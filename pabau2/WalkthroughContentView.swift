@@ -1,17 +1,19 @@
 import Foundation
 import SwiftUI
 
-struct WalkthroughState {
-	let text: String
+struct WalkthroughContentState {
+	let title: String
+	let description: String
 	let imageTitle: String
 }
 
 struct WalkthroughContentView: View {
-	let state: WalkthroughState
+	let state: WalkthroughContentState
 	var body: some View {
 		VStack {
 			Image(state.imageTitle)
-			Text(state.text)
+			Text(state.title)
+			Text(state.description)
 		}
 	}
 }

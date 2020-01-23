@@ -11,12 +11,14 @@
 		8297A29323D9AD7E00D091FF /* PageControl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8297A28C23D9AD7E00D091FF /* PageControl.framework */; };
 		8297A29423D9AD7E00D091FF /* PageControl.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8297A28C23D9AD7E00D091FF /* PageControl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8297A29823D9AD8400D091FF /* PageControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8297A28523D9AB1B00D091FF /* PageControl.swift */; };
-		8297A29A23D9AE1400D091FF /* Walkthrough.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8297A29923D9AE1400D091FF /* Walkthrough.swift */; };
+		8297A29A23D9AE1400D091FF /* WalkthroughContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8297A29923D9AE1400D091FF /* WalkthroughContentView.swift */; };
+		8297A2B523D9BA0200D091FF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8297A2B223D9BA0200D091FF /* Localizable.strings */; };
+		8297A2B723D9BB1C00D091FF /* Texts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8297A2B623D9BB1C00D091FF /* Texts.swift */; };
+		8297A2B923D9C80000D091FF /* WalkthroughContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8297A2B823D9C80000D091FF /* WalkthroughContainerView.swift */; };
 		82BE2F4823D97D9C00B3678A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BE2F4723D97D9C00B3678A /* AppDelegate.swift */; };
 		82BE2F4A23D97D9C00B3678A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BE2F4923D97D9C00B3678A /* SceneDelegate.swift */; };
 		82BE2F4E23D97D9F00B3678A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 82BE2F4D23D97D9F00B3678A /* Assets.xcassets */; };
 		82BE2F5123D97D9F00B3678A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 82BE2F5023D97D9F00B3678A /* Preview Assets.xcassets */; };
-		82BE2F5423D97D9F00B3678A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 82BE2F5223D97D9F00B3678A /* LaunchScreen.storyboard */; };
 		82BE2F6D23D9983C00B3678A /* ComposableArchitecture.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82BE2F6423D9983C00B3678A /* ComposableArchitecture.framework */; };
 		82BE2F7423D9983C00B3678A /* ComposableArchitectureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BE2F7323D9983C00B3678A /* ComposableArchitectureTests.swift */; };
 		82BE2F7623D9983C00B3678A /* ComposableArchitecture.h in Headers */ = {isa = PBXBuildFile; fileRef = 82BE2F6623D9983C00B3678A /* ComposableArchitecture.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -76,13 +78,16 @@
 		8297A28C23D9AD7E00D091FF /* PageControl.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PageControl.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8297A28E23D9AD7E00D091FF /* PageControl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PageControl.h; sourceTree = "<group>"; };
 		8297A28F23D9AD7E00D091FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8297A29923D9AE1400D091FF /* Walkthrough.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Walkthrough.swift; sourceTree = "<group>"; };
+		8297A29923D9AE1400D091FF /* WalkthroughContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkthroughContentView.swift; sourceTree = "<group>"; };
+		8297A2B323D9BA0200D091FF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		8297A2B423D9BA0200D091FF /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		8297A2B623D9BB1C00D091FF /* Texts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Texts.swift; sourceTree = "<group>"; };
+		8297A2B823D9C80000D091FF /* WalkthroughContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkthroughContainerView.swift; sourceTree = "<group>"; };
 		82BE2F4423D97D9C00B3678A /* pabau2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pabau2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		82BE2F4723D97D9C00B3678A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		82BE2F4923D97D9C00B3678A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		82BE2F4D23D97D9F00B3678A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		82BE2F5023D97D9F00B3678A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		82BE2F5323D97D9F00B3678A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		82BE2F5523D97D9F00B3678A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		82BE2F5D23D997F800B3678A /* ComposableArchitecture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComposableArchitecture.swift; sourceTree = "<group>"; };
 		82BE2F6423D9983C00B3678A /* ComposableArchitecture.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ComposableArchitecture.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -138,6 +143,14 @@
 			path = PageControl;
 			sourceTree = "<group>";
 		};
+		8297A2B123D9BA0200D091FF /* Locales */ = {
+			isa = PBXGroup;
+			children = (
+				8297A2B223D9BA0200D091FF /* Localizable.strings */,
+			);
+			path = Locales;
+			sourceTree = "<group>";
+		};
 		82BE2F3B23D97D9C00B3678A = {
 			isa = PBXGroup;
 			children = (
@@ -163,13 +176,15 @@
 		82BE2F4623D97D9C00B3678A /* pabau2 */ = {
 			isa = PBXGroup;
 			children = (
+				8297A2B623D9BB1C00D091FF /* Texts.swift */,
+				8297A2B123D9BA0200D091FF /* Locales */,
 				82BE2F4723D97D9C00B3678A /* AppDelegate.swift */,
 				82BE2F4923D97D9C00B3678A /* SceneDelegate.swift */,
 				82BE2F4D23D97D9F00B3678A /* Assets.xcassets */,
-				82BE2F5223D97D9F00B3678A /* LaunchScreen.storyboard */,
 				82BE2F5523D97D9F00B3678A /* Info.plist */,
 				82BE2F4F23D97D9F00B3678A /* Preview Content */,
-				8297A29923D9AE1400D091FF /* Walkthrough.swift */,
+				8297A29923D9AE1400D091FF /* WalkthroughContentView.swift */,
+				8297A2B823D9C80000D091FF /* WalkthroughContainerView.swift */,
 			);
 			path = pabau2;
 			sourceTree = "<group>";
@@ -331,6 +346,7 @@
 			knownRegions = (
 				en,
 				Base,
+				fr,
 			);
 			mainGroup = 82BE2F3B23D97D9C00B3678A;
 			productRefGroup = 82BE2F4523D97D9C00B3678A /* Products */;
@@ -357,8 +373,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				82BE2F5423D97D9F00B3678A /* LaunchScreen.storyboard in Resources */,
 				82BE2F5123D97D9F00B3678A /* Preview Assets.xcassets in Resources */,
+				8297A2B523D9BA0200D091FF /* Localizable.strings in Resources */,
 				82BE2F4E23D97D9F00B3678A /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -412,8 +428,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8297A29A23D9AE1400D091FF /* Walkthrough.swift in Sources */,
+				8297A29A23D9AE1400D091FF /* WalkthroughContentView.swift in Sources */,
+				8297A2B923D9C80000D091FF /* WalkthroughContainerView.swift in Sources */,
 				82BE2F4823D97D9C00B3678A /* AppDelegate.swift in Sources */,
+				8297A2B723D9BB1C00D091FF /* Texts.swift in Sources */,
 				82BE2F4A23D97D9C00B3678A /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -460,12 +478,13 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		82BE2F5223D97D9F00B3678A /* LaunchScreen.storyboard */ = {
+		8297A2B223D9BA0200D091FF /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				82BE2F5323D97D9F00B3678A /* Base */,
+				8297A2B323D9BA0200D091FF /* en */,
+				8297A2B423D9BA0200D091FF /* fr */,
 			);
-			name = LaunchScreen.storyboard;
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -529,6 +548,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -589,6 +609,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
