@@ -3,9 +3,9 @@ import SwiftUI
 
 public struct Effect<Output>: Publisher {
 	public typealias Failure = Never
-	
+
 	let publisher: AnyPublisher<Output, Failure>
-	
+
 	public func receive<S>(
 		subscriber: S
 	) where S: Subscriber, Failure == S.Failure, Output == S.Input {
@@ -20,7 +20,7 @@ extension Effect {
 			return Empty(completeImmediately: true)
 		}.eraseToEffect()
 	}
-	
+
 	public static func sync(work: @escaping () -> Output) -> Effect {
 		return Deferred {
 			Just(work())
@@ -41,12 +41,12 @@ public final class Store<Value, Action>: ObservableObject {
 	@Published public private(set) var value: Value
 	private var viewCancellable: Cancellable?
 	private var effectCancellables: Set<AnyCancellable> = []
-	
+
 	public init(initialValue: Value, reducer: @escaping Reducer<Value, Action>) {
 		self.reducer = reducer
 		self.value = initialValue
 	}
-	
+
 	public func send(_ action: Action) {
 		let effects = self.reducer(&self.value, action)
 		effects.forEach { effect in
@@ -65,7 +65,7 @@ public final class Store<Value, Action>: ObservableObject {
 			}
 		}
 	}
-	
+
 	public func view<LocalValue, LocalAction>(
 		value toLocalValue: @escaping (Value) -> LocalValue,
 		action toGlobalAction: @escaping (LocalAction) -> Action
@@ -102,7 +102,7 @@ public func pullback<LocalValue, GlobalValue, LocalAction, GlobalAction>(
 	return { globalValue, globalAction in
 		guard let localAction = globalAction[keyPath: action] else { return [] }
 		let localEffects = reducer(&globalValue[keyPath: value], localAction)
-		
+
 		return localEffects.map { localEffect in
 			localEffect.map { localAction -> GlobalAction in
 				var globalAction = globalAction
