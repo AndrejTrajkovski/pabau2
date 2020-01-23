@@ -7,9 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8297A29023D9AD7E00D091FF /* PageControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 8297A28E23D9AD7E00D091FF /* PageControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8297A29323D9AD7E00D091FF /* PageControl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8297A28C23D9AD7E00D091FF /* PageControl.framework */; };
+		8297A29423D9AD7E00D091FF /* PageControl.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8297A28C23D9AD7E00D091FF /* PageControl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8297A29823D9AD8400D091FF /* PageControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8297A28523D9AB1B00D091FF /* PageControl.swift */; };
+		8297A29A23D9AE1400D091FF /* Walkthrough.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8297A29923D9AE1400D091FF /* Walkthrough.swift */; };
 		82BE2F4823D97D9C00B3678A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BE2F4723D97D9C00B3678A /* AppDelegate.swift */; };
 		82BE2F4A23D97D9C00B3678A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BE2F4923D97D9C00B3678A /* SceneDelegate.swift */; };
-		82BE2F4C23D97D9C00B3678A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BE2F4B23D97D9C00B3678A /* ContentView.swift */; };
 		82BE2F4E23D97D9F00B3678A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 82BE2F4D23D97D9F00B3678A /* Assets.xcassets */; };
 		82BE2F5123D97D9F00B3678A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 82BE2F5023D97D9F00B3678A /* Preview Assets.xcassets */; };
 		82BE2F5423D97D9F00B3678A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 82BE2F5223D97D9F00B3678A /* LaunchScreen.storyboard */; };
@@ -22,6 +26,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		8297A29123D9AD7E00D091FF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 82BE2F3C23D97D9C00B3678A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8297A28B23D9AD7E00D091FF;
+			remoteInfo = PageControl;
+		};
 		82BE2F6E23D9983C00B3678A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 82BE2F3C23D97D9C00B3678A /* Project object */;
@@ -53,6 +64,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				82BE2F7A23D9983C00B3678A /* ComposableArchitecture.framework in Embed Frameworks */,
+				8297A29423D9AD7E00D091FF /* PageControl.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -60,10 +72,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8297A28523D9AB1B00D091FF /* PageControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageControl.swift; sourceTree = "<group>"; };
+		8297A28C23D9AD7E00D091FF /* PageControl.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PageControl.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8297A28E23D9AD7E00D091FF /* PageControl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PageControl.h; sourceTree = "<group>"; };
+		8297A28F23D9AD7E00D091FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8297A29923D9AE1400D091FF /* Walkthrough.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Walkthrough.swift; sourceTree = "<group>"; };
 		82BE2F4423D97D9C00B3678A /* pabau2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pabau2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		82BE2F4723D97D9C00B3678A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		82BE2F4923D97D9C00B3678A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		82BE2F4B23D97D9C00B3678A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		82BE2F4D23D97D9F00B3678A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		82BE2F5023D97D9F00B3678A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		82BE2F5323D97D9F00B3678A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -78,11 +94,19 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		8297A28923D9AD7E00D091FF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		82BE2F4123D97D9C00B3678A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				82BE2F7923D9983C00B3678A /* ComposableArchitecture.framework in Frameworks */,
+				8297A29323D9AD7E00D091FF /* PageControl.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -104,12 +128,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8297A28D23D9AD7E00D091FF /* PageControl */ = {
+			isa = PBXGroup;
+			children = (
+				8297A28E23D9AD7E00D091FF /* PageControl.h */,
+				8297A28523D9AB1B00D091FF /* PageControl.swift */,
+				8297A28F23D9AD7E00D091FF /* Info.plist */,
+			);
+			path = PageControl;
+			sourceTree = "<group>";
+		};
 		82BE2F3B23D97D9C00B3678A = {
 			isa = PBXGroup;
 			children = (
 				82BE2F4623D97D9C00B3678A /* pabau2 */,
 				82BE2F6523D9983C00B3678A /* ComposableArchitecture */,
 				82BE2F7223D9983C00B3678A /* ComposableArchitectureTests */,
+				8297A28D23D9AD7E00D091FF /* PageControl */,
 				82BE2F4523D97D9C00B3678A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -120,6 +155,7 @@
 				82BE2F4423D97D9C00B3678A /* pabau2.app */,
 				82BE2F6423D9983C00B3678A /* ComposableArchitecture.framework */,
 				82BE2F6C23D9983C00B3678A /* ComposableArchitectureTests.xctest */,
+				8297A28C23D9AD7E00D091FF /* PageControl.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -129,11 +165,11 @@
 			children = (
 				82BE2F4723D97D9C00B3678A /* AppDelegate.swift */,
 				82BE2F4923D97D9C00B3678A /* SceneDelegate.swift */,
-				82BE2F4B23D97D9C00B3678A /* ContentView.swift */,
 				82BE2F4D23D97D9F00B3678A /* Assets.xcassets */,
 				82BE2F5223D97D9F00B3678A /* LaunchScreen.storyboard */,
 				82BE2F5523D97D9F00B3678A /* Info.plist */,
 				82BE2F4F23D97D9F00B3678A /* Preview Content */,
+				8297A29923D9AE1400D091FF /* Walkthrough.swift */,
 			);
 			path = pabau2;
 			sourceTree = "<group>";
@@ -168,6 +204,14 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		8297A28723D9AD7E00D091FF /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8297A29023D9AD7E00D091FF /* PageControl.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		82BE2F5F23D9983C00B3678A /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -179,6 +223,24 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		8297A28B23D9AD7E00D091FF /* PageControl */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8297A29523D9AD7E00D091FF /* Build configuration list for PBXNativeTarget "PageControl" */;
+			buildPhases = (
+				8297A28723D9AD7E00D091FF /* Headers */,
+				8297A28823D9AD7E00D091FF /* Sources */,
+				8297A28923D9AD7E00D091FF /* Frameworks */,
+				8297A28A23D9AD7E00D091FF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PageControl;
+			productName = PageControl;
+			productReference = 8297A28C23D9AD7E00D091FF /* PageControl.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		82BE2F4323D97D9C00B3678A /* pabau2 */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 82BE2F5823D97D9F00B3678A /* Build configuration list for PBXNativeTarget "pabau2" */;
@@ -193,6 +255,7 @@
 			);
 			dependencies = (
 				82BE2F7823D9983C00B3678A /* PBXTargetDependency */,
+				8297A29223D9AD7E00D091FF /* PBXTargetDependency */,
 			);
 			name = pabau2;
 			productName = pabau2;
@@ -246,6 +309,9 @@
 				LastUpgradeCheck = 1120;
 				ORGANIZATIONNAME = "Andrej Trajkovski";
 				TargetAttributes = {
+					8297A28B23D9AD7E00D091FF = {
+						CreatedOnToolsVersion = 11.2.1;
+					};
 					82BE2F4323D97D9C00B3678A = {
 						CreatedOnToolsVersion = 11.2.1;
 					};
@@ -274,11 +340,19 @@
 				82BE2F4323D97D9C00B3678A /* pabau2 */,
 				82BE2F6323D9983C00B3678A /* ComposableArchitecture */,
 				82BE2F6B23D9983C00B3678A /* ComposableArchitectureTests */,
+				8297A28B23D9AD7E00D091FF /* PageControl */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		8297A28A23D9AD7E00D091FF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		82BE2F4223D97D9C00B3678A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -326,13 +400,21 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		8297A28823D9AD7E00D091FF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8297A29823D9AD8400D091FF /* PageControl.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		82BE2F4023D97D9C00B3678A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8297A29A23D9AE1400D091FF /* Walkthrough.swift in Sources */,
 				82BE2F4823D97D9C00B3678A /* AppDelegate.swift in Sources */,
 				82BE2F4A23D97D9C00B3678A /* SceneDelegate.swift in Sources */,
-				82BE2F4C23D97D9C00B3678A /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -355,6 +437,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		8297A29223D9AD7E00D091FF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8297A28B23D9AD7E00D091FF /* PageControl */;
+			targetProxy = 8297A29123D9AD7E00D091FF /* PBXContainerItemProxy */;
+		};
 		82BE2F6F23D9983C00B3678A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 82BE2F6323D9983C00B3678A /* ComposableArchitecture */;
@@ -384,6 +471,60 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		8297A29623D9AD7E00D091FF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = DKV7Q87Z7J;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = PageControl/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.andrejtrajkovski.PageControl;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		8297A29723D9AD7E00D091FF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = DKV7Q87Z7J;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = PageControl/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.andrejtrajkovski.PageControl;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 		82BE2F5623D97D9F00B3678A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -637,6 +778,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		8297A29523D9AD7E00D091FF /* Build configuration list for PBXNativeTarget "PageControl" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8297A29623D9AD7E00D091FF /* Debug */,
+				8297A29723D9AD7E00D091FF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		82BE2F3F23D97D9C00B3678A /* Build configuration list for PBXProject "pabau2" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
