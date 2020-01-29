@@ -44,7 +44,7 @@ public struct PageView<Page: View>: View {
     }
 
     public var body: some View {
-        ZStack(alignment: .bottom) {
+        VStack {
             PageViewController(controllers: viewControllers, currentPage: $currentPage)
             PageControl(numberOfPages: viewControllers.count, currentPage: $currentPage)
         }

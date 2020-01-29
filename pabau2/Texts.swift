@@ -9,6 +9,7 @@ struct Texts {
 	static let walkthroughDes2 = "walkthroughDes2".localized
 	static let walkthroughDes3 = "walkthroughDes3".localized
 	static let walkthroughDes4 = "walkthroughDes4".localized
+	static let signIn = "Sign In".localized
 }
 
 extension String {

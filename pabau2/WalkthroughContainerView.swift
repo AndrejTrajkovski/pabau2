@@ -1,5 +1,23 @@
 import SwiftUI
 import PageControl
+import ComposableArchitecture
+
+public enum WalkthroughAction: Equatable {
+  case signInTapped
+}
+
+public struct WalkthroughState {
+	var isFinished: Bool 
+}
+
+public func walkthroughReducer(state: inout WalkthroughState,
+															 action: WalkthroughAction) -> [Effect<WalkthroughAction>] {
+	switch action {
+	case .signInTapped:
+		state.isFinished = true
+		return []
+	}
+}
 
 struct WalkthroughStatic {
 	static let titles = [Texts.walkthrough1,
@@ -16,23 +34,41 @@ struct WalkthroughStatic {
 											 "illu-walkthrough-4"]
 }
 
-func makeState(titles: [String], descs: [String], imageTitles: [String]) -> [WalkthroughContentState] {
+func makeState(titles: [String], descs: [String], imageTitles: [String]) -> [WalkthroughContentContent] {
 	let zipped1 = zip(titles, descs)
 	let zipped2 = zip(zipped1, imageTitles)
 	return zipped2.map {
-		return WalkthroughContentState.init(title: $0.0, description: $0.1,
+		return WalkthroughContentContent.init(title: $0.0, description: $0.1,
 																				imageTitle: $1)
 	}
 }
 
 struct WalkthroughContainerView: View {
+	@ObservedObject var store: Store<WalkthroughState, WalkthroughAction>
 	let state = makeState(titles: WalkthroughStatic.titles,
 												descs: WalkthroughStatic.description,
 												imageTitles: WalkthroughStatic.images)
 	var body: some View {
-		VStack {
+		VStack(spacing: 50) {
 			PageView(state.map { WalkthroughContentView(state: $0)})
-			Button(action: {}, label: { Text("Sign in") })
+				.frame(maxHeight: 686.0)
+			MyButton(buttonTapAction: {
+				self.store.send(.signInTapped)
+			}).frame(minWidth: 320, maxWidth: 390)
 		}
+	}
+}
+
+struct MyButton: View {
+	var buttonTapAction: () -> Void
+	var body: some View {
+		Button(action: {
+			self.buttonTapAction()
+		}, label: {
+			Text(Texts.signIn)
+				.font(Font.system(size: 16.0, weight: .bold))
+				.frame(minWidth: 0, maxWidth: .infinity)
+		}).buttonStyle(BigButtonStyle())
+			.cornerRadius(10)
 	}
 }
