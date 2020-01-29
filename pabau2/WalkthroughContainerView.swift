@@ -55,6 +55,10 @@ struct WalkthroughContainerView: View {
 			MyButton(buttonTapAction: {
 				self.store.send(.signInTapped)
 			}).frame(minWidth: 320, maxWidth: 390)
+			NavigationLink(destination: EmptyView().navigationBarBackButtonHidden(true),
+										 isActive: .constant(self.store.value.isFinished)) {
+				Text("")
+			}.hidden()
 		}
 	}
 }
