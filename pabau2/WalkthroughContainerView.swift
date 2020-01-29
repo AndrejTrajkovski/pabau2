@@ -4,10 +4,12 @@ import ComposableArchitecture
 
 public enum WalkthroughAction: Equatable {
   case signInTapped
+	case loginAction(LoginAction)
 }
 
 public struct WalkthroughState {
-	var isFinished: Bool 
+	var isFinished: Bool
+	var loginViewState: LoginViewState
 }
 
 public func walkthroughReducer(state: inout WalkthroughState,
@@ -52,27 +54,14 @@ struct WalkthroughContainerView: View {
 		VStack(spacing: 50) {
 			PageView(state.map { WalkthroughContentView(state: $0)})
 				.frame(maxHeight: 686.0)
-			MyButton(buttonTapAction: {
+			BigButton(text: Texts.signIn,
+								buttonTapAction: {
 				self.store.send(.signInTapped)
 			}).frame(minWidth: 320, maxWidth: 390)
-			NavigationLink(destination: EmptyView().navigationBarBackButtonHidden(true),
+			NavigationLink(destination: LoginView(store: self.store.view(value: <#T##(WalkthroughState) -> LocalValue#>, action: <#T##(LocalAction) -> WalkthroughAction#>)),
 										 isActive: .constant(self.store.value.isFinished)) {
-				Text("")
+				EmptyView()
 			}.hidden()
 		}
-	}
-}
-
-struct MyButton: View {
-	var buttonTapAction: () -> Void
-	var body: some View {
-		Button(action: {
-			self.buttonTapAction()
-		}, label: {
-			Text(Texts.signIn)
-				.font(Font.system(size: 16.0, weight: .bold))
-				.frame(minWidth: 0, maxWidth: .infinity)
-		}).buttonStyle(BigButtonStyle())
-			.cornerRadius(10)
 	}
 }

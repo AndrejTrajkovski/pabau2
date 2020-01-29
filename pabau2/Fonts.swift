@@ -13,4 +13,10 @@ struct Fonts {
 	static let paragraph = Font.system(size: 16.0,
 																		 weight: .medium,
 																		 design: .default)
+	static let bigMediumFont = Font.system(size: 45,
+																				 weight: .medium,
+																				 design: .default)
+	static let bigSemibolFont = Font.system(size: 45,
+																				 weight: .semibold,
+																				 design: .default)
 }
