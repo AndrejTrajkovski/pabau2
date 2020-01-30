@@ -3,7 +3,9 @@ import ComposableArchitecture
 import SwiftUI
 
 struct AppState {
-	var isWalkthroughFinished: Bool
+	var isWalkthroughFinished: Bool = false
+	var username: String = ""
+	var password: String = ""
   struct User {
     let id: Int
     let name: String
@@ -11,8 +13,8 @@ struct AppState {
 }
 
 enum AppAction {
-	case walkthrough(WalkthroughAction)
-	var walkthrough: WalkthroughAction? {
+	case walkthrough(WalkthroughViewAction)
+	var walkthrough: WalkthroughViewAction? {
 		get {
 			guard case let .walkthrough(value) = self else { return nil }
 			return value
@@ -25,17 +27,19 @@ enum AppAction {
 }
 
 extension AppState {
-  var walktrough: WalkthroughState {
+  var walktrough: WalkthroughViewState {
     get {
-			WalkthroughState(isFinished: self.isWalkthroughFinished)
+			return WalkthroughViewState(walkthrough: WalkthroughState(isFinished: self.isWalkthroughFinished), login: LoginViewState(usernameInput: username, passwordInput: password))
     }
     set {
-			return self.isWalkthroughFinished = newValue.isFinished
+			self.isWalkthroughFinished = newValue.walkthrough.isFinished
+			self.username = newValue.login.usernameInput
+			self.password = newValue.login.passwordInput
     }
   }
 }
 
-let appReducer = pullback(walkthroughReducer, value: \AppState.walktrough, action: \AppAction.walkthrough)
+let appReducer = pullback(walkthroughViewReducer, value: \AppState.walktrough, action: \AppAction.walkthrough)
 
 struct ContentView: View {
   @ObservedObject var store: Store<AppState, AppAction>

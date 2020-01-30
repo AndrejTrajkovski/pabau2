@@ -11,7 +11,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       window.rootViewController = UIHostingController(
         rootView: ContentView(
           store: Store(
-						initialValue: AppState(isWalkthroughFinished: false),
+						initialValue: AppState(),
             reducer: with(
               appReducer,
                 logging

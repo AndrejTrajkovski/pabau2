@@ -2,8 +2,8 @@ import SwiftUI
 import ComposableArchitecture
 
 public struct LoginViewState {
-	let usernameInput: String
-	let passwordInput: String
+	var usernameInput: String
+	var passwordInput: String
 }
 
 public enum LoginAction {
@@ -26,7 +26,6 @@ struct LoginView: View {
   public init(store: Store<LoginViewState, LoginAction>) {
     self.store = store
   }
-	
 	var body: some View {
 		VStack {
 			Image("")

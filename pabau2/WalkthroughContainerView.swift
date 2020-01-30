@@ -2,15 +2,50 @@ import SwiftUI
 import PageControl
 import ComposableArchitecture
 
+public enum WalkthroughViewAction: Equatable {
+  case walkthrough(WalkthroughAction)
+	case login(LoginAction)
+
+  var walkthrough: WalkthroughAction? {
+    get {
+      guard case let .walkthrough(value) = self else { return nil }
+      return value
+    }
+    set {
+      guard case .walkthrough = self, let newValue = newValue else { return }
+      self = .walkthrough(newValue)
+    }
+  }
+
+	var login: LoginAction? {
+    get {
+      guard case let .login(value) = self else { return nil }
+      return value
+    }
+    set {
+      guard case .login = self, let newValue = newValue else { return }
+      self = .login(newValue)
+    }
+  }
+}
+
+public struct WalkthroughViewState {
+	var walkthrough: WalkthroughState
+	var login: LoginViewState
+}
+
 public enum WalkthroughAction: Equatable {
   case signInTapped
-	case loginAction(LoginAction)
 }
 
 public struct WalkthroughState {
 	var isFinished: Bool
-	var loginViewState: LoginViewState
 }
+
+public let walkthroughViewReducer = combine(
+pullback(walkthroughReducer, value: \WalkthroughViewState.walkthrough, action: \WalkthroughViewAction.walkthrough),
+pullback(loginReducer, value: \WalkthroughViewState.login, action: \WalkthroughViewAction.login)
+)
 
 public func walkthroughReducer(state: inout WalkthroughState,
 															 action: WalkthroughAction) -> [Effect<WalkthroughAction>] {
@@ -46,7 +81,7 @@ func makeState(titles: [String], descs: [String], imageTitles: [String]) -> [Wal
 }
 
 struct WalkthroughContainerView: View {
-	@ObservedObject var store: Store<WalkthroughState, WalkthroughAction>
+	@ObservedObject var store: Store<WalkthroughViewState, WalkthroughViewAction>
 	let state = makeState(titles: WalkthroughStatic.titles,
 												descs: WalkthroughStatic.description,
 												imageTitles: WalkthroughStatic.images)
@@ -56,10 +91,13 @@ struct WalkthroughContainerView: View {
 				.frame(maxHeight: 686.0)
 			BigButton(text: Texts.signIn,
 								buttonTapAction: {
-				self.store.send(.signInTapped)
+									self.store.send(.walkthrough(.signInTapped))
 			}).frame(minWidth: 320, maxWidth: 390)
-			NavigationLink(destination: LoginView(store: self.store.view(value: <#T##(WalkthroughState) -> LocalValue#>, action: <#T##(LocalAction) -> WalkthroughAction#>)),
-										 isActive: .constant(self.store.value.isFinished)) {
+			NavigationLink(destination: LoginView(store:
+				self.store.view(value: { $0.login },
+												action: { .login($0)})
+				),
+										 isActive: .constant(self.store.value.walkthrough.isFinished)) {
 				EmptyView()
 			}.hidden()
 		}
