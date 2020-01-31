@@ -31,18 +31,20 @@ struct LoginView: View {
 			Image("")
 				.resizable()
 				.frame(width: 160, height: 160)
-			VStack {
+			VStack(alignment: .leading) {
 				Text(Texts.helloAgain)
 					.foregroundColor(Colors.deepSkyBlue)
 					.font(Fonts.bigMediumFont)
 				Text(Texts.welcomeBack)
 					.foregroundColor(Colors.blackTwo)
 					.font(Fonts.bigSemibolFont)
-				BigButton(text: Texts.signIn,
-									buttonTapAction: {
-					self.store.send(.loginTapped)
-				}).frame(minWidth: 320, maxWidth: 390)
 			}
+			BigButton(text: Texts.signIn,
+								buttonTapAction: {
+				self.store.send(.loginTapped)
+			}).frame(minWidth: 320, maxWidth: 390)
 		}.navigationBarBackButtonHidden(true)
+			.frame(minWidth: 320, maxWidth: 495, minHeight: 400, maxHeight: 460)
+			
 	}
 }
