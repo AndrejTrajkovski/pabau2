@@ -12,6 +12,8 @@ struct Texts {
 	static let signIn = "Sign In".localized
 	static let helloAgain = "Hello Again.".localized
 	static let welcomeBack = "Welcome Back.".localized
+	static let emailAddress = "Email Address".localized
+	static let password = "Password".localized
 }
 
 extension String {

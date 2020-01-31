@@ -92,7 +92,7 @@ struct WalkthroughContainerView: View {
 			BigButton(text: Texts.signIn,
 								buttonTapAction: {
 									self.store.send(.walkthrough(.signInTapped))
-			}).frame(minWidth: 320, maxWidth: 390)
+			})
 			NavigationLink(destination: LoginView(store:
 				self.store.view(value: { $0.login },
 												action: { .login($0)})

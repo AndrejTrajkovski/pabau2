@@ -22,15 +22,12 @@ public func loginReducer(state: inout LoginViewState, action: LoginAction) -> [E
 
 struct LoginView: View {
 	var store: Store<LoginViewState, LoginAction>
-	
+	@State private var email: String = ""
+	@State private var password: String = ""
   public init(store: Store<LoginViewState, LoginAction>) {
     self.store = store
   }
 	var body: some View {
-		VStack {
-			Image("")
-				.resizable()
-				.frame(width: 160, height: 160)
 			VStack(alignment: .leading) {
 				Text(Texts.helloAgain)
 					.foregroundColor(Colors.deepSkyBlue)
@@ -38,13 +35,13 @@ struct LoginView: View {
 				Text(Texts.welcomeBack)
 					.foregroundColor(Colors.blackTwo)
 					.font(Fonts.bigSemibolFont)
-			}
-			BigButton(text: Texts.signIn,
-								buttonTapAction: {
-				self.store.send(.loginTapped)
-			}).frame(minWidth: 320, maxWidth: 390)
+				TextAndTextView(title: Texts.emailAddress.uppercased(), value: $email)
+				TextAndTextView(title: Texts.password.uppercased(), value: $password)
+				BigButton(text: Texts.signIn,
+									buttonTapAction: {
+					self.store.send(.loginTapped)
+				})
 		}.navigationBarBackButtonHidden(true)
-			.frame(minWidth: 320, maxWidth: 495, minHeight: 400, maxHeight: 460)
-			
+			.frame(minWidth: 304, maxWidth: 390, alignment: .center)
 	}
 }
