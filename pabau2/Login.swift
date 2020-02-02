@@ -7,7 +7,7 @@ public struct LoginViewState {
 }
 
 public enum LoginAction {
-	case loginTapped
+	case loginTapped (email: String, password: String)
 	case forgotPassTapped
 }
 
@@ -24,24 +24,24 @@ struct LoginView: View {
 	var store: Store<LoginViewState, LoginAction>
 	@State private var email: String = ""
 	@State private var password: String = ""
+	let emailValidation: String = ""
+	let passwordValidation: String = ""
   public init(store: Store<LoginViewState, LoginAction>) {
     self.store = store
   }
 	var body: some View {
+		VStack {
 			VStack(alignment: .leading) {
-				Text(Texts.helloAgain)
-					.foregroundColor(Colors.deepSkyBlue)
-					.font(Fonts.bigMediumFont)
-				Text(Texts.welcomeBack)
-					.foregroundColor(Colors.blackTwo)
-					.font(Fonts.bigSemibolFont)
-				TextAndTextView(title: Texts.emailAddress.uppercased(), value: $email)
-				TextAndTextView(title: Texts.password.uppercased(), value: $password)
+					LoginTitle()
+					Spacer(minLength: 85)
+					LoginTextFields(email: $email, password: $password, emailValidation: "bandash", passwordValidation: "bandash")
+				}
+				Spacer(minLength: 30)
 				BigButton(text: Texts.signIn,
 									buttonTapAction: {
-					self.store.send(.loginTapped)
+										self.store.send(.loginTapped(email: self.email, password: self.password))
 				})
 		}.navigationBarBackButtonHidden(true)
-			.frame(minWidth: 304, maxWidth: 390, alignment: .center)
+			.frame(minWidth: 304, maxWidth: 495, maxHeight: 460, alignment: .center)
 	}
 }

@@ -7,7 +7,10 @@ struct TextAndTextView: View {
 	var body: some View {
 		VStack(alignment: .leading) {
 			Text(title)
-			TextField.init(placeholder, text: $value)
+				.font(.textInTextAndTextField)
+				.foregroundColor(.textFieldAndTextLabel)
+			TextFieldWithBottomLine(placeholder: placeholder, text: $value)
+				.font(.textFieldInTextAndTextField)
 		}
 	}
 }

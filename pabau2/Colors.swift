@@ -1,11 +1,17 @@
 import SwiftUI
 
-struct Colors {
+extension Color {
 	static let main = Color.init(red: 0, green: 122, blue: 255)
 	static let gradient = Color.init(red: 121, green: 191, blue: 246)
 	static let gray1 = Color.init(red: 49, green: 49, blue: 49)
 	static let gray2 = Color.init(red: 70, green: 70, blue: 70)
 	static let gray3 = Color.init(red: 158, green: 158, blue: 158)
+
+	static let validationFail = Color.init(red: 1, green: 0, blue: 25/255)
+	
+	static let textFieldAndTextLabel = Color.init(red: 22/255, green: 31/255, blue: 61/255).opacity(0.5)
+
+	static let textFieldBottomLine = Color.init(red: 29/255, green: 29/255, blue: 38/255)
 
   static let lightBlueGrey = Color.init(red: 199/255, green: 199/255, blue: 204/255 )
 

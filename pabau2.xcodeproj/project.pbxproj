@@ -12,6 +12,9 @@
 		82811EF623E06D730066AFDC /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EF523E06D730066AFDC /* Util.swift */; };
 		82811EF823E187700066AFDC /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EF723E187700066AFDC /* Login.swift */; };
 		82811F0023E49F090066AFDC /* TextAndTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EFF23E49F090066AFDC /* TextAndTextView.swift */; };
+		82811F0223E6FAE10066AFDC /* TextFieldWithBottomLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811F0123E6FAE10066AFDC /* TextFieldWithBottomLine.swift */; };
+		82811F0523E720570066AFDC /* LoginTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811F0423E720570066AFDC /* LoginTitle.swift */; };
+		82811F0723E720670066AFDC /* LoginTextFields.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811F0623E720670066AFDC /* LoginTextFields.swift */; };
 		8297A29023D9AD7E00D091FF /* PageControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 8297A28E23D9AD7E00D091FF /* PageControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8297A29323D9AD7E00D091FF /* PageControl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8297A28C23D9AD7E00D091FF /* PageControl.framework */; };
 		8297A29423D9AD7E00D091FF /* PageControl.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8297A28C23D9AD7E00D091FF /* PageControl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -87,6 +90,9 @@
 		82811EF523E06D730066AFDC /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
 		82811EF723E187700066AFDC /* Login.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
 		82811EFF23E49F090066AFDC /* TextAndTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextAndTextView.swift; sourceTree = "<group>"; };
+		82811F0123E6FAE10066AFDC /* TextFieldWithBottomLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldWithBottomLine.swift; sourceTree = "<group>"; };
+		82811F0423E720570066AFDC /* LoginTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginTitle.swift; sourceTree = "<group>"; };
+		82811F0623E720670066AFDC /* LoginTextFields.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginTextFields.swift; sourceTree = "<group>"; };
 		8297A28523D9AB1B00D091FF /* PageControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageControl.swift; sourceTree = "<group>"; };
 		8297A28C23D9AD7E00D091FF /* PageControl.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PageControl.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8297A28E23D9AD7E00D091FF /* PageControl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PageControl.h; sourceTree = "<group>"; };
@@ -209,6 +215,9 @@
 				82811EF523E06D730066AFDC /* Util.swift */,
 				82811EF723E187700066AFDC /* Login.swift */,
 				82811EFF23E49F090066AFDC /* TextAndTextView.swift */,
+				82811F0123E6FAE10066AFDC /* TextFieldWithBottomLine.swift */,
+				82811F0423E720570066AFDC /* LoginTitle.swift */,
+				82811F0623E720670066AFDC /* LoginTextFields.swift */,
 			);
 			path = pabau2;
 			sourceTree = "<group>";
@@ -456,11 +465,14 @@
 				82F5592023DC255B008032F4 /* BigButton.swift in Sources */,
 				8297A2BD23DAAFE000D091FF /* Fonts.swift in Sources */,
 				8297A29A23D9AE1400D091FF /* WalkthroughContentView.swift in Sources */,
+				82811F0223E6FAE10066AFDC /* TextFieldWithBottomLine.swift in Sources */,
 				8297A2BB23DA08F200D091FF /* Colors.swift in Sources */,
 				8297A2B923D9C80000D091FF /* WalkthroughContainerView.swift in Sources */,
+				82811F0523E720570066AFDC /* LoginTitle.swift in Sources */,
 				82811EF423E06BCB0066AFDC /* ContentView.swift in Sources */,
 				82BE2F4823D97D9C00B3678A /* AppDelegate.swift in Sources */,
 				82811EF623E06D730066AFDC /* Util.swift in Sources */,
+				82811F0723E720670066AFDC /* LoginTextFields.swift in Sources */,
 				82811F0023E49F090066AFDC /* TextAndTextView.swift in Sources */,
 				8297A2B723D9BB1C00D091FF /* Texts.swift in Sources */,
 				82811EF823E187700066AFDC /* Login.swift in Sources */,

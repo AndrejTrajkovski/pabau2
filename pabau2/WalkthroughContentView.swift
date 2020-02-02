@@ -16,9 +16,9 @@ struct WalkthroughContentView: View {
 				.aspectRatio(contentMode: .fit)
 				.frame(maxHeight: 383)
 			Text(state.title)
-				.font(Fonts.headline2)
+				.font(.headline2)
 			Text(state.description)
-				.font(Fonts.paragraph)
+				.font(.paragraph)
 				.multilineTextAlignment(.center)
 		}
 	}

@@ -2,7 +2,7 @@ import SwiftUI
 import PageControl
 import ComposableArchitecture
 
-public enum WalkthroughViewAction: Equatable {
+public enum WalkthroughViewAction {
   case walkthrough(WalkthroughAction)
 	case login(LoginAction)
 
