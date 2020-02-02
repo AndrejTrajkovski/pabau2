@@ -1,5 +1,15 @@
 import SwiftUI
 import ComposableArchitecture
+import Combine
+
+func login(_ username: String, password: String) -> Effect<Bool> {
+	return Just(true)
+					.eraseToEffect()
+}
+
+public enum LoginError: Error {
+	
+}
 
 public struct LoginViewState {
 	var usernameInput: String
@@ -9,13 +19,22 @@ public struct LoginViewState {
 public enum LoginAction {
 	case loginTapped (email: String, password: String)
 	case forgotPassTapped
+	case loginResponse(Bool)
+//	case loginError(LoginError)
 }
 
 public func loginReducer(state: inout LoginViewState, action: LoginAction) -> [Effect<LoginAction>] {
 	switch action {
 	case .loginTapped:
-		return []
+		return [
+			login(state.usernameInput, password: state.passwordInput)
+				.map(LoginAction.loginResponse)
+				.receive(on: DispatchQueue.main)
+        .eraseToEffect()
+		]
 	case .forgotPassTapped:
+		return []
+	case .loginResponse:
 		return []
 	}
 }
