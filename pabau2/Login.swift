@@ -8,36 +8,67 @@ func login(_ username: String, password: String) -> Effect<User> {
 					.eraseToEffect()
 }
 
+public enum ValidatiorError: Error {
+	case invalidEmail
+}
+
 public enum LoginError: Error {
-	
+	case wrongCredentials
 }
 
 public struct LoginViewState {
-	var usernameInput: String
-	var passwordInput: String
 	var loggedInUser: User?
+	var validationError: ValidatiorError?
 }
 
 public enum LoginAction {
 	case loginTapped (email: String, password: String)
 	case forgotPassTapped
-	case loginResponse(User)
+	case didPassValidation (email: String, password: String)
+	case didFailValidation(ValidatiorError)
+	case didLogin(User)
 //	case loginError(LoginError)
+}
+
+func validate(username: String, password: String) -> Effect<Result<Void, ValidatiorError>> {
+	Effect.sync {
+		if !username.contains("@") {
+			return .failure(.invalidEmail)
+		} else {
+			return .success(())
+		}
+	}
 }
 
 public func loginReducer(state: inout LoginViewState, action: LoginAction) -> [Effect<LoginAction>] {
 	switch action {
-	case .loginTapped:
+	case .loginTapped (let username, let password):
 		return [
-			login(state.usernameInput, password: state.passwordInput)
-				.map(LoginAction.loginResponse)
-				.receive(on: DispatchQueue.main)
-        .eraseToEffect()
+				validate(username: username, password: password)
+				.map {
+					switch $0 {
+					case .success:
+						return LoginAction.didPassValidation(email: username, password: password)
+					case .failure(let failure):
+						return LoginAction.didFailValidation(failure)
+					}
+				}.eraseToEffect()
 		]
 	case .forgotPassTapped:
 		return []
-	case .loginResponse(let user):
+	case .didLogin(let user):
 		state.loggedInUser = user
+		return []
+	case .didPassValidation (let username, let password):
+		state.validationError = nil
+		return [
+			login(username, password: password)
+			.map(LoginAction.didLogin)
+			.receive(on: DispatchQueue.main)
+			.eraseToEffect()
+		]
+	case .didFailValidation(let failure):
+		state.validationError = failure
 		return []
 	}
 }
@@ -46,8 +77,14 @@ struct LoginView: View {
 	var store: Store<LoginViewState, LoginAction>
 	@State private var email: String = ""
 	@State private var password: String = ""
-	let emailValidation: String = ""
-	let passwordValidation: String = ""
+	func validate(validationError: ValidatiorError?) -> String {
+		if validationError != nil {
+			return "invalid email"
+		} else {
+			return ""
+		}
+	}
+//	let passwordValidation: String = ""
   public init(store: Store<LoginViewState, LoginAction>) {
     self.store = store
   }
@@ -56,7 +93,7 @@ struct LoginView: View {
 			VStack(alignment: .leading) {
 					LoginTitle()
 					Spacer(minLength: 85)
-					LoginTextFields(email: $email, password: $password, emailValidation: "bandash", passwordValidation: "bandash")
+				LoginTextFields(email: $email, password: $password, emailValidation: validate(validationError: self.store.value.validationError), passwordValidation: "bandash")
 				}
 				Spacer(minLength: 30)
 				BigButton(text: Texts.signIn,
