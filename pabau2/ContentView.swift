@@ -2,17 +2,20 @@ import Combine
 import ComposableArchitecture
 import SwiftUI
 
+public struct User {
+	let id: Int
+	let name: String
+}
+
 struct AppState {
 	var isWalkthroughFinished: Bool = false
 	var username: String = ""
 	var password: String = ""
-  struct User {
-    let id: Int
-    let name: String
-  }
+	var loggedInUser: User?
 }
 
 enum AppAction {
+	case login(LoginAction)
 	case walkthrough(WalkthroughViewAction)
 	var walkthrough: WalkthroughViewAction? {
 		get {
@@ -24,17 +27,29 @@ enum AppAction {
 			self = .walkthrough(newValue)
 		}
 	}
+	
+	var login: LoginAction? {
+		get {
+			guard case let .login(value) = self else { return nil }
+			return value
+		}
+		set {
+			guard case .login = self, let newValue = newValue else { return }
+			self = .login(newValue)
+		}
+	}
 }
 
 extension AppState {
   var walktrough: WalkthroughViewState {
     get {
-			return WalkthroughViewState(walkthrough: WalkthroughState(isFinished: self.isWalkthroughFinished), login: LoginViewState(usernameInput: username, passwordInput: password))
+			return WalkthroughViewState(walkthrough: WalkthroughState(isFinished: self.isWalkthroughFinished), login: LoginViewState(usernameInput: username, passwordInput: password, loggedInUser: loggedInUser))
     }
     set {
 			self.isWalkthroughFinished = newValue.walkthrough.isFinished
 			self.username = newValue.login.usernameInput
 			self.password = newValue.login.passwordInput
+			self.loggedInUser = newValue.login.loggedInUser
     }
   }
 }
@@ -54,4 +69,21 @@ struct ContentView: View {
 			)
 		}.navigationViewStyle(StackNavigationViewStyle())
 	}
+}
+
+func appLogin(
+  _ reducer: @escaping Reducer<AppState, AppAction>
+) -> Reducer<AppState, AppAction> {
+
+  return { state, action in
+    switch action {
+		case .walkthrough:
+			break
+		case .login(.loginResponse(let user)):
+			state.loggedInUser = user
+		case .login(.loginTapped), .login(.forgotPassTapped):
+			break
+		}
+    return reducer(&state, action)
+  }
 }

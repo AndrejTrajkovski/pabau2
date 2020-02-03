@@ -2,8 +2,9 @@ import SwiftUI
 import ComposableArchitecture
 import Combine
 
-func login(_ username: String, password: String) -> Effect<Bool> {
-	return Just(true)
+func login(_ username: String, password: String) -> Effect<User> {
+	return Just(User(id: 1, name: "Andrej"))
+					.delay(for: .seconds(2), scheduler: DispatchQueue.main)
 					.eraseToEffect()
 }
 
@@ -14,12 +15,13 @@ public enum LoginError: Error {
 public struct LoginViewState {
 	var usernameInput: String
 	var passwordInput: String
+	var loggedInUser: User?
 }
 
 public enum LoginAction {
 	case loginTapped (email: String, password: String)
 	case forgotPassTapped
-	case loginResponse(Bool)
+	case loginResponse(User)
 //	case loginError(LoginError)
 }
 
@@ -34,7 +36,8 @@ public func loginReducer(state: inout LoginViewState, action: LoginAction) -> [E
 		]
 	case .forgotPassTapped:
 		return []
-	case .loginResponse:
+	case .loginResponse(let user):
+		state.loggedInUser = user
 		return []
 	}
 }
@@ -60,6 +63,10 @@ struct LoginView: View {
 									buttonTapAction: {
 										self.store.send(.loginTapped(email: self.email, password: self.password))
 				})
+			NavigationLink(destination: EmptyView(),
+										 isActive: .constant(self.store.value.loggedInUser != nil)) {
+				EmptyView()
+			}.hidden()
 		}.navigationBarBackButtonHidden(true)
 			.frame(minWidth: 304, maxWidth: 495, maxHeight: 460, alignment: .center)
 	}
