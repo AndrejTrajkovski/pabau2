@@ -30,28 +30,40 @@ public enum WalkthroughViewAction {
 }
 
 public struct WalkthroughViewState {
-	var walkthrough: WalkthroughState
-	var login: LoginViewState
+	var navigation: Navigation
+	var loggedInUser: User?
+	var validationError: ValidatiorError?
+}
+
+extension WalkthroughViewState {
+	var login: LoginViewState {
+		get {
+			return LoginViewState(loggedInUser: self.loggedInUser,
+														validationError: self.validationError,
+														navigation: self.navigation)
+		}
+		set {
+			self.navigation = newValue.navigation
+			self.loggedInUser = newValue.loggedInUser
+			self.validationError = newValue.validationError
+		}
+	}
 }
 
 public enum WalkthroughAction: Equatable {
   case signInTapped
 }
 
-public struct WalkthroughState {
-	var isFinished: Bool
-}
-
 public let walkthroughViewReducer = combine(
-pullback(walkthroughReducer, value: \WalkthroughViewState.walkthrough, action: \WalkthroughViewAction.walkthrough),
+pullback(walkthroughReducer, value: \WalkthroughViewState.navigation, action: \WalkthroughViewAction.walkthrough),
 pullback(loginReducer, value: \WalkthroughViewState.login, action: \WalkthroughViewAction.login)
 )
 
-public func walkthroughReducer(state: inout WalkthroughState,
+public func walkthroughReducer(state: inout Navigation,
 															 action: WalkthroughAction) -> [Effect<WalkthroughAction>] {
 	switch action {
 	case .signInTapped:
-		state.isFinished = true
+		state = .login
 		return []
 	}
 }
@@ -97,7 +109,7 @@ struct WalkthroughContainerView: View {
 				self.store.view(value: { $0.login },
 												action: { .login($0)})
 				),
-										 isActive: .constant(self.store.value.walkthrough.isFinished)) {
+										 isActive: .constant(self.store.value.navigation == .login)) {
 				EmptyView()
 			}.hidden()
 		}

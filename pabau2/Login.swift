@@ -19,6 +19,7 @@ public enum LoginError: Error {
 public struct LoginViewState {
 	var loggedInUser: User?
 	var validationError: ValidatiorError?
+	var navigation: Navigation
 }
 
 public enum LoginAction {
@@ -55,9 +56,11 @@ public func loginReducer(state: inout LoginViewState, action: LoginAction) -> [E
 			}.eraseToEffect()
 		]
 	case .forgotPassTapped:
+		state.navigation = .forgotPass
 		return []
 	case .didLogin(let user):
 		state.loggedInUser = user
+		state.navigation = .tabBar
 		return []
 	case .didPassValidation (let username, let password):
 		state.validationError = nil
@@ -104,7 +107,11 @@ struct LoginView: View {
 									self.store.send(.loginTapped(email: self.email, password: self.password))
 			})
 			NavigationLink(destination: EmptyView(),
-										 isActive: .constant(self.store.value.loggedInUser != nil)) {
+										 isActive: .constant(self.store.value.navigation == .tabBar)) {
+											EmptyView()
+			}.hidden()
+			NavigationLink(destination: EmptyView(),
+										 isActive: .constant(self.store.value.navigation == .forgotPass)) {
 											EmptyView()
 			}.hidden()
 		}.navigationBarBackButtonHidden(true)

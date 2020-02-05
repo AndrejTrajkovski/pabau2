@@ -48,7 +48,7 @@ extension Font {
 	static let textFieldInTextAndTextField = Font.system(size: 15,
 																											 weight: .medium)
 	static let textInTextAndTextField = Font.system(size: 10, weight: .bold)
-	
+
 	static let thirteenBold = Font.system(size: 13, weight: .bold)
 }
 

@@ -7,18 +7,18 @@ public struct User {
 	let name: String
 }
 
-public enum LoginNavigation {
+public enum Navigation {
 	case walkthrough
 	case login
 	case forgotPass
 	case resetPass
+	case tabBar
 }
 
 struct AppState {
-	var isWalkthroughFinished: Bool = false
 	var loggedInUser: User?
 	var validationError: ValidatiorError?
-	var loginNav: LoginNavigation
+	var loginNav: Navigation
 }
 
 enum AppAction {
@@ -50,10 +50,12 @@ enum AppAction {
 extension AppState {
   var walktrough: WalkthroughViewState {
     get {
-			return WalkthroughViewState(walkthrough: WalkthroughState(isFinished: self.isWalkthroughFinished), login: LoginViewState(loggedInUser: loggedInUser, validationError: self.validationError))
+			return WalkthroughViewState(navigation: self.loginNav,
+																	loggedInUser: loggedInUser,
+																	validationError: self.validationError)
     }
     set {
-			self.isWalkthroughFinished = newValue.walkthrough.isFinished
+			self.loginNav = newValue.navigation
 			self.loggedInUser = newValue.login.loggedInUser
 			self.validationError = newValue.login.validationError
     }
