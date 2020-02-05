@@ -104,11 +104,12 @@ struct LoginView: View {
 									self.store.send(.loginTapped(email: self.email, password: self.password))
 			})
 			NavigationLink(destination: EmptyView(),
-										 isActive: .constant(true)) {
+										 isActive: .constant(self.store.value.loggedInUser != nil)) {
 											EmptyView()
 			}.hidden()
 		}.navigationBarBackButtonHidden(true)
-			.frame(minWidth: 280, maxWidth: 495, maxHeight: 460, alignment: .center)
+			.frame(minWidth: 280, maxWidth: 495, alignment: .center)
+			.fixedSize(horizontal: false, vertical: true)
 			.padding(.bottom, keyboardHandler.keyboardHeight)
 	}
 }

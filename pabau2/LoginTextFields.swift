@@ -11,15 +11,13 @@ struct LoginTextFields: View {
 			TextAndTextView(title: Texts.emailAddress.uppercased(), value: $email)
 			ValidationText(title: emailValidation)
 			Spacer(minLength: 10)
-			HStack {
+			HStack(alignment: .bottom, spacing: 0) {
 				TextAndTextView(title: Texts.password.uppercased(), value: $password)
-				Button(action: {
-					self.onForgotPass()
-				}, label: {
-					Text(Texts.forgotPass)
-						.font(.thirteenBold)
-						.foregroundColor(.textFieldAndTextLabel)
-				})
+				ButtonWithBottomLine(title: Texts.forgotPass,
+														 action: onForgotPass)
+					.font(.thirteenBold)
+					.foregroundColor(.textFieldAndTextLabel)
+					.frame(width: 150)
 			}
 			ValidationText(title: passwordValidation)
 		}
