@@ -11,7 +11,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       window.rootViewController = UIHostingController(
         rootView: ContentView(
           store: Store(
-						initialValue: AppState(),
+						initialValue: AppState(loginNav: .walkthrough),
             reducer: with(
               appReducer,
 							compose(
@@ -20,7 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 							)
             )
           )
-        )
+				).environmentObject(KeyboardFollower())
       )
       self.window = window
       window.makeKeyAndVisible()

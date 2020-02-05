@@ -11,16 +11,16 @@ extension Font {
 //																		 design: .default)
 	static let paragraph = Font.system(size: 16.0,
 																		 weight: .medium)
-	
+
 	static let bigMediumFont = Font.system(size: 45,
 																				 weight: .medium)
-	
+
 	static let bigSemibolFont = Font.system(size: 45,
 																				 weight: .semibold)
 
 	static let validation = Font.system(size: 12,
 																			weight: .semibold)
-	
+
 	static let largeTitle = Font.init(UIFont.largeTitle)
 
 	static let textStyle = Font.init(UIFont.textStyle)
@@ -44,10 +44,12 @@ extension Font {
 	static let formFieldHeader = Font.init(UIFont.formFieldHeader)
 
 	static let time = Font.init(UIFont.time)
-	
+
 	static let textFieldInTextAndTextField = Font.system(size: 15,
 																											 weight: .medium)
 	static let textInTextAndTextField = Font.system(size: 10, weight: .bold)
+	
+	static let thirteenBold = Font.system(size: 13, weight: .bold)
 }
 
 import UIKit

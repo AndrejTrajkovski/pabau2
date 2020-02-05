@@ -15,6 +15,7 @@
 		82811F0223E6FAE10066AFDC /* TextFieldWithBottomLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811F0123E6FAE10066AFDC /* TextFieldWithBottomLine.swift */; };
 		82811F0523E720570066AFDC /* LoginTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811F0423E720570066AFDC /* LoginTitle.swift */; };
 		82811F0723E720670066AFDC /* LoginTextFields.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811F0623E720670066AFDC /* LoginTextFields.swift */; };
+		82811F0D23E955F70066AFDC /* KeyboardFollower.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811F0C23E955F70066AFDC /* KeyboardFollower.swift */; };
 		8297A29023D9AD7E00D091FF /* PageControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 8297A28E23D9AD7E00D091FF /* PageControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8297A29323D9AD7E00D091FF /* PageControl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8297A28C23D9AD7E00D091FF /* PageControl.framework */; };
 		8297A29423D9AD7E00D091FF /* PageControl.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8297A28C23D9AD7E00D091FF /* PageControl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -93,6 +94,7 @@
 		82811F0123E6FAE10066AFDC /* TextFieldWithBottomLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldWithBottomLine.swift; sourceTree = "<group>"; };
 		82811F0423E720570066AFDC /* LoginTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginTitle.swift; sourceTree = "<group>"; };
 		82811F0623E720670066AFDC /* LoginTextFields.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginTextFields.swift; sourceTree = "<group>"; };
+		82811F0C23E955F70066AFDC /* KeyboardFollower.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardFollower.swift; sourceTree = "<group>"; };
 		8297A28523D9AB1B00D091FF /* PageControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageControl.swift; sourceTree = "<group>"; };
 		8297A28C23D9AD7E00D091FF /* PageControl.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PageControl.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8297A28E23D9AD7E00D091FF /* PageControl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PageControl.h; sourceTree = "<group>"; };
@@ -218,6 +220,7 @@
 				82811F0123E6FAE10066AFDC /* TextFieldWithBottomLine.swift */,
 				82811F0423E720570066AFDC /* LoginTitle.swift */,
 				82811F0623E720670066AFDC /* LoginTextFields.swift */,
+				82811F0C23E955F70066AFDC /* KeyboardFollower.swift */,
 			);
 			path = pabau2;
 			sourceTree = "<group>";
@@ -474,6 +477,7 @@
 				82811EF623E06D730066AFDC /* Util.swift in Sources */,
 				82811F0723E720670066AFDC /* LoginTextFields.swift in Sources */,
 				82811F0023E49F090066AFDC /* TextAndTextView.swift in Sources */,
+				82811F0D23E955F70066AFDC /* KeyboardFollower.swift in Sources */,
 				8297A2B723D9BB1C00D091FF /* Texts.swift in Sources */,
 				82811EF823E187700066AFDC /* Login.swift in Sources */,
 				82BE2F4A23D97D9C00B3678A /* SceneDelegate.swift in Sources */,

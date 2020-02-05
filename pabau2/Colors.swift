@@ -8,7 +8,7 @@ extension Color {
 	static let gray3 = Color.init(red: 158, green: 158, blue: 158)
 
 	static let validationFail = Color.init(red: 1, green: 0, blue: 25/255)
-	
+
 	static let textFieldAndTextLabel = Color.init(red: 22/255, green: 31/255, blue: 61/255).opacity(0.5)
 
 	static let textFieldBottomLine = Color.init(red: 29/255, green: 29/255, blue: 38/255)

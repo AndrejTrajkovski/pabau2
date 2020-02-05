@@ -7,10 +7,18 @@ public struct User {
 	let name: String
 }
 
+public enum LoginNavigation {
+	case walkthrough
+	case login
+	case forgotPass
+	case resetPass
+}
+
 struct AppState {
 	var isWalkthroughFinished: Bool = false
 	var loggedInUser: User?
 	var validationError: ValidatiorError?
+	var loginNav: LoginNavigation
 }
 
 enum AppAction {
@@ -26,7 +34,7 @@ enum AppAction {
 			self = .walkthrough(newValue)
 		}
 	}
-	
+
 	var login: LoginAction? {
 		get {
 			guard case let .login(value) = self else { return nil }
@@ -80,7 +88,7 @@ func appLogin(
 			state.loggedInUser = user
 		case .login(.loginTapped),
 				 .login(.didPassValidation),
-				 .login(.didFailValidation(_)),
+				 .login(.didFailValidation),
 				 .login(.forgotPassTapped):
 			break
 		}

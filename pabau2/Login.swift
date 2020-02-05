@@ -4,8 +4,8 @@ import Combine
 
 func login(_ username: String, password: String) -> Effect<User> {
 	return Just(User(id: 1, name: "Andrej"))
-					.delay(for: .seconds(2), scheduler: DispatchQueue.main)
-					.eraseToEffect()
+		.delay(for: .seconds(2), scheduler: DispatchQueue.main)
+		.eraseToEffect()
 }
 
 public enum ValidatiorError: Error {
@@ -27,7 +27,7 @@ public enum LoginAction {
 	case didPassValidation (email: String, password: String)
 	case didFailValidation(ValidatiorError)
 	case didLogin(User)
-//	case loginError(LoginError)
+	//	case loginError(LoginError)
 }
 
 func validate(username: String, password: String) -> Effect<Result<Void, ValidatiorError>> {
@@ -44,7 +44,7 @@ public func loginReducer(state: inout LoginViewState, action: LoginAction) -> [E
 	switch action {
 	case .loginTapped (let username, let password):
 		return [
-				validate(username: username, password: password)
+			validate(username: username, password: password)
 				.map {
 					switch $0 {
 					case .success:
@@ -52,7 +52,7 @@ public func loginReducer(state: inout LoginViewState, action: LoginAction) -> [E
 					case .failure(let failure):
 						return LoginAction.didFailValidation(failure)
 					}
-				}.eraseToEffect()
+			}.eraseToEffect()
 		]
 	case .forgotPassTapped:
 		return []
@@ -63,9 +63,9 @@ public func loginReducer(state: inout LoginViewState, action: LoginAction) -> [E
 		state.validationError = nil
 		return [
 			login(username, password: password)
-			.map(LoginAction.didLogin)
-			.receive(on: DispatchQueue.main)
-			.eraseToEffect()
+				.map(LoginAction.didLogin)
+				.receive(on: DispatchQueue.main)
+				.eraseToEffect()
 		]
 	case .didFailValidation(let failure):
 		state.validationError = failure
@@ -75,36 +75,40 @@ public func loginReducer(state: inout LoginViewState, action: LoginAction) -> [E
 
 struct LoginView: View {
 	var store: Store<LoginViewState, LoginAction>
+	@EnvironmentObject var keyboardHandler: KeyboardFollower
 	@State private var email: String = ""
 	@State private var password: String = ""
-	func validate(validationError: ValidatiorError?) -> String {
-		if validationError != nil {
+	func validate(_ error: ValidatiorError?) -> String {
+		if error != nil {
 			return "invalid email"
 		} else {
 			return ""
 		}
 	}
-//	let passwordValidation: String = ""
-  public init(store: Store<LoginViewState, LoginAction>) {
-    self.store = store
-  }
+	public init(store: Store<LoginViewState, LoginAction>) {
+		self.store = store
+	}
 	var body: some View {
 		VStack {
 			VStack(alignment: .leading) {
-					LoginTitle()
-					Spacer(minLength: 85)
-				LoginTextFields(email: $email, password: $password, emailValidation: validate(validationError: self.store.value.validationError), passwordValidation: "bandash")
-				}
-				Spacer(minLength: 30)
-				BigButton(text: Texts.signIn,
-									buttonTapAction: {
-										self.store.send(.loginTapped(email: self.email, password: self.password))
-				})
+				LoginTitle()
+				Spacer(minLength: 85)
+				LoginTextFields(email: $email,
+												password: $password,
+												emailValidation: validate(self.store.value.validationError), passwordValidation: "bandash",
+												onForgotPass: {self.store.send(.forgotPassTapped) })
+			}
+			Spacer(minLength: 30)
+			BigButton(text: Texts.signIn,
+								buttonTapAction: {
+									self.store.send(.loginTapped(email: self.email, password: self.password))
+			})
 			NavigationLink(destination: EmptyView(),
-										 isActive: .constant(self.store.value.loggedInUser != nil)) {
-				EmptyView()
+										 isActive: .constant(true)) {
+											EmptyView()
 			}.hidden()
 		}.navigationBarBackButtonHidden(true)
-			.frame(minWidth: 304, maxWidth: 495, maxHeight: 460, alignment: .center)
+			.frame(minWidth: 280, maxWidth: 495, maxHeight: 460, alignment: .center)
+			.padding(.bottom, keyboardHandler.keyboardHeight)
 	}
 }

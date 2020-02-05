@@ -5,12 +5,22 @@ struct LoginTextFields: View {
 	@Binding var password: String
 	let emailValidation: String
 	let passwordValidation: String
+	let onForgotPass: () -> Void
 	var body: some View {
 		VStack(alignment: .leading) {
 			TextAndTextView(title: Texts.emailAddress.uppercased(), value: $email)
 			ValidationText(title: emailValidation)
 			Spacer(minLength: 10)
-			TextAndTextView(title: Texts.password.uppercased(), value: $password)
+			HStack {
+				TextAndTextView(title: Texts.password.uppercased(), value: $password)
+				Button(action: {
+					self.onForgotPass()
+				}, label: {
+					Text(Texts.forgotPass)
+						.font(.thirteenBold)
+						.foregroundColor(.textFieldAndTextLabel)
+				})
+			}
 			ValidationText(title: passwordValidation)
 		}
 	}
