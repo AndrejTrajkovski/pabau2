@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		820961C223EBF3AF004A510A /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820961C123EBF3AF004A510A /* ForgotPasswordView.swift */; };
 		82811EF223DF53060066AFDC /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 82811EF123DF53060066AFDC /* Launch Screen.storyboard */; };
 		82811EF423E06BCB0066AFDC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EF323E06BCB0066AFDC /* ContentView.swift */; };
 		82811EF623E06D730066AFDC /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EF523E06D730066AFDC /* Util.swift */; };
@@ -86,6 +87,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		820961C123EBF3AF004A510A /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
 		82811EF123DF53060066AFDC /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		82811EF323E06BCB0066AFDC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		82811EF523E06D730066AFDC /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
@@ -205,6 +207,7 @@
 				8297A2B123D9BA0200D091FF /* Locales */,
 				82BE2F4723D97D9C00B3678A /* AppDelegate.swift */,
 				82BE2F4923D97D9C00B3678A /* SceneDelegate.swift */,
+				820961C123EBF3AF004A510A /* ForgotPasswordView.swift */,
 				82BE2F4D23D97D9F00B3678A /* Assets.xcassets */,
 				82BE2F5523D97D9F00B3678A /* Info.plist */,
 				82BE2F4F23D97D9F00B3678A /* Preview Content */,
@@ -468,6 +471,7 @@
 				82F5592023DC255B008032F4 /* BigButton.swift in Sources */,
 				8297A2BD23DAAFE000D091FF /* Fonts.swift in Sources */,
 				8297A29A23D9AE1400D091FF /* WalkthroughContentView.swift in Sources */,
+				820961C223EBF3AF004A510A /* ForgotPasswordView.swift in Sources */,
 				82811F0223E6FAE10066AFDC /* TextFieldWithBottomLine.swift in Sources */,
 				8297A2BB23DA08F200D091FF /* Colors.swift in Sources */,
 				8297A2B923D9C80000D091FF /* WalkthroughContainerView.swift in Sources */,

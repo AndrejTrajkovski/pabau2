@@ -33,8 +33,6 @@ extension Font {
 
 	static let bodyBlack = Font.init(UIFont.bodyBlack)
 
-	static let resetCodeWasSentStyle = Font.init(UIFont.resetCodeWasSentStyle)
-
 	static let body15CenterRegular = Font.init(UIFont.body15CenterRegular)
 
 	static let subheadBlack = Font.init(UIFont.subheadBlack)
@@ -78,10 +76,6 @@ extension UIFont {
 
   class var bodyBlack: UIFont {
     return UIFont.systemFont(ofSize: 17.0, weight: .regular)
-  }
-
-  class var resetCodeWasSentStyle: UIFont {
-    return UIFont.systemFont(ofSize: 16.0, weight: .medium)
   }
 
   class var body15CenterRegular: UIFont {

@@ -7,8 +7,8 @@ public struct User {
 	let name: String
 }
 
-public enum Navigation {
-	case walkthrough
+public enum Navigation: Int {
+	case walkthrough = 0
 	case login
 	case forgotPass
 	case resetPass
@@ -91,7 +91,8 @@ func appLogin(
 		case .login(.loginTapped),
 				 .login(.didPassValidation),
 				 .login(.didFailValidation),
-				 .login(.forgotPassTapped):
+				 .login(.forgotPassTapped),
+				 .login(.backBtnTappedForgotPassTapped):
 			break
 		}
     return reducer(&state, action)

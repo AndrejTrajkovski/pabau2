@@ -28,6 +28,7 @@ public enum LoginAction {
 	case didPassValidation (email: String, password: String)
 	case didFailValidation(ValidatiorError)
 	case didLogin(User)
+	case backBtnTappedForgotPassTapped
 	//	case loginError(LoginError)
 }
 
@@ -73,6 +74,9 @@ public func loginReducer(state: inout LoginViewState, action: LoginAction) -> [E
 	case .didFailValidation(let failure):
 		state.validationError = failure
 		return []
+	case .backBtnTappedForgotPassTapped:
+		state.navigation = .login
+		return []
 	}
 }
 
@@ -107,11 +111,11 @@ struct LoginView: View {
 									self.store.send(.loginTapped(email: self.email, password: self.password))
 			})
 			NavigationLink(destination: EmptyView(),
-										 isActive: .constant(self.store.value.navigation == .tabBar)) {
+										 isActive: .constant(self.store.value.navigation.rawValue >= Navigation.tabBar.rawValue)) {
 											EmptyView()
 			}.hidden()
-			NavigationLink(destination: EmptyView(),
-										 isActive: .constant(self.store.value.navigation == .forgotPass)) {
+			NavigationLink(destination: ForgotPasswordView(store: self.store.view(value: {$0}, action: {$0}), email: self.email),
+										 isActive: .constant(self.store.value.navigation.rawValue >= Navigation.forgotPass.rawValue)) {
 											EmptyView()
 			}.hidden()
 		}.navigationBarBackButtonHidden(true)

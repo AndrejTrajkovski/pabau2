@@ -109,7 +109,7 @@ struct WalkthroughContainerView: View {
 				self.store.view(value: { $0.login },
 												action: { .login($0)})
 				),
-										 isActive: .constant(self.store.value.navigation == .login)) {
+										 isActive: .constant(self.store.value.navigation.rawValue >= Navigation.login.rawValue)) {
 				EmptyView()
 			}.hidden()
 		}
