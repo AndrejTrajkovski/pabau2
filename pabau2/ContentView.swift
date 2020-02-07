@@ -92,7 +92,8 @@ func appLogin(
 				 .login(.didPassValidation),
 				 .login(.didFailValidation),
 				 .login(.forgotPassTapped),
-				 .login(.backBtnTappedForgotPassTapped):
+				 .login(.forgotPass(.sendRequest)),
+				 .login(.forgotPass(.backBtnTapped)):
 			break
 		}
     return reducer(&state, action)

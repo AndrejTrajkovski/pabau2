@@ -28,8 +28,18 @@ public enum LoginAction {
 	case didPassValidation (email: String, password: String)
 	case didFailValidation(ValidatiorError)
 	case didLogin(User)
-	case backBtnTappedForgotPassTapped
-	//	case loginError(LoginError)
+	case forgotPass(ForgotPasswordAction)
+	
+	var forgotPass: ForgotPasswordAction? {
+		get {
+			guard case let .forgotPass(value) = self else { return nil }
+			return value
+		}
+		set {
+			guard case .forgotPass = self, let newValue = newValue else { return }
+			self = .forgotPass(newValue)
+		}
+	}
 }
 
 func validate(username: String, password: String) -> Effect<Result<Void, ValidatiorError>> {
@@ -74,8 +84,7 @@ public func loginReducer(state: inout LoginViewState, action: LoginAction) -> [E
 	case .didFailValidation(let failure):
 		state.validationError = failure
 		return []
-	case .backBtnTappedForgotPassTapped:
-		state.navigation = .login
+	case .forgotPass(_):
 		return []
 	}
 }
@@ -114,7 +123,9 @@ struct LoginView: View {
 										 isActive: .constant(self.store.value.navigation.rawValue >= Navigation.tabBar.rawValue)) {
 											EmptyView()
 			}.hidden()
-			NavigationLink(destination: ForgotPasswordView(store: self.store.view(value: {$0}, action: {$0}), email: self.email),
+			NavigationLink(destination:
+				ForgotPasswordView(self.store.view(value: { _ in self.email },
+																					 action: { .forgotPass($0) })),
 										 isActive: .constant(self.store.value.navigation.rawValue >= Navigation.forgotPass.rawValue)) {
 											EmptyView()
 			}.hidden()

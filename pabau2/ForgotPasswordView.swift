@@ -1,9 +1,18 @@
 import SwiftUI
 import ComposableArchitecture
 
+public enum ForgotPasswordAction {
+	case backBtnTapped
+	case sendRequest
+}
+
 struct ForgotPasswordView: View {
-	var store: Store<LoginViewState, LoginAction>
-	@State var email: String
+	var store: Store<String, ForgotPasswordAction>
+	@State private var email: String = ""
+	init(_ store: Store<String, ForgotPasswordAction>) {
+		self.store = store
+		self.email = store.value
+	}
 	@Environment(\.presentationMode) var presentationMode
 	var body: some View {
 		VStack(alignment: .leading, spacing: 36) {
@@ -17,7 +26,7 @@ struct ForgotPasswordView: View {
 				.frame(maxWidth: 319)
 			TextAndTextView(title: Texts.emailAddress.uppercased(), value: $email)
 			BigButton(text: Texts.sendRequest) {
-				
+				self.store.send(.sendRequest)
 			}
 		}
 			.frame(minWidth: 280, maxWidth: 495, alignment: .center)
@@ -25,7 +34,7 @@ struct ForgotPasswordView: View {
 		.navigationBarBackButtonHidden(true)
 		.navigationBarItems(leading:
 				Button(action: {
-					self.store.send(.backBtnTappedForgotPassTapped)
+					self.store.send(.backBtnTapped)
 				}) {
 						HStack {
 								Image(systemName: "arrow.left.circle")
