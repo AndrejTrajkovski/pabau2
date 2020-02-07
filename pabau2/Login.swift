@@ -94,6 +94,8 @@ public func loginReducer(state: inout LoginViewState, action: LoginAction) -> [E
 	case .didLogin(let user):
 		state.loggedInUser = user
 		state.navigation.tabBar = true
+		state.navigation.tabBar = false
+		state.navigation.tabBar = false
 		return []
 	case .didPassValidation (let username, let password):
 		state.validationError = nil
@@ -166,8 +168,8 @@ struct LoginView: View {
 										 isActive: .constant(self.store.value.navigation.forgotPass), label: {
 											EmptyView()
 			}).hidden()
-			Login(store: store.view(value: { $0 },
-					 action: { .login($0)}))
+			Login(store: self.store.view(value: { $0 }, action: { .login($0)}))
+			Spacer()
 		}
 	}
 }

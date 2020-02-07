@@ -8,14 +8,17 @@ public struct User {
 }
 
 public struct Navigation {
-	var walkthrough: Bool = true
+	var walkthrough: Bool
 	var login: Bool = false
 	var forgotPass: Bool = false
 	var resetPass: Bool = false
-	var tabBar: Bool = false
+	var tabBar: Bool
 }
 
 struct AppState {
+	var isLoggedIn: Bool {
+		return self.loggedInUser != nil
+	}
 	var loggedInUser: User?
 	var validationError: ValidatiorError?
 	var navigation: Navigation
@@ -35,7 +38,7 @@ enum AppAction {
 			self = .walkthrough(newValue)
 		}
 	}
-
+	
 	var login: LoginViewAction? {
 		get {
 			guard case let .login(value) = self else { return nil }
@@ -49,28 +52,38 @@ enum AppAction {
 }
 
 extension AppState {
-  var walktrough: WalkthroughViewState {
-    get {
+	var walktrough: WalkthroughViewState {
+		get {
 			return WalkthroughViewState(navigation: self.navigation,
 																	loggedInUser: loggedInUser,
 																	validationError: self.validationError,
 																	email: self.email)
-    }
-    set {
+		}
+		set {
 			self.email = newValue.email
 			self.navigation = newValue.navigation
 			self.loggedInUser = newValue.login.loggedInUser
 			self.validationError = newValue.login.validationError
-    }
-  }
+		}
+	}
 }
 
 let appReducer = pullback(walkthroughViewReducer, value: \AppState.walktrough, action: \AppAction.walkthrough)
 
 struct ContentView: View {
-  @ObservedObject var store: Store<AppState, AppAction>
+	@ObservedObject var store: Store<AppState, AppAction>
+	var body: some View {
+		ViewBuilder.buildBlock(
+			store.value.isLoggedIn == false ?
+				ViewBuilder.buildEither(second: PreLogin(store: store)) :
+				ViewBuilder.buildEither(first: PabauTabBar())
+		)
+	}
+}
 
-  var body: some View {
+struct PreLogin: View {
+	@ObservedObject var store: Store<AppState, AppAction>
+	var body: some View {
 		NavigationView {
 			WalkthroughContainerView(store:
 				self.store.view(
@@ -82,11 +95,26 @@ struct ContentView: View {
 	}
 }
 
+struct PabauTabBar: View {
+	var body: some View {
+		TabView {
+			Text("Journey")
+				.tabItem {
+					Text("Journey")
+			}
+			Text("Calendar")
+				.tabItem {
+					Text("Calendar")
+			}
+		}
+	}
+}
+
 func appLogin(
-  _ reducer: @escaping Reducer<AppState, AppAction>
+	_ reducer: @escaping Reducer<AppState, AppAction>
 ) -> Reducer<AppState, AppAction> {
-  return { state, action in
-    switch action {
+	return { state, action in
+		switch action {
 		case .walkthrough:
 			break
 		case .login(.login(.didLogin(let user))):
@@ -99,6 +127,6 @@ func appLogin(
 		case .login(.forgotPass(_)):
 			break
 		}
-    return reducer(&state, action)
-  }
+		return reducer(&state, action)
+	}
 }

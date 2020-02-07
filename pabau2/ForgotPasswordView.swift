@@ -78,30 +78,31 @@ struct ForgotPassword: View {
 	}
 	
 	var body: some View {
-		VStack(alignment: .leading, spacing: 36) {
-			Text(Texts.forgotPass)
-				.foregroundColor(.blackTwo)
-				.font(.largeTitle)
-				.frame(width: 157)
-			Text(Texts.forgotPassDescription)
-				.foregroundColor(.grey155)
-				.font(.paragraph)
-				.frame(maxWidth: 319)
-			TextAndTextView(title: Texts.emailAddress.uppercased(), value: $email)
+		VStack(alignment: .leading, spacing: 25) {
+			VStack(alignment: .leading, spacing: 36) {
+				Text(Texts.forgotPass)
+					.foregroundColor(.blackTwo)
+					.font(.largeTitle)
+					.frame(width: 157)
+				Text(Texts.forgotPassDescription)
+					.foregroundColor(.grey155)
+					.font(.paragraph)
+				TextAndTextView(title: Texts.emailAddress.uppercased(), value: $email)
+			}.frame(maxWidth: 319)
 			BigButton(text: Texts.sendRequest) {
 				self.store.send(.sendRequest)
 			}
 		}
-		.frame(minWidth: 280, maxWidth: 495, alignment: .center)
+		.frame(minWidth: 280, maxWidth: 495)
 		.fixedSize(horizontal: false, vertical: true)
 		.navigationBarBackButtonHidden(true)
 		.navigationBarItems(leading:
 			Button(action: {
 				self.store.send(.backBtnTapped)
 			}, label: {
-					Image(systemName: "chevron.left")
-						.font(Font.title.weight(.semibold))
-					Text("Back")
+				Image(systemName: "chevron.left")
+					.font(Font.title.weight(.semibold))
+				Text("Back")
 			})
 		)
 	}
@@ -123,6 +124,7 @@ struct ForgotPasswordView: View {
 			.constant(self.store.value.navigation.resetPass)){
 				EmptyView()
 			}.hidden()
+			Spacer()
 		}
 	}
 }
