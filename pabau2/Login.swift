@@ -17,19 +17,29 @@ public enum LoginError: Error {
 }
 
 public struct LoginViewState {
+	var email: String
 	var loggedInUser: User?
 	var validationError: ValidatiorError?
 	var navigation: Navigation
+	var forgotPass: String {
+		get { return self.email }
+		set { self.email = newValue}
+	}
 }
 
-public enum LoginAction {
-	case loginTapped (email: String, password: String)
-	case forgotPassTapped
-	case didPassValidation (email: String, password: String)
-	case didFailValidation(ValidatiorError)
-	case didLogin(User)
+public enum LoginViewAction {
+	case login(LoginAction)
 	case forgotPass(ForgotPasswordAction)
-	
+	var login: LoginAction? {
+		get {
+			guard case let .login(value) = self else { return nil }
+			return value
+		}
+		set {
+			guard case .login = self, let newValue = newValue else { return }
+			self = .login(newValue)
+		}
+	}
 	var forgotPass: ForgotPasswordAction? {
 		get {
 			guard case let .forgotPass(value) = self else { return nil }
@@ -40,6 +50,14 @@ public enum LoginAction {
 			self = .forgotPass(newValue)
 		}
 	}
+}
+
+public enum LoginAction {
+	case loginTapped (email: String, password: String)
+	case forgotPassTapped
+	case didPassValidation (email: String, password: String)
+	case didFailValidation(ValidatiorError)
+	case didLogin(User)
 }
 
 func validate(username: String, password: String) -> Effect<Result<Void, ValidatiorError>> {
@@ -84,16 +102,19 @@ public func loginReducer(state: inout LoginViewState, action: LoginAction) -> [E
 	case .didFailValidation(let failure):
 		state.validationError = failure
 		return []
-	case .forgotPass(_):
-		return []
 	}
 }
+	
+let loginViewReducer = combine(
+	pullback(loginReducer, value: \LoginViewState.self, action: \LoginViewAction.login),
+	pullback(forgotPasswordReducer, value: \LoginViewState.forgotPass, action: \LoginViewAction.forgotPass)
+	)
+//public func loginViewReducer(state: inout LoginViewState, action: LoginViewAction) -> [Effect<LoginViewAction>] {
+//
+//}
 
-struct LoginView: View {
-	var store: Store<LoginViewState, LoginAction>
-	@EnvironmentObject var keyboardHandler: KeyboardFollower
-	@State private var email: String = ""
-	@State private var password: String = ""
+	
+struct Login: View {
 	func validate(_ error: ValidatiorError?) -> String {
 		if error != nil {
 			return "invalid email"
@@ -101,37 +122,52 @@ struct LoginView: View {
 			return ""
 		}
 	}
+	var store: Store<LoginViewState, LoginAction>
+	@EnvironmentObject var keyboardHandler: KeyboardFollower
+	@State private var email: String = ""
+	@State private var password: String = ""
 	public init(store: Store<LoginViewState, LoginAction>) {
 		self.store = store
 	}
 	var body: some View {
-		VStack {
-			VStack(alignment: .leading) {
-				LoginTitle()
-				Spacer(minLength: 85)
-				LoginTextFields(email: $email,
-												password: $password,
-												emailValidation: validate(self.store.value.validationError), passwordValidation: "bandash",
-												onForgotPass: {self.store.send(.forgotPassTapped) })
-			}
+		VStack(alignment: .leading) {
+			LoginTitle()
+			Spacer(minLength: 85)
+			LoginTextFields(email: $email,
+											password: $password,
+											emailValidation: validate(self.store.value.validationError), passwordValidation: "bandash",
+											onForgotPass: {self.store.send(.forgotPassTapped) })
 			Spacer(minLength: 30)
 			BigButton(text: Texts.signIn,
 								buttonTapAction: {
 									self.store.send(.loginTapped(email: self.email, password: self.password))
 			})
+		}
+		.navigationBarBackButtonHidden(true)
+		.frame(minWidth: 280, maxWidth: 495, alignment: .center)
+		.fixedSize(horizontal: false, vertical: true)
+		.padding(.bottom, keyboardHandler.keyboardHeight)
+	}
+}
+struct LoginView: View {
+	var store: Store<LoginViewState, LoginViewAction>
+	public init(store: Store<LoginViewState, LoginViewAction>) {
+		self.store = store
+	}
+	var body: some View {
+		VStack {
 			NavigationLink(destination: EmptyView(),
 										 isActive: .constant(self.store.value.navigation.rawValue >= Navigation.tabBar.rawValue)) {
 											EmptyView()
 			}.hidden()
 			NavigationLink(destination:
-				ForgotPasswordView(self.store.view(value: { _ in self.email },
+				ForgotPasswordView(self.store.view(value: { _ in self.store.value.email },
 																					 action: { .forgotPass($0) })),
 										 isActive: .constant(self.store.value.navigation.rawValue >= Navigation.forgotPass.rawValue)) {
 											EmptyView()
 			}.hidden()
-		}.navigationBarBackButtonHidden(true)
-			.frame(minWidth: 280, maxWidth: 495, alignment: .center)
-			.fixedSize(horizontal: false, vertical: true)
-			.padding(.bottom, keyboardHandler.keyboardHeight)
+			Login(store: store.view(value: { $0 },
+					 action: { .login($0)}))
+		}
 	}
 }

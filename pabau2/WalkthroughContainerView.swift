@@ -4,7 +4,7 @@ import ComposableArchitecture
 
 public enum WalkthroughViewAction {
   case walkthrough(WalkthroughAction)
-	case login(LoginAction)
+	case login(LoginViewAction)
 
   var walkthrough: WalkthroughAction? {
     get {
@@ -17,7 +17,7 @@ public enum WalkthroughViewAction {
     }
   }
 
-	var login: LoginAction? {
+	var login: LoginViewAction? {
     get {
       guard case let .login(value) = self else { return nil }
       return value
@@ -33,16 +33,19 @@ public struct WalkthroughViewState {
 	var navigation: Navigation
 	var loggedInUser: User?
 	var validationError: ValidatiorError?
+	var email: String
 }
 
 extension WalkthroughViewState {
 	var login: LoginViewState {
 		get {
-			return LoginViewState(loggedInUser: self.loggedInUser,
+			return LoginViewState(email: self.email,
+														loggedInUser: self.loggedInUser,
 														validationError: self.validationError,
 														navigation: self.navigation)
 		}
 		set {
+			self.email = newValue.email
 			self.navigation = newValue.navigation
 			self.loggedInUser = newValue.loggedInUser
 			self.validationError = newValue.validationError
@@ -56,7 +59,7 @@ public enum WalkthroughAction: Equatable {
 
 public let walkthroughViewReducer = combine(
 pullback(walkthroughReducer, value: \WalkthroughViewState.navigation, action: \WalkthroughViewAction.walkthrough),
-pullback(loginReducer, value: \WalkthroughViewState.login, action: \WalkthroughViewAction.login)
+pullback(loginViewReducer, value: \WalkthroughViewState.login, action: \WalkthroughViewAction.login)
 )
 
 public func walkthroughReducer(state: inout Navigation,

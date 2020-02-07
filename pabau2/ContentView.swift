@@ -19,10 +19,11 @@ struct AppState {
 	var loggedInUser: User?
 	var validationError: ValidatiorError?
 	var loginNav: Navigation
+	var email: String = ""
 }
 
 enum AppAction {
-	case login(LoginAction)
+	case login(LoginViewAction)
 	case walkthrough(WalkthroughViewAction)
 	var walkthrough: WalkthroughViewAction? {
 		get {
@@ -35,7 +36,7 @@ enum AppAction {
 		}
 	}
 
-	var login: LoginAction? {
+	var login: LoginViewAction? {
 		get {
 			guard case let .login(value) = self else { return nil }
 			return value
@@ -52,9 +53,11 @@ extension AppState {
     get {
 			return WalkthroughViewState(navigation: self.loginNav,
 																	loggedInUser: loggedInUser,
-																	validationError: self.validationError)
+																	validationError: self.validationError,
+																	email: self.email)
     }
     set {
+			self.email = newValue.email
 			self.loginNav = newValue.navigation
 			self.loggedInUser = newValue.login.loggedInUser
 			self.validationError = newValue.login.validationError
@@ -86,14 +89,14 @@ func appLogin(
     switch action {
 		case .walkthrough:
 			break
-		case .login(.didLogin(let user)):
+		case .login(.login(.didLogin(let user))):
 			state.loggedInUser = user
-		case .login(.loginTapped),
-				 .login(.didPassValidation),
-				 .login(.didFailValidation),
-				 .login(.forgotPassTapped),
-				 .login(.forgotPass(.sendRequest)),
-				 .login(.forgotPass(.backBtnTapped)):
+		case .login(.login(.loginTapped)),
+				 .login(.login(.didPassValidation)),
+				 .login(.login(.didFailValidation)),
+				 .login(.login(.forgotPassTapped)):
+			break
+		case .login(.forgotPass(_)):
 			break
 		}
     return reducer(&state, action)

@@ -1,6 +1,16 @@
 import SwiftUI
 import ComposableArchitecture
 
+public func forgotPasswordReducer(state: inout String,
+																	action: ForgotPasswordAction) -> [Effect<ForgotPasswordAction>] {
+	switch action {
+	case .backBtnTapped:
+		return []
+	case .sendRequest:
+		return []
+	}
+}
+
 public enum ForgotPasswordAction {
 	case backBtnTapped
 	case sendRequest
