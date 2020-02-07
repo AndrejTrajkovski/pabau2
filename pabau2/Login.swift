@@ -21,15 +21,19 @@ public struct LoginViewState {
 	var loggedInUser: User?
 	var validationError: ValidatiorError?
 	var navigation: Navigation
-	var forgotPass: String {
-		get { return self.email }
-		set { self.email = newValue}
+	var forgotPass: ForgotPassViewState {
+		get { return ForgotPassViewState(email: email,
+																 navigation: navigation)}
+		set {
+			self.email = newValue.email
+			self.navigation = newValue.navigation
+		}
 	}
 }
 
 public enum LoginViewAction {
 	case login(LoginAction)
-	case forgotPass(ForgotPasswordAction)
+	case forgotPass(ForgotPassViewAction)
 	var login: LoginAction? {
 		get {
 			guard case let .login(value) = self else { return nil }
@@ -40,7 +44,7 @@ public enum LoginViewAction {
 			self = .login(newValue)
 		}
 	}
-	var forgotPass: ForgotPasswordAction? {
+	var forgotPass: ForgotPassViewAction? {
 		get {
 			guard case let .forgotPass(value) = self else { return nil }
 			return value
@@ -85,11 +89,11 @@ public func loginReducer(state: inout LoginViewState, action: LoginAction) -> [E
 			}.eraseToEffect()
 		]
 	case .forgotPassTapped:
-		state.navigation = .forgotPass
+		state.navigation.forgotPass = true
 		return []
 	case .didLogin(let user):
 		state.loggedInUser = user
-		state.navigation = .tabBar
+		state.navigation.tabBar = true
 		return []
 	case .didPassValidation (let username, let password):
 		state.validationError = nil
@@ -104,16 +108,12 @@ public func loginReducer(state: inout LoginViewState, action: LoginAction) -> [E
 		return []
 	}
 }
-	
+
 let loginViewReducer = combine(
 	pullback(loginReducer, value: \LoginViewState.self, action: \LoginViewAction.login),
-	pullback(forgotPasswordReducer, value: \LoginViewState.forgotPass, action: \LoginViewAction.forgotPass)
+	pullback(forgotPassViewReducer, value: \LoginViewState.forgotPass, action: \LoginViewAction.forgotPass)
 	)
-//public func loginViewReducer(state: inout LoginViewState, action: LoginViewAction) -> [Effect<LoginViewAction>] {
-//
-//}
 
-	
 struct Login: View {
 	func validate(_ error: ValidatiorError?) -> String {
 		if error != nil {
@@ -157,15 +157,15 @@ struct LoginView: View {
 	var body: some View {
 		VStack {
 			NavigationLink(destination: EmptyView(),
-										 isActive: .constant(self.store.value.navigation.rawValue >= Navigation.tabBar.rawValue)) {
+										 isActive: .constant(self.store.value.navigation.tabBar)) {
 											EmptyView()
 			}.hidden()
 			NavigationLink(destination:
-				ForgotPasswordView(self.store.view(value: { _ in self.store.value.email },
-																					 action: { .forgotPass($0) })),
-										 isActive: .constant(self.store.value.navigation.rawValue >= Navigation.forgotPass.rawValue)) {
+				ForgotPasswordView(self.store.view(value: {_ in self.store.value.forgotPass },
+																					 action: { .forgotPass($0)})),
+										 isActive: .constant(self.store.value.navigation.forgotPass), label: {
 											EmptyView()
-			}.hidden()
+			}).hidden()
 			Login(store: store.view(value: { $0 },
 					 action: { .login($0)}))
 		}

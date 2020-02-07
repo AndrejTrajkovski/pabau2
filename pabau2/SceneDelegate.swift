@@ -20,7 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       window.rootViewController = UIHostingController(
         rootView: ContentView(
           store: Store(
-						initialValue: AppState(loginNav: .walkthrough),
+						initialValue: AppState(navigation: Navigation()),
             reducer: reducer
           )
 				).environmentObject(KeyboardFollower())

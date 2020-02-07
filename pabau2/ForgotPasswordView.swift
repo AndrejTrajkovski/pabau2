@@ -1,12 +1,65 @@
 import SwiftUI
 import ComposableArchitecture
 
-public func forgotPasswordReducer(state: inout String,
+public enum ForgotPassViewAction {
+	case forgotPass(ForgotPasswordAction)
+	case resetPass(ResetPasswordAction)
+	var forgotPass: ForgotPasswordAction? {
+		get {
+			guard case let .forgotPass(value) = self else { return nil }
+			return value
+		}
+		set {
+			guard case .forgotPass = self, let newValue = newValue else { return }
+			self = .forgotPass(newValue)
+		}
+	}
+	var resetPass: ResetPasswordAction? {
+		get {
+			guard case let .resetPass(value) = self else { return nil }
+			return value
+		}
+		set {
+			guard case .resetPass = self, let newValue = newValue else { return }
+			self = .resetPass(newValue)
+		}
+	}
+}
+
+public struct ForgotPassViewState {
+	var email: String
+	var navigation: Navigation
+	var forgotPass: ForgotPassState {
+		get { return ForgotPassState(email: email, navigation: navigation)}
+		set {
+			self.navigation = newValue.navigation
+			self.email = newValue.email
+		}
+	}
+	var resetPass: ResetPasswordState {
+		get { return ResetPasswordState(navigation: navigation)}
+		set { self.navigation = newValue.navigation }
+	}
+}
+
+public struct ForgotPassState {
+	var email: String
+	var navigation: Navigation
+}
+
+let forgotPassViewReducer = combine(
+	pullback(forgotPasswordReducer, value: \ForgotPassViewState.forgotPass, action: \ForgotPassViewAction.forgotPass),
+	pullback(resetPassReducer, value: \ForgotPassViewState.resetPass, action: \ForgotPassViewAction.resetPass)
+)
+
+public func forgotPasswordReducer(state: inout ForgotPassState,
 																	action: ForgotPasswordAction) -> [Effect<ForgotPasswordAction>] {
 	switch action {
 	case .backBtnTapped:
+		state.navigation.forgotPass = false
 		return []
 	case .sendRequest:
+		state.navigation.resetPass = true
 		return []
 	}
 }
@@ -16,14 +69,14 @@ public enum ForgotPasswordAction {
 	case sendRequest
 }
 
-struct ForgotPasswordView: View {
-	var store: Store<String, ForgotPasswordAction>
+struct ForgotPassword: View {
+	var store: Store<ForgotPassState, ForgotPasswordAction>
 	@State private var email: String = ""
-	init(_ store: Store<String, ForgotPasswordAction>) {
+	init(_ store: Store<ForgotPassState, ForgotPasswordAction>) {
 		self.store = store
-		self.email = store.value
+		self.email = store.value.email
 	}
-	@Environment(\.presentationMode) var presentationMode
+	
 	var body: some View {
 		VStack(alignment: .leading, spacing: 36) {
 			Text(Texts.forgotPass)
@@ -39,17 +92,37 @@ struct ForgotPasswordView: View {
 				self.store.send(.sendRequest)
 			}
 		}
-			.frame(minWidth: 280, maxWidth: 495, alignment: .center)
-			.fixedSize(horizontal: false, vertical: true)
+		.frame(minWidth: 280, maxWidth: 495, alignment: .center)
+		.fixedSize(horizontal: false, vertical: true)
 		.navigationBarBackButtonHidden(true)
 		.navigationBarItems(leading:
-				Button(action: {
-					self.store.send(.backBtnTapped)
-				}) {
-						HStack {
-								Image(systemName: "arrow.left.circle")
-								Text("Go Back")
-						}
-		})
+			Button(action: {
+				self.store.send(.backBtnTapped)
+			}, label: {
+					Image(systemName: "chevron.left")
+						.font(Font.title.weight(.semibold))
+					Text("Back")
+			})
+		)
+	}
+}
+
+struct ForgotPasswordView: View {
+	var store: Store<ForgotPassViewState, ForgotPassViewAction>
+	@State private var email: String = ""
+	init(_ store: Store<ForgotPassViewState, ForgotPassViewAction>) {
+		self.store = store
+		self.email = store.value.email
+	}
+	@Environment(\.presentationMode) var presentationMode
+	var body: some View {
+		VStack(alignment: .leading, spacing: 36) {
+			ForgotPassword(self.store.view(value: { $0.forgotPass }, action: { .forgotPass($0)}))
+			NavigationLink(destination: ResetPassword(store: self.store.view(value: { $0.resetPass }, action: { .resetPass($0)})),
+										 isActive:
+			.constant(self.store.value.navigation.resetPass)){
+				EmptyView()
+			}.hidden()
+		}
 	}
 }

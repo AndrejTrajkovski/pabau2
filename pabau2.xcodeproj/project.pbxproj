@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		820961C223EBF3AF004A510A /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820961C123EBF3AF004A510A /* ForgotPasswordView.swift */; };
+		820961D323ED881A004A510A /* ResetPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820961D223ED881A004A510A /* ResetPassword.swift */; };
 		82811EF223DF53060066AFDC /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 82811EF123DF53060066AFDC /* Launch Screen.storyboard */; };
 		82811EF423E06BCB0066AFDC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EF323E06BCB0066AFDC /* ContentView.swift */; };
 		82811EF623E06D730066AFDC /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EF523E06D730066AFDC /* Util.swift */; };
@@ -88,6 +89,7 @@
 
 /* Begin PBXFileReference section */
 		820961C123EBF3AF004A510A /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
+		820961D223ED881A004A510A /* ResetPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPassword.swift; sourceTree = "<group>"; };
 		82811EF123DF53060066AFDC /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		82811EF323E06BCB0066AFDC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		82811EF523E06D730066AFDC /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
@@ -224,6 +226,7 @@
 				82811F0423E720570066AFDC /* LoginTitle.swift */,
 				82811F0623E720670066AFDC /* LoginTextFields.swift */,
 				82811F0C23E955F70066AFDC /* KeyboardFollower.swift */,
+				820961D223ED881A004A510A /* ResetPassword.swift */,
 			);
 			path = pabau2;
 			sourceTree = "<group>";
@@ -480,6 +483,7 @@
 				82BE2F4823D97D9C00B3678A /* AppDelegate.swift in Sources */,
 				82811EF623E06D730066AFDC /* Util.swift in Sources */,
 				82811F0723E720670066AFDC /* LoginTextFields.swift in Sources */,
+				820961D323ED881A004A510A /* ResetPassword.swift in Sources */,
 				82811F0023E49F090066AFDC /* TextAndTextView.swift in Sources */,
 				82811F0D23E955F70066AFDC /* KeyboardFollower.swift in Sources */,
 				8297A2B723D9BB1C00D091FF /* Texts.swift in Sources */,
