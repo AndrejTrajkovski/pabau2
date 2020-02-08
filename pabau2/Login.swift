@@ -94,8 +94,8 @@ public func loginReducer(state: inout LoginViewState, action: LoginAction) -> [E
 	case .didLogin(let user):
 		state.loggedInUser = user
 		state.navigation.tabBar = true
-		state.navigation.tabBar = false
-		state.navigation.tabBar = false
+		state.navigation.login = false
+		state.navigation.walkthrough = false
 		return []
 	case .didPassValidation (let username, let password):
 		state.validationError = nil

@@ -17,6 +17,12 @@ struct Texts {
 	static let forgotPass = "Forgot Password".localized
 	static let forgotPassDescription = "Please enter your email below to recieve your password reset instructions".localized
 	static let sendRequest = "Send Request".localized
+	static let resetCode = "RESET CODE".localized
+	static let newPass = "NEW PASSWORD".localized
+	static let confirmPass = "CONFIRM PASSWORD".localized
+	static let newPassPlaceholder = "Enter your password.".localized
+	static let confirmPassPlaceholder = "Enter your confirm password.".localized
+	static let changePass = "Change Password".localized
 }
 
 extension String {

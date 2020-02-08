@@ -119,9 +119,10 @@ struct ForgotPasswordView: View {
 	var body: some View {
 		VStack(alignment: .leading, spacing: 36) {
 			ForgotPassword(self.store.view(value: { $0.forgotPass }, action: { .forgotPass($0)}))
-			NavigationLink(destination: ResetPassword(store: self.store.view(value: { $0.resetPass }, action: { .resetPass($0)})),
-										 isActive:
-			.constant(self.store.value.navigation.resetPass)){
+			NavigationLink(destination:
+				ResetPassword(store: self.store.view(value: { $0.resetPass },
+																						 action: { .resetPass($0)})),
+										 isActive: .constant(self.store.value.navigation.resetPass)){
 				EmptyView()
 			}.hidden()
 			Spacer()

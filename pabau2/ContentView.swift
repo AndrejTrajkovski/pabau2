@@ -16,9 +16,6 @@ public struct Navigation {
 }
 
 struct AppState {
-	var isLoggedIn: Bool {
-		return self.loggedInUser != nil
-	}
 	var loggedInUser: User?
 	var validationError: ValidatiorError?
 	var navigation: Navigation
@@ -74,9 +71,9 @@ struct ContentView: View {
 	@ObservedObject var store: Store<AppState, AppAction>
 	var body: some View {
 		ViewBuilder.buildBlock(
-			store.value.isLoggedIn == false ?
-				ViewBuilder.buildEither(second: PreLogin(store: store)) :
-				ViewBuilder.buildEither(first: PabauTabBar())
+			store.value.navigation.tabBar == true ?
+				ViewBuilder.buildEither(first: PabauTabBar()) :
+				ViewBuilder.buildEither(second: PreLogin(store: store))
 		)
 	}
 }
