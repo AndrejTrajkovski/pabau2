@@ -59,6 +59,7 @@ struct AppState {
 	var emailValidationText: String = ""
 	var passValidationText: String = ""
 	var forgotPassLS: LoadingState<ForgotPassResponse> = .initial
+	var loginLS: LoadingState<User> = .initial
 }
 
 enum AppAction {
@@ -94,7 +95,7 @@ extension AppState {
 																	loggedInUser: loggedInUser,
 																	emailValidationText: self.emailValidationText,
 																	passValidationText: self.passValidationText,
-																	forgotPassLS: self.forgotPassLS)
+																	forgotPassLS: self.forgotPassLS, loginLS: self.loginLS)
 		}
 		set {
 			self.navigation = newValue.navigation
@@ -102,6 +103,7 @@ extension AppState {
 			self.emailValidationText = newValue.emailValidationText
 			self.passValidationText = newValue.passValidationText
 			self.forgotPassLS = newValue.forgotPassLS
+			self.loginLS = newValue.loginLS
 		}
 	}
 }
@@ -155,7 +157,8 @@ func appLogin(
 		switch action {
 		case .walkthrough:
 			break
-		case .login(.login(.didLogin(let user))):
+		case .login(.login(.gotResponse(let result))):
+			guard case .success(let user) = result else { break }
 			state.loggedInUser = user
 		case .login(.login(.loginTapped)),
 				 .login(.login(.forgotPassTapped)):

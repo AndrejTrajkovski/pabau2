@@ -2,8 +2,8 @@ import SwiftUI
 import ComposableArchitecture
 import Combine
 
-func login(_ username: String, password: String) -> Effect<User> {
-	return Just(User(id: 1, name: "Andrej"))
+func login(_ username: String, password: String) -> Effect<Result<User, LoginError>> {
+	return Just(.success(User(id: 1, name: "Andrej")))
 		.delay(for: .seconds(2), scheduler: DispatchQueue.main)
 		.eraseToEffect()
 }
@@ -16,6 +16,7 @@ public struct LoginViewState {
 	var loggedInUser: User?
 	var navigation: Navigation
 	var forgotPassLS: LoadingState<ForgotPassResponse>
+	var loginLS: LoadingState<User>
 	var forgotPass: ForgotPassViewState {
 		get { return ForgotPassViewState(navigation: navigation,
 																		 forgotPassLS: forgotPassLS)}
@@ -56,19 +57,22 @@ public enum LoginViewAction {
 public enum LoginAction {
 	case loginTapped (email: String, password: String)
 	case forgotPassTapped
-	case didLogin(User)
+	case gotResponse(Result<User, LoginError>)
 }
 
-func validate(_ email: String, _ password: String) ->(String, [Effect<LoginAction>]) {
+func handle(_ email: String, _ password: String, state: inout LoginViewState) -> [Effect<LoginAction>] {
 	if !isValidEmail(email) {
-		return (Texts.invalidEmail, [])
+		state.emailValidationText = Texts.invalidEmail
+		return []
 	} else {
-		return ("", [
+		state.emailValidationText = ""
+		state.loginLS = .loading
+		return [
 			login(email, password: password)
-				.map(LoginAction.didLogin)
+				.map(LoginAction.gotResponse)
 				.receive(on: DispatchQueue.main)
 				.eraseToEffect()
-		])
+		]
 	}
 }
 
@@ -81,15 +85,19 @@ func isValidEmail(_ email: String) -> Bool {
 public func loginReducer(state: inout LoginViewState, action: LoginAction) -> [Effect<LoginAction>] {
 	switch action {
 	case .loginTapped (let email, let password):
-		let validateResult = validate(email, password)
-		state.emailValidationText = validateResult.0
-		return validateResult.1
+		return handle(email, password, state: &state)
 	case .forgotPassTapped:
 		state.navigation.login?.insert(.forgotPassScreen)
 		return []
-	case .didLogin(let user):
-		state.loggedInUser = user
-		state.navigation = .tabBar(.journey)
+	case .gotResponse(let result):
+		switch result {
+		case .success(let user):
+			state.loginLS = .gotSuccess(user)
+			state.loggedInUser = user
+			state.navigation = .tabBar(.journey)
+		case .failure(let error):
+			state.loginLS = .gotError(error)
+		}
 		return []
 	}
 }
@@ -137,15 +145,17 @@ struct LoginView: View {
 		self.store = store
 	}
 	var body: some View {
-		VStack {
-			NavigationLink.emptyHidden(destination: EmptyView(),
-										 isActive: self.store.value.navigation.tabBar != nil)
-			NavigationLink.emptyHidden(destination:
-				ForgotPasswordView(self.store.view(value: {_ in self.store.value.forgotPass },
-																					 action: { .forgotPass($0)}), email),
-																 isActive: self.store.value.navigation.login?.contains(.forgotPassScreen) ?? false)
-			Login(store: self.store.view(value: { $0 }, action: { .login($0)}), email: $email)
-			Spacer()
+		LoadingView(isShowing: .constant(self.store.value.loginLS.isLoading)) {
+			VStack {
+				NavigationLink.emptyHidden(destination: EmptyView(),
+																	 isActive: self.store.value.navigation.tabBar != nil)
+				NavigationLink.emptyHidden(destination:
+					ForgotPasswordView(self.store.view(value: {_ in self.store.value.forgotPass },
+																						 action: { .forgotPass($0)}), self.email),
+																	 isActive: self.store.value.navigation.login?.contains(.forgotPassScreen) ?? false)
+				Login(store: self.store.view(value: { $0 }, action: { .login($0)}), email: self.$email)
+				Spacer()
+			}
 		}
 	}
 }

@@ -35,6 +35,7 @@ public struct WalkthroughViewState {
 	var emailValidationText: String
 	var passValidationText: String
 	var forgotPassLS: LoadingState<ForgotPassResponse>
+	var loginLS: LoadingState<User>
 }
 
 extension WalkthroughViewState {
@@ -43,6 +44,7 @@ extension WalkthroughViewState {
 			return LoginViewState(loggedInUser: self.loggedInUser,
 														navigation: self.navigation,
 														forgotPassLS: self.forgotPassLS,
+														loginLS: self.loginLS,
 														emailValidationText: self.emailValidationText,
 														passValidationText: self.passValidationText)
 		}
@@ -52,6 +54,7 @@ extension WalkthroughViewState {
 			self.emailValidationText = newValue.emailValidationText
 			self.passValidationText = newValue.passValidationText
 			self.forgotPassLS = newValue.forgotPassLS
+			self.loginLS = newValue.loginLS
 		}
 	}
 }

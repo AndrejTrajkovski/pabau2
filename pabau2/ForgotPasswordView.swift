@@ -56,17 +56,17 @@ public struct ForgotPassViewState {
 public enum LoadingState<Value> {
 	case initial
 	case loading
-	case gotResponse(Value)
+	case gotSuccess(Value)
 	case gotError(Error)
+	var isLoading: Bool {
+		guard case LoadingState.loading = self else { return false }
+		return true
+	}
 }
 
 public struct ForgotPassState {
 	var navigation: Navigation
 	var loadingState: LoadingState<ForgotPassResponse>
-	var isLoading: Bool {
-		guard case LoadingState.loading = self.loadingState else { return false }
-		return true
-	}
 }
 
 let forgotPassViewReducer = combine(
@@ -91,7 +91,7 @@ public func forgotPasswordReducer(state: inout ForgotPassState,
 	case .gotResponse(let result):
 		switch result {
 		case .success(let success):
-			state.loadingState = .gotResponse(success)
+			state.loadingState = .gotSuccess(success)
 			state.navigation.login?.insert(.resetPassScreen)
 		case .failure(let error):
 			state.loadingState = .gotError(error)
@@ -149,7 +149,7 @@ struct ForgotPasswordView: View {
 	}
 	@Environment(\.presentationMode) var presentationMode
 	var body: some View {
-		LoadingView(isShowing: .constant(self.store.value.forgotPass.isLoading)) {
+		LoadingView(isShowing: .constant(self.store.value.forgotPass.loadingState.isLoading)) {
 			VStack(alignment: .leading, spacing: 36) {
 				ForgotPassword(self.store.view(value: { $0.forgotPass }, action: { .forgotPass($0)}), self.$email)
 				NavigationLink.emptyHidden(destination: self.resetPassView,
