@@ -7,12 +7,75 @@ public struct User {
 	let name: String
 }
 
-public struct Navigation {
-	var walkthrough: Bool
-	var login: Bool = false
-	var forgotPass: Bool = false
-	var resetPass: Bool = false
-	var tabBar: Bool
+public enum ForgotPassScreen {
+	case forgotPass
+	case resetPass
+}
+
+public enum SignInScreen {
+	case signIn
+	case forgotPass(ForgotPassScreen)
+	
+	var forgotPass: ForgotPassScreen? {
+		get {
+			guard case let .forgotPass(value) = self else { return nil }
+			return value
+		}
+		set {
+			guard case .forgotPass = self, let newValue = newValue else { return }
+			self = .forgotPass(newValue)
+		}
+	}
+}
+
+public enum LoginNavigation {
+	case signIn(SignInScreen)
+	case walkthrough
+	
+	var signIn: SignInScreen? {
+		get {
+			guard case let .signIn(value) = self else { return nil }
+			return value
+		}
+		set {
+			guard case .signIn = self, let newValue = newValue else { return }
+			self = .signIn(newValue)
+		}
+	}
+//	var walkthrough: Bool = true
+//	var login: Bool = false
+//	var forgotPass: Bool = false
+//	var resetPass: Bool = false
+}
+
+public enum TabBar {
+	case journey
+	case calendar
+}
+
+public enum Navigation {
+	case login(LoginNavigation)
+	case tabBar(TabBar)
+	var login: LoginNavigation? {
+		get {
+			guard case let .login(value) = self else { return nil }
+			return value
+		}
+		set {
+			guard case .login = self, let newValue = newValue else { return }
+			self = .login(newValue)
+		}
+	}
+	var tabBar: TabBar? {
+		get {
+			guard case let .tabBar(value) = self else { return nil }
+			return value
+		}
+		set {
+			guard case .tabBar = self, let newValue = newValue else { return }
+			self = .tabBar(newValue)
+		}
+	}
 }
 
 struct AppState {
@@ -71,9 +134,9 @@ struct ContentView: View {
 	@ObservedObject var store: Store<AppState, AppAction>
 	var body: some View {
 		ViewBuilder.buildBlock(
-			store.value.navigation.tabBar == true ?
-				ViewBuilder.buildEither(first: PabauTabBar()) :
-				ViewBuilder.buildEither(second: PreLogin(store: store))
+			(self.store.value.navigation.login != nil) ?
+				ViewBuilder.buildEither(second: PreLogin(store: store)) :
+				ViewBuilder.buildEither(first: PabauTabBar())
 		)
 	}
 }

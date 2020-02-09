@@ -56,10 +56,10 @@ public func forgotPasswordReducer(state: inout ForgotPassState,
 																	action: ForgotPasswordAction) -> [Effect<ForgotPasswordAction>] {
 	switch action {
 	case .backBtnTapped:
-		state.navigation.forgotPass = false
+		state.navigation = .login(.signIn(.signIn))
 		return []
 	case .sendRequest:
-		state.navigation.resetPass = true
+		state.navigation = .login(.signIn(.forgotPass(.resetPass)))
 		return []
 	}
 }
@@ -122,7 +122,7 @@ struct ForgotPasswordView: View {
 			NavigationLink(destination:
 				ResetPassword(store: self.store.view(value: { $0.resetPass },
 																						 action: { .resetPass($0)})),
-										 isActive: .constant(self.store.value.navigation.resetPass)){
+										 isActive: .constant(self.store.value.navigation.login?.signIn?.forgotPass == .resetPass)){
 				EmptyView()
 			}.hidden()
 			Spacer()

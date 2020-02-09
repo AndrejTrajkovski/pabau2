@@ -89,13 +89,11 @@ public func loginReducer(state: inout LoginViewState, action: LoginAction) -> [E
 			}.eraseToEffect()
 		]
 	case .forgotPassTapped:
-		state.navigation.forgotPass = true
+		state.navigation = .login(.signIn(.forgotPass(.forgotPass)))
 		return []
 	case .didLogin(let user):
 		state.loggedInUser = user
-		state.navigation.tabBar = true
-		state.navigation.login = false
-		state.navigation.walkthrough = false
+		state.navigation = .tabBar(.journey)
 		return []
 	case .didPassValidation (let username, let password):
 		state.validationError = nil
@@ -159,13 +157,13 @@ struct LoginView: View {
 	var body: some View {
 		VStack {
 			NavigationLink(destination: EmptyView(),
-										 isActive: .constant(self.store.value.navigation.tabBar)) {
+										 isActive: .constant(self.store.value.navigation.tabBar != nil)) {
 											EmptyView()
 			}.hidden()
 			NavigationLink(destination:
 				ForgotPasswordView(self.store.view(value: {_ in self.store.value.forgotPass },
 																					 action: { .forgotPass($0)})),
-										 isActive: .constant(self.store.value.navigation.forgotPass), label: {
+										 isActive: .constant(self.store.value.navigation.login?.signIn?.forgotPass != nil), label: {
 											EmptyView()
 			}).hidden()
 			Login(store: self.store.view(value: { $0 }, action: { .login($0)}))

@@ -13,7 +13,7 @@ public enum ResetPasswordAction {
 public func resetPassReducer(state: inout ResetPasswordState, action: ResetPasswordAction) -> [Effect<ResetPasswordAction>] {
 	switch action {
 	case .backBtnTapped:
-		state.navigation.resetPass = false
+		state.navigation = .login(.signIn(.forgotPass(.forgotPass)))
 		return []
 	case .changePassTapped:
 		return []
