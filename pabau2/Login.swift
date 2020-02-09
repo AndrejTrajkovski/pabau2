@@ -89,7 +89,7 @@ public func loginReducer(state: inout LoginViewState, action: LoginAction) -> [E
 			}.eraseToEffect()
 		]
 	case .forgotPassTapped:
-		state.navigation = .login(.forgotPass)
+		state.navigation.login?.insert(.forgotPassScreen)
 		return []
 	case .didLogin(let user):
 		state.loggedInUser = user
@@ -163,7 +163,7 @@ struct LoginView: View {
 			NavigationLink(destination:
 				ForgotPasswordView(self.store.view(value: {_ in self.store.value.forgotPass },
 																					 action: { .forgotPass($0)})),
-										 isActive: .constant(self.store.value.navigation.login?.contains(.forgotPass) ?? false), label: {
+										 isActive: .constant(self.store.value.navigation.login?.contains(.forgotPassScreen) ?? false), label: {
 											EmptyView()
 			}).hidden()
 			Login(store: self.store.view(value: { $0 }, action: { .login($0)}))

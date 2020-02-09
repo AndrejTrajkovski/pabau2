@@ -66,7 +66,9 @@ public func walkthroughReducer(state: inout Navigation,
 															 action: WalkthroughAction) -> [Effect<WalkthroughAction>] {
 	switch action {
 	case .signInTapped:
-		state = .login(.signIn)
+//		if case let loginNav = state.login {
+		state.login?.insert(.signInScreen)
+//		}
 		return []
 	}
 }
@@ -112,7 +114,7 @@ struct WalkthroughContainerView: View {
 				self.store.view(value: { $0.login },
 												action: { .login($0)})
 				),
-										 isActive: .constant(self.store.value.navigation.login?.contains(.signIn) ?? false)) {
+										 isActive: .constant(self.store.value.navigation.login?.contains(.signInScreen) ?? false)) {
 				EmptyView()
 			}.hidden()
 		}
