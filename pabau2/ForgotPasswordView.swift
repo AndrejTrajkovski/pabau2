@@ -1,5 +1,15 @@
 import SwiftUI
 import ComposableArchitecture
+import Combine
+
+public enum ResetPassError: Error {}
+public struct ResetPassResponse {}
+
+func resetPass(_ email: String) -> Effect<Result<ResetPassResponse, ResetPassError>> {
+	return Just(.success(ResetPassResponse()))
+		.delay(for: .seconds(1), scheduler: DispatchQueue.main)
+		.eraseToEffect()
+}
 
 public enum ForgotPassViewAction {
 	case forgotPass(ForgotPasswordAction)
@@ -56,7 +66,19 @@ public func forgotPasswordReducer(state: inout ForgotPassState,
 		state.navigation.login?.remove(.forgotPassScreen)
 		return []
 	case .sendRequest(let email):
-		state.navigation.login?.insert(.resetPassScreen)
+		return [
+			resetPass(email)
+				.map(ForgotPasswordAction.gotResponse)
+			.receive(on: DispatchQueue.main)
+			.eraseToEffect()
+		]
+	case .gotResponse(let result):
+		switch result {
+		case .success:
+			state.navigation.login?.insert(.resetPassScreen)
+		case .failure:
+			break
+		}
 		return []
 	}
 }
@@ -64,6 +86,7 @@ public func forgotPasswordReducer(state: inout ForgotPassState,
 public enum ForgotPasswordAction {
 	case backBtnTapped
 	case sendRequest(email: String)
+	case gotResponse(Result<ResetPassResponse, ResetPassError>)
 }
 
 struct ForgotPassword: View {
