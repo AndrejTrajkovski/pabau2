@@ -157,7 +157,7 @@ struct LoginView: View {
 																	 isActive: self.store.value.navigation.tabBar != nil)
 				NavigationLink.emptyHidden(destination:
 					ForgotPasswordView(self.store.view(value: {_ in self.store.value.forgotPass },
-																						 action: { .forgotPass($0)}), self.email),
+																						 action: { .forgotPass($0)}), self.$email),
 																	 isActive: self.store.value.navigation.login?.contains(.forgotPassScreen) ?? false)
 				Login(store: self.store.view(value: { $0 }, action: { .login($0)}), email: self.$email)
 				Spacer()

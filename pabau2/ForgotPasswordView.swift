@@ -155,11 +155,11 @@ struct ForgotPassword: View {
 
 struct ForgotPasswordView: View {
 	@ObservedObject var store: Store<ForgotPassViewState, ForgotPassViewAction>
-	@State private var email: String
+	@Binding private var email: String
 	init(_ store: Store<ForgotPassViewState, ForgotPassViewAction>,
-			 _ email: String) {
+			 _ email: Binding<String>) {
 		self.store = store
-		_email = State(initialValue: email)
+		_email = email
 	}
 	@Environment(\.presentationMode) var presentationMode
 	var body: some View {
