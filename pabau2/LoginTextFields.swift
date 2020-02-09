@@ -10,15 +10,15 @@ struct LoginTextFields: View {
 		VStack(alignment: .leading) {
 			TextAndTextView(title: Texts.emailAddress.uppercased(), placeholder: "", value: $email, validation: emailValidation)
 			Spacer(minLength: 10)
-			HStack(alignment: .bottom, spacing: 0) {
-				TextAndTextView(title: Texts.password.uppercased(), placeholder: "", value: $password, validation: emailValidation)
-				ButtonWithBottomLine(title: Texts.forgotPass,
-														 action: onForgotPass)
-					.font(.thirteenBold)
-					.foregroundColor(.textFieldAndTextLabel)
-					.frame(width: 150)
+			HStack(spacing: 0) {
+				TextAndTextView(title: Texts.password.uppercased(), placeholder: "", value: $password, validation: passwordValidation)
+				Button.init(Texts.forgotPass) {
+					self.onForgotPass()
+				}
+				.font(.thirteenBold)
+				.foregroundColor(.textFieldAndTextLabel)
+				.frame(width: 150)
 			}
-			ValidationText(title: passwordValidation)
 		}
 	}
 }
@@ -27,7 +27,7 @@ struct ValidationText: View {
 	let title: String
 	var body: some View {
 		Text(title)
-		.foregroundColor(.validationFail)
-		.font(.validation)
+			.foregroundColor(.validationFail)
+			.font(.validation)
 	}
 }
