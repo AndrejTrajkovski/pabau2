@@ -13,14 +13,11 @@ public enum LoginError: Error {
 }
 
 public struct LoginViewState {
-	var email: String = ""
 	var loggedInUser: User?
 	var navigation: Navigation
 	var forgotPass: ForgotPassViewState {
-		get { return ForgotPassViewState(email: email,
-																		 navigation: navigation)}
+		get { return ForgotPassViewState(navigation: navigation)}
 		set {
-			self.email = newValue.email
 			self.navigation = newValue.navigation
 		}
 	}
@@ -102,10 +99,12 @@ let loginViewReducer = combine(
 struct Login: View {
 	@ObservedObject var store: Store<LoginViewState, LoginAction>
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
-	@State private var email: String = ""
+	@Binding private var email: String
 	@State private var password: String = ""
-	public init(store: Store<LoginViewState, LoginAction>) {
+	public init(store: Store<LoginViewState, LoginAction>,
+							email: Binding<String>) {
 		self.store = store
+		self._email = email
 	}
 	var body: some View {
 		VStack(alignment: .leading) {
@@ -130,6 +129,7 @@ struct Login: View {
 
 struct LoginView: View {
 	@ObservedObject var store: Store<LoginViewState, LoginViewAction>
+	@State var email: String = ""
 	public init(store: Store<LoginViewState, LoginViewAction>) {
 		self.store = store
 	}
@@ -139,9 +139,9 @@ struct LoginView: View {
 										 isActive: self.store.value.navigation.tabBar != nil)
 			NavigationLink.emptyHidden(destination:
 				ForgotPasswordView(self.store.view(value: {_ in self.store.value.forgotPass },
-																					 action: { .forgotPass($0)})),
+																					 action: { .forgotPass($0)}), email),
 																 isActive: self.store.value.navigation.login?.contains(.forgotPassScreen) ?? false)
-			Login(store: self.store.view(value: { $0 }, action: { .login($0)}))
+			Login(store: self.store.view(value: { $0 }, action: { .login($0)}), email: $email)
 			Spacer()
 		}
 	}

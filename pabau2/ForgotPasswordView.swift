@@ -27,13 +27,11 @@ public enum ForgotPassViewAction {
 }
 
 public struct ForgotPassViewState {
-	var email: String
 	var navigation: Navigation
 	var forgotPass: ForgotPassState {
-		get { return ForgotPassState(email: email, navigation: navigation)}
+		get { return ForgotPassState(navigation: navigation)}
 		set {
 			self.navigation = newValue.navigation
-			self.email = newValue.email
 		}
 	}
 	var resetPass: ResetPasswordState {
@@ -43,7 +41,6 @@ public struct ForgotPassViewState {
 }
 
 public struct ForgotPassState {
-	var email: String
 	var navigation: Navigation
 }
 
@@ -58,7 +55,7 @@ public func forgotPasswordReducer(state: inout ForgotPassState,
 	case .backBtnTapped:
 		state.navigation.login?.remove(.forgotPassScreen)
 		return []
-	case .sendRequest:
+	case .sendRequest(let email):
 		state.navigation.login?.insert(.resetPassScreen)
 		return []
 	}
@@ -66,15 +63,16 @@ public func forgotPasswordReducer(state: inout ForgotPassState,
 
 public enum ForgotPasswordAction {
 	case backBtnTapped
-	case sendRequest
+	case sendRequest(email: String)
 }
 
 struct ForgotPassword: View {
 	@ObservedObject var store: Store<ForgotPassState, ForgotPasswordAction>
-	@State private var email: String = ""
-	init(_ store: Store<ForgotPassState, ForgotPasswordAction>) {
+	@Binding private var email: String
+	init(_ store: Store<ForgotPassState, ForgotPasswordAction>,
+			 _ email: Binding<String>) {
 		self.store = store
-		self.email = store.value.email
+		self._email = email
 	}
 
 	var body: some View {
@@ -90,7 +88,7 @@ struct ForgotPassword: View {
 				TextAndTextView(title: Texts.emailAddress.uppercased(), placeholder: "", value: $email)
 			}.frame(maxWidth: 319)
 			BigButton(text: Texts.sendRequest) {
-				self.store.send(.sendRequest)
+				self.store.send(.sendRequest(email: self.email))
 			}
 		}
 		.frame(minWidth: 280, maxWidth: 495)
@@ -103,15 +101,16 @@ struct ForgotPassword: View {
 
 struct ForgotPasswordView: View {
 	@ObservedObject var store: Store<ForgotPassViewState, ForgotPassViewAction>
-	@State private var email: String = ""
-	init(_ store: Store<ForgotPassViewState, ForgotPassViewAction>) {
+	@State private var email: String
+	init(_ store: Store<ForgotPassViewState, ForgotPassViewAction>,
+			 _ email: String) {
 		self.store = store
-		self.email = store.value.email
+		_email = State(initialValue: email)
 	}
 	@Environment(\.presentationMode) var presentationMode
 	var body: some View {
 		VStack(alignment: .leading, spacing: 36) {
-			ForgotPassword(self.store.view(value: { $0.forgotPass }, action: { .forgotPass($0)}))
+			ForgotPassword(self.store.view(value: { $0.forgotPass }, action: { .forgotPass($0)}), $email)
 			NavigationLink.emptyHidden(destination: resetPassView,
 																 isActive: self.store.value.navigation.login?.contains(.resetPassScreen) ?? false)
 			Spacer()

@@ -3,8 +3,8 @@ import SwiftUI
 struct LoginTextFields: View {
 	@Binding var email: String
 	@Binding var password: String
-	var emailValidation: String
-	var passwordValidation: String
+	let emailValidation: String
+	let passwordValidation: String
 	let onForgotPass: () -> Void
 	var body: some View {
 		VStack(alignment: .leading) {
