@@ -16,11 +16,6 @@ public struct LoginNavSet: OptionSet {
 	static let signInScreen = LoginNavSet(rawValue: 2)
 	static let forgotPassScreen = LoginNavSet(rawValue: 4)
 	static let resetPassScreen = LoginNavSet(rawValue: 8)
-
-//	static let walkthrough: LoginNavSet = [.walkthroughScreen]
-//	static let signIn: LoginNavSet = [.walkthroughScreen, .signInScreen]
-//	static let forgotPass: LoginNavSet = [.signIn, .forgotPassScreen]
-//	static let resetPass: LoginNavSet = [.forgotPass, .resetPassScreen]
 }
 
 public enum TabBar {
@@ -60,6 +55,7 @@ struct AppState {
 	var passValidationText: String = ""
 	var forgotPassLS: LoadingState<ForgotPassResponse> = .initial
 	var loginLS: LoadingState<User> = .initial
+	var fpValidation: String = ""
 }
 
 enum AppAction {
@@ -95,7 +91,9 @@ extension AppState {
 																	loggedInUser: loggedInUser,
 																	emailValidationText: self.emailValidationText,
 																	passValidationText: self.passValidationText,
-																	forgotPassLS: self.forgotPassLS, loginLS: self.loginLS)
+																	forgotPassLS: self.forgotPassLS,
+																	loginLS: self.loginLS,
+																	fpValidation: fpValidation)
 		}
 		set {
 			self.navigation = newValue.navigation
@@ -104,6 +102,7 @@ extension AppState {
 			self.passValidationText = newValue.passValidationText
 			self.forgotPassLS = newValue.forgotPassLS
 			self.loginLS = newValue.loginLS
+			self.fpValidation = newValue.fpValidation
 		}
 	}
 }

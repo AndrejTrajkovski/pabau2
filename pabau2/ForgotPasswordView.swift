@@ -39,12 +39,15 @@ public enum ForgotPassViewAction {
 public struct ForgotPassViewState {
 	var navigation: Navigation
 	var forgotPassLS: LoadingState<ForgotPassResponse>
+	var fpValidation: String
 	var forgotPass: ForgotPassState {
 		get { return ForgotPassState(navigation: navigation,
-																 loadingState: forgotPassLS)}
+																 loadingState: forgotPassLS,
+																 fpValidation: fpValidation)}
 		set {
 			self.forgotPassLS = newValue.loadingState
 			self.navigation = newValue.navigation
+			self.fpValidation = newValue.fpValidation
 		}
 	}
 	var resetPass: ResetPasswordState {
@@ -67,6 +70,7 @@ public enum LoadingState<Value> {
 public struct ForgotPassState {
 	var navigation: Navigation
 	var loadingState: LoadingState<ForgotPassResponse>
+	var fpValidation: String
 }
 
 let forgotPassViewReducer = combine(
