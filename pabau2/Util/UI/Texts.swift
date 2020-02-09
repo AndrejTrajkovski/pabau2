@@ -20,7 +20,7 @@ struct Texts {
 	static let forgotPass = "Forgot Password".localized
 	static let invalidEmail = "Invalid email format".localized
 	//forgot pass
-	static let forgotPassLoading = "Requesting new password...".localized
+	static let forgotPassLoading = "Requesting code...".localized
 	static let forgotPassDescription = "Please enter your email below to recieve your password reset instructions".localized
 	static let sendRequest = "Send Request".localized
 	//reset pass
