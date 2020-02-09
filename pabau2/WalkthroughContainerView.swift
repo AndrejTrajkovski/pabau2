@@ -37,6 +37,7 @@ public struct WalkthroughViewState {
 	var forgotPassLS: LoadingState<ForgotPassResponse>
 	var loginLS: LoadingState<User>
 	var fpValidation: String
+	var rpValidation: String
 }
 
 extension WalkthroughViewState {
@@ -47,6 +48,7 @@ extension WalkthroughViewState {
 														forgotPassLS: self.forgotPassLS,
 														loginLS: self.loginLS,
 														fpValidation: fpValidation,
+														rpValidation: rpValidation,
 														emailValidationText: self.emailValidationText,
 														passValidationText: self.passValidationText)
 		}
@@ -58,6 +60,7 @@ extension WalkthroughViewState {
 			self.forgotPassLS = newValue.forgotPassLS
 			self.loginLS = newValue.loginLS
 			self.fpValidation = newValue.fpValidation
+			self.rpValidation = newValue.rpValidation
 		}
 	}
 }

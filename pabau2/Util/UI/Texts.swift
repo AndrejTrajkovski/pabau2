@@ -32,6 +32,7 @@ struct Texts {
 	static let newPassPlaceholder = "Enter your password.".localized
 	static let confirmPassPlaceholder = "Enter your confirm password.".localized
 	static let changePass = "Change Password".localized
+	static let passwordsDontMatch = "Passwords do not match".localized
 }
 
 extension String {

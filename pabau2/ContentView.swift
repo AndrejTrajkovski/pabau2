@@ -56,6 +56,7 @@ struct AppState {
 	var forgotPassLS: LoadingState<ForgotPassResponse> = .initial
 	var loginLS: LoadingState<User> = .initial
 	var fpValidation: String = ""
+	var rpValidation: String = ""
 }
 
 enum AppAction {
@@ -93,7 +94,8 @@ extension AppState {
 																	passValidationText: self.passValidationText,
 																	forgotPassLS: self.forgotPassLS,
 																	loginLS: self.loginLS,
-																	fpValidation: fpValidation)
+																	fpValidation: fpValidation,
+																	rpValidation: rpValidation)
 		}
 		set {
 			self.navigation = newValue.navigation
@@ -103,6 +105,7 @@ extension AppState {
 			self.forgotPassLS = newValue.forgotPassLS
 			self.loginLS = newValue.loginLS
 			self.fpValidation = newValue.fpValidation
+			self.rpValidation = newValue.rpValidation
 		}
 	}
 }
