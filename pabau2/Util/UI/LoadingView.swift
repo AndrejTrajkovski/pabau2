@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct LoadingView<Content>: View where Content: View {
-
+	
+	let title: String
 	@Binding var isShowing: Bool
 	var content: () -> Content
 
@@ -12,7 +13,7 @@ struct LoadingView<Content>: View where Content: View {
 					.disabled(self.isShowing)
 					.blur(radius: self.isShowing ? 3 : 0)
 				VStack {
-					Text("Loading...")
+					Text(self.title)
 					ActivityIndicator(isAnimating: .constant(true), style: .large)
 				}
 				.frame(width: geometry.size.width / 2,

@@ -145,7 +145,7 @@ struct LoginView: View {
 		self.store = store
 	}
 	var body: some View {
-		LoadingView(isShowing: .constant(self.store.value.loginLS.isLoading)) {
+		LoadingView(title: Texts.signingIn, isShowing: .constant(self.store.value.loginLS.isLoading)) {
 			VStack {
 				NavigationLink.emptyHidden(destination: EmptyView(),
 																	 isActive: self.store.value.navigation.tabBar != nil)
