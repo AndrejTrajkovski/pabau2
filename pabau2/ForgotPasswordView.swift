@@ -87,7 +87,7 @@ struct ForgotPassword: View {
 				Text(Texts.forgotPassDescription)
 					.foregroundColor(.grey155)
 					.font(.paragraph)
-				TextAndTextView(title: Texts.emailAddress.uppercased(), value: $email)
+				TextAndTextView(title: Texts.emailAddress.uppercased(), placeholder: "", value: $email)
 			}.frame(maxWidth: 319)
 			BigButton(text: Texts.sendRequest) {
 				self.store.send(.sendRequest)
@@ -95,16 +95,9 @@ struct ForgotPassword: View {
 		}
 		.frame(minWidth: 280, maxWidth: 495)
 		.fixedSize(horizontal: false, vertical: true)
-		.navigationBarBackButtonHidden(true)
-		.navigationBarItems(leading:
-			Button(action: {
-				self.store.send(.backBtnTapped)
-			}, label: {
-				Image(systemName: "chevron.left")
-					.font(Font.title.weight(.semibold))
-				Text("Back")
-			})
-		)
+		.customBackButton {
+			self.store.send(.backBtnTapped)
+		}
 	}
 }
 

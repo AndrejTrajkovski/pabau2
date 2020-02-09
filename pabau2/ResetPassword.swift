@@ -30,16 +30,16 @@ struct ResetPassword: View {
 		VStack {
 			VStack(alignment: .leading, spacing: 25) {
 				VStack(alignment: .leading, spacing: 36) {
-					Text(Texts.forgotPass)
+					Text(Texts.resetPass)
 						.foregroundColor(.blackTwo)
 						.font(.largeTitle)
 						.frame(width: 157)
 					Text(Texts.forgotPassDescription)
 						.foregroundColor(.grey155)
 						.font(.paragraph)
-					TextAndTextView(title: Texts.resetCode.uppercased(), value: $code)
-					TextAndTextView(title: Texts.newPass.uppercased(), value: $newPass)
-					TextAndTextView(title: Texts.confirmPass.uppercased(), value: $confirmPass)
+					TextAndTextView(title: Texts.resetCode.uppercased(), placeholder: Texts.resetCodePlaceholder, value: $code)
+					TextAndTextView(title: Texts.newPass.uppercased(), placeholder: Texts.newPassPlaceholder, value: $newPass)
+					TextAndTextView(title: Texts.confirmPass.uppercased(), placeholder: Texts.confirmPassPlaceholder, value: $confirmPass)
 				}.frame(maxWidth: 319)
 				BigButton(text: Texts.changePass) {
 					self.store.send(.changePassTapped)
@@ -47,16 +47,9 @@ struct ResetPassword: View {
 			}
 			.frame(minWidth: 280, maxWidth: 495)
 			.fixedSize(horizontal: false, vertical: true)
-			.navigationBarBackButtonHidden(true)
-			.navigationBarItems(leading:
-				Button(action: {
-					self.store.send(.backBtnTapped)
-				}, label: {
-					Image(systemName: "chevron.left")
-						.font(Font.title.weight(.semibold))
-					Text("Back")
-				})
-			)
+			.customBackButton {
+				self.store.send(.backBtnTapped)
+			}
 			Spacer()
 		}
 	}

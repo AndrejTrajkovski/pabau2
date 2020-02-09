@@ -2,7 +2,7 @@ import SwiftUI
 
 struct TextAndTextView: View {
 	let title: String
-	let placeholder: String = ""
+	let placeholder: String
 	@Binding var value: String
 	var body: some View {
 		VStack(alignment: .leading) {

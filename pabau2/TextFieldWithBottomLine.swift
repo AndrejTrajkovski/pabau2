@@ -22,7 +22,7 @@ struct ButtonWithBottomLine: View {
 
 struct TextFieldWithBottomLine: View {
 	@Binding var text: String
-	private var placeholder = ""
+	private let placeholder: String
 	private let lineThickness = CGFloat(1.0)
 
 	init(placeholder: String, text: Binding<String>) {

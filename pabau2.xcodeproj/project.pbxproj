@@ -40,6 +40,7 @@
 		82BE2F7923D9983C00B3678A /* ComposableArchitecture.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82BE2F6423D9983C00B3678A /* ComposableArchitecture.framework */; };
 		82BE2F7A23D9983C00B3678A /* ComposableArchitecture.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 82BE2F6423D9983C00B3678A /* ComposableArchitecture.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		82BE2F8223D9984300B3678A /* ComposableArchitecture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BE2F5D23D997F800B3678A /* ComposableArchitecture.swift */; };
+		82EE570623F029900033B43C /* BackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82EE570523F029900033B43C /* BackButton.swift */; };
 		82F5592023DC255B008032F4 /* BigButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F5591F23DC255B008032F4 /* BigButton.swift */; };
 /* End PBXBuildFile section */
 
@@ -127,6 +128,7 @@
 		82BE2F6C23D9983C00B3678A /* ComposableArchitectureTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ComposableArchitectureTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		82BE2F7323D9983C00B3678A /* ComposableArchitectureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComposableArchitectureTests.swift; sourceTree = "<group>"; };
 		82BE2F7523D9983C00B3678A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		82EE570523F029900033B43C /* BackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
 		82F5591F23DC255B008032F4 /* BigButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BigButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -233,6 +235,7 @@
 				820961D223ED881A004A510A /* ResetPassword.swift */,
 				820961D423ED9AE2004A510A /* ActivityIndicator.swift */,
 				820961D623ED9AF7004A510A /* LoadingView.swift */,
+				82EE570523F029900033B43C /* BackButton.swift */,
 			);
 			path = pabau2;
 			sourceTree = "<group>";
@@ -482,6 +485,7 @@
 				820961D523ED9AE2004A510A /* ActivityIndicator.swift in Sources */,
 				8297A29A23D9AE1400D091FF /* WalkthroughContentView.swift in Sources */,
 				820961C223EBF3AF004A510A /* ForgotPasswordView.swift in Sources */,
+				82EE570623F029900033B43C /* BackButton.swift in Sources */,
 				82811F0223E6FAE10066AFDC /* TextFieldWithBottomLine.swift in Sources */,
 				8297A2BB23DA08F200D091FF /* Colors.swift in Sources */,
 				8297A2B923D9C80000D091FF /* WalkthroughContainerView.swift in Sources */,
