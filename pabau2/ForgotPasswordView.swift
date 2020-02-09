@@ -76,7 +76,7 @@ struct ForgotPassword: View {
 		self.store = store
 		self.email = store.value.email
 	}
-	
+
 	var body: some View {
 		VStack(alignment: .leading, spacing: 25) {
 			VStack(alignment: .leading, spacing: 36) {
@@ -117,7 +117,7 @@ struct ForgotPasswordView: View {
 			Spacer()
 		}
 	}
-	
+
 	var resetPassView: ResetPassword {
 		ResetPassword(store: self.store.view(value: { $0.resetPass }, action: { .resetPass($0)}))
 	}
