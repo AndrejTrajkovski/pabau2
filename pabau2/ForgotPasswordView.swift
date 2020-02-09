@@ -76,7 +76,7 @@ struct ForgotPassword: View {
 		self.store = store
 		self.email = store.value.email
 	}
-
+	
 	var body: some View {
 		VStack(alignment: .leading, spacing: 25) {
 			VStack(alignment: .leading, spacing: 36) {
@@ -112,13 +112,21 @@ struct ForgotPasswordView: View {
 	var body: some View {
 		VStack(alignment: .leading, spacing: 36) {
 			ForgotPassword(self.store.view(value: { $0.forgotPass }, action: { .forgotPass($0)}))
-			NavigationLink(destination:
-				ResetPassword(store: self.store.view(value: { $0.resetPass },
-																						 action: { .resetPass($0)})),
-										 isActive: .constant(self.store.value.navigation.login?.contains(.resetPassScreen) ?? false)) {
-				EmptyView()
-			}.hidden()
+			NavigationLink.emptyHidden(destination: resetPassView,
+																 isActive: self.store.value.navigation.login?.contains(.resetPassScreen) ?? false)
 			Spacer()
 		}
+	}
+	
+	var resetPassView: ResetPassword {
+		ResetPassword(store: self.store.view(value: { $0.resetPass }, action: { .resetPass($0)}))
+	}
+}
+
+extension NavigationLink where Label == EmptyView {
+	static func emptyHidden(destination: Destination, isActive: Bool) -> some View {
+		return NavigationLink.init(destination: destination,
+															 isActive: .constant(isActive),
+			label: { EmptyView() }).hidden()
 	}
 }

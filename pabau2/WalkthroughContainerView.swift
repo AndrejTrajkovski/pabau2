@@ -110,13 +110,10 @@ struct WalkthroughContainerView: View {
 								buttonTapAction: {
 									self.store.send(.walkthrough(.signInTapped))
 			})
-			NavigationLink(destination: LoginView(store:
+			NavigationLink.emptyHidden(destination:
+				LoginView(store:
 				self.store.view(value: { $0.login },
-												action: { .login($0)})
-				),
-										 isActive: .constant(self.store.value.navigation.login?.contains(.signInScreen) ?? false)) {
-				EmptyView()
-			}.hidden()
+												action: { .login($0)})), isActive: self.store.value.navigation.login?.contains(.signInScreen) ?? false)
 		}
 	}
 }

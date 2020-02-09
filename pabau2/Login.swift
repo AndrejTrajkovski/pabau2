@@ -23,7 +23,7 @@ public struct LoginViewState {
 	var navigation: Navigation
 	var forgotPass: ForgotPassViewState {
 		get { return ForgotPassViewState(email: email,
-																 navigation: navigation)}
+																		 navigation: navigation)}
 		set {
 			self.email = newValue.email
 			self.navigation = newValue.navigation
@@ -112,7 +112,7 @@ public func loginReducer(state: inout LoginViewState, action: LoginAction) -> [E
 let loginViewReducer = combine(
 	pullback(loginReducer, value: \LoginViewState.self, action: \LoginViewAction.login),
 	pullback(forgotPassViewReducer, value: \LoginViewState.forgotPass, action: \LoginViewAction.forgotPass)
-	)
+)
 
 struct Login: View {
 	func validate(_ error: ValidatiorError?) -> String {
@@ -156,16 +156,12 @@ struct LoginView: View {
 	}
 	var body: some View {
 		VStack {
-			NavigationLink(destination: EmptyView(),
-										 isActive: .constant(self.store.value.navigation.tabBar != nil)) {
-											EmptyView()
-			}.hidden()
-			NavigationLink(destination:
+			NavigationLink.emptyHidden(destination: EmptyView(),
+										 isActive: self.store.value.navigation.tabBar != nil)
+			NavigationLink.emptyHidden(destination:
 				ForgotPasswordView(self.store.view(value: {_ in self.store.value.forgotPass },
 																					 action: { .forgotPass($0)})),
-										 isActive: .constant(self.store.value.navigation.login?.contains(.forgotPassScreen) ?? false), label: {
-											EmptyView()
-			}).hidden()
+																 isActive: self.store.value.navigation.login?.contains(.forgotPassScreen) ?? false)
 			Login(store: self.store.view(value: { $0 }, action: { .login($0)}))
 			Spacer()
 		}
