@@ -3,8 +3,8 @@ import SwiftUI
 struct LoginTextFields: View {
 	@Binding var email: String
 	@Binding var password: String
-	let emailValidation: String
-	let passwordValidation: String
+	var emailValidation: String
+	var passwordValidation: String
 	let onForgotPass: () -> Void
 	var body: some View {
 		VStack(alignment: .leading) {
@@ -25,7 +25,7 @@ struct LoginTextFields: View {
 }
 
 struct ValidationText: View {
-	let title: String
+	var title: String
 	var body: some View {
 		Text(title)
 		.foregroundColor(.validationFail)

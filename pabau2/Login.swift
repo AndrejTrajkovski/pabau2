@@ -8,18 +8,13 @@ func login(_ username: String, password: String) -> Effect<User> {
 		.eraseToEffect()
 }
 
-public enum ValidatiorError: Error {
-	case invalidEmail
-}
-
 public enum LoginError: Error {
 	case wrongCredentials
 }
 
 public struct LoginViewState {
-	var email: String
+	var email: String = ""
 	var loggedInUser: User?
-	var validationError: ValidatiorError?
 	var navigation: Navigation
 	var forgotPass: ForgotPassViewState {
 		get { return ForgotPassViewState(email: email,
@@ -29,6 +24,8 @@ public struct LoginViewState {
 			self.navigation = newValue.navigation
 		}
 	}
+	var emailValidationText: String
+	var passValidationText: String
 }
 
 public enum LoginViewAction {
@@ -59,52 +56,40 @@ public enum LoginViewAction {
 public enum LoginAction {
 	case loginTapped (email: String, password: String)
 	case forgotPassTapped
-	case didPassValidation (email: String, password: String)
-	case didFailValidation(ValidatiorError)
 	case didLogin(User)
 }
 
-func validate(username: String, password: String) -> Effect<Result<Void, ValidatiorError>> {
-	Effect.sync {
-		if !username.contains("@") {
-			return .failure(.invalidEmail)
-		} else {
-			return .success(())
-		}
+func validate(_ email: String, _ password: String) ->(String, [Effect<LoginAction>]) {
+	if !isValidEmail(email) {
+		return (Texts.invalidEmail, [])
+	} else {
+		return ("", [
+			login(email, password: password)
+				.map(LoginAction.didLogin)
+				.receive(on: DispatchQueue.main)
+				.eraseToEffect()
+		])
 	}
+}
+
+func isValidEmail(_ email: String) -> Bool {
+	let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+	let emailPred = NSPredicate(format: "SELF MATCHES %@", emailRegEx)
+	return emailPred.evaluate(with: email)
 }
 
 public func loginReducer(state: inout LoginViewState, action: LoginAction) -> [Effect<LoginAction>] {
 	switch action {
-	case .loginTapped (let username, let password):
-		return [
-			validate(username: username, password: password)
-				.map {
-					switch $0 {
-					case .success:
-						return LoginAction.didPassValidation(email: username, password: password)
-					case .failure(let failure):
-						return LoginAction.didFailValidation(failure)
-					}
-			}.eraseToEffect()
-		]
+	case .loginTapped (let email, let password):
+		let validateResult = validate(email, password)
+		state.emailValidationText = validateResult.0
+		return validateResult.1
 	case .forgotPassTapped:
 		state.navigation.login?.insert(.forgotPassScreen)
 		return []
 	case .didLogin(let user):
 		state.loggedInUser = user
 		state.navigation = .tabBar(.journey)
-		return []
-	case .didPassValidation (let username, let password):
-		state.validationError = nil
-		return [
-			login(username, password: password)
-				.map(LoginAction.didLogin)
-				.receive(on: DispatchQueue.main)
-				.eraseToEffect()
-		]
-	case .didFailValidation(let failure):
-		state.validationError = failure
 		return []
 	}
 }
@@ -115,14 +100,7 @@ let loginViewReducer = combine(
 )
 
 struct Login: View {
-	func validate(_ error: ValidatiorError?) -> String {
-		if error != nil {
-			return "invalid email"
-		} else {
-			return ""
-		}
-	}
-	var store: Store<LoginViewState, LoginAction>
+	@ObservedObject var store: Store<LoginViewState, LoginAction>
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
 	@State private var email: String = ""
 	@State private var password: String = ""
@@ -135,7 +113,7 @@ struct Login: View {
 			Spacer(minLength: 85)
 			LoginTextFields(email: $email,
 											password: $password,
-											emailValidation: validate(self.store.value.validationError), passwordValidation: "bandash",
+											emailValidation: self.store.value.emailValidationText, passwordValidation: self.store.value.passValidationText,
 											onForgotPass: {self.store.send(.forgotPassTapped) })
 			Spacer(minLength: 30)
 			BigButton(text: Texts.signIn,
@@ -149,8 +127,9 @@ struct Login: View {
 		.padding(.bottom, keyboardHandler.keyboardHeight)
 	}
 }
+
 struct LoginView: View {
-	var store: Store<LoginViewState, LoginViewAction>
+	@ObservedObject var store: Store<LoginViewState, LoginViewAction>
 	public init(store: Store<LoginViewState, LoginViewAction>) {
 		self.store = store
 	}

@@ -55,9 +55,9 @@ public enum Navigation {
 
 struct AppState {
 	var loggedInUser: User?
-	var validationError: ValidatiorError?
 	var navigation: Navigation
-	var email: String = ""
+	var emailValidationText: String = ""
+	var passValidationText: String = ""
 }
 
 enum AppAction {
@@ -91,14 +91,14 @@ extension AppState {
 		get {
 			return WalkthroughViewState(navigation: self.navigation,
 																	loggedInUser: loggedInUser,
-																	validationError: self.validationError,
-																	email: self.email)
+																	emailValidationText: self.emailValidationText,
+																	passValidationText: self.passValidationText)
 		}
 		set {
-			self.email = newValue.email
 			self.navigation = newValue.navigation
 			self.loggedInUser = newValue.login.loggedInUser
-			self.validationError = newValue.login.validationError
+			self.emailValidationText = newValue.emailValidationText
+			self.passValidationText = newValue.passValidationText
 		}
 	}
 }
@@ -155,8 +155,6 @@ func appLogin(
 		case .login(.login(.didLogin(let user))):
 			state.loggedInUser = user
 		case .login(.login(.loginTapped)),
-				 .login(.login(.didPassValidation)),
-				 .login(.login(.didFailValidation)),
 				 .login(.login(.forgotPassTapped)):
 			break
 		case .login(.forgotPass):

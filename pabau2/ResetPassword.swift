@@ -21,7 +21,7 @@ public func resetPassReducer(state: inout ResetPasswordState, action: ResetPassw
 }
 
 struct ResetPassword: View {
-	var store: Store<ResetPasswordState, ResetPasswordAction>
+	@ObservedObject var store: Store<ResetPasswordState, ResetPasswordAction>
 	@State var code: String = ""
 	@State var newPass: String = ""
 	@State var confirmPass: String = ""

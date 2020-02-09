@@ -32,23 +32,23 @@ public enum WalkthroughViewAction {
 public struct WalkthroughViewState {
 	var navigation: Navigation
 	var loggedInUser: User?
-	var validationError: ValidatiorError?
-	var email: String
+	var emailValidationText: String
+	var passValidationText: String
 }
 
 extension WalkthroughViewState {
 	var login: LoginViewState {
 		get {
-			return LoginViewState(email: self.email,
-														loggedInUser: self.loggedInUser,
-														validationError: self.validationError,
-														navigation: self.navigation)
+			return LoginViewState(loggedInUser: self.loggedInUser,
+														navigation: self.navigation,
+														emailValidationText: self.emailValidationText,
+														passValidationText: self.passValidationText)
 		}
 		set {
-			self.email = newValue.email
 			self.navigation = newValue.navigation
 			self.loggedInUser = newValue.loggedInUser
-			self.validationError = newValue.validationError
+			self.emailValidationText = newValue.emailValidationText
+			self.passValidationText = newValue.passValidationText
 		}
 	}
 }
@@ -66,9 +66,7 @@ public func walkthroughReducer(state: inout Navigation,
 															 action: WalkthroughAction) -> [Effect<WalkthroughAction>] {
 	switch action {
 	case .signInTapped:
-//		if case let loginNav = state.login {
 		state.login?.insert(.signInScreen)
-//		}
 		return []
 	}
 }

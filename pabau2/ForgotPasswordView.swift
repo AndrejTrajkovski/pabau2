@@ -70,7 +70,7 @@ public enum ForgotPasswordAction {
 }
 
 struct ForgotPassword: View {
-	var store: Store<ForgotPassState, ForgotPasswordAction>
+	@ObservedObject var store: Store<ForgotPassState, ForgotPasswordAction>
 	@State private var email: String = ""
 	init(_ store: Store<ForgotPassState, ForgotPasswordAction>) {
 		self.store = store
@@ -102,7 +102,7 @@ struct ForgotPassword: View {
 }
 
 struct ForgotPasswordView: View {
-	var store: Store<ForgotPassViewState, ForgotPassViewAction>
+	@ObservedObject var store: Store<ForgotPassViewState, ForgotPassViewAction>
 	@State private var email: String = ""
 	init(_ store: Store<ForgotPassViewState, ForgotPassViewAction>) {
 		self.store = store
