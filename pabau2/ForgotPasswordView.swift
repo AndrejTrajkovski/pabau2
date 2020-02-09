@@ -38,12 +38,12 @@ public enum ForgotPassViewAction {
 
 public struct ForgotPassViewState {
 	var navigation: Navigation
-	var loadingState: LoadingState<ForgotPassResponse>
+	var forgotPassLS: LoadingState<ForgotPassResponse>
 	var forgotPass: ForgotPassState {
 		get { return ForgotPassState(navigation: navigation,
-																 loadingState: loadingState)}
+																 loadingState: forgotPassLS)}
 		set {
-			self.loadingState = newValue.loadingState
+			self.forgotPassLS = newValue.loadingState
 			self.navigation = newValue.navigation
 		}
 	}

@@ -15,12 +15,12 @@ public enum LoginError: Error {
 public struct LoginViewState {
 	var loggedInUser: User?
 	var navigation: Navigation
-	var loadingState: LoadingState<ForgotPassResponse>
+	var forgotPassLS: LoadingState<ForgotPassResponse>
 	var forgotPass: ForgotPassViewState {
 		get { return ForgotPassViewState(navigation: navigation,
-																		 loadingState: loadingState)}
+																		 loadingState: forgotPassLS)}
 		set {
-			self.loadingState = newValue.loadingState
+			self.forgotPassLS = newValue.loadingState
 			self.navigation = newValue.navigation
 		}
 	}
