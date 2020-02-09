@@ -11,7 +11,6 @@
 		820961D323ED881A004A510A /* ResetPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820961D223ED881A004A510A /* ResetPassword.swift */; };
 		820961D523ED9AE2004A510A /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820961D423ED9AE2004A510A /* ActivityIndicator.swift */; };
 		820961D723ED9AF7004A510A /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820961D623ED9AF7004A510A /* LoadingView.swift */; };
-		82811EF223DF53060066AFDC /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 82811EF123DF53060066AFDC /* Launch Screen.storyboard */; };
 		82811EF423E06BCB0066AFDC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EF323E06BCB0066AFDC /* ContentView.swift */; };
 		82811EF623E06D730066AFDC /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EF523E06D730066AFDC /* Util.swift */; };
 		82811EF823E187700066AFDC /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EF723E187700066AFDC /* Login.swift */; };
@@ -96,7 +95,6 @@
 		820961D223ED881A004A510A /* ResetPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPassword.swift; sourceTree = "<group>"; };
 		820961D423ED9AE2004A510A /* ActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
 		820961D623ED9AF7004A510A /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
-		82811EF123DF53060066AFDC /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		82811EF323E06BCB0066AFDC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		82811EF523E06D730066AFDC /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
 		82811EF723E187700066AFDC /* Login.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
@@ -222,7 +220,6 @@
 				82BE2F4F23D97D9F00B3678A /* Preview Content */,
 				8297A29923D9AE1400D091FF /* WalkthroughContentView.swift */,
 				8297A2B823D9C80000D091FF /* WalkthroughContainerView.swift */,
-				82811EF123DF53060066AFDC /* Launch Screen.storyboard */,
 				82811EF323E06BCB0066AFDC /* ContentView.swift */,
 				82811EF723E187700066AFDC /* Login.swift */,
 				82811F0423E720570066AFDC /* LoginTitle.swift */,
@@ -445,7 +442,6 @@
 			files = (
 				82BE2F5123D97D9F00B3678A /* Preview Assets.xcassets in Resources */,
 				8297A2B523D9BA0200D091FF /* Localizable.strings in Resources */,
-				82811EF223DF53060066AFDC /* Launch Screen.storyboard in Resources */,
 				82BE2F4E23D97D9F00B3678A /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -753,6 +749,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"pabau2/Preview Content\"";
 				DEVELOPMENT_TEAM = DKV7Q87Z7J;
@@ -774,6 +771,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"pabau2/Preview Content\"";
 				DEVELOPMENT_TEAM = DKV7Q87Z7J;
