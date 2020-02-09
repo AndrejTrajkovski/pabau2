@@ -25,7 +25,7 @@ struct LoginTextFields: View {
 }
 
 struct ValidationText: View {
-	var title: String
+	let title: String
 	var body: some View {
 		Text(title)
 		.foregroundColor(.validationFail)

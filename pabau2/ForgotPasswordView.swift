@@ -85,13 +85,18 @@ public func forgotPasswordReducer(state: inout ForgotPassState,
 		state.navigation.login?.remove(.forgotPassScreen)
 		return []
 	case .sendRequest(let email):
-		state.loadingState = .loading
-		return [
-			resetPass(email)
-				.map(ForgotPasswordAction.gotResponse)
-			.receive(on: DispatchQueue.main)
-			.eraseToEffect()
-		]
+		if isValidEmail(email) {
+			state.loadingState = .loading
+			return [
+				resetPass(email)
+					.map(ForgotPasswordAction.gotResponse)
+				.receive(on: DispatchQueue.main)
+				.eraseToEffect()
+			]
+		} else {
+			state.fpValidation = Texts.invalidEmail
+			return []
+		}
 	case .gotResponse(let result):
 		switch result {
 		case .success(let success):
@@ -130,6 +135,7 @@ struct ForgotPassword: View {
 					.foregroundColor(.grey155)
 					.font(.paragraph)
 				TextAndTextView(title: Texts.emailAddress.uppercased(), placeholder: "", value: self.$email)
+				ValidationText(title: store.value.fpValidation)
 			}.frame(maxWidth: 319)
 			BigButton(text: Texts.sendRequest) {
 				self.store.send(.sendRequest(email: self.email))

@@ -57,6 +57,7 @@ extension WalkthroughViewState {
 			self.passValidationText = newValue.passValidationText
 			self.forgotPassLS = newValue.forgotPassLS
 			self.loginLS = newValue.loginLS
+			self.fpValidation = newValue.fpValidation
 		}
 	}
 }
