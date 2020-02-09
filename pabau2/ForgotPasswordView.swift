@@ -2,11 +2,11 @@ import SwiftUI
 import ComposableArchitecture
 import Combine
 
-public enum ResetPassError: Error {}
-public struct ResetPassResponse {}
+public enum ForgotPassError: Error {}
+public struct ForgotPassResponse {}
 
-func resetPass(_ email: String) -> Effect<Result<ResetPassResponse, ResetPassError>> {
-	return Just(.success(ResetPassResponse()))
+func resetPass(_ email: String) -> Effect<Result<ForgotPassResponse, ForgotPassError>> {
+	return Just(.success(ForgotPassResponse()))
 		.delay(for: .seconds(1), scheduler: DispatchQueue.main)
 		.eraseToEffect()
 }
@@ -50,8 +50,16 @@ public struct ForgotPassViewState {
 	}
 }
 
+public enum LoadingState<Value> {
+	case initial
+	case loading
+	case gotResponse(Value)
+	case gotError(Error)
+}
+
 public struct ForgotPassState {
 	var navigation: Navigation
+	var loadingState: LoadingState<ForgotPassResponse> = .initial
 }
 
 let forgotPassViewReducer = combine(
@@ -66,6 +74,7 @@ public func forgotPasswordReducer(state: inout ForgotPassState,
 		state.navigation.login?.remove(.forgotPassScreen)
 		return []
 	case .sendRequest(let email):
+		state.loadingState = .loading
 		return [
 			resetPass(email)
 				.map(ForgotPasswordAction.gotResponse)
@@ -74,10 +83,11 @@ public func forgotPasswordReducer(state: inout ForgotPassState,
 		]
 	case .gotResponse(let result):
 		switch result {
-		case .success:
+		case .success(let success):
+			state.loadingState = .gotResponse(success)
 			state.navigation.login?.insert(.resetPassScreen)
-		case .failure:
-			break
+		case .failure(let error):
+			state.loadingState = .gotError(error)
 		}
 		return []
 	}
@@ -86,7 +96,7 @@ public func forgotPasswordReducer(state: inout ForgotPassState,
 public enum ForgotPasswordAction {
 	case backBtnTapped
 	case sendRequest(email: String)
-	case gotResponse(Result<ResetPassResponse, ResetPassError>)
+	case gotResponse(Result<ForgotPassResponse, ForgotPassError>)
 }
 
 struct ForgotPassword: View {
