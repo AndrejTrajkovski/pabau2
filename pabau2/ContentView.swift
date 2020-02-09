@@ -7,43 +7,19 @@ public struct User {
 	let name: String
 }
 
-public enum ForgotPass {
-	case forgotPass
-	case resetPass
-}
-
-public enum SignIn {
-	case signIn
-	case forgotPass(ForgotPass)
-	var forgotPass: ForgotPass? {
-		get {
-			guard case let .forgotPass(value) = self else { return nil }
-			return value
-		}
-		set {
-			guard case .forgotPass = self, let newValue = newValue else { return }
-			self = .forgotPass(newValue)
-		}
+public struct LoginNavSet: OptionSet {
+	public let rawValue: Int
+	public init(rawValue: Int) {
+		self.rawValue = rawValue
 	}
-}
+	static let walkthroughScreen = LoginNavSet(rawValue: 1)
+	private static let signInScreen = LoginNavSet(rawValue: 2)
+	private static let forgotPassScreen = LoginNavSet(rawValue: 4)
+	private static let resetPassScreen = LoginNavSet(rawValue: 8)
 
-public enum LoginNavigation {
-	case signIn(SignIn)
-	case walkthrough
-	var signIn: SignIn? {
-		get {
-			guard case let .signIn(value) = self else { return nil }
-			return value
-		}
-		set {
-			guard case .signIn = self, let newValue = newValue else { return }
-			self = .signIn(newValue)
-		}
-	}
-//	var walkthrough: Bool = true
-//	var login: Bool = false
-//	var forgotPass: Bool = false
-//	var resetPass: Bool = false
+	static let signIn: LoginNavSet = [.walkthroughScreen, .signInScreen]
+	static let forgotPass: LoginNavSet = [.signIn, .forgotPassScreen]
+	static let resetPass: LoginNavSet = [.forgotPass, .resetPassScreen]
 }
 
 public enum TabBar {
@@ -52,9 +28,9 @@ public enum TabBar {
 }
 
 public enum Navigation {
-	case login(LoginNavigation)
+	case login(LoginNavSet)
 	case tabBar(TabBar)
-	var login: LoginNavigation? {
+	var login: LoginNavSet? {
 		get {
 			guard case let .login(value) = self else { return nil }
 			return value
@@ -96,7 +72,7 @@ enum AppAction {
 			self = .walkthrough(newValue)
 		}
 	}
-	
+
 	var login: LoginViewAction? {
 		get {
 			guard case let .login(value) = self else { return nil }
@@ -182,7 +158,7 @@ func appLogin(
 				 .login(.login(.didFailValidation)),
 				 .login(.login(.forgotPassTapped)):
 			break
-		case .login(.forgotPass(_)):
+		case .login(.forgotPass):
 			break
 		}
 		return reducer(&state, action)

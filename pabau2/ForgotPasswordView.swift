@@ -56,10 +56,10 @@ public func forgotPasswordReducer(state: inout ForgotPassState,
 																	action: ForgotPasswordAction) -> [Effect<ForgotPasswordAction>] {
 	switch action {
 	case .backBtnTapped:
-		state.navigation = .login(.signIn(.signIn))
+		state.navigation = .login(.signIn)
 		return []
 	case .sendRequest:
-		state.navigation = .login(.signIn(.forgotPass(.resetPass)))
+		state.navigation = .login(.resetPass)
 		return []
 	}
 }
@@ -76,7 +76,7 @@ struct ForgotPassword: View {
 		self.store = store
 		self.email = store.value.email
 	}
-	
+
 	var body: some View {
 		VStack(alignment: .leading, spacing: 25) {
 			VStack(alignment: .leading, spacing: 36) {
@@ -122,7 +122,7 @@ struct ForgotPasswordView: View {
 			NavigationLink(destination:
 				ResetPassword(store: self.store.view(value: { $0.resetPass },
 																						 action: { .resetPass($0)})),
-										 isActive: .constant(self.store.value.navigation.login?.signIn?.forgotPass == .resetPass)){
+										 isActive: .constant(self.store.value.navigation.login?.contains(.resetPass) ?? false)) {
 				EmptyView()
 			}.hidden()
 			Spacer()

@@ -30,6 +30,6 @@ extension Color {
   static let blackTwo = Color.init(white: 49/255)
 
   static let deepSkyBlue = Color.init(red: 0, green: 122/255, blue: 1)
-	
+
 	static let grey155 = Color.init(red: 155/255, green: 155/255, blue: 155/255)
 }
