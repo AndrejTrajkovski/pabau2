@@ -8,11 +8,10 @@ struct LoginTextFields: View {
 	let onForgotPass: () -> Void
 	var body: some View {
 		VStack(alignment: .leading) {
-			TextAndTextView(title: Texts.emailAddress.uppercased(), placeholder: "", value: $email)
-			ValidationText(title: emailValidation)
+			TextAndTextView(title: Texts.emailAddress.uppercased(), placeholder: "", value: $email, validation: emailValidation)
 			Spacer(minLength: 10)
 			HStack(alignment: .bottom, spacing: 0) {
-				TextAndTextView(title: Texts.password.uppercased(), placeholder: "", value: $password)
+				TextAndTextView(title: Texts.password.uppercased(), placeholder: "", value: $password, validation: emailValidation)
 				ButtonWithBottomLine(title: Texts.forgotPass,
 														 action: onForgotPass)
 					.font(.thirteenBold)

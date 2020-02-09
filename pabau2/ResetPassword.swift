@@ -37,9 +37,9 @@ struct ResetPassword: View {
 					Text(Texts.forgotPassDescription)
 						.foregroundColor(.grey155)
 						.font(.paragraph)
-					TextAndTextView(title: Texts.resetCode.uppercased(), placeholder: Texts.resetCodePlaceholder, value: $code)
-					TextAndTextView(title: Texts.newPass.uppercased(), placeholder: Texts.newPassPlaceholder, value: $newPass)
-					TextAndTextView(title: Texts.confirmPass.uppercased(), placeholder: Texts.confirmPassPlaceholder, value: $confirmPass)
+					TextAndTextView(title: Texts.resetCode.uppercased(), placeholder: Texts.resetCodePlaceholder, value: $code, validation: "")
+					TextAndTextView(title: Texts.newPass.uppercased(), placeholder: Texts.newPassPlaceholder, value: $newPass, validation: "")
+					TextAndTextView(title: Texts.confirmPass.uppercased(), placeholder: Texts.confirmPassPlaceholder, value: $confirmPass, validation: "")
 				}.frame(maxWidth: 319)
 				BigButton(text: Texts.changePass) {
 					self.store.send(.changePassTapped)
