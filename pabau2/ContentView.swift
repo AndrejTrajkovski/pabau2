@@ -12,11 +12,12 @@ public struct LoginNavSet: OptionSet {
 	public init(rawValue: Int) {
 		self.rawValue = rawValue
 	}
-	static let walkthroughScreen = LoginNavSet(rawValue: 1)
+	private static let walkthroughScreen = LoginNavSet(rawValue: 1)
 	private static let signInScreen = LoginNavSet(rawValue: 2)
 	private static let forgotPassScreen = LoginNavSet(rawValue: 4)
 	private static let resetPassScreen = LoginNavSet(rawValue: 8)
 
+	static let walkthrough: LoginNavSet = [.walkthroughScreen]
 	static let signIn: LoginNavSet = [.walkthroughScreen, .signInScreen]
 	static let forgotPass: LoginNavSet = [.signIn, .forgotPassScreen]
 	static let resetPass: LoginNavSet = [.forgotPass, .resetPassScreen]
