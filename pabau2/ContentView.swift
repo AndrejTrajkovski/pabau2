@@ -7,16 +7,15 @@ public struct User {
 	let name: String
 }
 
-public enum ForgotPassScreen {
+public enum ForgotPass {
 	case forgotPass
 	case resetPass
 }
 
-public enum SignInScreen {
+public enum SignIn {
 	case signIn
-	case forgotPass(ForgotPassScreen)
-	
-	var forgotPass: ForgotPassScreen? {
+	case forgotPass(ForgotPass)
+	var forgotPass: ForgotPass? {
 		get {
 			guard case let .forgotPass(value) = self else { return nil }
 			return value
@@ -29,10 +28,9 @@ public enum SignInScreen {
 }
 
 public enum LoginNavigation {
-	case signIn(SignInScreen)
+	case signIn(SignIn)
 	case walkthrough
-	
-	var signIn: SignInScreen? {
+	var signIn: SignIn? {
 		get {
 			guard case let .signIn(value) = self else { return nil }
 			return value
