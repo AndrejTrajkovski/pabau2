@@ -41,6 +41,7 @@
 		82BE2F7A23D9983C00B3678A /* ComposableArchitecture.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 82BE2F6423D9983C00B3678A /* ComposableArchitecture.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		82BE2F8223D9984300B3678A /* ComposableArchitecture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BE2F5D23D997F800B3678A /* ComposableArchitecture.swift */; };
 		82EE570623F029900033B43C /* BackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82EE570523F029900033B43C /* BackButton.swift */; };
+		82EE570923F0335F0033B43C /* NavigationLinkExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82EE570823F0335F0033B43C /* NavigationLinkExtension.swift */; };
 		82F5592023DC255B008032F4 /* BigButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F5591F23DC255B008032F4 /* BigButton.swift */; };
 /* End PBXBuildFile section */
 
@@ -129,6 +130,7 @@
 		82BE2F7323D9983C00B3678A /* ComposableArchitectureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComposableArchitectureTests.swift; sourceTree = "<group>"; };
 		82BE2F7523D9983C00B3678A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		82EE570523F029900033B43C /* BackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
+		82EE570823F0335F0033B43C /* NavigationLinkExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationLinkExtension.swift; sourceTree = "<group>"; };
 		82F5591F23DC255B008032F4 /* BigButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BigButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -210,8 +212,7 @@
 		82BE2F4623D97D9C00B3678A /* pabau2 */ = {
 			isa = PBXGroup;
 			children = (
-				8297A2BA23DA08F200D091FF /* Colors.swift */,
-				8297A2B623D9BB1C00D091FF /* Texts.swift */,
+				82EE570723F0334D0033B43C /* Util */,
 				8297A2B123D9BA0200D091FF /* Locales */,
 				82BE2F4723D97D9C00B3678A /* AppDelegate.swift */,
 				82BE2F4923D97D9C00B3678A /* SceneDelegate.swift */,
@@ -221,21 +222,12 @@
 				82BE2F4F23D97D9F00B3678A /* Preview Content */,
 				8297A29923D9AE1400D091FF /* WalkthroughContentView.swift */,
 				8297A2B823D9C80000D091FF /* WalkthroughContainerView.swift */,
-				8297A2BC23DAAFE000D091FF /* Fonts.swift */,
-				82F5591F23DC255B008032F4 /* BigButton.swift */,
 				82811EF123DF53060066AFDC /* Launch Screen.storyboard */,
 				82811EF323E06BCB0066AFDC /* ContentView.swift */,
-				82811EF523E06D730066AFDC /* Util.swift */,
 				82811EF723E187700066AFDC /* Login.swift */,
-				82811EFF23E49F090066AFDC /* TextAndTextView.swift */,
-				82811F0123E6FAE10066AFDC /* TextFieldWithBottomLine.swift */,
 				82811F0423E720570066AFDC /* LoginTitle.swift */,
 				82811F0623E720670066AFDC /* LoginTextFields.swift */,
-				82811F0C23E955F70066AFDC /* KeyboardFollower.swift */,
 				820961D223ED881A004A510A /* ResetPassword.swift */,
-				820961D423ED9AE2004A510A /* ActivityIndicator.swift */,
-				820961D623ED9AF7004A510A /* LoadingView.swift */,
-				82EE570523F029900033B43C /* BackButton.swift */,
 			);
 			path = pabau2;
 			sourceTree = "<group>";
@@ -265,6 +257,33 @@
 				82BE2F7523D9983C00B3678A /* Info.plist */,
 			);
 			path = ComposableArchitectureTests;
+			sourceTree = "<group>";
+		};
+		82EE570723F0334D0033B43C /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				82811EF523E06D730066AFDC /* Util.swift */,
+				82EE570A23F0339B0033B43C /* UI */,
+			);
+			path = Util;
+			sourceTree = "<group>";
+		};
+		82EE570A23F0339B0033B43C /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				820961D423ED9AE2004A510A /* ActivityIndicator.swift */,
+				8297A2BC23DAAFE000D091FF /* Fonts.swift */,
+				8297A2BA23DA08F200D091FF /* Colors.swift */,
+				8297A2B623D9BB1C00D091FF /* Texts.swift */,
+				82EE570523F029900033B43C /* BackButton.swift */,
+				820961D623ED9AF7004A510A /* LoadingView.swift */,
+				82811F0C23E955F70066AFDC /* KeyboardFollower.swift */,
+				82811EFF23E49F090066AFDC /* TextAndTextView.swift */,
+				82811F0123E6FAE10066AFDC /* TextFieldWithBottomLine.swift */,
+				82F5591F23DC255B008032F4 /* BigButton.swift */,
+				82EE570823F0335F0033B43C /* NavigationLinkExtension.swift */,
+			);
+			path = UI;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -495,6 +514,7 @@
 				82811EF623E06D730066AFDC /* Util.swift in Sources */,
 				82811F0723E720670066AFDC /* LoginTextFields.swift in Sources */,
 				820961D723ED9AF7004A510A /* LoadingView.swift in Sources */,
+				82EE570923F0335F0033B43C /* NavigationLinkExtension.swift in Sources */,
 				820961D323ED881A004A510A /* ResetPassword.swift in Sources */,
 				82811F0023E49F090066AFDC /* TextAndTextView.swift in Sources */,
 				82811F0D23E955F70066AFDC /* KeyboardFollower.swift in Sources */,

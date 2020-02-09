@@ -122,11 +122,3 @@ struct ForgotPasswordView: View {
 		ResetPassword(store: self.store.view(value: { $0.resetPass }, action: { .resetPass($0)}))
 	}
 }
-
-extension NavigationLink where Label == EmptyView {
-	static func emptyHidden(destination: Destination, isActive: Bool) -> some View {
-		return NavigationLink.init(destination: destination,
-															 isActive: .constant(isActive),
-			label: { EmptyView() }).hidden()
-	}
-}
