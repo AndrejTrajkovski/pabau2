@@ -94,14 +94,14 @@ extension AppState {
 																	loggedInUser: loggedInUser,
 																	emailValidationText: self.emailValidationText,
 																	passValidationText: self.passValidationText,
-																	loadingState: self.forgotPassLS)
+																	forgotPassLS: self.forgotPassLS)
 		}
 		set {
 			self.navigation = newValue.navigation
 			self.loggedInUser = newValue.login.loggedInUser
 			self.emailValidationText = newValue.emailValidationText
 			self.passValidationText = newValue.passValidationText
-			self.forgotPassLS = newValue.loadingState
+			self.forgotPassLS = newValue.forgotPassLS
 		}
 	}
 }

@@ -18,9 +18,9 @@ public struct LoginViewState {
 	var forgotPassLS: LoadingState<ForgotPassResponse>
 	var forgotPass: ForgotPassViewState {
 		get { return ForgotPassViewState(navigation: navigation,
-																		 loadingState: forgotPassLS)}
+																		 forgotPassLS: forgotPassLS)}
 		set {
-			self.forgotPassLS = newValue.loadingState
+			self.forgotPassLS = newValue.forgotPassLS
 			self.navigation = newValue.navigation
 		}
 	}

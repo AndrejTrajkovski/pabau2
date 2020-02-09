@@ -42,7 +42,7 @@ extension WalkthroughViewState {
 		get {
 			return LoginViewState(loggedInUser: self.loggedInUser,
 														navigation: self.navigation,
-														loadingState: self.forgotPassLS,
+														forgotPassLS: self.forgotPassLS,
 														emailValidationText: self.emailValidationText,
 														passValidationText: self.passValidationText)
 		}
@@ -51,7 +51,7 @@ extension WalkthroughViewState {
 			self.loggedInUser = newValue.loggedInUser
 			self.emailValidationText = newValue.emailValidationText
 			self.passValidationText = newValue.passValidationText
-			self.forgotPassLS = newValue.loadingState
+			self.forgotPassLS = newValue.forgotPassLS
 		}
 	}
 }
