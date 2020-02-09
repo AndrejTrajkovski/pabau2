@@ -58,6 +58,7 @@ struct AppState {
 	var navigation: Navigation
 	var emailValidationText: String = ""
 	var passValidationText: String = ""
+	var loadingState: LoadingState<ForgotPassResponse> = .initial
 }
 
 enum AppAction {
@@ -92,13 +93,15 @@ extension AppState {
 			return WalkthroughViewState(navigation: self.navigation,
 																	loggedInUser: loggedInUser,
 																	emailValidationText: self.emailValidationText,
-																	passValidationText: self.passValidationText)
+																	passValidationText: self.passValidationText,
+																	loadingState: self.loadingState)
 		}
 		set {
 			self.navigation = newValue.navigation
 			self.loggedInUser = newValue.login.loggedInUser
 			self.emailValidationText = newValue.emailValidationText
 			self.passValidationText = newValue.passValidationText
+			self.loadingState = newValue.loadingState
 		}
 	}
 }

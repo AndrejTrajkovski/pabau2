@@ -38,9 +38,12 @@ public enum ForgotPassViewAction {
 
 public struct ForgotPassViewState {
 	var navigation: Navigation
+	var loadingState: LoadingState<ForgotPassResponse>
 	var forgotPass: ForgotPassState {
-		get { return ForgotPassState(navigation: navigation)}
+		get { return ForgotPassState(navigation: navigation,
+																 loadingState: loadingState)}
 		set {
+			self.loadingState = newValue.loadingState
 			self.navigation = newValue.navigation
 		}
 	}
@@ -59,7 +62,11 @@ public enum LoadingState<Value> {
 
 public struct ForgotPassState {
 	var navigation: Navigation
-	var loadingState: LoadingState<ForgotPassResponse> = .initial
+	var loadingState: LoadingState<ForgotPassResponse>
+	var isLoading: Bool {
+		guard case LoadingState.loading = self.loadingState else { return false }
+		return true
+	}
 }
 
 let forgotPassViewReducer = combine(
@@ -118,7 +125,7 @@ struct ForgotPassword: View {
 				Text(Texts.forgotPassDescription)
 					.foregroundColor(.grey155)
 					.font(.paragraph)
-				TextAndTextView(title: Texts.emailAddress.uppercased(), placeholder: "", value: $email)
+				TextAndTextView(title: Texts.emailAddress.uppercased(), placeholder: "", value: self.$email)
 			}.frame(maxWidth: 319)
 			BigButton(text: Texts.sendRequest) {
 				self.store.send(.sendRequest(email: self.email))
@@ -142,11 +149,13 @@ struct ForgotPasswordView: View {
 	}
 	@Environment(\.presentationMode) var presentationMode
 	var body: some View {
-		VStack(alignment: .leading, spacing: 36) {
-			ForgotPassword(self.store.view(value: { $0.forgotPass }, action: { .forgotPass($0)}), $email)
-			NavigationLink.emptyHidden(destination: resetPassView,
-																 isActive: self.store.value.navigation.login?.contains(.resetPassScreen) ?? false)
-			Spacer()
+		LoadingView(isShowing: .constant(self.store.value.forgotPass.isLoading)) {
+			VStack(alignment: .leading, spacing: 36) {
+				ForgotPassword(self.store.view(value: { $0.forgotPass }, action: { .forgotPass($0)}), self.$email)
+				NavigationLink.emptyHidden(destination: self.resetPassView,
+																	 isActive: self.store.value.navigation.login?.contains(.resetPassScreen) ?? false)
+				Spacer()
+			}
 		}
 	}
 
