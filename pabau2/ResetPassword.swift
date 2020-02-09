@@ -3,17 +3,41 @@ import ComposableArchitecture
 import Combine
 
 public struct ResetPassResponse {}
-public enum ResetPassError: Error {}
 
 func sendConfirmation(_ code: String, _ pass: String) -> Effect<Result<ResetPassResponse, ResetPassError>> {
 	return Just(.success(ResetPassResponse()))
-					.delay(for: .seconds(2), scheduler: DispatchQueue.main)
-					.eraseToEffect()
+		.delay(for: .seconds(2), scheduler: DispatchQueue.main)
+		.eraseToEffect()
 }
 
 public struct ResetPasswordState {
 	var navigation: Navigation
-	var rpValidation: String
+	var rpValidation: ResetPassError?
+	var newPassValidator: String {
+		if case .newPassEmpty = rpValidation {
+			return rpValidation!.localizedDescription
+		} else if case .nonMatchingPasswords = rpValidation {
+			return rpValidation!.localizedDescription
+		} else {
+			return ""
+		}
+	}
+	var confirmPassValidator: String {
+		if case .confirmPassEmpty = rpValidation {
+			return rpValidation!.localizedDescription
+		} else if case .nonMatchingPasswords = rpValidation {
+			return rpValidation!.localizedDescription
+		} else {
+			return ""
+		}
+	}
+	var codeValidator: String {
+		if case .emptyCode = rpValidation {
+			return rpValidation!.localizedDescription
+		} else {
+			return ""
+		}
+	}
 }
 
 public enum ResetPasswordAction {
@@ -22,33 +46,79 @@ public enum ResetPasswordAction {
 	case gotResponse(Result<ResetPassResponse, ResetPassError>)
 }
 
+func validate(_ code: String, _ newPass: String, _ confirmPass: String) -> Result<(String, String), ResetPassError> {
+	if newPass != confirmPass {
+		return .failure(.nonMatchingPasswords)
+	} else if newPass.isEmpty {
+		return .failure(.newPassEmpty)
+	} else if confirmPass.isEmpty {
+		return .failure(.confirmPassEmpty)
+	} else if code.isEmpty {
+		return .failure(.emptyCode)
+	} else {
+		return .success((code, newPass))
+	}
+}
+
+public enum ResetPassError: Error {
+	case newPassEmpty
+	case confirmPassEmpty
+	case nonMatchingPasswords
+	case emptyCode
+	public var localizedDescription: String {
+		switch self {
+		case .newPassEmpty:
+			return Texts.emptyPasswords
+		case .confirmPassEmpty:
+			return Texts.emptyPasswords
+		case .nonMatchingPasswords:
+			return Texts.passwordsDontMatch
+		case .emptyCode:
+			return Texts.emptyCode
+		}
+	}
+}
+
+func handle (_ code: String,
+						 _ newPass: String,
+						 _ confirmPass: String,
+						 _ state: inout ResetPasswordState) -> [Effect<ResetPasswordAction>] {
+	let validated = validate(code, newPass, confirmPass)
+	switch validated {
+	case .success(let code, let newPass):
+		state.rpValidation = nil
+		return [
+			sendConfirmation(code, newPass)
+				.map(ResetPasswordAction.gotResponse)
+				.eraseToEffect()
+		]
+	case .failure(let error):
+		state.rpValidation = error
+		return []
+	}
+}
+
+func handle(_ result: Result<ResetPassResponse, ResetPassError>, _ state: inout ResetPasswordState) ->  [Effect<ResetPasswordAction>] {
+	switch result {
+	case .success:
+		state.navigation.login?.remove(.resetPassScreen)
+		state.navigation.login?.remove(.forgotPassScreen)
+		return []
+	case .failure(let error):
+		state.rpValidation = error
+		return []
+	}
+}
+
 public func resetPassReducer(state: inout ResetPasswordState, action: ResetPasswordAction) -> [Effect<ResetPasswordAction>] {
 	switch action {
 	case .backBtnTapped:
 		state.navigation.login?.remove(.resetPassScreen)
 		return []
 	case .changePassTapped(let code, let newPass, let confirmPass):
-		if newPass == confirmPass {
-			state.rpValidation = ""
-			return [
-				sendConfirmation(code, newPass)
-					.map(ResetPasswordAction.gotResponse)
-					.eraseToEffect()
-			]
-		} else {
-			state.rpValidation = Texts.passwordsDontMatch
-			return []
-		}
+		return handle(code, newPass, confirmPass, &state)
 	case .gotResponse(let result):
-		switch result {
-		case .success:
-			state.navigation.login?.remove(.resetPassScreen)
-			state.navigation.login?.remove(.forgotPassScreen)
-			return []
-		case .failure(let error):
-			state.rpValidation = error.localizedDescription
-			return []
-		}
+		return handle(result, &state)
 	}
 }
 
@@ -57,7 +127,6 @@ struct ResetPassword: View {
 	@State var code: String = ""
 	@State var newPass: String = ""
 	@State var confirmPass: String = ""
-	
 	var body: some View {
 		VStack {
 			VStack(alignment: .leading, spacing: 25) {
@@ -69,9 +138,9 @@ struct ResetPassword: View {
 					Text(Texts.forgotPassDescription)
 						.foregroundColor(.grey155)
 						.font(.paragraph)
-					TextAndTextView(title: Texts.resetCode.uppercased(), placeholder: Texts.resetCodePlaceholder, value: $code, validation: "")
-					TextAndTextView(title: Texts.newPass.uppercased(), placeholder: Texts.newPassPlaceholder, value: $newPass, validation: "")
-					TextAndTextView(title: Texts.confirmPass.uppercased(), placeholder: Texts.confirmPassPlaceholder, value: $confirmPass, validation: "")
+					TextAndTextView(title: Texts.resetCode.uppercased(), placeholder: Texts.resetCodePlaceholder, value: $code, validation: self.store.value.codeValidator)
+					TextAndTextView(title: Texts.newPass.uppercased(), placeholder: Texts.newPassPlaceholder, value: $newPass, validation: self.store.value.newPassValidator)
+					TextAndTextView(title: Texts.confirmPass.uppercased(), placeholder: Texts.confirmPassPlaceholder, value: $confirmPass, validation: self.store.value.confirmPassValidator)
 				}.frame(maxWidth: 319)
 				BigButton(text: Texts.changePass) {
 					self.store.send(.changePassTapped(self.code, self.newPass, self.confirmPass))

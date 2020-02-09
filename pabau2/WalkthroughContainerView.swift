@@ -37,7 +37,7 @@ public struct WalkthroughViewState {
 	var forgotPassLS: LoadingState<ForgotPassResponse>
 	var loginLS: LoadingState<User>
 	var fpValidation: String
-	var rpValidation: String
+	var rpValidation: ResetPassError?
 }
 
 extension WalkthroughViewState {

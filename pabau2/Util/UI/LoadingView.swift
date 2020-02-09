@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct LoadingView<Content>: View where Content: View {
-	
+
 	let title: String
 	@Binding var isShowing: Bool
 	var content: () -> Content

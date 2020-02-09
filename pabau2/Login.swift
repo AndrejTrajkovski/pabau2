@@ -18,7 +18,7 @@ public struct LoginViewState {
 	var forgotPassLS: LoadingState<ForgotPassResponse>
 	var loginLS: LoadingState<User>
 	var fpValidation: String
-	var rpValidation: String
+	var rpValidation: ResetPassError?
 	var forgotPass: ForgotPassViewState {
 		get { return ForgotPassViewState(navigation: navigation,
 																		 forgotPassLS: forgotPassLS,

@@ -56,7 +56,7 @@ struct AppState {
 	var forgotPassLS: LoadingState<ForgotPassResponse> = .initial
 	var loginLS: LoadingState<User> = .initial
 	var fpValidation: String = ""
-	var rpValidation: String = ""
+	var rpValidation: ResetPassError?
 }
 
 enum AppAction {
