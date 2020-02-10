@@ -38,6 +38,7 @@ public struct WalkthroughViewState {
 	var loginLS: LoadingState<User>
 	var fpValidation: String
 	var rpValidation: ResetPassError?
+	var rpLoading: LoadingState<ResetPassResponse>
 }
 
 extension WalkthroughViewState {
@@ -49,6 +50,7 @@ extension WalkthroughViewState {
 														loginLS: self.loginLS,
 														fpValidation: fpValidation,
 														rpValidation: rpValidation,
+														rpLoading: rpLoading,
 														emailValidationText: self.emailValidationText,
 														passValidationText: self.passValidationText)
 		}
@@ -61,6 +63,7 @@ extension WalkthroughViewState {
 			self.loginLS = newValue.loginLS
 			self.fpValidation = newValue.fpValidation
 			self.rpValidation = newValue.rpValidation
+			self.rpLoading = newValue.rpLoading
 		}
 	}
 }

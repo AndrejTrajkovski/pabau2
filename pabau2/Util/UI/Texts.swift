@@ -36,6 +36,7 @@ struct Texts {
 
 	static let emptyPasswords = "Password is empty".localized
 	static let emptyCode = "Code is empty".localized
+	static let verifyingCode = "Verifying code...".localized
 }
 
 extension String {

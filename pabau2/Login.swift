@@ -19,16 +19,20 @@ public struct LoginViewState {
 	var loginLS: LoadingState<User>
 	var fpValidation: String
 	var rpValidation: ResetPassError?
+	var rpLoading: LoadingState<ResetPassResponse>
+	
 	var forgotPass: ForgotPassViewState {
 		get { return ForgotPassViewState(navigation: navigation,
 																		 forgotPassLS: forgotPassLS,
 																		 fpValidation: fpValidation,
-																		 rpValidation: rpValidation)}
+																		 rpValidation: rpValidation,
+																		 rpLoading: rpLoading)}
 		set {
 			self.forgotPassLS = newValue.forgotPassLS
 			self.navigation = newValue.navigation
 			self.fpValidation = newValue.fpValidation
 			self.rpValidation = newValue.rpValidation
+			self.rpLoading = newValue.rpLoading
 		}
 	}
 	var emailValidationText: String

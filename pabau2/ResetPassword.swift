@@ -13,6 +13,7 @@ func sendConfirmation(_ code: String, _ pass: String) -> Effect<Result<ResetPass
 public struct ResetPasswordState {
 	var navigation: Navigation
 	var rpValidation: ResetPassError?
+	var loadingState: LoadingState<ResetPassResponse>
 	var newPassValidator: String {
 		if case .newPassEmpty = rpValidation {
 			return rpValidation!.localizedDescription
@@ -87,6 +88,7 @@ func handle (_ code: String,
 	switch validated {
 	case .success(let code, let newPass):
 		state.rpValidation = nil
+		state.loadingState = .loading
 		return [
 			sendConfirmation(code, newPass)
 				.map(ResetPasswordAction.gotResponse)
@@ -100,11 +102,13 @@ func handle (_ code: String,
 
 func handle(_ result: Result<ResetPassResponse, ResetPassError>, _ state: inout ResetPasswordState) ->  [Effect<ResetPasswordAction>] {
 	switch result {
-	case .success:
+	case .success(let success):
+		state.loadingState = .gotSuccess(success)
 		state.navigation.login?.remove(.resetPassScreen)
 		state.navigation.login?.remove(.forgotPassScreen)
 		return []
 	case .failure(let error):
+		state.loadingState = .gotError(error)
 		state.rpValidation = error
 		return []
 	}
@@ -128,30 +132,32 @@ struct ResetPassword: View {
 	@State var newPass: String = ""
 	@State var confirmPass: String = ""
 	var body: some View {
-		VStack {
-			VStack(alignment: .leading, spacing: 25) {
-				VStack(alignment: .leading, spacing: 36) {
-					Text(Texts.resetPass)
-						.foregroundColor(.blackTwo)
-						.font(.largeTitle)
-						.frame(width: 157)
-					Text(Texts.forgotPassDescription)
-						.foregroundColor(.grey155)
-						.font(.paragraph)
-					TextAndTextView(title: Texts.resetCode.uppercased(), placeholder: Texts.resetCodePlaceholder, value: $code, validation: self.store.value.codeValidator)
-					TextAndTextView(title: Texts.newPass.uppercased(), placeholder: Texts.newPassPlaceholder, value: $newPass, validation: self.store.value.newPassValidator)
-					TextAndTextView(title: Texts.confirmPass.uppercased(), placeholder: Texts.confirmPassPlaceholder, value: $confirmPass, validation: self.store.value.confirmPassValidator)
-				}.frame(maxWidth: 319)
-				BigButton(text: Texts.changePass) {
-					self.store.send(.changePassTapped(self.code, self.newPass, self.confirmPass))
+		LoadingView(title: Texts.verifyingCode, isShowing: .constant(self.store.value.loadingState.isLoading)) {
+			VStack {
+				VStack(alignment: .leading, spacing: 25) {
+					VStack(alignment: .leading, spacing: 36) {
+						Text(Texts.resetPass)
+							.foregroundColor(.blackTwo)
+							.font(.largeTitle)
+							.frame(width: 157)
+						Text(Texts.forgotPassDescription)
+							.foregroundColor(.grey155)
+							.font(.paragraph)
+						TextAndTextView(title: Texts.resetCode.uppercased(), placeholder: Texts.resetCodePlaceholder, value: self.$code, validation: self.store.value.codeValidator)
+						TextAndTextView(title: Texts.newPass.uppercased(), placeholder: Texts.newPassPlaceholder, value: self.$newPass, validation: self.store.value.newPassValidator)
+						TextAndTextView(title: Texts.confirmPass.uppercased(), placeholder: Texts.confirmPassPlaceholder, value: self.$confirmPass, validation: self.store.value.confirmPassValidator)
+					}.frame(maxWidth: 319)
+					BigButton(text: Texts.changePass) {
+						self.store.send(.changePassTapped(self.code, self.newPass, self.confirmPass))
+					}
 				}
+				.frame(minWidth: 280, maxWidth: 495)
+				.fixedSize(horizontal: false, vertical: true)
+				.customBackButton {
+					self.store.send(.backBtnTapped)
+				}
+				Spacer()
 			}
-			.frame(minWidth: 280, maxWidth: 495)
-			.fixedSize(horizontal: false, vertical: true)
-			.customBackButton {
-				self.store.send(.backBtnTapped)
-			}
-			Spacer()
 		}
 	}
 }
