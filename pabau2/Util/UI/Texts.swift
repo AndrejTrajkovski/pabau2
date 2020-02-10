@@ -37,6 +37,12 @@ struct Texts {
 	static let emptyPasswords = "Password is empty".localized
 	static let emptyCode = "Code is empty".localized
 	static let verifyingCode = "Verifying code...".localized
+	
+	static let checkYourEmail = "Check your email".localized
+	static let checkEmailDesc = "The reset code for the email has been sent.".localized
+	
+	static let passwordChanged = "Password Changed".localized
+	static let passwordChangedDesc = "Please use your new password when logging in."
 }
 
 extension String {

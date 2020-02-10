@@ -15,7 +15,9 @@ public struct LoginNavSet: OptionSet {
 	static let walkthroughScreen = LoginNavSet(rawValue: 1)
 	static let signInScreen = LoginNavSet(rawValue: 2)
 	static let forgotPassScreen = LoginNavSet(rawValue: 4)
-	static let resetPassScreen = LoginNavSet(rawValue: 8)
+	static let checkEmailScreen = LoginNavSet(rawValue: 8)
+	static let resetPassScreen = LoginNavSet(rawValue: 16)
+	static let passChangedScreen = LoginNavSet(rawValue: 32)
 }
 
 public enum TabBar {
