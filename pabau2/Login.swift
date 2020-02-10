@@ -71,11 +71,11 @@ public enum LoginAction {
 }
 
 func handle(_ email: String, _ password: String, state: inout LoginViewState) -> [Effect<LoginAction>] {
-	if !isValidEmail(email) {
-		state.emailValidationText = Texts.invalidEmail
-		return []
-	} else {
-		state.emailValidationText = ""
+	let validEmail = isValidEmail(email)
+	let emptyPass = password.isEmpty
+	state.emailValidationText = emailValidationText(validEmail)
+	state.passValidationText = passValidationText(emptyPass)
+	if validEmail && !emptyPass {
 		state.loginLS = .loading
 		return [
 			login(email, password: password)
@@ -83,7 +83,17 @@ func handle(_ email: String, _ password: String, state: inout LoginViewState) ->
 				.receive(on: DispatchQueue.main)
 				.eraseToEffect()
 		]
+	} else {
+		return []
 	}
+}
+
+func passValidationText(_ isEmpty: Bool) -> String {
+	return isEmpty ? Texts.emptyPasswords : ""
+}
+
+func emailValidationText(_ isValid: Bool) -> String {
+	return isValid ? "" : Texts.invalidEmail
 }
 
 func isValidEmail(_ email: String) -> Bool {
