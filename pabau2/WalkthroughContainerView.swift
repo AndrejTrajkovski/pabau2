@@ -2,33 +2,6 @@ import SwiftUI
 import PageControl
 import ComposableArchitecture
 
-public enum WalkthroughViewAction {
-  case walkthrough(WalkthroughAction)
-	case login(LoginViewAction)
-
-  var walkthrough: WalkthroughAction? {
-    get {
-      guard case let .walkthrough(value) = self else { return nil }
-      return value
-    }
-    set {
-      guard case .walkthrough = self, let newValue = newValue else { return }
-      self = .walkthrough(newValue)
-    }
-  }
-
-	var login: LoginViewAction? {
-    get {
-      guard case let .login(value) = self else { return nil }
-      return value
-    }
-    set {
-      guard case .login = self, let newValue = newValue else { return }
-      self = .login(newValue)
-    }
-  }
-}
-
 public struct WalkthroughViewState {
 	var navigation: Navigation
 	var loggedInUser: User?
@@ -66,6 +39,33 @@ extension WalkthroughViewState {
 			self.rpLoading = newValue.rpLoading
 		}
 	}
+}
+
+public enum WalkthroughViewAction {
+  case walkthrough(WalkthroughAction)
+	case login(LoginViewAction)
+
+  var walkthrough: WalkthroughAction? {
+    get {
+      guard case let .walkthrough(value) = self else { return nil }
+      return value
+    }
+    set {
+      guard case .walkthrough = self, let newValue = newValue else { return }
+      self = .walkthrough(newValue)
+    }
+  }
+
+	var login: LoginViewAction? {
+    get {
+      guard case let .login(value) = self else { return nil }
+      return value
+    }
+    set {
+      guard case .login = self, let newValue = newValue else { return }
+      self = .login(newValue)
+    }
+  }
 }
 
 public enum WalkthroughAction: Equatable {
