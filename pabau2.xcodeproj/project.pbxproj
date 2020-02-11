@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -31,6 +31,7 @@
 		8297A2BD23DAAFE000D091FF /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8297A2BC23DAAFE000D091FF /* Fonts.swift */; };
 		82B02FF923F17BC90015B0B4 /* CheckYourEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82B02FF823F17BC90015B0B4 /* CheckYourEmail.swift */; };
 		82B02FFB23F17CF50015B0B4 /* PasswordChanged.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82B02FFA23F17CF50015B0B4 /* PasswordChanged.swift */; };
+		82B02FFE23F2542A0015B0B4 /* CasePaths in Frameworks */ = {isa = PBXBuildFile; productRef = 82B02FFD23F2542A0015B0B4 /* CasePaths */; };
 		82BE2F4823D97D9C00B3678A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BE2F4723D97D9C00B3678A /* AppDelegate.swift */; };
 		82BE2F4A23D97D9C00B3678A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BE2F4923D97D9C00B3678A /* SceneDelegate.swift */; };
 		82BE2F4E23D97D9F00B3678A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 82BE2F4D23D97D9F00B3678A /* Assets.xcassets */; };
@@ -150,6 +151,7 @@
 			files = (
 				82BE2F7923D9983C00B3678A /* ComposableArchitecture.framework in Frameworks */,
 				8297A29323D9AD7E00D091FF /* PageControl.framework in Frameworks */,
+				82B02FFE23F2542A0015B0B4 /* CasePaths in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -346,6 +348,9 @@
 				8297A29223D9AD7E00D091FF /* PBXTargetDependency */,
 			);
 			name = pabau2;
+			packageProductDependencies = (
+				82B02FFD23F2542A0015B0B4 /* CasePaths */,
+			);
 			productName = pabau2;
 			productReference = 82BE2F4423D97D9C00B3678A /* pabau2.app */;
 			productType = "com.apple.product-type.application";
@@ -422,6 +427,9 @@
 				fr,
 			);
 			mainGroup = 82BE2F3B23D97D9C00B3678A;
+			packageReferences = (
+				82B02FFC23F2542A0015B0B4 /* XCRemoteSwiftPackageReference "swift-case-paths" */,
+			);
 			productRefGroup = 82BE2F4523D97D9C00B3678A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -939,6 +947,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		82B02FFC23F2542A0015B0B4 /* XCRemoteSwiftPackageReference "swift-case-paths" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-case-paths.git";
+			requirement = {
+				kind = exactVersion;
+				version = 0.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		82B02FFD23F2542A0015B0B4 /* CasePaths */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 82B02FFC23F2542A0015B0B4 /* XCRemoteSwiftPackageReference "swift-case-paths" */;
+			productName = CasePaths;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 82BE2F3C23D97D9C00B3678A /* Project object */;
 }
