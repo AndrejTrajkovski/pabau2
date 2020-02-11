@@ -65,13 +65,13 @@ struct AppState {
 
 enum AppAction {
 	case login(LoginViewAction)
-	case walkthrough(WalkthroughViewAction)
+	case walkthrough(WalkthroughContainerAction)
 }
 
 extension AppState {
-	var walktrough: WalkthroughViewState {
+	var walktrough: WalkthroughContainerState {
 		get {
-			return WalkthroughViewState(navigation: self.navigation,
+			return WalkthroughContainerState(navigation: self.navigation,
 																	loggedInUser: loggedInUser,
 																	emailValidationText: self.emailValidationText,
 																	passValidationText: self.passValidationText,
@@ -95,7 +95,7 @@ extension AppState {
 	}
 }
 
-let appReducer = pullback(walkthroughViewReducer, value: \AppState.walktrough, action: /AppAction.walkthrough)
+let appReducer = pullback(walkthroughContainerReducer, value: \AppState.walktrough, action: /AppAction.walkthrough)
 
 struct ContentView: View {
 	@ObservedObject var store: Store<AppState, AppAction>
@@ -112,7 +112,7 @@ struct PreLogin: View {
 	@ObservedObject var store: Store<AppState, AppAction>
 	var body: some View {
 		NavigationView {
-			WalkthroughContainerView(store:
+			WalkthroughContainer(store:
 				self.store.view(
 					value: { $0.walktrough },
 					action: { .walkthrough($0)}

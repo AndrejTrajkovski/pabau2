@@ -3,7 +3,7 @@ import PageControl
 import ComposableArchitecture
 import CasePaths
 
-public struct WalkthroughViewState {
+public struct WalkthroughContainerState {
 	var navigation: Navigation
 	var loggedInUser: User?
 	var emailValidationText: String
@@ -15,7 +15,7 @@ public struct WalkthroughViewState {
 	var rpLoading: LoadingState<ResetPassResponse>
 }
 
-extension WalkthroughViewState {
+extension WalkthroughContainerState {
 	var login: LoginViewState {
 		get {
 			return LoginViewState(loggedInUser: self.loggedInUser,
@@ -42,7 +42,7 @@ extension WalkthroughViewState {
 	}
 }
 
-public enum WalkthroughViewAction {
+public enum WalkthroughContainerAction {
   case walkthrough(WalkthroughAction)
 	case login(LoginViewAction)
 }
@@ -51,9 +51,9 @@ public enum WalkthroughAction: Equatable {
   case signInTapped
 }
 
-public let walkthroughViewReducer = combine(
-pullback(walkthroughReducer, value: \WalkthroughViewState.navigation, action: /WalkthroughViewAction.walkthrough),
-pullback(loginViewReducer, value: \WalkthroughViewState.login, action: /WalkthroughViewAction.login)
+public let walkthroughContainerReducer = combine(
+pullback(walkthroughReducer, value: \WalkthroughContainerState.navigation, action: /WalkthroughContainerAction.walkthrough),
+pullback(loginViewReducer, value: \WalkthroughContainerState.login, action: /WalkthroughContainerAction.login)
 )
 
 public func walkthroughReducer(state: inout Navigation, action: WalkthroughAction) -> [Effect<WalkthroughAction>] {
@@ -88,8 +88,8 @@ func makeState(titles: [String], descs: [String], imageTitles: [String]) -> [Wal
 	}
 }
 
-struct WalkthroughContainerView: View {
-	@ObservedObject var store: Store<WalkthroughViewState, WalkthroughViewAction>
+struct WalkthroughContainer: View {
+	@ObservedObject var store: Store<WalkthroughContainerState, WalkthroughContainerAction>
 	let state = makeState(titles: WalkthroughStatic.titles,
 												descs: WalkthroughStatic.description,
 												imageTitles: WalkthroughStatic.images)

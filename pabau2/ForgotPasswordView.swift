@@ -88,7 +88,7 @@ public func forgotPasswordReducer(state: inout ForgotPassState, action: ForgotPa
 		switch result {
 		case .success(let success):
 			state.loadingState = .gotSuccess(success)
-			state.navigation.login?.insert(.resetPassScreen)
+			state.navigation.login?.insert(.checkEmailScreen)
 		case .failure(let error):
 			state.loadingState = .gotError(error)
 		}
