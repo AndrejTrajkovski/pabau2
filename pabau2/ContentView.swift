@@ -9,10 +9,6 @@ public struct User {
 }
 
 public enum LoginNavScreen {
-//	public let rawValue: Int
-//	public init(rawValue: Int) {
-//		self.rawValue = rawValue
-//	}
 	case walkthroughScreen
 	case signInScreen
 	case forgotPassScreen
@@ -121,21 +117,34 @@ struct ContentView: View {
 			action: { .walkthrough($0)}
 		)
 	}
-	
+
 	var tabBarStore: Store<TabBarState, TabBarAction> {
 		return self.store.view(
 			value: { $0.tabBar },
 			action: { .tabBar($0)}
 		)
 	}
-
 }
 
 struct LoginContainer: View {
-	let store: Store<WalkthroughContainerState, WalkthroughContainerAction>
+	@ObservedObject var store: Store<WalkthroughContainerState, WalkthroughContainerAction>
+
+	var shouldShowWalkthrough: Bool {
+		return self.store.value.navigation.login?.contains(.walkthroughScreen) ?? false
+	}
+
 	var body: some View {
 		NavigationView {
-			WalkthroughContainer(store: store)
+			ViewBuilder.buildBlock(
+				 shouldShowWalkthrough ?
+					ViewBuilder.buildEither(first: WalkthroughContainer(store: store))
+					:
+					ViewBuilder.buildEither(second:
+						LoginView(store:
+							self.store.view(value: { $0.login },
+															action: { .login($0)})
+					))
+			)
 		}.navigationViewStyle(StackNavigationViewStyle())
 	}
 }
