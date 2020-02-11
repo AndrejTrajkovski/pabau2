@@ -66,8 +66,7 @@ let forgotPassViewReducer = combine(
 	pullback(resetPassReducer, value: \ForgotPassViewState.resetPass, action: /ForgotPassViewAction.resetPass)
 )
 
-public func forgotPasswordReducer(state: inout ForgotPassState,
-																	action: ForgotPasswordAction) -> [Effect<ForgotPasswordAction>] {
+public func forgotPasswordReducer(state: inout ForgotPassState, action: ForgotPasswordAction) -> [Effect<ForgotPasswordAction>] {
 	switch action {
 	case .backBtnTapped:
 		state.navigation.login?.remove(.forgotPassScreen)
@@ -106,8 +105,7 @@ public enum ForgotPasswordAction {
 struct ForgotPassword: View {
 	@ObservedObject var store: Store<ForgotPassState, ForgotPasswordAction>
 	@Binding private var email: String
-	init(_ store: Store<ForgotPassState, ForgotPasswordAction>,
-			 _ email: Binding<String>) {
+	init(_ store: Store<ForgotPassState, ForgotPasswordAction>, _ email: Binding<String>) {
 		self.store = store
 		self._email = email
 	}
@@ -139,8 +137,7 @@ struct ForgotPassword: View {
 struct ForgotPasswordView: View {
 	@ObservedObject var store: Store<ForgotPassViewState, ForgotPassViewAction>
 	@Binding private var email: String
-	init(_ store: Store<ForgotPassViewState, ForgotPassViewAction>,
-			 _ email: Binding<String>) {
+	init(_ store: Store<ForgotPassViewState, ForgotPassViewAction>, _ email: Binding<String>) {
 		self.store = store
 		_email = email
 	}

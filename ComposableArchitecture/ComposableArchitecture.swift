@@ -94,7 +94,6 @@ public func combine<Value, Action>(
   }
 }
 
-
 //struct CasePath<Root, Value> {
 //  let extract: (Root) -> Value?
 //  let embed: (Value) -> Root

@@ -56,8 +56,7 @@ pullback(walkthroughReducer, value: \WalkthroughViewState.navigation, action: /W
 pullback(loginViewReducer, value: \WalkthroughViewState.login, action: /WalkthroughViewAction.login)
 )
 
-public func walkthroughReducer(state: inout Navigation,
-															 action: WalkthroughAction) -> [Effect<WalkthroughAction>] {
+public func walkthroughReducer(state: inout Navigation, action: WalkthroughAction) -> [Effect<WalkthroughAction>] {
 	switch action {
 	case .signInTapped:
 		state.login?.insert(.signInScreen)

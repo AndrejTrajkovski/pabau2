@@ -21,7 +21,7 @@ public struct LoginViewState {
 	var fpValidation: String
 	var rpValidation: ResetPassError?
 	var rpLoading: LoadingState<ResetPassResponse>
-	
+
 	var forgotPass: ForgotPassViewState {
 		get { return ForgotPassViewState(navigation: navigation,
 																		 forgotPassLS: forgotPassLS,
@@ -113,8 +113,7 @@ struct Login: View {
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
 	@Binding private var email: String
 	@State private var password: String = ""
-	public init(store: Store<LoginViewState, LoginAction>,
-							email: Binding<String>) {
+	public init(store: Store<LoginViewState, LoginAction>, email: Binding<String>) {
 		self.store = store
 		self._email = email
 	}

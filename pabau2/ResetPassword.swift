@@ -80,10 +80,7 @@ public enum ResetPassError: Error {
 	}
 }
 
-func handle (_ code: String,
-						 _ newPass: String,
-						 _ confirmPass: String,
-						 _ state: inout ResetPasswordState) -> [Effect<ResetPasswordAction>] {
+func handle (_ code: String, _ newPass: String, _ confirmPass: String, _ state: inout ResetPasswordState) -> [Effect<ResetPasswordAction>] {
 	let validated = validate(code, newPass, confirmPass)
 	switch validated {
 	case .success(let code, let newPass):
