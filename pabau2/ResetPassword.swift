@@ -168,8 +168,8 @@ struct ResetPassword: View {
 			}
 		}
 	}
-	
+
 	var passChangedView: PasswordChanged {
-		PasswordChanged(store: passChangedStore)
+		return PasswordChanged(store: passChangedStore)
 	}
 }

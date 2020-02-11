@@ -9,14 +9,10 @@ public func passChangedReducer(state: inout Navigation, action: PassChangedActio
 		state.login?.remove(.checkEmailScreen)
 		state.login?.remove(.forgotPassScreen)
 		return []
-	case .backBtnTapped:
-		state.login?.remove(.passChangedScreen)
-		return []
 	}
 }
 
 public enum PassChangedAction {
-	case backBtnTapped
 	case signInTapped
 }
 
@@ -28,9 +24,7 @@ public struct PasswordChanged: View {
 	public var body: some View {
 		WalkthroughContentAndButton(content: content,
 																btnTitle: Texts.signIn,
-																btnAction: { self.store.send(.signInTapped) },
-																backButtonTapped: {
-																	self.store.send(.backBtnTapped)
-		})
+																btnAction: { self.store.send(.signInTapped) })
+		.navigationBarBackButtonHidden(true)
 	}
 }

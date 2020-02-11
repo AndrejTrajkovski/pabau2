@@ -28,11 +28,10 @@ public struct CheckEmail: View {
 		VStack {
 			WalkthroughContentAndButton(content: content,
 																	btnTitle: Texts.resetPass,
-																	btnAction: { self.store.send(.resetPassTapped) },
-																	backButtonTapped: {
-																		self.store.send(.backBtnTapped)
+																	btnAction: { self.store.send(.resetPassTapped) }
+			).customBackButton {
+				self.store.send(.backBtnTapped)
 			}
-			)
 			NavigationLink.emptyHidden(destination: resetPassView,
 																 isActive: self.store.value.login?.contains(.resetPassScreen) ?? false)
 		}
