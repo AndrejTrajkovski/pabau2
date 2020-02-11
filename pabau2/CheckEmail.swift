@@ -19,6 +19,7 @@ public enum CheckEmailAction {
 
 public struct CheckEmail: View {
 	let resetPassStore: Store<ResetPasswordState, ResetPasswordAction>
+	let passChangedStore: Store<Navigation, PassChangedAction>
 	@ObservedObject var store: Store<Navigation, CheckEmailAction>
 	let content = WalkthroughContentContent(title: Texts.checkYourEmail,
 																					description: Texts.checkEmailDesc,
@@ -38,6 +39,7 @@ public struct CheckEmail: View {
 	}
 
 	var resetPassView: ResetPassword {
-		ResetPassword(store: resetPassStore)
+		ResetPassword(passChangedStore: passChangedStore,
+									store: resetPassStore)
 	}
 }

@@ -16,6 +16,7 @@ public enum ForgotPassViewAction {
 	case forgotPass(ForgotPasswordAction)
 	case resetPass(ResetPasswordAction)
 	case checkEmail(CheckEmailAction)
+	case passChanged(PassChangedAction)
 }
 
 public struct ForgotPassViewState {
@@ -65,7 +66,8 @@ public struct ForgotPassState {
 let forgotPassViewReducer = combine(
 	pullback(forgotPasswordReducer, value: \ForgotPassViewState.forgotPass, action: /ForgotPassViewAction.forgotPass),
 	pullback(resetPassReducer, value: \ForgotPassViewState.resetPass, action: /ForgotPassViewAction.resetPass),
-	pullback(checkEmailReducer, value: \ForgotPassViewState.navigation, action: /ForgotPassViewAction.checkEmail)
+	pullback(checkEmailReducer, value: \ForgotPassViewState.navigation, action: /ForgotPassViewAction.checkEmail),
+	pullback(passChangedReducer, value: \ForgotPassViewState.navigation, action: /ForgotPassViewAction.passChanged)
 )
 
 public func forgotPasswordReducer(state: inout ForgotPassState, action: ForgotPasswordAction) -> [Effect<ForgotPasswordAction>] {
@@ -156,10 +158,14 @@ struct ForgotPasswordView: View {
 
 	var checkEmailView: CheckEmail {
 		CheckEmail(resetPassStore: resetPassStore,
+							 passChangedStore: passChangedStore,
 							 store: self.store.view(value: { $0.navigation },
 																			action: { .checkEmail($0)}))
 	}
 
+	var passChangedStore: Store<Navigation, PassChangedAction> {
+		self.store.view(value: { $0.navigation }, action: { .passChanged($0)})
+	}
 	var resetPassStore: Store<ResetPasswordState, ResetPasswordAction> {
 		self.store.view(value: { $0.resetPass }, action: { .resetPass($0)})
 	}

@@ -28,6 +28,7 @@ struct Texts {
 	static let resetCode = "RESET CODE".localized
 	static let newPass = "NEW PASSWORD".localized
 	static let confirmPass = "CONFIRM PASSWORD".localized
+	static let resetPassDesc = "Reset code was sent to your email. Enter the code and create new password".localized
 	static let resetCodePlaceholder = "Enter your code.".localized
 	static let newPassPlaceholder = "Enter your password.".localized
 	static let confirmPassPlaceholder = "Enter your confirm password.".localized

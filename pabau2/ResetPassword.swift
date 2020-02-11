@@ -101,8 +101,7 @@ func handle(_ result: Result<ResetPassResponse, ResetPassError>, _ state: inout 
 	switch result {
 	case .success(let success):
 		state.loadingState = .gotSuccess(success)
-		state.navigation.login?.remove(.resetPassScreen)
-		state.navigation.login?.remove(.forgotPassScreen)
+		state.navigation.login?.insert(.passChangedScreen)
 		return []
 	case .failure(let error):
 		state.loadingState = .gotError(error)
@@ -124,6 +123,7 @@ public func resetPassReducer(state: inout ResetPasswordState, action: ResetPassw
 }
 
 struct ResetPassword: View {
+	let passChangedStore: Store<Navigation, PassChangedAction>
 	@ObservedObject var store: Store<ResetPasswordState, ResetPasswordAction>
 	@State var code: String = ""
 	@State var newPass: String = ""
@@ -137,16 +137,27 @@ struct ResetPassword: View {
 							.foregroundColor(.blackTwo)
 							.font(.largeTitle)
 							.frame(width: 157)
-						Text(Texts.forgotPassDescription)
+						Text(Texts.resetPassDesc)
 							.foregroundColor(.grey155)
 							.font(.paragraph)
-						TextAndTextView(title: Texts.resetCode.uppercased(), placeholder: Texts.resetCodePlaceholder, value: self.$code, validation: self.store.value.codeValidator)
-						TextAndTextView(title: Texts.newPass.uppercased(), placeholder: Texts.newPassPlaceholder, value: self.$newPass, validation: self.store.value.newPassValidator)
-						TextAndTextView(title: Texts.confirmPass.uppercased(), placeholder: Texts.confirmPassPlaceholder, value: self.$confirmPass, validation: self.store.value.confirmPassValidator)
+						TextAndTextView(title: Texts.resetCode.uppercased(),
+														placeholder: Texts.resetCodePlaceholder,
+														value: self.$code,
+														validation: self.store.value.codeValidator)
+						TextAndTextView(title: Texts.newPass.uppercased(),
+														placeholder: Texts.newPassPlaceholder,
+														value: self.$newPass,
+														validation: self.store.value.newPassValidator)
+						TextAndTextView(title: Texts.confirmPass.uppercased(),
+														placeholder: Texts.confirmPassPlaceholder,
+														value: self.$confirmPass,
+														validation: self.store.value.confirmPassValidator)
 					}.frame(maxWidth: 319)
 					BigButton(text: Texts.changePass) {
 						self.store.send(.changePassTapped(self.code, self.newPass, self.confirmPass))
 					}
+					NavigationLink.emptyHidden(destination: self.passChangedView,
+																		 isActive: self.store.value.navigation.login?.contains(.passChangedScreen) ?? false)
 				}
 				.frame(minWidth: 280, maxWidth: 495)
 				.fixedSize(horizontal: false, vertical: true)
@@ -156,5 +167,9 @@ struct ResetPassword: View {
 				Spacer()
 			}
 		}
+	}
+	
+	var passChangedView: PasswordChanged {
+		PasswordChanged(store: passChangedStore)
 	}
 }
