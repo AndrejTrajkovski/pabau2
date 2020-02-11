@@ -25,16 +25,15 @@ public struct CheckEmail: View {
 																					imageTitle: "illu-check-email")
 	public var body: some View {
 		VStack {
-		WalkthroughContentAndButton(content: content,
-																btnTitle: Texts.resetPass,
-																btnAction: { self.store.send(.resetPassTapped) },
-																backButtonTapped: {
-																	self.store.send(.backBtnTapped)
-																	}
-																)
+			WalkthroughContentAndButton(content: content,
+																	btnTitle: Texts.resetPass,
+																	btnAction: { self.store.send(.resetPassTapped) },
+																	backButtonTapped: {
+																		self.store.send(.backBtnTapped)
+			}
+			)
 			NavigationLink.emptyHidden(destination: resetPassView,
 																 isActive: self.store.value.login?.contains(.resetPassScreen) ?? false)
-			Spacer()
 		}
 	}
 
