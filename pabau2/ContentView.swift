@@ -21,14 +21,14 @@ public struct LoginNavSet: OptionSet {
 	static let passChangedScreen = LoginNavSet(rawValue: 32)
 }
 
-public enum TabBar {
+public enum TabBarNavigation {
 	case journey
 	case calendar
 }
 
 public enum Navigation {
 	case login(LoginNavSet)
-	case tabBar(TabBar)
+	case tabBar(TabBarNavigation)
 	var login: LoginNavSet? {
 		get {
 			guard case let .login(value) = self else { return nil }
@@ -39,7 +39,7 @@ public enum Navigation {
 			self = .login(newValue)
 		}
 	}
-	var tabBar: TabBar? {
+	var tabBar: TabBarNavigation? {
 		get {
 			guard case let .tabBar(value) = self else { return nil }
 			return value
@@ -64,11 +64,15 @@ struct AppState {
 }
 
 enum AppAction {
-	case login(LoginViewAction)
 	case walkthrough(WalkthroughContainerAction)
+	case tabBar(TabBarAction)
 }
 
 extension AppState {
+	var tabBar: TabBarState {
+		get { TabBarState(navigation: self.navigation) }
+		set { self.navigation = newValue.navigation }
+	}
 	var walktrough: WalkthroughContainerState {
 		get {
 			return WalkthroughContainerState(navigation: self.navigation,
@@ -95,7 +99,10 @@ extension AppState {
 	}
 }
 
-let appReducer = pullback(walkthroughContainerReducer, value: \AppState.walktrough, action: /AppAction.walkthrough)
+let appReducer = combine (pullback(walkthroughContainerReducer, value: \AppState.walktrough, action: /AppAction.walkthrough),
+													pullback(tabBarReducer, value: \AppState.tabBar,
+																	 action: /AppAction.tabBar)
+)
 
 struct ContentView: View {
 	@ObservedObject var store: Store<AppState, AppAction>
@@ -104,7 +111,7 @@ struct ContentView: View {
 			(self.store.value.navigation.login != nil) ?
 				ViewBuilder.buildEither(second: LoginContainer(store: loginContainerStore))
 				:
-				ViewBuilder.buildEither(first: PabauTabBar())
+				ViewBuilder.buildEither(first: PabauTabBar(store: tabBarStore))
 		)
 	}
 
@@ -114,6 +121,14 @@ struct ContentView: View {
 			action: { .walkthrough($0)}
 		)
 	}
+	
+	var tabBarStore: Store<TabBarState, TabBarAction> {
+		return self.store.view(
+			value: { $0.tabBar },
+			action: { .tabBar($0)}
+		)
+	}
+
 }
 
 struct LoginContainer: View {
@@ -122,25 +137,5 @@ struct LoginContainer: View {
 		NavigationView {
 			WalkthroughContainer(store: store)
 		}.navigationViewStyle(StackNavigationViewStyle())
-	}
-}
-
-func appLogin(
-	_ reducer: @escaping Reducer<AppState, AppAction>
-) -> Reducer<AppState, AppAction> {
-	return { state, action in
-		switch action {
-		case .walkthrough:
-			break
-		case .login(.login(.gotResponse(let result))):
-			guard case .success(let user) = result else { break }
-			state.loggedInUser = user
-		case .login(.login(.loginTapped)),
-				 .login(.login(.forgotPassTapped)):
-			break
-		case .login(.forgotPass):
-			break
-		}
-		return reducer(&state, action)
 	}
 }

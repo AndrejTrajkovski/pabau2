@@ -44,6 +44,8 @@ struct Texts {
 
 	static let passwordChanged = "Password Changed".localized
 	static let passwordChangedDesc = "Please use your new password when logging in."
+	
+	static let logout = "Logout"
 }
 
 extension String {
