@@ -23,7 +23,7 @@ public struct ForgotPassViewState {
 	var navigation: Navigation
 	var forgotPassLS: LoadingState<ForgotPassResponse>
 	var fpValidation: String
-	var rpValidation: ResetPassError?
+	var rpValidation: RPValidator
 	var rpLoading: LoadingState<ResetPassResponse>
 	var forgotPass: ForgotPassState {
 		get { return ForgotPassState(navigation: navigation,

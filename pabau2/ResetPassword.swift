@@ -1,8 +1,10 @@
 import SwiftUI
 import ComposableArchitecture
 import Combine
+import CasePaths
 
 public struct ResetPassResponse {}
+extension Array: Error where Element == ResetPassError {}
 
 func sendConfirmation(_ code: String, _ pass: String) -> Effect<Result<ResetPassResponse, ResetPassError>> {
 	return Just(.success(ResetPassResponse()))
@@ -10,31 +12,47 @@ func sendConfirmation(_ code: String, _ pass: String) -> Effect<Result<ResetPass
 		.eraseToEffect()
 }
 
+enum Authentication {
+  case authenticated(accessToken: String)
+  case unauthenticated
+}
+typealias RPValidator = Result<(String, String), [ResetPassError]>
+
 public struct ResetPasswordState {
 	var navigation: Navigation
-	var rpValidation: ResetPassError?
+	var rpValidation: RPValidator
 	var loadingState: LoadingState<ResetPassResponse>
 	var newPassValidator: String {
-		if case .newPassEmpty = rpValidation {
-			return rpValidation!.localizedDescription
-		} else if case .nonMatchingPasswords = rpValidation {
-			return rpValidation!.localizedDescription
+		guard let rpFailure = (/RPValidator.failure).extract(from: rpValidation) else {
+			return ""
+		}
+		if let newPassEmpty = rpFailure.first(where: { $0 == .newPassEmpty}) {
+			return newPassEmpty.localizedDescription
+		} else if let nonMatchingPasswords = rpFailure.first(where: { $0 == .nonMatchingPasswords}) {
+			return nonMatchingPasswords.localizedDescription
 		} else {
 			return ""
 		}
 	}
 	var confirmPassValidator: String {
-		if case .confirmPassEmpty = rpValidation {
-			return rpValidation!.localizedDescription
-		} else if case .nonMatchingPasswords = rpValidation {
-			return rpValidation!.localizedDescription
+		guard let rpFailure = (/RPValidator.failure).extract(from: rpValidation) else {
+			return ""
+		}
+		if let confirmPassEmpty = rpFailure.first(where: { $0 == .confirmPassEmpty}) {
+			return confirmPassEmpty.localizedDescription
+		} else if let nonMatchingPasswords = rpFailure.first(where: { $0 == .nonMatchingPasswords}) {
+			return nonMatchingPasswords.localizedDescription
 		} else {
 			return ""
 		}
 	}
+
 	var codeValidator: String {
-		if case .emptyCode = rpValidation {
-			return rpValidation!.localizedDescription
+		guard let rpFailure = (/RPValidator.failure).extract(from: rpValidation) else {
+			return ""
+		}
+		if let emptyCode = rpFailure.first(where: { $0 == .emptyCode}) {
+			return emptyCode.localizedDescription
 		} else {
 			return ""
 		}
@@ -47,17 +65,25 @@ public enum ResetPasswordAction {
 	case gotResponse(Result<ResetPassResponse, ResetPassError>)
 }
 
-func validate(_ code: String, _ newPass: String, _ confirmPass: String) -> Result<(String, String), ResetPassError> {
+func validate(_ code: String, _ newPass: String, _ confirmPass: String) -> RPValidator {
+	var errors = [ResetPassError]()
 	if newPass != confirmPass {
-		return .failure(.nonMatchingPasswords)
-	} else if newPass.isEmpty {
-		return .failure(.newPassEmpty)
-	} else if confirmPass.isEmpty {
-		return .failure(.confirmPassEmpty)
-	} else if code.isEmpty {
-		return .failure(.emptyCode)
-	} else {
+		errors.append(.nonMatchingPasswords)
+	}
+	if newPass.isEmpty {
+		errors.append(.newPassEmpty)
+	}
+	if confirmPass.isEmpty {
+		errors.append(.confirmPassEmpty)
+	}
+	if code.isEmpty {
+		errors.append(.emptyCode)
+	}
+	
+	if errors.isEmpty {
 		return .success((code, newPass))
+	} else {
+		return .failure(errors)
 	}
 }
 
@@ -82,17 +108,16 @@ public enum ResetPassError: Error {
 
 func handle (_ code: String, _ newPass: String, _ confirmPass: String, _ state: inout ResetPasswordState) -> [Effect<ResetPasswordAction>] {
 	let validated = validate(code, newPass, confirmPass)
+	state.rpValidation = validated
 	switch validated {
 	case .success(let code, let newPass):
-		state.rpValidation = nil
 		state.loadingState = .loading
 		return [
 			sendConfirmation(code, newPass)
 				.map(ResetPasswordAction.gotResponse)
 				.eraseToEffect()
 		]
-	case .failure(let error):
-		state.rpValidation = error
+	case .failure:
 		return []
 	}
 }
@@ -105,7 +130,7 @@ func handle(_ result: Result<ResetPassResponse, ResetPassError>, _ state: inout 
 		return []
 	case .failure(let error):
 		state.loadingState = .gotError(error)
-		state.rpValidation = error
+		state.rpValidation = .failure([error])
 		return []
 	}
 }

@@ -10,7 +10,7 @@ public struct WalkthroughContainerState {
 	var forgotPassLS: LoadingState<ForgotPassResponse>
 	var loginLS: LoadingState<User>
 	var fpValidation: String
-	var rpValidation: ResetPassError?
+	var rpValidation: RPValidator
 	var rpLoading: LoadingState<ResetPassResponse>
 }
 

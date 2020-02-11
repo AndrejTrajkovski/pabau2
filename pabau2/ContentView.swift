@@ -59,7 +59,7 @@ struct AppState {
 	var forgotPassLS: LoadingState<ForgotPassResponse> = .initial
 	var loginLS: LoadingState<User> = .initial
 	var fpValidation: String = ""
-	var rpValidation: ResetPassError?
+	var rpValidation: RPValidator = .failure([])
 	var rpLoading: LoadingState<ResetPassResponse> = .initial
 }
 
