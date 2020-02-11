@@ -77,6 +77,7 @@ public func forgotPasswordReducer(state: inout ForgotPassState, action: ForgotPa
 		return []
 	case .sendRequest(let email):
 		if isValidEmail(email) {
+			state.fpValidation = ""
 			state.loadingState = .loading
 			return [
 				resetPass(email)
@@ -97,6 +98,9 @@ public func forgotPasswordReducer(state: inout ForgotPassState, action: ForgotPa
 			state.loadingState = .gotError(error)
 		}
 		return []
+	case .onAppear:
+		state.fpValidation = ""
+		return []
 	}
 }
 
@@ -104,6 +108,7 @@ public enum ForgotPasswordAction {
 	case backBtnTapped
 	case sendRequest(email: String)
 	case gotResponse(Result<ForgotPassResponse, ForgotPassError>)
+	case onAppear
 }
 
 struct ForgotPassword: View {
@@ -126,6 +131,7 @@ struct ForgotPassword: View {
 					.font(.paragraph)
 				TextAndTextView(title: Texts.emailAddress.uppercased(), placeholder: "", value: self.$email, validation: self.store.value.fpValidation)
 			}.frame(maxWidth: 319)
+				.onAppear { self.store.send(.onAppear) }
 			BigButton(text: Texts.sendRequest) {
 				self.store.send(.sendRequest(email: self.email))
 			}
