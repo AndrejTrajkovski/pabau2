@@ -24,7 +24,7 @@ public struct Walkthrough: View {
 public func walkthroughReducer(state: inout Navigation, action: WalkthroughAction) -> [Effect<WalkthroughAction>] {
 	switch action {
 	case .signInTapped:
-		state.login?.insert(.signInScreen)
+		state.login?.append(.signInScreen)
 		return []
 	}
 }

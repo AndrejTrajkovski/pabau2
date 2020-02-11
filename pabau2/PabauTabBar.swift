@@ -52,7 +52,7 @@ public let tabBarReducer = (pullback(settingsReducer, value: \TabBarState.settin
 public func settingsReducer(state: inout SettingsState, action: SettingsAction) -> [Effect<SettingsAction>] {
 	switch action {
 	case .logoutTapped:
-		state.navigation = .login(.signInScreen)
+		state.navigation = .login([.signInScreen])
 		return []
 	}
 }

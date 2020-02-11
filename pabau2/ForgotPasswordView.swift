@@ -73,7 +73,7 @@ let forgotPassViewReducer = combine(
 public func forgotPasswordReducer(state: inout ForgotPassState, action: ForgotPasswordAction) -> [Effect<ForgotPasswordAction>] {
 	switch action {
 	case .backBtnTapped:
-		state.navigation.login?.remove(.forgotPassScreen)
+		state.navigation.login?.removeAll(where: { $0 == .forgotPassScreen })
 		return []
 	case .sendRequest(let email):
 		if isValidEmail(email) {
@@ -92,7 +92,7 @@ public func forgotPasswordReducer(state: inout ForgotPassState, action: ForgotPa
 		switch result {
 		case .success(let success):
 			state.loadingState = .gotSuccess(success)
-			state.navigation.login?.insert(.checkEmailScreen)
+			state.navigation.login?.append(.checkEmailScreen)
 		case .failure(let error):
 			state.loadingState = .gotError(error)
 		}

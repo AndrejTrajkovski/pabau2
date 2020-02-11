@@ -8,17 +8,17 @@ public struct User {
 	let name: String
 }
 
-public struct LoginNavSet: OptionSet {
-	public let rawValue: Int
-	public init(rawValue: Int) {
-		self.rawValue = rawValue
-	}
-	static let walkthroughScreen = LoginNavSet(rawValue: 1)
-	static let signInScreen = LoginNavSet(rawValue: 2)
-	static let forgotPassScreen = LoginNavSet(rawValue: 4)
-	static let checkEmailScreen = LoginNavSet(rawValue: 8)
-	static let resetPassScreen = LoginNavSet(rawValue: 16)
-	static let passChangedScreen = LoginNavSet(rawValue: 32)
+public enum LoginNavScreen {
+//	public let rawValue: Int
+//	public init(rawValue: Int) {
+//		self.rawValue = rawValue
+//	}
+	case walkthroughScreen
+	case signInScreen
+	case forgotPassScreen
+	case checkEmailScreen
+	case resetPassScreen
+	case passChangedScreen
 }
 
 public enum TabBarNavigation {
@@ -27,9 +27,9 @@ public enum TabBarNavigation {
 }
 
 public enum Navigation {
-	case login(LoginNavSet)
+	case login([LoginNavScreen])
 	case tabBar(TabBarNavigation)
-	var login: LoginNavSet? {
+	var login: [LoginNavScreen]? {
 		get {
 			guard case let .login(value) = self else { return nil }
 			return value

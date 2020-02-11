@@ -127,7 +127,7 @@ func handle(_ result: Result<ResetPassResponse, ResetPassBackendError>, _ state:
 	switch result {
 	case .success(let success):
 		state.loadingState = .gotSuccess(success)
-		state.navigation.login?.insert(.passChangedScreen)
+		state.navigation.login?.append(.passChangedScreen)
 		return []
 	case .failure(let error):
 		state.loadingState = .gotError(error)
@@ -138,7 +138,7 @@ func handle(_ result: Result<ResetPassResponse, ResetPassBackendError>, _ state:
 public func resetPassReducer(state: inout ResetPasswordState, action: ResetPasswordAction) -> [Effect<ResetPasswordAction>] {
 	switch action {
 	case .backBtnTapped:
-		state.navigation.login?.remove(.resetPassScreen)
+		state.navigation.login?.removeAll(where: { $0 == .resetPassScreen })
 		return []
 	case .changePassTapped(let code, let newPass, let confirmPass):
 		return handle(code, newPass, confirmPass, &state)

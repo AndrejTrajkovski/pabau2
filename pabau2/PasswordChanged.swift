@@ -4,10 +4,10 @@ import ComposableArchitecture
 public func passChangedReducer(state: inout Navigation, action: PassChangedAction) -> [Effect<PassChangedAction>] {
 	switch action {
 	case .signInTapped:
-		state.login?.remove(.passChangedScreen)
-		state.login?.remove(.resetPassScreen)
-		state.login?.remove(.checkEmailScreen)
-		state.login?.remove(.forgotPassScreen)
+		state.login?.removeAll(where: { $0 == .passChangedScreen })
+		state.login?.removeAll(where: { $0 == .resetPassScreen })
+		state.login?.removeAll(where: { $0 == .checkEmailScreen })
+		state.login?.removeAll(where: { $0 == .forgotPassScreen })
 		return []
 	}
 }

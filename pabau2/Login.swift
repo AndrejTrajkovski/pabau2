@@ -88,7 +88,7 @@ public func loginReducer(state: inout LoginViewState, action: LoginAction) -> [E
 	case .loginTapped (let email, let password):
 		return handle(email, password, state: &state)
 	case .forgotPassTapped:
-		state.navigation.login?.insert(.forgotPassScreen)
+		state.navigation.login?.append(.forgotPassScreen)
 		return []
 	case .gotResponse(let result):
 		switch result {

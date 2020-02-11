@@ -4,10 +4,10 @@ import ComposableArchitecture
 public func checkEmailReducer(state: inout Navigation, action: CheckEmailAction) -> [Effect<CheckEmailAction>] {
 	switch action {
 	case .resetPassTapped:
-		state.login?.insert(.resetPassScreen)
+		state.login?.append(.resetPassScreen)
 		return []
 	case .backBtnTapped:
-		state.login?.remove(.checkEmailScreen)
+		state.login?.removeAll(where: { $0 == .checkEmailScreen })
 		return []
 	}
 }
