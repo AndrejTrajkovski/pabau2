@@ -102,38 +102,26 @@ struct ContentView: View {
 	var body: some View {
 		ViewBuilder.buildBlock(
 			(self.store.value.navigation.login != nil) ?
-				ViewBuilder.buildEither(second: PreLogin(store: store)) :
+				ViewBuilder.buildEither(second: LoginContainer(store: loginContainerStore))
+				:
 				ViewBuilder.buildEither(first: PabauTabBar())
+		)
+	}
+
+	var loginContainerStore: Store<WalkthroughContainerState, WalkthroughContainerAction> {
+		return self.store.view(
+			value: { $0.walktrough },
+			action: { .walkthrough($0)}
 		)
 	}
 }
 
-struct PreLogin: View {
-	@ObservedObject var store: Store<AppState, AppAction>
+struct LoginContainer: View {
+	let store: Store<WalkthroughContainerState, WalkthroughContainerAction>
 	var body: some View {
 		NavigationView {
-			WalkthroughContainer(store:
-				self.store.view(
-					value: { $0.walktrough },
-					action: { .walkthrough($0)}
-				)
-			)
+			WalkthroughContainer(store: store)
 		}.navigationViewStyle(StackNavigationViewStyle())
-	}
-}
-
-struct PabauTabBar: View {
-	var body: some View {
-		TabView {
-			Text("Journey")
-				.tabItem {
-					Text("Journey")
-			}
-			Text("Calendar")
-				.tabItem {
-					Text("Calendar")
-			}
-		}
 	}
 }
 

@@ -48,6 +48,7 @@
 		82EE570623F029900033B43C /* BackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82EE570523F029900033B43C /* BackButton.swift */; };
 		82EE570923F0335F0033B43C /* NavigationLinkExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82EE570823F0335F0033B43C /* NavigationLinkExtension.swift */; };
 		82F5592023DC255B008032F4 /* BigButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F5591F23DC255B008032F4 /* BigButton.swift */; };
+		82F6ADAE23F2C7B1001B3ACE /* PabauTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -140,6 +141,7 @@
 		82EE570523F029900033B43C /* BackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
 		82EE570823F0335F0033B43C /* NavigationLinkExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationLinkExtension.swift; sourceTree = "<group>"; };
 		82F5591F23DC255B008032F4 /* BigButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BigButton.swift; sourceTree = "<group>"; };
+		82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PabauTabBar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -249,6 +251,7 @@
 				820961D223ED881A004A510A /* ResetPassword.swift */,
 				82B02FF823F17BC90015B0B4 /* CheckEmail.swift */,
 				82B0300423F29CC10015B0B4 /* WalkthroughContentAndButton.swift */,
+				82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */,
 			);
 			path = pabau2;
 			sourceTree = "<group>";
@@ -548,6 +551,7 @@
 				82EE570923F0335F0033B43C /* NavigationLinkExtension.swift in Sources */,
 				820961D323ED881A004A510A /* ResetPassword.swift in Sources */,
 				82811F0023E49F090066AFDC /* TextAndTextView.swift in Sources */,
+				82F6ADAE23F2C7B1001B3ACE /* PabauTabBar.swift in Sources */,
 				82811F0D23E955F70066AFDC /* KeyboardFollower.swift in Sources */,
 				8297A2B723D9BB1C00D091FF /* Texts.swift in Sources */,
 				82B0300523F29CC10015B0B4 /* WalkthroughContentAndButton.swift in Sources */,
