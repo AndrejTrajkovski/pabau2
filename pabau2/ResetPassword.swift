@@ -4,9 +4,29 @@ import Combine
 import CasePaths
 
 public struct ResetPassResponse {}
-extension Array: Error where Element == ResetPassError {}
+public enum ResetPassBackendError: Error {}
+public enum ResetPassValidationError: Error {
+	case newPassEmpty
+	case confirmPassEmpty
+	case nonMatchingPasswords
+	case emptyCode
+	public var localizedDescription: String {
+		switch self {
+		case .newPassEmpty:
+			return Texts.emptyPasswords
+		case .confirmPassEmpty:
+			return Texts.emptyPasswords
+		case .nonMatchingPasswords:
+			return Texts.passwordsDontMatch
+		case .emptyCode:
+			return Texts.emptyCode
+		}
+	}
+}
 
-func sendConfirmation(_ code: String, _ pass: String) -> Effect<Result<ResetPassResponse, ResetPassError>> {
+extension Array: Error where Element == ResetPassValidationError {}
+
+func sendConfirmation(_ code: String, _ pass: String) -> Effect<Result<ResetPassResponse, ResetPassBackendError>> {
 	return Just(.success(ResetPassResponse()))
 		.delay(for: .seconds(2), scheduler: DispatchQueue.main)
 		.eraseToEffect()
@@ -16,7 +36,7 @@ enum Authentication {
   case authenticated(accessToken: String)
   case unauthenticated
 }
-typealias RPValidator = Result<(String, String), [ResetPassError]>
+typealias RPValidator = Result<(String, String), [ResetPassValidationError]>
 
 public struct ResetPasswordState {
 	var navigation: Navigation
@@ -62,11 +82,11 @@ public struct ResetPasswordState {
 public enum ResetPasswordAction {
 	case backBtnTapped
 	case changePassTapped(String, String, String)
-	case gotResponse(Result<ResetPassResponse, ResetPassError>)
+	case gotResponse(Result<ResetPassResponse, ResetPassBackendError>)
 }
 
 func validate(_ code: String, _ newPass: String, _ confirmPass: String) -> RPValidator {
-	var errors = [ResetPassError]()
+	var errors = [ResetPassValidationError]()
 	if newPass != confirmPass {
 		errors.append(.nonMatchingPasswords)
 	}
@@ -87,25 +107,6 @@ func validate(_ code: String, _ newPass: String, _ confirmPass: String) -> RPVal
 	}
 }
 
-public enum ResetPassError: Error {
-	case newPassEmpty
-	case confirmPassEmpty
-	case nonMatchingPasswords
-	case emptyCode
-	public var localizedDescription: String {
-		switch self {
-		case .newPassEmpty:
-			return Texts.emptyPasswords
-		case .confirmPassEmpty:
-			return Texts.emptyPasswords
-		case .nonMatchingPasswords:
-			return Texts.passwordsDontMatch
-		case .emptyCode:
-			return Texts.emptyCode
-		}
-	}
-}
-
 func handle (_ code: String, _ newPass: String, _ confirmPass: String, _ state: inout ResetPasswordState) -> [Effect<ResetPasswordAction>] {
 	let validated = validate(code, newPass, confirmPass)
 	state.rpValidation = validated
@@ -122,7 +123,7 @@ func handle (_ code: String, _ newPass: String, _ confirmPass: String, _ state: 
 	}
 }
 
-func handle(_ result: Result<ResetPassResponse, ResetPassError>, _ state: inout ResetPasswordState) ->  [Effect<ResetPasswordAction>] {
+func handle(_ result: Result<ResetPassResponse, ResetPassBackendError>, _ state: inout ResetPasswordState) ->  [Effect<ResetPasswordAction>] {
 	switch result {
 	case .success(let success):
 		state.loadingState = .gotSuccess(success)
@@ -130,7 +131,6 @@ func handle(_ result: Result<ResetPassResponse, ResetPassError>, _ state: inout 
 		return []
 	case .failure(let error):
 		state.loadingState = .gotError(error)
-		state.rpValidation = .failure([error])
 		return []
 	}
 }
