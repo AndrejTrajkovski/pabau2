@@ -15,6 +15,7 @@ func resetPass(_ email: String) -> Effect<Result<ForgotPassResponse, ForgotPassE
 public enum ForgotPassViewAction {
 	case forgotPass(ForgotPasswordAction)
 	case resetPass(ResetPasswordAction)
+	case checkEmail(CheckEmailAction)
 }
 
 public struct ForgotPassViewState {
@@ -63,7 +64,8 @@ public struct ForgotPassState {
 
 let forgotPassViewReducer = combine(
 	pullback(forgotPasswordReducer, value: \ForgotPassViewState.forgotPass, action: /ForgotPassViewAction.forgotPass),
-	pullback(resetPassReducer, value: \ForgotPassViewState.resetPass, action: /ForgotPassViewAction.resetPass)
+	pullback(resetPassReducer, value: \ForgotPassViewState.resetPass, action: /ForgotPassViewAction.resetPass),
+	pullback(checkEmailReducer, value: \ForgotPassViewState.navigation, action: /ForgotPassViewAction.checkEmail)
 )
 
 public func forgotPasswordReducer(state: inout ForgotPassState, action: ForgotPasswordAction) -> [Effect<ForgotPasswordAction>] {
@@ -141,19 +143,24 @@ struct ForgotPasswordView: View {
 		self.store = store
 		_email = email
 	}
-	@Environment(\.presentationMode) var presentationMode
 	var body: some View {
 		LoadingView(title: Texts.forgotPassLoading, isShowing: .constant(self.store.value.forgotPass.loadingState.isLoading)) {
 			VStack(alignment: .leading, spacing: 36) {
 				ForgotPassword(self.store.view(value: { $0.forgotPass }, action: { .forgotPass($0)}), self.$email)
-				NavigationLink.emptyHidden(destination: self.resetPassView,
-																	 isActive: self.store.value.navigation.login?.contains(.resetPassScreen) ?? false)
+				NavigationLink.emptyHidden(destination: self.checkEmailView,
+																	 isActive: self.store.value.navigation.login?.contains(.checkEmailScreen) ?? false)
 				Spacer()
 			}
 		}
 	}
 
-	var resetPassView: ResetPassword {
-		ResetPassword(store: self.store.view(value: { $0.resetPass }, action: { .resetPass($0)}))
+	var checkEmailView: CheckEmail {
+		CheckEmail(resetPassStore: resetPassStore,
+							 store: self.store.view(value: { $0.navigation },
+																			action: { .checkEmail($0)}))
+	}
+
+	var resetPassStore: Store<ResetPasswordState, ResetPasswordAction> {
+		self.store.view(value: { $0.resetPass }, action: { .resetPass($0)})
 	}
 }
