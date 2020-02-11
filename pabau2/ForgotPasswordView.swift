@@ -1,6 +1,7 @@
 import SwiftUI
 import ComposableArchitecture
 import Combine
+import CasePaths
 
 public enum ForgotPassError: Error {}
 public struct ForgotPassResponse {}
@@ -14,26 +15,6 @@ func resetPass(_ email: String) -> Effect<Result<ForgotPassResponse, ForgotPassE
 public enum ForgotPassViewAction {
 	case forgotPass(ForgotPasswordAction)
 	case resetPass(ResetPasswordAction)
-	var forgotPass: ForgotPasswordAction? {
-		get {
-			guard case let .forgotPass(value) = self else { return nil }
-			return value
-		}
-		set {
-			guard case .forgotPass = self, let newValue = newValue else { return }
-			self = .forgotPass(newValue)
-		}
-	}
-	var resetPass: ResetPasswordAction? {
-		get {
-			guard case let .resetPass(value) = self else { return nil }
-			return value
-		}
-		set {
-			guard case .resetPass = self, let newValue = newValue else { return }
-			self = .resetPass(newValue)
-		}
-	}
 }
 
 public struct ForgotPassViewState {
@@ -81,8 +62,8 @@ public struct ForgotPassState {
 }
 
 let forgotPassViewReducer = combine(
-	pullback(forgotPasswordReducer, value: \ForgotPassViewState.forgotPass, action: \ForgotPassViewAction.forgotPass),
-	pullback(resetPassReducer, value: \ForgotPassViewState.resetPass, action: \ForgotPassViewAction.resetPass)
+	pullback(forgotPasswordReducer, value: \ForgotPassViewState.forgotPass, action: /ForgotPassViewAction.forgotPass),
+	pullback(resetPassReducer, value: \ForgotPassViewState.resetPass, action: /ForgotPassViewAction.resetPass)
 )
 
 public func forgotPasswordReducer(state: inout ForgotPassState,

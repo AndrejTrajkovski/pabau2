@@ -1,6 +1,7 @@
 import SwiftUI
 import PageControl
 import ComposableArchitecture
+import CasePaths
 
 public struct WalkthroughViewState {
 	var navigation: Navigation
@@ -44,28 +45,6 @@ extension WalkthroughViewState {
 public enum WalkthroughViewAction {
   case walkthrough(WalkthroughAction)
 	case login(LoginViewAction)
-
-  var walkthrough: WalkthroughAction? {
-    get {
-      guard case let .walkthrough(value) = self else { return nil }
-      return value
-    }
-    set {
-      guard case .walkthrough = self, let newValue = newValue else { return }
-      self = .walkthrough(newValue)
-    }
-  }
-
-	var login: LoginViewAction? {
-    get {
-      guard case let .login(value) = self else { return nil }
-      return value
-    }
-    set {
-      guard case .login = self, let newValue = newValue else { return }
-      self = .login(newValue)
-    }
-  }
 }
 
 public enum WalkthroughAction: Equatable {
@@ -73,8 +52,8 @@ public enum WalkthroughAction: Equatable {
 }
 
 public let walkthroughViewReducer = combine(
-pullback(walkthroughReducer, value: \WalkthroughViewState.navigation, action: \WalkthroughViewAction.walkthrough),
-pullback(loginViewReducer, value: \WalkthroughViewState.login, action: \WalkthroughViewAction.login)
+pullback(walkthroughReducer, value: \WalkthroughViewState.navigation, action: /WalkthroughViewAction.walkthrough),
+pullback(loginViewReducer, value: \WalkthroughViewState.login, action: /WalkthroughViewAction.login)
 )
 
 public func walkthroughReducer(state: inout Navigation,

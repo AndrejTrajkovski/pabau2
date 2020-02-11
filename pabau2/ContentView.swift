@@ -1,6 +1,7 @@
 import Combine
 import ComposableArchitecture
 import SwiftUI
+import CasePaths
 
 public struct User {
 	let id: Int
@@ -65,27 +66,6 @@ struct AppState {
 enum AppAction {
 	case login(LoginViewAction)
 	case walkthrough(WalkthroughViewAction)
-	var walkthrough: WalkthroughViewAction? {
-		get {
-			guard case let .walkthrough(value) = self else { return nil }
-			return value
-		}
-		set {
-			guard case .walkthrough = self, let newValue = newValue else { return }
-			self = .walkthrough(newValue)
-		}
-	}
-
-	var login: LoginViewAction? {
-		get {
-			guard case let .login(value) = self else { return nil }
-			return value
-		}
-		set {
-			guard case .login = self, let newValue = newValue else { return }
-			self = .login(newValue)
-		}
-	}
 }
 
 extension AppState {
@@ -115,7 +95,7 @@ extension AppState {
 	}
 }
 
-let appReducer = pullback(walkthroughViewReducer, value: \AppState.walktrough, action: \AppAction.walkthrough)
+let appReducer = pullback(walkthroughViewReducer, value: \AppState.walktrough, action: /AppAction.walkthrough)
 
 struct ContentView: View {
 	@ObservedObject var store: Store<AppState, AppAction>

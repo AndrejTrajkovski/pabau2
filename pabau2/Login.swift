@@ -1,6 +1,7 @@
 import SwiftUI
 import ComposableArchitecture
 import Combine
+import CasePaths
 
 func login(_ username: String, password: String) -> Effect<Result<User, LoginError>> {
 	return Just(.success(User(id: 1, name: "Andrej")))
@@ -42,26 +43,6 @@ public struct LoginViewState {
 public enum LoginViewAction {
 	case login(LoginAction)
 	case forgotPass(ForgotPassViewAction)
-	var login: LoginAction? {
-		get {
-			guard case let .login(value) = self else { return nil }
-			return value
-		}
-		set {
-			guard case .login = self, let newValue = newValue else { return }
-			self = .login(newValue)
-		}
-	}
-	var forgotPass: ForgotPassViewAction? {
-		get {
-			guard case let .forgotPass(value) = self else { return nil }
-			return value
-		}
-		set {
-			guard case .forgotPass = self, let newValue = newValue else { return }
-			self = .forgotPass(newValue)
-		}
-	}
 }
 
 public enum LoginAction {
@@ -123,8 +104,8 @@ public func loginReducer(state: inout LoginViewState, action: LoginAction) -> [E
 }
 
 let loginViewReducer = combine(
-	pullback(loginReducer, value: \LoginViewState.self, action: \LoginViewAction.login),
-	pullback(forgotPassViewReducer, value: \LoginViewState.forgotPass, action: \LoginViewAction.forgotPass)
+	pullback(loginReducer, value: \LoginViewState.self, action: /LoginViewAction.login),
+	pullback(forgotPassViewReducer, value: \LoginViewState.forgotPass, action: /LoginViewAction.forgotPass)
 )
 
 struct Login: View {
