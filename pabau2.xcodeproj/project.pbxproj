@@ -232,6 +232,7 @@
 		82BE2F4623D97D9C00B3678A /* pabau2 */ = {
 			isa = PBXGroup;
 			children = (
+				82EE570A23F0339B0033B43C /* UI */,
 				82EE570723F0334D0033B43C /* Util */,
 				8297A2B123D9BA0200D091FF /* Locales */,
 				82BE2F4723D97D9C00B3678A /* AppDelegate.swift */,
@@ -287,7 +288,6 @@
 			isa = PBXGroup;
 			children = (
 				82811EF523E06D730066AFDC /* Util.swift */,
-				82EE570A23F0339B0033B43C /* UI */,
 			);
 			path = Util;
 			sourceTree = "<group>";
