@@ -63,15 +63,15 @@ extension AppState {
 		get { TabBarState(navigation: self.navigation) }
 		set { self.navigation = newValue.navigation }
 	}
-	var walktrough: WalkthroughContainerState {
+	var walktrough: LoginViewState {
 		get {
-			return WalkthroughContainerState(navigation: self.navigation,
+			return LoginViewState(navigation: self.navigation,
 																	loggedInUser: loggedInUser,
 																	walkthroughState: self.walkthroughState)
 		}
 		set {
 			self.navigation = newValue.navigation
-			self.loggedInUser = newValue.login.loggedInUser
+			self.loggedInUser = newValue.loggedInUser
 			self.walkthroughState = newValue.walkthroughState
 		}
 	}
@@ -93,7 +93,7 @@ struct ContentView: View {
 		)
 	}
 
-	var loginContainerStore: Store<WalkthroughContainerState, WalkthroughContainerAction> {
+	var loginContainerStore: Store<LoginViewState, WalkthroughContainerAction> {
 		return self.store.view(
 			value: { $0.walktrough },
 			action: { .walkthrough($0)}
@@ -109,7 +109,7 @@ struct ContentView: View {
 }
 
 struct LoginContainer: View {
-	@ObservedObject var store: Store<WalkthroughContainerState, WalkthroughContainerAction>
+	@ObservedObject var store: Store<LoginViewState, WalkthroughContainerAction>
 	
 	var shouldShowWalkthrough: Bool {
 		return self.store.value.navigation.login?.contains(.walkthroughScreen) ?? false
@@ -123,7 +123,7 @@ struct LoginContainer: View {
 					:
 					ViewBuilder.buildEither(second:
 						LoginView(store:
-							self.store.view(value: { $0.login },
+							self.store.view(value: { $0 },
 															action: { .login($0)})
 					))
 			)

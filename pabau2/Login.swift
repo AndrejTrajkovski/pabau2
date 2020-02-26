@@ -13,31 +13,21 @@ public enum LoginError: Error {
 	case wrongCredentials
 }
 
-public struct LoginViewState {
-	var loggedInUser: User?
-	var navigation: Navigation
-	var forgotPassLS: LoadingState<ForgotPassResponse>
-	var loginLS: LoadingState<User>
-	var fpValidation: String
-	var rpValidation: RPValidator
-	var rpLoading: LoadingState<ResetPassResponse>
-
+extension LoginViewState {
 	var forgotPass: ForgotPassContainerState {
 		get { return ForgotPassContainerState(navigation: navigation,
-																					forgotPassLS: forgotPassLS,
-																					fpValidation: fpValidation,
-																					rpValidation: rpValidation,
-																					rpLoading: rpLoading)}
+																					forgotPassLS: self.walkthroughState.forgotPassLS,
+																					fpValidation: self.walkthroughState.fpValidation,
+																					rpValidation: self.walkthroughState.rpValidation,
+																					rpLoading: self.walkthroughState.rpLoading)}
 		set {
-			self.forgotPassLS = newValue.forgotPassLS
 			self.navigation = newValue.navigation
-			self.fpValidation = newValue.fpValidation
-			self.rpValidation = newValue.rpValidation
-			self.rpLoading = newValue.rpLoading
+			self.walkthroughState.forgotPassLS = newValue.forgotPassLS
+			self.walkthroughState.fpValidation = newValue.fpValidation
+			self.walkthroughState.rpValidation = newValue.rpValidation
+			self.walkthroughState.rpLoading = newValue.rpLoading
 		}
 	}
-	var emailValidationText: String
-	var passValidationText: String
 }
 
 public enum LoginViewAction {
@@ -54,10 +44,10 @@ public enum LoginAction {
 func handle(_ email: String, _ password: String, state: inout LoginViewState) -> [Effect<LoginAction>] {
 	let validEmail = isValidEmail(email)
 	let emptyPass = password.isEmpty
-	state.emailValidationText = emailValidationText(validEmail)
-	state.passValidationText = passValidationText(emptyPass)
+	state.walkthroughState.emailValidationText = emailValidationText(validEmail)
+	state.walkthroughState.passValidationText = passValidationText(emptyPass)
 	if validEmail && !emptyPass {
-		state.loginLS = .loading
+		state.walkthroughState.loginLS = .loading
 		return [
 			login(email, password: password)
 				.map(LoginAction.gotResponse)
@@ -93,11 +83,11 @@ public func loginReducer(state: inout LoginViewState, action: LoginAction) -> [E
 	case .gotResponse(let result):
 		switch result {
 		case .success(let user):
-			state.loginLS = .gotSuccess(user)
+			state.walkthroughState.loginLS = .gotSuccess(user)
 			state.loggedInUser = user
 			state.navigation = .tabBar(.journey)
 		case .failure(let error):
-			state.loginLS = .gotError(error)
+			state.walkthroughState.loginLS = .gotError(error)
 		}
 		return []
 	}
@@ -123,7 +113,7 @@ struct Login: View {
 			Spacer(minLength: 85)
 			LoginTextFields(email: $email,
 											password: $password,
-											emailValidation: self.store.value.emailValidationText, passwordValidation: self.store.value.passValidationText,
+											emailValidation: self.store.value.walkthroughState.emailValidationText, passwordValidation: self.store.value.walkthroughState.passValidationText,
 											onForgotPass: {self.store.send(.forgotPassTapped) })
 			Spacer(minLength: 30)
 			BigButton(text: Texts.signIn,
@@ -145,7 +135,7 @@ struct LoginView: View {
 		self.store = store
 	}
 	var body: some View {
-		LoadingView(title: Texts.signingIn, isShowing: .constant(self.store.value.loginLS.isLoading)) {
+		LoadingView(title: Texts.signingIn, isShowing: .constant(self.store.value.walkthroughState.loginLS.isLoading)) {
 			VStack {
 				NavigationLink.emptyHidden(destination: EmptyView(),
 																	 isActive: self.store.value.navigation.tabBar != nil)
