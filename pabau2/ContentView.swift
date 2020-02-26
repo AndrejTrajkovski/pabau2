@@ -50,7 +50,7 @@ public enum Navigation {
 struct AppState {
 	var loggedInUser: User?
 	var navigation: Navigation
-	var walkthroughState: WalkthroughState = WalkthroughState()
+	var loginViewState: LoginViewState = LoginViewState()
 }
 
 enum AppAction {
@@ -63,16 +63,16 @@ extension AppState {
 		get { TabBarState(navigation: self.navigation) }
 		set { self.navigation = newValue.navigation }
 	}
-	var walktrough: LoginViewState {
+	var walktrough: WalkthroughContainerState {
 		get {
-			return LoginViewState(navigation: self.navigation,
+			return WalkthroughContainerState(navigation: self.navigation,
 																	loggedInUser: loggedInUser,
-																	walkthroughState: self.walkthroughState)
+																	loginViewState: self.loginViewState)
 		}
 		set {
 			self.navigation = newValue.navigation
 			self.loggedInUser = newValue.loggedInUser
-			self.walkthroughState = newValue.walkthroughState
+			self.loginViewState = newValue.loginViewState
 		}
 	}
 }
@@ -93,7 +93,7 @@ struct ContentView: View {
 		)
 	}
 
-	var loginContainerStore: Store<LoginViewState, WalkthroughContainerAction> {
+	var loginContainerStore: Store<WalkthroughContainerState, WalkthroughContainerAction> {
 		return self.store.view(
 			value: { $0.walktrough },
 			action: { .walkthrough($0)}
@@ -109,7 +109,7 @@ struct ContentView: View {
 }
 
 struct LoginContainer: View {
-	@ObservedObject var store: Store<LoginViewState, WalkthroughContainerAction>
+	@ObservedObject var store: Store<WalkthroughContainerState, WalkthroughContainerAction>
 	
 	var shouldShowWalkthrough: Bool {
 		return self.store.value.navigation.login?.contains(.walkthroughScreen) ?? false
