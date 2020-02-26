@@ -22,12 +22,12 @@ public struct LoginViewState {
 	var rpValidation: RPValidator
 	var rpLoading: LoadingState<ResetPassResponse>
 
-	var forgotPass: ForgotPassViewState {
-		get { return ForgotPassViewState(navigation: navigation,
-																		 forgotPassLS: forgotPassLS,
-																		 fpValidation: fpValidation,
-																		 rpValidation: rpValidation,
-																		 rpLoading: rpLoading)}
+	var forgotPass: ForgotPassContainerState {
+		get { return ForgotPassContainerState(navigation: navigation,
+																					forgotPassLS: forgotPassLS,
+																					fpValidation: fpValidation,
+																					rpValidation: rpValidation,
+																					rpLoading: rpLoading)}
 		set {
 			self.forgotPassLS = newValue.forgotPassLS
 			self.navigation = newValue.navigation

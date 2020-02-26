@@ -50,13 +50,7 @@ public enum Navigation {
 struct AppState {
 	var loggedInUser: User?
 	var navigation: Navigation
-	var emailValidationText: String = ""
-	var passValidationText: String = ""
-	var forgotPassLS: LoadingState<ForgotPassResponse> = .initial
-	var loginLS: LoadingState<User> = .initial
-	var fpValidation: String = ""
-	var rpValidation: RPValidator = .failure([])
-	var rpLoading: LoadingState<ResetPassResponse> = .initial
+	var walkthroughState: WalkthroughState = WalkthroughState()
 }
 
 enum AppAction {
@@ -73,24 +67,12 @@ extension AppState {
 		get {
 			return WalkthroughContainerState(navigation: self.navigation,
 																	loggedInUser: loggedInUser,
-																	emailValidationText: self.emailValidationText,
-																	passValidationText: self.passValidationText,
-																	forgotPassLS: self.forgotPassLS,
-																	loginLS: self.loginLS,
-																	fpValidation: fpValidation,
-																	rpValidation: rpValidation,
-																	rpLoading: rpLoading)
+																	walkthroughState: self.walkthroughState)
 		}
 		set {
 			self.navigation = newValue.navigation
 			self.loggedInUser = newValue.login.loggedInUser
-			self.emailValidationText = newValue.emailValidationText
-			self.passValidationText = newValue.passValidationText
-			self.forgotPassLS = newValue.forgotPassLS
-			self.loginLS = newValue.loginLS
-			self.fpValidation = newValue.fpValidation
-			self.rpValidation = newValue.rpValidation
-			self.rpLoading = newValue.rpLoading
+			self.walkthroughState = newValue.walkthroughState
 		}
 	}
 }

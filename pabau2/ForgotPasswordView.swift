@@ -19,7 +19,7 @@ public enum ForgotPassViewAction {
 	case passChanged(PassChangedAction)
 }
 
-public struct ForgotPassViewState {
+public struct ForgotPassContainerState {
 	var navigation: Navigation
 	var forgotPassLS: LoadingState<ForgotPassResponse>
 	var fpValidation: String
@@ -53,10 +53,10 @@ public struct ForgotPassState {
 }
 
 let forgotPassViewReducer = combine(
-	pullback(forgotPasswordReducer, value: \ForgotPassViewState.forgotPass, action: /ForgotPassViewAction.forgotPass),
-	pullback(resetPassReducer, value: \ForgotPassViewState.resetPass, action: /ForgotPassViewAction.resetPass),
-	pullback(checkEmailReducer, value: \ForgotPassViewState.navigation, action: /ForgotPassViewAction.checkEmail),
-	pullback(passChangedReducer, value: \ForgotPassViewState.navigation, action: /ForgotPassViewAction.passChanged)
+	pullback(forgotPasswordReducer, value: \ForgotPassContainerState.forgotPass, action: /ForgotPassViewAction.forgotPass),
+	pullback(resetPassReducer, value: \ForgotPassContainerState.resetPass, action: /ForgotPassViewAction.resetPass),
+	pullback(checkEmailReducer, value: \ForgotPassContainerState.navigation, action: /ForgotPassViewAction.checkEmail),
+	pullback(passChangedReducer, value: \ForgotPassContainerState.navigation, action: /ForgotPassViewAction.passChanged)
 )
 
 public func forgotPasswordReducer(state: inout ForgotPassState, action: ForgotPasswordAction) -> [Effect<ForgotPasswordAction>] {
@@ -129,9 +129,9 @@ struct ForgotPassword: View {
 }
 
 struct ForgotPasswordView: View {
-	@ObservedObject var store: Store<ForgotPassViewState, ForgotPassViewAction>
+	@ObservedObject var store: Store<ForgotPassContainerState, ForgotPassViewAction>
 	@Binding private var email: String
-	init(_ store: Store<ForgotPassViewState, ForgotPassViewAction>, _ email: Binding<String>) {
+	init(_ store: Store<ForgotPassContainerState, ForgotPassViewAction>, _ email: Binding<String>) {
 		self.store = store
 		_email = email
 	}

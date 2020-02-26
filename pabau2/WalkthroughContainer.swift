@@ -5,13 +5,17 @@ import CasePaths
 public struct WalkthroughContainerState {
 	var navigation: Navigation
 	var loggedInUser: User?
-	var emailValidationText: String
-	var passValidationText: String
-	var forgotPassLS: LoadingState<ForgotPassResponse>
-	var loginLS: LoadingState<User>
-	var fpValidation: String
-	var rpValidation: RPValidator
-	var rpLoading: LoadingState<ResetPassResponse>
+	var walkthroughState: WalkthroughState
+}
+
+public struct WalkthroughState {
+	var emailValidationText: String = ""
+	var passValidationText: String = ""
+	var forgotPassLS: LoadingState<ForgotPassResponse> = .initial
+	var loginLS: LoadingState<User> = .initial
+	var fpValidation: String = ""
+	var rpValidation: RPValidator = .failure([])
+	var rpLoading: LoadingState<ResetPassResponse> = .initial
 }
 
 extension WalkthroughContainerState {
@@ -19,24 +23,24 @@ extension WalkthroughContainerState {
 		get {
 			return LoginViewState(loggedInUser: self.loggedInUser,
 														navigation: self.navigation,
-														forgotPassLS: self.forgotPassLS,
-														loginLS: self.loginLS,
-														fpValidation: fpValidation,
-														rpValidation: rpValidation,
-														rpLoading: rpLoading,
-														emailValidationText: self.emailValidationText,
-														passValidationText: self.passValidationText)
+														forgotPassLS: self.walkthroughState.forgotPassLS,
+														loginLS: self.walkthroughState.loginLS,
+														fpValidation: self.walkthroughState.fpValidation,
+														rpValidation: self.walkthroughState.rpValidation,
+														rpLoading: self.walkthroughState.rpLoading,
+														emailValidationText: self.walkthroughState.emailValidationText,
+														passValidationText: self.walkthroughState.passValidationText)
 		}
 		set {
 			self.navigation = newValue.navigation
 			self.loggedInUser = newValue.loggedInUser
-			self.emailValidationText = newValue.emailValidationText
-			self.passValidationText = newValue.passValidationText
-			self.forgotPassLS = newValue.forgotPassLS
-			self.loginLS = newValue.loginLS
-			self.fpValidation = newValue.fpValidation
-			self.rpValidation = newValue.rpValidation
-			self.rpLoading = newValue.rpLoading
+			self.walkthroughState.emailValidationText = newValue.emailValidationText
+			self.walkthroughState.passValidationText = newValue.passValidationText
+			self.walkthroughState.forgotPassLS = newValue.forgotPassLS
+			self.walkthroughState.loginLS = newValue.loginLS
+			self.walkthroughState.fpValidation = newValue.fpValidation
+			self.walkthroughState.rpValidation = newValue.rpValidation
+			self.walkthroughState.rpLoading = newValue.rpLoading
 		}
 	}
 }
