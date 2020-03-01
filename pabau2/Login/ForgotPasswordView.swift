@@ -5,15 +5,6 @@ import CasePaths
 import Util
 import Model
 
-public enum ForgotPassError: Error {}
-public struct ForgotPassResponse {}
-
-func resetPass(_ email: String) -> Effect<Result<ForgotPassResponse, ForgotPassError>> {
-	return Just(.success(ForgotPassResponse()))
-		.delay(for: .seconds(1), scheduler: DispatchQueue.main)
-		.eraseToEffect()
-}
-
 public enum ForgotPassViewAction {
 	case forgotPass(ForgotPasswordAction)
 	case resetPass(ResetPasswordAction)
@@ -26,7 +17,7 @@ public struct ForgotPassContainerState {
 	var forgotPassLS: LoadingState<ForgotPassResponse>
 	var fpValidation: String
 	var rpValidation: RPValidator
-	var rpLoading: LoadingState<ResetPassResponse>
+	var rpLoading: LoadingState<ResetPassSuccess>
 	var forgotPass: ForgotPassState {
 		get { return ForgotPassState(navigation: navigation,
 																 loadingState: forgotPassLS,

@@ -5,8 +5,6 @@ import CasePaths
 import Util
 import Model
 
-public struct ResetPassResponse {}
-public enum ResetPassBackendError: Error {}
 public enum ResetPassValidationError: Error {
 	case newPassEmpty
 	case confirmPassEmpty

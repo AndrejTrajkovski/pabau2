@@ -5,16 +5,6 @@ import CasePaths
 import Util
 import Model
 
-func login(_ username: String, password: String) -> Effect<Result<User, LoginError>> {
-	return Just(.success(User(id: 1, name: "Andrej")))
-		.delay(for: .seconds(2), scheduler: DispatchQueue.main)
-		.eraseToEffect()
-}
-
-public enum LoginError: Error {
-	case wrongCredentials
-}
-
 public struct LoginViewState {
 	public init () {}
 	var emailValidationText: String = ""

@@ -11,6 +11,15 @@
 		82104512240BC980004EA838 /* ComposableArchitectureTestSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 821044FD240BC980004EA838 /* ComposableArchitectureTestSupport.framework */; };
 		82104513240BC980004EA838 /* ComposableArchitectureTestSupport.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 821044FD240BC980004EA838 /* ComposableArchitectureTestSupport.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8210451A240BC9CB004EA838 /* ComposableArchitectureTestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8227FBBE240BC77300F653B5 /* ComposableArchitectureTestSupport.swift */; };
+		82104520240BCB94004EA838 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 8210451F240BCB94004EA838 /* SnapshotTesting */; };
+		82104521240BCB9D004EA838 /* ComposableArchitectureTestSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 821044FD240BC980004EA838 /* ComposableArchitectureTestSupport.framework */; };
+		82104523240C2018004EA838 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104522240C2018004EA838 /* APIClient.swift */; };
+		82104525240C21B9004EA838 /* ForgotPassSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104524240C21B9004EA838 /* ForgotPassSuccess.swift */; };
+		82104527240C21E3004EA838 /* ForgotPassError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104526240C21E3004EA838 /* ForgotPassError.swift */; };
+		82104529240C2218004EA838 /* LoginError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104528240C2218004EA838 /* LoginError.swift */; };
+		8210452B240C2234004EA838 /* ResetPassSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8210452A240C2234004EA838 /* ResetPassSuccess.swift */; };
+		8210452D240C2241004EA838 /* ResetPassBackendError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8210452C240C2241004EA838 /* ResetPassBackendError.swift */; };
+		8210452F240C2258004EA838 /* MockAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8210452E240C2258004EA838 /* MockAPIClient.swift */; };
 		8227FB27240BAAB600F653B5 /* Login.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8227FB1E240BAAB600F653B5 /* Login.framework */; };
 		8227FB2E240BAAB600F653B5 /* LoginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8227FB2D240BAAB600F653B5 /* LoginTests.swift */; };
 		8227FB30240BAAB600F653B5 /* Login.h in Headers */ = {isa = PBXBuildFile; fileRef = 8227FB20240BAAB600F653B5 /* Login.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -91,6 +100,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 82BE2F6323D9983C00B3678A;
 			remoteInfo = ComposableArchitecture;
+		};
+		8210451D240BCB58004EA838 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 82BE2F3C23D97D9C00B3678A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 821044FC240BC980004EA838;
+			remoteInfo = ComposableArchitectureTestSupport;
 		};
 		8227FB28240BAAB600F653B5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -233,6 +249,13 @@
 		821044FD240BC980004EA838 /* ComposableArchitectureTestSupport.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ComposableArchitectureTestSupport.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		821044FF240BC980004EA838 /* ComposableArchitectureTestSupport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ComposableArchitectureTestSupport.h; sourceTree = "<group>"; };
 		82104500240BC980004EA838 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		82104522240C2018004EA838 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		82104524240C21B9004EA838 /* ForgotPassSuccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassSuccess.swift; sourceTree = "<group>"; };
+		82104526240C21E3004EA838 /* ForgotPassError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassError.swift; sourceTree = "<group>"; };
+		82104528240C2218004EA838 /* LoginError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginError.swift; sourceTree = "<group>"; };
+		8210452A240C2234004EA838 /* ResetPassSuccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPassSuccess.swift; sourceTree = "<group>"; };
+		8210452C240C2241004EA838 /* ResetPassBackendError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPassBackendError.swift; sourceTree = "<group>"; };
+		8210452E240C2258004EA838 /* MockAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAPIClient.swift; sourceTree = "<group>"; };
 		821D43E3240667F4004BB17E /* LoadingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingState.swift; sourceTree = "<group>"; };
 		8227FB1E240BAAB600F653B5 /* Login.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Login.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8227FB20240BAAB600F653B5 /* Login.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Login.h; sourceTree = "<group>"; };
@@ -321,7 +344,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				82104521240BCB9D004EA838 /* ComposableArchitectureTestSupport.framework in Frameworks */,
 				8227FB27240BAAB600F653B5 /* Login.framework in Frameworks */,
+				82104520240BCB94004EA838 /* SnapshotTesting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -467,10 +492,17 @@
 		8227FB8B240BB40300F653B5 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				82104522240C2018004EA838 /* APIClient.swift */,
+				8210452E240C2258004EA838 /* MockAPIClient.swift */,
 				8227FB7F240BB13200F653B5 /* User.swift */,
 				8227FB82240BB1CB00F653B5 /* Navigation.swift */,
 				8227FB8C240BB40300F653B5 /* Model.h */,
 				8227FB8D240BB40300F653B5 /* Info.plist */,
+				82104524240C21B9004EA838 /* ForgotPassSuccess.swift */,
+				82104526240C21E3004EA838 /* ForgotPassError.swift */,
+				82104528240C2218004EA838 /* LoginError.swift */,
+				8210452A240C2234004EA838 /* ResetPassSuccess.swift */,
+				8210452C240C2241004EA838 /* ResetPassBackendError.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -695,10 +727,14 @@
 			buildRules = (
 			);
 			dependencies = (
+				8210451E240BCB58004EA838 /* PBXTargetDependency */,
 				8227FB29240BAAB600F653B5 /* PBXTargetDependency */,
 				8227FB2B240BAAB600F653B5 /* PBXTargetDependency */,
 			);
 			name = LoginTests;
+			packageProductDependencies = (
+				8210451F240BCB94004EA838 /* SnapshotTesting */,
+			);
 			productName = LoginTests;
 			productReference = 8227FB26240BAAB600F653B5 /* LoginTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -1116,6 +1152,13 @@
 			files = (
 				8227FBA8240BB41500F653B5 /* User.swift in Sources */,
 				8227FBA7240BB41500F653B5 /* Navigation.swift in Sources */,
+				8210452D240C2241004EA838 /* ResetPassBackendError.swift in Sources */,
+				82104529240C2218004EA838 /* LoginError.swift in Sources */,
+				82104527240C21E3004EA838 /* ForgotPassError.swift in Sources */,
+				82104523240C2018004EA838 /* APIClient.swift in Sources */,
+				82104525240C21B9004EA838 /* ForgotPassSuccess.swift in Sources */,
+				8210452B240C2234004EA838 /* ResetPassSuccess.swift in Sources */,
+				8210452F240C2258004EA838 /* MockAPIClient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1175,6 +1218,11 @@
 			isa = PBXTargetDependency;
 			target = 82BE2F6323D9983C00B3678A /* ComposableArchitecture */;
 			targetProxy = 8210451B240BCA31004EA838 /* PBXContainerItemProxy */;
+		};
+		8210451E240BCB58004EA838 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 821044FC240BC980004EA838 /* ComposableArchitectureTestSupport */;
+			targetProxy = 8210451D240BCB58004EA838 /* PBXContainerItemProxy */;
 		};
 		8227FB29240BAAB600F653B5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2068,6 +2116,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		8210451F240BCB94004EA838 /* SnapshotTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8227FBAC240BC68400F653B5 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = SnapshotTesting;
+		};
 		82B02FFD23F2542A0015B0B4 /* CasePaths */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 82B02FFC23F2542A0015B0B4 /* XCRemoteSwiftPackageReference "swift-case-paths" */;

@@ -5,6 +5,10 @@ import CasePaths
 import Login
 import Model
 
+typealias AppEnvironment = (
+  apiClient: APIClient
+)
+
 struct AppState {
 	var loggedInUser: User?
 	var navigation: Navigation
