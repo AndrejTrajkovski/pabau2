@@ -4,6 +4,7 @@ import PageControl
 import ComposableArchitecture
 import CasePaths
 import Util
+import Model
 
 public struct Walkthrough: View {
 	let state = makeState(titles: WalkthroughStatic.titles,

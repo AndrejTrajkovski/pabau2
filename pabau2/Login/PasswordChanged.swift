@@ -1,6 +1,7 @@
 import SwiftUI
 import ComposableArchitecture
 import Util
+import Model
 
 public func passChangedReducer(state: inout Navigation, action: PassChangedAction) -> [Effect<PassChangedAction>] {
 	switch action {

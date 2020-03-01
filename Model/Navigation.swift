@@ -1,7 +1,7 @@
 public enum Navigation {
 	case login([LoginNavScreen])
 	case tabBar(TabBarNavigation)
-	var login: [LoginNavScreen]? {
+	public var login: [LoginNavScreen]? {
 		get {
 			guard case let .login(value) = self else { return nil }
 			return value
@@ -11,7 +11,7 @@ public enum Navigation {
 			self = .login(newValue)
 		}
 	}
-	var tabBar: TabBarNavigation? {
+	public var tabBar: TabBarNavigation? {
 		get {
 			guard case let .tabBar(value) = self else { return nil }
 			return value

@@ -3,6 +3,7 @@ import ComposableArchitecture
 import Combine
 import CasePaths
 import Util
+import Model
 
 func login(_ username: String, password: String) -> Effect<Result<User, LoginError>> {
 	return Just(.success(User(id: 1, name: "Andrej")))
@@ -15,6 +16,7 @@ public enum LoginError: Error {
 }
 
 public struct LoginViewState {
+	public init () {}
 	var emailValidationText: String = ""
 	var passValidationText: String = ""
 	var forgotPassLS: LoadingState<ForgotPassResponse> = .initial

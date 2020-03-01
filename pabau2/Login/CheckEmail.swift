@@ -1,6 +1,7 @@
 import SwiftUI
 import ComposableArchitecture
 import Util
+import Model
 
 public func checkEmailReducer(state: inout Navigation, action: CheckEmailAction) -> [Effect<CheckEmailAction>] {
 	switch action {

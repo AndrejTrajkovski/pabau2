@@ -3,6 +3,7 @@ import ComposableArchitecture
 import Combine
 import CasePaths
 import Util
+import Model
 
 public enum ForgotPassError: Error {}
 public struct ForgotPassResponse {}

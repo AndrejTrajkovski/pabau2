@@ -3,6 +3,7 @@ import ComposableArchitecture
 import Combine
 import CasePaths
 import Util
+import Model
 
 public struct ResetPassResponse {}
 public enum ResetPassBackendError: Error {}

@@ -1,10 +1,11 @@
 import SwiftUI
 import ComposableArchitecture
 import CasePaths
+import Model
 
 public struct WalkthroughContainerState {
 	var navigation: Navigation
-	var loggedInUser: User?
+	public var loggedInUser: User?
 	var loginViewState: LoginViewState
 }
 
