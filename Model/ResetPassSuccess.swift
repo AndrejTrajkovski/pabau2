@@ -1,1 +1,3 @@
-public struct ResetPassSuccess {}
+public struct ResetPassSuccess {
+	public init () {}
+}

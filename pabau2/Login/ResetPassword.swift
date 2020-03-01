@@ -26,12 +26,6 @@ public enum ResetPassValidationError: Error {
 
 extension Array: Error where Element == ResetPassValidationError {}
 
-func sendConfirmation(_ code: String, _ pass: String) -> Effect<Result<ResetPassResponse, ResetPassBackendError>> {
-	return Just(.success(ResetPassResponse()))
-		.delay(for: .seconds(2), scheduler: DispatchQueue.main)
-		.eraseToEffect()
-}
-
 enum Authentication {
   case authenticated(accessToken: String)
   case unauthenticated
@@ -41,7 +35,7 @@ public typealias RPValidator = Result<(String, String), [ResetPassValidationErro
 public struct ResetPasswordState {
 	var navigation: Navigation
 	var rpValidation: RPValidator
-	var loadingState: LoadingState<ResetPassResponse>
+	var loadingState: LoadingState<ResetPassSuccess>
 	var newPassValidator: String {
 		guard let rpFailure = (/RPValidator.failure).extract(from: rpValidation) else {
 			return ""
@@ -82,7 +76,7 @@ public struct ResetPasswordState {
 public enum ResetPasswordAction {
 	case backBtnTapped
 	case changePassTapped(String, String, String)
-	case gotResponse(Result<ResetPassResponse, ResetPassBackendError>)
+	case gotResponse(Result<ResetPassSuccess, ResetPassBackendError>)
 }
 
 func validate(_ code: String, _ newPass: String, _ confirmPass: String) -> RPValidator {
@@ -123,7 +117,7 @@ func handle (_ code: String, _ newPass: String, _ confirmPass: String, _ state: 
 	}
 }
 
-func handle(_ result: Result<ResetPassResponse, ResetPassBackendError>, _ state: inout ResetPasswordState) ->  [Effect<ResetPasswordAction>] {
+func handle(_ result: Result<ResetPassSuccess, ResetPassBackendError>, _ state: inout ResetPasswordState) ->  [Effect<ResetPasswordAction>] {
 	switch result {
 	case .success(let success):
 		state.loadingState = .gotSuccess(success)

@@ -9,11 +9,11 @@ public struct LoginViewState {
 	public init () {}
 	var emailValidationText: String = ""
 	var passValidationText: String = ""
-	var forgotPassLS: LoadingState<ForgotPassResponse> = .initial
+	var forgotPassLS: LoadingState<ForgotPassSuccess> = .initial
 	var loginLS: LoadingState<User> = .initial
 	var fpValidation: String = ""
 	var rpValidation: RPValidator = .failure([])
-	var rpLoading: LoadingState<ResetPassResponse> = .initial
+	var rpLoading: LoadingState<ResetPassSuccess> = .initial
 }
 
 public enum LoginViewAction {

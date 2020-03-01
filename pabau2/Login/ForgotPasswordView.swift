@@ -14,7 +14,7 @@ public enum ForgotPassViewAction {
 
 public struct ForgotPassContainerState {
 	var navigation: Navigation
-	var forgotPassLS: LoadingState<ForgotPassResponse>
+	var forgotPassLS: LoadingState<ForgotPassSuccess>
 	var fpValidation: String
 	var rpValidation: RPValidator
 	var rpLoading: LoadingState<ResetPassSuccess>
@@ -41,7 +41,7 @@ public struct ForgotPassContainerState {
 
 public struct ForgotPassState {
 	var navigation: Navigation
-	var loadingState: LoadingState<ForgotPassResponse>
+	var loadingState: LoadingState<ForgotPassSuccess>
 	var fpValidation: String
 }
 
@@ -86,7 +86,7 @@ public func forgotPasswordReducer(state: inout ForgotPassState, action: ForgotPa
 public enum ForgotPasswordAction {
 	case backBtnTapped
 	case sendRequest(email: String)
-	case gotResponse(Result<ForgotPassResponse, ForgotPassError>)
+	case gotResponse(Result<ForgotPassSuccess, ForgotPassError>)
 }
 
 struct ForgotPassword: View {
