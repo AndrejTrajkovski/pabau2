@@ -4,14 +4,23 @@ import CasePaths
 import Model
 
 public struct WalkthroughContainerState {
-	var navigation: Navigation
+	public init(navigation: Navigation, loggedInUser: User?, loginViewState: LoginViewState) {
+		self.navigation = navigation
+		self.loggedInUser = loggedInUser
+		self.loginViewState = loginViewState
+	}
+
+	public var navigation: Navigation
 	public var loggedInUser: User?
-	var loginViewState: LoginViewState
+	public var loginViewState: LoginViewState
 }
 
-struct WalkthroughContainer: View {
+public struct WalkthroughContainer: View {
 	@ObservedObject var store: Store<WalkthroughContainerState, WalkthroughContainerAction>
-	var body: some View {
+	public init(_ store: Store<WalkthroughContainerState, WalkthroughContainerAction>) {
+		self.store = store
+	}
+	public var body: some View {
 		VStack(spacing: 50) {
 			Walkthrough(store:
 				self.store.view(value: { $0.navigation },

@@ -116,7 +116,7 @@ struct ForgotPassword: View {
 				Text(Texts.forgotPassDescription)
 					.foregroundColor(.grey155)
 					.font(.paragraph)
-				TextAndTextView(title: Texts.emailAddress.uppercased(), placeholder: "", _value: self.$email, validation: self.store.value.fpValidation)
+				TextAndTextView(title: Texts.emailAddress.uppercased(), placeholder: "", bindingValue: self.$email, validation: self.store.value.fpValidation)
 			}.frame(maxWidth: 319)
 			BigButton(text: Texts.sendRequest) {
 				self.store.send(.sendRequest(email: self.email))
@@ -138,7 +138,7 @@ struct ForgotPasswordView: View {
 		_email = email
 	}
 	var body: some View {
-		LoadingView(title: Texts.forgotPassLoading, _isShowing: .constant(self.store.value.forgotPass.loadingState.isLoading)) {
+		LoadingView(title: Texts.forgotPassLoading, bindingIsShowing: .constant(self.store.value.forgotPass.loadingState.isLoading)) {
 			VStack(alignment: .leading, spacing: 36) {
 				ForgotPassword(self.store.view(value: { $0.forgotPass }, action: { .forgotPass($0)}), self.$email)
 				NavigationLink.emptyHidden(destination: self.checkEmailView,

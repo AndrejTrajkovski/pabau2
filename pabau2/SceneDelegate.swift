@@ -2,6 +2,7 @@ import UIKit
 import SwiftUI
 import ComposableArchitecture
 import Util
+import Model
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 

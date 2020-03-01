@@ -3,6 +3,7 @@ import ComposableArchitecture
 import SwiftUI
 import CasePaths
 import Login
+import Model
 
 struct AppState {
 	var loggedInUser: User?
@@ -67,7 +68,7 @@ struct ContentView: View {
 
 struct LoginContainer: View {
 	@ObservedObject var store: Store<WalkthroughContainerState, WalkthroughContainerAction>
-	
+
 	var shouldShowWalkthrough: Bool {
 		return self.store.value.navigation.login?.contains(.walkthroughScreen) ?? false
 	}
@@ -76,7 +77,7 @@ struct LoginContainer: View {
 		NavigationView {
 			ViewBuilder.buildBlock(
 				 shouldShowWalkthrough ?
-					ViewBuilder.buildEither(first: WalkthroughContainer(store: store))
+					ViewBuilder.buildEither(first: WalkthroughContainer(store))
 					:
 					ViewBuilder.buildEither(second:
 						LoginView(store:

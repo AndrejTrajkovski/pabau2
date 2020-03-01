@@ -1,13 +1,13 @@
 import SwiftUI
 
 public struct TextAndTextView: View {
-	public init(title: String, placeholder: String, _value: Binding<String>, validation: String) {
+	public init(title: String, placeholder: String, bindingValue: Binding<String>, validation: String) {
 		self.title = title
 		self.placeholder = placeholder
-		self._value = _value
+		self._value = bindingValue
 		self.validation = validation
 	}
-	
+
 	let title: String
 	let placeholder: String
 	@Binding var value: String

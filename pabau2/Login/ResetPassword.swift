@@ -101,7 +101,7 @@ func validate(_ code: String, _ newPass: String, _ confirmPass: String) -> RPVal
 	if code.isEmpty {
 		errors.append(.emptyCode)
 	}
-	
+
 	if errors.isEmpty {
 		return .success((code, newPass))
 	} else {
@@ -156,7 +156,7 @@ struct ResetPassword: View {
 	@State var newPass: String = ""
 	@State var confirmPass: String = ""
 	var body: some View {
-		LoadingView(title: Texts.verifyingCode, _isShowing: .constant(self.store.value.loadingState.isLoading)) {
+		LoadingView(title: Texts.verifyingCode, bindingIsShowing: .constant(self.store.value.loadingState.isLoading)) {
 			VStack {
 				VStack(alignment: .leading, spacing: 25) {
 					VStack(alignment: .leading, spacing: 36) {
@@ -169,15 +169,15 @@ struct ResetPassword: View {
 							.font(.paragraph)
 						TextAndTextView(title: Texts.resetCode.uppercased(),
 														placeholder: Texts.resetCodePlaceholder,
-														_value: self.$code,
+														bindingValue: self.$code,
 														validation: self.store.value.codeValidator)
 						TextAndTextView(title: Texts.newPass.uppercased(),
 														placeholder: Texts.newPassPlaceholder,
-														_value: self.$newPass,
+														bindingValue: self.$newPass,
 														validation: self.store.value.newPassValidator)
 						TextAndTextView(title: Texts.confirmPass.uppercased(),
 														placeholder: Texts.confirmPassPlaceholder,
-														_value: self.$confirmPass,
+														bindingValue: self.$confirmPass,
 														validation: self.store.value.confirmPassValidator)
 					}.frame(maxWidth: 319)
 					BigButton(text: Texts.changePass) {

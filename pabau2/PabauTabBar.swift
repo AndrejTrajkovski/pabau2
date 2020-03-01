@@ -1,9 +1,11 @@
 import SwiftUI
 import ComposableArchitecture
 import CasePaths
+import Model
+import Util
 
 public struct TabBarState {
-	var navigation: Navigation
+	public var navigation: Navigation
 }
 
 extension TabBarState {

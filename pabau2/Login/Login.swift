@@ -124,14 +124,14 @@ struct Login: View {
 	}
 }
 
-struct LoginView: View {
+public struct LoginView: View {
 	@ObservedObject var store: Store<WalkthroughContainerState, LoginViewAction>
 	@State var email: String = ""
 	public init(store: Store<WalkthroughContainerState, LoginViewAction>) {
 		self.store = store
 	}
-	var body: some View {
-		LoadingView(title: Texts.signingIn, _isShowing: .constant(self.store.value.loginViewState.loginLS.isLoading)) {
+	public var body: some View {
+		LoadingView(title: Texts.signingIn, bindingIsShowing: .constant(self.store.value.loginViewState.loginLS.isLoading)) {
 			VStack {
 				NavigationLink.emptyHidden(destination: EmptyView(),
 																	 isActive: self.store.value.navigation.tabBar != nil)

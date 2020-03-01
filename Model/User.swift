@@ -3,7 +3,7 @@ public struct User {
 		self.id = id
 		self.name = name
 	}
-	
+
 	let id: Int
 	let name: String
 }
