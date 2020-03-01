@@ -1,4 +1,5 @@
 import SwiftUI
+import Util
 
 struct LoginTextFields: View {
 	@Binding var email: String
@@ -8,10 +9,10 @@ struct LoginTextFields: View {
 	let onForgotPass: () -> Void
 	var body: some View {
 		VStack(alignment: .leading) {
-			TextAndTextView(title: Texts.emailAddress.uppercased(), placeholder: "", value: $email, validation: emailValidation)
+			TextAndTextView(title: Texts.emailAddress.uppercased(), placeholder: "", _value: $email, validation: emailValidation)
 			Spacer(minLength: 10)
 			HStack(spacing: 0) {
-				TextAndTextView(title: Texts.password.uppercased(), placeholder: "", value: $password, validation: passwordValidation)
+				TextAndTextView(title: Texts.password.uppercased(), placeholder: "", _value: $password, validation: passwordValidation)
 				Button.init(Texts.forgotPass) {
 					self.onForgotPass()
 				}
@@ -20,14 +21,5 @@ struct LoginTextFields: View {
 				.frame(width: 150)
 			}
 		}
-	}
-}
-
-struct ValidationText: View {
-	let title: String
-	var body: some View {
-		Text(title)
-			.foregroundColor(.validationFail)
-			.font(.validation)
 	}
 }

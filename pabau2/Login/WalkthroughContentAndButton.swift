@@ -1,4 +1,5 @@
 import SwiftUI
+import Util
 
 public struct WalkthroughContentAndButton: View {
 	let content: WalkthroughContentContent

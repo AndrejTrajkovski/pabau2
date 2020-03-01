@@ -2,6 +2,7 @@ import SwiftUI
 import ComposableArchitecture
 import Combine
 import CasePaths
+import Util
 
 public struct ResetPassResponse {}
 public enum ResetPassBackendError: Error {}
@@ -160,7 +161,7 @@ struct ResetPassword: View {
 					VStack(alignment: .leading, spacing: 36) {
 						Text(Texts.resetPass)
 							.foregroundColor(.blackTwo)
-							.font(.largeTitle)
+							.font(.customLargeTitle)
 							.frame(width: 157)
 						Text(Texts.resetPassDesc)
 							.foregroundColor(.grey155)

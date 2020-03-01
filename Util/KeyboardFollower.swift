@@ -1,7 +1,7 @@
 import UIKit
 
-class KeyboardFollower: ObservableObject {
-	@Published var keyboardHeight: CGFloat = 0
+public class KeyboardFollower: ObservableObject {
+	@Published public var keyboardHeight: CGFloat = 0
 	@Published var isVisible = false
 
 	init() {

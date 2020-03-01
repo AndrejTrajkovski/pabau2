@@ -2,6 +2,7 @@ import SwiftUI
 import ComposableArchitecture
 import Combine
 import CasePaths
+import Util
 
 public enum ForgotPassError: Error {}
 public struct ForgotPassResponse {}
@@ -109,12 +110,12 @@ struct ForgotPassword: View {
 			VStack(alignment: .leading, spacing: 36) {
 				Text(Texts.forgotPass)
 					.foregroundColor(.blackTwo)
-					.font(.largeTitle)
+					.font(.customLargeTitle)
 					.frame(width: 157)
 				Text(Texts.forgotPassDescription)
 					.foregroundColor(.grey155)
 					.font(.paragraph)
-				TextAndTextView(title: Texts.emailAddress.uppercased(), placeholder: "", value: self.$email, validation: self.store.value.fpValidation)
+				TextAndTextView(title: Texts.emailAddress.uppercased(), placeholder: "", _value: self.$email, validation: self.store.value.fpValidation)
 			}.frame(maxWidth: 319)
 			BigButton(text: Texts.sendRequest) {
 				self.store.send(.sendRequest(email: self.email))

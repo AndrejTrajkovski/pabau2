@@ -2,6 +2,7 @@ import SwiftUI
 import ComposableArchitecture
 import Combine
 import CasePaths
+import Util
 
 func login(_ username: String, password: String) -> Effect<Result<User, LoginError>> {
 	return Just(.success(User(id: 1, name: "Andrej")))
@@ -110,7 +111,7 @@ struct Login: View {
 											onForgotPass: {self.store.send(.forgotPassTapped) })
 			Spacer(minLength: 30)
 			BigButton(text: Texts.signIn,
-								buttonTapAction: {
+								btnTapAction: {
 									self.store.send(.loginTapped(email: self.email, password: self.password))
 			})
 		}

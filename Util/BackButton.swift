@@ -17,7 +17,7 @@ struct BackButton: ViewModifier {
 	}
 }
 extension View {
-	func customBackButton(action: @escaping () -> Void) -> some View {
+	public func customBackButton(action: @escaping () -> Void) -> some View {
 		self.modifier(BackButton(action: action))
 	}
 }

@@ -1,6 +1,6 @@
 import SwiftUI
 
-extension Color {
+public extension Color {
 	static let main = Color.init(red: 0, green: 122, blue: 255)
 	static let gradient = Color.init(red: 121, green: 191, blue: 246)
 	static let gray1 = Color.init(red: 49, green: 49, blue: 49)

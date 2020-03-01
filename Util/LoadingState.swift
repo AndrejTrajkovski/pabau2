@@ -3,7 +3,7 @@ public enum LoadingState<Value> {
 	case loading
 	case gotSuccess(Value)
 	case gotError(Error)
-	var isLoading: Bool {
+	public var isLoading: Bool {
 		guard case LoadingState.loading = self else { return false }
 		return true
 	}

@@ -1,9 +1,13 @@
 import SwiftUI
 
-struct BigButton: View {
+public struct BigButton: View {
+	public init (text: String, btnTapAction: @escaping () -> Void) {
+		self.text = text
+		self.buttonTapAction = btnTapAction
+	}
 	let text: String
 	var buttonTapAction: () -> Void
-	var body: some View {
+	public var body: some View {
 		Button(action: {
 			self.buttonTapAction()
 		}, label: {

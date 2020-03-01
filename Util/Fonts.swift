@@ -1,6 +1,6 @@
 import SwiftUI
 
-extension Font {
+public extension Font {
 //	static let headline1 = Font.system(size: 36.0,
 //																		 weight: .bold,
 //																		 design: .default)
@@ -21,7 +21,7 @@ extension Font {
 	static let validation = Font.system(size: 12,
 																			weight: .semibold)
 
-	static let largeTitle = Font.init(UIFont.largeTitle)
+	static let customLargeTitle = Font.init(UIFont.customLargeTitle)
 
 	static let textStyle = Font.init(UIFont.textStyle)
 
@@ -54,7 +54,7 @@ import UIKit
 
 extension UIFont {
 
-  class var largeTitle: UIFont {
+  class var customLargeTitle: UIFont {
     return UIFont.systemFont(ofSize: 34.0, weight: .bold)
   }
 

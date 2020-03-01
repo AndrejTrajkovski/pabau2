@@ -3,11 +3,6 @@ import ComposableArchitecture
 import SwiftUI
 import CasePaths
 
-public struct User {
-	let id: Int
-	let name: String
-}
-
 public enum LoginNavScreen {
 	case walkthroughScreen
 	case signInScreen

@@ -1,12 +1,11 @@
 import SwiftUI
 
-struct LoadingView<Content>: View where Content: View {
-
+public struct LoadingView<Content>: View where Content: View {
 	let title: String
 	@Binding var isShowing: Bool
 	var content: () -> Content
 
-	var body: some View {
+	public var body: some View {
 		GeometryReader { geometry in
 			ZStack(alignment: .center) {
 				self.content()
