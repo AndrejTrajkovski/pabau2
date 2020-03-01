@@ -37,7 +37,7 @@ enum Authentication {
   case authenticated(accessToken: String)
   case unauthenticated
 }
-typealias RPValidator = Result<(String, String), [ResetPassValidationError]>
+public typealias RPValidator = Result<(String, String), [ResetPassValidationError]>
 
 public struct ResetPasswordState {
 	var navigation: Navigation
@@ -155,7 +155,7 @@ struct ResetPassword: View {
 	@State var newPass: String = ""
 	@State var confirmPass: String = ""
 	var body: some View {
-		LoadingView(title: Texts.verifyingCode, isShowing: .constant(self.store.value.loadingState.isLoading)) {
+		LoadingView(title: Texts.verifyingCode, _isShowing: .constant(self.store.value.loadingState.isLoading)) {
 			VStack {
 				VStack(alignment: .leading, spacing: 25) {
 					VStack(alignment: .leading, spacing: 36) {
@@ -168,15 +168,15 @@ struct ResetPassword: View {
 							.font(.paragraph)
 						TextAndTextView(title: Texts.resetCode.uppercased(),
 														placeholder: Texts.resetCodePlaceholder,
-														value: self.$code,
+														_value: self.$code,
 														validation: self.store.value.codeValidator)
 						TextAndTextView(title: Texts.newPass.uppercased(),
 														placeholder: Texts.newPassPlaceholder,
-														value: self.$newPass,
+														_value: self.$newPass,
 														validation: self.store.value.newPassValidator)
 						TextAndTextView(title: Texts.confirmPass.uppercased(),
 														placeholder: Texts.confirmPassPlaceholder,
-														value: self.$confirmPass,
+														_value: self.$confirmPass,
 														validation: self.store.value.confirmPassValidator)
 					}.frame(maxWidth: 319)
 					BigButton(text: Texts.changePass) {

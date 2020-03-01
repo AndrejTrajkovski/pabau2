@@ -45,6 +45,9 @@
 		8227FB7C240BACAC00F653B5 /* Util.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8227FB51240BAC8300F653B5 /* Util.framework */; };
 		8227FB7E240BB0B500F653B5 /* LoadingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 821D43E3240667F4004BB17E /* LoadingState.swift */; };
 		8227FB80240BB13200F653B5 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8227FB7F240BB13200F653B5 /* User.swift */; };
+		8227FB81240BB1A700F653B5 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8227FB7F240BB13200F653B5 /* User.swift */; };
+		8227FB83240BB1CB00F653B5 /* Navigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8227FB82240BB1CB00F653B5 /* Navigation.swift */; };
+		8227FB84240BB1DD00F653B5 /* Navigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8227FB82240BB1CB00F653B5 /* Navigation.swift */; };
 		82811EF423E06BCB0066AFDC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EF323E06BCB0066AFDC /* ContentView.swift */; };
 		8297A29023D9AD7E00D091FF /* PageControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 8297A28E23D9AD7E00D091FF /* PageControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8297A29323D9AD7E00D091FF /* PageControl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8297A28C23D9AD7E00D091FF /* PageControl.framework */; };
@@ -196,6 +199,7 @@
 		8227FB60240BAC8400F653B5 /* UtilTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilTests.swift; sourceTree = "<group>"; };
 		8227FB62240BAC8400F653B5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8227FB7F240BB13200F653B5 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		8227FB82240BB1CB00F653B5 /* Navigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Navigation.swift; sourceTree = "<group>"; };
 		82811EF323E06BCB0066AFDC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		82811EF523E06D730066AFDC /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
 		82811EF723E187700066AFDC /* Login.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
@@ -438,6 +442,7 @@
 				82811EF323E06BCB0066AFDC /* ContentView.swift */,
 				82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */,
 				8227FB7F240BB13200F653B5 /* User.swift */,
+				8227FB82240BB1CB00F653B5 /* Navigation.swift */,
 			);
 			path = pabau2;
 			sourceTree = "<group>";
@@ -823,6 +828,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8227FB84240BB1DD00F653B5 /* Navigation.swift in Sources */,
+				8227FB81240BB1A700F653B5 /* User.swift in Sources */,
 				8227FB41240BAAD800F653B5 /* Login.swift in Sources */,
 				8227FB42240BAAE100F653B5 /* CheckEmail.swift in Sources */,
 				8227FB3F240BAAD800F653B5 /* LoginTextFields.swift in Sources */,
@@ -888,6 +895,7 @@
 				82811EF423E06BCB0066AFDC /* ContentView.swift in Sources */,
 				82BE2F4823D97D9C00B3678A /* AppDelegate.swift in Sources */,
 				82F6ADAE23F2C7B1001B3ACE /* PabauTabBar.swift in Sources */,
+				8227FB83240BB1CB00F653B5 /* Navigation.swift in Sources */,
 				8227FB80240BB13200F653B5 /* User.swift in Sources */,
 				82BE2F4A23D97D9C00B3678A /* SceneDelegate.swift in Sources */,
 			);

@@ -15,7 +15,7 @@ public struct Walkthrough: View {
 			PageView(state.map { WalkthroughContentView(state: $0)})
 				.frame(maxHeight: 686.0)
 			BigButton(text: Texts.signIn,
-								buttonTapAction: {
+								btnTapAction: {
 									self.store.send(.signInTapped)
 			})
 		}

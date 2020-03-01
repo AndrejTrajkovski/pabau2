@@ -1,6 +1,12 @@
 import SwiftUI
 
 public struct LoadingView<Content>: View where Content: View {
+	public init(title: String, _isShowing: Binding<Bool>, content: @escaping () -> Content) {
+		self.title = title
+		self._isShowing = _isShowing
+		self.content = content
+	}
+	
 	let title: String
 	@Binding var isShowing: Bool
 	var content: () -> Content
