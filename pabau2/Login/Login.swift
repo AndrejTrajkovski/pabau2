@@ -5,6 +5,8 @@ import CasePaths
 import Util
 import Model
 
+public typealias LoginEnvironment = (apiClient: APIClient, userDefaults: UserDefaults)
+
 public struct LoginViewState {
 	public init () {}
 	var emailValidationText: String = ""
@@ -27,7 +29,7 @@ public enum LoginAction {
 	case gotResponse(Result<User, LoginError>)
 }
 
-func handle(_ email: String, _ password: String, state: inout WalkthroughContainerState) -> [Effect<LoginAction>] {
+func handle(_ email: String, _ password: String, state: inout WalkthroughContainerState, apiClient: APIClient) -> [Effect<LoginAction>] {
 	let validEmail = isValidEmail(email)
 	let emptyPass = password.isEmpty
 	state.loginViewState.emailValidationText = emailValidationText(validEmail)
@@ -35,7 +37,7 @@ func handle(_ email: String, _ password: String, state: inout WalkthroughContain
 	if validEmail && !emptyPass {
 		state.loginViewState.loginLS = .loading
 		return [
-			login(email, password: password)
+			apiClient.login(email, password: password)
 				.map(LoginAction.gotResponse)
 				.receive(on: DispatchQueue.main)
 				.eraseToEffect()
@@ -59,10 +61,10 @@ func isValidEmail(_ email: String) -> Bool {
 	return emailPred.evaluate(with: email)
 }
 
-public func loginReducer(state: inout WalkthroughContainerState, action: LoginAction) -> [Effect<LoginAction>] {
+public func loginReducer(state: inout WalkthroughContainerState, action: LoginAction, environment: LoginEnvironment) -> [Effect<LoginAction>] {
 	switch action {
 	case .loginTapped (let email, let password):
-		return handle(email, password, state: &state)
+		return handle(email, password, state: &state, apiClient: environment.apiClient)
 	case .forgotPassTapped:
 		state.navigation.login?.append(.forgotPassScreen)
 		return []
@@ -80,8 +82,8 @@ public func loginReducer(state: inout WalkthroughContainerState, action: LoginAc
 }
 
 let loginViewReducer = combine(
-	pullback(loginReducer, value: \WalkthroughContainerState.self, action: /LoginViewAction.login),
-	pullback(forgotPassViewReducer, value: \WalkthroughContainerState.forgotPass, action: /LoginViewAction.forgotPass)
+	pullback(loginReducer, value: \WalkthroughContainerState.self, action: /LoginViewAction.login, environment: { $0 }),
+	pullback(forgotPassViewReducer, value: \WalkthroughContainerState.forgotPass, action: /LoginViewAction.forgotPass, environment: { $0 })
 )
 
 struct Login: View {

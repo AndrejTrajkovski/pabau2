@@ -27,8 +27,8 @@ public enum ResetPassValidationError: Error {
 extension Array: Error where Element == ResetPassValidationError {}
 
 enum Authentication {
-  case authenticated(accessToken: String)
-  case unauthenticated
+	case authenticated(accessToken: String)
+	case unauthenticated
 }
 public typealias RPValidator = Result<(String, String), [ResetPassValidationError]>
 
@@ -60,7 +60,7 @@ public struct ResetPasswordState {
 			return ""
 		}
 	}
-
+	
 	var codeValidator: String {
 		guard let rpFailure = (/RPValidator.failure).extract(from: rpValidation) else {
 			return ""
@@ -93,7 +93,7 @@ func validate(_ code: String, _ newPass: String, _ confirmPass: String) -> RPVal
 	if code.isEmpty {
 		errors.append(.emptyCode)
 	}
-
+	
 	if errors.isEmpty {
 		return .success((code, newPass))
 	} else {
@@ -101,14 +101,14 @@ func validate(_ code: String, _ newPass: String, _ confirmPass: String) -> RPVal
 	}
 }
 
-func handle (_ code: String, _ newPass: String, _ confirmPass: String, _ state: inout ResetPasswordState) -> [Effect<ResetPasswordAction>] {
+func handle (_ code: String, _ newPass: String, _ confirmPass: String, _ state: inout ResetPasswordState, _ apiClient: APIClient) -> [Effect<ResetPasswordAction>] {
 	let validated = validate(code, newPass, confirmPass)
 	state.rpValidation = validated
 	switch validated {
 	case .success(let code, let newPass):
 		state.loadingState = .loading
 		return [
-			sendConfirmation(code, newPass)
+			apiClient.sendConfirmation(code, newPass)
 				.map(ResetPasswordAction.gotResponse)
 				.eraseToEffect()
 		]
@@ -129,13 +129,13 @@ func handle(_ result: Result<ResetPassSuccess, ResetPassBackendError>, _ state: 
 	}
 }
 
-public func resetPassReducer(state: inout ResetPasswordState, action: ResetPasswordAction) -> [Effect<ResetPasswordAction>] {
+public func resetPassReducer(state: inout ResetPasswordState, action: ResetPasswordAction, environment: LoginEnvironment) -> [Effect<ResetPasswordAction>] {
 	switch action {
 	case .backBtnTapped:
 		state.navigation.login?.removeAll(where: { $0 == .resetPassScreen })
 		return []
 	case .changePassTapped(let code, let newPass, let confirmPass):
-		return handle(code, newPass, confirmPass, &state)
+		return handle(code, newPass, confirmPass, &state, environment.apiClient)
 	case .gotResponse(let result):
 		return handle(result, &state)
 	}
@@ -187,7 +187,7 @@ struct ResetPassword: View {
 			}
 		}
 	}
-
+	
 	var passChangedView: PasswordChanged {
 		return PasswordChanged(store: passChangedStore)
 	}

@@ -1,3 +1,4 @@
+// swiftlint:disable identifier_name
 import ComposableArchitecture
 import XCTest
 
@@ -77,3 +78,4 @@ public func assert<Value: Equatable, Action: Equatable, Environment>(
     XCTFail("Assertion failed to handle \(effects.count) pending effect(s)", file: file, line: line)
   }
 }
+// swiftlint:enable identifier_name

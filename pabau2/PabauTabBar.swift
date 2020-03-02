@@ -4,6 +4,8 @@ import CasePaths
 import Model
 import Util
 
+public typealias TabBarEnvironment = (apiClient: APIClient, userDefaults: UserDefaults)
+
 public struct TabBarState {
 	public var navigation: Navigation
 }
@@ -49,9 +51,9 @@ public enum SettingsAction {
 	case logoutTapped
 }
 
-public let tabBarReducer = (pullback(settingsReducer, value: \TabBarState.settings, action: /TabBarAction.settings))
+public let tabBarReducer = (pullback(settingsReducer, value: \TabBarState.settings, action: /TabBarAction.settings, environment: { $0 }))
 
-public func settingsReducer(state: inout SettingsState, action: SettingsAction) -> [Effect<SettingsAction>] {
+public func settingsReducer(state: inout SettingsState, action: SettingsAction, environment: TabBarEnvironment) -> [Effect<SettingsAction>] {
 	switch action {
 	case .logoutTapped:
 		state.navigation = .login([.signInScreen])

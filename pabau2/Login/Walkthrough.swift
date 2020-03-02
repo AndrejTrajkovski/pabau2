@@ -23,7 +23,7 @@ public struct Walkthrough: View {
 	}
 }
 
-public func walkthroughReducer(state: inout Navigation, action: WalkthroughAction) -> [Effect<WalkthroughAction>] {
+public func walkthroughReducer(state: inout Navigation, action: WalkthroughAction, environment: LoginEnvironment) -> [Effect<WalkthroughAction>] {
 	switch action {
 	case .signInTapped:
 		state.login?.append(.signInScreen)

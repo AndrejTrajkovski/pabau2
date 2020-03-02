@@ -6,7 +6,8 @@ import Login
 import Model
 
 typealias AppEnvironment = (
-  apiClient: APIClient
+  apiClient: APIClient,
+	userDefaults: UserDefaults
 )
 
 struct AppState {
@@ -39,9 +40,19 @@ extension AppState {
 	}
 }
 
-let appReducer = combine (pullback(walkthroughContainerReducer, value: \AppState.walktrough, action: /AppAction.walkthrough),
-													pullback(tabBarReducer, value: \AppState.tabBar,
-																	 action: /AppAction.tabBar)
+let appReducer: Reducer<AppState, AppAction, AppEnvironment> = combine(
+	pullback(
+		walkthroughContainerReducer,
+		value: \AppState.walktrough,
+		action: /AppAction.walkthrough,
+		environment: { LoginEnvironment($0.apiClient, $0.userDefaults) }
+	),
+	pullback(
+		tabBarReducer,
+		value: \AppState.tabBar,
+		action: /AppAction.tabBar,
+		environment: { TabBarEnvironment($0.apiClient, $0.userDefaults) }
+	)
 )
 
 struct ContentView: View {

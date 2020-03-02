@@ -7,7 +7,7 @@
 		<key>ComposableArchitecture.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>1</integer>
+			<integer>2</integer>
 		</dict>
 		<key>ComposableArchitectureTestSupport.xcscheme_^#shared#^_</key>
 		<dict>
@@ -17,27 +17,55 @@
 		<key>Login.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>2</integer>
+			<integer>3</integer>
 		</dict>
 		<key>Model.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>5</integer>
+			<integer>4</integer>
 		</dict>
 		<key>PageControl.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>3</integer>
+			<integer>1</integer>
 		</dict>
 		<key>Util.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>4</integer>
+			<integer>5</integer>
 		</dict>
 		<key>pabau2.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>8227FB25240BAAB600F653B5</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>8227FB58240BAC8400F653B5</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>8227FB91240BB40300F653B5</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>82BE2F4323D97D9C00B3678A</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>82BE2F6B23D9983C00B3678A</key>
+		<dict>
+			<key>primary</key>
+			<true/>
 		</dict>
 	</dict>
 </dict>

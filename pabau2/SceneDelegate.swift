@@ -19,7 +19,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         rootView: ContentView(
           store: Store(
 						initialValue: AppState(navigation: .login([LoginNavScreen.walkthroughScreen])),
-            reducer: reducer
+						reducer: reducer,
+						environment: AppEnvironment(
+							apiClient: MockAPIClient(),
+							userDefaults: UserDefaults.standard
+						)
           )
 				).environmentObject(KeyboardFollower())
       )

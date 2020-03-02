@@ -20,6 +20,8 @@
 		8210452B240C2234004EA838 /* ResetPassSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8210452A240C2234004EA838 /* ResetPassSuccess.swift */; };
 		8210452D240C2241004EA838 /* ResetPassBackendError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8210452C240C2241004EA838 /* ResetPassBackendError.swift */; };
 		8210452F240C2258004EA838 /* MockAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8210452E240C2258004EA838 /* MockAPIClient.swift */; };
+		82104531240C434A004EA838 /* UserDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104530240C434A004EA838 /* UserDefault.swift */; };
+		82104533240C4371004EA838 /* UserDefaultsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104532240C4371004EA838 /* UserDefaultsConfig.swift */; };
 		8227FB27240BAAB600F653B5 /* Login.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8227FB1E240BAAB600F653B5 /* Login.framework */; };
 		8227FB2E240BAAB600F653B5 /* LoginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8227FB2D240BAAB600F653B5 /* LoginTests.swift */; };
 		8227FB30240BAAB600F653B5 /* Login.h in Headers */ = {isa = PBXBuildFile; fileRef = 8227FB20240BAAB600F653B5 /* Login.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -256,6 +258,10 @@
 		8210452A240C2234004EA838 /* ResetPassSuccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPassSuccess.swift; sourceTree = "<group>"; };
 		8210452C240C2241004EA838 /* ResetPassBackendError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPassBackendError.swift; sourceTree = "<group>"; };
 		8210452E240C2258004EA838 /* MockAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAPIClient.swift; sourceTree = "<group>"; };
+		82104530240C434A004EA838 /* UserDefault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefault.swift; sourceTree = "<group>"; };
+		82104532240C4371004EA838 /* UserDefaultsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsConfig.swift; sourceTree = "<group>"; };
+		82104534240CE516004EA838 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		82104536240CE524004EA838 /* libswiftXCTest.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftXCTest.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/libswiftXCTest.tbd; sourceTree = DEVELOPER_DIR; };
 		821D43E3240667F4004BB17E /* LoadingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingState.swift; sourceTree = "<group>"; };
 		8227FB1E240BAAB600F653B5 /* Login.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Login.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8227FB20240BAAB600F653B5 /* Login.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Login.h; sourceTree = "<group>"; };
@@ -503,6 +509,8 @@
 				82104528240C2218004EA838 /* LoginError.swift */,
 				8210452A240C2234004EA838 /* ResetPassSuccess.swift */,
 				8210452C240C2241004EA838 /* ResetPassBackendError.swift */,
+				82104530240C434A004EA838 /* UserDefault.swift */,
+				82104532240C4371004EA838 /* UserDefaultsConfig.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -537,6 +545,8 @@
 		82B02FFF23F2581C0015B0B4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				82104536240CE524004EA838 /* libswiftXCTest.tbd */,
+				82104534240CE516004EA838 /* XCTest.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1152,9 +1162,11 @@
 			files = (
 				8227FBA8240BB41500F653B5 /* User.swift in Sources */,
 				8227FBA7240BB41500F653B5 /* Navigation.swift in Sources */,
+				82104531240C434A004EA838 /* UserDefault.swift in Sources */,
 				8210452D240C2241004EA838 /* ResetPassBackendError.swift in Sources */,
 				82104529240C2218004EA838 /* LoginError.swift in Sources */,
 				82104527240C21E3004EA838 /* ForgotPassError.swift in Sources */,
+				82104533240C4371004EA838 /* UserDefaultsConfig.swift in Sources */,
 				82104523240C2018004EA838 /* APIClient.swift in Sources */,
 				82104525240C21B9004EA838 /* ForgotPassSuccess.swift in Sources */,
 				8210452B240C2234004EA838 /* ResetPassSuccess.swift in Sources */,

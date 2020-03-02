@@ -57,6 +57,6 @@ public enum WalkthroughContainerAction {
 }
 
 public let walkthroughContainerReducer = combine(
-pullback(walkthroughReducer, value: \WalkthroughContainerState.navigation, action: /WalkthroughContainerAction.walkthrough),
-pullback(loginViewReducer, value: \WalkthroughContainerState.self, action: /WalkthroughContainerAction.login)
+	pullback(walkthroughReducer, value: \WalkthroughContainerState.navigation, action: /WalkthroughContainerAction.walkthrough, environment: { $0 }),
+	pullback(loginViewReducer, value: \WalkthroughContainerState.self, action: /WalkthroughContainerAction.login, environment: { $0 })
 )

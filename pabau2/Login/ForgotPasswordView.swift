@@ -46,13 +46,13 @@ public struct ForgotPassState {
 }
 
 let forgotPassViewReducer = combine(
-	pullback(forgotPasswordReducer, value: \ForgotPassContainerState.forgotPass, action: /ForgotPassViewAction.forgotPass),
-	pullback(resetPassReducer, value: \ForgotPassContainerState.resetPass, action: /ForgotPassViewAction.resetPass),
-	pullback(checkEmailReducer, value: \ForgotPassContainerState.navigation, action: /ForgotPassViewAction.checkEmail),
-	pullback(passChangedReducer, value: \ForgotPassContainerState.navigation, action: /ForgotPassViewAction.passChanged)
+	pullback(forgotPasswordReducer, value: \ForgotPassContainerState.forgotPass, action: /ForgotPassViewAction.forgotPass, environment: { $0 }),
+	pullback(resetPassReducer, value: \ForgotPassContainerState.resetPass, action: /ForgotPassViewAction.resetPass, environment: { $0 }),
+	pullback(checkEmailReducer, value: \ForgotPassContainerState.navigation, action: /ForgotPassViewAction.checkEmail , environment: { $0 }),
+	pullback(passChangedReducer, value: \ForgotPassContainerState.navigation, action: /ForgotPassViewAction.passChanged, environment: { $0 })
 )
 
-public func forgotPasswordReducer(state: inout ForgotPassState, action: ForgotPasswordAction) -> [Effect<ForgotPasswordAction>] {
+public func forgotPasswordReducer(state: inout ForgotPassState, action: ForgotPasswordAction, environment: LoginEnvironment) -> [Effect<ForgotPasswordAction>] {
 	switch action {
 	case .backBtnTapped:
 		state.navigation.login?.removeAll(where: { $0 == .forgotPassScreen })
@@ -63,10 +63,10 @@ public func forgotPasswordReducer(state: inout ForgotPassState, action: ForgotPa
 		if isValid {
 			state.loadingState = .loading
 			return [
-				resetPass(email)
+				environment.apiClient.resetPass(email)
 					.map(ForgotPasswordAction.gotResponse)
-				.receive(on: DispatchQueue.main)
-				.eraseToEffect()
+					.receive(on: DispatchQueue.main)
+					.eraseToEffect()
 			]
 		} else {
 			return []
@@ -96,7 +96,7 @@ struct ForgotPassword: View {
 		self.store = store
 		self._email = email
 	}
-
+	
 	var body: some View {
 		VStack(alignment: .leading, spacing: 25) {
 			VStack(alignment: .leading, spacing: 36) {
@@ -138,14 +138,14 @@ struct ForgotPasswordView: View {
 			}
 		}
 	}
-
+	
 	var checkEmailView: CheckEmail {
 		CheckEmail(resetPassStore: resetPassStore,
 							 passChangedStore: passChangedStore,
 							 store: self.store.view(value: { $0.navigation },
 																			action: { .checkEmail($0)}))
 	}
-
+	
 	var passChangedStore: Store<Navigation, PassChangedAction> {
 		self.store.view(value: { $0.navigation }, action: { .passChanged($0)})
 	}
