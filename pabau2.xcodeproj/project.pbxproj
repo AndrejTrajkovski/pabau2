@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		820357F1240CED000050550C /* CasePaths in Frameworks */ = {isa = PBXBuildFile; productRef = 820357F0240CED000050550C /* CasePaths */; };
-		820357F3240CED380050550C /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 820357F2240CED380050550C /* SnapshotTesting */; };
-		820357F4240CEDC10050550C /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82104534240CE516004EA838 /* XCTest.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		820357F6240CEFE30050550C /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 820357F5240CEFE30050550C /* SnapshotTesting */; };
+		820357F7240CEFE90050550C /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82104534240CE516004EA838 /* XCTest.framework */; };
 		82104520240BCB94004EA838 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 8210451F240BCB94004EA838 /* SnapshotTesting */; };
 		82104523240C2018004EA838 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104522240C2018004EA838 /* APIClient.swift */; };
 		82104525240C21B9004EA838 /* ForgotPassSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104524240C21B9004EA838 /* ForgotPassSuccess.swift */; };
@@ -373,8 +373,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				820357F4240CEDC10050550C /* XCTest.framework in Frameworks */,
-				820357F3240CED380050550C /* SnapshotTesting in Frameworks */,
+				820357F7240CEFE90050550C /* XCTest.framework in Frameworks */,
+				820357F6240CEFE30050550C /* SnapshotTesting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -810,7 +810,7 @@
 			);
 			name = ComposableArchitectureTestSupport;
 			packageProductDependencies = (
-				820357F2240CED380050550C /* SnapshotTesting */,
+				820357F5240CEFE30050550C /* SnapshotTesting */,
 			);
 			productName = ComposableArchitectureTestSupport;
 			productReference = 824930DC240CE93500953E90 /* ComposableArchitectureTestSupport.framework */;
@@ -2129,7 +2129,7 @@
 			package = 82B02FFC23F2542A0015B0B4 /* XCRemoteSwiftPackageReference "swift-case-paths" */;
 			productName = CasePaths;
 		};
-		820357F2240CED380050550C /* SnapshotTesting */ = {
+		820357F5240CEFE30050550C /* SnapshotTesting */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8227FBAC240BC68400F653B5 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
 			productName = SnapshotTesting;
