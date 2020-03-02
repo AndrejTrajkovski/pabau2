@@ -48,7 +48,7 @@ public struct ForgotPassState {
 let forgotPassViewReducer = combine(
 	pullback(forgotPasswordReducer, value: \ForgotPassContainerState.forgotPass, action: /ForgotPassViewAction.forgotPass, environment: { $0 }),
 	pullback(resetPassReducer, value: \ForgotPassContainerState.resetPass, action: /ForgotPassViewAction.resetPass, environment: { $0 }),
-	pullback(checkEmailReducer, value: \ForgotPassContainerState.navigation, action: /ForgotPassViewAction.checkEmail , environment: { $0 }),
+	pullback(checkEmailReducer, value: \ForgotPassContainerState.navigation, action: /ForgotPassViewAction.checkEmail, environment: { $0 }),
 	pullback(passChangedReducer, value: \ForgotPassContainerState.navigation, action: /ForgotPassViewAction.passChanged, environment: { $0 })
 )
 
@@ -96,7 +96,7 @@ struct ForgotPassword: View {
 		self.store = store
 		self._email = email
 	}
-	
+
 	var body: some View {
 		VStack(alignment: .leading, spacing: 25) {
 			VStack(alignment: .leading, spacing: 36) {
@@ -138,14 +138,14 @@ struct ForgotPasswordView: View {
 			}
 		}
 	}
-	
+
 	var checkEmailView: CheckEmail {
 		CheckEmail(resetPassStore: resetPassStore,
 							 passChangedStore: passChangedStore,
 							 store: self.store.view(value: { $0.navigation },
 																			action: { .checkEmail($0)}))
 	}
-	
+
 	var passChangedStore: Store<Navigation, PassChangedAction> {
 		self.store.view(value: { $0.navigation }, action: { .passChanged($0)})
 	}

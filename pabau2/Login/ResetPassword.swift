@@ -60,7 +60,7 @@ public struct ResetPasswordState {
 			return ""
 		}
 	}
-	
+
 	var codeValidator: String {
 		guard let rpFailure = (/RPValidator.failure).extract(from: rpValidation) else {
 			return ""
@@ -93,7 +93,7 @@ func validate(_ code: String, _ newPass: String, _ confirmPass: String) -> RPVal
 	if code.isEmpty {
 		errors.append(.emptyCode)
 	}
-	
+
 	if errors.isEmpty {
 		return .success((code, newPass))
 	} else {
@@ -187,7 +187,7 @@ struct ResetPassword: View {
 			}
 		}
 	}
-	
+
 	var passChangedView: PasswordChanged {
 		return PasswordChanged(store: passChangedStore)
 	}

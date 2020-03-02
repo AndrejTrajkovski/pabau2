@@ -9,7 +9,7 @@ extension Snapshotting where Value: UIViewController, Format == UIImage {
         let window = UIApplication.shared.windows.first!
         window.rootViewController = viewC
         DispatchQueue.main.async {
-          let image = UIGraphicsImageRenderer(bounds: window.bounds).image { ctx in
+          let image = UIGraphicsImageRenderer(bounds: window.bounds).image { _ in
             window.drawHierarchy(in: window.bounds, afterScreenUpdates: true)
           }
           callback(image)
