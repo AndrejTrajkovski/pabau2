@@ -1,1 +1,1 @@
-public struct ForgotPassSuccess {}
+public struct ForgotPassSuccess: Equatable {}

@@ -15,6 +15,8 @@ public struct WalkthroughContainerState {
 	public var loginViewState: LoginViewState
 }
 
+extension WalkthroughContainerState: Equatable {}
+
 public struct WalkthroughContainer: View {
 	@ObservedObject var store: Store<WalkthroughContainerState, WalkthroughContainerAction>
 	public init(_ store: Store<WalkthroughContainerState, WalkthroughContainerAction>) {

@@ -5,7 +5,7 @@ import CasePaths
 import Util
 import Model
 
-public enum ResetPassValidationError: Error {
+public enum ResetPassValidationError: Error, Equatable {
 	case newPassEmpty
 	case confirmPassEmpty
 	case nonMatchingPasswords
@@ -30,12 +30,17 @@ enum Authentication {
 	case authenticated(accessToken: String)
 	case unauthenticated
 }
-public typealias RPValidator = Result<(String, String), [ResetPassValidationError]>
+public typealias RPValidator = Result<ResetPassRequest, [ResetPassValidationError]>
 
-public struct ResetPasswordState {
+public struct ResetPassRequest: Equatable {
+	var code: String
+	var newPass: String
+}
+
+public struct ResetPasswordState: Equatable {
 	var navigation: Navigation
 	var rpValidation: RPValidator
-	var loadingState: LoadingState<ResetPassSuccess>
+	var loadingState: LoadingState<ResetPassSuccess, ResetPassBackendError>
 	var newPassValidator: String {
 		guard let rpFailure = (/RPValidator.failure).extract(from: rpValidation) else {
 			return ""
@@ -73,7 +78,7 @@ public struct ResetPasswordState {
 	}
 }
 
-public enum ResetPasswordAction {
+public enum ResetPasswordAction: Equatable {
 	case backBtnTapped
 	case changePassTapped(String, String, String)
 	case gotResponse(Result<ResetPassSuccess, ResetPassBackendError>)
@@ -95,7 +100,7 @@ func validate(_ code: String, _ newPass: String, _ confirmPass: String) -> RPVal
 	}
 
 	if errors.isEmpty {
-		return .success((code, newPass))
+		return .success(ResetPassRequest(code: code, newPass: newPass))
 	} else {
 		return .failure(errors)
 	}
@@ -105,10 +110,10 @@ func handle (_ code: String, _ newPass: String, _ confirmPass: String, _ state: 
 	let validated = validate(code, newPass, confirmPass)
 	state.rpValidation = validated
 	switch validated {
-	case .success(let code, let newPass):
+	case .success(let resetPassReq):
 		state.loadingState = .loading
 		return [
-			apiClient.sendConfirmation(code, newPass)
+			apiClient.sendConfirmation(resetPassReq.code, resetPassReq.newPass)
 				.map(ResetPasswordAction.gotResponse)
 				.eraseToEffect()
 		]

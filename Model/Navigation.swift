@@ -1,4 +1,4 @@
-public enum Navigation {
+public enum Navigation: Equatable {
 	case login([LoginNavScreen])
 	case tabBar(TabBarNavigation)
 	public var login: [LoginNavScreen]? {
@@ -23,7 +23,7 @@ public enum Navigation {
 	}
 }
 
-public enum LoginNavScreen {
+public enum LoginNavScreen: Equatable {
 	case walkthroughScreen
 	case signInScreen
 	case forgotPassScreen
@@ -32,7 +32,7 @@ public enum LoginNavScreen {
 	case passChangedScreen
 }
 
-public enum TabBarNavigation {
+public enum TabBarNavigation: Equatable {
 	case journey
 	case calendar
 }

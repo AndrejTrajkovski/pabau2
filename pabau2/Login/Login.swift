@@ -7,29 +7,29 @@ import Model
 
 public typealias LoginEnvironment = (apiClient: APIClient, userDefaults: UserDefaults)
 
-public struct LoginViewState {
+public struct LoginViewState: Equatable {
 	public init () {}
 	var emailValidationText: String = ""
 	var passValidationText: String = ""
-	var forgotPassLS: LoadingState<ForgotPassSuccess> = .initial
-	var loginLS: LoadingState<User> = .initial
+	var forgotPassLS: LoadingState<ForgotPassSuccess, ForgotPassError> = .initial
+	var loginLS: LoadingState<User, LoginError> = .initial
 	var fpValidation: String = ""
 	var rpValidation: RPValidator = .failure([])
-	var rpLoading: LoadingState<ResetPassSuccess> = .initial
+	var rpLoading: LoadingState<ResetPassSuccess, ResetPassBackendError> = .initial
 }
 
-public enum LoginViewAction {
+public enum LoginViewAction: Equatable {
 	case login(LoginAction)
 	case forgotPass(ForgotPassViewAction)
 }
 
-public enum LoginAction {
+public enum LoginAction: Equatable {
 	case loginTapped (email: String, password: String)
 	case forgotPassTapped
 	case gotResponse(Result<User, LoginError>)
 }
 
-func handle(_ email: String, _ password: String, state: inout WalkthroughContainerState, apiClient: APIClient) -> [Effect<LoginAction>] {
+func handleLoginTapped(_ email: String, _ password: String, state: inout WalkthroughContainerState, apiClient: APIClient) -> [Effect<LoginAction>] {
 	let validEmail = isValidEmail(email)
 	let emptyPass = password.isEmpty
 	state.loginViewState.emailValidationText = emailValidationText(validEmail)
@@ -64,7 +64,7 @@ func isValidEmail(_ email: String) -> Bool {
 public func loginReducer(state: inout WalkthroughContainerState, action: LoginAction, environment: LoginEnvironment) -> [Effect<LoginAction>] {
 	switch action {
 	case .loginTapped (let email, let password):
-		return handle(email, password, state: &state, apiClient: environment.apiClient)
+		return handleLoginTapped(email, password, state: &state, apiClient: environment.apiClient)
 	case .forgotPassTapped:
 		state.navigation.login?.append(.forgotPassScreen)
 		return []

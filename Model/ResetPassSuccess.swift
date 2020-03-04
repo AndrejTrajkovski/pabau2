@@ -1,3 +1,3 @@
-public struct ResetPassSuccess {
+public struct ResetPassSuccess: Equatable {
 	public init () {}
 }

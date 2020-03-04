@@ -21,7 +21,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 						initialValue: AppState(navigation: .login([LoginNavScreen.walkthroughScreen])),
 						reducer: reducer,
 						environment: AppEnvironment(
-							apiClient: MockAPIClient(),
+							apiClient: MockAPIClient(delay: 1),
 							userDefaults: UserDefaults.standard
 						)
           )

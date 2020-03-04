@@ -14,7 +14,7 @@ public func passChangedReducer(state: inout Navigation, action: PassChangedActio
 	}
 }
 
-public enum PassChangedAction {
+public enum PassChangedAction: Equatable {
 	case signInTapped
 }
 

@@ -5,7 +5,7 @@ import CasePaths
 import Util
 import Model
 
-public enum ForgotPassViewAction {
+public enum ForgotPassViewAction: Equatable {
 	case forgotPass(ForgotPasswordAction)
 	case resetPass(ResetPasswordAction)
 	case checkEmail(CheckEmailAction)
@@ -14,10 +14,10 @@ public enum ForgotPassViewAction {
 
 public struct ForgotPassContainerState {
 	var navigation: Navigation
-	var forgotPassLS: LoadingState<ForgotPassSuccess>
+	var forgotPassLS: LoadingState<ForgotPassSuccess, ForgotPassError>
 	var fpValidation: String
 	var rpValidation: RPValidator
-	var rpLoading: LoadingState<ResetPassSuccess>
+	var rpLoading: LoadingState<ResetPassSuccess, ResetPassBackendError>
 	var forgotPass: ForgotPassState {
 		get { return ForgotPassState(navigation: navigation,
 																 loadingState: forgotPassLS,
@@ -41,7 +41,7 @@ public struct ForgotPassContainerState {
 
 public struct ForgotPassState {
 	var navigation: Navigation
-	var loadingState: LoadingState<ForgotPassSuccess>
+	var loadingState: LoadingState<ForgotPassSuccess, ForgotPassError>
 	var fpValidation: String
 }
 
@@ -83,7 +83,7 @@ public func forgotPasswordReducer(state: inout ForgotPassState, action: ForgotPa
 	}
 }
 
-public enum ForgotPasswordAction {
+public enum ForgotPasswordAction: Equatable {
 	case backBtnTapped
 	case sendRequest(email: String)
 	case gotResponse(Result<ForgotPassSuccess, ForgotPassError>)

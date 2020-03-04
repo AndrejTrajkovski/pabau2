@@ -1,1 +1,1 @@
-public enum ForgotPassError: Error {}
+public enum ForgotPassError: Error, Equatable {}

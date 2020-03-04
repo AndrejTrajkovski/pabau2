@@ -14,7 +14,7 @@ public func checkEmailReducer(state: inout Navigation, action: CheckEmailAction,
 	}
 }
 
-public enum CheckEmailAction {
+public enum CheckEmailAction: Equatable {
 	case backBtnTapped
 	case resetPassTapped
 }
