@@ -80,7 +80,6 @@ public func assert<Value: Equatable, Action: Equatable, Environment>(
   }
 }
 
-
 extension Snapshotting where Value: UIViewController, Format == UIImage {
   static var windowedImage: Snapshotting {
     return Snapshotting<UIImage, UIImage>.image.asyncPullback { viewC in

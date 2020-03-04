@@ -13,7 +13,7 @@ public enum LoadingState<Value: Equatable, Error: Equatable>: Equatable {
 			return true
 		}
 	}
-	
+
 	case initial
 	case loading
 	case gotSuccess(Value)
