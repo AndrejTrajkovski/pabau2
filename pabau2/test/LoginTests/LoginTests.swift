@@ -32,18 +32,6 @@ class LoginTests: XCTestCase {
 				state.navigation = .tabBar(.journey)
 			}
 		)
-//		assert(
-//			initialValue: ,
-//			reducer: loginViewReducer,
-//			environment: LoginEnvironment(
-//				apiClient: MockAPIClient(),
-//				userDefaults: UserDefaults.standard
-//			),
-//			steps: Step(.receive, .login(.loginTapped) { state in
-//					state.loginViewState.loginLS = .pending
-//				})
-//			)
-//		)
 	}
 
 	override func tearDown() {
