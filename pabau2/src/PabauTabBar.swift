@@ -3,6 +3,7 @@ import ComposableArchitecture
 import CasePaths
 import Model
 import Util
+import Journey
 
 public typealias TabBarEnvironment = (apiClient: APIClient, userDefaults: UserDefaults)
 
@@ -25,7 +26,7 @@ struct PabauTabBar: View {
 	let store: Store<TabBarState, TabBarAction>
 	var body: some View {
 		TabView {
-			Text("Journey")
+			JourneyView()
 				.tabItem {
 					Text("Journey")
 			}

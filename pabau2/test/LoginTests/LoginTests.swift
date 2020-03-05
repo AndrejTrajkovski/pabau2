@@ -9,7 +9,7 @@ import Model
 class LoginTests: XCTestCase {
 
 	override func setUp() {
-		
+
 	}
 
 	func testLoginValidation() {

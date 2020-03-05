@@ -21,14 +21,17 @@
 		<key>FSCalendar.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
+			<integer>7</integer>
+		</dict>
+		<key>FSCalendarSwiftUI.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
 			<integer>8</integer>
 		</dict>
 		<key>Journey.xcscheme_^#shared#^_</key>
 		<dict>
-			<key>isShown</key>
-			<true/>
 			<key>orderHint</key>
-			<integer>7</integer>
+			<integer>9</integer>
 		</dict>
 		<key>Login.xcscheme_^#shared#^_</key>
 		<dict>
@@ -124,6 +127,11 @@
 			<true/>
 		</dict>
 		<key>82CACE182410F3FF0021E1DE</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>82CACEE1241131250021E1DE</key>
 		<dict>
 			<key>primary</key>
 			<true/>
