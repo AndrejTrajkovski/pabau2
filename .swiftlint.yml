@@ -4,7 +4,7 @@ opt_in_rules: # some rules are only opt-in
   - empty_count
 excluded: # paths to ignore during linting. Takes precedence over `included`.
   - Carthage
-  - Pods
+  - pabau2/src/Model
   - Source/ExcludedFolder
   - Source/ExcludedFile.swift
   - Source/*/ExcludedFile.swift # Exclude files with a wildcard

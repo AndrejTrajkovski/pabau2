@@ -26,18 +26,21 @@ struct PabauTabBar: View {
 	let store: Store<TabBarState, TabBarAction>
 	var body: some View {
 		TabView {
-			JourneyView()
+			JourneyNavigationView()
 				.tabItem {
+					Image(systemName: "staroflife")
 					Text("Journey")
 			}
 			Text("Calendar")
 				.tabItem {
+					Image(systemName: "calendar")
 					Text("Calendar")
 			}
 			Settings(store:
 				store.view(value: { $0.settings },
 									 action: { .settings($0)}))
 				.tabItem {
+					Image(systemName: "gear")
 					Text("Settings")
 			}
 		}

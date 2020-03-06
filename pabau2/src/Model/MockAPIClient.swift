@@ -14,7 +14,7 @@ public struct MockAPIClient: APIClient {
 	}
 
 	public func login(_ username: String, password: String) -> Effect<Result<User, LoginError>> {
-		return Just(.success(User(id: 1, name: "Andrej")))
+		return Just(.success(User(1, "Andrej")))
 			.delay(for: .seconds(delay), scheduler: DispatchQueue.main)
 			.eraseToEffect()
 	}
