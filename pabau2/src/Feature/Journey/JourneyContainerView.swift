@@ -1,6 +1,7 @@
 import SwiftUI
 import FSCalendarSwiftUI
 import Model
+import Util
 
 public struct JourneyContainerView: View {
 	let calendarViewModel = MyCalendarViewModel()
@@ -11,24 +12,32 @@ public struct JourneyContainerView: View {
 			JourneyList(journeys: [Journey]())
 		}
 	}
-
-//	let appt1 = Journey(id: 0,
-//											appointments: [],
-//											patient: BaseClient(),
-//											employee: Employee())
-//
-//	let journeys: [Journey] = [
-//
-//	]
+	
+	//	let appt1 = Journey(id: 0,
+	//											appointments: [],
+	//											patient: BaseClient(),
+	//											employee: Employee())
+	//
+	//	let journeys: [Journey] = [
+	//
+	//	]
 }
 
-func color(hexString: String) -> Color {
-	return Color.init
-}
-
-func journeyCell(journey: Journey) -> [JourneyCell] {
-	return JourneyCell.init(
-		color: Color.init(red: <#T##Double#>, green: <#T##Double#>, blue: <#T##Double#>), time: <#T##String#>, imageUrl: <#T##String#>, name: <#T##String#>, services: <#T##String#>, status: <#T##String#>, employee: <#T##String#>, paidStatus: <#T##String#>, stepsComplete: <#T##Int#>, stepsTotal: <#T##Int#>)
+func journeyCellAdapter(journey: Journey) -> JourneyCell {
+	return JourneyCell(
+		color: Color.init(hex: journey.appointments.first!.service!.color),
+		time: "12:30",
+		imageUrl: journey.patient.avatar,
+		name: journey.patient.firstName + journey.patient.lastName,
+		services: journey.appointments
+			.map{ $0.service }
+			.compactMap { $0?.name }
+			.reduce("", +),
+		status: journey.appointments.first?.status?.name,
+		employee: journey.employee.name,
+		paidStatus: "Paid",
+		stepsComplete: 0,
+		stepsTotal: 3)
 }
 
 struct JourneyList: View {
@@ -36,7 +45,7 @@ struct JourneyList: View {
 	var body: some View {
 		List {
 			ForEach(journeys) { journey in
-					
+				journeyCellAdapter(journey: journey)
 			}
 		}
 	}
@@ -45,32 +54,48 @@ struct JourneyList: View {
 struct JourneyCell: View {
 	let color: Color
 	let time: String
-	let imageUrl: String
+	let imageUrl: String?
 	let name: String
 	let services: String
-	let status: String
+	let status: String?
 	let employee: String
 	let paidStatus: String
 	let stepsComplete: Int
 	let stepsTotal: Int
-
 	var body: some View {
 		HStack {
-			Rectangle.init().frame(width: 8).background(color)
+			JourneyColorRect(color: color)
 			Text(time)
-			Image(imageUrl)
+			Image(imageUrl ?? "avatar_placeholder")
 			VStack {
 				Text(name)
 				Text(services)
-				Text(status)
+				Text(status ?? "")
 			}
 			Image(systemName: "person")
 			Text(employee)
 			Image(systemName: "briefcase")
 			Text(paidStatus)
-			Ellipse()
-				.fill(Color.blue)
-				.frame(width: 100, height: 50)
+			StepsStatusView(stepsComplete: stepsComplete, stepsTotal: stepsTotal)
 		}
+	}
+}
+
+struct StepsStatusView: View {
+	let stepsComplete: Int
+	let stepsTotal: Int
+	var body: some View {
+		Ellipse()
+			.fill(Color.blue)
+			.frame(width: 100.0, height: 50.0)
+	}
+}
+
+struct JourneyColorRect: View {
+	let color: Color
+	var body: some View {
+		Rectangle()
+			.frame(width: 8.0)
+			.background(color)
 	}
 }

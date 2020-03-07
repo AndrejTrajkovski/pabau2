@@ -286,6 +286,13 @@
 			remoteGlobalIDString = 82CACEE1241131250021E1DE;
 			remoteInfo = FSCalendarSwiftUI;
 		};
+		827B46072413979D00A5975E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 82BE2F3C23D97D9C00B3678A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8227FB50240BAC8300F653B5;
+			remoteInfo = Util;
+		};
 		82BE2F7723D9983C00B3678A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 82BE2F3C23D97D9C00B3678A /* Project object */;
@@ -1152,6 +1159,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				827B46082413979D00A5975E /* PBXTargetDependency */,
 				827B45982411368A00A5975E /* PBXTargetDependency */,
 			);
 			name = Journey;
@@ -1775,6 +1783,11 @@
 			isa = PBXTargetDependency;
 			target = 82CACEE1241131250021E1DE /* FSCalendarSwiftUI */;
 			targetProxy = 827B45972411368A00A5975E /* PBXContainerItemProxy */;
+		};
+		827B46082413979D00A5975E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8227FB50240BAC8300F653B5 /* Util */;
+			targetProxy = 827B46072413979D00A5975E /* PBXContainerItemProxy */;
 		};
 		82BE2F7823D9983C00B3678A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
