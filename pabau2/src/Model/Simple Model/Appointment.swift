@@ -3,7 +3,7 @@
 
 import Foundation
 
-public struct Appointment: Codable {
+public struct Appointment: Codable, Equatable {
 
     public var id: Int
 

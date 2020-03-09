@@ -4,9 +4,9 @@
 import Foundation
 
 /** If a Step object \&quot;stepType\&quot; property value is \&quot;consents\&quot; or \&quot;treatmentNotes\&quot;, and its \&quot;preselectedTemplateType\&quot; property value is \&quot;template\&quot;, that Step object will have a value for the \&quot;formTemplate\&quot; property. If a Step object \&quot;stepType\&quot; property value is not \&quot;consents\&quot; nor \&quot;treatmentNotes\&quot;, then both \&quot;preselectedTemplateType\&quot; and \&quot;template\&quot; will not be returned. */
-public struct Step: Codable, Identifiable {
+public struct Step: Codable, Identifiable, Equatable {
 
-    public enum PreselectedTemplateType: String, Codable { 
+    public enum PreselectedTemplateType: String, Codable, Equatable { 
         case definedbyservice = "definedByService"
         case template = "template"
     }

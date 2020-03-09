@@ -4,7 +4,7 @@
 import Foundation
 
 
-public struct JourneyPhotos: Codable, Identifiable {
+public struct JourneyPhotos: Codable, Identifiable, Equatable {
 
     public let id: Int
     public let url: String?

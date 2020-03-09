@@ -4,7 +4,7 @@
 import Foundation
 
 
-public struct Employee: Codable, Identifiable {
+public struct Employee: Codable, Identifiable, Equatable {
 
 
     public let id: Int

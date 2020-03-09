@@ -4,7 +4,7 @@
 import Foundation
 
 /** Abstract superclass for Appointment and Bookout. */
-public struct Termin: Codable, Identifiable {
+public struct Termin: Codable, Identifiable, Equatable {
 
     public enum ModelType: String, Codable { 
         case appointment = "appointment"

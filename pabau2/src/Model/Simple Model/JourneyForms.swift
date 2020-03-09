@@ -4,7 +4,7 @@
 import Foundation
 
 
-public struct JourneyForms: Codable, Identifiable {
+public struct JourneyForms: Codable, Identifiable, Equatable {
 
     public let id: Int
 

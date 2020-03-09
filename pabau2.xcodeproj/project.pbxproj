@@ -122,6 +122,8 @@
 		827B460424126D4E00A5975E /* Pathway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45D024126D4E00A5975E /* Pathway.swift */; };
 		827B460524126D4E00A5975E /* Termin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45D124126D4E00A5975E /* Termin.swift */; };
 		827B460624126D4E00A5975E /* JourneyForms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45D224126D4E00A5975E /* JourneyForms.swift */; };
+		827B460B2413C0C300A5975E /* NonEmpty in Frameworks */ = {isa = PBXBuildFile; productRef = 827B460A2413C0C300A5975E /* NonEmpty */; };
+		827B460D2413C14D00A5975E /* NonEmpty in Frameworks */ = {isa = PBXBuildFile; productRef = 827B460C2413C14D00A5975E /* NonEmpty */; };
 		82811EF423E06BCB0066AFDC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EF323E06BCB0066AFDC /* ContentView.swift */; };
 		8297A29023D9AD7E00D091FF /* PageControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 8297A28E23D9AD7E00D091FF /* PageControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8297A29423D9AD7E00D091FF /* PageControl.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8297A28C23D9AD7E00D091FF /* PageControl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -549,6 +551,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				827B460D2413C14D00A5975E /* NonEmpty in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -594,6 +597,7 @@
 				82CACEE9241131260021E1DE /* FSCalendarSwiftUI.framework in Frameworks */,
 				82B02FFE23F2542A0015B0B4 /* CasePaths in Frameworks */,
 				8227FB9F240BB40300F653B5 /* Model.framework in Frameworks */,
+				827B460B2413C0C300A5975E /* NonEmpty in Frameworks */,
 				8227FB66240BAC8400F653B5 /* Util.framework in Frameworks */,
 				82CACE7E2411293C0021E1DE /* FSCalendar.framework in Frameworks */,
 			);
@@ -1118,9 +1122,13 @@
 			buildRules = (
 			);
 			dependencies = (
+				827B460F2413C15500A5975E /* PBXTargetDependency */,
 				827B4574241135F700A5975E /* PBXTargetDependency */,
 			);
 			name = Model;
+			packageProductDependencies = (
+				827B460C2413C14D00A5975E /* NonEmpty */,
+			);
 			productName = Model;
 			productReference = 8227FB8A240BB40300F653B5 /* Model.framework */;
 			productType = "com.apple.product-type.framework";
@@ -1229,6 +1237,7 @@
 			name = pabau2;
 			packageProductDependencies = (
 				82B02FFD23F2542A0015B0B4 /* CasePaths */,
+				827B460A2413C0C300A5975E /* NonEmpty */,
 			);
 			productName = pabau2;
 			productReference = 82BE2F4423D97D9C00B3678A /* pabau2.app */;
@@ -1375,6 +1384,7 @@
 			packageReferences = (
 				82B02FFC23F2542A0015B0B4 /* XCRemoteSwiftPackageReference "swift-case-paths" */,
 				8227FBAC240BC68400F653B5 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
+				827B46092413C0C300A5975E /* XCRemoteSwiftPackageReference "swift-nonempty" */,
 			);
 			productRefGroup = 82BE2F4523D97D9C00B3678A /* Products */;
 			projectDirPath = "";
@@ -1788,6 +1798,10 @@
 			isa = PBXTargetDependency;
 			target = 8227FB50240BAC8300F653B5 /* Util */;
 			targetProxy = 827B46072413979D00A5975E /* PBXContainerItemProxy */;
+		};
+		827B460F2413C15500A5975E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 827B460E2413C15500A5975E /* NonEmpty */;
 		};
 		82BE2F7823D9983C00B3678A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2712,6 +2726,14 @@
 				minimumVersion = 1.7.2;
 			};
 		};
+		827B46092413C0C300A5975E /* XCRemoteSwiftPackageReference "swift-nonempty" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-nonempty.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.2;
+			};
+		};
 		82B02FFC23F2542A0015B0B4 /* XCRemoteSwiftPackageReference "swift-case-paths" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-case-paths.git";
@@ -2737,6 +2759,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 82B02FFC23F2542A0015B0B4 /* XCRemoteSwiftPackageReference "swift-case-paths" */;
 			productName = CasePaths;
+		};
+		827B460A2413C0C300A5975E /* NonEmpty */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 827B46092413C0C300A5975E /* XCRemoteSwiftPackageReference "swift-nonempty" */;
+			productName = NonEmpty;
+		};
+		827B460C2413C14D00A5975E /* NonEmpty */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 827B46092413C0C300A5975E /* XCRemoteSwiftPackageReference "swift-nonempty" */;
+			productName = NonEmpty;
+		};
+		827B460E2413C15500A5975E /* NonEmpty */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 827B46092413C0C300A5975E /* XCRemoteSwiftPackageReference "swift-nonempty" */;
+			productName = NonEmpty;
 		};
 		82B02FFD23F2542A0015B0B4 /* CasePaths */ = {
 			isa = XCSwiftPackageProductDependency;

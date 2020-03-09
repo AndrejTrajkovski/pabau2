@@ -3,7 +3,7 @@
 
 import Foundation
 
-public enum StepType: String, Codable {
+public enum StepType: String, Codable, Equatable {
     case patientdetails = "patientDetails"
     case medicalhistory = "medicalHistory"
     case consents = "consents"

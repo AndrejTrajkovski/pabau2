@@ -4,7 +4,7 @@
 import Foundation
 
 
-public struct Media: Codable, Identifiable {
+public struct Media: Codable, Identifiable, Equatable {
 
     public enum ModelType: String, Codable { 
         case photo = "photo"

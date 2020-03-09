@@ -4,7 +4,7 @@
 import Foundation
 
 
-public struct AppointmentStatus: Codable, Identifiable {
+public struct AppointmentStatus: Codable, Identifiable, Equatable {
 
     public let id: Int?
 

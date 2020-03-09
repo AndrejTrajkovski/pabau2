@@ -4,7 +4,7 @@
 import Foundation
 
 
-public struct BaseService: Codable, Identifiable {
+public struct BaseService: Codable, Identifiable, Equatable {
 
     public let id: Int
 

@@ -1,10 +1,15 @@
 import Foundation
+import NonEmpty
 
-public struct Journey: Codable, Identifiable {
+public struct Journey: Codable, Identifiable, Equatable, Hashable {
+	
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(id)
+	}
 	
 	public let id: Int
 	
-	public let appointments: [Appointment]
+	public let appointments: NonEmpty<[Appointment]>
 	
 	public let patient: BaseClient
 	
@@ -14,22 +19,22 @@ public struct Journey: Codable, Identifiable {
 	
 	public let patientChecked: PatientStatus?
 	
-	public let forms: [JourneyForms]?
+	public let forms: [JourneyForms]
 	
-	public let photos: [JourneyPhotos]?
+	public let photos: [JourneyPhotos]
 	
-	public let postCare: [JourneyPostCare]?
+	public let postCare: [JourneyPostCare]
 	
 	public let media: [Media]?
 	public init(id: Int,
-							appointments: [Appointment],
+							appointments: NonEmpty<[Appointment]>,
 							patient: BaseClient,
 							pathway: Pathway? = nil,
 							employee: Employee,
 							patientChecked: PatientStatus? = nil,
-							forms: [JourneyForms]? = nil,
-							photos: [JourneyPhotos]? = nil,
-							postCare: [JourneyPostCare]? = nil,
+							forms: [JourneyForms],
+							photos: [JourneyPhotos],
+							postCare: [JourneyPostCare],
 							media: [Media]? = nil) {
 		self.id = id
 		self.appointments = appointments
@@ -54,5 +59,4 @@ public struct Journey: Codable, Identifiable {
 		case postCare = "post_care"
 		case media
 	}
-	
 }

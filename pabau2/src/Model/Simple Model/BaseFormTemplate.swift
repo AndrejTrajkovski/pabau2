@@ -4,7 +4,7 @@
 import Foundation
 
 
-public struct BaseFormTemplate: Codable, Identifiable {
+public struct BaseFormTemplate: Codable, Identifiable, Equatable {
 
 
     public let id: Int
