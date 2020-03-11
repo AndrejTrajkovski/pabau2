@@ -6,7 +6,8 @@ import Login
 import Model
 
 typealias AppEnvironment = (
-  apiClient: APIClient,
+  loginAPI: LoginAPI,
+	journeyAPI: JourneyAPI,
 	userDefaults: UserDefaults
 )
 
@@ -45,13 +46,13 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = combine(
 		walkthroughContainerReducer,
 		value: \AppState.walktrough,
 		action: /AppAction.walkthrough,
-		environment: { LoginEnvironment($0.apiClient, $0.userDefaults) }
+		environment: { LoginEnvironment($0.loginAPI, $0.userDefaults) }
 	),
 	pullback(
 		tabBarReducer,
 		value: \AppState.tabBar,
 		action: /AppAction.tabBar,
-		environment: { TabBarEnvironment($0.apiClient, $0.userDefaults) }
+		environment: { TabBarEnvironment($0) }
 	)
 )
 

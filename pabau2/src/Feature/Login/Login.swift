@@ -5,7 +5,7 @@ import CasePaths
 import Util
 import Model
 
-public typealias LoginEnvironment = (apiClient: APIClient, userDefaults: UserDefaults)
+public typealias LoginEnvironment = (apiClient: LoginAPI, userDefaults: UserDefaults)
 
 public struct LoginViewState: Equatable {
 	public init () {}
@@ -15,7 +15,7 @@ public struct LoginViewState: Equatable {
 	var loginLS: LoadingState<User, LoginError> = .initial
 	var fpValidation: String = ""
 	var rpValidation: RPValidator = .failure([])
-	var rpLoading: LoadingState<ResetPassSuccess, ResetPassBackendError> = .initial
+	var rpLoading: LoadingState<ResetPassSuccess, RequestError> = .initial
 }
 
 public enum LoginViewAction: Equatable {
@@ -29,7 +29,7 @@ public enum LoginAction: Equatable {
 	case gotResponse(Result<User, LoginError>)
 }
 
-func handleLoginTapped(_ email: String, _ password: String, state: inout WalkthroughContainerState, apiClient: APIClient) -> [Effect<LoginAction>] {
+func handleLoginTapped(_ email: String, _ password: String, state: inout WalkthroughContainerState, apiClient: LoginAPI) -> [Effect<LoginAction>] {
 	let validEmail = isValidEmail(email)
 	let emptyPass = password.isEmpty
 	state.loginViewState.emailValidationText = emailValidationText(validEmail)

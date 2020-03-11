@@ -5,7 +5,7 @@ import Model
 import Util
 import Journey
 
-public typealias TabBarEnvironment = (apiClient: APIClient, userDefaults: UserDefaults)
+public typealias TabBarEnvironment = (loginAPI: LoginAPI, journeyAPI: JourneyAPI, userDefaults: UserDefaults)
 
 public struct TabBarState {
 	public var navigation: Navigation

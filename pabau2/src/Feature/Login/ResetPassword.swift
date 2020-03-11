@@ -40,7 +40,7 @@ public struct ResetPassRequest: Equatable {
 public struct ResetPasswordState: Equatable {
 	var navigation: Navigation
 	var rpValidation: RPValidator
-	var loadingState: LoadingState<ResetPassSuccess, ResetPassBackendError>
+	var loadingState: LoadingState<ResetPassSuccess, RequestError>
 	var newPassValidator: String {
 		guard let rpFailure = (/RPValidator.failure).extract(from: rpValidation) else {
 			return ""
@@ -81,7 +81,7 @@ public struct ResetPasswordState: Equatable {
 public enum ResetPasswordAction: Equatable {
 	case backBtnTapped
 	case changePassTapped(String, String, String)
-	case gotResponse(Result<ResetPassSuccess, ResetPassBackendError>)
+	case gotResponse(Result<ResetPassSuccess, RequestError>)
 }
 
 func validate(_ code: String, _ newPass: String, _ confirmPass: String) -> RPValidator {
@@ -106,7 +106,7 @@ func validate(_ code: String, _ newPass: String, _ confirmPass: String) -> RPVal
 	}
 }
 
-func handle (_ code: String, _ newPass: String, _ confirmPass: String, _ state: inout ResetPasswordState, _ apiClient: APIClient) -> [Effect<ResetPasswordAction>] {
+func handle (_ code: String, _ newPass: String, _ confirmPass: String, _ state: inout ResetPasswordState, _ apiClient: LoginAPI) -> [Effect<ResetPasswordAction>] {
 	let validated = validate(code, newPass, confirmPass)
 	state.rpValidation = validated
 	switch validated {
@@ -122,7 +122,7 @@ func handle (_ code: String, _ newPass: String, _ confirmPass: String, _ state: 
 	}
 }
 
-func handle(_ result: Result<ResetPassSuccess, ResetPassBackendError>, _ state: inout ResetPasswordState) ->  [Effect<ResetPasswordAction>] {
+func handle(_ result: Result<ResetPassSuccess, RequestError>, _ state: inout ResetPasswordState) ->  [Effect<ResetPasswordAction>] {
 	switch result {
 	case .success(let success):
 		state.loadingState = .gotSuccess(success)

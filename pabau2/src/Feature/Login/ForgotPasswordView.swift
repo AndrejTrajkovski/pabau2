@@ -17,7 +17,7 @@ public struct ForgotPassContainerState {
 	var forgotPassLS: LoadingState<ForgotPassSuccess, ForgotPassError>
 	var fpValidation: String
 	var rpValidation: RPValidator
-	var rpLoading: LoadingState<ResetPassSuccess, ResetPassBackendError>
+	var rpLoading: LoadingState<ResetPassSuccess, RequestError>
 	var forgotPass: ForgotPassState {
 		get { return ForgotPassState(navigation: navigation,
 																 loadingState: forgotPassLS,

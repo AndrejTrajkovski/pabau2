@@ -65,6 +65,8 @@
 		825C525A2418C61200A33A29 /* APIs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C525224167C2E00A33A29 /* APIs.swift */; };
 		825C525B2418C61500A33A29 /* APIHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C525024167C2D00A33A29 /* APIHelper.swift */; };
 		825C525C2418C61B00A33A29 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C525124167C2E00A33A29 /* Models.swift */; };
+		825C52672418EC4B00A33A29 /* JourneyAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C524C24167BF500A33A29 /* JourneyAPI.swift */; };
+		825C526824192DE400A33A29 /* LoginAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C525724167D4600A33A29 /* LoginAPI.swift */; };
 		827B4572241135A700A5975E /* FSCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82CACE772411293C0021E1DE /* FSCalendar.framework */; };
 		827B45832411368100A5975E /* Journey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 827B457A2411368100A5975E /* Journey.framework */; };
 		827B458A2411368100A5975E /* JourneyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45892411368100A5975E /* JourneyTests.swift */; };
@@ -1627,6 +1629,7 @@
 				825C525C2418C61B00A33A29 /* Models.swift in Sources */,
 				827B460024126D4E00A5975E /* Tag.swift in Sources */,
 				82104533240C4371004EA838 /* UserDefaultsConfig.swift in Sources */,
+				825C526824192DE400A33A29 /* LoginAPI.swift in Sources */,
 				827B45F224126D4E00A5975E /* BaseService.swift in Sources */,
 				827B45FD24126D4E00A5975E /* PhotoDetails.swift in Sources */,
 				827B460524126D4E00A5975E /* Termin.swift in Sources */,
@@ -1657,6 +1660,7 @@
 				8210452F240C2258004EA838 /* MockAPIClient.swift in Sources */,
 				827B45EA24126D4E00A5975E /* CheckBoxValue.swift in Sources */,
 				827B45D624126D4E00A5975E /* ClientLink.swift in Sources */,
+				825C52672418EC4B00A33A29 /* JourneyAPI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

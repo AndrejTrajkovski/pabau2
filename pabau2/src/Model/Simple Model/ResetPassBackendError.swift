@@ -1,10 +1,10 @@
-//public enum ResetPassBackendError: Error {
+//public enum RequestError: Error {
 //	case emailNotSent
 //	case genericBackendError(RequestError)
 //}
 //
-//extension ResetPassBackendError: Equatable {
-//	public static func == (lhs: ResetPassBackendError, rhs: ResetPassBackendError) -> Bool {
+//extension RequestError: Equatable {
+//	public static func == (lhs: RequestError, rhs: RequestError) -> Bool {
 //		switch (lhs, rhs) {
 //		case (.emailNotSent, .emailNotSent):
 //			return true

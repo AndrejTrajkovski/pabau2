@@ -1,8 +1,27 @@
 import Foundation
+import ComposableArchitecture
+import Combine
 
-public struct JourneyAPI {
-	let baseAPI: BaseAPI
-	static let route = "journeys"
+public protocol JourneyAPI {
+	func getJourneys(date: Date) -> Effect<Result<[Journey], RequestError>>
+}
+
+public struct JourneyMockAPI: MockAPI, JourneyAPI {
+	public init () {}
+	public func getJourneys(date: Date) -> Effect<Result<[Journey], RequestError>> {
+		mockSuccess([])
+	}
+}
+
+public struct JourneyLiveAPI: JourneyAPI, LiveAPI {
+	public let requestBuilderFactory: RequestBuilderFactory = RequestBuilderFactoryImpl()
+	
+	public func getJourneys(date: Date) -> Effect<Result<[Journey], RequestError>> {
+		getJourneys(date: date).effect()
+	}
+	
+	public var basePath: String = ""
+	public let route: String = "journeys"
 	//    open class func journeyAppointmentPost(body: AppointmentBody? = nil, completion: @escaping ((_ data: Journey?,_ error: Error?) -> Void)) {
 	//        journeyAppointmentPostWithRequestBuilder(body: body).execute { (response, error) -> Void in
 	//            completion(response?.body, error)
@@ -188,18 +207,16 @@ public struct JourneyAPI {
 	- returns: RequestBuilder<[Journey]>
 	*/
 	
-	func journeysGetWithRequestBuilder(date: Date) -> RequestBuilder<[Journey]> {
-		
-		let URLString = baseAPI.basePath + JourneyAPI.route
+	private func getJourneys(date: Date) -> RequestBuilder<[Journey]> {
+		let URLString = basePath + route + "journeys"
 		let parameters: [String:Any]? = nil
 		var url = URLComponents(string: URLString)
 		url?.queryItems = APIHelper.mapValuesToQueryItems([
 			"date": try? newJSONEncoder().encode(date)
 		])
 		
-		let requestBuilder: RequestBuilder<[Journey]>.Type = baseAPI.requestBuilderFactory.getBuilder()
+		let requestBuilder: RequestBuilder<[Journey]>.Type = requestBuilderFactory.getBuilder()
 		
 		return requestBuilder.init(method: "GET", URLString: (url?.string ?? URLString), parameters: parameters, isBody: false)
 	}
-	
 }

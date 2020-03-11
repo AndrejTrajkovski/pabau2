@@ -5,7 +5,7 @@ import Util
 import NonEmpty
 import ComposableArchitecture
 
-public typealias JourneyEnvironemnt = (apiClient: APIClient, userDefaults: UserDefaults)
+public typealias JourneyEnvironemnt = (apiClient: JourneyAPI, userDefaults: UserDefaults)
 
 func journeyReducer(state: inout JourneyState, action: JourneyAction, environment: JourneyEnvironemnt) -> [Effect<JourneyAction>] {
 	switch action {

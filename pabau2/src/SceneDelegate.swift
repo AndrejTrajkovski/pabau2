@@ -19,11 +19,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         rootView: ContentView(
           store: Store(
 						initialValue: AppState(navigation:
-							.tabBar(.journey)
+							.login([.walkthroughScreen])
 						),
 						reducer: reducer,
 						environment: AppEnvironment(
-							apiClient: MockAPIClient(delay: 1),
+							loginAPI: LoginMockAPI(delay: 1),
+							journeyAPI: JourneyMockAPI(),
 							userDefaults: UserDefaults.standard
 						)
           )
