@@ -61,6 +61,10 @@
 		82300546240FE18700B4D159 /* CasePaths in Frameworks */ = {isa = PBXBuildFile; productRef = 82300545240FE18700B4D159 /* CasePaths */; };
 		824930E0240CE93500953E90 /* ComposableArchitectureTestSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 824930DE240CE93500953E90 /* ComposableArchitectureTestSupport.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		824930E9240CE94B00953E90 /* ComposableArchitectureTestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824930E8240CE94B00953E90 /* ComposableArchitectureTestSupport.swift */; };
+		825C52592417895D00A33A29 /* RequestBuilderImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C524F24167C2D00A33A29 /* RequestBuilderImpl.swift */; };
+		825C525A2418C61200A33A29 /* APIs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C525224167C2E00A33A29 /* APIs.swift */; };
+		825C525B2418C61500A33A29 /* APIHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C525024167C2D00A33A29 /* APIHelper.swift */; };
+		825C525C2418C61B00A33A29 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C525124167C2E00A33A29 /* Models.swift */; };
 		827B4572241135A700A5975E /* FSCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82CACE772411293C0021E1DE /* FSCalendar.framework */; };
 		827B45832411368100A5975E /* Journey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 827B457A2411368100A5975E /* Journey.framework */; };
 		827B458A2411368100A5975E /* JourneyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45892411368100A5975E /* JourneyTests.swift */; };
@@ -385,6 +389,12 @@
 		824930DE240CE93500953E90 /* ComposableArchitectureTestSupport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ComposableArchitectureTestSupport.h; sourceTree = "<group>"; };
 		824930DF240CE93500953E90 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		824930E8240CE94B00953E90 /* ComposableArchitectureTestSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComposableArchitectureTestSupport.swift; sourceTree = "<group>"; };
+		825C524C24167BF500A33A29 /* JourneyAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JourneyAPI.swift; sourceTree = "<group>"; };
+		825C524F24167C2D00A33A29 /* RequestBuilderImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestBuilderImpl.swift; sourceTree = "<group>"; };
+		825C525024167C2D00A33A29 /* APIHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIHelper.swift; sourceTree = "<group>"; };
+		825C525124167C2E00A33A29 /* Models.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		825C525224167C2E00A33A29 /* APIs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIs.swift; sourceTree = "<group>"; };
+		825C525724167D4600A33A29 /* LoginAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginAPI.swift; sourceTree = "<group>"; };
 		827B457A2411368100A5975E /* Journey.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Journey.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		827B457C2411368100A5975E /* Journey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Journey.h; sourceTree = "<group>"; };
 		827B457D2411368100A5975E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -682,17 +692,14 @@
 		8227FB8B240BB40300F653B5 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				825C524E24167C0000A33A29 /* RequestBuilder */,
+				825C524B24167BE300A33A29 /* API */,
 				827B459E24126D4D00A5975E /* Simple Model */,
 				82104522240C2018004EA838 /* APIClient.swift */,
 				8210452E240C2258004EA838 /* MockAPIClient.swift */,
 				8227FB82240BB1CB00F653B5 /* Navigation.swift */,
 				8227FB8C240BB40300F653B5 /* Model.h */,
 				8227FB8D240BB40300F653B5 /* Info.plist */,
-				82104524240C21B9004EA838 /* ForgotPassSuccess.swift */,
-				82104526240C21E3004EA838 /* ForgotPassError.swift */,
-				82104528240C2218004EA838 /* LoginError.swift */,
-				8210452A240C2234004EA838 /* ResetPassSuccess.swift */,
-				8210452C240C2241004EA838 /* ResetPassBackendError.swift */,
 				82104530240C434A004EA838 /* UserDefault.swift */,
 				82104532240C4371004EA838 /* UserDefaultsConfig.swift */,
 			);
@@ -707,6 +714,26 @@
 				824930E8240CE94B00953E90 /* ComposableArchitectureTestSupport.swift */,
 			);
 			path = ComposableArchitectureTestSupport;
+			sourceTree = "<group>";
+		};
+		825C524B24167BE300A33A29 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				825C524C24167BF500A33A29 /* JourneyAPI.swift */,
+				825C525724167D4600A33A29 /* LoginAPI.swift */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
+		825C524E24167C0000A33A29 /* RequestBuilder */ = {
+			isa = PBXGroup;
+			children = (
+				825C525024167C2D00A33A29 /* APIHelper.swift */,
+				825C525224167C2E00A33A29 /* APIs.swift */,
+				825C525124167C2E00A33A29 /* Models.swift */,
+				825C524F24167C2D00A33A29 /* RequestBuilderImpl.swift */,
+			);
+			path = RequestBuilder;
 			sourceTree = "<group>";
 		};
 		827B457B2411368100A5975E /* Journey */ = {
@@ -732,6 +759,11 @@
 		827B459E24126D4D00A5975E /* Simple Model */ = {
 			isa = PBXGroup;
 			children = (
+				82104524240C21B9004EA838 /* ForgotPassSuccess.swift */,
+				82104526240C21E3004EA838 /* ForgotPassError.swift */,
+				82104528240C2218004EA838 /* LoginError.swift */,
+				8210452A240C2234004EA838 /* ResetPassSuccess.swift */,
+				8210452C240C2241004EA838 /* ResetPassBackendError.swift */,
 				827B459F24126D4D00A5975E /* DrawingType.swift */,
 				827B45A024126D4D00A5975E /* FormTemplate.swift */,
 				827B45A124126D4D00A5975E /* Location.swift */,
@@ -1562,6 +1594,7 @@
 				8227FBA7240BB41500F653B5 /* Navigation.swift in Sources */,
 				827B45EC24126D4E00A5975E /* InlineResponse200.swift in Sources */,
 				82104531240C434A004EA838 /* UserDefault.swift in Sources */,
+				825C52592417895D00A33A29 /* RequestBuilderImpl.swift in Sources */,
 				827B45FB24126D4E00A5975E /* BaseFormTemplate.swift in Sources */,
 				827B45D824126D4E00A5975E /* AppointmentStatus.swift in Sources */,
 				827B45DF24126D4E00A5975E /* Shift.swift in Sources */,
@@ -1581,6 +1614,7 @@
 				827B45F624126D4E00A5975E /* FormFieldValue.swift in Sources */,
 				827B45D924126D4E00A5975E /* FormTemplateFormData.swift in Sources */,
 				827B460224126D4E00A5975E /* ClientDetails.swift in Sources */,
+				825C525B2418C61500A33A29 /* APIHelper.swift in Sources */,
 				827B45ED24126D4E00A5975E /* Photo.swift in Sources */,
 				82104529240C2218004EA838 /* LoginError.swift in Sources */,
 				827B45D524126D4E00A5975E /* Location.swift in Sources */,
@@ -1590,6 +1624,7 @@
 				827B45F824126D4E00A5975E /* Employee.swift in Sources */,
 				827B45D324126D4E00A5975E /* DrawingType.swift in Sources */,
 				827B45E324126D4E00A5975E /* PostcareType.swift in Sources */,
+				825C525C2418C61B00A33A29 /* Models.swift in Sources */,
 				827B460024126D4E00A5975E /* Tag.swift in Sources */,
 				82104533240C4371004EA838 /* UserDefaultsConfig.swift in Sources */,
 				827B45F224126D4E00A5975E /* BaseService.swift in Sources */,
@@ -1608,6 +1643,7 @@
 				827B45E924126D4E00A5975E /* User.swift in Sources */,
 				827B45E624126D4E00A5975E /* JourneyPhotos.swift in Sources */,
 				8210452B240C2234004EA838 /* ResetPassSuccess.swift in Sources */,
+				825C525A2418C61200A33A29 /* APIs.swift in Sources */,
 				827B45E224126D4E00A5975E /* StepType.swift in Sources */,
 				827B45DE24126D4E00A5975E /* ClientItemsCount.swift in Sources */,
 				827B45F924126D4E00A5975E /* AnyValue.swift in Sources */,

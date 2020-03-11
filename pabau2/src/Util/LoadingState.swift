@@ -1,9 +1,7 @@
 public enum LoadingState<Value: Equatable, Error: Equatable>: Equatable {
 	public static func == (lhs: LoadingState<Value, Error>, rhs: LoadingState<Value, Error>) -> Bool {
 		switch (lhs, rhs) {
-		case (.initial, .initial):
-			return true
-		case (.loading, .loading):
+		case (.initial, .initial), (.loading, .loading):
 			return true
 		case (let .gotSuccess(lhsValue), let .gotSuccess(rhsValue)):
 			return lhsValue == rhsValue
