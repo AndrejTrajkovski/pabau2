@@ -152,39 +152,40 @@ struct JourneyCell: View {
 			JourneyColorRect(color: color)
 			Spacer()
 			Group {
-				Text(time)
-					.font(Font.semibold11)
+				Text(time).font(Font.semibold11)
 				Spacer()
 				Image(imageUrl ?? "emily")
 					.resizable()
 					.frame(width: 55, height: 55)
 					.clipShape(Circle())
 				VStack(alignment: .leading) {
-					Text(name)
-						.font(Font.semibold14)
-					Text(services)
-					Text(status ?? "")
+					Text(name).font(Font.semibold14)
+					Text(services).font(Font.regular12)
+					Text(status ?? "").font(.medium9).foregroundColor(.deepSkyBlue)
 				}
 			}
 			Spacer()
-			Group {
-				Image(systemName: "person")
-					.foregroundColor(.deepSkyBlue)
-				Text(employee)
-					.font(Font.semibold11)
-			}
+			IconAndText(imageSystemName: "person", text: employee)
 			Spacer()
-			Group {
-				Image(systemName: "briefcase")
-					.foregroundColor(.deepSkyBlue)
-				Text(paidStatus)
-					.font(Font.semibold11)
-			}
+			IconAndText(imageSystemName: "bag", text: paidStatus)
 			Spacer()
 			StepsStatusView(stepsComplete: stepsComplete, stepsTotal: stepsTotal)
 			Spacer()
 		}
 		.frame(minWidth: 0, maxWidth: .infinity, idealHeight: 97)
+	}
+}
+
+struct IconAndText: View {
+	let imageSystemName: String
+	let text: String
+	var body: some View {
+		HStack {
+			Image(systemName: imageSystemName)
+				.foregroundColor(.deepSkyBlue)
+			Text(text)
+				.font(Font.semibold11)
+		}
 	}
 }
 

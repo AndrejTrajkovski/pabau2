@@ -19,7 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         rootView: ContentView(
           store: Store(
 						initialValue: AppState(navigation:
-							.login([.walkthroughScreen])
+							.tabBar(.journey)
 						),
 						reducer: reducer,
 						environment: AppEnvironment(
