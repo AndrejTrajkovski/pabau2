@@ -90,10 +90,14 @@ public struct JourneyContainerView: View {
 	]
 	let calendarViewModel = MyCalendarViewModel()
 	public init () {}
+	@State private var calendarHeight: CGFloat = 500
 	public var body: some View {
 		VStack {
-			SwiftUICalendar.init(calendarViewModel)
+			SwiftUICalendar.init(calendarViewModel, self.$calendarHeight)
+				.padding(0)
+				.frame(height: self.calendarHeight)
 			JourneyList(journeys: journeys)
+			Spacer()
 		}
 	}
 
