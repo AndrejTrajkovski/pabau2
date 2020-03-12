@@ -43,11 +43,7 @@ enum JourneyAction {
 	case addAppointment
 	case searchedText(String)
 	case toggleEmployees
-	case gotResponse(Result<[Journey], HTTPError>)
-}
-
-enum HTTPError: Error, Equatable {
-
+	case gotResponse(Result<[Journey], RequestError>)
 }
 
 enum CompleteFilter {
@@ -57,7 +53,7 @@ enum CompleteFilter {
 }
 
 struct JourneyState {
-	var loadingState: LoadingState<[Journey], HTTPError>
+	var loadingState: LoadingState<[Journey], RequestError>
 	var journeys: Set<Journey>
 	var selectedFilter: CompleteFilter
 	var selectedDate: Date
