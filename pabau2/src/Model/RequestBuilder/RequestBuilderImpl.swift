@@ -1,6 +1,10 @@
 import Foundation
 import Combine
 
+public protocol RequestBuilderFactory {
+    func getBuilder<T:Decodable>() -> RequestBuilder<T>.Type
+}
+
 class RequestBuilderFactoryImpl: RequestBuilderFactory {
 	
 	func getBuilder<T:Decodable>() -> RequestBuilder<T>.Type {

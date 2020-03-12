@@ -10,13 +10,12 @@
 		820357F6240CEFE30050550C /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 820357F5240CEFE30050550C /* SnapshotTesting */; };
 		820357F7240CEFE90050550C /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82104534240CE516004EA838 /* XCTest.framework */; };
 		8203580F240FDF390050550C /* CasePaths in Frameworks */ = {isa = PBXBuildFile; productRef = 8203580E240FDF390050550C /* CasePaths */; };
-		82104523240C2018004EA838 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104522240C2018004EA838 /* APIClient.swift */; };
 		82104525240C21B9004EA838 /* ForgotPassSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104524240C21B9004EA838 /* ForgotPassSuccess.swift */; };
 		82104527240C21E3004EA838 /* ForgotPassError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104526240C21E3004EA838 /* ForgotPassError.swift */; };
 		82104529240C2218004EA838 /* LoginError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104528240C2218004EA838 /* LoginError.swift */; };
 		8210452B240C2234004EA838 /* ResetPassSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8210452A240C2234004EA838 /* ResetPassSuccess.swift */; };
 		8210452D240C2241004EA838 /* ResetPassBackendError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8210452C240C2241004EA838 /* ResetPassBackendError.swift */; };
-		8210452F240C2258004EA838 /* MockAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8210452E240C2258004EA838 /* MockAPIClient.swift */; };
+		8210452F240C2258004EA838 /* LoginMockAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8210452E240C2258004EA838 /* LoginMockAPI.swift */; };
 		82104531240C434A004EA838 /* UserDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104530240C434A004EA838 /* UserDefault.swift */; };
 		82104533240C4371004EA838 /* UserDefaultsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104532240C4371004EA838 /* UserDefaultsConfig.swift */; };
 		8227FB30240BAAB600F653B5 /* Login.h in Headers */ = {isa = PBXBuildFile; fileRef = 8227FB20240BAAB600F653B5 /* Login.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -62,11 +61,17 @@
 		824930E0240CE93500953E90 /* ComposableArchitectureTestSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 824930DE240CE93500953E90 /* ComposableArchitectureTestSupport.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		824930E9240CE94B00953E90 /* ComposableArchitectureTestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824930E8240CE94B00953E90 /* ComposableArchitectureTestSupport.swift */; };
 		825C52592417895D00A33A29 /* RequestBuilderImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C524F24167C2D00A33A29 /* RequestBuilderImpl.swift */; };
-		825C525A2418C61200A33A29 /* APIs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C525224167C2E00A33A29 /* APIs.swift */; };
+		825C525A2418C61200A33A29 /* RequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C525224167C2E00A33A29 /* RequestBuilder.swift */; };
 		825C525B2418C61500A33A29 /* APIHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C525024167C2D00A33A29 /* APIHelper.swift */; };
-		825C525C2418C61B00A33A29 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C525124167C2E00A33A29 /* Models.swift */; };
+		825C525C2418C61B00A33A29 /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C525124167C2E00A33A29 /* Response.swift */; };
 		825C52672418EC4B00A33A29 /* JourneyAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C524C24167BF500A33A29 /* JourneyAPI.swift */; };
 		825C526824192DE400A33A29 /* LoginAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C525724167D4600A33A29 /* LoginAPI.swift */; };
+		825C5272241A106F00A33A29 /* JSONCodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C5271241A106F00A33A29 /* JSONCodable.swift */; };
+		825C5274241A126300A33A29 /* MockAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C5273241A126300A33A29 /* MockAPI.swift */; };
+		825C5276241A129700A33A29 /* LiveAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C5275241A129700A33A29 /* LiveAPI.swift */; };
+		825C5278241A130900A33A29 /* JourneyMockAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C5277241A130900A33A29 /* JourneyMockAPI.swift */; };
+		825C527A241A134F00A33A29 /* JourneyLiveAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C5279241A134F00A33A29 /* JourneyLiveAPI.swift */; };
+		825C527F241A13CC00A33A29 /* LoginLiveAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C527E241A13CB00A33A29 /* LoginLiveAPI.swift */; };
 		827B4572241135A700A5975E /* FSCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82CACE772411293C0021E1DE /* FSCalendar.framework */; };
 		827B45832411368100A5975E /* Journey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 827B457A2411368100A5975E /* Journey.framework */; };
 		827B458A2411368100A5975E /* JourneyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45892411368100A5975E /* JourneyTests.swift */; };
@@ -364,13 +369,12 @@
 		820961D223ED881A004A510A /* ResetPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPassword.swift; sourceTree = "<group>"; };
 		820961D423ED9AE2004A510A /* ActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
 		820961D623ED9AF7004A510A /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
-		82104522240C2018004EA838 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		82104524240C21B9004EA838 /* ForgotPassSuccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassSuccess.swift; sourceTree = "<group>"; };
 		82104526240C21E3004EA838 /* ForgotPassError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassError.swift; sourceTree = "<group>"; };
 		82104528240C2218004EA838 /* LoginError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginError.swift; sourceTree = "<group>"; };
 		8210452A240C2234004EA838 /* ResetPassSuccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPassSuccess.swift; sourceTree = "<group>"; };
 		8210452C240C2241004EA838 /* ResetPassBackendError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPassBackendError.swift; sourceTree = "<group>"; };
-		8210452E240C2258004EA838 /* MockAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAPIClient.swift; sourceTree = "<group>"; };
+		8210452E240C2258004EA838 /* LoginMockAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginMockAPI.swift; sourceTree = "<group>"; };
 		82104530240C434A004EA838 /* UserDefault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefault.swift; sourceTree = "<group>"; };
 		82104532240C4371004EA838 /* UserDefaultsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsConfig.swift; sourceTree = "<group>"; };
 		82104534240CE516004EA838 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -394,9 +398,15 @@
 		825C524C24167BF500A33A29 /* JourneyAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JourneyAPI.swift; sourceTree = "<group>"; };
 		825C524F24167C2D00A33A29 /* RequestBuilderImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestBuilderImpl.swift; sourceTree = "<group>"; };
 		825C525024167C2D00A33A29 /* APIHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIHelper.swift; sourceTree = "<group>"; };
-		825C525124167C2E00A33A29 /* Models.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
-		825C525224167C2E00A33A29 /* APIs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIs.swift; sourceTree = "<group>"; };
+		825C525124167C2E00A33A29 /* Response.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Response.swift; sourceTree = "<group>"; };
+		825C525224167C2E00A33A29 /* RequestBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestBuilder.swift; sourceTree = "<group>"; };
 		825C525724167D4600A33A29 /* LoginAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginAPI.swift; sourceTree = "<group>"; };
+		825C5271241A106F00A33A29 /* JSONCodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONCodable.swift; sourceTree = "<group>"; };
+		825C5273241A126300A33A29 /* MockAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAPI.swift; sourceTree = "<group>"; };
+		825C5275241A129700A33A29 /* LiveAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveAPI.swift; sourceTree = "<group>"; };
+		825C5277241A130900A33A29 /* JourneyMockAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyMockAPI.swift; sourceTree = "<group>"; };
+		825C5279241A134F00A33A29 /* JourneyLiveAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyLiveAPI.swift; sourceTree = "<group>"; };
+		825C527E241A13CB00A33A29 /* LoginLiveAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginLiveAPI.swift; sourceTree = "<group>"; };
 		827B457A2411368100A5975E /* Journey.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Journey.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		827B457C2411368100A5975E /* Journey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Journey.h; sourceTree = "<group>"; };
 		827B457D2411368100A5975E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -697,8 +707,6 @@
 				825C524E24167C0000A33A29 /* RequestBuilder */,
 				825C524B24167BE300A33A29 /* API */,
 				827B459E24126D4D00A5975E /* Simple Model */,
-				82104522240C2018004EA838 /* APIClient.swift */,
-				8210452E240C2258004EA838 /* MockAPIClient.swift */,
 				8227FB82240BB1CB00F653B5 /* Navigation.swift */,
 				8227FB8C240BB40300F653B5 /* Model.h */,
 				8227FB8D240BB40300F653B5 /* Info.plist */,
@@ -721,8 +729,9 @@
 		825C524B24167BE300A33A29 /* API */ = {
 			isa = PBXGroup;
 			children = (
-				825C524C24167BF500A33A29 /* JourneyAPI.swift */,
-				825C525724167D4600A33A29 /* LoginAPI.swift */,
+				825C527C241A138600A33A29 /* Protocols */,
+				825C527D241A139500A33A29 /* Live */,
+				825C527B241A137E00A33A29 /* Mock */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -731,11 +740,41 @@
 			isa = PBXGroup;
 			children = (
 				825C525024167C2D00A33A29 /* APIHelper.swift */,
-				825C525224167C2E00A33A29 /* APIs.swift */,
-				825C525124167C2E00A33A29 /* Models.swift */,
+				825C525224167C2E00A33A29 /* RequestBuilder.swift */,
+				825C525124167C2E00A33A29 /* Response.swift */,
 				825C524F24167C2D00A33A29 /* RequestBuilderImpl.swift */,
+				825C5271241A106F00A33A29 /* JSONCodable.swift */,
 			);
 			path = RequestBuilder;
+			sourceTree = "<group>";
+		};
+		825C527B241A137E00A33A29 /* Mock */ = {
+			isa = PBXGroup;
+			children = (
+				825C5277241A130900A33A29 /* JourneyMockAPI.swift */,
+				8210452E240C2258004EA838 /* LoginMockAPI.swift */,
+			);
+			path = Mock;
+			sourceTree = "<group>";
+		};
+		825C527C241A138600A33A29 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				825C5275241A129700A33A29 /* LiveAPI.swift */,
+				825C5273241A126300A33A29 /* MockAPI.swift */,
+				825C525724167D4600A33A29 /* LoginAPI.swift */,
+				825C524C24167BF500A33A29 /* JourneyAPI.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
+		825C527D241A139500A33A29 /* Live */ = {
+			isa = PBXGroup;
+			children = (
+				825C5279241A134F00A33A29 /* JourneyLiveAPI.swift */,
+				825C527E241A13CB00A33A29 /* LoginLiveAPI.swift */,
+			);
+			path = Live;
 			sourceTree = "<group>";
 		};
 		827B457B2411368100A5975E /* Journey */ = {
@@ -1598,6 +1637,7 @@
 				82104531240C434A004EA838 /* UserDefault.swift in Sources */,
 				825C52592417895D00A33A29 /* RequestBuilderImpl.swift in Sources */,
 				827B45FB24126D4E00A5975E /* BaseFormTemplate.swift in Sources */,
+				825C527A241A134F00A33A29 /* JourneyLiveAPI.swift in Sources */,
 				827B45D824126D4E00A5975E /* AppointmentStatus.swift in Sources */,
 				827B45DF24126D4E00A5975E /* Shift.swift in Sources */,
 				827B45F524126D4E00A5975E /* Media.swift in Sources */,
@@ -1621,12 +1661,14 @@
 				82104529240C2218004EA838 /* LoginError.swift in Sources */,
 				827B45D524126D4E00A5975E /* Location.swift in Sources */,
 				827B45E024126D4E00A5975E /* CustomFieldItems.swift in Sources */,
+				825C5276241A129700A33A29 /* LiveAPI.swift in Sources */,
 				827B45EB24126D4E00A5975E /* Room.swift in Sources */,
+				825C527F241A13CC00A33A29 /* LoginLiveAPI.swift in Sources */,
 				82104527240C21E3004EA838 /* ForgotPassError.swift in Sources */,
 				827B45F824126D4E00A5975E /* Employee.swift in Sources */,
 				827B45D324126D4E00A5975E /* DrawingType.swift in Sources */,
 				827B45E324126D4E00A5975E /* PostcareType.swift in Sources */,
-				825C525C2418C61B00A33A29 /* Models.swift in Sources */,
+				825C525C2418C61B00A33A29 /* Response.swift in Sources */,
 				827B460024126D4E00A5975E /* Tag.swift in Sources */,
 				82104533240C4371004EA838 /* UserDefaultsConfig.swift in Sources */,
 				825C526824192DE400A33A29 /* LoginAPI.swift in Sources */,
@@ -1634,8 +1676,9 @@
 				827B45FD24126D4E00A5975E /* PhotoDetails.swift in Sources */,
 				827B460524126D4E00A5975E /* Termin.swift in Sources */,
 				827B45E524126D4E00A5975E /* PostcareTemplate.swift in Sources */,
-				82104523240C2018004EA838 /* APIClient.swift in Sources */,
+				825C5272241A106F00A33A29 /* JSONCodable.swift in Sources */,
 				827B45DC24126D4E00A5975E /* AppointmentBody.swift in Sources */,
+				825C5274241A126300A33A29 /* MockAPI.swift in Sources */,
 				827B460424126D4E00A5975E /* Pathway.swift in Sources */,
 				827B45E824126D4E00A5975E /* CSSField.swift in Sources */,
 				82104525240C21B9004EA838 /* ForgotPassSuccess.swift in Sources */,
@@ -1646,7 +1689,7 @@
 				827B45E924126D4E00A5975E /* User.swift in Sources */,
 				827B45E624126D4E00A5975E /* JourneyPhotos.swift in Sources */,
 				8210452B240C2234004EA838 /* ResetPassSuccess.swift in Sources */,
-				825C525A2418C61200A33A29 /* APIs.swift in Sources */,
+				825C525A2418C61200A33A29 /* RequestBuilder.swift in Sources */,
 				827B45E224126D4E00A5975E /* StepType.swift in Sources */,
 				827B45DE24126D4E00A5975E /* ClientItemsCount.swift in Sources */,
 				827B45F924126D4E00A5975E /* AnyValue.swift in Sources */,
@@ -1656,8 +1699,9 @@
 				827B45F724126D4E00A5975E /* Form.swift in Sources */,
 				827B45EF24126D4E00A5975E /* Bookout.swift in Sources */,
 				827B45F124126D4E00A5975E /* BaseClient.swift in Sources */,
+				825C5278241A130900A33A29 /* JourneyMockAPI.swift in Sources */,
 				827B45DB24126D4E00A5975E /* Service.swift in Sources */,
-				8210452F240C2258004EA838 /* MockAPIClient.swift in Sources */,
+				8210452F240C2258004EA838 /* LoginMockAPI.swift in Sources */,
 				827B45EA24126D4E00A5975E /* CheckBoxValue.swift in Sources */,
 				827B45D624126D4E00A5975E /* ClientLink.swift in Sources */,
 				825C52672418EC4B00A33A29 /* JourneyAPI.swift in Sources */,

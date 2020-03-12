@@ -1,27 +1,14 @@
-import Foundation
 import ComposableArchitecture
-import Combine
-
-public protocol JourneyAPI {
-	func getJourneys(date: Date) -> Effect<Result<[Journey], RequestError>>
-}
-
-public struct JourneyMockAPI: MockAPI, JourneyAPI {
-	public init () {}
-	public func getJourneys(date: Date) -> Effect<Result<[Journey], RequestError>> {
-		mockSuccess([])
-	}
-}
 
 public struct JourneyLiveAPI: JourneyAPI, LiveAPI {
 	public let requestBuilderFactory: RequestBuilderFactory = RequestBuilderFactoryImpl()
+	public var basePath: String = ""
+	public let route: String = "journeys"
 	
 	public func getJourneys(date: Date) -> Effect<Result<[Journey], RequestError>> {
 		getJourneys(date: date).effect()
 	}
 	
-	public var basePath: String = ""
-	public let route: String = "journeys"
 	//    open class func journeyAppointmentPost(body: AppointmentBody? = nil, completion: @escaping ((_ data: Journey?,_ error: Error?) -> Void)) {
 	//        journeyAppointmentPostWithRequestBuilder(body: body).execute { (response, error) -> Void in
 	//            completion(response?.body, error)
