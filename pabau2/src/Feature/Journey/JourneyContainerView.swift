@@ -86,11 +86,17 @@ public struct JourneyContainerView: View {
 	let journeys: [Journey] = [
 			Journey.init(id: 0,
 									 appointments: NonEmpty.init(Appointment.init(id: 1, from: Date(), to: Date(), employeeId: 1, locationId: 1, service: BaseService.init(id: 1, name: "Botox", color: "#9400D3"))),
-									 patient: BaseClient.init(id: 0, firstName: "Andrej", lastName: "Trajkovski", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "Bojan Trajkovski"), forms: [], photos: [], postCare: [])
+									 patient: BaseClient.init(id: 0, firstName: "Andrej", lastName: "Trajkovski", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "Bojan Trajkovski"), forms: [], photos: [], postCare: []),
+			Journey.init(id: 1,
+			appointments: NonEmpty.init(Appointment.init(id: 1, from: Date(), to: Date(), employeeId: 1, locationId: 1, service: BaseService.init(id: 1, name: "Botox", color: "#9400D3"))),
+			patient: BaseClient.init(id: 1, firstName: "Andrej", lastName: "Trajkovski", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "Bojan Trajkovski"), forms: [], photos: [], postCare: []),
+			Journey.init(id: 2,
+			appointments: NonEmpty.init(Appointment.init(id: 1, from: Date(), to: Date(), employeeId: 1, locationId: 1, service: BaseService.init(id: 1, name: "Botox", color: "#9400D3"))),
+			patient: BaseClient.init(id: 2, firstName: "Andrej", lastName: "Trajkovski", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "Bojan Trajkovski"), forms: [], photos: [], postCare: [])
 	]
 	let calendarViewModel = MyCalendarViewModel()
 	public init () {}
-	@State private var calendarHeight: CGFloat = 500
+	@State private var calendarHeight: CGFloat?
 	public var body: some View {
 		VStack {
 			SwiftUICalendar.init(calendarViewModel, self.$calendarHeight)
