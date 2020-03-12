@@ -192,7 +192,10 @@ struct IconAndText: View {
 	var body: some View {
 		HStack {
 			Image(systemName: imageSystemName)
+				.resizable()
+				.scaledToFit()
 				.foregroundColor(.deepSkyBlue)
+				.frame(width: 20, height: 20)
 			Text(text)
 				.font(Font.semibold11)
 		}
