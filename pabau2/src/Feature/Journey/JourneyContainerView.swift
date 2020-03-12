@@ -85,7 +85,7 @@ struct JourneyState {
 public struct JourneyContainerView: View {
 	let journeys: [Journey] = [
 			Journey.init(id: 0,
-									 appointments: NonEmpty.init(Appointment.init(id: 1, from: Date(), to: Date(), employeeId: 1, locationId: 1, service: BaseService.init(id: 1, name: "purple", color: "#9400D3"))),
+									 appointments: NonEmpty.init(Appointment.init(id: 1, from: Date(), to: Date(), employeeId: 1, locationId: 1, service: BaseService.init(id: 1, name: "Botox", color: "#9400D3"))),
 									 patient: BaseClient.init(id: 0, firstName: "Andrej", lastName: "Trajkovski", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "Bojan Trajkovski"), forms: [], photos: [], postCare: [])
 	]
 	let calendarViewModel = MyCalendarViewModel()
@@ -153,13 +153,15 @@ struct JourneyCell: View {
 			Spacer()
 			Group {
 				Text(time)
+					.font(Font.semibold11)
 				Spacer()
 				Image(imageUrl ?? "emily")
 					.resizable()
 					.frame(width: 55, height: 55)
 					.clipShape(Circle())
-				VStack {
+				VStack(alignment: .leading) {
 					Text(name)
+						.font(Font.semibold14)
 					Text(services)
 					Text(status ?? "")
 				}
@@ -167,12 +169,16 @@ struct JourneyCell: View {
 			Spacer()
 			Group {
 				Image(systemName: "person")
+					.foregroundColor(.deepSkyBlue)
 				Text(employee)
+					.font(Font.semibold11)
 			}
 			Spacer()
 			Group {
 				Image(systemName: "briefcase")
+					.foregroundColor(.deepSkyBlue)
 				Text(paidStatus)
+					.font(Font.semibold11)
 			}
 			Spacer()
 			StepsStatusView(stepsComplete: stepsComplete, stepsTotal: stepsTotal)

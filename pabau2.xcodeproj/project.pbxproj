@@ -243,13 +243,6 @@
 			remoteGlobalIDString = 8227FB89240BB40300F653B5;
 			remoteInfo = Model;
 		};
-		824930E1240CE93500953E90 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 82BE2F3C23D97D9C00B3678A /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 824930DB240CE93500953E90;
-			remoteInfo = ComposableArchitectureTestSupport;
-		};
 		824930EA240CE9C200953E90 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 82BE2F3C23D97D9C00B3678A /* Project object */;
@@ -340,6 +333,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 82CACEE1241131250021E1DE;
 			remoteInfo = FSCalendarSwiftUI;
+		};
+		82E253D3241A6F2A00F16C30 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 82BE2F3C23D97D9C00B3678A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8227FB89240BB40300F653B5;
+			remoteInfo = Model;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -1240,6 +1240,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				82E253D4241A6F2A00F16C30 /* PBXTargetDependency */,
 				827B46082413979D00A5975E /* PBXTargetDependency */,
 				827B45982411368A00A5975E /* PBXTargetDependency */,
 			);
@@ -1302,7 +1303,6 @@
 				8227FB32240BAAB600F653B5 /* PBXTargetDependency */,
 				8227FB65240BAC8400F653B5 /* PBXTargetDependency */,
 				8227FB9E240BB40300F653B5 /* PBXTargetDependency */,
-				824930E2240CE93500953E90 /* PBXTargetDependency */,
 				82CACE7D2411293C0021E1DE /* PBXTargetDependency */,
 				82CACEE8241131260021E1DE /* PBXTargetDependency */,
 				827B458E2411368100A5975E /* PBXTargetDependency */,
@@ -1838,11 +1838,6 @@
 			target = 8227FB89240BB40300F653B5 /* Model */;
 			targetProxy = 8227FBA9240BB43000F653B5 /* PBXContainerItemProxy */;
 		};
-		824930E2240CE93500953E90 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 824930DB240CE93500953E90 /* ComposableArchitectureTestSupport */;
-			targetProxy = 824930E1240CE93500953E90 /* PBXContainerItemProxy */;
-		};
 		824930EB240CE9C200953E90 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 82BE2F6323D9983C00B3678A /* ComposableArchitecture */;
@@ -1911,6 +1906,11 @@
 			isa = PBXTargetDependency;
 			target = 82CACEE1241131250021E1DE /* FSCalendarSwiftUI */;
 			targetProxy = 82CACEE7241131260021E1DE /* PBXContainerItemProxy */;
+		};
+		82E253D4241A6F2A00F16C30 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8227FB89240BB40300F653B5 /* Model */;
+			targetProxy = 82E253D3241A6F2A00F16C30 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -2183,6 +2183,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.andrejtrajkovski.Journey;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2212,6 +2213,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.andrejtrajkovski.Journey;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -2439,6 +2441,7 @@
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"pabau2/Preview Content\"";
 				DEVELOPMENT_TEAM = 7M6BMQR36X;
+				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = pabau2/src/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -2463,6 +2466,7 @@
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"pabau2/Preview Content\"";
 				DEVELOPMENT_TEAM = 7M6BMQR36X;
+				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = pabau2/src/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

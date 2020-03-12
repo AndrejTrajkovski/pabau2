@@ -15,10 +15,10 @@ public struct TextAndTextView: View {
 	public var body: some View {
 		VStack(alignment: .leading, spacing: 6) {
 			Text(title)
-				.font(.textInTextAndTextField)
+				.font(.bold10)
 				.foregroundColor(.textFieldAndTextLabel)
 			TextFieldWithBottomLine(placeholder: placeholder, text: $value)
-				.font(.textFieldInTextAndTextField)
+				.font(.medium15)
 			ValidationText(title: validation)
 		}
 	}
@@ -29,6 +29,6 @@ struct ValidationText: View {
 	var body: some View {
 		Text(title)
 			.foregroundColor(.validationFail)
-			.font(.validation)
+			.font(.semibold12)
 	}
 }

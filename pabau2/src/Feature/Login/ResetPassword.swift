@@ -159,11 +159,11 @@ struct ResetPassword: View {
 					VStack(alignment: .leading, spacing: 36) {
 						Text(Texts.resetPass)
 							.foregroundColor(.blackTwo)
-							.font(.customLargeTitle)
+							.font(.bold34)
 							.frame(width: 157)
 						Text(Texts.resetPassDesc)
 							.foregroundColor(.grey155)
-							.font(.paragraph)
+							.font(.medium16)
 						TextAndTextView(title: Texts.resetCode.uppercased(),
 														placeholder: Texts.resetCodePlaceholder,
 														bindingValue: self.$code,

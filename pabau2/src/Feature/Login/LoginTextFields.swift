@@ -16,7 +16,7 @@ struct LoginTextFields: View {
 				Button.init(Texts.forgotPass) {
 					self.onForgotPass()
 				}
-				.font(.thirteenBold)
+				.font(.bold13)
 				.foregroundColor(.textFieldAndTextLabel)
 				.frame(width: 150)
 			}

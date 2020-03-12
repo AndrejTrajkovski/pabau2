@@ -6,10 +6,10 @@ struct LoginTitle: View {
 		VStack(alignment: .leading) {
 			Text(Texts.helloAgain)
 				.foregroundColor(.deepSkyBlue)
-				.font(.bigMediumFont)
+				.font(.medium45)
 			Text(Texts.welcomeBack)
 				.foregroundColor(.blackTwo)
-				.font(.bigSemibolFont)
+				.font(.semibold45)
 		}
 	}
 }

@@ -102,11 +102,11 @@ struct ForgotPassword: View {
 			VStack(alignment: .leading, spacing: 36) {
 				Text(Texts.forgotPass)
 					.foregroundColor(.blackTwo)
-					.font(.customLargeTitle)
+					.font(.bold34)
 					.frame(width: 157)
 				Text(Texts.forgotPassDescription)
 					.foregroundColor(.grey155)
-					.font(.paragraph)
+					.font(.medium16)
 				TextAndTextView(title: Texts.emailAddress.uppercased(), placeholder: "", bindingValue: self.$email, validation: self.store.value.fpValidation)
 			}.frame(maxWidth: 319)
 			BigButton(text: Texts.sendRequest) {
