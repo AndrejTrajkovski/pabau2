@@ -86,7 +86,7 @@ public struct JourneyContainerView: View {
 	let journeys: [Journey] = [
 			Journey.init(id: 0,
 									 appointments: NonEmpty.init(Appointment.init(id: 1, from: Date(), to: Date(), employeeId: 1, locationId: 1, service: BaseService.init(id: 1, name: "purple", color: "#9400D3"))),
-									 patient: BaseClient.init(id: 0, firstName: "Andrej", lastName: "Trajkovski", dOB: "28.02.1991", email: "andrej.", avatar: "", phone: ""), employee: Employee.init(id: 1, name: "Bojan Trajkovski"), forms: [], photos: [], postCare: [])
+									 patient: BaseClient.init(id: 0, firstName: "Andrej", lastName: "Trajkovski", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "Bojan Trajkovski"), forms: [], photos: [], postCare: [])
 	]
 	let calendarViewModel = MyCalendarViewModel()
 	public init () {}
@@ -130,6 +130,7 @@ struct JourneyList: View {
 		List {
 			ForEach(journeys) { journey in
 				journeyCellAdapter(journey: journey)
+					.listRowInsets(EdgeInsets())
 			}
 		}
 	}
@@ -149,19 +150,35 @@ struct JourneyCell: View {
 	var body: some View {
 		HStack {
 			JourneyColorRect(color: color)
-			Text(time)
-			Image(imageUrl ?? "avatar_placeholder")
-			VStack {
-				Text(name)
-				Text(services)
-				Text(status ?? "")
+			Spacer()
+			Group {
+				Text(time)
+				Spacer()
+				Image(imageUrl ?? "emily")
+					.resizable()
+					.frame(width: 55, height: 55)
+					.clipShape(Circle())
+				VStack {
+					Text(name)
+					Text(services)
+					Text(status ?? "")
+				}
 			}
-			Image(systemName: "person")
-			Text(employee)
-			Image(systemName: "briefcase")
-			Text(paidStatus)
+			Spacer()
+			Group {
+				Image(systemName: "person")
+				Text(employee)
+			}
+			Spacer()
+			Group {
+				Image(systemName: "briefcase")
+				Text(paidStatus)
+			}
+			Spacer()
 			StepsStatusView(stepsComplete: stepsComplete, stepsTotal: stepsTotal)
+			Spacer()
 		}
+		.frame(minWidth: 0, maxWidth: .infinity, idealHeight: 97)
 	}
 }
 
@@ -176,10 +193,10 @@ struct StepsStatusView: View {
 }
 
 struct JourneyColorRect: View {
-	let color: Color
+	public let color: Color
 	var body: some View {
 		Rectangle()
+			.foregroundColor(color)
 			.frame(width: 8.0)
-			.background(color)
 	}
 }
