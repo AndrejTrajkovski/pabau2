@@ -25,6 +25,8 @@ public struct Journey: Codable, Identifiable, Equatable, Hashable {
 	
 	public let postCare: [JourneyPostCare]
 	
+	public let paid: String
+	
 	public let media: [Media]?
 	public init(id: Int,
 							appointments: NonEmpty<[Appointment]>,
@@ -35,7 +37,8 @@ public struct Journey: Codable, Identifiable, Equatable, Hashable {
 							forms: [JourneyForms],
 							photos: [JourneyPhotos],
 							postCare: [JourneyPostCare],
-							media: [Media]? = nil) {
+							media: [Media]? = nil,
+							paid: String) {
 		self.id = id
 		self.appointments = appointments
 		self.patient = patient
@@ -46,6 +49,7 @@ public struct Journey: Codable, Identifiable, Equatable, Hashable {
 		self.photos = photos
 		self.postCare = postCare
 		self.media = media
+		self.paid = paid
 	}
 	public enum CodingKeys: String, CodingKey {
 		case id
@@ -58,5 +62,6 @@ public struct Journey: Codable, Identifiable, Equatable, Hashable {
 		case photos
 		case postCare = "post_care"
 		case media
+		case paid
 	}
 }

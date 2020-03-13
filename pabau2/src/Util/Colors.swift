@@ -49,8 +49,6 @@ public extension Color {
 
 	static let paleLilac = Color.init(red: 229/255, green: 229/255, blue: 234/255 )
 
-	static let black = Color.init(white: 0)
-
 	static let veryLightPink30 = Color.init(white: 216).opacity(0.3)
 
 	static let blackTwo = Color.init(white: 49/255)

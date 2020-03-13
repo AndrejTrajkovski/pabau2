@@ -85,14 +85,14 @@ struct JourneyState {
 public struct JourneyContainerView: View {
 	let journeys: [Journey] = [
 			Journey.init(id: 0,
-									 appointments: NonEmpty.init(Appointment.init(id: 1, from: Date(), to: Date(), employeeId: 1, locationId: 1, service: BaseService.init(id: 1, name: "Botox", color: "#9400D3"))),
-									 patient: BaseClient.init(id: 0, firstName: "Andrej", lastName: "Trajkovski", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "Bojan Trajkovski"), forms: [], photos: [], postCare: []),
+									 appointments: NonEmpty.init(Appointment.init(id: 1, from: Date(), to: Date(), employeeId: 1, locationId: 1, status: AppointmentStatus(id: 1, name: "Checked In"), service: BaseService.init(id: 1, name: "Botox", color: "#9400D3"))),
+									 patient: BaseClient.init(id: 0, firstName: "Andrej", lastName: "Trajkovski", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "Bojan Trajkovskiiii"), forms: [], photos: [], postCare: [], paid: "Not Paid"),
 			Journey.init(id: 1,
-			appointments: NonEmpty.init(Appointment.init(id: 1, from: Date(), to: Date(), employeeId: 1, locationId: 1, service: BaseService.init(id: 1, name: "Botox", color: "#9400D3"))),
-			patient: BaseClient.init(id: 1, firstName: "Andrej", lastName: "Trajkovski", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "Bojan Trajkovski"), forms: [], photos: [], postCare: []),
+									 appointments: NonEmpty.init(Appointment.init(id: 1, from: Date(), to: Date(), employeeId: 1, locationId: 1, status: AppointmentStatus(id: 1, name: "Not Checked In"),service: BaseService.init(id: 1, name: "Botox", color: "#9400D3"))),
+			patient: BaseClient.init(id: 1, firstName: "Elon", lastName: "Musk", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "John Doe"), forms: [], photos: [], postCare: [], paid: "Paid"),
 			Journey.init(id: 2,
-			appointments: NonEmpty.init(Appointment.init(id: 1, from: Date(), to: Date(), employeeId: 1, locationId: 1, service: BaseService.init(id: 1, name: "Botox", color: "#9400D3"))),
-			patient: BaseClient.init(id: 2, firstName: "Andrej", lastName: "Trajkovski", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "Bojan Trajkovski"), forms: [], photos: [], postCare: [])
+			appointments: NonEmpty.init(Appointment.init(id: 1, from: Date(), to: Date(), employeeId: 1, locationId: 1, status: AppointmentStatus(id: 1, name: "Not Checked In"), service: BaseService.init(id: 1, name: "Botox", color: "#9400D3"))),
+			patient: BaseClient.init(id: 2, firstName: "Joe", lastName: "Rogan", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "Tiger Woods"), forms: [], photos: [], postCare: [], paid: "Owes 1.000")
 	]
 	let calendarViewModel = MyCalendarViewModel()
 	public init () {}
@@ -129,7 +129,7 @@ func journeyCellAdapter(journey: Journey) -> JourneyCell {
 			.reduce("", +),
 		status: journey.appointments.head.status?.name,
 		employee: journey.employee.name,
-		paidStatus: "Paid",
+		paidStatus: journey.paid,
 		stepsComplete: 0,
 		stepsTotal: 3)
 }
@@ -172,12 +172,14 @@ struct JourneyCell: View {
 					Text(name).font(Font.semibold14)
 					Text(services).font(Font.regular12)
 					Text(status ?? "").font(.medium9).foregroundColor(.deepSkyBlue)
-				}
+				}.frame(maxWidth: 158, alignment: .leading)
 			}
 			Spacer()
 			IconAndText(imageSystemName: "person", text: employee)
+				.frame(maxWidth: 110, alignment: .leading)
 			Spacer()
 			IconAndText(imageSystemName: "bag", text: paidStatus)
+				.frame(maxWidth: 110, alignment: .leading)
 			Spacer()
 			StepsStatusView(stepsComplete: stepsComplete, stepsTotal: stepsTotal)
 			Spacer()
@@ -206,9 +208,12 @@ struct StepsStatusView: View {
 	let stepsComplete: Int
 	let stepsTotal: Int
 	var body: some View {
-		Ellipse()
-			.fill(Color.blue)
-			.frame(width: 100.0, height: 50.0)
+		Text("\(stepsComplete)/\(stepsTotal)")
+			.foregroundColor(.white)
+			.font(.semibold14)
+			.padding(5)
+			.frame(width: 50, height: 20)
+			.background(RoundedCorners(color: .blue, tl: 25, tr: 25, bl: 25, br: 25))
 	}
 }
 
