@@ -31,80 +31,29 @@ public func journeyReducer(state: inout JourneyState, action: JourneyAction, env
 	case .searchedText(let searchText):
 		state.searchText = searchText
 	case .toggleEmployees:
-		state.isShowingEmployees = !state.isShowingEmployees
+		state.isShowingEmployees.toggle()
 	}
 	return []
 }
-
-public enum JourneyAction {
-	case selectedFilter(CompleteFilter)
-	case selectedDate(Date)
-	case selectedEmployees([Employee])
-	case addAppointment
-	case searchedText(String)
-	case toggleEmployees
-	case gotResponse(Result<[Journey], RequestError>)
-}
-
-public enum CompleteFilter: Int, CaseIterable, CustomStringConvertible {
-	case all
-	case open
-	case complete
-	public var description: String {
-		switch self {
-		case .all: return "All"
-		case .open: return "Open"
-		case .complete: return "Complete"
-		}
-	}
-}
-
-public struct JourneyState {
-	public init () {}
-	var loadingState: LoadingState<[Journey], RequestError> = .initial
-	var journeys: Set<Journey> = Set.init()
-	var selectedFilter: CompleteFilter = .all
-	var selectedDate: Date = Date()
-	var selectedEmployees: [Employee] = []
-	var selectedLocation: Location = Location.init(id: 1)
-	var searchText: String = ""
-	var isShowingAddAppointment: Bool = false
-	var isShowingEmployees: Bool = false
-
-	//	var displayJourneys: [Journey] {
-	//		return journeys.filter { $0.date}
-	//	}
-}
-
-//func nonEmptyAppts() -> NonEmpty<[Appointment]> {
-//	var appts = [Appointment]()
-//	for i in 0...10 {
-//		let appt = Appointment.init(id: i, from: Date(), to: Date(), employeeId: 1, locationId: 1)
-//		appts.append(appt)
-//	}
-//	return NonEmpty.init(appts.first!, Array(appts.suffix(from: 1)))
-//}
-//let journeys: [Journey] = [
-//	Journey.init(id: 0,
-//							 appointments: nonEmptyAppts(),
-//							 patient: BaseClient.init(id: 0, firstName: "Andrej", lastName: "Trajkovski", dOB: "28.02.1991", email: "andrej.", avatar: "", phone: ""), employee: Employee.init(id: 1, name: "Bojan Trajkovski"), forms: [], photos: [], postCare: [])
-//]
-
 public struct JourneyContainerView: View {
 	let journeys: [Journey] = [
 		Journey.init(id: 0,
 								 appointments: NonEmpty.init(Appointment.init(id: 1, from: Date(), to: Date(), employeeId: 1, locationId: 1, status: AppointmentStatus(id: 1, name: "Checked In"), service: BaseService.init(id: 1, name: "Botox", color: "#9400D3"))),
 								 patient: BaseClient.init(id: 0, firstName: "Andrej", lastName: "Trajkovski", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "Bojan Trajkovskiiii"), forms: [], photos: [], postCare: [], paid: "Not Paid"),
 		Journey.init(id: 1,
-								 appointments: NonEmpty.init(Appointment.init(id: 1, from: Date(), to: Date(), employeeId: 1, locationId: 1, status: AppointmentStatus(id: 1, name: "Not Checked In"), service: BaseService.init(id: 1, name: "Botox", color: "#9400D3"))),
+								 appointments: NonEmpty.init(Appointment.init(id: 1, from: Date(), to: Date(), employeeId: 1, locationId: 1, status: AppointmentStatus(id: 1, name: "Not Checked In"), service: BaseService.init(id: 1, name: "Botox", color: "#ec75ff"))),
 								 patient: BaseClient.init(id: 1, firstName: "Elon", lastName: "Musk", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "John Doe"), forms: [], photos: [], postCare: [], paid: "Paid"),
 		Journey.init(id: 2,
-								 appointments: NonEmpty.init(Appointment.init(id: 1, from: Date(), to: Date(), employeeId: 1, locationId: 1, status: AppointmentStatus(id: 1, name: "Not Checked In"), service: BaseService.init(id: 1, name: "Botox", color: "#9400D3"))),
+								 appointments: NonEmpty.init(Appointment.init(id: 1, from: Date(), to: Date(), employeeId: 1, locationId: 1, status: AppointmentStatus(id: 1, name: "Not Checked In"), service: BaseService.init(id: 1, name: "Botox", color: "#88fa69"))),
 								 patient: BaseClient.init(id: 2, firstName: "Joe", lastName: "Rogan", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "Tiger Woods"), forms: [], photos: [], postCare: [], paid: "Owes 1.000")
 	]
-	let calendarViewModel = MyCalendarViewModel()
-	public init () {}
+
+	public init (date: Date) {
+		calendarViewModel = MyCalendarViewModel(date)
+	}
+	
 	@State private var calendarHeight: CGFloat?
+	let calendarViewModel: MyCalendarViewModel
 	public var body: some View {
 		VStack {
 			SwiftUICalendar.init(calendarViewModel, self.$calendarHeight)
@@ -177,7 +126,7 @@ struct JourneyCell: View {
 					.resizable()
 					.frame(width: 55, height: 55)
 					.clipShape(Circle())
-				VStack(alignment: .leading) {
+				VStack(alignment: .leading, spacing: 4) {
 					Text(name).font(Font.semibold14)
 					Text(services).font(Font.regular12)
 					Text(status ?? "").font(.medium9).foregroundColor(.deepSkyBlue)
