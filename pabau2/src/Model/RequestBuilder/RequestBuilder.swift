@@ -5,44 +5,44 @@ import CasePaths
 
 open class RequestBuilder<T> {
 	var credential: URLCredential?
-	var headers: [String:String]
-	public let parameters: [String:Any]?
+	var headers: [String: String]
+	public let parameters: [String: Any]?
 	public let isBody: Bool
 	public let method: String
 	public let URLString: String
-	
-	required public init(method: String, URLString: String, parameters: [String:Any]?, isBody: Bool, headers: [String:String] = [:]) {
+
+	required public init(method: String, URLString: String, parameters: [String: Any]?, isBody: Bool, headers: [String: String] = [:]) {
 		self.method = method
 		self.URLString = URLString
 		self.parameters = parameters
 		self.isBody = isBody
 		self.headers = headers
 	}
-	
+
 	func effect<DomainError: Error>(_ toDomainError: CasePath<DomainError, RequestError>) -> Effect<Result<T, DomainError>> {
 		return self.publisher()
 			.map { Result<T, DomainError>.success($0)}
 			.catch { Just(Result<T, DomainError>.failure(toDomainError.embed($0)))}
 			.eraseToEffect()
 	}
-	
+
 	func effect() -> Effect<Result<T, RequestError>> {
 		return self.publisher()
 			.map { Result<T, RequestError>.success($0)}
 			.catch { Just(Result<T, RequestError>.failure($0))}
 			.eraseToEffect()
 	}
-	
+
 	open func publisher() -> AnyPublisher<T, RequestError> {
 		fatalError()
 	}
-	
-	open func addHeaders(_ aHeaders:[String:String]) {
+
+	open func addHeaders(_ aHeaders: [String: String]) {
 		for (header, value) in aHeaders {
 			headers[header] = value
 		}
 	}
-	
+
 	public func addHeader(name: String, value: String) -> Self {
 		if !value.isEmpty {
 			headers[name] = value
@@ -51,7 +51,7 @@ open class RequestBuilder<T> {
 	}
 }
 
-fileprivate enum DownloadException : Error {
+private enum DownloadException: Error {
 	case responseDataMissing
 	case responseFailed
 	case requestMissing
@@ -76,7 +76,7 @@ public enum RequestError: Error, Equatable {
 			return false
 		}
 	}
-	
+
 	case urlBuilderError
 	case emptyDataResponse
 	case nilHTTPResponse

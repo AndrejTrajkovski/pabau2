@@ -1,5 +1,5 @@
 public struct User: Codable, Identifiable, Equatable {
-	
+
 	public init(_ id: Int = 0, _ firstName: String = "") {
 		self.id = id
 		self.firstName = firstName
@@ -7,15 +7,15 @@ public struct User: Codable, Identifiable, Equatable {
 		self.company = nil
 		self.lastName = nil
 	}
-	
+
 	public let id: Int?
-	
+
 	public let avatarUrl: String?
-	
+
 	public let firstName: String?
-	
+
 	public let lastName: String?
-	
+
 	public let company: Company?
 	public init(id: Int? = nil, avatarUrl: String? = nil, firstName: String? = nil, lastName: String? = nil, company: Company? = nil) {
 		self.id = id
@@ -31,5 +31,5 @@ public struct User: Codable, Identifiable, Equatable {
 		case lastName
 		case company
 	}
-	
+
 }

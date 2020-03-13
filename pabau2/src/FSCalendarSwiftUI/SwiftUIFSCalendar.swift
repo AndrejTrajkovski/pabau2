@@ -2,17 +2,20 @@ import SwiftUI
 import FSCalendar
 
 public struct SwiftUICalendar: UIViewRepresentable {
-	@Binding var totalHeight: CGFloat?
 	public typealias UIViewType = FSCalendar
-	private var scope: FSCalendarScope
-	private var date: Date
+	@Binding var totalHeight: CGFloat?
+	private let scope: FSCalendarScope
+	private let date: Date
+	private var onDateChanged: (Date) -> Void
 	
 	public init(_ date: Date,
 							_ height: Binding<CGFloat?>,
-							_ scope: FSCalendarScope = .week) {
+							_ scope: FSCalendarScope,
+							_ onDateChanged: @escaping (Date) -> Void) {
 		self.scope = scope
 		self.date = date
 		self._totalHeight = height
+		self.onDateChanged = onDateChanged
 	}
 
 	public func makeUIView(context: UIViewRepresentableContext<SwiftUICalendar>) -> FSCalendar {
@@ -39,11 +42,11 @@ public struct SwiftUICalendar: UIViewRepresentable {
 		}
 
 		public func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
-			self.parent.date = date
+			self.parent.onDateChanged(date)
 		}
+
 		public func calendar(_ calendar: FSCalendar, boundingRectWillChange bounds: CGRect, animated: Bool) {
 			self.parent.totalHeight = bounds.size.height
-			//			calendar.frame = CGRect.init(origin: calendar.frame.origin, size: CGSize.init(width: bounds.size.width, height: 250))
 		}
 	}
 }

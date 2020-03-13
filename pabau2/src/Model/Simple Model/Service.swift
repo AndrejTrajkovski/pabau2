@@ -3,9 +3,7 @@
 
 import Foundation
 
-
 public struct Service: Codable, Identifiable {
-
 
     public let id: Int
 
@@ -20,7 +18,7 @@ public struct Service: Codable, Identifiable {
     public let disabledUsers: [Int]?
 
     public let duration: String?
-    public init(id: Int, name: String, color: String, categoryId: Int? = nil, categoryName: String? = nil, disabledUsers: [Int]? = nil, duration: String? = nil) { 
+    public init(id: Int, name: String, color: String, categoryId: Int? = nil, categoryName: String? = nil, disabledUsers: [Int]? = nil, duration: String? = nil) {
         self.id = id
         self.name = name
         self.color = color
@@ -29,7 +27,7 @@ public struct Service: Codable, Identifiable {
         self.disabledUsers = disabledUsers
         self.duration = duration
     }
-    public enum CodingKeys: String, CodingKey { 
+    public enum CodingKeys: String, CodingKey {
         case id = "id"
         case name
         case color

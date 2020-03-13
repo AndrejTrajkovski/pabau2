@@ -16,21 +16,21 @@ public struct BaseClient: Codable, Identifiable, Equatable {
 		self.avatar = avatar
 		self.phone = phone
 	}
-	
+
 	public let id: Int
-	
+
 	public let firstName: String
-	
+
 	public let lastName: String
-	
+
 	public let dOB: String
-	
+
 	public let email: String?
-	
+
 	public let avatar: String?
-	
+
 	public let phone: String?
-	
+
 	public enum CodingKeys: String, CodingKey {
 		case id = "id"
 		case firstName = "first_name"
@@ -40,5 +40,5 @@ public struct BaseClient: Codable, Identifiable, Equatable {
 		case avatar
 		case phone
 	}
-	
+
 }

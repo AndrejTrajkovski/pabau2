@@ -3,9 +3,7 @@
 
 import Foundation
 
-
 public struct ClientItemsCount: Codable, Identifiable {
-
 
     public let id: Int
 
@@ -28,7 +26,7 @@ public struct ClientItemsCount: Codable, Identifiable {
     public let alerts: Int?
 
     public let notes: Int?
-    public init(id: Int, appointments: Int, photos: Int? = nil, financials: Int? = nil, treatmentNotes: Int? = nil, presriptions: Int? = nil, documents: Int? = nil, communications: Int? = nil, consents: Int? = nil, alerts: Int? = nil, notes: Int? = nil) { 
+    public init(id: Int, appointments: Int, photos: Int? = nil, financials: Int? = nil, treatmentNotes: Int? = nil, presriptions: Int? = nil, documents: Int? = nil, communications: Int? = nil, consents: Int? = nil, alerts: Int? = nil, notes: Int? = nil) {
         self.id = id
         self.appointments = appointments
         self.photos = photos
@@ -41,7 +39,7 @@ public struct ClientItemsCount: Codable, Identifiable {
         self.alerts = alerts
         self.notes = notes
     }
-    public enum CodingKeys: String, CodingKey { 
+    public enum CodingKeys: String, CodingKey {
         case id = "id"
         case appointments
         case photos

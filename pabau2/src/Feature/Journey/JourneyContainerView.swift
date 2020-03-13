@@ -55,7 +55,11 @@ public struct JourneyContainerView: View {
 	let date: Date
 	public var body: some View {
 		VStack {
-			SwiftUICalendar.init(date, self.$calendarHeight)
+			SwiftUICalendar.init(date,
+													 self.$calendarHeight,
+													 .week) {
+				
+			}
 				.padding(0)
 				.frame(height: self.calendarHeight)
 			FilterPicker()

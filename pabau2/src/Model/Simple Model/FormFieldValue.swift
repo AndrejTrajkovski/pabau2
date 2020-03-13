@@ -3,9 +3,7 @@
 
 import Foundation
 
-
 public struct FormFieldValue: Codable, Identifiable {
-
 
     public let id: Int
 
@@ -18,7 +16,7 @@ public struct FormFieldValue: Codable, Identifiable {
     public let value: AnyValue
 
     public let epaperImages: [String]
-    public init(id: Int, attrId: Int, labelName: String, contactId: Int, value: AnyValue, epaperImages: [String]) { 
+    public init(id: Int, attrId: Int, labelName: String, contactId: Int, value: AnyValue, epaperImages: [String]) {
         self.id = id
         self.attrId = attrId
         self.labelName = labelName
@@ -26,7 +24,7 @@ public struct FormFieldValue: Codable, Identifiable {
         self.value = value
         self.epaperImages = epaperImages
     }
-    public enum CodingKeys: String, CodingKey { 
+    public enum CodingKeys: String, CodingKey {
         case id = "id"
         case attrId = "attrid"
         case labelName = "label_name"

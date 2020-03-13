@@ -3,9 +3,7 @@
 
 import Foundation
 
-
 public struct Company: Codable, Identifiable, Equatable {
-
 
     public let id: Int
 
@@ -27,7 +25,7 @@ public struct Company: Codable, Identifiable, Equatable {
 
     /** Paired with user. */
     public let expired: Bool?
-    public init(id: Int, name: String, logo: String, pins: [Int]? = nil, backgroundImage: String? = nil, userId: Int? = nil, buttonCol: String? = nil, apiKey: String? = nil, expired: Bool? = nil) { 
+    public init(id: Int, name: String, logo: String, pins: [Int]? = nil, backgroundImage: String? = nil, userId: Int? = nil, buttonCol: String? = nil, apiKey: String? = nil, expired: Bool? = nil) {
         self.id = id
         self.name = name
         self.logo = logo
@@ -38,7 +36,7 @@ public struct Company: Codable, Identifiable, Equatable {
         self.apiKey = apiKey
         self.expired = expired
     }
-    public enum CodingKeys: String, CodingKey { 
+    public enum CodingKeys: String, CodingKey {
         case id = "id"
         case name
         case logo

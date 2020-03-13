@@ -12,13 +12,13 @@ public struct JourneyNavigationView: View {
 				.navigationBarItems(leading:
 					HStack(spacing: 16.0) {
 						Button(action: {
-							
+
 						}, label: {
 							Image(systemName: "plus")
 								.font(.system(size: 20))
 						})
 						Button(action: {
-							
+
 						}, label: {
 							Image(systemName: "magnifyingglass")
 								.font(.system(size: 20))

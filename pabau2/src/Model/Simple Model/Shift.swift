@@ -3,9 +3,7 @@
 
 import Foundation
 
-
 public struct Shift: Codable, Identifiable {
-
 
     public let id: Int?
 
@@ -22,7 +20,7 @@ public struct Shift: Codable, Identifiable {
     public let endTime: Date?
 
     public let published: Bool?
-    public init(id: Int? = nil, employeeId: Int? = nil, userId: Int? = nil, locationId: Int? = nil, date: Date? = nil, startTime: Date? = nil, endTime: Date? = nil, published: Bool? = nil) { 
+    public init(id: Int? = nil, employeeId: Int? = nil, userId: Int? = nil, locationId: Int? = nil, date: Date? = nil, startTime: Date? = nil, endTime: Date? = nil, published: Bool? = nil) {
         self.id = id
         self.employeeId = employeeId
         self.userId = userId
@@ -32,7 +30,7 @@ public struct Shift: Codable, Identifiable {
         self.endTime = endTime
         self.published = published
     }
-    public enum CodingKeys: String, CodingKey { 
+    public enum CodingKeys: String, CodingKey {
         case id = "id"
         case employeeId = "employeeid"
         case userId = "userid"

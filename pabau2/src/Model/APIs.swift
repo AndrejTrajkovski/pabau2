@@ -1,25 +1,24 @@
 // APIs.swift
 
-
 import Foundation
 import Combine
 
 open class SwaggerClientAPI {
     public static var basePath = "https://virtserver.swaggerhub.com/Pa577/iOS/1.0.0"
     public static var credential: URLCredential?
-    public static var customHeaders: [String:String] = [:]
+    public static var customHeaders: [String: String] = [:]
     public static var requestBuilderFactory: RequestBuilderFactory = RequestBuilderFactoryImpl()
 }
 
 open class RequestBuilder<T> {
     var credential: URLCredential?
-    var headers: [String:String]
-    public let parameters: [String:Any]?
+    var headers: [String: String]
+    public let parameters: [String: Any]?
     public let isBody: Bool
     public let method: String
     public let URLString: String
 
-    required public init(method: String, URLString: String, parameters: [String:Any]?, isBody: Bool, headers: [String:String] = [:]) {
+    required public init(method: String, URLString: String, parameters: [String: Any]?, isBody: Bool, headers: [String: String] = [:]) {
         self.method = method
         self.URLString = URLString
         self.parameters = parameters
@@ -28,12 +27,12 @@ open class RequestBuilder<T> {
 
         addHeaders(SwaggerClientAPI.customHeaders)
     }
-    
+
     open func publisher() -> AnyPublisher<T, RequestBuilderError> {
         fatalError()
     }
-    
-    open func addHeaders(_ aHeaders:[String:String]) {
+
+    open func addHeaders(_ aHeaders: [String: String]) {
         for (header, value) in aHeaders {
             headers[header] = value
         }
@@ -55,5 +54,5 @@ open class RequestBuilder<T> {
 }
 
 public protocol RequestBuilderFactory {
-    func getBuilder<T:Decodable>() -> RequestBuilder<T>.Type
+    func getBuilder<T: Decodable>() -> RequestBuilder<T>.Type
 }

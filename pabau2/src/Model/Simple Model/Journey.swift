@@ -2,31 +2,31 @@ import Foundation
 import NonEmpty
 
 public struct Journey: Codable, Identifiable, Equatable, Hashable {
-	
+
 	public func hash(into hasher: inout Hasher) {
 		hasher.combine(id)
 	}
-	
+
 	public let id: Int
-	
+
 	public let appointments: NonEmpty<[Appointment]>
-	
+
 	public let patient: BaseClient
-	
+
 	public let pathway: Pathway?
-	
+
 	public let employee: Employee
-	
+
 	public let patientChecked: PatientStatus?
-	
+
 	public let forms: [JourneyForms]
-	
+
 	public let photos: [JourneyPhotos]
-	
+
 	public let postCare: [JourneyPostCare]
-	
+
 	public let paid: String
-	
+
 	public let media: [Media]?
 	public init(id: Int,
 							appointments: NonEmpty<[Appointment]>,

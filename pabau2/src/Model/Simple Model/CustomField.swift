@@ -3,9 +3,7 @@
 
 import Foundation
 
-
 public struct CustomField: Codable, Identifiable {
-
 
     public let id: Int
 
@@ -52,7 +50,7 @@ public struct CustomField: Codable, Identifiable {
     public let showInCal: Bool?
 
     public let items: [CustomFieldItems]?
-    public init(id: Int, fieldType: FieldType, fieldLabel: String, occupier: Int? = nil, uid: Int? = nil, locationId: Int? = nil, createdDate: Date? = nil, modifiedDate: Date? = nil, treatmentInterest: Bool? = nil, showInLeads: Bool? = nil, fieldFor: String? = nil, flagged: Bool? = nil, isRequired: Bool? = nil, disableApp: Bool? = nil, isActive: Bool? = nil, fieldOrder: Bool? = nil, displayInInvoice: Bool? = nil, defaultInReports: Bool? = nil, categoryId: Int? = nil, inCcToolbar: Bool? = nil, favorite: Bool? = nil, showInCal: Bool? = nil, items: [CustomFieldItems]? = nil) { 
+    public init(id: Int, fieldType: FieldType, fieldLabel: String, occupier: Int? = nil, uid: Int? = nil, locationId: Int? = nil, createdDate: Date? = nil, modifiedDate: Date? = nil, treatmentInterest: Bool? = nil, showInLeads: Bool? = nil, fieldFor: String? = nil, flagged: Bool? = nil, isRequired: Bool? = nil, disableApp: Bool? = nil, isActive: Bool? = nil, fieldOrder: Bool? = nil, displayInInvoice: Bool? = nil, defaultInReports: Bool? = nil, categoryId: Int? = nil, inCcToolbar: Bool? = nil, favorite: Bool? = nil, showInCal: Bool? = nil, items: [CustomFieldItems]? = nil) {
         self.id = id
         self.fieldType = fieldType
         self.fieldLabel = fieldLabel
@@ -77,7 +75,7 @@ public struct CustomField: Codable, Identifiable {
         self.showInCal = showInCal
         self.items = items
     }
-    public enum CodingKeys: String, CodingKey { 
+    public enum CodingKeys: String, CodingKey {
         case id = "id"
         case fieldType = "field_type"
         case fieldLabel = "field_label"

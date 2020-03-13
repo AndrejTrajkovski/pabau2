@@ -3,7 +3,6 @@
 
 import Foundation
 
-
 public struct BaseService: Codable, Identifiable, Equatable {
 
     public let id: Int
@@ -11,12 +10,12 @@ public struct BaseService: Codable, Identifiable, Equatable {
     public let name: String
 
     public let color: String
-    public init(id: Int, name: String, color: String) { 
+    public init(id: Int, name: String, color: String) {
         self.id = id
         self.name = name
         self.color = color
     }
-    public enum CodingKeys: String, CodingKey { 
+    public enum CodingKeys: String, CodingKey {
         case id = "id"
         case name
         case color

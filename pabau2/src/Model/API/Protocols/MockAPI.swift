@@ -9,7 +9,7 @@ extension MockAPI {
 			.delay(for: .seconds(delay), scheduler: DispatchQueue.main)
 			.eraseToEffect()
 	}
-	
+
 	func mockSuccess<T: Codable, E: Error>(_ value: T, delay: Int = 1) -> Effect<Result<T, E>> {
 		return Just(.success(value))
 			.delay(for: .seconds(delay), scheduler: DispatchQueue.main)

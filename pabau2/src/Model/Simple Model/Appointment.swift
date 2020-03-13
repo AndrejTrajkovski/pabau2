@@ -44,7 +44,7 @@ public struct Appointment: Codable, Equatable {
         self.status = status
         self.service = service
     }
-    public enum CodingKeys: String, CodingKey { 
+    public enum CodingKeys: String, CodingKey {
         case id
         case from
         case to

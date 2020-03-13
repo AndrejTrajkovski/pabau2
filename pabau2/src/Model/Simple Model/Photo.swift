@@ -3,9 +3,7 @@
 
 import Foundation
 
-
 public struct Photo: Codable, Identifiable {
-
 
     public let url: String
 
@@ -26,7 +24,7 @@ public struct Photo: Codable, Identifiable {
         self.employeeId = employeeId
         self.journeyId = journeyId
     }
-    public enum CodingKeys: String, CodingKey { 
+    public enum CodingKeys: String, CodingKey {
         case url
         case dateTaken = "date_taken"
         case id = "id"

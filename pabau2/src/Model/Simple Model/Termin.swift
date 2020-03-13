@@ -6,7 +6,7 @@ import Foundation
 /** Abstract superclass for Appointment and Bookout. */
 public struct Termin: Codable, Identifiable, Equatable {
 
-    public enum ModelType: String, Codable { 
+    public enum ModelType: String, Codable {
         case appointment = "appointment"
         case bookout = "bookout"
     }
@@ -25,7 +25,7 @@ public struct Termin: Codable, Identifiable, Equatable {
     public let type: ModelType?
 
     public let extraEmployees: [Employee]?
-    public init(id: Int, from: Date, to: Date, employeeId: Int, locationId: Int, _private: Bool? = nil, type: ModelType? = nil, extraEmployees: [Employee]? = nil) { 
+    public init(id: Int, from: Date, to: Date, employeeId: Int, locationId: Int, _private: Bool? = nil, type: ModelType? = nil, extraEmployees: [Employee]? = nil) {
         self.id = id
         self.from = from
         self.to = to
@@ -35,7 +35,7 @@ public struct Termin: Codable, Identifiable, Equatable {
         self.type = type
         self.extraEmployees = extraEmployees
     }
-    public enum CodingKeys: String, CodingKey { 
+    public enum CodingKeys: String, CodingKey {
         case id = "id"
         case from
         case to

@@ -3,7 +3,6 @@
 
 import Foundation
 
-
 public struct Bookout: Codable, Identifiable {
 
     public let id: Int
@@ -36,7 +35,7 @@ public struct Bookout: Codable, Identifiable {
         self._description = _description
         self.externalGuests = externalGuests
     }
-    public enum CodingKeys: String, CodingKey { 
+    public enum CodingKeys: String, CodingKey {
         case id = "id"
         case from
         case to

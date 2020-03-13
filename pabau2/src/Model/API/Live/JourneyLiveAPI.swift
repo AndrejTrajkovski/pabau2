@@ -4,17 +4,17 @@ public struct JourneyLiveAPI: JourneyAPI, LiveAPI {
 	public let requestBuilderFactory: RequestBuilderFactory = RequestBuilderFactoryImpl()
 	public var basePath: String = ""
 	public let route: String = "journeys"
-	
+
 	public func getJourneys(date: Date) -> Effect<Result<[Journey], RequestError>> {
 		getJourneys(date: date).effect()
 	}
-	
+
 	//    open class func journeyAppointmentPost(body: AppointmentBody? = nil, completion: @escaping ((_ data: Journey?,_ error: Error?) -> Void)) {
 	//        journeyAppointmentPostWithRequestBuilder(body: body).execute { (response, error) -> Void in
 	//            completion(response?.body, error)
 	//        }
 	//    }
-	
+
 	//    open class func journeyAppointmentPostWithRequestBuilder(body: AppointmentBody? = nil) -> RequestBuilder<Journey> {
 	//        let path = "/journey/appointment"
 	//        let URLString = SwaggerClientAPI.basePath + path
@@ -26,7 +26,7 @@ public struct JourneyLiveAPI: JourneyAPI, LiveAPI {
 	//
 	//        return requestBuilder.init(method: "POST", URLString: (url?.string ?? URLString), parameters: parameters, isBody: true)
 	//    }
-	
+
 	/**
 	Update an existing Appointment in a Journey.
 	- parameter body: (body)  (optional)
@@ -185,7 +185,7 @@ public struct JourneyLiveAPI: JourneyAPI, LiveAPI {
 	//        }
 	//    }
 	//
-	
+
 	/**
 	Get all journeys for a specific date.
 	- GET /journeys
@@ -193,17 +193,17 @@ public struct JourneyLiveAPI: JourneyAPI, LiveAPI {
 	
 	- returns: RequestBuilder<[Journey]>
 	*/
-	
+
 	private func getJourneys(date: Date) -> RequestBuilder<[Journey]> {
 		let URLString = basePath + route + "journeys"
-		let parameters: [String:Any]? = nil
+		let parameters: [String: Any]? = nil
 		var url = URLComponents(string: URLString)
 		url?.queryItems = APIHelper.mapValuesToQueryItems([
 			"date": try? newJSONEncoder().encode(date)
 		])
-		
+
 		let requestBuilder: RequestBuilder<[Journey]>.Type = requestBuilderFactory.getBuilder()
-		
+
 		return requestBuilder.init(method: "GET", URLString: (url?.string ?? URLString), parameters: parameters, isBody: false)
 	}
 }

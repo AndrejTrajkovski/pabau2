@@ -18,7 +18,7 @@ public struct AppointmentBody: Codable {
         self.toDate = toDate
         self.helpersIds = helpersIds
     }
-    public enum CodingKeys: String, CodingKey { 
+    public enum CodingKeys: String, CodingKey {
         case employeeId = "employeeid"
         case serviceId = "serviceid"
         case from

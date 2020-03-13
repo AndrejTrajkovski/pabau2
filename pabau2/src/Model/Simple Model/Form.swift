@@ -6,7 +6,6 @@ import Foundation
 /** Object representing a form, without the field values. Meant to be returned when the form patient_status is needed but not the form field values. Is a superclass of Form, which contains the field values. */
 public struct Form: Codable, Identifiable {
 
-
     public let template: FormTemplate
 
     public let patientStatus: PatientStatus
@@ -29,7 +28,7 @@ public struct Form: Codable, Identifiable {
         self.employeeId = employeeId
         self.journeyId = journeyId
     }
-    public enum CodingKeys: String, CodingKey { 
+    public enum CodingKeys: String, CodingKey {
         case template
         case patientStatus = "patient_status"
         case fieldValues = "field_values"

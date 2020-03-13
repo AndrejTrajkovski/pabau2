@@ -2,13 +2,13 @@ import Foundation
 import Combine
 
 class RequestBuilderFactoryImpl: RequestBuilderFactory {
-	
-	func getBuilder<T:Decodable>() -> RequestBuilder<T>.Type {
+
+	func getBuilder<T: Decodable>() -> RequestBuilder<T>.Type {
 		return RequestBuilderImpl<T>.self
 	}
 }
 
-fileprivate enum DownloadException : Error {
+private enum DownloadException: Error {
 	case responseDataMissing
 	case responseFailed
 	case requestMissing
@@ -28,8 +28,8 @@ public enum RequestBuilderError: Error {
 	case unknown
 }
 
-open class RequestBuilderImpl<T:Decodable>: RequestBuilder<T> {
-	
+open class RequestBuilderImpl<T: Decodable>: RequestBuilder<T> {
+
 	override open func publisher() -> AnyPublisher<T, RequestBuilderError> {
 		guard let url = URL(string: self.URLString) else {
 			return Fail(error: RequestBuilderError.urlBuilderError).eraseToAnyPublisher()
@@ -37,7 +37,7 @@ open class RequestBuilderImpl<T:Decodable>: RequestBuilder<T> {
 		var request = URLRequest.init(url: url)
 		request.allHTTPHeaderFields = ["Content-Type": "application/json"]
 		request.httpMethod = method
-		
+
 		return URLSession.shared.dataTaskPublisher(for: request)
 			.mapError { error in RequestBuilderError.networking(error)}
 			.tryMap (self.validate)
@@ -47,7 +47,7 @@ open class RequestBuilderImpl<T:Decodable>: RequestBuilder<T> {
 			}
 			.eraseToAnyPublisher()
 	}
-	
+
 	func validate(data: Data, response: URLResponse) throws -> Data {
 		guard let httpResponse = response as? HTTPURLResponse else {
 			throw RequestBuilderError.responseNotHTTP
@@ -57,12 +57,12 @@ open class RequestBuilderImpl<T:Decodable>: RequestBuilder<T> {
 		}
 		return data
 	}
-	
+
 	func decode<T: Decodable>(_ data: Data) -> AnyPublisher<T,
 		RequestBuilderError> {
 			let decoder = JSONDecoder()
 			decoder.dateDecodingStrategy = .secondsSince1970
-			
+
 			return Just(data)
 				.decode(type: T.self, decoder: decoder)
 				.mapError { error in

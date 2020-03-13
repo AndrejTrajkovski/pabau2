@@ -3,9 +3,7 @@
 
 import Foundation
 
-
 public struct FormTemplate: Codable, Identifiable {
-
 
     public let id: Int
 
@@ -16,14 +14,14 @@ public struct FormTemplate: Codable, Identifiable {
     public let ePaper: Bool?
 
     public let formData: FormTemplateFormData?
-    public init(id: Int, name: String, formType: FormType, ePaper: Bool? = nil, formData: FormTemplateFormData? = nil) { 
+    public init(id: Int, name: String, formType: FormType, ePaper: Bool? = nil, formData: FormTemplateFormData? = nil) {
         self.id = id
         self.name = name
         self.formType = formType
         self.ePaper = ePaper
         self.formData = formData
     }
-    public enum CodingKeys: String, CodingKey { 
+    public enum CodingKeys: String, CodingKey {
         case id = "id"
         case name
         case formType = "form_type"
