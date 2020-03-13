@@ -49,14 +49,13 @@ public struct JourneyContainerView: View {
 	]
 
 	public init (date: Date) {
-		calendarViewModel = MyCalendarViewModel(date)
+		self.date = date
 	}
-	
 	@State private var calendarHeight: CGFloat?
-	let calendarViewModel: MyCalendarViewModel
+	let date: Date
 	public var body: some View {
 		VStack {
-			SwiftUICalendar.init(calendarViewModel, self.$calendarHeight)
+			SwiftUICalendar.init(date, self.$calendarHeight)
 				.padding(0)
 				.frame(height: self.calendarHeight)
 			FilterPicker()

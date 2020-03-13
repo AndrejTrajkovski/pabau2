@@ -4,16 +4,16 @@ import FSCalendar
 public struct SwiftUICalendar: UIViewRepresentable {
 	@Binding var totalHeight: CGFloat?
 	public typealias UIViewType = FSCalendar
-	public init(_ viewModel: MyCalendarViewModel,
-							_ height: Binding<CGFloat?>) {
-		self.viewModel = viewModel
-		self.scope = viewModel.scope
-		self.date = viewModel.date
-		self._totalHeight = height
-	}
-	private var viewModel: MyCalendarViewModel
 	private var scope: FSCalendarScope
 	private var date: Date
+	
+	public init(_ date: Date,
+							_ height: Binding<CGFloat?>,
+							_ scope: FSCalendarScope = .week) {
+		self.scope = scope
+		self.date = date
+		self._totalHeight = height
+	}
 
 	public func makeUIView(context: UIViewRepresentableContext<SwiftUICalendar>) -> FSCalendar {
 		let calendar = FSCalendar()
@@ -23,8 +23,8 @@ public struct SwiftUICalendar: UIViewRepresentable {
 	}
 
 	public func updateUIView(_ uiView: FSCalendar, context: UIViewRepresentableContext<SwiftUICalendar>) {
-		uiView.select(viewModel.date)
-		uiView.setScope(viewModel.scope, animated: false)
+		uiView.select(date)
+		uiView.setScope(scope, animated: false)
 	}
 
 	public func makeCoordinator() -> Coordinator {
@@ -39,7 +39,7 @@ public struct SwiftUICalendar: UIViewRepresentable {
 		}
 
 		public func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
-			self.parent.viewModel.date = date
+			self.parent.date = date
 		}
 		public func calendar(_ calendar: FSCalendar, boundingRectWillChange bounds: CGRect, animated: Bool) {
 			self.parent.totalHeight = bounds.size.height
