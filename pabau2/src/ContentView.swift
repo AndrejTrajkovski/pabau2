@@ -4,6 +4,7 @@ import SwiftUI
 import CasePaths
 import Login
 import Model
+import Journey
 
 typealias AppEnvironment = (
   loginAPI: LoginAPI,
@@ -15,6 +16,7 @@ struct AppState {
 	var loggedInUser: User?
 	var navigation: Navigation
 	var loginViewState: LoginViewState = LoginViewState()
+	var journeyState: JourneyState = JourneyState()
 }
 
 enum AppAction {
@@ -24,8 +26,12 @@ enum AppAction {
 
 extension AppState {
 	var tabBar: TabBarState {
-		get { TabBarState(navigation: self.navigation) }
-		set { self.navigation = newValue.navigation }
+		get { TabBarState(navigation: self.navigation,
+											journeyState: self.journeyState) }
+		set {
+			self.navigation = newValue.navigation
+			self.journeyState = newValue.journeyState
+		}
 	}
 	var walktrough: WalkthroughContainerState {
 		get {

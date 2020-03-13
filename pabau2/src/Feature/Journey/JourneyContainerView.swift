@@ -7,7 +7,7 @@ import ComposableArchitecture
 
 public typealias JourneyEnvironemnt = (apiClient: JourneyAPI, userDefaults: UserDefaults)
 
-func journeyReducer(state: inout JourneyState, action: JourneyAction, environment: JourneyEnvironemnt) -> [Effect<JourneyAction>] {
+public func journeyReducer(state: inout JourneyState, action: JourneyAction, environment: JourneyEnvironemnt) -> [Effect<JourneyAction>] {
 	switch action {
 	case .selectedFilter(let filter):
 		state.selectedFilter = filter
@@ -36,7 +36,7 @@ func journeyReducer(state: inout JourneyState, action: JourneyAction, environmen
 	return []
 }
 
-enum JourneyAction {
+public enum JourneyAction {
 	case selectedFilter(CompleteFilter)
 	case selectedDate(Date)
 	case selectedEmployees([Employee])
@@ -46,11 +46,11 @@ enum JourneyAction {
 	case gotResponse(Result<[Journey], RequestError>)
 }
 
-enum CompleteFilter: Int, CaseIterable, CustomStringConvertible {
+public enum CompleteFilter: Int, CaseIterable, CustomStringConvertible {
 	case all
 	case open
 	case complete
-	var description: String {
+	public var description: String {
 		switch self {
 		case .all: return "All"
 		case .open: return "Open"
@@ -59,16 +59,17 @@ enum CompleteFilter: Int, CaseIterable, CustomStringConvertible {
 	}
 }
 
-struct JourneyState {
-	var loadingState: LoadingState<[Journey], RequestError>
-	var journeys: Set<Journey>
-	var selectedFilter: CompleteFilter
-	var selectedDate: Date
-	var selectedEmployees: [Employee]
-	var selectedLocation: Location
-	var searchText: String
-	var isShowingAddAppointment: Bool
-	var isShowingEmployees: Bool
+public struct JourneyState {
+	public init () {}
+	var loadingState: LoadingState<[Journey], RequestError> = .initial
+	var journeys: Set<Journey> = Set.init()
+	var selectedFilter: CompleteFilter = .all
+	var selectedDate: Date = Date()
+	var selectedEmployees: [Employee] = []
+	var selectedLocation: Location = Location.init(id: 1)
+	var searchText: String = ""
+	var isShowingAddAppointment: Bool = false
+	var isShowingEmployees: Bool = false
 
 	//	var displayJourneys: [Journey] {
 	//		return journeys.filter { $0.date}

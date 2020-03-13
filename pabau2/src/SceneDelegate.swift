@@ -3,6 +3,7 @@ import SwiftUI
 import ComposableArchitecture
 import Util
 import Model
+import Journey
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -18,8 +19,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       window.rootViewController = UIHostingController(
         rootView: ContentView(
           store: Store(
-						initialValue: AppState(navigation:
-							.tabBar(.journey)
+						initialValue: AppState(
+							navigation: .tabBar(.journey)
 						),
 						reducer: reducer,
 						environment: AppEnvironment(

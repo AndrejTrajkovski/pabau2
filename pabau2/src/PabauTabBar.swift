@@ -9,6 +9,7 @@ public typealias TabBarEnvironment = (loginAPI: LoginAPI, journeyAPI: JourneyAPI
 
 public struct TabBarState {
 	public var navigation: Navigation
+	public var journeyState: JourneyState
 }
 
 extension TabBarState {
@@ -16,17 +17,27 @@ extension TabBarState {
 		get { SettingsState(navigation: self.navigation)}
 		set { self.navigation = newValue.navigation }
 	}
+	var journey: JourneyState {
+		get {
+			return self.journeyState
+		}
+		set {
+			self.journeyState = newValue
+		}
+	}
 }
 
 public enum TabBarAction {
 	case settings(SettingsAction)
+	case journey(JourneyAction)
 }
 
 struct PabauTabBar: View {
 	let store: Store<TabBarState, TabBarAction>
 	var body: some View {
 		TabView {
-			JourneyNavigationView()
+			JourneyNavigationView(self.store.view(value: { $0.journey },
+																						action: { .journey($0)}))
 				.tabItem {
 					Image(systemName: "staroflife")
 					Text("Journey")
@@ -55,7 +66,20 @@ public enum SettingsAction {
 	case logoutTapped
 }
 
-public let tabBarReducer = (pullback(settingsReducer, value: \TabBarState.settings, action: /TabBarAction.settings, environment: { $0 }))
+public let tabBarReducer = combine(
+	pullback(settingsReducer,
+					 value: \TabBarState.settings,
+					 action: /TabBarAction.settings,
+					 environment: { $0 }),
+	pullback(journeyReducer,
+					 value: \TabBarState.journey,
+					 action: /TabBarAction.journey,
+					 environment: {
+						return JourneyEnvironemnt(
+							apiClient: $0.journeyAPI,
+							userDefaults: $0.userDefaults)
+	})
+)
 
 public func settingsReducer(state: inout SettingsState, action: SettingsAction, environment: TabBarEnvironment) -> [Effect<SettingsAction>] {
 	switch action {
