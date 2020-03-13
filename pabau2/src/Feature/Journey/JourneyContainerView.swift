@@ -14,7 +14,7 @@ func journeyReducer(state: inout JourneyState, action: JourneyAction, environmen
 	case .selectedDate(let date):
 		state.selectedDate = date
 		return [
-//			environment.apiClient.
+			//			environment.apiClient.
 		]
 	case .selectedEmployees(let employees):
 		state.selectedEmployees = employees
@@ -70,9 +70,9 @@ struct JourneyState {
 	var isShowingAddAppointment: Bool
 	var isShowingEmployees: Bool
 
-//	var displayJourneys: [Journey] {
-//		return journeys.filter { $0.date}
-//	}
+	//	var displayJourneys: [Journey] {
+	//		return journeys.filter { $0.date}
+	//	}
 }
 
 //func nonEmptyAppts() -> NonEmpty<[Appointment]> {
@@ -91,15 +91,15 @@ struct JourneyState {
 
 public struct JourneyContainerView: View {
 	let journeys: [Journey] = [
-			Journey.init(id: 0,
-									 appointments: NonEmpty.init(Appointment.init(id: 1, from: Date(), to: Date(), employeeId: 1, locationId: 1, status: AppointmentStatus(id: 1, name: "Checked In"), service: BaseService.init(id: 1, name: "Botox", color: "#9400D3"))),
-									 patient: BaseClient.init(id: 0, firstName: "Andrej", lastName: "Trajkovski", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "Bojan Trajkovskiiii"), forms: [], photos: [], postCare: [], paid: "Not Paid"),
-			Journey.init(id: 1,
-									 appointments: NonEmpty.init(Appointment.init(id: 1, from: Date(), to: Date(), employeeId: 1, locationId: 1, status: AppointmentStatus(id: 1, name: "Not Checked In"),service: BaseService.init(id: 1, name: "Botox", color: "#9400D3"))),
-			patient: BaseClient.init(id: 1, firstName: "Elon", lastName: "Musk", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "John Doe"), forms: [], photos: [], postCare: [], paid: "Paid"),
-			Journey.init(id: 2,
-			appointments: NonEmpty.init(Appointment.init(id: 1, from: Date(), to: Date(), employeeId: 1, locationId: 1, status: AppointmentStatus(id: 1, name: "Not Checked In"), service: BaseService.init(id: 1, name: "Botox", color: "#9400D3"))),
-			patient: BaseClient.init(id: 2, firstName: "Joe", lastName: "Rogan", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "Tiger Woods"), forms: [], photos: [], postCare: [], paid: "Owes 1.000")
+		Journey.init(id: 0,
+								 appointments: NonEmpty.init(Appointment.init(id: 1, from: Date(), to: Date(), employeeId: 1, locationId: 1, status: AppointmentStatus(id: 1, name: "Checked In"), service: BaseService.init(id: 1, name: "Botox", color: "#9400D3"))),
+								 patient: BaseClient.init(id: 0, firstName: "Andrej", lastName: "Trajkovski", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "Bojan Trajkovskiiii"), forms: [], photos: [], postCare: [], paid: "Not Paid"),
+		Journey.init(id: 1,
+								 appointments: NonEmpty.init(Appointment.init(id: 1, from: Date(), to: Date(), employeeId: 1, locationId: 1, status: AppointmentStatus(id: 1, name: "Not Checked In"), service: BaseService.init(id: 1, name: "Botox", color: "#9400D3"))),
+								 patient: BaseClient.init(id: 1, firstName: "Elon", lastName: "Musk", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "John Doe"), forms: [], photos: [], postCare: [], paid: "Paid"),
+		Journey.init(id: 2,
+								 appointments: NonEmpty.init(Appointment.init(id: 1, from: Date(), to: Date(), employeeId: 1, locationId: 1, status: AppointmentStatus(id: 1, name: "Not Checked In"), service: BaseService.init(id: 1, name: "Botox", color: "#9400D3"))),
+								 patient: BaseClient.init(id: 2, firstName: "Joe", lastName: "Rogan", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "Tiger Woods"), forms: [], photos: [], postCare: [], paid: "Owes 1.000")
 	]
 	let calendarViewModel = MyCalendarViewModel()
 	public init () {}
@@ -236,14 +236,13 @@ struct JourneyColorRect: View {
 
 struct FilterPicker: View {
 	@State private var filter: CompleteFilter = .all
-
-    var body: some View {
-        VStack {
-            Picker(selection: $filter, label: Text("What is your favorite color?")) {
-							ForEach(CompleteFilter.allCases, id: \.self) { (filter: CompleteFilter) in
-								Text(String(filter.description)).tag(filter.rawValue)
-							}
-            }.pickerStyle(SegmentedPickerStyle())
-			}.padding()
-    }
+	var body: some View {
+		VStack {
+			Picker(selection: $filter, label: Text("What is your favorite color?")) {
+				ForEach(CompleteFilter.allCases, id: \.self) { (filter: CompleteFilter) in
+					Text(String(filter.description)).tag(filter.rawValue)
+				}
+			}.pickerStyle(SegmentedPickerStyle())
+		}.padding()
+	}
 }
