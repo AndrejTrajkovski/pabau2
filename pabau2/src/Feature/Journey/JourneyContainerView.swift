@@ -46,10 +46,17 @@ enum JourneyAction {
 	case gotResponse(Result<[Journey], RequestError>)
 }
 
-enum CompleteFilter {
+enum CompleteFilter: Int, CaseIterable, CustomStringConvertible {
 	case all
 	case open
 	case complete
+	var description: String {
+		switch self {
+		case .all: return "All"
+		case .open: return "Open"
+		case .complete: return "Complete"
+		}
+	}
 }
 
 struct JourneyState {
@@ -102,6 +109,7 @@ public struct JourneyContainerView: View {
 			SwiftUICalendar.init(calendarViewModel, self.$calendarHeight)
 				.padding(0)
 				.frame(height: self.calendarHeight)
+			FilterPicker()
 			JourneyList(journeys: journeys)
 			Spacer()
 		}
@@ -224,4 +232,18 @@ struct JourneyColorRect: View {
 			.foregroundColor(color)
 			.frame(width: 8.0)
 	}
+}
+
+struct FilterPicker: View {
+	@State private var filter: CompleteFilter = .all
+
+    var body: some View {
+        VStack {
+            Picker(selection: $filter, label: Text("What is your favorite color?")) {
+							ForEach(CompleteFilter.allCases, id: \.self) { (filter: CompleteFilter) in
+								Text(String(filter.description)).tag(filter.rawValue)
+							}
+            }.pickerStyle(SegmentedPickerStyle())
+			}.padding()
+    }
 }
