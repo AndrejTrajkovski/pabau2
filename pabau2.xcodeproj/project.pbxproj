@@ -194,6 +194,8 @@
 		82E253FA241B9EB500F16C30 /* JourneyAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E253F9241B9EB500F16C30 /* JourneyAction.swift */; };
 		82E253FC241B9ED000F16C30 /* JourneyState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E253FB241B9ED000F16C30 /* JourneyState.swift */; };
 		82E253FE241B9F1200F16C30 /* CompleteFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E253FD241B9F1200F16C30 /* CompleteFilter.swift */; };
+		82E25401241E5AC000F16C30 /* SwiftDate in Frameworks */ = {isa = PBXBuildFile; productRef = 82E25400241E5AC000F16C30 /* SwiftDate */; };
+		82E25403241E5AD500F16C30 /* SwiftDate in Frameworks */ = {isa = PBXBuildFile; productRef = 82E25402241E5AD500F16C30 /* SwiftDate */; };
 		82F6ADAE23F2C7B1001B3ACE /* PabauTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */; };
 /* End PBXBuildFile section */
 
@@ -598,6 +600,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				82E25403241E5AD500F16C30 /* SwiftDate in Frameworks */,
 				827B45992411368F00A5975E /* FSCalendarSwiftUI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -623,6 +626,7 @@
 			files = (
 				8227FB33240BAAB600F653B5 /* Login.framework in Frameworks */,
 				827B458F2411368100A5975E /* Journey.framework in Frameworks */,
+				82E25401241E5AC000F16C30 /* SwiftDate in Frameworks */,
 				82BE2F7923D9983C00B3678A /* ComposableArchitecture.framework in Frameworks */,
 				82CACEE9241131260021E1DE /* FSCalendarSwiftUI.framework in Frameworks */,
 				82B02FFE23F2542A0015B0B4 /* CasePaths in Frameworks */,
@@ -1257,6 +1261,9 @@
 				827B45982411368A00A5975E /* PBXTargetDependency */,
 			);
 			name = Journey;
+			packageProductDependencies = (
+				82E25402241E5AD500F16C30 /* SwiftDate */,
+			);
 			productName = Journey;
 			productReference = 827B457A2411368100A5975E /* Journey.framework */;
 			productType = "com.apple.product-type.framework";
@@ -1323,6 +1330,7 @@
 			packageProductDependencies = (
 				82B02FFD23F2542A0015B0B4 /* CasePaths */,
 				827B460A2413C0C300A5975E /* NonEmpty */,
+				82E25400241E5AC000F16C30 /* SwiftDate */,
 			);
 			productName = pabau2;
 			productReference = 82BE2F4423D97D9C00B3678A /* pabau2.app */;
@@ -1470,6 +1478,7 @@
 				82B02FFC23F2542A0015B0B4 /* XCRemoteSwiftPackageReference "swift-case-paths" */,
 				8227FBAC240BC68400F653B5 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 				827B46092413C0C300A5975E /* XCRemoteSwiftPackageReference "swift-nonempty" */,
+				82E253FF241E5ABF00F16C30 /* XCRemoteSwiftPackageReference "SwiftDate" */,
 			);
 			productRefGroup = 82BE2F4523D97D9C00B3678A /* Products */;
 			projectDirPath = "";
@@ -2846,6 +2855,14 @@
 				version = 0.1.0;
 			};
 		};
+		82E253FF241E5ABF00F16C30 /* XCRemoteSwiftPackageReference "SwiftDate" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/malcommac/SwiftDate.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.1.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -2883,6 +2900,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 82B02FFC23F2542A0015B0B4 /* XCRemoteSwiftPackageReference "swift-case-paths" */;
 			productName = CasePaths;
+		};
+		82E25400241E5AC000F16C30 /* SwiftDate */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 82E253FF241E5ABF00F16C30 /* XCRemoteSwiftPackageReference "SwiftDate" */;
+			productName = SwiftDate;
+		};
+		82E25402241E5AD500F16C30 /* SwiftDate */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 82E253FF241E5ABF00F16C30 /* XCRemoteSwiftPackageReference "SwiftDate" */;
+			productName = SwiftDate;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
