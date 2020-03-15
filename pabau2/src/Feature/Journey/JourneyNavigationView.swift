@@ -7,7 +7,7 @@ public struct JourneyNavigationView: View {
 	}
 	public var body: some View {
 		NavigationView {
-			JourneyContainerView(date: store.value.selectedDate)
+			JourneyContainerView(self.store)
 				.navigationBarTitle("Manchester", displayMode: .inline)
 				.navigationBarItems(leading:
 					HStack(spacing: 16.0) {

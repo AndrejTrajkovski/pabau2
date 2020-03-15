@@ -47,18 +47,18 @@ public struct JourneyContainerView: View {
 								 appointments: NonEmpty.init(Appointment.init(id: 1, from: Date(), to: Date(), employeeId: 1, locationId: 1, status: AppointmentStatus(id: 1, name: "Not Checked In"), service: BaseService.init(id: 1, name: "Botox", color: "#88fa69"))),
 								 patient: BaseClient.init(id: 2, firstName: "Joe", lastName: "Rogan", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "Tiger Woods"), forms: [], photos: [], postCare: [], paid: "Owes 1.000")
 	]
-
-	public init (date: Date) {
-		self.date = date
-	}
+	
 	@State private var calendarHeight: CGFloat?
-	let date: Date
+	@ObservedObject var store: Store<JourneyState, JourneyAction>
+	public init(_ store: Store<JourneyState, JourneyAction>) {
+		self.store = store
+	}
 	public var body: some View {
 		VStack {
-			SwiftUICalendar.init(date,
+			SwiftUICalendar.init(store.value.selectedDate,
 													 self.$calendarHeight,
-													 .week) {
-				
+													 .week) {date in
+				self.store.send(.selectedDate(date))
 			}
 				.padding(0)
 				.frame(height: self.calendarHeight)
