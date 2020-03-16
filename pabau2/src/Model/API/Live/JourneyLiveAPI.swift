@@ -1,6 +1,10 @@
 import ComposableArchitecture
 
 public struct JourneyLiveAPI: JourneyAPI, LiveAPI {
+	public func getEmployees() -> Effect<Result<[Employee], RequestError>> {
+		fatalError()
+	}
+	
 	public let requestBuilderFactory: RequestBuilderFactory = RequestBuilderFactoryImpl()
 	public var basePath: String = ""
 	public let route: String = "journeys"

@@ -17,7 +17,11 @@ public struct User: Codable, Identifiable, Equatable {
 	public let lastName: String?
 
 	public let company: Company?
-	public init(id: Int? = nil, avatarUrl: String? = nil, firstName: String? = nil, lastName: String? = nil, company: Company? = nil) {
+	public init(id: Int? = nil,
+							avatarUrl: String? = nil,
+							firstName: String? = nil,
+							lastName: String? = nil,
+							company: Company? = nil) {
 		self.id = id
 		self.avatarUrl = avatarUrl
 		self.firstName = firstName

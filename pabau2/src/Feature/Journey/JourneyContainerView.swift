@@ -21,7 +21,7 @@ public func journeyReducer(state: inout JourneyState, action: JourneyAction, env
 				.eraseToEffect()
 		]
 	case .selectedEmployees(let employees):
-		state.selectedEmployees = employees
+		state.employees = employees
 	case .addAppointment:
 		state.isShowingAddAppointment = true
 	case .gotResponse(let result):
@@ -36,12 +36,6 @@ public func journeyReducer(state: inout JourneyState, action: JourneyAction, env
 		state.searchText = searchText
 	case .toggleEmployees:
 		state.isShowingEmployees.toggle()
-	case .tabBarWillLoad:
-		return [
-			environment.apiClient.getJourneys(date: Date())
-			.map(JourneyAction.gotResponse)
-			.eraseToEffect()
-		]
 	}
 	return []
 }
@@ -56,10 +50,10 @@ public struct JourneyContainerView: View {
 			SwiftUICalendar.init(store.value.selectedDate,
 													 self.$calendarHeight,
 													 .week) {date in
-				self.store.send(.selectedDate(date))
+														self.store.send(.selectedDate(date))
 			}
-				.padding(0)
-				.frame(height: self.calendarHeight)
+			.padding(0)
+			.frame(height: self.calendarHeight)
 			FilterPicker()
 			LoadingView(title: Texts.fetchingJourneys, bindingIsShowing: .constant(self.store.value.loadingState.isLoading)) {
 				JourneyList(self.store.value.filteredJourneys)
@@ -186,11 +180,41 @@ struct FilterPicker: View {
 	@State private var filter: CompleteFilter = .all
 	var body: some View {
 		VStack {
-			Picker(selection: $filter, label: Text("What is your favorite color?")) {
+			Picker(selection: $filter, label: Text("Filter")) {
 				ForEach(CompleteFilter.allCases, id: \.self) { (filter: CompleteFilter) in
 					Text(String(filter.description)).tag(filter.rawValue)
 				}
 			}.pickerStyle(SegmentedPickerStyle())
 		}.padding()
+	}
+}
+
+struct EmployeeList: View {
+	public let selectedEmployeesIds: [Int]
+	public let employees: [Employee]
+	public let didSelectEmployee: (Employee) -> Void
+	public var body: some View {
+		List {
+			ForEach(employees) { employee in
+				EmployeeRow(employee: employee,
+										isSelected: self.selectedEmployeesIds.contains(employee.id)) {
+											self.didSelectEmployee($0)
+				}
+			}
+		}
+	}
+}
+
+struct EmployeeRow: View {
+	let employee: Employee
+	let isSelected: Bool
+	let didSelectEmployee: (Employee) -> Void
+	var body: some View {
+		HStack {
+			Image.init(self.isSelected ? "􀁣" : "􀀀")
+			Text(employee.name)
+		}.onTapGesture {
+			self.didSelectEmployee(self.employee)
+		}
 	}
 }

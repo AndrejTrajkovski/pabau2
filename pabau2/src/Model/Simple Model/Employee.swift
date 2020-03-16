@@ -12,7 +12,10 @@ public struct Employee: Codable, Identifiable, Equatable {
     public let avatarUrl: String?
 
     public let pin: Int?
-    public init(id: Int, name: String, avatarUrl: String? = nil, pin: Int? = nil) {
+    public init(id: Int,
+								name: String,
+								avatarUrl: String? = nil,
+								pin: Int? = nil) {
         self.id = id
         self.name = name
         self.avatarUrl = avatarUrl

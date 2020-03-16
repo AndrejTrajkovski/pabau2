@@ -73,14 +73,14 @@ struct ContentView: View {
 				ViewBuilder.buildEither(first: PabauTabBar(store: tabBarStore))
 		)
 	}
-	
+
 	var loginContainerStore: Store<WalkthroughContainerState, WalkthroughContainerAction> {
 		return self.store.view(
 			value: { $0.walktrough },
 			action: { .walkthrough($0)}
 		)
 	}
-	
+
 	var tabBarStore: Store<TabBarState, TabBarAction> {
 		return self.store.view(
 			value: { $0.tabBar },
@@ -91,11 +91,11 @@ struct ContentView: View {
 
 struct LoginContainer: View {
 	@ObservedObject var store: Store<WalkthroughContainerState, WalkthroughContainerAction>
-	
+
 	var shouldShowWalkthrough: Bool {
 		return self.store.value.navigation.login?.contains(.walkthroughScreen) ?? false
 	}
-	
+
 	var body: some View {
 		NavigationView {
 			ViewBuilder.buildBlock(
@@ -119,6 +119,11 @@ func globalReducer(state: inout AppState, action: AppAction, environment: AppEnv
 	if user != nil {
 		state.journeyState.loadingState = .loading
 		return [
+			environment.journeyAPI.getJourneys(date: Date())
+				.map {
+					AppAction.tabBar(TabBarAction.journey(JourneyAction.gotResponse($0)))
+			}
+			.eraseToEffect(),
 			environment.journeyAPI.getJourneys(date: Date())
 				.map {
 					AppAction.tabBar(TabBarAction.journey(JourneyAction.gotResponse($0)))

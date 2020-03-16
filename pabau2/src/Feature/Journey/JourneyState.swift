@@ -9,7 +9,8 @@ public struct JourneyState {
 	var journeys: Set<Journey> = Set()
 	var selectedFilter: CompleteFilter = .all
 	var selectedDate: Date = Date()
-	var selectedEmployees: [Employee] = []
+	var employees: [Employee] = []
+	var selectedEmployeesIds: [Int] = []
 	var selectedLocation: Location = Location.init(id: 1)
 	var searchText: String = ""
 	var isShowingAddAppointment: Bool = false

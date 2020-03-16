@@ -17,4 +17,37 @@ public struct JourneyMockAPI: MockAPI, JourneyAPI {
 									 patient: BaseClient.init(id: 2, firstName: "Joe", lastName: "Rogan", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "Tiger Woods"), forms: [], photos: [], postCare: [], paid: "Owes 1.000")
 		])
 	}
+	
+	public func getEmployees() -> Effect<Result<[Employee], RequestError>> {
+		mockSuccess([
+			Employee.init(id: 1,
+										name: "Dr. Jekil",
+										avatarUrl: "asd",
+										pin: 1234),
+			Employee.init(id: 2,
+										name: "Dr. Off Boley",
+										avatarUrl: "",
+										pin: 1234),
+			Employee.init(id: 3,
+										name: "Michael Jordan",
+										avatarUrl: "",
+										pin: 1234),
+			Employee.init(id: 4,
+										name: "Kobe Bryant RIP",
+										avatarUrl: "",
+										pin: 1234),
+			Employee.init(id: 5,
+										name: "LeBron James",
+										avatarUrl: "",
+										pin: 1234),
+			Employee.init(id: 6,
+										name: "Britney Spears",
+										avatarUrl: "",
+										pin: 1234),
+			Employee.init(id: 7,
+										name: "Dr. Who",
+										avatarUrl: "",
+										pin: 1234)
+		])
+	}
 }
