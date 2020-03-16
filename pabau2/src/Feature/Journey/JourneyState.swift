@@ -5,7 +5,7 @@ import SwiftDate
 
 public struct JourneyState {
 	public init () {}
-	public var loadingState: LoadingState<[Journey], RequestError> = .initial
+	public var loadingState: LoadingState = .initial
 	var journeys: Set<Journey> = Set()
 	var selectedFilter: CompleteFilter = .all
 	var selectedDate: Date = Date()

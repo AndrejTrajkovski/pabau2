@@ -1,12 +1,9 @@
-public enum LoadingState<Value: Equatable, Error: Equatable>: Equatable {
-	public static func == (lhs: LoadingState<Value, Error>, rhs: LoadingState<Value, Error>) -> Bool {
+public enum LoadingState: Equatable {
+	public static func == (lhs: LoadingState, rhs: LoadingState) -> Bool {
 		switch (lhs, rhs) {
-		case (.initial, .initial), (.loading, .loading):
+		case (.initial, .initial), (.loading, .loading), (.gotSuccess, .gotSuccess),
+				 (.gotError, .gotError):
 			return true
-		case (let .gotSuccess(lhsValue), let .gotSuccess(rhsValue)):
-			return lhsValue == rhsValue
-		case (let .gotError(lhsError), let .gotError(rhsError)):
-			return lhsError == rhsError
 		default:
 			return true
 		}
@@ -14,8 +11,8 @@ public enum LoadingState<Value: Equatable, Error: Equatable>: Equatable {
 
 	case initial
 	case loading
-	case gotSuccess(Value)
-	case gotError(Error)
+	case gotSuccess
+	case gotError
 	public var isLoading: Bool {
 		guard case LoadingState.loading = self else { return false }
 		return true

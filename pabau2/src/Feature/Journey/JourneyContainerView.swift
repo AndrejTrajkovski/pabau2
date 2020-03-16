@@ -6,6 +6,22 @@ import NonEmpty
 import ComposableArchitecture
 import SwiftDate
 
+public struct EmployeesState {
+	var loadingState: LoadingState
+	var employees: [Employee]
+	var selectedEmployeesIds: [Int]
+}
+
+public enum EmployeesAction {
+
+}
+
+public func employeeListReducer(state: inout EmployeesState,
+																action: EmployeesAction,
+																environment: JourneyEnvironemnt) {
+
+}
+
 public typealias JourneyEnvironemnt = (apiClient: JourneyAPI, userDefaults: UserDefaults)
 
 public func journeyReducer(state: inout JourneyState, action: JourneyAction, environment: JourneyEnvironemnt) -> [Effect<JourneyAction>] {
@@ -28,9 +44,9 @@ public func journeyReducer(state: inout JourneyState, action: JourneyAction, env
 		switch result {
 		case .success(let journeys):
 			state.journeys.formUnion(journeys)
-			state.loadingState = .gotSuccess(journeys)
-		case .failure(let error):
-			state.loadingState = .gotError(error)
+			state.loadingState = .gotSuccess
+		case .failure:
+			state.loadingState = .gotError
 		}
 	case .searchedText(let searchText):
 		state.searchText = searchText

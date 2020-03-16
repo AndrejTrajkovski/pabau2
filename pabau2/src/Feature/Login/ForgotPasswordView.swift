@@ -14,10 +14,10 @@ public enum ForgotPassViewAction: Equatable {
 
 public struct ForgotPassContainerState {
 	var navigation: Navigation
-	var forgotPassLS: LoadingState<ForgotPassSuccess, ForgotPassError>
+	var forgotPassLS: LoadingState
 	var fpValidation: String
 	var rpValidation: RPValidator
-	var rpLoading: LoadingState<ResetPassSuccess, RequestError>
+	var rpLoading: LoadingState
 	var forgotPass: ForgotPassState {
 		get { return ForgotPassState(navigation: navigation,
 																 loadingState: forgotPassLS,
@@ -41,7 +41,7 @@ public struct ForgotPassContainerState {
 
 public struct ForgotPassState {
 	var navigation: Navigation
-	var loadingState: LoadingState<ForgotPassSuccess, ForgotPassError>
+	var loadingState: LoadingState
 	var fpValidation: String
 }
 
@@ -73,11 +73,11 @@ public func forgotPasswordReducer(state: inout ForgotPassState, action: ForgotPa
 		}
 	case .gotResponse(let result):
 		switch result {
-		case .success(let success):
-			state.loadingState = .gotSuccess(success)
+		case .success:
+			state.loadingState = .gotSuccess
 			state.navigation.login?.append(.checkEmailScreen)
-		case .failure(let error):
-			state.loadingState = .gotError(error)
+		case .failure:
+			state.loadingState = .gotError
 		}
 		return []
 	}

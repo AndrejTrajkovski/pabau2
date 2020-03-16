@@ -11,11 +11,11 @@ public struct LoginViewState: Equatable {
 	public init () {}
 	var emailValidationText: String = ""
 	var passValidationText: String = ""
-	var forgotPassLS: LoadingState<ForgotPassSuccess, ForgotPassError> = .initial
-	var loginLS: LoadingState<User, LoginError> = .initial
+	var forgotPassLS: LoadingState = .initial
+	var loginLS: LoadingState = .initial
 	var fpValidation: String = ""
 	var rpValidation: RPValidator = .failure([])
-	var rpLoading: LoadingState<ResetPassSuccess, RequestError> = .initial
+	var rpLoading: LoadingState = .initial
 }
 
 public enum LoginViewAction: Equatable {
@@ -71,11 +71,11 @@ public func loginReducer(state: inout WalkthroughContainerState, action: LoginAc
 	case .gotResponse(let result):
 		switch result {
 		case .success(let user):
-			state.loginViewState.loginLS = .gotSuccess(user)
+			state.loginViewState.loginLS = .gotSuccess
 			state.loggedInUser = user
 			state.navigation = .tabBar(.journey)
-		case .failure(let error):
-			state.loginViewState.loginLS = .gotError(error)
+		case .failure:
+			state.loginViewState.loginLS = .gotError
 		}
 		return []
 	}

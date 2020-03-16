@@ -40,7 +40,7 @@ public struct ResetPassRequest: Equatable {
 public struct ResetPasswordState: Equatable {
 	var navigation: Navigation
 	var rpValidation: RPValidator
-	var loadingState: LoadingState<ResetPassSuccess, RequestError>
+	var loadingState: LoadingState
 	var newPassValidator: String {
 		guard let rpFailure = (/RPValidator.failure).extract(from: rpValidation) else {
 			return ""
@@ -124,12 +124,12 @@ func handle (_ code: String, _ newPass: String, _ confirmPass: String, _ state: 
 
 func handle(_ result: Result<ResetPassSuccess, RequestError>, _ state: inout ResetPasswordState) ->  [Effect<ResetPasswordAction>] {
 	switch result {
-	case .success(let success):
-		state.loadingState = .gotSuccess(success)
+	case .success:
+		state.loadingState = .gotSuccess
 		state.navigation.login?.append(.passChangedScreen)
 		return []
-	case .failure(let error):
-		state.loadingState = .gotError(error)
+	case .failure:
+		state.loadingState = .gotError
 		return []
 	}
 }
