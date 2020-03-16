@@ -13,13 +13,24 @@ public struct EmployeesState {
 }
 
 public enum EmployeesAction {
-
+	case gotResponse(Result<[Employee], ErrorResponse>)
+	case onTapGestureEmployee(Employee)
 }
 
 public func employeeListReducer(state: inout EmployeesState,
 																action: EmployeesAction,
-																environment: JourneyEnvironemnt) {
-
+																environment: JourneyEnvironemnt) -> [Effect<EmployeesAction>] {
+	switch action {
+	case .gotResponse(let response):
+		switch (response) {
+		case .success(let employees):
+			state.employees = employees
+		case .failure(let error):
+			
+		}
+	default:
+		<#code#>
+	}
 }
 
 public typealias JourneyEnvironemnt = (apiClient: JourneyAPI, userDefaults: UserDefaults)
