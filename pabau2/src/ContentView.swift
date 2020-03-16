@@ -7,7 +7,7 @@ import Model
 import Journey
 
 typealias AppEnvironment = (
-  loginAPI: LoginAPI,
+	loginAPI: LoginAPI,
 	journeyAPI: JourneyAPI,
 	userDefaults: UserDefaults
 )
@@ -36,8 +36,8 @@ extension AppState {
 	var walktrough: WalkthroughContainerState {
 		get {
 			return WalkthroughContainerState(navigation: self.navigation,
-																	loggedInUser: loggedInUser,
-																	loginViewState: self.loginViewState)
+																			 loggedInUser: loggedInUser,
+																			 loginViewState: self.loginViewState)
 		}
 		set {
 			self.navigation = newValue.navigation
@@ -59,7 +59,8 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = combine(
 		value: \AppState.tabBar,
 		action: /AppAction.tabBar,
 		environment: { TabBarEnvironment($0) }
-	)
+	),
+	globalReducer
 )
 
 struct ContentView: View {
@@ -72,14 +73,14 @@ struct ContentView: View {
 				ViewBuilder.buildEither(first: PabauTabBar(store: tabBarStore))
 		)
 	}
-
+	
 	var loginContainerStore: Store<WalkthroughContainerState, WalkthroughContainerAction> {
 		return self.store.view(
 			value: { $0.walktrough },
 			action: { .walkthrough($0)}
 		)
 	}
-
+	
 	var tabBarStore: Store<TabBarState, TabBarAction> {
 		return self.store.view(
 			value: { $0.tabBar },
@@ -90,15 +91,15 @@ struct ContentView: View {
 
 struct LoginContainer: View {
 	@ObservedObject var store: Store<WalkthroughContainerState, WalkthroughContainerAction>
-
+	
 	var shouldShowWalkthrough: Bool {
 		return self.store.value.navigation.login?.contains(.walkthroughScreen) ?? false
 	}
-
+	
 	var body: some View {
 		NavigationView {
 			ViewBuilder.buildBlock(
-				 shouldShowWalkthrough ?
+				shouldShowWalkthrough ?
 					ViewBuilder.buildEither(first: WalkthroughContainer(store))
 					:
 					ViewBuilder.buildEither(second:
@@ -108,5 +109,23 @@ struct LoginContainer: View {
 					))
 			)
 		}.navigationViewStyle(StackNavigationViewStyle())
+	}
+}
+
+func globalReducer(state: inout AppState, action: AppAction, environment: AppEnvironment) -> [Effect<AppAction>] {
+	let user = extract(case: { (value: User) -> (AppAction) in
+	AppAction.walkthrough(WalkthroughContainerAction.login(LoginViewAction.login(LoginAction.gotResponse(Result.success(value)))))
+	}, from: action)
+	if user != nil {
+		state.journeyState.loadingState = .loading
+		return [
+			environment.journeyAPI.getJourneys(date: Date())
+				.map {
+					AppAction.tabBar(TabBarAction.journey(JourneyAction.gotResponse($0)))
+			}
+			.eraseToEffect()
+		]
+	} else {
+		return []
 	}
 }

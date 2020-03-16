@@ -14,8 +14,11 @@ public func journeyReducer(state: inout JourneyState, action: JourneyAction, env
 		state.selectedFilter = filter
 	case .selectedDate(let date):
 		state.selectedDate = date
+		state.loadingState = .loading
 		return [
-			//			environment.apiClient.
+			environment.apiClient.getJourneys(date: date)
+				.map(JourneyAction.gotResponse)
+				.eraseToEffect()
 		]
 	case .selectedEmployees(let employees):
 		state.selectedEmployees = employees
@@ -33,6 +36,12 @@ public func journeyReducer(state: inout JourneyState, action: JourneyAction, env
 		state.searchText = searchText
 	case .toggleEmployees:
 		state.isShowingEmployees.toggle()
+	case .tabBarWillLoad:
+		return [
+			environment.apiClient.getJourneys(date: Date())
+			.map(JourneyAction.gotResponse)
+			.eraseToEffect()
+		]
 	}
 	return []
 }
@@ -52,19 +61,12 @@ public struct JourneyContainerView: View {
 				.padding(0)
 				.frame(height: self.calendarHeight)
 			FilterPicker()
-			JourneyList(journeys: store.value.filteredJourneys)
+			LoadingView(title: Texts.fetchingJourneys, bindingIsShowing: .constant(self.store.value.loadingState.isLoading)) {
+				JourneyList(self.store.value.filteredJourneys)
+			}
 			Spacer()
 		}
 	}
-
-	//	let appt1 = Journey(id: 0,
-	//											appointments: [],
-	//											patient: BaseClient(),
-	//											employee: Employee())
-	//
-	//	let journeys: [Journey] = [
-	//
-	//	]
 }
 
 func journeyCellAdapter(journey: Journey) -> JourneyCell {
@@ -86,6 +88,10 @@ func journeyCellAdapter(journey: Journey) -> JourneyCell {
 
 struct JourneyList: View {
 	let journeys: [Journey]
+	init (_ journeys: [Journey]) {
+		self.journeys = journeys
+		UITableView.appearance().separatorStyle = journeys.isEmpty ? .none : .singleLine
+	}
 	var body: some View {
 		List {
 			ForEach(journeys) { journey in

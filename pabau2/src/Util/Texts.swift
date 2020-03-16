@@ -46,6 +46,7 @@ public struct Texts {
 	public static let passwordChangedDesc = "Please use your new password when logging in."
 
 	public static let logout = "Logout"
+	public static let fetchingJourneys = "Fetching journeys...".localized
 }
 
 extension String {

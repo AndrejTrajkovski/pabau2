@@ -7,7 +7,7 @@ public struct SwiftUICalendar: UIViewRepresentable {
 	private let scope: FSCalendarScope
 	private let date: Date
 	private var onDateChanged: (Date) -> Void
-	
+
 	public init(_ date: Date,
 							_ height: Binding<CGFloat?>,
 							_ scope: FSCalendarScope,

@@ -196,6 +196,7 @@
 		82E253FE241B9F1200F16C30 /* CompleteFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E253FD241B9F1200F16C30 /* CompleteFilter.swift */; };
 		82E25401241E5AC000F16C30 /* SwiftDate in Frameworks */ = {isa = PBXBuildFile; productRef = 82E25400241E5AC000F16C30 /* SwiftDate */; };
 		82E25403241E5AD500F16C30 /* SwiftDate in Frameworks */ = {isa = PBXBuildFile; productRef = 82E25402241E5AD500F16C30 /* SwiftDate */; };
+		82E25405241EA8D800F16C30 /* SwiftDate in Frameworks */ = {isa = PBXBuildFile; productRef = 82E25404241EA8D800F16C30 /* SwiftDate */; };
 		82F6ADAE23F2C7B1001B3ACE /* PabauTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */; };
 /* End PBXBuildFile section */
 
@@ -583,6 +584,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				82E25405241EA8D800F16C30 /* SwiftDate in Frameworks */,
 				827B460D2413C14D00A5975E /* NonEmpty in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1217,6 +1219,7 @@
 			name = Model;
 			packageProductDependencies = (
 				827B460C2413C14D00A5975E /* NonEmpty */,
+				82E25404241EA8D800F16C30 /* SwiftDate */,
 			);
 			productName = Model;
 			productReference = 8227FB8A240BB40300F653B5 /* Model.framework */;
@@ -2907,6 +2910,11 @@
 			productName = SwiftDate;
 		};
 		82E25402241E5AD500F16C30 /* SwiftDate */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 82E253FF241E5ABF00F16C30 /* XCRemoteSwiftPackageReference "SwiftDate" */;
+			productName = SwiftDate;
+		};
+		82E25404241EA8D800F16C30 /* SwiftDate */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 82E253FF241E5ABF00F16C30 /* XCRemoteSwiftPackageReference "SwiftDate" */;
 			productName = SwiftDate;

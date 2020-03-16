@@ -8,4 +8,5 @@ public enum JourneyAction {
 	case searchedText(String)
 	case toggleEmployees
 	case gotResponse(Result<[Journey], RequestError>)
+	case tabBarWillLoad
 }
