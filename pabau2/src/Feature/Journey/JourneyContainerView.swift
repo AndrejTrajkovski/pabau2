@@ -9,7 +9,7 @@ import SwiftDate
 public struct EmployeesState {
 	var loadingState: LoadingState
 	var employees: [Employee]
-	var selectedEmployeesIds: [Int]
+	var selectedEmployeesIds: Set<Int>
 }
 
 public enum EmployeesAction {
@@ -20,17 +20,29 @@ public enum EmployeesAction {
 public func employeeListReducer(state: inout EmployeesState,
 																action: EmployeesAction,
 																environment: JourneyEnvironemnt) -> [Effect<EmployeesAction>] {
-	switch action {
-	case .gotResponse(let response):
-		switch (response) {
+	func handle(result: Result<[Employee], ErrorResponse>,
+							state: inout EmployeesState) -> [Effect<EmployeesAction>] {
+		switch result {
 		case .success(let employees):
 			state.employees = employees
-		case .failure(let error):
-			
+			state.loadingState = .gotSuccess
+		case .failure:
+			state.loadingState = .gotError
 		}
-	default:
-		<#code#>
+		return []
 	}
+
+	switch action {
+	case .gotResponse(let response):
+		return handle(result: response, state: &state)
+	case .onTapGestureEmployee(let employee):
+		if state.selectedEmployeesIds.contains(employee.id) {
+			state.selectedEmployeesIds.remove(employee.id)
+		} else {
+			state.selectedEmployeesIds.insert(employee.id)
+		}
+	}
+	return []
 }
 
 public typealias JourneyEnvironemnt = (apiClient: JourneyAPI, userDefaults: UserDefaults)
