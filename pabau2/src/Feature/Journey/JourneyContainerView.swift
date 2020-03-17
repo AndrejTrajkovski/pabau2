@@ -59,8 +59,6 @@ public func journeyReducer(state: inout JourneyState, action: JourneyAction, env
 				.map(JourneyAction.gotResponse)
 				.eraseToEffect()
 		]
-	case .selectedEmployees(let employees):
-		state.employees = employees
 	case .addAppointment:
 		state.isShowingAddAppointment = true
 	case .gotResponse(let result):
