@@ -35,25 +35,31 @@ public enum TabBarAction {
 struct PabauTabBar: View {
 	let store: Store<TabBarState, TabBarAction>
 	var body: some View {
-		TabView {
-			JourneyNavigationView(self.store.view(value: { $0.journey },
-																						action: { .journey($0)}))
-				.tabItem {
-					Image(systemName: "staroflife")
-					Text("Journey")
+		ZStack(alignment: .topTrailing) {
+			TabView {
+				JourneyNavigationView(self.store.view(value: { $0.journey },
+																							action: { .journey($0)}))
+					.tabItem {
+						Image(systemName: "staroflife")
+						Text("Journey")
+				}
+				Text("Calendar")
+					.tabItem {
+						Image(systemName: "calendar")
+						Text("Calendar")
+				}
+				Settings(store:
+					store.view(value: { $0.settings },
+										 action: { .settings($0)}))
+					.tabItem {
+						Image(systemName: "gear")
+						Text("Settings")
+				}
 			}
-			Text("Calendar")
-				.tabItem {
-					Image(systemName: "calendar")
-					Text("Calendar")
-			}
-			Settings(store:
-				store.view(value: { $0.settings },
-									 action: { .settings($0)}))
-				.tabItem {
-					Image(systemName: "gear")
-					Text("Settings")
-			}
+			EmployeesListStore(self.store.view(value: { $0.journey.employeesState } ,
+																				 action: { .journey(.employees($0))}))
+				.isHidden(!self.store.value.journey.employeesState.isShowingEmployees)
+				.frame(width: self.store.value.journey.employeesState.isShowingEmployees ? 302 : 0)
 		}
 	}
 }
@@ -98,4 +104,57 @@ public struct Settings: View {
 			}
 		}
 	}
+}
+
+extension View {
+
+    /// Hide or show the view based on a boolean value.
+    ///
+    /// Example for visibility:
+    /// ```
+    /// Text("Label")
+    ///     .isHidden(true)
+    /// ```
+    ///
+    /// Example for complete removal:
+    /// ```
+    /// Text("Label")
+    ///     .isHidden(true, remove: true)
+    /// ```
+    ///
+    /// - Parameters:
+    ///   - hidden: Set to `false` to show the view. Set to `true` to hide the view.
+    ///   - remove: Boolean value indicating whether or not to remove the view.
+    func isHidden(_ hidden: Bool, remove: Bool = false) -> some View {
+        modifier(HiddenModifier(isHidden: hidden, remove: remove))
+    }
+}
+
+
+/// Creates a view modifier to show and hide a view.
+///
+/// Variables can be used in place so that the content can be changed dynamically.
+fileprivate struct HiddenModifier: ViewModifier {
+
+    private let isHidden: Bool
+    private let remove: Bool
+
+    init(isHidden: Bool, remove: Bool = false) {
+        self.isHidden = isHidden
+        self.remove = remove
+    }
+
+    func body(content: Content) -> some View {
+        Group {
+            if isHidden {
+                if remove {
+                    EmptyView()
+                } else {
+                    content.hidden()
+                }
+            } else {
+                content
+            }
+        }
+    }
 }

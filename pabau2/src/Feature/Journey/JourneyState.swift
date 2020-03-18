@@ -12,7 +12,7 @@ public struct JourneyState {
 	var selectedLocation: Location = Location.init(id: 1)
 	var searchText: String = ""
 	var isShowingAddAppointment: Bool = false
-	var employeesState: EmployeesState = EmployeesState()
+	public var employeesState: EmployeesState = EmployeesState()
 
 	var filteredJourneys: [Journey] {
 		return self.journeys

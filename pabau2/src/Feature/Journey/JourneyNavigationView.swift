@@ -7,15 +7,10 @@ public struct JourneyNavigationView: View {
 		self.store = store
 	}
 	public var body: some View {
-		ZStack(alignment: .topTrailing) {
-			NavigationView {
-				JourneyContainerView(self.store.view(value: { $0 },
-																						 action: { .journey($0) }))
-			}
-			.navigationViewStyle(StackNavigationViewStyle())
-			EmployeesListStore(self.store.view(value: { $0.employeesState } ,
-																				 action: { .employees($0)}))
-				.frame(width: self.store.value.employeesState.isShowingEmployees ? 200 : 0)
+		NavigationView {
+			JourneyContainerView(self.store.view(value: { $0 },
+																					 action: { .journey($0) }))
 		}
+		.navigationViewStyle(StackNavigationViewStyle())
 	}
 }

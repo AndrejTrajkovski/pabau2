@@ -11,7 +11,7 @@ public struct EmployeesState {
 	var loadingState: LoadingState = .initial
 	var employees: [Employee] = []
 	var selectedEmployeesIds: Set<Int> = Set()
-	var isShowingEmployees: Bool = false
+	public var isShowingEmployees: Bool = false
 }
 
 public enum EmployeesAction {
@@ -271,7 +271,7 @@ public struct EmployeesListStore: View {
 		self.store = store
 	}
 	public var body: some View {
-		VStack {
+		VStack(alignment: .leading) {
 			HStack {
 				Button (action: {
 					self.store.send(.toggleEmployees)
@@ -279,7 +279,7 @@ public struct EmployeesListStore: View {
 					Image(systemName: "person").font(.system(size: 30))
 				})
 				Text(Texts.employee).font(Font.semibold20)
-			}
+			}.padding()
 			EmployeeList(selectedEmployeesIds: self.store.value.selectedEmployeesIds,
 									 employees: self.store.value.employees,
 									 didSelectEmployee: { self.store.send(.onTapGestureEmployee($0))})
