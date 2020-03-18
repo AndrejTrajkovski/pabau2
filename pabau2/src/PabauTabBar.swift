@@ -58,8 +58,8 @@ struct PabauTabBar: View {
 			}
 			EmployeesListStore(self.store.view(value: { $0.journey.employeesState } ,
 																				 action: { .journey(.employees($0))}))
-				.isHidden(!self.store.value.journey.employeesState.isShowingEmployees)
-				.frame(width: self.store.value.journey.employeesState.isShowingEmployees ? 302 : 0)
+				.isHidden(!self.store.value.journey.employeesState.isShowingEmployees, remove: true)
+				.frame(width: 302)
 		}
 	}
 }
