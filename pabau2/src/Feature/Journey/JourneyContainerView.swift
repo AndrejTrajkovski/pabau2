@@ -5,22 +5,25 @@ import Util
 import NonEmpty
 import ComposableArchitecture
 import SwiftDate
+import CasePaths
 
 public struct EmployeesState {
-	var loadingState: LoadingState
-	var employees: [Employee]
-	var selectedEmployeesIds: Set<Int>
+	var loadingState: LoadingState = .initial
+	var employees: [Employee] = []
+	var selectedEmployeesIds: Set<Int> = Set()
+	var isShowingEmployees: Bool = false
 }
 
 public enum EmployeesAction {
-	case gotResponse(Result<[Employee], ErrorResponse>)
+	case toggleEmployees
+	case gotResponse(Result<[Employee], RequestError>)
 	case onTapGestureEmployee(Employee)
 }
 
 public func employeeListReducer(state: inout EmployeesState,
 																action: EmployeesAction,
 																environment: JourneyEnvironemnt) -> [Effect<EmployeesAction>] {
-	func handle(result: Result<[Employee], ErrorResponse>,
+	func handle(result: Result<[Employee], RequestError>,
 							state: inout EmployeesState) -> [Effect<EmployeesAction>] {
 		switch result {
 		case .success(let employees):
@@ -41,11 +44,24 @@ public func employeeListReducer(state: inout EmployeesState,
 		} else {
 			state.selectedEmployeesIds.insert(employee.id)
 		}
+	case .toggleEmployees:
+		state.isShowingEmployees.toggle()
 	}
 	return []
 }
 
 public typealias JourneyEnvironemnt = (apiClient: JourneyAPI, userDefaults: UserDefaults)
+
+public let journeyContainerReducer: Reducer<JourneyState, JourneyContainerAction, JourneyEnvironemnt> = combine(
+	pullback(journeyReducer,
+					 value: \JourneyState.self,
+					 action: /JourneyContainerAction.journey,
+					 environment: { $0 }),
+	pullback(employeeListReducer,
+					 value: \JourneyState.employeesState,
+					 action: /JourneyContainerAction.employees,
+					 environment: { $0 })
+)
 
 public func journeyReducer(state: inout JourneyState, action: JourneyAction, environment: JourneyEnvironemnt) -> [Effect<JourneyAction>] {
 	switch action {
@@ -72,7 +88,7 @@ public func journeyReducer(state: inout JourneyState, action: JourneyAction, env
 	case .searchedText(let searchText):
 		state.searchText = searchText
 	case .toggleEmployees:
-		state.isShowingEmployees.toggle()
+		state.employeesState.isShowingEmployees.toggle()
 	}
 	return []
 }
@@ -97,6 +113,29 @@ public struct JourneyContainerView: View {
 			}
 			Spacer()
 		}
+		.navigationBarTitle("Manchester", displayMode: .inline)
+		.navigationBarItems(leading:
+			HStack(spacing: 16.0) {
+				Button(action: {
+					
+				}, label: {
+					Image(systemName: "plus")
+						.font(.system(size: 20))
+				})
+				Button(action: {
+					
+				}, label: {
+					Image(systemName: "magnifyingglass")
+						.font(.system(size: 20))
+				})
+			}, trailing:
+			Button (action: {
+				self.store.send(.toggleEmployees)
+			}, label: {
+				Image(systemName: "person")
+					.font(.system(size: 20))
+			})
+		)
 	}
 }
 
@@ -226,8 +265,30 @@ struct FilterPicker: View {
 	}
 }
 
+public struct EmployeesListStore: View {
+	@ObservedObject var store: Store<EmployeesState, EmployeesAction>
+	public init(_ store: Store<EmployeesState, EmployeesAction>) {
+		self.store = store
+	}
+	public var body: some View {
+		VStack {
+			HStack {
+				Button (action: {
+					self.store.send(.toggleEmployees)
+				}, label: {
+					Image(systemName: "person").font(.system(size: 30))
+				})
+				Text(Texts.employee).font(Font.semibold20)
+			}
+			EmployeeList(selectedEmployeesIds: self.store.value.selectedEmployeesIds,
+									 employees: self.store.value.employees,
+									 didSelectEmployee: { self.store.send(.onTapGestureEmployee($0))})
+		}
+	}
+}
+
 struct EmployeeList: View {
-	public let selectedEmployeesIds: [Int]
+	public let selectedEmployeesIds: Set<Int>
 	public let employees: [Employee]
 	public let didSelectEmployee: (Employee) -> Void
 	public var body: some View {

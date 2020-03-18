@@ -9,12 +9,10 @@ public struct JourneyState {
 	var journeys: Set<Journey> = Set()
 	var selectedFilter: CompleteFilter = .all
 	var selectedDate: Date = Date()
-	var employees: [Employee] = []
-	var selectedEmployeesIds: [Int] = []
 	var selectedLocation: Location = Location.init(id: 1)
 	var searchText: String = ""
 	var isShowingAddAppointment: Bool = false
-	var isShowingEmployees: Bool = false
+	var employeesState: EmployeesState = EmployeesState()
 
 	var filteredJourneys: [Journey] {
 		return self.journeys

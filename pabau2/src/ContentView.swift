@@ -121,12 +121,11 @@ func globalReducer(state: inout AppState, action: AppAction, environment: AppEnv
 		return [
 			environment.journeyAPI.getJourneys(date: Date())
 				.map {
-					AppAction.tabBar(TabBarAction.journey(JourneyAction.gotResponse($0)))
+					AppAction.tabBar(TabBarAction.journey(JourneyContainerAction.journey(.gotResponse($0))))
 			}
 			.eraseToEffect(),
 			environment.journeyAPI.getEmployees()
-				.map { AppAction.tabBar(TabBarAction.journey(JourneyAction.employees(EmployeesAction.gotResponse)))
-			}
+				.map { AppAction.tabBar(TabBarAction.journey(JourneyContainerAction.employees(EmployeesAction.gotResponse($0))))}
 			.eraseToEffect()
 		]
 	} else {

@@ -29,7 +29,7 @@ extension TabBarState {
 
 public enum TabBarAction {
 	case settings(SettingsAction)
-	case journey(JourneyAction)
+	case journey(JourneyContainerAction)
 }
 
 struct PabauTabBar: View {
@@ -71,7 +71,7 @@ public let tabBarReducer = combine(
 					 value: \TabBarState.settings,
 					 action: /TabBarAction.settings,
 					 environment: { $0 }),
-	pullback(journeyReducer,
+	pullback(journeyContainerReducer,
 					 value: \TabBarState.journey,
 					 action: /TabBarAction.journey,
 					 environment: {

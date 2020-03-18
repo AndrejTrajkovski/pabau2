@@ -47,6 +47,7 @@ public struct Texts {
 
 	public static let logout = "Logout"
 	public static let fetchingJourneys = "Fetching journeys...".localized
+	public static let employee = "Employee".localized
 }
 
 extension String {

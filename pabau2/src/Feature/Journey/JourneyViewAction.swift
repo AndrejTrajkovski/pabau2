@@ -1,11 +1,6 @@
 import Model
 
-public enum JourneyContainerAction {
-	case journey(JourneyAction)
-	case employees(EmployeesAction)
-}
-
-public enum JourneyAction {
+public enum JourneyViewAction {
 	case selectedFilter(CompleteFilter)
 	case selectedDate(Date)
 	case addAppointment

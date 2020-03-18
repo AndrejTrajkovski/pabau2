@@ -2,42 +2,20 @@ import SwiftUI
 import ComposableArchitecture
 
 public struct JourneyNavigationView: View {
-	@ObservedObject var store: Store<JourneyState, JourneyAction>
-	public init(_ store: Store<JourneyState, JourneyAction>) {
+	@ObservedObject var store: Store<JourneyState, JourneyContainerAction>
+	public init(_ store: Store<JourneyState, JourneyContainerAction>) {
 		self.store = store
 	}
 	public var body: some View {
-		ZStack {
+		ZStack(alignment: .topTrailing) {
 			NavigationView {
-				JourneyContainerView(self.store)
-					.navigationBarTitle("Manchester", displayMode: .inline)
-					.navigationBarItems(leading:
-						HStack(spacing: 16.0) {
-							Button(action: {
-
-							}, label: {
-								Image(systemName: "plus")
-									.font(.system(size: 20))
-							})
-							Button(action: {
-
-							}, label: {
-								Image(systemName: "magnifyingglass")
-									.font(.system(size: 20))
-							})
-						}, trailing:
-						Button (action: {
-							self.store.send(.toggleEmployees)
-						}, label: {
-							Image(systemName: "person")
-								.font(.system(size: 20))
-						})
-				)
+				JourneyContainerView(self.store.view(value: { $0 },
+																						 action: { .journey($0) }))
 			}
 			.navigationViewStyle(StackNavigationViewStyle())
-			EmployeeList(selectedEmployeesIds: self.store.value.selectedEmployeesIds,
-									 employees: self.store.value.employees,
-									 didSelectEmployee: {_ in })
+			EmployeesListStore(self.store.view(value: { $0.employeesState } ,
+																				 action: { .employees($0)}))
+				.frame(width: self.store.value.employeesState.isShowingEmployees ? 200 : 0)
 		}
 	}
 }
