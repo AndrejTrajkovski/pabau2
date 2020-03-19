@@ -147,7 +147,11 @@ public struct JourneyContainerView: View {
 			})
 		).sheet(isPresented: .constant(self.store.value.isShowingAddAppointment),
 						onDismiss: { self.store.send(.addAppointmentDismissed)},
-						content: { AddAppointment()})
+						content: { AddAppointment(clients: PickerContainerState.init(dataSource: [
+							Client.init(id: 1, firstName: "Wayne", lastName: "Rooney", dOB: Date()),
+							Client.init(id: 2, firstName: "Adam", lastName: "Smith", dOB: Date())
+						],
+																																												 chosenItemId: 1, isActive: false))})
 	}
 }
 

@@ -27,7 +27,9 @@ extension Service: ListPickerElement { }
 
 typealias PickerContainerReducer<T: ListPickerElement> = Reducer<PickerContainerState<T>, PickerContainerAction<T>, JourneyEnvironemnt>
 
-let clientReducer: PickerContainerReducer<Client> = { state, action, env in
+func pickerContainerReducer<T: ListPickerElement>(state: inout PickerContainerState<T>,
+																									action: PickerContainerAction<T>,
+																									environment: JourneyEnvironemnt) -> [Effect<PickerContainerAction<T>>]{
 	switch action {
 	case .didSelectPicker:
 		state.isActive = true
@@ -37,6 +39,17 @@ let clientReducer: PickerContainerReducer<Client> = { state, action, env in
 	}
 	return []
 }
+//let clientReducer: PickerContainerReducer<Client> = { state, action, env in
+//	switch action {
+//	case .didSelectPicker:
+//		state.isActive = true
+//	case .didChooseItem(let id):
+//		state.isActive = false
+//		state.chosenItemId = id
+//	}
+//	return []
+//}
+
 //let clientListPickerReducer: PickerContainerReducer<Client>
 //public func listPickerReducer<T>(state: inout PickerContainerState<T>,
 //																 action: PickerContainerAction<T>,
@@ -44,11 +57,16 @@ let clientReducer: PickerContainerReducer<Client> = { state, action, env in
 //	return []
 //}
 public struct AddAppointment: View {
-	let clients: PickerContainerState<Client> = PickerContainerState.init(dataSource: [
-		Client.init(id: 1, firstName: "Wayne", lastName: "Rooney", dOB: Date()),
-		Client.init(id: 2, firstName: "Adam", lastName: "Smith", dOB: Date())
-	],
-																																							 chosenItemId: 1, isActive: false)
+	
+	@ObservedObject public var store: Store<PickerContainerState<Client>, PickerContainerAction<Client>>
+	public init(clients: PickerContainerState<Client>) {
+		self.store = Store.init(initialValue: clients,
+														reducer: pickerContainerReducer,
+														environment: JourneyEnvironemnt(
+															apiClient: JourneyMockAPI(),
+															userDefaults: UserDefaults.init()))
+	}
+	
 	public var body: some View {
 		NavigationView {
 			VStack(alignment: .leading) {
@@ -56,13 +74,8 @@ public struct AddAppointment: View {
 				SwitchCell(text: "All Day", startingValue: true)
 				Divider()
 				PickerContainerStore.init(content: {
-					LabelAndTextField.init("CLIENT", self.clients.chosenItemName ?? "")
-				}, store:
-					Store.init(initialValue: clients,
-										 reducer: clientReducer,
-										 environment: JourneyEnvironemnt(
-											apiClient: JourneyMockAPI(),
-											userDefaults: UserDefaults.init())))
+					LabelAndTextField.init("CLIENT", self.store.value.chosenItemName ?? "")
+				}, store: self.store)
 			}
 		}.navigationViewStyle(StackNavigationViewStyle())
 	}
