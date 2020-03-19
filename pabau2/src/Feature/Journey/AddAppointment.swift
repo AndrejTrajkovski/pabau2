@@ -1,41 +1,68 @@
 import SwiftUI
 import Model
+import ComposableArchitecture
 
-public struct AddAppointmentState {
-	var clients: [Client]
-	var chosenClientId: Int
-	var isClientsActive: Bool
+public struct Duration: ListPickerElement {
+	public var name: String
+	public var id: ObjectIdentifier
+	public var duration: TimeInterval
 }
 
+public struct Termin: ListPickerElement {
+	public var name: String
+	public var id: ObjectIdentifier
+	public var date: Date
+}
+
+public struct AddAppointmentState {
+	var clients: PickerContainerState<Client>
+	var termins: PickerContainerState<Termin>
+	var services: PickerContainerState<Service>
+	var durations: PickerContainerState<Duration>
+	var with: PickerContainerState<Employee>
+}
+
+extension Employee: ListPickerElement { }
+extension Service: ListPickerElement { }
+
+typealias PickerContainerReducer<T: ListPickerElement> = Reducer<PickerContainerState<T>, PickerContainerAction<T>, JourneyEnvironemnt>
+
+let clientReducer: PickerContainerReducer<Client> = { state, action, env in
+	switch action {
+	case .didSelectPicker:
+		state.isActive = true
+	case .didChooseItem(let id):
+		state.isActive = false
+		state.chosenItemId = id
+	}
+	return []
+}
+//let clientListPickerReducer: PickerContainerReducer<Client>
+//public func listPickerReducer<T>(state: inout PickerContainerState<T>,
+//																 action: PickerContainerAction<T>,
+//																 environment: JourneyEnvironemnt) -> [Effect<PickerContainerAction<T>>] {
+//	return []
+//}
 public struct AddAppointment: View {
-	@State var clients: PickerContainerState<Client> = PickerContainerState.init(dataSource: [
+	let clients: PickerContainerState<Client> = PickerContainerState.init(dataSource: [
 		Client.init(id: 1, firstName: "Wayne", lastName: "Rooney", dOB: Date()),
 		Client.init(id: 2, firstName: "Adam", lastName: "Smith", dOB: Date())
 	],
-	chosenItemId: 1)
+																																							 chosenItemId: 1, isActive: false)
 	public var body: some View {
 		NavigationView {
 			VStack(alignment: .leading) {
 				Text("New Appointment")
 				SwitchCell(text: "All Day", startingValue: true)
 				Divider()
-				PickerContainer.init(content: {
+				PickerContainerStore.init(content: {
 					LabelAndTextField.init("CLIENT", self.clients.chosenItemName ?? "")
-				}, state: $clients)
-//						LabelAndTextField.init("CLIENT", self.chosenClient.name)
-					
-//						PickerContainerState.init(dataSource: clients,
-//																							chosenItemId: 1))
-//					PickerContainer.init(content: {
-//						LabelAndTextField.init("CLIENT", self.chosenClient.name)
-//					}, dataSource: self.clients,
-//						 isActive: $isClientsActive,
-//						 selectedItem: $chosenClient)
-//					PickerContainer.init(content: {
-//						LabelAndTextField.init("DAY", self.chosenClient.name)
-//					}, dataSource: self.clients,
-//						 isActive: $isClientsActive,
-//						 selectedItem: $chosenClient)
+				}, store:
+					Store.init(initialValue: clients,
+										 reducer: clientReducer,
+										 environment: JourneyEnvironemnt(
+											apiClient: JourneyMockAPI(),
+											userDefaults: UserDefaults.init())))
 			}
 		}.navigationViewStyle(StackNavigationViewStyle())
 	}
@@ -47,37 +74,68 @@ extension Client: ListPickerElement {
 	}
 }
 
-public struct PickerContainerState<Model: ListPickerElement> {
+public enum PickerContainerAction <Model: ListPickerElement> {
+	case didChooseItem(Model.ID)
+	case didSelectPicker
+}
+
+public struct PickerContainerState <Model: ListPickerElement> {
 //	associatedtype Model: ListPickerElement
 	var dataSource: [Model]
 	var chosenItemId: Model.ID
+	var isActive: Bool
 	var chosenItemName: String? {
 		return dataSource.first(where: { $0.id == chosenItemId})?.name
 	}
 }
 
+struct PickerContainerStore<Content: View, T: ListPickerElement>: View {
+	@ObservedObject public var store: Store<PickerContainerState<T>, PickerContainerAction<T>>
+	let content: () -> Content
+	init (@ViewBuilder content: @escaping () -> Content,
+										 store: Store<PickerContainerState<T>, PickerContainerAction<T>>) {
+		self.content = content
+		self.store = store
+	}
+	var body: some View {
+		PickerContainer.init(content: content,
+												 items: self.store.value.dataSource,
+												 choseItemId: self.store.value.chosenItemId,
+												 isActive: self.store.value.isActive,
+												 onTapGesture: {self.store.send(.didSelectPicker)}, onSelectItem: {self.store.send(.didChooseItem($0))})
+	}
+}
+
 struct PickerContainer<Content: View, T: ListPickerElement>: View {
 	let content: () -> Content
-	@Binding var state: PickerContainerState<T>
-	@State var isActive: Bool
+	let items: [T]
+	let chosenItemId: T.ID
+	let isActive: Bool
+	let onTapGesture: () -> Void
+	let onSelectItem: (T.ID) -> Void
 	init(@ViewBuilder content: @escaping () -> Content,
-										state: Binding<PickerContainerState<T>>) {
+										items: [T],
+										choseItemId: T.ID,
+										isActive: Bool,
+										onTapGesture: @escaping () -> Void,
+										onSelectItem: @escaping (T.ID) -> Void)
+	{
 		self.content = content
-		self._state = state
-		self._isActive = State.init(initialValue: false)
+		self.items = items
+		self.chosenItemId = choseItemId
+		self.isActive = isActive
+		self.onTapGesture = onTapGesture
+		self.onSelectItem = onSelectItem
 	}
 
 	var body: some View {
 		HStack {
-			content().onTapGesture(perform: { self.isActive = true })
+			content().onTapGesture(perform: onTapGesture)
 			NavigationLink.emptyHidden(destination:
-				ListPicker<T>.init(items: self.state.dataSource,
-															 selectedId: self.state.chosenItemId,
-															 onSelect: {
-																self.state.chosenItemId = $0
-																self.isActive = false
-				}
-			), isActive: self.isActive)
+				ListPicker<T>.init(items: self.items,
+															 selectedId: self.chosenItemId,
+															 onSelect: self.onSelectItem),
+																 isActive: self.isActive)
 		}
 	}
 }
