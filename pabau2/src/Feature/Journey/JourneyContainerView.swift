@@ -107,55 +107,43 @@ public struct JourneyContainerView: View {
 		self.store = store
 	}
 	public var body: some View {
-		GeometryReader { geometry in
-			VStack {
-				SwiftUICalendar.init(self.store.value.selectedDate,
-														 self.$calendarHeight,
-														 .week) {date in
-															self.store.send(.selectedDate(date))
-				}
-				.padding(0)
-				.frame(height: self.calendarHeight)
-				FilterPicker()
-				LoadingView(title: Texts.fetchingJourneys, bindingIsShowing: .constant(self.store.value.loadingState.isLoading)) {
-					JourneyList(self.store.value.filteredJourneys)
-				}
-				Spacer()
+		VStack {
+			SwiftUICalendar.init(store.value.selectedDate,
+													 self.$calendarHeight,
+													 .week) {date in
+														self.store.send(.selectedDate(date))
 			}
-			.navigationBarTitle("", displayMode: .inline)
-			.navigationBarItems(leading:
-				HStack(spacing: 16.0) {
-					Button(action: {
-						
-					}, label: {
-						Image(systemName: "plus")
-							.font(.system(size: 20))
-					})
-					Button(action: {
-						
-					}, label: {
-						Image(systemName: "magnifyingglass")
-							.font(.system(size: 20))
-					})
-				}, trailing:
-				HStack {
-					Button (action: {
-						
-					}, label: {
-						Text("Manchester")
-							.font(Font.semibold17)
-							.foregroundColor(.black)
-							.padding(.trailing, geometry.size.width/2.0)
-					})
-					Button (action: {
-						self.store.send(.toggleEmployees)
-					}, label: {
-						Image(systemName: "person")
-							.font(.system(size: 20))
-					})
-				}
-			)
+			.padding(0)
+			.frame(height: self.calendarHeight)
+			FilterPicker()
+			LoadingView(title: Texts.fetchingJourneys, bindingIsShowing: .constant(self.store.value.loadingState.isLoading)) {
+				JourneyList(self.store.value.filteredJourneys)
+			}
+			Spacer()
 		}
+		.navigationBarTitle("Manchester", displayMode: .inline)
+		.navigationBarItems(leading:
+			HStack(spacing: 16.0) {
+				Button(action: {
+					
+				}, label: {
+					Image(systemName: "plus")
+						.font(.system(size: 20))
+				})
+				Button(action: {
+					
+				}, label: {
+					Image(systemName: "magnifyingglass")
+						.font(.system(size: 20))
+				})
+			}, trailing:
+			Button (action: {
+				self.store.send(.toggleEmployees)
+			}, label: {
+				Image(systemName: "person")
+					.font(.system(size: 20))
+			})
+		)
 	}
 }
 
