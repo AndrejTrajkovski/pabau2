@@ -17,7 +17,7 @@ struct LoginTextFields: View {
 					self.onForgotPass()
 				}
 				.font(.bold13)
-				.foregroundColor(.textFieldAndTextLabel)
+				.foregroundColor(Color.textFieldAndTextLabel.opacity(0.5))
 				.frame(width: 150)
 			}
 		}

@@ -16,7 +16,7 @@ public struct TextAndTextView: View {
 		VStack(alignment: .leading, spacing: 6) {
 			Text(title)
 				.font(.bold10)
-				.foregroundColor(.textFieldAndTextLabel)
+				.foregroundColor(Color.textFieldAndTextLabel.opacity(0.5))
 			TextFieldWithBottomLine(placeholder: placeholder, text: $value)
 				.font(.medium15)
 			ValidationText(title: validation)
