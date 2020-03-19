@@ -85,6 +85,8 @@ public func journeyReducer(state: inout JourneyState, action: JourneyAction, env
 		]
 	case .addAppointment:
 		state.isShowingAddAppointment = true
+	case .addAppointmentDismissed:
+		state.isShowingAddAppointment = false
 	case .gotResponse(let result):
 		switch result {
 		case .success(let journeys):
@@ -125,7 +127,7 @@ public struct JourneyContainerView: View {
 		.navigationBarItems(leading:
 			HStack(spacing: 16.0) {
 				Button(action: {
-					
+					self.store.send(.addAppointment)
 				}, label: {
 					Image(systemName: "plus")
 						.font(.system(size: 20))
@@ -143,7 +145,9 @@ public struct JourneyContainerView: View {
 				Image(systemName: "person")
 					.font(.system(size: 20))
 			})
-		)
+		).sheet(isPresented: .constant(self.store.value.isShowingAddAppointment),
+						onDismiss: { self.store.send(.addAppointmentDismissed)},
+						content: { AddAppointment()})
 	}
 }
 

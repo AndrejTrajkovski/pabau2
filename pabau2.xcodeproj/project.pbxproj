@@ -140,6 +140,7 @@
 		8297A29423D9AD7E00D091FF /* PageControl.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8297A28C23D9AD7E00D091FF /* PageControl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8297A29823D9AD8400D091FF /* PageControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8297A28523D9AB1B00D091FF /* PageControl.swift */; };
 		8297A2B523D9BA0200D091FF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8297A2B223D9BA0200D091FF /* Localizable.strings */; };
+		829B40D12423B8F2009B7E71 /* AddAppointment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829B40D02423B8F2009B7E71 /* AddAppointment.swift */; };
 		82B02FFE23F2542A0015B0B4 /* CasePaths in Frameworks */ = {isa = PBXBuildFile; productRef = 82B02FFD23F2542A0015B0B4 /* CasePaths */; };
 		82BE2F4823D97D9C00B3678A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BE2F4723D97D9C00B3678A /* AppDelegate.swift */; };
 		82BE2F4A23D97D9C00B3678A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BE2F4923D97D9C00B3678A /* SceneDelegate.swift */; };
@@ -494,6 +495,7 @@
 		8297A2B823D9C80000D091FF /* WalkthroughContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkthroughContainer.swift; sourceTree = "<group>"; };
 		8297A2BA23DA08F200D091FF /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		8297A2BC23DAAFE000D091FF /* Fonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
+		829B40D02423B8F2009B7E71 /* AddAppointment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAppointment.swift; sourceTree = "<group>"; };
 		82B02FF823F17BC90015B0B4 /* CheckEmail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckEmail.swift; sourceTree = "<group>"; };
 		82B02FFA23F17CF50015B0B4 /* PasswordChanged.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordChanged.swift; sourceTree = "<group>"; };
 		82B0300223F2958B0015B0B4 /* Walkthrough.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Walkthrough.swift; sourceTree = "<group>"; };
@@ -805,6 +807,7 @@
 				82E253F9241B9EB500F16C30 /* JourneyAction.swift */,
 				82E253FB241B9ED000F16C30 /* JourneyState.swift */,
 				82E253FD241B9F1200F16C30 /* CompleteFilter.swift */,
+				829B40D02423B8F2009B7E71 /* AddAppointment.swift */,
 			);
 			path = Journey;
 			sourceTree = "<group>";
@@ -1750,6 +1753,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				827B459B241136D900A5975E /* JourneyContainerView.swift in Sources */,
+				829B40D12423B8F2009B7E71 /* AddAppointment.swift in Sources */,
 				82E253FA241B9EB500F16C30 /* JourneyAction.swift in Sources */,
 				82E253FC241B9ED000F16C30 /* JourneyState.swift in Sources */,
 				82E253FE241B9F1200F16C30 /* CompleteFilter.swift in Sources */,
