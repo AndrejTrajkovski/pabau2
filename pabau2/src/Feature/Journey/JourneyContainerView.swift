@@ -18,6 +18,7 @@ public enum EmployeesAction {
 	case toggleEmployees
 	case gotResponse(Result<[Employee], RequestError>)
 	case onTapGestureEmployee(Employee)
+	case onAppear
 }
 
 public func employeeListReducer(state: inout EmployeesState,
@@ -29,6 +30,7 @@ public func employeeListReducer(state: inout EmployeesState,
 		case .success(let employees):
 			state.employees = employees
 			state.loadingState = .gotSuccess
+			state.selectedEmployeesIds = Set.init(employees.map { $0.id })
 		case .failure:
 			state.loadingState = .gotError
 		}
@@ -46,6 +48,12 @@ public func employeeListReducer(state: inout EmployeesState,
 		}
 	case .toggleEmployees:
 		state.isShowingEmployees.toggle()
+	case .onAppear:
+		return [
+			environment.apiClient.getEmployees()
+				.map { .gotResponse($0)}
+			.eraseToEffect()
+		]
 	}
 	return []
 }
@@ -144,7 +152,7 @@ func journeyCellAdapter(journey: Journey) -> JourneyCell {
 		color: Color.init(hex: journey.appointments.head.service!.color),
 		time: "12:30",
 		imageUrl: journey.patient.avatar,
-		name: journey.patient.firstName + journey.patient.lastName,
+		name: journey.patient.firstName + " " + journey.patient.lastName,
 		services: journey.appointments
 			.map { $0.service }
 			.compactMap { $0?.name }
@@ -265,41 +273,57 @@ struct FilterPicker: View {
 	}
 }
 
+struct EmployeeHeader: View {
+	let didTouchHeaderButton: () -> Void
+	var body: some View {
+		HStack {
+			Button (action: {
+				self.didTouchHeaderButton()
+			}, label: {
+				Image(systemName: "person").font(.system(size: 30))
+			})
+			Text(Texts.employee)
+				.foregroundColor(.black)
+				.font(Font.semibold20)
+		}
+		.padding(.bottom)
+		.background(Color.employeeBg)
+	}
+}
+
 public struct EmployeesListStore: View {
 	@ObservedObject var store: Store<EmployeesState, EmployeesAction>
 	public init(_ store: Store<EmployeesState, EmployeesAction>) {
 		self.store = store
 	}
 	public var body: some View {
-		VStack(alignment: .leading) {
-			HStack {
-				Button (action: {
-					self.store.send(.toggleEmployees)
-				}, label: {
-					Image(systemName: "person").font(.system(size: 30))
-				})
-				Text(Texts.employee).font(Font.semibold20)
-			}.padding()
 			EmployeeList(selectedEmployeesIds: self.store.value.selectedEmployeesIds,
 									 employees: self.store.value.employees,
+									 header: EmployeeHeader { self.store.send(.toggleEmployees) },
 									 didSelectEmployee: { self.store.send(.onTapGestureEmployee($0))})
-		}
+				.onAppear(perform: { self.store.send(.onAppear) })
 	}
 }
 
 struct EmployeeList: View {
 	public let selectedEmployeesIds: Set<Int>
 	public let employees: [Employee]
+	public let header: EmployeeHeader
 	public let didSelectEmployee: (Employee) -> Void
 	public var body: some View {
-		List {
-			ForEach(employees) { employee in
-				EmployeeRow(employee: employee,
-										isSelected: self.selectedEmployeesIds.contains(employee.id)) {
-											self.didSelectEmployee($0)
+		//wrapping in Form for color (https://stackoverflow.com/a/57468607/3050624)
+		Form {
+			List {
+				Section(header: header) {
+					ForEach(employees) { employee in
+						EmployeeRow(employee: employee,
+												isSelected: self.selectedEmployeesIds.contains(employee.id)) {
+													self.didSelectEmployee($0)
+						}
+					}
 				}
 			}
-		}
+		}.background(Color.employeeBg)
 	}
 }
 
@@ -309,10 +333,11 @@ struct EmployeeRow: View {
 	let didSelectEmployee: (Employee) -> Void
 	var body: some View {
 		HStack {
-			Image.init(self.isSelected ? "􀁣" : "􀀀")
+			Image(systemName: self.isSelected ? "checkmark.circle.fill" : "circle")
+				.foregroundColor(self.isSelected ? Color.deepSkyBlue : Color.gray192)
 			Text(employee.name)
 		}.onTapGesture {
 			self.didSelectEmployee(self.employee)
-		}
+		}.listRowBackground(Color.employeeBg)
 	}
 }

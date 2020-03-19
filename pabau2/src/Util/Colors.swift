@@ -33,6 +33,8 @@ public extension Color {
 	static let gray2 = Color.init(red: 70, green: 70, blue: 70)
 	static let gray3 = Color.init(red: 158, green: 158, blue: 158)
 
+	static let gray192 = Color.init(red: 192/255, green: 192/255, blue: 192/255)
+
 	static let validationFail = Color.init(red: 1, green: 0, blue: 25/255)
 
 	static let textFieldAndTextLabel = Color.init(red: 22/255, green: 31/255, blue: 61/255).opacity(0.5)
@@ -56,4 +58,5 @@ public extension Color {
 	static let deepSkyBlue = Color.init(red: 0, green: 122/255, blue: 1)
 
 	static let grey155 = Color.init(red: 155/255, green: 155/255, blue: 155/255)
+	static let employeeBg = Color.init(red: 242/255, green: 242/255, blue: 247/255)
 }
