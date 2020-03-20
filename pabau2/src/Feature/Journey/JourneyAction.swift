@@ -3,12 +3,13 @@ import Model
 public enum JourneyContainerAction {
 	case journey(JourneyAction)
 	case employees(EmployeesAction)
+	case addAppointment(AddAppointmentAction)
 }
 
 public enum JourneyAction {
 	case selectedFilter(CompleteFilter)
 	case selectedDate(Date)
-	case addAppointment
+	case addAppointmentTap
 	case addAppointmentDismissed
 	case searchedText(String)
 	case toggleEmployees

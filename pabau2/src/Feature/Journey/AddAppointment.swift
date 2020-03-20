@@ -17,6 +17,7 @@ public struct MyTermin: ListPickerElement {
 }
 
 public struct AddAppointmentState {
+	var isShowingAddAppointment: Bool
 	var reminder: Bool
 	var email: Bool
 	var sms: Bool
@@ -38,6 +39,7 @@ public enum AddAppointmentAction {
 	case durations(PickerContainerAction<Duration>)
 	case with(PickerContainerAction<Employee>)
 	case participants(PickerContainerAction<Employee>)
+	case addAppointmentTap
 }
 
 extension Employee: ListPickerElement { }
@@ -60,9 +62,26 @@ func pickerContainerReducer<T: ListPickerElement>(state: inout PickerContainerSt
 	return []
 }
 
-let addAppointmentContainerReducer: Reducer<AddAppointmentState,
-	AddAppointmentAction, JourneyEnvironemnt> = {
-		
+//let isShowingAddAppReducer: Reducer<Bool,
+//	AddAppointmentAction, JourneyEnvironemnt> = { state, action, env in
+//		switch action {
+//		case .addAppointmentTap:
+//			state = false
+//		default:
+//			break
+//		}
+//		return []
+//}
+
+let addAppTapBtnReducer: Reducer<AddAppointmentState,
+	AddAppointmentAction, JourneyEnvironemnt> = { state, action, env in
+		switch action {
+		case .addAppointmentTap:
+			state.isShowingAddAppointment = false
+		default:
+			break
+		}
+		return []
 }
 
 let addAppointmentReducer: Reducer<AddAppointmentState,
@@ -90,7 +109,11 @@ let addAppointmentReducer: Reducer<AddAppointmentState,
 		pullback(pickerContainerReducer,
 		value: \AddAppointmentState.participants,
 		action: /AddAppointmentAction.participants,
-		environment: { $0 })
+		environment: { $0 }),
+		pullback(addAppTapBtnReducer,
+						 value: \AddAppointmentState.self,
+						 action: /AddAppointmentAction.self,
+						 environment: { $0 })
 		)
 )
 //func addAppointmentReducer(state: inout AddAppointmentState,
@@ -100,28 +123,8 @@ let addAppointmentReducer: Reducer<AddAppointmentState,
 //}
 public struct AddAppointment: View {
 	@ObservedObject public var store: Store<AddAppointmentState, AddAppointmentAction>
-	public init(clients: PickerContainerState<Client>,
-							termins: PickerContainerState<MyTermin>,
-							services: PickerContainerState<Service>,
-							durations: PickerContainerState<Duration>,
-							with: PickerContainerState<Employee>,
-							participants: PickerContainerState<Employee>) {
-		let state = AddAppointmentState.init(reminder: false,
-																				 email: false,
-																				 sms: false,
-																				 feedback: false,
-																				 isAllDay: false,
-																				 clients: clients,
-																				 termins: termins,
-																				 services: services,
-																				 durations: durations,
-																				 with: with,
-																				 participants: participants)
-		self.store = Store.init(initialValue: state,
-														reducer: addAppointmentReducer,
-														environment: JourneyEnvironemnt(
-															apiClient: JourneyMockAPI(),
-															userDefaults: UserDefaults.init()))
+	public init(store: Store<AddAppointmentState, AddAppointmentAction>) {
+		self.store = store
 	}
 	
 	public var body: some View {
@@ -131,7 +134,9 @@ public struct AddAppointment: View {
 //					Text("New Appointment").font(.semibold24)
 					AddAppSections(store: self.store)
 						.environmentObject(KeyboardFollower())
-					Button.init("Save Appointment", action: {})
+					Button.init("Save Appointment", action: {
+						self.store.send(.addAppointmentTap)
+					})
 					.font(.bold16)
 					.foregroundColor(.white)
 					.frame(width: 315, height: 52)

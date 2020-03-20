@@ -9,7 +9,7 @@ public struct JourneyNavigationView: View {
 	public var body: some View {
 		NavigationView {
 			JourneyContainerView(self.store.view(value: { $0 },
-																					 action: { .journey($0) }))
+																					 action: { $0 }))
 		}
 		.navigationViewStyle(StackNavigationViewStyle())
 	}

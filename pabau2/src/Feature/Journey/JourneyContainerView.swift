@@ -68,6 +68,10 @@ public let journeyContainerReducer: Reducer<JourneyState, JourneyContainerAction
 	pullback(employeeListReducer,
 					 value: \JourneyState.employeesState,
 					 action: /JourneyContainerAction.employees,
+					 environment: { $0 }),
+	pullback(addAppointmentReducer,
+					 value: \JourneyState.addAppointment,
+					 action: /JourneyContainerAction.addAppointment,
 					 environment: { $0 })
 )
 
@@ -83,10 +87,10 @@ public func journeyReducer(state: inout JourneyState, action: JourneyAction, env
 				.map(JourneyAction.gotResponse)
 				.eraseToEffect()
 		]
-	case .addAppointment:
-		state.isShowingAddAppointment = true
+	case .addAppointmentTap:
+		state.addAppointment.isShowingAddAppointment = true
 	case .addAppointmentDismissed:
-		state.isShowingAddAppointment = false
+		state.addAppointment.isShowingAddAppointment = false
 	case .gotResponse(let result):
 		switch result {
 		case .success(let journeys):
@@ -104,8 +108,8 @@ public func journeyReducer(state: inout JourneyState, action: JourneyAction, env
 }
 public struct JourneyContainerView: View {
 	@State private var calendarHeight: CGFloat?
-	@ObservedObject var store: Store<JourneyState, JourneyAction>
-	public init(_ store: Store<JourneyState, JourneyAction>) {
+	@ObservedObject var store: Store<JourneyState, JourneyContainerAction>
+	public init(_ store: Store<JourneyState, JourneyContainerAction>) {
 		self.store = store
 	}
 	public var body: some View {
@@ -113,7 +117,7 @@ public struct JourneyContainerView: View {
 			SwiftUICalendar.init(store.value.selectedDate,
 													 self.$calendarHeight,
 													 .week) {date in
-														self.store.send(.selectedDate(date))
+														self.store.send(.journey(.selectedDate(date)))
 			}
 			.padding(0)
 			.frame(height: self.calendarHeight)
@@ -127,7 +131,7 @@ public struct JourneyContainerView: View {
 		.navigationBarItems(leading:
 			HStack(spacing: 16.0) {
 				Button(action: {
-					self.store.send(.addAppointment)
+					self.store.send(.journey(.addAppointmentTap))
 				}, label: {
 					Image(systemName: "plus")
 						.font(.system(size: 20))
@@ -140,20 +144,18 @@ public struct JourneyContainerView: View {
 				})
 			}, trailing:
 			Button (action: {
-				self.store.send(.toggleEmployees)
+				self.store.send(.journey(.toggleEmployees))
 			}, label: {
 				Image(systemName: "person")
 					.font(.system(size: 20))
 			})
-		).sheet(isPresented: .constant(self.store.value.isShowingAddAppointment),
-						onDismiss: { self.store.send(.addAppointmentDismissed)},
-						content: { AddAppointment.init(
-							clients: self.clientState,
-							termins: self.terminState,
-							services: self.serviceState,
-							durations: self.durationState,
-							with: self.withState,
-							participants: self.participantsState)
+		).sheet(isPresented: .constant(self.store.value.addAppointment.isShowingAddAppointment),
+						onDismiss: { self.store.send(.journey(.addAppointmentDismissed))},
+						content: {
+							AddAppointment.init(store:
+								self.store.view(value: { $0.addAppointment },
+																action: { .addAppointment($0)})
+							)
 		})
 	}
 	
