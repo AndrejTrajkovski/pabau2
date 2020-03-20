@@ -1,25 +1,34 @@
 import SwiftUI
 import Model
 import ComposableArchitecture
+import CasePaths
 
 public struct Duration: ListPickerElement {
 	public var name: String
-	public var id: ObjectIdentifier
+	public var id: Int
 	public var duration: TimeInterval
 }
 
-public struct Termin: ListPickerElement {
+public struct MyTermin: ListPickerElement {
 	public var name: String
-	public var id: ObjectIdentifier
+	public var id: Int
 	public var date: Date
 }
 
 public struct AddAppointmentState {
 	var clients: PickerContainerState<Client>
-	var termins: PickerContainerState<Termin>
+	var termins: PickerContainerState<MyTermin>
 	var services: PickerContainerState<Service>
 	var durations: PickerContainerState<Duration>
 	var with: PickerContainerState<Employee>
+}
+
+public enum AddAppointmentAction {
+	case clients(PickerContainerAction<Client>)
+	case termins(PickerContainerAction<MyTermin>)
+	case services(PickerContainerAction<Service>)
+	case durations(PickerContainerAction<Duration>)
+	case with(PickerContainerAction<Employee>)
 }
 
 extension Employee: ListPickerElement { }
@@ -39,6 +48,20 @@ func pickerContainerReducer<T: ListPickerElement>(state: inout PickerContainerSt
 	}
 	return []
 }
+
+func clientReducer(state: inout PickerContainerState<Client>,
+	action: PickerContainerAction<Client>,
+	environment: JourneyEnvironemnt) -> [Effect<PickerContainerAction<Client>>] {
+	switch action {
+	case .didSelectPicker:
+		state.isActive = true
+	case .didChooseItem(let id):
+		state.isActive = false
+		state.chosenItemId = id
+	}
+	return []
+}
+
 //let clientReducer: PickerContainerReducer<Client> = { state, action, env in
 //	switch action {
 //	case .didSelectPicker:
@@ -56,12 +79,73 @@ func pickerContainerReducer<T: ListPickerElement>(state: inout PickerContainerSt
 //																 environment: JourneyEnvironemnt) -> [Effect<PickerContainerAction<T>>] {
 //	return []
 //}
+//var clients: PickerContainerState<Client>
+//var termins: PickerContainerState<Termin>
+//var services: PickerContainerState<Service>
+//var durations: PickerContainerState<Duration>
+//var with: PickerContainerState<Employee>
+
+//func addAppointmentReducer(state: inout AddAppointmentState,
+//													 action: AddAppointmentAction,
+//													 environment: JourneyEnvironemnt) -> [Effect<AddAppointmentAction>] {
+//	switch action {
+//	case .cli
+//		<#code#>
+//	default:
+//		<#code#>
+//	}
+//}
+
+let addAppointmentReducer: Reducer<AddAppointmentState,
+	AddAppointmentAction, JourneyEnvironemnt> = pullback(clientReducer,
+					 value: \AddAppointmentState.clients,
+					 action: /AddAppointmentAction.clients,
+					 environment: { $0 })
+//		,
+//
+//	pullback(pickerContainerReducer,
+//					 value: \AddAppointmentState.termins,
+//					 action: /AddAppointmentAction.termins,
+//	environment: { $0 }),
+//
+//	pullback(pickerContainerReducer,
+//					 value: \AddAppointmentState.services,
+//					 action: /AddAppointmentAction.services,
+//	environment: { $0 }),
+//
+//	pullback(pickerContainerReducer,
+//					 value: \AddAppointmentState.durations,
+//					 action: /AddAppointmentAction.durations,
+//	environment: { $0 }),
+//
+//	pullback(pickerContainerReducer,
+//					 value: \AddAppointmentState.with,
+//					 action: /AddAppointmentAction.with,
+//	environment: { $0 })
+//func addAppointmentReducer(state: inout AddAppointmentState,
+//													 action: AddAppointmentAction,
+//													 environment: JourneyEnvironemnt) -> [Effect<AddAppointmentAction>] {
+//
+//}
 public struct AddAppointment: View {
 	
-	@ObservedObject public var store: Store<PickerContainerState<Client>, PickerContainerAction<Client>>
-	public init(clients: PickerContainerState<Client>) {
-		self.store = Store.init(initialValue: clients,
-														reducer: pickerContainerReducer,
+//	var termins: PickerContainerState<Termin>
+//	var services: PickerContainerState<Service>
+//	var durations: PickerContainerState<Duration>
+//	var with: PickerContainerState<Employee>
+	@ObservedObject public var store: Store<AddAppointmentState, AddAppointmentAction>
+	public init(clients: PickerContainerState<Client>,
+							termins: PickerContainerState<MyTermin>,
+							services: PickerContainerState<Service>,
+							durations: PickerContainerState<Duration>,
+							with: PickerContainerState<Employee>) {
+		let state = AddAppointmentState.init(clients: clients,
+																				 termins: termins,
+																				 services: services,
+																				 durations: durations,
+																				 with: with)
+		self.store = Store.init(initialValue: state,
+														reducer: addAppointmentReducer,
 														environment: JourneyEnvironemnt(
 															apiClient: JourneyMockAPI(),
 															userDefaults: UserDefaults.init()))
@@ -74,8 +158,12 @@ public struct AddAppointment: View {
 				SwitchCell(text: "All Day", startingValue: true)
 				Divider()
 				PickerContainerStore.init(content: {
-					LabelAndTextField.init("CLIENT", self.store.value.chosenItemName ?? "")
-				}, store: self.store)
+					LabelAndTextField.init("CLIENT", self.store.value.clients.chosenItemName ?? "")
+				}, store: self.store.view(value: { $0.clients },
+																	action: { .clients($0) }))
+//				PickerContainerStore.init(content: {
+//					LabelAndTextField.init("CLIENT", self.store.value.chosenItemName ?? "")
+//				}, store: self.store)
 			}
 		}.navigationViewStyle(StackNavigationViewStyle())
 	}

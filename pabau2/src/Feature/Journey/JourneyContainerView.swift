@@ -36,7 +36,7 @@ public func employeeListReducer(state: inout EmployeesState,
 		}
 		return []
 	}
-
+	
 	switch action {
 	case .gotResponse(let response):
 		return handle(result: response, state: &state)
@@ -52,7 +52,7 @@ public func employeeListReducer(state: inout EmployeesState,
 		return [
 			environment.apiClient.getEmployees()
 				.map { .gotResponse($0)}
-			.eraseToEffect()
+				.eraseToEffect()
 		]
 	}
 	return []
@@ -147,13 +147,73 @@ public struct JourneyContainerView: View {
 			})
 		).sheet(isPresented: .constant(self.store.value.isShowingAddAppointment),
 						onDismiss: { self.store.send(.addAppointmentDismissed)},
-						content: { AddAppointment(clients: PickerContainerState.init(dataSource: [
-							Client.init(id: 1, firstName: "Wayne", lastName: "Rooney", dOB: Date()),
-							Client.init(id: 2, firstName: "Adam", lastName: "Smith", dOB: Date())
-						],
-																																												 chosenItemId: 1, isActive: false))})
+						content: { AddAppointment.init(
+							clients: self.clientState,
+							termins: self.terminState,
+							services: self.serviceState,
+							durations: self.durationState,
+							with: self.withState) })
+	}
+	
+	var clientState: PickerContainerState<Client> {
+		return PickerContainerState.init(
+			dataSource: [
+				Client.init(id: 1, firstName: "Wayne", lastName: "Rooney", dOB: Date()),
+				Client.init(id: 2, firstName: "Adam", lastName: "Smith", dOB: Date())
+			],
+			chosenItemId: 1,
+			isActive: false)
+	}
+	
+	var terminState: PickerContainerState<MyTermin> {
+		PickerContainerState.init(
+			dataSource: [
+				MyTermin.init(name: "12:30", id: 1, date: Date()),
+				MyTermin.init(name: "13:30", id: 2, date: Date()),
+				MyTermin.init(name: "14:30", id: 3, date: Date())
+			],
+			chosenItemId: 1,
+			isActive: false)
+	}
+	
+	var serviceState: PickerContainerState<Service> {
+		PickerContainerState.init(
+			dataSource: [
+				Service.init(id: 1, name: "Botox", color: ""),
+				Service.init(id: 2, name: "Fillers", color: ""),
+				Service.init(id: 3, name: "Facial", color: "")
+			],
+			chosenItemId: 1,
+			isActive: false)
+	}
+
+	var durationState: PickerContainerState<Duration> {
+		PickerContainerState.init(
+			dataSource: [
+				Duration.init(name: "00:30", id: 1, duration: 30),
+				Duration.init(name: "01:00", id: 2, duration: 60),
+				Duration.init(name: "01:30", id: 3, duration: 90)
+			],
+			chosenItemId: 1,
+			isActive: false)
+	}
+	
+	var withState: PickerContainerState<Employee> {
+		PickerContainerState.init(
+			dataSource: [
+				Employee.init(id: 1, name: "Andrej Trajkovski"),
+				Employee.init(id: 1, name: "Mark Ronson")
+			],
+			chosenItemId: 1,
+			isActive: false)
 	}
 }
+
+//case termins(PickerContainerAction<Termin>)
+//case services(PickerContainerAction<Service>)
+//case durations(PickerContainerAction<Duration>)
+//case with(PickerContainerAction<Employee>)
+
 
 func journeyCellAdapter(journey: Journey) -> JourneyCell {
 	return JourneyCell(
@@ -305,11 +365,11 @@ public struct EmployeesListStore: View {
 		self.store = store
 	}
 	public var body: some View {
-			EmployeeList(selectedEmployeesIds: self.store.value.selectedEmployeesIds,
-									 employees: self.store.value.employees,
-									 header: EmployeeHeader { self.store.send(.toggleEmployees) },
-									 didSelectEmployee: { self.store.send(.onTapGestureEmployee($0))})
-				.onAppear(perform: { self.store.send(.onAppear) })
+		EmployeeList(selectedEmployeesIds: self.store.value.selectedEmployeesIds,
+								 employees: self.store.value.employees,
+								 header: EmployeeHeader { self.store.send(.toggleEmployees) },
+								 didSelectEmployee: { self.store.send(.onTapGestureEmployee($0))})
+			.onAppear(perform: { self.store.send(.onAppear) })
 	}
 }
 
