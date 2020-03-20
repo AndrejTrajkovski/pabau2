@@ -6,7 +6,7 @@ import SwiftDate
 func makeProfileView(journey: Journey) -> ProfileView {
 	ProfileView.init(
 		imageUrl: journey.patient.avatar ?? "placeholder",
-		name: journey.patient.firstName + journey.patient.lastName,
+		name: journey.patient.firstName + " " + journey.patient.lastName,
 		services: journey.servicesString,
 		employeeName: journey.employee.name,
 		time: journey.appointments.first.from.toFormat("HH: mm"),

@@ -136,18 +136,20 @@ public struct JourneyContainerView: View {
 		}
 		.navigationBarTitle("Manchester", displayMode: .inline)
 		.navigationBarItems(leading:
-			HStack(spacing: 16.0) {
+			HStack(spacing: 8.0) {
 				Button(action: {
 					self.store.send(.journey(.addAppointmentTap))
 				}, label: {
 					Image(systemName: "plus")
 						.font(.system(size: 20))
+						.frame(width: 44, height: 44)
 				})
 				Button(action: {
 					
 				}, label: {
 					Image(systemName: "magnifyingglass")
 						.font(.system(size: 20))
+						.frame(width: 44, height: 44)
 				})
 			}, trailing:
 			Button (action: {
@@ -155,6 +157,7 @@ public struct JourneyContainerView: View {
 			}, label: {
 				Image(systemName: "person")
 					.font(.system(size: 20))
+					.frame(width: 44, height: 44)
 			})
 		).sheet(isPresented: .constant(self.store.value.addAppointment.isShowingAddAppointment),
 						onDismiss: { self.store.send(.journey(.addAppointmentDismissed))},
