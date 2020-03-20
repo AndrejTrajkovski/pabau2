@@ -1,9 +1,10 @@
 import SwiftUI
 import Model
-struct ChoosePathway: View {
+
+public struct ChoosePathway: View {
 	let journey: Journey
-	var body: some View {
-		VStack {
+	public var body: some View {
+		VStack(spacing: 8) {
 			view(journey: journey)
 		}
 	}

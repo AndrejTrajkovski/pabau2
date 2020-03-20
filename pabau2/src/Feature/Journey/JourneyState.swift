@@ -11,6 +11,9 @@ public struct JourneyState {
 	var selectedDate: Date = Date()
 	var selectedLocation: Location = Location.init(id: 1)
 	var searchText: String = ""
+	var isShowingPathway: Journey?
+	public var employeesState: EmployeesState = EmployeesState()
+	
 	var addAppointment: AddAppointmentState = AddAppointmentState.init(
 		isShowingAddAppointment: false,
 		reminder: false,
@@ -24,7 +27,6 @@ public struct JourneyState {
 		durations: JourneyMocks.durationState,
 		with: JourneyMocks.withState,
 		participants: JourneyMocks.participantsState)
-	public var employeesState: EmployeesState = EmployeesState()
 	
 	var filteredJourneys: [Journey] {
 		return self.journeys

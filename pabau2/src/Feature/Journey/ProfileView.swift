@@ -1,6 +1,7 @@
 import SwiftUI
 import Util
 import Model
+import SwiftDate
 
 func view(journey: Journey) -> ProfileView {
 	ProfileView.init(
@@ -8,7 +9,7 @@ func view(journey: Journey) -> ProfileView {
 		name: journey.patient.firstName + journey.patient.lastName,
 		services: journey.servicesString,
 		employeeName: journey.employee.name,
-		time: journey.appointments.first.from.toString(),
+		time: journey.appointments.first.from.toFormat("HH: mm"),
 		rooms: "201, 202")
 }
 
@@ -29,8 +30,8 @@ struct ProfileView: View {
 			Text(services).foregroundColor(.gray838383).font(.regular20)
 			Text(employeeName).foregroundColor(.blue2).font(.regular15)
 			HStack {
-				IconAndText(name: "clock", text: time).foregroundColor(.blue2)
-				IconAndText(name: "ico-journey-room", text: rooms).foregroundColor(.blue2)
+				IconAndText(Image(systemName: "clock"), time)
+				IconAndText(Image("ico-journey-room"), rooms)
 			}
 		}
 	}

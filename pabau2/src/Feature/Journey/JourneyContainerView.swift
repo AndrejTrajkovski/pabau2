@@ -103,6 +103,8 @@ public func journeyReducer(state: inout JourneyState, action: JourneyAction, env
 		state.searchText = searchText
 	case .toggleEmployees:
 		state.employeesState.isShowingEmployees.toggle()
+	case .selectedJourney(let journey):
+		state.isShowingPathway = journey
 	}
 	return []
 }
@@ -123,8 +125,13 @@ public struct JourneyContainerView: View {
 			.frame(height: self.calendarHeight)
 			FilterPicker()
 			LoadingView(title: Texts.fetchingJourneys, bindingIsShowing: .constant(self.store.value.loadingState.isLoading)) {
-				JourneyList(self.store.value.filteredJourneys)
+				JourneyList(self.store.value.filteredJourneys) {
+					self.store.send(.journey(.selectedJourney($0)))
+				}
 			}
+			NavigationLink.emptyHidden(destination:
+				pathwayView(),
+			isActive: (self.store.value.isShowingPathway != nil))
 			Spacer()
 		}
 		.navigationBarTitle("Manchester", displayMode: .inline)
@@ -158,6 +165,14 @@ public struct JourneyContainerView: View {
 							)
 		})
 	}
+	
+  func pathwayView() -> AnyView {
+		if let pathway = self.store.value.isShowingPathway {
+			return AnyView(ChoosePathway(journey: pathway))
+		} else {
+			return AnyView(EmptyView())
+		}
+  }
 	
 	var clientState: PickerContainerState<Client> {
 		return PickerContainerState.init(
@@ -239,14 +254,18 @@ func journeyCellAdapter(journey: Journey) -> JourneyCell {
 
 struct JourneyList: View {
 	let journeys: [Journey]
-	init (_ journeys: [Journey]) {
+	let onSelect: (Journey) -> Void
+	init (_ journeys: [Journey],
+				_ onSelect: @escaping (Journey) -> Void) {
 		self.journeys = journeys
+		self.onSelect = onSelect
 		UITableView.appearance().separatorStyle = journeys.isEmpty ? .none : .singleLine
 	}
 	var body: some View {
 		List {
 			ForEach(journeys) { journey in
 				journeyCellAdapter(journey: journey)
+					.onTapGesture { self.onSelect(journey) }
 					.listRowInsets(EdgeInsets())
 			}
 		}
@@ -282,10 +301,10 @@ struct JourneyCell: View {
 				}.frame(maxWidth: 158, alignment: .leading)
 			}
 			Spacer()
-			IconAndText(name: "person", text: employee)
+			IconAndText(Image(systemName: "person"), employee)
 				.frame(maxWidth: 110, alignment: .leading)
 			Spacer()
-			IconAndText(name: "bag", text: paidStatus)
+			IconAndText(Image(systemName: "bag"), paidStatus)
 				.frame(maxWidth: 110, alignment: .leading)
 			Spacer()
 			StepsStatusView(stepsComplete: stepsComplete, stepsTotal: stepsTotal)
@@ -296,14 +315,19 @@ struct JourneyCell: View {
 }
 
 struct IconAndText: View {
-	let name: String
 	let text: String
+	let image: Image
+	init(_ image: Image,
+			 _ text: String) {
+		self.image = image
+		self.text = text
+	}
 	var body: some View {
 		HStack {
-			Image(name)
+			image
 				.resizable()
 				.scaledToFit()
-				.foregroundColor(.deepSkyBlue)
+				.foregroundColor(.blue2)
 				.frame(width: 20, height: 20)
 			Text(text)
 				.font(Font.semibold11)
