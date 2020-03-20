@@ -70,4 +70,6 @@ public extension Color {
 	static let bigBtnShadow1 = Color.init(red: 152/255, green: 152/255, blue: 152/255).opacity(0.5)
 	
 	static let bigBtnShadow2 = Color.init(red: 196/255, green: 196/255, blue: 196/255).opacity(0.5)
+	
+	static let employeeShadow = Color.init(red: 196/255, green: 196/255, blue: 196/255).opacity(0.55)
 }

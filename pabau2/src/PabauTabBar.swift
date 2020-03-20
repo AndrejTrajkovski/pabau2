@@ -60,6 +60,7 @@ struct PabauTabBar: View {
 																				 action: { .journey(.employees($0))}))
 				.isHidden(!self.store.value.journey.employeesState.isShowingEmployees, remove: true)
 				.frame(width: 302)
+				.background(Color.white.shadow(color: .employeeShadow, radius: 40.0, x: -20, y: 2))
 		}
 	}
 }
