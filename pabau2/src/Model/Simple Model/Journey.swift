@@ -69,3 +69,12 @@ public struct Journey: Codable, Identifiable, Equatable, Hashable {
 		case paid
 	}
 }
+
+public extension Journey {
+	var servicesString: String {
+		appointments
+			.map { $0.service }
+			.compactMap { $0?.name }
+			.reduce("", +)
+	}
+}

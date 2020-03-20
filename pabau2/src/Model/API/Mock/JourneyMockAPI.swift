@@ -18,15 +18,15 @@ public struct JourneyMockAPI: MockAPI, JourneyAPI {
 				Journey.init(id: 4,
 										 appointments: NonEmpty.init(Appointment.init(id: 1, from: Date(), to: Date(), employeeId: 1, locationId: 1, status: AppointmentStatus(id: 1, name: "Checked In"), service: BaseService.init(id: 1, name: "Corona Virus", color: "#FFFF00"))),
 										 patient: BaseClient.init(id: 0, firstName: "Carl", lastName: "Cox", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 4,
-										 name: "Kobe Bryant RIP"), forms: [], photos: [], postCare: [], paid: "Not Paid"),
+										 name: "Kobe Bryant"), forms: [], photos: [], postCare: [], paid: "Not Paid"),
 				Journey.init(id: 5,
 										 appointments: NonEmpty.init(Appointment.init(id: 1, from: Date(), to: Date(), employeeId: 1, locationId: 1, status: AppointmentStatus(id: 1, name: "Not Checked In"), service: BaseService.init(id: 1, name: "Botox", color: "#ec75ff"))),
 										 patient: BaseClient.init(id: 1, firstName: "Elon", lastName: "Musk", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 4,
-																																																																																										name: "Kobe Bryant RIP"), forms: [], photos: [], postCare: [], paid: "Paid"),
+																																																																																										name: "Kobe Bryant"), forms: [], photos: [], postCare: [], paid: "Paid"),
 				Journey.init(id: 6,
 										 appointments: NonEmpty.init(Appointment.init(id: 1, from: Date() + 1.days, to: Date(), employeeId: 1, locationId: 1, status: AppointmentStatus(id: 1, name: "Not Checked In"), service: BaseService.init(id: 1, name: "Botox", color: "#88fa69"))),
 										 patient: BaseClient.init(id: 2, firstName: "Joe", lastName: "Rogan", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 4,
-										 name: "Kobe Bryant RIP"), forms: [], photos: [], postCare: [], paid: "Owes 1.000")
+										 name: "Kobe Bryant"), forms: [], photos: [], postCare: [], paid: "Owes 1.000")
 		])
 	}
 	
@@ -45,7 +45,7 @@ public struct JourneyMockAPI: MockAPI, JourneyAPI {
 										avatarUrl: "",
 										pin: 1234),
 			Employee.init(id: 4,
-										name: "Kobe Bryant RIP",
+										name: "Kobe Bryant",
 										avatarUrl: "",
 										pin: 1234),
 			Employee.init(id: 5,

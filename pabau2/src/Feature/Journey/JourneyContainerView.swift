@@ -223,22 +223,13 @@ public struct JourneyContainerView: View {
 	}
 }
 
-//case termins(PickerContainerAction<Termin>)
-//case services(PickerContainerAction<Service>)
-//case durations(PickerContainerAction<Duration>)
-//case with(PickerContainerAction<Employee>)
-
-
 func journeyCellAdapter(journey: Journey) -> JourneyCell {
 	return JourneyCell(
 		color: Color.init(hex: journey.appointments.head.service!.color),
 		time: "12:30",
 		imageUrl: journey.patient.avatar,
 		name: journey.patient.firstName + " " + journey.patient.lastName,
-		services: journey.appointments
-			.map { $0.service }
-			.compactMap { $0?.name }
-			.reduce("", +),
+		services: journey.servicesString,
 		status: journey.appointments.head.status?.name,
 		employee: journey.employee.name,
 		paidStatus: journey.paid,
@@ -291,10 +282,10 @@ struct JourneyCell: View {
 				}.frame(maxWidth: 158, alignment: .leading)
 			}
 			Spacer()
-			IconAndText(imageSystemName: "person", text: employee)
+			IconAndText(name: "person", text: employee)
 				.frame(maxWidth: 110, alignment: .leading)
 			Spacer()
-			IconAndText(imageSystemName: "bag", text: paidStatus)
+			IconAndText(name: "bag", text: paidStatus)
 				.frame(maxWidth: 110, alignment: .leading)
 			Spacer()
 			StepsStatusView(stepsComplete: stepsComplete, stepsTotal: stepsTotal)
@@ -305,11 +296,11 @@ struct JourneyCell: View {
 }
 
 struct IconAndText: View {
-	let imageSystemName: String
+	let name: String
 	let text: String
 	var body: some View {
 		HStack {
-			Image(systemName: imageSystemName)
+			Image(name)
 				.resizable()
 				.scaledToFit()
 				.foregroundColor(.deepSkyBlue)
