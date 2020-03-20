@@ -2,6 +2,7 @@ import SwiftUI
 import Model
 import ComposableArchitecture
 import CasePaths
+import Util
 
 public struct Duration: ListPickerElement {
 	public var name: String
@@ -16,6 +17,12 @@ public struct MyTermin: ListPickerElement {
 }
 
 public struct AddAppointmentState {
+	var reminder: Bool
+	var email: Bool
+	var sms: Bool
+	var feedback: Bool
+	var isAllDay: Bool
+	
 	var clients: PickerContainerState<Client>
 	var termins: PickerContainerState<MyTermin>
 	var services: PickerContainerState<Service>
@@ -94,7 +101,12 @@ public struct AddAppointment: View {
 							durations: PickerContainerState<Duration>,
 							with: PickerContainerState<Employee>,
 							participants: PickerContainerState<Employee>) {
-		let state = AddAppointmentState.init(clients: clients,
+		let state = AddAppointmentState.init(reminder: false,
+																				 email: false,
+																				 sms: false,
+																				 feedback: false,
+																				 isAllDay: false,
+																				 clients: clients,
 																				 termins: termins,
 																				 services: services,
 																				 durations: durations,
@@ -109,21 +121,26 @@ public struct AddAppointment: View {
 	
 	public var body: some View {
 		NavigationView {
-			VStack(alignment: .leading, spacing: 32) {
-				Text("New Appointment").font(.semibold24)
-				AddAppSections(store: self.store)
+			ScrollView {
+				VStack(alignment: .leading) {
+//					Text("New Appointment").font(.semibold24)
+					AddAppSections(store: self.store)
+						.environmentObject(KeyboardFollower())
+					Spacer()
+				}
 			}
-			.padding(32)
+			.padding(24)
 		}
 		.navigationViewStyle(StackNavigationViewStyle())
 	}
 }
 
 struct Section1: View {
+	@State var isAllDay: Bool = true
 	@ObservedObject public var store: Store<AddAppointmentState, AddAppointmentAction>
 	var body: some View {
 		VStack (spacing: 24.0) {
-			SwitchCell(text: "All Day", startingValue: true)
+			SwitchCell(text: "All Day", startingValue: $isAllDay)
 			HStack(spacing: 24.0) {
 				PickerContainerStore.init(content: {
 					LabelAndTextField.init("CLIENT", self.store.value.clients.chosenItemName ?? "")
@@ -183,12 +200,18 @@ struct Section2: View {
 }
 
 struct AddAppSections: View {
+	@EnvironmentObject var keyboardHandler: KeyboardFollower
 	@ObservedObject public var store: Store<AddAppointmentState, AddAppointmentAction>
 	var body: some View {
 		VStack(alignment: .leading, spacing: 32) {
 			Section1(store: self.store)
 			Section2(store: self.store)
-		}
+			NotesSection()
+			CommunicationsSection()
+		}.padding(.bottom, keyboardHandler.keyboardHeight)
+//		.navigationBarHidden(true)
+		.navigationBarTitle(Text("New Appointment").font(.semibold24))
+//		.edgesIgnoringSafeArea([.top, .bottom])
 	}
 }
 
@@ -335,13 +358,14 @@ struct LabelAndLowerContent<Content: View>: View {
 
 struct SwitchCell: View {
 	let text: String
-	let startingValue: Bool
+	@Binding var startingValue: Bool
 	var body: some View {
 		VStack {
 			HStack {
 				Text(text).font(.regular17)
 				Spacer()
-				Toggle.init(isOn: .constant(startingValue), label: { EmptyView() })
+				Toggle.init(isOn: $startingValue, label: { EmptyView() })
+				Spacer()
 			}
 			Divider()
 		}
@@ -366,5 +390,37 @@ struct ListPicker<T: ListPickerElement>: View {
 				}.onTapGesture { self.onSelect(item.id) }
 			}
 		}.customBackButton(action: self.onBackBtn)
+	}
+}
+
+struct NotesSection: View {
+	@State var note: String = ""
+	public var body: some View {
+		VStack(alignment: .leading, spacing: 24.0) {
+			Text("Notes").font(.semibold24)
+			LabelAndLowerContent.init("BOOKING NOTE") {
+				TextField.init("Add a booking note", text: self.$note)
+					.foregroundColor(Color.textFieldAndTextLabel)
+					.font(.semibold15)
+			}
+		}
+	}
+}
+
+struct CommunicationsSection: View {
+	@State var reminder: Bool = false
+	@State var email: Bool = false
+	@State var sms: Bool = false
+	@State var feedback: Bool = false
+	
+	public var body: some View {
+		VStack(alignment: .leading, spacing: 8.0) {
+			Text("Communications").font(.semibold24)
+			Spacer()
+			SwitchCell.init(text: "Send Reminder", startingValue: $reminder)
+			SwitchCell.init(text: "Send Confirmation Email", startingValue: $email)
+			SwitchCell.init(text: "Send Confirmation SMS", startingValue: $sms)
+			SwitchCell.init(text: "Send Feedback Survey", startingValue: $feedback)
+		}
 	}
 }
