@@ -60,6 +60,11 @@ func pickerContainerReducer<T: ListPickerElement>(state: inout PickerContainerSt
 	return []
 }
 
+let addAppointmentContainerReducer: Reducer<AddAppointmentState,
+	AddAppointmentAction, JourneyEnvironemnt> = {
+		
+}
+
 let addAppointmentReducer: Reducer<AddAppointmentState,
 	AddAppointmentAction, JourneyEnvironemnt> = (combine(
 		pullback(pickerContainerReducer,
@@ -122,10 +127,15 @@ public struct AddAppointment: View {
 	public var body: some View {
 		NavigationView {
 			ScrollView {
-				VStack(alignment: .leading) {
+				VStack(spacing: 32) {
 //					Text("New Appointment").font(.semibold24)
 					AddAppSections(store: self.store)
 						.environmentObject(KeyboardFollower())
+					Button.init("Save Appointment", action: {})
+					.font(.bold16)
+					.foregroundColor(.white)
+					.frame(width: 315, height: 52)
+					.background(Color.deepSkyBlue)
 					Spacer()
 				}
 			}
@@ -209,9 +219,7 @@ struct AddAppSections: View {
 			NotesSection()
 			CommunicationsSection()
 		}.padding(.bottom, keyboardHandler.keyboardHeight)
-//		.navigationBarHidden(true)
-		.navigationBarTitle(Text("New Appointment").font(.semibold24))
-//		.edgesIgnoringSafeArea([.top, .bottom])
+			.navigationBarTitle(Text("New Appointment").font(.semibold24))
 	}
 }
 
