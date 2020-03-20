@@ -38,7 +38,7 @@ typealias PickerContainerReducer<T: ListPickerElement> = Reducer<PickerContainer
 
 func pickerContainerReducer<T: ListPickerElement>(state: inout PickerContainerState<T>,
 																									action: PickerContainerAction<T>,
-																									environment: JourneyEnvironemnt) -> [Effect<PickerContainerAction<T>>]{
+																									environment: JourneyEnvironemnt) -> [Effect<PickerContainerAction<T>>] {
 	switch action {
 	case .didSelectPicker:
 		state.isActive = true
@@ -50,8 +50,8 @@ func pickerContainerReducer<T: ListPickerElement>(state: inout PickerContainerSt
 }
 
 func clientReducer(state: inout PickerContainerState<Client>,
-	action: PickerContainerAction<Client>,
-	environment: JourneyEnvironemnt) -> [Effect<PickerContainerAction<Client>>] {
+									 action: PickerContainerAction<Client>,
+									 environment: JourneyEnvironemnt) -> [Effect<PickerContainerAction<Client>>] {
 	switch action {
 	case .didSelectPicker:
 		state.isActive = true
@@ -62,77 +62,36 @@ func clientReducer(state: inout PickerContainerState<Client>,
 	return []
 }
 
-//let clientReducer: PickerContainerReducer<Client> = { state, action, env in
-//	switch action {
-//	case .didSelectPicker:
-//		state.isActive = true
-//	case .didChooseItem(let id):
-//		state.isActive = false
-//		state.chosenItemId = id
-//	}
-//	return []
-//}
-
-//let clientListPickerReducer: PickerContainerReducer<Client>
-//public func listPickerReducer<T>(state: inout PickerContainerState<T>,
-//																 action: PickerContainerAction<T>,
-//																 environment: JourneyEnvironemnt) -> [Effect<PickerContainerAction<T>>] {
-//	return []
-//}
-//var clients: PickerContainerState<Client>
-//var termins: PickerContainerState<Termin>
-//var services: PickerContainerState<Service>
-//var durations: PickerContainerState<Duration>
-//var with: PickerContainerState<Employee>
-
-//func addAppointmentReducer(state: inout AddAppointmentState,
-//													 action: AddAppointmentAction,
-//													 environment: JourneyEnvironemnt) -> [Effect<AddAppointmentAction>] {
-//	switch action {
-//	case .cli
-//		<#code#>
-//	default:
-//		<#code#>
-//	}
-//}
-
 let addAppointmentReducer: Reducer<AddAppointmentState,
-	AddAppointmentAction, JourneyEnvironemnt> = pullback(clientReducer,
-					 value: \AddAppointmentState.clients,
-					 action: /AddAppointmentAction.clients,
-					 environment: { $0 })
-//		,
-//
-//	pullback(pickerContainerReducer,
-//					 value: \AddAppointmentState.termins,
-//					 action: /AddAppointmentAction.termins,
-//	environment: { $0 }),
-//
-//	pullback(pickerContainerReducer,
-//					 value: \AddAppointmentState.services,
-//					 action: /AddAppointmentAction.services,
-//	environment: { $0 }),
-//
-//	pullback(pickerContainerReducer,
-//					 value: \AddAppointmentState.durations,
-//					 action: /AddAppointmentAction.durations,
-//	environment: { $0 }),
-//
-//	pullback(pickerContainerReducer,
-//					 value: \AddAppointmentState.with,
-//					 action: /AddAppointmentAction.with,
-//	environment: { $0 })
+	AddAppointmentAction, JourneyEnvironemnt> = (combine(
+		pullback(pickerContainerReducer,
+						 value: \AddAppointmentState.clients,
+						 action: /AddAppointmentAction.clients,
+						 environment: { $0 }),
+		pullback(pickerContainerReducer,
+						 value: \AddAppointmentState.termins,
+						 action: /AddAppointmentAction.termins,
+						 environment: { $0 }),
+		pullback(pickerContainerReducer,
+						 value: \AddAppointmentState.services,
+						 action: /AddAppointmentAction.services,
+						 environment: { $0 }),
+		pullback(pickerContainerReducer,
+						 value: \AddAppointmentState.durations,
+						 action: /AddAppointmentAction.durations,
+						 environment: { $0 }),
+		pullback(pickerContainerReducer,
+						 value: \AddAppointmentState.with,
+						 action: /AddAppointmentAction.with,
+						 environment: { $0 })
+		)
+)
 //func addAppointmentReducer(state: inout AddAppointmentState,
 //													 action: AddAppointmentAction,
 //													 environment: JourneyEnvironemnt) -> [Effect<AddAppointmentAction>] {
 //
 //}
 public struct AddAppointment: View {
-	
-//	var termins: PickerContainerState<Termin>
-//	var services: PickerContainerState<Service>
-//	var durations: PickerContainerState<Duration>
-//	var with: PickerContainerState<Employee>
 	@ObservedObject public var store: Store<AddAppointmentState, AddAppointmentAction>
 	public init(clients: PickerContainerState<Client>,
 							termins: PickerContainerState<MyTermin>,
@@ -160,10 +119,26 @@ public struct AddAppointment: View {
 				PickerContainerStore.init(content: {
 					LabelAndTextField.init("CLIENT", self.store.value.clients.chosenItemName ?? "")
 				}, store: self.store.view(value: { $0.clients },
-																	action: { .clients($0) }))
-//				PickerContainerStore.init(content: {
-//					LabelAndTextField.init("CLIENT", self.store.value.chosenItemName ?? "")
-//				}, store: self.store)
+																	action: { .clients($0) })
+				)
+				PickerContainerStore.init(content: {
+					LabelAndTextField.init("DAY", self.store.value.termins.chosenItemName ?? "")
+				}, store: self.store.view(value: { $0.termins },
+																	action: { .termins($0) })
+				)
+				PickerContainerStore.init(content: {
+					LabelAndTextField.init("SERVICE", self.store.value.services.chosenItemName ?? "")
+				}, store: self.store.view(value: { $0.services },
+																	action: { .services($0) })
+				)
+				PickerContainerStore.init(content: {
+					LabelAndTextField.init("DURATIONS", self.store.value.durations.chosenItemName ?? "")
+				}, store: self.store.view(value: { $0.durations },
+																	action: { .durations($0) })
+				)
+				//				PickerContainerStore.init(content: {
+				//					LabelAndTextField.init("CLIENT", self.store.value.chosenItemName ?? "")
+				//				}, store: self.store)
 			}
 		}.navigationViewStyle(StackNavigationViewStyle())
 	}
@@ -181,7 +156,7 @@ public enum PickerContainerAction <Model: ListPickerElement> {
 }
 
 public struct PickerContainerState <Model: ListPickerElement> {
-//	associatedtype Model: ListPickerElement
+	//	associatedtype Model: ListPickerElement
 	var dataSource: [Model]
 	var chosenItemId: Model.ID
 	var isActive: Bool
@@ -228,14 +203,14 @@ struct PickerContainer<Content: View, T: ListPickerElement>: View {
 		self.onTapGesture = onTapGesture
 		self.onSelectItem = onSelectItem
 	}
-
+	
 	var body: some View {
 		HStack {
 			content().onTapGesture(perform: onTapGesture)
 			NavigationLink.emptyHidden(destination:
 				ListPicker<T>.init(items: self.items,
-															 selectedId: self.chosenItemId,
-															 onSelect: self.onSelectItem),
+													 selectedId: self.chosenItemId,
+													 onSelect: self.onSelectItem),
 																 isActive: self.isActive)
 		}
 	}
