@@ -2,7 +2,16 @@ import SwiftUI
 import Model
 import Util
 
+public enum ChoosePathwayAction {
+	
+}
+
+public struct ChoosePathwayState {
+	var isShown: Bool
+}
+
 public struct ChoosePathway: View {
+//	@ObservedObject var store: Store<ChoosePathwayState, ChoosePathwayAction>
 	let journey: Journey
 	public var body: some View {
 		VStack(spacing: 8) {

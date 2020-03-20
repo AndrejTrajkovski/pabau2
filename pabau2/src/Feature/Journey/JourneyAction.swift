@@ -15,4 +15,5 @@ public enum JourneyAction {
 	case toggleEmployees
 	case gotResponse(Result<[Journey], RequestError>)
 	case selectedJourney(Journey)
+	case choosePathwayBackTap
 }

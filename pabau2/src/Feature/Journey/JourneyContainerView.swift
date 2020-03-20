@@ -105,6 +105,8 @@ public func journeyReducer(state: inout JourneyState, action: JourneyAction, env
 		state.employeesState.isShowingEmployees.toggle()
 	case .selectedJourney(let journey):
 		state.isShowingPathway = journey
+	case .choosePathwayBackTap:
+		state.isShowingPathway = nil
 	}
 	return []
 }
@@ -130,7 +132,10 @@ public struct JourneyContainerView: View {
 				}
 			}
 			NavigationLink.emptyHidden(destination:
-				pathwayView(),
+				pathwayView()
+					.customBackButton {
+						self.store.send(.journey(.choosePathwayBackTap))
+				},
 			isActive: (self.store.value.isShowingPathway != nil))
 			Spacer()
 		}
