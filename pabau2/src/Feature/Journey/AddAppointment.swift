@@ -112,8 +112,10 @@ public struct AddAppointment: View {
 			VStack(alignment: .leading, spacing: 32) {
 				Text("New Appointment").font(.semibold24)
 				AddAppSections(store: self.store)
-			}.padding(32)
-		}.navigationViewStyle(StackNavigationViewStyle())
+			}
+			.padding(32)
+		}
+		.navigationViewStyle(StackNavigationViewStyle())
 	}
 }
 
@@ -224,10 +226,8 @@ struct PickerContainerStore<Content: View, T: ListPickerElement>: View {
 												 items: self.store.value.dataSource,
 												 choseItemId: self.store.value.chosenItemId,
 												 isActive: self.store.value.isActive,
-												 onTapGesture: {self.store.send(.didSelectPicker)}, onSelectItem: {self.store.send(.didChooseItem($0))})
-			.customBackButton {
-				self.store.send(.backBtnTap)
-		}
+												 onTapGesture: {self.store.send(.didSelectPicker)}, onSelectItem: {self.store.send(.didChooseItem($0))},
+												 onBackBtn: {self.store.send(.backBtnTap)})
 	}
 }
 
@@ -238,12 +238,14 @@ struct PickerContainer<Content: View, T: ListPickerElement>: View {
 	let isActive: Bool
 	let onTapGesture: () -> Void
 	let onSelectItem: (T.ID) -> Void
+	let onBackBtn: () -> Void
 	init(@ViewBuilder content: @escaping () -> Content,
 										items: [T],
 										choseItemId: T.ID,
 										isActive: Bool,
 										onTapGesture: @escaping () -> Void,
-										onSelectItem: @escaping (T.ID) -> Void)
+										onSelectItem: @escaping (T.ID) -> Void,
+										onBackBtn: @escaping () -> Void)
 	{
 		self.content = content
 		self.items = items
@@ -251,16 +253,18 @@ struct PickerContainer<Content: View, T: ListPickerElement>: View {
 		self.isActive = isActive
 		self.onTapGesture = onTapGesture
 		self.onSelectItem = onSelectItem
+		self.onBackBtn = onBackBtn
 	}
-	
+
 	var body: some View {
 		HStack {
 			content().onTapGesture(perform: onTapGesture)
 			NavigationLink.emptyHidden(destination:
 				ListPicker<T>.init(items: self.items,
 													 selectedId: self.chosenItemId,
-													 onSelect: self.onSelectItem),
-																 isActive: self.isActive)
+													 onSelect: self.onSelectItem,
+													 onBackBtn: onBackBtn),
+				isActive: self.isActive)
 		}
 	}
 }
@@ -307,6 +311,7 @@ struct ListPicker<T: ListPickerElement>: View {
 	let items: [T]
 	let selectedId: T.ID
 	let onSelect: (T.ID) -> Void
+	let onBackBtn: () -> Void
 	var body: some View {
 		List {
 			ForEach(items) { item in
@@ -315,6 +320,6 @@ struct ListPicker<T: ListPickerElement>: View {
 					Spacer()
 				}.onTapGesture { self.onSelect(item.id) }
 			}
-		}
+		}.customBackButton(action: self.onBackBtn)
 	}
 }

@@ -219,7 +219,6 @@ public struct JourneyContainerView: View {
 			chosenItemId: 1,
 			isActive: false)
 	}
-
 }
 
 //case termins(PickerContainerAction<Termin>)
