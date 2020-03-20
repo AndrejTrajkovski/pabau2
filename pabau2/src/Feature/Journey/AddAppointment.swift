@@ -159,7 +159,8 @@ struct Section2: View {
 			}
 			HStack(spacing: 24.0) {
 				PickerContainerStore.init(content: {
-					LabelAndTextField.init("WITH", self.store.value.with.chosenItemName ?? "")
+					LabelHeartAndTextField.init("WITH", self.store.value.with.chosenItemName ?? "",
+																			true)
 				}, store: self.store.view(value: { $0.with },
 																	action: { .with($0) })
 				)
@@ -268,21 +269,65 @@ struct PickerContainer<Content: View, T: ListPickerElement>: View {
 		}
 	}
 }
+
+struct LabelHeartAndTextField: View {
+	let labelTxt: String
+	let valueText: String
+	@State var isHearted: Bool
+	init(_ labelTxt: String,
+			 _ valueText: String,
+			 _ isHearted: Bool) {
+		self.labelTxt = labelTxt
+		self.valueText = valueText
+		self._isHearted = State.init(initialValue: isHearted)
+	}
+	var body: some View {
+		LabelAndLowerContent(labelTxt) {
+			HStack {
+				Image(systemName: self.isHearted ? "heart.fill" : "heart")
+					.foregroundColor(.heartRed)
+					.onTapGesture {
+						self.isHearted.toggle()
+				}
+				Text(self.valueText)
+					.foregroundColor(Color.textFieldAndTextLabel)
+					.font(.semibold15)
+			}
+		}
+	}
+}
+
 struct LabelAndTextField: View {
-	init(_ labelTxt: String, _ valueText: String) {
+	let labelTxt: String
+	let valueText: String
+	init(_ labelTxt: String,
+			 _ valueText: String) {
 		self.labelTxt = labelTxt
 		self.valueText = valueText
 	}
+	var body: some View {
+		LabelAndLowerContent(labelTxt) {
+			Text(self.valueText)
+				.foregroundColor(Color.textFieldAndTextLabel)
+				.font(.semibold15)
+		}
+	}
+}
+
+struct LabelAndLowerContent<Content: View>: View {
+	init(_ labelTxt: String,
+			 @ViewBuilder _ lowerContent: @escaping () -> Content) {
+		self.labelTxt = labelTxt
+		self.lowerContent = lowerContent
+	}
 	let labelTxt: String
-	let valueText: String
+	let lowerContent: () -> Content
 	var body: some View {
 		VStack(alignment: .leading, spacing: 12) {
 			Text(labelTxt)
 				.foregroundColor(Color.textFieldAndTextLabel.opacity(0.5))
 				.font(.bold12)
-			Text(valueText)
-				.foregroundColor(Color.textFieldAndTextLabel)
-				.font(.semibold15)
+			lowerContent()
 			Divider().foregroundColor(.textFieldBottomLine)
 		}
 	}

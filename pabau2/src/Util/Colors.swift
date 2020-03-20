@@ -59,4 +59,6 @@ public extension Color {
 
 	static let grey155 = Color.init(red: 155/255, green: 155/255, blue: 155/255)
 	static let employeeBg = Color.init(red: 242/255, green: 242/255, blue: 247/255)
+	
+	static let heartRed = Color.init(red: 248/255, green: 92/255, blue: 92/255)
 }
