@@ -397,10 +397,20 @@ struct ListPicker<T: ListPickerElement>: View {
 	var body: some View {
 		List {
 			ForEach(items) { item in
-				HStack {
-					Text(item.name)
-					Spacer()
-				}.onTapGesture { self.onSelect(item.id) }
+				VStack {
+					HStack {
+						Text(item.name)
+						Spacer()
+						if item.id == self.selectedId {
+							Image(systemName: "checkmark")
+								.padding(.trailing)
+								.foregroundColor(.deepSkyBlue)
+						}
+					}
+					Divider()
+				}
+				.contentShape(Rectangle())
+				.onTapGesture { self.onSelect(item.id) }
 			}
 		}.customBackButton(action: self.onBackBtn)
 	}
