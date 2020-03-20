@@ -33,6 +33,7 @@ public extension Color {
 	static let gray2 = Color.init(red: 70, green: 70, blue: 70)
 	static let gray3 = Color.init(red: 158, green: 158, blue: 158)
 	static let gray838383 = Color.init(red: 83/255, green: 83/255, blue: 83/255)
+	static let gray140 = Color.init(red: 140/255, green: 140/255, blue: 140/255)
 	
 	static let gray192 = Color.init(red: 192/255, green: 192/255, blue: 192/255)
 

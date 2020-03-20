@@ -30,8 +30,8 @@ struct ProfileView: View {
 			Text(services).foregroundColor(.gray838383).font(.regular20)
 			Text(employeeName).foregroundColor(.blue2).font(.regular15)
 			HStack {
-				IconAndText(Image(systemName: "clock"), time)
-				IconAndText(Image("ico-journey-room"), rooms)
+				IconAndText(Image(systemName: "clock"), time, .gray140)
+				IconAndText(Image("ico-journey-room"), rooms, .gray140)
 			}
 		}
 	}
