@@ -3,7 +3,7 @@ import Util
 import Model
 import SwiftDate
 
-func view(journey: Journey) -> ProfileView {
+func makeProfileView(journey: Journey) -> ProfileView {
 	ProfileView.init(
 		imageUrl: journey.patient.avatar ?? "placeholder",
 		name: journey.patient.firstName + journey.patient.lastName,
