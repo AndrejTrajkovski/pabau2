@@ -100,37 +100,40 @@ struct PathwayCell: View {
 	let style: PathwayCellStyle
 //	let btnAction: () -> Void
 	public var body: some View {
-		VStack(alignment: .leading, spacing: 16) {
-			PathwayCellHeader(bottomLeading, numberOfSteps)
-			Text(title).font(.semibold20).foregroundColor(.black42)
-			Text(subtitle).font(.medium15)
-			PathwayBulletList(bulletPoints: bulletPoints, bgColor: style.bgColor)
-			Spacer()
-			Group {
-				if self.style == .blue {
-					BigButton.init(text: btnTxt,
-												 btnTapAction: {
-													
-					}).shadow(color: style.btnShadowColor,
-										radius: style.btnShadowBlur,
-										y: 2)
-						.background(style.btnColor)
-				} else {
-					Button.init(action: {}
-						, label: {
-							Text(btnTxt)
-								.font(Font.system(size: 16.0, weight: .bold))
-								.frame(minWidth: 0, maxWidth: .infinity)
-					}).buttonStyle(PathwayWhiteButtonStyle())
-						.shadow(color: style.btnShadowColor,
-										radius: style.btnShadowBlur,
-										y: 2)
-						.background(style.btnColor)
+		VStack(spacing: 0) {
+			Rectangle().fill(style.btnColor).frame(height: 8)
+			VStack(alignment: .leading, spacing: 16) {
+				PathwayCellHeader(bottomLeading, numberOfSteps)
+				Text(title).font(.semibold20).foregroundColor(.black42)
+				Text(subtitle).font(.medium15)
+				PathwayBulletList(bulletPoints: bulletPoints, bgColor: style.bgColor)
+				Spacer()
+				Group {
+					if self.style == .blue {
+						BigButton.init(text: btnTxt,
+													 btnTapAction: {
+														
+						}).shadow(color: style.btnShadowColor,
+											radius: style.btnShadowBlur,
+											y: 2)
+							.background(style.btnColor)
+					} else {
+						Button.init(action: {}
+							, label: {
+								Text(btnTxt)
+									.font(Font.system(size: 16.0, weight: .bold))
+									.frame(minWidth: 0, maxWidth: .infinity)
+						}).buttonStyle(PathwayWhiteButtonStyle())
+							.shadow(color: style.btnShadowColor,
+											radius: style.btnShadowBlur,
+											y: 2)
+							.background(style.btnColor)
+					}
 				}
 			}
+			.padding(32)
+			.background(style.bgColor)
 		}
-		.padding(32)
-		.background(style.bgColor)
 	}
 }
 
