@@ -152,7 +152,9 @@ public struct JourneyContainerView: View {
 							termins: self.terminState,
 							services: self.serviceState,
 							durations: self.durationState,
-							with: self.withState) })
+							with: self.withState,
+							participants: self.participantsState)
+		})
 	}
 	
 	var clientState: PickerContainerState<Client> {
@@ -202,11 +204,22 @@ public struct JourneyContainerView: View {
 		PickerContainerState.init(
 			dataSource: [
 				Employee.init(id: 1, name: "Andrej Trajkovski"),
-				Employee.init(id: 1, name: "Mark Ronson")
+				Employee.init(id: 2, name: "Mark Ronson")
 			],
 			chosenItemId: 1,
 			isActive: false)
 	}
+	
+	var participantsState: PickerContainerState<Employee> {
+		PickerContainerState.init(
+			dataSource: [
+				Employee.init(id: 1, name: "Participant 1"),
+				Employee.init(id: 2, name: "Participant 2")
+			],
+			chosenItemId: 1,
+			isActive: false)
+	}
+
 }
 
 //case termins(PickerContainerAction<Termin>)

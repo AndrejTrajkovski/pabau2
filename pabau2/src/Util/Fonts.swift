@@ -22,4 +22,6 @@ public extension Font {
 	static let bold13 = Font.system(size: 13, weight: .bold)
 
 	static let regular12 = Font.system(size: 12, weight: .regular)
+	static let regular15 = Font.system(size: 15, weight: .regular)
+	static let regular17 = Font.system(size: 17, weight: .regular)
 }

@@ -21,6 +21,7 @@ public struct AddAppointmentState {
 	var services: PickerContainerState<Service>
 	var durations: PickerContainerState<Duration>
 	var with: PickerContainerState<Employee>
+	var participants: PickerContainerState<Employee>
 }
 
 public enum AddAppointmentAction {
@@ -29,6 +30,7 @@ public enum AddAppointmentAction {
 	case services(PickerContainerAction<Service>)
 	case durations(PickerContainerAction<Duration>)
 	case with(PickerContainerAction<Employee>)
+	case participants(PickerContainerAction<Employee>)
 }
 
 extension Employee: ListPickerElement { }
@@ -45,19 +47,8 @@ func pickerContainerReducer<T: ListPickerElement>(state: inout PickerContainerSt
 	case .didChooseItem(let id):
 		state.isActive = false
 		state.chosenItemId = id
-	}
-	return []
-}
-
-func clientReducer(state: inout PickerContainerState<Client>,
-									 action: PickerContainerAction<Client>,
-									 environment: JourneyEnvironemnt) -> [Effect<PickerContainerAction<Client>>] {
-	switch action {
-	case .didSelectPicker:
-		state.isActive = true
-	case .didChooseItem(let id):
+	case .backBtnTap:
 		state.isActive = false
-		state.chosenItemId = id
 	}
 	return []
 }
@@ -83,7 +74,11 @@ let addAppointmentReducer: Reducer<AddAppointmentState,
 		pullback(pickerContainerReducer,
 						 value: \AddAppointmentState.with,
 						 action: /AddAppointmentAction.with,
-						 environment: { $0 })
+						 environment: { $0 }),
+		pullback(pickerContainerReducer,
+		value: \AddAppointmentState.participants,
+		action: /AddAppointmentAction.participants,
+		environment: { $0 })
 		)
 )
 //func addAppointmentReducer(state: inout AddAppointmentState,
@@ -97,12 +92,14 @@ public struct AddAppointment: View {
 							termins: PickerContainerState<MyTermin>,
 							services: PickerContainerState<Service>,
 							durations: PickerContainerState<Duration>,
-							with: PickerContainerState<Employee>) {
+							with: PickerContainerState<Employee>,
+							participants: PickerContainerState<Employee>) {
 		let state = AddAppointmentState.init(clients: clients,
 																				 termins: termins,
 																				 services: services,
 																				 durations: durations,
-																				 with: with)
+																				 with: with,
+																				 participants: participants)
 		self.store = Store.init(initialValue: state,
 														reducer: addAppointmentReducer,
 														environment: JourneyEnvironemnt(
@@ -112,10 +109,20 @@ public struct AddAppointment: View {
 	
 	public var body: some View {
 		NavigationView {
-			VStack(alignment: .leading) {
-				Text("New Appointment")
-				SwitchCell(text: "All Day", startingValue: true)
-				Divider()
+			VStack(alignment: .leading, spacing: 32) {
+				Text("New Appointment").font(.semibold24)
+				AddAppSections(store: self.store)
+			}.padding(32)
+		}.navigationViewStyle(StackNavigationViewStyle())
+	}
+}
+
+struct Section1: View {
+	@ObservedObject public var store: Store<AddAppointmentState, AddAppointmentAction>
+	var body: some View {
+		VStack (spacing: 24.0) {
+			SwitchCell(text: "All Day", startingValue: true)
+			HStack(spacing: 24.0) {
 				PickerContainerStore.init(content: {
 					LabelAndTextField.init("CLIENT", self.store.value.clients.chosenItemName ?? "")
 				}, store: self.store.view(value: { $0.clients },
@@ -126,21 +133,59 @@ public struct AddAppointment: View {
 				}, store: self.store.view(value: { $0.termins },
 																	action: { .termins($0) })
 				)
+			}
+		}
+	}
+}
+
+struct Section2: View {
+	@ObservedObject public var store: Store<AddAppointmentState, AddAppointmentAction>
+	var body: some View {
+		VStack(alignment: .leading, spacing: 24.0) {
+			Text("Services").font(.semibold24)
+			HStack(spacing: 24.0) {
 				PickerContainerStore.init(content: {
 					LabelAndTextField.init("SERVICE", self.store.value.services.chosenItemName ?? "")
 				}, store: self.store.view(value: { $0.services },
 																	action: { .services($0) })
 				)
 				PickerContainerStore.init(content: {
-					LabelAndTextField.init("DURATIONS", self.store.value.durations.chosenItemName ?? "")
+					LabelAndTextField.init("DURATION", self.store.value.durations.chosenItemName ?? "")
 				}, store: self.store.view(value: { $0.durations },
 																	action: { .durations($0) })
 				)
-				//				PickerContainerStore.init(content: {
-				//					LabelAndTextField.init("CLIENT", self.store.value.chosenItemName ?? "")
-				//				}, store: self.store)
 			}
-		}.navigationViewStyle(StackNavigationViewStyle())
+			HStack(spacing: 24.0) {
+				PickerContainerStore.init(content: {
+					LabelAndTextField.init("WITH", self.store.value.with.chosenItemName ?? "")
+				}, store: self.store.view(value: { $0.with },
+																	action: { .with($0) })
+				)
+				PickerContainerStore.init(content: {
+					HStack {
+						Image(systemName: "plus.circle")
+							.foregroundColor(.deepSkyBlue)
+							.font(.regular15)
+						Text("Add Participant")
+							.foregroundColor(Color.textFieldAndTextLabel)
+							.font(.semibold15)
+						Spacer()
+					}
+				}, store: self.store.view(value: { $0.participants },
+																	action: { .participants($0) })
+				)
+			}
+		}
+	}
+}
+
+struct AddAppSections: View {
+	@ObservedObject public var store: Store<AddAppointmentState, AddAppointmentAction>
+	var body: some View {
+		VStack(alignment: .leading, spacing: 32) {
+			Section1(store: self.store)
+			Section2(store: self.store)
+		}
 	}
 }
 
@@ -153,6 +198,7 @@ extension Client: ListPickerElement {
 public enum PickerContainerAction <Model: ListPickerElement> {
 	case didChooseItem(Model.ID)
 	case didSelectPicker
+	case backBtnTap
 }
 
 public struct PickerContainerState <Model: ListPickerElement> {
@@ -179,6 +225,9 @@ struct PickerContainerStore<Content: View, T: ListPickerElement>: View {
 												 choseItemId: self.store.value.chosenItemId,
 												 isActive: self.store.value.isActive,
 												 onTapGesture: {self.store.send(.didSelectPicker)}, onSelectItem: {self.store.send(.didChooseItem($0))})
+			.customBackButton {
+				self.store.send(.backBtnTap)
+		}
 	}
 }
 
@@ -239,10 +288,13 @@ struct SwitchCell: View {
 	let text: String
 	let startingValue: Bool
 	var body: some View {
-		HStack {
-			Text(text)
-			Spacer()
-			Toggle.init(isOn: .constant(startingValue), label: { EmptyView() })
+		VStack {
+			HStack {
+				Text(text).font(.regular17)
+				Spacer()
+				Toggle.init(isOn: .constant(startingValue), label: { EmptyView() })
+			}
+			Divider()
 		}
 	}
 }
