@@ -180,8 +180,9 @@ struct ResetPassword: View {
 					BigButton(text: Texts.changePass) {
 						self.store.send(.changePassTapped(self.code, self.newPass, self.confirmPass))
 					}
-					NavigationLink.emptyHidden(destination: self.passChangedView,
-																		 isActive: self.store.value.navigation.login?.contains(.passChangedScreen) ?? false)
+					NavigationLink.emptyHidden(
+						self.store.value.navigation.login?.contains(.passChangedScreen) ?? false,
+						self.passChangedView)
 				}
 				.frame(minWidth: 280, maxWidth: 495)
 				.fixedSize(horizontal: false, vertical: true)

@@ -36,7 +36,7 @@ public func employeeListReducer(state: inout EmployeesState,
 		}
 		return []
 	}
-	
+
 	switch action {
 	case .gotResponse(let response):
 		return handle(result: response, state: &state)
@@ -110,6 +110,7 @@ public func journeyReducer(state: inout JourneyState, action: JourneyAction, env
 	}
 	return []
 }
+
 public struct JourneyContainerView: View {
 	@State private var calendarHeight: CGFloat?
 	@ObservedObject var store: Store<JourneyState, JourneyContainerAction>
@@ -120,7 +121,7 @@ public struct JourneyContainerView: View {
 		VStack {
 			SwiftUICalendar.init(store.value.selectedDate,
 													 self.$calendarHeight,
-													 .week) {date in
+													 .week) { date in
 														self.store.send(.journey(.selectedDate(date)))
 			}
 			.padding(0)
@@ -131,12 +132,8 @@ public struct JourneyContainerView: View {
 					self.store.send(.journey(.selectedJourney($0)))
 				}
 			}
-			NavigationLink.emptyHidden(destination:
-				pathwayView()
-					.customBackButton {
-						self.store.send(.journey(.choosePathwayBackTap))
-				},
-			isActive: (self.store.value.isShowingPathway != nil))
+			NavigationLink.emptyHidden(self.store.value.isShowingPathway != nil,
+																	pathwayViewBackBtn())
 			Spacer()
 		}
 		.navigationBarTitle("Manchester", displayMode: .inline)
@@ -174,13 +171,19 @@ public struct JourneyContainerView: View {
 		})
 	}
 	
-  func pathwayView() -> AnyView {
+	func pathwayViewBackBtn() -> some View {
+		pathwayView().customBackButton {
+				self.store.send(.journey(.choosePathwayBackTap))
+		}
+	}
+	
+	func pathwayView() -> AnyView {
 		if let pathway = self.store.value.isShowingPathway {
 			return AnyView(ChoosePathway(journey: pathway))
 		} else {
 			return AnyView(EmptyView())
 		}
-  }
+	}
 	
 	var clientState: PickerContainerState<Client> {
 		return PickerContainerState.init(

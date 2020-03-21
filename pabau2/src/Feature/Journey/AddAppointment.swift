@@ -296,12 +296,12 @@ struct PickerContainer<Content: View, T: ListPickerElement>: View {
 	var body: some View {
 		HStack {
 			content().onTapGesture(perform: onTapGesture)
-			NavigationLink.emptyHidden(destination:
-				ListPicker<T>.init(items: self.items,
-													 selectedId: self.chosenItemId,
-													 onSelect: self.onSelectItem,
-													 onBackBtn: onBackBtn),
-				isActive: self.isActive)
+			NavigationLink.emptyHidden(self.isActive,
+																 ListPicker<T>.init(items: self.items,
+																										selectedId: self.chosenItemId,
+																										onSelect: self.onSelectItem,
+																										onBackBtn: onBackBtn)
+			)
 		}
 	}
 }

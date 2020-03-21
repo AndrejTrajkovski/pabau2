@@ -26,12 +26,11 @@ public struct WalkthroughContainer: View {
 		VStack(spacing: 50) {
 			Walkthrough(store:
 				self.store.view(value: { $0.navigation },
-												action: { .walkthrough($0)})
-			)
-			NavigationLink.emptyHidden(destination:
-				LoginView(store:
-				self.store.view(value: { $0 },
-												action: { .login($0)})), isActive: self.store.value.navigation.login?.contains(.signInScreen) ?? false)
+												action: { .walkthrough($0)}))
+			NavigationLink.emptyHidden(
+				store.value.navigation.login?.contains(.signInScreen) ?? false,
+			LoginView(store: self.store.view(value: { $0 },
+																			 action: { .login($0)})))
 		}
 	}
 }

@@ -125,13 +125,19 @@ public struct LoginView: View {
 	public var body: some View {
 		LoadingView(title: Texts.signingIn, bindingIsShowing: .constant(self.store.value.loginViewState.loginLS.isLoading)) {
 			VStack {
-				NavigationLink.emptyHidden(destination: EmptyView(),
-																	 isActive: self.store.value.navigation.tabBar != nil)
-				NavigationLink.emptyHidden(destination:
-					ForgotPasswordView(self.store.view(value: {_ in self.store.value.forgotPass },
-																						 action: { .forgotPass($0)}), self.$email),
-																	 isActive: self.store.value.navigation.login?.contains(.forgotPassScreen) ?? false)
-				Login(store: self.store.view(value: { $0 }, action: { .login($0)}), email: self.$email)
+				NavigationLink.emptyHidden(
+					self.store.value.navigation.tabBar != nil,
+					EmptyView()
+				)
+				NavigationLink.emptyHidden(
+					self.store.value.navigation.login?.contains(.forgotPassScreen) ?? false,
+					ForgotPasswordView(self.store.view(
+						value: { _ in self.store.value.forgotPass },
+						action: { .forgotPass($0)}), self.$email))
+				Login(store:
+					self.store.view(value: { $0 },
+													action: { .login($0)}),
+							email: self.$email)
 				Spacer()
 			}
 		}

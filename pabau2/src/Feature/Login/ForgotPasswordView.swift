@@ -132,8 +132,9 @@ struct ForgotPasswordView: View {
 		LoadingView(title: Texts.forgotPassLoading, bindingIsShowing: .constant(self.store.value.forgotPass.loadingState.isLoading)) {
 			VStack(alignment: .leading, spacing: 36) {
 				ForgotPassword(self.store.view(value: { $0.forgotPass }, action: { .forgotPass($0)}), self.$email)
-				NavigationLink.emptyHidden(destination: self.checkEmailView,
-																	 isActive: self.store.value.navigation.login?.contains(.checkEmailScreen) ?? false)
+				NavigationLink.emptyHidden(
+					self.store.value.navigation.login?.contains(.checkEmailScreen) ?? false,
+					self.checkEmailView)
 				Spacer()
 			}
 		}
