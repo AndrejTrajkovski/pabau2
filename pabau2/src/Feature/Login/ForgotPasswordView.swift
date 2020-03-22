@@ -96,7 +96,7 @@ struct ForgotPassword: View {
 		self.store = store
 		self._email = email
 	}
-
+	
 	var body: some View {
 		VStack(alignment: .leading, spacing: 25) {
 			VStack(alignment: .leading, spacing: 36) {
@@ -129,15 +129,14 @@ struct ForgotPasswordView: View {
 		_email = email
 	}
 	var body: some View {
-		LoadingView(title: Texts.forgotPassLoading, bindingIsShowing: .constant(self.store.value.forgotPass.loadingState.isLoading)) {
-			VStack(alignment: .leading, spacing: 36) {
-				ForgotPassword(self.store.view(value: { $0.forgotPass }, action: { .forgotPass($0)}), self.$email)
-				NavigationLink.emptyHidden(
-					self.store.value.navigation.login?.contains(.checkEmailScreen) ?? false,
-					self.checkEmailView)
-				Spacer()
-			}
-		}
+		VStack(alignment: .leading, spacing: 36) {
+			ForgotPassword(self.store.view(value: { $0.forgotPass }, action: { .forgotPass($0)}), self.$email)
+			NavigationLink.emptyHidden(
+				self.store.value.navigation.login?.contains(.checkEmailScreen) ?? false,
+				self.checkEmailView)
+			Spacer()
+		}.loadingView(.constant(self.store.value.forgotPass.loadingState.isLoading),
+									Texts.forgotPassLoading)
 	}
 
 	var checkEmailView: CheckEmail {
@@ -146,7 +145,7 @@ struct ForgotPasswordView: View {
 							 store: self.store.view(value: { $0.navigation },
 																			action: { .checkEmail($0)}))
 	}
-
+	
 	var passChangedStore: Store<Navigation, PassChangedAction> {
 		self.store.view(value: { $0.navigation }, action: { .passChanged($0)})
 	}

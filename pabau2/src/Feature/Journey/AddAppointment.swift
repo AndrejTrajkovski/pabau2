@@ -131,12 +131,12 @@ public struct AddAppointment: View {
 				}
 			}
 			.padding(24)
-			.navigationBarItems(leading:
-				Button.init(action: { self.store.send(.closeBtnTap) }, label: {
-					Image(systemName: "xmark").foregroundColor(.gray142).frame(width: 30, height: 30)
-			}))
 		}
 		.navigationViewStyle(StackNavigationViewStyle())
+		.navigationBarItems(leading:
+			Button.init(action: { self.store.send(.closeBtnTap) }, label: {
+				Image(systemName: "xmark").foregroundColor(.gray142).frame(width: 30, height: 30)
+		}))
 	}
 }
 

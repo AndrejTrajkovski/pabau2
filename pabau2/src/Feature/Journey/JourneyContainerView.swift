@@ -127,11 +127,10 @@ public struct JourneyContainerView: View {
 			.padding(0)
 			.frame(height: self.calendarHeight)
 			FilterPicker()
-			LoadingView(title: Texts.fetchingJourneys, bindingIsShowing: .constant(self.store.value.loadingState.isLoading)) {
-				JourneyList(self.store.value.filteredJourneys) {
-					self.store.send(.journey(.selectedJourney($0)))
-				}
-			}
+			JourneyList(self.store.value.filteredJourneys) {
+				self.store.send(.journey(.selectedJourney($0)))
+			}.loadingView(.constant(self.store.value.loadingState.isLoading),
+										Texts.fetchingJourneys)
 			NavigationLink.emptyHidden(self.store.value.isShowingPathway != nil,
 																	pathwayViewBackBtn())
 			Spacer()

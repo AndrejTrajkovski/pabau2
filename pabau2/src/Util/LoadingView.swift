@@ -1,5 +1,22 @@
 import SwiftUI
 
+public extension View {
+	func loadingView(_ isShowing: Binding<Bool>,
+									 _ title: String = "Loading") -> some View {
+		self.modifier(LoadingViewModifier(title: title, isShowing: isShowing))
+	}
+}
+
+public struct LoadingViewModifier: ViewModifier {
+	let title: String
+	@Binding var isShowing: Bool
+	public func body(content: Content) -> some View {
+		LoadingView(title: title,
+								bindingIsShowing: $isShowing,
+								content: { content })
+	}
+}
+
 public struct LoadingView<Content>: View where Content: View {
 	public init(title: String, bindingIsShowing: Binding<Bool>, content: @escaping () -> Content) {
 		self.title = title

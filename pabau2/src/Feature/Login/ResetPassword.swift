@@ -65,7 +65,7 @@ public struct ResetPasswordState: Equatable {
 			return ""
 		}
 	}
-
+	
 	var codeValidator: String {
 		guard let rpFailure = (/RPValidator.failure).extract(from: rpValidation) else {
 			return ""
@@ -98,7 +98,7 @@ func validate(_ code: String, _ newPass: String, _ confirmPass: String) -> RPVal
 	if code.isEmpty {
 		errors.append(.emptyCode)
 	}
-
+	
 	if errors.isEmpty {
 		return .success(ResetPassRequest(code: code, newPass: newPass))
 	} else {
@@ -153,47 +153,46 @@ struct ResetPassword: View {
 	@State var newPass: String = ""
 	@State var confirmPass: String = ""
 	var body: some View {
-		LoadingView(title: Texts.verifyingCode, bindingIsShowing: .constant(self.store.value.loadingState.isLoading)) {
-			VStack {
-				VStack(alignment: .leading, spacing: 25) {
-					VStack(alignment: .leading, spacing: 36) {
-						Text(Texts.resetPass)
-							.foregroundColor(.blackTwo)
-							.font(.bold34)
-							.frame(width: 157)
-						Text(Texts.resetPassDesc)
-							.foregroundColor(.grey155)
-							.font(.medium16)
-						TextAndTextView(title: Texts.resetCode.uppercased(),
-														placeholder: Texts.resetCodePlaceholder,
-														bindingValue: self.$code,
-														validation: self.store.value.codeValidator)
-						TextAndTextView(title: Texts.newPass.uppercased(),
-														placeholder: Texts.newPassPlaceholder,
-														bindingValue: self.$newPass,
-														validation: self.store.value.newPassValidator)
-						TextAndTextView(title: Texts.confirmPass.uppercased(),
-														placeholder: Texts.confirmPassPlaceholder,
-														bindingValue: self.$confirmPass,
-														validation: self.store.value.confirmPassValidator)
-					}.frame(maxWidth: 319)
-					BigButton(text: Texts.changePass) {
-						self.store.send(.changePassTapped(self.code, self.newPass, self.confirmPass))
-					}
-					NavigationLink.emptyHidden(
-						self.store.value.navigation.login?.contains(.passChangedScreen) ?? false,
-						self.passChangedView)
+		VStack {
+			VStack(alignment: .leading, spacing: 25) {
+				VStack(alignment: .leading, spacing: 36) {
+					Text(Texts.resetPass)
+						.foregroundColor(.blackTwo)
+						.font(.bold34)
+						.frame(width: 157)
+					Text(Texts.resetPassDesc)
+						.foregroundColor(.grey155)
+						.font(.medium16)
+					TextAndTextView(title: Texts.resetCode.uppercased(),
+													placeholder: Texts.resetCodePlaceholder,
+													bindingValue: self.$code,
+													validation: self.store.value.codeValidator)
+					TextAndTextView(title: Texts.newPass.uppercased(),
+													placeholder: Texts.newPassPlaceholder,
+													bindingValue: self.$newPass,
+													validation: self.store.value.newPassValidator)
+					TextAndTextView(title: Texts.confirmPass.uppercased(),
+													placeholder: Texts.confirmPassPlaceholder,
+													bindingValue: self.$confirmPass,
+													validation: self.store.value.confirmPassValidator)
+				}.frame(maxWidth: 319)
+				BigButton(text: Texts.changePass) {
+					self.store.send(.changePassTapped(self.code, self.newPass, self.confirmPass))
 				}
-				.frame(minWidth: 280, maxWidth: 495)
-				.fixedSize(horizontal: false, vertical: true)
-				.customBackButton {
-					self.store.send(.backBtnTapped)
-				}
-				Spacer()
+				NavigationLink.emptyHidden(
+					self.store.value.navigation.login?.contains(.passChangedScreen) ?? false,
+					self.passChangedView)
 			}
-		}
+			.frame(minWidth: 280, maxWidth: 495)
+			.fixedSize(horizontal: false, vertical: true)
+			.customBackButton {
+				self.store.send(.backBtnTapped)
+			}
+			Spacer()
+		}.loadingView(.constant(self.store.value.loadingState.isLoading),
+									Texts.verifyingCode)
 	}
-
+	
 	var passChangedView: PasswordChanged {
 		return PasswordChanged(store: passChangedStore)
 	}
