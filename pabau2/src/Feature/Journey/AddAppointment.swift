@@ -23,7 +23,6 @@ public struct AddAppointmentState {
 	var sms: Bool
 	var feedback: Bool
 	var isAllDay: Bool
-	
 	var clients: PickerContainerState<Client>
 	var termins: PickerContainerState<MyTermin>
 	var services: PickerContainerState<Service>
@@ -40,6 +39,7 @@ public enum AddAppointmentAction {
 	case with(PickerContainerAction<Employee>)
 	case participants(PickerContainerAction<Employee>)
 	case addAppointmentTap
+	case closeBtnTap
 }
 
 extension Employee: ListPickerElement { }
@@ -66,6 +66,8 @@ let addAppTapBtnReducer: Reducer<AddAppointmentState,
 	AddAppointmentAction, JourneyEnvironemnt> = { state, action, env in
 		switch action {
 		case .addAppointmentTap:
+			state.isShowingAddAppointment = false
+		case .closeBtnTap:
 			state.isShowingAddAppointment = false
 		default:
 			break
@@ -105,22 +107,17 @@ let addAppointmentReducer: Reducer<AddAppointmentState,
 						 environment: { $0 })
 		)
 )
-//func addAppointmentReducer(state: inout AddAppointmentState,
-//													 action: AddAppointmentAction,
-//													 environment: JourneyEnvironemnt) -> [Effect<AddAppointmentAction>] {
-//
-//}
+
 public struct AddAppointment: View {
 	@ObservedObject public var store: Store<AddAppointmentState, AddAppointmentAction>
 	public init(store: Store<AddAppointmentState, AddAppointmentAction>) {
 		self.store = store
 	}
-	
+
 	public var body: some View {
 		NavigationView {
 			ScrollView {
 				VStack(spacing: 32) {
-//					Text("New Appointment").font(.semibold24)
 					AddAppSections(store: self.store)
 						.environmentObject(KeyboardFollower())
 					Button.init("Save Appointment", action: {
@@ -134,6 +131,10 @@ public struct AddAppointment: View {
 				}
 			}
 			.padding(24)
+			.navigationBarItems(leading:
+				Button.init(action: { self.store.send(.closeBtnTap) }, label: {
+					Image(systemName: "xmark").foregroundColor(.gray142).frame(width: 30, height: 30)
+			}))
 		}
 		.navigationViewStyle(StackNavigationViewStyle())
 	}
