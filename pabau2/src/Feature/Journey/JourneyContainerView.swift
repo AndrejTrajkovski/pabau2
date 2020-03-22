@@ -279,7 +279,7 @@ struct JourneyList: View {
 					.onTapGesture { self.onSelect(journey) }
 					.listRowInsets(EdgeInsets())
 			}
-		}
+		}.id(UUID())
 	}
 }
 

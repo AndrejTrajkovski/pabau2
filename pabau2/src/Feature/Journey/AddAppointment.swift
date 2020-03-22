@@ -62,17 +62,6 @@ func pickerContainerReducer<T: ListPickerElement>(state: inout PickerContainerSt
 	return []
 }
 
-//let isShowingAddAppReducer: Reducer<Bool,
-//	AddAppointmentAction, JourneyEnvironemnt> = { state, action, env in
-//		switch action {
-//		case .addAppointmentTap:
-//			state = false
-//		default:
-//			break
-//		}
-//		return []
-//}
-
 let addAppTapBtnReducer: Reducer<AddAppointmentState,
 	AddAppointmentAction, JourneyEnvironemnt> = { state, action, env in
 		switch action {
