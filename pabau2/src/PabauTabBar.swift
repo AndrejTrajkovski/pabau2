@@ -37,7 +37,7 @@ struct PabauTabBar: View {
 	var body: some View {
 		ZStack(alignment: .topTrailing) {
 			TabView {
-				JourneyNavigationView(self.store.view(value: { $0.journey },
+				JourneyNavigationView(self.store.scope(value: { $0.journey },
 																							action: { .journey($0)}))
 					.tabItem {
 						Image(systemName: "staroflife")
@@ -49,14 +49,14 @@ struct PabauTabBar: View {
 						Text("Calendar")
 				}
 				Settings(store:
-					store.view(value: { $0.settings },
+					store.scope(value: { $0.settings },
 										 action: { .settings($0)}))
 					.tabItem {
 						Image(systemName: "gear")
 						Text("Settings")
 				}
 			}
-			EmployeesListStore(self.store.view(value: { $0.journey.employeesState } ,
+			EmployeesListStore(self.store.scope(value: { $0.journey.employeesState } ,
 																				 action: { .journey(.employees($0))}))
 				.isHidden(!self.store.value.journey.employeesState.isShowingEmployees, remove: true)
 				.frame(width: 302)

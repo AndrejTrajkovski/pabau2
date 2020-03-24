@@ -147,8 +147,16 @@ public func resetPassReducer(state: inout ResetPasswordState, action: ResetPassw
 }
 
 struct ResetPassword: View {
+	let store: Store<ResetPasswordState, ResetPasswordAction>
+	@ObservedObject var viewStore: ViewStore<ResetPasswordState>
+	init (store: Store<ResetPasswordState, ResetPasswordAction>,
+				passChangedStore: Store<Navigation, PassChangedAction>) {
+		self.store = store
+		self.viewStore = self.store.view
+		self.passChangedStore = passChangedStore
+	}
+	//
 	let passChangedStore: Store<Navigation, PassChangedAction>
-	@ObservedObject var store: Store<ResetPasswordState, ResetPasswordAction>
 	@State var code: String = ""
 	@State var newPass: String = ""
 	@State var confirmPass: String = ""
@@ -166,21 +174,21 @@ struct ResetPassword: View {
 					TextAndTextView(title: Texts.resetCode.uppercased(),
 													placeholder: Texts.resetCodePlaceholder,
 													bindingValue: self.$code,
-													validation: self.store.value.codeValidator)
+													validation: self.viewStore.value.codeValidator)
 					TextAndTextView(title: Texts.newPass.uppercased(),
 													placeholder: Texts.newPassPlaceholder,
 													bindingValue: self.$newPass,
-													validation: self.store.value.newPassValidator)
+													validation: self.viewStore.value.newPassValidator)
 					TextAndTextView(title: Texts.confirmPass.uppercased(),
 													placeholder: Texts.confirmPassPlaceholder,
 													bindingValue: self.$confirmPass,
-													validation: self.store.value.confirmPassValidator)
+													validation: self.viewStore.value.confirmPassValidator)
 				}.frame(maxWidth: 319)
 				BigButton(text: Texts.changePass) {
 					self.store.send(.changePassTapped(self.code, self.newPass, self.confirmPass))
 				}
 				NavigationLink.emptyHidden(
-					self.store.value.navigation.login?.contains(.passChangedScreen) ?? false,
+					self.viewStore.value.navigation.login?.contains(.passChangedScreen) ?? false,
 					self.passChangedView)
 			}
 			.frame(minWidth: 280, maxWidth: 495)
@@ -189,7 +197,7 @@ struct ResetPassword: View {
 				self.store.send(.backBtnTapped)
 			}
 			Spacer()
-		}.loadingView(.constant(self.store.value.loadingState.isLoading),
+		}.loadingView(.constant(self.viewStore.value.loadingState.isLoading),
 									Texts.verifyingCode)
 	}
 	

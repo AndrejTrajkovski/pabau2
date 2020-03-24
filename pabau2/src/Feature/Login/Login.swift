@@ -87,12 +87,14 @@ let loginViewReducer = combine(
 )
 
 struct Login: View {
-	@ObservedObject var store: Store<WalkthroughContainerState, LoginAction>
+	let store: Store<WalkthroughContainerState, LoginAction>
+	@ObservedObject var viewStore: ViewStore<WalkthroughContainerState>
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
 	@Binding private var email: String
 	@State private var password: String = ""
 	public init(store: Store<WalkthroughContainerState, LoginAction>, email: Binding<String>) {
 		self.store = store
+		self.viewStore = self.store.view
 		self._email = email
 	}
 	var body: some View {
@@ -101,7 +103,7 @@ struct Login: View {
 			Spacer(minLength: 85)
 			LoginTextFields(email: $email,
 											password: $password,
-											emailValidation: self.store.value.loginViewState.emailValidationText, passwordValidation: self.store.value.loginViewState.passValidationText,
+											emailValidation: self.viewStore.value.loginViewState.emailValidationText, passwordValidation: self.viewStore.value.loginViewState.passValidationText,
 											onForgotPass: {self.store.send(.forgotPassTapped) })
 			Spacer(minLength: 30)
 			BigButton(text: Texts.signIn,
@@ -117,28 +119,30 @@ struct Login: View {
 }
 
 public struct LoginView: View {
-	@ObservedObject var store: Store<WalkthroughContainerState, LoginViewAction>
+	let store: Store<WalkthroughContainerState, LoginViewAction>
+	@ObservedObject var viewStore: ViewStore<WalkthroughContainerState>
 	@State var email: String = ""
 	public init(store: Store<WalkthroughContainerState, LoginViewAction>) {
 		self.store = store
+		self.viewStore = self.store.view
 	}
 	public var body: some View {
 		VStack {
 			NavigationLink.emptyHidden(
-				self.store.value.navigation.tabBar != nil,
+				self.viewStore.value.navigation.tabBar != nil,
 				EmptyView()
 			)
 			NavigationLink.emptyHidden(
-				self.store.value.navigation.login?.contains(.forgotPassScreen) ?? false,
-				ForgotPasswordView(self.store.view(
-					value: { _ in self.store.value.forgotPass },
+				self.viewStore.value.navigation.login?.contains(.forgotPassScreen) ?? false,
+				ForgotPasswordView(self.store.scope(
+					value: { _ in self.viewStore.value.forgotPass },
 					action: { .forgotPass($0)}), self.$email))
 			Login(store:
-				self.store.view(value: { $0 },
+				self.store.scope(value: { $0 },
 												action: { .login($0)}),
 						email: self.$email)
 			Spacer()
-		}.loadingView(.constant(self.store.value.loginViewState.loginLS.isLoading),
+		}.loadingView(.constant(self.viewStore.value.loginViewState.loginLS.isLoading),
 									Texts.signingIn)
 	}
 }

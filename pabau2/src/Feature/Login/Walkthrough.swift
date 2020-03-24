@@ -10,7 +10,15 @@ public struct Walkthrough: View {
 	let state = makeState(titles: WalkthroughStatic.titles,
 												descs: WalkthroughStatic.description,
 												imageTitles: WalkthroughStatic.images)
-	@ObservedObject var store: Store<Navigation, WalkthroughAction>
+	let store: Store<Navigation, WalkthroughAction>
+	@ObservedObject var viewStore: ViewStore<Navigation>
+	public init (store: Store<Navigation, WalkthroughAction>) {
+		self.store = store
+		self.viewStore = self.store
+			.scope(value: { $0 }, action: { $0 })
+			.view
+	}
+	
 	public var body: some View {
 		VStack {
 			PageView(state.map { WalkthroughContentView(state: $0)})

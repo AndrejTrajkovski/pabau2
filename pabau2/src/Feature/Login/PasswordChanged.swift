@@ -19,7 +19,12 @@ public enum PassChangedAction: Equatable {
 }
 
 public struct PasswordChanged: View {
-	@ObservedObject var store: Store<Navigation, PassChangedAction>
+	let store: Store<Navigation, PassChangedAction>
+	@ObservedObject var viewStore: ViewStore<Navigation>
+	init (store: Store<Navigation, PassChangedAction>) {
+		self.store = store
+		self.viewStore = self.store.view
+	}
 	let content = WalkthroughContentContent(title: Texts.passwordChanged,
 																					description: Texts.passwordChangedDesc,
 																					imageTitle: "illu-password-changed")

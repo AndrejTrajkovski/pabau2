@@ -18,18 +18,20 @@ public struct WalkthroughContainerState {
 extension WalkthroughContainerState: Equatable {}
 
 public struct WalkthroughContainer: View {
-	@ObservedObject var store: Store<WalkthroughContainerState, WalkthroughContainerAction>
+	let store: Store<WalkthroughContainerState, WalkthroughContainerAction>
+	@ObservedObject var viewStore: ViewStore<WalkthroughContainerState>
 	public init(_ store: Store<WalkthroughContainerState, WalkthroughContainerAction>) {
 		self.store = store
+		self.viewStore = self.store.view
 	}
 	public var body: some View {
 		VStack(spacing: 50) {
 			Walkthrough(store:
-				self.store.view(value: { $0.navigation },
+				self.store.scope(value: { $0.navigation },
 												action: { .walkthrough($0)}))
 			NavigationLink.emptyHidden(
-				store.value.navigation.login?.contains(.signInScreen) ?? false,
-			LoginView(store: self.store.view(value: { $0 },
+				viewStore.value.navigation.login?.contains(.signInScreen) ?? false,
+			LoginView(store: self.store.scope(value: { $0 },
 																			 action: { .login($0)})))
 		}
 	}

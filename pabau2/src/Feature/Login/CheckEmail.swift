@@ -20,9 +20,19 @@ public enum CheckEmailAction: Equatable {
 }
 
 public struct CheckEmail: View {
+	let store: Store<Navigation, CheckEmailAction>
+	@ObservedObject var viewStore: ViewStore<Navigation>
+	//
 	let resetPassStore: Store<ResetPasswordState, ResetPasswordAction>
 	let passChangedStore: Store<Navigation, PassChangedAction>
-	@ObservedObject var store: Store<Navigation, CheckEmailAction>
+	public init(store: Store<Navigation, CheckEmailAction>,
+							resetPassStore: Store<ResetPasswordState, ResetPasswordAction>,
+							passChangedStore: Store<Navigation, PassChangedAction>) {
+		self.store = store
+		self.viewStore = self.store.view
+		self.resetPassStore = resetPassStore
+		self.passChangedStore = passChangedStore
+	}
 	let content = WalkthroughContentContent(title: Texts.checkYourEmail,
 																					description: Texts.checkEmailDesc,
 																					imageTitle: "illu-check-email")
@@ -33,13 +43,14 @@ public struct CheckEmail: View {
 																	btnAction: { self.store.send(.resetPassTapped) }
 			).customBackButton { self.store.send(.backBtnTapped) }
 		NavigationLink.emptyHidden(
-			self.store.value.login?.contains(.resetPassScreen) ?? false,
+			self.viewStore.value.login?.contains(.resetPassScreen) ?? false,
 			resetPassView)
 		}
 	}
 	
 	var resetPassView: ResetPassword {
-		ResetPassword(passChangedStore: passChangedStore,
-									store: resetPassStore)
+		ResetPassword(store: resetPassStore,
+									passChangedStore: passChangedStore
+		)
 	}
 }

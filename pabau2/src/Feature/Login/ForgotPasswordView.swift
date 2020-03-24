@@ -12,7 +12,7 @@ public enum ForgotPassViewAction: Equatable {
 	case passChanged(PassChangedAction)
 }
 
-public struct ForgotPassContainerState {
+public struct ForgotPassContainerState: Equatable {
 	var navigation: Navigation
 	var forgotPassLS: LoadingState
 	var fpValidation: String
@@ -39,7 +39,7 @@ public struct ForgotPassContainerState {
 	}
 }
 
-public struct ForgotPassState {
+public struct ForgotPassState: Equatable {
 	var navigation: Navigation
 	var loadingState: LoadingState
 	var fpValidation: String
@@ -90,10 +90,13 @@ public enum ForgotPasswordAction: Equatable {
 }
 
 struct ForgotPassword: View {
-	@ObservedObject var store: Store<ForgotPassState, ForgotPasswordAction>
+	let store: Store<ForgotPassState, ForgotPasswordAction>
+	@ObservedObject var viewStore: ViewStore<ForgotPassState>
 	@Binding private var email: String
-	init(_ store: Store<ForgotPassState, ForgotPasswordAction>, _ email: Binding<String>) {
+	init(_ store: Store<ForgotPassState, ForgotPasswordAction>,
+			 _ email: Binding<String>) {
 		self.store = store
+		self.viewStore = self.store.view
 		self._email = email
 	}
 	
@@ -107,7 +110,7 @@ struct ForgotPassword: View {
 				Text(Texts.forgotPassDescription)
 					.foregroundColor(.grey155)
 					.font(.medium16)
-				TextAndTextView(title: Texts.emailAddress.uppercased(), placeholder: "", bindingValue: self.$email, validation: self.store.value.fpValidation)
+				TextAndTextView(title: Texts.emailAddress.uppercased(), placeholder: "", bindingValue: self.$email, validation: self.viewStore.value.fpValidation)
 			}.frame(maxWidth: 319)
 			BigButton(text: Texts.sendRequest) {
 				self.store.send(.sendRequest(email: self.email))
@@ -122,34 +125,37 @@ struct ForgotPassword: View {
 }
 
 struct ForgotPasswordView: View {
-	@ObservedObject var store: Store<ForgotPassContainerState, ForgotPassViewAction>
+	let store: Store<ForgotPassContainerState, ForgotPassViewAction>
+	@ObservedObject var viewStore: ViewStore<ForgotPassContainerState>
 	@Binding private var email: String
 	init(_ store: Store<ForgotPassContainerState, ForgotPassViewAction>, _ email: Binding<String>) {
 		self.store = store
+		self.viewStore = self.store.view
 		_email = email
 	}
 	var body: some View {
 		VStack(alignment: .leading, spacing: 36) {
-			ForgotPassword(self.store.view(value: { $0.forgotPass }, action: { .forgotPass($0)}), self.$email)
+			ForgotPassword(self.store.scope(value: { $0.forgotPass }, action: { .forgotPass($0)}), self.$email)
 			NavigationLink.emptyHidden(
-				self.store.value.navigation.login?.contains(.checkEmailScreen) ?? false,
+				self.viewStore.value.navigation.login?.contains(.checkEmailScreen) ?? false,
 				self.checkEmailView)
 			Spacer()
-		}.loadingView(.constant(self.store.value.forgotPass.loadingState.isLoading),
+		}.loadingView(.constant(self.viewStore.value.forgotPass.loadingState.isLoading),
 									Texts.forgotPassLoading)
 	}
 
 	var checkEmailView: CheckEmail {
-		CheckEmail(resetPassStore: resetPassStore,
-							 passChangedStore: passChangedStore,
-							 store: self.store.view(value: { $0.navigation },
-																			action: { .checkEmail($0)}))
+		CheckEmail(store: self.store.scope(value: { $0.navigation },
+																			 action: { .checkEmail($0)}),
+							 resetPassStore: resetPassStore,
+							 passChangedStore: passChangedStore
+		)
 	}
 	
 	var passChangedStore: Store<Navigation, PassChangedAction> {
-		self.store.view(value: { $0.navigation }, action: { .passChanged($0)})
+		self.store.scope(value: { $0.navigation }, action: { .passChanged($0)})
 	}
 	var resetPassStore: Store<ResetPasswordState, ResetPasswordAction> {
-		self.store.view(value: { $0.resetPass }, action: { .resetPass($0)})
+		self.store.scope(value: { $0.resetPass }, action: { .resetPass($0)})
 	}
 }
