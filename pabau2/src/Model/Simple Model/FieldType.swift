@@ -3,7 +3,7 @@
 
 import Foundation
 
-public enum FieldType: String, Codable {
+public enum FieldType: String, Codable, Equatable {
     case list = "list"
     case string = "string"
     case number = "number"

@@ -3,7 +3,7 @@ import Util
 import NonEmpty
 import SwiftDate
 
-public struct JourneyState {
+public struct JourneyState: Equatable {
 	public init () {}
 	public var loadingState: LoadingState = .initial
 	var journeys: Set<Journey> = Set()

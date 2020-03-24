@@ -3,7 +3,7 @@
 
 import Foundation
 
-public struct Client: Codable, Identifiable {
+public struct Client: Codable, Identifiable, Equatable {
 
     public let mobile: String?
 

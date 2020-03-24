@@ -7,7 +7,7 @@ import ComposableArchitecture
 import SwiftDate
 import CasePaths
 
-public struct EmployeesState {
+public struct EmployeesState: Equatable {
 	var loadingState: LoadingState = .initial
 	var employees: [Employee] = []
 	var selectedEmployeesIds: Set<Int> = Set()
@@ -113,13 +113,15 @@ public func journeyReducer(state: inout JourneyState, action: JourneyAction, env
 
 public struct JourneyContainerView: View {
 	@State private var calendarHeight: CGFloat?
-	@ObservedObject var store: Store<JourneyState, JourneyContainerAction>
+	let store: Store<JourneyState, JourneyContainerAction>
+	@ObservedObject var viewStore: ViewStore<JourneyState>
 	public init(_ store: Store<JourneyState, JourneyContainerAction>) {
 		self.store = store
+		self.viewStore = self.store.view
 	}
 	public var body: some View {
 		VStack {
-			SwiftUICalendar.init(store.value.selectedDate,
+			SwiftUICalendar.init(viewStore.value.selectedDate,
 													 self.$calendarHeight,
 													 .week) { date in
 														self.store.send(.journey(.selectedDate(date)))
@@ -127,11 +129,11 @@ public struct JourneyContainerView: View {
 			.padding(0)
 			.frame(height: self.calendarHeight)
 			FilterPicker()
-			JourneyList(self.store.value.filteredJourneys) {
+			JourneyList(self.viewStore.value.filteredJourneys) {
 				self.store.send(.journey(.selectedJourney($0)))
-			}.loadingView(.constant(self.store.value.loadingState.isLoading),
+			}.loadingView(.constant(self.viewStore.value.loadingState.isLoading),
 										Texts.fetchingJourneys)
-			NavigationLink.emptyHidden(self.store.value.isShowingPathway != nil,
+			NavigationLink.emptyHidden(self.viewStore.value.isShowingPathway != nil,
 																	pathwayViewBackBtn())
 			Spacer()
 		}
@@ -160,11 +162,11 @@ public struct JourneyContainerView: View {
 					.font(.system(size: 20))
 					.frame(width: 44, height: 44)
 			})
-		).sheet(isPresented: .constant(self.store.value.addAppointment.isShowingAddAppointment),
+		).sheet(isPresented: .constant(self.viewStore.value.addAppointment.isShowingAddAppointment),
 						onDismiss: { self.store.send(.journey(.addAppointmentDismissed))},
 						content: {
 							AddAppointment.init(store:
-								self.store.view(value: { $0.addAppointment },
+								self.store.scope(value: { $0.addAppointment },
 																action: { .addAppointment($0)})
 							)
 		})
@@ -177,7 +179,7 @@ public struct JourneyContainerView: View {
 	}
 	
 	func pathwayView() -> AnyView {
-		if let pathway = self.store.value.isShowingPathway {
+		if let pathway = self.viewStore.value.isShowingPathway {
 			return AnyView(ChoosePathway(journey: pathway))
 		} else {
 			return AnyView(EmptyView())
@@ -403,13 +405,15 @@ struct EmployeeHeader: View {
 }
 
 public struct EmployeesListStore: View {
-	@ObservedObject var store: Store<EmployeesState, EmployeesAction>
+	let store: Store<EmployeesState, EmployeesAction>
+	@ObservedObject var viewStore: ViewStore<EmployeesState>
 	public init(_ store: Store<EmployeesState, EmployeesAction>) {
 		self.store = store
+		self.viewStore = self.store.view
 	}
 	public var body: some View {
-		EmployeeList(selectedEmployeesIds: self.store.value.selectedEmployeesIds,
-								 employees: self.store.value.employees,
+		EmployeeList(selectedEmployeesIds: self.viewStore.value.selectedEmployeesIds,
+								 employees: self.viewStore.value.employees,
 								 header: EmployeeHeader { self.store.send(.toggleEmployees) },
 								 didSelectEmployee: { self.store.send(.onTapGestureEmployee($0))})
 			.onAppear(perform: { self.store.send(.onAppear) })

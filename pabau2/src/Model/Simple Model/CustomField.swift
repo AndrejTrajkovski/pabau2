@@ -3,7 +3,7 @@
 
 import Foundation
 
-public struct CustomField: Codable, Identifiable {
+public struct CustomField: Codable, Identifiable, Equatable {
 
     public let id: Int
 

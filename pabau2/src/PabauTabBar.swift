@@ -7,7 +7,7 @@ import Journey
 
 public typealias TabBarEnvironment = (loginAPI: LoginAPI, journeyAPI: JourneyAPI, userDefaults: UserDefaults)
 
-public struct TabBarState {
+public struct TabBarState: Equatable {
 	public var navigation: Navigation
 	public var journeyState: JourneyState
 }
@@ -34,6 +34,11 @@ public enum TabBarAction {
 
 struct PabauTabBar: View {
 	let store: Store<TabBarState, TabBarAction>
+	@ObservedObject var viewStore: ViewStore<TabBarState>
+	init (store: Store<TabBarState, TabBarAction>) {
+		self.store = store
+		self.viewStore = self.store.view
+	}
 	var body: some View {
 		ZStack(alignment: .topTrailing) {
 			TabView {
@@ -58,14 +63,14 @@ struct PabauTabBar: View {
 			}
 			EmployeesListStore(self.store.scope(value: { $0.journey.employeesState } ,
 																				 action: { .journey(.employees($0))}))
-				.isHidden(!self.store.value.journey.employeesState.isShowingEmployees, remove: true)
+				.isHidden(!self.viewStore.value.journey.employeesState.isShowingEmployees, remove: true)
 				.frame(width: 302)
 				.background(Color.white.shadow(color: .employeeShadow, radius: 40.0, x: -20, y: 2))
 		}
 	}
 }
 
-public struct SettingsState {
+public struct SettingsState: Equatable {
 	var navigation: Navigation
 }
 
@@ -97,7 +102,12 @@ public func settingsReducer(state: inout SettingsState, action: SettingsAction, 
 }
 
 public struct Settings: View {
-	@ObservedObject var store: Store<SettingsState, SettingsAction>
+	let store: Store<SettingsState, SettingsAction>
+	@ObservedObject var viewStore: ViewStore<SettingsState>
+	init (store: Store<SettingsState, SettingsAction>) {
+		self.store = store
+		self.viewStore = self.store.view
+	}
 	public var body: some View {
 		VStack {
 			BigButton(text: "Logout") {

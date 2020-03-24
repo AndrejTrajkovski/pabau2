@@ -3,7 +3,7 @@
 
 import Foundation
 
-public struct ClientItemsCount: Codable, Identifiable {
+public struct ClientItemsCount: Codable, Identifiable, Equatable {
 
     public let id: Int
 

@@ -16,7 +16,7 @@ public struct MyTermin: ListPickerElement {
 	public var date: Date
 }
 
-public struct AddAppointmentState {
+public struct AddAppointmentState: Equatable {
 	var isShowingAddAppointment: Bool
 	var reminder: Bool
 	var email: Bool
@@ -109,9 +109,11 @@ let addAppointmentReducer: Reducer<AddAppointmentState,
 )
 
 public struct AddAppointment: View {
-	@ObservedObject public var store: Store<AddAppointmentState, AddAppointmentAction>
+	let store: Store<AddAppointmentState, AddAppointmentAction>
+	@ObservedObject var viewStore: ViewStore<AddAppointmentState>
 	public init(store: Store<AddAppointmentState, AddAppointmentAction>) {
 		self.store = store
+		self.viewStore = self.store.view
 	}
 
 	public var body: some View {
@@ -142,19 +144,24 @@ public struct AddAppointment: View {
 
 struct Section1: View {
 	@State var isAllDay: Bool = true
-	@ObservedObject public var store: Store<AddAppointmentState, AddAppointmentAction>
+	let store: Store<AddAppointmentState, AddAppointmentAction>
+	@ObservedObject var viewStore: ViewStore<AddAppointmentState>
+	init (store: Store<AddAppointmentState, AddAppointmentAction>) {
+		self.store = store
+		self.viewStore = self.store.view
+	}
 	var body: some View {
 		VStack (spacing: 24.0) {
 			SwitchCell(text: "All Day", startingValue: $isAllDay)
 			HStack(spacing: 24.0) {
 				PickerContainerStore.init(content: {
-					LabelAndTextField.init("CLIENT", self.store.value.clients.chosenItemName ?? "")
-				}, store: self.store.view(value: { $0.clients },
+					LabelAndTextField.init("CLIENT", self.viewStore.value.clients.chosenItemName ?? "")
+				}, store: self.store.scope(value: { $0.clients },
 																	action: { .clients($0) })
 				)
 				PickerContainerStore.init(content: {
-					LabelAndTextField.init("DAY", self.store.value.termins.chosenItemName ?? "")
-				}, store: self.store.view(value: { $0.termins },
+					LabelAndTextField.init("DAY", self.viewStore.value.termins.chosenItemName ?? "")
+				}, store: self.store.scope(value: { $0.termins },
 																	action: { .termins($0) })
 				)
 			}
@@ -163,27 +170,32 @@ struct Section1: View {
 }
 
 struct Section2: View {
-	@ObservedObject public var store: Store<AddAppointmentState, AddAppointmentAction>
+	let store: Store<AddAppointmentState, AddAppointmentAction>
+	@ObservedObject var viewStore: ViewStore<AddAppointmentState>
+	init (store: Store<AddAppointmentState, AddAppointmentAction>) {
+		self.store = store
+		self.viewStore = self.store.view
+	}
 	var body: some View {
 		VStack(alignment: .leading, spacing: 24.0) {
 			Text("Services").font(.semibold24)
 			HStack(spacing: 24.0) {
 				PickerContainerStore.init(content: {
-					LabelAndTextField.init("SERVICE", self.store.value.services.chosenItemName ?? "")
-				}, store: self.store.view(value: { $0.services },
+					LabelAndTextField.init("SERVICE", self.viewStore.value.services.chosenItemName ?? "")
+				}, store: self.store.scope(value: { $0.services },
 																	action: { .services($0) })
 				)
 				PickerContainerStore.init(content: {
-					LabelAndTextField.init("DURATION", self.store.value.durations.chosenItemName ?? "")
-				}, store: self.store.view(value: { $0.durations },
+					LabelAndTextField.init("DURATION", self.viewStore.value.durations.chosenItemName ?? "")
+				}, store: self.store.scope(value: { $0.durations },
 																	action: { .durations($0) })
 				)
 			}
 			HStack(spacing: 24.0) {
 				PickerContainerStore.init(content: {
-					LabelHeartAndTextField.init("WITH", self.store.value.with.chosenItemName ?? "",
+					LabelHeartAndTextField.init("WITH", self.viewStore.value.with.chosenItemName ?? "",
 																			true)
-				}, store: self.store.view(value: { $0.with },
+				}, store: self.store.scope(value: { $0.with },
 																	action: { .with($0) })
 				)
 				PickerContainerStore.init(content: {
@@ -196,7 +208,7 @@ struct Section2: View {
 							.font(.semibold15)
 						Spacer()
 					}
-				}, store: self.store.view(value: { $0.participants },
+				}, store: self.store.scope(value: { $0.participants },
 																	action: { .participants($0) })
 				)
 			}
@@ -206,7 +218,12 @@ struct Section2: View {
 
 struct AddAppSections: View {
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
-	@ObservedObject public var store: Store<AddAppointmentState, AddAppointmentAction>
+	let store: Store<AddAppointmentState, AddAppointmentAction>
+	@ObservedObject public var viewStore: ViewStore<AddAppointmentState>
+	init (store: Store<AddAppointmentState, AddAppointmentAction>) {
+		self.store = store
+		self.viewStore = self.store.view
+	}
 	var body: some View {
 		VStack(alignment: .leading, spacing: 32) {
 			Section1(store: self.store)
@@ -240,19 +257,23 @@ public struct PickerContainerState <Model: ListPickerElement> {
 	}
 }
 
+extension PickerContainerState: Equatable { }
+
 struct PickerContainerStore<Content: View, T: ListPickerElement>: View {
-	@ObservedObject public var store: Store<PickerContainerState<T>, PickerContainerAction<T>>
+	let store: Store<PickerContainerState<T>, PickerContainerAction<T>>
+	@ObservedObject public var viewStore: ViewStore<PickerContainerState<T>>
 	let content: () -> Content
 	init (@ViewBuilder content: @escaping () -> Content,
 										 store: Store<PickerContainerState<T>, PickerContainerAction<T>>) {
 		self.content = content
 		self.store = store
+		self.viewStore = self.store.view
 	}
 	var body: some View {
 		PickerContainer.init(content: content,
-												 items: self.store.value.dataSource,
-												 choseItemId: self.store.value.chosenItemId,
-												 isActive: self.store.value.isActive,
+												 items: self.viewStore.value.dataSource,
+												 choseItemId: self.viewStore.value.chosenItemId,
+												 isActive: self.viewStore.value.isActive,
 												 onTapGesture: {self.store.send(.didSelectPicker)}, onSelectItem: {self.store.send(.didChooseItem($0))},
 												 onBackBtn: {self.store.send(.backBtnTap)})
 	}
@@ -375,7 +396,7 @@ struct SwitchCell: View {
 	}
 }
 
-public protocol ListPickerElement: Identifiable {
+public protocol ListPickerElement: Identifiable, Equatable {
 	var name: String { get }
 }
 

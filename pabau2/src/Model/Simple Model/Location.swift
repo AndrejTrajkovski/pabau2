@@ -3,7 +3,7 @@
 
 import Foundation
 
-public struct Location: Codable, Identifiable {
+public struct Location: Codable, Identifiable, Equatable {
 
     public let id: Int
 

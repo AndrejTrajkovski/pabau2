@@ -12,7 +12,7 @@ typealias AppEnvironment = (
 	userDefaults: UserDefaults
 )
 
-struct AppState {
+struct AppState: Equatable {
 	var loggedInUser: User?
 	var navigation: Navigation
 	var loginViewState: LoginViewState = LoginViewState()
@@ -64,10 +64,15 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = combine(
 )
 
 struct ContentView: View {
-	@ObservedObject var store: Store<AppState, AppAction>
+	let store: Store<AppState, AppAction>
+	@ObservedObject var viewStore: ViewStore<AppState>
+	init (store: Store<AppState, AppAction>) {
+		self.store = store
+		self.viewStore = self.store.view
+	}
 	var body: some View {
 		ViewBuilder.buildBlock(
-			(self.store.value.navigation.login != nil) ?
+			(self.viewStore.value.navigation.login != nil) ?
 				ViewBuilder.buildEither(second: LoginContainer(store: loginContainerStore))
 				:
 				ViewBuilder.buildEither(first: PabauTabBar(store: tabBarStore))
@@ -75,14 +80,14 @@ struct ContentView: View {
 	}
 
 	var loginContainerStore: Store<WalkthroughContainerState, WalkthroughContainerAction> {
-		return self.store.view(
+		return self.store.scope(
 			value: { $0.walktrough },
 			action: { .walkthrough($0)}
 		)
 	}
 
 	var tabBarStore: Store<TabBarState, TabBarAction> {
-		return self.store.view(
+		return self.store.scope(
 			value: { $0.tabBar },
 			action: { .tabBar($0)}
 		)
@@ -90,10 +95,16 @@ struct ContentView: View {
 }
 
 struct LoginContainer: View {
-	@ObservedObject var store: Store<WalkthroughContainerState, WalkthroughContainerAction>
-
+	let store: Store<WalkthroughContainerState, WalkthroughContainerAction>
+	@ObservedObject var viewStore: ViewStore<WalkthroughContainerState>
+	
+	public init (store: Store<WalkthroughContainerState, WalkthroughContainerAction>) {
+		self.store = store
+		self.viewStore = self.store.view
+	}
+	
 	var shouldShowWalkthrough: Bool {
-		return self.store.value.navigation.login?.contains(.walkthroughScreen) ?? false
+		return self.viewStore.value.navigation.login?.contains(.walkthroughScreen) ?? false
 	}
 
 	var body: some View {
@@ -104,7 +115,7 @@ struct LoginContainer: View {
 					:
 					ViewBuilder.buildEither(second:
 						LoginView(store:
-							self.store.view(value: { $0 },
+							self.store.scope(value: { $0 },
 															action: { .login($0)})
 					))
 			)

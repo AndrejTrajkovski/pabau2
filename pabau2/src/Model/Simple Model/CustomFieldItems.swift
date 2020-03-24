@@ -3,7 +3,7 @@
 
 import Foundation
 
-public struct CustomFieldItems: Codable {
+public struct CustomFieldItems: Codable, Equatable {
 
     public let value: String?
 

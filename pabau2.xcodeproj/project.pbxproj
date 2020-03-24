@@ -76,7 +76,6 @@
 		827B45832411368100A5975E /* Journey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 827B457A2411368100A5975E /* Journey.framework */; };
 		827B458A2411368100A5975E /* JourneyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45892411368100A5975E /* JourneyTests.swift */; };
 		827B458C2411368100A5975E /* Journey.h in Headers */ = {isa = PBXBuildFile; fileRef = 827B457C2411368100A5975E /* Journey.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		827B458F2411368100A5975E /* Journey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 827B457A2411368100A5975E /* Journey.framework */; };
 		827B45902411368100A5975E /* Journey.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 827B457A2411368100A5975E /* Journey.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		827B45992411368F00A5975E /* FSCalendarSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82CACEE2241131250021E1DE /* FSCalendarSwiftUI.framework */; };
 		827B459B241136D900A5975E /* JourneyContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B459A241136D900A5975E /* JourneyContainerView.swift */; };
@@ -138,6 +137,7 @@
 		82811EF423E06BCB0066AFDC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EF323E06BCB0066AFDC /* ContentView.swift */; };
 		828626B12424CA64003ADA24 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828626B02424CA64003ADA24 /* ProfileView.swift */; };
 		828626B32424CEFB003ADA24 /* Pathway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828626B22424CEFB003ADA24 /* Pathway.swift */; };
+		828626B6242A915D003ADA24 /* Journey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 827B457A2411368100A5975E /* Journey.framework */; };
 		8297A29023D9AD7E00D091FF /* PageControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 8297A28E23D9AD7E00D091FF /* PageControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8297A29423D9AD7E00D091FF /* PageControl.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8297A28C23D9AD7E00D091FF /* PageControl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8297A29823D9AD8400D091FF /* PageControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8297A28523D9AB1B00D091FF /* PageControl.swift */; };
@@ -289,13 +289,6 @@
 			remoteGlobalIDString = 82BE2F4323D97D9C00B3678A;
 			remoteInfo = pabau2;
 		};
-		827B458D2411368100A5975E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 82BE2F3C23D97D9C00B3678A /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 827B45792411368100A5975E;
-			remoteInfo = Journey;
-		};
 		827B45972411368A00A5975E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 82BE2F3C23D97D9C00B3678A /* Project object */;
@@ -309,6 +302,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 8227FB50240BAC8300F653B5;
 			remoteInfo = Util;
+		};
+		828626B4242A9159003ADA24 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 82BE2F3C23D97D9C00B3678A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 827B45792411368100A5975E;
+			remoteInfo = Journey;
 		};
 		82BE2F7723D9983C00B3678A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -634,8 +634,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				828626B6242A915D003ADA24 /* Journey.framework in Frameworks */,
 				8227FB33240BAAB600F653B5 /* Login.framework in Frameworks */,
-				827B458F2411368100A5975E /* Journey.framework in Frameworks */,
 				82E25401241E5AC000F16C30 /* SwiftDate in Frameworks */,
 				82BE2F7923D9983C00B3678A /* ComposableArchitecture.framework in Frameworks */,
 				82CACEE9241131260021E1DE /* FSCalendarSwiftUI.framework in Frameworks */,
@@ -1333,13 +1333,13 @@
 			buildRules = (
 			);
 			dependencies = (
+				828626B5242A9159003ADA24 /* PBXTargetDependency */,
 				82BE2F7823D9983C00B3678A /* PBXTargetDependency */,
 				8227FB32240BAAB600F653B5 /* PBXTargetDependency */,
 				8227FB65240BAC8400F653B5 /* PBXTargetDependency */,
 				8227FB9E240BB40300F653B5 /* PBXTargetDependency */,
 				82CACE7D2411293C0021E1DE /* PBXTargetDependency */,
 				82CACEE8241131260021E1DE /* PBXTargetDependency */,
-				827B458E2411368100A5975E /* PBXTargetDependency */,
 			);
 			name = pabau2;
 			packageProductDependencies = (
@@ -1907,11 +1907,6 @@
 			target = 82BE2F4323D97D9C00B3678A /* pabau2 */;
 			targetProxy = 827B45862411368100A5975E /* PBXContainerItemProxy */;
 		};
-		827B458E2411368100A5975E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 827B45792411368100A5975E /* Journey */;
-			targetProxy = 827B458D2411368100A5975E /* PBXContainerItemProxy */;
-		};
 		827B45982411368A00A5975E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 82CACEE1241131250021E1DE /* FSCalendarSwiftUI */;
@@ -1925,6 +1920,11 @@
 		827B460F2413C15500A5975E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			productRef = 827B460E2413C15500A5975E /* NonEmpty */;
+		};
+		828626B5242A9159003ADA24 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 827B45792411368100A5975E /* Journey */;
+			targetProxy = 828626B4242A9159003ADA24 /* PBXContainerItemProxy */;
 		};
 		82BE2F7823D9983C00B3678A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
