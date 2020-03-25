@@ -5,7 +5,7 @@ public enum LoadingState: Equatable {
 				 (.gotError, .gotError):
 			return true
 		default:
-			return true
+			return false
 		}
 	}
 
