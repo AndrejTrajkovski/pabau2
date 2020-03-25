@@ -4,6 +4,7 @@ public enum JourneyContainerAction {
 	case journey(JourneyAction)
 	case employees(EmployeesAction)
 	case addAppointment(AddAppointmentAction)
+	case choosePathway(ChoosePathwayAction)
 }
 
 public enum JourneyAction {

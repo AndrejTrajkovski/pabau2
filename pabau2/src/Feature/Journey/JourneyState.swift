@@ -11,7 +11,7 @@ public struct JourneyState: Equatable {
 	var selectedDate: Date = Date()
 	var selectedLocation: Location = Location.init(id: 1)
 	var searchText: String = ""
-	var isShowingPathway: Journey?
+	var isShowingPathway: ChoosePathwayState?
 //		= Journey.init(id: 1,
 //	appointments: NonEmpty.init(Appointment.init(id: 1, from: Date() - 1.days, to: Date() - 1.days, employeeId: 1, locationId: 1, status: AppointmentStatus(id: 1, name: "Checked In"), service: BaseService.init(id: 1, name: "Botox", color: "#9400D3"))),
 //	patient: BaseClient.init(id: 0, firstName: "Andrej", lastName: "Trajkovski", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "Dr. Jekil"), forms: [], photos: [], postCare: [], paid: "Not Paid")

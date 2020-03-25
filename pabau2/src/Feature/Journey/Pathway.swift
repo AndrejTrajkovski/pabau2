@@ -1,24 +1,43 @@
 import SwiftUI
 import Model
 import Util
+import ComposableArchitecture
 
-public enum ChoosePathwayAction {
-	
+let choosePathwayContainerReducer = combine(choosePathwayReducer)
+
+func choosePathwayReducer(state: inout ChoosePathwayState?,
+													action: ChoosePathwayAction,
+													environment: JourneyEnvironemnt) -> [Effect<ChoosePathwayAction>] {
+	switch action {
+	case .didChooseConsultation:
+		state?.isChooseConsentShown = true
+	case .didChooseStandard:
+		state?.isChooseConsentShown = true
+	}
+	return []
 }
 
-public struct ChoosePathwayState {
-	var isShown: Bool
+public enum ChoosePathwayAction {
+	case didChooseStandard
+	case didChooseConsultation
+}
+
+public struct ChoosePathwayState: Equatable {
+	var journey: Journey
+	var isChooseConsentShown: Bool
 }
 
 public struct ChoosePathway: View {
-	//	@ObservedObject var store: Store<ChoosePathwayState, ChoosePathwayAction>
-	let journey: Journey
+	let store: Store<ChoosePathwayState, ChoosePathwayAction>
+	@ObservedObject var viewStore: ViewStore<ChoosePathwayState>
+	init(store: Store<ChoosePathwayState, ChoosePathwayAction>) {
+		self.store = store
+		self.viewStore = self.store.view
+	}
 	public var body: some View {
-		VStack(spacing: 8) {
-			makeProfileView(journey: journey)
-				.padding()
+		JourneyBaseView(journey: self.viewStore.value.journey) {
 			HStack {
-				PathwayCell.init(style: .blue) {
+				PathwayCell(style: .blue) {
 					ChoosePathwayListContent.init(.blue,
 																				Image(systemName: "arrow.right"),
 																				7,
@@ -26,18 +45,24 @@ public struct ChoosePathway: View {
 																				"Provides a basic standard pathway, defined for the company.",
 																				["Check Details", "Medical History", "Consent", "Image Upload",
 																				 "Treatment Notes", "Prescription", "Aftercare"],
-																				"Pathway") {}
+																				"Pathway") {
+																				self.store.send(.didChooseStandard)
+					}
 				}
-				PathwayCell.init(style: .white) {
+				PathwayCell(style: .white) {
 					ChoosePathwayListContent.init(.white,
 																				Image("ico-journey-consulting"),
 																				4,
 																				"Consultation Pathway",
 																				"Provides a consultation pathway, to hear out the person's needs.",
 																				["Check Details", "Medical History", "Image Upload", "Aftercare"],
-																				"Consultation") {}
+																				"Consultation") {
+																					self.store.send(.didChooseConsultation)
+					}
 				}
 			}
+			NavigationLink.emptyHidden(self.viewStore.value.isChooseConsentShown,
+																 ChooseFormList(journey: self.viewStore.value.journey))
 		}
 	}
 }
@@ -133,7 +158,7 @@ struct PathwayCell<Content: View>: View {
 
 	let style: PathwayCellStyle
 	let content: () -> Content
-
+	
 	public var body: some View {
 		VStack(spacing: 0) {
 			Rectangle().fill(style.btnColor).frame(height: 8)
@@ -152,14 +177,13 @@ struct ChoosePathwayButton: View {
 		Group {
 			if self.style == .blue {
 				BigButton.init(text: btnTxt,
-											 btnTapAction: {
-												
-				}).shadow(color: style.btnShadowColor,
+											 btnTapAction: action)
+					.shadow(color: style.btnShadowColor,
 									radius: style.btnShadowBlur,
 									y: 2)
 					.background(style.btnColor)
 			} else {
-				Button.init(action: {}
+				Button.init(action: action
 					, label: {
 						Text(btnTxt)
 							.font(Font.system(size: 16.0, weight: .bold))

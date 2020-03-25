@@ -72,6 +72,10 @@ public let journeyContainerReducer: Reducer<JourneyState, JourneyContainerAction
 	pullback(addAppointmentReducer,
 					 value: \JourneyState.addAppointment,
 					 action: /JourneyContainerAction.addAppointment,
+					 environment: { $0 }),
+	pullback(choosePathwayReducer,
+					 value: \JourneyState.isShowingPathway,
+					 action: /JourneyContainerAction.choosePathway,
 					 environment: { $0 })
 )
 
@@ -104,7 +108,8 @@ public func journeyReducer(state: inout JourneyState, action: JourneyAction, env
 	case .toggleEmployees:
 		state.employeesState.isShowingEmployees.toggle()
 	case .selectedJourney(let journey):
-		state.isShowingPathway = journey
+		state.isShowingPathway = ChoosePathwayState(journey: journey,
+																								isChooseConsentShown: false)
 	case .choosePathwayBackTap:
 		state.isShowingPathway = nil
 	}
@@ -180,7 +185,7 @@ public struct JourneyContainerView: View {
 	
 	func pathwayView() -> AnyView {
 		if let pathway = self.viewStore.value.isShowingPathway {
-			return AnyView(ChoosePathway(journey: pathway))
+			return AnyView(ChoosePathway(store: self.store.scope(value: { _ in pathway }, action: { .choosePathway($0)})))
 		} else {
 			return AnyView(EmptyView())
 		}

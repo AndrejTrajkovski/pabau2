@@ -3,8 +3,8 @@ import Util
 import Model
 import SwiftDate
 
-func makeProfileView(journey: Journey) -> ProfileView {
-	ProfileView.init(
+func makeProfileView(journey: Journey) -> JourneyProfileView {
+	JourneyProfileView.init(
 		imageUrl: journey.patient.avatar ?? "placeholder",
 		name: journey.patient.firstName + " " + journey.patient.lastName,
 		services: journey.servicesString,
@@ -13,7 +13,7 @@ func makeProfileView(journey: Journey) -> ProfileView {
 		rooms: "201, 202")
 }
 
-struct ProfileView: View {
+struct JourneyProfileView: View {
 	let imageUrl: String
 	let name: String
 	let services: String
