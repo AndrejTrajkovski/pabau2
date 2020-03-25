@@ -11,32 +11,32 @@ public struct ChoosePathwayState {
 }
 
 public struct ChoosePathway: View {
-//	@ObservedObject var store: Store<ChoosePathwayState, ChoosePathwayAction>
+	//	@ObservedObject var store: Store<ChoosePathwayState, ChoosePathwayAction>
 	let journey: Journey
 	public var body: some View {
 		VStack(spacing: 8) {
 			makeProfileView(journey: journey)
 				.padding()
 			HStack {
-				PathwayCell.init(
-					.blue,
-					Image(systemName: "arrow.right"),
-					7,
-					"Standard Pathway",
-					"Provides a basic standard pathway, defined for the company.",
-					["Check Details", "Medical History", "Consent", "Image Upload",
-					 "Treatment Notes", "Prescription", "Aftercare"],
-					"Pathway"
-				)
-				PathwayCell.init(
-					.white,
-					Image("ico-journey-consulting"),
-					4,
-					"Consultation Pathway",
-					"Provides a consultation pathway, to hear out the person's needs.",
-					["Check Details", "Medical History", "Image Upload", "Aftercare"],
-					"Consultation"
-				)
+				PathwayCell.init(style: .blue) {
+					ChoosePathwayListContent.init(.blue,
+																				Image(systemName: "arrow.right"),
+																				7,
+																				"Standard Pathway",
+																				"Provides a basic standard pathway, defined for the company.",
+																				["Check Details", "Medical History", "Consent", "Image Upload",
+																				 "Treatment Notes", "Prescription", "Aftercare"],
+																				"Pathway") {}
+				}
+				PathwayCell.init(style: .white) {
+					ChoosePathwayListContent.init(.white,
+																				Image("ico-journey-consulting"),
+																				4,
+																				"Consultation Pathway",
+																				"Provides a consultation pathway, to hear out the person's needs.",
+																				["Check Details", "Medical History", "Image Upload", "Aftercare"],
+																				"Consultation") {}
+				}
 			}
 		}
 	}
@@ -63,7 +63,7 @@ enum PathwayCellStyle {
 			return .white
 		}
 	}
-	
+
 	var btnShadowColor: Color {
 		switch self {
 		case .blue:
@@ -83,23 +83,7 @@ enum PathwayCellStyle {
 	}
 }
 
-struct PathwayCell: View {
-	init(
-		_ style: PathwayCellStyle,
-		_ bottomLeading: Image,
-		_ numberOfSteps: Int,
-		_ title: String,
-		_ subtitle: String,
-		_ bulletPoints: [String],
-		_ btnTxt: String) {
-		self.style = style
-		self.bottomLeading = bottomLeading
-		self.numberOfSteps = numberOfSteps
-		self.title = title
-		self.subtitle = subtitle
-		self.bulletPoints = bulletPoints
-		self.btnTxt = btnTxt
-	}
+struct ChoosePathwayListContent: View {
 	let bottomLeading: Image
 	let numberOfSteps: Int
 	let title: String
@@ -107,41 +91,85 @@ struct PathwayCell: View {
 	let bulletPoints: [String]
 	let btnTxt: String
 	let style: PathwayCellStyle
-//	let btnAction: () -> Void
+	let btnAction: () -> Void
+
+	init(
+		_ style: PathwayCellStyle,
+		_ bottomLeading: Image,
+		_ numberOfSteps: Int,
+		_ title: String,
+		_ subtitle: String,
+		_ bulletPoints: [String],
+		_ btnTxt: String,
+		_ btnAction: @escaping () -> Void) {
+		self.bottomLeading = bottomLeading
+		self.numberOfSteps = numberOfSteps
+		self.title = title
+		self.subtitle = subtitle
+		self.bulletPoints = bulletPoints
+		self.btnTxt = btnTxt
+		self.btnAction = btnAction
+		self.style = style
+	}
+
+	var body: some View {
+		VStack(alignment: .leading, spacing: 16) {
+			PathwayCellHeader(bottomLeading, numberOfSteps)
+			Text(title).font(.semibold20).foregroundColor(.black42)
+			Text(subtitle).font(.medium15)
+			PathwayBulletList(bulletPoints: bulletPoints, bgColor: style.bgColor)
+			Spacer()
+			ChoosePathwayButton(btnTxt: btnTxt, style: style, action: btnAction)
+		}
+	}
+}
+
+struct PathwayCell<Content: View>: View {
+	init(style: PathwayCellStyle,
+			 @ViewBuilder _ content: @escaping () -> Content) {
+		self.style = style
+		self.content = content
+	}
+
+	let style: PathwayCellStyle
+	let content: () -> Content
+
 	public var body: some View {
 		VStack(spacing: 0) {
 			Rectangle().fill(style.btnColor).frame(height: 8)
-			VStack(alignment: .leading, spacing: 16) {
-				PathwayCellHeader(bottomLeading, numberOfSteps)
-				Text(title).font(.semibold20).foregroundColor(.black42)
-				Text(subtitle).font(.medium15)
-				PathwayBulletList(bulletPoints: bulletPoints, bgColor: style.bgColor)
-				Spacer()
-				Group {
-					if self.style == .blue {
-						BigButton.init(text: btnTxt,
-													 btnTapAction: {
-														
-						}).shadow(color: style.btnShadowColor,
-											radius: style.btnShadowBlur,
-											y: 2)
-							.background(style.btnColor)
-					} else {
-						Button.init(action: {}
-							, label: {
-								Text(btnTxt)
-									.font(Font.system(size: 16.0, weight: .bold))
-									.frame(minWidth: 0, maxWidth: .infinity)
-						}).buttonStyle(PathwayWhiteButtonStyle())
-							.shadow(color: style.btnShadowColor,
-											radius: style.btnShadowBlur,
-											y: 2)
-							.background(style.btnColor)
-					}
-				}
-			}
+			content()
 			.padding(32)
 			.background(style.bgColor)
+		}
+	}
+}
+
+struct ChoosePathwayButton: View {
+	let btnTxt: String
+	let style: PathwayCellStyle
+	let action: () -> Void
+	var body: some View {
+		Group {
+			if self.style == .blue {
+				BigButton.init(text: btnTxt,
+											 btnTapAction: {
+												
+				}).shadow(color: style.btnShadowColor,
+									radius: style.btnShadowBlur,
+									y: 2)
+					.background(style.btnColor)
+			} else {
+				Button.init(action: {}
+					, label: {
+						Text(btnTxt)
+							.font(Font.system(size: 16.0, weight: .bold))
+							.frame(minWidth: 0, maxWidth: .infinity)
+				}).buttonStyle(PathwayWhiteButtonStyle())
+					.shadow(color: style.btnShadowColor,
+									radius: style.btnShadowBlur,
+									y: 2)
+					.background(style.btnColor)
+			}
 		}
 	}
 }
