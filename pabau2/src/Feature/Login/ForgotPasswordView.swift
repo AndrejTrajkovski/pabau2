@@ -30,7 +30,8 @@ public struct ForgotPassContainerState: Equatable {
 	}
 	var resetPass: ResetPasswordState {
 		get { return ResetPasswordState(navigation: navigation,
-																		rpValidation: rpValidation, loadingState: rpLoading)}
+																		rpValidation: rpValidation,
+																		loadingState: rpLoading)}
 		set {
 			self.navigation = newValue.navigation
 			self.rpValidation = newValue.rpValidation

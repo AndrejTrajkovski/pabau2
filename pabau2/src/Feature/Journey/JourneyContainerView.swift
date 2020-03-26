@@ -73,8 +73,8 @@ public let journeyContainerReducer: Reducer<JourneyState, JourneyContainerAction
 					 value: \JourneyState.addAppointment,
 					 action: /JourneyContainerAction.addAppointment,
 					 environment: { $0 }),
-	pullback(choosePathwayReducer,
-					 value: \JourneyState.isShowingPathway,
+	pullback(choosePathwayContainerReducer,
+					 value: \JourneyState.choosePathway,
 					 action: /JourneyContainerAction.choosePathway,
 					 environment: { $0 })
 )
@@ -108,10 +108,9 @@ public func journeyReducer(state: inout JourneyState, action: JourneyAction, env
 	case .toggleEmployees:
 		state.employeesState.isShowingEmployees.toggle()
 	case .selectedJourney(let journey):
-		state.isShowingPathway = ChoosePathwayState(journey: journey,
-																								isChooseConsentShown: false)
+		state.selectedJourney = journey
 	case .choosePathwayBackTap:
-		state.isShowingPathway = nil
+		state.selectedJourney = nil
 	}
 	return []
 }
@@ -138,8 +137,12 @@ public struct JourneyContainerView: View {
 				self.store.send(.journey(.selectedJourney($0)))
 			}.loadingView(.constant(self.viewStore.value.loadingState.isLoading),
 										Texts.fetchingJourneys)
-			NavigationLink.emptyHidden(self.viewStore.value.isShowingPathway != nil,
-																	pathwayViewBackBtn())
+			NavigationLink.emptyHidden(self.viewStore.value.selectedJourney != nil,
+																 ChoosePathwayEither(store: store, isSelectedJourney: self.viewStore.value.selectedJourney != nil)
+																	.customBackButton {
+																		self.store.send(.journey(.choosePathwayBackTap))
+				}
+			)
 			Spacer()
 		}
 		.navigationBarTitle("Manchester", displayMode: .inline)
@@ -177,17 +180,21 @@ public struct JourneyContainerView: View {
 		})
 	}
 	
-	func pathwayViewBackBtn() -> some View {
-		pathwayView().customBackButton {
-				self.store.send(.journey(.choosePathwayBackTap))
-		}
-	}
-	
-	func pathwayView() -> AnyView {
-		if let pathway = self.viewStore.value.isShowingPathway {
-			return AnyView(ChoosePathway(store: self.store.scope(value: { _ in pathway }, action: { .choosePathway($0)})))
-		} else {
-			return AnyView(EmptyView())
+	struct ChoosePathwayEither: View {
+		let store: Store<JourneyState, JourneyContainerAction>
+		let isSelectedJourney: Bool
+		var body: some View {
+			ViewBuilder.buildBlock(
+				(isSelectedJourney) ?
+					ViewBuilder.buildEither(second:
+						ChoosePathway(store: self.store.scope(value: { $0.choosePathway
+						}, action: { .choosePathway($0)}))
+					)
+					:
+					ViewBuilder.buildEither(first:
+						EmptyView()
+				)
+			)
 		}
 	}
 	

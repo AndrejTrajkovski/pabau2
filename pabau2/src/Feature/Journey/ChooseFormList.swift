@@ -4,17 +4,9 @@ import Util
 import ComposableArchitecture
 
 public struct ChooseFormState: Equatable {
-	let journey: Journey
-	let templates: [FormTemplate] = [
-		FormTemplate(id: 1, name: "Consent - Hair Extension", formType: .consent),
-		FormTemplate(id: 2, name: "Consent - Botox", formType: .consent),
-		FormTemplate(id: 3, name: "Consent - Fillers", formType: .consent),
-		FormTemplate(id: 4, name: "Consent - Pedicure", formType: .consent),
-		FormTemplate(id: 5, name: "Consent - Manicure", formType: .consent),
-		FormTemplate(id: 6, name: "Consent - Skin Treatment", formType: .consent),
-		FormTemplate(id: 7, name: "Consent - Lipo", formType: .consent)
-	]
-	let selectedTemplatesIds: [Int] = [1, 2, 3]
+	var journey: Journey?
+	var templates: [FormTemplate]
+	var selectedTemplatesIds: [Int]
 	
 	var notSelectedTemplates: [FormTemplate] {
 		templates.filter { !selectedTemplatesIds.contains($0.id) }
@@ -25,12 +17,22 @@ public struct ChooseFormState: Equatable {
 }
 
 public enum ChooseFormAction {
-	
+	case addTemplateId(Int)
+	case removeTemplateId(Int)
+	case checkIn
 }
 
-func chooseFormListReducer(state: ChooseFormState,
+func chooseFormListReducer(state: inout ChooseFormState,
 													 action: ChooseFormAction,
 													 environment: JourneyEnvironemnt) -> [Effect<ChooseFormAction>] {
+	switch action {
+	case .addTemplateId(let templateId):
+		state.selectedTemplatesIds.append(templateId)
+	case .removeTemplateId(let templateId):
+		state.selectedTemplatesIds.removeAll(where: { $0 == templateId})
+	case .checkIn:
+		return []
+	}
 	return []
 }
 
@@ -41,20 +43,21 @@ struct ChooseFormList: View {
 		self.store = store
 		self.viewStore = self.store.view
 	}
-	
 	@State var searchText: String = ""
-	
 	var body: some View {
 		JourneyBaseView(journey: self.viewStore.value.journey) {
 			HStack {
 				PathwayCell(style: .blue) {
 					VStack {
 						FormTemplateList(templates: self.viewStore.value.selectedTemplates,
+														 bgColor: PathwayCellStyle.blue.bgColor,
 														 templateRow: { template in
 															SelectedTemplateRow(template: template)
+						}, onSelect: {
+							self.store.send(.removeTemplateId($0.id))
 						})
 						ChoosePathwayButton(btnTxt: "Check-In", style: .blue, action: {
-							
+							self.store.send(.checkIn)
 						})
 					}
 				}
@@ -62,8 +65,11 @@ struct ChooseFormList: View {
 					TextField("search", text: self.$searchText)
 					VStack {
 						FormTemplateList(templates: self.viewStore.value.notSelectedTemplates,
+														 bgColor: PathwayCellStyle.white.bgColor,
 														 templateRow: { template in
 															NotSelectedTemplateRow(template: template)
+						}, onSelect: {
+							self.store.send(.addTemplateId($0.id))
 						})
 					}
 				}
@@ -75,10 +81,18 @@ struct ChooseFormList: View {
 struct FormTemplateList<Row: View>: View {
 	let templates: [FormTemplate]
 	let templateRow: (FormTemplate) -> Row
+	let onSelect: (FormTemplate) -> Void
+	let bgColor: Color
+	
 	init (templates: [FormTemplate],
-				@ViewBuilder templateRow: @escaping (FormTemplate) -> Row) {
+				bgColor: Color,
+				@ViewBuilder templateRow: @escaping (FormTemplate) -> Row,
+										 onSelect: @escaping (FormTemplate) -> Void
+										 ) {
 		self.templates = templates
 		self.templateRow = templateRow
+		self.onSelect = onSelect
+		self.bgColor = bgColor
 	}
 	var body: some View {
 		Form {
@@ -86,9 +100,11 @@ struct FormTemplateList<Row: View>: View {
 				Section(header: Text("Selected Consents")) {
 					ForEach(templates) { template in
 						self.templateRow(template)
+						.onTapGesture { self.onSelect(template) }
+						.listRowInsets(EdgeInsets())
 					}
 				}
-			}
+			}.listRowBackground(bgColor)
 		}
 //		.background(Color.employeeBg)
 	}
@@ -117,6 +133,7 @@ struct TemplateRow: View {
 		HStack {
 			Text(templateName)
 				.font(Font.regular17)
+			Spacer()
 			image
 				.foregroundColor(Color.blue2)
 		}

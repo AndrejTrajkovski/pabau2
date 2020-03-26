@@ -2,17 +2,35 @@ import SwiftUI
 import Model
 import Util
 import ComposableArchitecture
+import CasePaths
 
-let choosePathwayContainerReducer = combine(choosePathwayReducer)
+public enum ChoosePathwayContainerAction {
+	case choosePathway(ChoosePathwayAction)
+	case chooseConsent(ChooseFormAction)
+}
 
-func choosePathwayReducer(state: inout ChoosePathwayState?,
+let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayContainerAction, JourneyEnvironemnt> = combine(
+	pullback(chooseFormListReducer,
+					 value: \ChoosePathwayState.chooseConsentState,
+					 action: /ChoosePathwayContainerAction.chooseConsent,
+					 environment: { $0 })
+	,
+	pullback(choosePathwayReducer,
+					 value: \ChoosePathwayState.self,
+					 action: /ChoosePathwayContainerAction.choosePathway,
+					 environment: { $0 })
+)
+
+func choosePathwayReducer(state: inout ChoosePathwayState,
 													action: ChoosePathwayAction,
 													environment: JourneyEnvironemnt) -> [Effect<ChoosePathwayAction>] {
 	switch action {
 	case .didChooseConsultation:
-		state?.isChooseConsentShown = true
+		state.isChooseConsentShown = true
 	case .didChooseStandard:
-		state?.isChooseConsentShown = true
+		state.isChooseConsentShown = true
+	case .didTouchBackBtn:
+		state.isChooseConsentShown = false
 	}
 	return []
 }
@@ -20,19 +38,32 @@ func choosePathwayReducer(state: inout ChoosePathwayState?,
 public enum ChoosePathwayAction {
 	case didChooseStandard
 	case didChooseConsultation
+	case didTouchBackBtn
 }
 
 public struct ChoosePathwayState: Equatable {
-	var journey: Journey
+	var journey: Journey?
 	var isChooseConsentShown: Bool
+	var selectedTemplatesIds: [Int]
+	var templates: [FormTemplate]
+	var chooseConsentState: ChooseFormState {
+		get { ChooseFormState(journey: journey,
+													templates: self.templates,
+													selectedTemplatesIds: self.selectedTemplatesIds)}
+		set {
+			self.journey = newValue.journey
+			self.templates = newValue.templates
+			self.selectedTemplatesIds = newValue.selectedTemplatesIds
+		}
+	}
 }
 
 public struct ChoosePathway: View {
-	let store: Store<ChoosePathwayState, ChoosePathwayAction>
+	let store: Store<ChoosePathwayState, ChoosePathwayContainerAction>
 	@ObservedObject var viewStore: ViewStore<ChoosePathwayState>
-	init(store: Store<ChoosePathwayState, ChoosePathwayAction>) {
+	init(store: Store<ChoosePathwayState, ChoosePathwayContainerAction>) {
 		self.store = store
-		self.viewStore = self.store.view
+		self.viewStore = self.store.scope(value: { $0 }, action: { $0 }).view
 	}
 	public var body: some View {
 		JourneyBaseView(journey: self.viewStore.value.journey) {
@@ -46,7 +77,7 @@ public struct ChoosePathway: View {
 																				["Check Details", "Medical History", "Consent", "Image Upload",
 																				 "Treatment Notes", "Prescription", "Aftercare"],
 																				"Pathway") {
-																				self.store.send(.didChooseStandard)
+						self.store.send(.choosePathway(.didChooseStandard))
 					}
 				}
 				PathwayCell(style: .white) {
@@ -57,12 +88,17 @@ public struct ChoosePathway: View {
 																				"Provides a consultation pathway, to hear out the person's needs.",
 																				["Check Details", "Medical History", "Image Upload", "Aftercare"],
 																				"Consultation") {
-																					self.store.send(.didChooseConsultation)
+						self.store.send(.choosePathway(.didChooseConsultation))
 					}
 				}
 			}
 			NavigationLink.emptyHidden(self.viewStore.value.isChooseConsentShown,
-																 ChooseFormList(journey: self.viewStore.value.journey))
+																 ChooseFormList(store: self.store.scope(value: { $0.chooseConsentState },
+																																				action: { .chooseConsent($0)}))
+																	.customBackButton {
+																		self.store.send(.choosePathway(.didTouchBackBtn))
+				}
+			)
 		}
 	}
 }
