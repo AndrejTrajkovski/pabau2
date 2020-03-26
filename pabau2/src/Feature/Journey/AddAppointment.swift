@@ -183,7 +183,6 @@ struct Section2: View {
 		VStack(alignment: .leading, spacing: 24.0) {
 			Text("Services").font(.semibold24)
 			HStack(spacing: 24.0) {
-//				PickerContainerStore.init(content: {
 				LabelAndTextField.init("SERVICE", self.viewStore.value.services.chosenServiceName).onTapGesture {
 					self.store.send(.didTapServices)
 				}
@@ -192,9 +191,6 @@ struct Section2: View {
 																		.services($0)
 																		}))
 				)
-//				}, store: self.store.scope(value: { $0.services },
-//																	action: { .services($0) })
-//				)
 				PickerContainerStore.init(content: {
 					LabelAndTextField.init("DURATION", self.viewStore.value.durations.chosenItemName ?? "")
 				}, store: self.store.scope(value: { $0.durations },
