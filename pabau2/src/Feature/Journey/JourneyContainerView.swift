@@ -9,8 +9,39 @@ import CasePaths
 
 public struct EmployeesState: Equatable {
 	var loadingState: LoadingState = .initial
-	var employees: [Employee] = []
-	var selectedEmployeesIds: Set<Int> = Set()
+	var employees: [Employee] =
+//		[]
+	[
+		Employee.init(id: 1,
+									name: "Dr. Jekil",
+									avatarUrl: "asd",
+									pin: 1234),
+		Employee.init(id: 2,
+									name: "Dr. Off Boley",
+									avatarUrl: "",
+									pin: 1234),
+		Employee.init(id: 3,
+									name: "Michael Jordan",
+									avatarUrl: "",
+									pin: 1234),
+		Employee.init(id: 4,
+									name: "Kobe Bryant",
+									avatarUrl: "",
+									pin: 1234),
+		Employee.init(id: 5,
+									name: "LeBron James",
+									avatarUrl: "",
+									pin: 1234),
+		Employee.init(id: 6,
+									name: "Britney Spears",
+									avatarUrl: "",
+									pin: 1234),
+		Employee.init(id: 7,
+									name: "Dr. Who",
+									avatarUrl: "",
+									pin: 1234)
+	]
+	var selectedEmployeesIds: Set<Int> = Set([1, 2, 3, 4, 5, 6, 7])
 	public var isShowingEmployees: Bool = false
 }
 
