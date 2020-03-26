@@ -32,7 +32,7 @@ struct JourneyBaseModifier: ViewModifier {
 }
 
 public extension View {
-	
+
 	func journeyBase(_ journey: Journey?) -> some View {
 		self.modifier(JourneyBaseModifier(journey: journey))
 	}

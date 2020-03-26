@@ -97,12 +97,12 @@ struct ContentView: View {
 struct LoginContainer: View {
 	let store: Store<WalkthroughContainerState, WalkthroughContainerAction>
 	@ObservedObject var viewStore: ViewStore<WalkthroughContainerState>
-	
+
 	public init (store: Store<WalkthroughContainerState, WalkthroughContainerAction>) {
 		self.store = store
 		self.viewStore = self.store.view
 	}
-	
+
 	var shouldShowWalkthrough: Bool {
 		return self.viewStore.value.navigation.login?.contains(.walkthroughScreen) ?? false
 	}

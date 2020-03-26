@@ -3,7 +3,7 @@
 
 import Foundation
 
-public struct Service: Codable, Identifiable, Equatable {
+public struct Service: Codable, Identifiable, Equatable, Hashable {
 
     public let id: Int
 
@@ -11,14 +11,14 @@ public struct Service: Codable, Identifiable, Equatable {
 
     public let color: String
 
-    public let categoryId: Int?
+    public let categoryId: Int
 
-    public let categoryName: String?
+    public let categoryName: String
 
     public let disabledUsers: [Int]?
 
     public let duration: String?
-    public init(id: Int, name: String, color: String, categoryId: Int? = nil, categoryName: String? = nil, disabledUsers: [Int]? = nil, duration: String? = nil) {
+    public init(id: Int, name: String, color: String, categoryId: Int, categoryName: String, disabledUsers: [Int]? = nil, duration: String? = nil) {
         self.id = id
         self.name = name
         self.color = color

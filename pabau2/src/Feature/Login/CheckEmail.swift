@@ -47,7 +47,7 @@ public struct CheckEmail: View {
 			resetPassView)
 		}
 	}
-	
+
 	var resetPassView: ResetPassword {
 		ResetPassword(store: resetPassStore,
 									passChangedStore: passChangedStore

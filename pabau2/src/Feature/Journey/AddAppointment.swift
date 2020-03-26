@@ -25,7 +25,7 @@ public struct AddAppointmentState: Equatable {
 	var isAllDay: Bool
 	var clients: PickerContainerState<Client>
 	var termins: PickerContainerState<MyTermin>
-	var services: PickerContainerState<Service>
+	var services: ChooseServiceState
 	var durations: PickerContainerState<Duration>
 	var with: PickerContainerState<Employee>
 	var participants: PickerContainerState<Employee>
@@ -34,12 +34,13 @@ public struct AddAppointmentState: Equatable {
 public enum AddAppointmentAction {
 	case clients(PickerContainerAction<Client>)
 	case termins(PickerContainerAction<MyTermin>)
-	case services(PickerContainerAction<Service>)
+	case services(ChooseServiceAction)
 	case durations(PickerContainerAction<Duration>)
 	case with(PickerContainerAction<Employee>)
 	case participants(PickerContainerAction<Employee>)
 	case addAppointmentTap
 	case closeBtnTap
+	case didTapServices
 }
 
 extension Employee: ListPickerElement { }
@@ -69,6 +70,8 @@ let addAppTapBtnReducer: Reducer<AddAppointmentState,
 			state.isShowingAddAppointment = false
 		case .closeBtnTap:
 			state.isShowingAddAppointment = false
+		case .didTapServices:
+			state.services.isChooseServiceActive = true
 		default:
 			break
 		}
@@ -85,7 +88,7 @@ let addAppointmentReducer: Reducer<AddAppointmentState,
 						 value: \AddAppointmentState.termins,
 						 action: /AddAppointmentAction.termins,
 						 environment: { $0 }),
-		pullback(pickerContainerReducer,
+		pullback(chooseServiceReducer,
 						 value: \AddAppointmentState.services,
 						 action: /AddAppointmentAction.services,
 						 environment: { $0 }),
@@ -180,11 +183,18 @@ struct Section2: View {
 		VStack(alignment: .leading, spacing: 24.0) {
 			Text("Services").font(.semibold24)
 			HStack(spacing: 24.0) {
-				PickerContainerStore.init(content: {
-					LabelAndTextField.init("SERVICE", self.viewStore.value.services.chosenItemName ?? "")
-				}, store: self.store.scope(value: { $0.services },
-																	action: { .services($0) })
+//				PickerContainerStore.init(content: {
+				LabelAndTextField.init("SERVICE", self.viewStore.value.services.chosenServiceName).onTapGesture {
+					self.store.send(.didTapServices)
+				}
+				NavigationLink.emptyHidden(self.viewStore.value.services.isChooseServiceActive,
+																	 ChooseService(store: self.store.scope(value: { $0.services }, action: {
+																		.services($0)
+																		}))
 				)
+//				}, store: self.store.scope(value: { $0.services },
+//																	action: { .services($0) })
+//				)
 				PickerContainerStore.init(content: {
 					LabelAndTextField.init("DURATION", self.viewStore.value.durations.chosenItemName ?? "")
 				}, store: self.store.scope(value: { $0.durations },
@@ -293,8 +303,7 @@ struct PickerContainer<Content: View, T: ListPickerElement>: View {
 										isActive: Bool,
 										onTapGesture: @escaping () -> Void,
 										onSelectItem: @escaping (T.ID) -> Void,
-										onBackBtn: @escaping () -> Void)
-	{
+										onBackBtn: @escaping () -> Void) {
 		self.content = content
 		self.items = items
 		self.chosenItemId = choseItemId
@@ -446,7 +455,7 @@ struct CommunicationsSection: View {
 	@State var email: Bool = false
 	@State var sms: Bool = false
 	@State var feedback: Bool = false
-	
+
 	public var body: some View {
 		VStack(alignment: .leading, spacing: 8.0) {
 			Text("Communications").font(.semibold24)

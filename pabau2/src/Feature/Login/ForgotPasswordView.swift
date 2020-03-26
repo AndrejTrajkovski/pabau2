@@ -100,7 +100,7 @@ struct ForgotPassword: View {
 		self.viewStore = self.store.view
 		self._email = email
 	}
-	
+
 	var body: some View {
 		VStack(alignment: .leading, spacing: 25) {
 			VStack(alignment: .leading, spacing: 36) {
@@ -152,7 +152,7 @@ struct ForgotPasswordView: View {
 							 passChangedStore: passChangedStore
 		)
 	}
-	
+
 	var passChangedStore: Store<Navigation, PassChangedAction> {
 		self.store.scope(value: { $0.navigation }, action: { .passChanged($0)})
 	}

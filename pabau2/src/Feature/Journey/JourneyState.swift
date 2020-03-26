@@ -44,7 +44,7 @@ public struct JourneyState: Equatable {
 		}
 	}
 	public var employeesState: EmployeesState = EmployeesState()
-	
+
 	var addAppointment: AddAppointmentState = AddAppointmentState.init(
 		isShowingAddAppointment: false,
 		reminder: false,
@@ -54,11 +54,11 @@ public struct JourneyState: Equatable {
 		isAllDay: false,
 		clients: JourneyMocks.clientState,
 		termins: JourneyMocks.terminState,
-		services: JourneyMocks.serviceState,
+		services: ChooseServiceState(isChooseServiceActive: false, chosenServiceId: 1, filterChosen: .allStaff),
 		durations: JourneyMocks.durationState,
 		with: JourneyMocks.withState,
 		participants: JourneyMocks.participantsState)
-	
+
 	var filteredJourneys: [Journey] {
 		return self.journeys
 			.filter { $0.appointments.first.from.isInside(date: selectedDate, granularity: .day) }
@@ -77,7 +77,7 @@ struct JourneyMocks {
 			],
 			chosenItemId: 1,
 			isActive: false)
-	
+
 	static let terminState: PickerContainerState<MyTermin> = PickerContainerState.init(
 		dataSource: [
 			MyTermin.init(name: "12:30", id: 1, date: Date()),
@@ -86,17 +86,17 @@ struct JourneyMocks {
 		],
 		chosenItemId: 1,
 		isActive: false)
-	
+
 	static let serviceState: PickerContainerState<Service> =
 		PickerContainerState.init(
 			dataSource: [
-				Service.init(id: 1, name: "Botox", color: ""),
-				Service.init(id: 2, name: "Fillers", color: ""),
-				Service.init(id: 3, name: "Facial", color: "")
+				Service.init(id: 1, name: "Botox", color: "", categoryId: 1, categoryName: "Injectables"),
+				Service.init(id: 2, name: "Fillers", color: "", categoryId: 2, categoryName: "Urethra"),
+				Service.init(id: 3, name: "Facial", color: "", categoryId: 3, categoryName: "Mosaic")
 			],
 			chosenItemId: 1,
 			isActive: false)
-	
+
 	static let durationState: PickerContainerState<Duration> =
 		PickerContainerState.init(
 			dataSource: [
@@ -106,7 +106,7 @@ struct JourneyMocks {
 			],
 			chosenItemId: 1,
 			isActive: false)
-	
+
 	static let withState: PickerContainerState<Employee> =
 		PickerContainerState.init(
 			dataSource: [
@@ -115,7 +115,7 @@ struct JourneyMocks {
 			],
 			chosenItemId: 1,
 			isActive: false)
-	
+
 	static let participantsState: PickerContainerState<Employee> =
 		PickerContainerState.init(
 			dataSource: [

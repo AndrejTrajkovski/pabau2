@@ -39,7 +39,7 @@ public extension Color {
 	static let gray192 = Color.init(red: 192/255, green: 192/255, blue: 192/255)
 	static let gray249 = Color.init(red: 249/255, green: 249/255, blue: 249/255)
 	static let gray142 = Color.init(red: 142/255, green: 142/255, blue: 142/255)
-	
+
 	static let black42 = Color.init(red: 42/255, green: 42/255, blue: 42/255)
 
 	static let validationFail = Color.init(red: 1, green: 0, blue: 25/255)
@@ -65,12 +65,12 @@ public extension Color {
 	static let deepSkyBlue = Color.init(red: 0, green: 122/255, blue: 1)
 	static let blue2 = Color.init(red: 14/255, green: 122/255, blue: 1)
 	static let employeeBg = Color.init(red: 242/255, green: 242/255, blue: 247/255)
-	
+
 	static let heartRed = Color.init(red: 248/255, green: 92/255, blue: 92/255)
-	
+
 	static let bigBtnShadow1 = Color.init(red: 152/255, green: 152/255, blue: 152/255).opacity(0.5)
-	
+
 	static let bigBtnShadow2 = Color.init(red: 196/255, green: 196/255, blue: 196/255).opacity(0.5)
-	
+
 	static let employeeShadow = Color.init(red: 196/255, green: 196/255, blue: 196/255).opacity(0.55)
 }

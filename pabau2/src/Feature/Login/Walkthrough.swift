@@ -18,7 +18,7 @@ public struct Walkthrough: View {
 			.scope(value: { $0 }, action: { $0 })
 			.view
 	}
-	
+
 	public var body: some View {
 		VStack {
 			PageView(state.map { WalkthroughContentView(state: $0)})

@@ -189,7 +189,7 @@ public struct JourneyContainerView: View {
 						.frame(width: 44, height: 44)
 				})
 				Button(action: {
-					
+
 				}, label: {
 					Image(systemName: "magnifyingglass")
 						.font(.system(size: 20))
@@ -219,7 +219,7 @@ public struct JourneyContainerView: View {
 //
 //			}).navigationBarHidden(self.viewStore.value.addAppointment.isShowingAddAppointment || self.viewStore.value.isModalShown)
 	}
-	
+
 	struct ChoosePathwayEither: View {
 		let store: Store<JourneyState, JourneyContainerAction>
 		let isSelectedJourney: Bool
@@ -237,7 +237,7 @@ public struct JourneyContainerView: View {
 			)
 		}
 	}
-	
+
 	var clientState: PickerContainerState<Client> {
 		return PickerContainerState.init(
 			dataSource: [
@@ -247,7 +247,7 @@ public struct JourneyContainerView: View {
 			chosenItemId: 1,
 			isActive: false)
 	}
-	
+
 	var terminState: PickerContainerState<MyTermin> {
 		PickerContainerState.init(
 			dataSource: [
@@ -258,18 +258,18 @@ public struct JourneyContainerView: View {
 			chosenItemId: 1,
 			isActive: false)
 	}
-	
+
 	var serviceState: PickerContainerState<Service> {
 		PickerContainerState.init(
 			dataSource: [
-				Service.init(id: 1, name: "Botox", color: ""),
-				Service.init(id: 2, name: "Fillers", color: ""),
-				Service.init(id: 3, name: "Facial", color: "")
+				Service.init(id: 1, name: "Botox", color: "", categoryId: 1, categoryName: "Injectables"),
+				Service.init(id: 2, name: "Fillers", color: "", categoryId: 2, categoryName: "Urethra"),
+				Service.init(id: 3, name: "Facial", color: "", categoryId: 3, categoryName: "Mosaic")
 			],
 			chosenItemId: 1,
 			isActive: false)
 	}
-	
+
 	var durationState: PickerContainerState<Duration> {
 		PickerContainerState.init(
 			dataSource: [
@@ -280,7 +280,7 @@ public struct JourneyContainerView: View {
 			chosenItemId: 1,
 			isActive: false)
 	}
-	
+
 	var withState: PickerContainerState<Employee> {
 		PickerContainerState.init(
 			dataSource: [
@@ -290,7 +290,7 @@ public struct JourneyContainerView: View {
 			chosenItemId: 1,
 			isActive: false)
 	}
-	
+
 	var participantsState: PickerContainerState<Employee> {
 		PickerContainerState.init(
 			dataSource: [

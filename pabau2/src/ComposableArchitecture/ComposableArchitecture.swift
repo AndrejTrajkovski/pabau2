@@ -48,7 +48,7 @@ public func logging<Value, Action, Environment>(
 public final class ViewStore<Value>: ObservableObject {
   @Published public fileprivate(set) var value: Value
   fileprivate var cancellable: Cancellable?
-  
+
   public init(initialValue value: Value) {
     self.value = value
   }
@@ -65,14 +65,14 @@ extension Store {
     removeDuplicates predicate: @escaping (Value, Value) -> Bool
   ) -> ViewStore<Value> {
     let viewStore = ViewStore(initialValue: self.value)
-    
+
     viewStore.cancellable = self.$value
       .removeDuplicates(by: predicate)
       .sink(receiveValue: { [weak viewStore] value in
         viewStore?.value = value
         self
       })
-    
+
     return viewStore
   }
 }

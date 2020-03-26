@@ -65,6 +65,7 @@
 		8250D7D0242C575A00F8F3FC /* ModalTransitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7CD242C575A00F8F3FC /* ModalTransitions.swift */; };
 		8250D7D1242C575A00F8F3FC /* TransitionLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7CE242C575A00F8F3FC /* TransitionLink.swift */; };
 		8250D7D2242C575A00F8F3FC /* ScalableShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7CF242C575A00F8F3FC /* ScalableShape.swift */; };
+		8250D7D4242C980100F8F3FC /* ChooseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7D3242C980100F8F3FC /* ChooseService.swift */; };
 		825C52592417895D00A33A29 /* RequestBuilderImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C524F24167C2D00A33A29 /* RequestBuilderImpl.swift */; };
 		825C525A2418C61200A33A29 /* RequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C525224167C2E00A33A29 /* RequestBuilder.swift */; };
 		825C525B2418C61500A33A29 /* APIHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C525024167C2D00A33A29 /* APIHelper.swift */; };
@@ -416,6 +417,7 @@
 		8250D7CD242C575A00F8F3FC /* ModalTransitions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalTransitions.swift; sourceTree = "<group>"; };
 		8250D7CE242C575A00F8F3FC /* TransitionLink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransitionLink.swift; sourceTree = "<group>"; };
 		8250D7CF242C575A00F8F3FC /* ScalableShape.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScalableShape.swift; sourceTree = "<group>"; };
+		8250D7D3242C980100F8F3FC /* ChooseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseService.swift; sourceTree = "<group>"; };
 		825C524C24167BF500A33A29 /* JourneyAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JourneyAPI.swift; sourceTree = "<group>"; };
 		825C524F24167C2D00A33A29 /* RequestBuilderImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestBuilderImpl.swift; sourceTree = "<group>"; };
 		825C525024167C2D00A33A29 /* APIHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIHelper.swift; sourceTree = "<group>"; };
@@ -837,6 +839,7 @@
 				828626B22424CEFB003ADA24 /* Pathway.swift */,
 				8250D7C8242BCFD000F8F3FC /* ChooseFormList.swift */,
 				8250D7CA242BD25B00F8F3FC /* JourneyBaseView.swift */,
+				8250D7D3242C980100F8F3FC /* ChooseService.swift */,
 			);
 			path = Journey;
 			sourceTree = "<group>";
@@ -1786,6 +1789,7 @@
 			files = (
 				827B459B241136D900A5975E /* JourneyContainerView.swift in Sources */,
 				829B40D12423B8F2009B7E71 /* AddAppointment.swift in Sources */,
+				8250D7D4242C980100F8F3FC /* ChooseService.swift in Sources */,
 				82E253FA241B9EB500F16C30 /* JourneyAction.swift in Sources */,
 				82E253FC241B9ED000F16C30 /* JourneyState.swift in Sources */,
 				8250D7CB242BD25B00F8F3FC /* JourneyBaseView.swift in Sources */,

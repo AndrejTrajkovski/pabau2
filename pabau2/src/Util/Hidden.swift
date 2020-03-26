@@ -24,11 +24,10 @@ public extension View {
     }
 }
 
-
 /// Creates a view modifier to show and hide a view.
 ///
 /// Variables can be used in place so that the content can be changed dynamically.
-fileprivate struct HiddenModifier: ViewModifier {
+private struct HiddenModifier: ViewModifier {
 
     private let isHidden: Bool
     private let remove: Bool

@@ -49,7 +49,7 @@ struct ChooseFormList: View {
 		chooseFormCells
 			.journeyBase(self.viewStore.value.journey)
 	}
-	
+
 	var chooseFormCells: some View {
 		HStack {
 			PathwayCell(style: .blue) {
@@ -91,7 +91,7 @@ struct FormTemplateList<Row: View>: View {
 	let templateRow: (FormTemplate) -> Row
 	let onSelect: (FormTemplate) -> Void
 	let bgColor: Color
-	
+
 	init (templates: [FormTemplate],
 				bgColor: Color,
 				@ViewBuilder templateRow: @escaping (FormTemplate) -> Row,
