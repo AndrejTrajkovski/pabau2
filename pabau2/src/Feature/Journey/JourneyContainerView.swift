@@ -123,7 +123,7 @@ public func journeyReducer(state: inout JourneyState, action: JourneyAction, env
 				.eraseToEffect()
 		]
 	case .addAppointmentTap:
-		state.addAppointment.isShowingAddAppointment = true
+			state.addAppointment.isShowingAddAppointment = true
 	case .addAppointmentDismissed:
 		state.addAppointment.isShowingAddAppointment = false
 	case .gotResponse(let result):
@@ -182,7 +182,7 @@ public struct JourneyContainerView: View {
 		.navigationBarItems(leading:
 			HStack(spacing: 8.0) {
 				Button(action: {
-					self.store.send(.journey(.addAppointmentTap))
+						self.store.send(.journey(.addAppointmentTap))
 				}, label: {
 					Image(systemName: "plus")
 						.font(.system(size: 20))
@@ -203,14 +203,21 @@ public struct JourneyContainerView: View {
 					.font(.system(size: 20))
 					.frame(width: 44, height: 44)
 			})
-		).sheet(isPresented: .constant(self.viewStore.value.addAppointment.isShowingAddAppointment),
-						onDismiss: { self.store.send(.journey(.addAppointmentDismissed))},
-						content: {
+		)
+			.sheet(isPresented: .constant(self.viewStore.value.addAppointment.isShowingAddAppointment),
+						 onDismiss: { self.store.send(.journey(.addAppointmentDismissed))},
+						 content: {
 							AddAppointment.init(store:
 								self.store.scope(value: { $0.addAppointment },
-																action: { .addAppointment($0)})
+																 action: { .addAppointment($0)})
 							)
-		})
+			})
+//			.modalLink(isPresented: .constant(self.viewStore.value.isModalShown),
+//								 linkType: ModalTransition.circleReveal,
+//								 destination: {
+//									Rectangle().fill(Color.blue)
+//
+//			}).navigationBarHidden(self.viewStore.value.addAppointment.isShowingAddAppointment || self.viewStore.value.isModalShown)
 	}
 	
 	struct ChoosePathwayEither: View {

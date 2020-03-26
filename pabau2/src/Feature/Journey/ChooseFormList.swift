@@ -4,6 +4,7 @@ import Util
 import ComposableArchitecture
 
 public struct ChooseFormState: Equatable {
+	var isJourneyModalShown: Bool
 	var journey: Journey?
 	var templates: [FormTemplate]
 	var selectedTemplatesIds: [Int]
@@ -31,7 +32,7 @@ func chooseFormListReducer(state: inout ChooseFormState,
 	case .removeTemplateId(let templateId):
 		state.selectedTemplatesIds.removeAll(where: { $0 == templateId})
 	case .checkIn:
-		return []
+		state.isJourneyModalShown = true
 	}
 	return []
 }
@@ -45,35 +46,40 @@ struct ChooseFormList: View {
 	}
 	@State var searchText: String = ""
 	var body: some View {
-		JourneyBaseView(journey: self.viewStore.value.journey) {
-			HStack {
-				PathwayCell(style: .blue) {
-					VStack(alignment: .leading) {
-						Text("Selected Consents")
-							.font(.bold17)
-						FormTemplateList(templates: self.viewStore.value.selectedTemplates,
-														 bgColor: PathwayCellStyle.blue.bgColor,
-														 templateRow: { template in
-															SelectedTemplateRow(template: template)
-						}, onSelect: {
-							self.store.send(.removeTemplateId($0.id))
-						})
-						ChoosePathwayButton(btnTxt: "Check-In", style: .blue, action: {
+		chooseFormCells
+			.journeyBase(self.viewStore.value.journey)
+	}
+	
+	var chooseFormCells: some View {
+		HStack {
+			PathwayCell(style: .blue) {
+				VStack(alignment: .leading) {
+					Text("Selected Consents")
+						.font(.bold17)
+					FormTemplateList(templates: self.viewStore.value.selectedTemplates,
+													 bgColor: PathwayCellStyle.blue.bgColor,
+													 templateRow: { template in
+														SelectedTemplateRow(template: template)
+					}, onSelect: {
+						self.store.send(.removeTemplateId($0.id))
+					})
+					ChoosePathwayButton(btnTxt: "Check-In", style: .blue, action: {
+						withAnimation {
 							self.store.send(.checkIn)
-						})
-					}
+						}
+					})
 				}
-				PathwayCell(style: .white) {
-					VStack {
-						TextField("TODO: search: ", text: self.$searchText)
-						FormTemplateList(templates: self.viewStore.value.notSelectedTemplates,
-														 bgColor: PathwayCellStyle.white.bgColor,
-														 templateRow: { template in
-															NotSelectedTemplateRow(template: template)
-						}, onSelect: {
-							self.store.send(.addTemplateId($0.id))
-						})
-					}
+			}
+			PathwayCell(style: .white) {
+				VStack {
+					TextField("TODO: search: ", text: self.$searchText)
+					FormTemplateList(templates: self.viewStore.value.notSelectedTemplates,
+													 bgColor: PathwayCellStyle.white.bgColor,
+													 templateRow: { template in
+														NotSelectedTemplateRow(template: template)
+					}, onSelect: {
+						self.store.send(.addTemplateId($0.id))
+					})
 				}
 			}
 		}

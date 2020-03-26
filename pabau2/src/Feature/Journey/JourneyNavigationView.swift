@@ -1,5 +1,6 @@
 import SwiftUI
 import ComposableArchitecture
+import Util
 
 public struct JourneyNavigationView: View {
 	let store: Store<JourneyState, JourneyContainerAction>
@@ -14,5 +15,10 @@ public struct JourneyNavigationView: View {
 																					 action: { $0 }))
 		}
 		.navigationViewStyle(StackNavigationViewStyle())
+		.modalLink(isPresented: .constant(self.viewStore.value.isJourneyModalShown),
+							 linkType: ModalTransition.circleReveal,
+							 destination: {
+								Rectangle().fill(Color.blue)
+		})
 	}
 }

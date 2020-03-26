@@ -25,15 +25,18 @@ public struct JourneyState: Equatable {
 		FormTemplate(id: 6, name: "Consent - Skin Treatment", formType: .consent),
 		FormTemplate(id: 7, name: "Consent - Lipo", formType: .consent)
 	]
-	var isModalShown: Bool = false
+	var isJourneyModalShown: Bool = false
 	var choosePathway: ChoosePathwayState {
 		get {
-			return ChoosePathwayState(journey: self.selectedJourney,
-																isChooseConsentShown: self.isChooseConsentShown,
-																selectedTemplatesIds: self.selectedTemplatesIds,
-																templates: self.templates)
+			return ChoosePathwayState(
+				isJourneyModalShown: self.isJourneyModalShown,
+				journey: self.selectedJourney,
+				isChooseConsentShown: self.isChooseConsentShown,
+				selectedTemplatesIds: self.selectedTemplatesIds,
+				templates: self.templates)
 		}
 		set {
+			self.isJourneyModalShown = newValue.isJourneyModalShown
 			self.selectedJourney = newValue.journey
 			self.isChooseConsentShown = newValue.isChooseConsentShown
 			self.selectedTemplatesIds = newValue.selectedTemplatesIds

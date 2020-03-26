@@ -23,3 +23,22 @@ public struct JourneyBaseView<Content: View>: View {
 		}
 	}
 }
+
+struct JourneyBaseModifier: ViewModifier {
+	let journey: Journey?
+	func body(content: Content) -> some View {
+		JourneyBaseView(journey: journey, content: { content })
+	}
+}
+
+public extension View {
+	
+	func journeyBase(_ journey: Journey?) -> some View {
+		self.modifier(JourneyBaseModifier(journey: journey))
+	}
+//	func journeyBase<Content: View>(content: @escaping () -> Destination) -> some View {
+//		self.modifier(ModaLinkViewModifier(isPresented: isPresented,
+//																			 linkType: linkType,
+//																			 destination: destination))
+//	}
+}

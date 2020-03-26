@@ -42,15 +42,18 @@ public enum ChoosePathwayAction {
 }
 
 public struct ChoosePathwayState: Equatable {
+	var isJourneyModalShown: Bool
 	var journey: Journey?
 	var isChooseConsentShown: Bool
 	var selectedTemplatesIds: [Int]
 	var templates: [FormTemplate]
 	var chooseConsentState: ChooseFormState {
-		get { ChooseFormState(journey: journey,
+		get { ChooseFormState(isJourneyModalShown: self.isJourneyModalShown,
+													journey: journey,
 													templates: self.templates,
 													selectedTemplatesIds: self.selectedTemplatesIds)}
 		set {
+			self.isJourneyModalShown = newValue.isJourneyModalShown
 			self.journey = newValue.journey
 			self.templates = newValue.templates
 			self.selectedTemplatesIds = newValue.selectedTemplatesIds
@@ -66,40 +69,49 @@ public struct ChoosePathway: View {
 		self.viewStore = self.store.scope(value: { $0 }, action: { $0 }).view
 	}
 	public var body: some View {
-		JourneyBaseView(journey: self.viewStore.value.journey) {
-			HStack {
-				PathwayCell(style: .blue) {
-					ChoosePathwayListContent.init(.blue,
-																				Image(systemName: "arrow.right"),
-																				7,
-																				"Standard Pathway",
-																				"Provides a basic standard pathway, defined for the company.",
-																				["Check Details", "Medical History", "Consent", "Image Upload",
-																				 "Treatment Notes", "Prescription", "Aftercare"],
-																				"Pathway") {
-						self.store.send(.choosePathway(.didChooseStandard))
-					}
-				}
-				PathwayCell(style: .white) {
-					ChoosePathwayListContent.init(.white,
-																				Image("ico-journey-consulting"),
-																				4,
-																				"Consultation Pathway",
-																				"Provides a consultation pathway, to hear out the person's needs.",
-																				["Check Details", "Medical History", "Image Upload", "Aftercare"],
-																				"Consultation") {
-						self.store.send(.choosePathway(.didChooseConsultation))
-					}
+		HStack {
+			self.pathwayCells
+			self.chooseFormNavLink
+		}
+		.journeyBase(self.viewStore.value.journey)
+	}
+	
+	var chooseFormNavLink: some View {
+		NavigationLink.emptyHidden(self.viewStore.value.isChooseConsentShown,
+															 ChooseFormList(store: self.store.scope(value: { $0.chooseConsentState },
+																																			action: { .chooseConsent($0)}))
+																.navigationBarTitle("Choose Consent")
+																.customBackButton {
+																self.store.send(.choosePathway(.didTouchBackBtn))
+			}
+		)
+	}
+	
+	var pathwayCells: some View {
+		HStack {
+			PathwayCell(style: .blue) {
+				ChoosePathwayListContent.init(.blue,
+																			Image(systemName: "arrow.right"),
+																			7,
+																			"Standard Pathway",
+																			"Provides a basic standard pathway, defined for the company.",
+																			["Check Details", "Medical History", "Consent", "Image Upload",
+																			 "Treatment Notes", "Prescription", "Aftercare"],
+																			"Pathway") {
+																				self.store.send(.choosePathway(.didChooseStandard))
 				}
 			}
-			NavigationLink.emptyHidden(self.viewStore.value.isChooseConsentShown,
-																 ChooseFormList(store: self.store.scope(value: { $0.chooseConsentState },
-																																				action: { .chooseConsent($0)}))
-																	.navigationBarTitle("Choose Consent")
-																	.customBackButton {
-																		self.store.send(.choosePathway(.didTouchBackBtn))
+			PathwayCell(style: .white) {
+				ChoosePathwayListContent.init(.white,
+																			Image("ico-journey-consulting"),
+																			4,
+																			"Consultation Pathway",
+																			"Provides a consultation pathway, to hear out the person's needs.",
+																			["Check Details", "Medical History", "Image Upload", "Aftercare"],
+																			"Consultation") {
+																				self.store.send(.choosePathway(.didChooseConsultation))
 				}
-			)
+			}
 		}
 	}
 }
