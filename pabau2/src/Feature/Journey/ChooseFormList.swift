@@ -7,7 +7,7 @@ public struct ChooseFormState: Equatable {
 	var journey: Journey?
 	var templates: [FormTemplate]
 	var selectedTemplatesIds: [Int]
-	
+
 	var notSelectedTemplates: [FormTemplate] {
 		templates.filter { !selectedTemplatesIds.contains($0.id) }
 	}
@@ -48,7 +48,9 @@ struct ChooseFormList: View {
 		JourneyBaseView(journey: self.viewStore.value.journey) {
 			HStack {
 				PathwayCell(style: .blue) {
-					VStack {
+					VStack(alignment: .leading) {
+						Text("Selected Consents")
+							.font(.bold17)
 						FormTemplateList(templates: self.viewStore.value.selectedTemplates,
 														 bgColor: PathwayCellStyle.blue.bgColor,
 														 templateRow: { template in
@@ -62,8 +64,8 @@ struct ChooseFormList: View {
 					}
 				}
 				PathwayCell(style: .white) {
-					TextField("search", text: self.$searchText)
 					VStack {
+						TextField("TODO: search: ", text: self.$searchText)
 						FormTemplateList(templates: self.viewStore.value.notSelectedTemplates,
 														 bgColor: PathwayCellStyle.white.bgColor,
 														 templateRow: { template in
@@ -95,18 +97,14 @@ struct FormTemplateList<Row: View>: View {
 		self.bgColor = bgColor
 	}
 	var body: some View {
-		Form {
-			List {
-				Section(header: Text("Selected Consents")) {
-					ForEach(templates) { template in
-						self.templateRow(template)
-						.onTapGesture { self.onSelect(template) }
-						.listRowInsets(EdgeInsets())
-					}
-				}
-			}.listRowBackground(bgColor)
+		List {
+			ForEach(templates) { template in
+				self.templateRow(template)
+					.listRowInsets(EdgeInsets())
+					.listRowBackground(self.bgColor)
+					.onTapGesture { self.onSelect(template) }
+			}
 		}
-//		.background(Color.employeeBg)
 	}
 }
 
@@ -114,7 +112,8 @@ struct NotSelectedTemplateRow: View {
 	let template: FormTemplate
 	var body: some View {
 		TemplateRow.init(templateName: template.name,
-										 image: Image(systemName: "plus"))
+										 image: Image(systemName: "plus")
+		)
 	}
 }
 
@@ -122,7 +121,8 @@ struct SelectedTemplateRow: View {
 	let template: FormTemplate
 	var body: some View {
 		TemplateRow.init(templateName: template.name,
-										 image: Image(systemName: "checkmark.circle.fill"))
+										 image: Image(systemName: "checkmark.circle.fill")
+		)
 	}
 }
 

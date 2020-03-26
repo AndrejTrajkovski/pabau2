@@ -108,8 +108,10 @@ public func journeyReducer(state: inout JourneyState, action: JourneyAction, env
 	case .toggleEmployees:
 		state.employeesState.isShowingEmployees.toggle()
 	case .selectedJourney(let journey):
+		state.isChoosePathwayShown = true
 		state.selectedJourney = journey
 	case .choosePathwayBackTap:
+		state.isChoosePathwayShown = false
 		state.selectedJourney = nil
 	}
 	return []
@@ -137,8 +139,8 @@ public struct JourneyContainerView: View {
 				self.store.send(.journey(.selectedJourney($0)))
 			}.loadingView(.constant(self.viewStore.value.loadingState.isLoading),
 										Texts.fetchingJourneys)
-			NavigationLink.emptyHidden(self.viewStore.value.selectedJourney != nil,
-																 ChoosePathwayEither(store: store, isSelectedJourney: self.viewStore.value.selectedJourney != nil)
+			NavigationLink.emptyHidden(self.viewStore.value.isChoosePathwayShown,
+																 ChoosePathwayEither(store: store, isSelectedJourney: self.viewStore.value.isChoosePathwayShown)
 																	.customBackButton {
 																		self.store.send(.journey(.choosePathwayBackTap))
 				}
