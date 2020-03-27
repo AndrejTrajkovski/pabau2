@@ -52,11 +52,11 @@ public struct ChooseServiceState: Equatable {
 		Service.init(id: 8, name: "MOS- Skin Tightening", color: "#FEC87C", categoryId: 4, categoryName: "MOS", duration: "00:30"),
 		Service.init(id: 9, name: "MOS- Stretch Marks", color: "#FEC87C", categoryId: 4, categoryName: "MOS", duration: "00:30")
 	]
-	
-	var groupedServices: [Int : [Service]] {
+
+	var groupedServices: [Int: [Service]] {
 		 return [Int: [Service]].init(grouping: services, by: { $0.categoryId })
 	}
-	
+
 	var listServices: [[Service]] {
 		let res = self.groupedServices.map({ $0.value })
 			.sorted(by: { $0.first!.categoryId > $1.first!.categoryId})
@@ -103,6 +103,8 @@ struct ChooseService: View {
 					) {
 						ForEach(group, id: \.self) { (service: Service) in
 							ServiceRow(service: service)
+						}.onTapGesture {
+							self.store.send(.didTapBackBtn)
 						}
 					}.background(Color.white)
 				}
@@ -112,7 +114,7 @@ struct ChooseService: View {
 		.padding()
 		.navigationBarTitle("Services")
 		.customBackButton(action: { self.store.send(.didTapBackBtn)})
-		
+
 	}
 }
 
