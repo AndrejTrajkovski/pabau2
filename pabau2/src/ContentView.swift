@@ -69,9 +69,11 @@ struct ContentView: View {
 	init (store: Store<AppState, AppAction>) {
 		self.store = store
 		self.viewStore = self.store.view
+		print("ContentView init")
 	}
 	var body: some View {
-		ViewBuilder.buildBlock(
+		print("ContentView body")
+		return ViewBuilder.buildBlock(
 			(self.viewStore.value.navigation.login != nil) ?
 				ViewBuilder.buildEither(second: LoginContainer(store: loginContainerStore))
 				:
@@ -101,6 +103,7 @@ struct LoginContainer: View {
 	public init (store: Store<WalkthroughContainerState, WalkthroughContainerAction>) {
 		self.store = store
 		self.viewStore = self.store.view
+		print("LoginContainer init")
 	}
 
 	var shouldShowWalkthrough: Bool {
@@ -108,7 +111,8 @@ struct LoginContainer: View {
 	}
 
 	var body: some View {
-		NavigationView {
+		print("LoginContainer body")
+		return NavigationView {
 			ViewBuilder.buildBlock(
 				shouldShowWalkthrough ?
 					ViewBuilder.buildEither(first: WalkthroughContainer(store))

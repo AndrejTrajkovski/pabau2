@@ -23,9 +23,12 @@ public struct WalkthroughContainer: View {
 	public init(_ store: Store<WalkthroughContainerState, WalkthroughContainerAction>) {
 		self.store = store
 		self.viewStore = self.store.view
+		print("WalkthroughContainer init")
 	}
+	
 	public var body: some View {
-		VStack(spacing: 50) {
+		print("WalkthroughContainer body")
+		return VStack(spacing: 50) {
 			Walkthrough(store:
 				self.store.scope(value: { $0.navigation },
 												action: { .walkthrough($0)}))

@@ -93,12 +93,14 @@ struct Login: View {
 	@Binding private var email: String
 	@State private var password: String = ""
 	public init(store: Store<WalkthroughContainerState, LoginAction>, email: Binding<String>) {
+		print("Login init")
 		self.store = store
 		self.viewStore = self.store.view
 		self._email = email
 	}
 	var body: some View {
-		VStack(alignment: .leading) {
+		print("Login body")
+		return VStack(alignment: .leading) {
 			LoginTitle()
 			Spacer(minLength: 85)
 			LoginTextFields(email: $email,
@@ -125,9 +127,11 @@ public struct LoginView: View {
 	public init(store: Store<WalkthroughContainerState, LoginViewAction>) {
 		self.store = store
 		self.viewStore = self.store.view
+		print("LoginView init")
 	}
 	public var body: some View {
-		VStack {
+		print("LoginView body")
+		return VStack {
 			NavigationLink.emptyHidden(
 				self.viewStore.value.navigation.tabBar != nil,
 				EmptyView()
