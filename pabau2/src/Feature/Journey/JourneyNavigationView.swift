@@ -18,7 +18,7 @@ public struct JourneyNavigationView: View {
 		.modalLink(isPresented: .constant(self.viewStore.value.isJourneyModalShown),
 							 linkType: ModalTransition.circleReveal,
 							 destination: {
-								Rectangle().fill(Color.blue)
+								CheckIn()
 		})
 	}
 }

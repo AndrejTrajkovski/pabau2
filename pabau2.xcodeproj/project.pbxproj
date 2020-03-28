@@ -155,6 +155,7 @@
 		82BE2F7A23D9983C00B3678A /* ComposableArchitecture.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 82BE2F6423D9983C00B3678A /* ComposableArchitecture.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		82BE2F8223D9984300B3678A /* ComposableArchitecture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BE2F5D23D997F800B3678A /* ComposableArchitecture.swift */; };
 		82C479DC242D95780037F140 /* CasePaths in Frameworks */ = {isa = PBXBuildFile; productRef = 82C479DB242D95780037F140 /* CasePaths */; };
+		82C479DE242E17B50037F140 /* CheckIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82C479DD242E17B50037F140 /* CheckIn.swift */; };
 		82CACE0624102A2F0021E1DE /* LoginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CACE0524102A2F0021E1DE /* LoginTests.swift */; };
 		82CACE1024102BB00021E1DE /* ComposableArchitectureTestSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 824930DC240CE93500953E90 /* ComposableArchitectureTestSupport.framework */; };
 		82CACE7E2411293C0021E1DE /* FSCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82CACE772411293C0021E1DE /* FSCalendar.framework */; };
@@ -521,6 +522,7 @@
 		82BE2F6423D9983C00B3678A /* ComposableArchitecture.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ComposableArchitecture.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		82BE2F6623D9983C00B3678A /* ComposableArchitecture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ComposableArchitecture.h; sourceTree = "<group>"; };
 		82BE2F6723D9983C00B3678A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		82C479DD242E17B50037F140 /* CheckIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckIn.swift; sourceTree = "<group>"; };
 		82CACE0324102A2F0021E1DE /* LoginTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LoginTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		82CACE0524102A2F0021E1DE /* LoginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginTests.swift; sourceTree = "<group>"; };
 		82CACE0724102A2F0021E1DE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -830,6 +832,7 @@
 				8250D7C8242BCFD000F8F3FC /* ChooseFormList.swift */,
 				8250D7CA242BD25B00F8F3FC /* JourneyBaseView.swift */,
 				8250D7D3242C980100F8F3FC /* ChooseService.swift */,
+				82C479DD242E17B50037F140 /* CheckIn.swift */,
 			);
 			path = Journey;
 			sourceTree = "<group>";
@@ -1772,6 +1775,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				827B459B241136D900A5975E /* JourneyContainerView.swift in Sources */,
+				82C479DE242E17B50037F140 /* CheckIn.swift in Sources */,
 				829B40D12423B8F2009B7E71 /* AddAppointment.swift in Sources */,
 				8250D7D4242C980100F8F3FC /* ChooseService.swift in Sources */,
 				82E253FA241B9EB500F16C30 /* JourneyAction.swift in Sources */,

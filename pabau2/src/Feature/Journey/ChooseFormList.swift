@@ -64,7 +64,7 @@ struct ChooseFormList: View {
 						self.store.send(.removeTemplateId($0.id))
 					})
 					ChoosePathwayButton(btnTxt: "Check-In", style: .blue, action: {
-						withAnimation {
+						withAnimation(Animation.linear(duration: 1)) {
 							self.store.send(.checkIn)
 						}
 					})
