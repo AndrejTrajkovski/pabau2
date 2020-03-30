@@ -151,7 +151,7 @@ public func journeyReducer(state: inout JourneyState, action: JourneyAction, env
 public struct JourneyContainerView: View {
 	@State private var calendarHeight: CGFloat?
 	let store: Store<JourneyState, JourneyContainerAction>
-	@ObservedObject var viewStore: ViewStore<JourneyState>
+	@ObservedObject var viewStore: ViewStore<JourneyState, JourneyContainerAction>
 	public init(_ store: Store<JourneyState, JourneyContainerAction>) {
 		self.store = store
 		self.viewStore = self.store.view
@@ -163,19 +163,19 @@ public struct JourneyContainerView: View {
 			SwiftUICalendar.init(viewStore.value.selectedDate,
 													 self.$calendarHeight,
 													 .week) { date in
-														self.store.send(.journey(.selectedDate(date)))
+														self.viewStore.send(.journey(.selectedDate(date)))
 			}
 			.padding(0)
 			.frame(height: self.calendarHeight)
 			FilterPicker()
 			JourneyList(self.viewStore.value.filteredJourneys) {
-				self.store.send(.journey(.selectedJourney($0)))
+				self.viewStore.send(.journey(.selectedJourney($0)))
 			}.loadingView(.constant(self.viewStore.value.loadingState.isLoading),
 										Texts.fetchingJourneys)
 			NavigationLink.emptyHidden(self.viewStore.value.isChoosePathwayShown,
 																 ChoosePathwayEither(store: store, isSelectedJourney: self.viewStore.value.isChoosePathwayShown)
 																	.customBackButton {
-																		self.store.send(.journey(.choosePathwayBackTap))
+																		self.viewStore.send(.journey(.choosePathwayBackTap))
 				}
 			)
 			Spacer()
@@ -184,7 +184,7 @@ public struct JourneyContainerView: View {
 		.navigationBarItems(leading:
 			HStack(spacing: 8.0) {
 				Button(action: {
-						self.store.send(.journey(.addAppointmentTap))
+						self.viewStore.send(.journey(.addAppointmentTap))
 				}, label: {
 					Image(systemName: "plus")
 						.font(.system(size: 20))
@@ -199,7 +199,7 @@ public struct JourneyContainerView: View {
 				})
 			}, trailing:
 			Button (action: {
-				self.store.send(.journey(.toggleEmployees))
+				self.viewStore.send(.journey(.toggleEmployees))
 			}, label: {
 				Image(systemName: "person")
 					.font(.system(size: 20))
@@ -207,7 +207,7 @@ public struct JourneyContainerView: View {
 			})
 		)
 			.sheet(isPresented: .constant(self.viewStore.value.addAppointment.isShowingAddAppointment),
-						 onDismiss: { self.store.send(.journey(.addAppointmentDismissed))},
+						 onDismiss: { self.viewStore.send(.journey(.addAppointmentDismissed))},
 						 content: {
 							AddAppointment.init(store:
 								self.store.scope(value: { $0.addAppointment },
@@ -460,7 +460,7 @@ struct EmployeeHeader: View {
 
 public struct EmployeesListStore: View {
 	let store: Store<EmployeesState, EmployeesAction>
-	@ObservedObject var viewStore: ViewStore<EmployeesState>
+	@ObservedObject var viewStore: ViewStore<EmployeesState, EmployeesAction>
 	public init(_ store: Store<EmployeesState, EmployeesAction>) {
 		self.store = store
 		self.viewStore = self.store.view
@@ -468,9 +468,9 @@ public struct EmployeesListStore: View {
 	public var body: some View {
 		EmployeeList(selectedEmployeesIds: self.viewStore.value.selectedEmployeesIds,
 								 employees: self.viewStore.value.employees,
-								 header: EmployeeHeader { self.store.send(.toggleEmployees) },
-								 didSelectEmployee: { self.store.send(.onTapGestureEmployee($0))})
-			.onAppear(perform: { self.store.send(.onAppear) })
+								 header: EmployeeHeader { self.viewStore.send(.toggleEmployees) },
+								 didSelectEmployee: { self.viewStore.send(.onTapGestureEmployee($0))})
+			.onAppear(perform: { self.viewStore.send(.onAppear) })
 	}
 }
 

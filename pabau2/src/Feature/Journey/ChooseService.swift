@@ -82,7 +82,7 @@ struct FillAll: View {
 
 struct ChooseService: View {
 	let store: Store<ChooseServiceState, ChooseServiceAction>
-	@ObservedObject var viewStore: ViewStore<ChooseServiceState>
+	@ObservedObject var viewStore: ViewStore<ChooseServiceState, ChooseServiceAction>
 	init (store: Store<ChooseServiceState, ChooseServiceAction>) {
 		self.store = store
 		self.viewStore = self.store.view
@@ -104,7 +104,7 @@ struct ChooseService: View {
 						ForEach(group, id: \.self) { (service: Service) in
 							ServiceRow(service: service)
 						}.onTapGesture {
-							self.store.send(.didTapBackBtn)
+							self.viewStore.send(.didTapBackBtn)
 						}
 					}.background(Color.white)
 				}
@@ -113,7 +113,7 @@ struct ChooseService: View {
 		}
 		.padding()
 		.navigationBarTitle("Services")
-		.customBackButton(action: { self.store.send(.didTapBackBtn)})
+		.customBackButton(action: { self.viewStore.send(.didTapBackBtn)})
 
 	}
 }

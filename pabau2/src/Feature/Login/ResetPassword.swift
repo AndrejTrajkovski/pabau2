@@ -148,7 +148,7 @@ public func resetPassReducer(state: inout ResetPasswordState, action: ResetPassw
 
 struct ResetPassword: View {
 	let store: Store<ResetPasswordState, ResetPasswordAction>
-	@ObservedObject var viewStore: ViewStore<ResetPasswordState>
+	@ObservedObject var viewStore: ViewStore<ResetPasswordState, ResetPasswordAction>
 	init (store: Store<ResetPasswordState, ResetPasswordAction>,
 				passChangedStore: Store<Navigation, PassChangedAction>) {
 		self.store = store
@@ -185,7 +185,7 @@ struct ResetPassword: View {
 													validation: self.viewStore.value.confirmPassValidator)
 				}.frame(maxWidth: 319)
 				BigButton(text: Texts.changePass) {
-					self.store.send(.changePassTapped(self.code, self.newPass, self.confirmPass))
+					self.viewStore.send(.changePassTapped(self.code, self.newPass, self.confirmPass))
 				}
 				NavigationLink.emptyHidden(
 					self.viewStore.value.navigation.login?.contains(.passChangedScreen) ?? false,
@@ -194,7 +194,7 @@ struct ResetPassword: View {
 			.frame(minWidth: 280, maxWidth: 495)
 			.fixedSize(horizontal: false, vertical: true)
 			.customBackButton {
-				self.store.send(.backBtnTapped)
+				self.viewStore.send(.backBtnTapped)
 			}
 			Spacer()
 		}.loadingView(.constant(self.viewStore.value.loadingState.isLoading),

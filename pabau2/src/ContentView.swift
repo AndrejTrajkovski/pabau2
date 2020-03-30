@@ -65,7 +65,7 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = combine(
 
 struct ContentView: View {
 	let store: Store<AppState, AppAction>
-	@ObservedObject var viewStore: ViewStore<AppState>
+	@ObservedObject var viewStore: ViewStore<AppState, AppAction>
 	init (store: Store<AppState, AppAction>) {
 		self.store = store
 		self.viewStore = self.store.view
@@ -98,7 +98,7 @@ struct ContentView: View {
 
 struct LoginContainer: View {
 	let store: Store<WalkthroughContainerState, WalkthroughContainerAction>
-	@ObservedObject var viewStore: ViewStore<WalkthroughContainerState>
+	@ObservedObject var viewStore: ViewStore<WalkthroughContainerState, WalkthroughContainerAction>
 
 	public init (store: Store<WalkthroughContainerState, WalkthroughContainerAction>) {
 		self.store = store

@@ -39,7 +39,7 @@ func chooseFormListReducer(state: inout ChooseFormState,
 
 struct ChooseFormList: View {
 	let store: Store<ChooseFormState, ChooseFormAction>
-	@ObservedObject var viewStore: ViewStore<ChooseFormState>
+	@ObservedObject var viewStore: ViewStore<ChooseFormState, ChooseFormAction>
 	init (store: Store<ChooseFormState, ChooseFormAction>) {
 		self.store = store
 		self.viewStore = self.store.view
@@ -61,11 +61,11 @@ struct ChooseFormList: View {
 													 templateRow: { template in
 														SelectedTemplateRow(template: template)
 					}, onSelect: {
-						self.store.send(.removeTemplateId($0.id))
+						self.viewStore.send(.removeTemplateId($0.id))
 					})
 					ChoosePathwayButton(btnTxt: "Check-In", style: .blue, action: {
 						withAnimation(Animation.linear(duration: 1)) {
-							self.store.send(.checkIn)
+							self.viewStore.send(.checkIn)
 						}
 					})
 				}
@@ -78,7 +78,7 @@ struct ChooseFormList: View {
 													 templateRow: { template in
 														NotSelectedTemplateRow(template: template)
 					}, onSelect: {
-						self.store.send(.addTemplateId($0.id))
+						self.viewStore.send(.addTemplateId($0.id))
 					})
 				}
 			}

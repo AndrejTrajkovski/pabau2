@@ -92,7 +92,7 @@ public enum ForgotPasswordAction: Equatable {
 
 struct ForgotPassword: View {
 	let store: Store<ForgotPassState, ForgotPasswordAction>
-	@ObservedObject var viewStore: ViewStore<ForgotPassState>
+	@ObservedObject var viewStore: ViewStore<ForgotPassState, ForgotPasswordAction>
 	@Binding private var email: String
 	init(_ store: Store<ForgotPassState, ForgotPasswordAction>,
 			 _ email: Binding<String>) {
@@ -114,20 +114,20 @@ struct ForgotPassword: View {
 				TextAndTextView(title: Texts.emailAddress.uppercased(), placeholder: "", bindingValue: self.$email, validation: self.viewStore.value.fpValidation)
 			}.frame(maxWidth: 319)
 			BigButton(text: Texts.sendRequest) {
-				self.store.send(.sendRequest(email: self.email))
+				self.viewStore.send(.sendRequest(email: self.email))
 			}
 		}
 		.frame(minWidth: 280, maxWidth: 495)
 		.fixedSize(horizontal: false, vertical: true)
 		.customBackButton {
-			self.store.send(.backBtnTapped)
+			self.viewStore.send(.backBtnTapped)
 		}
 	}
 }
 
 struct ForgotPasswordView: View {
 	let store: Store<ForgotPassContainerState, ForgotPassViewAction>
-	@ObservedObject var viewStore: ViewStore<ForgotPassContainerState>
+	@ObservedObject var viewStore: ViewStore<ForgotPassContainerState, ForgotPassViewAction>
 	@Binding private var email: String
 	init(_ store: Store<ForgotPassContainerState, ForgotPassViewAction>, _ email: Binding<String>) {
 		self.store = store

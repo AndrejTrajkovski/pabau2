@@ -19,7 +19,7 @@ extension WalkthroughContainerState: Equatable {}
 
 public struct WalkthroughContainer: View {
 	let store: Store<WalkthroughContainerState, WalkthroughContainerAction>
-	@ObservedObject var viewStore: ViewStore<WalkthroughContainerState>
+	@ObservedObject var viewStore: ViewStore<WalkthroughContainerState, WalkthroughContainerAction>
 	public init(_ store: Store<WalkthroughContainerState, WalkthroughContainerAction>) {
 		self.store = store
 		self.viewStore = self.store.view

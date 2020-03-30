@@ -34,7 +34,7 @@ public enum TabBarAction {
 
 struct PabauTabBar: View {
 	let store: Store<TabBarState, TabBarAction>
-	@ObservedObject var viewStore: ViewStore<TabBarState>
+	@ObservedObject var viewStore: ViewStore<TabBarState, TabBarAction>
 	init (store: Store<TabBarState, TabBarAction>) {
 		self.store = store
 		self.viewStore = self.store.view
@@ -103,7 +103,7 @@ public func settingsReducer(state: inout SettingsState, action: SettingsAction, 
 
 public struct Settings: View {
 	let store: Store<SettingsState, SettingsAction>
-	@ObservedObject var viewStore: ViewStore<SettingsState>
+	@ObservedObject var viewStore: ViewStore<SettingsState, SettingsAction>
 	init (store: Store<SettingsState, SettingsAction>) {
 		self.store = store
 		self.viewStore = self.store.view
@@ -111,7 +111,7 @@ public struct Settings: View {
 	public var body: some View {
 		VStack {
 			BigButton(text: "Logout") {
-				self.store.send(.logoutTapped)
+				self.viewStore.send(.logoutTapped)
 			}
 		}
 	}

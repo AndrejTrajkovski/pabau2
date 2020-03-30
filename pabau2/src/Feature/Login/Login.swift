@@ -88,7 +88,7 @@ let loginViewReducer = combine(
 
 struct Login: View {
 	let store: Store<WalkthroughContainerState, LoginAction>
-	@ObservedObject var viewStore: ViewStore<WalkthroughContainerState>
+	@ObservedObject var viewStore: ViewStore<WalkthroughContainerState, LoginAction>
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
 	@Binding private var email: String
 	@State private var password: String = ""
@@ -106,11 +106,11 @@ struct Login: View {
 			LoginTextFields(email: $email,
 											password: $password,
 											emailValidation: self.viewStore.value.loginViewState.emailValidationText, passwordValidation: self.viewStore.value.loginViewState.passValidationText,
-											onForgotPass: {self.store.send(.forgotPassTapped) })
+											onForgotPass: {self.viewStore.send(.forgotPassTapped) })
 			Spacer(minLength: 30)
 			BigButton(text: Texts.signIn,
 								btnTapAction: {
-									self.store.send(.loginTapped(email: self.email, password: self.password))
+									self.viewStore.send(.loginTapped(email: self.email, password: self.password))
 			})
 		}
 		.navigationBarBackButtonHidden(true)
@@ -122,7 +122,7 @@ struct Login: View {
 
 public struct LoginView: View {
 	let store: Store<WalkthroughContainerState, LoginViewAction>
-	@ObservedObject var viewStore: ViewStore<WalkthroughContainerState>
+	@ObservedObject var viewStore: ViewStore<WalkthroughContainerState, LoginViewAction>
 	@State var email: String = ""
 	public init(store: Store<WalkthroughContainerState, LoginViewAction>) {
 		self.store = store

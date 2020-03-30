@@ -63,7 +63,7 @@ public struct ChoosePathwayState: Equatable {
 
 public struct ChoosePathway: View {
 	let store: Store<ChoosePathwayState, ChoosePathwayContainerAction>
-	@ObservedObject var viewStore: ViewStore<ChoosePathwayState>
+	@ObservedObject var viewStore: ViewStore<ChoosePathwayState, ChoosePathwayContainerAction>
 	init(store: Store<ChoosePathwayState, ChoosePathwayContainerAction>) {
 		self.store = store
 		self.viewStore = self.store.scope(value: { $0 }, action: { $0 }).view
@@ -82,7 +82,7 @@ public struct ChoosePathway: View {
 																																			action: { .chooseConsent($0)}))
 																.navigationBarTitle("Choose Consent")
 																.customBackButton {
-																self.store.send(.choosePathway(.didTouchBackBtn))
+																self.viewStore.send(.choosePathway(.didTouchBackBtn))
 			}
 		)
 	}
@@ -98,7 +98,7 @@ public struct ChoosePathway: View {
 																			["Check Details", "Medical History", "Consent", "Image Upload",
 																			 "Treatment Notes", "Prescription", "Aftercare"],
 																			"Pathway") {
-																				self.store.send(.choosePathway(.didChooseStandard))
+																				self.viewStore.send(.choosePathway(.didChooseStandard))
 				}
 			}
 			PathwayCell(style: .white) {
@@ -109,7 +109,7 @@ public struct ChoosePathway: View {
 																			"Provides a consultation pathway, to hear out the person's needs.",
 																			["Check Details", "Medical History", "Image Upload", "Aftercare"],
 																			"Consultation") {
-																				self.store.send(.choosePathway(.didChooseConsultation))
+																				self.viewStore.send(.choosePathway(.didChooseConsultation))
 				}
 			}
 		}

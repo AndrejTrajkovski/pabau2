@@ -20,7 +20,7 @@ public enum PassChangedAction: Equatable {
 
 public struct PasswordChanged: View {
 	let store: Store<Navigation, PassChangedAction>
-	@ObservedObject var viewStore: ViewStore<Navigation>
+	@ObservedObject var viewStore: ViewStore<Navigation, PassChangedAction>
 	init (store: Store<Navigation, PassChangedAction>) {
 		self.store = store
 		self.viewStore = self.store.view
@@ -31,7 +31,7 @@ public struct PasswordChanged: View {
 	public var body: some View {
 		WalkthroughContentAndButton(content: content,
 																btnTitle: Texts.signIn,
-																btnAction: { self.store.send(.signInTapped) })
+																btnAction: { self.viewStore.send(.signInTapped) })
 		.navigationBarBackButtonHidden(true)
 	}
 }

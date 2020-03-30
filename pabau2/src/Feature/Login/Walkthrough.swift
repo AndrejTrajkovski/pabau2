@@ -11,7 +11,7 @@ public struct Walkthrough: View {
 												descs: WalkthroughStatic.description,
 												imageTitles: WalkthroughStatic.images)
 	let store: Store<Navigation, WalkthroughAction>
-	@ObservedObject var viewStore: ViewStore<Navigation>
+	@ObservedObject var viewStore: ViewStore<Navigation, WalkthroughAction>
 	public init (store: Store<Navigation, WalkthroughAction>) {
 		self.store = store
 		self.viewStore = self.store
@@ -25,7 +25,7 @@ public struct Walkthrough: View {
 				.frame(maxHeight: 686.0)
 			BigButton(text: Texts.signIn,
 								btnTapAction: {
-									self.store.send(.signInTapped)
+									self.viewStore.send(.signInTapped)
 			})
 		}
 	}

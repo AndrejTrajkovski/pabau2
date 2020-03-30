@@ -4,7 +4,7 @@ import Util
 
 public struct JourneyNavigationView: View {
 	let store: Store<JourneyState, JourneyContainerAction>
-	@ObservedObject var viewStore: ViewStore<JourneyState>
+	@ObservedObject var viewStore: ViewStore<JourneyState, JourneyContainerAction>
 	public init(_ store: Store<JourneyState, JourneyContainerAction>) {
 		self.store = store
 		self.viewStore = self.store.view

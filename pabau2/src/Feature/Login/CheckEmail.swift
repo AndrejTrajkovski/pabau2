@@ -21,7 +21,7 @@ public enum CheckEmailAction: Equatable {
 
 public struct CheckEmail: View {
 	let store: Store<Navigation, CheckEmailAction>
-	@ObservedObject var viewStore: ViewStore<Navigation>
+	@ObservedObject var viewStore: ViewStore<Navigation, CheckEmailAction>
 	//
 	let resetPassStore: Store<ResetPasswordState, ResetPasswordAction>
 	let passChangedStore: Store<Navigation, PassChangedAction>
@@ -40,8 +40,8 @@ public struct CheckEmail: View {
 		VStack {
 			WalkthroughContentAndButton(content: content,
 																	btnTitle: Texts.resetPass,
-																	btnAction: { self.store.send(.resetPassTapped) }
-			).customBackButton { self.store.send(.backBtnTapped) }
+																	btnAction: { self.viewStore.send(.resetPassTapped) }
+			).customBackButton { self.viewStore.send(.backBtnTapped) }
 		NavigationLink.emptyHidden(
 			self.viewStore.value.login?.contains(.resetPassScreen) ?? false,
 			resetPassView)

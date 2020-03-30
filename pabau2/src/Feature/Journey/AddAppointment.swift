@@ -113,7 +113,7 @@ let addAppointmentReducer: Reducer<AddAppointmentState,
 
 public struct AddAppointment: View {
 	let store: Store<AddAppointmentState, AddAppointmentAction>
-	@ObservedObject var viewStore: ViewStore<AddAppointmentState>
+	@ObservedObject var viewStore: ViewStore<AddAppointmentState, AddAppointmentAction>
 	public init(store: Store<AddAppointmentState, AddAppointmentAction>) {
 		self.store = store
 		self.viewStore = self.store.view
@@ -126,7 +126,7 @@ public struct AddAppointment: View {
 					AddAppSections(store: self.store)
 						.environmentObject(KeyboardFollower())
 					Button.init("Save Appointment", action: {
-						self.store.send(.addAppointmentTap)
+						self.viewStore.send(.addAppointmentTap)
 					})
 					.font(.bold16)
 					.foregroundColor(.white)
@@ -139,7 +139,7 @@ public struct AddAppointment: View {
 		}
 		.navigationViewStyle(StackNavigationViewStyle())
 		.navigationBarItems(leading:
-			Button.init(action: { self.store.send(.closeBtnTap) }, label: {
+			Button.init(action: { self.viewStore.send(.closeBtnTap) }, label: {
 				Image(systemName: "xmark").foregroundColor(.gray142).frame(width: 30, height: 30)
 		}))
 	}
@@ -148,7 +148,7 @@ public struct AddAppointment: View {
 struct Section1: View {
 	@State var isAllDay: Bool = true
 	let store: Store<AddAppointmentState, AddAppointmentAction>
-	@ObservedObject var viewStore: ViewStore<AddAppointmentState>
+	@ObservedObject var viewStore: ViewStore<AddAppointmentState, AddAppointmentAction>
 	init (store: Store<AddAppointmentState, AddAppointmentAction>) {
 		self.store = store
 		self.viewStore = self.store.view
@@ -174,7 +174,7 @@ struct Section1: View {
 
 struct Section2: View {
 	let store: Store<AddAppointmentState, AddAppointmentAction>
-	@ObservedObject var viewStore: ViewStore<AddAppointmentState>
+	@ObservedObject var viewStore: ViewStore<AddAppointmentState, AddAppointmentAction>
 	init (store: Store<AddAppointmentState, AddAppointmentAction>) {
 		self.store = store
 		self.viewStore = self.store.view
@@ -184,7 +184,7 @@ struct Section2: View {
 			Text("Services").font(.semibold24)
 			HStack(spacing: 24.0) {
 				LabelAndTextField.init("SERVICE", self.viewStore.value.services.chosenServiceName).onTapGesture {
-					self.store.send(.didTapServices)
+					self.viewStore.send(.didTapServices)
 				}
 				NavigationLink.emptyHidden(self.viewStore.value.services.isChooseServiceActive,
 																	 ChooseService(store: self.store.scope(value: { $0.services }, action: {
@@ -225,7 +225,7 @@ struct Section2: View {
 struct AddAppSections: View {
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
 	let store: Store<AddAppointmentState, AddAppointmentAction>
-	@ObservedObject public var viewStore: ViewStore<AddAppointmentState>
+	@ObservedObject public var viewStore: ViewStore<AddAppointmentState, AddAppointmentAction>
 	init (store: Store<AddAppointmentState, AddAppointmentAction>) {
 		self.store = store
 		self.viewStore = self.store.view
@@ -267,7 +267,7 @@ extension PickerContainerState: Equatable { }
 
 struct PickerContainerStore<Content: View, T: ListPickerElement>: View {
 	let store: Store<PickerContainerState<T>, PickerContainerAction<T>>
-	@ObservedObject public var viewStore: ViewStore<PickerContainerState<T>>
+	@ObservedObject public var viewStore: ViewStore<PickerContainerState<T>, PickerContainerAction<T>>
 	let content: () -> Content
 	init (@ViewBuilder content: @escaping () -> Content,
 										 store: Store<PickerContainerState<T>, PickerContainerAction<T>>) {
@@ -280,8 +280,8 @@ struct PickerContainerStore<Content: View, T: ListPickerElement>: View {
 												 items: self.viewStore.value.dataSource,
 												 choseItemId: self.viewStore.value.chosenItemId,
 												 isActive: self.viewStore.value.isActive,
-												 onTapGesture: {self.store.send(.didSelectPicker)}, onSelectItem: {self.store.send(.didChooseItem($0))},
-												 onBackBtn: {self.store.send(.backBtnTap)})
+												 onTapGesture: {self.viewStore.send(.didSelectPicker)}, onSelectItem: {self.viewStore.send(.didChooseItem($0))},
+												 onBackBtn: {self.viewStore.send(.backBtnTap)})
 	}
 }
 
