@@ -64,16 +64,24 @@ public struct ChoosePathwayState: Equatable {
 public struct ChoosePathway: View {
 	let store: Store<ChoosePathwayState, ChoosePathwayContainerAction>
 	@ObservedObject var viewStore: ViewStore<ChoosePathwayState, ChoosePathwayContainerAction>
+	struct State {
+		
+	}
+	
 	init(store: Store<ChoosePathwayState, ChoosePathwayContainerAction>) {
 		self.store = store
-		self.viewStore = self.store.scope(value: { $0 }, action: { $0 }).view
+		self.viewStore = self.store.view
+		print("ChoosePathway init")
 	}
 	public var body: some View {
-		HStack {
+		print("ChoosePathway body")
+		return HStack {
 			self.pathwayCells
 			self.chooseFormNavLink
 		}
-		.journeyBase(self.viewStore.value.journey)
+		.journeyBase(self.store
+		.scope(value: { $0.journey },
+					 action: { $0 }))
 	}
 
 	var chooseFormNavLink: some View {

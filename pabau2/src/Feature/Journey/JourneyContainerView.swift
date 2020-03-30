@@ -464,9 +464,11 @@ public struct EmployeesListStore: View {
 	public init(_ store: Store<EmployeesState, EmployeesAction>) {
 		self.store = store
 		self.viewStore = self.store.view
+		print("EmployeesListStore init")
 	}
 	public var body: some View {
-		EmployeeList(selectedEmployeesIds: self.viewStore.value.selectedEmployeesIds,
+		print("EmployeesListStore body")
+		return EmployeeList(selectedEmployeesIds: self.viewStore.value.selectedEmployeesIds,
 								 employees: self.viewStore.value.employees,
 								 header: EmployeeHeader { self.viewStore.send(.toggleEmployees) },
 								 didSelectEmployee: { self.viewStore.send(.onTapGestureEmployee($0))})

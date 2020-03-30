@@ -40,14 +40,24 @@ func chooseFormListReducer(state: inout ChooseFormState,
 struct ChooseFormList: View {
 	let store: Store<ChooseFormState, ChooseFormAction>
 	@ObservedObject var viewStore: ViewStore<ChooseFormState, ChooseFormAction>
+	@State var searchText: String = ""
 	init (store: Store<ChooseFormState, ChooseFormAction>) {
 		self.store = store
 		self.viewStore = self.store.view
 	}
-	@State var searchText: String = ""
+	
+	struct ViewState {
+		
+	}
+	
+	enum Action {
+		
+	}
+	
 	var body: some View {
 		chooseFormCells
-			.journeyBase(self.viewStore.value.journey)
+			.journeyBase(self.store.scope(value: { $0.journey },
+																		action: { $0 }))
 	}
 
 	var chooseFormCells: some View {

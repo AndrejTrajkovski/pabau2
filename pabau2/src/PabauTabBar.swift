@@ -38,9 +38,11 @@ struct PabauTabBar: View {
 	init (store: Store<TabBarState, TabBarAction>) {
 		self.store = store
 		self.viewStore = self.store.view
+		print("PabauTabBar init")
 	}
 	var body: some View {
-		ZStack(alignment: .topTrailing) {
+		print("PabauTabBar body")
+		return ZStack(alignment: .topTrailing) {
 			TabView {
 				JourneyNavigationView(self.store.scope(value: { $0.journey },
 																							action: { .journey($0)}))

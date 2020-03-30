@@ -1,19 +1,47 @@
 import SwiftUI
 import Model
+import ComposableArchitecture
+import CasePaths
 
-public struct JourneyBaseView<Content: View>: View {
-	let journey: Journey?
+public struct JourneyBaseView<Content: View, Action>: View {
+	
 	let content: Content
-	init(journey: Journey?,
+	let store: Store<Journey?, Action>
+	@ObservedObject var viewStore: ViewStore<State, Action>
+	enum State: Equatable {
+		case empty
+		case profileView(JourneyProfileView.ViewState)
+		init (journey: Journey?) {
+			if let journey = journey {
+				self = .profileView(JourneyProfileView.ViewState.init(journey: journey))
+			} else {
+				self = .empty
+			}
+		}
+		var profileView: JourneyProfileView.ViewState? {
+			if case State.profileView(let viewState) = self {
+				return viewState
+			} else {
+				return nil
+			}
+		}
+	}
+	
+	init(store: Store<Journey?, Action>,
 			 @ViewBuilder content: () -> Content) {
-		self.journey = journey
+		self.store = store
+		self.viewStore = self.store
+			.scope(value: State.init,
+						 action: { $0 })
+			.view
 		self.content = content()
 	}
+	
 	public var body: some View {
 		Group {
-			if journey != nil {
+			if (self.viewStore.value.profileView != nil) {
 				VStack(spacing: 8) {
-					makeProfileView(journey: journey!)
+					JourneyProfileView(viewState: self.viewStore.value.profileView!)
 						.padding()
 					content
 				}
@@ -24,21 +52,16 @@ public struct JourneyBaseView<Content: View>: View {
 	}
 }
 
-struct JourneyBaseModifier: ViewModifier {
-	let journey: Journey?
+struct JourneyBaseModifier<Action>: ViewModifier {
+	let store: Store<Journey?, Action>
 	func body(content: Content) -> some View {
-		JourneyBaseView(journey: journey, content: { content })
+		JourneyBaseView(store: self.store, content: { content })
 	}
 }
 
 public extension View {
 
-	func journeyBase(_ journey: Journey?) -> some View {
-		self.modifier(JourneyBaseModifier(journey: journey))
+	func journeyBase<Action>(_ store: Store<Journey?, Action>) -> some View {
+		self.modifier(JourneyBaseModifier(store: store))
 	}
-//	func journeyBase<Content: View>(content: @escaping () -> Destination) -> some View {
-//		self.modifier(ModaLinkViewModifier(isPresented: isPresented,
-//																			 linkType: linkType,
-//																			 destination: destination))
-//	}
 }

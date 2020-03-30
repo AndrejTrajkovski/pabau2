@@ -8,9 +8,11 @@ public struct JourneyNavigationView: View {
 	public init(_ store: Store<JourneyState, JourneyContainerAction>) {
 		self.store = store
 		self.viewStore = self.store.view
+		print("JourneyNavigationView init")
 	}
 	public var body: some View {
-		NavigationView {
+		print("JourneyNavigationView body")
+		return NavigationView {
 			JourneyContainerView(self.store.scope(value: { $0 },
 																					 action: { $0 }))
 		}
