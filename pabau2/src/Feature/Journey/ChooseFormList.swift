@@ -8,13 +8,6 @@ public struct ChooseFormState: Equatable {
 	var journey: Journey?
 	var templates: [FormTemplate]
 	var selectedTemplatesIds: [Int]
-
-	var notSelectedTemplates: [FormTemplate] {
-		templates.filter { !selectedTemplatesIds.contains($0.id) }
-	}
-	var selectedTemplates: [FormTemplate] {
-		templates.filter { selectedTemplatesIds.contains($0.id) }
-	}
 }
 
 public enum ChooseFormAction {
@@ -39,21 +32,31 @@ func chooseFormListReducer(state: inout ChooseFormState,
 
 struct ChooseFormList: View {
 	let store: Store<ChooseFormState, ChooseFormAction>
-	@ObservedObject var viewStore: ViewStore<ChooseFormState, ChooseFormAction>
+	@ObservedObject var viewStore: ViewStore<ViewState, ChooseFormAction>
 	@State var searchText: String = ""
 	init (store: Store<ChooseFormState, ChooseFormAction>) {
 		self.store = store
-		self.viewStore = self.store.view
+		self.viewStore = self.store
+			.scope(value: ChooseFormList.ViewState.init,
+						 action: { $0 })
+			.view
 	}
-	
-	struct ViewState {
-		
+
+	struct ViewState: Equatable {
+		let templates: [FormTemplate]
+		var selectedTemplatesIds: [Int]
+		init(state: ChooseFormState) {
+			self.templates = state.templates
+			self.selectedTemplatesIds = state.selectedTemplatesIds
+		}
+		var notSelectedTemplates: [FormTemplate] {
+			templates.filter { !selectedTemplatesIds.contains($0.id) }
+		}
+		var selectedTemplates: [FormTemplate] {
+			templates.filter { selectedTemplatesIds.contains($0.id) }
+		}
 	}
-	
-	enum Action {
-		
-	}
-	
+
 	var body: some View {
 		chooseFormCells
 			.journeyBase(self.store.scope(value: { $0.journey },

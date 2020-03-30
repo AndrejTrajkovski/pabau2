@@ -80,8 +80,8 @@ public struct ChoosePathway: View {
 			self.chooseFormNavLink
 		}
 		.journeyBase(self.store
-		.scope(value: { $0.journey },
-					 action: { $0 }))
+			.scope(value: { $0.journey },
+						 action: { $0 }))
 	}
 
 	var chooseFormNavLink: some View {
