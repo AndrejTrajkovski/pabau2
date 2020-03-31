@@ -65,14 +65,14 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = combine(
 
 struct ContentView: View {
 	let store: Store<AppState, AppAction>
-	@ObservedObject var viewStore: ViewStore<State, AppAction>
-	struct State: Equatable {
-		var isLogin: Bool
-	}
+	@ObservedObject var viewStore: ViewStore<Navigation, AppAction>
+//	struct State: Equatable {
+//		var isLogin: Bool
+//	}
 	init (store: Store<AppState, AppAction>) {
 		self.store = store
 		self.viewStore = self.store
-			.scope(value: { State.init(isLogin: $0.navigation.login != nil)},
+			.scope(value: { $0.navigation },
 						 action: { $0 })
 			.view
 		print("ContentView init")
@@ -80,7 +80,7 @@ struct ContentView: View {
 	var body: some View {
 		print("ContentView body")
 		return ViewBuilder.buildBlock(
-			(self.viewStore.value.isLogin) ?
+			(self.viewStore.value.login != nil) ?
 				ViewBuilder.buildEither(second: LoginContainer(store: loginContainerStore))
 				:
 				ViewBuilder.buildEither(first: PabauTabBar(store: tabBarStore))
