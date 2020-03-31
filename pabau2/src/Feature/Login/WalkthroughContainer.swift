@@ -3,12 +3,15 @@ import ComposableArchitecture
 import CasePaths
 import Model
 
-public struct WalkthroughContainerState {
+public struct WalkthroughContainerState: Equatable {
+	public init (navigation: [LoginNavScreen],
+							 loginViewState: LoginViewState) {
+		self.navigation = navigation
+		self.loginViewState = loginViewState
+	}
 	public var navigation: [LoginNavScreen]
 	public var loginViewState: LoginViewState
 }
-
-extension WalkthroughContainerState: Equatable {}
 
 public struct WalkthroughContainer: View {
 	let store: Store<WalkthroughContainerState, WalkthroughContainerAction>
@@ -18,7 +21,7 @@ public struct WalkthroughContainer: View {
 		self.viewStore = self.store.view
 		print("WalkthroughContainer init")
 	}
-	
+
 	public var body: some View {
 		print("WalkthroughContainer body")
 		return VStack(spacing: 50) {

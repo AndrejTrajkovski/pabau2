@@ -24,7 +24,7 @@ public func pullbackcp<LocalValue, GlobalValue, LocalAction, GlobalAction, Local
 		guard let localValue = value.extract(from: globalValue) else { return [] }
 		var varLocalValue = localValue
 		let localEffects = reducer(&varLocalValue, localAction, environment(globalEnvironment))
-
+		globalValue = value.embed(varLocalValue)
     return localEffects.map { localEffect in
       localEffect.map(action.embed)
         .eraseToEffect()

@@ -71,7 +71,7 @@ struct PabauTabBar: View {
 }
 
 public struct SettingsState: Equatable {
-	var navigation: Navigation
+	
 }
 
 public enum SettingsAction {
@@ -96,7 +96,7 @@ public let tabBarReducer = combine(
 public func settingsReducer(state: inout SettingsState, action: SettingsAction, environment: TabBarEnvironment) -> [Effect<SettingsAction>] {
 	switch action {
 	case .logoutTapped:
-		state.navigation = .login([.signInScreen])
+		//TODO: 
 		return []
 	}
 }

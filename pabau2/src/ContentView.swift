@@ -13,19 +13,17 @@ typealias AppEnvironment = (
 )
 
 enum AppState: Equatable {
-	case walkthrough(LoginViewState)
+	case walkthrough(WalkthroughContainerState)
 	case tabBar(TabBarState)
 	public init (user: User?) {
 		if let user = user {
-			self = .tabBar(TabBarState(journeyState: JourneyState()))
+			self = .tabBar(TabBarState(journeyState: JourneyState(),
+																 settings: SettingsState()))
 		} else {
-			self = .walkthrough(LoginViewState())
+			self = .walkthrough(WalkthroughContainerState(navigation: [.walkthroughScreen]
+				, loginViewState: LoginViewState()))
 		}
 	}
-//	var loggedInUser: User?
-//	var navigation: Navigation
-//	var loginViewState: LoginViewState = LoginViewState()
-//	var journeyState: JourneyState = JourneyState()
 }
 
 enum AppAction {
@@ -33,39 +31,23 @@ enum AppAction {
 	case tabBar(TabBarAction)
 }
 
-extension AppState {
-//	var tabBar: TabBarState {
-//		get { TabBarState(navigation: self.navigation,
-//											journeyState: self.journeyState) }
-//		set {
-//			self.navigation = newValue.navigation
-//			self.journeyState = newValue.journeyState
-//		}
-//	}
-//	var walktrough: WalkthroughContainerState {
-//		set {
-//			self.navigation = newValue.navigation
-//			self.loggedInUser = newValue.loggedInUser
-//			self.loginViewState = newValue.loginViewState
-//		}
-//		get {
-//			return WalkthroughContainerState(navigation: self.navigation,
-//																			 loggedInUser: loggedInUser,
-//																			 loginViewState: self.loginViewState)
-//		}
-//	}
-}
-
 let appReducer: Reducer<AppState, AppAction, AppEnvironment> = combine(
 	pullbackcp(
 		walkthroughContainerReducer,
-		value: /AppState.walkthrough,
+		value: CasePath<AppState, WalkthroughContainerState>
+			.init(embed: { .walkthrough($0) }, extract: {
+				if case AppState.walkthrough(let value) = $0 {
+					return value
+				} else {
+					return nil
+				}
+			}),
 		action: /AppAction.walkthrough,
 		environment: { LoginEnvironment($0.loginAPI, $0.userDefaults) }
 	),
-	pullback(
+	pullbackcp(
 		tabBarReducer,
-		value: \AppState.tabBar,
+		value: /AppState.tabBar,
 		action: /AppAction.tabBar,
 		environment: { TabBarEnvironment($0) }
 	),
@@ -74,14 +56,22 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = combine(
 
 struct ContentView: View {
 	let store: Store<AppState, AppAction>
-	@ObservedObject var viewStore: ViewStore<Navigation, AppAction>
-//	struct State: Equatable {
-//		var isLogin: Bool
-//	}
-	init (store: Store<AppState, AppAction>) {
+	@ObservedObject var viewStore: ViewStore<State, AppAction>
+	struct State: Equatable {
+		var shouldShowLogin: Bool
+		init (_ appState: AppState) {
+			switch appState {
+			case .walkthrough(_):
+				self.shouldShowLogin = true
+			default:
+				self.shouldShowLogin = false
+			}
+		}
+	}
+	init(store: Store<AppState, AppAction>) {
 		self.store = store
 		self.viewStore = self.store
-			.scope(value: { $0.navigation },
+			.scope(value: State.init,
 						 action: { $0 })
 			.view
 		print("ContentView init")
@@ -89,7 +79,7 @@ struct ContentView: View {
 	var body: some View {
 		print("ContentView body")
 		return ViewBuilder.buildBlock(
-			(self.viewStore.value.login != nil) ?
+			(self.viewStore.value.shouldShowLogin) ?
 				ViewBuilder.buildEither(second: LoginContainer(store: loginContainerStore))
 				:
 				ViewBuilder.buildEither(first: PabauTabBar(store: tabBarStore))
@@ -98,14 +88,15 @@ struct ContentView: View {
 
 	var loginContainerStore: Store<WalkthroughContainerState, WalkthroughContainerAction> {
 		return self.store.scope(
-			value: { $0.walktrough },
+			value: { extract(case: AppState.walkthrough, from: $0) ?? WalkthroughContainerState(navigation: [.signInScreen],
+																																													loginViewState: LoginViewState()) },
 			action: { .walkthrough($0)}
 		)
 	}
 
 	var tabBarStore: Store<TabBarState, TabBarAction> {
 		return self.store.scope(
-			value: { $0.tabBar },
+			value: { extract(case: AppState.tabBar, from: $0)! },
 			action: { .tabBar($0)}
 		)
 	}
@@ -122,7 +113,7 @@ struct LoginContainer: View {
 	}
 
 	var shouldShowWalkthrough: Bool {
-		return self.viewStore.value.navigation.login?.contains(.walkthroughScreen) ?? false
+		return self.viewStore.value.navigation.contains(.walkthroughScreen)
 	}
 
 	var body: some View {
@@ -147,7 +138,10 @@ func globalReducer(state: inout AppState, action: AppAction, environment: AppEnv
 	AppAction.walkthrough(WalkthroughContainerAction.login(LoginViewAction.login(LoginAction.gotResponse(Result.success(value)))))
 	}, from: action)
 	if user != nil {
-		state.journeyState.loadingState = .loading
+		var journeyState = JourneyState()
+		journeyState.loadingState = .loading
+		state = .tabBar(TabBarState.init(journeyState: journeyState,
+																		 settings: SettingsState()))
 		return [
 			environment.journeyAPI.getJourneys(date: Date())
 				.map {
