@@ -46,17 +46,21 @@ public func logging<Value, Action, Environment>(
 }
 
 public final class ViewStore<Value, Action>: ObservableObject {
-	@Published public fileprivate(set) var value: Value
-	fileprivate var cancellable: Cancellable?
-	public let send: (Action) -> Void
-	
-	init(
-		initialValue: Value,
-		send: @escaping (Action) -> Void
-	) {
-		self.value = initialValue
-		self.send = send
-	}
+  @Published public fileprivate(set) var value: Value
+  fileprivate var cancellable: Cancellable?
+  public let send: (Action) -> Void
+  
+  public init(
+    initialValue value: Value,
+    send: @escaping (Action) -> Void
+  ) {
+    self.value = value
+    self.send = send
+  }
+  
+//  public func send(_ action: Action) {
+//
+//  }
 }
 
 extension Store where Value: Equatable {
@@ -66,18 +70,23 @@ extension Store where Value: Equatable {
 }
 
 extension Store {
-	public func view(removeDuplicates predicate: @escaping (Value, Value) -> Bool) -> ViewStore<Value, Action> {
-		let viewStore = ViewStore(
-			initialValue: self.value,
-			send: self.send
-		)
-		viewStore.cancellable = self.$value
-			.removeDuplicates(by: predicate)
-			.sink { newValue in
-				viewStore.value = newValue
-		}
-		return viewStore
-	}
+  public func view(
+    removeDuplicates predicate: @escaping (Value, Value) -> Bool
+  ) -> ViewStore<Value, Action> {
+    let viewStore = ViewStore(
+      initialValue: self.value,
+      send: self.send
+    )
+    
+    viewStore.cancellable = self.$value
+      .removeDuplicates(by: predicate)
+      .sink(receiveValue: { [weak viewStore] value in
+        viewStore?.value = value
+//        self
+      })
+    
+    return viewStore
+  }
 }
 
 public final class Store<Value, Action> /*: ObservableObject */ {
