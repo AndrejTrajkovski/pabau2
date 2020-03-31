@@ -34,15 +34,15 @@ extension AppState {
 		}
 	}
 	var walktrough: WalkthroughContainerState {
-		get {
-			return WalkthroughContainerState(navigation: self.navigation,
-																			 loggedInUser: loggedInUser,
-																			 loginViewState: self.loginViewState)
-		}
 		set {
 			self.navigation = newValue.navigation
 			self.loggedInUser = newValue.loggedInUser
 			self.loginViewState = newValue.loginViewState
+		}
+		get {
+			return WalkthroughContainerState(navigation: self.navigation,
+																			 loggedInUser: loggedInUser,
+																			 loginViewState: self.loginViewState)
 		}
 	}
 }
