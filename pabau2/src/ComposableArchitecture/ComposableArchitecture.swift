@@ -13,6 +13,25 @@ public func combine<Value, Action, Environment>(
   }
 }
 
+public func pullbackcp<LocalValue, GlobalValue, LocalAction, GlobalAction, LocalEnvironment, GlobalEnvironment>(
+  _ reducer: @escaping Reducer<LocalValue, LocalAction, LocalEnvironment>,
+  value: CasePath<GlobalValue, LocalValue>,
+  action: CasePath<GlobalAction, LocalAction>,
+  environment: @escaping (GlobalEnvironment) -> LocalEnvironment
+) -> Reducer<GlobalValue, GlobalAction, GlobalEnvironment> {
+  return { globalValue, globalAction, globalEnvironment in
+    guard let localAction = action.extract(from: globalAction) else { return [] }
+		guard let localValue = value.extract(from: globalValue) else { return [] }
+		var varLocalValue = localValue
+		let localEffects = reducer(&varLocalValue, localAction, environment(globalEnvironment))
+
+    return localEffects.map { localEffect in
+      localEffect.map(action.embed)
+        .eraseToEffect()
+    }
+  }
+}
+
 public func pullback<LocalValue, GlobalValue, LocalAction, GlobalAction, LocalEnvironment, GlobalEnvironment>(
   _ reducer: @escaping Reducer<LocalValue, LocalAction, LocalEnvironment>,
   value: WritableKeyPath<GlobalValue, LocalValue>,

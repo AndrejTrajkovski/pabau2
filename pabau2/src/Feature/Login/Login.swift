@@ -66,14 +66,12 @@ public func loginReducer(state: inout WalkthroughContainerState, action: LoginAc
 	case .loginTapped (let email, let password):
 		return handleLoginTapped(email, password, state: &state, apiClient: environment.apiClient)
 	case .forgotPassTapped:
-		state.navigation.login?.append(.forgotPassScreen)
+		state.navigation.append(.forgotPassScreen)
 		return []
 	case .gotResponse(let result):
 		switch result {
 		case .success(let user):
 			state.loginViewState.loginLS = .gotSuccess
-			state.loggedInUser = user
-			state.navigation = .tabBar(.journey)
 		case .failure:
 			state.loginViewState.loginLS = .gotError
 		}
@@ -133,11 +131,7 @@ public struct LoginView: View {
 		print("LoginView body")
 		return VStack {
 			NavigationLink.emptyHidden(
-				self.viewStore.value.navigation.tabBar != nil,
-				EmptyView()
-			)
-			NavigationLink.emptyHidden(
-				self.viewStore.value.navigation.login?.contains(.forgotPassScreen) ?? false,
+				self.viewStore.value.navigation.contains(.forgotPassScreen),
 				ForgotPasswordView(self.store.scope(
 					value: { _ in self.viewStore.value.forgotPass },
 					action: { .forgotPass($0)}), self.$email))

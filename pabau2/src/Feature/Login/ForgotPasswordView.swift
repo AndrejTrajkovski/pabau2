@@ -13,7 +13,7 @@ public enum ForgotPassViewAction: Equatable {
 }
 
 public struct ForgotPassContainerState: Equatable {
-	var navigation: Navigation
+	var navigation: [LoginNavScreen]
 	var forgotPassLS: LoadingState
 	var fpValidation: String
 	var rpValidation: RPValidator
@@ -41,7 +41,7 @@ public struct ForgotPassContainerState: Equatable {
 }
 
 public struct ForgotPassState: Equatable {
-	var navigation: Navigation
+	var navigation: [LoginNavScreen]
 	var loadingState: LoadingState
 	var fpValidation: String
 }
@@ -56,7 +56,7 @@ let forgotPassViewReducer = combine(
 public func forgotPasswordReducer(state: inout ForgotPassState, action: ForgotPasswordAction, environment: LoginEnvironment) -> [Effect<ForgotPasswordAction>] {
 	switch action {
 	case .backBtnTapped:
-		state.navigation.login?.removeAll(where: { $0 == .forgotPassScreen })
+		state.navigation.removeAll(where: { $0 == .forgotPassScreen })
 		return []
 	case .sendRequest(let email):
 		let isValid = isValidEmail(email)
@@ -76,7 +76,7 @@ public func forgotPasswordReducer(state: inout ForgotPassState, action: ForgotPa
 		switch result {
 		case .success:
 			state.loadingState = .gotSuccess
-			state.navigation.login?.append(.checkEmailScreen)
+			state.navigation.append(.checkEmailScreen)
 		case .failure:
 			state.loadingState = .gotError
 		}
@@ -140,7 +140,7 @@ struct ForgotPasswordView: View {
 		return VStack(alignment: .leading, spacing: 36) {
 			ForgotPassword(self.store.scope(value: { $0.forgotPass }, action: { .forgotPass($0)}), self.$email)
 			NavigationLink.emptyHidden(
-				self.viewStore.value.navigation.login?.contains(.checkEmailScreen) ?? false,
+				self.viewStore.value.navigation.contains(.checkEmailScreen),
 				self.checkEmailView)
 			Spacer()
 		}.loadingView(.constant(self.viewStore.value.forgotPass.loadingState.isLoading),
@@ -155,7 +155,7 @@ struct ForgotPasswordView: View {
 		)
 	}
 
-	var passChangedStore: Store<Navigation, PassChangedAction> {
+	var passChangedStore: Store<[LoginNavScreen], PassChangedAction> {
 		self.store.scope(value: { $0.navigation }, action: { .passChanged($0)})
 	}
 	var resetPassStore: Store<ResetPasswordState, ResetPasswordAction> {

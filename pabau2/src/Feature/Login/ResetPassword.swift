@@ -38,7 +38,7 @@ public struct ResetPassRequest: Equatable {
 }
 
 public struct ResetPasswordState: Equatable {
-	var navigation: Navigation
+	var navigation: [LoginNavScreen]
 	var rpValidation: RPValidator
 	var loadingState: LoadingState
 	var newPassValidator: String {
@@ -126,7 +126,7 @@ func handle(_ result: Result<ResetPassSuccess, RequestError>, _ state: inout Res
 	switch result {
 	case .success:
 		state.loadingState = .gotSuccess
-		state.navigation.login?.append(.passChangedScreen)
+		state.navigation.append(.passChangedScreen)
 		return []
 	case .failure:
 		state.loadingState = .gotError
@@ -137,7 +137,7 @@ func handle(_ result: Result<ResetPassSuccess, RequestError>, _ state: inout Res
 public func resetPassReducer(state: inout ResetPasswordState, action: ResetPasswordAction, environment: LoginEnvironment) -> [Effect<ResetPasswordAction>] {
 	switch action {
 	case .backBtnTapped:
-		state.navigation.login?.removeAll(where: { $0 == .resetPassScreen })
+		state.navigation.removeAll(where: { $0 == .resetPassScreen })
 		return []
 	case .changePassTapped(let code, let newPass, let confirmPass):
 		return handle(code, newPass, confirmPass, &state, environment.apiClient)
@@ -150,13 +150,13 @@ struct ResetPassword: View {
 	let store: Store<ResetPasswordState, ResetPasswordAction>
 	@ObservedObject var viewStore: ViewStore<ResetPasswordState, ResetPasswordAction>
 	init (store: Store<ResetPasswordState, ResetPasswordAction>,
-				passChangedStore: Store<Navigation, PassChangedAction>) {
+				passChangedStore: Store<[LoginNavScreen], PassChangedAction>) {
 		self.store = store
 		self.viewStore = self.store.view
 		self.passChangedStore = passChangedStore
 	}
 	//
-	let passChangedStore: Store<Navigation, PassChangedAction>
+	let passChangedStore: Store<[LoginNavScreen], PassChangedAction>
 	@State var code: String = ""
 	@State var newPass: String = ""
 	@State var confirmPass: String = ""
@@ -188,7 +188,7 @@ struct ResetPassword: View {
 					self.viewStore.send(.changePassTapped(self.code, self.newPass, self.confirmPass))
 				}
 				NavigationLink.emptyHidden(
-					self.viewStore.value.navigation.login?.contains(.passChangedScreen) ?? false,
+					self.viewStore.value.navigation.contains(.passChangedScreen),
 					self.passChangedView)
 			}
 			.frame(minWidth: 280, maxWidth: 495)

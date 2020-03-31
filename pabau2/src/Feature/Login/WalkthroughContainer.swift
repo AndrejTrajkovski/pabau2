@@ -4,14 +4,7 @@ import CasePaths
 import Model
 
 public struct WalkthroughContainerState {
-	public init(navigation: Navigation, loggedInUser: User?, loginViewState: LoginViewState) {
-		self.navigation = navigation
-		self.loggedInUser = loggedInUser
-		self.loginViewState = loginViewState
-	}
-
-	public var navigation: Navigation
-	public var loggedInUser: User?
+	public var navigation: [LoginNavScreen]
 	public var loginViewState: LoginViewState
 }
 
@@ -33,7 +26,7 @@ public struct WalkthroughContainer: View {
 				self.store.scope(value: { $0.navigation },
 												action: { .walkthrough($0)}))
 			NavigationLink.emptyHidden(
-				viewStore.value.navigation.login?.contains(.signInScreen) ?? false,
+				viewStore.value.navigation.contains(.signInScreen),
 			LoginView(store: self.store.scope(value: { $0 },
 																			 action: { .login($0)})))
 		}

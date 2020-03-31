@@ -3,13 +3,13 @@ import ComposableArchitecture
 import Util
 import Model
 
-public func checkEmailReducer(state: inout Navigation, action: CheckEmailAction, environment: LoginEnvironment) -> [Effect<CheckEmailAction>] {
+public func checkEmailReducer(state: inout [LoginNavScreen], action: CheckEmailAction, environment: LoginEnvironment) -> [Effect<CheckEmailAction>] {
 	switch action {
 	case .resetPassTapped:
-		state.login?.append(.resetPassScreen)
+		state.append(.resetPassScreen)
 		return []
 	case .backBtnTapped:
-		state.login?.removeAll(where: { $0 == .checkEmailScreen })
+		state.removeAll(where: { $0 == .checkEmailScreen })
 		return []
 	}
 }
@@ -20,14 +20,14 @@ public enum CheckEmailAction: Equatable {
 }
 
 public struct CheckEmail: View {
-	let store: Store<Navigation, CheckEmailAction>
-	@ObservedObject var viewStore: ViewStore<Navigation, CheckEmailAction>
+	let store: Store<[LoginNavScreen], CheckEmailAction>
+	@ObservedObject var viewStore: ViewStore<[LoginNavScreen], CheckEmailAction>
 	//
 	let resetPassStore: Store<ResetPasswordState, ResetPasswordAction>
-	let passChangedStore: Store<Navigation, PassChangedAction>
-	public init(store: Store<Navigation, CheckEmailAction>,
+	let passChangedStore: Store<[LoginNavScreen], PassChangedAction>
+	public init(store: Store<[LoginNavScreen], CheckEmailAction>,
 							resetPassStore: Store<ResetPasswordState, ResetPasswordAction>,
-							passChangedStore: Store<Navigation, PassChangedAction>) {
+							passChangedStore: Store<[LoginNavScreen], PassChangedAction>) {
 		self.store = store
 		self.viewStore = self.store.view
 		self.resetPassStore = resetPassStore
@@ -43,7 +43,7 @@ public struct CheckEmail: View {
 																	btnAction: { self.viewStore.send(.resetPassTapped) }
 			).customBackButton { self.viewStore.send(.backBtnTapped) }
 		NavigationLink.emptyHidden(
-			self.viewStore.value.login?.contains(.resetPassScreen) ?? false,
+			self.viewStore.value.contains(.resetPassScreen),
 			resetPassView)
 		}
 	}

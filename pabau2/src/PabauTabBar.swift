@@ -8,15 +8,13 @@ import Journey
 public typealias TabBarEnvironment = (loginAPI: LoginAPI, journeyAPI: JourneyAPI, userDefaults: UserDefaults)
 
 public struct TabBarState: Equatable {
-	public var navigation: Navigation
+//	public var navigation: Navigation
 	public var journeyState: JourneyState
+	var settings: SettingsState
 }
 
 extension TabBarState {
-	var settings: SettingsState {
-		get { SettingsState(navigation: self.navigation)}
-		set { self.navigation = newValue.navigation }
-	}
+	
 	var journey: JourneyState {
 		get {
 			return self.journeyState

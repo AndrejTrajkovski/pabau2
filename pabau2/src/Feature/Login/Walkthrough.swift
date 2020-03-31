@@ -10,9 +10,9 @@ public struct Walkthrough: View {
 	let state = makeState(titles: WalkthroughStatic.titles,
 												descs: WalkthroughStatic.description,
 												imageTitles: WalkthroughStatic.images)
-	let store: Store<Navigation, WalkthroughAction>
-	@ObservedObject var viewStore: ViewStore<Navigation, WalkthroughAction>
-	public init (store: Store<Navigation, WalkthroughAction>) {
+	let store: Store<[LoginNavScreen], WalkthroughAction>
+	@ObservedObject var viewStore: ViewStore<[LoginNavScreen], WalkthroughAction>
+	public init (store: Store<[LoginNavScreen], WalkthroughAction>) {
 		self.store = store
 		self.viewStore = self.store
 			.scope(value: { $0 }, action: { $0 })
@@ -31,10 +31,10 @@ public struct Walkthrough: View {
 	}
 }
 
-public func walkthroughReducer(state: inout Navigation, action: WalkthroughAction, environment: LoginEnvironment) -> [Effect<WalkthroughAction>] {
+public func walkthroughReducer(state: inout [LoginNavScreen], action: WalkthroughAction, environment: LoginEnvironment) -> [Effect<WalkthroughAction>] {
 	switch action {
 	case .signInTapped:
-		state.login?.append(.signInScreen)
+		state.append(.signInScreen)
 		return []
 	}
 }

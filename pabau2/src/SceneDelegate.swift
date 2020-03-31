@@ -16,9 +16,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       window.rootViewController = UIHostingController(
         rootView: ContentView(
           store: Store(
-						initialValue: AppState(
+						initialValue: AppState(user: nil
 //							navigation: .login([.walkthroughScreen])
-							navigation: .tabBar(.journey)
+//							navigation: .tabBar(.journey)
 						),
 						reducer: reducer,
 						environment: AppEnvironment(

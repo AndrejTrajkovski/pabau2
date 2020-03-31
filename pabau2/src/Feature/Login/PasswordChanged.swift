@@ -3,13 +3,13 @@ import ComposableArchitecture
 import Util
 import Model
 
-public func passChangedReducer(state: inout Navigation, action: PassChangedAction, environment: LoginEnvironment) -> [Effect<PassChangedAction>] {
+public func passChangedReducer(state: inout [LoginNavScreen], action: PassChangedAction, environment: LoginEnvironment) -> [Effect<PassChangedAction>] {
 	switch action {
 	case .signInTapped:
-		state.login?.removeAll(where: { $0 == .passChangedScreen })
-		state.login?.removeAll(where: { $0 == .resetPassScreen })
-		state.login?.removeAll(where: { $0 == .checkEmailScreen })
-		state.login?.removeAll(where: { $0 == .forgotPassScreen })
+		state.removeAll(where: { $0 == .passChangedScreen })
+		state.removeAll(where: { $0 == .resetPassScreen })
+		state.removeAll(where: { $0 == .checkEmailScreen })
+		state.removeAll(where: { $0 == .forgotPassScreen })
 		return []
 	}
 }
@@ -19,9 +19,9 @@ public enum PassChangedAction: Equatable {
 }
 
 public struct PasswordChanged: View {
-	let store: Store<Navigation, PassChangedAction>
-	@ObservedObject var viewStore: ViewStore<Navigation, PassChangedAction>
-	init (store: Store<Navigation, PassChangedAction>) {
+	let store: Store<[LoginNavScreen], PassChangedAction>
+	@ObservedObject var viewStore: ViewStore<[LoginNavScreen], PassChangedAction>
+	init (store: Store<[LoginNavScreen], PassChangedAction>) {
 		self.store = store
 		self.viewStore = self.store.view
 	}

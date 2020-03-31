@@ -12,11 +12,20 @@ typealias AppEnvironment = (
 	userDefaults: UserDefaults
 )
 
-struct AppState: Equatable {
-	var loggedInUser: User?
-	var navigation: Navigation
-	var loginViewState: LoginViewState = LoginViewState()
-	var journeyState: JourneyState = JourneyState()
+enum AppState: Equatable {
+	case walkthrough(LoginViewState)
+	case tabBar(TabBarState)
+	public init (user: User?) {
+		if let user = user {
+			self = .tabBar(TabBarState(journeyState: JourneyState()))
+		} else {
+			self = .walkthrough(LoginViewState())
+		}
+	}
+//	var loggedInUser: User?
+//	var navigation: Navigation
+//	var loginViewState: LoginViewState = LoginViewState()
+//	var journeyState: JourneyState = JourneyState()
 }
 
 enum AppAction {
@@ -25,32 +34,32 @@ enum AppAction {
 }
 
 extension AppState {
-	var tabBar: TabBarState {
-		get { TabBarState(navigation: self.navigation,
-											journeyState: self.journeyState) }
-		set {
-			self.navigation = newValue.navigation
-			self.journeyState = newValue.journeyState
-		}
-	}
-	var walktrough: WalkthroughContainerState {
-		set {
-			self.navigation = newValue.navigation
-			self.loggedInUser = newValue.loggedInUser
-			self.loginViewState = newValue.loginViewState
-		}
-		get {
-			return WalkthroughContainerState(navigation: self.navigation,
-																			 loggedInUser: loggedInUser,
-																			 loginViewState: self.loginViewState)
-		}
-	}
+//	var tabBar: TabBarState {
+//		get { TabBarState(navigation: self.navigation,
+//											journeyState: self.journeyState) }
+//		set {
+//			self.navigation = newValue.navigation
+//			self.journeyState = newValue.journeyState
+//		}
+//	}
+//	var walktrough: WalkthroughContainerState {
+//		set {
+//			self.navigation = newValue.navigation
+//			self.loggedInUser = newValue.loggedInUser
+//			self.loginViewState = newValue.loginViewState
+//		}
+//		get {
+//			return WalkthroughContainerState(navigation: self.navigation,
+//																			 loggedInUser: loggedInUser,
+//																			 loginViewState: self.loginViewState)
+//		}
+//	}
 }
 
 let appReducer: Reducer<AppState, AppAction, AppEnvironment> = combine(
-	pullback(
+	pullbackcp(
 		walkthroughContainerReducer,
-		value: \AppState.walktrough,
+		value: /AppState.walkthrough,
 		action: /AppAction.walkthrough,
 		environment: { LoginEnvironment($0.loginAPI, $0.userDefaults) }
 	),
