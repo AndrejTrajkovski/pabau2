@@ -32,10 +32,19 @@ public enum TabBarAction {
 
 struct PabauTabBar: View {
 	let store: Store<TabBarState, TabBarAction>
-	@ObservedObject var viewStore: ViewStore<TabBarState, TabBarAction>
+	@ObservedObject var viewStore: ViewStore<ViewState, TabBarAction>
+	struct ViewState: Equatable {
+		let isShowingEmployees: Bool
+		init(state: TabBarState) {
+			self.isShowingEmployees = state.journey.employeesState.isShowingEmployees
+		}
+	}
 	init (store: Store<TabBarState, TabBarAction>) {
 		self.store = store
-		self.viewStore = self.store.view
+		self.viewStore = self.store
+			.scope(value: ViewState.init(state:),
+						 action: { $0 })
+			.view
 		print("PabauTabBar init")
 	}
 	var body: some View {
@@ -63,7 +72,7 @@ struct PabauTabBar: View {
 			}
 			EmployeesListStore(self.store.scope(value: { $0.journey.employeesState } ,
 																				 action: { .journey(.employees($0))}))
-				.isHidden(!self.viewStore.value.journey.employeesState.isShowingEmployees, remove: true)
+				.isHidden(!self.viewStore.value.isShowingEmployees, remove: true)
 				.frame(width: 302)
 				.background(Color.white.shadow(color: .employeeShadow, radius: 40.0, x: -20, y: 2))
 		}

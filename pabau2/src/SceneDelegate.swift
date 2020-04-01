@@ -24,8 +24,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
           store: Store(
 						initialValue: AppState(user: userDefaults.loggedInUser,
 																	 hasSeenWalkthrough: userDefaults.hasSeenAppIntroduction
-//							navigation: .login([.walkthroughScreen])
-//							navigation: .tabBar(.journey)
 						),
 						reducer: reducer,
 						environment: env
