@@ -155,18 +155,8 @@ func globalReducer(state: inout AppState, action: AppAction, environment: AppEnv
 	if let user = user {
 		var journeyState = JourneyState()
 		journeyState.loadingState = .loading
-		state = .tabBar(TabBarState(journeyState: journeyState,
-																settings: SettingsState()))
-		return [
-			environment.journeyAPI.getJourneys(date: Date())
-				.map {
-					AppAction.tabBar(TabBarAction.journey(JourneyContainerAction.journey(.gotResponse($0))))
-			}
-			.eraseToEffect(),
-			environment.journeyAPI.getEmployees()
-				.map { AppAction.tabBar(TabBarAction.journey(JourneyContainerAction.employees(EmployeesAction.gotResponse($0))))}
-			.eraseToEffect()
-		]
+		state = AppState(user: user, hasSeenWalkthrough: environment.userDefaults.hasSeenAppIntroduction)
+		return []
 	} else {
 		return []
 	}

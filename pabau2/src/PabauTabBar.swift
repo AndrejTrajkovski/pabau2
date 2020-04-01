@@ -56,6 +56,8 @@ struct PabauTabBar: View {
 					.tabItem {
 						Image(systemName: "staroflife")
 						Text("Journey")
+				}.onAppear { self.viewStore.send(.journey(JourneyContainerAction.journey(JourneyAction.loadJourneys)))
+					self.viewStore.send(.journey(JourneyContainerAction.employees(EmployeesAction.loadEmployees)))
 				}
 				Text("Calendar")
 					.tabItem {

@@ -5,11 +5,11 @@ import SwiftDate
 public struct JourneyMockAPI: MockAPI, JourneyAPI {
 	public init () {}
 	public func getJourneys(date: Date) -> Effect<Result<[Journey], RequestError>> {
-		mockSuccess(Self.mockJourneys, delay: 2.0)
+		mockSuccess(Self.mockJourneys, delay: 0.2)
 	}
 	
 	public func getEmployees() -> Effect<Result<[Employee], RequestError>> {
-		mockSuccess(Self.mockEmployees)
+		mockSuccess(Self.mockEmployees, delay: 1.0)
 	}
 	
 	static let mockEmployees = [

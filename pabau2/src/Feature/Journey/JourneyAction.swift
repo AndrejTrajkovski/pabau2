@@ -8,6 +8,7 @@ public enum JourneyContainerAction {
 }
 
 public enum JourneyAction {
+	case loadJourneys
 	case selectedFilter(CompleteFilter)
 	case selectedDate(Date)
 	case addAppointmentTap
