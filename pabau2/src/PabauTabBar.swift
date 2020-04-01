@@ -5,12 +5,16 @@ import Model
 import Util
 import Journey
 
-public typealias TabBarEnvironment = (loginAPI: LoginAPI, journeyAPI: JourneyAPI, userDefaults: UserDefaultsConfig)
+public typealias TabBarEnvironment = (
+	loginAPI: LoginAPI,
+	journeyAPI: JourneyAPI,
+	userDefaults: UserDefaultsConfig
+)
 
 public struct TabBarState: Equatable {
 //	public var navigation: Navigation
 	public var journeyState: JourneyState
-	var settings: SettingsState
+	public var settings: SettingsState
 }
 
 extension TabBarState {
@@ -81,19 +85,12 @@ struct PabauTabBar: View {
 	}
 }
 
-public struct SettingsState: Equatable {
-	
-}
-
-public enum SettingsAction {
-	case logoutTapped
-}
-
 public let tabBarReducer = combine(
 	pullback(settingsReducer,
 					 value: \TabBarState.settings,
 					 action: /TabBarAction.settings,
-					 environment: { $0 }),
+					 environment: { SettingsEnvironment($0) }
+	),
 	pullback(journeyContainerReducer,
 					 value: \TabBarState.journey,
 					 action: /TabBarAction.journey,
@@ -103,27 +100,3 @@ public let tabBarReducer = combine(
 							userDefaults: $0.userDefaults)
 	})
 )
-
-public func settingsReducer(state: inout SettingsState, action: SettingsAction, environment: TabBarEnvironment) -> [Effect<SettingsAction>] {
-	switch action {
-	case .logoutTapped:
-		//TODO: 
-		return []
-	}
-}
-
-public struct Settings: View {
-	let store: Store<SettingsState, SettingsAction>
-	@ObservedObject var viewStore: ViewStore<SettingsState, SettingsAction>
-	init (store: Store<SettingsState, SettingsAction>) {
-		self.store = store
-		self.viewStore = self.store.view
-	}
-	public var body: some View {
-		VStack {
-			BigButton(text: "Logout") {
-				self.viewStore.send(.logoutTapped)
-			}
-		}
-	}
-}

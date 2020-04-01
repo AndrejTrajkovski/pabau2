@@ -9,7 +9,7 @@ public struct JourneyMockAPI: MockAPI, JourneyAPI {
 	}
 	
 	public func getEmployees() -> Effect<Result<[Employee], RequestError>> {
-		mockSuccess(Self.mockEmployees, delay: 1.0)
+		mockSuccess(Self.mockEmployees, delay: 0.0)
 	}
 	
 	static let mockEmployees = [

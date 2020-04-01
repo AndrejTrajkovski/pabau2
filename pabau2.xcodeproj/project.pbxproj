@@ -199,6 +199,7 @@
 		82CACEEE241131460021E1DE /* SwiftUIFSCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CACE68241109B70021E1DE /* SwiftUIFSCalendar.swift */; };
 		82CACEEF241131460021E1DE /* SwiftUICalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CACE6A24110A250021E1DE /* SwiftUICalendarViewModel.swift */; };
 		82D43D9024351F5000AC74FA /* EmployeesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D43D8F24351F5000AC74FA /* EmployeesList.swift */; };
+		82D43D92243522CD00AC74FA /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D43D91243522CD00AC74FA /* Settings.swift */; };
 		82E253F8241B661100F16C30 /* RoundedCorners.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E253F7241B661100F16C30 /* RoundedCorners.swift */; };
 		82E253FA241B9EB500F16C30 /* JourneyAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E253F9241B9EB500F16C30 /* JourneyAction.swift */; };
 		82E253FC241B9ED000F16C30 /* JourneyState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E253FB241B9ED000F16C30 /* JourneyState.swift */; };
@@ -570,6 +571,7 @@
 		82CACEE4241131260021E1DE /* FSCalendarSwiftUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSCalendarSwiftUI.h; sourceTree = "<group>"; };
 		82CACEE5241131260021E1DE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		82D43D8F24351F5000AC74FA /* EmployeesList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmployeesList.swift; sourceTree = "<group>"; };
+		82D43D91243522CD00AC74FA /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		82E253F7241B661100F16C30 /* RoundedCorners.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedCorners.swift; sourceTree = "<group>"; };
 		82E253F9241B9EB500F16C30 /* JourneyAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyAction.swift; sourceTree = "<group>"; };
 		82E253FB241B9ED000F16C30 /* JourneyState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyState.swift; sourceTree = "<group>"; };
@@ -839,6 +841,7 @@
 				8250D7D3242C980100F8F3FC /* ChooseService.swift */,
 				82C479DD242E17B50037F140 /* CheckIn.swift */,
 				82D43D8F24351F5000AC74FA /* EmployeesList.swift */,
+				82D43D91243522CD00AC74FA /* Settings.swift */,
 			);
 			path = Journey;
 			sourceTree = "<group>";
@@ -1785,6 +1788,7 @@
 				82C479DE242E17B50037F140 /* CheckIn.swift in Sources */,
 				829B40D12423B8F2009B7E71 /* AddAppointment.swift in Sources */,
 				8250D7D4242C980100F8F3FC /* ChooseService.swift in Sources */,
+				82D43D92243522CD00AC74FA /* Settings.swift in Sources */,
 				82E253FA241B9EB500F16C30 /* JourneyAction.swift in Sources */,
 				82D43D9024351F5000AC74FA /* EmployeesList.swift in Sources */,
 				82E253FC241B9ED000F16C30 /* JourneyState.swift in Sources */,
