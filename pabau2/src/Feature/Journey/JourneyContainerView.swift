@@ -18,7 +18,6 @@ public enum EmployeesAction {
 	case toggleEmployees
 	case gotResponse(Result<[Employee], RequestError>)
 	case onTapGestureEmployee(Employee)
-	case onAppear
 	case loadEmployees
 }
 
@@ -49,12 +48,6 @@ public func employeeListReducer(state: inout EmployeesState,
 		}
 	case .toggleEmployees:
 		state.isShowingEmployees.toggle()
-	case .onAppear:
-		return [
-			environment.apiClient.getEmployees()
-				.map { .gotResponse($0)}
-				.eraseToEffect()
-		]
 	case .loadEmployees:
 		state.loadingState = .loading
 		return [

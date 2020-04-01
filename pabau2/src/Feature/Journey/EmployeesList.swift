@@ -17,7 +17,6 @@ public struct EmployeesListStore: View {
 								 employees: self.viewStore.value.employees,
 								 header: EmployeeHeader { self.viewStore.send(.toggleEmployees) },
 								 didSelectEmployee: { self.viewStore.send(.onTapGestureEmployee($0))})
-			.onAppear(perform: { self.viewStore.send(.onAppear) })
 	}
 }
 
