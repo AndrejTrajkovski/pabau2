@@ -10,22 +10,24 @@ public struct Walkthrough: View {
 	let state = makeState(titles: WalkthroughStatic.titles,
 												descs: WalkthroughStatic.description,
 												imageTitles: WalkthroughStatic.images)
-	let store: Store<[LoginNavScreen], WalkthroughAction>
-	@ObservedObject var viewStore: ViewStore<[LoginNavScreen], WalkthroughAction>
-	public init (store: Store<[LoginNavScreen], WalkthroughAction>) {
-		self.store = store
-		self.viewStore = self.store
-			.scope(value: { $0 }, action: { $0 })
-			.view
+	let action: () -> Void
+	public init (action: @escaping () -> Void) {
+		self.action = action
+//		self.store = store
+//		self.viewStore = self.store
+//			.scope(value: { $0 }, action: { $0 })
+//			.view(removeDuplicates: ==)
+		print("Walkthrough init")
 	}
 
 	public var body: some View {
-		VStack {
+		print("Walkthrough body")
+		return VStack {
 			PageView(state.map { WalkthroughContentView(state: $0)})
 				.frame(maxHeight: 686.0)
 			BigButton(text: Texts.signIn,
 								btnTapAction: {
-									self.viewStore.send(.signInTapped)
+									self.action()
 			})
 		}
 	}
@@ -36,11 +38,16 @@ public func walkthroughReducer(state: inout [LoginNavScreen], action: Walkthroug
 	case .signInTapped:
 		state.append(.signInScreen)
 		return []
+	case .onAppear:
+		var userDefaults = environment.userDefaults
+		userDefaults.hasSeenAppIntroduction = true
+		return []
 	}
 }
 
 public enum WalkthroughAction: Equatable {
   case signInTapped
+	case onAppear
 }
 
 struct WalkthroughStatic {

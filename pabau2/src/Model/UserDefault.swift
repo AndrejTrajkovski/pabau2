@@ -1,19 +1,30 @@
 @propertyWrapper
-struct UserDefault<T> {
+public struct UserDefault<T: Codable> {
 	let key: String
 	let defaultValue: T?
-
-	init(_ key: String, defaultValue: T?) {
+	let userDefaults: UserDefaults
+	
+	init(_ key: String, defaultValue: T?, userDefaults: UserDefaults = .standard) {
 		self.key = key
 		self.defaultValue = defaultValue
+		self.userDefaults = userDefaults
 	}
 
-	var wrappedValue: T? {
+	public var wrappedValue: T? {
 		get {
-			return UserDefaults.standard.object(forKey: key) as? T ?? defaultValue
+			if let savedValue = userDefaults.object(forKey: key) as? Data {
+					let decoder = JSONDecoder()
+					if let loadedValue = try? decoder.decode(T.self, from: savedValue) {
+							return loadedValue
+					}
+			}
+			return defaultValue
 		}
 		set {
-			UserDefaults.standard.set(newValue, forKey: key)
+			let encoder = JSONEncoder()
+			if let encoded = try? encoder.encode(newValue) {
+				userDefaults.set(encoded, forKey: key)
+			}
 		}
 	}
 }

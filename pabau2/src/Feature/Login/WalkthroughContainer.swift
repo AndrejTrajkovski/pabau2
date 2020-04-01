@@ -2,6 +2,7 @@ import SwiftUI
 import ComposableArchitecture
 import CasePaths
 import Model
+import Util
 
 public struct WalkthroughContainerState: Equatable {
 	public init (navigation: [LoginNavScreen],
@@ -15,23 +16,35 @@ public struct WalkthroughContainerState: Equatable {
 
 public struct WalkthroughContainer: View {
 	let store: Store<WalkthroughContainerState, WalkthroughContainerAction>
-	@ObservedObject var viewStore: ViewStore<WalkthroughContainerState, WalkthroughContainerAction>
+	@ObservedObject var viewStore: ViewStore<ViewState, WalkthroughContainerAction>
+	struct ViewState: Equatable {
+		let isSignInActive: Bool
+		init(state: WalkthroughContainerState) {
+			self.isSignInActive = state.navigation.contains(.signInScreen)
+		}
+	}
 	public init(_ store: Store<WalkthroughContainerState, WalkthroughContainerAction>) {
 		self.store = store
-		self.viewStore = self.store.view
+		self.viewStore = self.store
+			.scope(value: ViewState.init(state:),
+						 action: { $0 })
+			.view
 		print("WalkthroughContainer init")
 	}
 
 	public var body: some View {
 		print("WalkthroughContainer body")
 		return VStack(spacing: 50) {
-			Walkthrough(store:
-				self.store.scope(value: { $0.navigation },
-												action: { .walkthrough($0)}))
+			Walkthrough(action: {
+				self.viewStore.send(.walkthrough(.signInTapped))
+			}).onAppear {
+				self.viewStore.send(.walkthrough(.onAppear))
+			}
 			NavigationLink.emptyHidden(
-				viewStore.value.navigation.contains(.signInScreen),
-			LoginView(store: self.store.scope(value: { $0 },
-																			 action: { .login($0)})))
+				viewStore.value.isSignInActive,
+					LoginView(store: self.store.scope(value: { $0 },
+																						action: { .login($0)}))
+			)
 		}
 	}
 }

@@ -5,7 +5,7 @@ import CasePaths
 import Util
 import Model
 
-public typealias LoginEnvironment = (apiClient: LoginAPI, userDefaults: UserDefaults)
+public typealias LoginEnvironment = (apiClient: LoginAPI, userDefaults: UserDefaultsConfig)
 
 public struct LoginViewState: Equatable {
 	public init () {}
@@ -72,6 +72,8 @@ public func loginReducer(state: inout WalkthroughContainerState, action: LoginAc
 		switch result {
 		case .success(let user):
 			state.loginViewState.loginLS = .gotSuccess
+			var userDefaults = environment.userDefaults
+			userDefaults.loggedInUser = user
 		case .failure:
 			state.loginViewState.loginLS = .gotError
 		}
@@ -120,27 +122,37 @@ struct Login: View {
 
 public struct LoginView: View {
 	let store: Store<WalkthroughContainerState, LoginViewAction>
-	@ObservedObject var viewStore: ViewStore<WalkthroughContainerState, LoginViewAction>
+	@ObservedObject var viewStore: ViewStore<ViewState, LoginViewAction>
+	struct ViewState: Equatable {
+		let isForgotPassActive: Bool
+		let showsLoadingSpinner: Bool
+		init (state: WalkthroughContainerState) {
+			self.showsLoadingSpinner = state.loginViewState.loginLS.isLoading
+			self.isForgotPassActive = state.navigation.contains(.forgotPassScreen)
+		}
+	}
 	@State var email: String = ""
 	public init(store: Store<WalkthroughContainerState, LoginViewAction>) {
 		self.store = store
-		self.viewStore = self.store.view
+		self.viewStore = self.store
+			.scope(value: ViewState.init(state:),
+						 action: { $0 })
+			.view
 		print("LoginView init")
 	}
 	public var body: some View {
 		print("LoginView body")
 		return VStack {
-			NavigationLink.emptyHidden(
-				self.viewStore.value.navigation.contains(.forgotPassScreen),
+			NavigationLink.emptyHidden(self.viewStore.value.isForgotPassActive,
 				ForgotPasswordView(self.store.scope(
-					value: { _ in self.viewStore.value.forgotPass },
+					value: { $0.forgotPass },
 					action: { .forgotPass($0)}), self.$email))
 			Login(store:
 				self.store.scope(value: { $0 },
 												action: { .login($0)}),
 						email: self.$email)
 			Spacer()
-		}.loadingView(.constant(self.viewStore.value.loginViewState.loginLS.isLoading),
+		}.loadingView(.constant(self.viewStore.value.showsLoadingSpinner),
 									Texts.signingIn)
 	}
 }

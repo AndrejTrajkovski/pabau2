@@ -10,22 +10,25 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 	var window: UIWindow?
 	func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 		if let windowScene = scene as? UIWindowScene {
-			let reducer = logging(appReducer)
-//			let reducer = appReducer
+//			let reducer = logging(appReducer)
+			let reducer = appReducer
       let window = UIWindow(windowScene: windowScene)
+			let userDefaults = StandardUDConfig()
+			let env = AppEnvironment(
+				loginAPI: LoginMockAPI(delay: 1),
+				journeyAPI: JourneyMockAPI(),
+				userDefaults: userDefaults
+			)
       window.rootViewController = UIHostingController(
         rootView: ContentView(
           store: Store(
-						initialValue: AppState(user: nil
+						initialValue: AppState(user: userDefaults.loggedInUser,
+																	 hasSeenWalkthrough: userDefaults.hasSeenAppIntroduction
 //							navigation: .login([.walkthroughScreen])
 //							navigation: .tabBar(.journey)
 						),
 						reducer: reducer,
-						environment: AppEnvironment(
-							loginAPI: LoginMockAPI(delay: 1),
-							journeyAPI: JourneyMockAPI(),
-							userDefaults: UserDefaults.standard
-						)
+						environment: env
           )
 				).environmentObject(KeyboardFollower())
       )

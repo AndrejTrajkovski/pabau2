@@ -89,7 +89,7 @@ public func employeeListReducer(state: inout EmployeesState,
 	return []
 }
 
-public typealias JourneyEnvironemnt = (apiClient: JourneyAPI, userDefaults: UserDefaults)
+public typealias JourneyEnvironemnt = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
 
 public let journeyContainerReducer: Reducer<JourneyState, JourneyContainerAction, JourneyEnvironemnt> = combine(
 	pullback(journeyReducer,

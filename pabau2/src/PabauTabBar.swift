@@ -5,7 +5,7 @@ import Model
 import Util
 import Journey
 
-public typealias TabBarEnvironment = (loginAPI: LoginAPI, journeyAPI: JourneyAPI, userDefaults: UserDefaults)
+public typealias TabBarEnvironment = (loginAPI: LoginAPI, journeyAPI: JourneyAPI, userDefaults: UserDefaultsConfig)
 
 public struct TabBarState: Equatable {
 //	public var navigation: Navigation
