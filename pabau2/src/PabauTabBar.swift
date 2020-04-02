@@ -39,8 +39,10 @@ struct PabauTabBar: View {
 	@ObservedObject var viewStore: ViewStore<ViewState, TabBarAction>
 	struct ViewState: Equatable {
 		let isShowingEmployees: Bool
+		let isShowingCheckin: Bool
 		init(state: TabBarState) {
 			self.isShowingEmployees = state.journey.employeesState.isShowingEmployees
+			self.isShowingCheckin = state.journeyState.isJourneyModalShown
 		}
 	}
 	init (store: Store<TabBarState, TabBarAction>) {
@@ -60,7 +62,8 @@ struct PabauTabBar: View {
 					.tabItem {
 						Image(systemName: "staroflife")
 						Text("Journey")
-				}.onAppear { self.viewStore.send(.journey(JourneyContainerAction.journey(JourneyAction.loadJourneys)))
+				}
+				.onAppear { self.viewStore.send(.journey(JourneyContainerAction.journey(JourneyAction.loadJourneys)))
 					self.viewStore.send(.journey(JourneyContainerAction.employees(EmployeesAction.loadEmployees)))
 				}
 				Text("Calendar")
@@ -75,7 +78,11 @@ struct PabauTabBar: View {
 						Image(systemName: "gear")
 						Text("Settings")
 				}
-			}
+			}.modalLink(isPresented: .constant(self.viewStore.value.isShowingCheckin),
+								 linkType: ModalTransition.circleReveal,
+								 destination: {
+									CheckIn()
+			})
 			EmployeesListStore(self.store.scope(value: { $0.journey.employeesState } ,
 																				 action: { .journey(.employees($0))}))
 				.isHidden(!self.viewStore.value.isShowingEmployees, remove: true)

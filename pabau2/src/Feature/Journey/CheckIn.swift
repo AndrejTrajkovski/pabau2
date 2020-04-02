@@ -1,8 +1,9 @@
 import SwiftUI
 import Util
 
-struct CheckIn: View {
-	var body: some View {
+public struct CheckIn: View {
+	public init () {}
+	public var body: some View {
 		ZStack {
 		Rectangle().fill(
 			LinearGradient(gradient: .init(colors: [.checkInGradient1, .deepSkyBlue]), startPoint: .top, endPoint: .bottom)

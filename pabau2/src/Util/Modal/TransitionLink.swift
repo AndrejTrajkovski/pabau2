@@ -31,10 +31,11 @@ struct TransitionLink<Content, Destination>: View where Content: View, Destinati
             if self.isPresented {
                 self.destination()
                     .transition(self.linkType.transition)
+										.edgesIgnoringSafeArea(.top)
             } else {
                 self.content()
             }
-        }
+				}
     }
 }
 
@@ -53,7 +54,6 @@ struct ModaLinkViewModifier<Destination>: ViewModifier where Destination: View {
             content
         })
     }
-
 }
 
 public extension View {

@@ -26,10 +26,5 @@ public struct JourneyNavigationView: View {
 																					 action: { $0 }))
 		}
 		.navigationViewStyle(StackNavigationViewStyle())
-		.modalLink(isPresented: .constant(self.viewStore.value.isJourneyModalShown),
-							 linkType: ModalTransition.circleReveal,
-							 destination: {
-								CheckIn()
-		})
 	}
 }

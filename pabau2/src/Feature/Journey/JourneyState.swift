@@ -25,7 +25,7 @@ public struct JourneyState: Equatable {
 		FormTemplate(id: 6, name: "Consent - Skin Treatment", formType: .consent),
 		FormTemplate(id: 7, name: "Consent - Lipo", formType: .consent)
 	]
-	var isJourneyModalShown: Bool = false
+	public var isJourneyModalShown: Bool = false
 	var choosePathway: ChoosePathwayState {
 		get {
 			return ChoosePathwayState(
