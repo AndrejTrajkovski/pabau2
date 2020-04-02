@@ -2,6 +2,7 @@ import SwiftUI
 import Util
 
 public struct CheckIn: View {
+	var player = Player()
 	public init () {}
 	public var body: some View {
 		ZStack {
@@ -18,5 +19,8 @@ public struct CheckIn: View {
 			).foregroundColor(Color.clear)
 				.frame(width: 240, height: 240)
 		}.edgesIgnoringSafeArea(.top)
+			.onAppear(perform: {
+				self.player.playSound()
+			})
 	}
 }

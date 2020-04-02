@@ -65,6 +65,8 @@
 		8250D7D2242C575A00F8F3FC /* ScalableShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7CF242C575A00F8F3FC /* ScalableShape.swift */; };
 		8250D7D4242C980100F8F3FC /* ChooseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7D3242C980100F8F3FC /* ChooseService.swift */; };
 		825BE7E224361ABD00422910 /* StaffFilterPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825BE7E124361ABD00422910 /* StaffFilterPicker.swift */; };
+		825BE7E424361C4400422910 /* SoundPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825BE7E324361C4400422910 /* SoundPlayer.swift */; };
+		825BE7EA2436226300422910 /* checkIn.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 825BE7E92436226300422910 /* checkIn.mp4 */; };
 		825C52592417895D00A33A29 /* RequestBuilderImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C524F24167C2D00A33A29 /* RequestBuilderImpl.swift */; };
 		825C525A2418C61200A33A29 /* RequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C525224167C2E00A33A29 /* RequestBuilder.swift */; };
 		825C525B2418C61500A33A29 /* APIHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C525024167C2D00A33A29 /* APIHelper.swift */; };
@@ -419,6 +421,8 @@
 		8250D7CF242C575A00F8F3FC /* ScalableShape.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScalableShape.swift; sourceTree = "<group>"; };
 		8250D7D3242C980100F8F3FC /* ChooseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseService.swift; sourceTree = "<group>"; };
 		825BE7E124361ABD00422910 /* StaffFilterPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaffFilterPicker.swift; sourceTree = "<group>"; };
+		825BE7E324361C4400422910 /* SoundPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundPlayer.swift; sourceTree = "<group>"; };
+		825BE7E92436226300422910 /* checkIn.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; name = checkIn.mp4; path = pabau2/src/Assets.xcassets/checkIn.mp4; sourceTree = "<group>"; };
 		825C524C24167BF500A33A29 /* JourneyAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JourneyAPI.swift; sourceTree = "<group>"; };
 		825C524F24167C2D00A33A29 /* RequestBuilderImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestBuilderImpl.swift; sourceTree = "<group>"; };
 		825C525024167C2D00A33A29 /* APIHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIHelper.swift; sourceTree = "<group>"; };
@@ -845,6 +849,7 @@
 				82D43D8F24351F5000AC74FA /* EmployeesList.swift */,
 				82D43D91243522CD00AC74FA /* Settings.swift */,
 				825BE7E124361ABD00422910 /* StaffFilterPicker.swift */,
+				825BE7E324361C4400422910 /* SoundPlayer.swift */,
 			);
 			path = Journey;
 			sourceTree = "<group>";
@@ -952,6 +957,7 @@
 		82BE2F3B23D97D9C00B3678A = {
 			isa = PBXGroup;
 			children = (
+				825BE7E92436226300422910 /* checkIn.mp4 */,
 				82BE2F4623D97D9C00B3678A /* pabau2 */,
 				827B45882411368100A5975E /* JourneyTests */,
 				82BE2F4523D97D9C00B3678A /* Products */,
@@ -1594,6 +1600,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				825BE7EA2436226300422910 /* checkIn.mp4 in Resources */,
 				82BE2F5123D97D9F00B3678A /* Preview Assets.xcassets in Resources */,
 				8297A2B523D9BA0200D091FF /* Localizable.strings in Resources */,
 				82BE2F4E23D97D9F00B3678A /* Assets.xcassets in Resources */,
@@ -1789,6 +1796,7 @@
 			files = (
 				827B459B241136D900A5975E /* JourneyContainerView.swift in Sources */,
 				82C479DE242E17B50037F140 /* CheckIn.swift in Sources */,
+				825BE7E424361C4400422910 /* SoundPlayer.swift in Sources */,
 				829B40D12423B8F2009B7E71 /* AddAppointment.swift in Sources */,
 				8250D7D4242C980100F8F3FC /* ChooseService.swift in Sources */,
 				82D43D92243522CD00AC74FA /* Settings.swift in Sources */,
