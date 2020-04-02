@@ -107,7 +107,7 @@ struct ContentView: View {
 
 	var tabBarStore: Store<TabBarState, TabBarAction> {
 		return self.store.scope(
-			value: { extract(case: AppState.tabBar, from: $0)! },
+			value: { extract(case: AppState.tabBar, from: $0) ?? TabBarState(journeyState: JourneyState(), settings: SettingsState()) },
 			action: { .tabBar($0)}
 		)
 	}
@@ -149,15 +149,21 @@ struct LoginContainer: View {
 }
 
 func globalReducer(state: inout AppState, action: AppAction, environment: AppEnvironment) -> [Effect<AppAction>] {
-	let user = extract(case: { (value: User) -> (AppAction) in
-	AppAction.walkthrough(WalkthroughContainerAction.login(LoginViewAction.login(LoginAction.gotResponse(Result.success(value)))))
-	}, from: action)
-	if let user = user {
-		var journeyState = JourneyState()
-		journeyState.loadingState = .loading
-		state = AppState(user: user, hasSeenWalkthrough: environment.userDefaults.hasSeenAppIntroduction)
+	if case let AppAction.tabBar(tabBar) = action,
+		case let TabBarAction.settings(settings) = tabBar,
+		case SettingsAction.logoutTapped = settings {
+		state = AppState(user: nil, hasSeenWalkthrough: environment.userDefaults.hasSeenAppIntroduction)
 		return []
 	} else {
-		return []
+		let user = extract(case: { (value: User) -> (AppAction) in
+			AppAction.walkthrough(WalkthroughContainerAction.login(LoginViewAction.login(LoginAction.gotResponse(Result.success(value)))))
+		}, from: action)
+		if let user = user {
+			var journeyState = JourneyState()
+			journeyState.loadingState = .loading
+			state = AppState(user: user, hasSeenWalkthrough: environment.userDefaults.hasSeenAppIntroduction)
+			return []
+		}
 	}
+	return []
 }

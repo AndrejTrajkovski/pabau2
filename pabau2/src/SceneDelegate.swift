@@ -14,6 +14,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 			let reducer = appReducer
       let window = UIWindow(windowScene: windowScene)
 			let userDefaults = StandardUDConfig()
+			let user = userDefaults.loggedInUser
+			let hasSeenWalkthrough = userDefaults.hasSeenAppIntroduction
 			let env = AppEnvironment(
 				loginAPI: LoginMockAPI(delay: 1),
 				journeyAPI: JourneyMockAPI(),
@@ -22,8 +24,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       window.rootViewController = UIHostingController(
         rootView: ContentView(
           store: Store(
-						initialValue: AppState(user: userDefaults.loggedInUser,
-																	 hasSeenWalkthrough: userDefaults.hasSeenAppIntroduction
+						initialValue: AppState(user: user,
+																	 hasSeenWalkthrough: hasSeenWalkthrough!
 						),
 						reducer: reducer,
 						environment: env

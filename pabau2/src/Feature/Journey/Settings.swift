@@ -12,7 +12,8 @@ public typealias SettingsEnvironment = (
 public func settingsReducer(state: inout SettingsState, action: SettingsAction, environment: SettingsEnvironment) -> [Effect<SettingsAction>] {
 	switch action {
 	case .logoutTapped:
-		//TODO:
+		var userDefaults = environment.userDefaults
+		userDefaults.loggedInUser = nil
 		return []
 	}
 }
