@@ -4,7 +4,6 @@ import ComposableArchitecture
 import CasePaths
 
 public struct JourneyBaseView<Content: View, Action>: View {
-	
 	let content: Content
 	let store: Store<Journey?, Action>
 	@ObservedObject var viewStore: ViewStore<State, Action>
@@ -26,7 +25,7 @@ public struct JourneyBaseView<Content: View, Action>: View {
 			}
 		}
 	}
-	
+
 	init(store: Store<Journey?, Action>,
 			 @ViewBuilder content: () -> Content) {
 		self.store = store
@@ -36,7 +35,7 @@ public struct JourneyBaseView<Content: View, Action>: View {
 			.view
 		self.content = content()
 	}
-	
+
 	public var body: some View {
 		Group {
 			if (self.viewStore.value.profileView != nil) {

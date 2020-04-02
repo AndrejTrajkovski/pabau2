@@ -11,7 +11,6 @@ public struct JourneyState: Equatable {
 	var selectedDate: Date = Date()
 	var selectedLocation: Location = Location.init(id: 1)
 	var searchText: String = ""
-
 	var selectedJourney: Journey?
 	var isChoosePathwayShown: Bool = false
 	var isChooseConsentShown: Bool = false
@@ -26,6 +25,8 @@ public struct JourneyState: Equatable {
 		FormTemplate(id: 7, name: "Consent - Lipo", formType: .consent)
 	]
 	public var isJourneyModalShown: Bool = false
+	public var employeesState: EmployeesState = EmployeesState()
+	
 	var choosePathway: ChoosePathwayState {
 		get {
 			return ChoosePathwayState(
@@ -43,7 +44,6 @@ public struct JourneyState: Equatable {
 			self.templates = newValue.templates
 		}
 	}
-	public var employeesState: EmployeesState = EmployeesState()
 
 	var addAppointment: AddAppointmentState = AddAppointmentState.init(
 		isShowingAddAppointment: false,

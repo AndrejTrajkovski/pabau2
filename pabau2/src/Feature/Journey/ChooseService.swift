@@ -2,6 +2,7 @@ import SwiftUI
 import Model
 import ComposableArchitecture
 import Util
+
 func chooseServiceReducer(state: inout ChooseServiceState,
 													action: ChooseServiceAction,
 													environment: JourneyEnvironemnt) -> [Effect<ChooseServiceAction>] {
@@ -115,19 +116,6 @@ struct ChooseService: View {
 		.navigationBarTitle("Services")
 		.customBackButton(action: { self.viewStore.send(.didTapBackBtn)})
 
-	}
-}
-
-struct StaffFilterPicker: View {
-	@State private var filter: ChooseServiceFilter = .onlyMe
-	var body: some View {
-		VStack {
-			Picker(selection: $filter, label: Text("Filter")) {
-				ForEach(ChooseServiceFilter.allCases, id: \.self) { (filter: ChooseServiceFilter) in
-					Text(String(filter.description)).tag(filter.rawValue)
-				}
-			}.pickerStyle(SegmentedPickerStyle())
-		}.padding()
 	}
 }
 
