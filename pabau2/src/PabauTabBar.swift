@@ -40,9 +40,11 @@ struct PabauTabBar: View {
 	struct ViewState: Equatable {
 		let isShowingEmployees: Bool
 		let isShowingCheckin: Bool
+		let isShowingAppointments: Bool
 		init(state: TabBarState) {
 			self.isShowingEmployees = state.journey.employeesState.isShowingEmployees
 			self.isShowingCheckin = state.journeyState.isJourneyModalShown
+			self.isShowingAppointments = state.journeyState.addAppointment.isShowingAddAppointment
 		}
 	}
 	init (store: Store<TabBarState, TabBarAction>) {
@@ -82,6 +84,12 @@ struct PabauTabBar: View {
 								 linkType: ModalTransition.circleReveal,
 								 destination: {
 									CheckIn()
+			}).modalLink(isPresented: .constant(self.viewStore.value.isShowingAppointments),
+									 linkType: ModalTransition.fullScreenModal,
+									 destination: {
+										AddAppointment.init(store:
+											self.store.scope(value: { $0.journeyState.addAppointment },
+																			 action: { .journey(.addAppointment($0))}))
 			})
 			EmployeesListStore(self.store.scope(value: { $0.journey.employeesState } ,
 																				 action: { .journey(.employees($0))}))

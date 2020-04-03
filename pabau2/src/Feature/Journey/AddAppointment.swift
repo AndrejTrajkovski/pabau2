@@ -17,7 +17,7 @@ public struct MyTermin: ListPickerElement {
 }
 
 public struct AddAppointmentState: Equatable {
-	var isShowingAddAppointment: Bool
+	public var isShowingAddAppointment: Bool
 	var reminder: Bool
 	var email: Bool
 	var sms: Bool

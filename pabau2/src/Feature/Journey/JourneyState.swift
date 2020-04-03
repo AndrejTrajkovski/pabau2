@@ -45,7 +45,7 @@ public struct JourneyState: Equatable {
 		}
 	}
 
-	var addAppointment: AddAppointmentState = AddAppointmentState.init(
+	public var addAppointment: AddAppointmentState = AddAppointmentState.init(
 		isShowingAddAppointment: false,
 		reminder: false,
 		email: false,
