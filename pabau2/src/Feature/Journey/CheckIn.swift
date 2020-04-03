@@ -10,7 +10,7 @@ public struct CheckIn: View {
 			Rectangle().fill(
 				LinearGradient(gradient: .init(colors: [.checkInGradient1, .deepSkyBlue]), startPoint: .top, endPoint: .bottom)
 			)
-			VStack(spacing: 16) {
+			VStack(spacing: 24) {
 				Checkmark()
 				Circle()
 					.overlay(
@@ -21,6 +21,8 @@ public struct CheckIn: View {
 						}
 				).foregroundColor(Color.clear)
 					.frame(width: 240, height: 240)
+				Text("Checking-In").foregroundColor(.white).font(.regular24)
+				Text("Hand over the tablet to the client").foregroundColor(.checkInSubtitle).font(.regular16)
 			}.offset(x: 0, y: -50)
 		}.edgesIgnoringSafeArea(.top)
 			.onAppear(perform: {
@@ -39,11 +41,11 @@ struct Checkmark: View {
 			Circle()
 				.strokeBorder(Color.white, lineWidth: 2)
 				.rotation3DEffect(.degrees(showFirstStroke ? 0 : 360), axis: (x: 1, y: 1, z: 1))
-				.animation(Animation.easeInOut(duration: 0.8))
+				.animation(Animation.easeInOut(duration: 1.0))
 			Circle()
 				.strokeBorder(Color.white, lineWidth: 2)
 				.rotation3DEffect(.degrees(showSecondStroke ? 0 : 360), axis: (x: -1, y: 1, z: 1))
-				.animation(Animation.easeInOut(duration: 0.8))
+				.animation(Animation.easeInOut(duration: 1.0))
 			Path { path in
 				path.move(to: CGPoint(x: 25, y: 45))
 				path.addLine(to: CGPoint(x: 25, y: 45))

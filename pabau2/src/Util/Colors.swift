@@ -73,6 +73,8 @@ public extension Color {
 	static let bigBtnShadow2 = Color.init(red: 196/255, green: 196/255, blue: 196/255).opacity(0.5)
 
 	static let employeeShadow = Color.init(red: 196/255, green: 196/255, blue: 196/255).opacity(0.55)
-	
+
 	static let checkInGradient1 = Color.init(red: 0/255, green: 178/255, blue: 255/255)
+	
+	static let checkInSubtitle = Color(hex: "C3E0FF")
 }
