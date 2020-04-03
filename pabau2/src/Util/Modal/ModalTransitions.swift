@@ -16,7 +16,8 @@ public enum ModalTransition: TransitionLinkType {
     public var transition: AnyTransition {
         switch self {
         case .circleReveal:
-            return .reveal(shape: ScalableCircle.self)
+            return AnyTransition.reveal(shape: ScalableCircle.self)
+							.combined(with: AnyTransition.opacity.animation(.easeInOut(duration: 0.5)))
         case .fullScreenModal:
             return .move(edge: .bottom)
         case .scale:
