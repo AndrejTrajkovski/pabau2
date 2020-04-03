@@ -37,21 +37,13 @@ struct Checkmark: View {
 	var body: some View {
 		ZStack {
 			Circle()
-				.stroke(Color.white, lineWidth: 3)
-				.foregroundColor(.clear)
+				.strokeBorder(Color.white, lineWidth: 3)
 				.rotation3DEffect(.degrees(showFirstStroke ? 0 : 360), axis: (x: 1, y: 1, z: 1))
-				.animation(Animation.easeInOut(duration: 0.8).delay(0.2))
-				.onAppear(perform: {
-					self.showFirstStroke.toggle()
-				})
+				.animation(Animation.easeInOut(duration: 1.0))
 			Circle()
-				.stroke(Color.white, lineWidth: 3)
-				.foregroundColor(.clear)
+				.strokeBorder(Color.white, lineWidth: 3)
 				.rotation3DEffect(.degrees(showSecondStroke ? 0 : 360), axis: (x: -1, y: 1, z: 1))
-				.animation(Animation.easeInOut(duration: 0.8).delay(0.2))
-				.onAppear(perform: {
-					self.showSecondStroke.toggle()
-				})
+				.animation(Animation.easeInOut(duration: 1.0))
 			Path { path in
 				path.move(to: CGPoint(x: 25, y: 45))
 				path.addLine(to: CGPoint(x: 25, y: 45))
@@ -62,9 +54,12 @@ struct Checkmark: View {
 				.stroke(style: StrokeStyle.init(lineWidth: 6, lineCap: .round, lineJoin: .round))
 				.foregroundColor(.white)
 				.animation(Animation.easeInOut.delay(0.3))
-				.onAppear(perform: {
-					self.showCheckMark.toggle()
-				})
-		}.frame(width: 95, height: 90)
+		}
+	.onAppear(perform: {
+		self.showFirstStroke.toggle()
+		self.showSecondStroke.toggle()
+		self.showCheckMark.toggle()
+	})
+		.frame(width: 95, height: 90)
 	}
 }
