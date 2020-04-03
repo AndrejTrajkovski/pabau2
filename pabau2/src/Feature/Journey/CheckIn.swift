@@ -37,13 +37,13 @@ struct Checkmark: View {
 	var body: some View {
 		ZStack {
 			Circle()
-				.strokeBorder(Color.white, lineWidth: 3)
+				.strokeBorder(Color.white, lineWidth: 2)
 				.rotation3DEffect(.degrees(showFirstStroke ? 0 : 360), axis: (x: 1, y: 1, z: 1))
-				.animation(Animation.easeInOut(duration: 1.0))
+				.animation(Animation.easeInOut(duration: 0.8))
 			Circle()
-				.strokeBorder(Color.white, lineWidth: 3)
+				.strokeBorder(Color.white, lineWidth: 2)
 				.rotation3DEffect(.degrees(showSecondStroke ? 0 : 360), axis: (x: -1, y: 1, z: 1))
-				.animation(Animation.easeInOut(duration: 1.0))
+				.animation(Animation.easeInOut(duration: 0.8))
 			Path { path in
 				path.move(to: CGPoint(x: 25, y: 45))
 				path.addLine(to: CGPoint(x: 25, y: 45))

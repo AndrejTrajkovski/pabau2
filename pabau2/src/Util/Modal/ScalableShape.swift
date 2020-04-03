@@ -14,7 +14,7 @@ protocol ScalableShape: Shape {
 }
 
 struct ScalableCircle: ScalableShape {
-	var animatableData: CGFloat = 0.5
+	var animatableData: CGFloat
 
 	func path(in rect: CGRect) -> Path {
 		let hypotenuse = sqrt(rect.width * rect.width + rect.height * rect.height)
