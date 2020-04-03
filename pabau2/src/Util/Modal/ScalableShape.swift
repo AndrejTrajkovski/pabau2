@@ -9,43 +9,42 @@
 import SwiftUI
 
 protocol ScalableShape: Shape {
-    init(animatableData: CGFloat)
-    var animatableData: CGFloat { get }
+	init(animatableData: CGFloat)
+	var animatableData: CGFloat { get }
 }
 
 struct ScalableCircle: ScalableShape {
-    var animatableData: CGFloat = 1
+	var animatableData: CGFloat = 0.5
 
-    func path(in rect: CGRect) -> Path {
-        let hypotenuse = sqrt(rect.width * rect.width + rect.height * rect.height)
-        let radius = hypotenuse * animatableData
-        let center = CGPoint(x: rect.midX,
-                             y: rect.midY)
+	func path(in rect: CGRect) -> Path {
+		let hypotenuse = sqrt(rect.width * rect.width + rect.height * rect.height)
+		let radius = hypotenuse * animatableData
+		let center = CGPoint(x: rect.midX,
+												 y: rect.midY)
 
-        var path = Path()
-        path.addArc(center: center,
-                    radius: radius,
-                    startAngle: .degrees(0),
-                    endAngle: .degrees(360),
-                    clockwise: false)
-
-        return path
-    }
+		var path = Path()
+		path.addArc(center: center,
+								radius: radius,
+								startAngle: .degrees(0),
+								endAngle: .degrees(360),
+								clockwise: false)
+		return path
+	}
 }
 
 struct ClipShapeModifier<T: ScalableShape>: ViewModifier {
-    let shape: T
+	let shape: T
 
-    func body(content: Content) -> some View {
-        content.clipShape(shape)
-    }
+	func body(content: Content) -> some View {
+		content.clipShape(shape)
+	}
 }
 
 extension AnyTransition {
-    static func reveal<T: ScalableShape> (shape: T.Type) -> AnyTransition {
-        .modifier(
-            active: ClipShapeModifier(shape: T(animatableData: 0)),
-            identity: ClipShapeModifier(shape: T(animatableData: 1))
-        )
-    }
+	static func reveal<T: ScalableShape> (shape: T.Type) -> AnyTransition {
+		.modifier(
+			active: ClipShapeModifier(shape: T(animatableData: 0)),
+			identity: ClipShapeModifier(shape: T(animatableData: 1))
+		)
+	}
 }
