@@ -65,9 +65,9 @@ public struct ChoosePathway: View {
 	let store: Store<ChoosePathwayState, ChoosePathwayContainerAction>
 	@ObservedObject var viewStore: ViewStore<ChoosePathwayState, ChoosePathwayContainerAction>
 	struct State {
-		
+
 	}
-	
+
 	init(store: Store<ChoosePathwayState, ChoosePathwayContainerAction>) {
 		self.store = store
 		self.viewStore = self.store.view

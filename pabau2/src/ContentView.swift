@@ -72,7 +72,7 @@ struct ContentView: View {
 		var shouldShowLogin: Bool
 		init (_ appState: AppState) {
 			switch appState {
-			case .walkthrough(_):
+			case .walkthrough:
 				self.shouldShowLogin = true
 			default:
 				self.shouldShowLogin = false

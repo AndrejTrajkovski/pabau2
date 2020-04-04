@@ -80,9 +80,10 @@ struct PabauTabBar: View {
 																			 action: { .journey(.addAppointment($0))}))
 			})
 			if self.viewStore.value.isShowingEmployees {
-				EmployeesListStore(self.store.scope(value: { $0.journey.employeesState } ,
-																					action: { .journey(.employees($0))}))
-				.transition(.moveAndFade)
+				EmployeesListStore(
+					self.store.scope(value: { $0.journey.employeesState } ,
+					action: { .journey(.employees($0))})
+				).transition(.moveAndFade)
 			}
 		}
 	}

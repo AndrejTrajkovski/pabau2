@@ -26,7 +26,7 @@ public struct JourneyState: Equatable {
 	]
 	public var isJourneyModalShown: Bool = false
 	public var employeesState: EmployeesState = EmployeesState()
-	
+
 	var choosePathway: ChoosePathwayState {
 		get {
 			return ChoosePathwayState(

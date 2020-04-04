@@ -38,7 +38,7 @@ public struct JourneyBaseView<Content: View, Action>: View {
 
 	public var body: some View {
 		Group {
-			if (self.viewStore.value.profileView != nil) {
+			if self.viewStore.value.profileView != nil {
 				VStack(spacing: 8) {
 					JourneyProfileView(viewState: self.viewStore.value.profileView!)
 						.padding()

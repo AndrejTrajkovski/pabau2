@@ -2,6 +2,7 @@ import CasePaths
 import Combine
 import SwiftUI
 
+// swiftlint:disable force_cast
 public typealias Reducer<Value, Action, Environment> = (inout Value, Action, Environment) -> [Effect<Action>]
 
 public func combine<Value, Action, Environment>(
@@ -68,7 +69,7 @@ public final class ViewStore<Value, Action>: ObservableObject {
   @Published public fileprivate(set) var value: Value
   fileprivate var cancellable: Cancellable?
   public let send: (Action) -> Void
-  
+
   public init(
     initialValue value: Value,
     send: @escaping (Action) -> Void
@@ -76,7 +77,7 @@ public final class ViewStore<Value, Action>: ObservableObject {
     self.value = value
     self.send = send
   }
-  
+
 //  public func send(_ action: Action) {
 //
 //  }
@@ -96,14 +97,14 @@ extension Store {
       initialValue: self.value,
       send: self.send
     )
-    
+
     viewStore.cancellable = self.$value
       .removeDuplicates(by: predicate)
       .sink(receiveValue: { [weak viewStore] value in
         viewStore?.value = value
 //        self
       })
-    
+
     return viewStore
   }
 }
@@ -168,3 +169,4 @@ public final class Store<Value, Action> /*: ObservableObject */ {
     return localStore
   }
 }
+// swiftlint:enable force_cast

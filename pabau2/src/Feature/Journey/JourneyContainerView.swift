@@ -171,7 +171,7 @@ public struct JourneyContainerView: View {
 						.frame(width: 44, height: 44)
 				})
 				Button(action: {
-					
+
 				}, label: {
 					Image(systemName: "magnifyingglass")
 						.font(.system(size: 20))
