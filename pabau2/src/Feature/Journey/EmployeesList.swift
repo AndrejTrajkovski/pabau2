@@ -15,7 +15,11 @@ public struct EmployeesListStore: View {
 		print("EmployeesListStore body")
 		return EmployeeList(selectedEmployeesIds: self.viewStore.value.selectedEmployeesIds,
 								 employees: self.viewStore.value.employees,
-								 header: EmployeeHeader { self.viewStore.send(.toggleEmployees) },
+								 header: EmployeeHeader {
+									withAnimation {
+										self.viewStore.send(.toggleEmployees)
+									}
+			},
 								 didSelectEmployee: { self.viewStore.send(.onTapGestureEmployee($0))})
 	}
 }

@@ -117,8 +117,10 @@ public func journeyReducer(state: inout JourneyState, action: JourneyAction, env
 	case .loadJourneys:
 		state.loadingState = .loading
 		return [
-			environment.apiClient.getJourneys(date: Date())
-				.map {.gotResponse($0)}.eraseToEffect()
+			environment.apiClient
+				.getJourneys(date: Date())
+				.map(JourneyAction.gotResponse)
+				.eraseToEffect()
 		]
 	}
 	return []
