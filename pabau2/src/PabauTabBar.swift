@@ -12,20 +12,8 @@ public typealias TabBarEnvironment = (
 )
 
 public struct TabBarState: Equatable {
-	public var journeyState: JourneyState
+	public var journey: JourneyState
 	public var settings: SettingsState
-}
-
-extension TabBarState {
-	
-	var journey: JourneyState {
-		get {
-			return self.journeyState
-		}
-		set {
-			self.journeyState = newValue
-		}
-	}
 }
 
 public enum TabBarAction {
@@ -42,8 +30,8 @@ struct PabauTabBar: View {
 		let isShowingAppointments: Bool
 		init(state: TabBarState) {
 			self.isShowingEmployees = state.journey.employeesState.isShowingEmployees
-			self.isShowingCheckin = state.journeyState.isJourneyModalShown
-			self.isShowingAppointments = state.journeyState.addAppointment.isShowingAddAppointment
+			self.isShowingCheckin = state.journey.isJourneyModalShown
+			self.isShowingAppointments = state.journey.addAppointment.isShowingAddAppointment
 		}
 	}
 	init (store: Store<TabBarState, TabBarAction>) {
@@ -88,7 +76,7 @@ struct PabauTabBar: View {
 									 linkType: ModalTransition.fullScreenModal,
 									 destination: {
 										AddAppointment.init(store:
-											self.store.scope(value: { $0.journeyState.addAppointment },
+											self.store.scope(value: { $0.journey.addAppointment },
 																			 action: { .journey(.addAppointment($0))}))
 			})
 			if self.viewStore.value.isShowingEmployees {

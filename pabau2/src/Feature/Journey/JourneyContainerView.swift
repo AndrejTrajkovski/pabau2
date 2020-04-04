@@ -171,7 +171,7 @@ public struct JourneyContainerView: View {
 						.frame(width: 44, height: 44)
 				})
 				Button(action: {
-
+					
 				}, label: {
 					Image(systemName: "magnifyingglass")
 						.font(.system(size: 20))
@@ -186,20 +186,6 @@ public struct JourneyContainerView: View {
 					.frame(width: 44, height: 44)
 			})
 		)
-//			.sheet(isPresented: .constant(self.viewStore.value.addAppointment.isShowingAddAppointment),
-//						 onDismiss: { self.viewStore.send(.journey(.addAppointmentDismissed))},
-//						 content: {
-//							AddAppointment.init(store:
-//								self.store.scope(value: { $0.addAppointment },
-//																 action: { .addAppointment($0)})
-//							)
-//			})
-//			.modalLink(isPresented: .constant(self.viewStore.value.isModalShown),
-//								 linkType: ModalTransition.circleReveal,
-//								 destination: {
-//									Rectangle().fill(Color.blue)
-//
-//			}).navigationBarHidden(self.viewStore.value.addAppointment.isShowingAddAppointment || self.viewStore.value.isModalShown)
 	}
 
 	struct ChoosePathwayEither: View {
