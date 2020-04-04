@@ -14,13 +14,16 @@ public struct EmployeesListStore: View {
 	public var body: some View {
 		print("EmployeesListStore body")
 		return EmployeeList(selectedEmployeesIds: self.viewStore.value.selectedEmployeesIds,
-								 employees: self.viewStore.value.employees,
-								 header: EmployeeHeader {
-									withAnimation {
-										self.viewStore.send(.toggleEmployees)
-									}
+												employees: self.viewStore.value.employees,
+												header: EmployeeHeader {
+													withAnimation {
+														self.viewStore.send(.toggleEmployees)
+													}
 			},
-								 didSelectEmployee: { self.viewStore.send(.onTapGestureEmployee($0))})
+												didSelectEmployee: { self.viewStore.send(.onTapGestureEmployee($0))}
+		)
+			.frame(width: 302)
+			.background(Color.white.shadow(color: .employeeShadow, radius: 40.0, x: -20, y: 2))
 	}
 }
 

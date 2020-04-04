@@ -91,12 +91,9 @@ struct PabauTabBar: View {
 											self.store.scope(value: { $0.journeyState.addAppointment },
 																			 action: { .journey(.addAppointment($0))}))
 			})
-			if (self.viewStore.value.isShowingEmployees) {
+			if self.viewStore.value.isShowingEmployees {
 				EmployeesListStore(self.store.scope(value: { $0.journey.employeesState } ,
 																					action: { .journey(.employees($0))}))
-//				.isHidden(!self.viewStore.value.isShowingEmployees, remove: true)
-				.frame(width: 302)
-				.background(Color.white.shadow(color: .employeeShadow, radius: 40.0, x: -20, y: 2))
 				.transition(.moveAndFade)
 			}
 		}
