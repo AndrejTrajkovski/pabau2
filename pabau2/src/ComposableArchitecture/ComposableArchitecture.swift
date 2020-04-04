@@ -77,10 +77,6 @@ public final class ViewStore<Value, Action>: ObservableObject {
     self.value = value
     self.send = send
   }
-
-//  public func send(_ action: Action) {
-//
-//  }
 }
 
 extension Store where Value: Equatable {
