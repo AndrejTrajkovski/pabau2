@@ -24,8 +24,8 @@ public enum LoginViewAction: Equatable {
 }
 
 public enum LoginAction: Equatable {
-	case loginTapped (email: String, password: String)
-	case forgotPassTapped
+	case login (email: String, password: String)
+	case forgotPass
 	case gotResponse(Result<User, LoginError>)
 }
 
@@ -63,9 +63,9 @@ func isValidEmail(_ email: String) -> Bool {
 
 public func loginReducer(state: inout WalkthroughContainerState, action: LoginAction, environment: LoginEnvironment) -> [Effect<LoginAction>] {
 	switch action {
-	case .loginTapped (let email, let password):
+	case .login (let email, let password):
 		return handleLoginTapped(email, password, state: &state, apiClient: environment.apiClient)
-	case .forgotPassTapped:
+	case .forgotPass:
 		state.navigation.append(.forgotPassScreen)
 		return []
 	case .gotResponse(let result):
@@ -88,14 +88,29 @@ let loginViewReducer = combine(
 
 struct Login: View {
 	let store: Store<WalkthroughContainerState, LoginAction>
-	@ObservedObject var viewStore: ViewStore<WalkthroughContainerState, LoginAction>
+	@ObservedObject var viewStore: ViewStore<ViewState, Action>
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
 	@Binding private var email: String
 	@State private var password: String = ""
+	struct ViewState: Equatable {
+		let emailValidationText: String
+		let passValidationText: String
+		init (state: WalkthroughContainerState) {
+			self.emailValidationText = state.loginViewState.emailValidationText
+			self.passValidationText = state.loginViewState.passValidationText
+		}
+	}
+	public enum Action {
+    case loginTapped (email: String, password: String)
+		case forgotPassTapped
+  }
 	public init(store: Store<WalkthroughContainerState, LoginAction>, email: Binding<String>) {
 		print("Login init")
 		self.store = store
-		self.viewStore = self.store.view
+		self.viewStore = self.store
+			.scope(value: ViewState.init(state:),
+						 action: LoginAction.init(action:))
+			.view
 		self._email = email
 	}
 	var body: some View {
@@ -105,12 +120,14 @@ struct Login: View {
 			Spacer(minLength: 85)
 			LoginTextFields(email: $email,
 											password: $password,
-											emailValidation: self.viewStore.value.loginViewState.emailValidationText, passwordValidation: self.viewStore.value.loginViewState.passValidationText,
+											emailValidation: self.viewStore.value.emailValidationText,
+											passwordValidation: self.viewStore.value.passValidationText,
 											onForgotPass: {self.viewStore.send(.forgotPassTapped) })
 			Spacer(minLength: 30)
 			BigButton(text: Texts.signIn,
 								btnTapAction: {
-									self.viewStore.send(.loginTapped(email: self.email, password: self.password))
+									self.viewStore.send(.loginTapped(email: self.email,
+																									 password: self.password))
 			})
 		}
 		.navigationBarBackButtonHidden(true)
@@ -154,5 +171,16 @@ public struct LoginView: View {
 			Spacer()
 		}.loadingView(.constant(self.viewStore.value.showsLoadingSpinner),
 									Texts.signingIn)
+	}
+}
+
+extension LoginAction {
+	init(action: Login.Action) {
+		switch action {
+		case .forgotPassTapped:
+			self = .forgotPass
+		case .loginTapped(let email, let pass):
+			self = .login(email: email, password: pass)
+		}
 	}
 }
