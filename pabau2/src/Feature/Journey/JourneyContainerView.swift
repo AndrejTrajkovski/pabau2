@@ -179,7 +179,9 @@ public struct JourneyContainerView: View {
 				})
 			}, trailing:
 			Button (action: {
-				self.viewStore.send(.journey(.toggleEmployees))
+				withAnimation {
+					self.viewStore.send(.journey(.toggleEmployees))
+				}
 			}, label: {
 				Image(systemName: "person")
 					.font(.system(size: 20))
