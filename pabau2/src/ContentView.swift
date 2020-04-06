@@ -43,20 +43,13 @@ enum AppAction {
 }
 
 let appReducer: Reducer<AppState, AppAction, AppEnvironment> = combine(
-	pullbackcp(
+	pullback(
 		walkthroughContainerReducer,
-		value: CasePath<AppState, WalkthroughContainerState>
-			.init(embed: { .walkthrough($0) }, extract: {
-				if case AppState.walkthrough(let value) = $0 {
-					return value
-				} else {
-					return nil
-				}
-			}),
+		value: /AppState.walkthrough,
 		action: /AppAction.walkthrough,
 		environment: { LoginEnvironment($0.loginAPI, $0.userDefaults) }
 	),
-	pullbackcp(
+	pullback(
 		tabBarReducer,
 		value: /AppState.tabBar,
 		action: /AppAction.tabBar,

@@ -14,7 +14,7 @@ public func combine<Value, Action, Environment>(
   }
 }
 
-public func pullbackcp<LocalValue, GlobalValue, LocalAction, GlobalAction, LocalEnvironment, GlobalEnvironment>(
+public func pullback<LocalValue, GlobalValue, LocalAction, GlobalAction, LocalEnvironment, GlobalEnvironment>(
   _ reducer: @escaping Reducer<LocalValue, LocalAction, LocalEnvironment>,
   value: CasePath<GlobalValue, LocalValue>,
   action: CasePath<GlobalAction, LocalAction>,
