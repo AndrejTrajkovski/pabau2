@@ -75,7 +75,7 @@ struct PabauTabBar: View {
 			}).modalLink(isPresented: .constant(self.viewStore.value.isShowingAppointments),
 									 linkType: ModalTransition.fullScreenModal,
 									 destination: {
-										AddAppointment.init(store:
+										AddAppointment(store:
 											self.store.scope(value: { $0.journey.addAppointment },
 																			 action: { .journey(.addAppointment($0))}))
 			})

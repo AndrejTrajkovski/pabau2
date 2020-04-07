@@ -162,7 +162,7 @@ public struct JourneyContainerView: View {
 		.navigationBarItems(leading:
 			HStack(spacing: 8.0) {
 				Button(action: {
-					withAnimation(Animation.linear(duration: 1)) {
+					withAnimation(Animation.easeIn(duration: 0.5)) {
 						self.viewStore.send(.journey(.addAppointmentTap))
 					}
 				}, label: {

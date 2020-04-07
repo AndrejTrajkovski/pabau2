@@ -71,7 +71,7 @@ struct EmployeeHeader: View {
 			Button (action: {
 				self.didTouchHeaderButton()
 			}, label: {
-				Image(systemName: "person").font(.system(size: 30))
+				Image(systemName: "person").font(.system(size: 28))
 			})
 			Text(Texts.employee)
 				.foregroundColor(.black)
