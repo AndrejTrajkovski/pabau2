@@ -26,7 +26,7 @@ public struct CheckIn: View {
 			}.offset(x: 0, y: -50)
 		}.edgesIgnoringSafeArea(.top)
 			.onAppear(perform: {
-				self.player.playSound()
+				self.player.playSoundAndVibrate()
 				self.animationFlag.toggle()
 			})
 	}

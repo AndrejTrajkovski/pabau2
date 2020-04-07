@@ -13,7 +13,8 @@ class Player: ObservableObject {
 		}
 	}
 
-	func playSound() {
+	func playSoundAndVibrate() {
+		AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
 		if let path = Bundle.main.path(forResource: "checkIn", ofType: "mp4") {
 			do {
 				sound = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: path))
