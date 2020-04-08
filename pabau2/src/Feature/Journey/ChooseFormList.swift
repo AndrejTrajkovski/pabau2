@@ -4,10 +4,18 @@ import Util
 import ComposableArchitecture
 
 public struct ChooseFormState: Equatable {
-	var isJourneyModalShown: Bool
-	var journey: Journey?
-	var templates: [FormTemplate]
-	var selectedTemplatesIds: [Int]
+	var selectedTemplatesIds: [Int] = [1, 2, 3]
+	var templates: [FormTemplate] = [
+		FormTemplate(id: 1, name: "Consent - Hair Extension", formType: .consent),
+		FormTemplate(id: 2, name: "Consent - Botox", formType: .consent),
+		FormTemplate(id: 3, name: "Consent - Fillers", formType: .consent),
+		FormTemplate(id: 4, name: "Consent - Pedicure", formType: .consent),
+		FormTemplate(id: 5, name: "Consent - Manicure", formType: .consent),
+		FormTemplate(id: 6, name: "Consent - Skin Treatment", formType: .consent),
+		FormTemplate(id: 7, name: "Consent - Lipo", formType: .consent)
+	]
+	var selectedJourney: Journey?
+	var selectedPathway: Pathway?
 }
 
 public enum ChooseFormAction {
@@ -24,8 +32,9 @@ func chooseFormListReducer(state: inout ChooseFormState,
 		state.selectedTemplatesIds.append(templateId)
 	case .removeTemplateId(let templateId):
 		state.selectedTemplatesIds.removeAll(where: { $0 == templateId})
-	case .checkIn:
-		state.isJourneyModalShown = true
+	case .checkIn: return []
+		//TODO
+//		state.isJourneyModalShown = true
 	}
 	return []
 }
@@ -59,7 +68,7 @@ struct ChooseFormList: View {
 
 	var body: some View {
 		chooseFormCells
-			.journeyBase(self.store.scope(value: { $0.journey },
+			.journeyBase(self.store.scope(value: { $0.selectedJourney },
 																		action: { $0 }))
 	}
 

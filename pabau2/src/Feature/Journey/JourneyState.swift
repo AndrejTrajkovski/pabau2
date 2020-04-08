@@ -11,37 +11,18 @@ public struct JourneyState: Equatable {
 	var selectedDate: Date = Date()
 	var selectedLocation: Location = Location.init(id: 1)
 	var searchText: String = ""
-	var selectedJourney: Journey?
-	var isChoosePathwayShown: Bool = false
-	var isChooseConsentShown: Bool = false
-	var selectedTemplatesIds: [Int] = [1, 2, 3]
-	var templates: [FormTemplate] = [
-		FormTemplate(id: 1, name: "Consent - Hair Extension", formType: .consent),
-		FormTemplate(id: 2, name: "Consent - Botox", formType: .consent),
-		FormTemplate(id: 3, name: "Consent - Fillers", formType: .consent),
-		FormTemplate(id: 4, name: "Consent - Pedicure", formType: .consent),
-		FormTemplate(id: 5, name: "Consent - Manicure", formType: .consent),
-		FormTemplate(id: 6, name: "Consent - Skin Treatment", formType: .consent),
-		FormTemplate(id: 7, name: "Consent - Lipo", formType: .consent)
-	]
 	public var isJourneyModalShown: Bool = false
 	public var employeesState: EmployeesState = EmployeesState()
-
+	var selectedJourney: Journey?
+	var selectedPathway: Pathway?
 	var choosePathway: ChoosePathwayState {
 		get {
-			return ChoosePathwayState(
-				isJourneyModalShown: self.isJourneyModalShown,
-				journey: self.selectedJourney,
-				isChooseConsentShown: self.isChooseConsentShown,
-				selectedTemplatesIds: self.selectedTemplatesIds,
-				templates: self.templates)
+			ChoosePathwayState(journey: self.selectedJourney,
+												 selectedPathway: self.selectedPathway)
 		}
 		set {
-			self.isJourneyModalShown = newValue.isJourneyModalShown
 			self.selectedJourney = newValue.journey
-			self.isChooseConsentShown = newValue.isChooseConsentShown
-			self.selectedTemplatesIds = newValue.selectedTemplatesIds
-			self.templates = newValue.templates
+			self.selectedPathway = newValue.selectedPathway
 		}
 	}
 

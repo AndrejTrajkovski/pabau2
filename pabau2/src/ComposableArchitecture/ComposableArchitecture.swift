@@ -174,7 +174,7 @@ public final class Store<Value, Action> /*: ObservableObject */ {
 				initialValue: localV,
 				reducer: { localValue, localAction, _ in
 					self.send(toGlobalAction(localAction))
-					localValue = localV
+					localValue = toLocalValue(self.value)!
 					return []
 			},
 				environment: self.environment

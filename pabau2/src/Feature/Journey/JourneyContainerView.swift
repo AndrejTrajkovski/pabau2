@@ -109,10 +109,8 @@ public func journeyReducer(state: inout JourneyState, action: JourneyAction, env
 	case .toggleEmployees:
 		state.employeesState.isShowingEmployees.toggle()
 	case .selectedJourney(let journey):
-		state.isChoosePathwayShown = true
 		state.selectedJourney = journey
 	case .choosePathwayBackTap:
-		state.isChoosePathwayShown = false
 		state.selectedJourney = nil
 	case .loadJourneys:
 		state.loadingState = .loading
@@ -129,10 +127,25 @@ public func journeyReducer(state: inout JourneyState, action: JourneyAction, env
 public struct JourneyContainerView: View {
 	@State private var calendarHeight: CGFloat?
 	let store: Store<JourneyState, JourneyContainerAction>
-	@ObservedObject var viewStore: ViewStore<JourneyState, JourneyContainerAction>
+	@ObservedObject var viewStore: ViewStore<ViewState, JourneyContainerAction>
+	struct ViewState: Equatable {
+		let isChoosePathwayShown: Bool
+		let selectedDate: Date
+		let listedJourneys: [Journey]
+		let isLoadingJourneys: Bool
+		init(state: JourneyState) {
+			self.isChoosePathwayShown = state.selectedJourney != nil
+			self.selectedDate = state.selectedDate
+			self.listedJourneys = state.filteredJourneys
+			self.isLoadingJourneys = state.loadingState.isLoading
+		}
+	}
 	public init(_ store: Store<JourneyState, JourneyContainerAction>) {
 		self.store = store
-		self.viewStore = self.store.view
+		self.viewStore = self.store
+			.scope(value: ViewState.init(state:),
+						 action: { $0 })
+			.view
 		print("JourneyContainerView init")
 	}
 	public var body: some View {
@@ -146,12 +159,13 @@ public struct JourneyContainerView: View {
 			.padding(0)
 			.frame(height: self.calendarHeight)
 			FilterPicker()
-			JourneyList(self.viewStore.value.filteredJourneys) {
+			JourneyList(self.viewStore.value.listedJourneys) {
 				self.viewStore.send(.journey(.selectedJourney($0)))
-			}.loadingView(.constant(self.viewStore.value.loadingState.isLoading),
+			}.loadingView(.constant(self.viewStore.value.isLoadingJourneys),
 										Texts.fetchingJourneys)
 			NavigationLink.emptyHidden(self.viewStore.value.isChoosePathwayShown,
-																 ChoosePathwayEither(store: store, isSelectedJourney: self.viewStore.value.isChoosePathwayShown)
+																 ChoosePathway(store: self.store.scope(value: { $0.choosePathway
+																 }, action: { .choosePathway($0)}))
 																	.customBackButton {
 																		self.viewStore.send(.journey(.choosePathwayBackTap))
 				}
