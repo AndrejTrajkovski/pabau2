@@ -12,6 +12,12 @@ public struct JourneyMockAPI: MockAPI, JourneyAPI {
 		mockSuccess(Self.mockEmployees, delay: 0.0)
 	}
 	
+	public func getTemplates(_ type: FormType) -> Effect<Result<[FormTemplate], RequestError>> {
+		mockSuccess(Self.mockConsents, delay: 0.1)
+	}
+}
+
+extension JourneyMockAPI {
 	static let mockEmployees = [
 		Employee.init(id: 1,
 									name: "Dr. Jekil",
@@ -66,5 +72,14 @@ public struct JourneyMockAPI: MockAPI, JourneyAPI {
 									 patient: BaseClient.init(id: 2, firstName: "Joe", lastName: "Rogan", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 4,
 									 name: "Kobe Bryant"), forms: [], photos: [], postCare: [], paid: "Owes 1.000")
 	]
+	
+	static let mockConsents  = [
+		FormTemplate(id: 1, name: "Consent - Hair Extension", formType: .consent),
+		FormTemplate(id: 2, name: "Consent - Botox", formType: .consent),
+		FormTemplate(id: 3, name: "Consent - Fillers", formType: .consent),
+		FormTemplate(id: 4, name: "Consent - Pedicure", formType: .consent),
+		FormTemplate(id: 5, name: "Consent - Manicure", formType: .consent),
+		FormTemplate(id: 6, name: "Consent - Skin Treatment", formType: .consent),
+		FormTemplate(id: 7, name: "Consent - Lipo", formType: .consent)
+	]
 }
-

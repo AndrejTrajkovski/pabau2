@@ -5,13 +5,17 @@ public struct JourneyLiveAPI: JourneyAPI, LiveAPI {
 		fatalError()
 	}
 	
-	public let requestBuilderFactory: RequestBuilderFactory = RequestBuilderFactoryImpl()
-	public var basePath: String = ""
-	public let route: String = "journeys"
-
+	public func getTemplates(_ type: FormType) -> Effect<Result<[FormTemplate], RequestError>> {
+		fatalError()
+	}
+	
 	public func getJourneys(date: Date) -> Effect<Result<[Journey], RequestError>> {
 		getJourneys(date: date).effect()
 	}
+	
+	public let requestBuilderFactory: RequestBuilderFactory = RequestBuilderFactoryImpl()
+	public var basePath: String = ""
+	public let route: String = "journeys"
 
 	//    open class func journeyAppointmentPost(body: AppointmentBody? = nil, completion: @escaping ((_ data: Journey?,_ error: Error?) -> Void)) {
 	//        journeyAppointmentPostWithRequestBuilder(body: body).execute { (response, error) -> Void in

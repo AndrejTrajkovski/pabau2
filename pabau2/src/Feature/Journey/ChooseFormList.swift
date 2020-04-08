@@ -4,24 +4,19 @@ import Util
 import ComposableArchitecture
 
 public struct ChooseFormState: Equatable {
-	var selectedTemplatesIds: [Int] = [1, 2, 3]
-	var templates: [FormTemplate] = [
-		FormTemplate(id: 1, name: "Consent - Hair Extension", formType: .consent),
-		FormTemplate(id: 2, name: "Consent - Botox", formType: .consent),
-		FormTemplate(id: 3, name: "Consent - Fillers", formType: .consent),
-		FormTemplate(id: 4, name: "Consent - Pedicure", formType: .consent),
-		FormTemplate(id: 5, name: "Consent - Manicure", formType: .consent),
-		FormTemplate(id: 6, name: "Consent - Skin Treatment", formType: .consent),
-		FormTemplate(id: 7, name: "Consent - Lipo", formType: .consent)
-	]
 	var selectedJourney: Journey?
 	var selectedPathway: Pathway?
+	var selectedTemplatesIds: [Int]
+	var templates: [FormTemplate]
+	var templatesLoadingState: LoadingState = .initial
 }
 
 public enum ChooseFormAction {
 	case addTemplateId(Int)
 	case removeTemplateId(Int)
 	case checkIn
+	case gotResponse(Result<[FormTemplate], RequestError>)
+	case onAppear
 }
 
 func chooseFormListReducer(state: inout ChooseFormState,
@@ -32,9 +27,21 @@ func chooseFormListReducer(state: inout ChooseFormState,
 		state.selectedTemplatesIds.append(templateId)
 	case .removeTemplateId(let templateId):
 		state.selectedTemplatesIds.removeAll(where: { $0 == templateId})
-	case .checkIn: return []
-		//TODO
-//		state.isJourneyModalShown = true
+	case .checkIn:
+		return []
+	case .gotResponse(let result):
+		switch result {
+		case .success(let templates):
+			state.templates = templates
+			state.selectedTemplatesIds = []
+			state.templatesLoadingState = .gotSuccess
+		case .failure:
+			state.templatesLoadingState = .gotError
+		}
+	case .onAppear:
+		return [environment.apiClient.getTemplates(.consent)
+			.map(ChooseFormAction.gotResponse)
+			.eraseToEffect()]
 	}
 	return []
 }
@@ -70,6 +77,9 @@ struct ChooseFormList: View {
 		chooseFormCells
 			.journeyBase(self.store.scope(value: { $0.selectedJourney },
 																		action: { $0 }))
+			.onAppear {
+				self.viewStore.send(.onAppear)
+		}
 	}
 
 	var chooseFormCells: some View {

@@ -39,16 +39,22 @@ public enum ChoosePathwayAction {
 }
 
 public struct ChoosePathwayState: Equatable {
-	var journey: Journey?
+	var selectedJourney: Journey?
 	var selectedPathway: Pathway?
+	var selectedTemplatesIds: [Int]
+	var templates: [FormTemplate]
 	var chooseConsentState: ChooseFormState {
 		get {
-			ChooseFormState(selectedJourney: journey,
-											selectedPathway: selectedPathway)
+			ChooseFormState(selectedJourney: selectedJourney,
+											selectedPathway: selectedPathway,
+											selectedTemplatesIds: selectedTemplatesIds,
+											templates: templates)
 		}
 		set {
-			self.journey = newValue.selectedJourney
+			self.selectedJourney = newValue.selectedJourney
 			self.selectedPathway = newValue.selectedPathway
+			self.selectedTemplatesIds = newValue.selectedTemplatesIds
+			self.templates = newValue.templates
 		}
 	}
 }
@@ -78,7 +84,7 @@ public struct ChoosePathway: View {
 			self.chooseFormNavLink
 		}
 		.journeyBase(self.store
-			.scope(value: { $0.journey },
+			.scope(value: { $0.selectedJourney },
 						 action: { $0 }))
 	}
 

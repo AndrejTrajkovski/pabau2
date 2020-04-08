@@ -15,14 +15,20 @@ public struct JourneyState: Equatable {
 	public var employeesState: EmployeesState = EmployeesState()
 	var selectedJourney: Journey?
 	var selectedPathway: Pathway?
+	var selectedTemplatesIds: [Int] = []
+	var templates: [FormTemplate] = []
 	var choosePathway: ChoosePathwayState {
 		get {
-			ChoosePathwayState(journey: self.selectedJourney,
-												 selectedPathway: self.selectedPathway)
+			ChoosePathwayState(selectedJourney: selectedJourney,
+											selectedPathway: selectedPathway,
+											selectedTemplatesIds: selectedTemplatesIds,
+											templates: templates)
 		}
 		set {
-			self.selectedJourney = newValue.journey
+			self.selectedJourney = newValue.selectedJourney
 			self.selectedPathway = newValue.selectedPathway
+			self.selectedTemplatesIds = newValue.selectedTemplatesIds
+			self.templates = newValue.templates
 		}
 	}
 
