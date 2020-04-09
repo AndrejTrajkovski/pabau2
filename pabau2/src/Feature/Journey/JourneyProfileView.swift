@@ -6,8 +6,8 @@ import SwiftDate
 struct JourneyProfileView: View {
 	let style: JourneyProfileViewStyle
 	let viewState: ViewState
-	
 	struct ViewState: Equatable {
+//		let hasJourney: Bool
 		let imageUrl: String
 		let name: String
 		let services: String
@@ -35,12 +35,13 @@ struct JourneyProfileView: View {
 }
 
 extension JourneyProfileView.ViewState {
-	init(journey: Journey) {
-		self.imageUrl = journey.patient.avatar ?? "placeholder"
-		self.name = journey.patient.firstName + " " + journey.patient.lastName
-		self.services = journey.servicesString
-		self.employeeName = journey.employee.name
-		self.time = journey.appointments.first.from.toFormat("HH: mm")
+	init(journey: Journey?) {
+		self.imageUrl = journey?.patient.avatar ?? "placeholder"
+		self.name = (journey?.patient.firstName ?? "") + " " + (journey?.patient.lastName ?? "")
+		self.services = journey?.servicesString ?? ""
+		self.employeeName = journey?.employee.name ?? ""
+		self.time = journey?.appointments.first.from.toFormat("HH: mm") ?? ""
 		self.rooms = "201, 202"
+//		self.hasJourney = journey != nil
 	}
 }

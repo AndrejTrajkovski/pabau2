@@ -61,11 +61,13 @@ struct ChooseFormList: View {
 	}
 
 	struct ViewState: Equatable {
+		let journey: Journey?
 		let templates: [FormTemplate]
 		var selectedTemplatesIds: [Int]
 		init(state: ChooseFormState) {
 			self.templates = state.templates
 			self.selectedTemplatesIds = state.selectedTemplatesIds
+			self.journey = state.selectedJourney
 		}
 		var notSelectedTemplates: [FormTemplate] {
 			templates.filter { !selectedTemplatesIds.contains($0.id) }
@@ -77,9 +79,7 @@ struct ChooseFormList: View {
 
 	var body: some View {
 		chooseFormCells
-			.journeyBase(self.store.scope(value: { $0.selectedJourney },
-																		action: { $0 }),
-									 .long)
+			.journeyBase(self.viewStore.value.journey, .long)
 			.onAppear {
 				self.viewStore.send(.onAppear)
 		}

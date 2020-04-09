@@ -67,8 +67,10 @@ public struct ChoosePathway: View {
 	@ObservedObject var viewStore: ViewStore<State, ChoosePathwayContainerAction>
 	struct State: Equatable {
 		let isChooseConsentShown: Bool
+		let journey: Journey?
 		init(state: ChoosePathwayState) {
 			self.isChooseConsentShown = state.selectedPathway != nil
+			self.journey = state.selectedJourney
 			UITableView.appearance().separatorStyle = .none
 		}
 	}
@@ -87,11 +89,7 @@ public struct ChoosePathway: View {
 			self.pathwayCells
 			self.chooseFormNavLink
 		}
-		.journeyBase(self.store
-		.scope(value: { $0.selectedJourney },
-					 action: { $0 }),
-								 .long
-		)
+		.journeyBase(self.viewStore.value.journey, .long)
 	}
 
 	var chooseFormNavLink: some View {
