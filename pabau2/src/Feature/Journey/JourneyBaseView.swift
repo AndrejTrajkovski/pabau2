@@ -3,9 +3,15 @@ import Model
 import ComposableArchitecture
 import CasePaths
 
+public enum JourneyProfileViewStyle {
+	case short
+	case long
+}
+
 public struct JourneyBaseView<Content: View, Action>: View {
 	let content: Content
 	let store: Store<Journey?, Action>
+	let style: JourneyProfileViewStyle
 	@ObservedObject var viewStore: ViewStore<State, Action>
 	enum State: Equatable {
 		case empty
@@ -27,6 +33,7 @@ public struct JourneyBaseView<Content: View, Action>: View {
 	}
 
 	init(store: Store<Journey?, Action>,
+			 style: JourneyProfileViewStyle,
 			 @ViewBuilder content: () -> Content) {
 		self.store = store
 		self.viewStore = self.store
@@ -34,13 +41,15 @@ public struct JourneyBaseView<Content: View, Action>: View {
 						 action: { $0 })
 			.view
 		self.content = content()
+		self.style = style
 	}
 
 	public var body: some View {
 		Group {
 			if self.viewStore.value.profileView != nil {
 				VStack(spacing: 8) {
-					JourneyProfileView(viewState: self.viewStore.value.profileView!)
+					JourneyProfileView(style: style,
+														 viewState: self.viewStore.value.profileView!)
 						.padding()
 					content
 				}
@@ -53,14 +62,16 @@ public struct JourneyBaseView<Content: View, Action>: View {
 
 struct JourneyBaseModifier<Action>: ViewModifier {
 	let store: Store<Journey?, Action>
+	let style: JourneyProfileViewStyle
 	func body(content: Content) -> some View {
-		JourneyBaseView(store: self.store, content: { content })
+		JourneyBaseView(store: self.store, style: style, content: { content })
 	}
 }
 
 public extension View {
 
-	func journeyBase<Action>(_ store: Store<Journey?, Action>) -> some View {
-		self.modifier(JourneyBaseModifier(store: store))
+	func journeyBase<Action>(_ store: Store<Journey?, Action>,
+													 _ style: JourneyProfileViewStyle) -> some View {
+		self.modifier(JourneyBaseModifier(store: store, style: style))
 	}
 }

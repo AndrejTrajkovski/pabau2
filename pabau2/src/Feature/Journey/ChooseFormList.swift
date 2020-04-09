@@ -78,7 +78,8 @@ struct ChooseFormList: View {
 	var body: some View {
 		chooseFormCells
 			.journeyBase(self.store.scope(value: { $0.selectedJourney },
-																		action: { $0 }))
+																		action: { $0 }),
+									 .long)
 			.onAppear {
 				self.viewStore.send(.onAppear)
 		}

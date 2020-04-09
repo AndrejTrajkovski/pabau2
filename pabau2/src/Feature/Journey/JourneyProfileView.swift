@@ -4,7 +4,9 @@ import Model
 import SwiftDate
 
 struct JourneyProfileView: View {
+	let style: JourneyProfileViewStyle
 	let viewState: ViewState
+	
 	struct ViewState: Equatable {
 		let imageUrl: String
 		let name: String
@@ -22,9 +24,11 @@ struct JourneyProfileView: View {
 			Text(viewState.name).font(.semibold24)
 			Text(viewState.services).foregroundColor(.gray838383).font(.regular20)
 			Text(viewState.employeeName).foregroundColor(.blue2).font(.regular15)
-			HStack {
-				IconAndText(Image(systemName: "clock"), viewState.time, .gray140)
-				IconAndText(Image("ico-journey-room"), viewState.rooms, .gray140)
+			if self.style == .long {
+				HStack {
+					IconAndText(Image(systemName: "clock"), viewState.time, .gray140)
+					IconAndText(Image("ico-journey-room"), viewState.rooms, .gray140)
+				}
 			}
 		}
 	}
