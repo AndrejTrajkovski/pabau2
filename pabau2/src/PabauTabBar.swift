@@ -30,7 +30,7 @@ struct PabauTabBar: View {
 		let isShowingAppointments: Bool
 		init(state: TabBarState) {
 			self.isShowingEmployees = state.journey.employeesState.isShowingEmployees
-			self.isShowingCheckin = state.journey.isJourneyModalShown
+			self.isShowingCheckin = state.journey.isCheckedIn
 			self.isShowingAppointments = state.journey.addAppointment.isShowingAddAppointment
 		}
 	}

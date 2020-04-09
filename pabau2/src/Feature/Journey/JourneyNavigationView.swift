@@ -5,16 +5,11 @@ import Util
 public struct JourneyNavigationView: View {
 	let store: Store<JourneyState, JourneyContainerAction>
 	@ObservedObject var viewStore: ViewStore<ViewState, JourneyContainerAction>
-	struct ViewState: Equatable {
-		let isJourneyModalShown: Bool
-		init(state: JourneyState) {
-			self.isJourneyModalShown = state.isJourneyModalShown
-		}
-	}
+	struct ViewState: Equatable { init() {} }
 	public init(_ store: Store<JourneyState, JourneyContainerAction>) {
 		self.store = store
 		self.viewStore = self.store
-			.scope(value: ViewState.init(state:),
+			.scope(value: {_ in ViewState()},
 						 action: { $0 })
 			.view
 		print("JourneyNavigationView init")

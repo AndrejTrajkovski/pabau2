@@ -11,7 +11,7 @@ public struct JourneyState: Equatable {
 	var selectedDate: Date = Date()
 	var selectedLocation: Location = Location.init(id: 1)
 	var searchText: String = ""
-	public var isJourneyModalShown: Bool = false
+	public var isCheckedIn: Bool = false
 	public var employeesState: EmployeesState = EmployeesState()
 	var selectedJourney: Journey?
 	var selectedPathway: Pathway?
@@ -22,13 +22,15 @@ public struct JourneyState: Equatable {
 			ChoosePathwayState(selectedJourney: selectedJourney,
 											selectedPathway: selectedPathway,
 											selectedTemplatesIds: selectedTemplatesIds,
-											templates: templates)
+											templates: templates,
+											isCheckedIn: isCheckedIn)
 		}
 		set {
 			self.selectedJourney = newValue.selectedJourney
 			self.selectedPathway = newValue.selectedPathway
 			self.selectedTemplatesIds = newValue.selectedTemplatesIds
 			self.templates = newValue.templates
+			self.isCheckedIn = newValue.isCheckedIn
 		}
 	}
 

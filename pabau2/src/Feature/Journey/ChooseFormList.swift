@@ -8,6 +8,7 @@ public struct ChooseFormState: Equatable {
 	var selectedPathway: Pathway?
 	var selectedTemplatesIds: [Int]
 	var templates: [FormTemplate]
+	var isCheckedIn: Bool
 	var templatesLoadingState: LoadingState = .initial
 }
 
@@ -28,7 +29,7 @@ func chooseFormListReducer(state: inout ChooseFormState,
 	case .removeTemplateId(let templateId):
 		state.selectedTemplatesIds.removeAll(where: { $0 == templateId})
 	case .checkIn:
-		return []
+		state.isCheckedIn = true
 	case .gotResponse(let result):
 		switch result {
 		case .success(let templates):
