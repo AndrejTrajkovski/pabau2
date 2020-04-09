@@ -142,6 +142,7 @@ public struct JourneyContainerView: View {
 			self.selectedDate = state.selectedDate
 			self.listedJourneys = state.filteredJourneys
 			self.isLoadingJourneys = state.loadingState.isLoading
+			UITableView.appearance().separatorStyle = .none
 		}
 	}
 	public init(_ store: Store<JourneyState, JourneyContainerAction>) {
@@ -311,7 +312,6 @@ struct JourneyList: View {
 				_ onSelect: @escaping (Journey) -> Void) {
 		self.journeys = journeys
 		self.onSelect = onSelect
-		UITableView.appearance().separatorStyle = journeys.isEmpty ? .none : .singleLine
 	}
 	var body: some View {
 		List {
@@ -336,31 +336,34 @@ struct JourneyCell: View {
 	let stepsComplete: Int
 	let stepsTotal: Int
 	var body: some View {
-		HStack {
-			JourneyColorRect(color: color)
-			Spacer()
-			Group {
-				Text(time).font(Font.semibold11)
+		VStack(spacing: 0) {
+			HStack {
+				JourneyColorRect(color: color)
 				Spacer()
-				Image(imageUrl ?? "emily")
-					.resizable()
-					.frame(width: 55, height: 55)
-					.clipShape(Circle())
-				VStack(alignment: .leading, spacing: 4) {
-					Text(name).font(Font.semibold14)
-					Text(services).font(Font.regular12)
-					Text(status ?? "").font(.medium9).foregroundColor(.deepSkyBlue)
-				}.frame(maxWidth: 158, alignment: .leading)
+				Group {
+					Text(time).font(Font.semibold11)
+					Spacer()
+					Image(imageUrl ?? "emily")
+						.resizable()
+						.frame(width: 55, height: 55)
+						.clipShape(Circle())
+					VStack(alignment: .leading, spacing: 4) {
+						Text(name).font(Font.semibold14)
+						Text(services).font(Font.regular12)
+						Text(status ?? "").font(.medium9).foregroundColor(.deepSkyBlue)
+					}.frame(maxWidth: 158, alignment: .leading)
+				}
+				Spacer()
+				IconAndText(Image(systemName: "person"), employee)
+					.frame(maxWidth: 110, alignment: .leading)
+				Spacer()
+				IconAndText(Image(systemName: "bag"), paidStatus)
+					.frame(maxWidth: 110, alignment: .leading)
+				Spacer()
+				StepsStatusView(stepsComplete: stepsComplete, stepsTotal: stepsTotal)
+				Spacer()
 			}
-			Spacer()
-			IconAndText(Image(systemName: "person"), employee)
-				.frame(maxWidth: 110, alignment: .leading)
-			Spacer()
-			IconAndText(Image(systemName: "bag"), paidStatus)
-				.frame(maxWidth: 110, alignment: .leading)
-			Spacer()
-			StepsStatusView(stepsComplete: stepsComplete, stepsTotal: stepsTotal)
-			Spacer()
+			Divider().frame(height: 1)
 		}
 		.frame(minWidth: 0, maxWidth: .infinity, idealHeight: 97)
 	}

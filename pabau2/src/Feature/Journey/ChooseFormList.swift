@@ -57,6 +57,7 @@ struct ChooseFormList: View {
 			.scope(value: ChooseFormList.ViewState.init,
 						 action: { $0 })
 			.view
+		UITableView.appearance().separatorStyle = .none
 	}
 
 	struct ViewState: Equatable {

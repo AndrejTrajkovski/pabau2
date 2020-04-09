@@ -69,6 +69,7 @@ public struct ChoosePathway: View {
 		let isChooseConsentShown: Bool
 		init(state: ChoosePathwayState) {
 			self.isChooseConsentShown = state.selectedPathway != nil
+			UITableView.appearance().separatorStyle = .none
 		}
 	}
 
