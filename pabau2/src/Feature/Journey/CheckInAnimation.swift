@@ -1,17 +1,33 @@
 import SwiftUI
-import Util
+import ComposableArchitecture
 
-public struct CheckIn: View {
-	@State private var animationFlag = false
+func checkInAnimationReducer(state: inout Bool,
+														 action: CheckInAnimationAction,
+														 environment: JourneyEnvironemnt) -> [Effect<CheckInAnimationAction>] {
+	switch action {
+	case .didFinishAnimation:
+		state = false
+	}
+	return []
+}
+
+struct CheckInAnimation: View {
+	let store: Store<Bool, CheckInAnimationAction>
+	@ObservedObject var viewStore: ViewStore<Bool, CheckInAnimationAction>
+	public init(store: Store<Bool, CheckInAnimationAction>) {
+		self.store = store
+		self.viewStore = self.store.view
+	}
 	var player = Player()
-	public init () {}
-	public var body: some View {
+	var body: some View {
 		ZStack {
 			Rectangle().fill(
 				LinearGradient(gradient: .init(colors: [.checkInGradient1, .deepSkyBlue]), startPoint: .top, endPoint: .bottom)
 			)
 			VStack(spacing: 24) {
-				Checkmark()
+				Checkmark(animationDuration: 1.0, onAnimationFinish: {
+					self.viewStore.send(.didFinishAnimation)
+				})
 				Circle()
 					.overlay(
 						ZStack {
@@ -27,25 +43,27 @@ public struct CheckIn: View {
 		}.edgesIgnoringSafeArea(.top)
 			.onAppear(perform: {
 				self.player.playSoundAndVibrate()
-				self.animationFlag.toggle()
 			})
 	}
 }
 
 struct Checkmark: View {
+	let animationDuration: Double
+	let onAnimationFinish: () -> Void
 	@State var showFirstStroke: Bool = false
 	@State var showSecondStroke: Bool = false
 	@State var showCheckMark: Bool = false
+
 	var body: some View {
 		ZStack {
 			Circle()
 				.strokeBorder(Color.white, lineWidth: 2)
 				.rotation3DEffect(.degrees(showFirstStroke ? 0 : 360), axis: (x: 1, y: 1, z: 1))
-				.animation(Animation.easeInOut(duration: 1.0))
+				.animation(Animation.easeInOut(duration: animationDuration))
 			Circle()
 				.strokeBorder(Color.white, lineWidth: 2)
 				.rotation3DEffect(.degrees(showSecondStroke ? 0 : 360), axis: (x: -1, y: 1, z: 1))
-				.animation(Animation.easeInOut(duration: 1.0))
+				.animation(Animation.easeInOut(duration: animationDuration))
 			Path { path in
 				path.move(to: CGPoint(x: 25, y: 45))
 				path.addLine(to: CGPoint(x: 25, y: 45))
@@ -61,6 +79,9 @@ struct Checkmark: View {
 		self.showFirstStroke.toggle()
 		self.showSecondStroke.toggle()
 		self.showCheckMark.toggle()
+		DispatchQueue.main.asyncAfter(deadline: .now() + self.animationDuration) {
+			self.onAnimationFinish()
+		}
 	})
 		.frame(width: 95, height: 90)
 	}

@@ -71,7 +71,11 @@ struct PabauTabBar: View {
 			}.modalLink(isPresented: .constant(self.viewStore.value.isShowingCheckin),
 								 linkType: ModalTransition.circleReveal,
 								 destination: {
-									CheckIn()
+									CheckInNavigationView(store:
+										self.store.scope(
+											value: { $0.journey.checkIn },
+											action: { .journey(.checkIn($0))})
+									)
 			}).modalLink(isPresented: .constant(self.viewStore.value.isShowingAppointments),
 									 linkType: ModalTransition.fullScreenModal,
 									 destination: {

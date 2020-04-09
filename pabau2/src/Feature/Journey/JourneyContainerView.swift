@@ -77,6 +77,10 @@ public let journeyContainerReducer: Reducer<JourneyState, JourneyContainerAction
 	pullback(choosePathwayContainerReducer,
 					 value: \JourneyState.choosePathway,
 					 action: /JourneyContainerAction.choosePathway,
+					 environment: { $0 }),
+	pullback(checkInReducer,
+					 value: \JourneyState.checkIn,
+					 action: /JourneyContainerAction.checkIn,
 					 environment: { $0 })
 )
 

@@ -149,6 +149,8 @@
 		8297A29823D9AD8400D091FF /* PageControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8297A28523D9AB1B00D091FF /* PageControl.swift */; };
 		8297A2B523D9BA0200D091FF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8297A2B223D9BA0200D091FF /* Localizable.strings */; };
 		829B40D12423B8F2009B7E71 /* AddAppointment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829B40D02423B8F2009B7E71 /* AddAppointment.swift */; };
+		829BFBAF243F5D6F005DDCB9 /* CheckInAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829BFBAE243F5D6F005DDCB9 /* CheckInAnimation.swift */; };
+		829BFBB1243F693E005DDCB9 /* CheckInMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829BFBB0243F693E005DDCB9 /* CheckInMain.swift */; };
 		82BE2F4823D97D9C00B3678A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BE2F4723D97D9C00B3678A /* AppDelegate.swift */; };
 		82BE2F4A23D97D9C00B3678A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BE2F4923D97D9C00B3678A /* SceneDelegate.swift */; };
 		82BE2F4E23D97D9F00B3678A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 82BE2F4D23D97D9F00B3678A /* Assets.xcassets */; };
@@ -158,7 +160,7 @@
 		82BE2F7A23D9983C00B3678A /* ComposableArchitecture.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 82BE2F6423D9983C00B3678A /* ComposableArchitecture.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		82BE2F8223D9984300B3678A /* ComposableArchitecture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BE2F5D23D997F800B3678A /* ComposableArchitecture.swift */; };
 		82C479DC242D95780037F140 /* CasePaths in Frameworks */ = {isa = PBXBuildFile; productRef = 82C479DB242D95780037F140 /* CasePaths */; };
-		82C479DE242E17B50037F140 /* CheckIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82C479DD242E17B50037F140 /* CheckIn.swift */; };
+		82C479DE242E17B50037F140 /* CheckInNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82C479DD242E17B50037F140 /* CheckInNavigationView.swift */; };
 		82C479E02433C1AB0037F140 /* LazyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82C479DF2433C1AB0037F140 /* LazyView.swift */; };
 		82CACE0624102A2F0021E1DE /* LoginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CACE0524102A2F0021E1DE /* LoginTests.swift */; };
 		82CACE1024102BB00021E1DE /* ComposableArchitectureTestSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 824930DC240CE93500953E90 /* ComposableArchitectureTestSupport.framework */; };
@@ -517,6 +519,8 @@
 		8297A2BA23DA08F200D091FF /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		8297A2BC23DAAFE000D091FF /* Fonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
 		829B40D02423B8F2009B7E71 /* AddAppointment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAppointment.swift; sourceTree = "<group>"; };
+		829BFBAE243F5D6F005DDCB9 /* CheckInAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInAnimation.swift; sourceTree = "<group>"; };
+		829BFBB0243F693E005DDCB9 /* CheckInMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInMain.swift; sourceTree = "<group>"; };
 		82B02FF823F17BC90015B0B4 /* CheckEmail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckEmail.swift; sourceTree = "<group>"; };
 		82B02FFA23F17CF50015B0B4 /* PasswordChanged.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordChanged.swift; sourceTree = "<group>"; };
 		82B0300223F2958B0015B0B4 /* Walkthrough.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Walkthrough.swift; sourceTree = "<group>"; };
@@ -531,7 +535,7 @@
 		82BE2F6423D9983C00B3678A /* ComposableArchitecture.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ComposableArchitecture.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		82BE2F6623D9983C00B3678A /* ComposableArchitecture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ComposableArchitecture.h; sourceTree = "<group>"; };
 		82BE2F6723D9983C00B3678A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		82C479DD242E17B50037F140 /* CheckIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckIn.swift; sourceTree = "<group>"; };
+		82C479DD242E17B50037F140 /* CheckInNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInNavigationView.swift; sourceTree = "<group>"; };
 		82C479DF2433C1AB0037F140 /* LazyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LazyView.swift; sourceTree = "<group>"; };
 		82CACE0324102A2F0021E1DE /* LoginTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LoginTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		82CACE0524102A2F0021E1DE /* LoginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginTests.swift; sourceTree = "<group>"; };
@@ -845,11 +849,13 @@
 				8250D7C8242BCFD000F8F3FC /* ChooseFormList.swift */,
 				8250D7CA242BD25B00F8F3FC /* JourneyBaseView.swift */,
 				8250D7D3242C980100F8F3FC /* ChooseService.swift */,
-				82C479DD242E17B50037F140 /* CheckIn.swift */,
 				82D43D8F24351F5000AC74FA /* EmployeesList.swift */,
 				82D43D91243522CD00AC74FA /* Settings.swift */,
 				825BE7E124361ABD00422910 /* StaffFilterPicker.swift */,
 				825BE7E324361C4400422910 /* SoundPlayer.swift */,
+				82C479DD242E17B50037F140 /* CheckInNavigationView.swift */,
+				829BFBAE243F5D6F005DDCB9 /* CheckInAnimation.swift */,
+				829BFBB0243F693E005DDCB9 /* CheckInMain.swift */,
 			);
 			path = Journey;
 			sourceTree = "<group>";
@@ -1795,10 +1801,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				827B459B241136D900A5975E /* JourneyContainerView.swift in Sources */,
-				82C479DE242E17B50037F140 /* CheckIn.swift in Sources */,
+				82C479DE242E17B50037F140 /* CheckInNavigationView.swift in Sources */,
+				829BFBB1243F693E005DDCB9 /* CheckInMain.swift in Sources */,
 				825BE7E424361C4400422910 /* SoundPlayer.swift in Sources */,
 				829B40D12423B8F2009B7E71 /* AddAppointment.swift in Sources */,
 				8250D7D4242C980100F8F3FC /* ChooseService.swift in Sources */,
+				829BFBAF243F5D6F005DDCB9 /* CheckInAnimation.swift in Sources */,
 				82D43D92243522CD00AC74FA /* Settings.swift in Sources */,
 				82E253FA241B9EB500F16C30 /* JourneyAction.swift in Sources */,
 				82D43D9024351F5000AC74FA /* EmployeesList.swift in Sources */,

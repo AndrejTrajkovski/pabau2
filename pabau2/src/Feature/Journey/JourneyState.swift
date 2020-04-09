@@ -15,22 +15,39 @@ public struct JourneyState: Equatable {
 	public var employeesState: EmployeesState = EmployeesState()
 	var selectedJourney: Journey?
 	var selectedPathway: Pathway?
-	var selectedTemplatesIds: [Int] = []
-	var templates: [FormTemplate] = []
+	var selectedConsentsIds: [Int] = []
+	var allConsents: [FormTemplate] = []
 	var choosePathway: ChoosePathwayState {
 		get {
 			ChoosePathwayState(selectedJourney: selectedJourney,
 											selectedPathway: selectedPathway,
-											selectedTemplatesIds: selectedTemplatesIds,
-											templates: templates,
+											selectedConsentsIds: selectedConsentsIds,
+											allConsents: allConsents,
 											isCheckedIn: isCheckedIn)
 		}
 		set {
 			self.selectedJourney = newValue.selectedJourney
 			self.selectedPathway = newValue.selectedPathway
-			self.selectedTemplatesIds = newValue.selectedTemplatesIds
-			self.templates = newValue.templates
+			self.selectedConsentsIds = newValue.selectedConsentsIds
+			self.allConsents = newValue.allConsents
 			self.isCheckedIn = newValue.isCheckedIn
+		}
+	}
+
+	var isShowingAnimationView: Bool = true
+	public var checkIn: CheckInContainerState {
+		get {
+			return CheckInContainerState.init(isCheckedIn: self.isCheckedIn,
+																				isShowingAnimationView: isShowingAnimationView,
+																				journey: self.selectedJourney,
+																				pathway: self.selectedPathway,
+																				consents: allConsents.filter {selectedConsentsIds.contains($0.id)})
+		}
+		set {
+			self.isCheckedIn = newValue.isCheckedIn
+			self.isShowingAnimationView = newValue.isShowingAnimationView
+			self.selectedPathway = newValue.pathway
+			self.selectedJourney = newValue.journey
 		}
 	}
 

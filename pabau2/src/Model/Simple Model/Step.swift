@@ -3,7 +3,7 @@
 
 import Foundation
 
-/** If a Step object \&quot;stepType\&quot; property value is \&quot;consents\&quot; or \&quot;treatmentNotes\&quot;, and its \&quot;preselectedTemplateType\&quot; property value is \&quot;template\&quot;, that Step object will have a value for the \&quot;formTemplate\&quot; property. If a Step object \&quot;stepType\&quot; property value is not \&quot;consents\&quot; nor \&quot;treatmentNotes\&quot;, then both \&quot;preselectedTemplateType\&quot; and \&quot;template\&quot; will not be returned. */
+/** If a Step object stepType  property value is consents  or treatmentNotes , and its preselectedTemplateType  property value istemplate , that Step object will have a value for theformTemplate  property. If a Step objectstepType  property value is not consents  nor treatmentNotes , then both preselected TemplateType  and template  will not be returned. */
 public struct Step: Codable, Identifiable, Equatable {
 
     public enum PreselectedTemplateType: String, Codable, Equatable {
