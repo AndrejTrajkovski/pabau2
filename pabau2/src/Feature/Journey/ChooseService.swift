@@ -103,9 +103,9 @@ struct ChooseService: View {
 						ServicesHeader(name: group.first?.categoryName ?? "No name")
 					) {
 						ForEach(group, id: \.self) { (service: Service) in
-							ServiceRow(service: service)
-						}.onTapGesture {
-							self.viewStore.send(.didTapBackBtn)
+							ServiceRow(service: service).onTapGesture {
+								self.viewStore.send(.didSelectServiceId(service.id))
+							}
 						}
 					}.background(Color.white)
 				}
