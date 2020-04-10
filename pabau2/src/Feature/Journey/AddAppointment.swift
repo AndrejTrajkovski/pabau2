@@ -138,10 +138,6 @@ public struct AddAppointment: View {
 			.padding(24)
 		}
 		.navigationViewStyle(StackNavigationViewStyle())
-		.navigationBarItems(leading:
-			Button.init(action: { self.viewStore.send(.closeBtnTap) }, label: {
-				Image(systemName: "xmark").foregroundColor(.gray142).frame(width: 30, height: 30)
-		}))
 	}
 }
 
@@ -238,6 +234,14 @@ struct AddAppSections: View {
 			CommunicationsSection()
 		}.padding(.bottom, keyboardHandler.keyboardHeight)
 			.navigationBarTitle(Text("New Appointment").font(.semibold24))
+			.navigationBarItems(leading:
+				Button.init(action: { self.viewStore.send(.closeBtnTap) }, label: {
+					Image(systemName: "xmark")
+						.font(Font.light30)
+						.foregroundColor(.gray142)
+						.frame(width: 30, height: 30)
+				})
+		)
 	}
 }
 

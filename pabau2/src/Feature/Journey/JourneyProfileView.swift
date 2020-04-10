@@ -14,16 +14,22 @@ struct JourneyProfileView: View {
 		let employeeName: String
 		let time: String
 		let rooms: String
+		let date: String
 	}
 	var body: some View {
 		VStack {
 			Image(viewState.imageUrl)
 				.resizable()
-				.frame(width: 84, height: 84)
+				.frame(width: profileImageRadius, height: profileImageRadius)
 				.clipShape(Circle())
-			Text(viewState.name).font(.semibold24)
-			Text(viewState.services).foregroundColor(.gray838383).font(.regular20)
-			Text(viewState.employeeName).foregroundColor(.blue2).font(.regular15)
+			Text(viewState.name).font(nameFont)
+			Text(viewState.services).foregroundColor(.gray838383).font(serviceFont)
+			if self.style == .short {
+				Text(viewState.date).foregroundColor(.gray838383).font(.regular14)
+			}
+			if self.style == .long {
+				Text(viewState.employeeName).foregroundColor(.blue2).font(.regular15)
+			}
 			if self.style == .long {
 				HStack {
 					IconAndText(Image(systemName: "clock"), viewState.time, .gray140)
@@ -31,6 +37,18 @@ struct JourneyProfileView: View {
 				}
 			}
 		}
+	}
+
+	var serviceFont: Font {
+		style == .long ? .regular20 : .regular15
+	}
+
+	var nameFont: Font {
+		style == .long ? .semibold24 : .semibold22
+	}
+
+	var profileImageRadius: CGFloat {
+		style == .long ? 84 : 46
 	}
 }
 
@@ -42,6 +60,7 @@ extension JourneyProfileView.ViewState {
 		self.employeeName = journey?.employee.name ?? ""
 		self.time = journey?.appointments.first.from.toFormat("HH: mm") ?? ""
 		self.rooms = "201, 202"
+		self.date = journey?.appointments.first.from.toFormat("MMMM dd yyyy") ?? ""
 //		self.hasJourney = journey != nil
 	}
 }
