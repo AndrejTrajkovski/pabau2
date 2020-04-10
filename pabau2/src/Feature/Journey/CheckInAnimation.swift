@@ -1,23 +1,8 @@
 import SwiftUI
 import ComposableArchitecture
 
-func checkInAnimationReducer(state: inout Bool,
-														 action: CheckInAnimationAction,
-														 environment: JourneyEnvironemnt) -> [Effect<CheckInAnimationAction>] {
-	switch action {
-	case .didFinishAnimation:
-		state = false
-	}
-	return []
-}
-
 struct CheckInAnimation: View {
-	let store: Store<Bool, CheckInAnimationAction>
-	@ObservedObject var viewStore: ViewStore<Bool, CheckInAnimationAction>
-	public init(store: Store<Bool, CheckInAnimationAction>) {
-		self.store = store
-		self.viewStore = self.store.view
-	}
+	@Binding var isRunningAnimation: Bool
 	var player = Player()
 	var body: some View {
 		ZStack {
@@ -26,7 +11,7 @@ struct CheckInAnimation: View {
 			)
 			VStack(spacing: 24) {
 				Checkmark(animationDuration: 1.0, onAnimationFinish: {
-					self.viewStore.send(.didFinishAnimation)
+					self.isRunningAnimation = true
 				})
 				Circle()
 					.overlay(

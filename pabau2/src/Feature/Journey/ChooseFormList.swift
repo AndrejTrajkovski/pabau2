@@ -171,12 +171,15 @@ struct TemplateRow: View {
 	let templateName: String
 	let image: Image
 	var body: some View {
-		HStack {
-			Text(templateName)
-				.font(Font.regular17)
-			Spacer()
-			image
-				.foregroundColor(Color.blue2)
-		}
+		VStack (spacing: 0){
+			HStack {
+				Text(templateName)
+					.font(Font.regular17)
+				Spacer()
+				image
+					.foregroundColor(Color.blue2)
+			}.frame(height: 44)
+			Divider().frame(height: 1)
+		}.frame(height: 45)
 	}
 }

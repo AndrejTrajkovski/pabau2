@@ -171,6 +171,7 @@ public struct JourneyContainerView: View {
 			NavigationLink.emptyHidden(self.viewStore.value.isChoosePathwayShown,
 																 ChoosePathway(store: self.store.scope(value: { $0.choosePathway
 																 }, action: { .choosePathway($0)}))
+																	.navigationBarTitle("Choose Pathway")
 																	.customBackButton {
 																		self.viewStore.send(.journey(.choosePathwayBackTap))
 				}

@@ -5,7 +5,6 @@ import CasePaths
 
 public struct CheckInContainerState: Equatable {
 	var isCheckedIn: Bool
-	var isShowingAnimationView: Bool
 	var journey: Journey?
 	var pathway: Pathway?
 	var consents: [FormTemplate]
@@ -36,10 +35,6 @@ public enum CheckInAnimationAction {
 }
 
 let checkInReducer = combine(
-	pullback(checkInAnimationReducer,
-					 value: \CheckInContainerState.isShowingAnimationView,
-					 action: /CheckInContainerAction.animation,
-					 environment: { $0 }),
 	pullback(checkInMainReducer,
 					 value: \CheckInContainerState.main,
 					 action: /CheckInContainerAction.main,
@@ -48,34 +43,21 @@ let checkInReducer = combine(
 
 public struct CheckInNavigationView: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>
-	@ObservedObject var viewStore: ViewStore<State, CheckInContainerAction>
-	struct State: Equatable {
-		let isAnimationDone: Bool
-		init (state: CheckInContainerState) {
-			self.isAnimationDone = !state.isShowingAnimationView
-		}
-	}
-	
+	@State var isRunningAnimation: Bool
 	public init(store: Store<CheckInContainerState, CheckInContainerAction>) {
 		self.store = store
-		self.viewStore = self.store
-			.scope(value: State.init(state:), action: { $0 })
-			.view
+		self._isRunningAnimation = State.init(initialValue: false)
 	}
 
 	public var body: some View {
 		NavigationView {
 			VStack {
-				CheckInAnimation(
-					store: self.store.scope(value: { $0.isShowingAnimationView },
-																	action: { .animation($0) }))
-				NavigationLink.emptyHidden(self.viewStore.value.isAnimationDone,
-																	 CheckInMain(store:
-																		self.store.scope(value: { $0.main },
-																										 action: { .main($0)}
-																	)
-					)
-				)
+				CheckInAnimation(isRunningAnimation: $isRunningAnimation)
+				NavigationLink.init(destination:
+					CheckInMain(store:
+						self.store.scope(value: { $0.main },
+														 action: { .main($0)}
+					)), isActive: $isRunningAnimation, label: { EmptyView() })
 			}
 		}.navigationViewStyle(StackNavigationViewStyle())
 	}
