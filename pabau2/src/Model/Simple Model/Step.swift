@@ -19,7 +19,7 @@ public struct Step: Codable, Identifiable, Equatable {
     public let preselectedTemplateType: PreselectedTemplateType?
 
     public let formTemplate: [BaseFormTemplate]?
-    public init(id: Int, stepType: StepType, _required: Bool, preselectedTemplateType: PreselectedTemplateType? = nil, formTemplate: [BaseFormTemplate]? = nil) {
+    public init(id: Int, stepType: StepType, _required: Bool = false, preselectedTemplateType: PreselectedTemplateType? = nil, formTemplate: [BaseFormTemplate]? = nil) {
         self.id = id
         self.stepType = stepType
         self._required = _required

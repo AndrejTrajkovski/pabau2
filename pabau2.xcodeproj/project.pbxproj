@@ -56,6 +56,7 @@
 		8227FBA7240BB41500F653B5 /* Navigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8227FB82240BB1CB00F653B5 /* Navigation.swift */; };
 		8227FBAB240BB43800F653B5 /* Model.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8227FB8A240BB40300F653B5 /* Model.framework */; };
 		8227FBC1240BC7D600F653B5 /* Effect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8227FBC0240BC7D600F653B5 /* Effect.swift */; };
+		82292BD324408F4A00080F74 /* ScrollableSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82292BD224408F4A00080F74 /* ScrollableSelector.swift */; };
 		824930E0240CE93500953E90 /* ComposableArchitectureTestSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 824930DE240CE93500953E90 /* ComposableArchitectureTestSupport.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		824930E9240CE94B00953E90 /* ComposableArchitectureTestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824930E8240CE94B00953E90 /* ComposableArchitectureTestSupport.swift */; };
 		8250D7C9242BCFD000F8F3FC /* ChooseFormList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7C8242BCFD000F8F3FC /* ChooseFormList.swift */; };
@@ -412,6 +413,7 @@
 		8227FB8C240BB40300F653B5 /* Model.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Model.h; sourceTree = "<group>"; };
 		8227FB8D240BB40300F653B5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8227FBC0240BC7D600F653B5 /* Effect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Effect.swift; sourceTree = "<group>"; };
+		82292BD224408F4A00080F74 /* ScrollableSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollableSelector.swift; sourceTree = "<group>"; };
 		824930DC240CE93500953E90 /* ComposableArchitectureTestSupport.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ComposableArchitectureTestSupport.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		824930DE240CE93500953E90 /* ComposableArchitectureTestSupport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ComposableArchitectureTestSupport.h; sourceTree = "<group>"; };
 		824930DF240CE93500953E90 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -856,6 +858,7 @@
 				82C479DD242E17B50037F140 /* CheckInNavigationView.swift */,
 				829BFBAE243F5D6F005DDCB9 /* CheckInAnimation.swift */,
 				829BFBB0243F693E005DDCB9 /* CheckInMain.swift */,
+				82292BD224408F4A00080F74 /* ScrollableSelector.swift */,
 			);
 			path = Journey;
 			sourceTree = "<group>";
@@ -1808,6 +1811,7 @@
 				8250D7D4242C980100F8F3FC /* ChooseService.swift in Sources */,
 				829BFBAF243F5D6F005DDCB9 /* CheckInAnimation.swift in Sources */,
 				82D43D92243522CD00AC74FA /* Settings.swift in Sources */,
+				82292BD324408F4A00080F74 /* ScrollableSelector.swift in Sources */,
 				82E253FA241B9EB500F16C30 /* JourneyAction.swift in Sources */,
 				82D43D9024351F5000AC74FA /* EmployeesList.swift in Sources */,
 				82E253FC241B9ED000F16C30 /* JourneyState.swift in Sources */,

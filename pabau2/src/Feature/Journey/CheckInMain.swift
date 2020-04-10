@@ -28,10 +28,13 @@ func checkInMainReducer(state: inout CheckInMainState,
 struct CheckInMain: View {
 	let store: Store<CheckInMainState, CheckInMainAction>
 	@ObservedObject var viewStore: ViewStore<CheckInMainState, CheckInMainAction>
-
+	@State var selectedStep: Step
+	
 	init(store: Store<CheckInMainState, CheckInMainAction>) {
 		self.store = store
-		self.viewStore = self.store.view
+		let viewStore = self.store.view
+		self.viewStore = viewStore
+		self._selectedStep = State.init(initialValue: viewStore.value.pathway!.steps.first!)
 	}
 
 	var body: some View {
@@ -60,7 +63,8 @@ struct CheckInMain: View {
 					.frame(minWidth: 0, maxWidth: .infinity,
 								 minHeight: 0, maxHeight: .infinity,
 								 alignment: .topTrailing)
-			}.frame(height: 138.0)
+			}.frame(height: 168.0)
+			ScrollableSelector(steps: self.viewStore.value.pathway!.steps, selection: $selectedStep)
 			Spacer()
 		}
 		.navigationBarTitle("")

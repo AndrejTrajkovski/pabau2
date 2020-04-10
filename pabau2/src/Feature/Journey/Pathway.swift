@@ -68,13 +68,31 @@ public struct ChoosePathway: View {
 	struct State: Equatable {
 		let isChooseConsentShown: Bool
 		let journey: Journey?
+		
+		let standardPathway =
+			Pathway.init(id: 1,
+									 title: "Standard",
+									 steps: [Step(id: 1, stepType: .checkpatient),
+													 Step(id: 2, stepType: .medicalhistory),
+													 Step(id: 3, stepType: .consents),
+													 Step(id: 5, stepType: .treatmentnotes),
+													 Step(id: 6, stepType: .prescriptions),
+													 Step(id: 6, stepType: .aftercares)
+			])
+		let consultationPathway =
+			Pathway.init(id: 1,
+									 title: "Consultation",
+									 steps: [Step(id: 1, stepType: .checkpatient),
+													 Step(id: 2, stepType: .medicalhistory),
+													 Step(id: 3, stepType: .consents),
+													 Step(id: 6, stepType: .aftercares)])
 		init(state: ChoosePathwayState) {
 			self.isChooseConsentShown = state.selectedPathway != nil
 			self.journey = state.selectedJourney
 			UITableView.appearance().separatorStyle = .none
 		}
 	}
-
+	
 	init(store: Store<ChoosePathwayState, ChoosePathwayContainerAction>) {
 		self.store = store
 		self.viewStore = self.store
@@ -91,14 +109,14 @@ public struct ChoosePathway: View {
 		}
 		.journeyBase(self.viewStore.value.journey, .long)
 	}
-
+	
 	var chooseFormNavLink: some View {
 		NavigationLink.emptyHidden(self.viewStore.value.isChooseConsentShown,
 															 ChooseFormList(store: self.store.scope(value: { $0.chooseConsentState },
 																																			action: { .chooseConsent($0)}))
 																.navigationBarTitle("Choose Consent")
 																.customBackButton {
-																self.viewStore.send(.choosePathway(.didTouchSelectConsentBackBtn))
+																	self.viewStore.send(.choosePathway(.didTouchSelectConsentBackBtn))
 			}
 		)
 	}
@@ -108,24 +126,23 @@ public struct ChoosePathway: View {
 			PathwayCell(style: .blue) {
 				ChoosePathwayListContent.init(.blue,
 																			Image(systemName: "arrow.right"),
-																			7,
+																			self.viewStore.value.standardPathway.steps.count,
 																			"Standard Pathway",
 																			"Provides a basic standard pathway, defined for the company.",
-																			["Check Details", "Medical History", "Consent", "Image Upload",
-																			 "Treatment Notes", "Prescription", "Aftercare"],
-																			"Pathway") {
-																				self.viewStore.send(.choosePathway(.didChoosePathway(Pathway(id: 1, title: "Standard", steps: []))))
+																			self.viewStore.value.standardPathway.steps.map { $0.stepType.title },
+																			"Standard") {
+																				self.viewStore.send(.choosePathway(.didChoosePathway(self.viewStore.value.standardPathway)))
 				}
 			}
 			PathwayCell(style: .white) {
 				ChoosePathwayListContent.init(.white,
 																			Image("ico-journey-consulting"),
-																			4,
+																			self.viewStore.value.standardPathway.steps.count,
 																			"Consultation Pathway",
 																			"Provides a consultation pathway, to hear out the person's needs.",
-																			["Check Details", "Medical History", "Image Upload", "Aftercare"],
+																			self.viewStore.value.consultationPathway.steps.map { $0.stepType.title },
 																			"Consultation") {
-																				self.viewStore.send(.choosePathway(.didChoosePathway(Pathway(id: 2, title: "Consultation", steps: []))))
+																				self.viewStore.send(.choosePathway(.didChoosePathway(self.viewStore.value.consultationPathway)))
 				}
 			}
 		}
@@ -135,7 +152,6 @@ public struct ChoosePathway: View {
 enum PathwayCellStyle {
 	case blue
 	case white
-
 	var bgColor: Color {
 		switch self {
 		case .blue:
@@ -144,7 +160,7 @@ enum PathwayCellStyle {
 			return .white
 		}
 	}
-
+	
 	var btnColor: Color {
 		switch self {
 		case .blue:
@@ -153,7 +169,7 @@ enum PathwayCellStyle {
 			return .white
 		}
 	}
-
+	
 	var btnShadowColor: Color {
 		switch self {
 		case .blue:
@@ -162,7 +178,7 @@ enum PathwayCellStyle {
 			return .bigBtnShadow2
 		}
 	}
-
+	
 	var btnShadowBlur: CGFloat {
 		switch self {
 		case .blue:
@@ -182,7 +198,7 @@ struct ChoosePathwayListContent: View {
 	let btnTxt: String
 	let style: PathwayCellStyle
 	let btnAction: () -> Void
-
+	
 	init(
 		_ style: PathwayCellStyle,
 		_ bottomLeading: Image,
@@ -201,7 +217,7 @@ struct ChoosePathwayListContent: View {
 		self.btnAction = btnAction
 		self.style = style
 	}
-
+	
 	var body: some View {
 		VStack(alignment: .leading, spacing: 16) {
 			PathwayCellHeader(bottomLeading, numberOfSteps)
@@ -220,16 +236,16 @@ struct PathwayCell<Content: View>: View {
 		self.style = style
 		self.content = content
 	}
-
+	
 	let style: PathwayCellStyle
 	let content: () -> Content
-
+	
 	public var body: some View {
 		VStack(spacing: 0) {
 			Rectangle().fill(style.btnColor).frame(height: 8)
 			content()
-			.padding(32)
-			.background(style.bgColor)
+				.padding(32)
+				.background(style.bgColor)
 		}
 	}
 }
@@ -249,9 +265,9 @@ struct ChoosePathwayButton: View {
 					.background(style.btnColor)
 			} else {
 				Button.init(action: action, label: {
-						Text(btnTxt)
-							.font(Font.system(size: 16.0, weight: .bold))
-							.frame(minWidth: 0, maxWidth: .infinity)
+					Text(btnTxt)
+						.font(Font.system(size: 16.0, weight: .bold))
+						.frame(minWidth: 0, maxWidth: .infinity)
 				}).buttonStyle(PathwayWhiteButtonStyle())
 					.shadow(color: style.btnShadowColor,
 									radius: style.btnShadowBlur,
@@ -283,9 +299,9 @@ struct PathwayBulletList: View {
 						.frame(width: 6.6, height: 6.6)
 					Text(bulletPoint)
 						.font(.regular16)
-					}
-					.listRowInsets(EdgeInsets())
-					.listRowBackground(self.bgColor)
+				}
+				.listRowInsets(EdgeInsets())
+				.listRowBackground(self.bgColor)
 			}
 		}
 	}
@@ -302,8 +318,8 @@ struct PathwayCellHeader: View {
 		ZStack {
 			image.font(Font.regular45).foregroundColor(.blue2)
 				.frame(minWidth: 0, maxWidth: .infinity,
-				minHeight: 0, maxHeight: .infinity,
-				alignment: .leading)
+							 minHeight: 0, maxHeight: .infinity,
+							 alignment: .leading)
 			Spacer()
 			HStack {
 				Image(systemName: "list.bullet").foregroundColor(.blue2)
