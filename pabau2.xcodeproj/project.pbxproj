@@ -57,6 +57,8 @@
 		8227FBAB240BB43800F653B5 /* Model.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8227FB8A240BB40300F653B5 /* Model.framework */; };
 		8227FBC1240BC7D600F653B5 /* Effect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8227FBC0240BC7D600F653B5 /* Effect.swift */; };
 		82292BD324408F4A00080F74 /* ScrollableSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82292BD224408F4A00080F74 /* ScrollableSelector.swift */; };
+		82292BD62440971F00080F74 /* CollectionUI in Frameworks */ = {isa = PBXBuildFile; productRef = 82292BD52440971F00080F74 /* CollectionUI */; };
+		82292BD8244097C600080F74 /* StepsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82292BD7244097C600080F74 /* StepsCollectionView.swift */; };
 		824930E0240CE93500953E90 /* ComposableArchitectureTestSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 824930DE240CE93500953E90 /* ComposableArchitectureTestSupport.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		824930E9240CE94B00953E90 /* ComposableArchitectureTestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824930E8240CE94B00953E90 /* ComposableArchitectureTestSupport.swift */; };
 		8250D7C9242BCFD000F8F3FC /* ChooseFormList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7C8242BCFD000F8F3FC /* ChooseFormList.swift */; };
@@ -414,6 +416,7 @@
 		8227FB8D240BB40300F653B5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8227FBC0240BC7D600F653B5 /* Effect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Effect.swift; sourceTree = "<group>"; };
 		82292BD224408F4A00080F74 /* ScrollableSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollableSelector.swift; sourceTree = "<group>"; };
+		82292BD7244097C600080F74 /* StepsCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsCollectionView.swift; sourceTree = "<group>"; };
 		824930DC240CE93500953E90 /* ComposableArchitectureTestSupport.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ComposableArchitectureTestSupport.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		824930DE240CE93500953E90 /* ComposableArchitectureTestSupport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ComposableArchitectureTestSupport.h; sourceTree = "<group>"; };
 		824930DF240CE93500953E90 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -636,6 +639,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				82292BD62440971F00080F74 /* CollectionUI in Frameworks */,
 				827B45992411368F00A5975E /* FSCalendarSwiftUI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -859,6 +863,7 @@
 				829BFBAE243F5D6F005DDCB9 /* CheckInAnimation.swift */,
 				829BFBB0243F693E005DDCB9 /* CheckInMain.swift */,
 				82292BD224408F4A00080F74 /* ScrollableSelector.swift */,
+				82292BD7244097C600080F74 /* StepsCollectionView.swift */,
 			);
 			path = Journey;
 			sourceTree = "<group>";
@@ -1321,6 +1326,7 @@
 			);
 			name = Journey;
 			packageProductDependencies = (
+				82292BD52440971F00080F74 /* CollectionUI */,
 			);
 			productName = Journey;
 			productReference = 827B457A2411368100A5975E /* Journey.framework */;
@@ -1534,6 +1540,7 @@
 				8227FBAC240BC68400F653B5 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 				827B46092413C0C300A5975E /* XCRemoteSwiftPackageReference "swift-nonempty" */,
 				82E253FF241E5ABF00F16C30 /* XCRemoteSwiftPackageReference "SwiftDate" */,
+				82292BD42440971F00080F74 /* XCRemoteSwiftPackageReference "CollectionUI" */,
 			);
 			productRefGroup = 82BE2F4523D97D9C00B3678A /* Products */;
 			projectDirPath = "";
@@ -1809,6 +1816,7 @@
 				825BE7E424361C4400422910 /* SoundPlayer.swift in Sources */,
 				829B40D12423B8F2009B7E71 /* AddAppointment.swift in Sources */,
 				8250D7D4242C980100F8F3FC /* ChooseService.swift in Sources */,
+				82292BD8244097C600080F74 /* StepsCollectionView.swift in Sources */,
 				829BFBAF243F5D6F005DDCB9 /* CheckInAnimation.swift in Sources */,
 				82D43D92243522CD00AC74FA /* Settings.swift in Sources */,
 				82292BD324408F4A00080F74 /* ScrollableSelector.swift in Sources */,
@@ -2534,7 +2542,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"pabau2/Preview Content\"";
 				DEVELOPMENT_TEAM = 7M6BMQR36X;
 				ENABLE_BITCODE = NO;
@@ -2559,7 +2567,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"pabau2/Preview Content\"";
 				DEVELOPMENT_TEAM = 7M6BMQR36X;
 				ENABLE_BITCODE = NO;
@@ -2910,6 +2918,14 @@
 				minimumVersion = 1.7.2;
 			};
 		};
+		82292BD42440971F00080F74 /* XCRemoteSwiftPackageReference "CollectionUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sbertix/CollectionUI.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 		827B46092413C0C300A5975E /* XCRemoteSwiftPackageReference "swift-nonempty" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-nonempty.git";
@@ -2941,6 +2957,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8227FBAC240BC68400F653B5 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
 			productName = SnapshotTesting;
+		};
+		82292BD52440971F00080F74 /* CollectionUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 82292BD42440971F00080F74 /* XCRemoteSwiftPackageReference "CollectionUI" */;
+			productName = CollectionUI;
 		};
 		827B460C2413C14D00A5975E /* NonEmpty */ = {
 			isa = XCSwiftPackageProductDependency;
