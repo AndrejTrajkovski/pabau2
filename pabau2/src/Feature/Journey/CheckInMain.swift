@@ -28,12 +28,12 @@ func checkInMainReducer(state: inout CheckInMainState,
 struct CheckInMain: View {
 	let store: Store<CheckInMainState, CheckInMainAction>
 	@ObservedObject var viewStore: ViewStore<CheckInMainState, CheckInMainAction>
-	
+
 	init(store: Store<CheckInMainState, CheckInMainAction>) {
 		self.store = store
 		self.viewStore = self.store.view
 	}
-	
+
 	var body: some View {
 		VStack (spacing: 0) {
 			ZStack {
@@ -76,11 +76,11 @@ struct RibbonView: View {
 	var body: some View {
 		ZStack(alignment: .bottom) {
 			RoundedRectangle(cornerRadius: 36.5)
-				.stroke(Color("979797"), lineWidth: lineWidth)
+				.stroke(Color(hex: "979797"), lineWidth: lineWidth)
 				.overlay(
 					RoundedRectangle(cornerRadius: 36.5)
 						.fill(Color.deepSkyBlue)
-						.shadow(color: Color("007AFF"), radius: 2, x: 0, y: 5)
+						.shadow(color: Color(hex: "007AFF"), radius: 1, x: 0, y: 5)
 			)
 				.padding(lineWidth)
 			Text("\(completedNumberOfSteps)/\(totalNumberOfSteps)")
