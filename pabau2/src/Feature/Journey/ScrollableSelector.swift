@@ -4,7 +4,7 @@ import Model
 struct ScrollableSelector: View {
 	let steps: [Step]
 	@Binding var selection: Step
-	
+
 	func text(for index: Step) -> some View {
 		Group {
 			if index == selection {
@@ -28,7 +28,7 @@ struct ScrollableSelector: View {
 			}
 		}
 	}
-	
+
 	var body: some View {
 		ScrollView(.horizontal, showsIndicators: false) {
 			HStack(alignment: .center, spacing: 12) {

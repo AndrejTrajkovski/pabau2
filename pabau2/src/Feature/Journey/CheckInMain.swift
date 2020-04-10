@@ -1,6 +1,7 @@
 import SwiftUI
 import Model
 import ComposableArchitecture
+import CollectionUI
 
 public struct CheckInMainState: Equatable {
 	var isCheckedIn: Bool
@@ -28,17 +29,16 @@ func checkInMainReducer(state: inout CheckInMainState,
 struct CheckInMain: View {
 	let store: Store<CheckInMainState, CheckInMainAction>
 	@ObservedObject var viewStore: ViewStore<CheckInMainState, CheckInMainAction>
-	@State var selectedStep: Step
-	
+	@State var selectedStep: Int
 	init(store: Store<CheckInMainState, CheckInMainAction>) {
 		self.store = store
 		let viewStore = self.store.view
 		self.viewStore = viewStore
-		self._selectedStep = State.init(initialValue: viewStore.value.pathway!.steps.first!)
+		self._selectedStep = State.init(initialValue: viewStore.value.pathway!.steps.first!.id)
 	}
 
 	var body: some View {
-		VStack (spacing: 0) {
+		VStack (alignment: .center, spacing: 0) {
 			ZStack {
 				Button.init(action: { self.viewStore.send(.closeBtnTap) }, label: {
 					Image(systemName: "xmark")
@@ -64,7 +64,15 @@ struct CheckInMain: View {
 								 minHeight: 0, maxHeight: .infinity,
 								 alignment: .topTrailing)
 			}.frame(height: 168.0)
-			ScrollableSelector(steps: self.viewStore.value.pathway!.steps, selection: $selectedStep)
+			Group {
+				if self.viewStore.value.pathway != nil {
+					StepsCollectionView(steps: self.viewStore.value.pathway!.steps,
+															selectionId: $selectedStep)
+				} else {
+					EmptyView()
+				}
+			}
+		.frame(width: 600, alignment: .center)
 			Spacer()
 		}
 		.navigationBarTitle("")
