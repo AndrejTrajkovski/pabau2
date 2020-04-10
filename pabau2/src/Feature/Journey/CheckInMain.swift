@@ -55,23 +55,11 @@ struct CheckInMain: View {
 								 minHeight: 0, maxHeight: .infinity,
 								 alignment: .top)
 				Spacer()
-				Foo()
+				RibbonView(completedNumberOfSteps: 1, totalNumberOfSteps: 4)
 					.offset(x: -80, y: -60)
 					.frame(minWidth: 0, maxWidth: .infinity,
 								 minHeight: 0, maxHeight: .infinity,
 								 alignment: .topTrailing)
-//				Text("1/4")
-//					.padding()
-//					.overlay (
-//						RoundedRectangle(cornerRadius: 36.5)
-//						.fill(Color.deepSkyBlue)
-//						.frame(width: 73, height: 168)
-//						.shadow(color: Color(.red).opacity(30), radius: 2, x: 0, y: 5)
-//						.offset(x: -80, y: -62)
-//						.frame(minWidth: 0, maxWidth: .infinity,
-//									 minHeight: 0, maxHeight: .infinity,
-//									 alignment: .topTrailing)
-//				)
 			}.frame(height: 138.0)
 			Spacer()
 		}
@@ -80,7 +68,10 @@ struct CheckInMain: View {
 	}
 }
 
-struct Foo: View {
+struct RibbonView: View {
+	let completedNumberOfSteps: Int
+	let totalNumberOfSteps: Int
+
 	private let lineWidth: CGFloat = 1
 	var body: some View {
 		ZStack(alignment: .bottom) {
@@ -92,11 +83,10 @@ struct Foo: View {
 						.shadow(color: Color("007AFF"), radius: 2, x: 0, y: 5)
 			)
 				.padding(lineWidth)
-			Text("1/4")
+			Text("\(completedNumberOfSteps)/\(totalNumberOfSteps)")
 				.foregroundColor(.white)
 				.font(.bold18)
-				.alignmentGuide(.bottom, computeValue: { dim in dim[.bottom] + 24
-				})
+				.alignmentGuide(.bottom, computeValue: { dim in dim[.bottom] + 24 })
 		}
 			.frame(width: 73, height: 168)
 	}
