@@ -2,15 +2,6 @@
   "object": {
     "pins": [
       {
-        "package": "CollectionUI",
-        "repositoryURL": "https://github.com/sbertix/CollectionUI.git",
-        "state": {
-          "branch": null,
-          "revision": "8f1c36af9eb2848b7042e1ebd5ef284f98354f38",
-          "version": "2.0.0"
-        }
-      },
-      {
         "package": "CasePaths",
         "repositoryURL": "https://github.com/pointfreeco/swift-case-paths.git",
         "state": {
