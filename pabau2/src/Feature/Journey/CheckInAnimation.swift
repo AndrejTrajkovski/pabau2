@@ -10,7 +10,7 @@ struct CheckInAnimation: View {
 				LinearGradient(gradient: .init(colors: [.checkInGradient1, .deepSkyBlue]), startPoint: .top, endPoint: .bottom)
 			)
 			VStack(spacing: 24) {
-				Checkmark(animationDuration: 1.0, onAnimationFinish: {
+				Checkmark(animationDuration: self.animationDuration, onAnimationFinish: {
 					self.isRunningAnimation = true
 				})
 				Circle()
@@ -29,6 +29,16 @@ struct CheckInAnimation: View {
 			.onAppear(perform: {
 				self.player.playSoundAndVibrate()
 			})
+	}
+}
+
+extension CheckInAnimation {
+	var animationDuration: Double {
+		#if DEBUG
+			return 0.0
+		#else
+			return 1.0
+		#endif
 	}
 }
 
