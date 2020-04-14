@@ -13,20 +13,20 @@ public struct FormTemplate: Codable, Identifiable, Equatable {
 
     public let ePaper: Bool?
 
-    public let formData: FormStructure?
-    public init(id: Int, name: String, formType: FormType, ePaper: Bool? = nil, formData: FormStructure? = nil) {
+    public let formStructure: FormStructure?
+    public init(id: Int, name: String, formType: FormType, ePaper: Bool? = nil, formStructure: FormStructure? = nil) {
         self.id = id
         self.name = name
         self.formType = formType
         self.ePaper = ePaper
-        self.formData = formData
+        self.formStructure = formStructure
     }
     public enum CodingKeys: String, CodingKey {
         case id = "id"
         case name
         case formType = "form_type"
         case ePaper
-        case formData = "form_data"
+        case formStructure = "form_structure"
     }
 
 }

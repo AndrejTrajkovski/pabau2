@@ -12,5 +12,4 @@ public struct FormStructure: Codable, Equatable {
     public enum CodingKeys: String, CodingKey {
         case formStructure = "form_structure"
     }
-
 }
