@@ -171,7 +171,7 @@ struct TemplateRow: View {
 	let templateName: String
 	let image: Image
 	var body: some View {
-		VStack (spacing: 0){
+		VStack (spacing: 0) {
 			HStack {
 				Text(templateName)
 					.font(Font.regular17)

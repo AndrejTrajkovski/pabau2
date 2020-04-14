@@ -18,7 +18,7 @@ public struct CollectionViewLayout {
 	public var alwaysBounces: Bool = false
 
 	/// The interitem spacing. Defaults to `nil`.
-	public var interItemSpacing: NSCollectionLayoutSpacing? = nil
+	public var interItemSpacing: NSCollectionLayoutSpacing?
 	/// The inter group spacing. Defaults to `10`.
 	public var interGroupSpacing: CGFloat = 10
 	/// The item size.
@@ -30,17 +30,17 @@ public struct CollectionViewLayout {
 	/// The item content inset. Defaults to `.zero`.
 	public var itemContentInset: NSDirectionalEdgeInsets = .zero
 	/// The item edge spacing. Defaults to `nil`.
-	public var itemEdgeSpacing: NSCollectionLayoutEdgeSpacing? = nil
-	
+	public var itemEdgeSpacing: NSCollectionLayoutEdgeSpacing?
+
 	/// Update.
-	public var transform: ((UICollectionView) -> Void)? = nil
+	public var transform: ((UICollectionView) -> Void)?
 }
 
 /// A basic `UICollectionView` wrapper.
 public struct CollectionView<Content: View>: UIViewControllerRepresentable {
 	public typealias UIViewControllerType = UICollectionViewController
 	public typealias Coordinator = CollectionCoordinator<Content>
-	
+
 	/// The actual ids.
 	var identifiers: [Int]
 	/// The actual content.
@@ -65,7 +65,7 @@ public struct CollectionView<Content: View>: UIViewControllerRepresentable {
 		self.identifiers = data.map { $0.id.hashValue }
 		self.content = data.map(content)
 	}
-	
+
 	// MARK: Accessory
 	/// Update layout.
 	public func layout(_ transform: (inout CollectionViewLayout) -> Void) -> Self {
@@ -95,7 +95,7 @@ public struct CollectionView<Content: View>: UIViewControllerRepresentable {
 	public func itemEdgeSpacing(_ edgeSpacing: NSCollectionLayoutEdgeSpacing?) -> Self { layout { $0.itemEdgeSpacing = edgeSpacing }}
 	/// Update `layout.transform`.
 	public func introspect(_ transform: @escaping (UICollectionView) -> Void) -> Self { layout { $0.transform = transform }}
-	
+
 	// MARK: UIViewControllerRepresentable
 	public func makeUIViewController(context: UIViewControllerRepresentableContext<CollectionView<Content>>) -> UICollectionViewController {
 		// update layout.
@@ -136,17 +136,17 @@ public struct CollectionView<Content: View>: UIViewControllerRepresentable {
 		//				uiViewController.collectionView.insertItems(at: differences.insertions.map { IndexPath(item: $0.offset, section: 0) })
 		//			}, completion: nil)
 	}
-	
+
 	// MARK: Coordinator
 	public func makeCoordinator() -> CollectionCoordinator<Content> {
 		.init(collectionView: self)
 	}
-	
+
 	/// The `BasicCollectionView` coordinator.
 	public class CollectionCoordinator<Content: View>: NSObject, UICollectionViewDataSource {
 		/// The actual data.
 		var zipped: [(Int, Content)]
-		
+
 		// MARK: Lifecycle
 		/// Init.
 		init(collectionView: CollectionView<Content>) {

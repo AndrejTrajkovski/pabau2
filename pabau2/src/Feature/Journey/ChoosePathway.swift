@@ -68,7 +68,7 @@ public struct ChoosePathway: View {
 	struct State: Equatable {
 		let isChooseConsentShown: Bool
 		let journey: Journey?
-		
+
 		let standardPathway =
 			Pathway.init(id: 1,
 									 title: "Standard",
@@ -92,7 +92,7 @@ public struct ChoosePathway: View {
 			UITableView.appearance().separatorStyle = .none
 		}
 	}
-	
+
 	init(store: Store<ChoosePathwayState, ChoosePathwayContainerAction>) {
 		self.store = store
 		self.viewStore = self.store
@@ -169,7 +169,7 @@ enum PathwayCellStyle {
 			return .white
 		}
 	}
-	
+
 	var btnShadowColor: Color {
 		switch self {
 		case .blue:
@@ -178,7 +178,7 @@ enum PathwayCellStyle {
 			return .bigBtnShadow2
 		}
 	}
-	
+
 	var btnShadowBlur: CGFloat {
 		switch self {
 		case .blue:
@@ -217,7 +217,7 @@ struct ChoosePathwayListContent: View {
 		self.btnAction = btnAction
 		self.style = style
 	}
-	
+
 	var body: some View {
 		VStack(alignment: .leading, spacing: 16) {
 			PathwayCellHeader(bottomLeading, numberOfSteps)

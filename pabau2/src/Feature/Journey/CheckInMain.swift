@@ -24,14 +24,14 @@ struct CheckInMain: View {
 	let store: Store<CheckInContainerState, CheckInMainAction>
 	@ObservedObject var viewStore: ViewStore<CheckInContainerState, CheckInMainAction>
 	@State var selectedStep: Int
-	
+
 	init(store: Store<CheckInContainerState, CheckInMainAction>) {
 		self.store = store
 		let viewStore = self.store.view
 		self.viewStore = viewStore
 		self._selectedStep = State.init(initialValue: viewStore.value.pathway.steps.first!.id)
 	}
-	
+
 	var body: some View {
 		print("check in main body")
 		return VStack (alignment: .center, spacing: 0) {

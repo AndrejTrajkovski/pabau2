@@ -83,6 +83,7 @@
 		825C527F241A13CC00A33A29 /* LoginLiveAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C527E241A13CB00A33A29 /* LoginLiveAPI.swift */; };
 		82622B4C2444F39200BECF9A /* CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82622B4B2444F39200BECF9A /* CollectionView.swift */; };
 		82622B5024464E0800BECF9A /* RibbonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82622B4F24464E0800BECF9A /* RibbonView.swift */; };
+		82622B52244650E000BECF9A /* MultipleChoiceField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82622B51244650E000BECF9A /* MultipleChoiceField.swift */; };
 		827B4572241135A700A5975E /* FSCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82CACE772411293C0021E1DE /* FSCalendar.framework */; };
 		827B45832411368100A5975E /* Journey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 827B457A2411368100A5975E /* Journey.framework */; };
 		827B458A2411368100A5975E /* JourneyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45892411368100A5975E /* JourneyTests.swift */; };
@@ -445,6 +446,7 @@
 		825C527E241A13CB00A33A29 /* LoginLiveAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginLiveAPI.swift; sourceTree = "<group>"; };
 		82622B4B2444F39200BECF9A /* CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionView.swift; sourceTree = "<group>"; };
 		82622B4F24464E0800BECF9A /* RibbonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RibbonView.swift; sourceTree = "<group>"; };
+		82622B51244650E000BECF9A /* MultipleChoiceField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleChoiceField.swift; sourceTree = "<group>"; };
 		827B457A2411368100A5975E /* Journey.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Journey.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		827B457C2411368100A5975E /* Journey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Journey.h; sourceTree = "<group>"; };
 		827B457D2411368100A5975E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -868,6 +870,7 @@
 				82292BD224408F4A00080F74 /* ScrollableSelector.swift */,
 				82292BD7244097C600080F74 /* StepsCollectionView.swift */,
 				82622B4F24464E0800BECF9A /* RibbonView.swift */,
+				82622B51244650E000BECF9A /* MultipleChoiceField.swift */,
 			);
 			path = Journey;
 			sourceTree = "<group>";
@@ -1832,6 +1835,7 @@
 				8250D7C9242BCFD000F8F3FC /* ChooseFormList.swift in Sources */,
 				828626B12424CA64003ADA24 /* JourneyProfileView.swift in Sources */,
 				828626B32424CEFB003ADA24 /* ChoosePathway.swift in Sources */,
+				82622B52244650E000BECF9A /* MultipleChoiceField.swift in Sources */,
 				827B459D24118ABD00A5975E /* JourneyNavigationView.swift in Sources */,
 				825BE7E224361ABD00422910 /* StaffFilterPicker.swift in Sources */,
 			);

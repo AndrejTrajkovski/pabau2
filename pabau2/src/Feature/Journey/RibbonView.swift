@@ -3,7 +3,7 @@ import SwiftUI
 struct RibbonView: View {
 	let completedNumberOfSteps: Int
 	let totalNumberOfSteps: Int
-	
+
 	private let lineWidth: CGFloat = 1
 	var body: some View {
 		ZStack(alignment: .bottom) {
