@@ -109,7 +109,7 @@ public struct ChoosePathway: View {
 		}
 		.journeyBase(self.viewStore.value.journey, .long)
 	}
-	
+
 	var chooseFormNavLink: some View {
 		NavigationLink.emptyHidden(self.viewStore.value.isChooseConsentShown,
 															 ChooseFormList(store: self.store.scope(value: { $0.chooseConsentState },
@@ -160,7 +160,7 @@ enum PathwayCellStyle {
 			return .white
 		}
 	}
-	
+
 	var btnColor: Color {
 		switch self {
 		case .blue:
@@ -198,7 +198,7 @@ struct ChoosePathwayListContent: View {
 	let btnTxt: String
 	let style: PathwayCellStyle
 	let btnAction: () -> Void
-	
+
 	init(
 		_ style: PathwayCellStyle,
 		_ bottomLeading: Image,
@@ -236,10 +236,10 @@ struct PathwayCell<Content: View>: View {
 		self.style = style
 		self.content = content
 	}
-	
+
 	let style: PathwayCellStyle
 	let content: () -> Content
-	
+
 	public var body: some View {
 		VStack(spacing: 0) {
 			Rectangle().fill(style.btnColor).frame(height: 8)

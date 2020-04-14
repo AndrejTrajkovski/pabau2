@@ -145,7 +145,7 @@
 		827B460D2413C14D00A5975E /* NonEmpty in Frameworks */ = {isa = PBXBuildFile; productRef = 827B460C2413C14D00A5975E /* NonEmpty */; };
 		82811EF423E06BCB0066AFDC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EF323E06BCB0066AFDC /* ContentView.swift */; };
 		828626B12424CA64003ADA24 /* JourneyProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828626B02424CA64003ADA24 /* JourneyProfileView.swift */; };
-		828626B32424CEFB003ADA24 /* Pathway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828626B22424CEFB003ADA24 /* Pathway.swift */; };
+		828626B32424CEFB003ADA24 /* ChoosePathway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828626B22424CEFB003ADA24 /* ChoosePathway.swift */; };
 		828626B6242A915D003ADA24 /* Journey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 827B457A2411368100A5975E /* Journey.framework */; };
 		8297A29023D9AD7E00D091FF /* PageControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 8297A28E23D9AD7E00D091FF /* PageControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8297A29423D9AD7E00D091FF /* PageControl.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8297A28C23D9AD7E00D091FF /* PageControl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -512,7 +512,7 @@
 		82811F0623E720670066AFDC /* LoginTextFields.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginTextFields.swift; sourceTree = "<group>"; };
 		82811F0C23E955F70066AFDC /* KeyboardFollower.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardFollower.swift; sourceTree = "<group>"; };
 		828626B02424CA64003ADA24 /* JourneyProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyProfileView.swift; sourceTree = "<group>"; };
-		828626B22424CEFB003ADA24 /* Pathway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pathway.swift; sourceTree = "<group>"; };
+		828626B22424CEFB003ADA24 /* ChoosePathway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoosePathway.swift; sourceTree = "<group>"; };
 		8297A28523D9AB1B00D091FF /* PageControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageControl.swift; sourceTree = "<group>"; };
 		8297A28C23D9AD7E00D091FF /* PageControl.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PageControl.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8297A28E23D9AD7E00D091FF /* PageControl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PageControl.h; sourceTree = "<group>"; };
@@ -852,7 +852,7 @@
 				82E253FD241B9F1200F16C30 /* CompleteFilter.swift */,
 				829B40D02423B8F2009B7E71 /* AddAppointment.swift */,
 				828626B02424CA64003ADA24 /* JourneyProfileView.swift */,
-				828626B22424CEFB003ADA24 /* Pathway.swift */,
+				828626B22424CEFB003ADA24 /* ChoosePathway.swift */,
 				8250D7C8242BCFD000F8F3FC /* ChooseFormList.swift */,
 				8250D7CA242BD25B00F8F3FC /* JourneyBaseView.swift */,
 				8250D7D3242C980100F8F3FC /* ChooseService.swift */,
@@ -1827,7 +1827,7 @@
 				82E253FE241B9F1200F16C30 /* CompleteFilter.swift in Sources */,
 				8250D7C9242BCFD000F8F3FC /* ChooseFormList.swift in Sources */,
 				828626B12424CA64003ADA24 /* JourneyProfileView.swift in Sources */,
-				828626B32424CEFB003ADA24 /* Pathway.swift in Sources */,
+				828626B32424CEFB003ADA24 /* ChoosePathway.swift in Sources */,
 				827B459D24118ABD00A5975E /* JourneyNavigationView.swift in Sources */,
 				825BE7E224361ABD00422910 /* StaffFilterPicker.swift in Sources */,
 			);
