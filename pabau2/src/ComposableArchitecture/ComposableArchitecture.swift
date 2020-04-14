@@ -50,6 +50,25 @@ public func pullback<LocalValue, GlobalValue, LocalAction, GlobalAction, LocalEn
   }
 }
 
+public func pullback<LocalValue, GlobalValue, LocalAction, GlobalAction, LocalEnvironment, GlobalEnvironment>(
+	_ reducer: @escaping Reducer<LocalValue, LocalAction, LocalEnvironment>,
+	value: WritableKeyPath<GlobalValue, LocalValue?>,
+	action: CasePath<GlobalAction, LocalAction>,
+	environment: @escaping (GlobalEnvironment) -> LocalEnvironment
+) -> Reducer<GlobalValue, GlobalAction, GlobalEnvironment> {
+	return { globalValue, globalAction, globalEnvironment in
+		guard let localAction = action.extract(from: globalAction) else { return [] }
+		guard let localValue = globalValue[keyPath: value] else { return [] }
+		var varLocalValue = localValue
+		let localEffects = reducer(&varLocalValue, localAction, environment(globalEnvironment))
+		globalValue[keyPath: value] = varLocalValue
+		return localEffects.map { localEffect in
+			localEffect.map(action.embed)
+				.eraseToEffect()
+		}
+	}
+}
+
 public func logging<Value, Action, Environment>(
   _ reducer: @escaping Reducer<Value, Action, Environment>
 ) -> Reducer<Value, Action, Environment> {

@@ -3,14 +3,6 @@ import Model
 import ComposableArchitecture
 import Util
 
-//public struct CheckInMainState: Equatable {
-//	var isCheckedIn: Bool
-//	var journey: Journey?
-//	var pathway: Pathway?
-//	var allConsents: [FormTemplate]
-//	var selectedConsentsIds: [Int]
-//}
-//
 public enum CheckInMainAction {
 	case closeBtnTap
 }
@@ -68,42 +60,12 @@ struct CheckInMain: View {
 								 minHeight: 0, maxHeight: .infinity,
 								 alignment: .topTrailing)
 			}.frame(height: 168.0)
-//			Group {
-//				if self.viewStore.value.pathway != nil {
-					StepsCollectionView(steps: self.viewStore.value.pathway.steps,
-														selectionId: $selectedStep)
-					.frame(width: 600, alignment: .center)
-//				} else {
-//					EmptyView()
-//				}
-//			}
+			StepsCollectionView(steps: self.viewStore.value.pathway.steps,
+													selectionId: $selectedStep)
+				.frame(width: 600, alignment: .center)
 			Spacer()
 		}
 		.navigationBarTitle("")
 		.navigationBarHidden(true)
-	}
-}
-
-struct RibbonView: View {
-	let completedNumberOfSteps: Int
-	let totalNumberOfSteps: Int
-	
-	private let lineWidth: CGFloat = 1
-	var body: some View {
-		ZStack(alignment: .bottom) {
-			RoundedRectangle(cornerRadius: 36.5)
-				.stroke(Color(hex: "979797"), lineWidth: lineWidth)
-				.overlay(
-					RoundedRectangle(cornerRadius: 36.5)
-						.fill(Color.deepSkyBlue)
-						.shadow(color: Color(hex: "007AFF"), radius: 1, x: 0, y: 5)
-			)
-				.padding(lineWidth)
-			Text("\(completedNumberOfSteps)/\(totalNumberOfSteps)")
-				.foregroundColor(.white)
-				.font(.bold18)
-				.alignmentGuide(.bottom, computeValue: { dim in dim[.bottom] + 24 })
-		}
-		.frame(width: 73, height: 168)
 	}
 }
