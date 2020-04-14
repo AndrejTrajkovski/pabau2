@@ -66,9 +66,15 @@ struct CheckInMain: View {
 								 minHeight: 0, maxHeight: .infinity,
 								 alignment: .topTrailing)
 			}.frame(height: 168.0)
-			StepsCollectionView(steps: self.viewStore.value.pathway!.steps,
-													selectionId: $selectedStep)
-				.frame(width: 600, alignment: .center)
+			Group {
+				if self.viewStore.value.pathway != nil {
+					StepsCollectionView(steps: self.viewStore.value.pathway!.steps,
+														selectionId: $selectedStep)
+					.frame(width: 600, alignment: .center)
+				} else {
+					EmptyView()
+				}
+			}
 			Spacer()
 		}
 		.navigationBarTitle("")
