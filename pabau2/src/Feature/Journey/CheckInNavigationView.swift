@@ -4,25 +4,16 @@ import Model
 import CasePaths
 
 public struct CheckInContainerState: Equatable {
-	var isCheckedIn: Bool
-	var journey: Journey?
-	var pathway: Pathway?
-	var consents: [FormTemplate]
 
-	var main: CheckInMainState {
-		get {
-			return CheckInMainState(isCheckedIn: isCheckedIn,
-															journey: journey,
-															pathway: pathway,
-															consents: consents)
-		}
-		set {
-			self.isCheckedIn = newValue.isCheckedIn
-			self.journey = newValue.journey
-			self.pathway = newValue.pathway
-			self.consents = newValue.consents
-		}
+	public static var defaultEmpty: CheckInContainerState {
+		CheckInContainerState(journey: Journey.defaultEmpty,
+													pathway: Pathway.defaultEmpty,
+													consents: [])
 	}
+
+	var journey: Journey
+	var pathway: Pathway
+	var consents: [FormTemplate]
 }
 
 public enum CheckInContainerAction {
@@ -34,9 +25,9 @@ public enum CheckInAnimationAction {
 	case didFinishAnimation
 }
 
-let checkInReducer = combine(
+public let checkInReducer = combine(
 	pullback(checkInMainReducer,
-					 value: \CheckInContainerState.main,
+					 value: \CheckInContainerState.self,
 					 action: /CheckInContainerAction.main,
 					 environment: { $0 })
 )
@@ -55,7 +46,7 @@ public struct CheckInNavigationView: View {
 				CheckInAnimation(isRunningAnimation: $isRunningAnimation)
 				NavigationLink.init(destination:
 					CheckInMain(store:
-						self.store.scope(value: { $0.main },
+						self.store.scope(value: { $0 },
 														 action: { .main($0)}
 					)), isActive: $isRunningAnimation, label: { EmptyView() })
 			}

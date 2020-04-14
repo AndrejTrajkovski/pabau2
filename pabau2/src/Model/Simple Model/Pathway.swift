@@ -6,6 +6,10 @@ import Foundation
 /** In the \&quot;steps\&quot; array of this object, if an element\\&#x27;s \&quot;stepType\&quot; property value is \&quot;consents\&quot; or \&quot;treatmentNotes\&quot;, and the \&quot;preselectedTemplateType\&quot; property value is \&quot;template\&quot;, that element will have a value for the \&quot;formTemplate\&quot; property. If an element\\&#x27;s \&quot;stepType\&quot; property value is not \&quot;consents\&quot; nor \&quot;treatmentNotes\&quot;, both the \&quot;preselectedTemplateType\&quot; and \&quot;formTemplate\&quot; will not be returned. */
 public struct Pathway: Codable, Identifiable, Equatable {
 
+	public static var defaultEmpty: Pathway {
+		Pathway(id: -1, title: "", steps: [])
+	}
+	
     public let id: Int
 
     public let title: String

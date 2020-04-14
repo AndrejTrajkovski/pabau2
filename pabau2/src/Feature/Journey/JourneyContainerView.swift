@@ -61,6 +61,18 @@ public func employeeListReducer(state: inout EmployeesState,
 
 public typealias JourneyEnvironemnt = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
 
+func checkInMiddleware(state: inout JourneyState,
+											 action: CheckInMainAction,
+											 environment: JourneyEnvironemnt) -> [Effect<CheckInMainAction>] {
+	switch action {
+	case .closeBtnTap:
+		state.isCheckedIn = false
+		state.selectedPathway = nil
+		state.selectedJourney = nil
+	}
+	return []
+}
+
 public let journeyContainerReducer: Reducer<JourneyState, JourneyContainerAction, JourneyEnvironemnt> = combine(
 	pullback(journeyReducer,
 					 value: \JourneyState.self,
@@ -78,9 +90,13 @@ public let journeyContainerReducer: Reducer<JourneyState, JourneyContainerAction
 					 value: \JourneyState.choosePathway,
 					 action: /JourneyContainerAction.choosePathway,
 					 environment: { $0 }),
-	pullback(checkInReducer,
-					 value: \JourneyState.checkIn,
-					 action: /JourneyContainerAction.checkIn,
+//	pullback(checkInReducer,
+//					 value: \JourneyState.checkIn,
+//					 action: /JourneyContainerAction.checkIn,
+//					 environment: { $0 }),
+	pullback(checkInMiddleware,
+					 value: \JourneyState.self,
+					 action: /JourneyContainerAction.checkIn..CheckInContainerAction.main,
 					 environment: { $0 })
 )
 

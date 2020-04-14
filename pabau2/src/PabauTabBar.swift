@@ -73,7 +73,7 @@ struct PabauTabBar: View {
 								 destination: {
 									CheckInNavigationView(store:
 										self.store.scope(
-											value: { $0.journey.checkIn },
+											value: { $0.journey.checkIn ?? CheckInContainerState.defaultEmpty },
 											action: { .journey(.checkIn($0))})
 									)
 			}).modalLink(isPresented: .constant(self.viewStore.value.isShowingAppointments),

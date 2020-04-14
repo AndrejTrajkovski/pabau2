@@ -3,39 +3,41 @@ import Model
 import ComposableArchitecture
 import Util
 
-public struct CheckInMainState: Equatable {
-	var isCheckedIn: Bool
-	var journey: Journey?
-	var pathway: Pathway?
-	var consents: [FormTemplate]
-}
-
+//public struct CheckInMainState: Equatable {
+//	var isCheckedIn: Bool
+//	var journey: Journey?
+//	var pathway: Pathway?
+//	var allConsents: [FormTemplate]
+//	var selectedConsentsIds: [Int]
+//}
+//
 public enum CheckInMainAction {
 	case closeBtnTap
 }
 
-func checkInMainReducer(state: inout CheckInMainState,
+func checkInMainReducer(state: inout CheckInContainerState,
 												action: CheckInMainAction,
 												environment: JourneyEnvironemnt) -> [Effect<CheckInMainAction>] {
 	switch action {
 	case .closeBtnTap:
-		state.isCheckedIn = false
-		state.pathway = nil
-		state.journey = nil
+		return []
+//		state.isCheckedIn = false
+//		state.pathway = nil
+//		state.journey = nil
 	}
 	return []
 }
 
 struct CheckInMain: View {
-	let store: Store<CheckInMainState, CheckInMainAction>
-	@ObservedObject var viewStore: ViewStore<CheckInMainState, CheckInMainAction>
+	let store: Store<CheckInContainerState, CheckInMainAction>
+	@ObservedObject var viewStore: ViewStore<CheckInContainerState, CheckInMainAction>
 	@State var selectedStep: Int
 	
-	init(store: Store<CheckInMainState, CheckInMainAction>) {
+	init(store: Store<CheckInContainerState, CheckInMainAction>) {
 		self.store = store
 		let viewStore = self.store.view
 		self.viewStore = viewStore
-		self._selectedStep = State.init(initialValue: viewStore.value.pathway!.steps.first!.id)
+		self._selectedStep = State.init(initialValue: viewStore.value.pathway.steps.first!.id)
 	}
 	
 	var body: some View {
@@ -66,15 +68,15 @@ struct CheckInMain: View {
 								 minHeight: 0, maxHeight: .infinity,
 								 alignment: .topTrailing)
 			}.frame(height: 168.0)
-			Group {
-				if self.viewStore.value.pathway != nil {
-					StepsCollectionView(steps: self.viewStore.value.pathway!.steps,
+//			Group {
+//				if self.viewStore.value.pathway != nil {
+					StepsCollectionView(steps: self.viewStore.value.pathway.steps,
 														selectionId: $selectedStep)
 					.frame(width: 600, alignment: .center)
-				} else {
-					EmptyView()
-				}
-			}
+//				} else {
+//					EmptyView()
+//				}
+//			}
 			Spacer()
 		}
 		.navigationBarTitle("")

@@ -5,6 +5,10 @@ import Foundation
 
 public struct Employee: Codable, Identifiable, Equatable, Hashable {
 	
+	public static var defaultEmpty: Employee {
+		Employee.init(id: -1, name: "")
+	}
+	
 	public let id: Int
 	
 	public let name: String
