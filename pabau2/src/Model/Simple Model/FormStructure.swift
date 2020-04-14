@@ -3,7 +3,7 @@
 
 import Foundation
 
-public struct FormTemplateFormData: Codable, Equatable {
+public struct FormStructure: Codable, Equatable {
 
     public let formStructure: [CSSField]?
     public init(formStructure: [CSSField]? = nil) {

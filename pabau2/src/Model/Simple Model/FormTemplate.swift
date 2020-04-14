@@ -13,8 +13,8 @@ public struct FormTemplate: Codable, Identifiable, Equatable {
 
     public let ePaper: Bool?
 
-    public let formData: FormTemplateFormData?
-    public init(id: Int, name: String, formType: FormType, ePaper: Bool? = nil, formData: FormTemplateFormData? = nil) {
+    public let formData: FormStructure?
+    public init(id: Int, name: String, formType: FormType, ePaper: Bool? = nil, formData: FormStructure? = nil) {
         self.id = id
         self.name = name
         self.formType = formType

@@ -96,7 +96,7 @@
 		827B45D624126D4E00A5975E /* ClientLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45A224126D4D00A5975E /* ClientLink.swift */; };
 		827B45D724126D4E00A5975E /* Journey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45A324126D4D00A5975E /* Journey.swift */; };
 		827B45D824126D4E00A5975E /* AppointmentStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45A424126D4D00A5975E /* AppointmentStatus.swift */; };
-		827B45D924126D4E00A5975E /* FormTemplateFormData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45A524126D4D00A5975E /* FormTemplateFormData.swift */; };
+		827B45D924126D4E00A5975E /* FormStructure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45A524126D4D00A5975E /* FormStructure.swift */; };
 		827B45DA24126D4E00A5975E /* JourneyPostCare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45A624126D4D00A5975E /* JourneyPostCare.swift */; };
 		827B45DB24126D4E00A5975E /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45A724126D4D00A5975E /* Service.swift */; };
 		827B45DC24126D4E00A5975E /* AppointmentBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45A824126D4D00A5975E /* AppointmentBody.swift */; };
@@ -457,7 +457,7 @@
 		827B45A224126D4D00A5975E /* ClientLink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClientLink.swift; sourceTree = "<group>"; };
 		827B45A324126D4D00A5975E /* Journey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Journey.swift; sourceTree = "<group>"; };
 		827B45A424126D4D00A5975E /* AppointmentStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppointmentStatus.swift; sourceTree = "<group>"; };
-		827B45A524126D4D00A5975E /* FormTemplateFormData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormTemplateFormData.swift; sourceTree = "<group>"; };
+		827B45A524126D4D00A5975E /* FormStructure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormStructure.swift; sourceTree = "<group>"; };
 		827B45A624126D4D00A5975E /* JourneyPostCare.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JourneyPostCare.swift; sourceTree = "<group>"; };
 		827B45A724126D4D00A5975E /* Service.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 		827B45A824126D4D00A5975E /* AppointmentBody.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppointmentBody.swift; sourceTree = "<group>"; };
@@ -892,7 +892,7 @@
 				827B45A224126D4D00A5975E /* ClientLink.swift */,
 				827B45A324126D4D00A5975E /* Journey.swift */,
 				827B45A424126D4D00A5975E /* AppointmentStatus.swift */,
-				827B45A524126D4D00A5975E /* FormTemplateFormData.swift */,
+				827B45A524126D4D00A5975E /* FormStructure.swift */,
 				827B45A624126D4D00A5975E /* JourneyPostCare.swift */,
 				827B45A724126D4D00A5975E /* Service.swift */,
 				827B45A824126D4D00A5975E /* AppointmentBody.swift */,
@@ -1744,7 +1744,7 @@
 				827B45D424126D4E00A5975E /* FormTemplate.swift in Sources */,
 				827B45FE24126D4E00A5975E /* Company.swift in Sources */,
 				827B45F624126D4E00A5975E /* FormFieldValue.swift in Sources */,
-				827B45D924126D4E00A5975E /* FormTemplateFormData.swift in Sources */,
+				827B45D924126D4E00A5975E /* FormStructure.swift in Sources */,
 				827B460224126D4E00A5975E /* ClientDetails.swift in Sources */,
 				825C525B2418C61500A33A29 /* APIHelper.swift in Sources */,
 				827B45ED24126D4E00A5975E /* Photo.swift in Sources */,
