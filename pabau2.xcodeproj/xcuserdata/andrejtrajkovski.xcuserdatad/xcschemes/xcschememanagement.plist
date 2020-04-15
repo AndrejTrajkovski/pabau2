@@ -21,7 +21,7 @@
 		<key>FSCalendar.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>8</integer>
+			<integer>9</integer>
 		</dict>
 		<key>FSCalendarSwiftUI.xcscheme_^#shared#^_</key>
 		<dict>
@@ -31,7 +31,7 @@
 		<key>Journey.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>9</integer>
+			<integer>8</integer>
 		</dict>
 		<key>Login.xcscheme_^#shared#^_</key>
 		<dict>

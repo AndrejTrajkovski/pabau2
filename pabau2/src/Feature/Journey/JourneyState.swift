@@ -53,7 +53,7 @@ public struct JourneyState: Equatable {
 				isCheckedIn == true else { return nil }
 			return CheckInContainerState(journey: selectedJourney,
 																	 pathway: selectedPathway,
-																	 consents: allConsents.filter { self.selectedConsentsIds.contains($0.id)})
+																	 forms: allConsents.filter { self.selectedConsentsIds.contains($0.id)})
 		}
 		set {}
 	}

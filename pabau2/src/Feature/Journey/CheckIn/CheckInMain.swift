@@ -24,7 +24,7 @@ struct CheckInMain: View {
 	let store: Store<CheckInContainerState, CheckInMainAction>
 	@ObservedObject var viewStore: ViewStore<CheckInContainerState, CheckInMainAction>
 	@State var selectedStep: Int
-
+	
 	init(store: Store<CheckInContainerState, CheckInMainAction>) {
 		self.store = store
 		let viewStore = self.store.view

@@ -8,12 +8,15 @@ public struct CheckInContainerState: Equatable {
 	public static var defaultEmpty: CheckInContainerState {
 		CheckInContainerState(journey: Journey.defaultEmpty,
 													pathway: Pathway.defaultEmpty,
-													consents: [])
+													forms: [])
 	}
-
 	var journey: Journey
 	var pathway: Pathway
-	var consents: [FormTemplate]
+
+	var completed: [Int: Bool] = [:]
+	var steps: [Step] = []
+	var forms: [FormTemplate] = []
+	var formByStep: [Int: Int] = [:]
 }
 
 public enum CheckInContainerAction {
