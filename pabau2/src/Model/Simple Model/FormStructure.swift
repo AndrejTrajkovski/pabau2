@@ -5,8 +5,8 @@ import Foundation
 
 public struct FormStructure: Codable, Equatable {
 
-    public let formStructure: [CSSField]?
-    public init(formStructure: [CSSField]? = nil) {
+    public let formStructure: [String]?
+    public init(formStructure: [String]? = nil) {
         self.formStructure = formStructure
     }
     public enum CodingKeys: String, CodingKey {

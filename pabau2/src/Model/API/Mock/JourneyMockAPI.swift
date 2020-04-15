@@ -78,11 +78,11 @@ extension JourneyMockAPI {
 								 ePaper: false,
 								 formStructure:
 			FormStructure(formStructure: [
-				CSSField(id: 1, cssClass: .select),
-				CSSField(id: 2, cssClass: .select),
-				CSSField(id: 3, cssClass: .select),
-				CSSField(id: 4, cssClass: .select),
-				CSSField(id: 5, cssClass: .staticText)
+//				CSSField(id: 1, cssClass: .select),
+//				CSSField(id: 2, cssClass: .select),
+//				CSSField(id: 3, cssClass: .select),
+//				CSSField(id: 4, cssClass: .select),
+//				CSSField(id: 5, cssClass: .staticText)
 			])),
 		FormTemplate(id: 2, name: "Consent - Botox", formType: .consent),
 		FormTemplate(id: 3, name: "Consent - Fillers", formType: .consent),
