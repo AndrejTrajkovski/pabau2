@@ -64,6 +64,19 @@ struct CheckInMain: View {
 													selectionId: $selectedStep)
 				.frame(width: 600, alignment: .center)
 			Spacer()
+//			List {
+//				ForEach(self.viewStore.value.listServices, id: \.self.first?.categoryId) { (group: [Service]) in
+//					Section(header:
+//						ServicesHeader(name: group.first?.categoryName ?? "No name")
+//					) {
+//						ForEach(group, id: \.self) { (service: Service) in
+//							ServiceRow(service: service).onTapGesture {
+//								self.viewStore.send(.didSelectServiceId(service.id))
+//							}
+//						}
+//					}.background(Color.white)
+//				}
+//			}
 		}
 		.navigationBarTitle("")
 		.navigationBarHidden(true)

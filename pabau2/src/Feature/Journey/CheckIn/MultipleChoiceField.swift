@@ -3,7 +3,7 @@ import ComposableArchitecture
 
 struct MultipleChoiceState {
 	var choices: [String]
-	var selected: [Int: Bool]
+	var selected: [Bool]
 }
 
 enum MultipleChoiceAction {
@@ -15,27 +15,49 @@ func multipleChoiceState(state: inout MultipleChoiceState,
 												 env: ()) -> [Effect<MultipleChoiceAction>] {
 	switch action {
 	case .didTouchChoiceIdx(let idx):
-		state.selected[idx]!.toggle()
+		state.selected[idx].toggle()
 	}
 	return []
+}
+
+struct MultipleChoiceField: View {
+	let store: Store<MultipleChoiceState, MultipleChoiceAction>
+	var viewStore: ViewStore<State, MultipleChoiceAction>
+
+	struct State {
+		let title: String
+		let choices: [ChoiceVM]
+	}
+
+	var body: some View {
+		Section(
+		header: Text(self.viewStore.value.title)) {
+			ForEach(self.viewStore.value.choices, id: \.self) { (choice: ChoiceVM) in
+				ChoiceRow(choice: choice)
+					.onTapGesture { self.viewStore.send(.didTouchChoiceIdx(choice.idx))}
+					.listRowInsets(EdgeInsets())
+			}
+		}
+	}
+}
+
+extension MultipleChoiceField.State {
+
+	init(state: MultipleChoiceState) {
+		self.title = "Title"
+		self.choices = zip(state.choices.enumerated().map({idx, elm in (elm, idx)}), state.selected)
+			.map(makeChoiceVm)
+	}
+}
+
+func makeChoiceVm(choice: ((String, Int), Bool)) -> ChoiceVM {
+	ChoiceVM(title: choice.0.0, isSelected: choice.1, idx: choice.0.1)
 }
 
 struct ChoiceVM: Hashable {
 	let title: String
 	let isSelected: Bool
-}
-
-struct MultipleChoiceField: View {
-	let title: String
-	let choices: [ChoiceVM]
-	var body: some View {
-		Section(
-		header: Text(title)) {
-			ForEach(choices, id: \.self) { (choice: ChoiceVM) in
-				ChoiceRow(choice: choice)
-			}
-		}
-	}
+	let idx: Int
 }
 
 struct ChoiceRow: View {

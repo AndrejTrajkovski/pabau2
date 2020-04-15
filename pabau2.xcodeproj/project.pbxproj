@@ -844,9 +844,25 @@
 			path = Live;
 			sourceTree = "<group>";
 		};
+		82622B5324468C9F00BECF9A /* CheckIn */ = {
+			isa = PBXGroup;
+			children = (
+				825BE7E324361C4400422910 /* SoundPlayer.swift */,
+				829BFBAE243F5D6F005DDCB9 /* CheckInAnimation.swift */,
+				829BFBB0243F693E005DDCB9 /* CheckInMain.swift */,
+				82C479DD242E17B50037F140 /* CheckInNavigationView.swift */,
+				82292BD7244097C600080F74 /* StepsCollectionView.swift */,
+				82292BD224408F4A00080F74 /* ScrollableSelector.swift */,
+				82622B4F24464E0800BECF9A /* RibbonView.swift */,
+				82622B51244650E000BECF9A /* MultipleChoiceField.swift */,
+			);
+			path = CheckIn;
+			sourceTree = "<group>";
+		};
 		827B457B2411368100A5975E /* Journey */ = {
 			isa = PBXGroup;
 			children = (
+				82622B5324468C9F00BECF9A /* CheckIn */,
 				827B457C2411368100A5975E /* Journey.h */,
 				827B457D2411368100A5975E /* Info.plist */,
 				827B459A241136D900A5975E /* JourneyContainerView.swift */,
@@ -863,14 +879,6 @@
 				82D43D8F24351F5000AC74FA /* EmployeesList.swift */,
 				82D43D91243522CD00AC74FA /* Settings.swift */,
 				825BE7E124361ABD00422910 /* StaffFilterPicker.swift */,
-				825BE7E324361C4400422910 /* SoundPlayer.swift */,
-				82C479DD242E17B50037F140 /* CheckInNavigationView.swift */,
-				829BFBAE243F5D6F005DDCB9 /* CheckInAnimation.swift */,
-				829BFBB0243F693E005DDCB9 /* CheckInMain.swift */,
-				82292BD224408F4A00080F74 /* ScrollableSelector.swift */,
-				82292BD7244097C600080F74 /* StepsCollectionView.swift */,
-				82622B4F24464E0800BECF9A /* RibbonView.swift */,
-				82622B51244650E000BECF9A /* MultipleChoiceField.swift */,
 			);
 			path = Journey;
 			sourceTree = "<group>";
