@@ -4,16 +4,14 @@ import Model
 
 struct StepsCollectionView: View {
 	let stepVms: [StepVM]
-	@Binding var selection: Int {
-		didSet {
-			print(selection)
-		}
-	}
-
-	init (steps: [Step], selectionId: Binding<Int>) {
-		self._selection = selectionId
-		self.stepVms = steps.map { Self.stepVM(step: $0, selection: selectionId.wrappedValue)}
+	let selectedId: Int
+	let didSelect: (Int) -> Void
+	
+	init (steps: [Step], selectedId: Int, didSelect: @escaping (Int) -> Void) {
+		self.selectedId = selectedId
+		self.stepVms = steps.map { Self.stepVM(step: $0, selection: selectedId)}
 		self.stepVms.forEach {print("\($0.id) is selected: \($0.isSelected)")}
+		self.didSelect = didSelect
 	}
 
 	struct StepVM {
@@ -37,7 +35,7 @@ struct StepsCollectionView: View {
 				.font(.medium10)
 				.foregroundColor(Color(hex: "909090"))
 		}.onTapGesture {
-			self.selection = viewModel.id
+			self.didSelect(viewModel.id)
 		}
 	}
 

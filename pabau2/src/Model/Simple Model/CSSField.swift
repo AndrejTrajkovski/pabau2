@@ -3,7 +3,17 @@
 
 import Foundation
 
-public struct CSSField: Codable {
+public struct CSSField: Codable, Equatable {
+	public static func == (lhs: CSSField, rhs: CSSField) -> Bool {
+		return
+			lhs.id == rhs.id &&
+			lhs.cssClass == rhs.cssClass &&
+			lhs._required == rhs._required &&
+			lhs.searchable == rhs.searchable &&
+			lhs.title == rhs.title &&
+			lhs.values.id == rhs.values.id
+	}
+	
 	
 	public let id: Int
 	

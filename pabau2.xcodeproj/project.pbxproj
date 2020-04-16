@@ -212,6 +212,8 @@
 		82D43D92243522CD00AC74FA /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D43D91243522CD00AC74FA /* Settings.swift */; };
 		82D7C2BF2446FEB3000B1CD5 /* CSSClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D7C2BE2446FEB3000B1CD5 /* CSSClass.swift */; };
 		82D7C2C124471854000B1CD5 /* CSSValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D7C2C024471854000B1CD5 /* CSSValues.swift */; };
+		82D7C2C324479CAF000B1CD5 /* CheckInContainerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D7C2C224479CAF000B1CD5 /* CheckInContainerState.swift */; };
+		82D7C2C52447AB57000B1CD5 /* FormBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D7C2C42447AB57000B1CD5 /* FormBuilder.swift */; };
 		82E253F8241B661100F16C30 /* RoundedCorners.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E253F7241B661100F16C30 /* RoundedCorners.swift */; };
 		82E253FA241B9EB500F16C30 /* JourneyAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E253F9241B9EB500F16C30 /* JourneyAction.swift */; };
 		82E253FC241B9ED000F16C30 /* JourneyState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E253FB241B9ED000F16C30 /* JourneyState.swift */; };
@@ -596,6 +598,8 @@
 		82D43D91243522CD00AC74FA /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		82D7C2BE2446FEB3000B1CD5 /* CSSClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSSClass.swift; sourceTree = "<group>"; };
 		82D7C2C024471854000B1CD5 /* CSSValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSSValues.swift; sourceTree = "<group>"; };
+		82D7C2C224479CAF000B1CD5 /* CheckInContainerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInContainerState.swift; sourceTree = "<group>"; };
+		82D7C2C42447AB57000B1CD5 /* FormBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormBuilder.swift; sourceTree = "<group>"; };
 		82E253F7241B661100F16C30 /* RoundedCorners.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedCorners.swift; sourceTree = "<group>"; };
 		82E253F9241B9EB500F16C30 /* JourneyAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyAction.swift; sourceTree = "<group>"; };
 		82E253FB241B9ED000F16C30 /* JourneyState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyState.swift; sourceTree = "<group>"; };
@@ -859,6 +863,8 @@
 				82292BD224408F4A00080F74 /* ScrollableSelector.swift */,
 				82622B4F24464E0800BECF9A /* RibbonView.swift */,
 				82622B51244650E000BECF9A /* MultipleChoiceField.swift */,
+				82D7C2C224479CAF000B1CD5 /* CheckInContainerState.swift */,
+				82D7C2C42447AB57000B1CD5 /* FormBuilder.swift */,
 			);
 			path = CheckIn;
 			sourceTree = "<group>";
@@ -1847,7 +1853,9 @@
 				82D43D9024351F5000AC74FA /* EmployeesList.swift in Sources */,
 				82E253FC241B9ED000F16C30 /* JourneyState.swift in Sources */,
 				8250D7CB242BD25B00F8F3FC /* JourneyBaseView.swift in Sources */,
+				82D7C2C52447AB57000B1CD5 /* FormBuilder.swift in Sources */,
 				82E253FE241B9F1200F16C30 /* CompleteFilter.swift in Sources */,
+				82D7C2C324479CAF000B1CD5 /* CheckInContainerState.swift in Sources */,
 				8250D7C9242BCFD000F8F3FC /* ChooseFormList.swift in Sources */,
 				828626B12424CA64003ADA24 /* JourneyProfileView.swift in Sources */,
 				828626B32424CEFB003ADA24 /* ChoosePathway.swift in Sources */,

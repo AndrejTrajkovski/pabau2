@@ -69,6 +69,8 @@ func checkInMiddleware(state: inout JourneyState,
 		state.isCheckedIn = false
 		state.selectedPathway = nil
 		state.selectedJourney = nil
+	default:
+		return []
 	}
 	return []
 }

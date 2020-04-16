@@ -3,22 +3,6 @@ import ComposableArchitecture
 import Model
 import CasePaths
 
-public struct CheckInContainerState: Equatable {
-
-	public static var defaultEmpty: CheckInContainerState {
-		CheckInContainerState(journey: Journey.defaultEmpty,
-													pathway: Pathway.defaultEmpty,
-													forms: [])
-	}
-	var journey: Journey
-	var pathway: Pathway
-
-	var completed: [Int: Bool] = [:]
-	var steps: [Step] = []
-	var forms: [FormTemplate] = []
-	var formByStep: [Int: Int] = [:]
-}
-
 public enum CheckInContainerAction {
 	case animation(CheckInAnimationAction)
 	case main(CheckInMainAction)

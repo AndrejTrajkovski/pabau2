@@ -29,6 +29,24 @@ public struct JourneyState: Equatable {
 		])
 	var selectedConsentsIds: [Int] = []
 	var allConsents: [FormTemplate] = []
+
+	public var addAppointment: AddAppointmentState = AddAppointmentState.init(
+		isShowingAddAppointment: false,
+		reminder: false,
+		email: false,
+		sms: false,
+		feedback: false,
+		isAllDay: false,
+		clients: JourneyMocks.clientState,
+		termins: JourneyMocks.terminState,
+		services: ChooseServiceState(isChooseServiceActive: false, chosenServiceId: 1, filterChosen: .allStaff),
+		durations: JourneyMocks.durationState,
+		with: JourneyMocks.withState,
+		participants: JourneyMocks.participantsState)
+}
+
+extension JourneyState {
+	
 	var choosePathway: ChoosePathwayState {
 		get {
 			ChoosePathwayState(selectedJourney: selectedJourney,
@@ -53,25 +71,11 @@ public struct JourneyState: Equatable {
 				isCheckedIn == true else { return nil }
 			return CheckInContainerState(journey: selectedJourney,
 																	 pathway: selectedPathway,
-																	 forms: allConsents.filter { self.selectedConsentsIds.contains($0.id)})
+																	 templates: allConsents.filter { self.selectedConsentsIds.contains($0.id)})
 		}
 		set {}
 	}
-
-	public var addAppointment: AddAppointmentState = AddAppointmentState.init(
-		isShowingAddAppointment: false,
-		reminder: false,
-		email: false,
-		sms: false,
-		feedback: false,
-		isAllDay: false,
-		clients: JourneyMocks.clientState,
-		termins: JourneyMocks.terminState,
-		services: ChooseServiceState(isChooseServiceActive: false, chosenServiceId: 1, filterChosen: .allStaff),
-		durations: JourneyMocks.durationState,
-		with: JourneyMocks.withState,
-		participants: JourneyMocks.participantsState)
-
+	
 	var filteredJourneys: [Journey] {
 		return self.journeys
 			.filter { $0.appointments.first.from.isInside(date: selectedDate, granularity: .day) }

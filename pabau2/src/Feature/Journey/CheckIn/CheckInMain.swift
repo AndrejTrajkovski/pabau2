@@ -4,6 +4,7 @@ import ComposableArchitecture
 import Util
 
 public enum CheckInMainAction {
+	case didSelectStepId(Int)
 	case closeBtnTap
 }
 
@@ -12,10 +13,9 @@ func checkInMainReducer(state: inout CheckInContainerState,
 												environment: JourneyEnvironemnt) -> [Effect<CheckInMainAction>] {
 	switch action {
 	case .closeBtnTap:
-		return []
-//		state.isCheckedIn = false
-//		state.pathway = nil
-//		state.journey = nil
+		break
+	case .didSelectStepId(let id):
+		state.selectedStepId = id
 	}
 	return []
 }
@@ -23,13 +23,11 @@ func checkInMainReducer(state: inout CheckInContainerState,
 struct CheckInMain: View {
 	let store: Store<CheckInContainerState, CheckInMainAction>
 	@ObservedObject var viewStore: ViewStore<CheckInContainerState, CheckInMainAction>
-	@State var selectedStep: Int
 	
 	init(store: Store<CheckInContainerState, CheckInMainAction>) {
 		self.store = store
 		let viewStore = self.store.view
 		self.viewStore = viewStore
-		self._selectedStep = State.init(initialValue: viewStore.value.pathway.steps.first!.id)
 	}
 
 	var body: some View {
@@ -61,22 +59,22 @@ struct CheckInMain: View {
 								 alignment: .topTrailing)
 			}.frame(height: 168.0)
 			StepsCollectionView(steps: self.viewStore.value.pathway.steps,
-													selectionId: $selectedStep)
+													selectedId: self.viewStore.value.selectedStepId) {
+														self.viewStore.send(.didSelectStepId($0))
+			}
 				.frame(width: 600, alignment: .center)
 			Spacer()
-//			List {
-//				ForEach(self.viewStore.value.listServices, id: \.self.first?.categoryId) { (group: [Service]) in
-//					Section(header:
-//						ServicesHeader(name: group.first?.categoryName ?? "No name")
-//					) {
-//						ForEach(group, id: \.self) { (service: Service) in
-//							ServiceRow(service: service).onTapGesture {
-//								self.viewStore.send(.didSelectServiceId(service.id))
-//							}
-//						}
-//					}.background(Color.white)
-//				}
-//			}
+			FormBuilder.makeForm(cssFields: [
+				CSSField(id: 0, cssClass: .checkbox,
+								 title: "Checkbox",
+								 values:
+					CheckBox(1, [
+						CheckBoxChoice(1, "choice 1", true),
+						CheckBoxChoice(2, "choice 2", false),
+						CheckBoxChoice(3, "choice 3", true)
+					])
+				)
+			])
 		}
 		.navigationBarTitle("")
 		.navigationBarHidden(true)
