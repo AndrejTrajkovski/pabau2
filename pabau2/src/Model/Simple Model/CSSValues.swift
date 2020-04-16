@@ -2,73 +2,53 @@
 
 import Foundation
 
-public protocol MyCSSValues: Codable {
-	var id: Int { get }
-	var myClass: CSSClass { get }
-}
-
-public struct StaticText: MyCSSValues {
+public struct StaticText: Codable, Equatable {
 	public let id: Int
-	public let myClass: CSSClass = .staticText
 }
 
-public struct CheckBox: MyCSSValues {
+public struct CheckBox: Codable, Equatable {
 	public init( _ id: Int, _ choices: [CheckBoxChoice]) {
 		self.id = id
 		self.choices = choices
 	}
 	public let id: Int
-	public let myClass: CSSClass = .checkbox
 	public let choices: [CheckBoxChoice]
 }
 
-public struct CheckBoxChoice: Codable {
-	public init ( _ id: Int, _ title: String, _ isSelected: Bool) {
-		self.id = id
-		self.title = title
-		self.isSelected = isSelected
-	}
+public struct CheckBoxChoice: Codable, Equatable {
 	let id: Int
 	let title: String
 	let isSelected: Bool
 }
 
-public struct InputText: MyCSSValues {
+public struct InputText: Codable, Equatable {
 	public let id: Int
-	public let myClass: CSSClass = .input_text
 }
 
-public struct TextArea: MyCSSValues {
+public struct TextArea: Codable, Equatable {
 	public let id: Int
-	public let myClass: CSSClass = .textarea
 }
 
-public struct Radio: MyCSSValues {
+public struct Radio: Codable, Equatable {
 	public let id: Int
-	public let myClass: CSSClass = .radio
 }
 
-public struct Signature: MyCSSValues {
+public struct Signature: Codable, Equatable {
 	public let id: Int
-	public let myClass: CSSClass = .signature
 }
 
-public struct Select: MyCSSValues {
+public struct Select: Codable, Equatable {
 	public let id: Int
-	public let myClass: CSSClass = .select
 }
 
-public struct Heading: MyCSSValues {
+public struct Heading: Codable, Equatable {
 	public let id: Int
-	public let myClass: CSSClass = .heading
 }
 
-public struct ClDrugs: MyCSSValues {
+public struct ClDrugs: Codable, Equatable {
 	public let id: Int
-	public let myClass: CSSClass = .cl_drugs
 }
 
-public struct DiagramMini: MyCSSValues {
+public struct DiagramMini: Codable, Equatable {
 	public let id: Int
-	public let myClass: CSSClass = .diagram_mini
 }

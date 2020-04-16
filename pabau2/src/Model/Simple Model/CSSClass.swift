@@ -2,40 +2,56 @@
 
 import Foundation
 
-public enum CSSClass: String, Codable, Equatable {
-	case staticText
-	case input_text
-	case textarea
-	case radio
-	case signature
-	case checkbox
-	case select
-	case heading
-	case cl_drugs
-	case diagram_mini
+public enum CSSClass: Codable, Equatable {
 	
-	var metatype: MyCSSValues.Type {
-			switch self {
-			case .staticText:
-					return StaticText.self
-			case .checkbox:
-					return CheckBox.self
-			case .input_text:
-				return InputText.self
-			case .textarea:
-				return TextArea.self
-			case .radio:
-				return Radio.self
-			case .signature:
-				return Signature.self
-			case .select:
-				return Select.self
-			case .heading:
-				return Heading.self
-			case .cl_drugs:
-				return ClDrugs.self
-			case .diagram_mini:
-				return DiagramMini.self
+	case staticText(StaticText)
+	case input_text(InputText)
+	case textarea(TextArea)
+	case radio(Radio)
+	case signature(Signature)
+	case checkbox(CheckBox)
+	case select(Select)
+	case heading(Heading)
+	case cl_drugs(ClDrugs)
+	case diagram_mini(DiagramMini)
+	case unknown
+	
+	public init(from decoder: Decoder) throws {
+		let container = try decoder.singleValueContainer()
+		if case .success(let res) = Self.decode(container, StaticText.self) {
+			self = .staticText(res)
+		} else if case .success(let res) = Self.decode(container, InputText.self) {
+			self = .input_text(res)
+		} else if case .success(let res) = Self.decode(container, TextArea.self) {
+			self = .textarea(res)
+		} else if case .success(let res) = Self.decode(container, Radio.self) {
+			self = .radio(res)
+		} else if case .success(let res) = Self.decode(container, Signature.self) {
+			self = .signature(res)
+		} else if case .success(let res) = Self.decode(container, CheckBox.self) {
+			self = .checkbox(res)
+		} else if case .success(let res) = Self.decode(container, Select.self) {
+			self = .select(res)
+		} else if case .success(let res) = Self.decode(container, Heading.self) {
+			self = .heading(res)
+		} else if case .success(let res) = Self.decode(container, ClDrugs.self) {
+			self = .cl_drugs(res)
+		} else if case .success(let res) = Self.decode(container, DiagramMini.self) {
+			self = .diagram_mini(res)
+		} else {
+			self = .unknown
 		}
+	}
+	
+	static func decode<T: Codable>(_ container: SingleValueDecodingContainer, _ type: T.Type) -> Result<T, Error> {
+		do {
+			return .success(try container.decode(type))
+		} catch {
+			return .failure(error)
+		}
+	}
+	
+	public func encode(to encoder: Encoder) throws {
+		
 	}
 }
