@@ -65,14 +65,14 @@ struct CheckInMain: View {
 				.frame(width: 600, alignment: .center)
 			Spacer()
 			FormBuilder.makeForm(cssFields: [
-				CSSField(id: 0, cssClass: .checkbox,
-								 title: "Checkbox",
-								 values:
-					CheckBox(1, [
-						CheckBoxChoice(1, "choice 1", true),
-						CheckBoxChoice(2, "choice 2", false),
-						CheckBoxChoice(3, "choice 3", true)
-					])
+				CSSField(id: 0,
+								 cssClass: .checkbox(
+									CheckBox(1, [
+										CheckBoxChoice(1, "choice 1", true),
+										CheckBoxChoice(2, "choice 2", false),
+										CheckBoxChoice(3, "choice 3", true)
+									])),
+								 title: "Checkbox"
 				)
 			])
 		}

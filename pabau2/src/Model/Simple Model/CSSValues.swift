@@ -16,9 +16,15 @@ public struct CheckBox: Codable, Equatable {
 }
 
 public struct CheckBoxChoice: Codable, Equatable {
-	let id: Int
-	let title: String
-	let isSelected: Bool
+	public init( _ id: Int, _ title: String, _ isSelected: Bool) {
+		self.id = id
+		self.title = title
+		self.isSelected = isSelected
+	}
+	
+	public let id: Int
+	public let title: String
+	public let isSelected: Bool
 }
 
 public struct InputText: Codable, Equatable {

@@ -35,7 +35,7 @@ public struct CSSField: Codable, Equatable {
 	public init(from decoder: Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
 		self.id = try container.decode(Int.self, forKey: .id)
-		self.cssClass = try container.decode(CSSClass.self, forKey: .cssClass)
+		self.cssClass = try container.decode(CSSClass.self, forKey: .values)
 		self._required = try container.decode(Bool.self, forKey: ._required)
 		self.searchable = try container.decode(Bool.self, forKey: .searchable)
 		self.title = try container.decode(String.self, forKey: .title)

@@ -1,21 +1,41 @@
 import SwiftUI
 import ComposableArchitecture
+import Model
 
 struct MultipleChoiceState {
-	var choices: [String]
-	var selected: [Bool]
+	var field: CSSField
+	var choices: [Int: CheckBoxChoice]
+	var selected: [Int: Bool]
+	
+	init(field: CSSField, checkBox: CheckBox) {
+		self.field = field
+		self.choices = checkBox.choices.reduce(into: [:], {
+			$0[$1.id] = $1
+		})
+		self.selected = checkBox.choices.reduce(into: [:], {
+			$0[$1.id] = $1.isSelected
+		})
+	}
+//	self.choices = choices.reduce(into: [:], {
+//		//			$0[$1.id] = $1.formTemplate?.map(\.id)
+//		$0[$1.id] = $1
+//	})
+//	self.selected = choices.reduce(into: [:], {
+//		//			$0[$1.id] = $1.formTemplate?.map(\.id)
+//		$0[$1.id] = $1.isSelected
+//	})
 }
 
 enum MultipleChoiceAction {
-	case didTouchChoiceIdx(Int)
+	case didTouchChoiceId(Int)
 }
 
 func multipleChoiceState(state: inout MultipleChoiceState,
 												 action: MultipleChoiceAction,
 												 env: ()) -> [Effect<MultipleChoiceAction>] {
 	switch action {
-	case .didTouchChoiceIdx(let idx):
-		state.selected[idx].toggle()
+	case .didTouchChoiceId(let id):
+		state.selected[id]?.toggle()
 	}
 	return []
 }
@@ -34,7 +54,7 @@ struct MultipleChoiceField: View {
 		header: Text(self.viewStore.value.title)) {
 			ForEach(self.viewStore.value.choices, id: \.self) { (choice: ChoiceVM) in
 				ChoiceRow(choice: choice)
-					.onTapGesture { self.viewStore.send(.didTouchChoiceIdx(choice.idx))}
+					.onTapGesture { self.viewStore.send(.didTouchChoiceId(choice.id))}
 					.listRowInsets(EdgeInsets())
 			}
 		}
@@ -44,20 +64,24 @@ struct MultipleChoiceField: View {
 extension MultipleChoiceField.State {
 
 	init(state: MultipleChoiceState) {
+//		var choices: [Int: CheckBoxChoice]
+//		var selected: [Int: Bool]
 		self.title = "Title"
-		self.choices = zip(state.choices.enumerated().map({idx, elm in (elm, idx)}), state.selected)
-			.map(makeChoiceVm)
+		self.choices = state.choices.reduce(into: [ChoiceVM](), {
+			let newElement = ChoiceVM(title: $1.value.title, isSelected: state.selected[$1.key]!, id: $1.key)
+			$0.append(newElement)
+		})
 	}
 }
 
 func makeChoiceVm(choice: ((String, Int), Bool)) -> ChoiceVM {
-	ChoiceVM(title: choice.0.0, isSelected: choice.1, idx: choice.0.1)
+	ChoiceVM(title: choice.0.0, isSelected: choice.1, id: choice.0.1)
 }
 
 struct ChoiceVM: Hashable {
 	let title: String
 	let isSelected: Bool
-	let idx: Int
+	let id: Int
 }
 
 struct ChoiceRow: View {
