@@ -1,14 +1,15 @@
 import SwiftUI
 import ComposableArchitecture
 import Model
+import CasePaths
 
-struct MultipleChoiceState {
+struct MultipleChoiceState: Equatable {
 	var field: CSSField
 	var choices: [Int: CheckBoxChoice]
 	var selected: [Int: Bool]
-	
 	init(field: CSSField, checkBox: CheckBox) {
 		self.field = field
+//		let checkBox = extract(case: CSSClass.checkbox, from: field.cssClass)!
 		self.choices = checkBox.choices.reduce(into: [:], {
 			$0[$1.id] = $1
 		})
@@ -26,13 +27,13 @@ struct MultipleChoiceState {
 //	})
 }
 
-enum MultipleChoiceAction {
+public enum MultipleChoiceAction {
 	case didTouchChoiceId(Int)
 }
 
-func multipleChoiceState(state: inout MultipleChoiceState,
-												 action: MultipleChoiceAction,
-												 env: ()) -> [Effect<MultipleChoiceAction>] {
+func multipleChoiceReducer(state: inout MultipleChoiceState,
+													 action: MultipleChoiceAction,
+													 environment: (JourneyEnvironemnt)) -> [Effect<MultipleChoiceAction>] {
 	switch action {
 	case .didTouchChoiceId(let id):
 		state.selected[id]?.toggle()
@@ -43,8 +44,14 @@ func multipleChoiceState(state: inout MultipleChoiceState,
 struct MultipleChoiceField: View {
 	let store: Store<MultipleChoiceState, MultipleChoiceAction>
 	var viewStore: ViewStore<State, MultipleChoiceAction>
-
-	struct State {
+	init(store: Store<MultipleChoiceState, MultipleChoiceAction>) {
+		self.store = store
+		self.viewStore = self.store
+			.scope(value: State.init(state:),
+						 action: { $0 } )
+			.view
+	}
+	struct State: Equatable {
 		let title: String
 		let choices: [ChoiceVM]
 	}

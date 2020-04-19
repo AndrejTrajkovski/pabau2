@@ -6,6 +6,7 @@ import Util
 public enum CheckInMainAction {
 	case didSelectStepId(Int)
 	case closeBtnTap
+	case form(CheckInFormAction)
 }
 
 func checkInMainReducer(state: inout CheckInContainerState,
@@ -16,6 +17,8 @@ func checkInMainReducer(state: inout CheckInContainerState,
 		break
 	case .didSelectStepId(let id):
 		state.selectedStepId = id
+	case .form(_):
+		break
 	}
 	return []
 }
@@ -64,17 +67,9 @@ struct CheckInMain: View {
 			}
 				.frame(width: 600, alignment: .center)
 			Spacer()
-			FormBuilder.makeForm(cssFields: [
-				CSSField(id: 0,
-								 cssClass: .checkbox(
-									CheckBox(1, [
-										CheckBoxChoice(1, "choice 1", true),
-										CheckBoxChoice(2, "choice 2", false),
-										CheckBoxChoice(3, "choice 3", true)
-									])),
-								 title: "Checkbox"
-				)
-			])
+			PabauForm(store:
+				self.store.scope(value: { $0.selectedTemplate.formStructure!.formStructure!},
+												 action: { .form($0)}))
 		}
 		.navigationBarTitle("")
 		.navigationBarHidden(true)

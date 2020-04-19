@@ -25,7 +25,7 @@ public struct CheckInContainerState: Equatable {
 	var templates = [FormTemplate]()
 	var templateByStep = [Int: Int]()
 	var selectedTemplate: FormTemplate {
-		templates.filter{ $0.id == templateByStep[selectedStepId] }.first!
+		templates.first!
 	}
 }
 

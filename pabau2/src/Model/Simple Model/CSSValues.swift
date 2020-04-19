@@ -4,6 +4,7 @@ import Foundation
 
 public struct StaticText: Codable, Equatable {
 	public let id: Int
+	public let text: String
 }
 
 public struct CheckBox: Codable, Equatable {
@@ -37,6 +38,13 @@ public struct TextArea: Codable, Equatable {
 
 public struct Radio: Codable, Equatable {
 	public let id: Int
+	public let choices: [RadioChoice]
+	public let selectedChoiceId: Int
+}
+
+public struct RadioChoice: Codable, Equatable {
+	public let id: Int
+	public let title: String
 }
 
 public struct Signature: Codable, Equatable {

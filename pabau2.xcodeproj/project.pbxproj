@@ -208,6 +208,7 @@
 		82CACEEA241131260021E1DE /* FSCalendarSwiftUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 82CACEE2241131250021E1DE /* FSCalendarSwiftUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		82CACEEE241131460021E1DE /* SwiftUIFSCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CACE68241109B70021E1DE /* SwiftUIFSCalendar.swift */; };
 		82CACEEF241131460021E1DE /* SwiftUICalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CACE6A24110A250021E1DE /* SwiftUICalendarViewModel.swift */; };
+		82CEA223244CB28500A895F6 /* Radio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CEA222244CB28500A895F6 /* Radio.swift */; };
 		82D43D9024351F5000AC74FA /* EmployeesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D43D8F24351F5000AC74FA /* EmployeesList.swift */; };
 		82D43D92243522CD00AC74FA /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D43D91243522CD00AC74FA /* Settings.swift */; };
 		82D7C2BF2446FEB3000B1CD5 /* CSSClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D7C2BE2446FEB3000B1CD5 /* CSSClass.swift */; };
@@ -594,6 +595,7 @@
 		82CACEE2241131250021E1DE /* FSCalendarSwiftUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FSCalendarSwiftUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		82CACEE4241131260021E1DE /* FSCalendarSwiftUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSCalendarSwiftUI.h; sourceTree = "<group>"; };
 		82CACEE5241131260021E1DE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		82CEA222244CB28500A895F6 /* Radio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Radio.swift; sourceTree = "<group>"; };
 		82D43D8F24351F5000AC74FA /* EmployeesList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmployeesList.swift; sourceTree = "<group>"; };
 		82D43D91243522CD00AC74FA /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		82D7C2BE2446FEB3000B1CD5 /* CSSClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSSClass.swift; sourceTree = "<group>"; };
@@ -865,6 +867,7 @@
 				82622B51244650E000BECF9A /* MultipleChoiceField.swift */,
 				82D7C2C224479CAF000B1CD5 /* CheckInContainerState.swift */,
 				82D7C2C42447AB57000B1CD5 /* FormBuilder.swift */,
+				82CEA222244CB28500A895F6 /* Radio.swift */,
 			);
 			path = CheckIn;
 			sourceTree = "<group>";
@@ -1838,6 +1841,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				82CEA223244CB28500A895F6 /* Radio.swift in Sources */,
 				827B459B241136D900A5975E /* JourneyContainerView.swift in Sources */,
 				82C479DE242E17B50037F140 /* CheckInNavigationView.swift in Sources */,
 				829BFBB1243F693E005DDCB9 /* CheckInMain.swift in Sources */,

@@ -3,7 +3,7 @@
 
 import Foundation
 
-public struct CSSField: Codable, Equatable {
+public struct CSSField: Codable, Equatable, Identifiable {
 	
 	public let id: Int
 	

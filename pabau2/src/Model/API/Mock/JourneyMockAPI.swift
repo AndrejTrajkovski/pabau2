@@ -78,11 +78,27 @@ extension JourneyMockAPI {
 								 ePaper: false,
 								 formStructure:
 			FormStructure(formStructure: [
-//				CSSField(id: 1, cssClass: .select),
-//				CSSField(id: 2, cssClass: .select),
-//				CSSField(id: 3, cssClass: .select),
-//				CSSField(id: 4, cssClass: .select),
-//				CSSField(id: 5, cssClass: .staticText)
+				CSSField(id: 1, cssClass:
+					.checkbox(
+						CheckBox(1, [
+							CheckBoxChoice(1, "choice 1", true),
+							CheckBoxChoice(2, "choice 2", false),
+							CheckBoxChoice(3, "choice 3", false)
+						])
+					)
+				),
+				CSSField(id: 2, cssClass:
+					.checkbox(
+						CheckBox(2, [
+							CheckBoxChoice(3, "choice 1", false),
+							CheckBoxChoice(4, "choice 1", false),
+							CheckBoxChoice(5, "choice 1", true)
+						])
+					)
+				),
+				CSSField(id: 3, cssClass:
+					.staticText(StaticText(id: 1, text: "Hey what's going on?"))
+				)
 			])),
 		FormTemplate(id: 2, name: "Consent - Botox", formType: .consent),
 		FormTemplate(id: 3, name: "Consent - Fillers", formType: .consent),
