@@ -134,7 +134,7 @@ func handle(_ result: Result<ResetPassSuccess, RequestError>, _ state: inout Res
 	}
 }
 
-public func resetPassReducer(state: inout ResetPasswordState, action: ResetPasswordAction, environment: LoginEnvironment) -> [Effect<ResetPasswordAction>] {
+public let resetPassReducer = Reducer<ResetPasswordState, ResetPasswordAction, LoginEnvironment> { state, action, environment in
 	switch action {
 	case .backBtnTapped:
 		state.navigation.removeAll(where: { $0 == .resetPassScreen })

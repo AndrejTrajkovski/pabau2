@@ -61,7 +61,7 @@ func isValidEmail(_ email: String) -> Bool {
 	return emailPred.evaluate(with: email)
 }
 
-public func loginReducer(state: inout WalkthroughContainerState, action: LoginAction, environment: LoginEnvironment) -> [Effect<LoginAction>] {
+public let loginReducer = Reducer<WalkthroughContainerState, LoginAction, LoginEnvironment> { state, action, environment in
 	switch action {
 	case .login (let email, let password):
 		return handleLoginTapped(email, password, state: &state, apiClient: environment.apiClient)
@@ -81,9 +81,12 @@ public func loginReducer(state: inout WalkthroughContainerState, action: LoginAc
 	}
 }
 
-let loginViewReducer = combine(
-	pullback(loginReducer, value: \WalkthroughContainerState.self, action: /LoginViewAction.login, environment: { $0 }),
-	pullback(forgotPassViewReducer, value: \WalkthroughContainerState.forgotPass, action: /LoginViewAction.forgotPass, environment: { $0 })
+let loginViewReducer: Reducer<WalkthroughContainerState, LoginViewAction, LoginEnvironment> = .combine(
+	loginReducer.pullback(value: \WalkthroughContainerState.self, action: /LoginViewAction.login, environment: { $0 }),
+	forgotPassViewReducer.pullback(
+		value: \WalkthroughContainerState.forgotPass,
+		action: /LoginViewAction.forgotPass,
+		environment: { $0 })
 )
 
 struct Login: View {

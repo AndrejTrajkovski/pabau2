@@ -71,13 +71,11 @@ public enum WalkthroughContainerAction {
 	case login(LoginViewAction)
 }
 
-public let walkthroughContainerReducer = combine(
-	pullback(walkthroughReducer,
-					 value: \WalkthroughContainerState.navigation,
+public let walkthroughContainerReducer: Reducer<WalkthroughContainerState, WalkthroughContainerAction, LoginEnvironment> = .combine(
+	walkthroughReducer.pullback(value: \WalkthroughContainerState.navigation,
 					 action: /WalkthroughContainerAction.walkthrough,
 					 environment: { $0 }),
-	pullback(loginViewReducer,
-					 value: \WalkthroughContainerState.self,
+	loginViewReducer.pullback(value: \WalkthroughContainerState.self,
 					 action: /WalkthroughContainerAction.login,
 					 environment: { $0 })
 )

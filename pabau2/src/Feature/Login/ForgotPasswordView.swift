@@ -46,42 +46,57 @@ public struct ForgotPassState: Equatable {
 	var fpValidation: String
 }
 
-let forgotPassViewReducer = combine(
-	pullback(forgotPasswordReducer, value: \ForgotPassContainerState.forgotPass, action: /ForgotPassViewAction.forgotPass, environment: { $0 }),
-	pullback(resetPassReducer, value: \ForgotPassContainerState.resetPass, action: /ForgotPassViewAction.resetPass, environment: { $0 }),
-	pullback(checkEmailReducer, value: \ForgotPassContainerState.navigation, action: /ForgotPassViewAction.checkEmail, environment: { $0 }),
-	pullback(passChangedReducer, value: \ForgotPassContainerState.navigation, action: /ForgotPassViewAction.passChanged, environment: { $0 })
+let forgotPassViewReducer: Reducer<ForgotPassContainerState,
+	ForgotPassViewAction,
+	LoginEnvironment> = .combine(
+		forgotPasswordReducer.pullback(
+					 value: \ForgotPassContainerState.forgotPass,
+					 action: /ForgotPassViewAction.forgotPass,
+					 environment: { $0 }),
+		resetPassReducer.pullback(
+					 value: \ForgotPassContainerState.resetPass,
+					 action: /ForgotPassViewAction.resetPass,
+					 environment: { $0 }),
+		checkEmailReducer.pullback(
+					 value: \ForgotPassContainerState.navigation,
+					 action: /ForgotPassViewAction.checkEmail,
+					 environment: { $0 }),
+		passChangedReducer.pullback(
+					 value: \ForgotPassContainerState.navigation,
+					 action: /ForgotPassViewAction.passChanged,
+					 environment: { $0 })
 )
 
-public func forgotPasswordReducer(state: inout ForgotPassState, action: ForgotPasswordAction, environment: LoginEnvironment) -> [Effect<ForgotPasswordAction>] {
-	switch action {
-	case .backBtnTapped:
-		state.navigation.removeAll(where: { $0 == .forgotPassScreen })
-		return []
-	case .sendRequest(let email):
-		let isValid = isValidEmail(email)
-		state.fpValidation = emailValidationText(isValid)
-		if isValid {
-			state.loadingState = .loading
-			return [
-				environment.apiClient.resetPass(email)
-					.map(ForgotPasswordAction.gotResponse)
-					.receive(on: DispatchQueue.main)
-					.eraseToEffect()
-			]
-		} else {
+
+let forgotPasswordReducer = Reducer<ForgotPassState, ForgotPasswordAction, LoginEnvironment> { state, action, environment in
+		switch action {
+		case .backBtnTapped:
+			state.navigation.removeAll(where: { $0 == .forgotPassScreen })
+			return []
+		case .sendRequest(let email):
+			let isValid = isValidEmail(email)
+			state.fpValidation = emailValidationText(isValid)
+			if isValid {
+				state.loadingState = .loading
+				return [
+					environment.apiClient.resetPass(email)
+						.map(ForgotPasswordAction.gotResponse)
+						.receive(on: DispatchQueue.main)
+						.eraseToEffect()
+				]
+			} else {
+				return []
+			}
+		case .gotResponse(let result):
+			switch result {
+			case .success:
+				state.loadingState = .gotSuccess
+				state.navigation.append(.checkEmailScreen)
+			case .failure:
+				state.loadingState = .gotError
+			}
 			return []
 		}
-	case .gotResponse(let result):
-		switch result {
-		case .success:
-			state.loadingState = .gotSuccess
-			state.navigation.append(.checkEmailScreen)
-		case .failure:
-			state.loadingState = .gotError
-		}
-		return []
-	}
 }
 
 public enum ForgotPasswordAction: Equatable {

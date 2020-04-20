@@ -3,7 +3,7 @@ import ComposableArchitecture
 import Util
 import Model
 
-public func checkEmailReducer(state: inout [LoginNavScreen], action: CheckEmailAction, environment: LoginEnvironment) -> [Effect<CheckEmailAction>] {
+public let checkEmailReducer = Reducer<[LoginNavScreen], CheckEmailAction, LoginEnvironment> { state, action, environment in
 	switch action {
 	case .resetPassTapped:
 		state.append(.resetPassScreen)

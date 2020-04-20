@@ -3,26 +3,6 @@ import Combine
 import SwiftUI
 
 // swiftlint:disable force_cast
-import CasePaths
-import Combine
-import SwiftUI
-
-//(inout RandomNumberGenerator) -> A
-struct Gen<A> {
-  let run: (inout RandomNumberGenerator) -> A
-}
-
-//(inout Substring) -> A?
-struct Parser<A> {
-  let run: (inout Substring) -> A?
-}
-
-//(@escaping (A) -> Void) -> Void
-//struct Effect<A> {
-//  let run: (@escaping (A) -> Void) -> Void
-//}
-
-//public typealias Reducer<Value, Action, Environment> = (inout Value, Action, Environment) -> [Effect<Action>]
 public struct Reducer<Value, Action, Environment> {
   let reducer: (inout Value, Action, Environment) -> [Effect<Action>]
   
@@ -230,40 +210,41 @@ extension Store {
 }
 // swiftlint:enable force_cast
 
-public func pullback<LocalValue, GlobalValue, LocalAction, GlobalAction, LocalEnvironment, GlobalEnvironment>(
-	_ reducer: Reducer<LocalValue, LocalAction, LocalEnvironment>,
-	value: WritableKeyPath<GlobalValue, LocalValue?>,
-	action: CasePath<GlobalAction, LocalAction>,
-	environment: @escaping (GlobalEnvironment) -> LocalEnvironment
-) -> Reducer<GlobalValue, GlobalAction, GlobalEnvironment> {
-	.init  { globalValue, globalAction, globalEnvironment in
-		guard let localAction = action.extract(from: globalAction) else { return [] }
-		guard let localValue = globalValue[keyPath: value] else { return [] }
-		var varLocalValue = localValue
-		let localEffects = reducer(&varLocalValue, localAction, environment(globalEnvironment))
-		globalValue[keyPath: value] = varLocalValue
-		return localEffects.map { localEffect in
-			localEffect.map(action.embed)
-				.eraseToEffect()
+extension Reducer {
+
+	public func pullback<GlobalValue, GlobalAction, GlobalEnvironment>(
+		value: WritableKeyPath<GlobalValue, Value?>,
+		action: CasePath<GlobalAction, Action>,
+		environment: @escaping (GlobalEnvironment) -> Environment
+	) -> Reducer<GlobalValue, GlobalAction, GlobalEnvironment> {
+		.init  { globalValue, globalAction, globalEnvironment in
+			guard let localAction = action.extract(from: globalAction) else { return [] }
+			guard let localValue = globalValue[keyPath: value] else { return [] }
+			var varLocalValue = localValue
+			let localEffects = self(&varLocalValue, localAction, environment(globalEnvironment))
+			globalValue[keyPath: value] = varLocalValue
+			return localEffects.map { localEffect in
+				localEffect.map(action.embed)
+					.eraseToEffect()
+			}
 		}
 	}
-}
-
-public func pullback<LocalValue, GlobalValue, LocalAction, GlobalAction, LocalEnvironment, GlobalEnvironment>(
-	_ reducer: Reducer<LocalValue, LocalAction, LocalEnvironment>,
-	value: CasePath<GlobalValue, LocalValue>,
-	action: CasePath<GlobalAction, LocalAction>,
-	environment: @escaping (GlobalEnvironment) -> LocalEnvironment
-) -> Reducer<GlobalValue, GlobalAction, GlobalEnvironment> {
-	.init { globalValue, globalAction, globalEnvironment in
-		guard let localAction = action.extract(from: globalAction) else { return [] }
-		guard let localValue = value.extract(from: globalValue) else { return [] }
-		var varLocalValue = localValue
-		let localEffects = reducer(&varLocalValue, localAction, environment(globalEnvironment))
-		globalValue = value.embed(varLocalValue)
-		return localEffects.map { localEffect in
-			localEffect.map(action.embed)
-				.eraseToEffect()
+	
+	public func pullback<GlobalValue, GlobalAction, GlobalEnvironment>(
+		value: CasePath<GlobalValue, Value>,
+		action: CasePath<GlobalAction, Action>,
+		environment: @escaping (GlobalEnvironment) -> Environment
+	) -> Reducer<GlobalValue, GlobalAction, GlobalEnvironment> {
+		.init { globalValue, globalAction, globalEnvironment in
+			guard let localAction = action.extract(from: globalAction) else { return [] }
+			guard let localValue = value.extract(from: globalValue) else { return [] }
+			var varLocalValue = localValue
+			let localEffects = self(&varLocalValue, localAction, environment(globalEnvironment))
+			globalValue = value.embed(varLocalValue)
+			return localEffects.map { localEffect in
+				localEffect.map(action.embed)
+					.eraseToEffect()
+			}
 		}
 	}
 }
