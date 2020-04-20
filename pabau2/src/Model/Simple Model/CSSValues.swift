@@ -2,7 +2,7 @@
 
 import Foundation
 
-public struct StaticText: Codable, Equatable {
+public struct StaticText: Codable, Equatable, Hashable {
 	public let id: Int
 	public let text: String
 	public init( _ id: Int, _ text: String) {
@@ -23,15 +23,15 @@ public struct CheckBoxChoice: Codable, Equatable, Hashable {
 	public var isSelected: Bool
 }
 
-public struct InputText: Codable, Equatable {
+public struct InputText: Codable, Equatable, Hashable {
 	public let id: Int
 }
 
-public struct TextArea: Codable, Equatable {
+public struct TextArea: Codable, Equatable, Hashable {
 	public let id: Int
 }
 
-public struct Radio: Codable, Equatable {
+public struct Radio: Codable, Equatable, Hashable {
 	public var id: Int
 	public var choices: [RadioChoice]
 	public var selectedChoiceId: Int
@@ -43,7 +43,7 @@ public struct Radio: Codable, Equatable {
 	}
 }
 
-public struct RadioChoice: Codable, Equatable {
+public struct RadioChoice: Codable, Equatable, Hashable {
 	public let id: Int
 	public let title: String
 	
@@ -53,22 +53,22 @@ public struct RadioChoice: Codable, Equatable {
 	}
 }
 
-public struct Signature: Codable, Equatable {
+public struct Signature: Codable, Equatable, Hashable {
 	public let id: Int
 }
 
-public struct Select: Codable, Equatable {
+public struct Select: Codable, Equatable , Hashable{
 	public let id: Int
 }
 
-public struct Heading: Codable, Equatable {
+public struct Heading: Codable, Equatable, Hashable {
 	public let id: Int
 }
 
-public struct ClDrugs: Codable, Equatable {
+public struct ClDrugs: Codable, Equatable, Hashable {
 	public let id: Int
 }
 
-public struct DiagramMini: Codable, Equatable {
+public struct DiagramMini: Codable, Equatable, Hashable {
 	public let id: Int
 }

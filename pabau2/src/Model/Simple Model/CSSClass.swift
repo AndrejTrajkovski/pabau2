@@ -2,7 +2,7 @@
 
 import Foundation
 
-public enum CSSClass: Codable, Equatable {
+public enum CSSClass: Codable, Equatable, Hashable {
 	
 	case staticText(StaticText)
 	case input_text(InputText)

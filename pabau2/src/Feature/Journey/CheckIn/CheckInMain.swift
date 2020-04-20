@@ -29,8 +29,7 @@ struct CheckInMain: View {
 	
 	init(store: Store<CheckInContainerState, CheckInMainAction>) {
 		self.store = store
-		let viewStore = self.store.view
-		self.viewStore = viewStore
+		self.viewStore = self.store.view
 	}
 
 	var body: some View {
