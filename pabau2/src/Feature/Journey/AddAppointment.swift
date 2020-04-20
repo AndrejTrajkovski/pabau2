@@ -46,7 +46,23 @@ public enum AddAppointmentAction {
 extension Employee: ListPickerElement { }
 extension Service: ListPickerElement { }
 
-typealias PickerContainerReducer<T: ListPickerElement> = Reducer<PickerContainerState<T>, PickerContainerAction<T>, JourneyEnvironemnt>
+//typealias PickerContainerReducer<T: ListPickerElement> = Reducer<PickerContainerState<T>, PickerContainerAction<T>, JourneyEnvironemnt>
+
+struct PickerReducer<T: ListPickerElement> {
+	let reducer = Reducer<PickerContainerState<T>, PickerContainerAction<T>, JourneyEnvironemnt>
+		{ state, action, env in
+			switch action {
+			case .didSelectPicker:
+				state.isActive = true
+			case .didChooseItem(let id):
+				state.isActive = false
+				state.chosenItemId = id
+			case .backBtnTap:
+				state.isActive = false
+			}
+			return []
+	}
+}
 
 func pickerContainerReducer<T: ListPickerElement>(state: inout PickerContainerState<T>,
 																									action: PickerContainerAction<T>,
@@ -63,8 +79,8 @@ func pickerContainerReducer<T: ListPickerElement>(state: inout PickerContainerSt
 	return []
 }
 
-let addAppTapBtnReducer: Reducer<AddAppointmentState,
-	AddAppointmentAction, JourneyEnvironemnt> = { state, action, env in
+let addAppTapBtnReducer = Reducer<AddAppointmentState,
+	AddAppointmentAction, JourneyEnvironemnt> { state, action, env in
 		switch action {
 		case .addAppointmentTap:
 			state.isShowingAddAppointment = false
@@ -79,36 +95,35 @@ let addAppTapBtnReducer: Reducer<AddAppointmentState,
 }
 
 let addAppointmentReducer: Reducer<AddAppointmentState,
-	AddAppointmentAction, JourneyEnvironemnt> = (combine(
-		pullback(pickerContainerReducer,
-						 value: \AddAppointmentState.clients,
-						 action: /AddAppointmentAction.clients,
-						 environment: { $0 }),
-		pullback(pickerContainerReducer,
-						 value: \AddAppointmentState.termins,
-						 action: /AddAppointmentAction.termins,
-						 environment: { $0 }),
-		pullback(chooseServiceReducer,
+	AddAppointmentAction, JourneyEnvironemnt> = .combine(
+		PickerReducer<Client>().reducer.pullback(
+			value: \AddAppointmentState.clients,
+			action: /AddAppointmentAction.clients,
+			environment: { $0 }),
+		PickerReducer<MyTermin>().reducer.pullback(
+			value: \AddAppointmentState.termins,
+			action: /AddAppointmentAction.termins,
+			environment: { $0 }),
+		chooseServiceReducer.pullback(
 						 value: \AddAppointmentState.services,
 						 action: /AddAppointmentAction.services,
 						 environment: { $0 }),
-		pullback(pickerContainerReducer,
-						 value: \AddAppointmentState.durations,
-						 action: /AddAppointmentAction.durations,
-						 environment: { $0 }),
-		pullback(pickerContainerReducer,
-						 value: \AddAppointmentState.with,
-						 action: /AddAppointmentAction.with,
-						 environment: { $0 }),
-		pullback(pickerContainerReducer,
-						 value: \AddAppointmentState.participants,
-						 action: /AddAppointmentAction.participants,
-						 environment: { $0 }),
-		pullback(addAppTapBtnReducer,
+		PickerReducer<Duration>().reducer.pullback(
+			value: \AddAppointmentState.durations,
+			action: /AddAppointmentAction.durations,
+			environment: { $0 }),
+		PickerReducer<Employee>().reducer.pullback(
+			value: \AddAppointmentState.with,
+			action: /AddAppointmentAction.with,
+			environment: { $0 }),
+		PickerReducer<Employee>().reducer.pullback(
+			value: \AddAppointmentState.participants,
+			action: /AddAppointmentAction.participants,
+			environment: { $0 }),
+		addAppTapBtnReducer.pullback(
 						 value: \AddAppointmentState.self,
 						 action: /AddAppointmentAction.self,
 						 environment: { $0 })
-		)
 )
 
 public struct AddAppointment: View {
