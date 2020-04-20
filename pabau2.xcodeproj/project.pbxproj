@@ -209,6 +209,8 @@
 		82CACEEE241131460021E1DE /* SwiftUIFSCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CACE68241109B70021E1DE /* SwiftUIFSCalendar.swift */; };
 		82CACEEF241131460021E1DE /* SwiftUICalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CACE6A24110A250021E1DE /* SwiftUICalendarViewModel.swift */; };
 		82CEA223244CB28500A895F6 /* Radio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CEA222244CB28500A895F6 /* Radio.swift */; };
+		82CEA225244E0F9B00A895F6 /* ForEachWithindex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CEA224244E0F9B00A895F6 /* ForEachWithindex.swift */; };
+		82CEA227244E128B00A895F6 /* Indexed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CEA226244E128B00A895F6 /* Indexed.swift */; };
 		82D43D9024351F5000AC74FA /* EmployeesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D43D8F24351F5000AC74FA /* EmployeesList.swift */; };
 		82D43D92243522CD00AC74FA /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D43D91243522CD00AC74FA /* Settings.swift */; };
 		82D7C2BF2446FEB3000B1CD5 /* CSSClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D7C2BE2446FEB3000B1CD5 /* CSSClass.swift */; };
@@ -596,6 +598,8 @@
 		82CACEE4241131260021E1DE /* FSCalendarSwiftUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSCalendarSwiftUI.h; sourceTree = "<group>"; };
 		82CACEE5241131260021E1DE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		82CEA222244CB28500A895F6 /* Radio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Radio.swift; sourceTree = "<group>"; };
+		82CEA224244E0F9B00A895F6 /* ForEachWithindex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForEachWithindex.swift; sourceTree = "<group>"; };
+		82CEA226244E128B00A895F6 /* Indexed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Indexed.swift; sourceTree = "<group>"; };
 		82D43D8F24351F5000AC74FA /* EmployeesList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmployeesList.swift; sourceTree = "<group>"; };
 		82D43D91243522CD00AC74FA /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		82D7C2BE2446FEB3000B1CD5 /* CSSClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSSClass.swift; sourceTree = "<group>"; };
@@ -764,6 +768,7 @@
 				82E254082422388600F16C30 /* Hidden.swift */,
 				82C479DF2433C1AB0037F140 /* LazyView.swift */,
 				82622B4B2444F39200BECF9A /* CollectionView.swift */,
+				82CEA224244E0F9B00A895F6 /* ForEachWithindex.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -1053,6 +1058,7 @@
 				82BE2F6623D9983C00B3678A /* ComposableArchitecture.h */,
 				82BE2F5D23D997F800B3678A /* ComposableArchitecture.swift */,
 				82BE2F6723D9983C00B3678A /* Info.plist */,
+				82CEA226244E128B00A895F6 /* Indexed.swift */,
 			);
 			path = ComposableArchitecture;
 			sourceTree = "<group>";
@@ -1732,6 +1738,7 @@
 				8227FB6F240BAC9600F653B5 /* BigButton.swift in Sources */,
 				8227FB72240BAC9600F653B5 /* TextFieldWithBottomLine.swift in Sources */,
 				8250D7D2242C575A00F8F3FC /* ScalableShape.swift in Sources */,
+				82CEA225244E0F9B00A895F6 /* ForEachWithindex.swift in Sources */,
 				8227FB7E240BB0B500F653B5 /* LoadingState.swift in Sources */,
 				82E253F8241B661100F16C30 /* RoundedCorners.swift in Sources */,
 				8227FB77240BAC9600F653B5 /* KeyboardFollower.swift in Sources */,
@@ -1901,6 +1908,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8227FBC1240BC7D600F653B5 /* Effect.swift in Sources */,
+				82CEA227244E128B00A895F6 /* Indexed.swift in Sources */,
 				82BE2F8223D9984300B3678A /* ComposableArchitecture.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
