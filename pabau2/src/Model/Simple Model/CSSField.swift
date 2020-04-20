@@ -7,7 +7,7 @@ public struct CSSField: Codable, Equatable, Identifiable {
 	
 	public let id: Int
 	
-	public let cssClass: CSSClass
+	public var cssClass: CSSClass
 	
 	public let _required: Bool
 	

@@ -215,25 +215,25 @@ public func indexed<State, Action, GlobalState, GlobalAction,
 	}
 }
 
-public func indexed<State, Action, GlobalState, GlobalAction, LocalEnvironment, GlobalEnvironment>(
-	reducer: @escaping Reducer<State, Action, LocalEnvironment>,
-	_ stateKeyPath: WritableKeyPath<GlobalState, [State]>,
-	_ actionKeyPath: WritableKeyPath<GlobalAction, Indexed<Action>?>,
-	_ environment: @escaping (GlobalEnvironment) -> LocalEnvironment
-) -> Reducer<GlobalState, GlobalAction, GlobalEnvironment> {
-	return { globalValue, globalAction, globalEnvironment in
-		guard let localAction = globalAction[keyPath: actionKeyPath] else { return [] }
-		let index = localAction.index
-		let localEffects = reducer(&globalValue[keyPath: stateKeyPath][index], localAction.value, environment(globalEnvironment))
-		return localEffects.map { localEffect in
-			localEffect.map { localAction in
-				var globalAction = globalAction
-				globalAction[keyPath: actionKeyPath] = Indexed(index: index, value: localAction)
-				return globalAction
-			}.eraseToEffect()
-		}
-	}
-}
+//public func indexed<State, Action, GlobalState, GlobalAction, LocalEnvironment, GlobalEnvironment>(
+//	reducer: @escaping Reducer<State, Action, LocalEnvironment>,
+//	_ stateKeyPath: WritableKeyPath<GlobalState, [State]>,
+//	_ actionKeyPath: WritableKeyPath<GlobalAction, Indexed<Action>?>,
+//	_ environment: @escaping (GlobalEnvironment) -> LocalEnvironment
+//) -> Reducer<GlobalState, GlobalAction, GlobalEnvironment> {
+//	return { globalValue, globalAction, globalEnvironment in
+//		guard let localAction = globalAction[keyPath: actionKeyPath] else { return [] }
+//		let index = localAction.index
+//		let localEffects = reducer(&globalValue[keyPath: stateKeyPath][index], localAction.value, environment(globalEnvironment))
+//		return localEffects.map { localEffect in
+//			localEffect.map { localAction in
+//				var globalAction = globalAction
+//				globalAction[keyPath: actionKeyPath] = Indexed(index: index, value: localAction)
+//				return globalAction
+//			}.eraseToEffect()
+//		}
+//	}
+//}
 
 extension Store {
 	// https://twitter.com/alexito4/status/1228373956777979905?s=21

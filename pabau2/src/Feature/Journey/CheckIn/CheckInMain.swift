@@ -6,7 +6,7 @@ import Util
 public enum CheckInMainAction {
 	case didSelectStepId(Int)
 	case closeBtnTap
-	case form(CheckInFormAction)
+	case form(Indexed<CheckInFormAction>)
 }
 
 func checkInMainReducer(state: inout CheckInContainerState,
@@ -68,8 +68,8 @@ struct CheckInMain: View {
 				.frame(width: 600, alignment: .center)
 			Spacer()
 			PabauForm(store:
-				self.store.scope(value: { $0.selectedTemplate.formStructure!.formStructure!},
-												 action: { .form($0)}))
+				self.store.scope(value: { $0.selectedTemplate.formStructure.formStructure},
+												 action: { $0 }))
 		}
 		.navigationBarTitle("")
 		.navigationBarHidden(true)

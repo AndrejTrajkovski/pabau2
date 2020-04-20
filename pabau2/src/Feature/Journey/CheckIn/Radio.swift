@@ -3,17 +3,25 @@ import ComposableArchitecture
 import Model
 import CasePaths
 
-public struct RadioState: Codable, Equatable {
-	public var id: Int
-	public var choices: [RadioChoice]
-	public var selectedChoiceId: Int
-}
+//public struct RadioState: Codable, Equatable {
+//	public var cssField: CSSField
+//	public var id: Int
+//	public var choices: [RadioChoice]
+//	public var selectedChoiceId: Int
+//	
+//	init(cssField: CSSField, radio: Radio) {
+//		self.cssField = cssField
+//		self.id = radio.id
+//		self.choices = radio.choices
+//		self.selectedChoiceId = radio.selectedChoiceId
+//	}
+//}
 
-enum RadioAction {
+public enum RadioAction {
 	case didSelectChoice(Int)
 }
 
-func radioReducer(state: inout RadioState,
+func radioReducer(state: inout Radio,
 									action: RadioAction,
 									environment: JourneyEnvironemnt) -> [Effect<RadioAction>] {
 	switch action {
@@ -25,7 +33,17 @@ func radioReducer(state: inout RadioState,
 
 struct RadioView: View {
 	let store: Store<Radio, RadioAction>
-	@ObservedObject var viewStore: ViewStore<RadioState, RadioAction>
+	@ObservedObject var viewStore: ViewStore<Radio, RadioAction>
+	
+	init(store: Store<Radio, RadioAction>) {
+		self.store = store
+		self.viewStore = self.store
+//		.scope(
+//			value: RadioState.init(radio:),
+//			action: { $0 })
+		.view
+	}
+	
 	var body: some View {
 		VStack {
 			Picker(selection: self.store.binding(

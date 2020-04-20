@@ -79,32 +79,32 @@ extension JourneyMockAPI {
 								 formStructure:
 			FormStructure(formStructure: [
 				CSSField(id: 1, cssClass:
-					.checkbox(
-						CheckBox(1, [
+					.checkboxes(
+						[
 							CheckBoxChoice(1, "choice 1", true),
 							CheckBoxChoice(2, "choice 2", false),
 							CheckBoxChoice(3, "choice 3", false)
-						])
+						]
 					)
 				),
 				CSSField(id: 2, cssClass:
-					.checkbox(
-						CheckBox(2, [
+					.checkboxes(
+						[
 							CheckBoxChoice(3, "choice 1", false),
 							CheckBoxChoice(4, "choice 1", false),
 							CheckBoxChoice(5, "choice 1", true)
-						])
+						]
 					)
 				),
 				CSSField(id: 3, cssClass:
-					.staticText(StaticText(id: 1, text: "Hey what's going on?"))
+					.staticText(StaticText(1, "Hey what's going on?"))
 				)
 			])),
-		FormTemplate(id: 2, name: "Consent - Botox", formType: .consent),
-		FormTemplate(id: 3, name: "Consent - Fillers", formType: .consent),
-		FormTemplate(id: 4, name: "Consent - Pedicure", formType: .consent),
-		FormTemplate(id: 5, name: "Consent - Manicure", formType: .consent),
-		FormTemplate(id: 6, name: "Consent - Skin Treatment", formType: .consent),
-		FormTemplate(id: 7, name: "Consent - Lipo", formType: .consent)
+//		FormTemplate(id: 2, name: "Consent - Botox", formType: .consent),
+//		FormTemplate(id: 3, name: "Consent - Fillers", formType: .consent),
+//		FormTemplate(id: 4, name: "Consent - Pedicure", formType: .consent),
+//		FormTemplate(id: 5, name: "Consent - Manicure", formType: .consent),
+//		FormTemplate(id: 6, name: "Consent - Skin Treatment", formType: .consent),
+//		FormTemplate(id: 7, name: "Consent - Lipo", formType: .consent)
 	]
 }

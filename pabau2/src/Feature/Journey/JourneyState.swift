@@ -63,7 +63,7 @@ extension JourneyState {
 			self.isCheckedIn = newValue.isCheckedIn
 		}
 	}
-
+	
 	public var checkIn: CheckInContainerState? {
 		get {
 			guard let selectedJourney = selectedJourney,
@@ -73,7 +73,9 @@ extension JourneyState {
 																	 pathway: selectedPathway,
 																	 templates: allConsents.filter { self.selectedConsentsIds.contains($0.id)})
 		}
-		set {}
+		set {
+			allConsents = [newValue!.selectedTemplate]
+		}
 	}
 	
 	var filteredJourneys: [Journey] {

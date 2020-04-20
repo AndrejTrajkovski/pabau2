@@ -9,24 +9,58 @@ public struct CheckInContainerState: Equatable {
 			 templates: [FormTemplate]) {
 		self.journey = journey
 		self.pathway = pathway
-		self.templates = templates
-		self.steps = pathway.steps.reduce(into: [:], {
-			$0[$1.id] = $1
-		})
-		self.templateByStep = pathway.steps.reduce(into: [:], {
-//			$0[$1.id] = $1.formTemplate?.map(\.id)
-			$0[$1.id] = $1.formTemplate?.first!.id
-		})
+//		self.templates = templates
+//		self.steps = pathway.steps.reduce(into: [:], {
+//			$0[$1.id] = $1
+//		})
+//		self.templateByStep = pathway.steps.reduce(into: [:], {
+//			$0[$1.id] = $1.formTemplate?.first!.id
+//		})
 	}
 
 	var selectedStepId: Int = 0
-	var completedSteps = [Int: Bool]()
-	var steps = [Int: Step]()
-	var templates = [FormTemplate]()
-	var templateByStep = [Int: Int]()
-	var selectedTemplate: FormTemplate {
-		templates.first!
-	}
+//	var completedSteps = [Int: Bool]()
+//	var steps = [Int: Step]()
+//	var templates = [FormTemplate]()
+//	var templateByStep = [Int: Int]()
+	public var selectedTemplate: FormTemplate
+	=
+		FormTemplate(id: 1,
+								 name: "Consent - Hair Extension",
+								 formType: .consent,
+						 ePaper: false,
+						 formStructure:
+	FormStructure(formStructure: [
+		CSSField(id: 1, cssClass:
+			.checkboxes(
+				[
+					CheckBoxChoice(1, "choice 1", true),
+					CheckBoxChoice(2, "choice 2", false),
+					CheckBoxChoice(3, "choice 3", false)
+				]
+			)
+		),
+		CSSField(id: 2, cssClass:
+			.checkboxes(
+				[
+					CheckBoxChoice(4, "choice 4", false),
+					CheckBoxChoice(5, "choice 5", false),
+					CheckBoxChoice(6, "choice 6", true)
+				]
+			)
+		),
+		CSSField(id: 3,
+						 cssClass: .staticText(
+							StaticText(1, "Hey what's going on?"))
+		),
+		CSSField(id: 4,
+						 cssClass: .radio(Radio(4,
+																		[RadioChoice(1, "radio choice 1"),
+																		 RadioChoice(2, "radio choice 2")],
+																		1)
+			)
+		)
+	]))
 }
 
 extension CheckInContainerState {

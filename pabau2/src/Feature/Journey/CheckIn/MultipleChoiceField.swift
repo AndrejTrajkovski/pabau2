@@ -3,63 +3,33 @@ import ComposableArchitecture
 import Model
 import CasePaths
 
-struct MultipleChoiceState: Equatable {
-	var field: CSSField
-	var choices: [Int: CheckBoxChoice]
-	var selected: [Int: Bool]
-	init(field: CSSField, checkBox: CheckBox) {
-		self.field = field
-//		let checkBox = extract(case: CSSClass.checkbox, from: field.cssClass)!
-		self.choices = checkBox.choices.reduce(into: [:], {
-			$0[$1.id] = $1
-		})
-		self.selected = checkBox.choices.reduce(into: [:], {
-			$0[$1.id] = $1.isSelected
-		})
-	}
-//	self.choices = choices.reduce(into: [:], {
-//		//			$0[$1.id] = $1.formTemplate?.map(\.id)
-//		$0[$1.id] = $1
-//	})
-//	self.selected = choices.reduce(into: [:], {
-//		//			$0[$1.id] = $1.formTemplate?.map(\.id)
-//		$0[$1.id] = $1.isSelected
-//	})
-}
-
 public enum MultipleChoiceAction {
 	case didTouchChoiceId(Int)
 }
 
-func multipleChoiceReducer(state: inout MultipleChoiceState,
+func multipleChoiceReducer(state: inout [CheckBoxChoice],
 													 action: MultipleChoiceAction,
 													 environment: (JourneyEnvironemnt)) -> [Effect<MultipleChoiceAction>] {
 	switch action {
 	case .didTouchChoiceId(let id):
-		state.selected[id]?.toggle()
+		let idx = state.firstIndex(where: { $0.id == id })
+		state[idx!].isSelected.toggle()
+		return []
 	}
-	return []
 }
 
 struct MultipleChoiceField: View {
-	let store: Store<MultipleChoiceState, MultipleChoiceAction>
-	var viewStore: ViewStore<State, MultipleChoiceAction>
-	init(store: Store<MultipleChoiceState, MultipleChoiceAction>) {
+	let store: Store<[CheckBoxChoice], MultipleChoiceAction>
+	var viewStore: ViewStore<[CheckBoxChoice], MultipleChoiceAction>
+	init(store: Store<[CheckBoxChoice], MultipleChoiceAction>) {
 		self.store = store
-		self.viewStore = self.store
-			.scope(value: State.init(state:),
-						 action: { $0 } )
-			.view
+		self.viewStore = self.store.view
 	}
-	struct State: Equatable {
-		let title: String
-		let choices: [ChoiceVM]
-	}
-
+	
 	var body: some View {
 		Section(
-		header: Text(self.viewStore.value.title)) {
-			ForEach(self.viewStore.value.choices, id: \.self) { (choice: ChoiceVM) in
+		header: Text("some title")) {
+			ForEach(self.viewStore.value, id: \.self) { (choice: CheckBoxChoice) in
 				ChoiceRow(choice: choice)
 					.onTapGesture { self.viewStore.send(.didTouchChoiceId(choice.id))}
 					.listRowInsets(EdgeInsets())
@@ -68,31 +38,8 @@ struct MultipleChoiceField: View {
 	}
 }
 
-extension MultipleChoiceField.State {
-
-	init(state: MultipleChoiceState) {
-//		var choices: [Int: CheckBoxChoice]
-//		var selected: [Int: Bool]
-		self.title = "Title"
-		self.choices = state.choices.reduce(into: [ChoiceVM](), {
-			let newElement = ChoiceVM(title: $1.value.title, isSelected: state.selected[$1.key]!, id: $1.key)
-			$0.append(newElement)
-		})
-	}
-}
-
-func makeChoiceVm(choice: ((String, Int), Bool)) -> ChoiceVM {
-	ChoiceVM(title: choice.0.0, isSelected: choice.1, id: choice.0.1)
-}
-
-struct ChoiceVM: Hashable {
-	let title: String
-	let isSelected: Bool
-	let id: Int
-}
-
 struct ChoiceRow: View {
-	let choice: ChoiceVM
+	let choice: CheckBoxChoice
 	var body: some View {
 		HStack {
 			Checkbox(isSelected: choice.isSelected)

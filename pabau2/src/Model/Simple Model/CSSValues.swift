@@ -5,27 +5,22 @@ import Foundation
 public struct StaticText: Codable, Equatable {
 	public let id: Int
 	public let text: String
-}
-
-public struct CheckBox: Codable, Equatable {
-	public init( _ id: Int, _ choices: [CheckBoxChoice]) {
+	public init( _ id: Int, _ text: String) {
 		self.id = id
-		self.choices = choices
+		self.text = text
 	}
-	public let id: Int
-	public let choices: [CheckBoxChoice]
 }
 
-public struct CheckBoxChoice: Codable, Equatable {
+public struct CheckBoxChoice: Codable, Equatable, Hashable {
 	public init( _ id: Int, _ title: String, _ isSelected: Bool) {
 		self.id = id
 		self.title = title
 		self.isSelected = isSelected
 	}
 	
-	public let id: Int
-	public let title: String
-	public let isSelected: Bool
+	public var id: Int
+	public var title: String
+	public var isSelected: Bool
 }
 
 public struct InputText: Codable, Equatable {
@@ -37,14 +32,25 @@ public struct TextArea: Codable, Equatable {
 }
 
 public struct Radio: Codable, Equatable {
-	public let id: Int
-	public let choices: [RadioChoice]
-	public let selectedChoiceId: Int
+	public var id: Int
+	public var choices: [RadioChoice]
+	public var selectedChoiceId: Int
+	
+	public init (_ id: Int, _ choices: [RadioChoice], _ selectedChoiceId: Int) {
+		self.id = id
+		self.choices = choices
+		self.selectedChoiceId = selectedChoiceId
+	}
 }
 
 public struct RadioChoice: Codable, Equatable {
 	public let id: Int
 	public let title: String
+	
+	public init (_ id: Int, _ title: String) {
+		self.id = id
+		self.title = title
+	}
 }
 
 public struct Signature: Codable, Equatable {
