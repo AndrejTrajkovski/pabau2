@@ -98,6 +98,13 @@ extension JourneyMockAPI {
 				),
 				CSSField(id: 3, cssClass:
 					.staticText(StaticText(1, "Hey what's going on?"))
+				),
+				CSSField(id: 4,
+								 cssClass: .radio(Radio(4,
+																				[RadioChoice(1, "radio choice 1"),
+																				 RadioChoice(2, "radio choice 2")],
+																				1)
+					)
 				)
 			])),
 //		FormTemplate(id: 2, name: "Consent - Botox", formType: .consent),

@@ -4,7 +4,9 @@ import NonEmpty
 import SwiftDate
 
 public struct JourneyState: Equatable {
-	public init () {}
+	public init () {
+		print("init journey state")
+	}
 	public var loadingState: LoadingState = .initial
 	var journeys: Set<Journey> = Set()
 	var selectedFilter: CompleteFilter = .all
@@ -29,7 +31,8 @@ public struct JourneyState: Equatable {
 //		])
 	var selectedConsentsIds: [Int] = []
 	var allConsents: [FormTemplate] = []
-
+	var selectedStepId: Int = 0
+	
 	public var addAppointment: AddAppointmentState = AddAppointmentState.init(
 		isShowingAddAppointment: false,
 		reminder: false,
@@ -71,10 +74,29 @@ extension JourneyState {
 				isCheckedIn == true else { return nil }
 			return CheckInContainerState(journey: selectedJourney,
 																	 pathway: selectedPathway,
-																	 templates: allConsents.filter { self.selectedConsentsIds.contains($0.id)})
+																	 selectedStepId: selectedStepId,
+																	 templates: selectedConsents)
 		}
 		set {
-			allConsents = [newValue!.selectedTemplate]
+			guard let newValue = newValue else { return }
+			self.selectedJourney = newValue.journey
+			self.selectedPathway = newValue.pathway
+			self.selectedStepId = newValue.selectedStepId
+			self.selectedConsents = newValue.templates
+		}
+	}
+	
+	var selectedConsents: [FormTemplate] {
+		get {
+			allConsents.filter { self.selectedConsentsIds.contains($0.id)}
+		}
+		set {
+			allConsents.removeAll(where: { consent in
+				newValue.contains(where: { newConsent in
+					newConsent.id == consent.id
+				})
+			})
+			allConsents.append(contentsOf: newValue)
 		}
 	}
 	
