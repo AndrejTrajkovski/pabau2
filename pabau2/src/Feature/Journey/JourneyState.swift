@@ -92,8 +92,8 @@ extension JourneyState {
 		}
 		set {
 			allConsents.removeAll(where: { consent in
-				newValue.contains(where: { newConsent in
-					newConsent.id == consent.id
+				self.selectedConsentsIds.contains(where: { id in
+					id == consent.id
 				})
 			})
 			allConsents.append(contentsOf: newValue)

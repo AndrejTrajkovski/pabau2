@@ -22,6 +22,14 @@ public struct CheckInContainerState: Equatable {
 		self.selectedStepId = selectedStepId
 		self.templates = templates
 	}
+	
+	var selectedTemplate: FormTemplate {
+		get { self.templates.first! }
+		set {
+			self.templates.remove(at: 0)
+			self.templates.insert(newValue, at: 0)
+		}
+	}
 }
 
 extension CheckInContainerState {
