@@ -42,15 +42,13 @@ enum AppAction {
 	case tabBar(TabBarAction)
 }
 
-let appReducer: Reducer<AppState, AppAction, AppEnvironment> = combine(
-	pullback(
-		walkthroughContainerReducer,
+let appReducer: Reducer<AppState, AppAction, AppEnvironment> = .combine(
+	walkthroughContainerReducer.pullback(
 		value: /AppState.walkthrough,
 		action: /AppAction.walkthrough,
 		environment: { LoginEnvironment($0.loginAPI, $0.userDefaults) }
 	),
-	pullback(
-		tabBarReducer,
+	tabBarReducer.pullback(
 		value: /AppState.tabBar,
 		action: /AppAction.tabBar,
 		environment: { TabBarEnvironment($0) }
@@ -141,7 +139,8 @@ struct LoginContainer: View {
 	}
 }
 
-func globalReducer(state: inout AppState, action: AppAction, environment: AppEnvironment) -> [Effect<AppAction>] {
+let globalReducer = Reducer<AppState, AppAction, AppEnvironment> {
+	state, action, environment in
 	if case let AppAction.tabBar(tabBar) = action,
 		case let TabBarAction.settings(settings) = tabBar,
 		case SettingsAction.logoutTapped = settings {

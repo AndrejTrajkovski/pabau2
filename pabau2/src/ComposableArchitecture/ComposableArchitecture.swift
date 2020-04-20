@@ -248,3 +248,33 @@ extension Reducer {
 		}
 	}
 }
+
+extension ViewStore {
+  public func binding<LocalValue>(
+    get: @escaping (Value) -> LocalValue,
+    send action: Action
+  ) -> Binding<LocalValue> {
+    Binding(
+      get: { get(self.value) },
+      set: { _ in self.send(action) }
+    )
+  }
+	
+	public func binding<LocalValue>(
+		get: @escaping (Value) -> LocalValue,
+		send toAction: @escaping (LocalValue) -> Action
+	) -> Binding<LocalValue> {
+		Binding(
+			get: { get(self.value) },
+			set: { self.send(toAction($0)) }
+		)
+	}
+	
+	public func binding<T>(value: KeyPath<Value, T>,
+												 action: CasePath<Action, T>) -> Binding<T> {
+		Binding<T>(
+			get: { self.value[keyPath: value]  },
+			set: { self.send(action.embed($0)) }
+		)
+	}
+}

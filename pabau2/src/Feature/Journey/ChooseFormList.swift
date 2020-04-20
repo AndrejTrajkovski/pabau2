@@ -20,9 +20,7 @@ public enum ChooseFormAction {
 	case onAppear
 }
 
-func chooseFormListReducer(state: inout ChooseFormState,
-													 action: ChooseFormAction,
-													 environment: JourneyEnvironemnt) -> [Effect<ChooseFormAction>] {
+let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, JourneyEnvironemnt> { state, action, environment in
 	switch action {
 	case .addTemplateId(let templateId):
 		state.selectedTemplatesIds.append(templateId)

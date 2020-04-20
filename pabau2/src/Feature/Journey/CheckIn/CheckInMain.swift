@@ -9,9 +9,7 @@ public enum CheckInMainAction {
 	case form(Indexed<CheckInFormAction>)
 }
 
-func checkInMainReducer(state: inout CheckInContainerState,
-												action: CheckInMainAction,
-												environment: JourneyEnvironemnt) -> [Effect<CheckInMainAction>] {
+let checkInMainReducer = Reducer<CheckInContainerState, CheckInMainAction, JourneyEnvironemnt>{ state, action, environment in
 	switch action {
 	case .closeBtnTap:
 		break

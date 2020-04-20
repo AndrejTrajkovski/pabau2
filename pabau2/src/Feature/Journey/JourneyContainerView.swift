@@ -21,9 +21,7 @@ public enum EmployeesAction {
 	case loadEmployees
 }
 
-public func employeeListReducer(state: inout EmployeesState,
-																action: EmployeesAction,
-																environment: JourneyEnvironemnt) -> [Effect<EmployeesAction>] {
+let employeeListReducer = Reducer<EmployeesState, EmployeesAction, JourneyEnvironemnt> { state, action, env in
 	func handle(result: Result<[Employee], RequestError>,
 							state: inout EmployeesState) -> [Effect<EmployeesAction>] {
 		switch result {
@@ -51,7 +49,7 @@ public func employeeListReducer(state: inout EmployeesState,
 	case .loadEmployees:
 		state.loadingState = .loading
 		return [
-			environment.apiClient.getEmployees()
+			env.apiClient.getEmployees()
 				.map {.gotResponse($0)}
 				.eraseToEffect()
 		]
@@ -61,9 +59,8 @@ public func employeeListReducer(state: inout EmployeesState,
 
 public typealias JourneyEnvironemnt = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
 
-func checkInMiddleware(state: inout JourneyState,
-											 action: CheckInMainAction,
-											 environment: JourneyEnvironemnt) -> [Effect<CheckInMainAction>] {
+let checkInMiddleware = Reducer<JourneyState, CheckInMainAction, JourneyEnvironemnt> {
+	state, action, env in
 	switch action {
 	case .closeBtnTap:
 		state.isCheckedIn = false
@@ -75,34 +72,36 @@ func checkInMiddleware(state: inout JourneyState,
 	return []
 }
 
-public let journeyContainerReducer: Reducer<JourneyState, JourneyContainerAction, JourneyEnvironemnt> = combine(
-	pullback(journeyReducer,
+public let journeyContainerReducer: Reducer<JourneyState, JourneyContainerAction, JourneyEnvironemnt> =
+	.combine(
+		journeyReducer.pullback(
 					 value: \JourneyState.self,
 					 action: /JourneyContainerAction.journey,
 					 environment: { $0 }),
-	pullback(employeeListReducer,
+		employeeListReducer.pullback(
 					 value: \JourneyState.employeesState,
 					 action: /JourneyContainerAction.employees,
 					 environment: { $0 }),
-	pullback(addAppointmentReducer,
+		addAppointmentReducer.pullback(
 					 value: \JourneyState.addAppointment,
 					 action: /JourneyContainerAction.addAppointment,
 					 environment: { $0 }),
-	pullback(choosePathwayContainerReducer,
+		choosePathwayContainerReducer.pullback(
 					 value: \JourneyState.choosePathway,
 					 action: /JourneyContainerAction.choosePathway,
 					 environment: { $0 }),
-	pullback(checkInReducer,
+		checkInReducer.pullback(
 					 value: \JourneyState.checkIn,
 					 action: /JourneyContainerAction.checkIn,
 					 environment: { $0 }),
-	pullback(checkInMiddleware,
+		checkInMiddleware.pullback(
 					 value: \JourneyState.self,
 					 action: /JourneyContainerAction.checkIn..CheckInContainerAction.main,
 					 environment: { $0 })
 )
 
-public func journeyReducer(state: inout JourneyState, action: JourneyAction, environment: JourneyEnvironemnt) -> [Effect<JourneyAction>] {
+let journeyReducer = Reducer<JourneyState, JourneyAction, JourneyEnvironemnt>
+{ state, action, environment in
 	switch action {
 	case .selectedFilter(let filter):
 		state.selectedFilter = filter

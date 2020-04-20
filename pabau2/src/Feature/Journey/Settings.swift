@@ -9,10 +9,10 @@ public typealias SettingsEnvironment = (
 	userDefaults: UserDefaultsConfig
 )
 
-public func settingsReducer(state: inout SettingsState, action: SettingsAction, environment: SettingsEnvironment) -> [Effect<SettingsAction>] {
+public let settingsReducer = Reducer<SettingsState, SettingsAction, SettingsEnvironment> { state, action, env in
 	switch action {
 	case .logoutTapped:
-		var userDefaults = environment.userDefaults
+		var userDefaults = env.userDefaults
 		userDefaults.loggedInUser = nil
 		return []
 	}

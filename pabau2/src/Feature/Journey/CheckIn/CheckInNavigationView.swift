@@ -12,12 +12,12 @@ public enum CheckInAnimationAction {
 	case didFinishAnimation
 }
 
-public let checkInReducer = combine(
-	pullback(checkInMainReducer,
+public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction, JourneyEnvironemnt> = .combine(
+	checkInMainReducer.pullback(
 					 value: \CheckInContainerState.self,
 					 action: /CheckInContainerAction.main,
 					 environment: { $0 }),
-	pullback(fieldsReducer,
+	fieldsReducer.pullback(
 					 value: \CheckInContainerState.self,
 					 action: /CheckInContainerAction.main,
 					 environment: { $0 })
@@ -42,27 +42,26 @@ let fieldsReducer: Reducer<CheckInContainerState, CheckInMainAction, JourneyEnvi
 
 let fieldReducer: Reducer<CSSField, CheckInFormAction, JourneyEnvironemnt> =
 (
-	pullback(cssClassReducer,
+	cssClassReducer.pullback(
 					 value: \CSSField.cssClass,
 					 action: /CheckInFormAction.self,
 					 environment: { $0 })
 )
 
-let cssClassReducer: Reducer<CSSClass, CheckInFormAction, JourneyEnvironemnt> = (
-combine(
+let cssClassReducer: Reducer<CSSClass, CheckInFormAction, JourneyEnvironemnt> =
+	.combine(
 //	pullback(multipleChoiceReducer,
 //					 value: /CSSField.cssClass,
 //					 action: /CheckInFormAction.multipleChoice,
 //					 environment: { $0 }),
-	pullback(multipleChoiceReducer,
+		multipleChoiceReducer.pullback(
 					 value: /CSSClass.checkboxes,
 					 action: /CheckInFormAction.multipleChoice,
 					 environment: { $0 }),
-	pullback(radioReducer,
+		radioReducer.pullback(
 					 value: /CSSClass.radio,
 					 action: /CheckInFormAction.radio,
 					 environment: { $0 })
-	)
 )
 
 //func dummyReducer(state: inout CSSField)

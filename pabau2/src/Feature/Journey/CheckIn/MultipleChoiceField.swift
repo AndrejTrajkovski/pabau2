@@ -7,9 +7,9 @@ public enum MultipleChoiceAction {
 	case didTouchChoiceId(Int)
 }
 
-func multipleChoiceReducer(state: inout [CheckBoxChoice],
-													 action: MultipleChoiceAction,
-													 environment: (JourneyEnvironemnt)) -> [Effect<MultipleChoiceAction>] {
+public let multipleChoiceReducer =
+	Reducer<[CheckBoxChoice], MultipleChoiceAction, JourneyEnvironemnt> {
+	state, action, env in
 	switch action {
 	case .didTouchChoiceId(let id):
 		let idx = state.firstIndex(where: { $0.id == id })

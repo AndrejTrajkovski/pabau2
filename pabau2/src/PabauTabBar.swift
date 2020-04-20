@@ -93,13 +93,13 @@ struct PabauTabBar: View {
 	}
 }
 
-public let tabBarReducer = combine(
-	pullback(settingsReducer,
+public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> = .combine(
+	settingsReducer.pullback(
 					 value: \TabBarState.settings,
 					 action: /TabBarAction.settings,
 					 environment: { SettingsEnvironment($0) }
 	),
-	pullback(journeyContainerReducer,
+	journeyContainerReducer.pullback(
 					 value: \TabBarState.journey,
 					 action: /TabBarAction.journey,
 					 environment: {
