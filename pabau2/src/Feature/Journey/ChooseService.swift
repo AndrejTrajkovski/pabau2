@@ -4,8 +4,7 @@ import ComposableArchitecture
 import Util
 
 let chooseServiceReducer =
-	Reducer<ChooseServiceState, ChooseServiceAction, JourneyEnvironemnt>
-	{ state, action, env in
+	Reducer<ChooseServiceState, ChooseServiceAction, JourneyEnvironemnt> { state, action, _ in
 	switch action {
 	case .didSelectFilter(let filter):
 		state.filterChosen = filter

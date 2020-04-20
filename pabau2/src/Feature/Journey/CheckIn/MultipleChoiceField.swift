@@ -8,8 +8,7 @@ public enum MultipleChoiceAction {
 }
 
 public let multipleChoiceReducer =
-	Reducer<[CheckBoxChoice], MultipleChoiceAction, JourneyEnvironemnt> {
-	state, action, env in
+	Reducer<[CheckBoxChoice], MultipleChoiceAction, JourneyEnvironemnt> { state, action, _ in
 	switch action {
 	case .didTouchChoiceId(let id):
 		let idx = state.firstIndex(where: { $0.id == id })
@@ -25,7 +24,7 @@ struct MultipleChoiceField: View {
 		self.store = store
 		self.viewStore = self.store.view
 	}
-	
+
 	var body: some View {
 		Section(
 		header: Text("some title")) {

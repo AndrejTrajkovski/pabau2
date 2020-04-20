@@ -6,7 +6,7 @@ struct StepsCollectionView: View {
 	let stepVms: [StepVM]
 	let selectedId: Int
 	let didSelect: (Int) -> Void
-	
+
 	init (steps: [Step], selectedId: Int, didSelect: @escaping (Int) -> Void) {
 		self.selectedId = selectedId
 		self.stepVms = steps.map { Self.stepVM(step: $0, selection: selectedId)}

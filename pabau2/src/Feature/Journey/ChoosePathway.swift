@@ -22,7 +22,7 @@ let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayCont
 			environment: { $0 })
 )
 
-let choosePathwayReducer = Reducer<ChoosePathwayState, ChoosePathwayAction, JourneyEnvironemnt> { state, action, env in
+let choosePathwayReducer = Reducer<ChoosePathwayState, ChoosePathwayAction, JourneyEnvironemnt> { state, action, _ in
 	switch action {
 	case .didChoosePathway(let pathway):
 		state.selectedPathway = pathway

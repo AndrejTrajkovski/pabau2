@@ -67,7 +67,6 @@ let forgotPassViewReducer: Reducer<ForgotPassContainerState,
 					 environment: { $0 })
 )
 
-
 let forgotPasswordReducer = Reducer<ForgotPassState, ForgotPasswordAction, LoginEnvironment> { state, action, environment in
 		switch action {
 		case .backBtnTapped:

@@ -9,13 +9,13 @@ public enum CheckInMainAction {
 	case form(Indexed<CheckInFormAction>)
 }
 
-let checkInMainReducer = Reducer<CheckInContainerState, CheckInMainAction, JourneyEnvironemnt>{ state, action, environment in
+let checkInMainReducer = Reducer<CheckInContainerState, CheckInMainAction, JourneyEnvironemnt> { state, action, _ in
 	switch action {
 	case .closeBtnTap:
 		break
 	case .didSelectStepId(let id):
 		state.selectedStepId = id
-	case .form(_):
+	case .form:
 		break
 	}
 	return []
@@ -24,7 +24,7 @@ let checkInMainReducer = Reducer<CheckInContainerState, CheckInMainAction, Journ
 struct CheckInMain: View {
 	let store: Store<CheckInContainerState, CheckInMainAction>
 	@ObservedObject var viewStore: ViewStore<CheckInContainerState, CheckInMainAction>
-	
+
 	init(store: Store<CheckInContainerState, CheckInMainAction>) {
 		self.store = store
 		self.viewStore = self.store.view

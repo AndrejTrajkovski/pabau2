@@ -21,8 +21,7 @@ public enum RadioAction {
 	case didSelectChoice(Int)
 }
 
-let radioReducer = Reducer<Radio, RadioAction, JourneyEnvironemnt> {
-	state, action, environment in
+let radioReducer = Reducer<Radio, RadioAction, JourneyEnvironemnt> { state, action, _ in
 	switch action {
 	case .didSelectChoice(let id):
 		state.selectedChoiceId = id
@@ -33,7 +32,7 @@ let radioReducer = Reducer<Radio, RadioAction, JourneyEnvironemnt> {
 struct RadioView: View {
 	let store: Store<Radio, RadioAction>
 	@ObservedObject var viewStore: ViewStore<Radio, RadioAction>
-	
+
 	init(store: Store<Radio, RadioAction>) {
 		self.store = store
 		self.viewStore = self.store
@@ -42,7 +41,7 @@ struct RadioView: View {
 //			action: { $0 })
 		.view
 	}
-	
+
 	var body: some View {
 		VStack {
 			Picker(selection: self.viewStore.binding(

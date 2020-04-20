@@ -32,7 +32,7 @@ public struct JourneyState: Equatable {
 	var selectedConsentsIds: [Int] = []
 	var allConsents: [FormTemplate] = []
 	var selectedStepId: Int = 0
-	
+
 	public var addAppointment: AddAppointmentState = AddAppointmentState.init(
 		isShowingAddAppointment: false,
 		reminder: false,
@@ -49,7 +49,7 @@ public struct JourneyState: Equatable {
 }
 
 extension JourneyState {
-	
+
 	var choosePathway: ChoosePathwayState {
 		get {
 			ChoosePathwayState(selectedJourney: selectedJourney,
@@ -66,7 +66,7 @@ extension JourneyState {
 			self.isCheckedIn = newValue.isCheckedIn
 		}
 	}
-	
+
 	public var checkIn: CheckInContainerState? {
 		get {
 			guard let selectedJourney = selectedJourney,
@@ -85,7 +85,7 @@ extension JourneyState {
 			self.selectedConsents = newValue.templates
 		}
 	}
-	
+
 	var selectedConsents: [FormTemplate] {
 		get {
 			allConsents.filter { self.selectedConsentsIds.contains($0.id)}
@@ -99,7 +99,7 @@ extension JourneyState {
 			allConsents.append(contentsOf: newValue)
 		}
 	}
-	
+
 	var filteredJourneys: [Journey] {
 		return self.journeys
 			.filter { $0.appointments.first.from.isInside(date: selectedDate, granularity: .day) }

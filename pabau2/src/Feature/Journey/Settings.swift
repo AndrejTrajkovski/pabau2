@@ -9,7 +9,7 @@ public typealias SettingsEnvironment = (
 	userDefaults: UserDefaultsConfig
 )
 
-public let settingsReducer = Reducer<SettingsState, SettingsAction, SettingsEnvironment> { state, action, env in
+public let settingsReducer = Reducer<SettingsState, SettingsAction, SettingsEnvironment> { _, action, env in
 	switch action {
 	case .logoutTapped:
 		var userDefaults = env.userDefaults

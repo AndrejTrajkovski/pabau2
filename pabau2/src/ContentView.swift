@@ -139,8 +139,7 @@ struct LoginContainer: View {
 	}
 }
 
-let globalReducer = Reducer<AppState, AppAction, AppEnvironment> {
-	state, action, environment in
+let globalReducer = Reducer<AppState, AppAction, AppEnvironment> { state, action, environment in
 	if case let AppAction.tabBar(tabBar) = action,
 		case let TabBarAction.settings(settings) = tabBar,
 		case SettingsAction.logoutTapped = settings {

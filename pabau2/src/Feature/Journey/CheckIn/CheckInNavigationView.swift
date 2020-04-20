@@ -37,8 +37,7 @@ public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction
 let fieldsReducer: Reducer<CheckInContainerState, CheckInMainAction, JourneyEnvironemnt> =
 	indexed(reducer: fieldReducer,
 					\CheckInContainerState.selectedTemplate.formStructure.formStructure,
-					/CheckInMainAction.form,
-					{ $0 })
+					/CheckInMainAction.form, { $0 })
 
 let fieldReducer: Reducer<CSSField, CheckInFormAction, JourneyEnvironemnt> =
 (
@@ -84,7 +83,6 @@ let cssClassReducer: Reducer<CSSClass, CheckInFormAction, JourneyEnvironemnt> =
 //		fatalError()
 //	}
 //}
-
 
 public struct CheckInNavigationView: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>

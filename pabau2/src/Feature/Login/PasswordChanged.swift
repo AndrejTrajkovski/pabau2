@@ -3,7 +3,7 @@ import ComposableArchitecture
 import Util
 import Model
 
-public let passChangedReducer = Reducer<[LoginNavScreen], PassChangedAction, LoginEnvironment> { state, action, environment in
+public let passChangedReducer = Reducer<[LoginNavScreen], PassChangedAction, LoginEnvironment> { state, action, _ in
 	switch action {
 	case .signInTapped:
 		state.removeAll(where: { $0 == .passChangedScreen })

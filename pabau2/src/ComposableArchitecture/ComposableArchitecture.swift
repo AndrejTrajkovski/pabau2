@@ -5,7 +5,7 @@ import SwiftUI
 // swiftlint:disable force_cast
 public struct Reducer<Value, Action, Environment> {
   let reducer: (inout Value, Action, Environment) -> [Effect<Action>]
-  
+
   public init(_ reducer: @escaping (inout Value, Action, Environment) -> [Effect<Action>]) {
     self.reducer = reducer
   }
@@ -170,7 +170,7 @@ public final class ViewStore<Value, Action>: ObservableObject {
   @Published public fileprivate(set) var value: Value
   fileprivate var cancellable: Cancellable?
   public let send: (Action) -> Void
-  
+
   public subscript<LocalValue>(dynamicMember keyPath: KeyPath<Value, LocalValue>) -> LocalValue {
     self.value[keyPath: keyPath]
   }
@@ -217,7 +217,7 @@ extension Reducer {
 		action: CasePath<GlobalAction, Action>,
 		environment: @escaping (GlobalEnvironment) -> Environment
 	) -> Reducer<GlobalValue, GlobalAction, GlobalEnvironment> {
-		.init  { globalValue, globalAction, globalEnvironment in
+		.init { globalValue, globalAction, globalEnvironment in
 			guard let localAction = action.extract(from: globalAction) else { return [] }
 			guard let localValue = globalValue[keyPath: value] else { return [] }
 			var varLocalValue = localValue
@@ -229,7 +229,7 @@ extension Reducer {
 			}
 		}
 	}
-	
+
 	public func pullback<GlobalValue, GlobalAction, GlobalEnvironment>(
 		value: CasePath<GlobalValue, Value>,
 		action: CasePath<GlobalAction, Action>,
@@ -259,7 +259,7 @@ extension ViewStore {
       set: { _ in self.send(action) }
     )
   }
-	
+
 	public func binding<LocalValue>(
 		get: @escaping (Value) -> LocalValue,
 		send toAction: @escaping (LocalValue) -> Action
@@ -269,7 +269,7 @@ extension ViewStore {
 			set: { self.send(toAction($0)) }
 		)
 	}
-	
+
 	public func binding<T>(value: KeyPath<Value, T>,
 												 action: CasePath<Action, T>) -> Binding<T> {
 		Binding<T>(

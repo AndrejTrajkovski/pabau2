@@ -67,7 +67,7 @@ enum FormBuilder {
 			return AnyView(EmptyView())
 		}
 	}
-	
+
 //	static func makeSection(_ checkBox: CheckBox, field: CSSField) -> some View {
 //		return Section(header: Text(field.title ?? ""),
 //									 content: {

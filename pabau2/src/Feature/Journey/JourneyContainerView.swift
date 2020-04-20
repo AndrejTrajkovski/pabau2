@@ -59,8 +59,7 @@ let employeeListReducer = Reducer<EmployeesState, EmployeesAction, JourneyEnviro
 
 public typealias JourneyEnvironemnt = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
 
-let checkInMiddleware = Reducer<JourneyState, CheckInMainAction, JourneyEnvironemnt> {
-	state, action, env in
+let checkInMiddleware = Reducer<JourneyState, CheckInMainAction, JourneyEnvironemnt> { state, action, _ in
 	switch action {
 	case .closeBtnTap:
 		state.isCheckedIn = false
@@ -100,8 +99,7 @@ public let journeyContainerReducer: Reducer<JourneyState, JourneyContainerAction
 					 environment: { $0 })
 )
 
-let journeyReducer = Reducer<JourneyState, JourneyAction, JourneyEnvironemnt>
-{ state, action, environment in
+let journeyReducer = Reducer<JourneyState, JourneyAction, JourneyEnvironemnt> { state, action, environment in
 	switch action {
 	case .selectedFilter(let filter):
 		state.selectedFilter = filter

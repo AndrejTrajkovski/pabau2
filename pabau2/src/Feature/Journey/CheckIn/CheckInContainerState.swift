@@ -12,7 +12,7 @@ public struct CheckInContainerState: Equatable {
 	var pathway: Pathway
 	var selectedStepId: Int
 	var templates: [FormTemplate]
-	
+
 	init(journey: Journey,
 			 pathway: Pathway,
 			 selectedStepId: Int,
@@ -22,7 +22,7 @@ public struct CheckInContainerState: Equatable {
 		self.selectedStepId = selectedStepId
 		self.templates = templates
 	}
-	
+
 	var selectedTemplate: FormTemplate {
 		get { self.templates.first! }
 		set {
