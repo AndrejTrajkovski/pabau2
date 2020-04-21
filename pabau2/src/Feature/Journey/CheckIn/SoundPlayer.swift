@@ -18,7 +18,7 @@ class Player: ObservableObject {
 		if let path = Bundle.main.path(forResource: "checkIn", ofType: "mp4") {
 			do {
 				sound = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: path))
-				print("Playing sound")
+				print("Playing sounddd")
 				sound.play()
 			} catch {
 				print( "Could not find file")
