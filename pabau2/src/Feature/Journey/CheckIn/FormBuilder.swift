@@ -20,25 +20,20 @@ struct PabauForm: View {
 
 	public var body: some View {
 		ForEachWithIndex(viewStore.value, id: \.self) { index, cssValue in
-			FormBuilder.makeSection(store:
+			FormSectionView(store:
 				self.store.scope(
 					value: { _ in cssValue },
 					action: { .form(Indexed(index: index, value: $0)) }
-			),
-			cssClass: cssValue.cssClass)
+			))
+//			FormBuilder.makeSection(store:
+//				self.store.scope(
+//					value: { _ in cssValue },
+//					action: { .form(Indexed(index: index, value: $0)) }
+//			),
+//			cssClass: cssValue.cssClass)
 		}
 	}
 }
-
-//struct SectionView: View {
-//	let store: Store<CSSField, CheckInFormAction>
-//	@ObservedObject var viewStore: ViewStore<CSSField, CheckInFormAction>
-//	var body: some View {
-//		Group {
-//			
-//		}
-//	}
-//}
 
 enum FormBuilder {
 
@@ -67,11 +62,4 @@ enum FormBuilder {
 			return AnyView(EmptyView())
 		}
 	}
-
-//	static func makeSection(_ checkBox: CheckBox, field: CSSField) -> some View {
-//		return Section(header: Text(field.title ?? ""),
-//									 content: {
-//			MultipleChoiceField(store: <#T##Store<MultipleChoiceState, MultipleChoiceAction>#>, viewStore: <#T##ViewStore<MultipleChoiceField.State, MultipleChoiceAction>#>)
-//		})
-//	}
 }

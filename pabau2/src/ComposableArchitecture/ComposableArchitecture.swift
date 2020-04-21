@@ -26,6 +26,15 @@ extension Reducer {
   }
 }
 
+extension Reducer {
+	public var optional: Reducer<Value?, Action, Environment> {
+		.init { value, action, environment in
+			guard value != nil else { return [] }
+			return self(&value!, action, environment)
+		}
+	}
+}
+
 //public func combine<Value, Action, Environment>(
 //  _ reducers: Reducer<Value, Action, Environment>...
 //) -> Reducer<Value, Action, Environment> {

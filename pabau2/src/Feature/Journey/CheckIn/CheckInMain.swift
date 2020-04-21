@@ -65,7 +65,7 @@ struct CheckInMain: View {
 				.frame(width: 600, alignment: .center)
 			Spacer()
 			PabauForm(store:
-				self.store.scope(value: { $0.selectedTemplate.formStructure.formStructure},
+				self.store.scope(value: { $0.selectedTemplate.formStructure.formStructure },
 												 action: { $0 }))
 		}
 		.navigationBarTitle("")
