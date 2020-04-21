@@ -14,7 +14,6 @@ struct FormSectionView: View {
 	}
 	
 	@ObservedObject var viewStore: ViewStore<State, CheckInFormAction>
-	
 	struct State: Equatable {
 		let checkBox: [CheckBoxChoice]?
 		let radio: Radio?
@@ -23,20 +22,20 @@ struct FormSectionView: View {
 
 	var body: some View {
 		Group {
-			if viewStore.checkBox != nil {
+			if viewStore.value.checkBox != nil {
 				MultipleChoiceField(
 					store: store.scope(
-						value: { _ in self.viewStore.checkBox! },
+						value: { _ in self.viewStore.value.checkBox! },
 						action: { .multipleChoice($0) }))
 			}
-			if viewStore.radio != nil {
+			if viewStore.value.radio != nil {
 					RadioView(
 						store: store.scope(
-						value: { _ in self.viewStore.radio! },
+						value: { _ in self.viewStore.value.radio! },
 						action: { .radio($0) }))
 			}
-			if viewStore.staticText != nil {
-				Text(self.viewStore.staticText!.text)
+			if viewStore.value.staticText != nil {
+				Text(self.viewStore.value.staticText!.text)
 			}
 		}
 	}
