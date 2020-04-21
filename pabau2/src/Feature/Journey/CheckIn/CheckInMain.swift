@@ -46,7 +46,7 @@ struct CheckInMain: View {
 								 alignment: .topLeading)
 				Spacer()
 				JourneyProfileView(style: .short,
-													 viewState: .init(journey: self.viewStore.value.journey))
+													 viewState: .init(journey: self.viewStore.journey))
 					.padding()
 					.frame(minWidth: 0, maxWidth: .infinity,
 								 minHeight: 0, maxHeight: .infinity,
@@ -58,8 +58,8 @@ struct CheckInMain: View {
 								 minHeight: 0, maxHeight: .infinity,
 								 alignment: .topTrailing)
 			}.frame(height: 168.0)
-			StepsCollectionView(steps: self.viewStore.value.pathway.steps,
-													selectedId: self.viewStore.value.selectedStepId) {
+			StepsCollectionView(steps: self.viewStore.pathway.steps,
+													selectedId: self.viewStore.selectedStepId) {
 														self.viewStore.send(.didSelectStepId($0))
 			}
 				.frame(width: 600, alignment: .center)

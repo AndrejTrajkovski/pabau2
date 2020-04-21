@@ -123,8 +123,8 @@ struct Login: View {
 			Spacer(minLength: 85)
 			LoginTextFields(email: $email,
 											password: $password,
-											emailValidation: self.viewStore.value.emailValidationText,
-											passwordValidation: self.viewStore.value.passValidationText,
+											emailValidation: self.viewStore.emailValidationText,
+											passwordValidation: self.viewStore.passValidationText,
 											onForgotPass: {self.viewStore.send(.forgotPassTapped) })
 			Spacer(minLength: 30)
 			BigButton(text: Texts.signIn,
@@ -163,7 +163,7 @@ public struct LoginView: View {
 	public var body: some View {
 		print("LoginView body")
 		return VStack {
-			NavigationLink.emptyHidden(self.viewStore.value.isForgotPassActive,
+			NavigationLink.emptyHidden(self.viewStore.isForgotPassActive,
 				ForgotPasswordView(self.store.scope(
 					value: { $0.forgotPass },
 					action: { .forgotPass($0)}), self.$email))
@@ -172,7 +172,7 @@ public struct LoginView: View {
 												action: { .login($0)}),
 						email: self.$email)
 			Spacer()
-		}.loadingView(.constant(self.viewStore.value.showsLoadingSpinner),
+		}.loadingView(.constant(self.viewStore.showsLoadingSpinner),
 									Texts.signingIn)
 	}
 }

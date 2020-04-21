@@ -41,7 +41,7 @@ public struct WalkthroughContainer: View {
 				self.viewStore.send(.walkthrough(.onAppear))
 			}
 			NavigationLink.emptyHidden(
-				viewStore.value.isSignInActive,
+				viewStore.isSignInActive,
 					LoginView(store: self.store.scope(value: { $0 },
 																						action: { .login($0)}))
 			)

@@ -125,7 +125,7 @@ struct ForgotPassword: View {
 				Text(Texts.forgotPassDescription)
 					.foregroundColor(.grey155)
 					.font(.medium16)
-				TextAndTextView(title: Texts.emailAddress.uppercased(), placeholder: "", bindingValue: self.$email, validation: self.viewStore.value.fpValidation)
+				TextAndTextView(title: Texts.emailAddress.uppercased(), placeholder: "", bindingValue: self.$email, validation: self.viewStore.fpValidation)
 			}.frame(maxWidth: 319)
 			BigButton(text: Texts.sendRequest) {
 				self.viewStore.send(.sendRequest(email: self.email))
@@ -154,10 +154,10 @@ struct ForgotPasswordView: View {
 		return VStack(alignment: .leading, spacing: 36) {
 			ForgotPassword(self.store.scope(value: { $0.forgotPass }, action: { .forgotPass($0)}), self.$email)
 			NavigationLink.emptyHidden(
-				self.viewStore.value.navigation.contains(.checkEmailScreen),
+				self.viewStore.navigation.contains(.checkEmailScreen),
 				self.checkEmailView)
 			Spacer()
-		}.loadingView(.constant(self.viewStore.value.forgotPass.loadingState.isLoading),
+		}.loadingView(.constant(self.viewStore.forgotPass.loadingState.isLoading),
 									Texts.forgotPassLoading)
 	}
 

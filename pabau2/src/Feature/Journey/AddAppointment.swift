@@ -168,12 +168,12 @@ struct Section1: View {
 			SwitchCell(text: "All Day", startingValue: $isAllDay)
 			HStack(spacing: 24.0) {
 				PickerContainerStore.init(content: {
-					LabelAndTextField.init("CLIENT", self.viewStore.value.clients.chosenItemName ?? "")
+					LabelAndTextField.init("CLIENT", self.viewStore.clients.chosenItemName ?? "")
 				}, store: self.store.scope(value: { $0.clients },
 																	action: { .clients($0) })
 				)
 				PickerContainerStore.init(content: {
-					LabelAndTextField.init("DAY", self.viewStore.value.termins.chosenItemName ?? "")
+					LabelAndTextField.init("DAY", self.viewStore.termins.chosenItemName ?? "")
 				}, store: self.store.scope(value: { $0.termins },
 																	action: { .termins($0) })
 				)
@@ -193,23 +193,23 @@ struct Section2: View {
 		VStack(alignment: .leading, spacing: 24.0) {
 			Text("Services").font(.semibold24)
 			HStack(spacing: 24.0) {
-				LabelAndTextField.init("SERVICE", self.viewStore.value.services.chosenServiceName).onTapGesture {
+				LabelAndTextField.init("SERVICE", self.viewStore.services.chosenServiceName).onTapGesture {
 					self.viewStore.send(.didTapServices)
 				}
-				NavigationLink.emptyHidden(self.viewStore.value.services.isChooseServiceActive,
+				NavigationLink.emptyHidden(self.viewStore.services.isChooseServiceActive,
 																	 ChooseService(store: self.store.scope(value: { $0.services }, action: {
 																		.services($0)
 																		}))
 				)
 				PickerContainerStore.init(content: {
-					LabelAndTextField.init("DURATION", self.viewStore.value.durations.chosenItemName ?? "")
+					LabelAndTextField.init("DURATION", self.viewStore.durations.chosenItemName ?? "")
 				}, store: self.store.scope(value: { $0.durations },
 																	action: { .durations($0) })
 				)
 			}
 			HStack(spacing: 24.0) {
 				PickerContainerStore.init(content: {
-					LabelHeartAndTextField.init("WITH", self.viewStore.value.with.chosenItemName ?? "",
+					LabelHeartAndTextField.init("WITH", self.viewStore.with.chosenItemName ?? "",
 																			true)
 				}, store: self.store.scope(value: { $0.with },
 																	action: { .with($0) })
@@ -295,9 +295,9 @@ struct PickerContainerStore<Content: View, T: ListPickerElement>: View {
 	}
 	var body: some View {
 		PickerContainer.init(content: content,
-												 items: self.viewStore.value.dataSource,
-												 choseItemId: self.viewStore.value.chosenItemId,
-												 isActive: self.viewStore.value.isActive,
+												 items: self.viewStore.dataSource,
+												 choseItemId: self.viewStore.chosenItemId,
+												 isActive: self.viewStore.isActive,
 												 onTapGesture: {self.viewStore.send(.didSelectPicker)}, onSelectItem: {self.viewStore.send(.didChooseItem($0))},
 												 onBackBtn: {self.viewStore.send(.backBtnTap)})
 	}

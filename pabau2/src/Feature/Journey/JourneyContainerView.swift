@@ -171,7 +171,7 @@ public struct JourneyContainerView: View {
 	public var body: some View {
 		print("JourneyContainerView body")
 		return VStack {
-			SwiftUICalendar.init(viewStore.value.selectedDate,
+			SwiftUICalendar.init(viewStore.selectedDate,
 													 self.$calendarHeight,
 													 .week) { date in
 														self.viewStore.send(.journey(.selectedDate(date)))
@@ -179,11 +179,11 @@ public struct JourneyContainerView: View {
 			.padding(0)
 			.frame(height: self.calendarHeight)
 			FilterPicker()
-			JourneyList(self.viewStore.value.listedJourneys) {
+			JourneyList(self.viewStore.listedJourneys) {
 				self.viewStore.send(.journey(.selectedJourney($0)))
-			}.loadingView(.constant(self.viewStore.value.isLoadingJourneys),
+			}.loadingView(.constant(self.viewStore.isLoadingJourneys),
 										Texts.fetchingJourneys)
-			NavigationLink.emptyHidden(self.viewStore.value.isChoosePathwayShown,
+			NavigationLink.emptyHidden(self.viewStore.isChoosePathwayShown,
 																 ChoosePathway(store: self.store.scope(value: { $0.choosePathway
 																 }, action: { .choosePathway($0)}))
 																	.navigationBarTitle("Choose Pathway")
