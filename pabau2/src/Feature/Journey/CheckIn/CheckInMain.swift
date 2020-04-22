@@ -24,7 +24,7 @@ let checkInMainReducer = Reducer<CheckInContainerState, CheckInMainAction, Journ
 struct CheckInMain: View {
 	let store: Store<CheckInContainerState, CheckInMainAction>
 	@ObservedObject var viewStore: ViewStore<State, CheckInMainAction>
-
+	
 	init(store: Store<CheckInContainerState, CheckInMainAction>) {
 		self.store = store
 		self.viewStore = self.store
@@ -32,7 +32,7 @@ struct CheckInMain: View {
 						 action: { $0 })
 			.view
 	}
-
+	
 	struct State: Equatable {
 		let steps: [Step]
 		let selectedStepId: Int
@@ -44,46 +44,50 @@ struct CheckInMain: View {
 			self.selectedStepId = state.selectedStepId
 		}
 	}
-
+	
 	var body: some View {
 		print("check in main body")
-		return VStack (alignment: .center, spacing: 0) {
-			ZStack {
-				Button.init(action: { self.viewStore.send(.closeBtnTap) }, label: {
-					Image(systemName: "xmark")
-						.font(Font.light30)
-						.foregroundColor(.gray142)
-						.frame(width: 30, height: 30)
-				})
-					.padding()
-					.frame(minWidth: 0, maxWidth: .infinity,
-								 minHeight: 0, maxHeight: .infinity,
-								 alignment: .topLeading)
-				Spacer()
-				JourneyProfileView(style: .short,
-													 viewState: .init(journey: self.viewStore.value.journey))
-					.padding()
-					.frame(minWidth: 0, maxWidth: .infinity,
-								 minHeight: 0, maxHeight: .infinity,
-								 alignment: .top)
-				Spacer()
-				RibbonView(completedNumberOfSteps: 1, totalNumberOfSteps: 4)
-					.offset(x: -80, y: -60)
-					.frame(minWidth: 0, maxWidth: .infinity,
-								 minHeight: 0, maxHeight: .infinity,
-								 alignment: .topTrailing)
-			}.frame(height: 168.0)
-			StepsCollectionView(steps: self.viewStore.value.steps,
-													selectedId: self.viewStore.value.selectedStepId) {
-														self.viewStore.send(.didSelectStepId($0))
+		return
+			VStack (alignment: .center, spacing: 0) {
+				ZStack {
+					Button.init(action: { self.viewStore.send(.closeBtnTap) }, label: {
+						Image(systemName: "xmark")
+							.font(Font.light30)
+							.foregroundColor(.gray142)
+							.frame(width: 30, height: 30)
+					})
+						.padding()
+						.frame(minWidth: 0, maxWidth: .infinity,
+									 minHeight: 0, maxHeight: .infinity,
+									 alignment: .topLeading)
+					Spacer()
+					JourneyProfileView(style: .short,
+														 viewState: .init(journey: self.viewStore.value.journey))
+						.padding()
+						.frame(minWidth: 0, maxWidth: .infinity,
+									 minHeight: 0, maxHeight: .infinity,
+									 alignment: .top)
+					Spacer()
+					RibbonView(completedNumberOfSteps: 1, totalNumberOfSteps: 4)
+						.offset(x: -80, y: -60)
+						.frame(minWidth: 0, maxWidth: .infinity,
+									 minHeight: 0, maxHeight: .infinity,
+									 alignment: .topTrailing)
+				}.frame(height: 168.0)
+				StepsCollectionView(steps: self.viewStore.value.steps,
+														selectedId: self.viewStore.value.selectedStepId) {
+															self.viewStore.send(.didSelectStepId($0))
+				}
+//				.frame(maxWidth: 600, minHeight: 0, maxHeight: 64, alignment: .center)
+				PabauForm(store:
+					self.store.scope(value: { $0.selectedTemplate.formStructure.formStructure },
+													 action: { $0 }))
+					.padding(.leading, 44)
+					.padding(.trailing, 44)
+//				Spacer()
+				//			.padding(.top, 24)
 			}
-				.frame(width: 600, alignment: .center)
-			Spacer()
-			PabauForm(store:
-				self.store.scope(value: { $0.selectedTemplate.formStructure.formStructure },
-												 action: { $0 }))
-		}
-		.navigationBarTitle("")
-		.navigationBarHidden(true)
+			.navigationBarTitle("")
+			.navigationBarHidden(true)
 	}
 }

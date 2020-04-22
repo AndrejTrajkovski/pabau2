@@ -73,7 +73,7 @@ extension JourneyMockAPI {
 									 name: "Kobe Bryant"), forms: [], photos: [], postCare: [], paid: "Owes 1.000")
 	]
 	
-	static let mockConsents  = [
+	public static let mockConsents  = [
 		FormTemplate(id: 1, name: "Consent - Hair Extension", formType: .consent,
 								 ePaper: false,
 								 formStructure:
@@ -81,23 +81,30 @@ extension JourneyMockAPI {
 				CSSField(id: 1, cssClass:
 					.checkboxes(
 						[
-							CheckBoxChoice(1, "choice 1", true),
-							CheckBoxChoice(2, "choice 2", false),
-							CheckBoxChoice(3, "choice 3", false)
+							CheckBoxChoice(1, "Are you currently receiving any medical treatment at present?", false),
+							CheckBoxChoice(2, "Have you received Roaccutane/Accutane treatment in the past 12 months?", false),
+							CheckBoxChoice(3, "Have you ever suffered from an allergic reaction to lignocaine / lidocaine?", false),
+							CheckBoxChoice(4, "Do you have a history of anaphylactic shock (severe allergic reactions) Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)? tic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions) tic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)", false),
+							 CheckBoxChoice(5, "Have you undergone any laser skin resurfacing, skin peel or dermabrasion?", false),
+							 CheckBoxChoice(6, "Do you have or have you ever had any form of skin cancer?", false),
+							 CheckBoxChoice(7 ,"Have you been treated with any dermal fillers on either your face and/or body?", false)
 						]
-					)
+					),
+					title: "Choose please"
 				),
 				CSSField(id: 2, cssClass:
 					.checkboxes(
 						[
-							CheckBoxChoice(3, "choice 1", false),
-							CheckBoxChoice(4, "choice 1", false),
-							CheckBoxChoice(5, "choice 1", true)
+							CheckBoxChoice(3, "choice 3", false),
+							CheckBoxChoice(4, "choice 4", false),
+							CheckBoxChoice(5, "choice 5", true)
 						]
-					)
+					),
+					title: "Choose smth else"
 				),
 				CSSField(id: 3, cssClass:
-					.staticText(StaticText(1, "Hey what's going on?"))
+					.staticText(StaticText(1, "Hey what's going on?")),
+								 title: "This is some static text "
 				),
 				CSSField(id: 4,
 								 cssClass: .radio(Radio(4,
@@ -105,13 +112,8 @@ extension JourneyMockAPI {
 																				 RadioChoice(2, "radio choice 2")],
 																				1)
 					)
+					,title: "Radio title"
 				)
 			])),
-//		FormTemplate(id: 2, name: "Consent - Botox", formType: .consent),
-//		FormTemplate(id: 3, name: "Consent - Fillers", formType: .consent),
-//		FormTemplate(id: 4, name: "Consent - Pedicure", formType: .consent),
-//		FormTemplate(id: 5, name: "Consent - Manicure", formType: .consent),
-//		FormTemplate(id: 6, name: "Consent - Skin Treatment", formType: .consent),
-//		FormTemplate(id: 7, name: "Consent - Lipo", formType: .consent)
 	]
 }

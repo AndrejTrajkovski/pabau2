@@ -56,7 +56,6 @@
 		8227FBA7240BB41500F653B5 /* Navigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8227FB82240BB1CB00F653B5 /* Navigation.swift */; };
 		8227FBAB240BB43800F653B5 /* Model.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8227FB8A240BB40300F653B5 /* Model.framework */; };
 		8227FBC1240BC7D600F653B5 /* Effect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8227FBC0240BC7D600F653B5 /* Effect.swift */; };
-		82292BD324408F4A00080F74 /* ScrollableSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82292BD224408F4A00080F74 /* ScrollableSelector.swift */; };
 		82292BD8244097C600080F74 /* StepsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82292BD7244097C600080F74 /* StepsCollectionView.swift */; };
 		824930E0240CE93500953E90 /* ComposableArchitectureTestSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 824930DE240CE93500953E90 /* ComposableArchitectureTestSupport.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		824930E9240CE94B00953E90 /* ComposableArchitectureTestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824930E8240CE94B00953E90 /* ComposableArchitectureTestSupport.swift */; };
@@ -85,6 +84,7 @@
 		82622B5024464E0800BECF9A /* RibbonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82622B4F24464E0800BECF9A /* RibbonView.swift */; };
 		82622B52244650E000BECF9A /* MultipleChoiceField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82622B51244650E000BECF9A /* MultipleChoiceField.swift */; };
 		82648404244F42F300544703 /* FormSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82648403244F42F300544703 /* FormSectionView.swift */; };
+		8269526824506F18001B806E /* PabauForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8269526724506F18001B806E /* PabauForm.swift */; };
 		827B4572241135A700A5975E /* FSCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82CACE772411293C0021E1DE /* FSCalendar.framework */; };
 		827B45832411368100A5975E /* Journey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 827B457A2411368100A5975E /* Journey.framework */; };
 		827B458A2411368100A5975E /* JourneyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45892411368100A5975E /* JourneyTests.swift */; };
@@ -217,7 +217,6 @@
 		82D7C2BF2446FEB3000B1CD5 /* CSSClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D7C2BE2446FEB3000B1CD5 /* CSSClass.swift */; };
 		82D7C2C124471854000B1CD5 /* CSSValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D7C2C024471854000B1CD5 /* CSSValues.swift */; };
 		82D7C2C324479CAF000B1CD5 /* CheckInContainerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D7C2C224479CAF000B1CD5 /* CheckInContainerState.swift */; };
-		82D7C2C52447AB57000B1CD5 /* FormBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D7C2C42447AB57000B1CD5 /* FormBuilder.swift */; };
 		82E253F8241B661100F16C30 /* RoundedCorners.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E253F7241B661100F16C30 /* RoundedCorners.swift */; };
 		82E253FA241B9EB500F16C30 /* JourneyAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E253F9241B9EB500F16C30 /* JourneyAction.swift */; };
 		82E253FC241B9ED000F16C30 /* JourneyState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E253FB241B9ED000F16C30 /* JourneyState.swift */; };
@@ -425,7 +424,6 @@
 		8227FB8C240BB40300F653B5 /* Model.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Model.h; sourceTree = "<group>"; };
 		8227FB8D240BB40300F653B5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8227FBC0240BC7D600F653B5 /* Effect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Effect.swift; sourceTree = "<group>"; };
-		82292BD224408F4A00080F74 /* ScrollableSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollableSelector.swift; sourceTree = "<group>"; };
 		82292BD7244097C600080F74 /* StepsCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsCollectionView.swift; sourceTree = "<group>"; };
 		824930DC240CE93500953E90 /* ComposableArchitectureTestSupport.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ComposableArchitectureTestSupport.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		824930DE240CE93500953E90 /* ComposableArchitectureTestSupport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ComposableArchitectureTestSupport.h; sourceTree = "<group>"; };
@@ -456,6 +454,7 @@
 		82622B4F24464E0800BECF9A /* RibbonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RibbonView.swift; sourceTree = "<group>"; };
 		82622B51244650E000BECF9A /* MultipleChoiceField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleChoiceField.swift; sourceTree = "<group>"; };
 		82648403244F42F300544703 /* FormSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormSectionView.swift; sourceTree = "<group>"; };
+		8269526724506F18001B806E /* PabauForm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PabauForm.swift; sourceTree = "<group>"; };
 		827B457A2411368100A5975E /* Journey.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Journey.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		827B457C2411368100A5975E /* Journey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Journey.h; sourceTree = "<group>"; };
 		827B457D2411368100A5975E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -607,7 +606,6 @@
 		82D7C2BE2446FEB3000B1CD5 /* CSSClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSSClass.swift; sourceTree = "<group>"; };
 		82D7C2C024471854000B1CD5 /* CSSValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSSValues.swift; sourceTree = "<group>"; };
 		82D7C2C224479CAF000B1CD5 /* CheckInContainerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInContainerState.swift; sourceTree = "<group>"; };
-		82D7C2C42447AB57000B1CD5 /* FormBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormBuilder.swift; sourceTree = "<group>"; };
 		82E253F7241B661100F16C30 /* RoundedCorners.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedCorners.swift; sourceTree = "<group>"; };
 		82E253F9241B9EB500F16C30 /* JourneyAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyAction.swift; sourceTree = "<group>"; };
 		82E253FB241B9ED000F16C30 /* JourneyState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyState.swift; sourceTree = "<group>"; };
@@ -869,20 +867,27 @@
 				829BFBB0243F693E005DDCB9 /* CheckInMain.swift */,
 				82C479DD242E17B50037F140 /* CheckInNavigationView.swift */,
 				82292BD7244097C600080F74 /* StepsCollectionView.swift */,
-				82292BD224408F4A00080F74 /* ScrollableSelector.swift */,
 				82622B4F24464E0800BECF9A /* RibbonView.swift */,
-				82622B51244650E000BECF9A /* MultipleChoiceField.swift */,
 				82D7C2C224479CAF000B1CD5 /* CheckInContainerState.swift */,
-				82D7C2C42447AB57000B1CD5 /* FormBuilder.swift */,
-				82CEA222244CB28500A895F6 /* Radio.swift */,
-				82648403244F42F300544703 /* FormSectionView.swift */,
 			);
 			path = CheckIn;
+			sourceTree = "<group>";
+		};
+		8269526624506ED2001B806E /* Form */ = {
+			isa = PBXGroup;
+			children = (
+				8269526724506F18001B806E /* PabauForm.swift */,
+				82648403244F42F300544703 /* FormSectionView.swift */,
+				82CEA222244CB28500A895F6 /* Radio.swift */,
+				82622B51244650E000BECF9A /* MultipleChoiceField.swift */,
+			);
+			path = Form;
 			sourceTree = "<group>";
 		};
 		827B457B2411368100A5975E /* Journey */ = {
 			isa = PBXGroup;
 			children = (
+				8269526624506ED2001B806E /* Form */,
 				82622B5324468C9F00BECF9A /* CheckIn */,
 				827B457C2411368100A5975E /* Journey.h */,
 				827B457D2411368100A5975E /* Info.plist */,
@@ -1863,18 +1868,17 @@
 				82292BD8244097C600080F74 /* StepsCollectionView.swift in Sources */,
 				829BFBAF243F5D6F005DDCB9 /* CheckInAnimation.swift in Sources */,
 				82D43D92243522CD00AC74FA /* Settings.swift in Sources */,
-				82292BD324408F4A00080F74 /* ScrollableSelector.swift in Sources */,
 				82E253FA241B9EB500F16C30 /* JourneyAction.swift in Sources */,
 				82D43D9024351F5000AC74FA /* EmployeesList.swift in Sources */,
 				82E253FC241B9ED000F16C30 /* JourneyState.swift in Sources */,
 				8250D7CB242BD25B00F8F3FC /* JourneyBaseView.swift in Sources */,
-				82D7C2C52447AB57000B1CD5 /* FormBuilder.swift in Sources */,
 				82E253FE241B9F1200F16C30 /* CompleteFilter.swift in Sources */,
 				82D7C2C324479CAF000B1CD5 /* CheckInContainerState.swift in Sources */,
 				8250D7C9242BCFD000F8F3FC /* ChooseFormList.swift in Sources */,
 				828626B12424CA64003ADA24 /* JourneyProfileView.swift in Sources */,
 				828626B32424CEFB003ADA24 /* ChoosePathway.swift in Sources */,
 				82622B52244650E000BECF9A /* MultipleChoiceField.swift in Sources */,
+				8269526824506F18001B806E /* PabauForm.swift in Sources */,
 				827B459D24118ABD00A5975E /* JourneyNavigationView.swift in Sources */,
 				825BE7E224361ABD00422910 /* StaffFilterPicker.swift in Sources */,
 			);

@@ -77,4 +77,6 @@ public extension Color {
 	static let checkInGradient1 = Color.init(red: 0/255, green: 178/255, blue: 255/255)
 
 	static let checkInSubtitle = Color(hex: "C3E0FF")
+	
+	static let checkBoxGray = Color(hex: "C0C0C0")
 }
