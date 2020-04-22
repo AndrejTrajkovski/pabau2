@@ -215,25 +215,6 @@ extension Store {
 // swiftlint:enable force_cast
 
 extension Reducer {
-
-	public func pullback<GlobalValue, GlobalAction, GlobalEnvironment>(
-		value: WritableKeyPath<GlobalValue, Value?>,
-		action: CasePath<GlobalAction, Action>,
-		environment: @escaping (GlobalEnvironment) -> Environment
-	) -> Reducer<GlobalValue, GlobalAction, GlobalEnvironment> {
-		.init { globalValue, globalAction, globalEnvironment in
-			guard let localAction = action.extract(from: globalAction) else { return [] }
-			guard let localValue = globalValue[keyPath: value] else { return [] }
-			var varLocalValue = localValue
-			let localEffects = self(&varLocalValue, localAction, environment(globalEnvironment))
-			globalValue[keyPath: value] = varLocalValue
-			return localEffects.map { localEffect in
-				localEffect.map(action.embed)
-					.eraseToEffect()
-			}
-		}
-	}
-
 	public func pullback<GlobalValue, GlobalAction, GlobalEnvironment>(
 		value: CasePath<GlobalValue, Value>,
 		action: CasePath<GlobalAction, Action>,

@@ -23,8 +23,7 @@ public struct CheckInContainerState: Equatable {
 		self.templates = templates
 	}
 
-	var selectedTemplate: FormTemplate
-	{
+	var selectedTemplate: FormTemplate {
 		get {
 			self.templates.first ?? FormTemplate.defaultEmpty }
 		set {
