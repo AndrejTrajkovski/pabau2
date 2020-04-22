@@ -22,10 +22,11 @@ public struct CheckInContainerState: Equatable {
 		self.selectedStepId = selectedStepId
 		self.templates = templates
 	}
-	
+
 	var selectedTemplate: FormTemplate
 	{
-		get { self.templates.first ?? FormTemplate.defaultEmpty }
+		get {
+			self.templates.first ?? FormTemplate.defaultEmpty }
 		set {
 			self.templates.remove(at: 0)
 			self.templates.insert(newValue, at: 0)

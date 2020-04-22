@@ -23,11 +23,26 @@ let checkInMainReducer = Reducer<CheckInContainerState, CheckInMainAction, Journ
 
 struct CheckInMain: View {
 	let store: Store<CheckInContainerState, CheckInMainAction>
-	@ObservedObject var viewStore: ViewStore<CheckInContainerState, CheckInMainAction>
+	@ObservedObject var viewStore: ViewStore<State, CheckInMainAction>
 
 	init(store: Store<CheckInContainerState, CheckInMainAction>) {
 		self.store = store
-		self.viewStore = self.store.view
+		self.viewStore = self.store
+			.scope(value: State.init(state:),
+						 action: { $0 })
+			.view
+	}
+
+	struct State: Equatable {
+		let steps: [Step]
+		let selectedStepId: Int
+		let journey: Journey
+		
+		init(state: CheckInContainerState) {
+			self.steps = state.pathway.steps
+			self.journey = state.journey
+			self.selectedStepId = state.selectedStepId
+		}
 	}
 
 	var body: some View {
@@ -58,7 +73,7 @@ struct CheckInMain: View {
 								 minHeight: 0, maxHeight: .infinity,
 								 alignment: .topTrailing)
 			}.frame(height: 168.0)
-			StepsCollectionView(steps: self.viewStore.value.pathway.steps,
+			StepsCollectionView(steps: self.viewStore.value.steps,
 													selectedId: self.viewStore.value.selectedStepId) {
 														self.viewStore.send(.didSelectStepId($0))
 			}
