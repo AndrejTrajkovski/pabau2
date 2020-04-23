@@ -40,6 +40,7 @@ struct ChoiceRow: View {
 		HStack (alignment: .center, spacing: 16) {
 			Checkbox(isSelected: choice.isSelected)
 			Text(choice.title)
+				.foregroundColor(.black).opacity(0.9)
 				.font(.regular16)
 				.alignmentGuide(VerticalAlignment.center, computeValue: { return $0[VerticalAlignment.firstTextBaseline] - 4.5 })
 		}

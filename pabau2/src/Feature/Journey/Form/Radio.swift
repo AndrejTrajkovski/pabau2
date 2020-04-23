@@ -35,6 +35,6 @@ struct RadioView: View {
 					Text(String(choice.title)).tag(choice.id)
 				}
 			}.pickerStyle(SegmentedPickerStyle())
-		}.padding()
+		}
 	}
 }
