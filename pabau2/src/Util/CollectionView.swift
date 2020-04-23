@@ -107,7 +107,7 @@ public struct CollectionView<Content: View>: UIViewControllerRepresentable {
 		let group = self.layout.axis == .horizontal
 			? NSCollectionLayoutGroup.vertical(layoutSize: self.layout.groupSize, subitems: [item])
 			: NSCollectionLayoutGroup.horizontal(layoutSize: self.layout.groupSize, subitems: [item])
-		group.interItemSpacing = self.layout.interItemSpacing
+		group.interItemSpacing = .fixed(CGFloat(0))
 		let section = NSCollectionLayoutSection(group: group)
 		section.interGroupSpacing = self.layout.interGroupSpacing
 		let layout = UICollectionViewCompositionalLayout(section: section, configuration: configuration)
@@ -115,26 +115,26 @@ public struct CollectionView<Content: View>: UIViewControllerRepresentable {
 		let controller = UICollectionViewController(collectionViewLayout: layout)
 		controller.collectionView.alwaysBounceHorizontal = self.layout.alwaysBounces && self.layout.axis == .horizontal
 		controller.collectionView.alwaysBounceVertical = self.layout.alwaysBounces && self.layout.axis == .vertical
-		controller.collectionView.preservesSuperviewLayoutMargins = true
+//		controller.collectionView.preservesSuperviewLayoutMargins = true
 		controller.collectionView.register(CollectionViewCell.self, forCellWithReuseIdentifier: "cell")
 		controller.collectionView.backgroundColor = .clear
 		controller.collectionView.dataSource = context.coordinator
 		controller.collectionView.showsHorizontalScrollIndicator = self.layout.showsIndicators && self.layout.axis == .horizontal
 		controller.collectionView.showsVerticalScrollIndicator = self.layout.showsIndicators && self.layout.axis == .vertical
 		controller.collectionView.clipsToBounds = false
+		print(controller.collectionView.translatesAutoresizingMaskIntoConstraints)
 		self.layout.transform?(controller.collectionView)
+//		controller.collectionView.translatesAutoresizingMaskIntoConstraints = false
+//		controller.collectionView.setContentHuggingPriority(.defaultHigh, for: .vertical)
+//		controller.collectionView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+//		controller.collectionView.autoresizingMask = UIView.AutoresizingMask.flexibleWidth
 		return controller
 	}
 	public func updateUIViewController(_ uiViewController: UICollectionViewController,
 																		 context: UIViewControllerRepresentableContext<CollectionView<Content>>) {
-		// obtain differences.
-		//			let differences = identifiers.difference(from: context.coordinator.zipped.map { $0.0 })
 		context.coordinator.zipped = Array(zip(identifiers, content))
 		uiViewController.collectionView.reloadData()
-		//			uiViewController.collectionView.performBatchUpdates({
-		//				uiViewController.collectionView.deleteItems(at: differences.removals.map { IndexPath(item: $0.offset, section: 0) })
-		//				uiViewController.collectionView.insertItems(at: differences.insertions.map { IndexPath(item: $0.offset, section: 0) })
-		//			}, completion: nil)
+		print(uiViewController.collectionView.frame.size.height)
 	}
 
 	// MARK: Coordinator
@@ -144,15 +144,13 @@ public struct CollectionView<Content: View>: UIViewControllerRepresentable {
 
 	/// The `BasicCollectionView` coordinator.
 	public class CollectionCoordinator<Content: View>: NSObject, UICollectionViewDataSource {
-		/// The actual data.
+		
 		var zipped: [(Int, Content)]
 
-		// MARK: Lifecycle
-		/// Init.
 		init(collectionView: CollectionView<Content>) {
 			self.zipped = Array(zip(collectionView.identifiers, collectionView.content))
 		}
-		// MARK: Collection
+		
 		public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int { zipped.count }
 		public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 			guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? CollectionViewCell else {

@@ -24,7 +24,7 @@ let checkInMainReducer = Reducer<CheckInContainerState, CheckInMainAction, Journ
 struct CheckInMain: View {
 	let store: Store<CheckInContainerState, CheckInMainAction>
 	@ObservedObject var viewStore: ViewStore<State, CheckInMainAction>
-	
+
 	init(store: Store<CheckInContainerState, CheckInMainAction>) {
 		self.store = store
 		self.viewStore = self.store
@@ -32,19 +32,19 @@ struct CheckInMain: View {
 						 action: { $0 })
 			.view
 	}
-	
+
 	struct State: Equatable {
 		let steps: [Step]
 		let selectedStepId: Int
 		let journey: Journey
-		
+
 		init(state: CheckInContainerState) {
 			self.steps = state.pathway.steps
 			self.journey = state.journey
 			self.selectedStepId = state.selectedStepId
 		}
 	}
-	
+
 	var body: some View {
 		print("check in main body")
 		return
@@ -74,17 +74,20 @@ struct CheckInMain: View {
 									 minHeight: 0, maxHeight: .infinity,
 									 alignment: .topTrailing)
 				}.frame(height: 168.0)
+				VStack {
 				StepsCollectionView(steps: self.viewStore.value.steps,
 														selectedId: self.viewStore.value.selectedStepId) {
 															self.viewStore.send(.didSelectStepId($0))
 				}
-//				.frame(maxWidth: 600, minHeight: 0, maxHeight: 64, alignment: .center)
+				.frame(minWidth: 240, maxWidth: 480, alignment: .center)
+				.frame(height: 80)
 				PabauForm(store:
 					self.store.scope(value: { $0.selectedTemplate.formStructure.formStructure },
 													 action: { $0 }))
+				}
 					.padding(.leading, 44)
 					.padding(.trailing, 44)
-//				Spacer()
+				Spacer()
 				//			.padding(.top, 24)
 			}
 			.navigationBarTitle("")

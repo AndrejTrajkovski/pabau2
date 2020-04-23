@@ -31,7 +31,9 @@ struct StepsCollectionView: View {
 			Image(systemName: "checkmark.circle.fill")
 				.foregroundColor(viewModel.isSelected ? .blue : .gray)
 				.frame(width: 30, height: 30)
-			Text(viewModel.title)
+			Text(viewModel.title.uppercased())
+				.fixedSize(horizontal: true, vertical: false)
+				.lineLimit(1)
 				.font(.medium10)
 				.foregroundColor(Color(hex: "909090"))
 		}.onTapGesture {
@@ -42,15 +44,18 @@ struct StepsCollectionView: View {
 	var body: some View {
 		CollectionView(stepVms, id: \.id) {
 			stepView(for: $0)
+				.frame(width: 80, height: 50)
 		}
 		.axis(.horizontal)
 		.indicators(false)
-		.groupSize(.init(widthDimension: .fractionalWidth(1/CGFloat(stepVms.count)),
-										 heightDimension: .fractionalHeight(0.1)))
+		.groupSize(
+			.init(
+				widthDimension: .absolute(80),
+				heightDimension: .absolute(50)))
 			.itemSize(.init(widthDimension: .absolute(80),
 											heightDimension: .absolute(50)))
 			.layout({ (layout) in
-				layout.interGroupSpacing = 0
+				layout.interGroupSpacing = 24
 			})
 	}
 }

@@ -31,7 +31,7 @@ public struct JourneyState: Equatable {
 		])
 	var selectedConsentsIds: [Int] = [1]
 	var allConsents: [FormTemplate] = JourneyMockAPI.mockConsents
-	var selectedStepId: Int = 0
+	var selectedStepId: Int = 1
 
 	public var addAppointment: AddAppointmentState = AddAppointmentState.init(
 		isShowingAddAppointment: false,

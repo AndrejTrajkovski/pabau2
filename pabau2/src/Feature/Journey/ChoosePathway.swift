@@ -74,8 +74,8 @@ public struct ChoosePathway: View {
 									 steps: [Step(id: 1, stepType: .checkpatient),
 													 Step(id: 2, stepType: .medicalhistory),
 													 Step(id: 3, stepType: .consents),
-													 Step(id: 5, stepType: .treatmentnotes),
-													 Step(id: 6, stepType: .prescriptions),
+													 Step(id: 4, stepType: .treatmentnotes),
+													 Step(id: 5, stepType: .prescriptions),
 													 Step(id: 6, stepType: .aftercares)
 			])
 		let consultationPathway =
