@@ -71,15 +71,6 @@ public enum ChooseServiceAction {
 	case didTapBackBtn
 }
 
-struct FillAll: View {
-    let color: Color
-    var body: some View {
-        GeometryReader { proxy in
-            self.color.frame(width: proxy.size.width * 1.3).fixedSize()
-        }
-    }
-}
-
 struct ChooseService: View {
 	let store: Store<ChooseServiceState, ChooseServiceAction>
 	@ObservedObject var viewStore: ViewStore<ChooseServiceState, ChooseServiceAction>
@@ -99,7 +90,7 @@ struct ChooseService: View {
 			List {
 				ForEach(self.viewStore.value.listServices, id: \.self.first?.categoryId) { (group: [Service]) in
 					Section(header:
-						ServicesHeader(name: group.first?.categoryName ?? "No name")
+						TextHeader(name: group.first?.categoryName ?? "No name")
 					) {
 						ForEach(group, id: \.self) { (service: Service) in
 							ServiceRow(service: service).onTapGesture {
@@ -132,7 +123,7 @@ struct ServiceRow: View {
 	}
 }
 
-struct ServicesHeader: View {
+struct TextHeader: View {
 	let name: String
 	var body: some View {
 		VStack(alignment: .leading, spacing: 16) {
