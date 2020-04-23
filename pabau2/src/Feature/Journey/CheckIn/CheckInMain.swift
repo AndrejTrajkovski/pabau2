@@ -85,8 +85,8 @@ struct CheckInMain: View {
 					self.store.scope(value: { $0.selectedTemplate.formStructure.formStructure },
 													 action: { $0 }))
 				}
-					.padding(.leading, 44)
-					.padding(.trailing, 44)
+					.padding(.leading, 40)
+					.padding(.trailing, 40)
 				Spacer()
 				//			.padding(.top, 24)
 			}

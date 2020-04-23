@@ -30,7 +30,6 @@ struct MultipleChoiceField: View {
 		ForEach(self.viewStore.value, id: \.self) { (choice: CheckBoxChoice) in
 			ChoiceRow(choice: choice)
 				.onTapGesture { self.viewStore.send(.didTouchChoiceId(choice.id))}
-				.listRowInsets(EdgeInsets())
 		}
 	}
 }
@@ -44,15 +43,7 @@ struct ChoiceRow: View {
 				.font(.regular16)
 				.alignmentGuide(VerticalAlignment.center, computeValue: { return $0[VerticalAlignment.firstTextBaseline] - 4.5 })
 		}
-		.padding()
-		.frame(minWidth: 0, maxWidth: .infinity, minHeight: 48, alignment: .leading)
-//		HStack (alignment: .firstTextBaseline) {
-//			Checkbox(isSelected: choice.isSelected)
-//				.frame(width: 30, height: 30)
-//				.alignmentGuide(.firstTextBaseline, computeValue: { return $0[VerticalAlignment.center] + 5})
-//			Text(choice.title)
-//				.font(.regular16)
-//		}.frame(minWidth: 0, maxWidth: .infinity, minHeight: 44, alignment: .leading)
+		.frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
 	}
 }
 

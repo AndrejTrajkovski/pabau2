@@ -27,7 +27,8 @@ struct FormSectionView: View {
 			Text(viewStore.value.headerTitle)
 				.font(.semibold18)
 				.frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-				.padding()
+				.padding(.top)
+				.padding(.bottom)
 		) {
 			Group {
 				if viewStore.value.checkBox != nil {
@@ -45,7 +46,8 @@ struct FormSectionView: View {
 				if viewStore.value.staticText != nil {
 					Text(self.viewStore.value.staticText!.text)
 				}
-			}.listRowInsets(EdgeInsets())
+			}
+			.listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
 		}.background(Color.white)
 	}
 }
