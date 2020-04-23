@@ -38,29 +38,30 @@ struct MultipleChoiceField: View {
 struct ChoiceRow: View {
 	let choice: CheckBoxChoice
 	var body: some View {
-		HStack (alignment: .firstTextBaseline) {
+		HStack (alignment: .center, spacing: 16) {
 			Checkbox(isSelected: choice.isSelected)
-				.frame(width: 30, height: 30)
-				.alignmentGuide(.firstTextBaseline, computeValue: { return $0[VerticalAlignment.center] + 5})
 			Text(choice.title)
 				.font(.regular16)
-		}.frame(minWidth: 0, maxWidth: .infinity, minHeight: 44, alignment: .leading)
+				.alignmentGuide(VerticalAlignment.center, computeValue: { return $0[VerticalAlignment.firstTextBaseline] - 4.5 })
+		}
+		.padding()
+		.frame(minWidth: 0, maxWidth: .infinity, minHeight: 48, alignment: .leading)
+//		HStack (alignment: .firstTextBaseline) {
+//			Checkbox(isSelected: choice.isSelected)
+//				.frame(width: 30, height: 30)
+//				.alignmentGuide(.firstTextBaseline, computeValue: { return $0[VerticalAlignment.center] + 5})
+//			Text(choice.title)
+//				.font(.regular16)
+//		}.frame(minWidth: 0, maxWidth: .infinity, minHeight: 44, alignment: .leading)
 	}
 }
 
 struct Checkbox: View {
 	let isSelected: Bool
 	var body: some View {
-		Group {
-			if isSelected {
-				Image(systemName: "checkmark.circle.fill")
-				.foregroundColor(.blue)
-				.frame(width: 30, height: 30)
-			} else {
-				Image(systemName: "circle")
-					.foregroundColor(.checkBoxGray)
-					.frame(width: 30, height: 30)
-			}
-		}
+		Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+			.resizable()
+			.foregroundColor( isSelected ? .blue : .checkBoxGray)
+			.frame(width: 24, height: 24)
 	}
 }
