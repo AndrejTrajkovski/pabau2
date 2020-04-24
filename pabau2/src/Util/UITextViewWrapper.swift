@@ -1,113 +1,101 @@
 import SwiftUI
 import UIKit
 
-private struct UITextViewWrapper: UIViewRepresentable {
-	typealias UIViewType = UITextView
-	@Binding var text: String
-	@Binding var calculatedHeight: CGFloat
-	var onDone: (() -> Void)?
-	func makeUIView(context: UIViewRepresentableContext<UITextViewWrapper>) -> UITextView {
-		let textField = UITextView()
-		textField.delegate = context.coordinator
-		textField.isEditable = true
-		textField.font = UIFont.preferredFont(forTextStyle: .body)
-		textField.isSelectable = true
-		textField.isUserInteractionEnabled = true
-		textField.isScrollEnabled = false
-		textField.backgroundColor = UIColor.clear
-		if nil != onDone {
-			textField.returnKeyType = .done
-		}
-		textField.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-		return textField
+//struct TextView: UIViewRepresentable {
+//
+//	@State var text: String
+//
+//	func makeUIView(context: Context) -> UITextView {
+//		let view = UITextView()
+//		view.isScrollEnabled = false
+//		view.isEditable = true
+//		view.isUserInteractionEnabled = true
+//		view.contentInset = UIEdgeInsets(top: 5,
+//																		 left: 10, bottom: 5, right: 5)
+//		view.delegate = context.coordinator
+//
+//		return view
+//	}
+//
+//	func updateUIView(_ uiView: UITextView, context: Context) {
+//		uiView.text = text
+//	}
+//
+//	func makeCoordinator() -> TextView.Coordinator {
+//		Coordinator(self)
+//	}
+//
+//	class Coordinator: NSObject, UITextViewDelegate {
+//		var control: TextView
+//
+//		init(_ control: TextView) {
+//			self.control = control
+//		}
+//
+//		func textViewDidChange(_ textView: UITextView) {
+//			control.text = textView.text
+//		}
+//	}
+//}
+
+public struct MultilineTextView: UIViewRepresentable {
+
+	var initialText: String
+	let placeholder: String
+	let onTextChange: (String) -> Void
+
+	public init (initialText: String,
+							 placeholder: String,
+							 onTextChange: @escaping (String) -> Void) {
+		self.initialText = initialText
+		self.onTextChange = onTextChange
+		self.placeholder = placeholder
 	}
-	
-	func updateUIView(_ uiView: UITextView, context: UIViewRepresentableContext<UITextViewWrapper>) {
-		if uiView.text != self.text {
-			uiView.text = self.text
-		}
-		if uiView.window != nil, !uiView.isFirstResponder {
-			uiView.becomeFirstResponder()
-		}
-		UITextViewWrapper.recalculateHeight(view: uiView, result: $calculatedHeight)
+
+	public func makeCoordinator() -> Coordinator {
+		Coordinator(self)
 	}
-	
-	fileprivate static func recalculateHeight(view: UIView, result: Binding<CGFloat>) {
-		let newSize = view.sizeThatFits(CGSize(width: view.frame.size.width, height: CGFloat.greatestFiniteMagnitude))
-		if result.wrappedValue != newSize.height {
-			DispatchQueue.main.async {
-				result.wrappedValue = newSize.height // !! must be called asynchronously
-			}
-		}
+
+	public func makeUIView(context: Context) -> UITextView {
+		let textView = UITextView()
+		textView.delegate = context.coordinator
+		textView.isScrollEnabled = false
+		textView.isEditable = true
+		textView.isUserInteractionEnabled = true
+		textView.text = initialText
+		return textView
 	}
-	
-	func makeCoordinator() -> Coordinator {
-		return Coordinator(text: $text, height: $calculatedHeight, onDone: onDone)
+
+	public func updateUIView(_ uiView: UITextView, context: Context) {
+//		uiView.text = initialText
 	}
-	
-	final class Coordinator: NSObject, UITextViewDelegate {
-		var text: Binding<String>
-		var calculatedHeight: Binding<CGFloat>
-		var onDone: (() -> Void)?
-		
-		init(text: Binding<String>, height: Binding<CGFloat>, onDone: (() -> Void)? = nil) {
-			self.text = text
-			self.calculatedHeight = height
-			self.onDone = onDone
+
+	public class Coordinator : NSObject, UITextViewDelegate {
+		var parent: MultilineTextView
+		init(_ uiTextView: MultilineTextView) {
+			self.parent = uiTextView
 		}
-		
-		func textViewDidChange(_ uiView: UITextView) {
-			text.wrappedValue = uiView.text
-			UITextViewWrapper.recalculateHeight(view: uiView, result: calculatedHeight)
-		}
-		
-		func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-			if let onDone = self.onDone, text == "\n" {
-				textView.resignFirstResponder()
-				onDone()
-				return false
-			}
+
+		public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+			let result = (textView.text as NSString?)?.replacingCharacters(in: range, with: text) ?? text
+			parent.onTextChange(result as String)
 			return true
 		}
-	}
-	
-}
+		
+//		public func textViewDidChange(_ textView: UITextView) {
+//			parent.text = textView.text
+//		}
 
-struct MultilineTextField: View {
-	
-	private var placeholder: String
-	private var onCommit: (() -> Void)?
-	
-	@Binding private var text: String
-	private var internalText: Binding<String> {
-		Binding<String> (get: { self.text }) { txt in
-			self.text = txt
-			self.showingPlaceholder = txt.isEmpty
+		public func textViewDidBeginEditing(_ textView: UITextView) {
+			if textView.textColor == UIColor.lightGray {
+				textView.text = nil
+				textView.textColor = UIColor.black
+			}
 		}
-	}
-	
-	@State private var dynamicHeight: CGFloat = 100
-	@State private var showingPlaceholder = false
-	
-	init (_ placeholder: String = "", text: Binding<String>, onCommit: (() -> Void)? = nil) {
-		self.placeholder = placeholder
-		self.onCommit = onCommit
-		self._text = text
-		self._showingPlaceholder = State<Bool>(initialValue: self.text.isEmpty)
-	}
-	
-	var body: some View {
-		UITextViewWrapper(text: self.internalText, calculatedHeight: $dynamicHeight, onDone: onCommit)
-			.frame(minHeight: dynamicHeight, maxHeight: dynamicHeight)
-			.background(placeholderView, alignment: .topLeading)
-	}
-	
-	var placeholderView: some View {
-		Group {
-			if showingPlaceholder {
-				Text(placeholder).foregroundColor(.gray)
-					.padding(.leading, 4)
-					.padding(.top, 8)
+		public func textViewDidEndEditing(_ textView: UITextView) {
+			if textView.text.isEmpty {
+				textView.text = parent.placeholder
+				textView.textColor = UIColor.lightGray
 			}
 		}
 	}

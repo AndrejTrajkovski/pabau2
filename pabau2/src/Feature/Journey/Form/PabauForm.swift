@@ -4,10 +4,18 @@ import ComposableArchitecture
 import CasePaths
 import Util
 
-public enum CheckInFormAction {
-	case multipleChoice(MultipleChoiceAction)
-	case radio(RadioAction)
-}
+let fieldsReducer: Reducer<CheckInContainerState, CheckInMainAction, JourneyEnvironemnt> =
+	indexed(reducer: fieldReducer,
+					\CheckInContainerState.selectedTemplate.formStructure.formStructure,
+					/CheckInMainAction.form, { $0 })
+
+let fieldReducer: Reducer<CSSField, CheckInFormAction, JourneyEnvironemnt> =
+(
+	cssClassReducer.pullback(
+					 value: \CSSField.cssClass,
+					 action: /CheckInFormAction.self,
+					 environment: { $0 })
+)
 
 struct PabauForm: View {
 	let store: Store<[CSSField], CheckInMainAction>
@@ -21,7 +29,8 @@ struct PabauForm: View {
 	}
 
 	public var body: some View {
-		List {
+		print("pabau form body")
+		return List {
 			ForEachWithIndex(viewStore.value, id: \.self) { index, cssValue in
 				FormSectionField(store:
 					self.store.scope(

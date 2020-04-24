@@ -4,12 +4,12 @@ import Model
 import CasePaths
 import Util
 
-public enum MultipleChoiceAction {
+public enum CheckboxFieldAction {
 	case didTouchChoiceId(Int)
 }
 
-public let multipleChoiceReducer =
-	Reducer<[CheckBoxChoice], MultipleChoiceAction, JourneyEnvironemnt> { state, action, _ in
+public let checkBoxFieldReducer =
+	Reducer<[CheckBoxChoice], CheckboxFieldAction, JourneyEnvironemnt> { state, action, _ in
 	switch action {
 	case .didTouchChoiceId(let id):
 		let idx = state.firstIndex(where: { $0.id == id })
@@ -19,9 +19,9 @@ public let multipleChoiceReducer =
 }
 
 struct CheckBoxField: View {
-	let store: Store<[CheckBoxChoice], MultipleChoiceAction>
-	@ObservedObject var viewStore: ViewStore<[CheckBoxChoice], MultipleChoiceAction>
-	init(store: Store<[CheckBoxChoice], MultipleChoiceAction>) {
+	let store: Store<[CheckBoxChoice], CheckboxFieldAction>
+	@ObservedObject var viewStore: ViewStore<[CheckBoxChoice], CheckboxFieldAction>
+	init(store: Store<[CheckBoxChoice], CheckboxFieldAction>) {
 		self.store = store
 		self.viewStore = self.store.view
 	}

@@ -78,6 +78,10 @@ extension JourneyMockAPI {
 								 ePaper: false,
 								 formStructure:
 			FormStructure(formStructure: [
+				CSSField(id: 5,
+								 cssClass: .textarea(TextArea(text: "some text")),
+								 title: "Please enter some text below"
+				),
 				CSSField(id: 1, cssClass:
 					.checkboxes(
 						[

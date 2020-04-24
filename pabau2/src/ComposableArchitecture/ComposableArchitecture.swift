@@ -263,3 +263,37 @@ extension ViewStore {
 		)
 	}
 }
+
+extension Store {
+	public func indexed<LocalState, LocalAction>(
+		index: Int,
+		value toLocalState: WritableKeyPath<Value, [LocalState]>,
+		action toGlobalAction: CasePath<Action, (Int, LocalState.ID, LocalAction)>
+	) -> Store<LocalState, LocalAction> where LocalState: Identifiable {
+		var index = index
+		let localStore =
+			Store<LocalState, LocalAction>(
+				initialValue: self.value[keyPath: toLocalState][index],
+				reducer: .init { (localState, localAction, _) -> [Effect<LocalAction>] in
+					let values = self.value[keyPath: toLocalState]
+					if !values.indices.contains(index) || localState.id != values[index].id {
+						guard let newIndex = values.firstIndex(where: { localState.id == $0.id}) else { return [] }
+						index = newIndex
+					}
+					let globalAction = toGlobalAction.embed((index, localState.id, localAction))
+					self.send(globalAction)
+					localState = self.value[keyPath: toLocalState][index]
+					return []
+				},
+				environment: self.environment)
+		localStore.viewCancellable = self.$value.sink(receiveValue: { [weak localStore] newValue in
+			let values = newValue[keyPath: toLocalState]
+			if !values.indices.contains(index) || localStore?.value.id != values[index].id {
+				guard let newIndex = values.firstIndex(where: { localStore?.value.id == $0.id }) else { return }
+				index = newIndex
+			}
+			localStore?.value = newValue[keyPath: toLocalState][index]
+		})
+		return localStore
+	}
+}

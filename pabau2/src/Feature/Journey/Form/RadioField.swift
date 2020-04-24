@@ -3,11 +3,11 @@ import ComposableArchitecture
 import Model
 import CasePaths
 
-public enum RadioAction {
+public enum RadioFieldAction {
 	case didSelectChoice(Int)
 }
 
-let radioReducer = Reducer<Radio, RadioAction, JourneyEnvironemnt> { state, action, _ in
+let radioFieldReducer = Reducer<Radio, RadioFieldAction, JourneyEnvironemnt> { state, action, _ in
 	switch action {
 	case .didSelectChoice(let id):
 		state.selectedChoiceId = id
@@ -16,10 +16,10 @@ let radioReducer = Reducer<Radio, RadioAction, JourneyEnvironemnt> { state, acti
 }
 
 struct RadioField: View {
-	let store: Store<Radio, RadioAction>
-	@ObservedObject var viewStore: ViewStore<Radio, RadioAction>
+	let store: Store<Radio, RadioFieldAction>
+	@ObservedObject var viewStore: ViewStore<Radio, RadioFieldAction>
 
-	init(store: Store<Radio, RadioAction>) {
+	init(store: Store<Radio, RadioFieldAction>) {
 		self.store = store
 		self.viewStore = self.store.view
 	}
@@ -28,7 +28,7 @@ struct RadioField: View {
 		VStack {
 			Picker(selection: self.viewStore.binding(
 				value: \.selectedChoiceId,
-				action: /RadioAction.didSelectChoice),
+				action: /RadioFieldAction.didSelectChoice),
 						 label: Text("Radio")
 			) {
 				ForEach(store.view.value.choices, id: \.id) { (choice: RadioChoice) in

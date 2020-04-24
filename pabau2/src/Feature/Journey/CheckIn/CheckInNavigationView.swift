@@ -23,31 +23,6 @@ public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction
 					 environment: { $0 })
 )
 
-let fieldsReducer: Reducer<CheckInContainerState, CheckInMainAction, JourneyEnvironemnt> =
-	indexed(reducer: fieldReducer,
-					\CheckInContainerState.selectedTemplate.formStructure.formStructure,
-					/CheckInMainAction.form, { $0 })
-
-let fieldReducer: Reducer<CSSField, CheckInFormAction, JourneyEnvironemnt> =
-(
-	cssClassReducer.pullback(
-					 value: \CSSField.cssClass,
-					 action: /CheckInFormAction.self,
-					 environment: { $0 })
-)
-
-let cssClassReducer: Reducer<CSSClass, CheckInFormAction, JourneyEnvironemnt> =
-	.combine(
-		multipleChoiceReducer.pullback(
-					 value: /CSSClass.checkboxes,
-					 action: /CheckInFormAction.multipleChoice,
-					 environment: { $0 }),
-		radioReducer.pullback(
-					 value: /CSSClass.radio,
-					 action: /CheckInFormAction.radio,
-					 environment: { $0 })
-)
-
 public struct CheckInNavigationView: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>
 	@State var isRunningAnimation: Bool

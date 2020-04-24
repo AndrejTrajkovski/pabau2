@@ -87,6 +87,10 @@
 		8269526824506F18001B806E /* PabauForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8269526724506F18001B806E /* PabauForm.swift */; };
 		8269526A2452D90F001B806E /* UITextViewWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826952692452D90E001B806E /* UITextViewWrapper.swift */; };
 		8269526C2452DA93001B806E /* TextAreaField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8269526B2452DA93001B806E /* TextAreaField.swift */; };
+		8269526F2452E02A001B806E /* StaticText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8269526E2452E02A001B806E /* StaticText.swift */; };
+		826952712452E04D001B806E /* CheckBoxChoice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826952702452E04D001B806E /* CheckBoxChoice.swift */; };
+		826952732452E064001B806E /* Radio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826952722452E064001B806E /* Radio.swift */; };
+		826952752452E07E001B806E /* TextArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826952742452E07E001B806E /* TextArea.swift */; };
 		827B4572241135A700A5975E /* FSCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82CACE772411293C0021E1DE /* FSCalendar.framework */; };
 		827B45832411368100A5975E /* Journey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 827B457A2411368100A5975E /* Journey.framework */; };
 		827B458A2411368100A5975E /* JourneyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45892411368100A5975E /* JourneyTests.swift */; };
@@ -459,6 +463,10 @@
 		8269526724506F18001B806E /* PabauForm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PabauForm.swift; sourceTree = "<group>"; };
 		826952692452D90E001B806E /* UITextViewWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextViewWrapper.swift; sourceTree = "<group>"; };
 		8269526B2452DA93001B806E /* TextAreaField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextAreaField.swift; sourceTree = "<group>"; };
+		8269526E2452E02A001B806E /* StaticText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticText.swift; sourceTree = "<group>"; };
+		826952702452E04D001B806E /* CheckBoxChoice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckBoxChoice.swift; sourceTree = "<group>"; };
+		826952722452E064001B806E /* Radio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Radio.swift; sourceTree = "<group>"; };
+		826952742452E07E001B806E /* TextArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextArea.swift; sourceTree = "<group>"; };
 		827B457A2411368100A5975E /* Journey.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Journey.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		827B457C2411368100A5975E /* Journey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Journey.h; sourceTree = "<group>"; };
 		827B457D2411368100A5975E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -890,6 +898,19 @@
 			path = Form;
 			sourceTree = "<group>";
 		};
+		8269526D2452DFF3001B806E /* CSSValue */ = {
+			isa = PBXGroup;
+			children = (
+				82D7C2BE2446FEB3000B1CD5 /* CSSClass.swift */,
+				82D7C2C024471854000B1CD5 /* CSSValues.swift */,
+				8269526E2452E02A001B806E /* StaticText.swift */,
+				826952702452E04D001B806E /* CheckBoxChoice.swift */,
+				826952722452E064001B806E /* Radio.swift */,
+				826952742452E07E001B806E /* TextArea.swift */,
+			);
+			path = CSSValue;
+			sourceTree = "<group>";
+		};
 		827B457B2411368100A5975E /* Journey */ = {
 			isa = PBXGroup;
 			children = (
@@ -927,6 +948,7 @@
 		827B459E24126D4D00A5975E /* Simple Model */ = {
 			isa = PBXGroup;
 			children = (
+				8269526D2452DFF3001B806E /* CSSValue */,
 				82104524240C21B9004EA838 /* ForgotPassSuccess.swift */,
 				82104526240C21E3004EA838 /* ForgotPassError.swift */,
 				82104528240C2218004EA838 /* LoginError.swift */,
@@ -984,8 +1006,6 @@
 				827B45D024126D4E00A5975E /* Pathway.swift */,
 				827B45D124126D4E00A5975E /* Termin.swift */,
 				827B45D224126D4E00A5975E /* JourneyForms.swift */,
-				82D7C2BE2446FEB3000B1CD5 /* CSSClass.swift */,
-				82D7C2C024471854000B1CD5 /* CSSValues.swift */,
 			);
 			path = "Simple Model";
 			sourceTree = "<group>";
@@ -1802,11 +1822,14 @@
 				82104529240C2218004EA838 /* LoginError.swift in Sources */,
 				827B45D524126D4E00A5975E /* Location.swift in Sources */,
 				827B45E024126D4E00A5975E /* CustomFieldItems.swift in Sources */,
+				826952752452E07E001B806E /* TextArea.swift in Sources */,
 				825C5276241A129700A33A29 /* LiveAPI.swift in Sources */,
 				827B45EB24126D4E00A5975E /* Room.swift in Sources */,
 				825C527F241A13CC00A33A29 /* LoginLiveAPI.swift in Sources */,
+				8269526F2452E02A001B806E /* StaticText.swift in Sources */,
 				82104527240C21E3004EA838 /* ForgotPassError.swift in Sources */,
 				827B45F824126D4E00A5975E /* Employee.swift in Sources */,
+				826952732452E064001B806E /* Radio.swift in Sources */,
 				827B45D324126D4E00A5975E /* DrawingType.swift in Sources */,
 				827B45E324126D4E00A5975E /* PostcareType.swift in Sources */,
 				825C525C2418C61B00A33A29 /* Response.swift in Sources */,
@@ -1830,6 +1853,7 @@
 				827B45FF24126D4E00A5975E /* FieldType.swift in Sources */,
 				827B45E924126D4E00A5975E /* User.swift in Sources */,
 				827B45E624126D4E00A5975E /* JourneyPhotos.swift in Sources */,
+				826952712452E04D001B806E /* CheckBoxChoice.swift in Sources */,
 				8210452B240C2234004EA838 /* ResetPassSuccess.swift in Sources */,
 				825C525A2418C61200A33A29 /* RequestBuilder.swift in Sources */,
 				827B45E224126D4E00A5975E /* StepType.swift in Sources */,
