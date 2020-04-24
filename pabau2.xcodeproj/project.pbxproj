@@ -82,9 +82,11 @@
 		825C527F241A13CC00A33A29 /* LoginLiveAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C527E241A13CB00A33A29 /* LoginLiveAPI.swift */; };
 		82622B4C2444F39200BECF9A /* CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82622B4B2444F39200BECF9A /* CollectionView.swift */; };
 		82622B5024464E0800BECF9A /* RibbonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82622B4F24464E0800BECF9A /* RibbonView.swift */; };
-		82622B52244650E000BECF9A /* MultipleChoiceField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82622B51244650E000BECF9A /* MultipleChoiceField.swift */; };
-		82648404244F42F300544703 /* FormSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82648403244F42F300544703 /* FormSectionView.swift */; };
+		82622B52244650E000BECF9A /* CheckBoxField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82622B51244650E000BECF9A /* CheckBoxField.swift */; };
+		82648404244F42F300544703 /* FormSectionField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82648403244F42F300544703 /* FormSectionField.swift */; };
 		8269526824506F18001B806E /* PabauForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8269526724506F18001B806E /* PabauForm.swift */; };
+		8269526A2452D90F001B806E /* UITextViewWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826952692452D90E001B806E /* UITextViewWrapper.swift */; };
+		8269526C2452DA93001B806E /* TextAreaField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8269526B2452DA93001B806E /* TextAreaField.swift */; };
 		827B4572241135A700A5975E /* FSCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82CACE772411293C0021E1DE /* FSCalendar.framework */; };
 		827B45832411368100A5975E /* Journey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 827B457A2411368100A5975E /* Journey.framework */; };
 		827B458A2411368100A5975E /* JourneyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45892411368100A5975E /* JourneyTests.swift */; };
@@ -209,7 +211,7 @@
 		82CACEEA241131260021E1DE /* FSCalendarSwiftUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 82CACEE2241131250021E1DE /* FSCalendarSwiftUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		82CACEEE241131460021E1DE /* SwiftUIFSCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CACE68241109B70021E1DE /* SwiftUIFSCalendar.swift */; };
 		82CACEEF241131460021E1DE /* SwiftUICalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CACE6A24110A250021E1DE /* SwiftUICalendarViewModel.swift */; };
-		82CEA223244CB28500A895F6 /* Radio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CEA222244CB28500A895F6 /* Radio.swift */; };
+		82CEA223244CB28500A895F6 /* RadioField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CEA222244CB28500A895F6 /* RadioField.swift */; };
 		82CEA225244E0F9B00A895F6 /* ForEachWithindex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CEA224244E0F9B00A895F6 /* ForEachWithindex.swift */; };
 		82CEA227244E128B00A895F6 /* Indexed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CEA226244E128B00A895F6 /* Indexed.swift */; };
 		82D43D9024351F5000AC74FA /* EmployeesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D43D8F24351F5000AC74FA /* EmployeesList.swift */; };
@@ -452,9 +454,11 @@
 		825C527E241A13CB00A33A29 /* LoginLiveAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginLiveAPI.swift; sourceTree = "<group>"; };
 		82622B4B2444F39200BECF9A /* CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionView.swift; sourceTree = "<group>"; };
 		82622B4F24464E0800BECF9A /* RibbonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RibbonView.swift; sourceTree = "<group>"; };
-		82622B51244650E000BECF9A /* MultipleChoiceField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleChoiceField.swift; sourceTree = "<group>"; };
-		82648403244F42F300544703 /* FormSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormSectionView.swift; sourceTree = "<group>"; };
+		82622B51244650E000BECF9A /* CheckBoxField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckBoxField.swift; sourceTree = "<group>"; };
+		82648403244F42F300544703 /* FormSectionField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormSectionField.swift; sourceTree = "<group>"; };
 		8269526724506F18001B806E /* PabauForm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PabauForm.swift; sourceTree = "<group>"; };
+		826952692452D90E001B806E /* UITextViewWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextViewWrapper.swift; sourceTree = "<group>"; };
+		8269526B2452DA93001B806E /* TextAreaField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextAreaField.swift; sourceTree = "<group>"; };
 		827B457A2411368100A5975E /* Journey.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Journey.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		827B457C2411368100A5975E /* Journey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Journey.h; sourceTree = "<group>"; };
 		827B457D2411368100A5975E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -598,7 +602,7 @@
 		82CACEE2241131250021E1DE /* FSCalendarSwiftUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FSCalendarSwiftUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		82CACEE4241131260021E1DE /* FSCalendarSwiftUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSCalendarSwiftUI.h; sourceTree = "<group>"; };
 		82CACEE5241131260021E1DE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		82CEA222244CB28500A895F6 /* Radio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Radio.swift; sourceTree = "<group>"; };
+		82CEA222244CB28500A895F6 /* RadioField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioField.swift; sourceTree = "<group>"; };
 		82CEA224244E0F9B00A895F6 /* ForEachWithindex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForEachWithindex.swift; sourceTree = "<group>"; };
 		82CEA226244E128B00A895F6 /* Indexed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Indexed.swift; sourceTree = "<group>"; };
 		82D43D8F24351F5000AC74FA /* EmployeesList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmployeesList.swift; sourceTree = "<group>"; };
@@ -769,6 +773,7 @@
 				82C479DF2433C1AB0037F140 /* LazyView.swift */,
 				82622B4B2444F39200BECF9A /* CollectionView.swift */,
 				82CEA224244E0F9B00A895F6 /* ForEachWithindex.swift */,
+				826952692452D90E001B806E /* UITextViewWrapper.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -877,9 +882,10 @@
 			isa = PBXGroup;
 			children = (
 				8269526724506F18001B806E /* PabauForm.swift */,
-				82648403244F42F300544703 /* FormSectionView.swift */,
-				82CEA222244CB28500A895F6 /* Radio.swift */,
-				82622B51244650E000BECF9A /* MultipleChoiceField.swift */,
+				82648403244F42F300544703 /* FormSectionField.swift */,
+				82CEA222244CB28500A895F6 /* RadioField.swift */,
+				82622B51244650E000BECF9A /* CheckBoxField.swift */,
+				8269526B2452DA93001B806E /* TextAreaField.swift */,
 			);
 			path = Form;
 			sourceTree = "<group>";
@@ -1745,6 +1751,7 @@
 				8227FB78240BAC9600F653B5 /* Texts.swift in Sources */,
 				8227FB6F240BAC9600F653B5 /* BigButton.swift in Sources */,
 				8227FB72240BAC9600F653B5 /* TextFieldWithBottomLine.swift in Sources */,
+				8269526A2452D90F001B806E /* UITextViewWrapper.swift in Sources */,
 				8250D7D2242C575A00F8F3FC /* ScalableShape.swift in Sources */,
 				82CEA225244E0F9B00A895F6 /* ForEachWithindex.swift in Sources */,
 				8227FB7E240BB0B500F653B5 /* LoadingState.swift in Sources */,
@@ -1856,7 +1863,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				82CEA223244CB28500A895F6 /* Radio.swift in Sources */,
+				82CEA223244CB28500A895F6 /* RadioField.swift in Sources */,
+				8269526C2452DA93001B806E /* TextAreaField.swift in Sources */,
 				827B459B241136D900A5975E /* JourneyContainerView.swift in Sources */,
 				82C479DE242E17B50037F140 /* CheckInNavigationView.swift in Sources */,
 				829BFBB1243F693E005DDCB9 /* CheckInMain.swift in Sources */,
@@ -1864,7 +1872,7 @@
 				829B40D12423B8F2009B7E71 /* AddAppointment.swift in Sources */,
 				82622B5024464E0800BECF9A /* RibbonView.swift in Sources */,
 				8250D7D4242C980100F8F3FC /* ChooseService.swift in Sources */,
-				82648404244F42F300544703 /* FormSectionView.swift in Sources */,
+				82648404244F42F300544703 /* FormSectionField.swift in Sources */,
 				82292BD8244097C600080F74 /* StepsCollectionView.swift in Sources */,
 				829BFBAF243F5D6F005DDCB9 /* CheckInAnimation.swift in Sources */,
 				82D43D92243522CD00AC74FA /* Settings.swift in Sources */,
@@ -1877,7 +1885,7 @@
 				8250D7C9242BCFD000F8F3FC /* ChooseFormList.swift in Sources */,
 				828626B12424CA64003ADA24 /* JourneyProfileView.swift in Sources */,
 				828626B32424CEFB003ADA24 /* ChoosePathway.swift in Sources */,
-				82622B52244650E000BECF9A /* MultipleChoiceField.swift in Sources */,
+				82622B52244650E000BECF9A /* CheckBoxField.swift in Sources */,
 				8269526824506F18001B806E /* PabauForm.swift in Sources */,
 				827B459D24118ABD00A5975E /* JourneyNavigationView.swift in Sources */,
 				825BE7E224361ABD00422910 /* StaffFilterPicker.swift in Sources */,

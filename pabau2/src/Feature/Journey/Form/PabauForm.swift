@@ -23,7 +23,7 @@ struct PabauForm: View {
 	public var body: some View {
 		List {
 			ForEachWithIndex(viewStore.value, id: \.self) { index, cssValue in
-				FormSectionView(store:
+				FormSectionField(store:
 					self.store.scope(
 						value: { _ in cssValue },
 						action: { .form(Indexed(index: index, value: $0)) }

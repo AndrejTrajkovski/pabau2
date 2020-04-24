@@ -144,13 +144,13 @@ public struct CollectionView<Content: View>: UIViewControllerRepresentable {
 
 	/// The `BasicCollectionView` coordinator.
 	public class CollectionCoordinator<Content: View>: NSObject, UICollectionViewDataSource {
-		
+
 		var zipped: [(Int, Content)]
 
 		init(collectionView: CollectionView<Content>) {
 			self.zipped = Array(zip(collectionView.identifiers, collectionView.content))
 		}
-		
+
 		public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int { zipped.count }
 		public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 			guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? CollectionViewCell else {
