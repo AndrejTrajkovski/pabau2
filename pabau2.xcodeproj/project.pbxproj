@@ -91,6 +91,7 @@
 		826952712452E04D001B806E /* CheckBoxChoice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826952702452E04D001B806E /* CheckBoxChoice.swift */; };
 		826952732452E064001B806E /* Radio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826952722452E064001B806E /* Radio.swift */; };
 		826952752452E07E001B806E /* TextArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826952742452E07E001B806E /* TextArea.swift */; };
+		826952772454E0A5001B806E /* SignatureField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826952762454E0A5001B806E /* SignatureField.swift */; };
 		827B4572241135A700A5975E /* FSCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82CACE772411293C0021E1DE /* FSCalendar.framework */; };
 		827B45832411368100A5975E /* Journey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 827B457A2411368100A5975E /* Journey.framework */; };
 		827B458A2411368100A5975E /* JourneyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45892411368100A5975E /* JourneyTests.swift */; };
@@ -467,6 +468,7 @@
 		826952702452E04D001B806E /* CheckBoxChoice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckBoxChoice.swift; sourceTree = "<group>"; };
 		826952722452E064001B806E /* Radio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Radio.swift; sourceTree = "<group>"; };
 		826952742452E07E001B806E /* TextArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextArea.swift; sourceTree = "<group>"; };
+		826952762454E0A5001B806E /* SignatureField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignatureField.swift; sourceTree = "<group>"; };
 		827B457A2411368100A5975E /* Journey.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Journey.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		827B457C2411368100A5975E /* Journey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Journey.h; sourceTree = "<group>"; };
 		827B457D2411368100A5975E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -894,6 +896,7 @@
 				82CEA222244CB28500A895F6 /* RadioField.swift */,
 				82622B51244650E000BECF9A /* CheckBoxField.swift */,
 				8269526B2452DA93001B806E /* TextAreaField.swift */,
+				826952762454E0A5001B806E /* SignatureField.swift */,
 			);
 			path = Form;
 			sourceTree = "<group>";
@@ -1902,6 +1905,7 @@
 				82D43D92243522CD00AC74FA /* Settings.swift in Sources */,
 				82E253FA241B9EB500F16C30 /* JourneyAction.swift in Sources */,
 				82D43D9024351F5000AC74FA /* EmployeesList.swift in Sources */,
+				826952772454E0A5001B806E /* SignatureField.swift in Sources */,
 				82E253FC241B9ED000F16C30 /* JourneyState.swift in Sources */,
 				8250D7CB242BD25B00F8F3FC /* JourneyBaseView.swift in Sources */,
 				82E253FE241B9F1200F16C30 /* CompleteFilter.swift in Sources */,

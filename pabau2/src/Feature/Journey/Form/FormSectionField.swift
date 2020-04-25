@@ -31,7 +31,7 @@ struct FormSectionField: View, Equatable {
 		if lhs.viewStore.value.textArea != nil { return true }
 		return lhs.viewStore.value == rhs.viewStore.value
 	}
-	
+
 	let store: Store<CSSField, CheckInFormAction>
 	@ObservedObject var viewStore: ViewStore<State, CheckInFormAction>
 
@@ -50,6 +50,7 @@ struct FormSectionField: View, Equatable {
 		let radio: Radio?
 		let staticText: StaticText?
 		let textArea: TextArea?
+		let signature: Signature?
 	}
 
 	var body: some View {
@@ -84,6 +85,10 @@ struct FormSectionField: View, Equatable {
 							action: { .textArea($0) })
 					)
 				}
+				if viewStore.value.signature != nil {
+					SignatureField()
+					.frame(height: 200)
+				}
 			}
 			.listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
 		}.background(Color.white)
@@ -98,5 +103,6 @@ extension FormSectionField.State {
 		self.radio = extract(case: CSSClass.radio, from: state.cssClass)
 		self.staticText = extract(case: CSSClass.staticText, from: state.cssClass)
 		self.textArea = extract(case: CSSClass.textarea, from: state.cssClass)
+		self.signature = extract(case: CSSClass.signature, from: state.cssClass)
 	}
 }
