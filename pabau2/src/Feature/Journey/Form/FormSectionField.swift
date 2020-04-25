@@ -28,7 +28,8 @@ let cssClassReducer: Reducer<CSSClass, CheckInFormAction, JourneyEnvironemnt> =
 
 struct FormSectionField: View, Equatable {
 	static func == (lhs: FormSectionField, rhs: FormSectionField) -> Bool {
-		lhs.viewStore.value == rhs.viewStore.value
+		if lhs.viewStore.value.textArea != nil { return true }
+		return lhs.viewStore.value == rhs.viewStore.value
 	}
 	
 	let store: Store<CSSField, CheckInFormAction>
@@ -52,7 +53,7 @@ struct FormSectionField: View, Equatable {
 	}
 
 	var body: some View {
-		print("form section")
+		print("form section \(self.viewStore.value)")
 		return Section(header:
 			Text(viewStore.value.headerTitle)
 				.font(.semibold18)

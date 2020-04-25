@@ -63,6 +63,9 @@ public struct MultilineTextView: UIViewRepresentable {
 		textView.isEditable = true
 		textView.isUserInteractionEnabled = true
 		textView.text = initialText
+		textView.layer.cornerRadius = 8.0
+		textView.layer.masksToBounds = true
+		textView.layer.borderWidth = 1.0
 		return textView
 	}
 
@@ -76,14 +79,14 @@ public struct MultilineTextView: UIViewRepresentable {
 			self.parent = uiTextView
 		}
 
-		public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-			let result = (textView.text as NSString?)?.replacingCharacters(in: range, with: text) ?? text
-			parent.onTextChange(result as String)
-			return true
-		}
+//		public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+//			let result = (textView.text as NSString?)?.replacingCharacters(in: range, with: text) ?? text
+//			parent.onTextChange(result as String)
+//			return true
+//		}
 		
 //		public func textViewDidChange(_ textView: UITextView) {
-//			parent.text = textView.text
+//
 //		}
 
 		public func textViewDidBeginEditing(_ textView: UITextView) {
@@ -97,6 +100,7 @@ public struct MultilineTextView: UIViewRepresentable {
 				textView.text = parent.placeholder
 				textView.textColor = UIColor.lightGray
 			}
+			parent.onTextChange(textView.text)
 		}
 	}
 }

@@ -36,7 +36,8 @@ struct PabauForm: View {
 					self.store.scope(
 						value: { _ in cssValue },
 						action: { .form(Indexed(index: index, value: $0)) }
-					)).equatable()
+					))
+//					.equatable()
 			}
 		}
 	}

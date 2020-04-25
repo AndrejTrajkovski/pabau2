@@ -25,12 +25,10 @@ struct TextAreaField: View {
 	}
 
 	var body: some View {
-		Group {
-			MultilineTextView(initialText: self.viewStore.value.text,
-												placeholder: "Some placeholder",
-												onTextChange: {
-													self.viewStore.send(.didUpdateText($0))
-			})
-		}
+		MultilineTextView(initialText: self.viewStore.value.text,
+											placeholder: "Some placeholder",
+											onTextChange: {
+												self.viewStore.send(.didUpdateText($0))
+		}).frame(height: 100)
 	}
 }
