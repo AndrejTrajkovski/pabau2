@@ -18,7 +18,11 @@ public let checkBoxFieldReducer =
 	}
 }
 
-struct CheckBoxField: View {
+struct CheckBoxField: View, Equatable {
+	static func == (lhs: CheckBoxField, rhs: CheckBoxField) -> Bool {
+		lhs.viewStore.value == rhs.viewStore.value
+	}
+	
 	let store: Store<[CheckBoxChoice], CheckboxFieldAction>
 	@ObservedObject var viewStore: ViewStore<[CheckBoxChoice], CheckboxFieldAction>
 	init(store: Store<[CheckBoxChoice], CheckboxFieldAction>) {
@@ -29,6 +33,7 @@ struct CheckBoxField: View {
 	var body: some View {
 		ForEach(self.viewStore.value, id: \.self) { (choice: CheckBoxChoice) in
 			ChoiceRow(choice: choice)
+				.padding(4)
 				.onTapGesture { self.viewStore.send(.didTouchChoiceId(choice.id))}
 		}
 	}

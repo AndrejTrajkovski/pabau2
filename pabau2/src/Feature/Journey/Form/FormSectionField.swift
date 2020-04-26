@@ -28,21 +28,45 @@ let cssClassReducer: Reducer<CSSClass, CheckInFormAction, JourneyEnvironemnt> =
 
 struct FormSectionField: View, Equatable {
 	static func == (lhs: FormSectionField, rhs: FormSectionField) -> Bool {
-		return lhs.viewStore.value == rhs.viewStore.value
+		return lhs.store.view.value == rhs.store.view.value
 	}
 
 	let store: Store<CSSField, CheckInFormAction>
-	@ObservedObject var viewStore: ViewStore<State, CheckInFormAction>
+	let isSignature: Bool
+	init (store: Store<CSSField, CheckInFormAction>) {
+		self.store = store
+		self.isSignature = extract(case: CSSClass.signature, from: store.view.value.cssClass) != nil
+	}
+
+	var body: some View {
+		return Section(header:
+			Text("header ")
+				.font(.semibold18)
+				.frame(minWidth: 0, maxWidth: .infinity,
+							 alignment: isSignature ? .center : .leading)
+				.padding(.top)
+				.padding(.bottom)
+		) {
+			FormField(store: store)
+				.listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
+		}.background(Color.white)
+	}
+}
+
+struct FormField: View, Equatable {
+	static func == (lhs: FormField, rhs: FormField) -> Bool {
+		return lhs.store.view.value == rhs.store.view.value
+	}
+
+	let store: Store<CSSField, CheckInFormAction>
+	let myValue: ViewState
 
 	init (store: Store<CSSField, CheckInFormAction>) {
 		self.store = store
-		self.viewStore = self.store.scope (
-			value: State.init(state:),
-			action: { $0 }
-		).view
+		self.myValue = ViewState.init(state: self.store.view.value)
 	}
 
-	struct State: Equatable {
+	struct ViewState: Equatable {
 		let id: Int
 		let headerTitle: String
 		let checkBox: [CheckBoxChoice]?
@@ -53,48 +77,38 @@ struct FormSectionField: View, Equatable {
 	}
 
 	var body: some View {
-		print("form section \(self.viewStore.value)")
-		return Section(header:
-			Text(viewStore.value.headerTitle)
-				.font(.semibold18)
-				.frame(minWidth: 0, maxWidth: .infinity,
-							 alignment: viewStore.value.signature != nil ? .center : .leading)
-				.padding(.top)
-				.padding(.bottom)
-		) {
-			Group {
-				if viewStore.value.checkBox != nil {
-					CheckBoxField(
-						store: store.scope(
-							value: { _ in self.viewStore.value.checkBox! },
-							action: { .multipleChoice($0) }))
-				}
-				if viewStore.value.radio != nil {
-					RadioField(
-						store: store.scope(
-							value: { _ in self.viewStore.value.radio! },
-							action: { .radio($0) }))
-				}
-				if viewStore.value.staticText != nil {
-					Text(self.viewStore.value.staticText!.text)
-				}
-				if viewStore.value.textArea != nil {
-					TextAreaField (
-						store: store.scope(
-							value: { _ in self.viewStore.value.textArea! },
-							action: { .textArea($0) })
-					)
-				}
-				if viewStore.value.signature != nil {
-					SignatureField()
-				}
+		print("body of field: \(myValue)")
+		return Group {
+			if myValue.checkBox != nil {
+				CheckBoxField(
+					store: store.scope(
+						value: { _ in self.myValue.checkBox! },
+						action: { .multipleChoice($0) }))
 			}
-			.listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
-		}.background(Color.white)
+			if myValue.radio != nil {
+				RadioField(
+					store: store.scope(
+						value: { _ in self.myValue.radio! },
+						action: { .radio($0) }))
+			}
+			if myValue.staticText != nil {
+				Text(myValue.staticText!.text)
+			}
+			if myValue.textArea != nil {
+				TextAreaField (
+					store: store.scope(
+						value: { _ in self.myValue.textArea! },
+						action: { .textArea($0) })
+				)
+			}
+			if myValue.signature != nil {
+				SignatureField()
+			}
+		}
 	}
 }
 
-extension FormSectionField.State {
+extension FormField.ViewState {
 	init(state: CSSField) {
 		self.id = state.id
 		self.headerTitle = state.title ?? ""

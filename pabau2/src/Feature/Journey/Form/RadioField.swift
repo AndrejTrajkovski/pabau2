@@ -15,7 +15,11 @@ let radioFieldReducer = Reducer<Radio, RadioFieldAction, JourneyEnvironemnt> { s
 	return []
 }
 
-struct RadioField: View {
+struct RadioField: View, Equatable {
+	static func == (lhs: RadioField, rhs: RadioField) -> Bool {
+		lhs.viewStore.value == rhs.viewStore.value
+	}
+	
 	let store: Store<Radio, RadioFieldAction>
 	@ObservedObject var viewStore: ViewStore<Radio, RadioFieldAction>
 
