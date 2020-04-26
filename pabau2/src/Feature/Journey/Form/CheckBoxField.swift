@@ -20,16 +20,26 @@ public let checkBoxFieldReducer =
 
 struct CheckBoxField: View {
 	let store: Store<[CheckBoxChoice], CheckboxFieldAction>
-	@ObservedObject var viewStore: ViewStore<[CheckBoxChoice], CheckboxFieldAction>
+	@State var checkBox: [CheckBoxChoice]
+
+	func toggleCheckbox(_ choice: CheckBoxChoice) {
+		guard let index = checkBox.firstIndex(of: choice) else {return}
+		checkBox[index].isSelected.toggle()
+	}
+
+//	@ObservedObject var viewStore: ViewStore<[CheckBoxChoice], CheckboxFieldAction>
 	init(store: Store<[CheckBoxChoice], CheckboxFieldAction>) {
 		self.store = store
-		self.viewStore = self.store.view
+		self._checkBox = State(initialValue: store.view.value)
 	}
 
 	var body: some View {
-		ForEach(self.viewStore.value, id: \.self) { (choice: CheckBoxChoice) in
+		ForEach(self.checkBox, id: \.self) { (choice: CheckBoxChoice) in
 			ChoiceRow(choice: choice)
-				.onTapGesture { self.viewStore.send(.didTouchChoiceId(choice.id))}
+				.onTapGesture {
+					self.toggleCheckbox(choice)
+//					self.viewStore.send(.didTouchChoiceId(choice.id))
+			}
 		}
 	}
 }
