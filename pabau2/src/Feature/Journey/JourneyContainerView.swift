@@ -59,20 +59,41 @@ let employeeListReducer = Reducer<EmployeesState, EmployeesAction, JourneyEnviro
 
 public typealias JourneyEnvironemnt = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
 
-let checkInMiddleware = Reducer<JourneyState, CheckInMainAction, JourneyEnvironemnt> { state, action, _ in
+let checkInMiddleware2 = Reducer<JourneyState, ChooseFormAction, JourneyEnvironemnt> { state, action, _ in
 	switch action {
-	case .closeBtnTap:
-		state.isCheckedIn = false
-		state.selectedPathway = nil
-		state.selectedJourney = nil
+	case .checkIn:
+		guard let selJ = state.selectedJourney,
+			let selP = state.selectedPathway else { return [] }
+		state.checkIn = CheckInContainerState(
+			journey: selJ,
+			pathway: selP,
+			selectedStepId: 1,
+			templates: state.allConsents.filter { state.selectedConsentsIds.contains($0.id)})
 	default:
 		return []
 	}
 	return []
 }
 
+let checkInMiddleware = Reducer<JourneyState, CheckInMainAction, JourneyEnvironemnt> { state, action, _ in
+	switch action {
+	case .closeBtnTap:
+		state.selectedJourney = nil
+		state.selectedPathway = nil
+		state.checkIn = nil
+	default:
+		return []
+	}
+	return []
+}
+
+//JourneyState, ChooseFormAction
 public let journeyContainerReducer: Reducer<JourneyState, JourneyContainerAction, JourneyEnvironemnt> =
 	.combine(
+		checkInMiddleware2.pullback(
+			value: \JourneyState.self,
+			action: /JourneyContainerAction.choosePathway..ChoosePathwayContainerAction.chooseConsent,
+			environment: { $0 }),
 		journeyReducer.pullback(
 					 value: \JourneyState.self,
 					 action: /JourneyContainerAction.journey,

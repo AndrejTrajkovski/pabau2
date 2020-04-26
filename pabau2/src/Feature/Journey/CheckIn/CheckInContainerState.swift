@@ -12,7 +12,8 @@ public struct CheckInContainerState: Equatable {
 	var pathway: Pathway
 	var selectedStepId: Int
 	var templates: [FormTemplate]
-
+	var currentFields: [CSSField]
+	
 	init(journey: Journey,
 			 pathway: Pathway,
 			 selectedStepId: Int,
@@ -21,16 +22,7 @@ public struct CheckInContainerState: Equatable {
 		self.pathway = pathway
 		self.selectedStepId = selectedStepId
 		self.templates = templates
-	}
-
-	var selectedTemplate: FormTemplate
-	{
-		get {
-			self.templates.first ?? FormTemplate.defaultEmpty }
-		set {
-			self.templates.remove(at: 0)
-			self.templates.insert(newValue, at: 0)
-		}
+		self.currentFields = templates.first?.formStructure.formStructure ?? []
 	}
 }
 

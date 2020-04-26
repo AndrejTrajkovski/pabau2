@@ -42,21 +42,18 @@ public struct ChoosePathwayState: Equatable {
 	var selectedPathway: Pathway?
 	var selectedConsentsIds: [Int]
 	var allConsents: [FormTemplate]
-	var isCheckedIn: Bool
 	var chooseConsentState: ChooseFormState {
 		get {
 			ChooseFormState(selectedJourney: selectedJourney,
 											selectedPathway: selectedPathway,
 											selectedTemplatesIds: selectedConsentsIds,
-											templates: allConsents,
-											isCheckedIn: isCheckedIn)
+											templates: allConsents)
 		}
 		set {
 			self.selectedJourney = newValue.selectedJourney
 			self.selectedPathway = newValue.selectedPathway
 			self.selectedConsentsIds = newValue.selectedTemplatesIds
 			self.allConsents = newValue.templates
-			self.isCheckedIn = newValue.isCheckedIn
 		}
 	}
 }

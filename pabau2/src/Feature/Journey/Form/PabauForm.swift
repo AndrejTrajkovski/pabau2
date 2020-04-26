@@ -6,7 +6,7 @@ import Util
 
 let fieldsReducer: Reducer<CheckInContainerState, CheckInMainAction, JourneyEnvironemnt> =
 	indexed(reducer: fieldReducer,
-					\CheckInContainerState.selectedTemplate.formStructure.formStructure,
+					\CheckInContainerState.currentFields,
 					/CheckInMainAction.form, { $0 })
 
 let fieldReducer: Reducer<CSSField, CheckInFormAction, JourneyEnvironemnt> =

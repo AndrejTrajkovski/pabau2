@@ -13,25 +13,24 @@ public struct JourneyState: Equatable {
 	var selectedDate: Date = Date()
 	var selectedLocation: Location = Location.init(id: 1)
 	var searchText: String = ""
-	public var isCheckedIn: Bool = true
 	public var employeesState: EmployeesState = EmployeesState()
 	public var selectedJourney: Journey?
-		= Journey.init(id: 1,
-	appointments: NonEmpty.init(Appointment.init(id: 1, from: Date() - 1.days, to: Date() - 1.days, employeeId: 1, locationId: 1, status: AppointmentStatus(id: 1, name: "Checked In"), service: BaseService.init(id: 1, name: "Botox", color: "#9400D3"))),
-	patient: BaseClient.init(id: 0, firstName: "Andrej", lastName: "Trajkovski", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "Dr. Jekil"), forms: [], photos: [], postCare: [], paid: "Not Paid")
+//		= Journey.init(id: 1,
+//	appointments: NonEmpty.init(Appointment.init(id: 1, from: Date() - 1.days, to: Date() - 1.days, employeeId: 1, locationId: 1, status: AppointmentStatus(id: 1, name: "Checked In"), service: BaseService.init(id: 1, name: "Botox", color: "#9400D3"))),
+//	patient: BaseClient.init(id: 0, firstName: "Andrej", lastName: "Trajkovski", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "Dr. Jekil"), forms: [], photos: [], postCare: [], paid: "Not Paid")
 	public var selectedPathway: Pathway?
-		= Pathway.init(id: 1,
-									 title: "Standard",
-									 steps: [Step(id: 1, stepType: .checkpatient),
-													 Step(id: 2, stepType: .medicalhistory),
-													 Step(id: 3, stepType: .consents),
-													 Step(id: 4, stepType: .treatmentnotes),
-													 Step(id: 5, stepType: .prescriptions),
-													 Step(id: 6, stepType: .aftercares)
-		])
-	var selectedConsentsIds: [Int] = [1]
+//		= Pathway.init(id: 1,
+//									 title: "Standard",
+//									 steps: [Step(id: 1, stepType: .checkpatient),
+//													 Step(id: 2, stepType: .medicalhistory),
+//													 Step(id: 3, stepType: .consents),
+//													 Step(id: 4, stepType: .treatmentnotes),
+//													 Step(id: 5, stepType: .prescriptions),
+//													 Step(id: 6, stepType: .aftercares)
+//		])
+	var selectedConsentsIds: [Int] = []
 	var allConsents: [FormTemplate] = JourneyMockAPI.mockConsents
-	var selectedStepId: Int = 1
+	public var checkIn: CheckInContainerState?
 
 	public var addAppointment: AddAppointmentState = AddAppointmentState.init(
 		isShowingAddAppointment: false,
@@ -55,48 +54,13 @@ extension JourneyState {
 			ChoosePathwayState(selectedJourney: selectedJourney,
 											selectedPathway: selectedPathway,
 											selectedConsentsIds: selectedConsentsIds,
-											allConsents: allConsents,
-											isCheckedIn: isCheckedIn)
+											allConsents: allConsents)
 		}
 		set {
 			self.selectedJourney = newValue.selectedJourney
 			self.selectedPathway = newValue.selectedPathway
 			self.selectedConsentsIds = newValue.selectedConsentsIds
 			self.allConsents = newValue.allConsents
-			self.isCheckedIn = newValue.isCheckedIn
-		}
-	}
-
-	public var checkIn: CheckInContainerState? {
-		get {
-			guard let selectedJourney = selectedJourney,
-				let selectedPathway = selectedPathway,
-				isCheckedIn == true else { return nil }
-			return CheckInContainerState(journey: selectedJourney,
-																	 pathway: selectedPathway,
-																	 selectedStepId: selectedStepId,
-																	 templates: selectedConsents)
-		}
-		set {
-			guard let newValue = newValue else { return }
-			self.selectedJourney = newValue.journey
-			self.selectedPathway = newValue.pathway
-			self.selectedStepId = newValue.selectedStepId
-			self.selectedConsents = newValue.templates
-		}
-	}
-
-	var selectedConsents: [FormTemplate] {
-		get {
-			allConsents.filter { self.selectedConsentsIds.contains($0.id)}
-		}
-		set {
-			allConsents.removeAll(where: { consent in
-				self.selectedConsentsIds.contains(where: { id in
-					id == consent.id
-				})
-			})
-			allConsents.append(contentsOf: newValue)
 		}
 	}
 

@@ -82,7 +82,7 @@ struct CheckInMain: View {
 				.frame(minWidth: 240, maxWidth: 480, alignment: .center)
 				.frame(height: 80)
 				PabauForm(store:
-					self.store.scope(value: { $0.selectedTemplate.formStructure.formStructure },
+					self.store.scope(value: { $0.currentFields },
 													 action: { $0 }))
 				}
 					.padding(.leading, 40)

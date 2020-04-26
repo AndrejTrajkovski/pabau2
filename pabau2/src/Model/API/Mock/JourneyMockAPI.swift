@@ -80,11 +80,11 @@ extension JourneyMockAPI {
 			FormStructure(formStructure: [
 				CSSField(id: 6,
 								 cssClass: .signature(Signature()),
-								 title: "Please sign"
+								 title: "Patient signature"
 				),
 				CSSField(id: 7,
 								 cssClass: .signature(Signature()),
-								 title: "Please sign"
+								 title: "Practitioner signature"
 				),
 				CSSField(id: 5,
 								 cssClass: .textarea(TextArea(text: "some text")),

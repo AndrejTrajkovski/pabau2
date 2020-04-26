@@ -28,7 +28,6 @@ let cssClassReducer: Reducer<CSSClass, CheckInFormAction, JourneyEnvironemnt> =
 
 struct FormSectionField: View, Equatable {
 	static func == (lhs: FormSectionField, rhs: FormSectionField) -> Bool {
-		if lhs.viewStore.value.textArea != nil { return true }
 		return lhs.viewStore.value == rhs.viewStore.value
 	}
 
@@ -58,7 +57,8 @@ struct FormSectionField: View, Equatable {
 		return Section(header:
 			Text(viewStore.value.headerTitle)
 				.font(.semibold18)
-				.frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+				.frame(minWidth: 0, maxWidth: .infinity,
+							 alignment: viewStore.value.signature != nil ? .center : .leading)
 				.padding(.top)
 				.padding(.bottom)
 		) {
@@ -87,7 +87,6 @@ struct FormSectionField: View, Equatable {
 				}
 				if viewStore.value.signature != nil {
 					SignatureField()
-					.frame(height: 200)
 				}
 			}
 			.listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))

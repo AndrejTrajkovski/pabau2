@@ -30,7 +30,7 @@ struct PabauTabBar: View {
 		let isShowingAppointments: Bool
 		init(state: TabBarState) {
 			self.isShowingEmployees = state.journey.employeesState.isShowingEmployees
-			self.isShowingCheckin = state.journey.isCheckedIn
+			self.isShowingCheckin = state.journey.checkIn != nil
 			self.isShowingAppointments = state.journey.addAppointment.isShowingAddAppointment
 		}
 	}
@@ -95,17 +95,17 @@ struct PabauTabBar: View {
 
 public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> = .combine(
 	settingsReducer.pullback(
-					 value: \TabBarState.settings,
-					 action: /TabBarAction.settings,
-					 environment: { SettingsEnvironment($0) }
+		value: \TabBarState.settings,
+		action: /TabBarAction.settings,
+		environment: { SettingsEnvironment($0) }
 	),
 	journeyContainerReducer.pullback(
-					 value: \TabBarState.journey,
-					 action: /TabBarAction.journey,
-					 environment: {
-						return JourneyEnvironemnt(
-							apiClient: $0.journeyAPI,
-							userDefaults: $0.userDefaults)
+		value: \TabBarState.journey,
+		action: /TabBarAction.journey,
+		environment: {
+			return JourneyEnvironemnt(
+				apiClient: $0.journeyAPI,
+				userDefaults: $0.userDefaults)
 	})
 )
 
