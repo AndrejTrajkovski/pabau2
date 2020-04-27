@@ -78,9 +78,17 @@ extension JourneyMockAPI {
 								 ePaper: false,
 								 formStructure:
 			FormStructure(formStructure: [
+				CSSField(id: 8,
+								 cssClass: .input_text(InputText(text: "input text 1")),
+								 title: "Insert some text"
+				),
 				CSSField(id: 6,
 								 cssClass: .signature(Signature()),
 								 title: "Patient signature"
+				),
+				CSSField(id: 9,
+								 cssClass: .input_text(InputText(text: "input text 2")),
+								 title: "Insert some text 2"
 				),
 				CSSField(id: 7,
 								 cssClass: .signature(Signature()),

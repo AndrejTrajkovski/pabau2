@@ -1,7 +1,3 @@
-public struct InputText: Codable, Equatable, Hashable {
-	
-}
-
 public struct Signature: Codable, Equatable, Hashable {
 	
 }

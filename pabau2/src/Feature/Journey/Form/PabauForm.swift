@@ -20,11 +20,11 @@ let fieldReducer: Reducer<CSSField, CheckInFormAction, JourneyEnvironemnt> =
 struct PabauForm: View {
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
 	let store: Store<[CSSField], CheckInMainAction>
-	@ObservedObject var viewStore: ViewStore<[CSSField], CheckInMainAction>
+//	@ObservedObject var viewStore: ViewStore<[CSSField], CheckInMainAction>
 
 	init(store: Store<[CSSField], CheckInMainAction>) {
 		self.store = store
-		self.viewStore = self.store.view
+//		self.viewStore = self.store.view
 		UITableViewHeaderFooterView.appearance().tintColor = UIColor.white
 		UITableView.appearance().separatorStyle = .none
 	}
@@ -32,7 +32,7 @@ struct PabauForm: View {
 	public var body: some View {
 		print("pabau form body")
 		return List {
-			ForEachWithIndex(viewStore.value, id: \.self) { index, cssValue in
+			ForEachWithIndex(store.view.value, id: \.self) { index, cssValue in
 				FormSectionField(store:
 					self.store.scope(
 						value: { _ in cssValue },

@@ -6,7 +6,7 @@ public struct MultilineTextView: UIViewRepresentable {
 	var initialText: String
 	let placeholder: String
 	let onTextChange: (String) -> Void
-	
+
 	public init (initialText: String,
 							 placeholder: String,
 							 onTextChange: @escaping (String) -> Void) {

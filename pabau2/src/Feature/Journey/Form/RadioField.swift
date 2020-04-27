@@ -4,38 +4,47 @@ import Model
 import CasePaths
 
 public enum RadioFieldAction {
-	case didSelectChoice(Int)
+	case didUpdateRadio(Radio)
 }
 
 let radioFieldReducer = Reducer<Radio, RadioFieldAction, JourneyEnvironemnt> { state, action, _ in
 	switch action {
-	case .didSelectChoice(let id):
-		state.selectedChoiceId = id
+	case .didUpdateRadio(let radio):
+		state = radio
 	}
 	return []
 }
 
 struct RadioField: View, Equatable {
 	static func == (lhs: RadioField, rhs: RadioField) -> Bool {
-		lhs.viewStore.value == rhs.viewStore.value
+		lhs.radio == rhs.radio
 	}
-	
-	let store: Store<Radio, RadioFieldAction>
-	@ObservedObject var viewStore: ViewStore<Radio, RadioFieldAction>
+	@State var radio: Radio
+	let onChange: (Radio) -> Void
 
-	init(store: Store<Radio, RadioFieldAction>) {
-		self.store = store
-		self.viewStore = self.store.view
+	init (radio: Radio, onChange: @escaping (Radio) -> Void) {
+		self._radio = State(initialValue: radio)
+		self.onChange = onChange
 	}
+//	let store: Store<Radio, RadioFieldAction>
+//	@ObservedObject var viewStore: ViewStore<Radio, RadioFieldAction>
+//
+//	init(store: Store<Radio, RadioFieldAction>) {
+//		self.store = store
+//		self.viewStore = self.store.view
+//	}
 
 	var body: some View {
 		VStack {
-			Picker(selection: self.viewStore.binding(
-				value: \.selectedChoiceId,
-				action: /RadioFieldAction.didSelectChoice),
-						 label: Text("Radio")
-			) {
-				ForEach(store.view.value.choices, id: \.id) { (choice: RadioChoice) in
+			Picker(selection:
+				Binding.init(
+					get: { self.radio.selectedChoiceId },
+					set: { (id: Int) in
+						self.radio.selectedChoiceId = id
+						self.onChange(self.radio)
+				}),
+						 label: Text("Radio")) {
+				ForEach(radio.choices, id: \.id) { (choice: RadioChoice) in
 					Text(String(choice.title)).tag(choice.id)
 				}
 			}.pickerStyle(SegmentedPickerStyle())
