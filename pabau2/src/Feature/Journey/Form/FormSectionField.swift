@@ -101,7 +101,6 @@ struct FormField: View, Equatable {
 							value: { _ in self.myValue.textArea! },
 							action: { .textArea($0) })
 					)
-					.frame(height: 200)
 				}
 				if self.myValue.signature != nil {
 					SignatureField()

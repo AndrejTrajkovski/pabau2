@@ -29,6 +29,6 @@ struct TextAreaField: View {
 											placeholder: "Some placeholder",
 											onTextChange: {
 												self.viewStore.send(.didUpdateText($0))
-		})
+		}).frame(height: 200)
 	}
 }
