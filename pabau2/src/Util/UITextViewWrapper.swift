@@ -22,7 +22,7 @@ public struct MultilineTextView: UIViewRepresentable {
 	public func makeUIView(context: Context) -> UITextView {
 		let textView = UITextView()
 		textView.delegate = context.coordinator
-		textView.isScrollEnabled = false
+		textView.isScrollEnabled = true
 		textView.isEditable = true
 		textView.isUserInteractionEnabled = true
 		textView.text = initialText
