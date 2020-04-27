@@ -33,26 +33,28 @@ let cssClassReducer: Reducer<CSSClass, CheckInFormAction, JourneyEnvironemnt> =
 
 struct FormSectionField: View, Equatable {
 	static func == (lhs: FormSectionField, rhs: FormSectionField) -> Bool {
-		return lhs.store.view.value == rhs.store.view.value
+		return lhs.cssField == rhs.cssField
 	}
 
-	let store: Store<CSSField, CheckInFormAction>
+//	let store: Store<CSSField, CheckInFormAction>
 	let isSignature: Bool
-	init (store: Store<CSSField, CheckInFormAction>) {
-		self.store = store
-		self.isSignature = extract(case: CSSClass.signature, from: store.view.value.cssClass) != nil
+	@Binding var cssField: CSSField
+	init (cssField: Binding<CSSField>) {
+//		self.store = store
+		self._cssField = cssField
+		self.isSignature = extract(case: CSSClass.signature, from: cssField.wrappedValue.cssClass) != nil
 	}
 
 	var body: some View {
 		return Section(header:
-			Text(self.store.view.value.title ?? "")
+			Text(cssField.title ?? "")
 				.font(.semibold18)
 				.frame(minWidth: 0, maxWidth: .infinity,
 							 alignment: isSignature ? .center : .leading)
 				.padding(.top)
 				.padding(.bottom)
 		) {
-			FormField(store: store)
+			FormField(cssField: $cssField)
 				.listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
 		}.background(Color.white)
 	}
@@ -60,17 +62,14 @@ struct FormSectionField: View, Equatable {
 
 struct FormField: View, Equatable {
 	static func == (lhs: FormField, rhs: FormField) -> Bool {
-		return lhs.store.view.value == rhs.store.view.value
+		return lhs.myValue == rhs.myValue
 	}
-
-	let store: Store<CSSField, CheckInFormAction>
-	@ObservedObject var viewStore: ViewStore<CSSField, CheckInFormAction>
+	@Binding var cssField: CSSField
 	let myValue: ViewState
 
-	init (store: Store<CSSField, CheckInFormAction>) {
-		self.store = store
-		self.viewStore = self.store.view(removeDuplicates: ==)
-		self.myValue = ViewState.init(state: self.store.view.value)
+	init (cssField: Binding<CSSField>) {
+		self.myValue = ViewState.init(state: cssField.wrappedValue)
+		self._cssField = cssField
 	}
 
 	struct ViewState: Equatable {
@@ -89,41 +88,37 @@ struct FormField: View, Equatable {
 		return
 			Group {
 				if self.myValue.checkBox != nil {
-					CheckBoxField(
-						store: self.store.scope(
-							value: { _ in self.myValue.checkBox! },
-							action: { .multipleChoice($0) }))
+					CheckBoxField(choices:
+						Binding.init(
+							get: { self.myValue.checkBox! },
+							set: { self.cssField.cssClass = CSSClass.checkboxes($0) })
+					)
 				}
 				if self.myValue.radio != nil {
-					RadioField(radio: self.myValue.radio!) {
-						self.store.view.send(.radio(.didUpdateRadio($0)))
-					}
-//						 self.store.view.binding(
-//							get: { _ in  },
-//							send: { .radio(.didUpdateRadio($0))})
-//					)
-//						store: self.store.scope(
-//							value: { _ in self.myValue.radio! },
-//							action: { .radio($0) }))
+					RadioField(radio:
+						Binding.init(
+							get: { self.myValue.radio! },
+							set: { self.cssField.cssClass = CSSClass.radio($0) })
+					)
 				}
 				if self.myValue.staticText != nil {
 					Text(self.myValue.staticText!.text)
 				}
 				if self.myValue.textArea != nil {
-					TextAreaField (
-						store: self.store.scope(
-							value: { _ in self.myValue.textArea! },
-							action: { .textArea($0) })
-					)
+					MultilineTextView(initialText: self.myValue.textArea!.text,
+														placeholder: "Some placeholder",
+														onTextChange: {
+															self.cssField.cssClass = CSSClass.textarea(TextArea(text: $0))
+					}).frame(height: 150)
 				}
 				if self.myValue.signature != nil {
 					SignatureField()
 				}
 				if self.myValue.inputText != nil {
 					InputTextField (myText:
-						self.store.view.binding(
-							get: { _ in self.myValue.inputText!.text },
-							send: { .inputText(.didChangeText($0))})
+						Binding.init(
+							get: { self.myValue.inputText! .text},
+							set: { self.cssField.cssClass = CSSClass.input_text(InputText(text: $0)) })
 					)
 				}
 		}

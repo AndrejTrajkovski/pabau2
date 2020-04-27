@@ -19,20 +19,7 @@ struct RadioField: View, Equatable {
 	static func == (lhs: RadioField, rhs: RadioField) -> Bool {
 		lhs.radio == rhs.radio
 	}
-	@State var radio: Radio
-	let onChange: (Radio) -> Void
-
-	init (radio: Radio, onChange: @escaping (Radio) -> Void) {
-		self._radio = State(initialValue: radio)
-		self.onChange = onChange
-	}
-//	let store: Store<Radio, RadioFieldAction>
-//	@ObservedObject var viewStore: ViewStore<Radio, RadioFieldAction>
-//
-//	init(store: Store<Radio, RadioFieldAction>) {
-//		self.store = store
-//		self.viewStore = self.store.view
-//	}
+	@Binding var radio: Radio
 
 	var body: some View {
 		VStack {
@@ -41,7 +28,6 @@ struct RadioField: View, Equatable {
 					get: { self.radio.selectedChoiceId },
 					set: { (id: Int) in
 						self.radio.selectedChoiceId = id
-						self.onChange(self.radio)
 				}),
 						 label: Text("Radio")) {
 				ForEach(radio.choices, id: \.id) { (choice: RadioChoice) in

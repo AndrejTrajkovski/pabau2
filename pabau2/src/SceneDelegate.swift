@@ -10,8 +10,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 	var window: UIWindow?
 	func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 		if let windowScene = scene as? UIWindowScene {
-//			let reducer = logging(appReducer)
-			let reducer = appReducer
+			let reducer = appReducer.logging()
+//			let reducer = appReducer
       let window = UIWindow(windowScene: windowScene)
 			let userDefaults = StandardUDConfig()
 			let user = userDefaults.loggedInUser

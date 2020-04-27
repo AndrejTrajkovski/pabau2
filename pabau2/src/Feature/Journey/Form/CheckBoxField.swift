@@ -5,36 +5,36 @@ import CasePaths
 import Util
 
 public enum CheckboxFieldAction {
-	case didTouchChoiceId(Int)
+	case didUpdateChoices([CheckBoxChoice])
 }
 
 public let checkBoxFieldReducer =
 	Reducer<[CheckBoxChoice], CheckboxFieldAction, JourneyEnvironemnt> { state, action, _ in
 	switch action {
-	case .didTouchChoiceId(let id):
-		let idx = state.firstIndex(where: { $0.id == id })
-		state[idx!].isSelected.toggle()
+	case .didUpdateChoices(let updated):
+		state = updated
 		return []
 	}
 }
 
-struct CheckBoxField: View, Equatable {
-	static func == (lhs: CheckBoxField, rhs: CheckBoxField) -> Bool {
-		lhs.viewStore.value == rhs.viewStore.value
-	}
-
-	let store: Store<[CheckBoxChoice], CheckboxFieldAction>
-	@ObservedObject var viewStore: ViewStore<[CheckBoxChoice], CheckboxFieldAction>
-	init(store: Store<[CheckBoxChoice], CheckboxFieldAction>) {
-		self.store = store
-		self.viewStore = self.store.view
-	}
+struct CheckBoxField: View {
+	@Binding var choices: [CheckBoxChoice]
+//	let onChange: ([CheckBoxChoice]) -> Void
+//	let store: Store<[CheckBoxChoice], CheckboxFieldAction>
+//	init(store: Store<[CheckBoxChoice], CheckboxFieldAction>) {
+//		self._choices = State(initialValue: store.view.value)
+//		self.store = store
+//	}
 
 	var body: some View {
-		ForEach(self.viewStore.value, id: \.self) { (choice: CheckBoxChoice) in
+		ForEach(choices, id: \.self) { (choice: CheckBoxChoice) in
 			ChoiceRow(choice: choice)
 				.padding(4)
-				.onTapGesture { self.viewStore.send(.didTouchChoiceId(choice.id))}
+				.onTapGesture {
+					let idx = self.choices.firstIndex(where: { $0.id == choice.id })
+					self.choices[idx!].isSelected.toggle()
+//					self.store.view.send(.didUpdateChoices(self.choices))
+			}
 		}
 	}
 }
