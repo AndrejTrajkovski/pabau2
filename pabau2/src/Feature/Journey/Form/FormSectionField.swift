@@ -105,11 +105,13 @@ struct FormField: View, Equatable {
 					Text(self.myValue.staticText!.text)
 				}
 				if self.myValue.textArea != nil {
-					MultilineTextView(initialText: self.myValue.textArea!.text,
-														placeholder: "Some placeholder",
-														onTextChange: {
-															self.cssField.cssClass = CSSClass.textarea(TextArea(text: $0))
-					}).frame(height: 150)
+					TextAreaField(textArea:
+						Binding.init(
+								get: { self.myValue.textArea! },
+								set: { self.cssField.cssClass = CSSClass.textarea($0) }
+						)
+					)
+					.frame(height: 150)
 				}
 				if self.myValue.signature != nil {
 					SignatureField()

@@ -17,18 +17,13 @@ public enum TextAreaFieldAction {
 }
 
 struct TextAreaField: View {
-	let store: Store<TextArea, TextAreaFieldAction>
-	@ObservedObject var viewStore: ViewStore<TextArea, TextAreaFieldAction>
-	init(store: Store<TextArea, TextAreaFieldAction>) {
-		self.store = store
-		self.viewStore = self.store.view
-	}
+	@Binding var textArea: TextArea
 
 	var body: some View {
-		MultilineTextView(initialText: self.viewStore.value.text,
+		MultilineTextView(initialText: self.textArea.text,
 											placeholder: "Some placeholder",
 											onTextChange: {
-												self.viewStore.send(.didUpdateText($0))
+												self.textArea.text = $0
 		}).frame(height: 150)
 	}
 }
