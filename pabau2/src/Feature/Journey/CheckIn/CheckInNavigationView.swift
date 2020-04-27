@@ -16,11 +16,11 @@ public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction
 	checkInMainReducer.pullback(
 					 value: \CheckInContainerState.self,
 					 action: /CheckInContainerAction.main,
-					 environment: { $0 }),
-	fieldsReducer.pullback(
-					 value: \CheckInContainerState.self,
-					 action: /CheckInContainerAction.main,
 					 environment: { $0 })
+//	fieldsReducer.pullback(
+//					 value: \CheckInContainerState.self,
+//					 action: /CheckInContainerAction.main,
+//					 environment: { $0 })
 )
 
 public struct CheckInNavigationView: View {

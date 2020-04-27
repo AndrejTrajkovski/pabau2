@@ -6,7 +6,7 @@ import Util
 public enum CheckInMainAction {
 	case didSelectStepId(Int)
 	case closeBtnTap
-	case form(Indexed<CheckInFormAction>)
+	case didUpdateFields([CSSField])
 }
 
 let checkInMainReducer = Reducer<CheckInContainerState, CheckInMainAction, JourneyEnvironemnt> { state, action, _ in
@@ -15,8 +15,8 @@ let checkInMainReducer = Reducer<CheckInContainerState, CheckInMainAction, Journ
 		break
 	case .didSelectStepId(let id):
 		state.selectedStepId = id
-	case .form:
-		break
+	case .didUpdateFields(let fields):
+		state.currentFields = fields
 	}
 	return []
 }
@@ -37,11 +37,13 @@ struct CheckInMain: View {
 		let steps: [Step]
 		let selectedStepId: Int
 		let journey: Journey
+		let currentFields: [CSSField]
 
 		init(state: CheckInContainerState) {
 			self.steps = state.pathway.steps
 			self.journey = state.journey
 			self.selectedStepId = state.selectedStepId
+			self.currentFields = state.currentFields
 		}
 	}
 
@@ -81,9 +83,11 @@ struct CheckInMain: View {
 				}
 				.frame(minWidth: 240, maxWidth: 480, alignment: .center)
 				.frame(height: 80)
-				PabauForm(store:
-					self.store.scope(value: { $0.currentFields },
-													 action: { $0 }))
+					PabauForm(cssFields:
+						Binding.init(
+							get: { self.viewStore.value.currentFields },
+							set: { self.viewStore.send(.didUpdateFields($0)) } )
+					)
 				}
 					.padding(.leading, 40)
 					.padding(.trailing, 40)

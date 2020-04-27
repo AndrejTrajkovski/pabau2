@@ -36,11 +36,9 @@ struct FormSectionField: View, Equatable {
 		return lhs.cssField == rhs.cssField
 	}
 
-//	let store: Store<CSSField, CheckInFormAction>
 	let isSignature: Bool
 	@Binding var cssField: CSSField
 	init (cssField: Binding<CSSField>) {
-//		self.store = store
 		self._cssField = cssField
 		self.isSignature = extract(case: CSSClass.signature, from: cssField.wrappedValue.cssClass) != nil
 	}
@@ -55,7 +53,7 @@ struct FormSectionField: View, Equatable {
 				.padding(.bottom)
 		) {
 			FormField(cssField: $cssField)
-				.listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
+//				.listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
 		}.background(Color.white)
 	}
 }

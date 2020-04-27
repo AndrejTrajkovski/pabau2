@@ -4,28 +4,25 @@ import ComposableArchitecture
 import CasePaths
 import Util
 
-let fieldsReducer: Reducer<CheckInContainerState, CheckInMainAction, JourneyEnvironemnt> =
-	indexed(reducer: fieldReducer,
-					\CheckInContainerState.currentFields,
-					/CheckInMainAction.form, { $0 })
+//let fieldsReducer: Reducer<CheckInContainerState, CheckInMainAction, JourneyEnvironemnt> =
+//	indexed(reducer: fieldReducer,
+//					\CheckInContainerState.currentFields,
+//					/CheckInMainAction.form, { $0 })
 
-let fieldReducer: Reducer<CSSField, CheckInFormAction, JourneyEnvironemnt> =
-(
-	cssClassReducer.pullback(
-					 value: \CSSField.cssClass,
-					 action: /CheckInFormAction.self,
-					 environment: { $0 })
-)
+//let fieldReducer: Reducer<CSSField, CheckInFormAction, JourneyEnvironemnt> =
+//(
+//	cssClassReducer.pullback(
+//					 value: \CSSField.cssClass,
+//					 action: /CheckInFormAction.self,
+//					 environment: { $0 })
+//)
 
 struct PabauForm: View {
+	
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
-	let store: Store<[CSSField], CheckInMainAction>
-//	@ObservedObject var viewStore: ViewStore<[CSSField], CheckInMainAction>
-	@State var cssFields: [CSSField]
-	init(store: Store<[CSSField], CheckInMainAction>) {
-		self.store = store
-		self._cssFields = State(initialValue: self.store.view.value)
-//		self.viewStore = self.store.view
+	@Binding var cssFields: [CSSField]
+	init(cssFields: Binding<[CSSField]>) {
+		self._cssFields = cssFields
 		UITableViewHeaderFooterView.appearance().tintColor = UIColor.white
 		UITableView.appearance().separatorStyle = .none
 	}
@@ -37,17 +34,11 @@ struct PabauForm: View {
 				FormSectionField(cssField:
 					Binding(
 						get: { self.cssFields[index] },
-						set: { (newValue) in self.cssFields[index] = newValue})
+						set: {
+							(newValue) in self.cssFields[index] = newValue
+					})
 				).equatable()
 			}
-//			ForEachWithIndex(cssFields, id: \.self) { index, cssValue in
-//				FormSectionField(store:
-//					self.store.scope(
-//						value: { _ in cssValue },
-//						action: { .form(Indexed(index: index, value: $0)) }
-//				))
-//				.equatable()
-//			}
 		}.padding(.bottom, keyboardHandler.keyboardHeight)
 	}
 }
