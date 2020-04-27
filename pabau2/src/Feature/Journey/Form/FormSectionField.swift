@@ -57,7 +57,7 @@ struct FormField: View, Equatable {
 	static func == (lhs: FormField, rhs: FormField) -> Bool {
 		return lhs.store.view.value == rhs.store.view.value
 	}
-
+	
 	let store: Store<CSSField, CheckInFormAction>
 	let myValue: ViewState
 
@@ -78,32 +78,34 @@ struct FormField: View, Equatable {
 
 	var body: some View {
 		print("body of field: \(myValue)")
-		return Group {
-			if myValue.checkBox != nil {
-				CheckBoxField(
-					store: store.scope(
-						value: { _ in self.myValue.checkBox! },
-						action: { .multipleChoice($0) }))
-			}
-			if myValue.radio != nil {
-				RadioField(
-					store: store.scope(
-						value: { _ in self.myValue.radio! },
-						action: { .radio($0) }))
-			}
-			if myValue.staticText != nil {
-				Text(myValue.staticText!.text)
-			}
-			if myValue.textArea != nil {
-				TextAreaField (
-					store: store.scope(
-						value: { _ in self.myValue.textArea! },
-						action: { .textArea($0) })
-				)
-			}
-			if myValue.signature != nil {
-				SignatureField()
-			}
+		return
+			Group {
+				if self.myValue.checkBox != nil {
+					CheckBoxField(
+						store: self.store.scope(
+							value: { _ in self.myValue.checkBox! },
+							action: { .multipleChoice($0) }))
+				}
+				if self.myValue.radio != nil {
+					RadioField(
+						store: self.store.scope(
+							value: { _ in self.myValue.radio! },
+							action: { .radio($0) }))
+				}
+				if self.myValue.staticText != nil {
+					Text(self.myValue.staticText!.text)
+				}
+				if self.myValue.textArea != nil {
+					TextAreaField (
+						store: self.store.scope(
+							value: { _ in self.myValue.textArea! },
+							action: { .textArea($0) })
+					)
+					.frame(height: 200)
+				}
+				if self.myValue.signature != nil {
+					SignatureField()
+				}
 		}
 	}
 }

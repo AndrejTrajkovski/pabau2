@@ -1,49 +1,12 @@
 import SwiftUI
 import UIKit
 
-//struct TextView: UIViewRepresentable {
-//
-//	@State var text: String
-//
-//	func makeUIView(context: Context) -> UITextView {
-//		let view = UITextView()
-//		view.isScrollEnabled = false
-//		view.isEditable = true
-//		view.isUserInteractionEnabled = true
-//		view.contentInset = UIEdgeInsets(top: 5,
-//																		 left: 10, bottom: 5, right: 5)
-//		view.delegate = context.coordinator
-//
-//		return view
-//	}
-//
-//	func updateUIView(_ uiView: UITextView, context: Context) {
-//		uiView.text = text
-//	}
-//
-//	func makeCoordinator() -> TextView.Coordinator {
-//		Coordinator(self)
-//	}
-//
-//	class Coordinator: NSObject, UITextViewDelegate {
-//		var control: TextView
-//
-//		init(_ control: TextView) {
-//			self.control = control
-//		}
-//
-//		func textViewDidChange(_ textView: UITextView) {
-//			control.text = textView.text
-//		}
-//	}
-//}
-
 public struct MultilineTextView: UIViewRepresentable {
 
 	var initialText: String
 	let placeholder: String
 	let onTextChange: (String) -> Void
-
+	
 	public init (initialText: String,
 							 placeholder: String,
 							 onTextChange: @escaping (String) -> Void) {
@@ -66,6 +29,9 @@ public struct MultilineTextView: UIViewRepresentable {
 		textView.layer.cornerRadius = 8.0
 		textView.layer.masksToBounds = true
 		textView.layer.borderWidth = 1.0
+		textView.addDoneButton(title: "Done", target: textView, selector: #selector(UIView.endEditing(_:)))
+		textView.text = initialText
+		textView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
 		return textView
 	}
 
@@ -86,7 +52,7 @@ public struct MultilineTextView: UIViewRepresentable {
 //		}
 		
 //		public func textViewDidChange(_ textView: UITextView) {
-//
+//			parent.onTextChange(textView.text)
 //		}
 
 		public func textViewDidBeginEditing(_ textView: UITextView) {
@@ -102,5 +68,18 @@ public struct MultilineTextView: UIViewRepresentable {
 			}
 			parent.onTextChange(textView.text)
 		}
+	}
+}
+
+extension UITextView {
+	func addDoneButton(title: String, target: Any, selector: Selector) {
+		let toolBar = UIToolbar(frame: CGRect(x: 0.0,
+																					y: 0.0,
+																					width: UIScreen.main.bounds.size.width,
+																					height: 44.0))//1
+		let flexible = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)//2
+		let barButton = UIBarButtonItem(title: title, style: .plain, target: target, action: selector)//3
+		toolBar.setItems([flexible, barButton], animated: false)//4
+		self.inputAccessoryView = toolBar//5
 	}
 }

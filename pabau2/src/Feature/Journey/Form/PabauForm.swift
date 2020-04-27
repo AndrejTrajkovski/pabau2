@@ -18,6 +18,7 @@ let fieldReducer: Reducer<CSSField, CheckInFormAction, JourneyEnvironemnt> =
 )
 
 struct PabauForm: View {
+	@EnvironmentObject var keyboardHandler: KeyboardFollower
 	let store: Store<[CSSField], CheckInMainAction>
 	@ObservedObject var viewStore: ViewStore<[CSSField], CheckInMainAction>
 
@@ -39,6 +40,6 @@ struct PabauForm: View {
 				))
 				.equatable()
 			}
-		}
+		}.padding(.bottom, keyboardHandler.keyboardHeight)
 	}
 }
