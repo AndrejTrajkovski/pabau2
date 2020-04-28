@@ -17,8 +17,34 @@ import Util
 //					 environment: { $0 })
 //)
 
-struct PabauForm: View {
+struct PabauFormWrap: View {
+	let store: Store<CheckInContainerState, CheckInMainAction>
+	@ObservedObject var viewStore: ViewStore<State, CheckInMainAction>
+	struct State: Equatable {
+		let currentFields: [CSSField]
+		init (state: CheckInContainerState) {
+			self.currentFields = state.currentFields
+		}
+	}
 	
+	init(store: Store<CheckInContainerState, CheckInMainAction>) {
+		self.store = store
+		self.viewStore = store.scope(
+			value: State.init(state:),
+			action: { $0 }).view
+	}
+
+	var body: some View {
+		PabauForm(cssFields:
+			Binding.init(
+				get: { self.viewStore.value.currentFields },
+				set: { self.viewStore.send(.didUpdateFields($0)) } )
+		)
+	}
+}
+
+struct PabauForm: View {
+
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
 	@Binding var cssFields: [CSSField]
 	init(cssFields: Binding<[CSSField]>) {

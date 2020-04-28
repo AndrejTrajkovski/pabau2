@@ -17,14 +17,12 @@ public let checkBoxFieldReducer =
 	}
 }
 
-struct CheckBoxField: View {
+struct CheckBoxField: View, Equatable {
+	static func == (lhs: CheckBoxField, rhs: CheckBoxField) -> Bool {
+		lhs.choices == rhs.choices
+	}
+	
 	@Binding var choices: [CheckBoxChoice]
-//	let onChange: ([CheckBoxChoice]) -> Void
-//	let store: Store<[CheckBoxChoice], CheckboxFieldAction>
-//	init(store: Store<[CheckBoxChoice], CheckboxFieldAction>) {
-//		self._choices = State(initialValue: store.view.value)
-//		self.store = store
-//	}
 
 	var body: some View {
 		ForEach(choices, id: \.self) { (choice: CheckBoxChoice) in

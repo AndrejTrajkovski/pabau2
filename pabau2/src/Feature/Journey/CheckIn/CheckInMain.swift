@@ -37,13 +37,11 @@ struct CheckInMain: View {
 		let steps: [Step]
 		let selectedStepId: Int
 		let journey: Journey
-		let currentFields: [CSSField]
 
 		init(state: CheckInContainerState) {
 			self.steps = state.pathway.steps
 			self.journey = state.journey
 			self.selectedStepId = state.selectedStepId
-			self.currentFields = state.currentFields
 		}
 	}
 
@@ -83,11 +81,7 @@ struct CheckInMain: View {
 				}
 				.frame(minWidth: 240, maxWidth: 480, alignment: .center)
 				.frame(height: 80)
-					PabauForm(cssFields:
-						Binding.init(
-							get: { self.viewStore.value.currentFields },
-							set: { self.viewStore.send(.didUpdateFields($0)) } )
-					)
+					PabauFormWrap(store: self.store)
 				}
 					.padding(.leading, 40)
 					.padding(.trailing, 40)

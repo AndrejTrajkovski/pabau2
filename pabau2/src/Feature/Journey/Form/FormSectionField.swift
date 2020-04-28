@@ -82,7 +82,7 @@ struct FormField: View, Equatable {
 	}
 
 	var body: some View {
-		print("body of field: \(myValue)")
+		print("form section body \(self.myValue.id)")
 		return
 			Group {
 				if self.myValue.checkBox != nil {
