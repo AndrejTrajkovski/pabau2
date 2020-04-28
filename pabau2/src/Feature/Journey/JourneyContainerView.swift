@@ -68,7 +68,7 @@ let checkInMiddleware2 = Reducer<JourneyState, ChooseFormAction, JourneyEnvirone
 			journey: selJ,
 			pathway: selP,
 			selectedStepId: 1,
-			templates: state.allConsents.filter { state.selectedConsentsIds.contains($0.id)})
+			consents: state.allConsents.filter { state.selectedConsentsIds.contains($0.id)})
 	default:
 		return []
 	}

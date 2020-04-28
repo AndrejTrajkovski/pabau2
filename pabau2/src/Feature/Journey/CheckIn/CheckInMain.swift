@@ -4,19 +4,17 @@ import ComposableArchitecture
 import Util
 
 public enum CheckInMainAction {
-	case didSelectStepId(Int)
 	case closeBtnTap
-	case didUpdateFields([CSSField])
+	case patient(StepFormsAction)
 }
 
 let checkInMainReducer = Reducer<CheckInContainerState, CheckInMainAction, JourneyEnvironemnt> { state, action, _ in
 	switch action {
 	case .closeBtnTap:
+		//handled elsewhere
 		break
-	case .didSelectStepId(let id):
-		state.selectedStepId = id
-	case .didUpdateFields(let fields):
-		state.currentFields = fields
+	case .patient(_):
+		break
 	}
 	return []
 }
@@ -34,14 +32,10 @@ struct CheckInMain: View {
 	}
 
 	struct State: Equatable {
-		let steps: [Step]
-		let selectedStepId: Int
 		let journey: Journey
 
 		init(state: CheckInContainerState) {
-			self.steps = state.pathway.steps
 			self.journey = state.journey
-			self.selectedStepId = state.selectedStepId
 		}
 	}
 
@@ -74,21 +68,60 @@ struct CheckInMain: View {
 									 minHeight: 0, maxHeight: .infinity,
 									 alignment: .topTrailing)
 				}.frame(height: 168.0)
-				VStack {
-				StepsCollectionView(steps: self.viewStore.value.steps,
-														selectedId: self.viewStore.value.selectedStepId) {
-															self.viewStore.send(.didSelectStepId($0))
-				}
-				.frame(minWidth: 240, maxWidth: 480, alignment: .center)
-				.frame(height: 80)
-					PabauFormWrap(store: self.store)
-				}
-					.padding(.leading, 40)
-					.padding(.trailing, 40)
+				StepForms(store:
+					self.store.scope(
+						value: { $0.patient },
+						action: { .patient($0) }))
 				Spacer()
-				//			.padding(.top, 24)
 			}
 			.navigationBarTitle("")
 			.navigationBarHidden(true)
+	}
+}
+
+struct StepFormsState {
+	var steps: [Step]
+	var selectedStepId: Int
+	var templates: [FormTemplate]
+	var currentFields: [CSSField]
+}
+
+public enum StepFormsAction {
+	case didUpdateFields([CSSField])
+	case didSelectStepId(Int)
+}
+
+let stepFormsReducer = Reducer<StepFormsState, StepFormsAction, JourneyEnvironemnt> { state, action, env in
+	switch action {
+		case .didUpdateFields(let fields):
+		state.currentFields = fields
+		case .didSelectStepId(let id):
+		state.selectedStepId = id
+	}
+	return []
+}
+
+struct StepForms: View {
+	
+	let store: Store<StepFormsState, StepFormsAction>
+	@ObservedObject var viewStore: ViewStore<StepFormsState, StepFormsAction>
+	
+	init(store: Store<StepFormsState, StepFormsAction>) {
+		self.store = store
+		self.viewStore = store.view(removeDuplicates: ==)
+	}
+	
+	var body: some View {
+		VStack {
+			StepsCollectionView(steps: self.viewStore.value.steps,
+													selectedId: self.viewStore.value.selectedStepId) {
+														self.viewStore.send(.didSelectStepId($0))
+		}
+		.frame(minWidth: 240, maxWidth: 480, alignment: .center)
+		.frame(height: 80)
+			PabauFormWrap(store: self.store)
+		}
+			.padding(.leading, 40)
+			.padding(.trailing, 40)
 	}
 }

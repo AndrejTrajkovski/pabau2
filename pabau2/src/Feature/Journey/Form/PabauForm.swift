@@ -18,16 +18,16 @@ import Util
 //)
 
 struct PabauFormWrap: View {
-	let store: Store<CheckInContainerState, CheckInMainAction>
-	@ObservedObject var viewStore: ViewStore<State, CheckInMainAction>
+	let store: Store<StepFormsState, StepFormsAction>
+	@ObservedObject var viewStore: ViewStore<State, StepFormsAction>
 	struct State: Equatable {
 		let currentFields: [CSSField]
-		init (state: CheckInContainerState) {
+		init (state: StepFormsState) {
 			self.currentFields = state.currentFields
 		}
 	}
 	
-	init(store: Store<CheckInContainerState, CheckInMainAction>) {
+	init(store: Store<StepFormsState, StepFormsAction>) {
 		self.store = store
 		self.viewStore = store.scope(
 			value: State.init(state:),
