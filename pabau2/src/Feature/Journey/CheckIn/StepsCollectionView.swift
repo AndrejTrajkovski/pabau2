@@ -3,30 +3,30 @@ import SwiftUI
 import Model
 
 struct StepsCollectionView: View {
-	let stepVms: [StepVM]
-	let selectedId: Int
+	let formVms: [FormVM]
+	let selectedIdx: Int
 	let didSelect: (Int) -> Void
 
-	init (steps: [Step], selectedId: Int, didSelect: @escaping (Int) -> Void) {
-		self.selectedId = selectedId
-		self.stepVms = steps.map { Self.stepVM(step: $0, selection: selectedId)}
-		self.stepVms.forEach {print("\($0.id) is selected: \($0.isSelected)")}
+	init (steps: [MetaForm], selectedIdx: Int, didSelect: @escaping (Int) -> Void) {
+		self.selectedIdx = selectedIdx
+		self.formVms = zip(steps, steps.indices).map { Self.stepVM(step: $0, selection: selectedIdx)}
+		self.formVms.forEach {print("\($0.idx) is selected: \($0.isSelected)")}
 		self.didSelect = didSelect
 	}
 
-	struct StepVM {
-		let id: Int
+	struct FormVM {
+		let idx: Int
 		let isSelected: Bool
 		let title: String
 	}
 
-	static func stepVM(step: Step, selection: Int) -> StepVM {
-		StepVM(id: step.id,
-					 isSelected: step.id == selection,
-					 title: step.stepType.title)
+	static func stepVM(step: (MetaForm, Int), selection: Int) -> FormVM {
+		FormVM(idx: step.1,
+					 isSelected: step.1 == selection,
+					 title: step.0.title)
 	}
-
-	func stepView(for viewModel: StepVM) -> some View {
+	
+	func stepView(for viewModel: FormVM) -> some View {
 		VStack {
 			Image(systemName: "checkmark.circle.fill")
 				.foregroundColor(viewModel.isSelected ? .blue : .gray)
@@ -37,12 +37,12 @@ struct StepsCollectionView: View {
 				.font(.medium10)
 				.foregroundColor(Color(hex: "909090"))
 		}.onTapGesture {
-			self.didSelect(viewModel.id)
+			self.didSelect(viewModel.idx)
 		}
 	}
 
 	var body: some View {
-		CollectionView(stepVms, id: \.id) {
+		CollectionView(formVms, id: \.idx) {
 			stepView(for: $0)
 				.frame(width: 80, height: 50)
 		}

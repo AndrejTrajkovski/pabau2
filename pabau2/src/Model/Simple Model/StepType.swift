@@ -13,8 +13,8 @@ public enum StepType: String, Codable, Equatable {
 	case photos = "photos"
 	case recalls = "recalls"
 	case aftercares = "aftercares"
-	case mediaimages = "mediaImages"
-	case mediavideos = "mediaVideos"
+//	case mediaimages = "mediaImages"
+//	case mediavideos = "mediaVideos"
 	
 	public var title: String {
 		switch self {
@@ -36,10 +36,10 @@ public enum StepType: String, Codable, Equatable {
 			return "Recall"
 		case .aftercares:
 			return "Aftercare"
-		case .mediaimages:
-			return "Image"
-		case .mediavideos:
-			return "Video"
+//		case .mediaimages:
+//			return "Image"
+//		case .mediavideos:
+//			return "Video"
 		}
 	}
 }

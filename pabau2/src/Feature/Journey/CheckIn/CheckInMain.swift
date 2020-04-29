@@ -79,24 +79,106 @@ struct CheckInMain: View {
 	}
 }
 
-struct StepFormsState {
-	var steps: [Step]
-	var selectedStepId: Int
-	var templates: [FormTemplate]
-	var currentFields: [CSSField]
+public struct PatientDetails: Equatable {
+}
+
+public struct Aftercare: Equatable {
+}
+
+public enum MetaForm: Equatable {
+	case patientDetails(PatientDetails)
+	case aftercare(Aftercare)
+	case template(FormTemplate)
+	
+	var title: String {
+		switch self {
+		case .patientDetails(_):
+			return "PATIENT DETAILS"
+		case .template(let template):
+			return title(template: template)
+		case .aftercare(_):
+			return "AFTERCARE"
+		}
+	}
+	
+	private func title(template: FormTemplate) -> String {
+		switch template.formType {
+		case .consent, .treatment:
+			return template.name
+		case .history:
+			return "HISTORY"
+		case .prescription:
+			return "PRESCRIPTION"
+		}
+	}
+}
+
+struct StepFormsState: Equatable {
+	let journeyMode: JourneyMode
+	let steps: [Step]
+//	var templates: [FormTemplate]
+//	var patientDetails: PatientDetails
+//	var consents: [FormTemplate]
+//	var medicalHistory: FormTemplate?
+//	var treatmentNotes: [FormTemplate]
+//	var aftercare: Aftercare?
+	
+	var forms: [MetaForm]
+	var runningForms: [MetaForm]
+	var selectedFormIndex: Int
+	var completedForms: [Int: Bool]
+	
+	var selectedForm: MetaForm {
+		get { runningForms[selectedFormIndex] }
+		set { runningForms[selectedFormIndex] = newValue }
+	}
+	
+	func patientMode(steps: [Step],
+									 patientDetails: PatientDetails?,
+									 medicalHistory: FormTemplate?,
+									 consents: [FormTemplate]
+									 ) -> [MetaForm] {
+		let steps = steps.filter { stepToModeMap[$0.stepType] == .patient }
+		var result = [MetaForm]()
+		steps.forEach { step in
+			switch step.stepType {
+			case .consents:
+				result += consents.map(MetaForm.template)
+			case .patientdetails:
+				guard let patientDetails = patientDetails else {}
+				result.append(.patientDetails(patientDetails))
+			case .medicalhistory:
+				guard let medicalHistory = medicalHistory else {}
+				result.append(.template(medicalHistory))
+			case .checkpatient,
+				.treatmentnotes,
+				.prescriptions,
+				.photos,
+				.recalls,
+				.aftercares:
+				fatalError("doctor steps, should be filtered earlier")
+			}
+		}
+	}
 }
 
 public enum StepFormsAction {
-	case didUpdateFields([CSSField])
-	case didSelectStepId(Int)
+	case didUpdateSelectedForm(MetaForm)
+//	case didUpdatePatientDetails(PatientDetails)
+//	case didUpdateFields([CSSField])
+	case didSelectStepIdx(Int)
+	case didFinishTemplateIdx(Int)
 }
 
 let stepFormsReducer = Reducer<StepFormsState, StepFormsAction, JourneyEnvironemnt> { state, action, env in
 	switch action {
-		case .didUpdateFields(let fields):
-		state.currentFields = fields
-		case .didSelectStepId(let id):
-		state.selectedStepId = id
+	case .didUpdateSelectedForm(let form):
+		state.selectedForm = form
+	case .didSelectStepIdx(let idx):
+		state.selectedFormIndex = idx
+	case .didFinishTemplateIdx(let idx):
+		state.forms[idx] = state.runningForms[idx]
+		state.completedForms[idx] = true
 	}
 	return []
 }
@@ -106,6 +188,13 @@ struct StepForms: View {
 	let store: Store<StepFormsState, StepFormsAction>
 	@ObservedObject var viewStore: ViewStore<StepFormsState, StepFormsAction>
 	
+//	struct State {
+//		var forms: [MetaForm]
+//		var runningForms: [MetaForm]
+//		var selectedFormIndex: Int
+//		var completedForms: [Int: Bool]
+//	}
+	
 	init(store: Store<StepFormsState, StepFormsAction>) {
 		self.store = store
 		self.viewStore = store.view(removeDuplicates: ==)
@@ -113,13 +202,15 @@ struct StepForms: View {
 	
 	var body: some View {
 		VStack {
-			StepsCollectionView(steps: self.viewStore.value.steps,
-													selectedId: self.viewStore.value.selectedStepId) {
-														self.viewStore.send(.didSelectStepId($0))
+			StepsCollectionView(steps: self.viewStore.value.forms,
+													selectedIdx: self.viewStore.value.selectedFormIndex) {
+														self.viewStore.send(.didSelectStepIdx($0))
 		}
 		.frame(minWidth: 240, maxWidth: 480, alignment: .center)
 		.frame(height: 80)
-			PabauFormWrap(store: self.store)
+			PabauFormWrap(store: self.store.scope(
+				value: { $0.runningForms[$0.selectedFormIndex] },
+				action: { $0 }))
 		}
 			.padding(.leading, 40)
 			.padding(.trailing, 40)

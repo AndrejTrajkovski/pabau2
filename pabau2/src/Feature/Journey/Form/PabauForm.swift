@@ -18,37 +18,52 @@ import Util
 //)
 
 struct PabauFormWrap: View {
-	let store: Store<StepFormsState, StepFormsAction>
+	let store: Store<MetaForm, StepFormsAction>
 	@ObservedObject var viewStore: ViewStore<State, StepFormsAction>
+	
 	struct State: Equatable {
-		let currentFields: [CSSField]
-		init (state: StepFormsState) {
-			self.currentFields = state.currentFields
+		var patientDetails: PatientDetails?
+		var template: FormTemplate?
+		var aftercare: Aftercare?
+		init (state: MetaForm) {
+			self.patientDetails = extract(case: MetaForm.patientDetails, from: state)
+			self.template = extract(case: MetaForm.template, from: state)
+			self.aftercare = extract(case: MetaForm.aftercare, from: state)
 		}
 	}
 	
-	init(store: Store<StepFormsState, StepFormsAction>) {
+	init(store: Store<MetaForm, StepFormsAction>) {
 		self.store = store
 		self.viewStore = store.scope(
 			value: State.init(state:),
 			action: { $0 }).view
 	}
-
+	
 	var body: some View {
-		PabauForm(cssFields:
-			Binding.init(
-				get: { self.viewStore.value.currentFields },
-				set: { self.viewStore.send(.didUpdateFields($0)) } )
-		)
+		Group {
+			if self.viewStore.value.template != nil {
+				PabauForm(template:
+					Binding.init(
+						get: { self.viewStore.value.template! },
+						set: { self.viewStore.send(.didUpdateSelectedForm(.template($0))) } )
+				)
+			}
+			if self.viewStore.value.patientDetails != nil {
+				Text("Patient details")
+			}
+			if self.viewStore.value.aftercare != nil {
+				Text("Aftercare")
+			}
+		}
 	}
 }
 
 struct PabauForm: View {
-
+	
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
-	@Binding var cssFields: [CSSField]
-	init(cssFields: Binding<[CSSField]>) {
-		self._cssFields = cssFields
+	@Binding var template: FormTemplate
+	init(template: Binding<FormTemplate>) {
+		self._template = template
 		UITableViewHeaderFooterView.appearance().tintColor = UIColor.white
 		UITableView.appearance().separatorStyle = .none
 	}
@@ -56,12 +71,12 @@ struct PabauForm: View {
 	public var body: some View {
 		print("pabau form body")
 		return List {
-			ForEach(cssFields.indices, id:\.self ){ index in
+			ForEach(template.formStructure.formStructure.indices, id:\.self ){ index in
 				FormSectionField(cssField:
 					Binding(
-						get: { self.cssFields[index] },
+						get: { self.template.formStructure.formStructure[index] },
 						set: {
-							(newValue) in self.cssFields[index] = newValue
+							(newValue) in self.template.formStructure.formStructure[index] = newValue
 					})
 				).equatable()
 			}
