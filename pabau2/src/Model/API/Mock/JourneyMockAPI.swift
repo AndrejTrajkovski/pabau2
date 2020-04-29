@@ -135,5 +135,62 @@ extension JourneyMockAPI {
 					,title: "Radio title"
 				)
 			])),
+		FormTemplate(id: 2, name: "Consent - Botox", formType: .consent,
+							 ePaper: false,
+							 formStructure:
+		FormStructure(formStructure: [
+			CSSField(id: 1, cssClass:
+				.checkboxes(
+					[
+						CheckBoxChoice(1, "Are you currently receiving any medical treatment at present?", false),
+						CheckBoxChoice(2, "Have you received Roaccutane/Accutane treatment in the past 12 months?", false),
+						 CheckBoxChoice(5, "Have you undergone any laser skin resurfacing, skin peel or dermabrasion?", false),
+						 CheckBoxChoice(6, "Do you have or have you ever had any form of skin cancer?", false)
+					]
+				),
+				title: "Choose please"
+			),
+			CSSField(id: 6,
+							 cssClass: .signature(Signature()),
+							 title: "Patient signatureeee"
+			),
+			CSSField(id: 9,
+							 cssClass: .input_text(InputText(text: "input text 2")),
+							 title: "yada yada yada"
+			),
+			CSSField(id: 7,
+							 cssClass: .signature(Signature()),
+							 title: "Sign this please"
+			),
+			CSSField(id: 5,
+							 cssClass: .textarea(TextArea(text: "some text")),
+							 title: "Please enter some text below"
+			),
+			CSSField(id: 2, cssClass:
+				.checkboxes(
+					[
+						CheckBoxChoice(3, "choice 3", false),
+						CheckBoxChoice(5, "choice 5", true)
+					]
+				),
+				title: "Choose smth else"
+			),
+			CSSField(id: 3, cssClass:
+				.staticText(StaticText(1, "Hey what's going on?")),
+							 title: "This is some static text "
+			),
+			CSSField(id: 4,
+							 cssClass: .radio(Radio(4,
+																			[RadioChoice(1, "radio choice 1"),
+																			 RadioChoice(2, "radio choice 2")],
+																			1)
+				)
+				,title: "Radio title"
+			),
+			CSSField(id: 8,
+							 cssClass: .input_text(InputText(text: "input some text")),
+							 title: "Insert some text bla bla"
+			),
+		])),
 	]
 }
