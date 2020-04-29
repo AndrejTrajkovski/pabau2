@@ -79,17 +79,16 @@ struct CheckInMain: View {
 	}
 }
 
-public struct PatientDetails: Equatable {
+public struct PatientDetails: Equatable, Hashable {
 }
 
-public struct Aftercare: Equatable {
+public struct Aftercare: Equatable, Hashable {
 }
 
-public enum MetaForm: Equatable {
+public enum MetaForm: Equatable, Hashable {
 	case patientDetails(PatientDetails)
 	case aftercare(Aftercare)
 	case template(FormTemplate)
-	
 	var title: String {
 		switch self {
 		case .patientDetails(_):
@@ -113,7 +112,7 @@ public enum MetaForm: Equatable {
 	}
 }
 
-public struct MetaFormAndStatus: Equatable {
+public struct MetaFormAndStatus: Equatable, Hashable {
 	var form: MetaForm
 	var isComplete: Bool
 	
@@ -129,7 +128,7 @@ public enum StepFormsAction {
 //	case didUpdatePatientDetails(PatientDetails)
 //	case didUpdateFields([CSSField])
 	case didSelectFormIndex(Int)
-	case action2(StepFormsAction2)
+	case action2(Indexed<StepFormsAction2>)
 }
 
 public enum StepFormsAction2 {
@@ -137,6 +136,20 @@ public enum StepFormsAction2 {
 	case didUpdatePatientDetails(PatientDetails)
 	case didFinishTemplate(FormTemplate)
 	case didFinishPatientDetails(PatientDetails)
+}
+
+let stepFormsReducer2 = Reducer<MetaFormAndStatus, StepFormsAction2, JourneyEnvironemnt> { state, action, env in
+	switch action {
+	case .didFinishPatientDetails(_):
+		break
+	case .didUpdateTemplate(let template):
+		state = .init(.template(template), state.isComplete)
+	case .didUpdatePatientDetails(_):
+		break
+	case .didFinishTemplate(let template):
+		state = .init(.template(template), true)
+	}
+	return []
 }
 
 let stepFormsReducer = Reducer<CheckInContainerState, StepFormsAction, JourneyEnvironemnt> { state, action, env in
@@ -202,8 +215,12 @@ struct StepForms: View {
 		.frame(minWidth: 240, maxWidth: 480, alignment: .center)
 		.frame(height: 80)
 			PabauFormWrap(store: self.store.scope(
-				value: { $0.forms[$0.selectedFormIndex] },
-				action: { .action2($0) }))
+				value: { $0.forms[self.viewStore.value.selectedFormIndex] },
+				action: { .action2(
+					Indexed(index: self.viewStore.value.selectedFormIndex,
+									value: $0))}
+				)
+			)
 		}
 			.padding(.leading, 40)
 			.padding(.trailing, 40)

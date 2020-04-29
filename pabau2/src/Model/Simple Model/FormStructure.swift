@@ -3,7 +3,7 @@
 
 import Foundation
 
-public struct FormStructure: Codable, Equatable {
+public struct FormStructure: Codable, Equatable, Hashable {
 	
 	public static var defaultEmpty: FormStructure {
 		FormStructure(formStructure: [])

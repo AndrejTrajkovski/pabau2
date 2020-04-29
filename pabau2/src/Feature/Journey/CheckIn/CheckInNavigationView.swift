@@ -17,15 +17,28 @@ public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction
 					 value: \CheckInContainerState.self,
 					 action: /CheckInContainerAction.main,
 					 environment: { $0 }),
-	stepFormsReducer.pullback(
+	formsParentReducer.pullback(
 		value: \CheckInContainerState.self,
-		action: /CheckInContainerAction.main..CheckInMainAction.patient,
-		environment: { $0 })
+		action: /CheckInContainerAction.main,
+		environment: { $0 }
+	)
 //	fieldsReducer.pullback(
 //					 value: \CheckInContainerState.self,
 //					 action: /CheckInContainerAction.main,
 //					 environment: { $0 })
 )
+
+public let formsParentReducer: Reducer<CheckInContainerState, CheckInMainAction, JourneyEnvironemnt> = .combine(
+	indexed(reducer: stepFormsReducer2,
+					\CheckInContainerState.forms,
+					/CheckInMainAction.patient..StepFormsAction.action2,
+					{ $0 }),
+	stepFormsReducer.pullback(
+		value: \CheckInContainerState.self,
+		action: /CheckInMainAction.patient,
+		environment: { $0 })
+)
+
 
 public struct CheckInNavigationView: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>

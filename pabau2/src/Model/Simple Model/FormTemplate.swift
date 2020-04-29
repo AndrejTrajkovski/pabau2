@@ -3,7 +3,7 @@
 
 import Foundation
 
-public struct FormTemplate: Codable, Identifiable, Equatable {
+public struct FormTemplate: Codable, Identifiable, Equatable, Hashable {
 
 	public static var defaultEmpty: FormTemplate {
 		return FormTemplate(id: -1,
