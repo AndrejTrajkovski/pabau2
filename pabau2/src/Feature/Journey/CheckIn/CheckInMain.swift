@@ -70,7 +70,7 @@ struct CheckInMain: View {
 				}.frame(height: 168.0)
 				StepForms(store:
 					self.store.scope(
-						value: { $0.patient },
+						value: { $0 },
 						action: { .patient($0) }))
 				Spacer()
 			}
@@ -113,81 +113,74 @@ public enum MetaForm: Equatable {
 	}
 }
 
-struct StepFormsState: Equatable {
-	let journeyMode: JourneyMode
-	let steps: [Step]
-//	var templates: [FormTemplate]
-//	var patientDetails: PatientDetails
-//	var consents: [FormTemplate]
-//	var medicalHistory: FormTemplate?
-//	var treatmentNotes: [FormTemplate]
-//	var aftercare: Aftercare?
+public struct MetaFormAndStatus: Equatable {
+	var form: MetaForm
+	var isComplete: Bool
 	
-	var forms: [MetaForm]
-	var runningForms: [MetaForm]
-	var selectedFormIndex: Int
-	var completedForms: [Int: Bool]
-	
-	var selectedForm: MetaForm {
-		get { runningForms[selectedFormIndex] }
-		set { runningForms[selectedFormIndex] = newValue }
-	}
-	
-	func patientMode(steps: [Step],
-									 patientDetails: PatientDetails?,
-									 medicalHistory: FormTemplate?,
-									 consents: [FormTemplate]
-									 ) -> [MetaForm] {
-		let steps = steps.filter { stepToModeMap[$0.stepType] == .patient }
-		var result = [MetaForm]()
-		steps.forEach { step in
-			switch step.stepType {
-			case .consents:
-				result += consents.map(MetaForm.template)
-			case .patientdetails:
-				guard let patientDetails = patientDetails else {}
-				result.append(.patientDetails(patientDetails))
-			case .medicalhistory:
-				guard let medicalHistory = medicalHistory else {}
-				result.append(.template(medicalHistory))
-			case .checkpatient,
-				.treatmentnotes,
-				.prescriptions,
-				.photos,
-				.recalls,
-				.aftercares:
-				fatalError("doctor steps, should be filtered earlier")
-			}
-		}
+	init(_ form: MetaForm,_ isComplete: Bool) {
+		self.form = form
+		self.isComplete = isComplete
 	}
 }
 
 public enum StepFormsAction {
-	case didUpdateSelectedForm(MetaForm)
+//	case didUpdatePatientDetails(PatientDetails)
+//	case didUpdateConsent(FormTemplate)
 //	case didUpdatePatientDetails(PatientDetails)
 //	case didUpdateFields([CSSField])
-	case didSelectStepIdx(Int)
-	case didFinishTemplateIdx(Int)
+	case didSelectFormIndex(Int)
+	case action2(StepFormsAction2)
 }
 
-let stepFormsReducer = Reducer<StepFormsState, StepFormsAction, JourneyEnvironemnt> { state, action, env in
+public enum StepFormsAction2 {
+	case didUpdateTemplate(FormTemplate)
+	case didUpdatePatientDetails(PatientDetails)
+	case didFinishTemplate(FormTemplate)
+	case didFinishPatientDetails(PatientDetails)
+}
+
+let stepFormsReducer = Reducer<CheckInContainerState, StepFormsAction, JourneyEnvironemnt> { state, action, env in
 	switch action {
-	case .didUpdateSelectedForm(let form):
-		state.selectedForm = form
-	case .didSelectStepIdx(let idx):
+	case .didSelectFormIndex(let idx):
 		state.selectedFormIndex = idx
-	case .didFinishTemplateIdx(let idx):
-		state.forms[idx] = state.runningForms[idx]
-		state.completedForms[idx] = true
+	case .action2(_):
+		break
 	}
+	
+//	func update(state: inout CheckInContainerState, form: MetaForm) {
+//		switch form {
+//		case .aftercare(let aftercare):
+//			state.aftercare = aftercare
+//		case .template(let template):
+//			update(state: &state, template: template)
+//		case .patientDetails(let patientDetails):
+//			state.patientDetails = patientDetails
+//		}
+//	}
+//
+//	func update(state: inout CheckInContainerState, template: FormTemplate) {
+//		switch template.formType {
+//		case .consent:
+//			state.consents.removeAll(where: { $0.id == template.id })
+//			state.consents.append(template)
+//		case .treatment:
+//			state.treatments.removeAll(where: { $0.id == template.id })
+//			state.treatments.append(template)
+//		case .history:
+//			state.history = template
+//		case .prescription:
+//			state.presription = template
+//		}
+//	}
+
 	return []
 }
 
 struct StepForms: View {
-	
-	let store: Store<StepFormsState, StepFormsAction>
-	@ObservedObject var viewStore: ViewStore<StepFormsState, StepFormsAction>
-	
+
+	let store: Store<CheckInContainerState, StepFormsAction>
+	@ObservedObject var viewStore: ViewStore<CheckInContainerState, StepFormsAction>
+
 //	struct State {
 //		var forms: [MetaForm]
 //		var runningForms: [MetaForm]
@@ -195,22 +188,22 @@ struct StepForms: View {
 //		var completedForms: [Int: Bool]
 //	}
 	
-	init(store: Store<StepFormsState, StepFormsAction>) {
+	init(store: Store<CheckInContainerState, StepFormsAction>) {
 		self.store = store
 		self.viewStore = store.view(removeDuplicates: ==)
 	}
-	
+
 	var body: some View {
 		VStack {
 			StepsCollectionView(steps: self.viewStore.value.forms,
 													selectedIdx: self.viewStore.value.selectedFormIndex) {
-														self.viewStore.send(.didSelectStepIdx($0))
+														self.viewStore.send(.didSelectFormIndex($0))
 		}
 		.frame(minWidth: 240, maxWidth: 480, alignment: .center)
 		.frame(height: 80)
 			PabauFormWrap(store: self.store.scope(
-				value: { $0.runningForms[$0.selectedFormIndex] },
-				action: { $0 }))
+				value: { $0.forms[$0.selectedFormIndex] },
+				action: { .action2($0) }))
 		}
 			.padding(.leading, 40)
 			.padding(.trailing, 40)

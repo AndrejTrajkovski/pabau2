@@ -18,21 +18,21 @@ import Util
 //)
 
 struct PabauFormWrap: View {
-	let store: Store<MetaForm, StepFormsAction>
-	@ObservedObject var viewStore: ViewStore<State, StepFormsAction>
+	let store: Store<MetaFormAndStatus, StepFormsAction2>
+	@ObservedObject var viewStore: ViewStore<State, StepFormsAction2>
 	
 	struct State: Equatable {
 		var patientDetails: PatientDetails?
 		var template: FormTemplate?
 		var aftercare: Aftercare?
-		init (state: MetaForm) {
-			self.patientDetails = extract(case: MetaForm.patientDetails, from: state)
-			self.template = extract(case: MetaForm.template, from: state)
-			self.aftercare = extract(case: MetaForm.aftercare, from: state)
+		init (state: MetaFormAndStatus) {
+			self.patientDetails = extract(case: MetaForm.patientDetails, from: state.form)
+			self.template = extract(case: MetaForm.template, from: state.form)
+			self.aftercare = extract(case: MetaForm.aftercare, from: state.form)
 		}
 	}
 	
-	init(store: Store<MetaForm, StepFormsAction>) {
+	init(store: Store<MetaFormAndStatus, StepFormsAction2>) {
 		self.store = store
 		self.viewStore = store.scope(
 			value: State.init(state:),
@@ -45,7 +45,7 @@ struct PabauFormWrap: View {
 				PabauForm(template:
 					Binding.init(
 						get: { self.viewStore.value.template! },
-						set: { self.viewStore.send(.didUpdateSelectedForm(.template($0))) } )
+						set: { self.viewStore.send(.didUpdateTemplate($0)) } )
 				)
 			}
 			if self.viewStore.value.patientDetails != nil {

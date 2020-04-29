@@ -16,7 +16,11 @@ public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction
 	checkInMainReducer.pullback(
 					 value: \CheckInContainerState.self,
 					 action: /CheckInContainerAction.main,
-					 environment: { $0 })
+					 environment: { $0 }),
+	stepFormsReducer.pullback(
+		value: \CheckInContainerState.self,
+		action: /CheckInContainerAction.main..CheckInMainAction.patient,
+		environment: { $0 })
 //	fieldsReducer.pullback(
 //					 value: \CheckInContainerState.self,
 //					 action: /CheckInContainerAction.main,
