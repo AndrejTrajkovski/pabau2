@@ -31,14 +31,12 @@ public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction
 public let formsParentReducer: Reducer<CheckInContainerState, CheckInMainAction, JourneyEnvironemnt> = .combine(
 	indexed(reducer: stepFormsReducer2,
 					\CheckInContainerState.forms,
-					/CheckInMainAction.patient..StepFormsAction.action2,
-					{ $0 }),
+					/CheckInMainAction.patient..StepFormsAction.action2, { $0 }),
 	stepFormsReducer.pullback(
 		value: \CheckInContainerState.self,
 		action: /CheckInMainAction.patient,
 		environment: { $0 })
 )
-
 
 public struct CheckInNavigationView: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>

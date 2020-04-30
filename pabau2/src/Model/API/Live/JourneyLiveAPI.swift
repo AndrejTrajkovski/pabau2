@@ -4,15 +4,15 @@ public struct JourneyLiveAPI: JourneyAPI, LiveAPI {
 	public func getEmployees() -> Effect<Result<[Employee], RequestError>> {
 		fatalError()
 	}
-	
+
 	public func getTemplates(_ type: FormType) -> Effect<Result<[FormTemplate], RequestError>> {
 		fatalError()
 	}
-	
+
 	public func getJourneys(date: Date) -> Effect<Result<[Journey], RequestError>> {
 		getJourneys(date: date).effect()
 	}
-	
+
 	public let requestBuilderFactory: RequestBuilderFactory = RequestBuilderFactoryImpl()
 	public var basePath: String = ""
 	public let route: String = "journeys"

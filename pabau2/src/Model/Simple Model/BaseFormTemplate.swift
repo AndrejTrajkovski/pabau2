@@ -4,13 +4,13 @@
 import Foundation
 
 public struct BaseFormTemplate: Codable, Identifiable, Equatable {
-	
+
 	public let id: Int
-	
+
 	public let name: String
-	
+
 	public let formType: FormType
-	
+
 	public let ePaper: Bool?
 	public init(id: Int, name: String, formType: FormType, ePaper: Bool? = nil) {
 		self.id = id

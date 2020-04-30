@@ -5,28 +5,28 @@ import Foundation
 import SwiftDate
 
 public struct Appointment: Codable, Equatable {
-	
+
 	public static var defaultEmpty: Appointment {
 		Appointment.init(id: 1, from: Date() - 1.days, to: Date() - 1.days, employeeId: 1, locationId: 1, status: AppointmentStatus(id: 1, name: ""), service: BaseService.defaultEmpty)
 	}
-	
+
 	public var id: Int
-	
+
 	public var from: Date
-	
+
 	public var to: Date
-	
+
 	public var employeeId: Int
-	
+
 	public var locationId: Int
-	
+
 	public var _private: Bool?
 	public var type: Termin.ModelType?
-	
+
 	public var extraEmployees: [Employee]?
-	
+
 	public var status: AppointmentStatus?
-	
+
 	public var service: BaseService?
 	public init(id: Int,
 							from: Date,
@@ -61,5 +61,5 @@ public struct Appointment: Codable, Equatable {
 		case status
 		case service
 	}
-	
+
 }

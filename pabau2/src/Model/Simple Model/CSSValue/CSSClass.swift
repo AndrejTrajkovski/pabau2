@@ -3,7 +3,7 @@
 import Foundation
 
 public enum CSSClass: Codable, Equatable, Hashable {
-	
+
 	case staticText(StaticText)
 	case input_text(InputText)
 	case textarea(TextArea)
@@ -15,7 +15,7 @@ public enum CSSClass: Codable, Equatable, Hashable {
 	case cl_drugs(ClDrugs)
 	case diagram_mini(DiagramMini)
 	case unknown
-	
+
 	public init(from decoder: Decoder) throws {
 		let container = try decoder.singleValueContainer()
 		if case .success(let res) = Self.decode(container, StaticText.self) {
@@ -42,7 +42,7 @@ public enum CSSClass: Codable, Equatable, Hashable {
 			self = .unknown
 		}
 	}
-	
+
 	static func decode<T: Codable>(_ container: SingleValueDecodingContainer, _ type: T.Type) -> Result<T, Error> {
 		do {
 			return .success(try container.decode(type))
@@ -50,8 +50,8 @@ public enum CSSClass: Codable, Equatable, Hashable {
 			return .failure(error)
 		}
 	}
-	
+
 	public func encode(to encoder: Encoder) throws {
-		
+
 	}
 }

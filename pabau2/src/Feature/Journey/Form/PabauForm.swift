@@ -20,7 +20,7 @@ import Util
 struct PabauFormWrap: View {
 	let store: Store<MetaFormAndStatus, StepFormsAction2>
 	@ObservedObject var viewStore: ViewStore<State, StepFormsAction2>
-	
+
 	struct State: Equatable {
 		var patientDetails: PatientDetails?
 		var template: FormTemplate?
@@ -31,21 +31,21 @@ struct PabauFormWrap: View {
 			self.aftercare = extract(case: MetaForm.aftercare, from: state.form)
 		}
 	}
-	
+
 	init(store: Store<MetaFormAndStatus, StepFormsAction2>) {
 		self.store = store
 		self.viewStore = store.scope(
 			value: State.init(state:),
 			action: { $0 }).view
 	}
-	
+
 	var body: some View {
 		Group {
 			if self.viewStore.value.template != nil {
 				PabauForm(template:
 					Binding.init(
 						get: { self.viewStore.value.template! },
-						set: { self.viewStore.send(.didUpdateTemplate($0)) } )
+						set: { self.viewStore.send(.didUpdateTemplate($0)) })
 				)
 			}
 			if self.viewStore.value.patientDetails != nil {
@@ -59,7 +59,7 @@ struct PabauFormWrap: View {
 }
 
 struct PabauForm: View {
-	
+
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
 	@Binding var template: FormTemplate
 	init(template: Binding<FormTemplate>) {
@@ -71,7 +71,7 @@ struct PabauForm: View {
 	public var body: some View {
 		print("pabau form body")
 		return List {
-			ForEach(template.formStructure.formStructure.indices, id:\.self ){ index in
+			ForEach(template.formStructure.formStructure.indices, id: \.self ) { index in
 				FormSectionField(cssField:
 					Binding(
 						get: { self.template.formStructure.formStructure[index] },

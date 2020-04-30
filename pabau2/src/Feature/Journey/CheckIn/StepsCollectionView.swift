@@ -6,26 +6,26 @@ struct StepsCollectionView: View {
 	let formVms: [FormVM]
 	let selectedIdx: Int
 	let didSelect: (Int) -> Void
-	
+
 	init (steps: [MetaFormAndStatus], selectedIdx: Int, didSelect: @escaping (Int) -> Void) {
 		self.selectedIdx = selectedIdx
 		self.formVms = zip(steps, steps.indices).map { Self.stepVM(step: $0, selection: selectedIdx)}
 		self.formVms.forEach {print("\($0.idx) is selected: \($0.isSelected)")}
 		self.didSelect = didSelect
 	}
-	
+
 	struct FormVM: Hashable {
 		let idx: Int
 		let isSelected: Bool
 		let title: String
 	}
-	
+
 	static func stepVM(step: (MetaFormAndStatus, Int), selection: Int) -> FormVM {
 		FormVM(idx: step.1,
 					 isSelected: step.1 == selection,
 					 title: step.0.form.title)
 	}
-	
+
 	func stepView(for viewModel: FormVM) -> some View {
 		VStack {
 			Image(systemName: "checkmark.circle.fill")
@@ -40,7 +40,7 @@ struct StepsCollectionView: View {
 			self.didSelect(viewModel.idx)
 		}
 	}
-	
+
 	var body: some View {
 		CollectionView(formVms) {
 			stepView(for: $0)

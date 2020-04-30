@@ -4,7 +4,7 @@ public struct CheckBoxChoice: Codable, Equatable, Hashable {
 		self.title = title
 		self.isSelected = isSelected
 	}
-	
+
 	public var id: Int
 	public var title: String
 	public var isSelected: Bool

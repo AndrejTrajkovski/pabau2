@@ -7,11 +7,11 @@ public struct JourneyMockAPI: MockAPI, JourneyAPI {
 	public func getJourneys(date: Date) -> Effect<Result<[Journey], RequestError>> {
 		mockSuccess(Self.mockJourneys, delay: 0.2)
 	}
-	
+
 	public func getEmployees() -> Effect<Result<[Employee], RequestError>> {
 		mockSuccess(Self.mockEmployees, delay: 0.0)
 	}
-	
+
 	public func getTemplates(_ type: FormType) -> Effect<Result<[FormTemplate], RequestError>> {
 		mockSuccess(Self.mockConsents, delay: 0.1)
 	}
@@ -48,7 +48,7 @@ extension JourneyMockAPI {
 									avatarUrl: "",
 									pin: 1234)
 	]
-	
+
 	static let mockJourneys = [
 		Journey.init(id: 1,
 								 appointments: NonEmpty.init(Appointment.init(id: 1, from: Date() - 1.days, to: Date() - 1.days, employeeId: 1, locationId: 1, status: AppointmentStatus(id: 1, name: "Checked In"), service: BaseService.init(id: 1, name: "Botox", color: "#9400D3"))),
@@ -72,7 +72,7 @@ extension JourneyMockAPI {
 									 patient: BaseClient.init(id: 2, firstName: "Joe", lastName: "Rogan", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 4,
 									 name: "Kobe Bryant"), forms: [], photos: [], postCare: [], paid: "Owes 1.000")
 	]
-	
+
 	public static let mockConsents  = [
 		FormTemplate(id: 1, name: "Consent - Hair Extension", formType: .consent,
 								 ePaper: false,
@@ -107,7 +107,7 @@ extension JourneyMockAPI {
 							CheckBoxChoice(4, "Do you have a history of anaphylactic shock (severe allergic reactions) Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)? tic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions) tic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)", false),
 							 CheckBoxChoice(5, "Have you undergone any laser skin resurfacing, skin peel or dermabrasion?", false),
 							 CheckBoxChoice(6, "Do you have or have you ever had any form of skin cancer?", false),
-							 CheckBoxChoice(7 ,"Have you been treated with any dermal fillers on either your face and/or body?", false)
+							 CheckBoxChoice(7, "Have you been treated with any dermal fillers on either your face and/or body?", false)
 						]
 					),
 					title: "Choose please"
@@ -131,8 +131,7 @@ extension JourneyMockAPI {
 																				[RadioChoice(1, "radio choice 1"),
 																				 RadioChoice(2, "radio choice 2")],
 																				1)
-					)
-					,title: "Radio title"
+					), title: "Radio title"
 				)
 			])),
 		FormTemplate(id: 2, name: "Consent - Botox", formType: .consent,
@@ -184,13 +183,12 @@ extension JourneyMockAPI {
 																			[RadioChoice(1, "radio choice 1"),
 																			 RadioChoice(2, "radio choice 2")],
 																			1)
-				)
-				,title: "Radio title"
+				), title: "Radio title"
 			),
 			CSSField(id: 8,
 							 cssClass: .input_text(InputText(text: "input some text")),
 							 title: "Insert some text bla bla"
-			),
-		])),
+			)
+		]))
 	]
 }

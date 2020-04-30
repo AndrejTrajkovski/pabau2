@@ -8,12 +8,12 @@ public enum CheckInMainAction {
 	case patient(StepFormsAction)
 }
 
-let checkInMainReducer = Reducer<CheckInContainerState, CheckInMainAction, JourneyEnvironemnt> { state, action, _ in
+let checkInMainReducer = Reducer<CheckInContainerState, CheckInMainAction, JourneyEnvironemnt> { _, action, _ in
 	switch action {
 	case .closeBtnTap:
 		//handled elsewhere
 		break
-	case .patient(_):
+	case .patient:
 		break
 	}
 	return []
@@ -91,15 +91,15 @@ public enum MetaForm: Equatable, Hashable {
 	case template(FormTemplate)
 	var title: String {
 		switch self {
-		case .patientDetails(_):
+		case .patientDetails:
 			return "PATIENT DETAILS"
 		case .template(let template):
 			return title(template: template)
-		case .aftercare(_):
+		case .aftercare:
 			return "AFTERCARE"
 		}
 	}
-	
+
 	private func title(template: FormTemplate) -> String {
 		switch template.formType {
 		case .consent, .treatment:
@@ -115,8 +115,8 @@ public enum MetaForm: Equatable, Hashable {
 public struct MetaFormAndStatus: Equatable, Hashable {
 	var form: MetaForm
 	var isComplete: Bool
-	
-	init(_ form: MetaForm,_ isComplete: Bool) {
+
+	init(_ form: MetaForm, _ isComplete: Bool) {
 		self.form = form
 		self.isComplete = isComplete
 	}
@@ -138,13 +138,13 @@ public enum StepFormsAction2 {
 	case didFinishPatientDetails(PatientDetails)
 }
 
-let stepFormsReducer2 = Reducer<MetaFormAndStatus, StepFormsAction2, JourneyEnvironemnt> { state, action, env in
+let stepFormsReducer2 = Reducer<MetaFormAndStatus, StepFormsAction2, JourneyEnvironemnt> { state, action, _ in
 	switch action {
-	case .didFinishPatientDetails(_):
+	case .didFinishPatientDetails:
 		break
 	case .didUpdateTemplate(let template):
 		state = .init(.template(template), state.isComplete)
-	case .didUpdatePatientDetails(_):
+	case .didUpdatePatientDetails:
 		break
 	case .didFinishTemplate(let template):
 		state = .init(.template(template), true)
@@ -152,14 +152,14 @@ let stepFormsReducer2 = Reducer<MetaFormAndStatus, StepFormsAction2, JourneyEnvi
 	return []
 }
 
-let stepFormsReducer = Reducer<CheckInContainerState, StepFormsAction, JourneyEnvironemnt> { state, action, env in
+let stepFormsReducer = Reducer<CheckInContainerState, StepFormsAction, JourneyEnvironemnt> { state, action, _ in
 	switch action {
 	case .didSelectFormIndex(let idx):
 		state.selectedFormIndex = idx
-	case .action2(_):
+	case .action2:
 		break
 	}
-	
+
 //	func update(state: inout CheckInContainerState, form: MetaForm) {
 //		switch form {
 //		case .aftercare(let aftercare):
@@ -200,7 +200,7 @@ struct StepForms: View {
 //		var selectedFormIndex: Int
 //		var completedForms: [Int: Bool]
 //	}
-	
+
 	init(store: Store<CheckInContainerState, StepFormsAction>) {
 		self.store = store
 		self.viewStore = store.view(removeDuplicates: ==)

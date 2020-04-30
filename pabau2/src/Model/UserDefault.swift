@@ -3,7 +3,7 @@ public struct UserDefault<T: Codable> {
 	let key: String
 	let defaultValue: T?
 	let userDefaults: UserDefaults
-	
+
 	init(_ key: String, defaultValue: T?, userDefaults: UserDefaults = .standard) {
 		self.key = key
 		self.defaultValue = defaultValue

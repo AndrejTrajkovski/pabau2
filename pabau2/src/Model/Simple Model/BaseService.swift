@@ -4,15 +4,15 @@
 import Foundation
 
 public struct BaseService: Codable, Identifiable, Equatable {
-	
+
 	public static var defaultEmpty: BaseService {
 		BaseService(id: 1, name: "", color: "#FFFFFF")
 	}
-	
+
 	public let id: Int
-	
+
 	public let name: String
-	
+
 	public let color: String
 	public init(id: Int, name: String, color: String) {
 		self.id = id
@@ -24,5 +24,5 @@ public struct BaseService: Codable, Identifiable, Equatable {
 		case name
 		case color
 	}
-	
+
 }

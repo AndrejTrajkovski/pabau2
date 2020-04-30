@@ -22,7 +22,7 @@ let stepToModeMap: [StepType: JourneyMode] = [
 public struct CheckInContainerState: Equatable {
 	var journey: Journey
 	var pathway: Pathway
-	
+
 	var forms: [MetaFormAndStatus]
 	var selectedFormIndex: Int
 //	var patientDetails: PatientDetails?
@@ -45,13 +45,13 @@ public struct CheckInContainerState: Equatable {
 //
 //	var presription: FormTemplate?
 //	var presriptionCompleted: Bool
-	
+
 	init(journey: Journey,
 			 pathway: Pathway,
 			 consents: [FormTemplate]) {
 		self.journey = journey
 		self.pathway = pathway
-		self.forms = zip(consents.map(MetaForm.template), consents.map{ _ in false})
+		self.forms = zip(consents.map(MetaForm.template), consents.map { _ in false})
 								.map(MetaFormAndStatus.init)
 		self.forms += [MetaFormAndStatus(MetaForm.patientDetails(PatientDetails()), false)]
 		self.selectedFormIndex = 0
@@ -67,7 +67,7 @@ public struct CheckInContainerState: Equatable {
 }
 
 extension CheckInContainerState {
-	
+
 //			let steps = pathway.steps.filter { stepToModeMap[$0.stepType] == .patient }
 //			var result = [MetaFormAndStatus]()
 //			steps.forEach { step in

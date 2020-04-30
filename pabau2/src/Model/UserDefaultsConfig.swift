@@ -5,7 +5,7 @@ public protocol UserDefaultsConfig {
 
 public struct StandardUDConfig: UserDefaultsConfig {
 	public init () {}
-	
+
 	@UserDefault("has_seen_app_introduction", defaultValue: false)
 	public var hasSeenAppIntroduction: Bool!
 

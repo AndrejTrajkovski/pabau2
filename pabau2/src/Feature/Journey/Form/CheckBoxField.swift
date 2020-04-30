@@ -21,7 +21,7 @@ struct CheckBoxField: View, Equatable {
 	static func == (lhs: CheckBoxField, rhs: CheckBoxField) -> Bool {
 		lhs.choices == rhs.choices
 	}
-	
+
 	@Binding var choices: [CheckBoxChoice]
 
 	var body: some View {

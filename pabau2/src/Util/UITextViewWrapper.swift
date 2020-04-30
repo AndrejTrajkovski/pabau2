@@ -39,7 +39,7 @@ public struct MultilineTextView: UIViewRepresentable {
 //		uiView.text = initialText
 	}
 
-	public class Coordinator : NSObject, UITextViewDelegate {
+	public class Coordinator: NSObject, UITextViewDelegate {
 		var parent: MultilineTextView
 		init(_ uiTextView: MultilineTextView) {
 			self.parent = uiTextView
@@ -50,7 +50,7 @@ public struct MultilineTextView: UIViewRepresentable {
 //			parent.onTextChange(result as String)
 //			return true
 //		}
-		
+
 //		public func textViewDidChange(_ textView: UITextView) {
 //			parent.onTextChange(textView.text)
 //		}

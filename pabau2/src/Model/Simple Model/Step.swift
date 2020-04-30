@@ -9,14 +9,14 @@ public struct Step: Codable, Identifiable, Equatable {
 		case definedbyservice = "definedByService"
 		case template = "template"
 	}
-	
+
 	public let id: Int
-	
+
 	public let stepType: StepType
-	
+
 	public let _required: Bool
 	public let preselectedTemplateType: PreselectedTemplateType?
-	
+
 	public let formTemplate: [BaseFormTemplate]?
 	public init(id: Int, stepType: StepType, _required: Bool = false, preselectedTemplateType: PreselectedTemplateType? = nil, formTemplate: [BaseFormTemplate]? = nil) {
 		self.id = id
@@ -32,5 +32,5 @@ public struct Step: Codable, Identifiable, Equatable {
 		case preselectedTemplateType
 		case formTemplate
 	}
-	
+
 }

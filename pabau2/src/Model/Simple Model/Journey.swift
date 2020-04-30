@@ -2,17 +2,17 @@ import Foundation
 import NonEmpty
 
 public struct Journey: Codable, Identifiable, Equatable, Hashable {
-	
+
 	public static var defaultEmpty: Journey {
 		Journey(id: -1,
 						appointments: NonEmpty.init(Appointment.defaultEmpty),
 						patient: BaseClient.init(id: 0, firstName: "", lastName: "", dOB: "", email: "", avatar: "", phone: ""), employee: Employee.defaultEmpty, forms: [], photos: [], postCare: [], paid: "")
 	}
-	
+
 	public static func == (lhs: Self, rhs: Self) -> Bool {
 		return lhs.id == rhs.id
 	}
-	
+
 	public func hash(into hasher: inout Hasher) {
 		hasher.combine(id)
 	}

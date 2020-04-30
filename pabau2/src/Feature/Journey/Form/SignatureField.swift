@@ -52,7 +52,7 @@ struct DrawingPad: View {
 		}
 		.frame(maxHeight: .infinity)
 	}
-	
+
 	private func add(drawing: Drawing, toPath path: inout Path) {
 		let points = drawing.points
 		if points.count > 1 {

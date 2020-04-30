@@ -15,7 +15,7 @@ public enum StepType: String, Codable, Equatable {
 	case aftercares = "aftercares"
 //	case mediaimages = "mediaImages"
 //	case mediavideos = "mediaVideos"
-	
+
 	public var title: String {
 		switch self {
 		case .patientdetails:

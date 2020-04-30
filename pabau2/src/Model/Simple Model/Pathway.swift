@@ -9,7 +9,7 @@ public struct Pathway: Codable, Identifiable, Equatable {
 	public static var defaultEmpty: Pathway {
 		Pathway(id: -1, title: "", steps: [])
 	}
-	
+
     public let id: Int
 
     public let title: String
