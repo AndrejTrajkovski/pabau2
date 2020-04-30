@@ -84,7 +84,7 @@
 		82622B5024464E0800BECF9A /* RibbonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82622B4F24464E0800BECF9A /* RibbonView.swift */; };
 		82622B52244650E000BECF9A /* CheckBoxField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82622B51244650E000BECF9A /* CheckBoxField.swift */; };
 		82648404244F42F300544703 /* FormSectionField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82648403244F42F300544703 /* FormSectionField.swift */; };
-		8269526824506F18001B806E /* PabauForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8269526724506F18001B806E /* PabauForm.swift */; };
+		8269526824506F18001B806E /* DynamicForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8269526724506F18001B806E /* DynamicForm.swift */; };
 		8269526A2452D90F001B806E /* UITextViewWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826952692452D90E001B806E /* UITextViewWrapper.swift */; };
 		8269526C2452DA93001B806E /* TextAreaField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8269526B2452DA93001B806E /* TextAreaField.swift */; };
 		8269526F2452E02A001B806E /* StaticText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8269526E2452E02A001B806E /* StaticText.swift */; };
@@ -233,6 +233,7 @@
 		82E25405241EA8D800F16C30 /* SwiftDate in Frameworks */ = {isa = PBXBuildFile; productRef = 82E25404241EA8D800F16C30 /* SwiftDate */; };
 		82E254092422388600F16C30 /* Hidden.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E254082422388600F16C30 /* Hidden.swift */; };
 		82F6ADAE23F2C7B1001B3ACE /* PabauTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */; };
+		82FB74F6245A9E51001C2DF3 /* PabauFormWrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FB74F5245A9E51001C2DF3 /* PabauFormWrap.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -463,7 +464,7 @@
 		82622B4F24464E0800BECF9A /* RibbonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RibbonView.swift; sourceTree = "<group>"; };
 		82622B51244650E000BECF9A /* CheckBoxField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckBoxField.swift; sourceTree = "<group>"; };
 		82648403244F42F300544703 /* FormSectionField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormSectionField.swift; sourceTree = "<group>"; };
-		8269526724506F18001B806E /* PabauForm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PabauForm.swift; sourceTree = "<group>"; };
+		8269526724506F18001B806E /* DynamicForm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicForm.swift; sourceTree = "<group>"; };
 		826952692452D90E001B806E /* UITextViewWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextViewWrapper.swift; sourceTree = "<group>"; };
 		8269526B2452DA93001B806E /* TextAreaField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextAreaField.swift; sourceTree = "<group>"; };
 		8269526E2452E02A001B806E /* StaticText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticText.swift; sourceTree = "<group>"; };
@@ -633,6 +634,7 @@
 		82EE570823F0335F0033B43C /* NavigationLinkExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationLinkExtension.swift; sourceTree = "<group>"; };
 		82F5591F23DC255B008032F4 /* BigButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BigButton.swift; sourceTree = "<group>"; };
 		82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PabauTabBar.swift; sourceTree = "<group>"; };
+		82FB74F5245A9E51001C2DF3 /* PabauFormWrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PabauFormWrap.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -895,13 +897,14 @@
 		8269526624506ED2001B806E /* Form */ = {
 			isa = PBXGroup;
 			children = (
-				8269526724506F18001B806E /* PabauForm.swift */,
+				8269526724506F18001B806E /* DynamicForm.swift */,
 				82648403244F42F300544703 /* FormSectionField.swift */,
 				82CEA222244CB28500A895F6 /* RadioField.swift */,
 				82622B51244650E000BECF9A /* CheckBoxField.swift */,
 				8269526B2452DA93001B806E /* TextAreaField.swift */,
 				826952762454E0A5001B806E /* SignatureField.swift */,
 				826952782456F436001B806E /* InputTextField.swift */,
+				82FB74F5245A9E51001C2DF3 /* PabauFormWrap.swift */,
 			);
 			path = Form;
 			sourceTree = "<group>";
@@ -1905,6 +1908,7 @@
 				825BE7E424361C4400422910 /* SoundPlayer.swift in Sources */,
 				829B40D12423B8F2009B7E71 /* AddAppointment.swift in Sources */,
 				82622B5024464E0800BECF9A /* RibbonView.swift in Sources */,
+				82FB74F6245A9E51001C2DF3 /* PabauFormWrap.swift in Sources */,
 				8250D7D4242C980100F8F3FC /* ChooseService.swift in Sources */,
 				82648404244F42F300544703 /* FormSectionField.swift in Sources */,
 				82292BD8244097C600080F74 /* StepsCollectionView.swift in Sources */,
@@ -1922,7 +1926,7 @@
 				828626B12424CA64003ADA24 /* JourneyProfileView.swift in Sources */,
 				828626B32424CEFB003ADA24 /* ChoosePathway.swift in Sources */,
 				82622B52244650E000BECF9A /* CheckBoxField.swift in Sources */,
-				8269526824506F18001B806E /* PabauForm.swift in Sources */,
+				8269526824506F18001B806E /* DynamicForm.swift in Sources */,
 				827B459D24118ABD00A5975E /* JourneyNavigationView.swift in Sources */,
 				825BE7E224361ABD00422910 /* StaffFilterPicker.swift in Sources */,
 			);
