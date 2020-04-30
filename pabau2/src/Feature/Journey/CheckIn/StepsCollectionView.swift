@@ -3,6 +3,11 @@ import SwiftUI
 import Model
 
 struct StepsCollectionView: View {
+	
+	let cellWidth: CGFloat = 80
+	let cellHeight: CGFloat = 50
+	let spacing: CGFloat = 12
+	
 	let formVms: [FormVM]
 	let selectedIdx: Int
 	let didSelect: (Int) -> Void
@@ -32,30 +37,31 @@ struct StepsCollectionView: View {
 				.foregroundColor(viewModel.isSelected ? .blue : .gray)
 				.frame(width: 30, height: 30)
 			Text(viewModel.title.uppercased())
-				.fixedSize(horizontal: true, vertical: false)
-				.lineLimit(1)
+				.fixedSize(horizontal: false, vertical: true)
+				.multilineTextAlignment(.center)
+				.lineLimit(nil)
 				.font(.medium10)
 				.foregroundColor(Color(hex: "909090"))
 		}.onTapGesture {
 			self.didSelect(viewModel.idx)
-		}
+		}.frame(maxWidth: cellWidth, maxHeight: cellHeight, alignment: .top)
 	}
 
 	var body: some View {
 		CollectionView(formVms) {
 			stepView(for: $0)
-				.frame(width: 80, height: 50)
 		}
 		.axis(.horizontal)
 		.indicators(false)
 		.groupSize(
 			.init(
-				widthDimension: .absolute(80),
-				heightDimension: .absolute(50)))
-			.itemSize(.init(widthDimension: .absolute(80),
-											heightDimension: .absolute(50)))
+				widthDimension: .absolute(cellWidth),
+				heightDimension: .absolute(cellHeight)))
+			.itemSize(.init(widthDimension: .absolute(cellWidth),
+											heightDimension: .absolute(cellHeight)))
 			.layout({ (layout) in
-				layout.interGroupSpacing = 24
+				layout.interGroupSpacing = spacing
 			})
+		.frame(width: CGFloat(formVms.count) * (cellWidth + spacing), height: cellHeight)
 	}
 }

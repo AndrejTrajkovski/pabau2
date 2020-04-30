@@ -134,6 +134,10 @@ public struct CollectionView<Content: View>: UIViewControllerRepresentable {
 																		 context: UIViewControllerRepresentableContext<CollectionView<Content>>) {
 		context.coordinator.zipped = Array(zip(identifiers, content))
 		uiViewController.collectionView.reloadData()
+		uiViewController.collectionView.frame.size =
+			CGSize(
+				width: uiViewController.collectionView.frame.size.width,
+				height: 50)
 		print(uiViewController.collectionView.frame.size.height)
 	}
 

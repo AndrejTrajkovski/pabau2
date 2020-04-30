@@ -21,9 +21,7 @@ struct DynamicForm: View {
 				FormSectionField(cssField:
 					Binding(
 						get: { self.template.formStructure.formStructure[index] },
-						set: {
-							(newValue) in self.template.formStructure.formStructure[index] = newValue
-					})
+						set: { self.template.formStructure.formStructure[index] = $0 })
 				).equatable()
 			}
 		}.padding(.bottom, keyboardHandler.keyboardHeight)

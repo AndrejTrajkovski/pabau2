@@ -4,33 +4,6 @@ import ComposableArchitecture
 import Model
 import Util
 
-public enum CheckInFormAction {
-	case multipleChoice(CheckboxFieldAction)
-	case radio(RadioFieldAction)
-	case textArea(TextAreaFieldAction)
-	case inputText(InputTextFieldAction)
-}
-
-let cssClassReducer: Reducer<CSSClass, CheckInFormAction, JourneyEnvironemnt> =
-	.combine(
-		checkBoxFieldReducer.pullback(
-			value: /CSSClass.checkboxes,
-			action: /CheckInFormAction.multipleChoice,
-			environment: { $0 }),
-		radioFieldReducer.pullback(
-			value: /CSSClass.radio,
-			action: /CheckInFormAction.radio,
-			environment: { $0 }),
-		textAreaFieldReducer.pullback(
-			value: /CSSClass.textarea,
-			action: /CheckInFormAction.textArea,
-			environment: { $0 }),
-		inputTextFieldReducer.pullback(
-			value: /CSSClass.input_text,
-			action: /CheckInFormAction.inputText,
-			environment: { $0 })
-)
-
 struct FormSectionField: View, Equatable {
 	static func == (lhs: FormSectionField, rhs: FormSectionField) -> Bool {
 		return lhs.cssField == rhs.cssField
@@ -53,7 +26,6 @@ struct FormSectionField: View, Equatable {
 				.padding(.bottom)
 		) {
 			FormField(cssField: $cssField)
-//				.listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
 		}.background(Color.white)
 	}
 }
@@ -137,3 +109,30 @@ extension FormField.ViewState {
 		self.inputText = extract(case: CSSClass.input_text, from: state.cssClass)
 	}
 }
+
+//let cssClassReducer: Reducer<CSSClass, CheckInFormAction, JourneyEnvironemnt> =
+//	.combine(
+//		checkBoxFieldReducer.pullback(
+//			value: /CSSClass.checkboxes,
+//			action: /CheckInFormAction.multipleChoice,
+//			environment: { $0 }),
+//		radioFieldReducer.pullback(
+//			value: /CSSClass.radio,
+//			action: /CheckInFormAction.radio,
+//			environment: { $0 }),
+//		textAreaFieldReducer.pullback(
+//			value: /CSSClass.textarea,
+//			action: /CheckInFormAction.textArea,
+//			environment: { $0 }),
+//		inputTextFieldReducer.pullback(
+//			value: /CSSClass.input_text,
+//			action: /CheckInFormAction.inputText,
+//			environment: { $0 })
+//)
+
+//public enum CheckInFormAction {
+//	case multipleChoice(CheckboxFieldAction)
+//	case radio(RadioFieldAction)
+//	case textArea(TextAreaFieldAction)
+//	case inputText(InputTextFieldAction)
+//}
