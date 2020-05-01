@@ -125,7 +125,10 @@ struct ForgotPassword: View {
 				Text(Texts.forgotPassDescription)
 					.foregroundColor(.grey155)
 					.font(.medium16)
-				TextAndTextView(title: Texts.emailAddress.uppercased(), placeholder: "", bindingValue: self.$email, validation: self.viewStore.value.fpValidation)
+				TextAndTextField(Texts.emailAddress.uppercased(),
+												 self.$email,
+												 "",
+												 self.viewStore.value.fpValidation)
 			}.frame(maxWidth: 319)
 			BigButton(text: Texts.sendRequest) {
 				self.viewStore.send(.sendRequest(email: self.email))

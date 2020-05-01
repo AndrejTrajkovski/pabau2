@@ -39,7 +39,7 @@
 		8227FB6E240BAC9600F653B5 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8297A2BA23DA08F200D091FF /* Colors.swift */; };
 		8227FB6F240BAC9600F653B5 /* BigButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F5591F23DC255B008032F4 /* BigButton.swift */; };
 		8227FB70240BAC9600F653B5 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820961D423ED9AE2004A510A /* ActivityIndicator.swift */; };
-		8227FB71240BAC9600F653B5 /* TextAndTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EFF23E49F090066AFDC /* TextAndTextView.swift */; };
+		8227FB71240BAC9600F653B5 /* TextAndTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EFF23E49F090066AFDC /* TextAndTextField.swift */; };
 		8227FB72240BAC9600F653B5 /* TextFieldWithBottomLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811F0123E6FAE10066AFDC /* TextFieldWithBottomLine.swift */; };
 		8227FB73240BAC9600F653B5 /* NavigationLinkExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82EE570823F0335F0033B43C /* NavigationLinkExtension.swift */; };
 		8227FB74240BAC9600F653B5 /* BackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82EE570523F029900033B43C /* BackButton.swift */; };
@@ -232,6 +232,7 @@
 		82E253FE241B9F1200F16C30 /* CompleteFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E253FD241B9F1200F16C30 /* CompleteFilter.swift */; };
 		82E25405241EA8D800F16C30 /* SwiftDate in Frameworks */ = {isa = PBXBuildFile; productRef = 82E25404241EA8D800F16C30 /* SwiftDate */; };
 		82E254092422388600F16C30 /* Hidden.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E254082422388600F16C30 /* Hidden.swift */; };
+		82E6D827245C213300CB359A /* PatientDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E6D826245C213300CB359A /* PatientDetails.swift */; };
 		82F6ADAE23F2C7B1001B3ACE /* PabauTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */; };
 		82FB74F6245A9E51001C2DF3 /* PabauFormWrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FB74F5245A9E51001C2DF3 /* PabauFormWrap.swift */; };
 /* End PBXBuildFile section */
@@ -537,7 +538,7 @@
 		82811EF323E06BCB0066AFDC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		82811EF523E06D730066AFDC /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
 		82811EF723E187700066AFDC /* Login.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
-		82811EFF23E49F090066AFDC /* TextAndTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextAndTextView.swift; sourceTree = "<group>"; };
+		82811EFF23E49F090066AFDC /* TextAndTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextAndTextField.swift; sourceTree = "<group>"; };
 		82811F0123E6FAE10066AFDC /* TextFieldWithBottomLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldWithBottomLine.swift; sourceTree = "<group>"; };
 		82811F0423E720570066AFDC /* LoginTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginTitle.swift; sourceTree = "<group>"; };
 		82811F0623E720670066AFDC /* LoginTextFields.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginTextFields.swift; sourceTree = "<group>"; };
@@ -630,6 +631,7 @@
 		82E253FB241B9ED000F16C30 /* JourneyState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyState.swift; sourceTree = "<group>"; };
 		82E253FD241B9F1200F16C30 /* CompleteFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteFilter.swift; sourceTree = "<group>"; };
 		82E254082422388600F16C30 /* Hidden.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hidden.swift; sourceTree = "<group>"; };
+		82E6D826245C213300CB359A /* PatientDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientDetails.swift; sourceTree = "<group>"; };
 		82EE570523F029900033B43C /* BackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
 		82EE570823F0335F0033B43C /* NavigationLinkExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationLinkExtension.swift; sourceTree = "<group>"; };
 		82F5591F23DC255B008032F4 /* BigButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BigButton.swift; sourceTree = "<group>"; };
@@ -778,7 +780,7 @@
 				82EE570523F029900033B43C /* BackButton.swift */,
 				820961D623ED9AF7004A510A /* LoadingView.swift */,
 				82811F0C23E955F70066AFDC /* KeyboardFollower.swift */,
-				82811EFF23E49F090066AFDC /* TextAndTextView.swift */,
+				82811EFF23E49F090066AFDC /* TextAndTextField.swift */,
 				82811F0123E6FAE10066AFDC /* TextFieldWithBottomLine.swift */,
 				82F5591F23DC255B008032F4 /* BigButton.swift */,
 				82EE570823F0335F0033B43C /* NavigationLinkExtension.swift */,
@@ -905,6 +907,7 @@
 				826952762454E0A5001B806E /* SignatureField.swift */,
 				826952782456F436001B806E /* InputTextField.swift */,
 				82FB74F5245A9E51001C2DF3 /* PabauFormWrap.swift */,
+				82E6D826245C213300CB359A /* PatientDetails.swift */,
 			);
 			path = Form;
 			sourceTree = "<group>";
@@ -1778,7 +1781,7 @@
 			files = (
 				82C479E02433C1AB0037F140 /* LazyView.swift in Sources */,
 				8250D7D1242C575A00F8F3FC /* TransitionLink.swift in Sources */,
-				8227FB71240BAC9600F653B5 /* TextAndTextView.swift in Sources */,
+				8227FB71240BAC9600F653B5 /* TextAndTextField.swift in Sources */,
 				8227FB73240BAC9600F653B5 /* NavigationLinkExtension.swift in Sources */,
 				8227FB78240BAC9600F653B5 /* Texts.swift in Sources */,
 				8227FB6F240BAC9600F653B5 /* BigButton.swift in Sources */,
@@ -1918,6 +1921,7 @@
 				82E253FA241B9EB500F16C30 /* JourneyAction.swift in Sources */,
 				82D43D9024351F5000AC74FA /* EmployeesList.swift in Sources */,
 				826952772454E0A5001B806E /* SignatureField.swift in Sources */,
+				82E6D827245C213300CB359A /* PatientDetails.swift in Sources */,
 				82E253FC241B9ED000F16C30 /* JourneyState.swift in Sources */,
 				8250D7CB242BD25B00F8F3FC /* JourneyBaseView.swift in Sources */,
 				82E253FE241B9F1200F16C30 /* CompleteFilter.swift in Sources */,

@@ -65,7 +65,7 @@ public struct ResetPasswordState: Equatable {
 			return ""
 		}
 	}
-
+	
 	var codeValidator: String {
 		guard let rpFailure = (/RPValidator.failure).extract(from: rpValidation) else {
 			return ""
@@ -98,7 +98,7 @@ func validate(_ code: String, _ newPass: String, _ confirmPass: String) -> RPVal
 	if code.isEmpty {
 		errors.append(.emptyCode)
 	}
-
+	
 	if errors.isEmpty {
 		return .success(ResetPassRequest(code: code, newPass: newPass))
 	} else {
@@ -171,18 +171,18 @@ struct ResetPassword: View {
 					Text(Texts.resetPassDesc)
 						.foregroundColor(.grey155)
 						.font(.medium16)
-					TextAndTextView(title: Texts.resetCode.uppercased(),
-													placeholder: Texts.resetCodePlaceholder,
-													bindingValue: self.$code,
-													validation: self.viewStore.value.codeValidator)
-					TextAndTextView(title: Texts.newPass.uppercased(),
-													placeholder: Texts.newPassPlaceholder,
-													bindingValue: self.$newPass,
-													validation: self.viewStore.value.newPassValidator)
-					TextAndTextView(title: Texts.confirmPass.uppercased(),
-													placeholder: Texts.confirmPassPlaceholder,
-													bindingValue: self.$confirmPass,
-													validation: self.viewStore.value.confirmPassValidator)
+					TextAndTextField( Texts.resetCode.uppercased(),
+														self.$code,
+														Texts.resetCodePlaceholder,
+														self.viewStore.value.codeValidator)
+					TextAndTextField( Texts.newPass.uppercased(),
+														self.$newPass,
+														Texts.newPassPlaceholder,
+														self.viewStore.value.newPassValidator)
+					TextAndTextField( Texts.confirmPass.uppercased(),
+														self.$confirmPass,
+														Texts.confirmPassPlaceholder,
+														self.viewStore.value.confirmPassValidator)
 				}.frame(maxWidth: 319)
 				BigButton(text: Texts.changePass) {
 					self.viewStore.send(.changePassTapped(self.code, self.newPass, self.confirmPass))
@@ -200,7 +200,7 @@ struct ResetPassword: View {
 		}.loadingView(.constant(self.viewStore.value.loadingState.isLoading),
 									Texts.verifyingCode)
 	}
-
+	
 	var passChangedView: PasswordChanged {
 		return PasswordChanged(store: passChangedStore)
 	}

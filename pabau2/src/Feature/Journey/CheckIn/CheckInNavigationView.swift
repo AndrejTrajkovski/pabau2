@@ -54,7 +54,8 @@ public struct CheckInNavigationView: View {
 					CheckInMain(store:
 						self.store.scope(value: { $0 },
 														 action: { .main($0)}
-					)), isActive: $isRunningAnimation, label: { EmptyView() })
+					))
+					, isActive: $isRunningAnimation, label: { EmptyView() })
 			}
 		}.navigationViewStyle(StackNavigationViewStyle())
 	}

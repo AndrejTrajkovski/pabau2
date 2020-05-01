@@ -48,6 +48,21 @@ public struct Texts {
 	public static let logout = "Logout"
 	public static let fetchingJourneys = "Fetching journeys...".localized
 	public static let employee = "Employee".localized
+	
+	public static let salutation = "SALUTATION".localized
+	public static let firstName = "FIRST NAME".localized
+	public static let lastName = "LAST NAME".localized
+	public static let dob = "DATE OF BIRTH".localized
+	public static let email = "EMAIL".localized
+	public static let phone = "PHONE".localized
+	public static let cellPhone = "CELL PHONE".localized
+	public static let addressLine1 = "ADDRESS LINE 1".localized
+	public static let addressLine2 = "ADDRESS LINE 2".localized
+	public static let postCode = "PSOT CODE".localized
+	public static let city = "CITY".localized
+	public static let county = "COUNTY".localized
+	public static let country = "COUNTRY".localized
+	public static let howDidUHear = "HOW DID YOU HEAR ABOUT US?".localized
 }
 
 extension String {

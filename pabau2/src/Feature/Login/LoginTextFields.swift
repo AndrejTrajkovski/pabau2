@@ -9,10 +9,16 @@ struct LoginTextFields: View {
 	let onForgotPass: () -> Void
 	var body: some View {
 		VStack(alignment: .leading) {
-			TextAndTextView(title: Texts.emailAddress.uppercased(), placeholder: "", bindingValue: $email, validation: emailValidation)
+			TextAndTextField(Texts.emailAddress.uppercased(),
+											 $email,
+											 "",
+											 emailValidation)
 			Spacer(minLength: 10)
 			HStack(spacing: 0) {
-				TextAndTextView(title: Texts.password.uppercased(), placeholder: "", bindingValue: $password, validation: passwordValidation)
+				TextAndTextField(Texts.password.uppercased(),
+												 $password,
+												 "",
+												 passwordValidation)
 				Button.init(Texts.forgotPass) {
 					self.onForgotPass()
 				}

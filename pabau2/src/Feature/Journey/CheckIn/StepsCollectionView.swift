@@ -3,11 +3,11 @@ import SwiftUI
 import Model
 
 struct StepsCollectionView: View {
-	
+
 	let cellWidth: CGFloat = 80
 	let cellHeight: CGFloat = 50
 	let spacing: CGFloat = 12
-	
+
 	let formVms: [FormVM]
 	let selectedIdx: Int
 	let didSelect: (Int) -> Void
@@ -37,7 +37,7 @@ struct StepsCollectionView: View {
 				.foregroundColor(viewModel.isSelected ? .blue : .gray)
 				.frame(width: 30, height: 30)
 			Text(viewModel.title.uppercased())
-				.fixedSize(horizontal: false, vertical: true)
+//				.fixedSize(horizontal: false, vertical: true)
 				.multilineTextAlignment(.center)
 				.lineLimit(nil)
 				.font(.medium10)

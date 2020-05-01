@@ -165,7 +165,7 @@ struct Section1: View {
 	}
 	var body: some View {
 		VStack (spacing: 24.0) {
-			SwitchCell(text: "All Day", startingValue: $isAllDay)
+			SwitchCell(text: "All Day", value: $isAllDay)
 			HStack(spacing: 24.0) {
 				PickerContainerStore.init(content: {
 					LabelAndTextField.init("CLIENT", self.viewStore.value.clients.chosenItemName ?? "")
@@ -405,13 +405,13 @@ struct LabelAndLowerContent<Content: View>: View {
 
 struct SwitchCell: View {
 	let text: String
-	@Binding var startingValue: Bool
+	@Binding var value: Bool
 	var body: some View {
 		VStack {
 			HStack {
 				Text(text).font(.regular17)
 				Spacer()
-				Toggle.init(isOn: $startingValue, label: { EmptyView() })
+				Toggle.init(isOn: $value, label: { EmptyView() })
 				Spacer()
 			}
 			Divider()
@@ -474,10 +474,10 @@ struct CommunicationsSection: View {
 		VStack(alignment: .leading, spacing: 8.0) {
 			Text("Communications").font(.semibold24)
 			Spacer()
-			SwitchCell.init(text: "Send Reminder", startingValue: $reminder)
-			SwitchCell.init(text: "Send Confirmation Email", startingValue: $email)
-			SwitchCell.init(text: "Send Confirmation SMS", startingValue: $sms)
-			SwitchCell.init(text: "Send Feedback Survey", startingValue: $feedback)
+			SwitchCell.init(text: "Send Reminder", value: $reminder)
+			SwitchCell.init(text: "Send Confirmation Email", value: $email)
+			SwitchCell.init(text: "Send Confirmation SMS", value: $sms)
+			SwitchCell.init(text: "Send Feedback Survey", value: $feedback)
 		}
 	}
 }

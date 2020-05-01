@@ -87,7 +87,8 @@ struct FormField: View, Equatable {
 					SignatureField()
 				}
 				if self.myValue.inputText != nil {
-					InputTextField (myText:
+					TextAndTextField (
+						self.cssField.title ?? "",
 						Binding.init(
 							get: { self.myValue.inputText! .text},
 							set: { self.cssField.cssClass = CSSClass.input_text(InputText(text: $0)) })

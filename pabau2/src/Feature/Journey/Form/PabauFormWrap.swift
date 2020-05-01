@@ -36,11 +36,11 @@ struct PabauFormWrap: View {
 				)
 			}
 			if self.viewStore.value.patientDetails != nil {
-				Text("Patient details")
+				PatientDetailsForm()
 			}
 			if self.viewStore.value.aftercare != nil {
 				Text("Aftercare")
 			}
-		}
+		}.padding()
 	}
 }
