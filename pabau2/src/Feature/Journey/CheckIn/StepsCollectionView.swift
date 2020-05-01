@@ -4,9 +4,9 @@ import Model
 
 struct StepsCollectionView: View {
 
-	let cellWidth: CGFloat = 80
+	let cellWidth: CGFloat = 100
 	let cellHeight: CGFloat = 50
-	let spacing: CGFloat = 12
+	let spacing: CGFloat = 8
 
 	let formVms: [FormVM]
 	let selectedIdx: Int
@@ -37,7 +37,7 @@ struct StepsCollectionView: View {
 				.foregroundColor(viewModel.isSelected ? .blue : .gray)
 				.frame(width: 30, height: 30)
 			Text(viewModel.title.uppercased())
-//				.fixedSize(horizontal: false, vertical: true)
+				.fixedSize(horizontal: false, vertical: true)
 				.multilineTextAlignment(.center)
 				.lineLimit(nil)
 				.font(.medium10)

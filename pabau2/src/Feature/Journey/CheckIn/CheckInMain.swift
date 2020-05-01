@@ -207,22 +207,32 @@ struct StepForms: View {
 	}
 
 	var body: some View {
-		VStack {
-			StepsCollectionView(steps: self.viewStore.value.forms,
-													selectedIdx: self.viewStore.value.selectedFormIndex) {
-														self.viewStore.send(.didSelectFormIndex($0))
-		}
-		.frame(minWidth: 240, maxWidth: 480, alignment: .center)
-		.frame(height: 80)
-			PabauFormWrap(store: self.store.scope(
-				value: { $0.forms[self.viewStore.value.selectedFormIndex] },
-				action: { .action2(
-					Indexed(index: self.viewStore.value.selectedFormIndex,
-									value: $0))}
+		return GeometryReader { geo in
+			VStack(spacing: 0) {
+				StepsCollectionView(steps: self.viewStore.value.forms,
+														selectedIdx: self.viewStore.value.selectedFormIndex) {
+															self.viewStore.send(.didSelectFormIndex($0))
+				}
+				.frame(minWidth: 240, maxWidth: 480, alignment: .center)
+				.frame(height: 80)
+				Divider()
+					.frame(width: geo.size.width)
+					.shadow(color: Color(hex: "C1C1C1"), radius: 4, y: 2)
+				PabauFormWrap(store: self.store.scope(
+					value: { $0.forms[self.viewStore.value.selectedFormIndex] },
+					action: { .action2(
+						Indexed(index: self.viewStore.value.selectedFormIndex,
+										value: $0))}
+					)
 				)
-			)
+				Spacer()
+				BigButton(text: Texts.next) {
+					
+				}
+				.frame(width: 230)
+				.padding(8)
+			}	.padding(.leading, 40)
+				.padding(.trailing, 40)
 		}
-			.padding(.leading, 40)
-			.padding(.trailing, 40)
 	}
 }

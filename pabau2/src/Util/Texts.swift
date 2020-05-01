@@ -63,6 +63,8 @@ public struct Texts {
 	public static let county = "COUNTY".localized
 	public static let country = "COUNTRY".localized
 	public static let howDidUHear = "HOW DID YOU HEAR ABOUT US?".localized
+	
+	public static let next = "Next"
 }
 
 extension String {

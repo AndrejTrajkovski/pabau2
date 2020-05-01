@@ -16,15 +16,17 @@ struct DynamicForm: View {
 
 	public var body: some View {
 		print("pabau form body")
-		return List {
-			ForEach(template.formStructure.formStructure.indices, id: \.self ) { index in
-				FormSectionField(cssField:
-					Binding(
-						get: { self.template.formStructure.formStructure[index] },
-						set: { self.template.formStructure.formStructure[index] = $0 })
-				).equatable()
+		return
+			List {
+				ForEach(template.formStructure.formStructure.indices, id: \.self ) { index in
+					FormSectionField(cssField:
+						Binding(
+							get: { self.template.formStructure.formStructure[index] },
+							set: { self.template.formStructure.formStructure[index] = $0 })
+					).equatable()
+				}
 			}
-		}.padding(.bottom, keyboardHandler.keyboardHeight)
+			.padding(.bottom, keyboardHandler.keyboardHeight)
 	}
 }
 
