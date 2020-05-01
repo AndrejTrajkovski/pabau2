@@ -41,6 +41,10 @@ public enum AddAppointmentAction {
 	case addAppointmentTap
 	case closeBtnTap
 	case didTapServices
+	case sms(ToggleAction)
+	case reminder(ToggleAction)
+	case email(ToggleAction)
+	case feedback(ToggleAction)
 }
 
 extension Employee: ListPickerElement { }
@@ -120,10 +124,26 @@ let addAppointmentReducer: Reducer<AddAppointmentState,
 			action: /AddAppointmentAction.participants,
 			environment: { $0 }),
 		addAppTapBtnReducer.pullback(
-						 value: \AddAppointmentState.self,
-						 action: /AddAppointmentAction.self,
-						 environment: { $0 })
-)
+			value: \AddAppointmentState.self,
+			action: /AddAppointmentAction.self,
+			environment: { $0 }),
+		switchCellReducer.pullback(
+			value: \AddAppointmentState.sms,
+			action: /AddAppointmentAction.sms,
+			environment: { $0 }),
+		switchCellReducer.pullback(
+			value: \AddAppointmentState.reminder,
+			action: /AddAppointmentAction.reminder,
+			environment: { $0 }),
+		switchCellReducer.pullback(
+			value: \AddAppointmentState.feedback,
+			action: /AddAppointmentAction.feedback,
+			environment: { $0 }),
+		switchCellReducer.pullback(
+			value: \AddAppointmentState.email,
+			action: /AddAppointmentAction.email,
+			environment: { $0 })
+		)
 
 public struct AddAppointment: View {
 	let store: Store<AddAppointmentState, AddAppointmentAction>
@@ -245,7 +265,20 @@ struct AddAppSections: View {
 			Section1(store: self.store)
 			Section2(store: self.store)
 			NotesSection()
-			CommunicationsSection()
+			CommunicationsSection(
+				reminder: viewStore.binding(
+					get: { $0.reminder },
+					send: { .reminder(.setTo($0)) }),
+				email: viewStore.binding(
+					get: { $0.email },
+					send: { .email(.setTo($0)) }),
+				sms: viewStore.binding(
+					get: { $0.sms },
+					send: { .sms(.setTo($0)) }),
+				feedback: viewStore.binding(
+					get: { $0.feedback },
+					send: { .feedback(.setTo($0)) })
+			)
 		}.padding(.bottom, keyboardHandler.keyboardHeight)
 			.navigationBarTitle(Text("New Appointment").font(.semibold24))
 			.navigationBarItems(leading:
@@ -403,6 +436,18 @@ struct LabelAndLowerContent<Content: View>: View {
 	}
 }
 
+public enum ToggleAction {
+	case setTo(Bool)
+}
+
+let switchCellReducer = Reducer<Bool, ToggleAction, Any> { state, action, env in
+	switch action {
+	case .setTo(let value):
+		state = value
+	}
+	return []
+}
+
 struct SwitchCell: View {
 	let text: String
 	@Binding var value: Bool
@@ -465,10 +510,10 @@ struct NotesSection: View {
 }
 
 struct CommunicationsSection: View {
-	@State var reminder: Bool = false
-	@State var email: Bool = false
-	@State var sms: Bool = false
-	@State var feedback: Bool = false
+	@Binding var reminder: Bool
+	@Binding var email: Bool
+	@Binding var sms: Bool
+	@Binding var feedback: Bool
 
 	public var body: some View {
 		VStack(alignment: .leading, spacing: 8.0) {
