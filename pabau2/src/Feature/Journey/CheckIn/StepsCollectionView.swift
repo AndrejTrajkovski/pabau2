@@ -5,7 +5,7 @@ import Model
 struct StepsCollectionView: View {
 
 	let cellWidth: CGFloat = 100
-	let cellHeight: CGFloat = 50
+	let cellHeight: CGFloat = 80
 	let spacing: CGFloat = 8
 
 	let formVms: [FormVM]
@@ -67,8 +67,6 @@ struct StepsCollectionView: View {
 				})
 				.frame(width: 480,
 							 height: cellHeight)
-			Spacer()
-			.fixedSize(horizontal: false, vertical: true)
 		}
 	}
 }

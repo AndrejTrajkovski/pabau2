@@ -142,10 +142,10 @@ public struct CollectionView<Content: View>: UIViewControllerRepresentable {
 		uiViewController.collectionView.scrollToItem(at:
 			IndexPath(row: selectedIdx, section: 0),
 																								 at: .centeredHorizontally, animated: true)
-		uiViewController.collectionView.frame.size =
-			CGSize(
-				width: uiViewController.collectionView.frame.size.width,
-				height: 50)
+//		uiViewController.collectionView.frame.size =
+//			CGSize(
+//				width: uiViewController.collectionView.frame.size.width,
+//				height: 50)
 		print(uiViewController.collectionView.frame.size.height)
 	}
 
