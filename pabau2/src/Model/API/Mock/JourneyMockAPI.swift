@@ -180,8 +180,8 @@ extension JourneyMockAPI {
 			),
 			CSSField(id: 4,
 							 cssClass: .radio(Radio(4,
-																			[RadioChoice(1, "radio choice 1"),
-																			 RadioChoice(2, "radio choice 2")],
+																			[RadioChoice(1, "radio choice 3"),
+																			 RadioChoice(2, "radio choice 4")],
 																			1)
 				), title: "Radio title"
 			),
@@ -244,8 +244,8 @@ extension JourneyMockAPI {
 			),
 			CSSField(id: 4,
 							 cssClass: .radio(Radio(4,
-																			[RadioChoice(1, "radio choice 1"),
-																			 RadioChoice(2, "radio choice 2")],
+																			[RadioChoice(1, "radio choice 5"),
+																			 RadioChoice(2, "radio choice 6")],
 																			1)
 				), title: "Radio title"
 			)
@@ -304,8 +304,8 @@ extension JourneyMockAPI {
 			),
 			CSSField(id: 4,
 							 cssClass: .radio(Radio(4,
-																			[RadioChoice(1, "radio choice 1"),
-																			 RadioChoice(2, "radio choice 2")],
+																			[RadioChoice(1, "radio choice 7"),
+																			 RadioChoice(2, "radio choice 8")],
 																			1)
 				), title: "Radio title"
 			)
@@ -364,8 +364,8 @@ extension JourneyMockAPI {
 			),
 			CSSField(id: 4,
 							 cssClass: .radio(Radio(4,
-																			[RadioChoice(1, "radio choice 1"),
-																			 RadioChoice(2, "radio choice 2")],
+																			[RadioChoice(1, "radio choice 9"),
+																			 RadioChoice(2, "radio choice 10")],
 																			1)
 				), title: "Radio title"
 			)
@@ -424,8 +424,8 @@ extension JourneyMockAPI {
 			),
 			CSSField(id: 4,
 							 cssClass: .radio(Radio(4,
-																			[RadioChoice(1, "radio choice 1"),
-																			 RadioChoice(2, "radio choice 2")],
+																			[RadioChoice(1, "radio choice 11"),
+																			 RadioChoice(2, "radio choice 12")],
 																			1)
 				), title: "Radio title"
 			)
