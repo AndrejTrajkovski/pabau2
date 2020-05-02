@@ -184,6 +184,7 @@ let stepFormsReducer = Reducer<CheckInContainerState, StepFormsAction, JourneyEn
 
 struct StepForms: View {
 
+	@EnvironmentObject var keyboardHandler: KeyboardFollower
 	let store: Store<CheckInContainerState, StepFormsAction>
 	@ObservedObject var viewStore: ViewStore<CheckInContainerState, StepFormsAction>
 
@@ -202,7 +203,7 @@ struct StepForms: View {
 	var body: some View {
 		print("check in main body")
 		return GeometryReader { geo in
-			VStack(spacing: 0) {
+			VStack(spacing: 8) {
 				StepsCollectionView(steps: self.viewStore.value.patientForms,
 														selectedIdx: self.viewStore.value.selectedFormIndex) {
 															self.viewStore.send(.didSelectFormIndex($0))
@@ -218,13 +219,16 @@ struct StepForms: View {
 						Indexed(index: self.viewStore.value.selectedFormIndex,
 										value: $0))}
 					)
-				)
+				).padding(.bottom, self.keyboardHandler.keyboardHeight > 0 ? self.keyboardHandler.keyboardHeight : 32)
+					.padding([.leading, .trailing, .top], 32)
 				Spacer()
-				BigButton(text: Texts.next) {
-					self.viewStore.send(.didSelectNextForm)
+				if self.keyboardHandler.keyboardHeight == 0 {
+					BigButton(text: Texts.next) {
+						self.viewStore.send(.didSelectNextForm)
+					}
+					.frame(width: 230)
+					.padding(8)
 				}
-				.frame(width: 230)
-				.padding(8)
 			}	.padding(.leading, 40)
 				.padding(.trailing, 40)
 		}

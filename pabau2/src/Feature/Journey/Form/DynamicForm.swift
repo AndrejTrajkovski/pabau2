@@ -5,8 +5,7 @@ import CasePaths
 import Util
 
 struct DynamicForm: View {
-
-	@EnvironmentObject var keyboardHandler: KeyboardFollower
+	
 	@Binding var template: FormTemplate
 	init(template: Binding<FormTemplate>) {
 		self._template = template
@@ -21,12 +20,24 @@ struct DynamicForm: View {
 				ForEach(template.formStructure.formStructure.indices, id: \.self ) { index in
 					FormSectionField(cssField:
 						Binding(
-							get: { self.template.formStructure.formStructure[index] },
-							set: { self.template.formStructure.formStructure[index] = $0 })
+							get: {
+								if self.template.formStructure.formStructure.count > index {
+									return self.template.formStructure.formStructure[index]
+								} else {
+									return CSSField.defaultEmpty
+								}
+						},
+							set: {
+								if self.template.formStructure.formStructure.count > index {
+									self.template.formStructure.formStructure[index] = $0
+								} else {
+									
+								}
+							}
+						)
 					).equatable()
 				}
 			}
-			.padding(.bottom, keyboardHandler.keyboardHeight)
 	}
 }
 
