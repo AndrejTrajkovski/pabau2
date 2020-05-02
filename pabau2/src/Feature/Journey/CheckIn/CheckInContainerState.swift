@@ -24,12 +24,21 @@ public struct CheckInContainerState: Equatable {
 	var patientForms: [MetaFormAndStatus]
 	var selectedFormIndex: Int
 
+	//NAVIGATION
+	var patientMode: Bool = false
+	var handBackDevice: Bool = false
+	var passcode: Bool = false
+	var chooseTreatment: Bool = false
+	var journeySummary: Bool = false
+	var doctorMode: Bool = false
+	
 	init(journey: Journey,
 			 pathway: Pathway,
 			 consents: [FormTemplate]) {
 		self.journey = journey
 		self.pathway = pathway
 		self.patientForms = []
+		self.patientForms += [MetaFormAndStatus(MetaForm.patientComplete, false)]
 		self.patientForms += [MetaFormAndStatus(MetaForm.patientDetails(PatientDetails()), false)]
 		self.patientForms += zip(consents.map(MetaForm.template), consents.map { _ in false})
 		.map(MetaFormAndStatus.init)

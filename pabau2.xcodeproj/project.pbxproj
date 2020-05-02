@@ -232,7 +232,7 @@
 		82E253FE241B9F1200F16C30 /* CompleteFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E253FD241B9F1200F16C30 /* CompleteFilter.swift */; };
 		82E25405241EA8D800F16C30 /* SwiftDate in Frameworks */ = {isa = PBXBuildFile; productRef = 82E25404241EA8D800F16C30 /* SwiftDate */; };
 		82E254092422388600F16C30 /* Hidden.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E254082422388600F16C30 /* Hidden.swift */; };
-		82E6D827245C213300CB359A /* PatientDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E6D826245C213300CB359A /* PatientDetails.swift */; };
+		82E6D827245C213300CB359A /* PatientDetailsForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E6D826245C213300CB359A /* PatientDetailsForm.swift */; };
 		82F6ADAE23F2C7B1001B3ACE /* PabauTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */; };
 		82FB74F6245A9E51001C2DF3 /* PabauFormWrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FB74F5245A9E51001C2DF3 /* PabauFormWrap.swift */; };
 /* End PBXBuildFile section */
@@ -631,7 +631,7 @@
 		82E253FB241B9ED000F16C30 /* JourneyState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyState.swift; sourceTree = "<group>"; };
 		82E253FD241B9F1200F16C30 /* CompleteFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteFilter.swift; sourceTree = "<group>"; };
 		82E254082422388600F16C30 /* Hidden.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hidden.swift; sourceTree = "<group>"; };
-		82E6D826245C213300CB359A /* PatientDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientDetails.swift; sourceTree = "<group>"; };
+		82E6D826245C213300CB359A /* PatientDetailsForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientDetailsForm.swift; sourceTree = "<group>"; };
 		82EE570523F029900033B43C /* BackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
 		82EE570823F0335F0033B43C /* NavigationLinkExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationLinkExtension.swift; sourceTree = "<group>"; };
 		82F5591F23DC255B008032F4 /* BigButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BigButton.swift; sourceTree = "<group>"; };
@@ -907,7 +907,7 @@
 				826952762454E0A5001B806E /* SignatureField.swift */,
 				826952782456F436001B806E /* InputTextField.swift */,
 				82FB74F5245A9E51001C2DF3 /* PabauFormWrap.swift */,
-				82E6D826245C213300CB359A /* PatientDetails.swift */,
+				82E6D826245C213300CB359A /* PatientDetailsForm.swift */,
 			);
 			path = Form;
 			sourceTree = "<group>";
@@ -1921,7 +1921,7 @@
 				82E253FA241B9EB500F16C30 /* JourneyAction.swift in Sources */,
 				82D43D9024351F5000AC74FA /* EmployeesList.swift in Sources */,
 				826952772454E0A5001B806E /* SignatureField.swift in Sources */,
-				82E6D827245C213300CB359A /* PatientDetails.swift in Sources */,
+				82E6D827245C213300CB359A /* PatientDetailsForm.swift in Sources */,
 				82E253FC241B9ED000F16C30 /* JourneyState.swift in Sources */,
 				8250D7CB242BD25B00F8F3FC /* JourneyBaseView.swift in Sources */,
 				82E253FE241B9F1200F16C30 /* CompleteFilter.swift in Sources */,

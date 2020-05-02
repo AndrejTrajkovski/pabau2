@@ -68,16 +68,16 @@ struct CheckInMain: View {
 	}
 }
 
-public struct PatientDetails: Equatable, Hashable {
-}
+public struct PatientDetails: Equatable, Hashable { }
 
-public struct Aftercare: Equatable, Hashable {
-}
+public struct Aftercare: Equatable, Hashable { }
 
 public enum MetaForm: Equatable, Hashable {
 	case patientDetails(PatientDetails)
 	case aftercare(Aftercare)
 	case template(FormTemplate)
+	case patientComplete
+	
 	var title: String {
 		switch self {
 		case .patientDetails:
@@ -86,6 +86,8 @@ public enum MetaForm: Equatable, Hashable {
 			return title(template: template)
 		case .aftercare:
 			return "AFTERCARE"
+		case .patientComplete:
+			return "COMPLETE"
 		}
 	}
 
@@ -205,7 +207,7 @@ struct StepForms: View {
 		return GeometryReader { geo in
 			VStack(spacing: 8) {
 				StepsCollectionView(steps: self.viewStore.value.patientForms,
-														selectedIdx: self.viewStore.value.selectedFormIndex) {
+														selectedIdx: self.viewStore.value.selectedFormIndex, journeyMode: .patient) {
 															self.viewStore.send(.didSelectFormIndex($0))
 				}
 				.frame(minWidth: 240, maxWidth: 480, alignment: .center)
