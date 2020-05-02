@@ -236,6 +236,7 @@
 		82E6D829245DF4D200CB359A /* CompleteStepForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E6D828245DF4D200CB359A /* CompleteStepForm.swift */; };
 		82E6D82B245E09ED00CB359A /* HandBackDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E6D82A245E09ED00CB359A /* HandBackDevice.swift */; };
 		82E6D82D245E0A4400CB359A /* GradientBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E6D82C245E0A4400CB359A /* GradientBackground.swift */; };
+		82E6D82F245E177900CB359A /* JourneyTransitionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E6D82E245E177900CB359A /* JourneyTransitionView.swift */; };
 		82F6ADAE23F2C7B1001B3ACE /* PabauTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */; };
 		82FB74F6245A9E51001C2DF3 /* PabauFormWrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FB74F5245A9E51001C2DF3 /* PabauFormWrap.swift */; };
 /* End PBXBuildFile section */
@@ -638,6 +639,7 @@
 		82E6D828245DF4D200CB359A /* CompleteStepForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteStepForm.swift; sourceTree = "<group>"; };
 		82E6D82A245E09ED00CB359A /* HandBackDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandBackDevice.swift; sourceTree = "<group>"; };
 		82E6D82C245E0A4400CB359A /* GradientBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientBackground.swift; sourceTree = "<group>"; };
+		82E6D82E245E177900CB359A /* JourneyTransitionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyTransitionView.swift; sourceTree = "<group>"; };
 		82EE570523F029900033B43C /* BackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
 		82EE570823F0335F0033B43C /* NavigationLinkExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationLinkExtension.swift; sourceTree = "<group>"; };
 		82F5591F23DC255B008032F4 /* BigButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BigButton.swift; sourceTree = "<group>"; };
@@ -956,6 +958,7 @@
 				825BE7E124361ABD00422910 /* StaffFilterPicker.swift */,
 				82E6D82A245E09ED00CB359A /* HandBackDevice.swift */,
 				82E6D82C245E0A4400CB359A /* GradientBackground.swift */,
+				82E6D82E245E177900CB359A /* JourneyTransitionView.swift */,
 			);
 			path = Journey;
 			sourceTree = "<group>";
@@ -1918,6 +1921,7 @@
 				82C479DE242E17B50037F140 /* CheckInNavigationView.swift in Sources */,
 				829BFBB1243F693E005DDCB9 /* CheckInMain.swift in Sources */,
 				82E6D82D245E0A4400CB359A /* GradientBackground.swift in Sources */,
+				82E6D82F245E177900CB359A /* JourneyTransitionView.swift in Sources */,
 				825BE7E424361C4400422910 /* SoundPlayer.swift in Sources */,
 				829B40D12423B8F2009B7E71 /* AddAppointment.swift in Sources */,
 				82622B5024464E0800BECF9A /* RibbonView.swift in Sources */,

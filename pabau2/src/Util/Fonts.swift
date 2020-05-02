@@ -37,6 +37,7 @@ public extension Font {
 	static let regular45 = Font.system(size: 45, weight: .regular)
 	static let regular90 = Font.system(size: 90, weight: .regular)
 	static let regular24 = Font.system(size: 24, weight: .regular)
-
+	static let regular100 = Font.system(size: 100, weight: .regular)
+	
 	static let light30 = Font.system(size: 30, weight: .light)
 }

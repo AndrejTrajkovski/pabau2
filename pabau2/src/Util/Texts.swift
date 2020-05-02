@@ -69,6 +69,12 @@ public struct Texts {
 	public static let journeyCompleteDesc = "Please use the checkout button at the end of the page."
 	public static let journeyCompleteTitle = "You have successfully completed the journey."
 	public static let complete = "COMPLETE"
+	
+	public static let handBackTitle = "Please hand back the device."
+	public static let handBackDesc = "You can now give the device to the doctor."
+	
+	public static let checkInTitle = "Checking-In"
+	public static let checkInDesc = "Hand over the tablet to the client"
 }
 
 extension String {

@@ -1,5 +1,6 @@
 import SwiftUI
 import ComposableArchitecture
+import Util
 
 struct CheckInAnimation: View {
 	@Binding var isRunningAnimation: Bool
@@ -9,17 +10,9 @@ struct CheckInAnimation: View {
 				Checkmark(animationDuration: self.animationDuration, onAnimationFinish: {
 					self.isRunningAnimation = true
 				})
-				Circle()
-					.overlay(
-						ZStack {
-							Text("SC").foregroundColor(.white).font(.regular90)
-							Circle()
-								.stroke(Color.white, lineWidth: 3.0)
-						}
-				).foregroundColor(Color.clear)
-					.frame(width: 240, height: 240)
-				Text("Checking-In").foregroundColor(.white).font(.regular24)
-				Text("Hand over the tablet to the client").foregroundColor(.checkInSubtitle).font(.regular16)
+				JourneyTransitionView(title: Texts.checkInDesc,
+															description: Texts.checkInTitle,
+															circleContent: { Text("SC").font(.regular90)})
 			}.offset(x: 0, y: -50)
 				.gradientView()
 				.edgesIgnoringSafeArea(.top)
