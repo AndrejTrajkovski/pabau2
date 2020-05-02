@@ -45,26 +45,31 @@ public struct CollectionView<Content: View>: UIViewControllerRepresentable {
 	var identifiers: [Int]
 	/// The actual content.
 	var content: [Content]
+	
+	var selectedIdx: Int
 
 	/// The layout info.
 	var layout: CollectionViewLayout = .init()
 
 	// MARK: Lifecycle
 	/// Init with `data`.
-	public init<C, ID>(_ data: C, id: KeyPath<C.Element, ID>, @ViewBuilder content: (C.Element) -> Content) where C: RandomAccessCollection, ID: Hashable {
-		self.identifiers = data.map { $0[keyPath: id].hashValue }
-		self.content = data.map(content)
-	}
+//	public init<C, ID>(_ data: C, id: KeyPath<C.Element, ID>, @ViewBuilder content: (C.Element) -> Content) where C: RandomAccessCollection, ID: Hashable {
+//		self.identifiers = data.map { $0[keyPath: id].hashValue }
+//		self.content = data.map(content)
+//	}
 	/// Init with hashable `data`.
-	public init<C>(_ data: C, @ViewBuilder content: (C.Element) -> Content) where C: RandomAccessCollection, C.Element: Hashable {
+	public init<C>(_ data: C,
+								 _ selectedIdx: Int,
+								 @ViewBuilder content: (C.Element) -> Content) where C: RandomAccessCollection, C.Element: Hashable {
 		self.identifiers = data.map { $0.hashValue }
 		self.content = data.map(content)
+		self.selectedIdx = selectedIdx
 	}
 	/// Init with identifiable data.
-	public init<C>(_ data: C, @ViewBuilder content: (C.Element) -> Content) where C: RandomAccessCollection, C.Element: Identifiable {
-		self.identifiers = data.map { $0.id.hashValue }
-		self.content = data.map(content)
-	}
+//	public init<C>(_ data: C, @ViewBuilder content: (C.Element) -> Content) where C: RandomAccessCollection, C.Element: Identifiable {
+//		self.identifiers = data.map { $0.id.hashValue }
+//		self.content = data.map(content)
+//	}
 
 	// MARK: Accessory
 	/// Update layout.
@@ -121,7 +126,7 @@ public struct CollectionView<Content: View>: UIViewControllerRepresentable {
 		controller.collectionView.dataSource = context.coordinator
 		controller.collectionView.showsHorizontalScrollIndicator = self.layout.showsIndicators && self.layout.axis == .horizontal
 		controller.collectionView.showsVerticalScrollIndicator = self.layout.showsIndicators && self.layout.axis == .vertical
-		controller.collectionView.clipsToBounds = false
+		controller.collectionView.clipsToBounds = true
 		print(controller.collectionView.translatesAutoresizingMaskIntoConstraints)
 		self.layout.transform?(controller.collectionView)
 //		controller.collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -134,13 +139,14 @@ public struct CollectionView<Content: View>: UIViewControllerRepresentable {
 																		 context: UIViewControllerRepresentableContext<CollectionView<Content>>) {
 		context.coordinator.zipped = Array(zip(identifiers, content))
 		uiViewController.collectionView.reloadData()
-		
-//		DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-			uiViewController.collectionView.scrollToItem(at:
-				IndexPath(row: 5, section: 0),
-																									 at: .centeredHorizontally, animated: true)
-			uiViewController.collectionView.layoutIfNeeded()
-//		}
+		uiViewController.collectionView.scrollToItem(at:
+			IndexPath(row: selectedIdx, section: 0),
+																								 at: .centeredHorizontally, animated: true)
+		uiViewController.collectionView.frame.size =
+			CGSize(
+				width: uiViewController.collectionView.frame.size.width,
+				height: 50)
+		print(uiViewController.collectionView.frame.size.height)
 	}
 
 	// MARK: Coordinator
@@ -174,9 +180,9 @@ public struct CollectionView<Content: View>: UIViewControllerRepresentable {
 			container.backgroundColor = .clear
 			container.frame = .zero
 			container.translatesAutoresizingMaskIntoConstraints = true
-			container.clipsToBounds = false
+			container.clipsToBounds = true
 			container.frame = cell.contentView.bounds
-			container.autoresizingMask = [.flexibleHeight, .flexibleBottomMargin, .flexibleWidth, .flexibleRightMargin]
+			container.autoresizingMask = [.flexibleHeight, .flexibleBottomMargin, .flexibleRightMargin]
 			cell.contentView.addSubview(container)
 			cell.identifier = value.0
 			return cell
