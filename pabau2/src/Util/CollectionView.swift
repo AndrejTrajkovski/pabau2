@@ -134,11 +134,13 @@ public struct CollectionView<Content: View>: UIViewControllerRepresentable {
 																		 context: UIViewControllerRepresentableContext<CollectionView<Content>>) {
 		context.coordinator.zipped = Array(zip(identifiers, content))
 		uiViewController.collectionView.reloadData()
-		uiViewController.collectionView.frame.size =
-			CGSize(
-				width: uiViewController.collectionView.frame.size.width,
-				height: 50)
-		print(uiViewController.collectionView.frame.size.height)
+		
+//		DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+			uiViewController.collectionView.scrollToItem(at:
+				IndexPath(row: 5, section: 0),
+																									 at: .centeredHorizontally, animated: true)
+			uiViewController.collectionView.layoutIfNeeded()
+//		}
 	}
 
 	// MARK: Coordinator

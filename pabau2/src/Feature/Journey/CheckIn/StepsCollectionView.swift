@@ -62,6 +62,6 @@ struct StepsCollectionView: View {
 			.layout({ (layout) in
 				layout.interGroupSpacing = spacing
 			})
-		.frame(width: CGFloat(formVms.count) * (cellWidth + spacing), height: cellHeight)
+			.frame(idealWidth: CGFloat(formVms.count) * (cellWidth + spacing), maxWidth: 480, idealHeight: cellHeight)
 	}
 }

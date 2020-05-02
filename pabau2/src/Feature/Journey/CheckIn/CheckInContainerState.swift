@@ -15,45 +15,24 @@ let stepToModeMap: [StepType: JourneyMode] = [
 	.photos: .doctor,
 	.recalls: .doctor,
 	.aftercares: .doctor
-//	.mediaimages : .patient,
-//	.mediavideos : .patient,
 ]
 
 public struct CheckInContainerState: Equatable {
 	var journey: Journey
 	var pathway: Pathway
 
-	var forms: [MetaFormAndStatus]
+	var patientForms: [MetaFormAndStatus]
 	var selectedFormIndex: Int
-//	var patientDetails: PatientDetails?
-//	var pdCompleted: Bool
-//
-//	var consents: [FormTemplate]
-//	var consentsCompleted: [Bool]
-//
-//	var medicalHistory: FormTemplate?
-//	var mhCompleted: Bool
-//
-//	var aftercare: Aftercare?
-//	var aftercareCompleted: Bool
-//
-//	var treatments: [FormTemplate]
-//	var treatmentsCompleted: [Bool]
-//
-//	var history: FormTemplate?
-//	var historyCompleted: Bool
-//
-//	var presription: FormTemplate?
-//	var presriptionCompleted: Bool
 
 	init(journey: Journey,
 			 pathway: Pathway,
 			 consents: [FormTemplate]) {
 		self.journey = journey
 		self.pathway = pathway
-		self.forms = zip(consents.map(MetaForm.template), consents.map { _ in false})
-								.map(MetaFormAndStatus.init)
-		self.forms += [MetaFormAndStatus(MetaForm.patientDetails(PatientDetails()), false)]
+		self.patientForms = []
+		self.patientForms += [MetaFormAndStatus(MetaForm.patientDetails(PatientDetails()), false)]
+		self.patientForms += zip(consents.map(MetaForm.template), consents.map { _ in false})
+		.map(MetaFormAndStatus.init)
 		self.selectedFormIndex = 0
 //		self.consents = consents
 //		if let patientDetails = patientDetails {

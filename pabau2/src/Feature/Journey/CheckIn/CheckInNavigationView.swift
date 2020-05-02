@@ -13,10 +13,6 @@ public enum CheckInAnimationAction {
 }
 
 public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction, JourneyEnvironemnt> = .combine(
-	checkInMainReducer.pullback(
-					 value: \CheckInContainerState.self,
-					 action: /CheckInContainerAction.main,
-					 environment: { $0 }),
 	formsParentReducer.pullback(
 		value: \CheckInContainerState.self,
 		action: /CheckInContainerAction.main,
@@ -30,7 +26,7 @@ public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction
 
 public let formsParentReducer: Reducer<CheckInContainerState, CheckInMainAction, JourneyEnvironemnt> = .combine(
 	indexed(reducer: stepFormsReducer2,
-					\CheckInContainerState.forms,
+					\CheckInContainerState.patientForms,
 					/CheckInMainAction.patient..StepFormsAction.action2, { $0 }),
 	stepFormsReducer.pullback(
 		value: \CheckInContainerState.self,

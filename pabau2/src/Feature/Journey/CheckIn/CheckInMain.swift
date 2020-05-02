@@ -8,17 +8,6 @@ public enum CheckInMainAction {
 	case patient(StepFormsAction)
 }
 
-let checkInMainReducer = Reducer<CheckInContainerState, CheckInMainAction, JourneyEnvironemnt> { _, action, _ in
-	switch action {
-	case .closeBtnTap:
-		//handled elsewhere
-		break
-	case .patient:
-		break
-	}
-	return []
-}
-
 struct CheckInMain: View {
 	let store: Store<CheckInContainerState, CheckInMainAction>
 	@ObservedObject var viewStore: ViewStore<State, CheckInMainAction>
@@ -123,10 +112,7 @@ public struct MetaFormAndStatus: Equatable, Hashable {
 }
 
 public enum StepFormsAction {
-//	case didUpdatePatientDetails(PatientDetails)
-//	case didUpdateConsent(FormTemplate)
-//	case didUpdatePatientDetails(PatientDetails)
-//	case didUpdateFields([CSSField])
+	case didSelectNextForm
 	case didSelectFormIndex(Int)
 	case action2(Indexed<StepFormsAction2>)
 }
@@ -158,8 +144,15 @@ let stepFormsReducer = Reducer<CheckInContainerState, StepFormsAction, JourneyEn
 		state.selectedFormIndex = idx
 	case .action2:
 		break
+	case .didSelectNextForm:
+		if state.patientForms.count > state.selectedFormIndex + 1 {
+			state.selectedFormIndex += 1
+		}
 	}
 
+//	func handleNextBtn(state: inout CheckInContainerState) -> [StepFormsAction] {
+//
+//	}
 //	func update(state: inout CheckInContainerState, form: MetaForm) {
 //		switch form {
 //		case .aftercare(let aftercare):
@@ -209,7 +202,7 @@ struct StepForms: View {
 	var body: some View {
 		return GeometryReader { geo in
 			VStack(spacing: 0) {
-				StepsCollectionView(steps: self.viewStore.value.forms,
+				StepsCollectionView(steps: self.viewStore.value.patientForms,
 														selectedIdx: self.viewStore.value.selectedFormIndex) {
 															self.viewStore.send(.didSelectFormIndex($0))
 				}
@@ -219,7 +212,7 @@ struct StepForms: View {
 					.frame(width: geo.size.width)
 					.shadow(color: Color(hex: "C1C1C1"), radius: 4, y: 2)
 				PabauFormWrap(store: self.store.scope(
-					value: { $0.forms[self.viewStore.value.selectedFormIndex] },
+					value: { $0.patientForms[self.viewStore.value.selectedFormIndex] },
 					action: { .action2(
 						Indexed(index: self.viewStore.value.selectedFormIndex,
 										value: $0))}
@@ -227,7 +220,7 @@ struct StepForms: View {
 				)
 				Spacer()
 				BigButton(text: Texts.next) {
-					
+					self.viewStore.send(.didSelectNextForm)
 				}
 				.frame(width: 230)
 				.padding(8)
