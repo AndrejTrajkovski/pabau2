@@ -5,10 +5,6 @@ struct CheckInAnimation: View {
 	@Binding var isRunningAnimation: Bool
 	var player = Player()
 	var body: some View {
-		ZStack {
-			Rectangle().fill(
-				LinearGradient(gradient: .init(colors: [.checkInGradient1, .deepSkyBlue]), startPoint: .top, endPoint: .bottom)
-			)
 			VStack(spacing: 24) {
 				Checkmark(animationDuration: self.animationDuration, onAnimationFinish: {
 					self.isRunningAnimation = true
@@ -25,10 +21,11 @@ struct CheckInAnimation: View {
 				Text("Checking-In").foregroundColor(.white).font(.regular24)
 				Text("Hand over the tablet to the client").foregroundColor(.checkInSubtitle).font(.regular16)
 			}.offset(x: 0, y: -50)
-		}.edgesIgnoringSafeArea(.top)
-			.onAppear(perform: {
-				self.player.playSoundAndVibrate()
-			})
+				.gradientView()
+				.edgesIgnoringSafeArea(.top)
+				.onAppear(perform: {
+					self.player.playSoundAndVibrate()
+				})
 	}
 }
 

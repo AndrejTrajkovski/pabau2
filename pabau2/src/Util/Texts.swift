@@ -65,6 +65,10 @@ public struct Texts {
 	public static let howDidUHear = "HOW DID YOU HEAR ABOUT US?".localized
 	
 	public static let next = "Next"
+	
+	public static let journeyCompleteDesc = "Please use the checkout button at the end of the page."
+	public static let journeyCompleteTitle = "You have successfully completed the journey."
+	public static let complete = "COMPLETE"
 }
 
 extension String {

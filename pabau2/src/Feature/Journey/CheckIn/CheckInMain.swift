@@ -207,7 +207,7 @@ struct StepForms: View {
 		return GeometryReader { geo in
 			VStack(spacing: 8) {
 				StepsCollectionView(steps: self.viewStore.value.patientForms,
-														selectedIdx: self.viewStore.value.selectedFormIndex, journeyMode: .patient) {
+														selectedIdx: self.viewStore.value.selectedFormIndex) {
 															self.viewStore.send(.didSelectFormIndex($0))
 				}
 				.frame(minWidth: 240, maxWidth: 480, alignment: .center)
@@ -224,7 +224,8 @@ struct StepForms: View {
 				).padding(.bottom, self.keyboardHandler.keyboardHeight > 0 ? self.keyboardHandler.keyboardHeight : 32)
 					.padding([.leading, .trailing, .top], 32)
 				Spacer()
-				if self.keyboardHandler.keyboardHeight == 0 {
+				if self.keyboardHandler.keyboardHeight == 0 &&
+					!self.viewStore.value.isOnCompleteStep {
 					BigButton(text: Texts.next) {
 						self.viewStore.send(.didSelectNextForm)
 					}
