@@ -15,10 +15,7 @@ let radioFieldReducer = Reducer<Radio, RadioFieldAction, JourneyEnvironemnt> { s
 	return []
 }
 
-struct RadioField: View, Equatable {
-	static func == (lhs: RadioField, rhs: RadioField) -> Bool {
-		lhs.radio == rhs.radio
-	}
+struct RadioField: View {
 
 	init(radio: Binding<Radio>) {
 		self._radio = radio

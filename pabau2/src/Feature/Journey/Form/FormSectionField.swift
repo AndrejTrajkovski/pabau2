@@ -30,10 +30,10 @@ struct FormSectionField: View, Equatable {
 	}
 }
 
-struct FormField: View, Equatable {
-	static func == (lhs: FormField, rhs: FormField) -> Bool {
-		return lhs.myValue == rhs.myValue
-	}
+struct FormField: View {
+//	static func == (lhs: FormField, rhs: FormField) -> Bool {
+//		return lhs.myValue == rhs.myValue
+//	}
 	@Binding var cssField: CSSField
 	let myValue: ViewState
 

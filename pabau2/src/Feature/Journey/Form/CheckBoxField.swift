@@ -17,10 +17,7 @@ public let checkBoxFieldReducer =
 	}
 }
 
-struct CheckBoxField: View, Equatable {
-	static func == (lhs: CheckBoxField, rhs: CheckBoxField) -> Bool {
-		lhs.choices == rhs.choices
-	}
+struct CheckBoxField: View {
 
 	@Binding var choices: [CheckBoxChoice]
 
