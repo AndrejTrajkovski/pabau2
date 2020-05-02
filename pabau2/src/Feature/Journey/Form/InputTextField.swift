@@ -15,9 +15,20 @@ import Model
 //	case didChangeText(String)
 //}
 
-//struct InputTextField: View {
-//	@Binding var myText: String
-//	var body: some View {
-//		TextField.init("", text: $myText)
-//	}
-//}
+struct InputTextField: View {
+	@State var myText: String
+	var onChange: (String) -> Void
+	init (initialValue: String, onChange: @escaping (String) -> Void) {
+		self._myText = State.init(initialValue: initialValue)
+		self.onChange = onChange
+	}
+	
+	var body: some View {
+		//https://stackoverflow.com/a/56551874/3050624
+		TextField.init("", text: $myText, onEditingChanged: { _ in
+			self.onChange(self.myText)
+		}, onCommit: {
+		})
+			.textFieldStyle(RoundedBorderTextFieldStyle())
+	}
+}

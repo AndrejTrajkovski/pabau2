@@ -29,6 +29,7 @@ public struct MultilineTextView: UIViewRepresentable {
 		textView.layer.cornerRadius = 8.0
 		textView.layer.masksToBounds = true
 		textView.layer.borderWidth = 1.0
+		textView.layer.borderColor = UIColor.init(hex: "C0C0C0").cgColor
 		textView.addDoneButton(title: "Done", target: textView, selector: #selector(UIView.endEditing(_:)))
 		textView.text = initialText
 		textView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)

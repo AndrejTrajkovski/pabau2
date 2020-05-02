@@ -200,6 +200,7 @@ struct StepForms: View {
 	}
 
 	var body: some View {
+		print("check in main body")
 		return GeometryReader { geo in
 			VStack(spacing: 0) {
 				StepsCollectionView(steps: self.viewStore.value.patientForms,

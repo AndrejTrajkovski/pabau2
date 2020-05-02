@@ -27,7 +27,8 @@ struct PabauFormWrap: View {
 	}
 
 	var body: some View {
-		Group {
+		print("pabau wrapper body ")
+		return Group {
 			if self.viewStore.value.template != nil {
 				DynamicForm(template:
 					Binding.init(

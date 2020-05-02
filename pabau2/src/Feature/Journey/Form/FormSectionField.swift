@@ -19,7 +19,7 @@ struct FormSectionField: View, Equatable {
 	var body: some View {
 		return Section(header:
 			Text(cssField.title ?? "")
-				.font(.semibold18)
+				.font(isSignature ? .bold18: .semibold18)
 				.frame(minWidth: 0, maxWidth: .infinity,
 							 alignment: isSignature ? .center : .leading)
 				.padding(.top)
@@ -87,12 +87,15 @@ struct FormField: View, Equatable {
 					SignatureField()
 				}
 				if self.myValue.inputText != nil {
-					TextAndTextField (
-						self.cssField.title ?? "",
-						Binding.init(
-							get: { self.myValue.inputText! .text},
-							set: { self.cssField.cssClass = CSSClass.input_text(InputText(text: $0)) })
-					)
+					InputTextField.init(initialValue: self.myValue.inputText!.text) {
+						self.cssField.cssClass = CSSClass.input_text(InputText(text: $0))
+					}
+//					TextAndTextField (
+//						self.cssField.title ?? "",
+//						Binding.init(
+//							get: { self.myValue.inputText! .text},
+//							set: { self.cssField.cssClass = CSSClass.input_text(InputText(text: $0)) })
+//					)
 				}
 		}
 	}
