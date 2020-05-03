@@ -5,9 +5,10 @@ import CasePaths
 import Util
 
 struct PabauFormWrap: View {
-	let store: Store<MetaFormAndStatus, StepFormsAction2>
+	let store: Store<CheckInContainerState, CheckInMainAction>
 	@ObservedObject var viewStore: ViewStore<State, StepFormsAction2>
-
+	let journeyMode: JourneyMode
+	
 	struct State: Equatable {
 		var patientDetails: PatientDetails?
 		var template: FormTemplate?
@@ -21,11 +22,27 @@ struct PabauFormWrap: View {
 		}
 	}
 
-	init(store: Store<MetaFormAndStatus, StepFormsAction2>) {
+	init(store: Store<CheckInContainerState, CheckInMainAction>,
+			 selectedFormIndex: Int,
+			 journeyMode: JourneyMode) {
 		self.store = store
-		self.viewStore = store.scope(
-			value: State.init(state:),
-			action: { $0 }).view
+		self.journeyMode = journeyMode
+		self.viewStore = self.store.scope(
+			value: {
+				let formState = $0.patientForms[selectedFormIndex]
+				return State.init(state: formState)
+		},
+			action: {
+				switch journeyMode {
+				case .patient:
+					return .patient(.action2(Indexed(index: selectedFormIndex, value: $0)))
+				case .doctor:
+					return .doctor(.action2(Indexed(index: selectedFormIndex, value: $0)))
+				}
+		}).view
+//		self.viewStore = store.scope(
+//			value: State.init(state:),
+//			action: { $0 }).view
 	}
 
 //	var body: some View {
@@ -59,7 +76,7 @@ struct PabauFormWrap: View {
 		} else if self.viewStore.value.patientDetails != nil {
 			return AnyView(PatientDetailsForm().padding())
 		} else if self.viewStore.value.isCompleteForm {
-			return AnyView(CompleteStepForm())
+			return AnyView(CompleteStepForm(store: store))
 		} else {
 			return AnyView(Text("Aftercare"))
 		}

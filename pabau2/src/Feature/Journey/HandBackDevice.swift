@@ -1,7 +1,10 @@
 import SwiftUI
 import Util
+import ComposableArchitecture
+
 struct HandBackDevice: View {
 
+	let store: Store<CheckInContainerState, CheckInMainAction>
 	@State var isPasscodeActive = false
 
 	var body: some View {
@@ -16,7 +19,7 @@ struct HandBackDevice: View {
 					self.isPasscodeActive = true
 			}
 			NavigationLink.emptyHidden(self.isPasscodeActive,
-				Passcode()
+																 Passcode(store: self.store)
 				.navigationBarTitle("")
 				.navigationBarHidden(true)
 			)

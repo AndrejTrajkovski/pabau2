@@ -1,8 +1,9 @@
 import SwiftUI
 import Util
+import ComposableArchitecture
 
 struct CompleteStepForm: View {
-
+	let store: Store<CheckInContainerState, CheckInMainAction>
 	var body: some View {
 		VStack(spacing: 32) {
 			Image("ico-journey-complete")
@@ -12,7 +13,7 @@ struct CompleteStepForm: View {
 			Text(Texts.journeyCompleteDesc)
 				.font(.regular16)
 			NavigationLink.init(destination:
-				HandBackDevice()
+				HandBackDevice(store: store)
 				.navigationBarTitle("")
 				.navigationBarHidden(true),
 													isActive: .constant(true),

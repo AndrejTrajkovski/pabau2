@@ -20,6 +20,7 @@ enum PasscodeAction {
 }
 
 struct Passcode: View {
+	let store: Store<CheckInContainerState, CheckInMainAction>
 	@State var passcodeState = PasscodeState()
 	//animation does not work if wrong attempts is in passcodeState
 	@State var wrongAttempts: Int = 0
@@ -33,7 +34,7 @@ struct Passcode: View {
 				}
 			}
 			.modifier(Shake(animatableData: CGFloat(wrongAttempts)))
-			Digits(onTouch:onTouch(digit:))
+			Digits(onTouch: onTouch(digit:))
 			HStack {
 				Text("Cancel")
 				Spacer()
@@ -43,7 +44,12 @@ struct Passcode: View {
 			}
 			.font(.regular16)
 			NavigationLink.emptyHidden(self.passcodeState.unlocked,
-																 Text("asdasd"))
+																 CheckInMain(store: self.store.scope(
+																	value: {
+																		$0
+																}, action: { $0}),
+																journeyMode: .doctor)
+			)
 		}
 			.foregroundColor(.white)
 		.fixedSize(horizontal: true, vertical: false)
@@ -54,7 +60,7 @@ struct Passcode: View {
 		passcodeReducer(&self.passcodeState,
 										.touchDigit(digit))
 	}
-	
+
 	func passcodeReducer(_ state: inout PasscodeState, _ action: PasscodeAction) {
 		switch action {
 		case .touchDigit(let digit):

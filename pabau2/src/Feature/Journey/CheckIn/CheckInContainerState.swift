@@ -31,7 +31,7 @@ public struct CheckInContainerState: Equatable {
 	//NAVIGATION
 //	var patientMode: Bool = false
 //	var handBackDevice: Bool = false
-	var passcode: Bool = false
+//	var passcode: Bool = false
 	var chooseTreatment: Bool = false
 	var journeySummary: Bool = false
 	var doctorMode: Bool = false

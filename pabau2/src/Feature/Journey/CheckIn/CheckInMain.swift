@@ -6,13 +6,16 @@ import Util
 public enum CheckInMainAction {
 	case closeBtnTap
 	case patient(StepFormsAction)
+	case doctor(StepFormsAction)
 }
 
 struct CheckInMain: View {
 	let store: Store<CheckInContainerState, CheckInMainAction>
 	@ObservedObject var viewStore: ViewStore<State, CheckInMainAction>
-
-	init(store: Store<CheckInContainerState, CheckInMainAction>) {
+	let journeyMode: JourneyMode
+	init(store: Store<CheckInContainerState, CheckInMainAction>,
+			 journeyMode: JourneyMode) {
+		self.journeyMode = journeyMode
 		self.store = store
 		self.viewStore = self.store
 			.scope(value: State.init(state:),
@@ -60,7 +63,9 @@ struct CheckInMain: View {
 				StepForms(store:
 					self.store.scope(
 						value: { $0 },
-						action: { .patient($0) }))
+						action: { $0 }
+					),
+					journeyMode: self.journeyMode)
 				Spacer()
 			}
 			.navigationBarTitle("")
@@ -151,55 +156,30 @@ let stepFormsReducer = Reducer<CheckInContainerState, StepFormsAction, JourneyEn
 			state.selectedFormIndex += 1
 		}
 	}
-
-//	func handleNextBtn(state: inout CheckInContainerState) -> [StepFormsAction] {
-//
-//	}
-//	func update(state: inout CheckInContainerState, form: MetaForm) {
-//		switch form {
-//		case .aftercare(let aftercare):
-//			state.aftercare = aftercare
-//		case .template(let template):
-//			update(state: &state, template: template)
-//		case .patientDetails(let patientDetails):
-//			state.patientDetails = patientDetails
-//		}
-//	}
-//
-//	func update(state: inout CheckInContainerState, template: FormTemplate) {
-//		switch template.formType {
-//		case .consent:
-//			state.consents.removeAll(where: { $0.id == template.id })
-//			state.consents.append(template)
-//		case .treatment:
-//			state.treatments.removeAll(where: { $0.id == template.id })
-//			state.treatments.append(template)
-//		case .history:
-//			state.history = template
-//		case .prescription:
-//			state.presription = template
-//		}
-//	}
-
 	return []
 }
 
 struct StepForms: View {
 
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
-	let store: Store<CheckInContainerState, StepFormsAction>
+	let store: Store<CheckInContainerState, CheckInMainAction>
+	let journeyMode: JourneyMode
 	@ObservedObject var viewStore: ViewStore<CheckInContainerState, StepFormsAction>
 
-//	struct State {
-//		var forms: [MetaForm]
-//		var runningForms: [MetaForm]
-//		var selectedFormIndex: Int
-//		var completedForms: [Int: Bool]
-//	}
-
-	init(store: Store<CheckInContainerState, StepFormsAction>) {
+	init(store: Store<CheckInContainerState, CheckInMainAction>,
+			 journeyMode: JourneyMode) {
 		self.store = store
-		self.viewStore = store.view(removeDuplicates: ==)
+		self.journeyMode = journeyMode
+		self.viewStore = self.store
+			.scope(value: { $0 },
+						 action: {
+							switch journeyMode {
+							case .patient:
+								return .patient($0)
+							case .doctor:
+								return .doctor($0)
+							}
+			}).view
 	}
 
 	var body: some View {
@@ -215,13 +195,10 @@ struct StepForms: View {
 				Divider()
 					.frame(width: geo.size.width)
 					.shadow(color: Color(hex: "C1C1C1"), radius: 4, y: 2)
-				PabauFormWrap(store: self.store.scope(
-					value: { $0.patientForms[self.viewStore.value.selectedFormIndex] },
-					action: { .action2(
-						Indexed(index: self.viewStore.value.selectedFormIndex,
-										value: $0))}
-					)
-				).padding(.bottom, self.keyboardHandler.keyboardHeight > 0 ? self.keyboardHandler.keyboardHeight : 32)
+				PabauFormWrap(store: self.store,
+											selectedFormIndex: self.viewStore.value.selectedFormIndex,
+											journeyMode: self.journeyMode)
+					.padding(.bottom, self.keyboardHandler.keyboardHeight > 0 ? self.keyboardHandler.keyboardHeight : 32)
 					.padding([.leading, .trailing, .top], 32)
 				Spacer()
 				if self.keyboardHandler.keyboardHeight == 0 &&

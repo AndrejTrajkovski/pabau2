@@ -50,7 +50,7 @@ public struct CheckInNavigationView: View {
 					CheckInMain(store:
 						self.store.scope(value: { $0 },
 														 action: { .main($0)}
-					))
+					), journeyMode: .patient)
 					, isActive: $isRunningAnimation, label: { EmptyView() })
 			}
 		}.navigationViewStyle(StackNavigationViewStyle())
