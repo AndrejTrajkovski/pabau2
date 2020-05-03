@@ -237,6 +237,7 @@
 		82E6D82B245E09ED00CB359A /* HandBackDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E6D82A245E09ED00CB359A /* HandBackDevice.swift */; };
 		82E6D82D245E0A4400CB359A /* GradientBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E6D82C245E0A4400CB359A /* GradientBackground.swift */; };
 		82E6D82F245E177900CB359A /* JourneyTransitionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E6D82E245E177900CB359A /* JourneyTransitionView.swift */; };
+		82E6D831245ECBA000CB359A /* Passcode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E6D830245ECBA000CB359A /* Passcode.swift */; };
 		82F6ADAE23F2C7B1001B3ACE /* PabauTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */; };
 		82FB74F6245A9E51001C2DF3 /* PabauFormWrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FB74F5245A9E51001C2DF3 /* PabauFormWrap.swift */; };
 /* End PBXBuildFile section */
@@ -640,6 +641,7 @@
 		82E6D82A245E09ED00CB359A /* HandBackDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandBackDevice.swift; sourceTree = "<group>"; };
 		82E6D82C245E0A4400CB359A /* GradientBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientBackground.swift; sourceTree = "<group>"; };
 		82E6D82E245E177900CB359A /* JourneyTransitionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyTransitionView.swift; sourceTree = "<group>"; };
+		82E6D830245ECBA000CB359A /* Passcode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Passcode.swift; sourceTree = "<group>"; };
 		82EE570523F029900033B43C /* BackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
 		82EE570823F0335F0033B43C /* NavigationLinkExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationLinkExtension.swift; sourceTree = "<group>"; };
 		82F5591F23DC255B008032F4 /* BigButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BigButton.swift; sourceTree = "<group>"; };
@@ -959,6 +961,7 @@
 				82E6D82A245E09ED00CB359A /* HandBackDevice.swift */,
 				82E6D82C245E0A4400CB359A /* GradientBackground.swift */,
 				82E6D82E245E177900CB359A /* JourneyTransitionView.swift */,
+				82E6D830245ECBA000CB359A /* Passcode.swift */,
 			);
 			path = Journey;
 			sourceTree = "<group>";
@@ -1916,6 +1919,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				82CEA223244CB28500A895F6 /* RadioField.swift in Sources */,
+				82E6D831245ECBA000CB359A /* Passcode.swift in Sources */,
 				8269526C2452DA93001B806E /* TextAreaField.swift in Sources */,
 				827B459B241136D900A5975E /* JourneyContainerView.swift in Sources */,
 				82C479DE242E17B50037F140 /* CheckInNavigationView.swift in Sources */,
