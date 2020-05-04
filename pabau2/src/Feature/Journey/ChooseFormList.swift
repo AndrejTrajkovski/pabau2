@@ -66,7 +66,7 @@ struct ChooseTreatmentNote: View {
 			.scope(value: { $0.isDoctorSummaryActive},
 						 action: { $0 }).view
 	}
-	
+
 	var body: some View {
 		VStack {
 			ChooseFormList(store: store.scope(value: { $0.chooseTreatments },

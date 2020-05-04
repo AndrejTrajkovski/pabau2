@@ -104,7 +104,7 @@ extension CheckInContainerState {
 	var chooseTreatments: ChooseFormState {
 		get {
 			let ids = doctorForms
-				.map { $0.form }
+				.map{ $0.form }
 				.compactMap { extract(case: MetaForm.template, from: $0) }
 				.map({ $0.id })
 			return ChooseFormState(selectedJourney: journey,
