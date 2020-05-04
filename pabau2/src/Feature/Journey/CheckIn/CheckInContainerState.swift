@@ -34,6 +34,12 @@ extension FormsState {
 	}
 }
 
+struct DoctorStep {
+	let stepName: String
+	let isComplete: String
+	let forms: [MetaFormAndStatus]
+}
+
 public struct CheckInContainerState: Equatable {
 	var journey: Journey
 	var pathway: Pathway
@@ -69,6 +75,8 @@ public struct CheckInContainerState: Equatable {
 		self.doctorSelectedIndex = 0
 		self.treatmentForms = JourneyMockAPI.mockConsents
 		self.isDoctorSummaryActive = false
+		
+//		let steps = pathway.steps.filter { stepToModeMap[$0.stepType] == .doctor }
 //		self.consents = consents
 //		if let patientDetails = patientDetails {
 //			self.selectedForm = .patientDetails(patientDetails)
@@ -81,7 +89,6 @@ public struct CheckInContainerState: Equatable {
 }
 
 extension CheckInContainerState {
-
 	var doctor: FormsState {
 		get {
 			FormsState(self.doctorForms, self.doctorSelectedIndex)
@@ -101,6 +108,7 @@ extension CheckInContainerState {
 			self.patientSelectedIndex = newValue.selectedIndex
 		}
 	}
+	
 	var chooseTreatments: ChooseFormState {
 		get {
 			let ids = doctorForms

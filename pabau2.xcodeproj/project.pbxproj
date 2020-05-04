@@ -155,6 +155,7 @@
 		827B460524126D4E00A5975E /* Termin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45D124126D4E00A5975E /* Termin.swift */; };
 		827B460624126D4E00A5975E /* JourneyForms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45D224126D4E00A5975E /* JourneyForms.swift */; };
 		827B460D2413C14D00A5975E /* NonEmpty in Frameworks */ = {isa = PBXBuildFile; productRef = 827B460C2413C14D00A5975E /* NonEmpty */; };
+		8280D479245FEAA80077A73F /* DoctorSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8280D478245FEAA80077A73F /* DoctorSummary.swift */; };
 		82811EF423E06BCB0066AFDC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EF323E06BCB0066AFDC /* ContentView.swift */; };
 		828626B12424CA64003ADA24 /* JourneyProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828626B02424CA64003ADA24 /* JourneyProfileView.swift */; };
 		828626B32424CEFB003ADA24 /* ChoosePathway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828626B22424CEFB003ADA24 /* ChoosePathway.swift */; };
@@ -540,6 +541,7 @@
 		827B45D024126D4E00A5975E /* Pathway.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pathway.swift; sourceTree = "<group>"; };
 		827B45D124126D4E00A5975E /* Termin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Termin.swift; sourceTree = "<group>"; };
 		827B45D224126D4E00A5975E /* JourneyForms.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JourneyForms.swift; sourceTree = "<group>"; };
+		8280D478245FEAA80077A73F /* DoctorSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoctorSummary.swift; sourceTree = "<group>"; };
 		82811EF323E06BCB0066AFDC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		82811EF523E06D730066AFDC /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
 		82811EF723E187700066AFDC /* Login.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
@@ -906,6 +908,7 @@
 				82292BD7244097C600080F74 /* StepsCollectionView.swift */,
 				82622B4F24464E0800BECF9A /* RibbonView.swift */,
 				82D7C2C224479CAF000B1CD5 /* CheckInContainerState.swift */,
+				8280D478245FEAA80077A73F /* DoctorSummary.swift */,
 			);
 			path = CheckIn;
 			sourceTree = "<group>";
@@ -1933,6 +1936,7 @@
 				82E6D829245DF4D200CB359A /* CompleteStepForm.swift in Sources */,
 				8250D7D4242C980100F8F3FC /* ChooseService.swift in Sources */,
 				82E6D82B245E09ED00CB359A /* HandBackDevice.swift in Sources */,
+				8280D479245FEAA80077A73F /* DoctorSummary.swift in Sources */,
 				82648404244F42F300544703 /* FormSectionField.swift in Sources */,
 				82292BD8244097C600080F74 /* StepsCollectionView.swift in Sources */,
 				829BFBAF243F5D6F005DDCB9 /* CheckInAnimation.swift in Sources */,
