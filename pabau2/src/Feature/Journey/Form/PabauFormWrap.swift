@@ -14,11 +14,14 @@ struct PabauFormWrap: View {
 		var template: FormTemplate?
 		var aftercare: Aftercare?
 		var isCompleteForm: Bool
+		static var defaultEmpty: State {
+			State.init(state: MetaFormAndStatus.defaultEmpty)
+		}
 		init (state: MetaFormAndStatus) {
 			self.patientDetails = extract(case: MetaForm.patientDetails, from: state.form)
 			self.template = extract(case: MetaForm.template, from: state.form)
 			self.aftercare = extract(case: MetaForm.aftercare, from: state.form)
-			self.isCompleteForm = MetaForm.patientComplete == state.form
+			self.isCompleteForm = extract(case: MetaForm.patientComplete, from: state.form) != nil
 		}
 	}
 
@@ -29,8 +32,12 @@ struct PabauFormWrap: View {
 		self.journeyMode = journeyMode
 		self.viewStore = self.store.scope(
 			value: {
-				let formState = $0.patientForms[selectedFormIndex]
-				return State.init(state: formState)
+				if ($0.patient.forms.count > selectedFormIndex) {
+					let formState = $0.patient.forms[selectedFormIndex]
+						return State.init(state: formState)
+				} else {
+					return State.defaultEmpty
+				}
 		},
 			action: {
 				switch journeyMode {

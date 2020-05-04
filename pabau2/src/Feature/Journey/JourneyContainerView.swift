@@ -67,6 +67,8 @@ let checkInMiddleware2 = Reducer<JourneyState, ChooseFormAction, JourneyEnvirone
 		state.checkIn = CheckInContainerState(
 			journey: selJ,
 			pathway: selP,
+			patientDetails: PatientDetails(),
+			medHistory: JourneyMockAPI.getMedHistory(),
 			consents: state.allConsents.filter { state.selectedConsentsIds.contains($0.id)})
 	default:
 		return []

@@ -1,5 +1,5 @@
 public struct Signature: Codable, Equatable, Hashable {
-
+	public init () {}
 }
 
 public struct Select: Codable, Equatable, Hashable {

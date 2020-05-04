@@ -78,12 +78,14 @@ public struct PatientDetails: Equatable, Hashable { }
 
 public struct Aftercare: Equatable, Hashable { }
 
+public struct PatientComplete: Equatable, Hashable { }
+
 public enum MetaForm: Equatable, Hashable {
 	case patientDetails(PatientDetails)
 	case aftercare(Aftercare)
 	case template(FormTemplate)
-	case patientComplete
-	
+	case patientComplete(PatientComplete)
+
 	var title: String {
 		switch self {
 		case .patientDetails:
@@ -110,6 +112,8 @@ public enum MetaForm: Equatable, Hashable {
 }
 
 public struct MetaFormAndStatus: Equatable, Hashable {
+	static let defaultEmpty = MetaFormAndStatus.init(MetaForm.template(FormTemplate.defaultEmpty), false)
+
 	var form: MetaForm
 	var isComplete: Bool
 
@@ -146,7 +150,7 @@ let stepFormsReducer2 = Reducer<MetaFormAndStatus, StepFormsAction2, JourneyEnvi
 	return []
 }
 
-let stepFormsReducer = Reducer<FormsState, StepFormsAction, JourneyEnvironemnt> { state, action, _ in
+let stepFormsReducer = Reducer<StepsState, StepFormsAction, JourneyEnvironemnt> { state, action, _ in
 	switch action {
 	case .didSelectFormIndex(let idx):
 		state.selectedIndex = idx
@@ -165,7 +169,7 @@ struct StepForms: View {
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
 	let store: Store<CheckInContainerState, CheckInMainAction>
 	let journeyMode: JourneyMode
-	@ObservedObject var viewStore: ViewStore<FormsState, StepFormsAction>
+	@ObservedObject var viewStore: ViewStore<StepsState, StepFormsAction>
 
 	init(store: Store<CheckInContainerState, CheckInMainAction>,
 			 journeyMode: JourneyMode) {

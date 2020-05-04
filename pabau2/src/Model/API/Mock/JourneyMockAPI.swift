@@ -13,7 +13,14 @@ public struct JourneyMockAPI: MockAPI, JourneyAPI {
 	}
 
 	public func getTemplates(_ type: FormType) -> Effect<Result<[FormTemplate], RequestError>> {
-		mockSuccess(Self.mockConsents, delay: 0.1)
+		switch type {
+		case .consent:
+		  return mockSuccess(Self.mockConsents, delay: 0.1)
+		case .treatment:
+			return mockSuccess(Self.mockTreatmentN, delay: 0.1)
+		default:
+		fatalError("TODO")
+		}
 	}
 }
 
@@ -310,66 +317,6 @@ extension JourneyMockAPI {
 				), title: "Radio title"
 			)
 		])),
-		FormTemplate(id: 5, name: "I'm running out of names", formType: .consent,
-							 ePaper: false,
-							 formStructure:
-		FormStructure(formStructure: [
-			CSSField(id: 8,
-							 cssClass: .input_text(InputText(text: "input text 1")),
-							 title: "Insert some text"
-			),
-			CSSField(id: 6,
-							 cssClass: .signature(Signature()),
-							 title: "Patient signature"
-			),
-			CSSField(id: 9,
-							 cssClass: .input_text(InputText(text: "input text 2")),
-							 title: "Insert some text 2"
-			),
-			CSSField(id: 7,
-							 cssClass: .signature(Signature()),
-							 title: "Practitioner signature"
-			),
-			CSSField(id: 5,
-							 cssClass: .textarea(TextArea(text: "some text")),
-							 title: "Please enter some text below"
-			),
-			CSSField(id: 1, cssClass:
-				.checkboxes(
-					[
-						CheckBoxChoice(1, "Are you currently receiving any medical treatment at present?", false),
-						CheckBoxChoice(2, "Have you received Roaccutane/Accutane treatment in the past 12 months?", false),
-						CheckBoxChoice(3, "Have you ever suffered from an allergic reaction to lignocaine / lidocaine?", false),
-						CheckBoxChoice(4, "Do you have a history of anaphylactic shock (severe allergic reactions) Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)? tic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions) tic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)", false),
-						 CheckBoxChoice(5, "Have you undergone any laser skin resurfacing, skin peel or dermabrasion?", false),
-						 CheckBoxChoice(6, "Do you have or have you ever had any form of skin cancer?", false),
-						 CheckBoxChoice(7, "Have you been treated with any dermal fillers on either your face and/or body?", false)
-					]
-				),
-				title: "Choose please"
-			),
-			CSSField(id: 2, cssClass:
-				.checkboxes(
-					[
-						CheckBoxChoice(3, "choice 3", false),
-						CheckBoxChoice(4, "choice 4", false),
-						CheckBoxChoice(5, "choice 5", true)
-					]
-				),
-				title: "Choose smth else"
-			),
-			CSSField(id: 3, cssClass:
-				.staticText(StaticText(1, "Hey what's going on?")),
-							 title: "This is some static text "
-			),
-			CSSField(id: 4,
-							 cssClass: .radio(Radio(4,
-																			[RadioChoice(1, "radio choice 9"),
-																			 RadioChoice(2, "radio choice 10")],
-																			1)
-				), title: "Radio title"
-			)
-		])),
 		FormTemplate(id: 123, name: "Signature Consent", formType: .consent,
 							 ePaper: false,
 							 formStructure:
@@ -491,4 +438,427 @@ extension JourneyMockAPI {
 			)
 		])),
 	]
+	
+	public static let mockTreatmentN  = [
+		FormTemplate(id: 1, name: "Treatment - Transplant", formType: .treatment,
+								 ePaper: false,
+								 formStructure:
+			FormStructure(formStructure: [
+				CSSField(id: 8,
+								 cssClass: .input_text(InputText(text: "input text 1")),
+								 title: "Insert some text"
+				),
+				CSSField(id: 6,
+								 cssClass: .signature(Signature()),
+								 title: "Patient signature"
+				),
+				CSSField(id: 9,
+								 cssClass: .input_text(InputText(text: "input text 2")),
+								 title: "Insert some text 2"
+				),
+				CSSField(id: 7,
+								 cssClass: .signature(Signature()),
+								 title: "Practitioner signature"
+				),
+				CSSField(id: 5,
+								 cssClass: .textarea(TextArea(text: "some text")),
+								 title: "Please enter some text below"
+				),
+				CSSField(id: 1, cssClass:
+					.checkboxes(
+						[
+							CheckBoxChoice(1, "Are you currently receiving any medical treatment at present?", false),
+							CheckBoxChoice(2, "Have you received Roaccutane/Accutane treatment in the past 12 months?", false),
+							CheckBoxChoice(3, "Have you ever suffered from an allergic reaction to lignocaine / lidocaine?", false),
+							CheckBoxChoice(4, "Do you have a history of anaphylactic shock (severe allergic reactions) Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)? tic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions) tic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)", false),
+							 CheckBoxChoice(5, "Have you undergone any laser skin resurfacing, skin peel or dermabrasion?", false),
+							 CheckBoxChoice(6, "Do you have or have you ever had any form of skin cancer?", false),
+							 CheckBoxChoice(7, "Have you been treated with any dermal fillers on either your face and/or body?", false)
+						]
+					),
+					title: "Choose please"
+				),
+				CSSField(id: 2, cssClass:
+					.checkboxes(
+						[
+							CheckBoxChoice(3, "choice 3", false),
+							CheckBoxChoice(4, "choice 4", false),
+							CheckBoxChoice(5, "choice 5", true)
+						]
+					),
+					title: "Choose smth else"
+				),
+				CSSField(id: 3, cssClass:
+					.staticText(StaticText(1, "Hey what's going on?")),
+								 title: "This is some static text "
+				),
+				CSSField(id: 4,
+								 cssClass: .radio(Radio(4,
+																				[RadioChoice(1, "radio choice 1"),
+																				 RadioChoice(2, "radio choice 2")],
+																				1)
+					), title: "Radio title"
+				)
+			])),
+		FormTemplate(id: 2, name: "Treatment - Botox", formType: .treatment,
+							 ePaper: false,
+							 formStructure:
+		FormStructure(formStructure: [
+			CSSField(id: 1, cssClass:
+				.checkboxes(
+					[
+						CheckBoxChoice(1, "Are you currently receiving any medical treatment at present?", false),
+						CheckBoxChoice(2, "Have you received Roaccutane/Accutane treatment in the past 12 months?", false),
+						 CheckBoxChoice(5, "Have you undergone any laser skin resurfacing, skin peel or dermabrasion?", false),
+						 CheckBoxChoice(6, "Do you have or have you ever had any form of skin cancer?", false)
+					]
+				),
+				title: "Choose please"
+			),
+			CSSField(id: 6,
+							 cssClass: .signature(Signature()),
+							 title: "Patient signatureeee"
+			),
+			CSSField(id: 9,
+							 cssClass: .input_text(InputText(text: "input text 2")),
+							 title: "yada yada yada"
+			),
+			CSSField(id: 7,
+							 cssClass: .signature(Signature()),
+							 title: "Sign this please"
+			),
+			CSSField(id: 5,
+							 cssClass: .textarea(TextArea(text: "some text")),
+							 title: "Please enter some text below"
+			),
+			CSSField(id: 2, cssClass:
+				.checkboxes(
+					[
+						CheckBoxChoice(3, "choice 3", false),
+						CheckBoxChoice(5, "choice 5", true)
+					]
+				),
+				title: "Choose smth else"
+			),
+			CSSField(id: 3, cssClass:
+				.staticText(StaticText(1, "Hey what's going on?")),
+							 title: "This is some static text "
+			),
+			CSSField(id: 4,
+							 cssClass: .radio(Radio(4,
+																			[RadioChoice(1, "radio choice 3"),
+																			 RadioChoice(2, "radio choice 4")],
+																			1)
+				), title: "Radio title"
+			),
+			CSSField(id: 8,
+							 cssClass: .input_text(InputText(text: "input some text")),
+							 title: "Insert some text bla bla"
+			)
+		])),
+		FormTemplate(id: 3, name: "Boobjob Treatment", formType: .treatment,
+							 ePaper: false,
+							 formStructure:
+		FormStructure(formStructure: [
+			CSSField(id: 8,
+							 cssClass: .input_text(InputText(text: "input text 1")),
+							 title: "Insert some text"
+			),
+			CSSField(id: 6,
+							 cssClass: .signature(Signature()),
+							 title: "Patient signature"
+			),
+			CSSField(id: 9,
+							 cssClass: .input_text(InputText(text: "input text 2")),
+							 title: "Insert some text 2"
+			),
+			CSSField(id: 7,
+							 cssClass: .signature(Signature()),
+							 title: "Practitioner signature"
+			),
+			CSSField(id: 5,
+							 cssClass: .textarea(TextArea(text: "some text")),
+							 title: "Please enter some text below"
+			),
+			CSSField(id: 1, cssClass:
+				.checkboxes(
+					[
+						CheckBoxChoice(1, "Are you currently receiving any medical treatment at present?", false),
+						CheckBoxChoice(2, "Have you received Roaccutane/Accutane treatment in the past 12 months?", false),
+						CheckBoxChoice(3, "Have you ever suffered from an allergic reaction to lignocaine / lidocaine?", false),
+						CheckBoxChoice(4, "Do you have a history of anaphylactic shock (severe allergic reactions) Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)? tic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions) tic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)", false),
+						 CheckBoxChoice(5, "Have you undergone any laser skin resurfacing, skin peel or dermabrasion?", false),
+						 CheckBoxChoice(6, "Do you have or have you ever had any form of skin cancer?", false),
+						 CheckBoxChoice(7, "Have you been treated with any dermal fillers on either your face and/or body?", false)
+					]
+				),
+				title: "Choose please"
+			),
+			CSSField(id: 2, cssClass:
+				.checkboxes(
+					[
+						CheckBoxChoice(3, "choice 3", false),
+						CheckBoxChoice(4, "choice 4", false),
+						CheckBoxChoice(5, "choice 5", true)
+					]
+				),
+				title: "Choose smth else"
+			),
+			CSSField(id: 3, cssClass:
+				.staticText(StaticText(1, "Hey what's going on?")),
+							 title: "This is some static text "
+			),
+			CSSField(id: 4,
+							 cssClass: .radio(Radio(4,
+																			[RadioChoice(1, "radio choice 5"),
+																			 RadioChoice(2, "radio choice 6")],
+																			1)
+				), title: "Radio title"
+			)
+		])),
+		FormTemplate(id: 4, name: "Treatment Vaccines", formType: .treatment,
+							 ePaper: false,
+							 formStructure:
+		FormStructure(formStructure: [
+			CSSField(id: 8,
+							 cssClass: .input_text(InputText(text: "input text 1")),
+							 title: "Insert some text"
+			),
+			CSSField(id: 6,
+							 cssClass: .signature(Signature()),
+							 title: "Patient signature"
+			),
+			CSSField(id: 9,
+							 cssClass: .input_text(InputText(text: "input text 2")),
+							 title: "Insert some text 2"
+			),
+			CSSField(id: 7,
+							 cssClass: .signature(Signature()),
+							 title: "Practitioner signature"
+			),
+			CSSField(id: 5,
+							 cssClass: .textarea(TextArea(text: "some text")),
+							 title: "Please enter some text below"
+			),
+			CSSField(id: 1, cssClass:
+				.checkboxes(
+					[
+						CheckBoxChoice(1, "Are you currently receiving any medical treatment at present?", false),
+						CheckBoxChoice(2, "Have you received Roaccutane/Accutane treatment in the past 12 months?", false),
+						CheckBoxChoice(3, "Have you ever suffered from an allergic reaction to lignocaine / lidocaine?", false),
+						CheckBoxChoice(4, "Do you have a history of anaphylactic shock (severe allergic reactions) Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)? tic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions) tic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)", false),
+						 CheckBoxChoice(5, "Have you undergone any laser skin resurfacing, skin peel or dermabrasion?", false),
+						 CheckBoxChoice(6, "Do you have or have you ever had any form of skin cancer?", false),
+						 CheckBoxChoice(7, "Have you been treated with any dermal fillers on either your face and/or body?", false)
+					]
+				),
+				title: "Choose please"
+			),
+			CSSField(id: 2, cssClass:
+				.checkboxes(
+					[
+						CheckBoxChoice(3, "choice 3", false),
+						CheckBoxChoice(4, "choice 4", false),
+						CheckBoxChoice(5, "choice 5", true)
+					]
+				),
+				title: "Choose smth else"
+			),
+			CSSField(id: 3, cssClass:
+				.staticText(StaticText(1, "Hey what's going on?")),
+							 title: "This is some static text "
+			),
+			CSSField(id: 4,
+							 cssClass: .radio(Radio(4,
+																			[RadioChoice(1, "radio choice 7"),
+																			 RadioChoice(2, "radio choice 8")],
+																			1)
+				), title: "Radio title"
+			)
+		])),
+		FormTemplate(id: 123, name: "Signature Treatment", formType: .treatment,
+							 ePaper: false,
+							 formStructure:
+		FormStructure(formStructure: [
+			CSSField(id: 8,
+							 cssClass: .input_text(InputText(text: "input text 1")),
+							 title: "Insert some text"
+			),
+			CSSField(id: 6,
+							 cssClass: .signature(Signature()),
+							 title: "Patient signature"
+			),
+			CSSField(id: 9,
+							 cssClass: .input_text(InputText(text: "input text 2")),
+							 title: "Insert some text 2"
+			),
+			CSSField(id: 7,
+							 cssClass: .signature(Signature()),
+							 title: "Practitioner signature"
+			),
+			CSSField(id: 5,
+							 cssClass: .textarea(TextArea(text: "some text")),
+							 title: "Please enter some text below"
+			),
+			CSSField(id: 1, cssClass:
+				.checkboxes(
+					[
+						CheckBoxChoice(1, "Are you currently receiving any medical treatment at present?", false),
+						CheckBoxChoice(2, "Have you received Roaccutane/Accutane treatment in the past 12 months?", false),
+						CheckBoxChoice(3, "Have you ever suffered from an allergic reaction to lignocaine / lidocaine?", false),
+						CheckBoxChoice(4, "Do you have a history of anaphylactic shock (severe allergic reactions) Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)? tic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions) tic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)", false),
+						 CheckBoxChoice(5, "Have you undergone any laser skin resurfacing, skin peel or dermabrasion?", false),
+						 CheckBoxChoice(6, "Do you have or have you ever had any form of skin cancer?", false),
+						 CheckBoxChoice(7, "Have you been treated with any dermal fillers on either your face and/or body?", false)
+					]
+				),
+				title: "Choose please"
+			),
+			CSSField(id: 2, cssClass:
+				.checkboxes(
+					[
+						CheckBoxChoice(3, "choice 3", false),
+						CheckBoxChoice(4, "choice 4", false),
+						CheckBoxChoice(5, "choice 5", true)
+					]
+				),
+				title: "Choose smth else"
+			),
+			CSSField(id: 3, cssClass:
+				.staticText(StaticText(1, "Hey what's going on?")),
+							 title: "This is some static text "
+			),
+			CSSField(id: 4,
+							 cssClass: .radio(Radio(4,
+																			[RadioChoice(1, "radio choice 11"),
+																			 RadioChoice(2, "radio choice 12")],
+																			1)
+				), title: "Radio title"
+			)
+		])),
+		FormTemplate(id: 123423, name: "Treatmentzzz", formType: .treatment,
+							 ePaper: false,
+							 formStructure:
+		FormStructure(formStructure: [
+			CSSField(id: 8,
+							 cssClass: .input_text(InputText(text: "input text 1")),
+							 title: "Insert some text"
+			),
+			CSSField(id: 6,
+							 cssClass: .signature(Signature()),
+							 title: "Patient signature"
+			),
+			CSSField(id: 9,
+							 cssClass: .input_text(InputText(text: "input text 2")),
+							 title: "Insert some text 2"
+			),
+			CSSField(id: 7,
+							 cssClass: .signature(Signature()),
+							 title: "Practitioner signature"
+			),
+			CSSField(id: 5,
+							 cssClass: .textarea(TextArea(text: "some text")),
+							 title: "Please enter some text below"
+			),
+			CSSField(id: 1, cssClass:
+				.checkboxes(
+					[
+						CheckBoxChoice(1, "Are you currently receiving any medical treatment at present?", false),
+						CheckBoxChoice(2, "Have you received Roaccutane/Accutane treatment in the past 12 months?", false),
+						CheckBoxChoice(3, "Have you ever suffered from an allergic reaction to lignocaine / lidocaine?", false),
+						CheckBoxChoice(4, "Do you have a history of anaphylactic shock (severe allergic reactions) Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)? tic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions) tic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)", false),
+						 CheckBoxChoice(5, "Have you undergone any laser skin resurfacing, skin peel or dermabrasion?", false),
+						 CheckBoxChoice(6, "Do you have or have you ever had any form of skin cancer?", false),
+						 CheckBoxChoice(7, "Have you been treated with any dermal fillers on either your face and/or body?", false)
+					]
+				),
+				title: "Choose please"
+			),
+			CSSField(id: 2, cssClass:
+				.checkboxes(
+					[
+						CheckBoxChoice(3, "choice 3", false),
+						CheckBoxChoice(4, "choice 4", false),
+						CheckBoxChoice(5, "choice 5", true)
+					]
+				),
+				title: "Choose smth else"
+			),
+			CSSField(id: 3, cssClass:
+				.staticText(StaticText(1, "Hey what's going on?")),
+							 title: "This is some static text "
+			),
+			CSSField(id: 4,
+							 cssClass: .radio(Radio(4,
+																			[RadioChoice(1, "radio choice 1"),
+																			 RadioChoice(2, "radio choice 2")],
+																			1)
+				), title: "Radio title"
+			)
+		])),
+	]
+
+	
+	public static func getMedHistory() -> FormTemplate {
+		FormTemplate(id: 1, name: "Medical History Form", formType: .consent,
+								 ePaper: false,
+								 formStructure:
+			FormStructure(formStructure: [
+				CSSField(id: 8,
+								 cssClass: .input_text(InputText(text: "input text 1")),
+								 title: "Insert some text"
+				),
+				CSSField(id: 6,
+								 cssClass: .signature(Signature()),
+								 title: "Patient signature"
+				),
+				CSSField(id: 9,
+								 cssClass: .input_text(InputText(text: "input text 2")),
+								 title: "Insert some text 2"
+				),
+				CSSField(id: 7,
+								 cssClass: .signature(Signature()),
+								 title: "Practitioner signature"
+				),
+				CSSField(id: 5,
+								 cssClass: .textarea(TextArea(text: "some text")),
+								 title: "Please enter some text below"
+				),
+				CSSField(id: 1, cssClass:
+					.checkboxes(
+						[
+							CheckBoxChoice(1, "Are you currently receiving any medical treatment at present?", false),
+							CheckBoxChoice(2, "Have you received Roaccutane/Accutane treatment in the past 12 months?", false),
+							CheckBoxChoice(3, "Have you ever suffered from an allergic reaction to lignocaine / lidocaine?", false),
+							CheckBoxChoice(4, "Do you have a history of anaphylactic shock (severe allergic reactions) Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)? tic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions) tic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)", false),
+							CheckBoxChoice(5, "Have you undergone any laser skin resurfacing, skin peel or dermabrasion?", false),
+							CheckBoxChoice(6, "Do you have or have you ever had any form of skin cancer?", false),
+							CheckBoxChoice(7, "Have you been treated with any dermal fillers on either your face and/or body?", false)
+						]
+					),
+								 title: "Choose please"
+				),
+				CSSField(id: 2, cssClass:
+					.checkboxes(
+						[
+							CheckBoxChoice(3, "choice 3", false),
+							CheckBoxChoice(4, "choice 4", false),
+							CheckBoxChoice(5, "choice 5", true)
+						]
+					),
+								 title: "Choose smth else"
+				),
+				CSSField(id: 3, cssClass:
+					.staticText(StaticText(1, "Hey what's going on?")),
+								 title: "This is some static text "
+				),
+				CSSField(id: 4,
+								 cssClass: .radio(Radio(4,
+																				[RadioChoice(1, "radio choice 1"),
+																				 RadioChoice(2, "radio choice 2")],
+																				1)
+					), title: "Radio title"
+				)
+			]))
+	}
 }

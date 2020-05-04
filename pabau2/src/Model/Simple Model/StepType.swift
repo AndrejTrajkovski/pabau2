@@ -3,7 +3,7 @@
 
 import Foundation
 
-public enum StepType: String, Codable, Equatable {
+public enum StepType: String, Codable, Equatable, CaseIterable {
 	case patientdetails = "patientDetails"
 	case medicalhistory = "medicalHistory"
 	case consents = "consents"
@@ -13,6 +13,7 @@ public enum StepType: String, Codable, Equatable {
 	case photos = "photos"
 	case recalls = "recalls"
 	case aftercares = "aftercares"
+	case patientComplete = "complete"
 //	case mediaimages = "mediaImages"
 //	case mediavideos = "mediaVideos"
 
@@ -40,6 +41,8 @@ public enum StepType: String, Codable, Equatable {
 //			return "Image"
 //		case .mediavideos:
 //			return "Video"
+		case .patientComplete:
+			return "Complete"
 		}
 	}
 }

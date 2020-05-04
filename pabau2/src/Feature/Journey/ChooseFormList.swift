@@ -16,7 +16,7 @@ public enum ChooseFormAction {
 	case removeTemplateId(Int)
 	case proceed//Check-In or Proceed
 	case gotResponse(Result<[FormTemplate], RequestError>)
-	case onAppear
+	case onAppear(FormType)
 }
 
 let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, JourneyEnvironemnt> { state, action, environment in
@@ -36,8 +36,8 @@ let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, JourneyEn
 		case .failure:
 			state.templatesLoadingState = .gotError
 		}
-	case .onAppear:
-		return [environment.apiClient.getTemplates(.consent)
+	case .onAppear(let formType):
+		return [environment.apiClient.getTemplates(formType)
 			.map(ChooseFormAction.gotResponse)
 			.eraseToEffect()]
 	}
@@ -55,16 +55,22 @@ enum ChooseFormMode {
 			return Texts.proceed
 		}
 	}
+	var formType: FormType {
+		switch self {
+		case .consents:
+			return .consent
+		case .treatmentNotes:
+			return .treatment
+		}
+	}
 }
 
 struct ChooseTreatmentNote: View {
 	let store: Store<CheckInContainerState, ChooseFormAction>
-	@ObservedObject var viewStore: ViewStore<Bool, ChooseFormAction>
+	@ObservedObject var viewStore: ViewStore<CheckInContainerState, ChooseFormAction>
 	init (store: Store<CheckInContainerState, ChooseFormAction>) {
 		self.store = store
-		self.viewStore = self.store
-			.scope(value: { $0.isDoctorSummaryActive},
-						 action: { $0 }).view
+		self.viewStore = self.store.view
 	}
 
 	var body: some View {
@@ -72,7 +78,7 @@ struct ChooseTreatmentNote: View {
 			ChooseFormList(store: store.scope(value: { $0.chooseTreatments },
 																				action: { $0}),
 										 mode: .treatmentNotes)
-			NavigationLink.emptyHidden(self.viewStore.value,
+			NavigationLink.emptyHidden(self.viewStore.value.isDoctorSummaryActive,
 																 EmptyView()
 			)
 		}
@@ -119,7 +125,7 @@ struct ChooseFormList: View {
 		chooseFormCells
 			.journeyBase(self.viewStore.value.journey, .long)
 			.onAppear {
-				self.viewStore.send(.onAppear)
+				self.viewStore.send(.onAppear(self.mode.formType))
 		}
 	}
 
