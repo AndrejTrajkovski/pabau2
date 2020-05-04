@@ -34,10 +34,15 @@ extension FormsState {
 	}
 }
 
-struct DoctorStep {
-	let stepName: String
-	let isComplete: String
-	let forms: [MetaFormAndStatus]
+struct StepState {
+	let stepType: StepType
+	var isComplete: Bool {
+		return self.forms.forms.map { $0.isComplete }.allSatisfy { $0 == true }
+	}
+	var title: String {
+		return stepType.title.uppercased()
+	}
+	let forms: FormsState
 }
 
 public struct CheckInContainerState: Equatable {
