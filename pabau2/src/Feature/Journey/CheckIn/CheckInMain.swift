@@ -7,6 +7,7 @@ public enum CheckInMainAction {
 	case closeBtnTap
 	case patient(StepFormsAction)
 	case doctor(StepFormsAction)
+	case chooseTreatments(ChooseFormAction)
 }
 
 struct CheckInMain: View {
@@ -145,15 +146,15 @@ let stepFormsReducer2 = Reducer<MetaFormAndStatus, StepFormsAction2, JourneyEnvi
 	return []
 }
 
-let stepFormsReducer = Reducer<CheckInContainerState, StepFormsAction, JourneyEnvironemnt> { state, action, _ in
+let stepFormsReducer = Reducer<FormsState, StepFormsAction, JourneyEnvironemnt> { state, action, _ in
 	switch action {
 	case .didSelectFormIndex(let idx):
-		state.selectedFormIndex = idx
+		state.selectedIndex = idx
 	case .action2:
 		break
 	case .didSelectNextForm:
-		if state.patientForms.count > state.selectedFormIndex + 1 {
-			state.selectedFormIndex += 1
+		if state.forms.count > state.selectedIndex + 1 {
+			state.selectedIndex += 1
 		}
 	}
 	return []
@@ -164,14 +165,21 @@ struct StepForms: View {
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
 	let store: Store<CheckInContainerState, CheckInMainAction>
 	let journeyMode: JourneyMode
-	@ObservedObject var viewStore: ViewStore<CheckInContainerState, StepFormsAction>
+	@ObservedObject var viewStore: ViewStore<FormsState, StepFormsAction>
 
 	init(store: Store<CheckInContainerState, CheckInMainAction>,
 			 journeyMode: JourneyMode) {
 		self.store = store
 		self.journeyMode = journeyMode
 		self.viewStore = self.store
-			.scope(value: { $0 },
+			.scope(value: {
+				switch journeyMode {
+				case .patient:
+					return $0.patient
+				case .doctor:
+					return $0.doctor
+				}
+			},
 						 action: {
 							switch journeyMode {
 							case .patient:
@@ -186,8 +194,8 @@ struct StepForms: View {
 		print("check in main body")
 		return GeometryReader { geo in
 			VStack(spacing: 8) {
-				StepsCollectionView(steps: self.viewStore.value.patientForms,
-														selectedIdx: self.viewStore.value.selectedFormIndex) {
+				StepsCollectionView(steps: self.viewStore.value.forms,
+														selectedIdx: self.viewStore.value.selectedIndex) {
 															self.viewStore.send(.didSelectFormIndex($0))
 				}
 				.frame(minWidth: 240, maxWidth: 480, alignment: .center)
@@ -196,7 +204,7 @@ struct StepForms: View {
 					.frame(width: geo.size.width)
 					.shadow(color: Color(hex: "C1C1C1"), radius: 4, y: 2)
 				PabauFormWrap(store: self.store,
-											selectedFormIndex: self.viewStore.value.selectedFormIndex,
+											selectedFormIndex: self.viewStore.value.selectedIndex,
 											journeyMode: self.journeyMode)
 					.padding(.bottom, self.keyboardHandler.keyboardHeight > 0 ? self.keyboardHandler.keyboardHeight : 32)
 					.padding([.leading, .trailing, .top], 32)

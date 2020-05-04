@@ -61,7 +61,7 @@ public typealias JourneyEnvironemnt = (apiClient: JourneyAPI, userDefaults: User
 
 let checkInMiddleware2 = Reducer<JourneyState, ChooseFormAction, JourneyEnvironemnt> { state, action, _ in
 	switch action {
-	case .checkIn:
+	case .proceed:
 		guard let selJ = state.selectedJourney,
 			let selP = state.selectedPathway else { return [] }
 		state.checkIn = CheckInContainerState(

@@ -76,6 +76,8 @@ public struct Texts {
 	public static let checkInTitle = "Checking-In"
 	public static let checkInDesc = "Hand over the tablet to the client"
 	public static let enterPass = "Enter Passcode"
+	public static let checkIn = "Check-In"
+	public static let proceed = "Proceed"
 }
 
 extension String {

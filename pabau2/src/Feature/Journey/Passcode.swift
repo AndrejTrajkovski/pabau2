@@ -21,6 +21,17 @@ enum PasscodeAction {
 
 struct Passcode: View {
 	let store: Store<CheckInContainerState, CheckInMainAction>
+	let viewStore: ViewStore<ViewState, CheckInMainAction>
+	struct ViewState: Equatable {
+		let isDoctorSummaryActive: Bool
+	}
+	init(store: Store<CheckInContainerState, CheckInMainAction>) {
+		self.store = store
+		self.viewStore = self.store
+			.scope(value: { _ in ViewState.init(isDoctorSummaryActive: store.view.value.isDoctorSummaryActive)},
+			action: { $0 }).view
+	}
+	
 	@State var passcodeState = PasscodeState()
 	//animation does not work if wrong attempts is in passcodeState
 	@State var wrongAttempts: Int = 0
@@ -44,11 +55,13 @@ struct Passcode: View {
 			}
 			.font(.regular16)
 			NavigationLink.emptyHidden(self.passcodeState.unlocked,
-																 CheckInMain(store: self.store.scope(
-																	value: {
-																		$0
-																}, action: { $0}),
-																journeyMode: .doctor)
+				ChooseTreatmentNote(store:
+					self.store.scope(
+						value: { $0 },
+						action: { .chooseTreatments($0) }))
+				.navigationBarHidden(false)
+				.navigationBarTitle("Choose Tretment Note", displayMode: .inline)
+				.navigationBarBackButtonHidden(true)
 			)
 		}
 			.foregroundColor(.white)

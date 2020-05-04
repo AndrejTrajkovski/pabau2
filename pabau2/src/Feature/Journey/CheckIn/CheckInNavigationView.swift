@@ -17,6 +17,21 @@ public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction
 		value: \CheckInContainerState.self,
 		action: /CheckInContainerAction.main,
 		environment: { $0 }
+	),
+	chooseFormListReducer.pullback(
+		value: \CheckInContainerState.chooseTreatments,
+		action: /CheckInContainerAction.main..CheckInMainAction.chooseTreatments,
+		environment: { $0 }
+	),
+	chooseFormListReducer.pullback(
+		value: \CheckInContainerState.chooseTreatments,
+		action: /CheckInContainerAction.main..CheckInMainAction.chooseTreatments,
+		environment: { $0 }
+	),
+	doctorSummaryNavigator.pullback(
+		value: \CheckInContainerState.self,
+		action: /CheckInContainerAction.main..CheckInMainAction.chooseTreatments,
+		environment: { $0 }
 	)
 //	fieldsReducer.pullback(
 //					 value: \CheckInContainerState.self,
@@ -24,12 +39,22 @@ public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction
 //					 environment: { $0 })
 )
 
+public let doctorSummaryNavigator = Reducer<CheckInContainerState, ChooseFormAction, Any> { state, action, env in
+	switch action {
+	case .proceed:
+		state.isDoctorSummaryActive = true
+	default:
+		break
+	}
+	return []
+}
+
 public let formsParentReducer: Reducer<CheckInContainerState, CheckInMainAction, JourneyEnvironemnt> = .combine(
 	indexed(reducer: stepFormsReducer2,
 					\CheckInContainerState.patientForms,
 					/CheckInMainAction.patient..StepFormsAction.action2, { $0 }),
 	stepFormsReducer.pullback(
-		value: \CheckInContainerState.self,
+		value: \CheckInContainerState.patient,
 		action: /CheckInMainAction.patient,
 		environment: { $0 })
 )

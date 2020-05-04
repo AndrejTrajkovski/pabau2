@@ -8,7 +8,7 @@ struct PabauFormWrap: View {
 	let store: Store<CheckInContainerState, CheckInMainAction>
 	@ObservedObject var viewStore: ViewStore<State, StepFormsAction2>
 	let journeyMode: JourneyMode
-	
+
 	struct State: Equatable {
 		var patientDetails: PatientDetails?
 		var template: FormTemplate?

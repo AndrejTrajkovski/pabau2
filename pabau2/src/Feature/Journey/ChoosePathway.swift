@@ -108,8 +108,9 @@ public struct ChoosePathway: View {
 
 	var chooseFormNavLink: some View {
 		NavigationLink.emptyHidden(self.viewStore.value.isChooseConsentShown,
-															 ChooseFormList(store: self.store.scope(value: { $0.chooseConsentState },
-																																			action: { .chooseConsent($0)}))
+															 ChooseFormList(store: self.store.scope(
+																	value: { $0.chooseConsentState },
+																	action: { .chooseConsent($0)}), mode: .consents)
 																.navigationBarTitle("Choose Consent")
 																.customBackButton {
 																	self.viewStore.send(.choosePathway(.didTouchSelectConsentBackBtn))

@@ -20,8 +20,8 @@ struct HandBackDevice: View {
 			}
 			NavigationLink.emptyHidden(self.isPasscodeActive,
 																 Passcode(store: self.store)
-				.navigationBarTitle("")
-				.navigationBarHidden(true)
+																	//have to enable nav bar on choose treatment
+																	.navigationBarHidden(false)
 			)
 		}
 	}

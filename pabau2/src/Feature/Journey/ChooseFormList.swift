@@ -14,7 +14,7 @@ public struct ChooseFormState: Equatable {
 public enum ChooseFormAction {
 	case addTemplateId(Int)
 	case removeTemplateId(Int)
-	case checkIn
+	case proceed//Check-In or Proceed
 	case gotResponse(Result<[FormTemplate], RequestError>)
 	case onAppear
 }
@@ -25,7 +25,7 @@ let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, JourneyEn
 		state.selectedTemplatesIds.append(templateId)
 	case .removeTemplateId(let templateId):
 		state.selectedTemplatesIds.removeAll(where: { $0 == templateId})
-	case .checkIn:
+	case .proceed:
 		return []//handled elsewhere
 	case .gotResponse(let result):
 		switch result {
@@ -44,14 +44,54 @@ let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, JourneyEn
 	return []
 }
 
+enum ChooseFormMode {
+	case consents
+	case treatmentNotes
+	var btnTitle: String {
+		switch self {
+		case .consents:
+			return Texts.checkIn
+		case .treatmentNotes:
+			return Texts.proceed
+		}
+	}
+}
+
+struct ChooseTreatmentNote: View {
+	let store: Store<CheckInContainerState, ChooseFormAction>
+	@ObservedObject var viewStore: ViewStore<Bool, ChooseFormAction>
+	init (store: Store<CheckInContainerState, ChooseFormAction>) {
+		self.store = store
+		self.viewStore = self.store
+			.scope(value: { $0.isDoctorSummaryActive},
+						 action: { $0 }).view
+	}
+	
+	var body: some View {
+		VStack {
+			ChooseFormList(store: store.scope(value: { $0.chooseTreatments },
+																				action: { $0}),
+										 mode: .treatmentNotes)
+			NavigationLink.emptyHidden(self.viewStore.value,
+																 EmptyView()
+			)
+		}
+	}
+}
+
+
 struct ChooseFormList: View {
+
+	let mode: ChooseFormMode
 	let store: Store<ChooseFormState, ChooseFormAction>
 	@ObservedObject var viewStore: ViewStore<ViewState, ChooseFormAction>
 	@State var searchText: String = ""
-	init (store: Store<ChooseFormState, ChooseFormAction>) {
+	init (store: Store<ChooseFormState, ChooseFormAction>,
+				mode: ChooseFormMode) {
+		self.mode = mode
 		self.store = store
 		self.viewStore = self.store
-			.scope(value: ChooseFormList.ViewState.init,
+			.scope(value: { ChooseFormList.ViewState.init($0) } ,
 						 action: { $0 })
 			.view
 		UITableView.appearance().separatorStyle = .none
@@ -61,11 +101,12 @@ struct ChooseFormList: View {
 		let journey: Journey?
 		let templates: [FormTemplate]
 		var selectedTemplatesIds: [Int]
-		init(state: ChooseFormState) {
+		init(_ state: ChooseFormState) {
 			self.templates = state.templates
 			self.selectedTemplatesIds = state.selectedTemplatesIds
 			self.journey = state.selectedJourney
 		}
+		
 		var notSelectedTemplates: [FormTemplate] {
 			templates.filter { !selectedTemplatesIds.contains($0.id) }
 		}
@@ -95,9 +136,10 @@ struct ChooseFormList: View {
 					}, onSelect: {
 						self.viewStore.send(.removeTemplateId($0.id))
 					})
-					ChoosePathwayButton(btnTxt: "Check-In", style: .blue, action: {
+					ChoosePathwayButton(btnTxt: self.mode.btnTitle, style: .blue,
+							action: {
 						withAnimation(Animation.linear(duration: 1)) {
-							self.viewStore.send(.checkIn)
+							self.viewStore.send(.proceed)
 						}
 					})
 				}

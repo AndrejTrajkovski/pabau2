@@ -1,4 +1,5 @@
 import Model
+import CasePaths
 
 enum JourneyMode: Equatable {
 	case patient
@@ -17,22 +18,39 @@ let stepToModeMap: [StepType: JourneyMode] = [
 	.aftercares: .doctor
 ]
 
+struct FormsState: Equatable {
+	var forms: [MetaFormAndStatus]
+	var selectedIndex: Int
+	init (_ forms: [MetaFormAndStatus], _ selectedIndex: Int) {
+		self.forms = forms
+		self.selectedIndex = selectedIndex
+	}
+}
+
+extension FormsState {
+	var isOnCompleteStep: Bool {
+		self.forms.firstIndex(where: { $0.form == .patientComplete }) ==
+		selectedIndex
+	}
+}
+
 public struct CheckInContainerState: Equatable {
 	var journey: Journey
 	var pathway: Pathway
 
 	var patientForms: [MetaFormAndStatus]
-	var selectedFormIndex: Int
-	
-	var isOnCompleteStep: Bool {
-		self.patientForms.firstIndex(where: { $0.form == .patientComplete }) ==
-		selectedFormIndex
-	}
+	var patientSelectedIndex: Int
+	var doctorForms: [MetaFormAndStatus]
+	var doctorSelectedIndex: Int
+	var treatmentForms: [FormTemplate]
+//	var doctorForms: [MetaFormAndStatus]
+//	var selectedFormIndex: Int
 	//NAVIGATION
+	var isDoctorSummaryActive: Bool
 //	var patientMode: Bool = false
 //	var handBackDevice: Bool = false
 //	var passcode: Bool = false
-	var chooseTreatment: Bool = false
+//	var chooseTreatment: Bool = false
 	var journeySummary: Bool = false
 	var doctorMode: Bool = false
 
@@ -46,7 +64,11 @@ public struct CheckInContainerState: Equatable {
 		self.patientForms += zip(consents.map(MetaForm.template), consents.map { _ in false})
 		.map(MetaFormAndStatus.init)
 		self.patientForms += [MetaFormAndStatus(MetaForm.patientComplete, false)]
-		self.selectedFormIndex = 0
+		self.patientSelectedIndex = 0
+		self.doctorForms = []
+		self.doctorSelectedIndex = 0
+		self.treatmentForms = JourneyMockAPI.mockConsents
+		self.isDoctorSummaryActive = false
 //		self.consents = consents
 //		if let patientDetails = patientDetails {
 //			self.selectedForm = .patientDetails(patientDetails)
@@ -60,6 +82,44 @@ public struct CheckInContainerState: Equatable {
 
 extension CheckInContainerState {
 
+	var doctor: FormsState {
+		get {
+			FormsState(self.doctorForms, self.doctorSelectedIndex)
+		}
+		set {
+			self.doctorForms = newValue.forms
+			self.doctorSelectedIndex = newValue.selectedIndex
+		}
+	}
+
+	var patient: FormsState {
+		get {
+			FormsState(self.patientForms, self.patientSelectedIndex)
+		}
+		set {
+			self.patientForms = newValue.forms
+			self.patientSelectedIndex = newValue.selectedIndex
+		}
+	}
+	var chooseTreatments: ChooseFormState {
+		get {
+			let ids = doctorForms
+				.map { $0.form }
+				.compactMap { extract(case: MetaForm.template, from: $0) }
+				.map({ $0.id })
+			return ChooseFormState(selectedJourney: journey,
+											selectedPathway: pathway,
+											selectedTemplatesIds: ids,
+											templates: treatmentForms,
+											templatesLoadingState: .initial)
+		}
+		set {
+			self.doctorForms = newValue.templates.filter { newValue.selectedTemplatesIds.contains($0.id )}
+				.map { MetaForm.template($0) }
+				.map { MetaFormAndStatus.init( $0, false)}
+			self.treatmentForms = newValue.templates
+		}
+	}
 //			let steps = pathway.steps.filter { stepToModeMap[$0.stepType] == .patient }
 //			var result = [MetaFormAndStatus]()
 //			steps.forEach { step in

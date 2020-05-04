@@ -105,7 +105,6 @@ struct ChooseService: View {
 		.padding()
 		.navigationBarTitle("Services")
 		.customBackButton(action: { self.viewStore.send(.didTapBackBtn)})
-
 	}
 }
 
