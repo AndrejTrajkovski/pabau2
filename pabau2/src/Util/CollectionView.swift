@@ -127,12 +127,11 @@ public struct CollectionView<Content: View>: UIViewControllerRepresentable {
 		controller.collectionView.showsHorizontalScrollIndicator = self.layout.showsIndicators && self.layout.axis == .horizontal
 		controller.collectionView.showsVerticalScrollIndicator = self.layout.showsIndicators && self.layout.axis == .vertical
 		controller.collectionView.clipsToBounds = true
-		print(controller.collectionView.translatesAutoresizingMaskIntoConstraints)
 		self.layout.transform?(controller.collectionView)
-//		controller.collectionView.translatesAutoresizingMaskIntoConstraints = false
-//		controller.collectionView.setContentHuggingPriority(.defaultHigh, for: .vertical)
-//		controller.collectionView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-//		controller.collectionView.autoresizingMask = UIView.AutoresizingMask.flexibleWidth
+		controller.collectionView.translatesAutoresizingMaskIntoConstraints = false
+		controller.collectionView.setContentHuggingPriority(.defaultHigh, for: .vertical)
+		controller.collectionView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+		controller.collectionView.autoresizingMask = UIView.AutoresizingMask.flexibleWidth
 		return controller
 	}
 	public func updateUIViewController(_ uiViewController: UICollectionViewController,
@@ -142,11 +141,6 @@ public struct CollectionView<Content: View>: UIViewControllerRepresentable {
 		uiViewController.collectionView.scrollToItem(at:
 			IndexPath(row: selectedIdx, section: 0),
 																								 at: .centeredHorizontally, animated: true)
-//		uiViewController.collectionView.frame.size =
-//			CGSize(
-//				width: uiViewController.collectionView.frame.size.width,
-//				height: 50)
-		print(uiViewController.collectionView.frame.size.height)
 	}
 
 	// MARK: Coordinator

@@ -3,7 +3,8 @@ import SwiftUI
 import Model
 
 struct StepsCollectionView: View {
-
+	
+	let maxVisibleCells = 5
 	let cellWidth: CGFloat = 100
 	let cellHeight: CGFloat = 80
 	let spacing: CGFloat = 8
@@ -50,25 +51,21 @@ struct StepsCollectionView: View {
 	}
 
 	var body: some View {
-		HStack {
-			Spacer()
-				.fixedSize(horizontal: false, vertical: true)
-			CollectionView(formVms, selectedIdx) {
-				stepView(for: $0)
-			}
-			.axis(.horizontal)
-			.indicators(false)
-			.groupSize(
-				.init(
-					widthDimension: .absolute(cellWidth),
-					heightDimension: .absolute(cellHeight)))
-				.itemSize(.init(widthDimension: .absolute(cellWidth),
-												heightDimension: .absolute(cellHeight)))
-				.layout({ (layout) in
-					layout.interGroupSpacing = spacing
-				})
-				.frame(width: 480,
-							 height: cellHeight)
+		CollectionView(formVms, selectedIdx) {
+			stepView(for: $0)
 		}
+		.axis(.horizontal)
+		.indicators(false)
+		.groupSize(
+			.init(
+				widthDimension: .absolute(cellWidth),
+				heightDimension: .absolute(cellHeight)))
+			.itemSize(.init(widthDimension: .absolute(cellWidth),
+											heightDimension: .absolute(cellHeight)))
+			.layout({ (layout) in
+				layout.interGroupSpacing = spacing
+			})
+			.frame(width: ((cellWidth + spacing) * CGFloat(min(formVms.count, maxVisibleCells))),
+						 height: cellHeight)
 	}
 }

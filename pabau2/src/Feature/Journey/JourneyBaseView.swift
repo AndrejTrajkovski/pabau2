@@ -22,10 +22,11 @@ public struct JourneyBaseView<Content: View>: View {
 	}
 
 	public var body: some View {
-		VStack(spacing: 8) {
+		VStack(spacing: 64) {
 			JourneyProfileView(style: style,
 													viewState: JourneyProfileView.ViewState.init(journey: journey))
-				.padding()
+				.padding(.top, 32)
+				.padding(.bottom, 32)
 			content
 		}
 	}

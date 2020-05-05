@@ -52,13 +52,14 @@ struct StepsState: Equatable {
 	var selectedIndex: Int
 	var forms: [MetaFormAndStatus] {
 		get { self.stepsState.flatMap(\.forms) }
-		set { self.stepsState = self.stepsState.map {
-//			let forms = $0.forms.append(newValue)
+		set {
 			let grouped: [StepType: [MetaFormAndStatus]] =
 				Dictionary.init(grouping: newValue,
 												by: { stepType(form: $0.form) })
-			return StepState.init(stepType: $0.stepType, forms: grouped[$0.stepType] ?? [])
-			}
+			let result = grouped.reduce(into: [StepState](), {
+				$0.append(StepState.init(stepType: $1.key, forms: $1.value))
+			})
+			self.stepsState = result
 		}
 	}
 
@@ -225,9 +226,9 @@ extension StepsState {
 				.filter { $0.formType == .treatment }
 		}
 		set {
-			self.forms = newValue.map {
+			self.forms.append(contentsOf: newValue.map {
 				MetaFormAndStatus.init(MetaForm.template($0), false)
-			}
+			})
 		}
 	}
 }

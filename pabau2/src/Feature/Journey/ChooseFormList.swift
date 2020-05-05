@@ -79,12 +79,11 @@ struct ChooseTreatmentNote: View {
 																				action: { $0}),
 										 mode: .treatmentNotes)
 			NavigationLink.emptyHidden(self.viewStore.value.isDoctorSummaryActive,
-																 EmptyView()
+																 DoctorSummary(store: self.store)
 			)
 		}
 	}
 }
-
 
 struct ChooseFormList: View {
 
@@ -133,7 +132,7 @@ struct ChooseFormList: View {
 		HStack {
 			PathwayCell(style: .blue) {
 				VStack(alignment: .leading) {
-					Text("Selected Consents")
+					Text("Selected " + (self.mode == .consents ? "Consents" : "Treatments"))
 						.font(.bold17)
 					FormTemplateList(templates: self.viewStore.value.selectedTemplates,
 													 bgColor: PathwayCellStyle.blue.bgColor,

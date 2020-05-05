@@ -197,7 +197,7 @@ extension JourneyMockAPI {
 							 title: "Insert some text bla bla"
 			)
 		])),
-		FormTemplate(id: 3, name: "Boobjob", formType: .consent,
+		FormTemplate(id: 3, name: "Test Consent", formType: .consent,
 							 ePaper: false,
 							 formStructure:
 		FormStructure(formStructure: [
@@ -556,7 +556,7 @@ extension JourneyMockAPI {
 							 title: "Insert some text bla bla"
 			)
 		])),
-		FormTemplate(id: 3, name: "Boobjob Treatment", formType: .treatment,
+		FormTemplate(id: 3, name: "Test Treatment", formType: .treatment,
 							 ePaper: false,
 							 formStructure:
 		FormStructure(formStructure: [

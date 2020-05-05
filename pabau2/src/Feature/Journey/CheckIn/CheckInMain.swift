@@ -202,7 +202,7 @@ struct StepForms: View {
 														selectedIdx: self.viewStore.value.selectedIndex) {
 															self.viewStore.send(.didSelectFormIndex($0))
 				}
-				.frame(minWidth: 240, maxWidth: 480, alignment: .center)
+//				.frame(minWidth: 240, maxWidth: 480, alignment: .center)
 				.frame(height: 80)
 				Divider()
 					.frame(width: geo.size.width)
