@@ -16,7 +16,7 @@ struct CompleteStepForm: View {
 				HandBackDevice(store: store)
 				.navigationBarTitle("")
 				.navigationBarHidden(true),
-													isActive: .constant(true),
+//													isActive: .constant(true),
 													label: {
 														Text("Complete")
 															.frame(minWidth: 0, maxWidth: .infinity)

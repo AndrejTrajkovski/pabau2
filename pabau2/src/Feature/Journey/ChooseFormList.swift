@@ -44,7 +44,7 @@ let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, JourneyEn
 	return []
 }
 
-enum ChooseFormMode {
+public enum ChooseFormMode {
 	case consents
 	case treatmentNotes
 	var btnTitle: String {
@@ -66,9 +66,9 @@ enum ChooseFormMode {
 }
 
 struct ChooseTreatmentNote: View {
-	let store: Store<CheckInContainerState, ChooseFormAction>
-	@ObservedObject var viewStore: ViewStore<CheckInContainerState, ChooseFormAction>
-	init (store: Store<CheckInContainerState, ChooseFormAction>) {
+	let store: Store<CheckInContainerState, CheckInMainAction>
+	@ObservedObject var viewStore: ViewStore<CheckInContainerState, CheckInMainAction>
+	init (store: Store<CheckInContainerState, CheckInMainAction>) {
 		self.store = store
 		self.viewStore = self.store.view
 	}
@@ -76,10 +76,11 @@ struct ChooseTreatmentNote: View {
 	var body: some View {
 		VStack {
 			ChooseFormList(store: store.scope(value: { $0.chooseTreatments },
-																				action: { $0}),
+																				action: { .chooseTreatments($0)}),
 										 mode: .treatmentNotes)
 			NavigationLink.emptyHidden(self.viewStore.value.isDoctorSummaryActive,
 																 DoctorSummary(store: self.store)
+																	.navigationBarBackButtonHidden(true)
 			)
 		}
 	}

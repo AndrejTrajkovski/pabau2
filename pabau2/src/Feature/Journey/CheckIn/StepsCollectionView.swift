@@ -3,7 +3,7 @@ import SwiftUI
 import Model
 
 struct StepsCollectionView: View {
-	
+
 	let maxVisibleCells = 5
 	let cellWidth: CGFloat = 100
 	let cellHeight: CGFloat = 80

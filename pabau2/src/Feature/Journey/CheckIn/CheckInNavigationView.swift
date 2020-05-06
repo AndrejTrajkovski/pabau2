@@ -32,7 +32,12 @@ public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction
 		value: \CheckInContainerState.self,
 		action: /CheckInContainerAction.main..CheckInMainAction.chooseTreatments,
 		environment: { $0 }
-	)
+	),
+	doctorSummaryReducer.pullback(
+		value: \CheckInContainerState.doctorSummary,
+		action: /CheckInContainerAction.main..CheckInMainAction.doctorSummary,
+		environment: { $0 }
+		)
 //	fieldsReducer.pullback(
 //					 value: \CheckInContainerState.self,
 //					 action: /CheckInContainerAction.main,

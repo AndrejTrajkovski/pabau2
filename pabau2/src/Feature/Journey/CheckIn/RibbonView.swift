@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct RibbonView: View {
+	
 	let completedNumberOfSteps: Int
 	let totalNumberOfSteps: Int
 

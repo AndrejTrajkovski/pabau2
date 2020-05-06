@@ -127,7 +127,7 @@ struct JourneyMocks {
 		pathway:
 		Pathway.init(id: 1,
 								 title: "Standard",
-								 steps: [Step(id: 1, stepType: .checkpatient),
+								 steps: [Step(id: 1, stepType: .patientdetails),
 												 Step(id: 2, stepType: .medicalhistory),
 												 Step(id: 3, stepType: .consents),
 												 Step(id: 4, stepType: .treatmentnotes),

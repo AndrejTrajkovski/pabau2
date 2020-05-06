@@ -8,28 +8,28 @@ public enum CheckInMainAction {
 	case patient(StepFormsAction)
 	case doctor(StepFormsAction)
 	case chooseTreatments(ChooseFormAction)
+	case doctorSummary(DoctorSummaryAction)
 }
 
 struct CheckInMain: View {
 	let store: Store<CheckInContainerState, CheckInMainAction>
-	@ObservedObject var viewStore: ViewStore<State, CheckInMainAction>
+	@ObservedObject var viewStore: ViewStore<StepsState, CheckInMainAction>
 	let journeyMode: JourneyMode
 	init(store: Store<CheckInContainerState, CheckInMainAction>,
 			 journeyMode: JourneyMode) {
 		self.journeyMode = journeyMode
 		self.store = store
 		self.viewStore = self.store
-			.scope(value: State.init(state:),
-						 action: { $0 })
-			.view
-	}
-
-	struct State: Equatable {
-		let journey: Journey
-
-		init(state: CheckInContainerState) {
-			self.journey = state.journey
-		}
+			.scope(value: {
+				switch journeyMode {
+				case .patient:
+					return $0.patient
+				case .doctor:
+					return $0.doctor
+				}
+			},
+			action: { $0 }
+		).view
 	}
 
 	var body: some View {
@@ -49,13 +49,14 @@ struct CheckInMain: View {
 									 alignment: .topLeading)
 					Spacer()
 					JourneyProfileView(style: .short,
-														 viewState: .init(journey: self.viewStore.value.journey))
+														 viewState: .init(journey: self.store.view.value.journey))
 						.padding()
 						.frame(minWidth: 0, maxWidth: .infinity,
 									 minHeight: 0, maxHeight: .infinity,
 									 alignment: .top)
 					Spacer()
-					RibbonView(completedNumberOfSteps: 1, totalNumberOfSteps: 4)
+					RibbonView(completedNumberOfSteps: self.viewStore.value.forms.filter(\.isComplete).count,
+										 totalNumberOfSteps: self.viewStore.value.forms.count)
 						.offset(x: -80, y: -60)
 						.frame(minWidth: 0, maxWidth: .infinity,
 									 minHeight: 0, maxHeight: .infinity,
@@ -132,7 +133,7 @@ public enum StepFormsAction {
 public enum StepFormsAction2 {
 	case didUpdateTemplate(FormTemplate)
 	case didUpdatePatientDetails(PatientDetails)
-	case didFinishTemplate(FormTemplate)
+	case didFinishTemplate(MetaFormAndStatus)
 	case didFinishPatientDetails(PatientDetails)
 }
 
@@ -145,7 +146,7 @@ let stepFormsReducer2 = Reducer<MetaFormAndStatus, StepFormsAction2, JourneyEnvi
 	case .didUpdatePatientDetails:
 		break
 	case .didFinishTemplate(let template):
-		state = .init(.template(template), true)
+		state.isComplete = true
 	}
 	return []
 }
@@ -202,7 +203,6 @@ struct StepForms: View {
 														selectedIdx: self.viewStore.value.selectedIndex) {
 															self.viewStore.send(.didSelectFormIndex($0))
 				}
-//				.frame(minWidth: 240, maxWidth: 480, alignment: .center)
 				.frame(height: 80)
 				Divider()
 					.frame(width: geo.size.width)
@@ -217,6 +217,9 @@ struct StepForms: View {
 					!self.viewStore.value.isOnCompleteStep {
 					BigButton(text: Texts.next) {
 						self.viewStore.send(.didSelectNextForm)
+						self.viewStore.send(.action2(
+							Indexed<StepFormsAction2>.init(index: self.viewStore.value.selectedIndex,
+																						 value: .didFinishTemplate(self.viewStore.value.forms[self.viewStore.value.selectedIndex]))))
 					}
 					.frame(width: 230)
 					.padding(8)

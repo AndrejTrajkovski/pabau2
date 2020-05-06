@@ -17,6 +17,31 @@ public enum StepType: String, Codable, Equatable, CaseIterable {
 //	case mediaimages = "mediaImages"
 //	case mediavideos = "mediaVideos"
 
+	public var order: Int {
+		switch self {
+		case .patientdetails:
+			return 0
+		case .medicalhistory:
+			return 1
+		case .consents:
+			return 2
+		case .checkpatient:
+			return 3
+		case .treatmentnotes:
+			return 4
+		case .prescriptions:
+			return 5
+		case .photos:
+			return 6
+		case .recalls:
+			return 7
+		case .aftercares:
+			return 8
+		case .patientComplete:
+			return 9
+		}
+	}
+	
 	public var title: String {
 		switch self {
 		case .patientdetails:

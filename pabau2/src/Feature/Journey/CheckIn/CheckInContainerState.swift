@@ -43,7 +43,7 @@ func stepType(type: FormType) -> StepType {
 	case .prescription:
 		return .prescriptions
 	case .treatment:
-		return .prescriptions
+		return .treatmentnotes
 	}
 }
 
@@ -59,7 +59,7 @@ struct StepsState: Equatable {
 			let result = grouped.reduce(into: [StepState](), {
 				$0.append(StepState.init(stepType: $1.key, forms: $1.value))
 			})
-			self.stepsState = result
+			self.stepsState = result.sorted(by: { $0.stepType.order < $1.stepType.order })
 		}
 	}
 
@@ -93,14 +93,10 @@ public struct CheckInContainerState: Equatable {
 	//	var doctorForms: [MetaFormAndStatus]
 	//	var selectedFormIndex: Int
 	//NAVIGATION
-	var isDoctorSummaryActive: Bool
-	//	var patientMode: Bool = false
-	//	var handBackDevice: Bool = false
-	//	var passcode: Bool = false
-	//	var chooseTreatment: Bool = false
-	var journeySummary: Bool = false
-	var doctorMode: Bool = false
-
+	var isChooseConsentActive: Bool = false
+	var isChooseTreatmentActive: Bool = false
+	var isCheckInMainActive: Bool = false
+	var isDoctorSummaryActive: Bool = false
 	init(journey: Journey,
 			 pathway: Pathway,
 			 patientDetails: PatientDetails,
@@ -117,7 +113,6 @@ public struct CheckInContainerState: Equatable {
 															[],
 															[])
 		self.treatmentForms = JourneyMockAPI.mockTreatmentN
-		self.isDoctorSummaryActive = false
 	}
 
 	static func doctor(_ pathway: Pathway,
@@ -133,9 +128,9 @@ public struct CheckInContainerState: Equatable {
 										forms: Self.doctorForms($0,
 																						patientDetails,
 																						treatmentN,
-																						prescriptions)
+																						[JourneyMockAPI.getPrescription()])
 					)
-		}
+		}.sorted(by: { $0.stepType.order < $1.stepType.order })
 		return StepsState(stepsState: patientSteps,
 											selectedIndex: 0)
 	}
@@ -155,7 +150,7 @@ public struct CheckInContainerState: Equatable {
 																													 medHistory,
 																													 consents)
 					)
-		}
+		}.sorted(by: { $0.stepType.order < $1.stepType.order })
 		return StepsState(stepsState: patientSteps,
 											selectedIndex: 0)
 	}
@@ -235,6 +230,21 @@ extension StepsState {
 
 extension CheckInContainerState {
 
+	var doctorSummary: DoctorSummaryState {
+		get {
+			DoctorSummaryState(isChooseConsentActive: isChooseConsentActive,
+												 isChooseTreatmentActive: isChooseTreatmentActive,
+												 isCheckInMainActive: isCheckInMainActive,
+												 doctor: doctor)
+		}
+		set {
+			self.isChooseTreatmentActive = newValue.isChooseTreatmentActive
+			self.doctor = newValue.doctor
+			self.isChooseTreatmentActive = newValue.isChooseTreatmentActive
+			self.isCheckInMainActive = newValue.isCheckInMainActive
+		}
+	}
+	
 	var chooseTreatments: ChooseFormState {
 		get {
 			return ChooseFormState(selectedJourney: journey,

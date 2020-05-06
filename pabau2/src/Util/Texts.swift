@@ -78,6 +78,8 @@ public struct Texts {
 	public static let enterPass = "Enter Passcode"
 	public static let checkIn = "Check-In"
 	public static let proceed = "Proceed"
+	public static let addConsent = "Add Consent"
+	public static let addTreatment = "Add Treatment Note"
 }
 
 extension String {
