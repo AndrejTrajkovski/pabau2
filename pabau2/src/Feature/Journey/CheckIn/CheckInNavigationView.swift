@@ -51,7 +51,7 @@ public let doctorSummaryNavigator = Reducer<CheckInContainerState, ChooseFormAct
 	default:
 		break
 	}
-	return []
+	return .none
 }
 
 public let formsParentReducer: Reducer<CheckInContainerState, CheckInMainAction, JourneyEnvironemnt> = .combine(
@@ -78,7 +78,7 @@ public struct CheckInNavigationView: View {
 				CheckInAnimation(isRunningAnimation: $isRunningAnimation)
 				NavigationLink.init(destination:
 					CheckInMain(store:
-						self.store.scope(value: { $0 },
+						self.store.scope(state: { $0 },
 														 action: { .main($0)}
 					), journeyMode: .patient)
 					, isActive: $isRunningAnimation, label: { EmptyView() })

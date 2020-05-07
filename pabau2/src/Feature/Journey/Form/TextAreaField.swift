@@ -9,7 +9,7 @@ let textAreaFieldReducer = Reducer<TextArea, TextAreaFieldAction, JourneyEnviron
 	case .didUpdateText(let text):
 		state.text = text
 	}
-	return []
+	return .none
 }
 
 public enum TextAreaFieldAction {

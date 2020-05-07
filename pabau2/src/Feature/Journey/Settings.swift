@@ -14,7 +14,7 @@ public let settingsReducer = Reducer<SettingsState, SettingsAction, SettingsEnvi
 	case .logoutTapped:
 		var userDefaults = env.userDefaults
 		userDefaults.loggedInUser = nil
-		return []
+		return .none
 	}
 }
 

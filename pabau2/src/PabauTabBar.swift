@@ -36,7 +36,7 @@ struct PabauTabBar: View {
 	init (store: Store<TabBarState, TabBarAction>) {
 		self.store = store
 		self.viewStore = self.store
-			.scope(value: ViewState.init(state:),
+			.scope(state: ViewState.init(state:),
 						 action: { $0 })
 			.view
 		print("PabauTabBar init")
@@ -45,7 +45,7 @@ struct PabauTabBar: View {
 		print("PabauTabBar body")
 		return ZStack(alignment: .topTrailing) {
 			TabView {
-				JourneyNavigationView(self.store.scope(value: { $0.journey },
+				JourneyNavigationView(self.store.scope(state: { $0.journey },
 																							action: { .journey($0)}))
 					.tabItem {
 						Image(systemName: "staroflife")
@@ -61,7 +61,7 @@ struct PabauTabBar: View {
 						Text("Calendar")
 				}
 				Settings(store:
-					store.scope(value: { $0.settings },
+					store.scope(state: { $0.settings },
 										 action: { .settings($0)}))
 					.tabItem {
 						Image(systemName: "gear")
@@ -79,12 +79,12 @@ struct PabauTabBar: View {
 									 linkType: ModalTransition.fullScreenModal,
 									 destination: {
 										AddAppointment(store:
-											self.store.scope(value: { $0.journey.addAppointment },
+											self.store.scope(state: { $0.journey.addAppointment },
 																			 action: { .journey(.addAppointment($0))}))
 			})
 			if self.viewStore.value.isShowingEmployees {
 				EmployeesListStore(
-					self.store.scope(value: { $0.journey.employeesState } ,
+					self.store.scope(state: { $0.journey.employeesState } ,
 					action: { .journey(.employees($0))})
 				).transition(.moveAndFade)
 			}

@@ -15,7 +15,7 @@ public struct Walkthrough: View {
 		self.action = action
 //		self.store = store
 //		self.viewStore = self.store
-//			.scope(value: { $0 }, action: { $0 })
+//			.scope(state: { $0 }, action: { $0 })
 //			.view(removeDuplicates: ==)
 		print("Walkthrough init")
 	}
@@ -37,11 +37,11 @@ public let walkthroughReducer = Reducer<[LoginNavScreen], WalkthroughAction, Log
 	switch action {
 	case .signInTapped:
 		state.append(.signInScreen)
-		return []
+		return .none
 	case .onAppear:
 		var userDefaults = environment.userDefaults
 		userDefaults.hasSeenAppIntroduction = true
-		return []
+		return .none
 	}
 }
 

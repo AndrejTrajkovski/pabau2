@@ -71,7 +71,7 @@ let forgotPasswordReducer = Reducer<ForgotPassState, ForgotPasswordAction, Login
 		switch action {
 		case .backBtnTapped:
 			state.navigation.removeAll(where: { $0 == .forgotPassScreen })
-			return []
+			return .none
 		case .sendRequest(let email):
 			let isValid = isValidEmail(email)
 			state.fpValidation = emailValidationText(isValid)
@@ -84,7 +84,7 @@ let forgotPasswordReducer = Reducer<ForgotPassState, ForgotPasswordAction, Login
 						.eraseToEffect()
 				]
 			} else {
-				return []
+				return .none
 			}
 		case .gotResponse(let result):
 			switch result {
@@ -94,7 +94,7 @@ let forgotPasswordReducer = Reducer<ForgotPassState, ForgotPasswordAction, Login
 			case .failure:
 				state.loadingState = .gotError
 			}
-			return []
+			return .none
 		}
 }
 
@@ -155,7 +155,7 @@ struct ForgotPasswordView: View {
 	var body: some View {
 		print("ForgotPasswordView body")
 		return VStack(alignment: .leading, spacing: 36) {
-			ForgotPassword(self.store.scope(value: { $0.forgotPass }, action: { .forgotPass($0)}), self.$email)
+			ForgotPassword(self.store.scope(state: { $0.forgotPass }, action: { .forgotPass($0)}), self.$email)
 			NavigationLink.emptyHidden(
 				self.viewStore.value.navigation.contains(.checkEmailScreen),
 				self.checkEmailView)
@@ -165,7 +165,7 @@ struct ForgotPasswordView: View {
 	}
 
 	var checkEmailView: CheckEmail {
-		CheckEmail(store: self.store.scope(value: { $0.navigation },
+		CheckEmail(store: self.store.scope(state: { $0.navigation },
 																			 action: { .checkEmail($0)}),
 							 resetPassStore: resetPassStore,
 							 passChangedStore: passChangedStore
@@ -173,9 +173,9 @@ struct ForgotPasswordView: View {
 	}
 
 	var passChangedStore: Store<[LoginNavScreen], PassChangedAction> {
-		self.store.scope(value: { $0.navigation }, action: { .passChanged($0)})
+		self.store.scope(state: { $0.navigation }, action: { .passChanged($0)})
 	}
 	var resetPassStore: Store<ResetPasswordState, ResetPasswordAction> {
-		self.store.scope(value: { $0.resetPass }, action: { .resetPass($0)})
+		self.store.scope(state: { $0.resetPass }, action: { .resetPass($0)})
 	}
 }

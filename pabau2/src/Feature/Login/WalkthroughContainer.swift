@@ -26,7 +26,7 @@ public struct WalkthroughContainer: View {
 	public init(_ store: Store<WalkthroughContainerState, WalkthroughContainerAction>) {
 		self.store = store
 		self.viewStore = self.store
-			.scope(value: ViewState.init(state:),
+			.scope(state: ViewState.init(state:),
 						 action: { $0 })
 			.view
 		print("WalkthroughContainer init")
@@ -42,7 +42,7 @@ public struct WalkthroughContainer: View {
 			}
 			NavigationLink.emptyHidden(
 				viewStore.value.isSignInActive,
-					LoginView(store: self.store.scope(value: { $0 },
+					LoginView(store: self.store.scope(state: { $0 },
 																						action: { .login($0)}))
 			)
 		}

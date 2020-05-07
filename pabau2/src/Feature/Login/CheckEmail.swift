@@ -7,10 +7,10 @@ public let checkEmailReducer = Reducer<[LoginNavScreen], CheckEmailAction, Login
 	switch action {
 	case .resetPassTapped:
 		state.append(.resetPassScreen)
-		return []
+		return .none
 	case .backBtnTapped:
 		state.removeAll(where: { $0 == .checkEmailScreen })
-		return []
+		return .none
 	}
 }
 

@@ -7,7 +7,7 @@ import Model
 //	switch action {
 //	case .didChangeText(let text):
 //		state.text = text
-//		return []
+//		return .none
 //	}
 //}
 //

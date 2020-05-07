@@ -154,8 +154,6 @@
 		8280D4812463F1790077A73F /* ExplodingStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8280D4802463F1790077A73F /* ExplodingStack.swift */; };
 		8280D4842463F2BE0077A73F /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 8280D4832463F2BE0077A73F /* ComposableArchitecture */; };
 		8280D4852463F2BE0077A73F /* ComposableArchitecture in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 8280D4832463F2BE0077A73F /* ComposableArchitecture */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		8280D4872463F2BE0077A73F /* ComposableArchitectureTestSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 8280D4862463F2BE0077A73F /* ComposableArchitectureTestSupport */; };
-		8280D4882463F2BE0077A73F /* ComposableArchitectureTestSupport in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 8280D4862463F2BE0077A73F /* ComposableArchitectureTestSupport */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		8280D48C2463F3F20077A73F /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 8280D48B2463F3F20077A73F /* ComposableArchitecture */; };
 		8280D48D2463F3F20077A73F /* ComposableArchitecture in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 8280D48B2463F3F20077A73F /* ComposableArchitecture */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		82811EF423E06BCB0066AFDC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EF323E06BCB0066AFDC /* ContentView.swift */; };
@@ -383,7 +381,6 @@
 				8280D4852463F2BE0077A73F /* ComposableArchitecture in Embed Frameworks */,
 				82CACEEA241131260021E1DE /* FSCalendarSwiftUI.framework in Embed Frameworks */,
 				8227FB34240BAAB600F653B5 /* Login.framework in Embed Frameworks */,
-				8280D4882463F2BE0077A73F /* ComposableArchitectureTestSupport in Embed Frameworks */,
 				8297A29423D9AD7E00D091FF /* PageControl.framework in Embed Frameworks */,
 				8227FBA0240BB40300F653B5 /* Model.framework in Embed Frameworks */,
 				82CACE7F2411293C0021E1DE /* FSCalendar.framework in Embed Frameworks */,
@@ -681,7 +678,6 @@
 				8280D4842463F2BE0077A73F /* ComposableArchitecture in Frameworks */,
 				82CACEE9241131260021E1DE /* FSCalendarSwiftUI.framework in Frameworks */,
 				8280D47F2463E6FC0077A73F /* Overture in Frameworks */,
-				8280D4872463F2BE0077A73F /* ComposableArchitectureTestSupport in Frameworks */,
 				8227FB9F240BB40300F653B5 /* Model.framework in Frameworks */,
 				8227FB66240BAC8400F653B5 /* Util.framework in Frameworks */,
 				82CACE7E2411293C0021E1DE /* FSCalendar.framework in Frameworks */,
@@ -1386,7 +1382,6 @@
 			packageProductDependencies = (
 				8280D47E2463E6FC0077A73F /* Overture */,
 				8280D4832463F2BE0077A73F /* ComposableArchitecture */,
-				8280D4862463F2BE0077A73F /* ComposableArchitectureTestSupport */,
 			);
 			productName = pabau2;
 			productReference = 82BE2F4423D97D9C00B3678A /* pabau2.app */;
@@ -2762,11 +2757,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8280D4822463F2BE0077A73F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
 			productName = ComposableArchitecture;
-		};
-		8280D4862463F2BE0077A73F /* ComposableArchitectureTestSupport */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8280D4822463F2BE0077A73F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
-			productName = ComposableArchitectureTestSupport;
 		};
 		8280D48B2463F3F20077A73F /* ComposableArchitecture */ = {
 			isa = XCSwiftPackageProductDependency;

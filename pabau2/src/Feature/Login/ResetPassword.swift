@@ -118,7 +118,7 @@ func handle (_ code: String, _ newPass: String, _ confirmPass: String, _ state: 
 				.eraseToEffect()
 		]
 	case .failure:
-		return []
+		return .none
 	}
 }
 
@@ -127,10 +127,10 @@ func handle(_ result: Result<ResetPassSuccess, RequestError>, _ state: inout Res
 	case .success:
 		state.loadingState = .gotSuccess
 		state.navigation.append(.passChangedScreen)
-		return []
+		return .none
 	case .failure:
 		state.loadingState = .gotError
-		return []
+		return .none
 	}
 }
 
@@ -138,7 +138,7 @@ public let resetPassReducer = Reducer<ResetPasswordState, ResetPasswordAction, L
 	switch action {
 	case .backBtnTapped:
 		state.navigation.removeAll(where: { $0 == .resetPassScreen })
-		return []
+		return .none
 	case .changePassTapped(let code, let newPass, let confirmPass):
 		return handle(code, newPass, confirmPass, &state, environment.apiClient)
 	case .gotResponse(let result):

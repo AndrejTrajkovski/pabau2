@@ -28,7 +28,7 @@ struct Passcode: View {
 	init(store: Store<CheckInContainerState, CheckInMainAction>) {
 		self.store = store
 		self.viewStore = self.store
-			.scope(value: { _ in ViewState.init(isDoctorSummaryActive: store.view.value.isDoctorSummaryActive)},
+			.scope(state: { _ in ViewState.init(isDoctorSummaryActive: store.view.value.isDoctorSummaryActive)},
 			action: { $0 }).view
 	}
 	

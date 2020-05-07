@@ -63,7 +63,7 @@ struct PickerReducer<T: ListPickerElement> {
 			case .backBtnTap:
 				state.isActive = false
 			}
-			return []
+			return .none
 	}
 }
 
@@ -79,7 +79,7 @@ func pickerContainerReducer<T: ListPickerElement>(state: inout PickerContainerSt
 	case .backBtnTap:
 		state.isActive = false
 	}
-	return []
+	return .none
 }
 
 let addAppTapBtnReducer = Reducer<AddAppointmentState,
@@ -94,17 +94,17 @@ let addAppTapBtnReducer = Reducer<AddAppointmentState,
 		default:
 			break
 		}
-		return []
+		return .none
 }
 
 let addAppointmentReducer: Reducer<AddAppointmentState,
 	AddAppointmentAction, JourneyEnvironemnt> = .combine(
 		PickerReducer<Client>().reducer.pullback(
-			value: \AddAppointmentState.clients,
+			state: \AddAppointmentState.clients,
 			action: /AddAppointmentAction.clients,
 			environment: { $0 }),
 		PickerReducer<MyTermin>().reducer.pullback(
-			value: \AddAppointmentState.termins,
+			state: \AddAppointmentState.termins,
 			action: /AddAppointmentAction.termins,
 			environment: { $0 }),
 		chooseServiceReducer.pullback(
@@ -112,35 +112,35 @@ let addAppointmentReducer: Reducer<AddAppointmentState,
 						 action: /AddAppointmentAction.services,
 						 environment: { $0 }),
 		PickerReducer<Duration>().reducer.pullback(
-			value: \AddAppointmentState.durations,
+			state: \AddAppointmentState.durations,
 			action: /AddAppointmentAction.durations,
 			environment: { $0 }),
 		PickerReducer<Employee>().reducer.pullback(
-			value: \AddAppointmentState.with,
+			state: \AddAppointmentState.with,
 			action: /AddAppointmentAction.with,
 			environment: { $0 }),
 		PickerReducer<Employee>().reducer.pullback(
-			value: \AddAppointmentState.participants,
+			state: \AddAppointmentState.participants,
 			action: /AddAppointmentAction.participants,
 			environment: { $0 }),
 		addAppTapBtnReducer.pullback(
-			value: \AddAppointmentState.self,
+			state: \AddAppointmentState.self,
 			action: /AddAppointmentAction.self,
 			environment: { $0 }),
 		switchCellReducer.pullback(
-			value: \AddAppointmentState.sms,
+			state: \AddAppointmentState.sms,
 			action: /AddAppointmentAction.sms,
 			environment: { $0 }),
 		switchCellReducer.pullback(
-			value: \AddAppointmentState.reminder,
+			state: \AddAppointmentState.reminder,
 			action: /AddAppointmentAction.reminder,
 			environment: { $0 }),
 		switchCellReducer.pullback(
-			value: \AddAppointmentState.feedback,
+			state: \AddAppointmentState.feedback,
 			action: /AddAppointmentAction.feedback,
 			environment: { $0 }),
 		switchCellReducer.pullback(
-			value: \AddAppointmentState.email,
+			state: \AddAppointmentState.email,
 			action: /AddAppointmentAction.email,
 			environment: { $0 })
 		)
@@ -189,12 +189,12 @@ struct Section1: View {
 			HStack(spacing: 24.0) {
 				PickerContainerStore.init(content: {
 					LabelAndTextField.init("CLIENT", self.viewStore.value.clients.chosenItemName ?? "")
-				}, store: self.store.scope(value: { $0.clients },
+				}, store: self.store.scope(state: { $0.clients },
 																	action: { .clients($0) })
 				)
 				PickerContainerStore.init(content: {
 					LabelAndTextField.init("DAY", self.viewStore.value.termins.chosenItemName ?? "")
-				}, store: self.store.scope(value: { $0.termins },
+				}, store: self.store.scope(state: { $0.termins },
 																	action: { .termins($0) })
 				)
 			}
@@ -217,13 +217,13 @@ struct Section2: View {
 					self.viewStore.send(.didTapServices)
 				}
 				NavigationLink.emptyHidden(self.viewStore.value.services.isChooseServiceActive,
-																	 ChooseService(store: self.store.scope(value: { $0.services }, action: {
+																	 ChooseService(store: self.store.scope(state: { $0.services }, action: {
 																		.services($0)
 																		}))
 				)
 				PickerContainerStore.init(content: {
 					LabelAndTextField.init("DURATION", self.viewStore.value.durations.chosenItemName ?? "")
-				}, store: self.store.scope(value: { $0.durations },
+				}, store: self.store.scope(state: { $0.durations },
 																	action: { .durations($0) })
 				)
 			}
@@ -231,7 +231,7 @@ struct Section2: View {
 				PickerContainerStore.init(content: {
 					LabelHeartAndTextField.init("WITH", self.viewStore.value.with.chosenItemName ?? "",
 																			true)
-				}, store: self.store.scope(value: { $0.with },
+				}, store: self.store.scope(state: { $0.with },
 																	action: { .with($0) })
 				)
 				PickerContainerStore.init(content: {
@@ -244,7 +244,7 @@ struct Section2: View {
 							.font(.semibold15)
 						Spacer()
 					}
-				}, store: self.store.scope(value: { $0.participants },
+				}, store: self.store.scope(state: { $0.participants },
 																	action: { .participants($0) })
 				)
 			}
@@ -445,7 +445,7 @@ let switchCellReducer = Reducer<Bool, ToggleAction, Any> { state, action, env in
 	case .setTo(let value):
 		state = value
 	}
-	return []
+	return .none
 }
 
 struct SwitchCell: View {

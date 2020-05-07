@@ -73,7 +73,7 @@ struct ContentView: View {
 	init(store: Store<AppState, AppAction>) {
 		self.store = store
 		self.viewStore = self.store
-			.scope(value: State.init,
+			.scope(state: State.init,
 						 action: { $0 })
 			.view
 		print("ContentView init")
@@ -90,7 +90,7 @@ struct ContentView: View {
 
 	var loginContainerStore: Store<WalkthroughContainerState, WalkthroughContainerAction> {
 		return self.store.scope(
-			value: { extract(case: AppState.walkthrough, from: $0) ?? WalkthroughContainerState(navigation: [.signInScreen],
+			state: { extract(case: AppState.walkthrough, from: $0) ?? WalkthroughContainerState(navigation: [.signInScreen],
 																																													loginViewState: LoginViewState()) },
 			action: { .walkthrough($0)}
 		)
@@ -98,7 +98,7 @@ struct ContentView: View {
 
 	var tabBarStore: Store<TabBarState, TabBarAction> {
 		return self.store.scope(
-			value: { extract(case: AppState.tabBar, from: $0) ?? TabBarState(journey: JourneyState(), settings: SettingsState()) },
+			state: { extract(case: AppState.tabBar, from: $0) ?? TabBarState(journey: JourneyState(), settings: SettingsState()) },
 			action: { .tabBar($0)}
 		)
 	}
@@ -116,7 +116,7 @@ struct LoginContainer: View {
 	public init (store: Store<WalkthroughContainerState, WalkthroughContainerAction>) {
 		self.store = store
 		self.viewStore = self.store
-			.scope(value: ViewState.init(state:),
+			.scope(state: ViewState.init(state:),
 						 action: { $0 })
 			.view
 		print("LoginContainer init")
@@ -131,7 +131,7 @@ struct LoginContainer: View {
 					:
 					ViewBuilder.buildEither(second:
 						LoginView(store:
-							self.store.scope(value: { $0 },
+							self.store.scope(state: { $0 },
 															action: { .login($0)})
 					))
 			)
@@ -144,7 +144,7 @@ let globalReducer = Reducer<AppState, AppAction, AppEnvironment> { state, action
 		case let TabBarAction.settings(settings) = tabBar,
 		case SettingsAction.logoutTapped = settings {
 		state = AppState(user: nil, hasSeenWalkthrough: environment.userDefaults.hasSeenAppIntroduction)
-		return []
+		return .none
 	} else {
 		let user = extract(case: { (value: User) -> (AppAction) in
 			AppAction.walkthrough(WalkthroughContainerAction.login(LoginViewAction.login(LoginAction.gotResponse(Result.success(value)))))
@@ -153,8 +153,8 @@ let globalReducer = Reducer<AppState, AppAction, AppEnvironment> { state, action
 			var journeyState = JourneyState()
 			journeyState.loadingState = .loading
 			state = AppState(user: user, hasSeenWalkthrough: environment.userDefaults.hasSeenAppIntroduction)
-			return []
+			return .none
 		}
 	}
-	return []
+	return .none
 }

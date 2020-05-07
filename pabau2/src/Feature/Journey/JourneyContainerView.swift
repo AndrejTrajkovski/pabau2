@@ -31,7 +31,7 @@ let employeeListReducer = Reducer<EmployeesState, EmployeesAction, JourneyEnviro
 		case .failure:
 			state.loadingState = .gotError
 		}
-		return []
+		return .none
 	}
 
 	switch action {
@@ -53,7 +53,7 @@ let employeeListReducer = Reducer<EmployeesState, EmployeesAction, JourneyEnviro
 				.eraseToEffect()
 		]
 	}
-	return []
+	return .none
 }
 
 public typealias JourneyEnvironemnt = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
@@ -62,7 +62,7 @@ let checkInMiddleware2 = Reducer<JourneyState, ChooseFormAction, JourneyEnvirone
 	switch action {
 	case .proceed:
 		guard let selJ = state.selectedJourney,
-			let selP = state.selectedPathway else { return [] }
+			let selP = state.selectedPathway else { return .none }
 		state.checkIn = CheckInContainerState(
 			journey: selJ,
 			pathway: selP,
@@ -70,9 +70,9 @@ let checkInMiddleware2 = Reducer<JourneyState, ChooseFormAction, JourneyEnvirone
 			medHistory: JourneyMockAPI.getMedHistory(),
 			consents: state.allConsents.filter { state.selectedConsentsIds.contains($0.id)})
 	default:
-		return []
+		return .none
 	}
-	return []
+	return .none
 }
 
 let checkInMiddleware = Reducer<JourneyState, CheckInMainAction, JourneyEnvironemnt> { state, action, _ in
@@ -82,16 +82,16 @@ let checkInMiddleware = Reducer<JourneyState, CheckInMainAction, JourneyEnvirone
 		state.selectedPathway = nil
 		state.checkIn = nil
 	default:
-		return []
+		return .none
 	}
-	return []
+	return .none
 }
 
 //JourneyState, ChooseFormAction
 public let journeyContainerReducer: Reducer<JourneyState, JourneyContainerAction, JourneyEnvironemnt> =
 	.combine(
 		checkInMiddleware2.pullback(
-			value: \JourneyState.self,
+			state: \JourneyState.self,
 			action: /JourneyContainerAction.choosePathway..ChoosePathwayContainerAction.chooseConsent,
 			environment: { $0 }),
 		journeyReducer.pullback(
@@ -161,7 +161,7 @@ let journeyReducer = Reducer<JourneyState, JourneyAction, JourneyEnvironemnt> { 
 				.eraseToEffect()
 		]
 	}
-	return []
+	return .none
 }
 
 public struct JourneyContainerView: View {
@@ -184,7 +184,7 @@ public struct JourneyContainerView: View {
 	public init(_ store: Store<JourneyState, JourneyContainerAction>) {
 		self.store = store
 		self.viewStore = self.store
-			.scope(value: ViewState.init(state:),
+			.scope(state: ViewState.init(state:),
 						 action: { $0 })
 			.view
 		print("JourneyContainerView init")
@@ -205,7 +205,7 @@ public struct JourneyContainerView: View {
 			}.loadingView(.constant(self.viewStore.value.isLoadingJourneys),
 										Texts.fetchingJourneys)
 			NavigationLink.emptyHidden(self.viewStore.value.isChoosePathwayShown,
-																 ChoosePathway(store: self.store.scope(value: { $0.choosePathway
+																 ChoosePathway(store: self.store.scope(state: { $0.choosePathway
 																 }, action: { .choosePathway($0)}))
 																	.navigationBarTitle("Choose Pathway")
 																	.customBackButton {
@@ -253,7 +253,7 @@ public struct JourneyContainerView: View {
 			ViewBuilder.buildBlock(
 				(isSelectedJourney) ?
 					ViewBuilder.buildEither(second:
-						ChoosePathway(store: self.store.scope(value: { $0.choosePathway
+						ChoosePathway(store: self.store.scope(state: { $0.choosePathway
 						}, action: { .choosePathway($0)}))
 					)
 					:

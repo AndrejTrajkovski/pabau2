@@ -29,21 +29,20 @@ public enum LoginAction: Equatable {
 	case gotResponse(Result<User, LoginError>)
 }
 
-func handleLoginTapped(_ email: String, _ password: String, state: inout WalkthroughContainerState, apiClient: LoginAPI) -> [Effect<LoginAction>] {
+func handleLoginTapped(_ email: String, _ password: String, state: inout WalkthroughContainerState, apiClient: LoginAPI) -> Effect<LoginAction, Never> {
 	let validEmail = isValidEmail(email)
 	let emptyPass = password.isEmpty
 	state.loginViewState.emailValidationText = emailValidationText(validEmail)
 	state.loginViewState.passValidationText = passValidationText(emptyPass)
 	if validEmail && !emptyPass {
 		state.loginViewState.loginLS = .loading
-		return [
+		return
 			apiClient.login(email, password: password)
 				.map(LoginAction.gotResponse)
 				.receive(on: DispatchQueue.main)
 				.eraseToEffect()
-		]
 	} else {
-		return []
+		return .none
 	}
 }
 
@@ -67,7 +66,7 @@ public let loginReducer = Reducer<WalkthroughContainerState, LoginAction, LoginE
 		return handleLoginTapped(email, password, state: &state, apiClient: environment.apiClient)
 	case .forgotPass:
 		state.navigation.append(.forgotPassScreen)
-		return []
+		return .none
 	case .gotResponse(let result):
 		switch result {
 		case .success(let user):
@@ -77,21 +76,20 @@ public let loginReducer = Reducer<WalkthroughContainerState, LoginAction, LoginE
 		case .failure:
 			state.loginViewState.loginLS = .gotError
 		}
-		return []
+		return .none
 	}
 }
 
 let loginViewReducer: Reducer<WalkthroughContainerState, LoginViewAction, LoginEnvironment> = .combine(
-	loginReducer.pullback(value: \WalkthroughContainerState.self, action: /LoginViewAction.login, environment: { $0 }),
+	loginReducer.pullback(state: \WalkthroughContainerState.self, action: /LoginViewAction.login, environment: { $0 }),
 	forgotPassViewReducer.pullback(
-		value: \WalkthroughContainerState.forgotPass,
+		state: \WalkthroughContainerState.forgotPass,
 		action: /LoginViewAction.forgotPass,
 		environment: { $0 })
 )
 
 struct Login: View {
 	let store: Store<WalkthroughContainerState, LoginAction>
-	@ObservedObject var viewStore: ViewStore<ViewState, Action>
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
 	@Binding private var email: String
 	@State private var password: String = ""
@@ -110,33 +108,31 @@ struct Login: View {
 	public init(store: Store<WalkthroughContainerState, LoginAction>, email: Binding<String>) {
 		print("Login init")
 		self.store = store
-		self.viewStore = self.store
-			.scope(value: ViewState.init(state:),
-						 action: LoginAction.init(action:))
-			.view
 		self._email = email
 	}
 	var body: some View {
-		print("Login body")
-		return VStack(alignment: .leading) {
-			LoginTitle()
-			Spacer(minLength: 85)
-			LoginTextFields(email: $email,
-											password: $password,
-											emailValidation: self.viewStore.value.emailValidationText,
-											passwordValidation: self.viewStore.value.passValidationText,
-											onForgotPass: {self.viewStore.send(.forgotPassTapped) })
-			Spacer(minLength: 30)
-			BigButton(text: Texts.signIn,
-								btnTapAction: {
-									self.viewStore.send(.loginTapped(email: self.email,
-																									 password: self.password))
-			})
-		}
-		.navigationBarBackButtonHidden(true)
-		.frame(minWidth: 280, maxWidth: 495, alignment: .center)
-		.fixedSize(horizontal: false, vertical: true)
-		.padding(.bottom, keyboardHandler.keyboardHeight)
+		WithViewStore(self.store.scope(state: ViewState.init(state:),
+																	 action: { LoginAction.init(action: $0) })) { viewStore in
+			VStack(alignment: .leading) {
+				LoginTitle()
+				Spacer(minLength: 85)
+				LoginTextFields(email: self.$email,
+												password: self.$password,
+												emailValidation: viewStore.state.emailValidationText,
+												passwordValidation: viewStore.state.passValidationText,
+												onForgotPass: { viewStore.send(.forgotPassTapped) })
+				Spacer(minLength: 30)
+				BigButton(text: Texts.signIn,
+									btnTapAction: {
+										viewStore.send(.loginTapped(email: self.email,
+																								password: self.password))
+				})
+			}
+			.navigationBarBackButtonHidden(true)
+			.frame(minWidth: 280, maxWidth: 495, alignment: .center)
+			.fixedSize(horizontal: false, vertical: true)
+			.padding(.bottom, self.keyboardHandler.keyboardHeight)
+			}
 	}
 }
 
@@ -155,7 +151,7 @@ public struct LoginView: View {
 	public init(store: Store<WalkthroughContainerState, LoginViewAction>) {
 		self.store = store
 		self.viewStore = self.store
-			.scope(value: ViewState.init(state:),
+			.scope(state: ViewState.init(state:),
 						 action: { $0 })
 			.view
 		print("LoginView init")
@@ -168,7 +164,7 @@ public struct LoginView: View {
 					value: { $0.forgotPass },
 					action: { .forgotPass($0)}), self.$email))
 			Login(store:
-				self.store.scope(value: { $0 },
+				self.store.scope(state: { $0 },
 												action: { .login($0)}),
 						email: self.$email)
 			Spacer()

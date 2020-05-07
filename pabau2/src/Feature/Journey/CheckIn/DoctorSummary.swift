@@ -30,7 +30,7 @@ let doctorSummaryReducer = Reducer <DoctorSummaryState, DoctorSummaryAction, Jou
 	case .didTouchBackFromCheckInMain:
 		state.isCheckInMainActive = false
 	}
-	return []
+	return .none
 }
 
 public enum DoctorSummaryAction {
@@ -45,7 +45,7 @@ struct DoctorSummary: View {
 	init (store: Store<CheckInContainerState, CheckInMainAction>) {
 		self.store = store
 		self.viewStore = store
-			.scope(value: { $0 },
+			.scope(state: { $0 },
 						 action: { .doctorSummary($0)})
 			.view(removeDuplicates: ==)
 	}
@@ -68,7 +68,7 @@ struct DoctorSummary: View {
 						self.viewStore.send(.didTouchBackFromCheckInMain)
 				}
 				NavigationLink.emptyHidden(self.viewStore.value.doctorSummary.isChooseTreatmentActive,
-																	 ChooseFormList(store: self.store.scope(value: {
+																	 ChooseFormList(store: self.store.scope(state: {
 																		$0.chooseTreatments
 																	}, action: {
 																		.chooseTreatments($0)

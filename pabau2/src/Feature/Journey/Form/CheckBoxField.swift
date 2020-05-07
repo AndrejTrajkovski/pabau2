@@ -13,7 +13,7 @@ public let checkBoxFieldReducer =
 	switch action {
 	case .didUpdateChoices(let updated):
 		state = updated
-		return []
+		return .none
 	}
 }
 

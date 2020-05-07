@@ -20,7 +20,7 @@ struct CheckInMain: View {
 		self.journeyMode = journeyMode
 		self.store = store
 		self.viewStore = self.store
-			.scope(value: {
+			.scope(state: {
 				switch journeyMode {
 				case .patient:
 					return $0.patient
@@ -157,7 +157,7 @@ let stepFormsReducer2 = Reducer<MetaFormAndStatus, StepFormsAction2, JourneyEnvi
 	case .didFinishTemplate(let template):
 		state.isComplete = true
 	}
-	return []
+	return .none
 }
 
 let stepFormsReducer = Reducer<StepsState, StepFormsAction, JourneyEnvironemnt> { state, action, _ in
@@ -171,7 +171,7 @@ let stepFormsReducer = Reducer<StepsState, StepFormsAction, JourneyEnvironemnt> 
 			state.selectedIndex += 1
 		}
 	}
-	return []
+	return .none
 }
 
 struct StepForms: View {
@@ -186,7 +186,7 @@ struct StepForms: View {
 		self.store = store
 		self.journeyMode = journeyMode
 		self.viewStore = self.store
-			.scope(value: {
+			.scope(state: {
 				switch journeyMode {
 				case .patient:
 					return $0.patient

@@ -12,7 +12,7 @@ let radioFieldReducer = Reducer<Radio, RadioFieldAction, JourneyEnvironemnt> { s
 	case .didUpdateRadio(let radio):
 		state = radio
 	}
-	return []
+	return .none
 }
 
 struct RadioField: View {

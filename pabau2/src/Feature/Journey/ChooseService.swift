@@ -14,7 +14,7 @@ let chooseServiceReducer =
 	case .didTapBackBtn:
 		state.isChooseServiceActive = false
 	}
-	return []
+	return .none
 }
 
 public enum ChooseServiceFilter: Int, CaseIterable, CustomStringConvertible {

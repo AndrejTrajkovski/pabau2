@@ -26,7 +26,7 @@ let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, JourneyEn
 	case .removeTemplateId(let templateId):
 		state.selectedTemplatesIds.removeAll(where: { $0 == templateId})
 	case .proceed:
-		return []//handled elsewhere
+		return .none//handled elsewhere
 	case .gotResponse(let result):
 		switch result {
 		case .success(let templates):
@@ -41,7 +41,7 @@ let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, JourneyEn
 			.map(ChooseFormAction.gotResponse)
 			.eraseToEffect()]
 	}
-	return []
+	return .none
 }
 
 public enum ChooseFormMode {
@@ -75,7 +75,7 @@ struct ChooseTreatmentNote: View {
 
 	var body: some View {
 		VStack {
-			ChooseFormList(store: store.scope(value: { $0.chooseTreatments },
+			ChooseFormList(store: store.scope(state: { $0.chooseTreatments },
 																				action: { .chooseTreatments($0)}),
 										 mode: .treatmentNotes)
 			NavigationLink.emptyHidden(self.viewStore.value.isDoctorSummaryActive,
@@ -97,7 +97,7 @@ struct ChooseFormList: View {
 		self.mode = mode
 		self.store = store
 		self.viewStore = self.store
-			.scope(value: { ChooseFormList.ViewState.init($0) } ,
+			.scope(state: { ChooseFormList.ViewState.init($0) } ,
 						 action: { $0 })
 			.view
 		UITableView.appearance().separatorStyle = .none

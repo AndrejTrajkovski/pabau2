@@ -12,12 +12,12 @@ public enum ChoosePathwayContainerAction {
 let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayContainerAction, JourneyEnvironemnt> =
 	.combine(
 		chooseFormListReducer.pullback(
-			value: \ChoosePathwayState.chooseConsentState,
+			state: \ChoosePathwayState.chooseConsentState,
 			action: /ChoosePathwayContainerAction.chooseConsent,
 			environment: { $0 })
 		,
 		choosePathwayReducer.pullback(
-			value: \ChoosePathwayState.self,
+			state: \ChoosePathwayState.self,
 			action: /ChoosePathwayContainerAction.choosePathway,
 			environment: { $0 })
 )
@@ -29,7 +29,7 @@ let choosePathwayReducer = Reducer<ChoosePathwayState, ChoosePathwayAction, Jour
 	case .didTouchSelectConsentBackBtn:
 		state.selectedPathway = nil
 	}
-	return []
+	return .none
 }
 
 public enum ChoosePathwayAction {
@@ -92,7 +92,7 @@ public struct ChoosePathway: View {
 	init(store: Store<ChoosePathwayState, ChoosePathwayContainerAction>) {
 		self.store = store
 		self.viewStore = self.store
-			.scope(value: State.init(state:),
+			.scope(state: State.init(state:),
 						 action: { $0 })
 			.view
 		print("ChoosePathway init")
