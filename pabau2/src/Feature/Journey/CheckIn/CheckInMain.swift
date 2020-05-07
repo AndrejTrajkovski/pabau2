@@ -36,32 +36,7 @@ struct CheckInMain: View {
 		print("check in main body")
 		return
 			VStack (alignment: .center, spacing: 0) {
-				ZStack {
-					Button.init(action: { self.viewStore.send(.closeBtnTap) }, label: {
-						Image(systemName: "xmark")
-							.font(Font.light30)
-							.foregroundColor(.gray142)
-							.frame(width: 30, height: 30)
-					})
-						.padding()
-						.frame(minWidth: 0, maxWidth: .infinity,
-									 minHeight: 0, maxHeight: .infinity,
-									 alignment: .topLeading)
-					Spacer()
-					JourneyProfileView(style: .short,
-														 viewState: .init(journey: self.store.view.value.journey))
-						.padding()
-						.frame(minWidth: 0, maxWidth: .infinity,
-									 minHeight: 0, maxHeight: .infinity,
-									 alignment: .top)
-					Spacer()
-					RibbonView(completedNumberOfSteps: self.viewStore.value.forms.filter(\.isComplete).count,
-										 totalNumberOfSteps: self.viewStore.value.forms.count)
-						.offset(x: -80, y: -60)
-						.frame(minWidth: 0, maxWidth: .infinity,
-									 minHeight: 0, maxHeight: .infinity,
-									 alignment: .topTrailing)
-				}.frame(height: 168.0)
+				
 				StepForms(store:
 					self.store.scope(
 						value: { $0 },
@@ -72,6 +47,39 @@ struct CheckInMain: View {
 			}
 			.navigationBarTitle("")
 			.navigationBarHidden(true)
+	}
+}
+
+struct TopView: View {
+	var body: some View {
+		ZStack {
+			XButton(onTap: { self.viewStore.send(.closeBtnTap) })
+				.padding()
+				.exploding(.topLeading)
+			Spacer()
+			JourneyProfileView(style: .short,
+												 viewState: .init(journey: self.store.view.value.journey))
+				.padding()
+				.exploding(.top)
+			Spacer()
+			RibbonView(completedNumberOfSteps: self.viewStore.value.forms.filter(\.isComplete).count,
+								 totalNumberOfSteps: self.viewStore.value.forms.count)
+				.offset(x: -80, y: -60)
+				.exploding(.topTrailing)
+		}.frame(height: 168.0)
+	}
+}
+
+
+struct XButton: View {
+	let onTap: () -> Void
+	var body: some View {
+		Button.init(action: onTap, label: {
+			Image(systemName: "xmark")
+				.font(Font.light30)
+				.foregroundColor(.gray142)
+				.frame(width: 30, height: 30)
+		})
 	}
 }
 
