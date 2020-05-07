@@ -4,7 +4,7 @@ public struct TextAndTextField: View {
 	public init(_ title: String,
 							_ bindingValue: Binding<String>,
 							_ placeholder: String = "",
-							_ validation: String = "") {
+							_ validation: String? = nil) {
 		self.title = title
 		self.placeholder = placeholder
 		self._value = bindingValue
@@ -14,7 +14,7 @@ public struct TextAndTextField: View {
 	let title: String
 	let placeholder: String
 	@Binding var value: String
-	let validation: String
+	let validation: String?
 	public var body: some View {
 		VStack(alignment: .leading, spacing: 6) {
 			Text(title.uppercased())
@@ -22,7 +22,9 @@ public struct TextAndTextField: View {
 				.foregroundColor(Color.textFieldAndTextLabel.opacity(0.5))
 			TextFieldWithBottomLine(placeholder: placeholder, text: $value)
 				.font(.medium15)
-//			ValidationText(title: validation)
+			if validation != nil {
+				ValidationText(title: validation!)
+			}
 		}
 	}
 }

@@ -61,6 +61,7 @@ struct DoctorSummary: View {
 				Spacer()
 				NavigationLink.emptyHidden(self.viewStore.state.doctorSummary.isCheckInMainActive,
 																	 CheckInMain(store: self.store,
+																							 journey: self.viewStore.state.journey,
 																							 journeyMode: .doctor))
 					.customBackButton {
 						self.viewStore.send(.didTouchBackFromCheckInMain)

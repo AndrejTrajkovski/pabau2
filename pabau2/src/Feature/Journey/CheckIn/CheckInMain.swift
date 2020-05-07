@@ -2,6 +2,7 @@ import SwiftUI
 import Model
 import ComposableArchitecture
 import Util
+import Overture
 
 public enum CheckInMainAction {
 	case closeBtnTap
@@ -12,11 +13,14 @@ public enum CheckInMainAction {
 }
 
 struct CheckInMain: View {
+	let journey: Journey
 	let store: Store<CheckInContainerState, CheckInMainAction>
 	@ObservedObject var viewStore: ViewStore<StepsState, CheckInMainAction>
 	let journeyMode: JourneyMode
 	init(store: Store<CheckInContainerState, CheckInMainAction>,
+			 journey: Journey,
 			 journeyMode: JourneyMode) {
+		self.journey = journey
 		self.journeyMode = journeyMode
 		self.store = store
 		self.viewStore = ViewStore(self.store
@@ -36,7 +40,7 @@ struct CheckInMain: View {
 		print("check in main body")
 		return
 			VStack (alignment: .center, spacing: 0) {
-				
+				TopView(journey: self.journey, viewStore: self.viewStore)
 				StepForms(store:
 					self.store.scope(
 						state: { $0 },
@@ -51,26 +55,26 @@ struct CheckInMain: View {
 }
 
 struct TopView: View {
+	let journey: Journey
+	@ObservedObject var viewStore: ViewStore<StepsState, CheckInMainAction>
 	var body: some View {
-		EmptyView()
-//		ZStack {
-//			XButton(onTap: { self.viewStore.send(.closeBtnTap) })
-//				.padding()
-//				.exploding(.topLeading)
-//			Spacer()
-//			JourneyProfileView(style: .short,
-//												 viewState: .init(journey: self.store.view.value.journey))
-//				.padding()
-//				.exploding(.top)
-//			Spacer()
-//			RibbonView(completedNumberOfSteps: self.viewStore.state.forms.filter(\.isComplete).count,
-//								 totalNumberOfSteps: self.viewStore.state.forms.count)
-//				.offset(x: -80, y: -60)
-//				.exploding(.topTrailing)
-//		}.frame(height: 168.0)
+		ZStack {
+			XButton(onTap: { self.viewStore.send(.closeBtnTap) })
+				.padding()
+				.exploding(.topLeading)
+			Spacer()
+			JourneyProfileView(style: .short,
+												 viewState: .init(journey: self.journey))
+				.padding()
+				.exploding(.top)
+			Spacer()
+			RibbonView(completedNumberOfSteps: viewStore.state.forms.filter(\.isComplete).count,
+								 totalNumberOfSteps: viewStore.state.forms.count)
+				.offset(x: -80, y: -60)
+				.exploding(.topTrailing)
+		}.frame(height: 168.0)
 	}
 }
-
 
 struct XButton: View {
 	let onTap: () -> Void
