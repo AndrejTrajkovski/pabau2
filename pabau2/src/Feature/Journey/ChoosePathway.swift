@@ -103,13 +103,13 @@ public struct ChoosePathway: View {
 			self.pathwayCells
 			self.chooseFormNavLink
 		}
-		.journeyBase(self.viewStore.value.journey, .long)
+		.journeyBase(self.viewStore.state.journey, .long)
 	}
 
 	var chooseFormNavLink: some View {
-		NavigationLink.emptyHidden(self.viewStore.value.isChooseConsentShown,
+		NavigationLink.emptyHidden(self.viewStore.state.isChooseConsentShown,
 															 ChooseFormList(store: self.store.scope(
-																	value: { $0.chooseConsentState },
+																	state: { $0.chooseConsentState },
 																	action: { .chooseConsent($0)}), mode: .consents)
 																.navigationBarTitle("Choose Consent")
 																.customBackButton {
@@ -123,23 +123,23 @@ public struct ChoosePathway: View {
 			PathwayCell(style: .blue) {
 				ChoosePathwayListContent.init(.blue,
 																			Image(systemName: "arrow.right"),
-																			self.viewStore.value.standardPathway.steps.count,
+																			self.viewStore.state.standardPathway.steps.count,
 																			"Standard Pathway",
 																			"Provides a basic standard pathway, defined for the company.",
-																			self.viewStore.value.standardPathway.steps.map { $0.stepType.title },
+																			self.viewStore.state.standardPathway.steps.map { $0.stepType.title },
 																			"Standard") {
-																				self.viewStore.send(.choosePathway(.didChoosePathway(self.viewStore.value.standardPathway)))
+																				self.viewStore.send(.choosePathway(.didChoosePathway(self.viewStore.state.standardPathway)))
 				}
 			}
 			PathwayCell(style: .white) {
 				ChoosePathwayListContent.init(.white,
 																			Image("ico-journey-consulting"),
-																			self.viewStore.value.standardPathway.steps.count,
+																			self.viewStore.state.standardPathway.steps.count,
 																			"Consultation Pathway",
 																			"Provides a consultation pathway, to hear out the person's needs.",
-																			self.viewStore.value.consultationPathway.steps.map { $0.stepType.title },
+																			self.viewStore.state.consultationPathway.steps.map { $0.stepType.title },
 																			"Consultation") {
-																				self.viewStore.send(.choosePathway(.didChoosePathway(self.viewStore.value.consultationPathway)))
+																				self.viewStore.send(.choosePathway(.didChoosePathway(self.viewStore.state.consultationPathway)))
 				}
 			}
 		}

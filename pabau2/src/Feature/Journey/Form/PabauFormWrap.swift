@@ -55,34 +55,34 @@ struct PabauFormWrap: View {
 //	var body: some View {
 //		print("pabau wrapper body ")
 //		return Group {
-//			if self.viewStore.value.template != nil {
+//			if self.viewStore.state.template != nil {
 //				DynamicForm(template:
 //					Binding.init(
-//						get: { self.viewStore.value.template ?? FormTemplate.defaultEmpty },
+//						get: { self.viewStore.state.template ?? FormTemplate.defaultEmpty },
 //						set: { self.viewStore.send(.didUpdateTemplate($0)) })
 //				)
 //			}
-//			if self.viewStore.value.patientDetails != nil {
+//			if self.viewStore.state.patientDetails != nil {
 //				PatientDetailsForm()
 //			}
-//			if self.viewStore.value.aftercare != nil {
+//			if self.viewStore.state.aftercare != nil {
 //				Text("Aftercare")
 //			}
 //		}.padding()
 //	}
 
 	var body: some View {
-		if self.viewStore.value.template != nil {
+		if self.viewStore.state.template != nil {
 			return AnyView(
 				DynamicForm(template:
 					Binding.init(
-						get: { self.viewStore.value.template ?? FormTemplate.defaultEmpty },
+						get: { self.viewStore.state.template ?? FormTemplate.defaultEmpty },
 						set: { self.viewStore.send(.didUpdateTemplate($0)) })
 				)
 			)
-		} else if self.viewStore.value.patientDetails != nil {
+		} else if self.viewStore.state.patientDetails != nil {
 			return AnyView(PatientDetailsForm().padding())
-		} else if self.viewStore.value.isCompleteForm {
+		} else if self.viewStore.state.isCompleteForm {
 			return AnyView(CompleteStepForm(store: store))
 		} else {
 			return AnyView(Text("Aftercare"))

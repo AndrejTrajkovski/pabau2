@@ -57,7 +57,7 @@ struct Passcode: View {
 			NavigationLink.emptyHidden(self.passcodeState.unlocked,
 				ChooseTreatmentNote(store:
 					self.store.scope(
-						value: { $0 },
+						state: { $0 },
 						action: { $0 }))
 				.navigationBarHidden(false)
 				.navigationBarTitle("Choose Tretment Note", displayMode: .inline)

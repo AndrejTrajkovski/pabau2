@@ -39,7 +39,7 @@ struct CheckInMain: View {
 				
 				StepForms(store:
 					self.store.scope(
-						value: { $0 },
+						state: { $0 },
 						action: { $0 }
 					),
 					journeyMode: self.journeyMode)
@@ -63,8 +63,8 @@ struct TopView: View {
 //				.padding()
 //				.exploding(.top)
 //			Spacer()
-//			RibbonView(completedNumberOfSteps: self.viewStore.value.forms.filter(\.isComplete).count,
-//								 totalNumberOfSteps: self.viewStore.value.forms.count)
+//			RibbonView(completedNumberOfSteps: self.viewStore.state.forms.filter(\.isComplete).count,
+//								 totalNumberOfSteps: self.viewStore.state.forms.count)
 //				.offset(x: -80, y: -60)
 //				.exploding(.topTrailing)
 //		}.frame(height: 168.0)
@@ -208,8 +208,8 @@ struct StepForms: View {
 		print("check in main body")
 		return GeometryReader { geo in
 			VStack(spacing: 8) {
-				StepsCollectionView(steps: self.viewStore.value.forms,
-														selectedIdx: self.viewStore.value.selectedIndex) {
+				StepsCollectionView(steps: self.viewStore.state.forms,
+														selectedIdx: self.viewStore.state.selectedIndex) {
 															self.viewStore.send(.didSelectFormIndex($0))
 				}
 				.frame(height: 80)
@@ -217,18 +217,18 @@ struct StepForms: View {
 					.frame(width: geo.size.width)
 					.shadow(color: Color(hex: "C1C1C1"), radius: 4, y: 2)
 				PabauFormWrap(store: self.store,
-											selectedFormIndex: self.viewStore.value.selectedIndex,
+											selectedFormIndex: self.viewStore.state.selectedIndex,
 											journeyMode: self.journeyMode)
 					.padding(.bottom, self.keyboardHandler.keyboardHeight > 0 ? self.keyboardHandler.keyboardHeight : 32)
 					.padding([.leading, .trailing, .top], 32)
 				Spacer()
 				if self.keyboardHandler.keyboardHeight == 0 &&
-					!self.viewStore.value.isOnCompleteStep {
+					!self.viewStore.state.isOnCompleteStep {
 					BigButton(text: Texts.next) {
 						self.viewStore.send(.didSelectNextForm)
 						self.viewStore.send(.action2(
-							Indexed<StepFormsAction2>.init(index: self.viewStore.value.selectedIndex,
-																						 value: .didFinishTemplate(self.viewStore.value.forms[self.viewStore.value.selectedIndex]))))
+							Indexed<StepFormsAction2>.init(index: self.viewStore.state.selectedIndex,
+																						 value: .didFinishTemplate(self.viewStore.state.forms[self.viewStore.state.selectedIndex]))))
 					}
 					.frame(width: 230)
 					.padding(8)

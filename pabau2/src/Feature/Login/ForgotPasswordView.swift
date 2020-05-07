@@ -50,19 +50,19 @@ let forgotPassViewReducer: Reducer<ForgotPassContainerState,
 	ForgotPassViewAction,
 	LoginEnvironment> = .combine(
 		forgotPasswordReducer.pullback(
-					 value: \ForgotPassContainerState.forgotPass,
+					 state: \ForgotPassContainerState.forgotPass,
 					 action: /ForgotPassViewAction.forgotPass,
 					 environment: { $0 }),
 		resetPassReducer.pullback(
-					 value: \ForgotPassContainerState.resetPass,
+					 state: \ForgotPassContainerState.resetPass,
 					 action: /ForgotPassViewAction.resetPass,
 					 environment: { $0 }),
 		checkEmailReducer.pullback(
-					 value: \ForgotPassContainerState.navigation,
+					 state: \ForgotPassContainerState.navigation,
 					 action: /ForgotPassViewAction.checkEmail,
 					 environment: { $0 }),
 		passChangedReducer.pullback(
-					 value: \ForgotPassContainerState.navigation,
+					 state: \ForgotPassContainerState.navigation,
 					 action: /ForgotPassViewAction.passChanged,
 					 environment: { $0 })
 )
@@ -77,12 +77,10 @@ let forgotPasswordReducer = Reducer<ForgotPassState, ForgotPasswordAction, Login
 			state.fpValidation = emailValidationText(isValid)
 			if isValid {
 				state.loadingState = .loading
-				return [
-					environment.apiClient.resetPass(email)
+				return environment.apiClient.resetPass(email)
 						.map(ForgotPasswordAction.gotResponse)
 						.receive(on: DispatchQueue.main)
 						.eraseToEffect()
-				]
 			} else {
 				return .none
 			}
@@ -111,7 +109,7 @@ struct ForgotPassword: View {
 	init(_ store: Store<ForgotPassState, ForgotPasswordAction>,
 			 _ email: Binding<String>) {
 		self.store = store
-		self.viewStore = self.store.view
+		self.viewStore = ViewStore(self.store)
 		self._email = email
 	}
 
@@ -128,7 +126,7 @@ struct ForgotPassword: View {
 				TextAndTextField(Texts.emailAddress.uppercased(),
 												 self.$email,
 												 "",
-												 self.viewStore.value.fpValidation)
+												 self.viewStore.state.fpValidation)
 			}.frame(maxWidth: 319)
 			BigButton(text: Texts.sendRequest) {
 				self.viewStore.send(.sendRequest(email: self.email))
@@ -148,7 +146,7 @@ struct ForgotPasswordView: View {
 	@Binding private var email: String
 	init(_ store: Store<ForgotPassContainerState, ForgotPassViewAction>, _ email: Binding<String>) {
 		self.store = store
-		self.viewStore = self.store.view
+		self.viewStore = ViewStore.init(store)
 		_email = email
 		print("ForgotPasswordView init")
 	}
@@ -157,10 +155,10 @@ struct ForgotPasswordView: View {
 		return VStack(alignment: .leading, spacing: 36) {
 			ForgotPassword(self.store.scope(state: { $0.forgotPass }, action: { .forgotPass($0)}), self.$email)
 			NavigationLink.emptyHidden(
-				self.viewStore.value.navigation.contains(.checkEmailScreen),
+				self.viewStore.state.navigation.contains(.checkEmailScreen),
 				self.checkEmailView)
 			Spacer()
-		}.loadingView(.constant(self.viewStore.value.forgotPass.loadingState.isLoading),
+		}.loadingView(.constant(self.viewStore.state.forgotPass.loadingState.isLoading),
 									Texts.forgotPassLoading)
 	}
 

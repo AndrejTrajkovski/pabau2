@@ -88,7 +88,7 @@ struct ChooseService: View {
 				StaffFilterPicker()
 			}
 			List {
-				ForEach(self.viewStore.value.listServices, id: \.self.first?.categoryId) { (group: [Service]) in
+				ForEach(self.viewStore.state.listServices, id: \.self.first?.categoryId) { (group: [Service]) in
 					Section(header:
 						TextHeader(name: group.first?.categoryName ?? "No name")
 					) {

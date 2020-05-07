@@ -78,7 +78,7 @@ struct ChooseTreatmentNote: View {
 			ChooseFormList(store: store.scope(state: { $0.chooseTreatments },
 																				action: { .chooseTreatments($0)}),
 										 mode: .treatmentNotes)
-			NavigationLink.emptyHidden(self.viewStore.value.isDoctorSummaryActive,
+			NavigationLink.emptyHidden(self.viewStore.state.isDoctorSummaryActive,
 																 DoctorSummary(store: self.store)
 																	.navigationBarBackButtonHidden(true)
 			)
@@ -123,7 +123,7 @@ struct ChooseFormList: View {
 
 	var body: some View {
 		chooseFormCells
-			.journeyBase(self.viewStore.value.journey, .long)
+			.journeyBase(self.viewStore.state.journey, .long)
 			.onAppear {
 				self.viewStore.send(.onAppear(self.mode.formType))
 		}
@@ -135,7 +135,7 @@ struct ChooseFormList: View {
 				VStack(alignment: .leading) {
 					Text("Selected " + (self.mode == .consents ? "Consents" : "Treatments"))
 						.font(.bold17)
-					FormTemplateList(templates: self.viewStore.value.selectedTemplates,
+					FormTemplateList(templates: self.viewStore.state.selectedTemplates,
 													 bgColor: PathwayCellStyle.blue.bgColor,
 													 templateRow: { template in
 														SelectedTemplateRow(template: template)
@@ -153,7 +153,7 @@ struct ChooseFormList: View {
 			PathwayCell(style: .white) {
 				VStack {
 					TextField("TODO: search: ", text: self.$searchText)
-					FormTemplateList(templates: self.viewStore.value.notSelectedTemplates,
+					FormTemplateList(templates: self.viewStore.state.notSelectedTemplates,
 													 bgColor: PathwayCellStyle.white.bgColor,
 													 templateRow: { template in
 														NotSelectedTemplateRow(template: template)

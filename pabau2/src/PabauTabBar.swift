@@ -67,22 +67,22 @@ struct PabauTabBar: View {
 						Image(systemName: "gear")
 						Text("Settings")
 				}
-			}.modalLink(isPresented: .constant(self.viewStore.value.isShowingCheckin),
+			}.modalLink(isPresented: .constant(self.viewStore.state.isShowingCheckin),
 								 linkType: ModalTransition.circleReveal,
 								 destination: {
 									CheckInNavigationView(store:
 										self.store.scope(
-											value: { $0.journey.checkIn ?? CheckInContainerState.defaultEmpty },
+											state: { $0.journey.checkIn ?? CheckInContainerState.defaultEmpty },
 											action: { .journey(.checkIn($0))})
 									)
-			}).modalLink(isPresented: .constant(self.viewStore.value.isShowingAppointments),
+			}).modalLink(isPresented: .constant(self.viewStore.state.isShowingAppointments),
 									 linkType: ModalTransition.fullScreenModal,
 									 destination: {
 										AddAppointment(store:
 											self.store.scope(state: { $0.journey.addAppointment },
 																			 action: { .journey(.addAppointment($0))}))
 			})
-			if self.viewStore.value.isShowingEmployees {
+			if self.viewStore.state.isShowingEmployees {
 				EmployeesListStore(
 					self.store.scope(state: { $0.journey.employeesState } ,
 					action: { .journey(.employees($0))})

@@ -81,7 +81,7 @@ struct ContentView: View {
 	var body: some View {
 		print("ContentView body")
 		return ViewBuilder.buildBlock(
-			(self.viewStore.value.shouldShowLogin) ?
+			(self.viewStore.state.shouldShowLogin) ?
 				ViewBuilder.buildEither(second: LoginContainer(store: loginContainerStore))
 				:
 				ViewBuilder.buildEither(first: PabauTabBar(store: tabBarStore))
@@ -126,7 +126,7 @@ struct LoginContainer: View {
 		print("LoginContainer body")
 		return NavigationView {
 			ViewBuilder.buildBlock(
-				viewStore.value.shouldShowWalkthrough ?
+				viewStore.state.shouldShowWalkthrough ?
 					ViewBuilder.buildEither(first: WalkthroughContainer(store))
 					:
 					ViewBuilder.buildEither(second:

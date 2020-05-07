@@ -150,25 +150,24 @@ public struct LoginView: View {
 	@State var email: String = ""
 	public init(store: Store<WalkthroughContainerState, LoginViewAction>) {
 		self.store = store
-		self.viewStore = self.store
+		self.viewStore = ViewStore.init(self.store
 			.scope(state: ViewState.init(state:),
-						 action: { $0 })
-			.view
+						 action: { $0 }))
 		print("LoginView init")
 	}
 	public var body: some View {
 		print("LoginView body")
 		return VStack {
-			NavigationLink.emptyHidden(self.viewStore.value.isForgotPassActive,
+			NavigationLink.emptyHidden(self.viewStore.state.isForgotPassActive,
 				ForgotPasswordView(self.store.scope(
-					value: { $0.forgotPass },
+					state: { $0.forgotPass },
 					action: { .forgotPass($0)}), self.$email))
 			Login(store:
 				self.store.scope(state: { $0 },
 												action: { .login($0)}),
 						email: self.$email)
 			Spacer()
-		}.loadingView(.constant(self.viewStore.value.showsLoadingSpinner),
+		}.loadingView(.constant(self.viewStore.state.showsLoadingSpinner),
 									Texts.signingIn)
 	}
 }

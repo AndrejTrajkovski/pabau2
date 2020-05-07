@@ -106,23 +106,21 @@ func validate(_ code: String, _ newPass: String, _ confirmPass: String) -> RPVal
 	}
 }
 
-func handle (_ code: String, _ newPass: String, _ confirmPass: String, _ state: inout ResetPasswordState, _ apiClient: LoginAPI) -> [Effect<ResetPasswordAction>] {
+func handle (_ code: String, _ newPass: String, _ confirmPass: String, _ state: inout ResetPasswordState, _ apiClient: LoginAPI) -> Effect<ResetPasswordAction, Never> {
 	let validated = validate(code, newPass, confirmPass)
 	state.rpValidation = validated
 	switch validated {
 	case .success(let resetPassReq):
 		state.loadingState = .loading
-		return [
-			apiClient.sendConfirmation(resetPassReq.code, resetPassReq.newPass)
-				.map(ResetPasswordAction.gotResponse)
-				.eraseToEffect()
-		]
+		return apiClient.sendConfirmation(resetPassReq.code, resetPassReq.newPass)
+			.map(ResetPasswordAction.gotResponse)
+			.eraseToEffect()
 	case .failure:
 		return .none
 	}
 }
 
-func handle(_ result: Result<ResetPassSuccess, RequestError>, _ state: inout ResetPasswordState) ->  [Effect<ResetPasswordAction>] {
+func handle(_ result: Result<ResetPassSuccess, RequestError>, _ state: inout ResetPasswordState) -> Effect<ResetPasswordAction, Never> {
 	switch result {
 	case .success:
 		state.loadingState = .gotSuccess
@@ -152,7 +150,7 @@ struct ResetPassword: View {
 	init (store: Store<ResetPasswordState, ResetPasswordAction>,
 				passChangedStore: Store<[LoginNavScreen], PassChangedAction>) {
 		self.store = store
-		self.viewStore = self.store.view
+		self.viewStore = ViewStore(store)
 		self.passChangedStore = passChangedStore
 	}
 	//
@@ -174,21 +172,21 @@ struct ResetPassword: View {
 					TextAndTextField( Texts.resetCode.uppercased(),
 														self.$code,
 														Texts.resetCodePlaceholder,
-														self.viewStore.value.codeValidator)
+														self.viewStore.state.codeValidator)
 					TextAndTextField( Texts.newPass.uppercased(),
 														self.$newPass,
 														Texts.newPassPlaceholder,
-														self.viewStore.value.newPassValidator)
+														self.viewStore.state.newPassValidator)
 					TextAndTextField( Texts.confirmPass.uppercased(),
 														self.$confirmPass,
 														Texts.confirmPassPlaceholder,
-														self.viewStore.value.confirmPassValidator)
+														self.viewStore.state.confirmPassValidator)
 				}.frame(maxWidth: 319)
 				BigButton(text: Texts.changePass) {
 					self.viewStore.send(.changePassTapped(self.code, self.newPass, self.confirmPass))
 				}
 				NavigationLink.emptyHidden(
-					self.viewStore.value.navigation.contains(.passChangedScreen),
+					self.viewStore.state.navigation.contains(.passChangedScreen),
 					self.passChangedView)
 			}
 			.frame(minWidth: 280, maxWidth: 495)
@@ -197,7 +195,7 @@ struct ResetPassword: View {
 				self.viewStore.send(.backBtnTapped)
 			}
 			Spacer()
-		}.loadingView(.constant(self.viewStore.value.loadingState.isLoading),
+		}.loadingView(.constant(self.viewStore.state.loadingState.isLoading),
 									Texts.verifyingCode)
 	}
 	

@@ -29,7 +29,7 @@ public struct CheckEmail: View {
 							resetPassStore: Store<ResetPasswordState, ResetPasswordAction>,
 							passChangedStore: Store<[LoginNavScreen], PassChangedAction>) {
 		self.store = store
-		self.viewStore = self.store.view
+		self.viewStore = ViewStore(store)
 		self.resetPassStore = resetPassStore
 		self.passChangedStore = passChangedStore
 	}
@@ -43,7 +43,7 @@ public struct CheckEmail: View {
 																	btnAction: { self.viewStore.send(.resetPassTapped) }
 			).customBackButton { self.viewStore.send(.backBtnTapped) }
 		NavigationLink.emptyHidden(
-			self.viewStore.value.contains(.resetPassScreen),
+			self.viewStore.state.contains(.resetPassScreen),
 			resetPassView)
 		}
 	}

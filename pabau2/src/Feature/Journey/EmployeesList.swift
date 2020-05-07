@@ -13,8 +13,8 @@ public struct EmployeesListStore: View {
 	}
 	public var body: some View {
 		print("EmployeesListStore body")
-		return EmployeeList(selectedEmployeesIds: self.viewStore.value.selectedEmployeesIds,
-												employees: self.viewStore.value.employees,
+		return EmployeeList(selectedEmployeesIds: self.viewStore.state.selectedEmployeesIds,
+												employees: self.viewStore.state.employees,
 												header: EmployeeHeader {
 													withAnimation {
 														self.viewStore.send(.toggleEmployees)

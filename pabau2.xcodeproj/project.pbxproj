@@ -59,6 +59,8 @@
 		8250D7D1242C575A00F8F3FC /* TransitionLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7CE242C575A00F8F3FC /* TransitionLink.swift */; };
 		8250D7D2242C575A00F8F3FC /* ScalableShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7CF242C575A00F8F3FC /* ScalableShape.swift */; };
 		8250D7D4242C980100F8F3FC /* ChooseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7D3242C980100F8F3FC /* ChooseService.swift */; };
+		8253709624640D520095CEFA /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 8253709524640D520095CEFA /* ComposableArchitecture */; };
+		8253709724640D520095CEFA /* ComposableArchitecture in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 8253709524640D520095CEFA /* ComposableArchitecture */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		825BE7E224361ABD00422910 /* StaffFilterPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825BE7E124361ABD00422910 /* StaffFilterPicker.swift */; };
 		825BE7E424361C4400422910 /* SoundPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825BE7E324361C4400422910 /* SoundPlayer.swift */; };
 		825BE7EA2436226300422910 /* checkIn.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 825BE7E92436226300422910 /* checkIn.mp4 */; };
@@ -359,6 +361,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		8253709824640D520095CEFA /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				8253709724640D520095CEFA /* ComposableArchitecture in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8280D48E2463F3F20077A73F /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -625,6 +638,7 @@
 			files = (
 				8227FBAB240BB43800F653B5 /* Model.framework in Frameworks */,
 				8227FB7C240BACAC00F653B5 /* Util.framework in Frameworks */,
+				8253709624640D520095CEFA /* ComposableArchitecture in Frameworks */,
 				8227FB4B240BAB6A00F653B5 /* PageControl.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1241,6 +1255,7 @@
 				8227FB1A240BAAB600F653B5 /* Sources */,
 				8227FB1B240BAAB600F653B5 /* Frameworks */,
 				8227FB1C240BAAB600F653B5 /* Resources */,
+				8253709824640D520095CEFA /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1251,6 +1266,7 @@
 			);
 			name = Login;
 			packageProductDependencies = (
+				8253709524640D520095CEFA /* ComposableArchitecture */,
 			);
 			productName = Login;
 			productReference = 8227FB1E240BAAB600F653B5 /* Login.framework */;
@@ -2743,6 +2759,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		8253709524640D520095CEFA /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8280D4822463F2BE0077A73F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
+		};
 		827B460C2413C14D00A5975E /* NonEmpty */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 827B46092413C0C300A5975E /* XCRemoteSwiftPackageReference "swift-nonempty" */;

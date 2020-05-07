@@ -54,20 +54,20 @@ struct DoctorSummary: View {
 	var body: some View {
 		GeometryReader { geo in
 			VStack(spacing: 32) {
-				DoctorSummaryStepList(self.viewStore.value.doctor.stepsState) {
+				DoctorSummaryStepList(self.viewStore.state.doctor.stepsState) {
 					self.viewStore.send(.didTouchStep($0))
 				}
 				AddConsentBtns {
 					self.viewStore.send(.didTouchAdd($0))
 				}
 				Spacer()
-				NavigationLink.emptyHidden(self.viewStore.value.doctorSummary.isCheckInMainActive,
+				NavigationLink.emptyHidden(self.viewStore.state.doctorSummary.isCheckInMainActive,
 																	 CheckInMain(store: self.store,
 																							 journeyMode: .doctor))
 					.customBackButton {
 						self.viewStore.send(.didTouchBackFromCheckInMain)
 				}
-				NavigationLink.emptyHidden(self.viewStore.value.doctorSummary.isChooseTreatmentActive,
+				NavigationLink.emptyHidden(self.viewStore.state.doctorSummary.isChooseTreatmentActive,
 																	 ChooseFormList(store: self.store.scope(state: {
 																		$0.chooseTreatments
 																	}, action: {

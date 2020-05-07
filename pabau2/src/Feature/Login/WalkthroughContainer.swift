@@ -25,10 +25,9 @@ public struct WalkthroughContainer: View {
 	}
 	public init(_ store: Store<WalkthroughContainerState, WalkthroughContainerAction>) {
 		self.store = store
-		self.viewStore = self.store
+		self.viewStore = ViewStore(store
 			.scope(state: ViewState.init(state:),
-						 action: { $0 })
-			.view
+						 action: { $0 }))
 		print("WalkthroughContainer init")
 	}
 
@@ -41,7 +40,7 @@ public struct WalkthroughContainer: View {
 				self.viewStore.send(.walkthrough(.onAppear))
 			}
 			NavigationLink.emptyHidden(
-				viewStore.value.isSignInActive,
+				viewStore.state.isSignInActive,
 					LoginView(store: self.store.scope(state: { $0 },
 																						action: { .login($0)}))
 			)
@@ -72,10 +71,10 @@ public enum WalkthroughContainerAction {
 }
 
 public let walkthroughContainerReducer: Reducer<WalkthroughContainerState, WalkthroughContainerAction, LoginEnvironment> = .combine(
-	walkthroughReducer.pullback(value: \WalkthroughContainerState.navigation,
+	walkthroughReducer.pullback(state: \WalkthroughContainerState.navigation,
 					 action: /WalkthroughContainerAction.walkthrough,
 					 environment: { $0 }),
-	loginViewReducer.pullback(value: \WalkthroughContainerState.self,
+	loginViewReducer.pullback(state: \WalkthroughContainerState.self,
 					 action: /WalkthroughContainerAction.login,
 					 environment: { $0 })
 )
