@@ -35,10 +35,9 @@ struct PabauTabBar: View {
 	}
 	init (store: Store<TabBarState, TabBarAction>) {
 		self.store = store
-		self.viewStore = self.store
+		self.viewStore = ViewStore(self.store
 			.scope(state: ViewState.init(state:),
-						 action: { $0 })
-			.view
+						 action: { $0 }))
 		print("PabauTabBar init")
 	}
 	var body: some View {
@@ -94,12 +93,12 @@ struct PabauTabBar: View {
 
 public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> = .combine(
 	settingsReducer.pullback(
-		value: \TabBarState.settings,
+		state: \TabBarState.settings,
 		action: /TabBarAction.settings,
 		environment: { SettingsEnvironment($0) }
 	),
 	journeyContainerReducer.pullback(
-		value: \TabBarState.journey,
+		state: \TabBarState.journey,
 		action: /TabBarAction.journey,
 		environment: {
 			return JourneyEnvironemnt(

@@ -1,7 +1,6 @@
 import Combine
 import ComposableArchitecture
 import SwiftUI
-
 import Login
 import Model
 import Journey
@@ -42,14 +41,14 @@ enum AppAction {
 	case tabBar(TabBarAction)
 }
 
-let appReducer: Reducer<AppState, AppAction, AppEnvironment> = .combine(
-	walkthroughContainerReducer.pullback(
-		value: /AppState.walkthrough,
+let appReducer: Reducer<AppState, AppAction, AppEnvironment> = Reducer.combine(
+	walkthroughContainerReducer.pullbackCp(
+		state: /AppState.walkthrough,
 		action: /AppAction.walkthrough,
 		environment: { LoginEnvironment($0.loginAPI, $0.userDefaults) }
 	),
-	tabBarReducer.pullback(
-		value: /AppState.tabBar,
+	tabBarReducer.pullbackCp(
+		state: /AppState.tabBar,
 		action: /AppAction.tabBar,
 		environment: { TabBarEnvironment($0) }
 	),
@@ -72,10 +71,9 @@ struct ContentView: View {
 	}
 	init(store: Store<AppState, AppAction>) {
 		self.store = store
-		self.viewStore = self.store
+		self.viewStore = ViewStore(self.store
 			.scope(state: State.init,
-						 action: { $0 })
-			.view
+						 action: { $0 }))
 		print("ContentView init")
 	}
 	var body: some View {
@@ -115,10 +113,9 @@ struct LoginContainer: View {
 	}
 	public init (store: Store<WalkthroughContainerState, WalkthroughContainerAction>) {
 		self.store = store
-		self.viewStore = self.store
+		self.viewStore = ViewStore(self.store
 			.scope(state: ViewState.init(state:),
-						 action: { $0 })
-			.view
+						 action: { $0 }))
 		print("LoginContainer init")
 	}
 
@@ -157,4 +154,21 @@ let globalReducer = Reducer<AppState, AppAction, AppEnvironment> { state, action
 		}
 	}
 	return .none
+}
+
+extension Reducer {
+	public func pullbackCp<GlobalState, GlobalAction, GlobalEnvironment>(
+		state: CasePath<GlobalState, State>,
+		action: CasePath<GlobalAction, Action>,
+		environment: @escaping (GlobalEnvironment) -> Environment
+	) -> Reducer<GlobalState, GlobalAction, GlobalEnvironment> {
+		.init { globalValue, globalAction, globalEnvironment in
+			guard let localAction = action.extract(from: globalAction) else { return .none }
+			guard let localValue = state.extract(from: globalValue) else { return .none }
+			var varLocalValue = localValue
+			let localEffect = self(&varLocalValue, localAction, environment(globalEnvironment))
+			globalValue = state.embed(varLocalValue)
+			return localEffect.map(action.embed)
+		}
+	}
 }
