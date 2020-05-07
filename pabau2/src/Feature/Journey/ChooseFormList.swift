@@ -37,9 +37,9 @@ let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, JourneyEn
 			state.templatesLoadingState = .gotError
 		}
 	case .onAppear(let formType):
-		return [environment.apiClient.getTemplates(formType)
+		return environment.apiClient.getTemplates(formType)
 			.map(ChooseFormAction.gotResponse)
-			.eraseToEffect()]
+			.eraseToEffect()
 	}
 	return .none
 }
@@ -70,7 +70,7 @@ struct ChooseTreatmentNote: View {
 	@ObservedObject var viewStore: ViewStore<CheckInContainerState, CheckInMainAction>
 	init (store: Store<CheckInContainerState, CheckInMainAction>) {
 		self.store = store
-		self.viewStore = self.store.view
+		self.viewStore = ViewStore(store)
 	}
 
 	var body: some View {
@@ -96,10 +96,9 @@ struct ChooseFormList: View {
 				mode: ChooseFormMode) {
 		self.mode = mode
 		self.store = store
-		self.viewStore = self.store
+		self.viewStore = ViewStore(self.store
 			.scope(state: { ChooseFormList.ViewState.init($0) } ,
-						 action: { $0 })
-			.view
+						 action: { $0 }))
 		UITableView.appearance().separatorStyle = .none
 	}
 

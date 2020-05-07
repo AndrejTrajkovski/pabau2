@@ -67,21 +67,6 @@ struct PickerReducer<T: ListPickerElement> {
 	}
 }
 
-func pickerContainerReducer<T: ListPickerElement>(state: inout PickerContainerState<T>,
-																									action: PickerContainerAction<T>,
-																									environment: JourneyEnvironemnt) -> [Effect<PickerContainerAction<T>>] {
-	switch action {
-	case .didSelectPicker:
-		state.isActive = true
-	case .didChooseItem(let id):
-		state.isActive = false
-		state.chosenItemId = id
-	case .backBtnTap:
-		state.isActive = false
-	}
-	return .none
-}
-
 let addAppTapBtnReducer = Reducer<AddAppointmentState,
 	AddAppointmentAction, JourneyEnvironemnt> { state, action, _ in
 		switch action {
@@ -107,10 +92,10 @@ let addAppointmentReducer: Reducer<AddAppointmentState,
 			state: \AddAppointmentState.termins,
 			action: /AddAppointmentAction.termins,
 			environment: { $0 }),
-		chooseServiceReducer.pullback(
-						 value: \AddAppointmentState.services,
-						 action: /AddAppointmentAction.services,
-						 environment: { $0 }),
+	chooseServiceReducer.pullback(
+			 state: \AddAppointmentState.services,
+			 action: /AddAppointmentAction.services,
+			 environment: { $0 }),
 		PickerReducer<Duration>().reducer.pullback(
 			state: \AddAppointmentState.durations,
 			action: /AddAppointmentAction.durations,
@@ -150,7 +135,7 @@ public struct AddAppointment: View {
 	@ObservedObject var viewStore: ViewStore<AddAppointmentState, AddAppointmentAction>
 	public init(store: Store<AddAppointmentState, AddAppointmentAction>) {
 		self.store = store
-		self.viewStore = self.store.view
+		self.viewStore = ViewStore(store)
 	}
 
 	public var body: some View {
@@ -181,7 +166,7 @@ struct Section1: View {
 	@ObservedObject var viewStore: ViewStore<AddAppointmentState, AddAppointmentAction>
 	init (store: Store<AddAppointmentState, AddAppointmentAction>) {
 		self.store = store
-		self.viewStore = self.store.view
+		self.viewStore = ViewStore(store)
 	}
 	var body: some View {
 		VStack (spacing: 24.0) {
@@ -207,7 +192,7 @@ struct Section2: View {
 	@ObservedObject var viewStore: ViewStore<AddAppointmentState, AddAppointmentAction>
 	init (store: Store<AddAppointmentState, AddAppointmentAction>) {
 		self.store = store
-		self.viewStore = self.store.view
+		self.viewStore = ViewStore(store)
 	}
 	var body: some View {
 		VStack(alignment: .leading, spacing: 24.0) {
@@ -258,7 +243,7 @@ struct AddAppSections: View {
 	@ObservedObject public var viewStore: ViewStore<AddAppointmentState, AddAppointmentAction>
 	init (store: Store<AddAppointmentState, AddAppointmentAction>) {
 		self.store = store
-		self.viewStore = self.store.view
+		self.viewStore = ViewStore(store)
 	}
 	var body: some View {
 		VStack(alignment: .leading, spacing: 32) {
@@ -324,7 +309,7 @@ struct PickerContainerStore<Content: View, T: ListPickerElement>: View {
 										 store: Store<PickerContainerState<T>, PickerContainerAction<T>>) {
 		self.content = content
 		self.store = store
-		self.viewStore = self.store.view
+		self.viewStore = ViewStore(store)
 	}
 	var body: some View {
 		PickerContainer.init(content: content,

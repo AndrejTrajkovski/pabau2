@@ -8,11 +8,9 @@ public struct JourneyNavigationView: View {
 	struct ViewState: Equatable { init() {} }
 	public init(_ store: Store<JourneyState, JourneyContainerAction>) {
 		self.store = store
-		self.viewStore = self.store
+		self.viewStore = ViewStore(store
 			.scope(state: {_ in ViewState()},
-						 action: { $0 })
-			.view
-		print("JourneyNavigationView init")
+						 action: { $0 }))
 	}
 	public var body: some View {
 		print("JourneyNavigationView body")

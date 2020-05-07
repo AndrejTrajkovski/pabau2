@@ -14,27 +14,27 @@ public enum CheckInAnimationAction {
 
 public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction, JourneyEnvironemnt> = .combine(
 	formsParentReducer.pullback(
-		value: \CheckInContainerState.self,
+		state: \CheckInContainerState.self,
 		action: /CheckInContainerAction.main,
 		environment: { $0 }
 	),
 	chooseFormListReducer.pullback(
-		value: \CheckInContainerState.chooseTreatments,
+		state: \CheckInContainerState.chooseTreatments,
 		action: /CheckInContainerAction.main..CheckInMainAction.chooseTreatments,
 		environment: { $0 }
 	),
 	chooseFormListReducer.pullback(
-		value: \CheckInContainerState.chooseTreatments,
+		state: \CheckInContainerState.chooseTreatments,
 		action: /CheckInContainerAction.main..CheckInMainAction.chooseTreatments,
 		environment: { $0 }
 	),
 	doctorSummaryNavigator.pullback(
-		value: \CheckInContainerState.self,
+		state: \CheckInContainerState.self,
 		action: /CheckInContainerAction.main..CheckInMainAction.chooseTreatments,
 		environment: { $0 }
 	),
 	doctorSummaryReducer.pullback(
-		value: \CheckInContainerState.doctorSummary,
+		state: \CheckInContainerState.doctorSummary,
 		action: /CheckInContainerAction.main..CheckInMainAction.doctorSummary,
 		environment: { $0 }
 		)

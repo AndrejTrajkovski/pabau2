@@ -19,7 +19,7 @@ struct CheckInMain: View {
 			 journeyMode: JourneyMode) {
 		self.journeyMode = journeyMode
 		self.store = store
-		self.viewStore = self.store
+		self.viewStore = ViewStore(self.store
 			.scope(state: {
 				switch journeyMode {
 				case .patient:
@@ -29,7 +29,7 @@ struct CheckInMain: View {
 				}
 			},
 			action: { $0 }
-		).view
+		))
 	}
 
 	var body: some View {
@@ -185,7 +185,7 @@ struct StepForms: View {
 			 journeyMode: JourneyMode) {
 		self.store = store
 		self.journeyMode = journeyMode
-		self.viewStore = self.store
+		self.viewStore = ViewStore(self.store
 			.scope(state: {
 				switch journeyMode {
 				case .patient:
@@ -194,14 +194,14 @@ struct StepForms: View {
 					return $0.doctor
 				}
 			},
-						 action: {
-							switch journeyMode {
-							case .patient:
-								return .patient($0)
-							case .doctor:
-								return .doctor($0)
-							}
-			}).view
+			 action: {
+				switch journeyMode {
+				case .patient:
+					return .patient($0)
+				case .doctor:
+					return .doctor($0)
+				}
+			}))
 	}
 
 	var body: some View {

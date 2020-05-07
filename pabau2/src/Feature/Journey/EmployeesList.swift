@@ -8,7 +8,7 @@ public struct EmployeesListStore: View {
 	@ObservedObject var viewStore: ViewStore<EmployeesState, EmployeesAction>
 	public init(_ store: Store<EmployeesState, EmployeesAction>) {
 		self.store = store
-		self.viewStore = self.store.view
+		self.viewStore = ViewStore(store)
 		print("EmployeesListStore init")
 	}
 	public var body: some View {

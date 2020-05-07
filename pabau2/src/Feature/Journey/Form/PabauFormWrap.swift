@@ -30,7 +30,7 @@ struct PabauFormWrap: View {
 			 journeyMode: JourneyMode) {
 		self.store = store
 		self.journeyMode = journeyMode
-		self.viewStore = self.store.scope(
+		self.viewStore = ViewStore(store.scope(
 			state: {
 				if ($0.patient.forms.count > selectedFormIndex) {
 					let formState = $0.patient.forms[selectedFormIndex]
@@ -46,7 +46,7 @@ struct PabauFormWrap: View {
 				case .doctor:
 					return .doctor(.action2(Indexed(index: selectedFormIndex, value: $0)))
 				}
-		}).view
+		}))
 //		self.viewStore = store.scope(
 //			value: State.init(state:),
 //			action: { $0 }).view

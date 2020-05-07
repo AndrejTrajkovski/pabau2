@@ -76,7 +76,7 @@ struct ChooseService: View {
 	@ObservedObject var viewStore: ViewStore<ChooseServiceState, ChooseServiceAction>
 	init (store: Store<ChooseServiceState, ChooseServiceAction>) {
 		self.store = store
-		self.viewStore = self.store.view
+		self.viewStore = ViewStore(store)
 		UITableViewHeaderFooterView.appearance().tintColor = UIColor.clear
 	}
 

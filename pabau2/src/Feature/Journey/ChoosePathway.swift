@@ -91,10 +91,9 @@ public struct ChoosePathway: View {
 
 	init(store: Store<ChoosePathwayState, ChoosePathwayContainerAction>) {
 		self.store = store
-		self.viewStore = self.store
+		self.viewStore = ViewStore(self.store
 			.scope(state: State.init(state:),
-						 action: { $0 })
-			.view
+						 action: { $0 }))
 		print("ChoosePathway init")
 	}
 	public var body: some View {

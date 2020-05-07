@@ -31,7 +31,7 @@ public struct Settings: View {
 	@ObservedObject var viewStore: ViewStore<SettingsState, SettingsAction>
 	public init (store: Store<SettingsState, SettingsAction>) {
 		self.store = store
-		self.viewStore = self.store.view
+		self.viewStore = ViewStore(store)
 	}
 	public var body: some View {
 		VStack {

@@ -42,15 +42,13 @@ public enum DoctorSummaryAction {
 
 struct DoctorSummary: View {
 	let store: Store<CheckInContainerState, CheckInMainAction>
+	@ObservedObject var viewStore: ViewStore<CheckInContainerState, DoctorSummaryAction>
 	init (store: Store<CheckInContainerState, CheckInMainAction>) {
 		self.store = store
-		self.viewStore = store
+		self.viewStore = ViewStore(store
 			.scope(state: { $0 },
-						 action: { .doctorSummary($0)})
-			.view(removeDuplicates: ==)
+						 action: { .doctorSummary($0)}))
 	}
-
-	@ObservedObject var viewStore: ViewStore<CheckInContainerState, DoctorSummaryAction>
 	var body: some View {
 		GeometryReader { geo in
 			VStack(spacing: 32) {
@@ -78,7 +76,7 @@ struct DoctorSummary: View {
 						self.viewStore.send(.didTouchBackFrom(.treatmentNotes))
 				}
 			}.frame(width: geo.size.width * 0.75)
-				.journeyBase(self.store.view.value.journey, .long)
+				.journeyBase(self.viewStore.state.journey, .long)
 		}
 	}
 }

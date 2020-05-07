@@ -22,7 +22,7 @@ public enum EmployeesAction {
 
 let employeeListReducer = Reducer<EmployeesState, EmployeesAction, JourneyEnvironemnt> { state, action, env in
 	func handle(result: Result<[Employee], RequestError>,
-							state: inout EmployeesState) -> [Effect<EmployeesAction>] {
+							state: inout EmployeesState) -> Effect<EmployeesAction, Never> {
 		switch result {
 		case .success(let employees):
 			state.employees = employees
@@ -47,11 +47,9 @@ let employeeListReducer = Reducer<EmployeesState, EmployeesAction, JourneyEnviro
 		state.isShowingEmployees.toggle()
 	case .loadEmployees:
 		state.loadingState = .loading
-		return [
-			env.apiClient.getEmployees()
-				.map {.gotResponse($0)}
-				.eraseToEffect()
-		]
+		return env.apiClient.getEmployees()
+			.map {.gotResponse($0)}
+			.eraseToEffect()
 	}
 	return .none
 }
@@ -95,27 +93,27 @@ public let journeyContainerReducer: Reducer<JourneyState, JourneyContainerAction
 			action: /JourneyContainerAction.choosePathway..ChoosePathwayContainerAction.chooseConsent,
 			environment: { $0 }),
 		journeyReducer.pullback(
-					 value: \JourneyState.self,
+					 state: \JourneyState.self,
 					 action: /JourneyContainerAction.journey,
 					 environment: { $0 }),
 		employeeListReducer.pullback(
-					 value: \JourneyState.employeesState,
+					 state: \JourneyState.employeesState,
 					 action: /JourneyContainerAction.employees,
 					 environment: { $0 }),
 		addAppointmentReducer.pullback(
-					 value: \JourneyState.addAppointment,
+					 state: \JourneyState.addAppointment,
 					 action: /JourneyContainerAction.addAppointment,
 					 environment: { $0 }),
 		choosePathwayContainerReducer.pullback(
-					 value: \JourneyState.choosePathway,
+					 state: \JourneyState.choosePathway,
 					 action: /JourneyContainerAction.choosePathway,
 					 environment: { $0 }),
 		checkInReducer.optional.pullback(
-					 value: \JourneyState.checkIn,
+					 state: \JourneyState.checkIn,
 					 action: /JourneyContainerAction.checkIn,
 					 environment: { $0 }),
 		checkInMiddleware.pullback(
-					 value: \JourneyState.self,
+					 state: \JourneyState.self,
 					 action: /JourneyContainerAction.checkIn..CheckInContainerAction.main,
 					 environment: { $0 })
 )
@@ -127,11 +125,9 @@ let journeyReducer = Reducer<JourneyState, JourneyAction, JourneyEnvironemnt> { 
 	case .selectedDate(let date):
 		state.selectedDate = date
 		state.loadingState = .loading
-		return [
-			environment.apiClient.getJourneys(date: date)
+		return environment.apiClient.getJourneys(date: date)
 				.map(JourneyAction.gotResponse)
 				.eraseToEffect()
-		]
 	case .addAppointmentTap:
 		state.addAppointment.isShowingAddAppointment = true
 	case .addAppointmentDismissed:
@@ -154,12 +150,10 @@ let journeyReducer = Reducer<JourneyState, JourneyAction, JourneyEnvironemnt> { 
 		state.selectedJourney = nil
 	case .loadJourneys:
 		state.loadingState = .loading
-		return [
-			environment.apiClient
+		return environment.apiClient
 				.getJourneys(date: Date())
 				.map(JourneyAction.gotResponse)
 				.eraseToEffect()
-		]
 	}
 	return .none
 }
@@ -183,10 +177,9 @@ public struct JourneyContainerView: View {
 	}
 	public init(_ store: Store<JourneyState, JourneyContainerAction>) {
 		self.store = store
-		self.viewStore = self.store
+		self.viewStore = ViewStore(self.store
 			.scope(state: ViewState.init(state:),
-						 action: { $0 })
-			.view
+						 action: { $0 }))
 		print("JourneyContainerView init")
 	}
 	public var body: some View {
