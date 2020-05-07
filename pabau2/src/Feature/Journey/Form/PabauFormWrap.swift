@@ -1,8 +1,23 @@
 import Model
 import SwiftUI
 import ComposableArchitecture
-
 import Util
+
+public typealias Indexed<T> = (Int, T)
+
+//public struct Indexed<T> {
+//	let idx: Int
+//	let value: T
+//	
+//	public init (_ idx: Int, _ value: T) {
+//		self.idx = idx
+//		self.value = value
+//	}
+//	
+//	public var asTuple: (Int, T) {
+//		return (idx, value)
+//	}
+//}
 
 struct PabauFormWrap: View {
 	let store: Store<CheckInContainerState, CheckInMainAction>
@@ -42,9 +57,9 @@ struct PabauFormWrap: View {
 			action: {
 				switch journeyMode {
 				case .patient:
-					return .patient(.action2(Indexed(index: selectedFormIndex, value: $0)))
+					return .patient(.action2(Indexed(selectedFormIndex, $0)))
 				case .doctor:
-					return .doctor(.action2(Indexed(index: selectedFormIndex, value: $0)))
+					return .doctor(.action2(Indexed(selectedFormIndex, $0)))
 				}
 		}))
 //		self.viewStore = store.scope(

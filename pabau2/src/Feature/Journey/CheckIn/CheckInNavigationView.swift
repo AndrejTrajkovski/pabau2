@@ -55,11 +55,12 @@ public let doctorSummaryNavigator = Reducer<CheckInContainerState, ChooseFormAct
 }
 
 public let formsParentReducer: Reducer<CheckInContainerState, CheckInMainAction, JourneyEnvironemnt> = .combine(
-	indexed(reducer: stepFormsReducer2,
-					\CheckInContainerState.patient.forms,
-					/CheckInMainAction.patient..StepFormsAction.action2, { $0 }),
+	stepFormsReducer2.forEach(
+		state: \CheckInContainerState.patient.forms,
+		action: /CheckInMainAction.patient..StepFormsAction.action2,
+		environment: { $0 }),
 	stepFormsReducer.pullback(
-		value: \CheckInContainerState.patient,
+		state: \CheckInContainerState.patient,
 		action: /CheckInMainAction.patient,
 		environment: { $0 })
 )

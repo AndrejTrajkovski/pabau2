@@ -8,7 +8,7 @@ public struct FormStructure: Codable, Equatable, Hashable {
 	public static var defaultEmpty: FormStructure {
 		FormStructure(formStructure: [])
 	}
-
+	
 	public var formStructure: [CSSField]
 	public init(formStructure: [CSSField]) {
 		self.formStructure = formStructure

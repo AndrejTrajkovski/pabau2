@@ -61,6 +61,8 @@
 		8250D7D4242C980100F8F3FC /* ChooseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7D3242C980100F8F3FC /* ChooseService.swift */; };
 		8253709624640D520095CEFA /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 8253709524640D520095CEFA /* ComposableArchitecture */; };
 		8253709724640D520095CEFA /* ComposableArchitecture in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 8253709524640D520095CEFA /* ComposableArchitecture */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		8253709C246497800095CEFA /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 8253709B246497800095CEFA /* ComposableArchitecture */; };
+		8253709D246497800095CEFA /* ComposableArchitecture in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 8253709B246497800095CEFA /* ComposableArchitecture */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		825BE7E224361ABD00422910 /* StaffFilterPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825BE7E124361ABD00422910 /* StaffFilterPicker.swift */; };
 		825BE7E424361C4400422910 /* SoundPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825BE7E324361C4400422910 /* SoundPlayer.swift */; };
 		825BE7EA2436226300422910 /* checkIn.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 825BE7E92436226300422910 /* checkIn.mp4 */; };
@@ -372,6 +374,17 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		8253709E246497800095CEFA /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				8253709D246497800095CEFA /* ComposableArchitecture in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8280D48E2463F3F20077A73F /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -664,6 +677,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8253709C246497800095CEFA /* ComposableArchitecture in Frameworks */,
 				827B45992411368F00A5975E /* FSCalendarSwiftUI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1322,6 +1336,7 @@
 				827B45762411368100A5975E /* Sources */,
 				827B45772411368100A5975E /* Frameworks */,
 				827B45782411368100A5975E /* Resources */,
+				8253709E246497800095CEFA /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1332,6 +1347,7 @@
 			);
 			name = Journey;
 			packageProductDependencies = (
+				8253709B246497800095CEFA /* ComposableArchitecture */,
 			);
 			productName = Journey;
 			productReference = 827B457A2411368100A5975E /* Journey.framework */;
@@ -2760,6 +2776,11 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		8253709524640D520095CEFA /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8280D4822463F2BE0077A73F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
+		};
+		8253709B246497800095CEFA /* ComposableArchitecture */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8280D4822463F2BE0077A73F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
 			productName = ComposableArchitecture;
