@@ -1,7 +1,7 @@
 import SwiftUI
 import Model
 import ComposableArchitecture
-import CasePaths
+
 import Util
 
 public struct Duration: ListPickerElement {

@@ -1,5 +1,5 @@
 import Model
-import CasePaths
+import ComposableArchitecture
 
 enum JourneyMode: Equatable {
 	case patient

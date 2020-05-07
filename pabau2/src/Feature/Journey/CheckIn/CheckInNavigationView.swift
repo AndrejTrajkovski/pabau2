@@ -1,7 +1,7 @@
 import SwiftUI
 import ComposableArchitecture
 import Model
-import CasePaths
+
 
 public enum CheckInContainerAction {
 	case animation(CheckInAnimationAction)

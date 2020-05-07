@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 import ComposableArchitecture
-import CasePaths
+
 
 open class RequestBuilder<T> {
 	var credential: URLCredential?
@@ -19,14 +19,14 @@ open class RequestBuilder<T> {
 		self.headers = headers
 	}
 
-	func effect<DomainError: Error>(_ toDomainError: CasePath<DomainError, RequestError>) -> Effect<Result<T, DomainError>> {
+	func effect<DomainError: Error>(_ toDomainError: CasePath<DomainError, RequestError>) -> EffectWithResult<T, DomainError> {
 		return self.publisher()
 			.map { Result<T, DomainError>.success($0)}
 			.catch { Just(Result<T, DomainError>.failure(toDomainError.embed($0)))}
 			.eraseToEffect()
 	}
 
-	func effect() -> Effect<Result<T, RequestError>> {
+	func effect() -> EffectWithResult<T, RequestError> {
 		return self.publisher()
 			.map { Result<T, RequestError>.success($0)}
 			.catch { Just(Result<T, RequestError>.failure($0))}

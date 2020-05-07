@@ -1,9 +1,8 @@
 import ComposableArchitecture
 import Combine
-import CasePaths
 
 public struct LoginMockAPI: MockAPI, LoginAPI {
-	public func resetPass(_ email: String) -> Effect<Result<ForgotPassSuccess, ForgotPassError>> {
+	public func resetPass(_ email: String) -> EffectWithResult<ForgotPassSuccess, ForgotPassError> {
 		mockSuccess(ForgotPassSuccess())
 	}
 
@@ -12,19 +11,19 @@ public struct LoginMockAPI: MockAPI, LoginAPI {
 		self.delay = delay
 	}
 
-	public func sendConfirmation(_ code: String, _ pass: String) -> Effect<Result<ResetPassSuccess, Error>> {
+	public func sendConfirmation(_ code: String, _ pass: String) -> EffectWithResult<ResetPassSuccess, Error> {
 		mockSuccess(ResetPassSuccess())
 	}
 
-	public func login(_ username: String, password: String) -> Effect<Result<User, LoginError>> {
+	public func login(_ username: String, password: String) -> EffectWithResult<User, LoginError> {
 		mockSuccess(User(1, "Andrej"))
 	}
 
-	public func sendConfirmation(_ code: String, _ pass: String) -> Effect<Result<ResetPassSuccess, RequestError>> {
+	public func sendConfirmation(_ code: String, _ pass: String) -> EffectWithResult<ResetPassSuccess, RequestError> {
 		mockSuccess(ResetPassSuccess())
 	}
 
-	public func resetPass(_ email: String) -> Effect<Result<ResetPassSuccess, RequestError>> {
+	public func resetPass(_ email: String) -> EffectWithResult<ResetPassSuccess, RequestError> {
 		mockSuccess(ResetPassSuccess())
 	}
 }

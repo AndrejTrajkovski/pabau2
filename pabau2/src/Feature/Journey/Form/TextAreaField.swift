@@ -2,7 +2,7 @@ import SwiftUI
 import ComposableArchitecture
 import Model
 import Util
-import CasePaths
+
 
 let textAreaFieldReducer = Reducer<TextArea, TextAreaFieldAction, JourneyEnvironemnt> { state, action, _ in
 	switch action {

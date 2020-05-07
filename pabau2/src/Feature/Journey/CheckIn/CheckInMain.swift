@@ -52,21 +52,22 @@ struct CheckInMain: View {
 
 struct TopView: View {
 	var body: some View {
-		ZStack {
-			XButton(onTap: { self.viewStore.send(.closeBtnTap) })
-				.padding()
-				.exploding(.topLeading)
-			Spacer()
-			JourneyProfileView(style: .short,
-												 viewState: .init(journey: self.store.view.value.journey))
-				.padding()
-				.exploding(.top)
-			Spacer()
-			RibbonView(completedNumberOfSteps: self.viewStore.value.forms.filter(\.isComplete).count,
-								 totalNumberOfSteps: self.viewStore.value.forms.count)
-				.offset(x: -80, y: -60)
-				.exploding(.topTrailing)
-		}.frame(height: 168.0)
+		EmptyView()
+//		ZStack {
+//			XButton(onTap: { self.viewStore.send(.closeBtnTap) })
+//				.padding()
+//				.exploding(.topLeading)
+//			Spacer()
+//			JourneyProfileView(style: .short,
+//												 viewState: .init(journey: self.store.view.value.journey))
+//				.padding()
+//				.exploding(.top)
+//			Spacer()
+//			RibbonView(completedNumberOfSteps: self.viewStore.value.forms.filter(\.isComplete).count,
+//								 totalNumberOfSteps: self.viewStore.value.forms.count)
+//				.offset(x: -80, y: -60)
+//				.exploding(.topTrailing)
+//		}.frame(height: 168.0)
 	}
 }
 

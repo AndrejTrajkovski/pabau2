@@ -1,15 +1,15 @@
 import ComposableArchitecture
 
 public struct JourneyLiveAPI: JourneyAPI, LiveAPI {
-	public func getEmployees() -> Effect<Result<[Employee], RequestError>> {
+	public func getEmployees() -> Effect<Result<[Employee], RequestError>, Never> {
 		fatalError()
 	}
 
-	public func getTemplates(_ type: FormType) -> Effect<Result<[FormTemplate], RequestError>> {
+	public func getTemplates(_ type: FormType) -> Effect<Result<[FormTemplate], RequestError>, Never> {
 		fatalError()
 	}
 
-	public func getJourneys(date: Date) -> Effect<Result<[Journey], RequestError>> {
+	public func getJourneys(date: Date) -> Effect<Result<[Journey], RequestError>, Never> {
 		getJourneys(date: date).effect()
 	}
 

@@ -1,8 +1,8 @@
-import CasePaths
+
 import ComposableArchitecture
 
 struct LiveLoginAPI: LoginAPI, LiveAPI {
-	func resetPass(_ email: String) -> Effect<Result<ForgotPassSuccess, ForgotPassError>> {
+	func resetPass(_ email: String) -> EffectWithResult<ForgotPassSuccess, ForgotPassError> {
 		resetPass(email).effect(/ForgotPassError.requestError)
 	}
 
@@ -10,11 +10,11 @@ struct LiveLoginAPI: LoginAPI, LiveAPI {
 	let route: String = "login"
 	let requestBuilderFactory: RequestBuilderFactory = RequestBuilderFactoryImpl()
 
-	func sendConfirmation(_ code: String, _ pass: String) -> Effect<Result<ResetPassSuccess, RequestError>> {
+	func sendConfirmation(_ code: String, _ pass: String) -> EffectWithResult<ResetPassSuccess, RequestError> {
 		sendConfirmation(code, pass).effect()
 	}
 
-	func login(_ username: String, password: String) -> Effect<Result<User, LoginError>> {
+	func login(_ username: String, password: String) -> EffectWithResult<User, LoginError> {
 		login(username, password: password).effect(/LoginError.requestError)
 	}
 
