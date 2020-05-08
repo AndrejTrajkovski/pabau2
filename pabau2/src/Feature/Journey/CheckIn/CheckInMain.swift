@@ -10,6 +10,7 @@ public enum CheckInMainAction {
 	case doctor(StepFormsAction)
 	case chooseTreatments(ChooseFormAction)
 	case doctorSummary(DoctorSummaryAction)
+	case completePatient
 }
 
 struct CheckInMain: View {

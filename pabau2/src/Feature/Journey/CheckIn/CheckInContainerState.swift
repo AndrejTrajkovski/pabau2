@@ -93,6 +93,7 @@ public struct CheckInContainerState: Equatable {
 	//	var doctorForms: [MetaFormAndStatus]
 	//	var selectedFormIndex: Int
 	//NAVIGATION
+	var isHandBackDeviceActive: Bool = false
 	var isChooseConsentActive: Bool = false
 	var isChooseTreatmentActive: Bool = false
 	var isCheckInMainActive: Bool = false
