@@ -141,6 +141,7 @@ extension JourneyMockAPI {
 					), title: "Radio title"
 				)
 			])),
+		
 		FormTemplate(id: 2, name: "Consent - Botox", formType: .consent,
 							 ePaper: false,
 							 formStructure:
@@ -201,18 +202,6 @@ extension JourneyMockAPI {
 							 ePaper: false,
 							 formStructure:
 		FormStructure(formStructure: [
-			CSSField(id: 8,
-							 cssClass: .input_text(InputText(text: "input text 1")),
-							 title: "Insert some text"
-			),
-			CSSField(id: 6,
-							 cssClass: .signature(Signature()),
-							 title: "Patient signature"
-			),
-			CSSField(id: 9,
-							 cssClass: .input_text(InputText(text: "input text 2")),
-							 title: "Insert some text 2"
-			),
 			CSSField(id: 7,
 							 cssClass: .signature(Signature()),
 							 title: "Practitioner signature"
@@ -224,13 +213,13 @@ extension JourneyMockAPI {
 			CSSField(id: 1, cssClass:
 				.checkboxes(
 					[
+						CheckBoxChoice(3, "Have you ever suffered from an allergic reaction to lignocaine / lidocaine?", false),
 						CheckBoxChoice(1, "Are you currently receiving any medical treatment at present?", false),
 						CheckBoxChoice(2, "Have you received Roaccutane/Accutane treatment in the past 12 months?", false),
-						CheckBoxChoice(3, "Have you ever suffered from an allergic reaction to lignocaine / lidocaine?", false),
-						CheckBoxChoice(4, "Do you have a history of anaphylactic shock (severe allergic reactions) Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)? tic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions) tic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)Do you have a history of anaphylactic shock (severe allergic reactions)", false),
-						 CheckBoxChoice(5, "Have you undergone any laser skin resurfacing, skin peel or dermabrasion?", false),
-						 CheckBoxChoice(6, "Do you have or have you ever had any form of skin cancer?", false),
-						 CheckBoxChoice(7, "Have you been treated with any dermal fillers on either your face and/or body?", false)
+						CheckBoxChoice(4, "Do you have a history of ?", false),
+						CheckBoxChoice(6, "Do you have or have you ever had any form of skin cancer?", false),
+						CheckBoxChoice(7, "Have you been treated with any dermal fillers on either your face and/or body?", false),
+						CheckBoxChoice(5, "Have you undergone any laser skin resurfacing, skin peel or dermabrasion?", false)
 					]
 				),
 				title: "Choose please"
@@ -255,6 +244,18 @@ extension JourneyMockAPI {
 																			 RadioChoice(2, "radio choice 6")],
 																			1)
 				), title: "Radio title"
+			),
+			CSSField(id: 8,
+							 cssClass: .input_text(InputText(text: "input text 1")),
+							 title: "Insert some text"
+			),
+			CSSField(id: 6,
+							 cssClass: .signature(Signature()),
+							 title: "Patient signature"
+			),
+			CSSField(id: 9,
+							 cssClass: .input_text(InputText(text: "input text 2")),
+							 title: "Insert some text 2"
 			)
 		])),
 		FormTemplate(id: 4, name: "Vaccines", formType: .consent,

@@ -47,6 +47,7 @@ let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, JourneyEn
 public enum ChooseFormMode {
 	case consents
 	case treatmentNotes
+	
 	var btnTitle: String {
 		switch self {
 		case .consents:
@@ -55,6 +56,7 @@ public enum ChooseFormMode {
 			return Texts.proceed
 		}
 	}
+	
 	var formType: FormType {
 		switch self {
 		case .consents:
@@ -81,6 +83,9 @@ struct ChooseTreatmentNote: View {
 			NavigationLink.emptyHidden(self.viewStore.state.isDoctorSummaryActive,
 																 DoctorSummary(store: self.store)
 																	.navigationBarBackButtonHidden(true)
+																	.navigationBarItems(leading:
+																		XButton(onTap: { self.viewStore.send(.closeBtnTap)
+																		}))
 			)
 		}
 	}

@@ -229,11 +229,10 @@ struct StepForms: View {
 				if self.keyboardHandler.keyboardHeight == 0 &&
 					!self.viewStore.state.isOnCompleteStep {
 					BigButton(text: Texts.next) {
-						let idx = self.viewStore.state.selectedIndex
 						self.viewStore.send(.didSelectNextForm)
 						self.viewStore.send(.action2(
-							Indexed<StepFormsAction2>(idx,
-																				.didFinishTemplate(self.viewStore.state.forms[idx]))))
+							Indexed<StepFormsAction2>(self.viewStore.state.selectedIndex,
+																				.didFinishTemplate(self.viewStore.state.forms[self.viewStore.state.selectedIndex]))))
 					}
 					.frame(width: 230)
 					.padding(8)

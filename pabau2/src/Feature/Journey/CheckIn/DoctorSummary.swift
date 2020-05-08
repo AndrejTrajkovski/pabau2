@@ -100,7 +100,7 @@ struct AddFormButton: View {
 	
 	init(mode: ChooseFormMode, action: @escaping (ChooseFormMode) -> Void) {
 		self.mode = mode
-		self.btnTxt = mode == .consents ? "Add Consent" : "Add Treatment Not"
+		self.btnTxt = mode == .consents ? "Add Consent" : "Add Treatment Note"
 		self.imageName = mode == .consents ? "ico-journey-consent" : "ico-journey-treatment-notes"
 		self.onSelect = action
 	}
@@ -109,7 +109,7 @@ struct AddFormButton: View {
 		Button.init(action: { self.onSelect(self.mode) }, label: {
 			HStack {
 				Image(imageName)
-				Text(mode.btnTitle)
+				Text(btnTxt)
 					.font(Font.system(size: 16.0, weight: .bold))
 					.frame(minWidth: 0, maxWidth: .infinity)
 			}
@@ -130,10 +130,10 @@ struct DoctorSummaryStepList: View {
 	}
 
 	var body: some View {
-		ForEach(0..<self.stepsVMs.count) { idx in
+		ForEach(self.stepsVMs, id: \.stepType) { step in
 			VStack(spacing: 0) {
-				DoctorSummaryRow(step: self.stepsVMs[idx])
-					.onTapGesture { self.onSelect(idx) }
+				DoctorSummaryRow(step: step)
+					.onTapGesture { self.onSelect(self.stepsVMs.firstIndex(of: step)!) }
 				Divider()
 			}
 		}
