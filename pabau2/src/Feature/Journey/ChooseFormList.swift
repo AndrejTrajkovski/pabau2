@@ -47,7 +47,7 @@ let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, JourneyEn
 public enum ChooseFormMode {
 	case consents
 	case treatmentNotes
-	
+
 	var btnTitle: String {
 		switch self {
 		case .consents:
@@ -56,7 +56,7 @@ public enum ChooseFormMode {
 			return Texts.proceed
 		}
 	}
-	
+
 	var formType: FormType {
 		switch self {
 		case .consents:
@@ -92,7 +92,6 @@ struct ChooseTreatmentNote: View {
 }
 
 struct ChooseFormList: View {
-
 	let mode: ChooseFormMode
 	let store: Store<ChooseFormState, ChooseFormAction>
 	@ObservedObject var viewStore: ViewStore<ViewState, ChooseFormAction>

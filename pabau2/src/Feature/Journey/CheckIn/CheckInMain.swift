@@ -232,7 +232,7 @@ struct StepForms: View {
 					BigButton(text: Texts.next) {
 						self.viewStore.send(.didSelectNextForm)
 						self.viewStore.send(.childForm(
-							Indexed<StepFormsAction2>(self.viewStore.state.selectedIndex,
+							Indexed<ChildFormAction>(self.viewStore.state.selectedIndex,
 																				.didFinishTemplate(self.viewStore.state.forms[self.viewStore.state.selectedIndex]))))
 					}
 					.frame(width: 230)
