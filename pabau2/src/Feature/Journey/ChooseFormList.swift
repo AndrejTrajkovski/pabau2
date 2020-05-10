@@ -56,7 +56,7 @@ public enum ChooseFormMode {
 			return Texts.proceed
 		}
 	}
-
+	
 	var formType: FormType {
 		switch self {
 		case .consents:

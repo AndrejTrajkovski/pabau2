@@ -2,7 +2,6 @@ import SwiftUI
 import ComposableArchitecture
 import Model
 
-
 public enum RadioFieldAction {
 	case didUpdateRadio(Radio)
 }

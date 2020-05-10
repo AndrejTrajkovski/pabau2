@@ -5,12 +5,12 @@ import Util
 import Overture
 
 public enum CheckInMainAction {
+	case didTouchHandbackDevice
 	case closeBtnTap
 	case patient(StepFormsAction)
 	case doctor(StepFormsAction)
 	case chooseTreatments(ChooseFormAction)
 	case doctorSummary(DoctorSummaryAction)
-	case completePatient
 }
 
 struct CheckInMain: View {
@@ -142,6 +142,7 @@ public enum StepFormsAction {
 	case didSelectNextForm
 	case didSelectFormIndex(Int)
 	case childForm(Indexed<ChildFormAction>)
+	case complete
 }
 
 public enum ChildFormAction {
@@ -175,6 +176,8 @@ let stepFormsReducer = Reducer<StepsState, StepFormsAction, JourneyEnvironemnt> 
 		if state.forms.count > state.selectedIndex + 1 {
 			state.selectedIndex += 1
 		}
+	case .complete:
+		break
 	}
 	return .none
 }

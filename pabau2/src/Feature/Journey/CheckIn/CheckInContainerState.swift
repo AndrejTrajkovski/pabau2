@@ -94,10 +94,12 @@ public struct CheckInContainerState: Equatable {
 	//	var selectedFormIndex: Int
 	//NAVIGATION
 	var isHandBackDeviceActive: Bool = false
+	var isEnterPasscodeActive: Bool = false
 	var isChooseConsentActive: Bool = false
 	var isChooseTreatmentActive: Bool = false
 	var isCheckInMainActive: Bool = false
 	var isDoctorSummaryActive: Bool = false
+	
 	init(journey: Journey,
 			 pathway: Pathway,
 			 patientDetails: PatientDetails,

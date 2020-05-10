@@ -19,7 +19,7 @@ struct CompleteStepForm: View {
 						.navigationBarHidden(true),
 														isActive: viewStore.binding(
 														  get: { $0.isHandBackDeviceActive },
-															send: (CheckInMainAction.completePatient)
+															send: (CheckInMainAction.patient(.complete))
 														),
 					label: {
 						Text("Complete")

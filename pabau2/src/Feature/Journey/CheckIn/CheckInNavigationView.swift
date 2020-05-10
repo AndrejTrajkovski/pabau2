@@ -30,7 +30,7 @@ public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction
 	),
 	navigatorReducer.pullback(
 		state: \CheckInContainerState.self,
-		action: /CheckInContainerAction.main..CheckInMainAction.chooseTreatments,
+		action: /CheckInContainerAction.main,
 		environment: { $0 }
 	),
 	doctorSummaryReducer.pullback(
@@ -44,10 +44,12 @@ public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction
 //					 environment: { $0 })
 )
 
-public let navigatorReducer = Reducer<CheckInContainerState, ChooseFormAction, Any> { state, action, env in
+public let navigatorReducer = Reducer<CheckInContainerState, CheckInMainAction, Any> { state, action, env in
 	switch action {
-	case .proceed:
+	case .chooseTreatments(.proceed):
 		state.isDoctorSummaryActive = true
+	case .patient(.complete):
+		state.isHandBackDeviceActive = true
 	default:
 		break
 	}
