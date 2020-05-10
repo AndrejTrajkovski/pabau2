@@ -31,7 +31,6 @@ struct DynamicForm: View {
 								if self.template.formStructure.formStructure.count > index {
 									self.template.formStructure.formStructure[index] = $0
 								} else {
-									
 								}
 							}
 						)

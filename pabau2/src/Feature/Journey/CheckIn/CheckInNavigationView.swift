@@ -57,7 +57,7 @@ public let navigatorReducer = Reducer<CheckInContainerState, ChooseFormAction, A
 public let formsParentReducer: Reducer<CheckInContainerState, CheckInMainAction, JourneyEnvironemnt> = .combine(
 	stepFormsReducer2.forEach(
 		state: \CheckInContainerState.patient.forms,
-		action: /CheckInMainAction.patient..StepFormsAction.action2,
+		action: /CheckInMainAction.patient..StepFormsAction.childForm,
 		environment: { $0 }),
 	stepFormsReducer.pullback(
 		state: \CheckInContainerState.patient,

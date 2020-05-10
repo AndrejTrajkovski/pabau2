@@ -141,17 +141,17 @@ public struct MetaFormAndStatus: Equatable, Hashable {
 public enum StepFormsAction {
 	case didSelectNextForm
 	case didSelectFormIndex(Int)
-	case action2(Indexed<StepFormsAction2>)
+	case childForm(Indexed<ChildFormAction>)
 }
 
-public enum StepFormsAction2 {
+public enum ChildFormAction {
 	case didUpdateTemplate(FormTemplate)
 	case didUpdatePatientDetails(PatientDetails)
 	case didFinishTemplate(MetaFormAndStatus)
 	case didFinishPatientDetails(PatientDetails)
 }
 
-let stepFormsReducer2 = Reducer<MetaFormAndStatus, StepFormsAction2, JourneyEnvironemnt> { state, action, _ in
+let stepFormsReducer2 = Reducer<MetaFormAndStatus, ChildFormAction, JourneyEnvironemnt> { state, action, _ in
 	switch action {
 	case .didFinishPatientDetails:
 		break
@@ -169,7 +169,7 @@ let stepFormsReducer = Reducer<StepsState, StepFormsAction, JourneyEnvironemnt> 
 	switch action {
 	case .didSelectFormIndex(let idx):
 		state.selectedIndex = idx
-	case .action2:
+	case .childForm:
 		break
 	case .didSelectNextForm:
 		if state.forms.count > state.selectedIndex + 1 {
@@ -231,7 +231,7 @@ struct StepForms: View {
 					!self.viewStore.state.isOnCompleteStep {
 					BigButton(text: Texts.next) {
 						self.viewStore.send(.didSelectNextForm)
-						self.viewStore.send(.action2(
+						self.viewStore.send(.childForm(
 							Indexed<StepFormsAction2>(self.viewStore.state.selectedIndex,
 																				.didFinishTemplate(self.viewStore.state.forms[self.viewStore.state.selectedIndex]))))
 					}

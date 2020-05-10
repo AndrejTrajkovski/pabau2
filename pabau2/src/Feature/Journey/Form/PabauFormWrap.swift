@@ -21,7 +21,7 @@ public typealias Indexed<T> = (Int, T)
 
 struct PabauFormWrap: View {
 	let store: Store<CheckInContainerState, CheckInMainAction>
-	@ObservedObject var viewStore: ViewStore<State, StepFormsAction2>
+	@ObservedObject var viewStore: ViewStore<State, ChildFormAction>
 	let journeyMode: JourneyMode
 
 	struct State: Equatable {
@@ -57,14 +57,11 @@ struct PabauFormWrap: View {
 			action: {
 				switch journeyMode {
 				case .patient:
-					return .patient(.action2(Indexed(selectedFormIndex, $0)))
+					return .patient(.childForm(Indexed(selectedFormIndex, $0)))
 				case .doctor:
-					return .doctor(.action2(Indexed(selectedFormIndex, $0)))
+					return .doctor(.childForm(Indexed(selectedFormIndex, $0)))
 				}
 		}))
-//		self.viewStore = store.scope(
-//			value: State.init(state:),
-//			action: { $0 }).view
 	}
 
 //	var body: some View {
