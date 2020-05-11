@@ -4,8 +4,13 @@ import Model
 
 
 public enum CheckInContainerAction {
+	case chooseTreatments(ChooseFormAction)
+	case passcode(PasscodeAction)
 	case animation(CheckInAnimationAction)
-	case main(CheckInMainAction)
+	case patient(CheckInMainAction)
+	case doctor(CheckInMainAction)
+	case didTouchHandbackDevice
+	case doctorSummary(DoctorSummaryAction)
 }
 
 public enum CheckInAnimationAction {
@@ -14,37 +19,46 @@ public enum CheckInAnimationAction {
 
 public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction, JourneyEnvironemnt> = .combine(
 	formsParentReducer.pullback(
-		state: \CheckInContainerState.self,
-		action: /CheckInContainerAction.main,
+		state: \CheckInContainerState.patient,
+		action: /CheckInContainerAction.patient,
+		environment: { $0 }
+	),
+	formsParentReducer.pullback(
+		state: \CheckInContainerState.doctor,
+		action: /CheckInContainerAction.doctor,
 		environment: { $0 }
 	),
 	chooseFormListReducer.pullback(
 		state: \CheckInContainerState.chooseTreatments,
-		action: /CheckInContainerAction.main..CheckInMainAction.chooseTreatments,
+		action: /CheckInContainerAction.chooseTreatments,
 		environment: { $0 }
 	),
 	chooseFormListReducer.pullback(
 		state: \CheckInContainerState.chooseTreatments,
-		action: /CheckInContainerAction.main..CheckInMainAction.chooseTreatments,
+		action: /CheckInContainerAction.chooseTreatments,
 		environment: { $0 }
 	),
 	navigatorReducer.pullback(
 		state: \CheckInContainerState.self,
-		action: /CheckInContainerAction.main,
+		action: /CheckInContainerAction.self,
 		environment: { $0 }
 	),
 	doctorSummaryReducer.pullback(
 		state: \CheckInContainerState.doctorSummary,
-		action: /CheckInContainerAction.main..CheckInMainAction.doctorSummary,
+		action: /CheckInContainerAction.doctorSummary,
 		environment: { $0 }
-		)
+		),
+	passcodeReducer.pullback(
+		state: \CheckInContainerState.passcode,
+		action: /CheckInContainerAction.passcode,
+		environment: { $0 })
 //	fieldsReducer.pullback(
 //					 value: \CheckInContainerState.self,
 //					 action: /CheckInContainerAction.main,
 //					 environment: { $0 })
 )
 
-public let navigatorReducer = Reducer<CheckInContainerState, CheckInMainAction, Any> { state, action, env in
+public let navigatorReducer = Reducer<CheckInContainerState, CheckInContainerAction, Any> { state, action, env in
 	switch action {
 	case .chooseTreatments(.proceed):
 		state.isDoctorSummaryActive = true
@@ -56,14 +70,15 @@ public let navigatorReducer = Reducer<CheckInContainerState, CheckInMainAction, 
 	return .none
 }
 
-public let formsParentReducer: Reducer<CheckInContainerState, CheckInMainAction, JourneyEnvironemnt> = .combine(
+public let formsParentReducer: Reducer<StepsState, CheckInMainAction, JourneyEnvironemnt> = .combine(
 	stepFormsReducer2.forEach(
-		state: \CheckInContainerState.patient.forms,
-		action: /CheckInMainAction.patient..StepFormsAction.childForm,
-		environment: { $0 }),
+		state: \StepsState.forms,
+		action: /CheckInMainAction.stepForms..StepFormsAction.childForm,
+		environment: { $0 })
+	,
 	stepFormsReducer.pullback(
-		state: \CheckInContainerState.patient,
-		action: /CheckInMainAction.patient,
+		state: \StepsState.self,
+		action: /CheckInMainAction.stepForms,
 		environment: { $0 })
 )
 

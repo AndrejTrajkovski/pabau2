@@ -29,11 +29,14 @@ let doctorSummaryReducer = Reducer <DoctorSummaryState, DoctorSummaryAction, Jou
 		state.isCheckInMainActive = true
 	case .didTouchBackFromCheckInMain:
 		state.isCheckInMainActive = false
+	case .closeBtnTap:
+		<#code#>
 	}
 	return .none
 }
 
 public enum DoctorSummaryAction {
+	case closeBtnTap
 	case didTouchAdd(ChooseFormMode)
 	case didTouchStep(Int)
 	case didTouchBackFrom(ChooseFormMode)
@@ -41,9 +44,9 @@ public enum DoctorSummaryAction {
 }
 
 struct DoctorSummary: View {
-	let store: Store<CheckInContainerState, CheckInMainAction>
+	let store: Store<CheckInContainerState, CheckInContainerAction>
 	@ObservedObject var viewStore: ViewStore<CheckInContainerState, DoctorSummaryAction>
-	init (store: Store<CheckInContainerState, CheckInMainAction>) {
+	init (store: Store<CheckInContainerState, CheckInContainerAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store
 			.scope(state: { $0 },

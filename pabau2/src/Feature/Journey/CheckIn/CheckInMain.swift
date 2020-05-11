@@ -5,20 +5,17 @@ import Util
 import Overture
 
 public enum CheckInMainAction {
-	case didTouchHandbackDevice
 	case closeBtnTap
-	case patient(StepFormsAction)
-	case doctor(StepFormsAction)
-	case chooseTreatments(ChooseFormAction)
-	case doctorSummary(DoctorSummaryAction)
+	case stepForms(StepFormsAction)
+	case complete
 }
 
 struct CheckInMain: View {
 	let journey: Journey
-	let store: Store<CheckInContainerState, CheckInMainAction>
+	let store: Store<CheckInContainerState, CheckInContainerAction>
 	@ObservedObject var viewStore: ViewStore<StepsState, CheckInMainAction>
 	let journeyMode: JourneyMode
-	init(store: Store<CheckInContainerState, CheckInMainAction>,
+	init(store: Store<CheckInContainerState, CheckInContainerAction>,
 			 journey: Journey,
 			 journeyMode: JourneyMode) {
 		self.journey = journey
@@ -142,7 +139,6 @@ public enum StepFormsAction {
 	case didSelectNextForm
 	case didSelectFormIndex(Int)
 	case childForm(Indexed<ChildFormAction>)
-	case complete
 }
 
 public enum ChildFormAction {

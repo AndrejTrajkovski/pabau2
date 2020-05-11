@@ -20,7 +20,7 @@ public typealias Indexed<T> = (Int, T)
 //}
 
 struct PabauFormWrap: View {
-	let store: Store<CheckInContainerState, CheckInMainAction>
+	let store: Store<CheckInContainerState, CheckInContainerAction>
 	@ObservedObject var viewStore: ViewStore<State, ChildFormAction>
 	let journeyMode: JourneyMode
 
@@ -40,7 +40,7 @@ struct PabauFormWrap: View {
 		}
 	}
 
-	init(store: Store<CheckInContainerState, CheckInMainAction>,
+	init(store: Store<CheckInContainerState, CheckInContainerAction>,
 			 selectedFormIndex: Int,
 			 journeyMode: JourneyMode) {
 		self.store = store
@@ -57,9 +57,9 @@ struct PabauFormWrap: View {
 			action: {
 				switch journeyMode {
 				case .patient:
-					return .patient(.childForm(Indexed(selectedFormIndex, $0)))
+					return .patient(.stepForms(.childForm(Indexed(selectedFormIndex, $0))))
 				case .doctor:
-					return .doctor(.childForm(Indexed(selectedFormIndex, $0)))
+					return .doctor(.stepForms(.childForm(Indexed(selectedFormIndex, $0))))
 				}
 		}))
 	}

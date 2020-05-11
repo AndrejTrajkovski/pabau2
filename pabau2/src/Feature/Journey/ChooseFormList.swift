@@ -68,9 +68,9 @@ public enum ChooseFormMode {
 }
 
 struct ChooseTreatmentNote: View {
-	let store: Store<CheckInContainerState, CheckInMainAction>
-	@ObservedObject var viewStore: ViewStore<CheckInContainerState, CheckInMainAction>
-	init (store: Store<CheckInContainerState, CheckInMainAction>) {
+	let store: Store<CheckInContainerState, CheckInContainerAction>
+	@ObservedObject var viewStore: ViewStore<CheckInContainerState, CheckInContainerAction>
+	init (store: Store<CheckInContainerState, CheckInContainerAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
@@ -84,7 +84,7 @@ struct ChooseTreatmentNote: View {
 																 DoctorSummary(store: self.store)
 																	.navigationBarBackButtonHidden(true)
 																	.navigationBarItems(leading:
-																		XButton(onTap: { self.viewStore.send(.closeBtnTap)
+																		XButton(onTap: { self.viewStore.send(.doctorSummary(.closeBtnTap))
 																		}))
 			)
 		}

@@ -3,7 +3,7 @@ import Util
 import ComposableArchitecture
 
 struct CompleteStepForm: View {
-	let store: Store<CheckInContainerState, CheckInMainAction>
+	let store: Store<CheckInContainerState, CheckInContainerAction>
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			VStack(spacing: 32) {
@@ -19,7 +19,7 @@ struct CompleteStepForm: View {
 						.navigationBarHidden(true),
 														isActive: viewStore.binding(
 														  get: { $0.isHandBackDeviceActive },
-															send: (CheckInMainAction.patient(.complete))
+															send: (.patient(.complete))
 														),
 					label: {
 						Text("Complete")

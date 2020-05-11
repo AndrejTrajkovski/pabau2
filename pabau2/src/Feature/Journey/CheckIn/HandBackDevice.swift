@@ -4,7 +4,7 @@ import ComposableArchitecture
 
 struct HandBackDevice: View {
 
-	let store: Store<CheckInContainerState, CheckInMainAction>
+	let store: Store<CheckInContainerState, CheckInContainerAction>
 
 	var body: some View {
 		WithViewStore(store.scope(

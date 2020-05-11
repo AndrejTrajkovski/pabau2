@@ -114,7 +114,7 @@ public let journeyContainerReducer: Reducer<JourneyState, JourneyContainerAction
 					 environment: { $0 }),
 		checkInMiddleware.pullback(
 					 state: \JourneyState.self,
-					 action: /JourneyContainerAction.checkIn..CheckInContainerAction.main,
+					 action: /JourneyContainerAction.checkIn..CheckInContainerAction.patient,
 					 environment: { $0 })
 )
 

@@ -47,7 +47,7 @@ func stepType(type: FormType) -> StepType {
 	}
 }
 
-struct StepsState: Equatable {
+public struct StepsState: Equatable {
 	var stepsState: [StepState]
 	var selectedIndex: Int
 	var forms: [MetaFormAndStatus] {
@@ -92,6 +92,11 @@ public struct CheckInContainerState: Equatable {
 	var patient: StepsState
 	//	var doctorForms: [MetaFormAndStatus]
 	//	var selectedFormIndex: Int
+
+	var runningDigits: [String] = []
+	var unlocked: Bool = false
+	var wrongAttempts: Int = 0
+
 	//NAVIGATION
 	var isHandBackDeviceActive: Bool = false
 	var isEnterPasscodeActive: Bool = false
@@ -99,7 +104,7 @@ public struct CheckInContainerState: Equatable {
 	var isChooseTreatmentActive: Bool = false
 	var isCheckInMainActive: Bool = false
 	var isDoctorSummaryActive: Bool = false
-	
+
 	init(journey: Journey,
 			 pathway: Pathway,
 			 patientDetails: PatientDetails,
@@ -247,7 +252,7 @@ extension CheckInContainerState {
 			self.isCheckInMainActive = newValue.isCheckInMainActive
 		}
 	}
-	
+
 	var chooseTreatments: ChooseFormState {
 		get {
 			return ChooseFormState(selectedJourney: journey,
@@ -262,6 +267,20 @@ extension CheckInContainerState {
 //				.map { MetaFormAndStatus.init( $0, false)}
 			self.doctor.treatmentNotes = doctorForms
 			self.treatmentForms = newValue.templates
+		}
+	}
+
+	var passcode: PasscodeState {
+		get {
+			PasscodeState(runningDigits: self.runningDigits,
+										unlocked: self.unlocked,
+										isDoctorSummaryActive: self.isDoctorSummaryActive, wrongAttempts: self.wrongAttempts)
+		}
+		set {
+			self.runningDigits = newValue.runningDigits
+			self.unlocked = newValue.unlocked
+			self.isDoctorSummaryActive = newValue.isDoctorSummaryActive
+			self.wrongAttempts = newValue.wrongAttempts
 		}
 	}
 }
