@@ -30,7 +30,7 @@ let doctorSummaryReducer = Reducer <DoctorSummaryState, DoctorSummaryAction, Jou
 	case .didTouchBackFromCheckInMain:
 		state.isCheckInMainActive = false
 	case .closeBtnTap:
-		<#code#>
+		break
 	}
 	return .none
 }

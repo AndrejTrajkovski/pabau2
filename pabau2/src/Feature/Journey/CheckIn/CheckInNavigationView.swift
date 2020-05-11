@@ -38,7 +38,7 @@ public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction
 		action: /CheckInContainerAction.chooseTreatments,
 		environment: { $0 }
 	),
-	navigatorReducer.pullback(
+	navigationReducer.pullback(
 		state: \CheckInContainerState.self,
 		action: /CheckInContainerAction.self,
 		environment: { $0 }
@@ -58,12 +58,14 @@ public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction
 //					 environment: { $0 })
 )
 
-public let navigatorReducer = Reducer<CheckInContainerState, CheckInContainerAction, Any> { state, action, env in
+public let navigationReducer = Reducer<CheckInContainerState, CheckInContainerAction, Any> { state, action, _ in
 	switch action {
 	case .chooseTreatments(.proceed):
 		state.isDoctorSummaryActive = true
 	case .patient(.complete):
 		state.isHandBackDeviceActive = true
+	case .didTouchHandbackDevice:
+		state.isEnterPasscodeActive = true
 	default:
 		break
 	}
@@ -98,7 +100,7 @@ public struct CheckInNavigationView: View {
 					NavigationLink.init(destination:
 						CheckInMain(store:
 							self.store.scope(state: { $0 },
-															 action: { .main($0)}
+															 action: { $0 }
 							), journey: viewStore.state.journey,
 								 journeyMode: .patient)
 						, isActive: self.$isRunningAnimation, label: { EmptyView() })

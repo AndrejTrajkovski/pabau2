@@ -30,7 +30,14 @@ struct CheckInMain: View {
 					return $0.doctor
 				}
 			},
-			action: { $0 }
+			action: {
+				switch journeyMode {
+				case .patient:
+					return .patient($0)
+				case .doctor:
+					return .doctor($0)
+				}
+			}
 		))
 	}
 
@@ -172,8 +179,6 @@ let stepFormsReducer = Reducer<StepsState, StepFormsAction, JourneyEnvironemnt> 
 		if state.forms.count > state.selectedIndex + 1 {
 			state.selectedIndex += 1
 		}
-	case .complete:
-		break
 	}
 	return .none
 }
@@ -181,11 +186,11 @@ let stepFormsReducer = Reducer<StepsState, StepFormsAction, JourneyEnvironemnt> 
 struct StepForms: View {
 
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
-	let store: Store<CheckInContainerState, CheckInMainAction>
+	let store: Store<CheckInContainerState, CheckInContainerAction>
 	let journeyMode: JourneyMode
 	@ObservedObject var viewStore: ViewStore<StepsState, StepFormsAction>
 
-	init(store: Store<CheckInContainerState, CheckInMainAction>,
+	init(store: Store<CheckInContainerState, CheckInContainerAction>,
 			 journeyMode: JourneyMode) {
 		self.store = store
 		self.journeyMode = journeyMode
@@ -201,9 +206,9 @@ struct StepForms: View {
 			 action: {
 				switch journeyMode {
 				case .patient:
-					return .patient($0)
+					return .patient(.stepForms($0))
 				case .doctor:
-					return .doctor($0)
+					return .doctor(.stepForms($0))
 				}
 			}))
 	}
