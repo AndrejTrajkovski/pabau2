@@ -229,6 +229,11 @@ extension StepsState {
 				.filter { $0.formType == .treatment }
 		}
 		set {
+			self.forms.removeAll(where: { form in
+					guard let template = extract(case: MetaForm.template, from: form.form),
+						template.formType == .treatment else { return false}
+					return newValue.contains(where: { $0.id == template.id })
+			})
 			self.forms.append(contentsOf: newValue.map {
 				MetaFormAndStatus.init(MetaForm.template($0), false)
 			})
