@@ -102,7 +102,8 @@ public struct CheckInContainerState: Equatable {
 	var isEnterPasscodeActive: Bool = false
 	var isChooseConsentActive: Bool = false
 	var isChooseTreatmentActive: Bool = false
-	var isCheckInMainActive: Bool = false
+	var isPatientCheckInMainActive: Bool = false
+	var isDoctorCheckInMainActive: Bool = false
 	var isDoctorSummaryActive: Bool = false
 
 	init(journey: Journey,
@@ -247,14 +248,14 @@ extension CheckInContainerState {
 		get {
 			DoctorSummaryState(isChooseConsentActive: isChooseConsentActive,
 												 isChooseTreatmentActive: isChooseTreatmentActive,
-												 isCheckInMainActive: isCheckInMainActive,
+												 isDoctorCheckInMainActive: isDoctorCheckInMainActive,
 												 doctor: doctor)
 		}
 		set {
 			self.isChooseTreatmentActive = newValue.isChooseTreatmentActive
 			self.doctor = newValue.doctor
 			self.isChooseTreatmentActive = newValue.isChooseTreatmentActive
-			self.isCheckInMainActive = newValue.isCheckInMainActive
+			self.isDoctorCheckInMainActive = newValue.isDoctorCheckInMainActive
 		}
 	}
 

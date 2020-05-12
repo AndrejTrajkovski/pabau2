@@ -19,6 +19,16 @@ public typealias Indexed<T> = (Int, T)
 //	}
 //}
 
+func getForms(_ journeyMode: JourneyMode,
+							_ state: CheckInContainerState) -> [MetaFormAndStatus] {
+	switch journeyMode {
+	case .doctor:
+		return state.doctor.forms
+	case .patient:
+		return state.patient.forms
+	}
+}
+
 struct PabauFormWrap: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>
 	@ObservedObject var viewStore: ViewStore<State, ChildFormAction>
@@ -47,9 +57,9 @@ struct PabauFormWrap: View {
 		self.journeyMode = journeyMode
 		self.viewStore = ViewStore(store.scope(
 			state: {
-				if $0.patient.forms.count > selectedFormIndex {
-					let formState = $0.patient.forms[selectedFormIndex]
-						return State.init(state: formState)
+				let forms = getForms(journeyMode, $0)
+				if forms.count > selectedFormIndex {
+					return State.init(state: forms[selectedFormIndex])
 				} else {
 					return State.defaultEmpty
 				}

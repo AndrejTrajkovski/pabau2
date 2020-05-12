@@ -5,7 +5,7 @@ import Model
 struct DoctorSummaryState: Equatable {
 	var isChooseConsentActive: Bool
 	var isChooseTreatmentActive: Bool
-	var isCheckInMainActive: Bool
+	var isDoctorCheckInMainActive: Bool
 	var doctor: StepsState
 }
 
@@ -26,21 +26,18 @@ let doctorSummaryReducer = Reducer <DoctorSummaryState, DoctorSummaryAction, Jou
 			state.isChooseTreatmentActive = true
 		}
 	case .didTouchStep(let idx):
-		state.isCheckInMainActive = true
-	case .didTouchBackFromCheckInMain:
-		state.isCheckInMainActive = false
-	case .closeBtnTap:
-		break
+		state.isDoctorCheckInMainActive = true
+	case .backOnDoctorCheckIn:
+		state.isDoctorCheckInMainActive = false
 	}
 	return .none
 }
 
 public enum DoctorSummaryAction {
-	case closeBtnTap
 	case didTouchAdd(ChooseFormMode)
 	case didTouchStep(Int)
 	case didTouchBackFrom(ChooseFormMode)
-	case didTouchBackFromCheckInMain
+	case backOnDoctorCheckIn
 }
 
 struct DoctorSummary: View {
@@ -62,13 +59,14 @@ struct DoctorSummary: View {
 					self.viewStore.send(.didTouchAdd($0))
 				}
 				Spacer()
-				NavigationLink.emptyHidden(self.viewStore.state.doctorSummary.isCheckInMainActive,
+				NavigationLink.emptyHidden(self.viewStore.state.doctorSummary.isDoctorCheckInMainActive,
 																	 CheckInMain(store: self.store,
 																							 journey: self.viewStore.state.journey,
-																							 journeyMode: .doctor))
-					.customBackButton {
-						self.viewStore.send(.didTouchBackFromCheckInMain)
-				}
+																							 journeyMode: .doctor,
+																							 onClose: {
+																								self.viewStore.send(.backOnDoctorCheckIn)
+																	}))
+					.navigationBarHidden(true)
 				NavigationLink.emptyHidden(self.viewStore.state.doctorSummary.isChooseTreatmentActive,
 																	 ChooseFormList(store: self.store.scope(state: {
 																		$0.chooseTreatments

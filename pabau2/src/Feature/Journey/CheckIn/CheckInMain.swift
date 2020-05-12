@@ -5,7 +5,6 @@ import Util
 import Overture
 
 public enum CheckInMainAction {
-	case closeBtnTap
 	case stepForms(StepFormsAction)
 	case complete
 }
@@ -15,9 +14,11 @@ struct CheckInMain: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>
 	@ObservedObject var viewStore: ViewStore<StepsState, CheckInMainAction>
 	let journeyMode: JourneyMode
+	let onClose: () -> Void
 	init(store: Store<CheckInContainerState, CheckInContainerAction>,
 			 journey: Journey,
-			 journeyMode: JourneyMode) {
+			 journeyMode: JourneyMode,
+			 onClose: @escaping () -> Void) {
 		self.journey = journey
 		self.journeyMode = journeyMode
 		self.store = store
@@ -39,13 +40,14 @@ struct CheckInMain: View {
 				}
 			}
 		))
+		self.onClose = onClose
 	}
 
 	var body: some View {
 		print("check in main body")
 		return
 			VStack (alignment: .center, spacing: 0) {
-				TopView(journey: self.journey, viewStore: self.viewStore)
+				TopView(journey: self.journey, viewStore: self.viewStore, onClose: onClose)
 				StepForms(store:
 					self.store.scope(
 						state: { $0 },
@@ -62,9 +64,10 @@ struct CheckInMain: View {
 struct TopView: View {
 	let journey: Journey
 	@ObservedObject var viewStore: ViewStore<StepsState, CheckInMainAction>
+	let onClose: () -> Void
 	var body: some View {
 		ZStack {
-			XButton(onTap: { self.viewStore.send(.closeBtnTap) })
+			XButton(onTap: onClose)
 				.padding()
 				.exploding(.topLeading)
 			Spacer()

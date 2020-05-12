@@ -84,7 +84,7 @@ struct ChooseTreatmentNote: View {
 																 DoctorSummary(store: self.store)
 																	.navigationBarBackButtonHidden(true)
 																	.navigationBarItems(leading:
-																		XButton(onTap: { self.viewStore.send(.doctorSummary(.closeBtnTap))
+																		XButton(onTap: { self.viewStore.send(.doctorSummary(.backOnDoctorCheckIn))
 																		}))
 			)
 		}

@@ -11,6 +11,7 @@ public enum CheckInContainerAction {
 	case doctor(CheckInMainAction)
 	case didTouchHandbackDevice
 	case doctorSummary(DoctorSummaryAction)
+	case closeBtnTap
 }
 
 public enum CheckInAnimationAction {
@@ -102,7 +103,10 @@ public struct CheckInNavigationView: View {
 							self.store.scope(state: { $0 },
 															 action: { $0 }
 							), journey: viewStore.state.journey,
-								 journeyMode: .patient)
+								 journeyMode: .patient,
+								 onClose: {
+									viewStore.send(.closeBtnTap)
+						})
 						, isActive: self.$isRunningAnimation, label: { EmptyView() })
 				}
 			}.navigationViewStyle(StackNavigationViewStyle())

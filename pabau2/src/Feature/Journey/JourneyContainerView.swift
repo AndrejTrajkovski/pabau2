@@ -73,7 +73,7 @@ let checkInMiddleware2 = Reducer<JourneyState, ChooseFormAction, JourneyEnvirone
 	return .none
 }
 
-let checkInMiddleware = Reducer<JourneyState, CheckInMainAction, JourneyEnvironemnt> { state, action, _ in
+let checkInMiddleware = Reducer<JourneyState, CheckInContainerAction, JourneyEnvironemnt> { state, action, _ in
 	switch action {
 	case .closeBtnTap:
 		state.selectedJourney = nil
@@ -114,7 +114,7 @@ public let journeyContainerReducer: Reducer<JourneyState, JourneyContainerAction
 					 environment: { $0 }),
 		checkInMiddleware.pullback(
 					 state: \JourneyState.self,
-					 action: /JourneyContainerAction.checkIn..CheckInContainerAction.patient,
+					 action: /JourneyContainerAction.checkIn,
 					 environment: { $0 })
 )
 
