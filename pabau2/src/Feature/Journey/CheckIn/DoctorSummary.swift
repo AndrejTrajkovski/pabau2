@@ -11,7 +11,7 @@ struct DoctorSummaryState: Equatable {
 	var doctorCheckIn: DoctorCheckInState
 }
 
-let doctorSummaryReducer = Reducer <DoctorSummaryState, DoctorSummaryAction, JourneyEnvironemnt> { state, action, _ in
+let doctorSummaryReducer = Reducer <DoctorSummaryState, DoctorSummaryAction, JourneyEnvironment> { state, action, _ in
 	switch action {
 	case .didTouchBackFrom(let mode):
 		switch mode {

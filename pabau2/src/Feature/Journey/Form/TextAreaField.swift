@@ -3,7 +3,7 @@ import ComposableArchitecture
 import Model
 import Util
 
-let textAreaFieldReducer = Reducer<TextArea, TextAreaFieldAction, JourneyEnvironemnt> { state, action, _ in
+let textAreaFieldReducer = Reducer<TextArea, TextAreaFieldAction, JourneyEnvironment> { state, action, _ in
 	switch action {
 	case .didUpdateText(let text):
 		state.text = text

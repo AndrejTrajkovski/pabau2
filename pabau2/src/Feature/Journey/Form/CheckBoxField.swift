@@ -9,7 +9,7 @@ public enum CheckboxFieldAction {
 }
 
 public let checkBoxFieldReducer =
-	Reducer<[CheckBoxChoice], CheckboxFieldAction, JourneyEnvironemnt> { state, action, _ in
+	Reducer<[CheckBoxChoice], CheckboxFieldAction, JourneyEnvironment> { state, action, _ in
 	switch action {
 	case .didUpdateChoices(let updated):
 		state = updated

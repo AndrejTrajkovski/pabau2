@@ -53,7 +53,7 @@ extension Service: ListPickerElement { }
 //typealias PickerContainerReducer<T: ListPickerElement> = Reducer<PickerContainerState<T>, PickerContainerAction<T>, JourneyEnvironemnt>
 
 struct PickerReducer<T: ListPickerElement> {
-	let reducer = Reducer<PickerContainerState<T>, PickerContainerAction<T>, JourneyEnvironemnt> { state, action, _ in
+	let reducer = Reducer<PickerContainerState<T>, PickerContainerAction<T>, JourneyEnvironment> { state, action, _ in
 			switch action {
 			case .didSelectPicker:
 				state.isActive = true
@@ -68,7 +68,7 @@ struct PickerReducer<T: ListPickerElement> {
 }
 
 let addAppTapBtnReducer = Reducer<AddAppointmentState,
-	AddAppointmentAction, JourneyEnvironemnt> { state, action, _ in
+	AddAppointmentAction, JourneyEnvironment> { state, action, _ in
 		switch action {
 		case .addAppointmentTap:
 			state.isShowingAddAppointment = false
@@ -83,7 +83,7 @@ let addAppTapBtnReducer = Reducer<AddAppointmentState,
 }
 
 let addAppointmentReducer: Reducer<AddAppointmentState,
-	AddAppointmentAction, JourneyEnvironemnt> = .combine(
+	AddAppointmentAction, JourneyEnvironment> = .combine(
 		PickerReducer<Client>().reducer.pullback(
 			state: \AddAppointmentState.clients,
 			action: /AddAppointmentAction.clients,

@@ -19,7 +19,7 @@ public enum CheckInAnimationAction {
 	case didFinishAnimation
 }
 
-public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction, JourneyEnvironemnt> = .combine(
+public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction, JourneyEnvironment> = .combine(
 //	formsParentReducer.pullback(
 //		state: \CheckInContainerState.patient,
 //		action: /CheckInContainerAction.patient,

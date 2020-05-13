@@ -6,7 +6,7 @@ public enum RadioFieldAction {
 	case didUpdateRadio(Radio)
 }
 
-let radioFieldReducer = Reducer<Radio, RadioFieldAction, JourneyEnvironemnt> { state, action, _ in
+let radioFieldReducer = Reducer<Radio, RadioFieldAction, JourneyEnvironment> { state, action, _ in
 	switch action {
 	case .didUpdateRadio(let radio):
 		state = radio

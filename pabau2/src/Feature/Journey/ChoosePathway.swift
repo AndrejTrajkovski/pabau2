@@ -9,7 +9,7 @@ public enum ChoosePathwayContainerAction {
 	case chooseConsent(ChooseFormAction)
 }
 
-let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayContainerAction, JourneyEnvironemnt> =
+let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayContainerAction, JourneyEnvironment> =
 	.combine(
 		chooseFormListReducer.pullback(
 			state: \ChoosePathwayState.chooseConsentState,
@@ -22,7 +22,7 @@ let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayCont
 			environment: { $0 })
 )
 
-let choosePathwayReducer = Reducer<ChoosePathwayState, ChoosePathwayAction, JourneyEnvironemnt> { state, action, _ in
+let choosePathwayReducer = Reducer<ChoosePathwayState, ChoosePathwayAction, JourneyEnvironment> { state, action, _ in
 	switch action {
 	case .didChoosePathway(let pathway):
 		state.selectedPathway = pathway

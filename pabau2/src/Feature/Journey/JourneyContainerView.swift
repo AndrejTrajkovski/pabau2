@@ -20,7 +20,7 @@ public enum EmployeesAction {
 	case loadEmployees
 }
 
-let employeeListReducer = Reducer<EmployeesState, EmployeesAction, JourneyEnvironemnt> { state, action, env in
+let employeeListReducer = Reducer<EmployeesState, EmployeesAction, JourneyEnvironment> { state, action, env in
 	func handle(result: Result<[Employee], RequestError>,
 							state: inout EmployeesState) -> Effect<EmployeesAction, Never> {
 		switch result {
@@ -54,9 +54,9 @@ let employeeListReducer = Reducer<EmployeesState, EmployeesAction, JourneyEnviro
 	return .none
 }
 
-public typealias JourneyEnvironemnt = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
+public typealias JourneyEnvironment = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
 
-let checkInMiddleware2 = Reducer<JourneyState, ChooseFormAction, JourneyEnvironemnt> { state, action, _ in
+let checkInMiddleware2 = Reducer<JourneyState, ChooseFormAction, JourneyEnvironment> { state, action, _ in
 	switch action {
 	case .proceed:
 		guard let selJ = state.selectedJourney,
@@ -74,7 +74,7 @@ let checkInMiddleware2 = Reducer<JourneyState, ChooseFormAction, JourneyEnvirone
 	return .none
 }
 
-let checkInMiddleware = Reducer<JourneyState, CheckInContainerAction, JourneyEnvironemnt> { state, action, _ in
+let checkInMiddleware = Reducer<JourneyState, CheckInContainerAction, JourneyEnvironment> { state, action, _ in
 	switch action {
 	case .closeBtnTap:
 		state.selectedJourney = nil
@@ -87,7 +87,7 @@ let checkInMiddleware = Reducer<JourneyState, CheckInContainerAction, JourneyEnv
 }
 
 //JourneyState, ChooseFormAction
-public let journeyContainerReducer: Reducer<JourneyState, JourneyContainerAction, JourneyEnvironemnt> =
+public let journeyContainerReducer: Reducer<JourneyState, JourneyContainerAction, JourneyEnvironment> =
 	.combine(
 		checkInMiddleware2.pullback(
 			state: \JourneyState.self,
@@ -119,7 +119,7 @@ public let journeyContainerReducer: Reducer<JourneyState, JourneyContainerAction
 					 environment: { $0 })
 )
 
-let journeyReducer = Reducer<JourneyState, JourneyAction, JourneyEnvironemnt> { state, action, environment in
+let journeyReducer = Reducer<JourneyState, JourneyAction, JourneyEnvironment> { state, action, environment in
 	switch action {
 	case .selectedFilter(let filter):
 		state.selectedFilter = filter
