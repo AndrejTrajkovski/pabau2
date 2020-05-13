@@ -137,14 +137,97 @@ public struct CheckInContainerState: Equatable {
 	}
 }
 
+func indexOfStep(_ pathway: Pathway,
+								 _ journeyMode: JourneyMode,
+								 _ stepType: StepType) -> Int? {
+	return pathway.steps
+		.filter(with(.patient, filterStepType))
+		.sorted(by: \.stepType.order)
+		.firstIndex(where: { $0.stepType == stepType })
+}
+
 struct PatientCheckInState: Equatable {
 	var patientSelectedIndex: Int
 	var pathway: Pathway
+	var medHistory: FormTemplate
+	var medHistoryCompleted: FormTemplate
 	var patientDetails: PatientDetails
 	var patientDetailsCompleted: Bool
 	var patientComplete: PatientComplete
 	var consentsCompleted: [Int: Bool]
 	var runningConsents: [Int: FormTemplate]
+	
+	func wrapForm(_ stepType: StepType) -> [MetaForm] {
+		switch stepType {
+		case .patientdetails:
+			return [MetaForm.patientDetails(patientDetails)]
+		case .medicalhistory:
+			return [MetaForm.template(medHistory)]
+		case .consents:
+			return runningConsents.map { MetaForm.template($0.value) }
+		case .checkpatient,
+				 .treatmentnotes,
+				 .prescriptions,
+				 .photos,
+				 .recalls,
+				 .aftercares:
+			fatalError("doctor steps, should be filtered earlier")
+		case .patientComplete:
+			return [MetaForm.patientComplete(PatientComplete())]
+		}
+	}
+	
+	func unwrap(_ metaForm: [MetaForm], _ stepType: StepType) {
+		switch stepType {
+		case .patientdetails:
+			return [MetaForm.patientDetails(patientDetails)]
+		case .medicalhistory:
+			return [MetaForm.template(medHistory)]
+		case .consents:
+			return runningConsents.map { MetaForm.template($0.value) }
+		case .checkpatient,
+				 .treatmentnotes,
+				 .prescriptions,
+				 .photos,
+				 .recalls,
+				 .aftercares:
+			fatalError("doctor steps, should be filtered earlier")
+		case .patientComplete:
+			return [MetaForm.patientComplete(PatientComplete())]
+		}
+	}
+	//TODO: //GO WITH [StepState] for index!
+	var forms: [MetaForm] {
+		get {
+			self.pathway.steps
+				.filter(with(.patient, filterStepType))
+				.reduce(into: [MetaForm]()) {
+					$0.append(contentsOf: with($1, (pipe(get(\.stepType), wrapForm(_:)))))
+			}
+		}
+		set {
+			newValue.forEach {
+				
+			}
+		}
+	}
+	
+//	var patientDetailsIdx: Int? {
+//		indexOfStep(pathway, .patient, .patientdetails)
+//	}
+//
+//	var medHistoryIdx: Int? {
+//		indexOfStep(pathway, .patient, .medicalhistory)
+//	}
+//
+//	var consentsIdxs: [Int] {
+//		guard let firstConsentIdx = indexOfStep(pathway, .patient, .consents) else {
+//			return []
+//		}
+//		return runningConsents.map{ $0.key }.indices.map {
+//			return firstConsentIdx + $0
+//		}
+//	}
 }
 
 struct DoctorCheckInState: Equatable {
@@ -167,28 +250,9 @@ let filterStepType = flip(filterStepTypeFlipped)
 
 struct CheckInViewState: Equatable {
 	var selectedIndex: Int
-	var forms: [Int: MetaFormAndStatus]
+	var forms: [Int: MetaForm]
+	var completedForms: [Int: Bool]
 	var order: [Int]
-	
-//	init (_ doctor: DoctorCheckInState) {
-//		let steps = doctor.pathway.steps.filter(with(.doctor, filterStepType))
-//		doctor.pathway.steps.filter(with(.doctor, filterStepType)).map {
-//			Self.doctorForms($0.stepType,
-//											 doctor., <#T##treatmentN: [FormTemplate]##[FormTemplate]#>, <#T##prescriptions: [FormTemplate]##[FormTemplate]#>)
-//		}
-//			.map(pipe(get(\.stepType)))
-//		doctor.pathway.steps.map { $0.stepType }
-//				.filter { stepToModeMap($0) == .doctor }
-//				.map {
-//					StepState(stepType: $0,
-//										forms: Self.doctorForms($0,
-//																						patientDetails,
-//																						treatmentN,
-//																						[JourneyMockAPI.getPrescription()])
-//					)
-//		}.sorted(by: { $0.stepType.order < $1.stepType.order })
-//		self.forms = CheckInContainerState.doctorForms(<#T##stepType: StepType##StepType#>, <#T##patientDetails: PatientDetails##PatientDetails#>, <#T##treatmentN: [FormTemplate]##[FormTemplate]#>, <#T##prescriptions: [FormTemplate]##[FormTemplate]#>)
-//	}
 }
 
 func selected(_ templates: [Int: FormTemplate], _ selectedIds: [Int]) -> [Int: FormTemplate] {

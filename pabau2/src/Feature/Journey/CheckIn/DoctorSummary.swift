@@ -2,6 +2,7 @@ import SwiftUI
 import ComposableArchitecture
 import Model
 import Overture
+import Util
 
 struct DoctorSummaryState: Equatable {
 	var journey: Journey
@@ -170,6 +171,10 @@ struct DoctorSummaryRow: View {
 	}
 }
 
+func sortSteps(_ step1: StepType, _ step2: StepType) -> Bool {
+	return step1.order > step2.order
+}
+
 extension DoctorSummaryState {
 	var steps: [StepState] {
 		doctorCheckIn.pathway.steps
@@ -201,6 +206,6 @@ extension DoctorSummaryState {
 						 .consents:
 					fatalError("patient steps")
 				}
-		}
+		}.sorted(by: \.stepType.order)
 	}
 }

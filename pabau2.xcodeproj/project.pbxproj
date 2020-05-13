@@ -61,6 +61,7 @@
 		82477618246C336300508434 /* PatientComplete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82477617246C336300508434 /* PatientComplete.swift */; };
 		8247761A246C337D00508434 /* MetaForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82477619246C337D00508434 /* MetaForm.swift */; };
 		8247761C246C339800508434 /* MetaFormAndStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247761B246C339800508434 /* MetaFormAndStatus.swift */; };
+		8247761E246C4C1800508434 /* SortByKeyPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247761D246C4C1800508434 /* SortByKeyPath.swift */; };
 		8250D7C9242BCFD000F8F3FC /* ChooseFormList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7C8242BCFD000F8F3FC /* ChooseFormList.swift */; };
 		8250D7CB242BD25B00F8F3FC /* JourneyBaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7CA242BD25B00F8F3FC /* JourneyBaseView.swift */; };
 		8250D7D0242C575A00F8F3FC /* ModalTransitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7CD242C575A00F8F3FC /* ModalTransitions.swift */; };
@@ -459,6 +460,7 @@
 		82477617246C336300508434 /* PatientComplete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientComplete.swift; sourceTree = "<group>"; };
 		82477619246C337D00508434 /* MetaForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaForm.swift; sourceTree = "<group>"; };
 		8247761B246C339800508434 /* MetaFormAndStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaFormAndStatus.swift; sourceTree = "<group>"; };
+		8247761D246C4C1800508434 /* SortByKeyPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortByKeyPath.swift; sourceTree = "<group>"; };
 		8250D7C8242BCFD000F8F3FC /* ChooseFormList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseFormList.swift; sourceTree = "<group>"; };
 		8250D7CA242BD25B00F8F3FC /* JourneyBaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyBaseView.swift; sourceTree = "<group>"; };
 		8250D7CD242C575A00F8F3FC /* ModalTransitions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalTransitions.swift; sourceTree = "<group>"; };
@@ -799,6 +801,7 @@
 				82CEA224244E0F9B00A895F6 /* ForEachWithindex.swift */,
 				826952692452D90E001B806E /* UITextViewWrapper.swift */,
 				8280D4802463F1790077A73F /* ExplodingStack.swift */,
+				8247761D246C4C1800508434 /* SortByKeyPath.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -1721,6 +1724,7 @@
 				8227FB77240BAC9600F653B5 /* KeyboardFollower.swift in Sources */,
 				8280D4812463F1790077A73F /* ExplodingStack.swift in Sources */,
 				8227FB70240BAC9600F653B5 /* ActivityIndicator.swift in Sources */,
+				8247761E246C4C1800508434 /* SortByKeyPath.swift in Sources */,
 				8227FB79240BAC9A00F653B5 /* Util.swift in Sources */,
 				8227FB75240BAC9600F653B5 /* LoadingView.swift in Sources */,
 				82E254092422388600F16C30 /* Hidden.swift in Sources */,

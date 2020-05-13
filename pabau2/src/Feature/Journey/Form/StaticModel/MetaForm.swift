@@ -1,3 +1,5 @@
+import Model
+
 public enum MetaForm: Equatable, Hashable, CustomDebugStringConvertible {
 	
 	public var debugDescription: String {
@@ -13,7 +15,8 @@ public enum MetaForm: Equatable, Hashable, CustomDebugStringConvertible {
 		}
 	}
 	
-	init(_ patD: PatientDetails) {
+	init?(_ patD: PatientDetails?) {
+		guard let patD = patD else { return nil }
 		self = .patientDetails(patD)
 	}
 	
