@@ -102,7 +102,21 @@ public struct Aftercare: Equatable, Hashable { }
 
 public struct PatientComplete: Equatable, Hashable { }
 
-public enum MetaForm: Equatable, Hashable {
+public enum MetaForm: Equatable, Hashable, CustomDebugStringConvertible {
+	
+	public var debugDescription: String {
+		switch self {
+		case .patientDetails:
+			return "PATIENT DETAILS"
+		case .template(let template):
+			return template.debugDescription
+		case .aftercare:
+			return "AFTERCARE"
+		case .patientComplete:
+			return "COMPLETE"
+		}
+	}
+	
 	case patientDetails(PatientDetails)
 	case aftercare(Aftercare)
 	case template(FormTemplate)
@@ -133,7 +147,12 @@ public enum MetaForm: Equatable, Hashable {
 	}
 }
 
-public struct MetaFormAndStatus: Equatable, Hashable {
+public struct MetaFormAndStatus: Equatable, Hashable, CustomDebugStringConvertible {
+	
+	public var debugDescription: String {
+		return form.debugDescription
+	}
+	
 	static let defaultEmpty = MetaFormAndStatus.init(MetaForm.template(FormTemplate.defaultEmpty), false)
 
 	var form: MetaForm

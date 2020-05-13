@@ -136,5 +136,6 @@ struct JourneyMocks {
 		]),
 		patientDetails: PatientDetails(),
 		medHistory: JourneyMockAPI.getMedHistory(),
-		consents: JourneyMockAPI.mockConsents)
+		consents: JourneyMockAPI.mockConsents,
+		allConsents: JourneyMockAPI.mockConsents)
 }

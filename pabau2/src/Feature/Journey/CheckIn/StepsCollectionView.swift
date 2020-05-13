@@ -18,7 +18,7 @@ struct StepsCollectionView: View {
 				didSelect: @escaping (Int) -> Void) {
 		self.selectedIdx = selectedIdx
 		self.formVms = zip(steps, steps.indices).map { Self.stepVM(step: $0, selection: selectedIdx)}
-		self.formVms.forEach {print("\($0.idx) is selected: \($0.isSelected)")}
+//		self.formVms.forEach {print("\($0.idx) is selected: \($0.isSelected)")}
 		self.didSelect = didSelect
 	}
 

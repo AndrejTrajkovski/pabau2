@@ -5,6 +5,7 @@ import Model
 
 public enum CheckInContainerAction {
 	case chooseTreatments(ChooseFormAction)
+	case chooseConsents(ChooseFormAction)
 	case passcode(PasscodeAction)
 	case animation(CheckInAnimationAction)
 	case patient(CheckInMainAction)
@@ -35,8 +36,8 @@ public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction
 		environment: { $0 }
 	),
 	chooseFormListReducer.pullback(
-		state: \CheckInContainerState.chooseTreatments,
-		action: /CheckInContainerAction.chooseTreatments,
+		state: \CheckInContainerState.chooseConsents,
+		action: /CheckInContainerAction.chooseConsents,
 		environment: { $0 }
 	),
 	navigationReducer.pullback(

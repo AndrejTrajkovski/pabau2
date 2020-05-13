@@ -77,6 +77,16 @@ struct DoctorSummary: View {
 					.customBackButton {
 						self.viewStore.send(.didTouchBackFrom(.treatmentNotes))
 				}
+				NavigationLink.emptyHidden(self.viewStore.state.doctorSummary.isChooseConsentActive,
+																	 ChooseFormList(store: self.store.scope(state: {
+																		$0.chooseConsents
+																	}, action: {
+																		.chooseConsents($0)
+																	}),
+																								mode: .consents))
+					.customBackButton {
+						self.viewStore.send(.didTouchBackFrom(.consents))
+				}
 			}.frame(width: geo.size.width * 0.75)
 				.journeyBase(self.viewStore.state.journey, .long)
 		}

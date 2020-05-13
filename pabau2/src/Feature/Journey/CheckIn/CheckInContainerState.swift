@@ -87,7 +87,8 @@ public struct CheckInContainerState: Equatable {
 	//	var patientSelectedIndex: Int
 	//	var doctorForms: [MetaFormAndStatus]
 	//	var doctorSelectedIndex: Int
-	var treatmentForms: [FormTemplate]
+	var allConsents: [FormTemplate]
+	var allTreatmentForms: [FormTemplate]
 	var doctor: StepsState
 	var patient: StepsState
 	//	var doctorForms: [MetaFormAndStatus]
@@ -110,7 +111,8 @@ public struct CheckInContainerState: Equatable {
 			 pathway: Pathway,
 			 patientDetails: PatientDetails,
 			 medHistory: FormTemplate,
-			 consents: [FormTemplate]) {
+			 consents: [FormTemplate],
+			 allConsents: [FormTemplate]) {
 		self.journey = journey
 		self.pathway = pathway
 		self.patient = Self.patient(pathway,
@@ -121,7 +123,8 @@ public struct CheckInContainerState: Equatable {
 															patientDetails,
 															[],
 															[])
-		self.treatmentForms = JourneyMockAPI.mockTreatmentN
+		self.allTreatmentForms = JourneyMockAPI.mockTreatmentN
+		self.allConsents = allConsents
 	}
 
 	static func doctor(_ pathway: Pathway,
@@ -222,6 +225,26 @@ public struct CheckInContainerState: Equatable {
 }
 
 extension StepsState {
+	
+	var consents: [FormTemplate] {
+		get {
+			forms
+				.map{ $0.form }
+				.compactMap { extract(case: MetaForm.template, from: $0) }
+				.filter { $0.formType == .consent }
+		}
+		set {
+			self.forms.removeAll(where: { form in
+					guard let template = extract(case: MetaForm.template, from: form.form),
+						template.formType == .consent else { return false}
+					return newValue.contains(where: { $0.id == template.id })
+			})
+			self.forms.append(contentsOf: newValue.map {
+				MetaFormAndStatus.init(MetaForm.template($0), false)
+			})
+		}
+	}
+	
 	var treatmentNotes: [FormTemplate] {
 		get {
 			forms
@@ -230,14 +253,25 @@ extension StepsState {
 				.filter { $0.formType == .treatment }
 		}
 		set {
-			self.forms.removeAll(where: { form in
+			print("new values setter \(self.forms.count)")
+			newValue.forEach {
+				print("\($0.name), \($0.formType)")
+			}
+			var copy = self.forms
+			copy.removeAll(where: { form in
 					guard let template = extract(case: MetaForm.template, from: form.form),
 						template.formType == .treatment else { return false}
 					return newValue.contains(where: { $0.id == template.id })
 			})
-			self.forms.append(contentsOf: newValue.map {
+			let newValues = newValue.map {
 				MetaFormAndStatus.init(MetaForm.template($0), false)
-			})
+			}
+			copy.append(contentsOf: newValues)
+			self.forms = copy
+			print("treatmentNotes setter \(self.forms.count)")
+			self.forms.forEach {
+				print("\($0.form.title)")
+			}
 		}
 	}
 }
@@ -254,8 +288,23 @@ extension CheckInContainerState {
 		set {
 			self.isChooseTreatmentActive = newValue.isChooseTreatmentActive
 			self.doctor = newValue.doctor
-			self.isChooseTreatmentActive = newValue.isChooseTreatmentActive
+			self.isChooseConsentActive = newValue.isChooseConsentActive
 			self.isDoctorCheckInMainActive = newValue.isDoctorCheckInMainActive
+		}
+	}
+
+	var chooseConsents: ChooseFormState {
+		get {
+			return ChooseFormState(selectedJourney: journey,
+														 selectedPathway: pathway,
+														 selectedTemplatesIds: patient.consents.map { $0.id},
+														 templates: allConsents,
+														 templatesLoadingState: .initial)
+		}
+		set {
+			let patientForms = newValue.templates.filter { newValue.selectedTemplatesIds.contains($0.id )}
+			self.patient.consents = patientForms
+			self.allConsents = newValue.templates
 		}
 	}
 
@@ -264,15 +313,17 @@ extension CheckInContainerState {
 			return ChooseFormState(selectedJourney: journey,
 														 selectedPathway: pathway,
 														 selectedTemplatesIds: doctor.treatmentNotes.map { $0.id},
-														 templates: treatmentForms,
+														 templates: allTreatmentForms,
 														 templatesLoadingState: .initial)
 		}
 		set {
 			let doctorForms = newValue.templates.filter { newValue.selectedTemplatesIds.contains($0.id )}
-//				.map { MetaForm.template($0) }
-//				.map { MetaFormAndStatus.init( $0, false)}
 			self.doctor.treatmentNotes = doctorForms
-			self.treatmentForms = newValue.templates
+			self.allTreatmentForms = newValue.templates
+			print("chooseTreatments setter \(doctor.treatmentNotes.count)")
+			doctor.treatmentNotes.forEach {
+				print("\($0.name), \($0.formType)")
+			}
 		}
 	}
 
@@ -297,7 +348,8 @@ extension CheckInContainerState {
 													pathway: Pathway.defaultEmpty,
 													patientDetails: PatientDetails(),
 													medHistory: FormTemplate.defaultEmpty,
-													consents: []
+													consents: [],
+													allConsents: JourneyMockAPI.mockConsents
 		)
 	}
 }

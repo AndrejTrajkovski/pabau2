@@ -54,7 +54,7 @@ struct FormField: View {
 	}
 
 	var body: some View {
-		print("form section body \(self.myValue.id)")
+//		print("form section body \(self.myValue.id)")
 		return
 			Group {
 				if self.myValue.checkBox != nil {

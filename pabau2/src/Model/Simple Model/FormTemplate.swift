@@ -3,8 +3,12 @@
 
 import Foundation
 
-public struct FormTemplate: Codable, Identifiable, Equatable, Hashable {
-
+public struct FormTemplate: Codable, Identifiable, Equatable, Hashable, CustomDebugStringConvertible {
+	
+	public var debugDescription: String {
+			return name
+	}
+	
 	public static var defaultEmpty: FormTemplate {
 		return FormTemplate(id: -1,
 												name: "", formType: .consent, ePaper: false, formStructure: FormStructure.defaultEmpty)
