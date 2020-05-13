@@ -177,7 +177,7 @@ struct PatientCheckInState: Equatable {
 		}
 	}
 	
-	func unwrap(_ metaForm: [MetaForm], _ stepType: StepType) {
+	func unwrap(_ metaForm: [MetaForm], _ stepType: StepType) -> [MetaForm] {
 		switch stepType {
 		case .patientdetails:
 			return [MetaForm.patientDetails(patientDetails)]
@@ -197,7 +197,7 @@ struct PatientCheckInState: Equatable {
 		}
 	}
 	//TODO: //GO WITH [StepState] for index!
-	var forms: [MetaForm] {
+	var stepState: [StepState] {
 		get {
 			self.pathway.steps
 				.filter(with(.patient, filterStepType))
@@ -206,9 +206,7 @@ struct PatientCheckInState: Equatable {
 			}
 		}
 		set {
-			newValue.forEach {
-				
-			}
+			
 		}
 	}
 	
