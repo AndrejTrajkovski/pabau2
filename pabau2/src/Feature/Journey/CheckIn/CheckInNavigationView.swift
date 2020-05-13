@@ -20,16 +20,16 @@ public enum CheckInAnimationAction {
 }
 
 public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction, JourneyEnvironemnt> = .combine(
-	formsParentReducer.pullback(
-		state: \CheckInContainerState.patient,
-		action: /CheckInContainerAction.patient,
-		environment: { $0 }
-	),
-	formsParentReducer.pullback(
-		state: \CheckInContainerState.doctor,
-		action: /CheckInContainerAction.doctor,
-		environment: { $0 }
-	),
+//	formsParentReducer.pullback(
+//		state: \CheckInContainerState.patient,
+//		action: /CheckInContainerAction.patient,
+//		environment: { $0 }
+//	),
+//	formsParentReducer.pullback(
+//		state: \CheckInContainerState.doctor,
+//		action: /CheckInContainerAction.doctor,
+//		environment: { $0 }
+//	),
 	chooseFormListReducer.pullback(
 		state: \CheckInContainerState.chooseTreatments,
 		action: /CheckInContainerAction.chooseTreatments,
@@ -74,17 +74,17 @@ public let navigationReducer = Reducer<CheckInContainerState, CheckInContainerAc
 	return .none
 }
 
-public let formsParentReducer: Reducer<StepsState, CheckInMainAction, JourneyEnvironemnt> = .combine(
-	stepFormsReducer2.forEach(
-		state: \StepsState.forms,
-		action: /CheckInMainAction.stepForms..StepFormsAction.childForm,
-		environment: { $0 })
-	,
-	stepFormsReducer.pullback(
-		state: \StepsState.self,
-		action: /CheckInMainAction.stepForms,
-		environment: { $0 })
-)
+//public let formsParentReducer: Reducer<StepsState, CheckInMainAction, JourneyEnvironemnt> = .combine(
+//	stepFormsReducer2.forEach(
+//		state: \StepsState.forms,
+//		action: /CheckInMainAction.stepForms..StepFormsAction.childForm,
+//		environment: { $0 })
+//	,
+//	stepFormsReducer.pullback(
+//		state: \StepsState.self,
+//		action: /CheckInMainAction.stepForms,
+//		environment: { $0 })
+//)
 
 public struct CheckInNavigationView: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>

@@ -9,6 +9,13 @@ public enum CheckInMainAction {
 	case complete
 }
 
+//struct PatientCheckInMain: View {
+//	let store: Store<PatientCheckInState, CheckInMainAction>
+//	var body: some View {
+//		CheckInMain(store: <#T##Store<CheckInContainerState, CheckInContainerAction>#>, journey: <#T##Journey#>, journeyMode: <#T##JourneyMode#>, onClose: <#T##() -> Void#>)
+//	}
+//}
+
 struct CheckInMain: View {
 	let journey: Journey
 	let store: Store<CheckInContainerState, CheckInContainerAction>
@@ -48,39 +55,11 @@ struct CheckInMain: View {
 		return
 			VStack (alignment: .center, spacing: 0) {
 				TopView(journey: self.journey, viewStore: self.viewStore, onClose: onClose)
-				StepForms(store:
-					self.store.scope(
-						state: { $0 },
-						action: { $0 }
-					),
-					journeyMode: self.journeyMode)
+				StepForms(store: self.store, journeyMode: self.journeyMode)
 				Spacer()
 			}
 			.navigationBarTitle("")
 			.navigationBarHidden(true)
-	}
-}
-
-struct TopView: View {
-	let journey: Journey
-	@ObservedObject var viewStore: ViewStore<StepsState, CheckInMainAction>
-	let onClose: () -> Void
-	var body: some View {
-		ZStack {
-			XButton(onTap: onClose)
-				.padding()
-				.exploding(.topLeading)
-			Spacer()
-			JourneyProfileView(style: .short,
-												 viewState: .init(journey: self.journey))
-				.padding()
-				.exploding(.top)
-			Spacer()
-			RibbonView(completedNumberOfSteps: viewStore.state.forms.filter(\.isComplete).count,
-								 totalNumberOfSteps: viewStore.state.forms.count)
-				.offset(x: -80, y: -60)
-				.exploding(.topTrailing)
-		}.frame(height: 168.0)
 	}
 }
 
@@ -97,6 +76,8 @@ struct XButton: View {
 }
 
 public struct PatientDetails: Equatable, Hashable { }
+
+public struct Recall: Equatable, Hashable { }
 
 public struct Aftercare: Equatable, Hashable { }
 
@@ -115,6 +96,22 @@ public enum MetaForm: Equatable, Hashable, CustomDebugStringConvertible {
 		case .patientComplete:
 			return "COMPLETE"
 		}
+	}
+	
+	init(_ patD: PatientDetails) {
+		self = .patientDetails(patD)
+	}
+	
+	init(_ aftercare: Aftercare) {
+		self = .aftercare(aftercare)
+	}
+	
+	init(_ template: FormTemplate) {
+		self = .template(template)
+	}
+	
+	init(_ patientComplete: PatientComplete) {
+		self = .patientComplete(patientComplete)
 	}
 	
 	case patientDetails(PatientDetails)

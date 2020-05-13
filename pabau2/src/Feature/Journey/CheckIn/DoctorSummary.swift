@@ -1,12 +1,14 @@
 import SwiftUI
 import ComposableArchitecture
 import Model
+import Overture
 
 struct DoctorSummaryState: Equatable {
+	var journey: Journey
 	var isChooseConsentActive: Bool
 	var isChooseTreatmentActive: Bool
 	var isDoctorCheckInMainActive: Bool
-	var doctor: StepsState
+	var doctorCheckIn: DoctorCheckInState
 }
 
 let doctorSummaryReducer = Reducer <DoctorSummaryState, DoctorSummaryAction, JourneyEnvironemnt> { state, action, _ in
@@ -42,24 +44,24 @@ public enum DoctorSummaryAction {
 
 struct DoctorSummary: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>
-	@ObservedObject var viewStore: ViewStore<CheckInContainerState, DoctorSummaryAction>
+	@ObservedObject var viewStore: ViewStore<DoctorSummaryState, DoctorSummaryAction>
 	init (store: Store<CheckInContainerState, CheckInContainerAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store
-			.scope(state: { $0 },
+			.scope(state: { $0.doctorSummary },
 						 action: { .doctorSummary($0)}))
 	}
 	var body: some View {
 		GeometryReader { geo in
 			VStack(spacing: 32) {
-				DoctorSummaryStepList(self.viewStore.state.doctor.stepsState) {
+				DoctorSummaryStepList(self.viewStore.state.steps) {
 					self.viewStore.send(.didTouchStep($0))
 				}
 				AddConsentBtns {
 					self.viewStore.send(.didTouchAdd($0))
 				}
 				Spacer()
-				NavigationLink.emptyHidden(self.viewStore.state.doctorSummary.isDoctorCheckInMainActive,
+				NavigationLink.emptyHidden(self.viewStore.state.isDoctorCheckInMainActive,
 																	 CheckInMain(store: self.store,
 																							 journey: self.viewStore.state.journey,
 																							 journeyMode: .doctor,
@@ -67,7 +69,7 @@ struct DoctorSummary: View {
 																								self.viewStore.send(.backOnDoctorCheckIn)
 																	}))
 					.navigationBarHidden(true)
-				NavigationLink.emptyHidden(self.viewStore.state.doctorSummary.isChooseTreatmentActive,
+				NavigationLink.emptyHidden(self.viewStore.state.isChooseTreatmentActive,
 																	 ChooseFormList(store: self.store.scope(state: {
 																		$0.chooseTreatments
 																	}, action: {
@@ -77,7 +79,7 @@ struct DoctorSummary: View {
 					.customBackButton {
 						self.viewStore.send(.didTouchBackFrom(.treatmentNotes))
 				}
-				NavigationLink.emptyHidden(self.viewStore.state.doctorSummary.isChooseConsentActive,
+				NavigationLink.emptyHidden(self.viewStore.state.isChooseConsentActive,
 																	 ChooseFormList(store: self.store.scope(state: {
 																		$0.chooseConsents
 																	}, action: {
@@ -164,6 +166,41 @@ struct DoctorSummaryRow: View {
 				Image(systemName: "chevron.right")
 					.frame(width: 8, height: 13)
 			}
+		}
+	}
+}
+
+extension DoctorSummaryState {
+	var steps: [StepState] {
+		doctorCheckIn.pathway.steps
+			.filter(with(.doctor, filterStepType))
+			.map {
+				switch $0.stepType {
+				case .checkpatient:
+					return StepState(stepType: $0.stepType,
+													 isComplete: doctorCheckIn.checkPatientCompleted)
+				case .treatmentnotes:
+					return StepState(stepType: $0.stepType,
+													 isComplete: doctorCheckIn.treatmentFormsCompleted.allSatisfy { $0.value == true })
+				case .prescriptions:
+					return StepState(stepType: $0.stepType,
+													 isComplete: doctorCheckIn.prescriptionsCompleted.allSatisfy {
+														$0.value == true })
+				case .photos:
+					return StepState(stepType: $0.stepType,
+													 isComplete: doctorCheckIn.photosCompleted)
+				case .recalls:
+					return StepState(stepType: $0.stepType,
+													 isComplete: doctorCheckIn.recallCompleted)
+				case .aftercares:
+					return StepState(stepType: $0.stepType,
+													 isComplete: doctorCheckIn.aftercareCompleted)
+				case .patientComplete,
+						 .patientdetails,
+						 .medicalhistory,
+						 .consents:
+					fatalError("patient steps")
+				}
 		}
 	}
 }

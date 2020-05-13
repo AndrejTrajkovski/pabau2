@@ -17,7 +17,7 @@ public struct JourneyState: Equatable {
 	public var selectedJourney: Journey?
 	public var selectedPathway: Pathway?
 	var selectedConsentsIds: [Int] = []
-	var allConsents: [FormTemplate] = []
+	var allConsents: [Int: FormTemplate] = [:]
 	public var checkIn: CheckInContainerState?
 //		= JourneyMocks.checkIn
 
@@ -136,6 +136,6 @@ struct JourneyMocks {
 		]),
 		patientDetails: PatientDetails(),
 		medHistory: JourneyMockAPI.getMedHistory(),
-		consents: JourneyMockAPI.mockConsents,
-		allConsents: JourneyMockAPI.mockConsents)
+		allConsents: flatten(JourneyMockAPI.mockConsents),
+		selectedConsentsIds: [])
 }

@@ -1,10 +1,21 @@
 import Model
 import ComposableArchitecture
+import Overture
+
+func flatten<T: Identifiable>(_ list: [T]) -> [T.ID: T] {
+	Dictionary(uniqueKeysWithValues: Array(zip(list.map(\.id), list)))
+}
 
 enum JourneyMode: Equatable {
 	case patient
 	case doctor
 }
+
+func isIn(_ journeyMode: JourneyMode, _ stepType: StepType) -> Bool {
+	stepToModeMap(stepType) == journeyMode
+}
+
+let filterBy = curry(isIn(_:_:))
 
 func stepToModeMap(_ stepType: StepType) -> JourneyMode {
 	switch stepType {
@@ -47,53 +58,40 @@ func stepType(type: FormType) -> StepType {
 	}
 }
 
-public struct StepsState: Equatable {
-	var stepsState: [StepState]
-	var selectedIndex: Int
-	var forms: [MetaFormAndStatus] {
-		get { self.stepsState.flatMap(\.forms) }
-		set {
-			let grouped: [StepType: [MetaFormAndStatus]] =
-				Dictionary.init(grouping: newValue,
-												by: { stepType(form: $0.form) })
-			let result = grouped.reduce(into: [StepState](), {
-				$0.append(StepState.init(stepType: $1.key, forms: $1.value))
-			})
-			self.stepsState = result.sorted(by: { $0.stepType.order < $1.stepType.order })
-		}
-	}
-
-	var isOnCompleteStep: Bool {
-		self.forms.firstIndex(where: { extract(case: MetaForm.patientComplete, from: $0.form) != nil }) ==
-		selectedIndex
-	}
-}
-
-struct StepState: Equatable {
-	let stepType: StepType
-	var isComplete: Bool {
-		return self.forms.map { $0.isComplete }.allSatisfy { $0 == true }
-	}
-//	var title: String {
-//		return stepType.title.uppercased()
-//	}
-	var forms: [MetaFormAndStatus]
-}
-
 public struct CheckInContainerState: Equatable {
 	var journey: Journey
 	var pathway: Pathway
-	//	var patientForms: [MetaFormAndStatus]
-	//	var patientSelectedIndex: Int
-	//	var doctorForms: [MetaFormAndStatus]
-	//	var doctorSelectedIndex: Int
-	var allConsents: [FormTemplate]
-	var allTreatmentForms: [FormTemplate]
-	var doctor: StepsState
-	var patient: StepsState
-	//	var doctorForms: [MetaFormAndStatus]
-	//	var selectedFormIndex: Int
-
+	
+	var runningPrescriptions: [Int: FormTemplate]
+	var prescriptionsCompleted: [Int: Bool]
+	
+	var allConsents: [Int: FormTemplate]
+	var selectedConsentsIds: [Int]
+	var consentsCompleted: [Int: Bool]
+	var runningConsents: [Int: FormTemplate]
+	
+	var allTreatmentForms: [Int: FormTemplate]
+	var selectedTreatmentFormsIds: [Int]
+	var treatmentFormsCompleted: [Int: Bool]
+	var runningTreatmentForms: [Int: FormTemplate]
+	
+	var aftercare: Aftercare
+	var aftercareCompleted: Bool
+	
+	var patientDetails: PatientDetails
+	var patientDetailsCompleted: Bool
+	
+	var patientComplete: PatientComplete
+	
+	var checkPatientCompleted: Bool
+	
+	var patientSelectedIndex: Int
+	var doctorSelectedIndex: Int
+	
+	var photosCompleted: Bool
+	var recall: Recall
+	var recallCompleted: Bool
+	
 	var runningDigits: [String] = []
 	var unlocked: Bool = false
 	var wrongAttempts: Int = 0
@@ -103,208 +101,169 @@ public struct CheckInContainerState: Equatable {
 	var isEnterPasscodeActive: Bool = false
 	var isChooseConsentActive: Bool = false
 	var isChooseTreatmentActive: Bool = false
-	var isPatientCheckInMainActive: Bool = false
 	var isDoctorCheckInMainActive: Bool = false
+	var isPatientCheckInMainActive: Bool = false
 	var isDoctorSummaryActive: Bool = false
 
 	init(journey: Journey,
 			 pathway: Pathway,
 			 patientDetails: PatientDetails,
 			 medHistory: FormTemplate,
-			 consents: [FormTemplate],
-			 allConsents: [FormTemplate]) {
+			 allConsents: [Int: FormTemplate],
+			 selectedConsentsIds: [Int]) {
 		self.journey = journey
 		self.pathway = pathway
-		self.patient = Self.patient(pathway,
-																patientDetails,
-																medHistory,
-																consents)
-		self.doctor = Self.doctor(pathway,
-															patientDetails,
-															[],
-															[])
-		self.allTreatmentForms = JourneyMockAPI.mockTreatmentN
 		self.allConsents = allConsents
-	}
-
-	static func doctor(_ pathway: Pathway,
-										 _ patientDetails: PatientDetails,
-										 _ treatmentN: [FormTemplate],
-										 _ prescriptions: [FormTemplate]
-	) -> StepsState {
-		let patientSteps: [StepState] =
-			pathway.steps.map { $0.stepType }
-				.filter { stepToModeMap($0) == .doctor }
-				.map {
-					StepState(stepType: $0,
-										forms: Self.doctorForms($0,
-																						patientDetails,
-																						treatmentN,
-																						[JourneyMockAPI.getPrescription()])
-					)
-		}.sorted(by: { $0.stepType.order < $1.stepType.order })
-		return StepsState(stepsState: patientSteps,
-											selectedIndex: 0)
-	}
-
-	static func patient(_ pathway: Pathway,
-											_ patientDetails: PatientDetails,
-											_ medHistory: FormTemplate,
-											_ consents: [FormTemplate]) -> StepsState {
-		var stepTypes = pathway.steps.map { $0.stepType }
-		stepTypes.append(.patientComplete)
-		let patientSteps: [StepState] =
-			stepTypes
-				.filter { stepToModeMap($0) == .patient }
-				.map {
-					StepState(stepType: $0, forms: Self.patientForms($0,
-																													 patientDetails,
-																													 medHistory,
-																													 consents)
-					)
-		}.sorted(by: { $0.stepType.order < $1.stepType.order })
-		return StepsState(stepsState: patientSteps,
-											selectedIndex: 0)
-	}
-
-	static func patientForms(_ stepType: StepType,
-													 _ patientDetails: PatientDetails,
-													 _ medHistory: FormTemplate,
-													 _ consents: [FormTemplate]) -> [MetaFormAndStatus] {
-		switch stepType {
-		case .patientdetails:
-			return [MetaFormAndStatus(MetaForm.patientDetails(patientDetails), false)]
-		case .medicalhistory:
-			return [MetaFormAndStatus(MetaForm.template(medHistory), false)]
-		case .consents:
-			return zip(
-				consents.map(MetaForm.template), consents.map { _ in false })
-				.map(MetaFormAndStatus.init)
-		case .checkpatient,
-				 .treatmentnotes,
-				 .prescriptions,
-				 .photos,
-				 .recalls,
-				 .aftercares:
-			fatalError("doctor steps, should be filtered earlier")
-		case .patientComplete:
-			return [MetaFormAndStatus(MetaForm.patientComplete(PatientComplete()), false)]
-		}
-	}
-
-	static func doctorForms(_ stepType: StepType,
-													_ patientDetails: PatientDetails,
-													_ treatmentN: [FormTemplate],
-													_ prescriptions: [FormTemplate]
-	) -> [MetaFormAndStatus] {
-		switch stepType {
-		case .checkpatient:
-			return [MetaFormAndStatus(MetaForm.patientDetails(patientDetails), false)]
-		case .treatmentnotes:
-			return zip(
-				treatmentN.map(MetaForm.template), treatmentN.map { _ in false })
-				.map(MetaFormAndStatus.init)
-		case .prescriptions:
-			return zip(
-				prescriptions.map(MetaForm.template), prescriptions.map { _ in false })
-				.map(MetaFormAndStatus.init)
-		case .photos:
-			return []//TODO
-		case .recalls:
-			return []//TODO
-		case .aftercares:
-			return []//TODO
-		case .patientdetails,
-				 .medicalhistory,
-				 .consents:
-			fatalError("patient steps, should be filtered earlier")
-		case .patientComplete:
-			return []
-		}
+		self.selectedConsentsIds = selectedConsentsIds
+		self.allTreatmentForms = flatten(JourneyMockAPI.mockTreatmentN)
+		self.runningConsents = selected(allConsents, selectedConsentsIds)
+		self.runningTreatmentForms = [:]
+		self.consentsCompleted = [:]
+		self.selectedTreatmentFormsIds = []
+		self.treatmentFormsCompleted = [:]
+		self.aftercare = Aftercare()
+		self.aftercareCompleted = false
+		self.patientDetails = PatientDetails()
+		self.patientDetailsCompleted = false
+		self.patientComplete = PatientComplete()
+		self.patientSelectedIndex = 0
+		self.doctorSelectedIndex = 0
+		self.runningPrescriptions = [:]
+		self.prescriptionsCompleted = [:]
+		self.checkPatientCompleted = false
+		self.photosCompleted = false
+		self.recall = Recall()
+		self.recallCompleted = false
 	}
 }
 
-extension StepsState {
+struct PatientCheckInState: Equatable {
+	var patientSelectedIndex: Int
+	var pathway: Pathway
+	var patientDetails: PatientDetails
+	var patientDetailsCompleted: Bool
+	var patientComplete: PatientComplete
+	var consentsCompleted: [Int: Bool]
+	var runningConsents: [Int: FormTemplate]
+}
+
+struct DoctorCheckInState: Equatable {
+	var doctorSelectedIndex: Int
+	var pathway: Pathway
+	var aftercare: Aftercare
+	var aftercareCompleted: Bool
+	var runningTreatmentForms: [Int: FormTemplate]
+	var treatmentFormsCompleted: [Int: Bool]
+	var checkPatientCompleted: Bool
+	var runningPrescriptions: [Int: FormTemplate]
+	var prescriptionsCompleted: [Int: Bool]
+	var photosCompleted: Bool
+	var recall: Recall
+	var recallCompleted: Bool
+}
+
+let filterStepTypeFlipped = pipe(get(\Step.stepType), flip(filterBy))
+let filterStepType = flip(filterStepTypeFlipped)
+
+struct CheckInViewState: Equatable {
+	var selectedIndex: Int
+	var forms: [Int: MetaFormAndStatus]
+	var order: [Int]
 	
-	var consents: [FormTemplate] {
-		get {
-			forms
-				.map{ $0.form }
-				.compactMap { extract(case: MetaForm.template, from: $0) }
-				.filter { $0.formType == .consent }
-		}
-		set {
-			self.forms.removeAll(where: { form in
-					guard let template = extract(case: MetaForm.template, from: form.form),
-						template.formType == .consent else { return false}
-					return newValue.contains(where: { $0.id == template.id })
-			})
-			self.forms.append(contentsOf: newValue.map {
-				MetaFormAndStatus.init(MetaForm.template($0), false)
-			})
-		}
-	}
-	
-	var treatmentNotes: [FormTemplate] {
-		get {
-			forms
-				.map{ $0.form }
-				.compactMap { extract(case: MetaForm.template, from: $0) }
-				.filter { $0.formType == .treatment }
-		}
-		set {
-			print("new values setter \(self.forms.count)")
-			newValue.forEach {
-				print("\($0.name), \($0.formType)")
-			}
-			var copy = self.forms
-			copy.removeAll(where: { form in
-					guard let template = extract(case: MetaForm.template, from: form.form),
-						template.formType == .treatment else { return false}
-					return newValue.contains(where: { $0.id == template.id })
-			})
-			let newValues = newValue.map {
-				MetaFormAndStatus.init(MetaForm.template($0), false)
-			}
-			copy.append(contentsOf: newValues)
-			self.forms = copy
-			print("treatmentNotes setter \(self.forms.count)")
-			self.forms.forEach {
-				print("\($0.form.title)")
-			}
-		}
-	}
+//	init (_ doctor: DoctorCheckInState) {
+//		let steps = doctor.pathway.steps.filter(with(.doctor, filterStepType))
+//		doctor.pathway.steps.filter(with(.doctor, filterStepType)).map {
+//			Self.doctorForms($0.stepType,
+//											 doctor., <#T##treatmentN: [FormTemplate]##[FormTemplate]#>, <#T##prescriptions: [FormTemplate]##[FormTemplate]#>)
+//		}
+//			.map(pipe(get(\.stepType)))
+//		doctor.pathway.steps.map { $0.stepType }
+//				.filter { stepToModeMap($0) == .doctor }
+//				.map {
+//					StepState(stepType: $0,
+//										forms: Self.doctorForms($0,
+//																						patientDetails,
+//																						treatmentN,
+//																						[JourneyMockAPI.getPrescription()])
+//					)
+//		}.sorted(by: { $0.stepType.order < $1.stepType.order })
+//		self.forms = CheckInContainerState.doctorForms(<#T##stepType: StepType##StepType#>, <#T##patientDetails: PatientDetails##PatientDetails#>, <#T##treatmentN: [FormTemplate]##[FormTemplate]#>, <#T##prescriptions: [FormTemplate]##[FormTemplate]#>)
+//	}
+}
+
+func selected(_ templates: [Int: FormTemplate], _ selectedIds: [Int]) -> [Int: FormTemplate] {
+	templates.filter { selectedIds.contains($0.key) }
 }
 
 extension CheckInContainerState {
-
-	var doctorSummary: DoctorSummaryState {
+	
+	var doctorCheckIn: DoctorCheckInState {
 		get {
-			DoctorSummaryState(isChooseConsentActive: isChooseConsentActive,
-												 isChooseTreatmentActive: isChooseTreatmentActive,
-												 isDoctorCheckInMainActive: isDoctorCheckInMainActive,
-												 doctor: doctor)
+			DoctorCheckInState(
+				doctorSelectedIndex: doctorSelectedIndex,
+				pathway: pathway,
+				aftercare: aftercare,
+				aftercareCompleted: aftercareCompleted,
+				runningTreatmentForms: runningTreatmentForms,
+				treatmentFormsCompleted: treatmentFormsCompleted,
+				checkPatientCompleted: checkPatientCompleted,
+				runningPrescriptions: runningPrescriptions,
+				prescriptionsCompleted: prescriptionsCompleted,
+				photosCompleted: photosCompleted,
+				recall: recall,
+				recallCompleted: recallCompleted
+			)
 		}
 		set {
-			self.isChooseTreatmentActive = newValue.isChooseTreatmentActive
-			self.doctor = newValue.doctor
-			self.isChooseConsentActive = newValue.isChooseConsentActive
-			self.isDoctorCheckInMainActive = newValue.isDoctorCheckInMainActive
+			self.doctorSelectedIndex = newValue.doctorSelectedIndex
+			self.pathway = newValue.pathway
+			self.aftercare = newValue.aftercare
+			self.aftercareCompleted = newValue.aftercareCompleted
+			self.runningTreatmentForms = newValue.runningTreatmentForms
+			self.treatmentFormsCompleted = newValue.treatmentFormsCompleted
+			self.checkPatientCompleted = newValue.checkPatientCompleted
+			self.runningPrescriptions = newValue.runningPrescriptions
+			self.prescriptionsCompleted = newValue.prescriptionsCompleted
+			self.photosCompleted = newValue.photosCompleted
+			self.recall = newValue.recall
+			self.recallCompleted = newValue.recallCompleted
 		}
 	}
-
-	var chooseConsents: ChooseFormState {
-		get {
-			return ChooseFormState(selectedJourney: journey,
-														 selectedPathway: pathway,
-														 selectedTemplatesIds: patient.consents.map { $0.id},
-														 templates: allConsents,
-														 templatesLoadingState: .initial)
+	
+	var patientCheckIn: PatientCheckInState {
+		get { PatientCheckInState(patientSelectedIndex: patientSelectedIndex,
+															pathway: pathway,
+															patientDetails: patientDetails,
+															patientDetailsCompleted: patientDetailsCompleted,
+															patientComplete: patientComplete,
+															consentsCompleted: consentsCompleted,
+															runningConsents: runningConsents)
 		}
 		set {
-			let patientForms = newValue.templates.filter { newValue.selectedTemplatesIds.contains($0.id )}
-			self.patient.consents = patientForms
-			self.allConsents = newValue.templates
+			self.patientSelectedIndex = newValue.patientSelectedIndex
+			self.pathway = newValue.pathway
+			self.patientDetails = newValue.patientDetails
+			self.patientDetailsCompleted = newValue.patientDetailsCompleted
+			self.patientComplete = newValue.patientComplete
+			self.runningConsents = newValue.runningConsents
+			self.consentsCompleted = newValue.consentsCompleted
+		}
+	}
+	
+	var doctorSummary: DoctorSummaryState {
+		get {
+			DoctorSummaryState(journey: journey,
+												 isChooseConsentActive: isChooseConsentActive,
+												 isChooseTreatmentActive: isChooseTreatmentActive,
+												 isDoctorCheckInMainActive: isDoctorCheckInMainActive,
+												 doctorCheckIn: doctorCheckIn)
+		}
+		set {
+			self.journey = newValue.journey
+			self.doctorCheckIn = newValue.doctorCheckIn
+			self.isChooseConsentActive = newValue.isChooseConsentActive
+			self.isChooseTreatmentActive = newValue.isChooseTreatmentActive
+			self.isDoctorCheckInMainActive = newValue.isDoctorCheckInMainActive
 		}
 	}
 
@@ -312,21 +271,28 @@ extension CheckInContainerState {
 		get {
 			return ChooseFormState(selectedJourney: journey,
 														 selectedPathway: pathway,
-														 selectedTemplatesIds: doctor.treatmentNotes.map { $0.id},
+														 selectedTemplatesIds: selectedTreatmentFormsIds,
 														 templates: allTreatmentForms,
 														 templatesLoadingState: .initial)
 		}
 		set {
-			let doctorForms = newValue.templates.filter { newValue.selectedTemplatesIds.contains($0.id )}
-			self.doctor.treatmentNotes = doctorForms
-			self.allTreatmentForms = newValue.templates
-			print("chooseTreatments setter \(doctor.treatmentNotes.count)")
-			doctor.treatmentNotes.forEach {
-				print("\($0.name), \($0.formType)")
-			}
+			self.selectedTreatmentFormsIds = newValue.selectedTemplatesIds
 		}
 	}
 
+	var chooseConsents: ChooseFormState {
+		get {
+			return ChooseFormState(selectedJourney: journey,
+														 selectedPathway: pathway,
+														 selectedTemplatesIds: selectedConsentsIds,
+														 templates: allConsents,
+														 templatesLoadingState: .initial)
+		}
+		set {
+			self.selectedConsentsIds = newValue.selectedTemplatesIds
+		}
+	}
+	
 	var passcode: PasscodeState {
 		get {
 			PasscodeState(runningDigits: self.runningDigits,
@@ -348,8 +314,108 @@ extension CheckInContainerState {
 													pathway: Pathway.defaultEmpty,
 													patientDetails: PatientDetails(),
 													medHistory: FormTemplate.defaultEmpty,
-													consents: [],
-													allConsents: JourneyMockAPI.mockConsents
+													allConsents: [:],
+													selectedConsentsIds: []
 		)
 	}
 }
+
+//extension CheckInViewState {
+//	static func doctorForms(_ stepType: StepType,
+//													_ patientDetails: PatientDetails,
+//													_ treatmentN: [Int: FormTemplate],
+//													_ prescriptions: [FormTemplate],
+//													_ pdComplete: Bool,
+//													_ treatmentNComplete: [Int: Bool]
+//	) -> [MetaFormAndStatus] {
+//		switch stepType {
+//		case .checkpatient:
+//			return [MetaFormAndStatus(MetaForm.patientDetails(patientDetails), false)]
+//		case .treatmentnotes:
+//			return zip(
+//				treatmentN.map(MetaForm.template), treatmentN.map { _ in false })
+//				.map(MetaFormAndStatus.init)
+//		case .prescriptions:
+//			return zip(
+//				prescriptions.map(MetaForm.template), prescriptions.map { _ in false })
+//				.map(MetaFormAndStatus.init)
+//		case .photos:
+//			return []//TODO
+//		case .recalls:
+//			return []//TODO
+//		case .aftercares:
+//			return []//TODO
+//		case .patientdetails,
+//				 .medicalhistory,
+//				 .consents:
+//			fatalError("patient steps, should be filtered earlier")
+//		case .patientComplete:
+//			return []
+//		}
+//	}
+//
+//	static func patientForms(_ stepType: StepType,
+//													 _ patientDetails: PatientDetails,
+//													 _ medHistory: FormTemplate,
+//													 _ consents: [FormTemplate]) -> [MetaFormAndStatus] {
+//		switch stepType {
+//		case .patientdetails:
+//			return [MetaFormAndStatus(MetaForm.patientDetails(patientDetails), false)]
+//		case .medicalhistory:
+//			return [MetaFormAndStatus(MetaForm.template(medHistory), false)]
+//		case .consents:
+//			return zip(
+//				consents.map(MetaForm.template), consents.map { _ in false })
+//				.map(MetaFormAndStatus.init)
+//		case .checkpatient,
+//				 .treatmentnotes,
+//				 .prescriptions,
+//				 .photos,
+//				 .recalls,
+//				 .aftercares:
+//			fatalError("doctor steps, should be filtered earlier")
+//		case .patientComplete:
+//			return [MetaFormAndStatus(MetaForm.patientComplete(PatientComplete()), false)]
+//		}
+//	}
+//}
+
+//static func doctor(_ pathway: Pathway,
+//									 _ patientDetails: PatientDetails,
+//									 _ treatmentN: [FormTemplate],
+//									 _ prescriptions: [FormTemplate]
+//) -> StepsState {
+//	let patientSteps: [StepState] =
+//		pathway.steps.map { $0.stepType }
+//			.filter { stepToModeMap($0) == .doctor }
+//			.map {
+//				StepState(stepType: $0,
+//									forms: Self.doctorForms($0,
+//																					patientDetails,
+//																					treatmentN,
+//																					[JourneyMockAPI.getPrescription()])
+//				)
+//	}.sorted(by: { $0.stepType.order < $1.stepType.order })
+//	return StepsState(stepsState: patientSteps,
+//										selectedIndex: 0)
+//}
+//
+//static func patient(_ pathway: Pathway,
+//										_ patientDetails: PatientDetails,
+//										_ medHistory: FormTemplate,
+//										_ consents: [FormTemplate]) -> StepsState {
+//	var stepTypes = pathway.steps.map { $0.stepType }
+//	stepTypes.append(.patientComplete)
+//	let patientSteps: [StepState] =
+//		stepTypes
+//			.filter { stepToModeMap($0) == .patient }
+//			.map {
+//				StepState(stepType: $0, forms: Self.patientForms($0,
+//																												 patientDetails,
+//																												 medHistory,
+//																												 consents)
+//				)
+//	}.sorted(by: { $0.stepType.order < $1.stepType.order })
+//	return StepsState(stepsState: patientSteps,
+//										selectedIndex: 0)
+//}

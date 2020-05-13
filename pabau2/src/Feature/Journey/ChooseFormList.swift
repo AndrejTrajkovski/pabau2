@@ -7,7 +7,7 @@ public struct ChooseFormState: Equatable {
 	var selectedJourney: Journey?
 	var selectedPathway: Pathway?
 	var selectedTemplatesIds: [Int]
-	var templates: [FormTemplate]
+	var templates: [Int: FormTemplate]
 	var templatesLoadingState: LoadingState = .initial
 }
 
@@ -30,7 +30,7 @@ let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, JourneyEn
 	case .gotResponse(let result):
 		switch result {
 		case .success(let templates):
-			state.templates = templates
+			state.templates = flatten(templates)
 			state.selectedTemplatesIds = []
 			state.templatesLoadingState = .gotSuccess
 		case .failure:
@@ -108,7 +108,7 @@ struct ChooseFormList: View {
 
 	struct ViewState: Equatable {
 		let journey: Journey?
-		let templates: [FormTemplate]
+		let templates: [Int: FormTemplate]
 		var selectedTemplatesIds: [Int]
 		init(_ state: ChooseFormState) {
 			self.templates = state.templates
@@ -117,10 +117,14 @@ struct ChooseFormList: View {
 		}
 		
 		var notSelectedTemplates: [FormTemplate] {
-			templates.filter { !selectedTemplatesIds.contains($0.id) }
+			templates
+				.filter { !selectedTemplatesIds.contains($0.key) }
+				.map { $0.value }
 		}
 		var selectedTemplates: [FormTemplate] {
-			templates.filter { selectedTemplatesIds.contains($0.id) }
+			templates
+				.filter { selectedTemplatesIds.contains($0.key) }
+				.map { $0.value }
 		}
 	}
 
