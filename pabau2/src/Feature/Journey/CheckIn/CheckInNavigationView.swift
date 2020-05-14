@@ -101,13 +101,9 @@ public struct CheckInNavigationView: View {
 					CheckInAnimation(isRunningAnimation: self.$isRunningAnimation)
 					NavigationLink.init(destination:
 						CheckInMain(store:
-							self.store.scope(state: { $0 },
-															 action: { $0 }
-							), journey: viewStore.state.journey,
-								 journeyMode: .patient,
-								 onClose: {
-									viewStore.send(.closeBtnTap)
-						})
+							self.store.scope(state: { $0.patientCheckIn },
+															 action: { .patient($0) }
+							))
 						, isActive: self.$isRunningAnimation, label: { EmptyView() })
 				}
 			}.navigationViewStyle(StackNavigationViewStyle())

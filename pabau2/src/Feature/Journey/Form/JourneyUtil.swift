@@ -72,3 +72,13 @@ let filterStepType = flip(filterStepTypeFlipped)
 func selected(_ templates: [Int: FormTemplate], _ selectedIds: [Int]) -> [Int: FormTemplate] {
 	templates.filter { selectedIds.contains($0.key) }
 }
+
+let formTemplatesAllFalse: ([Int: FormTemplate]) -> [Int: Bool] = { state in
+	return allFalseCompleted(state.map(\.key))
+}
+
+func allFalseCompleted(_ ids: [Int]) -> [Int: Bool] {
+	ids.reduce(into: [Int: Bool]()) {
+		$0[$1] = false
+	}
+}

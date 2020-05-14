@@ -3,7 +3,6 @@ import SwiftUI
 import Model
 
 struct StepsCollectionView: View {
-
 	let maxVisibleCells = 5
 	let cellWidth: CGFloat = 100
 	let cellHeight: CGFloat = 80
@@ -18,7 +17,6 @@ struct StepsCollectionView: View {
 				didSelect: @escaping (Int) -> Void) {
 		self.selectedIdx = selectedIdx
 		self.formVms = zip(steps, steps.indices).map { Self.stepVM(step: $0, selection: selectedIdx)}
-//		self.formVms.forEach {print("\($0.idx) is selected: \($0.isSelected)")}
 		self.didSelect = didSelect
 	}
 

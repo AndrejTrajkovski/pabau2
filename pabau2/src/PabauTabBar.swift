@@ -101,7 +101,7 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
 		state: \TabBarState.journey,
 		action: /TabBarAction.journey,
 		environment: {
-			return JourneyEnvironemnt(
+			return JourneyEnvironment(
 				apiClient: $0.journeyAPI,
 				userDefaults: $0.userDefaults)
 	})

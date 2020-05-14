@@ -8,8 +8,14 @@ public typealias Indexed<T> = (Int, T)
 struct PabauFormWrap: View {
 	let store: Store<MetaFormAndStatus, ChildFormAction>
 	@ObservedObject var viewStore: ViewStore<State, ChildFormAction>
-	let journeyMode: JourneyMode
 
+	init(store: Store<MetaFormAndStatus, ChildFormAction>) {
+		self.store = store
+		self.viewStore = ViewStore(store.scope(
+			state: State.init(state:),
+			action: { $0 }))
+	}
+	
 	struct State: Equatable {
 		var patientDetails: PatientDetails?
 		var template: FormTemplate?

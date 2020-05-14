@@ -10,42 +10,30 @@ enum JourneyMode: Equatable {
 public struct CheckInContainerState: Equatable {
 	var journey: Journey
 	var pathway: Pathway
-	
 	var runningPrescriptions: [Int: FormTemplate]
 	var prescriptionsCompleted: [Int: Bool]
-	
 	var allConsents: [Int: FormTemplate]
 	var selectedConsentsIds: [Int]
 	var consentsCompleted: [Int: Bool]
 	var runningConsents: [Int: FormTemplate]
-	
 	var allTreatmentForms: [Int: FormTemplate]
 	var selectedTreatmentFormsIds: [Int]
 	var treatmentFormsCompleted: [Int: Bool]
 	var runningTreatmentForms: [Int: FormTemplate]
-	
 	var aftercare: Aftercare
 	var aftercareCompleted: Bool
-	
 	var patientDetails: PatientDetails
 	var patientDetailsCompleted: Bool
-	
 	var patientComplete: PatientComplete
-	
 	var checkPatientCompleted: Bool
-	
 	var medHistory: FormTemplate
 	var medHistoryCompleted: Bool
-	
 	var checkPatientForm: CheckPatientForm
-	
 	var patientSelectedIndex: Int
 	var doctorSelectedIndex: Int
-	
 	var photosCompleted: Bool
 	var recall: Recall
 	var recallCompleted: Bool
-	
 	var runningDigits: [String] = []
 	var unlocked: Bool = false
 	var wrongAttempts: Int = 0
@@ -72,7 +60,9 @@ public struct CheckInContainerState: Equatable {
 		self.allTreatmentForms = flatten(JourneyMockAPI.mockTreatmentN)
 		self.runningConsents = selected(allConsents, selectedConsentsIds)
 		self.runningTreatmentForms = [:]
-		self.consentsCompleted = [:]
+		self.consentsCompleted = runningConsents.map { $0.key }.reduce(into: [Int: Bool]()) {
+			$0[$1] = false
+		}
 		self.selectedTreatmentFormsIds = []
 		self.treatmentFormsCompleted = [:]
 		self.aftercare = Aftercare()
@@ -97,30 +87,27 @@ public struct CheckInContainerState: Equatable {
 extension CheckInContainerState {
 	
 	//FIXME: OPTIMIZE FILTERING ON PATIENT VS DOCTOR
-	
 	var patientArray: [MetaFormAndStatus] {
 		get {
-			forms(.patient, self)
+			return forms(.patient, self)
 		}
 		set {
 			newValue.filter(
 				with(.patient, filterMetaFormsByJourneyMode)
-			)
-				.forEach {
-					unwrap(&self, $0)
+			).forEach {
+				unwrap(&self, $0)
 			}
 		}
 	}
 	
 	var doctorArray: [MetaFormAndStatus] {
 		get {
-			forms(.doctor, self)
+			return forms(.doctor, self)
 		}
 		set {
 			newValue.filter(
 				with(.doctor, filterMetaFormsByJourneyMode)
-			)
-				.forEach {
+			).forEach {
 					unwrap(&self, $0)
 			}
 		}
@@ -145,7 +132,7 @@ extension CheckInContainerState {
 		get {
 			CheckInViewState(
 				selectedIndex: patientSelectedIndex,
-				forms: doctorArray,
+				forms: patientArray,
 				xButtonActiveFlag: isPatientCheckInMainActive,
 				journey: journey)
 		}
@@ -231,14 +218,17 @@ extension CheckInContainerState {
 	}
 }
 
-
 struct CheckInViewState: Equatable {
 	var selectedIndex: Int
 	var forms: [MetaFormAndStatus]
 	var xButtonActiveFlag: Bool
 	var journey: Journey
 	
-	var topViewState: TopViewState {
+	var selectedForm: MetaFormAndStatus {
+		return forms[selectedIndex]
+	}
+	
+	var topView: TopViewState {
 		get {
 			TopViewState(totalSteps: self.forms.count,
 									 completedSteps: self.forms.filter(\.isComplete).count,
@@ -251,73 +241,6 @@ struct CheckInViewState: Equatable {
 	}
 }
 
-
-
-
-
-//var doctorCheckIn: DoctorCheckInState {
-//	get {
-//		DoctorCheckInState(
-//			doctorSelectedIndex: doctorSelectedIndex,
-//			pathway: pathway,
-//			aftercare: aftercare,
-//			aftercareCompleted: aftercareCompleted,
-//			runningTreatmentForms: runningTreatmentForms,
-//			treatmentFormsCompleted: treatmentFormsCompleted,
-//			checkPatientCompleted: checkPatientCompleted,
-//			runningPrescriptions: runningPrescriptions,
-//			prescriptionsCompleted: prescriptionsCompleted,
-//			photosCompleted: photosCompleted,
-//			recall: recall,
-//			recallCompleted: recallCompleted
-//		)
-//	}
-//	set {
-//		self.doctorSelectedIndex = newValue.doctorSelectedIndex
-//		self.pathway = newValue.pathway
-//		self.aftercare = newValue.aftercare
-//		self.aftercareCompleted = newValue.aftercareCompleted
-//		self.runningTreatmentForms = newValue.runningTreatmentForms
-//		self.treatmentFormsCompleted = newValue.treatmentFormsCompleted
-//		self.checkPatientCompleted = newValue.checkPatientCompleted
-//		self.runningPrescriptions = newValue.runningPrescriptions
-//		self.prescriptionsCompleted = newValue.prescriptionsCompleted
-//		self.photosCompleted = newValue.photosCompleted
-//		self.recall = newValue.recall
-//		self.recallCompleted = newValue.recallCompleted
-//	}
-//}
-//
-//var patientCheckIn: PatientCheckInState {
-//	get {
-//		PatientCheckInState(
-//			isPatientCheckInMainActive: isPatientCheckInMainActive,
-//			journey: journey,
-//			patientSelectedIndex: patientSelectedIndex,
-//			pathway: pathway,
-//			medHistory: medHistory,
-//			medHistoryCompleted: medHistoryCompleted,
-//			patientDetails: patientDetails,
-//			patientDetailsCompleted: patientDetailsCompleted,
-//			patientComplete: patientComplete,
-//			consentsCompleted: consentsCompleted,
-//			runningConsents: runningConsents)
-//	}
-//	set {
-//		self.isPatientCheckInMainActive = newValue.isPatientCheckInMainActive
-//		self.journey = newValue.journey
-//		self.patientSelectedIndex = newValue.patientSelectedIndex
-//		self.pathway = newValue.pathway
-//		self.medHistory = newValue.medHistory
-//		self.medHistoryCompleted = newValue.medHistoryCompleted
-//		self.patientDetails = newValue.patientDetails
-//		self.patientDetailsCompleted = newValue.patientDetailsCompleted
-//		self.patientComplete = newValue.patientComplete
-//		self.runningConsents = newValue.runningConsents
-//		self.consentsCompleted = newValue.consentsCompleted
-//	}
-//}
-
 extension CheckInContainerState {
 	public static var defaultEmpty: CheckInContainerState {
 		CheckInContainerState(journey: Journey.defaultEmpty,
@@ -329,46 +252,6 @@ extension CheckInContainerState {
 		)
 	}
 }
-
-
-//func indexOfStep(_ pathway: Pathway,
-//								 _ journeyMode: JourneyMode,
-//								 _ stepType: StepType) -> Int? {
-//	return pathway.steps
-//		.filter(with(.patient, filterStepType))
-//		.sorted(by: \.stepType.order)
-//		.firstIndex(where: { $0.stepType == stepType })
-//}
-
-//struct PatientCheckInState: Equatable {
-//	var isPatientCheckInMainActive: Bool
-//	var journey: Journey
-//	var patientSelectedIndex: Int
-//	var pathway: Pathway
-//	var medHistory: FormTemplate
-//	var medHistoryCompleted: Bool
-//	var patientDetails: PatientDetails
-//	var patientDetailsCompleted: Bool
-//	var patientComplete: PatientComplete
-//	var consentsCompleted: [Int: Bool]
-//	var runningConsents: [Int: FormTemplate]
-//}
-
-//struct DoctorCheckInState: Equatable {
-//	var doctorSelectedIndex: Int
-//	var pathway: Pathway
-//	var aftercare: Aftercare
-//	var aftercareCompleted: Bool
-//	var runningTreatmentForms: [Int: FormTemplate]
-//	var treatmentFormsCompleted: [Int: Bool]
-//	var checkPatientCompleted: Bool
-//	var runningPrescriptions: [Int: FormTemplate]
-//	var prescriptionsCompleted: [Int: Bool]
-//	var photosCompleted: Bool
-//	var recall: Recall
-//	var recallCompleted: Bool
-//}
-
 
 func wrapForm(_ state: CheckInContainerState,
 							_ stepType: StepType) -> [MetaFormAndStatus] {

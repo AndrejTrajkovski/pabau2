@@ -10,59 +10,28 @@ public enum CheckInMainAction {
 	case topView(TopViewAction)
 }
 
-//struct PatientCheckInMain: View {
-//	let store: Store<PatientCheckInState, CheckInMainAction>
-//	var body: some View {
-//		CheckInMain(store: <#T##Store<CheckInContainerState, CheckInContainerAction>#>, journey: <#T##Journey#>, journeyMode: <#T##JourneyMode#>, onClose: <#T##() -> Void#>)
-//	}
-//}
-
 struct CheckInMain: View {
-	let journey: Journey
-	let store: Store<CheckInContainerState, CheckInContainerAction>
-	@ObservedObject var viewStore: ViewStore<StepsState, CheckInMainAction>
-	let journeyMode: JourneyMode
-	let onClose: () -> Void
-	init(store: Store<CheckInContainerState, CheckInContainerAction>,
-			 journey: Journey,
-			 journeyMode: JourneyMode,
-			 onClose: @escaping () -> Void) {
-		self.journey = journey
-		self.journeyMode = journeyMode
+	let store: Store<CheckInViewState, CheckInMainAction>
+	@ObservedObject var viewStore: ViewStore<CheckInViewState, CheckInMainAction>
+	init (store: Store<CheckInViewState, CheckInMainAction>) {
 		self.store = store
-		self.viewStore = ViewStore(self.store
-			.scope(state: {
-				switch journeyMode {
-				case .patient:
-					return $0.patient
-				case .doctor:
-					return $0.doctor
-				}
-			},
-			action: {
-				switch journeyMode {
-				case .patient:
-					return .patient($0)
-				case .doctor:
-					return .doctor($0)
-				}
-			}
-		))
-		self.onClose = onClose
+		self.viewStore = ViewStore(store)
 	}
-
+	
 	var body: some View {
-		print("check in main body")
-		return
+		WithViewStore(store) { viewStore in
 			VStack (alignment: .center, spacing: 0) {
-				TopView(journey: self.journey,
-								viewStore: self.viewStore,
-								onClose: onClose)
-				StepForms(store: self.store, journeyMode: self.journeyMode)
+				TopView(store: self.store
+					.scope(state: { $0.topView },
+								 action: { .topView($0) }))
+				StepForms(store: self.store.scope(
+					state: { $0 },
+					action: { .stepForms($0) }))
 				Spacer()
 			}
 			.navigationBarTitle("")
 			.navigationBarHidden(true)
+		}
 	}
 }
 
@@ -93,7 +62,7 @@ let stepFormsReducer2 = Reducer<MetaFormAndStatus, ChildFormAction, JourneyEnvir
 	return .none
 }
 
-let stepFormsReducer = Reducer<StepsState, StepFormsAction, JourneyEnvironment> { state, action, _ in
+let stepFormsReducer = Reducer<CheckInViewState, StepFormsAction, JourneyEnvironment> { state, action, _ in
 	switch action {
 	case .didSelectFormIndex(let idx):
 		state.selectedIndex = idx
@@ -110,33 +79,14 @@ let stepFormsReducer = Reducer<StepsState, StepFormsAction, JourneyEnvironment> 
 struct StepForms: View {
 
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
-	let store: Store<CheckInContainerState, CheckInContainerAction>
-	let journeyMode: JourneyMode
-	@ObservedObject var viewStore: ViewStore<StepsState, StepFormsAction>
-
-	init(store: Store<CheckInContainerState, CheckInContainerAction>,
-			 journeyMode: JourneyMode) {
+	let store: Store<CheckInViewState, StepFormsAction>
+	@ObservedObject var viewStore: ViewStore<CheckInViewState, StepFormsAction>
+	
+	init(store: Store<CheckInViewState, StepFormsAction>) {
 		self.store = store
-		self.journeyMode = journeyMode
-		self.viewStore = ViewStore(self.store
-			.scope(state: {
-				switch journeyMode {
-				case .patient:
-					return $0.patient
-				case .doctor:
-					return $0.doctor
-				}
-			},
-			 action: {
-				switch journeyMode {
-				case .patient:
-					return .patient(.stepForms($0))
-				case .doctor:
-					return .doctor(.stepForms($0))
-				}
-			}))
+		self.viewStore = ViewStore(store)
 	}
-
+	
 	var body: some View {
 		print("check in main body")
 		return GeometryReader { geo in
@@ -149,23 +99,25 @@ struct StepForms: View {
 				Divider()
 					.frame(width: geo.size.width)
 					.shadow(color: Color(hex: "C1C1C1"), radius: 4, y: 2)
-				PabauFormWrap(store: self.store,
-											selectedFormIndex: self.viewStore.state.selectedIndex,
-											journeyMode: self.journeyMode)
+				PabauFormWrap(store: self.store
+					.scope(state: { $0.selectedForm },
+								 action:  {
+									.childForm(Indexed(self.viewStore.state.selectedIndex, $0))
+					}))
 					.padding(.bottom, self.keyboardHandler.keyboardHeight > 0 ? self.keyboardHandler.keyboardHeight : 32)
 					.padding([.leading, .trailing, .top], 32)
 				Spacer()
-				if self.keyboardHandler.keyboardHeight == 0 &&
-					!self.viewStore.state.isOnCompleteStep {
-					BigButton(text: Texts.next) {
-						self.viewStore.send(.didSelectNextForm)
-						self.viewStore.send(.childForm(
-							Indexed<ChildFormAction>(self.viewStore.state.selectedIndex,
-																				.didFinishTemplate(self.viewStore.state.forms[self.viewStore.state.selectedIndex]))))
-					}
-					.frame(width: 230)
-					.padding(8)
-				}
+//				if self.keyboardHandler.keyboardHeight == 0 &&
+//					!self.viewStore.state.isOnCompleteStep {
+//					BigButton(text: Texts.next) {
+//						self.viewStore.send(.didSelectNextForm)
+//						self.viewStore.send(.childForm(
+//							Indexed<ChildFormAction>(self.viewStore.state.selectedIndex,
+//																				.didFinishTemplate(self.viewStore.state.forms[self.viewStore.state.selectedIndex]))))
+//					}
+//					.frame(width: 230)
+//					.padding(8)
+//				}
 			}	.padding(.leading, 40)
 				.padding(.trailing, 40)
 		}

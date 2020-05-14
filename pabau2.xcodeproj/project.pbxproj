@@ -64,6 +64,7 @@
 		8247761E246C4C1800508434 /* SortByKeyPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247761D246C4C1800508434 /* SortByKeyPath.swift */; };
 		82477622246D189C00508434 /* JourneyUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82477621246D189C00508434 /* JourneyUtil.swift */; };
 		82477624246D47A000508434 /* CheckPatientForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82477623246D47A000508434 /* CheckPatientForm.swift */; };
+		8247762A246DE77E00508434 /* Overture in Frameworks */ = {isa = PBXBuildFile; productRef = 82477629246DE77E00508434 /* Overture */; };
 		8250D7C9242BCFD000F8F3FC /* ChooseFormList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7C8242BCFD000F8F3FC /* ChooseFormList.swift */; };
 		8250D7CB242BD25B00F8F3FC /* JourneyBaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7CA242BD25B00F8F3FC /* JourneyBaseView.swift */; };
 		8250D7D0242C575A00F8F3FC /* ModalTransitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7CD242C575A00F8F3FC /* ModalTransitions.swift */; };
@@ -165,7 +166,6 @@
 		827B460624126D4E00A5975E /* JourneyForms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45D224126D4E00A5975E /* JourneyForms.swift */; };
 		827B460D2413C14D00A5975E /* NonEmpty in Frameworks */ = {isa = PBXBuildFile; productRef = 827B460C2413C14D00A5975E /* NonEmpty */; };
 		8280D479245FEAA80077A73F /* DoctorSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8280D478245FEAA80077A73F /* DoctorSummary.swift */; };
-		8280D47F2463E6FC0077A73F /* Overture in Frameworks */ = {isa = PBXBuildFile; productRef = 8280D47E2463E6FC0077A73F /* Overture */; };
 		8280D4812463F1790077A73F /* ExplodingStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8280D4802463F1790077A73F /* ExplodingStack.swift */; };
 		8280D4842463F2BE0077A73F /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 8280D4832463F2BE0077A73F /* ComposableArchitecture */; };
 		8280D4852463F2BE0077A73F /* ComposableArchitecture in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 8280D4832463F2BE0077A73F /* ComposableArchitecture */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -701,6 +701,7 @@
 			files = (
 				8253709C246497800095CEFA /* ComposableArchitecture in Frameworks */,
 				827B45992411368F00A5975E /* FSCalendarSwiftUI.framework in Frameworks */,
+				8247762A246DE77E00508434 /* Overture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -727,7 +728,6 @@
 				8227FB33240BAAB600F653B5 /* Login.framework in Frameworks */,
 				8280D4842463F2BE0077A73F /* ComposableArchitecture in Frameworks */,
 				82CACEE9241131260021E1DE /* FSCalendarSwiftUI.framework in Frameworks */,
-				8280D47F2463E6FC0077A73F /* Overture in Frameworks */,
 				8227FB9F240BB40300F653B5 /* Model.framework in Frameworks */,
 				8227FB66240BAC8400F653B5 /* Util.framework in Frameworks */,
 				82CACE7E2411293C0021E1DE /* FSCalendar.framework in Frameworks */,
@@ -1389,6 +1389,7 @@
 			name = Journey;
 			packageProductDependencies = (
 				8253709B246497800095CEFA /* ComposableArchitecture */,
+				82477629246DE77E00508434 /* Overture */,
 			);
 			productName = Journey;
 			productReference = 827B457A2411368100A5975E /* Journey.framework */;
@@ -1453,7 +1454,6 @@
 			);
 			name = pabau2;
 			packageProductDependencies = (
-				8280D47E2463E6FC0077A73F /* Overture */,
 				8280D4832463F2BE0077A73F /* ComposableArchitecture */,
 			);
 			productName = pabau2;
@@ -2827,6 +2827,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		82477629246DE77E00508434 /* Overture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8280D47D2463E6FC0077A73F /* XCRemoteSwiftPackageReference "swift-overture" */;
+			productName = Overture;
+		};
 		8253709524640D520095CEFA /* ComposableArchitecture */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8280D4822463F2BE0077A73F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
@@ -2841,11 +2846,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 827B46092413C0C300A5975E /* XCRemoteSwiftPackageReference "swift-nonempty" */;
 			productName = NonEmpty;
-		};
-		8280D47E2463E6FC0077A73F /* Overture */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8280D47D2463E6FC0077A73F /* XCRemoteSwiftPackageReference "swift-overture" */;
-			productName = Overture;
 		};
 		8280D4832463F2BE0077A73F /* ComposableArchitecture */ = {
 			isa = XCSwiftPackageProductDependency;

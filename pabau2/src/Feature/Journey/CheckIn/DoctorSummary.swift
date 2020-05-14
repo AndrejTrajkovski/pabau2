@@ -63,13 +63,11 @@ struct DoctorSummary: View {
 				}
 				Spacer()
 				NavigationLink.emptyHidden(self.viewStore.state.isDoctorCheckInMainActive,
-																	 CheckInMain(store: self.store,
-																							 journey: self.viewStore.state.journey,
-																							 journeyMode: .doctor,
-																							 onClose: {
-																								self.viewStore.send(.backOnDoctorCheckIn)
-																	}))
-					.navigationBarHidden(true)
+																	 CheckInMain(store: self.store
+																		.scope(state: { $0.doctorCheckIn },
+																					 action: { .doctor($0) }))
+																		.navigationBarHidden(true)
+				)
 				NavigationLink.emptyHidden(self.viewStore.state.isChooseTreatmentActive,
 																	 ChooseFormList(store: self.store.scope(state: {
 																		$0.chooseTreatments
