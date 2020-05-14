@@ -101,6 +101,8 @@ func indexOfStep(_ pathway: Pathway,
 }
 
 struct PatientCheckInState: Equatable {
+	var isPatientCheckInMainActive: Bool
+	var journey: Journey
 	var patientSelectedIndex: Int
 	var pathway: Pathway
 	var medHistory: FormTemplate
@@ -111,14 +113,36 @@ struct PatientCheckInState: Equatable {
 	var consentsCompleted: [Int: Bool]
 	var runningConsents: [Int: FormTemplate]
 	
-	func wrapForm(_ stepType: StepType) -> [MetaForm] {
+//	var patientSteps: [Step] {
+//		self.pathway.steps.filter(with(.patient, filterStepType))
+//	}
+	
+	var topView: TopViewState {
+		get {
+			TopViewState(totalSteps: formsArray.count,
+									 completedSteps: 2,
+									 xButtonActiveFlag: isPatientCheckInMainActive,
+									 journey: journey)
+		}
+		set {
+			self.isPatientCheckInMainActive = newValue.xButtonActiveFlag
+		}
+	}
+	
+	func wrapForm(_ stepType: StepType) -> [MetaFormAndStatus] {
 		switch stepType {
 		case .patientdetails:
-			return [MetaForm.patientDetails(patientDetails)]
+			let form = MetaForm.patientDetails(patientDetails)
+			return [MetaFormAndStatus(form, patientDetailsCompleted)]
 		case .medicalhistory:
-			return [MetaForm.template(medHistory)]
+			let form = MetaForm.template(medHistory)
+			return [MetaFormAndStatus(form, medHistoryCompleted)]
 		case .consents:
-			return runningConsents.map { MetaForm.template($0.value) }
+			return runningConsents.map {
+				let form = MetaForm.template($0.value)
+				guard let status = consentsCompleted[$0.value.id] else { fatalError() }
+				return MetaFormAndStatus(form, status)
+			}
 		case .checkpatient,
 				 .treatmentnotes,
 				 .prescriptions,
@@ -127,19 +151,25 @@ struct PatientCheckInState: Equatable {
 				 .aftercares:
 			fatalError("doctor steps, should be filtered earlier")
 		case .patientComplete:
-			return [MetaForm.patientComplete(PatientComplete())]
+			let form = MetaForm.patientComplete(patientComplete)
+			return [MetaFormAndStatus(form, false)]
 		}
 	}
 	
-	mutating func unwrap(_ metaForm: MetaForm) {
+	mutating func unwrap(_ metaFormAndStatus: MetaFormAndStatus) {
+		let metaForm = metaFormAndStatus.form
+		let isComplete = metaFormAndStatus.isComplete
 		switch stepType(form: metaForm) {
 		case .patientdetails:
 			self.patientDetails = extract(case: MetaForm.patientDetails, from: metaForm)!
+			self.patientDetailsCompleted = isComplete
 		case .medicalhistory:
 			self.medHistory = extract(case: MetaForm.template, from: metaForm)!
+			self.medHistoryCompleted = isComplete
 		case .consents:
 			let consent = extract(case: MetaForm.template, from: metaForm)!
 			self.runningConsents[consent.id] = consent
+			self.consentsCompleted[consent.id] = isComplete
 		case .checkpatient,
 				 .treatmentnotes,
 				 .prescriptions,
@@ -151,8 +181,8 @@ struct PatientCheckInState: Equatable {
 			self.patientComplete = extract(case: MetaForm.patientComplete, from: metaForm)!
 		}
 	}
-	//TODO: //GO WITH [StepState] for index!
-	var stepState: [MetaForm] {
+	
+	var formsArray: [MetaForm] {
 		get {
 			self.pathway.steps
 				.filter(with(.patient, filterStepType))
@@ -164,23 +194,6 @@ struct PatientCheckInState: Equatable {
 			newValue.forEach { unwrap($0) }
 		}
 	}
-	
-//	var patientDetailsIdx: Int? {
-//		indexOfStep(pathway, .patient, .patientdetails)
-//	}
-//
-//	var medHistoryIdx: Int? {
-//		indexOfStep(pathway, .patient, .medicalhistory)
-//	}
-//
-//	var consentsIdxs: [Int] {
-//		guard let firstConsentIdx = indexOfStep(pathway, .patient, .consents) else {
-//			return []
-//		}
-//		return runningConsents.map{ $0.key }.indices.map {
-//			return firstConsentIdx + $0
-//		}
-//	}
 }
 
 struct DoctorCheckInState: Equatable {
