@@ -1,3 +1,5 @@
+import Model
+
 public struct MetaFormAndStatus: Equatable, Hashable, CustomDebugStringConvertible {
 	
 	public var debugDescription: String {

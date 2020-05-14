@@ -2,60 +2,9 @@ import Model
 import ComposableArchitecture
 import Overture
 
-func flatten<T: Identifiable>(_ list: [T]) -> [T.ID: T] {
-	Dictionary(uniqueKeysWithValues: Array(zip(list.map(\.id), list)))
-}
-
 enum JourneyMode: Equatable {
 	case patient
 	case doctor
-}
-
-func isIn(_ journeyMode: JourneyMode, _ stepType: StepType) -> Bool {
-	stepToModeMap(stepType) == journeyMode
-}
-
-let filterBy = curry(isIn(_:_:))
-
-func stepToModeMap(_ stepType: StepType) -> JourneyMode {
-	switch stepType {
-	case .patientdetails: return .patient
-	case .medicalhistory: return .patient
-	case .consents: return .patient
-	case .patientComplete: return .patient
-	case .checkpatient: return .doctor
-	case .treatmentnotes: return .doctor
-	case .prescriptions: return .doctor
-	case .photos: return .doctor
-	case .recalls: return .doctor
-	case .aftercares: return .doctor
-	}
-}
-
-func stepType(form: MetaForm) -> StepType {
-	switch form {
-	case .aftercare(_):
-		return .aftercares
-	case .template(let template):
-		return stepType(type: template.formType)
-	case .patientDetails(_):
-		return .patientdetails
-	case .patientComplete:
-		return .patientComplete
-	}
-}
-
-func stepType(type: FormType) -> StepType {
-	switch type {
-	case .consent:
-		return .consents
-	case .history:
-		return .medicalhistory
-	case .prescription:
-		return .prescriptions
-	case .treatment:
-		return .treatmentnotes
-	}
 }
 
 public struct CheckInContainerState: Equatable {
@@ -84,6 +33,9 @@ public struct CheckInContainerState: Equatable {
 	var patientComplete: PatientComplete
 	
 	var checkPatientCompleted: Bool
+	
+	var medHistory: FormTemplate
+	var medHistoryCompleted: Bool
 	
 	var patientSelectedIndex: Int
 	var doctorSelectedIndex: Int
@@ -177,14 +129,15 @@ struct PatientCheckInState: Equatable {
 		}
 	}
 	
-	func unwrap(_ metaForm: [MetaForm], _ stepType: StepType) -> [MetaForm] {
-		switch stepType {
+	mutating func unwrap(_ metaForm: MetaForm) {
+		switch stepType(form: metaForm) {
 		case .patientdetails:
-			return [MetaForm.patientDetails(patientDetails)]
+			self.patientDetails = extract(case: MetaForm.patientDetails, from: metaForm)!
 		case .medicalhistory:
-			return [MetaForm.template(medHistory)]
+			self.medHistory = extract(case: MetaForm.template, from: metaForm)!
 		case .consents:
-			return runningConsents.map { MetaForm.template($0.value) }
+			let consent = extract(case: MetaForm.template, from: metaForm)!
+			self.runningConsents[consent.id] = consent
 		case .checkpatient,
 				 .treatmentnotes,
 				 .prescriptions,
@@ -193,20 +146,20 @@ struct PatientCheckInState: Equatable {
 				 .aftercares:
 			fatalError("doctor steps, should be filtered earlier")
 		case .patientComplete:
-			return [MetaForm.patientComplete(PatientComplete())]
+			self.patientComplete = extract(case: MetaForm.patientComplete, from: metaForm)!
 		}
 	}
 	//TODO: //GO WITH [StepState] for index!
-	var stepState: [StepState] {
+	var stepState: [MetaForm] {
 		get {
 			self.pathway.steps
 				.filter(with(.patient, filterStepType))
 				.reduce(into: [MetaForm]()) {
 					$0.append(contentsOf: with($1, (pipe(get(\.stepType), wrapForm(_:)))))
-			}
+			}.sorted(by: their(pipe(stepType(form:), get(\.order))))
 		}
 		set {
-			
+			newValue.forEach { unwrap($0) }
 		}
 	}
 	
@@ -295,6 +248,8 @@ extension CheckInContainerState {
 	var patientCheckIn: PatientCheckInState {
 		get { PatientCheckInState(patientSelectedIndex: patientSelectedIndex,
 															pathway: pathway,
+															medHistory: medHistory,
+															medHistoryCompleted: medHistoryCompleted,
 															patientDetails: patientDetails,
 															patientDetailsCompleted: patientDetailsCompleted,
 															patientComplete: patientComplete,
@@ -304,6 +259,7 @@ extension CheckInContainerState {
 		set {
 			self.patientSelectedIndex = newValue.patientSelectedIndex
 			self.pathway = newValue.pathway
+			self.medHistory
 			self.patientDetails = newValue.patientDetails
 			self.patientDetailsCompleted = newValue.patientDetailsCompleted
 			self.patientComplete = newValue.patientComplete

@@ -62,6 +62,7 @@
 		8247761A246C337D00508434 /* MetaForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82477619246C337D00508434 /* MetaForm.swift */; };
 		8247761C246C339800508434 /* MetaFormAndStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247761B246C339800508434 /* MetaFormAndStatus.swift */; };
 		8247761E246C4C1800508434 /* SortByKeyPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247761D246C4C1800508434 /* SortByKeyPath.swift */; };
+		82477622246D189C00508434 /* JourneyUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82477621246D189C00508434 /* JourneyUtil.swift */; };
 		8250D7C9242BCFD000F8F3FC /* ChooseFormList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7C8242BCFD000F8F3FC /* ChooseFormList.swift */; };
 		8250D7CB242BD25B00F8F3FC /* JourneyBaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7CA242BD25B00F8F3FC /* JourneyBaseView.swift */; };
 		8250D7D0242C575A00F8F3FC /* ModalTransitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7CD242C575A00F8F3FC /* ModalTransitions.swift */; };
@@ -461,6 +462,7 @@
 		82477619246C337D00508434 /* MetaForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaForm.swift; sourceTree = "<group>"; };
 		8247761B246C339800508434 /* MetaFormAndStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaFormAndStatus.swift; sourceTree = "<group>"; };
 		8247761D246C4C1800508434 /* SortByKeyPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortByKeyPath.swift; sourceTree = "<group>"; };
+		82477621246D189C00508434 /* JourneyUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyUtil.swift; sourceTree = "<group>"; };
 		8250D7C8242BCFD000F8F3FC /* ChooseFormList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseFormList.swift; sourceTree = "<group>"; };
 		8250D7CA242BD25B00F8F3FC /* JourneyBaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyBaseView.swift; sourceTree = "<group>"; };
 		8250D7CD242C575A00F8F3FC /* ModalTransitions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalTransitions.swift; sourceTree = "<group>"; };
@@ -930,6 +932,7 @@
 				82FB74F5245A9E51001C2DF3 /* PabauFormWrap.swift */,
 				82E6D826245C213300CB359A /* PatientDetailsForm.swift */,
 				82E6D828245DF4D200CB359A /* CompleteStepForm.swift */,
+				82477621246D189C00508434 /* JourneyUtil.swift */,
 			);
 			path = Form;
 			sourceTree = "<group>";
@@ -1871,6 +1874,7 @@
 				8269526824506F18001B806E /* DynamicForm.swift in Sources */,
 				827B459D24118ABD00A5975E /* JourneyNavigationView.swift in Sources */,
 				825BE7E224361ABD00422910 /* StaffFilterPicker.swift in Sources */,
+				82477622246D189C00508434 /* JourneyUtil.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
