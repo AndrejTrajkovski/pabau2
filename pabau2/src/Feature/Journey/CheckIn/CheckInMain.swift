@@ -55,7 +55,9 @@ struct CheckInMain: View {
 		print("check in main body")
 		return
 			VStack (alignment: .center, spacing: 0) {
-				TopView(journey: self.journey, viewStore: self.viewStore, onClose: onClose)
+				TopView(journey: self.journey,
+								viewStore: self.viewStore,
+								onClose: onClose)
 				StepForms(store: self.store, journeyMode: self.journeyMode)
 				Spacer()
 			}

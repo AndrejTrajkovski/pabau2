@@ -86,6 +86,8 @@ public struct CheckInContainerState: Equatable {
 		self.photosCompleted = false
 		self.recall = Recall()
 		self.recallCompleted = false
+		self.medHistory = JourneyMockAPI.getMedHistory()
+		self.medHistoryCompleted = false
 	}
 }
 
@@ -102,7 +104,7 @@ struct PatientCheckInState: Equatable {
 	var patientSelectedIndex: Int
 	var pathway: Pathway
 	var medHistory: FormTemplate
-	var medHistoryCompleted: FormTemplate
+	var medHistoryCompleted: Bool
 	var patientDetails: PatientDetails
 	var patientDetailsCompleted: Bool
 	var patientComplete: PatientComplete
@@ -259,7 +261,8 @@ extension CheckInContainerState {
 		set {
 			self.patientSelectedIndex = newValue.patientSelectedIndex
 			self.pathway = newValue.pathway
-			self.medHistory
+			self.medHistory = newValue.medHistory
+			self.medHistoryCompleted = newValue.medHistoryCompleted
 			self.patientDetails = newValue.patientDetails
 			self.patientDetailsCompleted = newValue.patientDetailsCompleted
 			self.patientComplete = newValue.patientComplete
