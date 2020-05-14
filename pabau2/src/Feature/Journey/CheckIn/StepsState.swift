@@ -21,11 +21,6 @@ public struct StepsState: Equatable {
 //	}
 }
 
-struct StepState: Equatable {
-	var stepType: StepType
-	var isComplete: Bool
-}
-
 //
 //extension StepsState {
 //	var treatmentNotes: [FormTemplate] {

@@ -1,10 +1,6 @@
 import Model
 
-public struct MetaFormAndStatus: Hashable, CustomDebugStringConvertible {
-	
-	public var debugDescription: String {
-		return form.debugDescription
-	}
+public struct MetaFormAndStatus: Hashable {
 	
 	static let defaultEmpty = MetaFormAndStatus.init(MetaForm.template(FormTemplate.defaultEmpty), false)
 

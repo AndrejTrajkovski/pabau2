@@ -171,41 +171,21 @@ struct DoctorSummaryRow: View {
 	}
 }
 
-func sortSteps(_ step1: StepType, _ step2: StepType) -> Bool {
-	return step1.order > step2.order
+struct StepState: Equatable {
+	var stepType: StepType
+	var isComplete: Bool
 }
 
 extension DoctorSummaryState {
 	var steps: [StepState] {
-		doctorCheckIn.pathway.steps
-			.filter(with(.doctor, filterStepType))
-			.map {
-				switch $0.stepType {
-				case .checkpatient:
-					return StepState(stepType: $0.stepType,
-													 isComplete: doctorCheckIn.checkPatientCompleted)
-				case .treatmentnotes:
-					return StepState(stepType: $0.stepType,
-													 isComplete: doctorCheckIn.treatmentFormsCompleted.allSatisfy { $0.value == true })
-				case .prescriptions:
-					return StepState(stepType: $0.stepType,
-													 isComplete: doctorCheckIn.prescriptionsCompleted.allSatisfy {
-														$0.value == true })
-				case .photos:
-					return StepState(stepType: $0.stepType,
-													 isComplete: doctorCheckIn.photosCompleted)
-				case .recalls:
-					return StepState(stepType: $0.stepType,
-													 isComplete: doctorCheckIn.recallCompleted)
-				case .aftercares:
-					return StepState(stepType: $0.stepType,
-													 isComplete: doctorCheckIn.aftercareCompleted)
-				case .patientComplete,
-						 .patientdetails,
-						 .medicalhistory,
-						 .consents:
-					fatalError("patient steps")
-				}
-		}.sorted(by: \.stepType.order)
+		return Dictionary.init(grouping: doctorCheckIn.forms,
+															 by: pipe(get(\.form), stepType(form:)))
+			.reduce(into: [StepState](), {
+				$0.append(
+					StepState(stepType: $1.key,
+										isComplete: $1.value.allSatisfy(\.isComplete))
+				)
+			})
+			.sorted(by: their(get(\.stepType.order)))
 	}
 }
