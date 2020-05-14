@@ -1,19 +1,6 @@
 import Model
 
-public enum MetaForm: Equatable, Hashable, CustomDebugStringConvertible {
-	
-	public var debugDescription: String {
-		switch self {
-		case .patientDetails:
-			return "PATIENT DETAILS"
-		case .template(let template):
-			return template.debugDescription
-		case .aftercare:
-			return "AFTERCARE"
-		case .patientComplete:
-			return "COMPLETE"
-		}
-	}
+public enum MetaForm: Equatable, Hashable {
 	
 	init?(_ patD: PatientDetails?) {
 		guard let patD = patD else { return nil }
@@ -36,7 +23,9 @@ public enum MetaForm: Equatable, Hashable, CustomDebugStringConvertible {
 	case aftercare(Aftercare)
 	case template(FormTemplate)
 	case patientComplete(PatientComplete)
-
+	case checkPatient(CheckPatientForm)
+	case recall(Recall)
+	
 	var title: String {
 		switch self {
 		case .patientDetails:
@@ -47,6 +36,10 @@ public enum MetaForm: Equatable, Hashable, CustomDebugStringConvertible {
 			return "AFTERCARE"
 		case .patientComplete:
 			return "COMPLETE"
+		case .checkPatient(_):
+			return "CHECK PATIENT"
+		case .recall(_):
+			return "RECALL"
 		}
 	}
 

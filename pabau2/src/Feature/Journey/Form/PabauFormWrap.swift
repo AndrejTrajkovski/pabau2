@@ -5,32 +5,8 @@ import Util
 
 public typealias Indexed<T> = (Int, T)
 
-//public struct Indexed<T> {
-//	let idx: Int
-//	let value: T
-//	
-//	public init (_ idx: Int, _ value: T) {
-//		self.idx = idx
-//		self.value = value
-//	}
-//	
-//	public var asTuple: (Int, T) {
-//		return (idx, value)
-//	}
-//}
-
-func getForms(_ journeyMode: JourneyMode,
-							_ state: CheckInContainerState) -> [MetaFormAndStatus] {
-	switch journeyMode {
-	case .doctor:
-		return state.doctor.forms
-	case .patient:
-		return state.patient.forms
-	}
-}
-
 struct PabauFormWrap: View {
-	let store: Store<CheckInContainerState, CheckInContainerAction>
+	let store: Store<MetaFormAndStatus, ChildFormAction>
 	@ObservedObject var viewStore: ViewStore<State, ChildFormAction>
 	let journeyMode: JourneyMode
 
@@ -49,50 +25,7 @@ struct PabauFormWrap: View {
 			self.isCompleteForm = extract(case: MetaForm.patientComplete, from: state.form) != nil
 		}
 	}
-
-	init(store: Store<CheckInContainerState, CheckInContainerAction>,
-			 selectedFormIndex: Int,
-			 journeyMode: JourneyMode) {
-		self.store = store
-		self.journeyMode = journeyMode
-		self.viewStore = ViewStore(store.scope(
-			state: {
-				let forms = getForms(journeyMode, $0)
-				if forms.count > selectedFormIndex {
-					return State.init(state: forms[selectedFormIndex])
-				} else {
-					return State.defaultEmpty
-				}
-		},
-			action: {
-				switch journeyMode {
-				case .patient:
-					return .patient(.stepForms(.childForm(Indexed(selectedFormIndex, $0))))
-				case .doctor:
-					return .doctor(.stepForms(.childForm(Indexed(selectedFormIndex, $0))))
-				}
-		}))
-	}
-
-//	var body: some View {
-//		print("pabau wrapper body ")
-//		return Group {
-//			if self.viewStore.state.template != nil {
-//				DynamicForm(template:
-//					Binding.init(
-//						get: { self.viewStore.state.template ?? FormTemplate.defaultEmpty },
-//						set: { self.viewStore.send(.didUpdateTemplate($0)) })
-//				)
-//			}
-//			if self.viewStore.state.patientDetails != nil {
-//				PatientDetailsForm()
-//			}
-//			if self.viewStore.state.aftercare != nil {
-//				Text("Aftercare")
-//			}
-//		}.padding()
-//	}
-
+	
 	var body: some View {
 		if self.viewStore.state.template != nil {
 			return AnyView(
@@ -105,9 +38,30 @@ struct PabauFormWrap: View {
 		} else if self.viewStore.state.patientDetails != nil {
 			return AnyView(PatientDetailsForm().padding())
 		} else if self.viewStore.state.isCompleteForm {
-			return AnyView(CompleteStepForm(store: store))
+//			return AnyView(CompleteStepForm(store: store))
+			return AnyView(EmptyView())
 		} else {
 			return AnyView(Text("Aftercare"))
 		}
 	}
 }
+//
+//self.store = store
+//self.journeyMode = journeyMode
+//self.viewStore = ViewStore(store.scope(
+//	state: {
+//		let forms = getForms(journeyMode, $0)
+//		if forms.count > selectedFormIndex {
+//			return State.init(state: forms[selectedFormIndex])
+//		} else {
+//			return State.defaultEmpty
+//		}
+//},
+//	action: {
+//		switch journeyMode {
+//		case .patient:
+//			return .patient(.stepForms(.childForm(Indexed(selectedFormIndex, $0))))
+//		case .doctor:
+//			return .doctor(.stepForms(.childForm(Indexed(selectedFormIndex, $0))))
+//		}
+//}))

@@ -1,1 +1,1 @@
-public struct PatientDetails: Equatable, Hashable { }
+public struct PatientDetails: Hashable { }

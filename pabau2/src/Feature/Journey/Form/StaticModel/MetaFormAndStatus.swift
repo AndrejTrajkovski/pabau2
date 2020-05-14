@@ -1,6 +1,6 @@
 import Model
 
-public struct MetaFormAndStatus: Equatable, Hashable, CustomDebugStringConvertible {
+public struct MetaFormAndStatus: Hashable, CustomDebugStringConvertible {
 	
 	public var debugDescription: String {
 		return form.debugDescription

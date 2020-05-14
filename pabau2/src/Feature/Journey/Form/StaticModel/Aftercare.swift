@@ -1,1 +1,1 @@
-public struct Aftercare: Equatable, Hashable { }
+public struct Aftercare: Hashable { }

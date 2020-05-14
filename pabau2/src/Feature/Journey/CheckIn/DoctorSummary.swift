@@ -9,7 +9,7 @@ struct DoctorSummaryState: Equatable {
 	var isChooseConsentActive: Bool
 	var isChooseTreatmentActive: Bool
 	var isDoctorCheckInMainActive: Bool
-	var doctorCheckIn: DoctorCheckInState
+	var doctorCheckIn: CheckInViewState
 }
 
 let doctorSummaryReducer = Reducer <DoctorSummaryState, DoctorSummaryAction, JourneyEnvironment> { state, action, _ in

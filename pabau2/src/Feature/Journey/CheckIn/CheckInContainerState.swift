@@ -37,6 +37,8 @@ public struct CheckInContainerState: Equatable {
 	var medHistory: FormTemplate
 	var medHistoryCompleted: Bool
 	
+	var checkPatientForm: CheckPatientForm
+	
 	var patientSelectedIndex: Int
 	var doctorSelectedIndex: Int
 	
@@ -88,199 +90,86 @@ public struct CheckInContainerState: Equatable {
 		self.recallCompleted = false
 		self.medHistory = JourneyMockAPI.getMedHistory()
 		self.medHistoryCompleted = false
+		self.checkPatientForm = CheckPatientForm()
 	}
-}
-
-func indexOfStep(_ pathway: Pathway,
-								 _ journeyMode: JourneyMode,
-								 _ stepType: StepType) -> Int? {
-	return pathway.steps
-		.filter(with(.patient, filterStepType))
-		.sorted(by: \.stepType.order)
-		.firstIndex(where: { $0.stepType == stepType })
-}
-
-struct PatientCheckInState: Equatable {
-	var isPatientCheckInMainActive: Bool
-	var journey: Journey
-	var patientSelectedIndex: Int
-	var pathway: Pathway
-	var medHistory: FormTemplate
-	var medHistoryCompleted: Bool
-	var patientDetails: PatientDetails
-	var patientDetailsCompleted: Bool
-	var patientComplete: PatientComplete
-	var consentsCompleted: [Int: Bool]
-	var runningConsents: [Int: FormTemplate]
-	
-//	var patientSteps: [Step] {
-//		self.pathway.steps.filter(with(.patient, filterStepType))
-//	}
-	
-	var topView: TopViewState {
-		get {
-			TopViewState(totalSteps: formsArray.count,
-									 completedSteps: 2,
-									 xButtonActiveFlag: isPatientCheckInMainActive,
-									 journey: journey)
-		}
-		set {
-			self.isPatientCheckInMainActive = newValue.xButtonActiveFlag
-		}
-	}
-	
-	func wrapForm(_ stepType: StepType) -> [MetaFormAndStatus] {
-		switch stepType {
-		case .patientdetails:
-			let form = MetaForm.patientDetails(patientDetails)
-			return [MetaFormAndStatus(form, patientDetailsCompleted)]
-		case .medicalhistory:
-			let form = MetaForm.template(medHistory)
-			return [MetaFormAndStatus(form, medHistoryCompleted)]
-		case .consents:
-			return runningConsents.map {
-				let form = MetaForm.template($0.value)
-				guard let status = consentsCompleted[$0.value.id] else { fatalError() }
-				return MetaFormAndStatus(form, status)
-			}
-		case .checkpatient,
-				 .treatmentnotes,
-				 .prescriptions,
-				 .photos,
-				 .recalls,
-				 .aftercares:
-			fatalError("doctor steps, should be filtered earlier")
-		case .patientComplete:
-			let form = MetaForm.patientComplete(patientComplete)
-			return [MetaFormAndStatus(form, false)]
-		}
-	}
-	
-	mutating func unwrap(_ metaFormAndStatus: MetaFormAndStatus) {
-		let metaForm = metaFormAndStatus.form
-		let isComplete = metaFormAndStatus.isComplete
-		switch stepType(form: metaForm) {
-		case .patientdetails:
-			self.patientDetails = extract(case: MetaForm.patientDetails, from: metaForm)!
-			self.patientDetailsCompleted = isComplete
-		case .medicalhistory:
-			self.medHistory = extract(case: MetaForm.template, from: metaForm)!
-			self.medHistoryCompleted = isComplete
-		case .consents:
-			let consent = extract(case: MetaForm.template, from: metaForm)!
-			self.runningConsents[consent.id] = consent
-			self.consentsCompleted[consent.id] = isComplete
-		case .checkpatient,
-				 .treatmentnotes,
-				 .prescriptions,
-				 .photos,
-				 .recalls,
-				 .aftercares:
-			fatalError("doctor steps, should be filtered earlier")
-		case .patientComplete:
-			self.patientComplete = extract(case: MetaForm.patientComplete, from: metaForm)!
-		}
-	}
-	
-	var formsArray: [MetaForm] {
-		get {
-			self.pathway.steps
-				.filter(with(.patient, filterStepType))
-				.reduce(into: [MetaForm]()) {
-					$0.append(contentsOf: with($1, (pipe(get(\.stepType), wrapForm(_:)))))
-			}.sorted(by: their(pipe(stepType(form:), get(\.order))))
-		}
-		set {
-			newValue.forEach { unwrap($0) }
-		}
-	}
-}
-
-struct DoctorCheckInState: Equatable {
-	var doctorSelectedIndex: Int
-	var pathway: Pathway
-	var aftercare: Aftercare
-	var aftercareCompleted: Bool
-	var runningTreatmentForms: [Int: FormTemplate]
-	var treatmentFormsCompleted: [Int: Bool]
-	var checkPatientCompleted: Bool
-	var runningPrescriptions: [Int: FormTemplate]
-	var prescriptionsCompleted: [Int: Bool]
-	var photosCompleted: Bool
-	var recall: Recall
-	var recallCompleted: Bool
-}
-
-let filterStepTypeFlipped = pipe(get(\Step.stepType), flip(filterBy))
-let filterStepType = flip(filterStepTypeFlipped)
-
-struct CheckInViewState: Equatable {
-	var selectedIndex: Int
-	var forms: [Int: MetaForm]
-	var completedForms: [Int: Bool]
-	var order: [Int]
-}
-
-func selected(_ templates: [Int: FormTemplate], _ selectedIds: [Int]) -> [Int: FormTemplate] {
-	templates.filter { selectedIds.contains($0.key) }
 }
 
 extension CheckInContainerState {
 	
-	var doctorCheckIn: DoctorCheckInState {
+	//FIXME: OPTIMIZE FILTERING ON PATIENT VS DOCTOR
+	
+	var patientArray: [MetaFormAndStatus] {
 		get {
-			DoctorCheckInState(
-				doctorSelectedIndex: doctorSelectedIndex,
-				pathway: pathway,
-				aftercare: aftercare,
-				aftercareCompleted: aftercareCompleted,
-				runningTreatmentForms: runningTreatmentForms,
-				treatmentFormsCompleted: treatmentFormsCompleted,
-				checkPatientCompleted: checkPatientCompleted,
-				runningPrescriptions: runningPrescriptions,
-				prescriptionsCompleted: prescriptionsCompleted,
-				photosCompleted: photosCompleted,
-				recall: recall,
-				recallCompleted: recallCompleted
-			)
+			forms(.patient, self)
 		}
 		set {
-			self.doctorSelectedIndex = newValue.doctorSelectedIndex
-			self.pathway = newValue.pathway
-			self.aftercare = newValue.aftercare
-			self.aftercareCompleted = newValue.aftercareCompleted
-			self.runningTreatmentForms = newValue.runningTreatmentForms
-			self.treatmentFormsCompleted = newValue.treatmentFormsCompleted
-			self.checkPatientCompleted = newValue.checkPatientCompleted
-			self.runningPrescriptions = newValue.runningPrescriptions
-			self.prescriptionsCompleted = newValue.prescriptionsCompleted
-			self.photosCompleted = newValue.photosCompleted
-			self.recall = newValue.recall
-			self.recallCompleted = newValue.recallCompleted
+			newValue.filter(
+				with(.patient, filterMetaFormsByJourneyMode)
+			)
+				.forEach {
+					unwrap(&self, $0)
+			}
 		}
 	}
 	
-	var patientCheckIn: PatientCheckInState {
-		get { PatientCheckInState(patientSelectedIndex: patientSelectedIndex,
-															pathway: pathway,
-															medHistory: medHistory,
-															medHistoryCompleted: medHistoryCompleted,
-															patientDetails: patientDetails,
-															patientDetailsCompleted: patientDetailsCompleted,
-															patientComplete: patientComplete,
-															consentsCompleted: consentsCompleted,
-															runningConsents: runningConsents)
+	var doctorArray: [MetaFormAndStatus] {
+		get {
+			forms(.doctor, self)
 		}
 		set {
-			self.patientSelectedIndex = newValue.patientSelectedIndex
-			self.pathway = newValue.pathway
-			self.medHistory = newValue.medHistory
-			self.medHistoryCompleted = newValue.medHistoryCompleted
-			self.patientDetails = newValue.patientDetails
-			self.patientDetailsCompleted = newValue.patientDetailsCompleted
-			self.patientComplete = newValue.patientComplete
-			self.runningConsents = newValue.runningConsents
-			self.consentsCompleted = newValue.consentsCompleted
+			newValue.filter(
+				with(.doctor, filterMetaFormsByJourneyMode)
+			)
+				.forEach {
+					unwrap(&self, $0)
+			}
+		}
+	}
+}
+
+func forms(_ journeyMode: JourneyMode,
+					 _ state: CheckInContainerState) -> [MetaFormAndStatus] {
+	state.pathway.steps
+		.filter(with(journeyMode, filterStepType))
+		.reduce(into: [MetaFormAndStatus]()) {
+			$0.append(contentsOf:
+				with($1, (pipe(get(\.stepType),
+											 with(state, curry(wrapForm(_:_:)))))))
+	}
+	.sorted(by: their(pipe(get(\.form), stepType(form:), get(\.order))))
+}
+
+extension CheckInContainerState {
+		
+	var patientCheckIn: CheckInViewState {
+		get {
+			CheckInViewState(
+				selectedIndex: patientSelectedIndex,
+				forms: doctorArray,
+				xButtonActiveFlag: isPatientCheckInMainActive,
+				journey: journey)
+		}
+		set {
+			self.patientSelectedIndex = newValue.selectedIndex
+			self.patientArray = newValue.forms
+			self.isDoctorCheckInMainActive = newValue.xButtonActiveFlag
+			self.journey = newValue.journey
+		}
+	}
+	
+	var doctorCheckIn: CheckInViewState {
+		get {
+			CheckInViewState(
+				selectedIndex: doctorSelectedIndex,
+				forms: doctorArray,
+				xButtonActiveFlag: isDoctorCheckInMainActive,
+				journey: journey)
+		}
+		set {
+			self.doctorSelectedIndex = newValue.selectedIndex
+			self.doctorArray = newValue.forms
+			self.isDoctorCheckInMainActive = newValue.xButtonActiveFlag
+			self.journey = newValue.journey
 		}
 	}
 	
@@ -342,6 +231,93 @@ extension CheckInContainerState {
 	}
 }
 
+
+struct CheckInViewState: Equatable {
+	var selectedIndex: Int
+	var forms: [MetaFormAndStatus]
+	var xButtonActiveFlag: Bool
+	var journey: Journey
+	
+	var topViewState: TopViewState {
+		get {
+			TopViewState(totalSteps: self.forms.count,
+									 completedSteps: self.forms.filter(\.isComplete).count,
+									 xButtonActiveFlag: xButtonActiveFlag,
+									 journey: journey)
+		}
+		set {
+			self.xButtonActiveFlag = newValue.xButtonActiveFlag
+		}
+	}
+}
+
+
+
+
+
+//var doctorCheckIn: DoctorCheckInState {
+//	get {
+//		DoctorCheckInState(
+//			doctorSelectedIndex: doctorSelectedIndex,
+//			pathway: pathway,
+//			aftercare: aftercare,
+//			aftercareCompleted: aftercareCompleted,
+//			runningTreatmentForms: runningTreatmentForms,
+//			treatmentFormsCompleted: treatmentFormsCompleted,
+//			checkPatientCompleted: checkPatientCompleted,
+//			runningPrescriptions: runningPrescriptions,
+//			prescriptionsCompleted: prescriptionsCompleted,
+//			photosCompleted: photosCompleted,
+//			recall: recall,
+//			recallCompleted: recallCompleted
+//		)
+//	}
+//	set {
+//		self.doctorSelectedIndex = newValue.doctorSelectedIndex
+//		self.pathway = newValue.pathway
+//		self.aftercare = newValue.aftercare
+//		self.aftercareCompleted = newValue.aftercareCompleted
+//		self.runningTreatmentForms = newValue.runningTreatmentForms
+//		self.treatmentFormsCompleted = newValue.treatmentFormsCompleted
+//		self.checkPatientCompleted = newValue.checkPatientCompleted
+//		self.runningPrescriptions = newValue.runningPrescriptions
+//		self.prescriptionsCompleted = newValue.prescriptionsCompleted
+//		self.photosCompleted = newValue.photosCompleted
+//		self.recall = newValue.recall
+//		self.recallCompleted = newValue.recallCompleted
+//	}
+//}
+//
+//var patientCheckIn: PatientCheckInState {
+//	get {
+//		PatientCheckInState(
+//			isPatientCheckInMainActive: isPatientCheckInMainActive,
+//			journey: journey,
+//			patientSelectedIndex: patientSelectedIndex,
+//			pathway: pathway,
+//			medHistory: medHistory,
+//			medHistoryCompleted: medHistoryCompleted,
+//			patientDetails: patientDetails,
+//			patientDetailsCompleted: patientDetailsCompleted,
+//			patientComplete: patientComplete,
+//			consentsCompleted: consentsCompleted,
+//			runningConsents: runningConsents)
+//	}
+//	set {
+//		self.isPatientCheckInMainActive = newValue.isPatientCheckInMainActive
+//		self.journey = newValue.journey
+//		self.patientSelectedIndex = newValue.patientSelectedIndex
+//		self.pathway = newValue.pathway
+//		self.medHistory = newValue.medHistory
+//		self.medHistoryCompleted = newValue.medHistoryCompleted
+//		self.patientDetails = newValue.patientDetails
+//		self.patientDetailsCompleted = newValue.patientDetailsCompleted
+//		self.patientComplete = newValue.patientComplete
+//		self.runningConsents = newValue.runningConsents
+//		self.consentsCompleted = newValue.consentsCompleted
+//	}
+//}
+
 extension CheckInContainerState {
 	public static var defaultEmpty: CheckInContainerState {
 		CheckInContainerState(journey: Journey.defaultEmpty,
@@ -354,102 +330,125 @@ extension CheckInContainerState {
 	}
 }
 
-//extension CheckInViewState {
-//	static func doctorForms(_ stepType: StepType,
-//													_ patientDetails: PatientDetails,
-//													_ treatmentN: [Int: FormTemplate],
-//													_ prescriptions: [FormTemplate],
-//													_ pdComplete: Bool,
-//													_ treatmentNComplete: [Int: Bool]
-//	) -> [MetaFormAndStatus] {
-//		switch stepType {
-//		case .checkpatient:
-//			return [MetaFormAndStatus(MetaForm.patientDetails(patientDetails), false)]
-//		case .treatmentnotes:
-//			return zip(
-//				treatmentN.map(MetaForm.template), treatmentN.map { _ in false })
-//				.map(MetaFormAndStatus.init)
-//		case .prescriptions:
-//			return zip(
-//				prescriptions.map(MetaForm.template), prescriptions.map { _ in false })
-//				.map(MetaFormAndStatus.init)
-//		case .photos:
-//			return []//TODO
-//		case .recalls:
-//			return []//TODO
-//		case .aftercares:
-//			return []//TODO
-//		case .patientdetails,
-//				 .medicalhistory,
-//				 .consents:
-//			fatalError("patient steps, should be filtered earlier")
-//		case .patientComplete:
-//			return []
-//		}
-//	}
-//
-//	static func patientForms(_ stepType: StepType,
-//													 _ patientDetails: PatientDetails,
-//													 _ medHistory: FormTemplate,
-//													 _ consents: [FormTemplate]) -> [MetaFormAndStatus] {
-//		switch stepType {
-//		case .patientdetails:
-//			return [MetaFormAndStatus(MetaForm.patientDetails(patientDetails), false)]
-//		case .medicalhistory:
-//			return [MetaFormAndStatus(MetaForm.template(medHistory), false)]
-//		case .consents:
-//			return zip(
-//				consents.map(MetaForm.template), consents.map { _ in false })
-//				.map(MetaFormAndStatus.init)
-//		case .checkpatient,
-//				 .treatmentnotes,
-//				 .prescriptions,
-//				 .photos,
-//				 .recalls,
-//				 .aftercares:
-//			fatalError("doctor steps, should be filtered earlier")
-//		case .patientComplete:
-//			return [MetaFormAndStatus(MetaForm.patientComplete(PatientComplete()), false)]
-//		}
-//	}
+
+//func indexOfStep(_ pathway: Pathway,
+//								 _ journeyMode: JourneyMode,
+//								 _ stepType: StepType) -> Int? {
+//	return pathway.steps
+//		.filter(with(.patient, filterStepType))
+//		.sorted(by: \.stepType.order)
+//		.firstIndex(where: { $0.stepType == stepType })
 //}
 
-//static func doctor(_ pathway: Pathway,
-//									 _ patientDetails: PatientDetails,
-//									 _ treatmentN: [FormTemplate],
-//									 _ prescriptions: [FormTemplate]
-//) -> StepsState {
-//	let patientSteps: [StepState] =
-//		pathway.steps.map { $0.stepType }
-//			.filter { stepToModeMap($0) == .doctor }
-//			.map {
-//				StepState(stepType: $0,
-//									forms: Self.doctorForms($0,
-//																					patientDetails,
-//																					treatmentN,
-//																					[JourneyMockAPI.getPrescription()])
-//				)
-//	}.sorted(by: { $0.stepType.order < $1.stepType.order })
-//	return StepsState(stepsState: patientSteps,
-//										selectedIndex: 0)
+//struct PatientCheckInState: Equatable {
+//	var isPatientCheckInMainActive: Bool
+//	var journey: Journey
+//	var patientSelectedIndex: Int
+//	var pathway: Pathway
+//	var medHistory: FormTemplate
+//	var medHistoryCompleted: Bool
+//	var patientDetails: PatientDetails
+//	var patientDetailsCompleted: Bool
+//	var patientComplete: PatientComplete
+//	var consentsCompleted: [Int: Bool]
+//	var runningConsents: [Int: FormTemplate]
 //}
-//
-//static func patient(_ pathway: Pathway,
-//										_ patientDetails: PatientDetails,
-//										_ medHistory: FormTemplate,
-//										_ consents: [FormTemplate]) -> StepsState {
-//	var stepTypes = pathway.steps.map { $0.stepType }
-//	stepTypes.append(.patientComplete)
-//	let patientSteps: [StepState] =
-//		stepTypes
-//			.filter { stepToModeMap($0) == .patient }
-//			.map {
-//				StepState(stepType: $0, forms: Self.patientForms($0,
-//																												 patientDetails,
-//																												 medHistory,
-//																												 consents)
-//				)
-//	}.sorted(by: { $0.stepType.order < $1.stepType.order })
-//	return StepsState(stepsState: patientSteps,
-//										selectedIndex: 0)
+
+//struct DoctorCheckInState: Equatable {
+//	var doctorSelectedIndex: Int
+//	var pathway: Pathway
+//	var aftercare: Aftercare
+//	var aftercareCompleted: Bool
+//	var runningTreatmentForms: [Int: FormTemplate]
+//	var treatmentFormsCompleted: [Int: Bool]
+//	var checkPatientCompleted: Bool
+//	var runningPrescriptions: [Int: FormTemplate]
+//	var prescriptionsCompleted: [Int: Bool]
+//	var photosCompleted: Bool
+//	var recall: Recall
+//	var recallCompleted: Bool
 //}
+
+
+func wrapForm(_ state: CheckInContainerState,
+							_ stepType: StepType) -> [MetaFormAndStatus] {
+	switch stepType {
+	case .patientdetails:
+		let form = MetaForm.patientDetails(state.patientDetails)
+		return [MetaFormAndStatus(form, state.patientDetailsCompleted)]
+	case .medicalhistory:
+		let form = MetaForm.template(state.medHistory)
+		return [MetaFormAndStatus(form, state.medHistoryCompleted)]
+	case .consents:
+		return state.runningConsents.map {
+			let form = MetaForm.template($0.value)
+			guard let status = state.consentsCompleted[$0.value.id] else { fatalError() }
+			return MetaFormAndStatus(form, status)
+		}
+	case .checkpatient:
+		let form = MetaForm.checkPatient(state.checkPatientForm)
+		return [MetaFormAndStatus(form, state.checkPatientCompleted)]
+	case .treatmentnotes:
+		return state.runningTreatmentForms.map {
+			let form = MetaForm.template($0.value)
+			guard let status = state.treatmentFormsCompleted[$0.value.id] else { fatalError() }
+			return MetaFormAndStatus(form, status)
+		}
+	case .prescriptions:
+		return state.runningPrescriptions.map {
+			let form = MetaForm.template($0.value)
+			guard let status = state.prescriptionsCompleted[$0.value.id] else { fatalError() }
+			return MetaFormAndStatus(form, status)
+		}
+	case .photos:
+		return [] //TODO
+	case .recalls:
+		let form = MetaForm.recall(state.recall)
+		return [MetaFormAndStatus(form, state.recallCompleted)]
+	case .aftercares:
+		let form = MetaForm.aftercare(state.aftercare)
+		return [MetaFormAndStatus(form, state.aftercareCompleted)]
+	case .patientComplete:
+		let form = MetaForm.patientComplete(state.patientComplete)
+		return [MetaFormAndStatus(form, false)]
+	}
+}
+
+func unwrap(_ state: inout CheckInContainerState,
+						_ metaFormAndStatus: MetaFormAndStatus) {
+	let metaForm = metaFormAndStatus.form
+	let isComplete = metaFormAndStatus.isComplete
+	switch stepType(form: metaForm) {
+	case .patientdetails:
+		state.patientDetails = extract(case: MetaForm.patientDetails, from: metaForm)!
+		state.patientDetailsCompleted = isComplete
+	case .medicalhistory:
+		state.medHistory = extract(case: MetaForm.template, from: metaForm)!
+		state.medHistoryCompleted = isComplete
+	case .consents:
+		let consent = extract(case: MetaForm.template, from: metaForm)!
+		state.runningConsents[consent.id] = consent
+		state.consentsCompleted[consent.id] = isComplete
+	case .checkpatient:
+		state.checkPatientForm = extract(case: MetaForm.checkPatient, from: metaForm)!
+		state.checkPatientCompleted = isComplete
+	case .treatmentnotes:
+		let treatmentnote = extract(case: MetaForm.template, from: metaForm)!
+		state.runningTreatmentForms[treatmentnote.id] = treatmentnote
+		state.treatmentFormsCompleted[treatmentnote.id] = isComplete
+	case .prescriptions:
+		let prescription = extract(case: MetaForm.template, from: metaForm)!
+		state.runningPrescriptions[prescription.id] = prescription
+		state.prescriptionsCompleted[prescription.id] = isComplete
+	case .photos:
+		return
+	case .recalls:
+		state.recall = extract(case: MetaForm.recall, from: metaForm)!
+		state.recallCompleted = isComplete
+	case .aftercares:
+		state.aftercare = extract(case: MetaForm.aftercare, from: metaForm)!
+		state.aftercareCompleted = isComplete
+	case .patientComplete:
+		state.patientComplete = extract(case: MetaForm.patientComplete, from: metaForm)!
+	}
+}

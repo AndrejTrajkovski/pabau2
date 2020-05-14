@@ -1,1 +1,1 @@
-public struct Recall: Equatable, Hashable { }
+public struct Recall: Hashable { }
