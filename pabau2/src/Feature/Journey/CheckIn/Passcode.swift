@@ -45,7 +45,7 @@ let passcodeReducer = Reducer<PasscodeState, PasscodeAction, Any> { state, actio
 
 struct Passcode: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>
-	
+
 	var body: some View {
 		WithViewStore(self.store.scope(state: { $0.passcode },
 																	 action: { .passcode($0)})) { viewStore in
@@ -140,7 +140,7 @@ struct Shake: GeometryEffect {
 	var amount: CGFloat = 10
 	var shakesPerUnit = 3
 	var animatableData: CGFloat
-	
+
 	func effectValue(size: CGSize) -> ProjectionTransform {
 		ProjectionTransform(CGAffineTransform(translationX:
 			amount * sin(animatableData * .pi * CGFloat(shakesPerUnit)),

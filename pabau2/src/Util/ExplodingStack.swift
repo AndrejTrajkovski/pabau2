@@ -21,7 +21,7 @@ struct ExplodingFrame<Content: View>: View {
 		self.content = content
 		self.alignment = alignment
 	}
-	
+
 	var body: some View {
 		content().frame(minWidth: 0, maxWidth: .infinity,
 										minHeight: 0, maxHeight: .infinity,

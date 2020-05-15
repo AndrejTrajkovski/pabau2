@@ -425,7 +425,7 @@ public enum ToggleAction {
 	case setTo(Bool)
 }
 
-let switchCellReducer = Reducer<Bool, ToggleAction, Any> { state, action, env in
+let switchCellReducer = Reducer<Bool, ToggleAction, Any> { state, action, _ in
 	switch action {
 	case .setTo(let value):
 		state = value

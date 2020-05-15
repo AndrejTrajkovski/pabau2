@@ -48,7 +48,7 @@ public struct Texts {
 	public static let logout = "Logout"
 	public static let fetchingJourneys = "Fetching journeys...".localized
 	public static let employee = "Employee".localized
-	
+
 	public static let salutation = "SALUTATION".localized
 	public static let firstName = "FIRST NAME".localized
 	public static let lastName = "LAST NAME".localized
@@ -63,16 +63,16 @@ public struct Texts {
 	public static let county = "COUNTY".localized
 	public static let country = "COUNTRY".localized
 	public static let howDidUHear = "HOW DID YOU HEAR ABOUT US?".localized
-	
+
 	public static let next = "Next"
-	
+
 	public static let journeyCompleteDesc = "Please use the checkout button at the end of the page."
 	public static let journeyCompleteTitle = "You have successfully completed the journey."
 	public static let complete = "COMPLETE"
-	
+
 	public static let handBackTitle = "Please hand back the device."
 	public static let handBackDesc = "You can now give the device to the doctor."
-	
+
 	public static let checkInTitle = "Checking-In"
 	public static let checkInDesc = "Hand over the tablet to the client"
 	public static let enterPass = "Enter Passcode"

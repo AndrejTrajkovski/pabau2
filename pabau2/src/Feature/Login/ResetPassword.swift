@@ -65,7 +65,7 @@ public struct ResetPasswordState: Equatable {
 			return ""
 		}
 	}
-	
+
 	var codeValidator: String {
 		guard let rpFailure = (/RPValidator.failure).extract(from: rpValidation) else {
 			return ""
@@ -98,7 +98,7 @@ func validate(_ code: String, _ newPass: String, _ confirmPass: String) -> RPVal
 	if code.isEmpty {
 		errors.append(.emptyCode)
 	}
-	
+
 	if errors.isEmpty {
 		return .success(ResetPassRequest(code: code, newPass: newPass))
 	} else {
@@ -198,7 +198,7 @@ struct ResetPassword: View {
 		}.loadingView(.constant(self.viewStore.state.loadingState.isLoading),
 									Texts.verifyingCode)
 	}
-	
+
 	var passChangedView: PasswordChanged {
 		return PasswordChanged(store: passChangedStore)
 	}

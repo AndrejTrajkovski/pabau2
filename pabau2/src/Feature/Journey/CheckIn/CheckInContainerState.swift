@@ -85,7 +85,7 @@ public struct CheckInContainerState: Equatable {
 }
 
 extension CheckInContainerState {
-	
+
 	//FIXME: OPTIMIZE FILTERING ON PATIENT VS DOCTOR
 	var patientArray: [MetaFormAndStatus] {
 		get {
@@ -99,7 +99,7 @@ extension CheckInContainerState {
 			}
 		}
 	}
-	
+
 	var doctorArray: [MetaFormAndStatus] {
 		get {
 			return forms(.doctor, self)
@@ -127,7 +127,7 @@ func forms(_ journeyMode: JourneyMode,
 }
 
 extension CheckInContainerState {
-		
+
 	var patientCheckIn: CheckInViewState {
 		get {
 			CheckInViewState(
@@ -143,7 +143,7 @@ extension CheckInContainerState {
 			self.journey = newValue.journey
 		}
 	}
-	
+
 	var doctorCheckIn: CheckInViewState {
 		get {
 			CheckInViewState(
@@ -159,7 +159,7 @@ extension CheckInContainerState {
 			self.journey = newValue.journey
 		}
 	}
-	
+
 	var doctorSummary: DoctorSummaryState {
 		get {
 			DoctorSummaryState(journey: journey,
@@ -202,7 +202,7 @@ extension CheckInContainerState {
 			self.selectedConsentsIds = newValue.selectedTemplatesIds
 		}
 	}
-	
+
 	var passcode: PasscodeState {
 		get {
 			PasscodeState(runningDigits: self.runningDigits,
@@ -218,16 +218,16 @@ extension CheckInContainerState {
 	}
 }
 
-struct CheckInViewState: Equatable {
+public struct CheckInViewState: Equatable {
 	var selectedIndex: Int
 	var forms: [MetaFormAndStatus]
 	var xButtonActiveFlag: Bool
 	var journey: Journey
-	
+
 	var selectedForm: MetaFormAndStatus {
 		return forms[selectedIndex]
 	}
-	
+
 	var topView: TopViewState {
 		get {
 			TopViewState(totalSteps: self.forms.count,

@@ -22,7 +22,7 @@ struct InputTextField: View {
 		self._myText = State.init(initialValue: initialValue)
 		self.onChange = onChange
 	}
-	
+
 	var body: some View {
 		//https://stackoverflow.com/a/56551874/3050624
 		TextField.init("", text: $myText, onEditingChanged: { _ in

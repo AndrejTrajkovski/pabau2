@@ -28,7 +28,7 @@ struct PatientDetailsForm: View {
 			TextAndTextViewVM(.constant("+ 389 70 999 111"), Texts.howDidUHear)
 		]
 	]
-	
+
 	var body: some View {
 		print("Patient details body")
 		return VStack {
@@ -53,7 +53,7 @@ struct TextAndTextViewVM {
 struct ThreeTextColumns: View {
 	let vms: [TextAndTextViewVM]
 	let isFirstFixSized: Bool
-	
+
 	init(_ vms: [TextAndTextViewVM], isFirstFixSized: Bool = false) {
 		self.vms = vms
 		self.isFirstFixSized = isFirstFixSized

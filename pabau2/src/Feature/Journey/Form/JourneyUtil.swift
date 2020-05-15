@@ -38,17 +38,17 @@ func stepToModeMap(_ stepType: StepType) -> JourneyMode {
 
 func stepType(form: MetaForm) -> StepType {
 	switch form {
-	case .aftercare(_):
+	case .aftercare:
 		return .aftercares
 	case .template(let template):
 		return stepType(type: template.formType)
-	case .patientDetails(_):
+	case .patientDetails:
 		return .patientdetails
 	case .patientComplete:
 		return .patientComplete
-	case .checkPatient(_):
+	case .checkPatient:
 		return .checkpatient
-	case .recall(_):
+	case .recall:
 		return .recalls
 	}
 }

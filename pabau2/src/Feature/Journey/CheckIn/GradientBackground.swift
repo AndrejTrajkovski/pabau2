@@ -5,7 +5,7 @@ struct GradientBackground<Content: View>: View {
 	init(@ViewBuilder _ content: @escaping () -> Content) {
 		self.content = content
 	}
-	
+
 	var body: some View {
 		ZStack {
 			Rectangle().fill(

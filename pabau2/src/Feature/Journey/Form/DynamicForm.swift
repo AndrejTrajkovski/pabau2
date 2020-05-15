@@ -5,7 +5,7 @@ import ComposableArchitecture
 import Util
 
 struct DynamicForm: View {
-	
+
 	@Binding var template: FormTemplate
 	init(template: Binding<FormTemplate>) {
 		self._template = template

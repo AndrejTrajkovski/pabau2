@@ -2,7 +2,6 @@ import SwiftUI
 import Model
 import ComposableArchitecture
 
-
 public enum JourneyProfileViewStyle {
 	case short
 	case long

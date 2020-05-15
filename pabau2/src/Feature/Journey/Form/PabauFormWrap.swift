@@ -15,7 +15,7 @@ struct PabauFormWrap: View {
 			state: State.init(state:),
 			action: { $0 }))
 	}
-	
+
 	struct State: Equatable {
 		var patientDetails: PatientDetails?
 		var template: FormTemplate?
@@ -31,7 +31,7 @@ struct PabauFormWrap: View {
 			self.isCompleteForm = extract(case: MetaForm.patientComplete, from: state.form) != nil
 		}
 	}
-	
+
 	var body: some View {
 		if self.viewStore.state.template != nil {
 			return AnyView(

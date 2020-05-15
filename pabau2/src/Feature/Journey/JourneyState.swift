@@ -118,7 +118,7 @@ struct JourneyMocks {
 			],
 			chosenItemId: 1,
 			isActive: false)
-	
+
 	static let checkIn = CheckInContainerState(
 		journey:
 		Journey.init(id: 1,

@@ -45,7 +45,7 @@ public struct CollectionView<Content: View>: UIViewControllerRepresentable {
 	var identifiers: [Int]
 	/// The actual content.
 	var content: [Content]
-	
+
 	var selectedIdx: Int
 
 	/// The layout info.

@@ -1,7 +1,7 @@
 import Model
 
 public struct MetaFormAndStatus: Hashable {
-	
+
 	static let defaultEmpty = MetaFormAndStatus.init(MetaForm.template(FormTemplate.defaultEmpty), false)
 
 	var form: MetaForm

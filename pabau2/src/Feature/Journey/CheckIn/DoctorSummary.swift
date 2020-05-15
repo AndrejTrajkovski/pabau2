@@ -109,7 +109,7 @@ struct AddFormButton: View {
 	let btnTxt: String
 	let imageName: String
 	let onSelect: (ChooseFormMode) -> Void
-	
+
 	init(mode: ChooseFormMode, action: @escaping (ChooseFormMode) -> Void) {
 		self.mode = mode
 		self.btnTxt = mode == .consents ? "Add Consent" : "Add Treatment Note"

@@ -17,14 +17,14 @@ struct CheckInMain: View {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
-	
+
 	var body: some View {
-		WithViewStore(store) { viewStore in
+		WithViewStore(store) { _ in
 			VStack (alignment: .center, spacing: 0) {
 				TopView(store: self.store
 					.scope(state: { $0.topView },
 								 action: { .topView($0) }))
-				StepForms(store: self.store.scope(
+				CheckInBody(store: self.store.scope(
 					state: { $0 },
 					action: { .stepForms($0) }))
 				Spacer()
@@ -48,7 +48,7 @@ public enum ChildFormAction {
 	case didFinishPatientDetails(PatientDetails)
 }
 
-let stepFormsReducer2 = Reducer<MetaFormAndStatus, ChildFormAction, JourneyEnvironment> { state, action, _ in
+let anyFormReducer = Reducer<MetaFormAndStatus, ChildFormAction, JourneyEnvironment> { state, action, _ in
 	switch action {
 	case .didFinishPatientDetails:
 		break
@@ -62,7 +62,7 @@ let stepFormsReducer2 = Reducer<MetaFormAndStatus, ChildFormAction, JourneyEnvir
 	return .none
 }
 
-let stepFormsReducer = Reducer<CheckInViewState, StepFormsAction, JourneyEnvironment> { state, action, _ in
+let checkInBodyReducer = Reducer<CheckInViewState, StepFormsAction, JourneyEnvironment> { state, action, _ in
 	switch action {
 	case .didSelectFormIndex(let idx):
 		state.selectedIndex = idx
@@ -76,17 +76,17 @@ let stepFormsReducer = Reducer<CheckInViewState, StepFormsAction, JourneyEnviron
 	return .none
 }
 
-struct StepForms: View {
+struct CheckInBody: View {
 
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
 	let store: Store<CheckInViewState, StepFormsAction>
 	@ObservedObject var viewStore: ViewStore<CheckInViewState, StepFormsAction>
-	
+
 	init(store: Store<CheckInViewState, StepFormsAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
-	
+
 	var body: some View {
 		print("check in main body")
 		return GeometryReader { geo in
@@ -101,8 +101,7 @@ struct StepForms: View {
 					.shadow(color: Color(hex: "C1C1C1"), radius: 4, y: 2)
 				PabauFormWrap(store: self.store
 					.scope(state: { $0.selectedForm },
-								 action:  {
-									.childForm(Indexed(self.viewStore.state.selectedIndex, $0))
+								 action: { .childForm(Indexed(self.viewStore.state.selectedIndex, $0))
 					}))
 					.padding(.bottom, self.keyboardHandler.keyboardHeight > 0 ? self.keyboardHandler.keyboardHeight : 32)
 					.padding([.leading, .trailing, .top], 32)

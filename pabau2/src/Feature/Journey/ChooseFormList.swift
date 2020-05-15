@@ -56,7 +56,7 @@ public enum ChooseFormMode {
 			return Texts.proceed
 		}
 	}
-	
+
 	var formType: FormType {
 		switch self {
 		case .consents:
@@ -115,7 +115,7 @@ struct ChooseFormList: View {
 			self.selectedTemplatesIds = state.selectedTemplatesIds
 			self.journey = state.selectedJourney
 		}
-		
+
 		var notSelectedTemplates: [FormTemplate] {
 			templates
 				.filter { !selectedTemplatesIds.contains($0.key) }
