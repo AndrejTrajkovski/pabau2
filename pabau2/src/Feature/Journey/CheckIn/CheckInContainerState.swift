@@ -37,7 +37,6 @@ public struct CheckInContainerState: Equatable {
 	var runningDigits: [String] = []
 	var unlocked: Bool = false
 	var wrongAttempts: Int = 0
-	
 	//NAVIGATION
 	var isHandBackDeviceActive: Bool = false
 	var isEnterPasscodeActive: Bool = false
@@ -46,42 +45,6 @@ public struct CheckInContainerState: Equatable {
 	var isDoctorCheckInMainActive: Bool = false
 	var isPatientCheckInMainActive: Bool = false
 	var isDoctorSummaryActive: Bool = false
-
-	init(journey: Journey,
-			 pathway: Pathway,
-			 patientDetails: PatientDetails,
-			 medHistory: FormTemplate,
-			 allConsents: [Int: FormTemplate],
-			 selectedConsentsIds: [Int]) {
-		self.journey = journey
-		self.pathway = pathway
-		self.allConsents = allConsents
-		self.selectedConsentsIds = selectedConsentsIds
-		self.allTreatmentForms = flatten(JourneyMockAPI.mockTreatmentN)
-		self.runningConsents = selected(allConsents, selectedConsentsIds)
-		self.runningTreatmentForms = [:]
-		self.consentsCompleted = runningConsents.map { $0.key }.reduce(into: [Int: Bool]()) {
-			$0[$1] = false
-		}
-		self.selectedTreatmentFormsIds = []
-		self.treatmentFormsCompleted = [:]
-		self.aftercare = Aftercare()
-		self.aftercareCompleted = false
-		self.patientDetails = PatientDetails()
-		self.patientDetailsCompleted = false
-		self.patientComplete = PatientComplete()
-		self.patientSelectedIndex = 0
-		self.doctorSelectedIndex = 0
-		self.runningPrescriptions = [:]
-		self.prescriptionsCompleted = [:]
-		self.checkPatientCompleted = false
-		self.photosCompleted = false
-		self.recall = Recall()
-		self.recallCompleted = false
-		self.medHistory = JourneyMockAPI.getMedHistory()
-		self.medHistoryCompleted = false
-		self.checkPatientForm = CheckPatientForm()
-	}
 }
 
 extension CheckInContainerState {
@@ -127,13 +90,13 @@ func forms(_ journeyMode: JourneyMode,
 }
 
 extension CheckInContainerState {
-
+	
 	var patientCheckIn: CheckInViewState {
 		get {
 			CheckInViewState(
 				selectedIndex: patientSelectedIndex,
 				forms: patientArray,
-				xButtonActiveFlag: isPatientCheckInMainActive,
+				xButtonActiveFlag: true,
 				journey: journey)
 		}
 		set {
@@ -333,5 +296,45 @@ func unwrap(_ state: inout CheckInContainerState,
 		state.aftercareCompleted = isComplete
 	case .patientComplete:
 		state.patientComplete = extract(case: MetaForm.patientComplete, from: metaForm)!
+	}
+}
+
+
+extension CheckInContainerState {
+	
+	init(journey: Journey,
+			 pathway: Pathway,
+			 patientDetails: PatientDetails,
+			 medHistory: FormTemplate,
+			 allConsents: [Int: FormTemplate],
+			 selectedConsentsIds: [Int]) {
+		self.journey = journey
+		self.pathway = pathway
+		self.allConsents = allConsents
+		self.selectedConsentsIds = selectedConsentsIds
+		self.allTreatmentForms = flatten(JourneyMockAPI.mockTreatmentN)
+		self.runningConsents = selected(allConsents, selectedConsentsIds)
+		self.runningTreatmentForms = [:]
+		self.consentsCompleted = runningConsents.map { $0.key }.reduce(into: [Int: Bool]()) {
+			$0[$1] = false
+		}
+		self.selectedTreatmentFormsIds = []
+		self.treatmentFormsCompleted = [:]
+		self.aftercare = Aftercare()
+		self.aftercareCompleted = false
+		self.patientDetails = PatientDetails()
+		self.patientDetailsCompleted = false
+		self.patientComplete = PatientComplete()
+		self.patientSelectedIndex = 0
+		self.doctorSelectedIndex = 0
+		self.runningPrescriptions = [:]
+		self.prescriptionsCompleted = [:]
+		self.checkPatientCompleted = false
+		self.photosCompleted = false
+		self.recall = Recall()
+		self.recallCompleted = false
+		self.medHistory = JourneyMockAPI.getMedHistory()
+		self.medHistoryCompleted = false
+		self.checkPatientForm = CheckPatientForm()
 	}
 }

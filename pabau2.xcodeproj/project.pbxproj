@@ -65,6 +65,7 @@
 		82477622246D189C00508434 /* JourneyUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82477621246D189C00508434 /* JourneyUtil.swift */; };
 		82477624246D47A000508434 /* CheckPatientForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82477623246D47A000508434 /* CheckPatientForm.swift */; };
 		8247762A246DE77E00508434 /* Overture in Frameworks */ = {isa = PBXBuildFile; productRef = 82477629246DE77E00508434 /* Overture */; };
+		8247762C24704DC800508434 /* JourneyMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247762B24704DC800508434 /* JourneyMocks.swift */; };
 		8250D7C9242BCFD000F8F3FC /* ChooseFormList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7C8242BCFD000F8F3FC /* ChooseFormList.swift */; };
 		8250D7CB242BD25B00F8F3FC /* JourneyBaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7CA242BD25B00F8F3FC /* JourneyBaseView.swift */; };
 		8250D7D0242C575A00F8F3FC /* ModalTransitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7CD242C575A00F8F3FC /* ModalTransitions.swift */; };
@@ -465,6 +466,7 @@
 		8247761D246C4C1800508434 /* SortByKeyPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortByKeyPath.swift; sourceTree = "<group>"; };
 		82477621246D189C00508434 /* JourneyUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyUtil.swift; sourceTree = "<group>"; };
 		82477623246D47A000508434 /* CheckPatientForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckPatientForm.swift; sourceTree = "<group>"; };
+		8247762B24704DC800508434 /* JourneyMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyMocks.swift; sourceTree = "<group>"; };
 		8250D7C8242BCFD000F8F3FC /* ChooseFormList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseFormList.swift; sourceTree = "<group>"; };
 		8250D7CA242BD25B00F8F3FC /* JourneyBaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyBaseView.swift; sourceTree = "<group>"; };
 		8250D7CD242C575A00F8F3FC /* ModalTransitions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalTransitions.swift; sourceTree = "<group>"; };
@@ -975,6 +977,7 @@
 				82D43D8F24351F5000AC74FA /* EmployeesList.swift */,
 				82D43D91243522CD00AC74FA /* Settings.swift */,
 				825BE7E124361ABD00422910 /* StaffFilterPicker.swift */,
+				8247762B24704DC800508434 /* JourneyMocks.swift */,
 			);
 			path = Journey;
 			sourceTree = "<group>";
@@ -1873,6 +1876,7 @@
 				82D7C2C324479CAF000B1CD5 /* CheckInContainerState.swift in Sources */,
 				8250D7C9242BCFD000F8F3FC /* ChooseFormList.swift in Sources */,
 				828626B12424CA64003ADA24 /* JourneyProfileView.swift in Sources */,
+				8247762C24704DC800508434 /* JourneyMocks.swift in Sources */,
 				828626B32424CEFB003ADA24 /* ChoosePathway.swift in Sources */,
 				82622B52244650E000BECF9A /* CheckBoxField.swift in Sources */,
 				8269526824506F18001B806E /* DynamicForm.swift in Sources */,

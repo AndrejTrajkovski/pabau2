@@ -76,7 +76,7 @@ let checkInMiddleware2 = Reducer<JourneyState, ChooseFormAction, JourneyEnvironm
 
 let checkInMiddleware = Reducer<JourneyState, CheckInContainerAction, JourneyEnvironment> { state, action, _ in
 	switch action {
-	case .closeBtnTap:
+	case .patient(.topView(.onXButtonTap)):
 		state.selectedJourney = nil
 		state.selectedPathway = nil
 		state.checkIn = nil
