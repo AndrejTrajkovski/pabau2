@@ -37,7 +37,7 @@ public struct CheckInContainerState: Equatable {
 	var runningDigits: [String] = []
 	var unlocked: Bool = false
 	var wrongAttempts: Int = 0
-
+	
 	//NAVIGATION
 	var isHandBackDeviceActive: Bool = false
 	var isEnterPasscodeActive: Bool = false
@@ -86,7 +86,7 @@ public struct CheckInContainerState: Equatable {
 
 extension CheckInContainerState {
 
-	//FIXME: OPTIMIZE FILTERING ON PATIENT VS DOCTOR
+	//TODO: OPTIMIZE FILTERING ON PATIENT VS DOCTOR
 	var patientArray: [MetaFormAndStatus] {
 		get {
 			return forms(.patient, self)

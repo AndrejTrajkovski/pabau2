@@ -77,11 +77,14 @@ public let checkInMainReducer: Reducer<CheckInViewState, CheckInMainAction, Jour
 	anyFormReducer.forEach(
 		state: \CheckInViewState.forms,
 		action: /CheckInMainAction.stepForms..StepFormsAction.childForm,
-		environment: { $0 })
-	,
+		environment: { $0 }),
 	checkInBodyReducer.pullback(
 		state: \CheckInViewState.self,
 		action: /CheckInMainAction.stepForms,
+		environment: { $0 }),
+	topViewReducer.pullback(
+		state: \CheckInViewState.topView,
+		action: /CheckInMainAction.topView,
 		environment: { $0 })
 )
 
