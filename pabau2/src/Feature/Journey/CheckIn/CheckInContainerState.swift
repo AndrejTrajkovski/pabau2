@@ -204,18 +204,6 @@ public struct CheckInViewState: Equatable {
 	}
 }
 
-extension CheckInContainerState {
-	public static var defaultEmpty: CheckInContainerState {
-		CheckInContainerState(journey: Journey.defaultEmpty,
-													pathway: Pathway.defaultEmpty,
-													patientDetails: PatientDetails(),
-													medHistory: FormTemplate.defaultEmpty,
-													allConsents: [:],
-													selectedConsentsIds: []
-		)
-	}
-}
-
 func wrapForm(_ state: CheckInContainerState,
 							_ stepType: StepType) -> [MetaFormAndStatus] {
 	switch stepType {
