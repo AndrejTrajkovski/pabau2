@@ -66,8 +66,7 @@ func stepType(type: FormType) -> StepType {
 	}
 }
 
-let filterStepTypeFlipped = pipe(get(\Step.stepType), flip(filterBy))
-let filterStepType = flip(filterStepTypeFlipped)
+let filterStepType = filterBy
 
 func selected(_ templates: [Int: FormTemplate], _ selectedIds: [Int]) -> [Int: FormTemplate] {
 	templates.filter { selectedIds.contains($0.key) }

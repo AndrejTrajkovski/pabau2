@@ -5,7 +5,6 @@ import ComposableArchitecture
 
 public struct ChooseFormState: Equatable {
 	var selectedJourney: Journey?
-	var selectedPathway: Pathway?
 	var selectedTemplatesIds: [Int]
 	var templates: [Int: FormTemplate]
 	var templatesLoadingState: LoadingState = .initial

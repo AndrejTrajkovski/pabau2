@@ -78,13 +78,12 @@ extension CheckInContainerState {
 
 func forms(_ journeyMode: JourneyMode,
 					 _ state: CheckInContainerState) -> [MetaFormAndStatus] {
-	state.pathway.steps
+	state.stepTypes
 		.filter(with(journeyMode, filterStepType))
 		.reduce(into: [MetaFormAndStatus]()) {
 			print("\($1)")
 			$0.append(contentsOf:
-				with($1, (pipe(get(\.stepType),
-											 with(state, curry(wrapForm(_:_:)))))))
+				with($1, (with(state, curry(wrapForm(_:_:))))))
 	}
 	.sorted(by: their(pipe(get(\.form), stepType(form:), get(\.order))))
 }
@@ -143,7 +142,6 @@ extension CheckInContainerState {
 	var chooseTreatments: ChooseFormState {
 		get {
 			return ChooseFormState(selectedJourney: journey,
-														 selectedPathway: pathway,
 														 selectedTemplatesIds: selectedTreatmentFormsIds,
 														 templates: allTreatmentForms,
 														 templatesLoadingState: .initial)
@@ -156,7 +154,6 @@ extension CheckInContainerState {
 	var chooseConsents: ChooseFormState {
 		get {
 			return ChooseFormState(selectedJourney: journey,
-														 selectedPathway: pathway,
 														 selectedTemplatesIds: selectedConsentsIds,
 														 templates: allConsents,
 														 templatesLoadingState: .initial)
@@ -295,7 +292,8 @@ extension CheckInContainerState {
 			 allConsents: [Int: FormTemplate],
 			 selectedConsentsIds: [Int]) {
 		self.journey = journey
-		self.pathway = pathway
+		self.stepTypes = pathway.steps.map { $0.stepType }
+		self.stepTypes.append(StepType.patientComplete)
 		self.allConsents = allConsents
 		self.selectedConsentsIds = selectedConsentsIds
 		self.allTreatmentForms = flatten(JourneyMockAPI.mockTreatmentN)

@@ -44,13 +44,11 @@ public struct ChoosePathwayState: Equatable {
 	var chooseConsentState: ChooseFormState {
 		get {
 			ChooseFormState(selectedJourney: selectedJourney,
-											selectedPathway: selectedPathway,
 											selectedTemplatesIds: selectedConsentsIds,
 											templates: allConsents)
 		}
 		set {
 			self.selectedJourney = newValue.selectedJourney
-			self.selectedPathway = newValue.selectedPathway
 			self.selectedConsentsIds = newValue.selectedTemplatesIds
 			self.allConsents = newValue.templates
 		}
