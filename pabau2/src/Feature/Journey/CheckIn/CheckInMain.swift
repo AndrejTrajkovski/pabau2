@@ -106,17 +106,17 @@ struct CheckInBody: View {
 					.padding(.bottom, self.keyboardHandler.keyboardHeight > 0 ? self.keyboardHandler.keyboardHeight : 32)
 					.padding([.leading, .trailing, .top], 32)
 				Spacer()
-//				if self.keyboardHandler.keyboardHeight == 0 &&
-//					!self.viewStore.state.isOnCompleteStep {
-//					BigButton(text: Texts.next) {
-//						self.viewStore.send(.didSelectNextForm)
-//						self.viewStore.send(.childForm(
-//							Indexed<ChildFormAction>(self.viewStore.state.selectedIndex,
-//																				.didFinishTemplate(self.viewStore.state.forms[self.viewStore.state.selectedIndex]))))
-//					}
-//					.frame(width: 230)
-//					.padding(8)
-//				}
+				if self.keyboardHandler.keyboardHeight == 0 &&
+					!self.viewStore.state.isOnCompleteStep {
+					BigButton(text: Texts.next) {
+						self.viewStore.send(.didSelectNextForm)
+						self.viewStore.send(.childForm(
+							Indexed<ChildFormAction>(self.viewStore.state.selectedIndex,
+																				.didFinishTemplate(self.viewStore.state.forms[self.viewStore.state.selectedIndex]))))
+					}
+					.frame(width: 230)
+					.padding(8)
+				}
 			}	.padding(.leading, 40)
 				.padding(.trailing, 40)
 		}

@@ -34,17 +34,16 @@ public struct CheckInContainerState: Equatable {
 	var photosCompleted: Bool
 	var recall: Recall
 	var recallCompleted: Bool
-	var runningDigits: [String] = []
-	var unlocked: Bool = false
-	var wrongAttempts: Int = 0
+
+	var passcodeState = PasscodeState()
 	//NAVIGATION
 	var isHandBackDeviceActive: Bool = false
 	var isEnterPasscodeActive: Bool = false
 	var isChooseConsentActive: Bool = false
 	var isChooseTreatmentActive: Bool = false
 	var isDoctorCheckInMainActive: Bool = false
-	var isPatientCheckInMainActive: Bool = false
 	var isDoctorSummaryActive: Bool = false
+	var isPatientCheckInMainActive: Bool = false
 }
 
 extension CheckInContainerState {
@@ -82,6 +81,7 @@ func forms(_ journeyMode: JourneyMode,
 	state.pathway.steps
 		.filter(with(journeyMode, filterStepType))
 		.reduce(into: [MetaFormAndStatus]()) {
+			print("\($1)")
 			$0.append(contentsOf:
 				with($1, (pipe(get(\.stepType),
 											 with(state, curry(wrapForm(_:_:)))))))
@@ -90,7 +90,7 @@ func forms(_ journeyMode: JourneyMode,
 }
 
 extension CheckInContainerState {
-	
+
 	var patientCheckIn: CheckInViewState {
 		get {
 			CheckInViewState(
@@ -168,15 +168,10 @@ extension CheckInContainerState {
 
 	var passcode: PasscodeState {
 		get {
-			PasscodeState(runningDigits: self.runningDigits,
-										unlocked: self.unlocked,
-										isDoctorSummaryActive: self.isDoctorSummaryActive, wrongAttempts: self.wrongAttempts)
+			self.passcodeState
 		}
 		set {
-			self.runningDigits = newValue.runningDigits
-			self.unlocked = newValue.unlocked
-			self.isDoctorSummaryActive = newValue.isDoctorSummaryActive
-			self.wrongAttempts = newValue.wrongAttempts
+			self.passcodeState = newValue
 		}
 	}
 }
@@ -201,6 +196,10 @@ public struct CheckInViewState: Equatable {
 		set {
 			self.xButtonActiveFlag = newValue.xButtonActiveFlag
 		}
+	}
+
+	var isOnCompleteStep: Bool {
+		stepType(form: selectedForm.form) == .patientComplete
 	}
 }
 
@@ -287,9 +286,8 @@ func unwrap(_ state: inout CheckInContainerState,
 	}
 }
 
-
 extension CheckInContainerState {
-	
+
 	init(journey: Journey,
 			 pathway: Pathway,
 			 patientDetails: PatientDetails,

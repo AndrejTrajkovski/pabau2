@@ -10,10 +10,9 @@ let validPasscodes: [[String]] = [
 ]
 
 public struct PasscodeState: Equatable {
-	var runningDigits: [String]
-	var unlocked: Bool
-	var isDoctorSummaryActive: Bool
-	var wrongAttempts: Int
+	var runningDigits: [String] = []
+	var unlocked: Bool = false
+	var wrongAttempts: Int = 0
 }
 
 public enum PasscodeAction {

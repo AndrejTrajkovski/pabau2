@@ -806,7 +806,7 @@ extension JourneyMockAPI {
 								 formStructure:
 			FormStructure(formStructure: [
 				CSSField(id: 8,
-								 cssClass: .input_text(InputText(text: "input text 1")),
+								 cssClass: .input_text(InputText(text: "This is med history input 1")),
 								 title: "Insert some text"
 				),
 				CSSField(id: 6,

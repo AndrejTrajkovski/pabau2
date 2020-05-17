@@ -67,20 +67,22 @@ public struct ChoosePathway: View {
 		let standardPathway =
 			Pathway.init(id: 1,
 									 title: "Standard",
-									 steps: [Step(id: 1, stepType: .checkpatient),
+									 steps: [Step(id: 1, stepType: .patientdetails),
 													 Step(id: 2, stepType: .medicalhistory),
 													 Step(id: 3, stepType: .consents),
 													 Step(id: 4, stepType: .treatmentnotes),
 													 Step(id: 5, stepType: .prescriptions),
-													 Step(id: 6, stepType: .aftercares)
+													 Step(id: 6, stepType: .aftercares),
+													 Step(id: 7, stepType: .checkpatient)
 			])
 		let consultationPathway =
 			Pathway.init(id: 1,
 									 title: "Consultation",
-									 steps: [Step(id: 1, stepType: .checkpatient),
+									 steps: [Step(id: 1, stepType: .patientdetails),
 													 Step(id: 2, stepType: .medicalhistory),
 													 Step(id: 3, stepType: .consents),
-													 Step(id: 6, stepType: .aftercares)])
+													 Step(id: 6, stepType: .aftercares),
+													 Step(id: 5, stepType: .checkpatient)])
 		init(state: ChoosePathwayState) {
 			self.isChooseConsentShown = state.selectedPathway != nil
 			self.journey = state.selectedJourney
@@ -132,7 +134,7 @@ public struct ChoosePathway: View {
 			PathwayCell(style: .white) {
 				ChoosePathwayListContent.init(.white,
 																			Image("ico-journey-consulting"),
-																			self.viewStore.state.standardPathway.steps.count,
+																			self.viewStore.state.consultationPathway.steps.count,
 																			"Consultation Pathway",
 																			"Provides a consultation pathway, to hear out the person's needs.",
 																			self.viewStore.state.consultationPathway.steps.map { $0.stepType.title },

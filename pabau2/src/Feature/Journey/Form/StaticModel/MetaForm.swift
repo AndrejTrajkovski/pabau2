@@ -2,8 +2,8 @@ import Model
 
 public enum MetaForm: Equatable, Hashable {
 
-	init?(_ patD: PatientDetails?) {
-		guard let patD = patD else { return nil }
+	init(_ patD: PatientDetails) {
+//		guard let patD = patD else { return nil }
 		self = .patientDetails(patD)
 	}
 
