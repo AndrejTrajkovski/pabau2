@@ -53,23 +53,17 @@ struct DoctorSummary: View {
 						 action: { .doctorSummary($0)}))
 	}
 	var body: some View {
-		GeometryReader { geo in
-			VStack(spacing: 32) {
-				DoctorSummaryStepList(self.viewStore.state.steps) {
-					self.viewStore.send(.didTouchStep($0))
-				}
-				AddConsentBtns {
-					self.viewStore.send(.didTouchAdd($0))
-				}
-				Spacer()
-				DoctorNavigation(store: self.store)
-			}.frame(width: geo.size.width * 0.75)
-				.journeyBase(self.viewStore.state.journey, .long)
+		VStack(spacing: 32) {
+			DoctorSummaryStepList(self.viewStore.state.steps) {
+				self.viewStore.send(.didTouchStep($0))
+			}
+			AddConsentBtns {
+				self.viewStore.send(.didTouchAdd($0))
+			}
+			Spacer()
+			DoctorNavigation(store: self.store)
 		}
-		.navigationBarBackButtonHidden(true)
-		.navigationBarItems(leading:
-				XButton(onTap: { self.viewStore.send(.backOnDoctorCheckIn)
-			}))
+		.journeyBase(self.viewStore.state.journey, .long)
 	}
 }
 
@@ -81,34 +75,28 @@ struct DoctorNavigation: View {
 			action: { .doctorSummary($0)})) { viewStore in
 				VStack {
 					NavigationLink.emptyHidden(viewStore.state.isDoctorCheckInMainActive,
-						 CheckInMain(store: self.store
-							.scope(state: { $0.doctorCheckIn },
-										 action: { .doctor($0) }))
+							CheckInMain(store: self.store
+								.scope(state: { $0.doctorCheckIn },
+											 action: { .doctor($0) }))
 					)
-					.navigationBarTitle("")
-					.navigationBarHidden(true)
 					NavigationLink.emptyHidden(viewStore.state.isChooseTreatmentActive,
 						 ChooseFormList(store: self.store.scope(
 							state: { $0.chooseTreatments },
 							action: { .chooseTreatments($0)}),
 							mode: .treatmentNotes)
-//							.customBackButton {
-//								viewStore.send(.didTouchBackFrom(.treatmentNotes))
-//							}
+							.customBackButton {
+								viewStore.send(.didTouchBackFrom(.treatmentNotes))
+							}
 					)
-					.navigationBarTitle("")
-					.navigationBarHidden(true)
 					NavigationLink.emptyHidden(viewStore.state.isChooseConsentActive,
 						 ChooseFormList(store: self.store.scope(
 							state: { $0.chooseConsents },
 							action: { .chooseConsents($0)}),
 							mode: .consents)
-//							.customBackButton {
-//								viewStore.send(.didTouchBackFrom(.consents))
-//							}
+							.customBackButton {
+								viewStore.send(.didTouchBackFrom(.consents))
+							}
 					)
-					.navigationBarTitle("")
-					.navigationBarHidden(true)
 			}
 		}
 	}

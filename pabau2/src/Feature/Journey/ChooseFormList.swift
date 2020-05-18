@@ -45,29 +45,6 @@ let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, JourneyEn
 	return .none
 }
 
-public enum ChooseFormMode {
-	case consents
-	case treatmentNotes
-
-	var btnTitle: String {
-		switch self {
-		case .consents:
-			return Texts.checkIn
-		case .treatmentNotes:
-			return Texts.proceed
-		}
-	}
-
-	var formType: FormType {
-		switch self {
-		case .consents:
-			return .consent
-		case .treatmentNotes:
-			return .treatment
-		}
-	}
-}
-
 struct ChooseTreatmentNote: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>
 	@ObservedObject var viewStore: ViewStore<CheckInContainerState, CheckInContainerAction>
@@ -83,6 +60,10 @@ struct ChooseTreatmentNote: View {
 										 mode: .treatmentNotes)
 			NavigationLink.emptyHidden(self.viewStore.state.isDoctorSummaryActive,
 																 DoctorSummary(store: self.store)
+																	.navigationBarItems(leading:
+																		XButton(onTap: { self.viewStore.send(.doctorSummary(.backOnDoctorCheckIn))}))
+																	.navigationBarTitle(self.viewStore.state.isDoctorCheckInMainActive ? "" : "Summary")
+																	.navigationBarHidden(self.viewStore.state.isDoctorCheckInMainActive)
 			)
 		}
 	}
@@ -130,7 +111,7 @@ struct ChooseFormList: View {
 			.journeyBase(self.viewStore.state.journey, .long)
 			.onAppear {
 				self.viewStore.send(.onAppear(self.mode.formType))
-		}
+		}.navigationBarTitle(self.mode.navigationTitle)
 	}
 
 	var chooseFormCells: some View {
@@ -230,5 +211,37 @@ struct TemplateRow: View {
 			}.frame(height: 44)
 			Divider().frame(height: 1)
 		}.frame(height: 45)
+	}
+}
+
+public enum ChooseFormMode {
+	case consents
+	case treatmentNotes
+
+	var navigationTitle: String {
+		switch self {
+		case .consents:
+			return Texts.chooseConsent
+		case .treatmentNotes:
+			return Texts.chooseTreatmentNote
+		}
+	}
+	
+	var btnTitle: String {
+		switch self {
+		case .consents:
+			return Texts.checkIn
+		case .treatmentNotes:
+			return Texts.proceed
+		}
+	}
+
+	var formType: FormType {
+		switch self {
+		case .consents:
+			return .consent
+		case .treatmentNotes:
+			return .treatment
+		}
 	}
 }

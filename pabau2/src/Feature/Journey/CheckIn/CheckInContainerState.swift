@@ -300,7 +300,8 @@ extension CheckInContainerState {
 			 patientDetails: PatientDetails,
 			 medHistory: FormTemplate,
 			 allConsents: [Int: FormTemplate],
-			 selectedConsentsIds: [Int]) {
+			 selectedConsentsIds: [Int],
+			 patientComplete: PatientComplete = PatientComplete(isPatientComplete: true)) {
 		self.journey = journey
 		self.stepTypes = pathway.steps.map { $0.stepType }
 		self.stepTypes.append(StepType.patientComplete)
@@ -318,7 +319,7 @@ extension CheckInContainerState {
 		self.aftercareCompleted = false
 		self.patientDetails = PatientDetails()
 		self.patientDetailsCompleted = false
-		self.patientComplete = PatientComplete(isPatientComplete: false)
+		self.patientComplete = patientComplete
 		self.patientSelectedIndex = 0
 		self.doctorSelectedIndex = 0
 		self.runningPrescriptions = [:]

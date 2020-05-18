@@ -19,7 +19,7 @@ struct CheckInMain: View {
 	}
 
 	var body: some View {
-		WithViewStore(store) { _ in
+//		WithViewStore(store) { _ in
 			VStack (alignment: .center, spacing: 0) {
 				TopView(store: self.store
 					.scope(state: { $0.topView },
@@ -29,7 +29,7 @@ struct CheckInMain: View {
 					action: { .stepForms($0) }))
 				Spacer()
 			}
-		}
+//		}
 	}
 }
 
