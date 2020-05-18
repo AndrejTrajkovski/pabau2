@@ -96,6 +96,10 @@ func forms(_ journeyMode: JourneyMode,
 			$0.append(contentsOf:
 				with($1, (with(state, curry(wrapForm(_:_:))))))
 	}
+	.map {
+		print($0.form.title)
+		return $0
+	}
 	.sorted(by: their(pipe(get(\.form), stepType(form:), get(\.order))))
 }
 
@@ -158,6 +162,10 @@ extension CheckInContainerState {
 		}
 		set {
 			self.selectedTreatmentFormsIds = newValue.selectedTemplatesIds
+			self.treatmentFormsCompleted = newValue.selectedTemplatesIds.reduce(into: [Int: Bool]()) {
+				$0[$1] = false
+			}
+			self.runningTreatmentForms = selected(allTreatmentForms, newValue.selectedTemplatesIds)
 		}
 	}
 
