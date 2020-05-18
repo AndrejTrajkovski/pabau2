@@ -36,9 +36,11 @@ let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, JourneyEn
 			state.templatesLoadingState = .gotError
 		}
 	case .onAppear(let formType):
-		return environment.apiClient.getTemplates(formType)
-			.map(ChooseFormAction.gotResponse)
-			.eraseToEffect()
+		return
+			state.templates.isEmpty ?
+				environment.apiClient.getTemplates(formType)
+				.map(ChooseFormAction.gotResponse)
+		.eraseToEffect() : .none
 	}
 	return .none
 }

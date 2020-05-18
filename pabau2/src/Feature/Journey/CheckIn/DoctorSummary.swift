@@ -62,34 +62,45 @@ struct DoctorSummary: View {
 					self.viewStore.send(.didTouchAdd($0))
 				}
 				Spacer()
-//				NavigationLink.emptyHidden(self.viewStore.state.isDoctorCheckInMainActive,
-//																	 CheckInMain(store: self.store
-//																		.scope(state: { $0.doctorCheckIn },
-//																					 action: { .doctor($0) }))
-//																		.navigationBarHidden(true)
-//				)
-				NavigationLink.emptyHidden(self.viewStore.state.isChooseTreatmentActive,
-																	 ChooseFormList(store: self.store.scope(state: {
-																		$0.chooseTreatments
-																	}, action: {
-																		.chooseTreatments($0)
-																	}),
-																								mode: .treatmentNotes))
-					.customBackButton {
-						self.viewStore.send(.didTouchBackFrom(.treatmentNotes))
-				}
-				NavigationLink.emptyHidden(self.viewStore.state.isChooseConsentActive,
-																	 ChooseFormList(store: self.store.scope(state: {
-																		$0.chooseConsents
-																	}, action: {
-																		.chooseConsents($0)
-																	}),
-																								mode: .consents))
-					.customBackButton {
-						self.viewStore.send(.didTouchBackFrom(.consents))
-				}
+				DoctorNavigation(store: self.store)
 			}.frame(width: geo.size.width * 0.75)
 				.journeyBase(self.viewStore.state.journey, .long)
+		}
+	}
+}
+
+struct DoctorNavigation: View {
+	let store: Store<CheckInContainerState, CheckInContainerAction>
+	var body: some View {
+		WithViewStore(store.scope(
+			state: { $0.doctorSummary },
+			action: { .doctorSummary($0)})) { viewStore in
+				VStack {
+					NavigationLink.emptyHidden(viewStore.state.isDoctorCheckInMainActive,
+						 CheckInMain(store: self.store
+							.scope(state: { $0.doctorCheckIn },
+										 action: { .doctor($0) }))
+							.navigationBarHidden(true)
+					)
+					NavigationLink.emptyHidden(viewStore.state.isChooseTreatmentActive,
+						 ChooseFormList(store: self.store.scope(
+							state: { $0.chooseTreatments },
+							action: { .chooseTreatments($0)}),
+							mode: .treatmentNotes)
+							.customBackButton {
+								viewStore.send(.didTouchBackFrom(.treatmentNotes))
+							}
+					)
+					NavigationLink.emptyHidden(viewStore.state.isChooseConsentActive,
+						 ChooseFormList(store: self.store.scope(
+							state: { $0.chooseConsents },
+							action: { .chooseConsents($0)}),
+							mode: .consents)
+							.customBackButton {
+								viewStore.send(.didTouchBackFrom(.consents))
+							}
+					)
+			}
 		}
 	}
 }

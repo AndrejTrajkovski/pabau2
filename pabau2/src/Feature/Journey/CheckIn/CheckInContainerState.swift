@@ -55,7 +55,6 @@ public struct CheckInContainerState: Equatable {
 	var isChooseTreatmentActive: Bool = false
 	var isDoctorCheckInMainActive: Bool = false
 	var isDoctorSummaryActive: Bool = false
-	var isPatientCheckInMainActive: Bool = false
 }
 
 extension CheckInContainerState {
@@ -113,7 +112,6 @@ extension CheckInContainerState {
 		set {
 			self.patientSelectedIndex = newValue.selectedIndex
 			self.patientArray = newValue.forms
-			self.isDoctorCheckInMainActive = newValue.xButtonActiveFlag
 			self.journey = newValue.journey
 		}
 	}
