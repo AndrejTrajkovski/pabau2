@@ -29,8 +29,6 @@ struct CheckInMain: View {
 					action: { .stepForms($0) }))
 				Spacer()
 			}
-			.navigationBarTitle("")
-			.navigationBarHidden(true)
 		}
 	}
 }

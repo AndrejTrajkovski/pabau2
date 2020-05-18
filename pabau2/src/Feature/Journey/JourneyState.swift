@@ -19,7 +19,7 @@ public struct JourneyState: Equatable {
 	var selectedConsentsIds: [Int] = []
 	var allConsents: [Int: FormTemplate] = [:]
 	public var checkIn: CheckInContainerState?
-//		= JourneyMocks.checkIn
+		= JourneyMocks.checkIn
 
 	public var addAppointment: AddAppointmentState = AddAppointmentState.init(
 		isShowingAddAppointment: false,

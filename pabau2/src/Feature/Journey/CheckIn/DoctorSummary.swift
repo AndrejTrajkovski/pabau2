@@ -66,6 +66,10 @@ struct DoctorSummary: View {
 			}.frame(width: geo.size.width * 0.75)
 				.journeyBase(self.viewStore.state.journey, .long)
 		}
+		.navigationBarBackButtonHidden(true)
+		.navigationBarItems(leading:
+				XButton(onTap: { self.viewStore.send(.backOnDoctorCheckIn)
+			}))
 	}
 }
 
@@ -80,26 +84,31 @@ struct DoctorNavigation: View {
 						 CheckInMain(store: self.store
 							.scope(state: { $0.doctorCheckIn },
 										 action: { .doctor($0) }))
-							.navigationBarHidden(true)
 					)
+					.navigationBarTitle("")
+					.navigationBarHidden(true)
 					NavigationLink.emptyHidden(viewStore.state.isChooseTreatmentActive,
 						 ChooseFormList(store: self.store.scope(
 							state: { $0.chooseTreatments },
 							action: { .chooseTreatments($0)}),
 							mode: .treatmentNotes)
-							.customBackButton {
-								viewStore.send(.didTouchBackFrom(.treatmentNotes))
-							}
+//							.customBackButton {
+//								viewStore.send(.didTouchBackFrom(.treatmentNotes))
+//							}
 					)
+					.navigationBarTitle("")
+					.navigationBarHidden(true)
 					NavigationLink.emptyHidden(viewStore.state.isChooseConsentActive,
 						 ChooseFormList(store: self.store.scope(
 							state: { $0.chooseConsents },
 							action: { .chooseConsents($0)}),
 							mode: .consents)
-							.customBackButton {
-								viewStore.send(.didTouchBackFrom(.consents))
-							}
+//							.customBackButton {
+//								viewStore.send(.didTouchBackFrom(.consents))
+//							}
 					)
+					.navigationBarTitle("")
+					.navigationBarHidden(true)
 			}
 		}
 	}

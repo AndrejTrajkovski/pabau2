@@ -83,10 +83,6 @@ struct ChooseTreatmentNote: View {
 										 mode: .treatmentNotes)
 			NavigationLink.emptyHidden(self.viewStore.state.isDoctorSummaryActive,
 																 DoctorSummary(store: self.store)
-																	.navigationBarBackButtonHidden(true)
-																	.navigationBarItems(leading:
-																		XButton(onTap: { self.viewStore.send(.doctorSummary(.backOnDoctorCheckIn))
-																		}))
 			)
 		}
 	}
