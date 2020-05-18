@@ -20,7 +20,7 @@ struct PabauFormWrap: View {
 		var patientDetails: PatientDetails?
 		var template: FormTemplate?
 		var aftercare: Aftercare?
-		var isCompleteForm: Bool
+		var patientCompleteForm: PatientComplete?
 		static var defaultEmpty: State {
 			State.init(state: MetaFormAndStatus.defaultEmpty)
 		}
@@ -28,7 +28,7 @@ struct PabauFormWrap: View {
 			self.patientDetails = extract(case: MetaForm.patientDetails, from: state.form)
 			self.template = extract(case: MetaForm.template, from: state.form)
 			self.aftercare = extract(case: MetaForm.aftercare, from: state.form)
-			self.isCompleteForm = extract(case: MetaForm.patientComplete, from: state.form) != nil
+			self.patientCompleteForm = extract(case: MetaForm.patientComplete, from: state.form)
 		}
 	}
 
@@ -43,9 +43,15 @@ struct PabauFormWrap: View {
 			)
 		} else if self.viewStore.state.patientDetails != nil {
 			return AnyView(PatientDetailsForm().padding())
-		} else if self.viewStore.state.isCompleteForm {
-//			return AnyView(CompleteStepForm(store: store))
-			return AnyView(EmptyView())
+		} else if self.viewStore.state.patientCompleteForm != nil {
+			return AnyView(
+				IfLetStore(
+					self.store.scope(
+						state: { extract(case: MetaForm.patientComplete, from: $0.form) },
+						action: { .patientComplete($0) }),
+					then: PatientCompleteForm.init(store:)
+				)
+			)
 		} else {
 			return AnyView(Text("Aftercare"))
 		}

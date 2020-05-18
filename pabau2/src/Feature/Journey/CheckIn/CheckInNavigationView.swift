@@ -63,8 +63,6 @@ public let navigationReducer = Reducer<CheckInContainerState, CheckInContainerAc
 	switch action {
 	case .chooseTreatments(.proceed):
 		state.isDoctorSummaryActive = true
-	case .patient(.complete):
-		state.isHandBackDeviceActive = true
 	case .didTouchHandbackDevice:
 		state.isEnterPasscodeActive = true
 	default:
@@ -97,17 +95,14 @@ public struct CheckInNavigationView: View {
 	}
 
 	public var body: some View {
-		WithViewStore(store) { _ in
-			NavigationView {
-				VStack {
-					CheckInAnimation(isRunningAnimation: self.$isRunningAnimation)
-					NavigationLink.init(destination:
-						CheckInMain(store:
-							self.store.scope(state: { $0.patientCheckIn },
-															 action: { .patient($0) }
-							)), isActive: self.$isRunningAnimation, label: { EmptyView() })
-				}
-			}.navigationViewStyle(StackNavigationViewStyle())
-		}
+		NavigationView {
+			VStack {
+				CheckInAnimation(isRunningAnimation: self.$isRunningAnimation)
+				NavigationLink.init(destination:
+					CheckInPatient(store: self.store),
+														isActive: self.$isRunningAnimation,
+														label: { EmptyView() })
+			}
+		}.navigationViewStyle(StackNavigationViewStyle())
 	}
 }

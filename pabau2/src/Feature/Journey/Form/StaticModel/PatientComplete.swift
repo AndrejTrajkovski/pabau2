@@ -1,1 +1,3 @@
-public struct PatientComplete: Hashable { }
+public struct PatientComplete: Hashable {
+	var isPatientComplete: Bool
+}

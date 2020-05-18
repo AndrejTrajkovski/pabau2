@@ -9,7 +9,7 @@ enum JourneyMode: Equatable {
 
 public struct CheckInContainerState: Equatable {
 	var journey: Journey
-	var pathway: Pathway
+	var stepTypes: [StepType]
 	var runningPrescriptions: [Int: FormTemplate]
 	var prescriptionsCompleted: [Int: Bool]
 	var allConsents: [Int: FormTemplate]
@@ -37,7 +37,19 @@ public struct CheckInContainerState: Equatable {
 
 	var passcodeState = PasscodeState()
 	//NAVIGATION
-	var isHandBackDeviceActive: Bool = false
+	var isHandBackDeviceActive: Bool {
+		get {
+			let pcform = patientArray.filter { stepType(form: $0.form) == .patientComplete }.first!
+			let res = extract(case: MetaForm.patientComplete,
+												from: pcform.form)!
+				.isPatientComplete
+			return res
+		}
+		set {
+			self.patientComplete.isPatientComplete = newValue
+		}
+	}
+	
 	var isEnterPasscodeActive: Bool = false
 	var isChooseConsentActive: Bool = false
 	var isChooseTreatmentActive: Bool = false
@@ -308,7 +320,7 @@ extension CheckInContainerState {
 		self.aftercareCompleted = false
 		self.patientDetails = PatientDetails()
 		self.patientDetailsCompleted = false
-		self.patientComplete = PatientComplete()
+		self.patientComplete = PatientComplete(isPatientComplete: false)
 		self.patientSelectedIndex = 0
 		self.doctorSelectedIndex = 0
 		self.runningPrescriptions = [:]

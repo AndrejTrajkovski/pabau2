@@ -42,25 +42,45 @@ public enum StepFormsAction {
 }
 
 public enum ChildFormAction {
+	case patientComplete(PatientCompleteAction)
 	case didUpdateTemplate(FormTemplate)
 	case didUpdatePatientDetails(PatientDetails)
 	case didFinishTemplate(MetaFormAndStatus)
 	case didFinishPatientDetails(PatientDetails)
 }
 
-let anyFormReducer = Reducer<MetaFormAndStatus, ChildFormAction, JourneyEnvironment> { state, action, _ in
-	switch action {
-	case .didFinishPatientDetails:
-		break
-	case .didUpdateTemplate(let template):
-		state = .init(.template(template), state.isComplete)
-	case .didUpdatePatientDetails:
-		break
-	case .didFinishTemplate(let template):
-		state.isComplete = true
-	}
-	return .none
-}
+let anyFormReducer: Reducer<MetaFormAndStatus, ChildFormAction, JourneyEnvironment> = (
+	.combine (
+		Reducer { state, action, _ in
+			switch action {
+			case .didFinishPatientDetails:
+				break
+			case .didUpdateTemplate(let template):
+				state = .init(.template(template), state.isComplete)
+			case .didUpdatePatientDetails:
+				break
+			case .didFinishTemplate(let template):
+				state.isComplete = true
+			case .patientComplete(_):
+				break
+			}
+			return .none
+		},
+		metaFormReducer.pullback(
+			state: \MetaFormAndStatus.form,
+			action: /ChildFormAction.self,
+			environment: { $0 }
+		)
+	)
+)
+
+let metaFormReducer: Reducer<MetaForm, ChildFormAction, JourneyEnvironment> =
+	Reducer.combine(
+		patientCompleteReducer.pullbackCp(
+			state: /MetaForm.patientComplete,
+			action: /ChildFormAction.patientComplete,
+			environment: { $0 })
+)
 
 let checkInBodyReducer = Reducer<CheckInViewState, StepFormsAction, JourneyEnvironment> { state, action, _ in
 	switch action {
