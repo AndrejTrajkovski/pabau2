@@ -64,6 +64,8 @@ struct DoctorSummary: View {
 			DoctorNavigation(store: self.store)
 		}
 		.journeyBase(self.viewStore.state.journey, .long)
+		.navigationBarItems(leading:
+			XButton(onTap: { self.viewStore.send(.backOnDoctorCheckIn)}))
 	}
 }
 
