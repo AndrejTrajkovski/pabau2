@@ -5,6 +5,12 @@ import Foundation
 
 public struct FormTemplate: Codable, Identifiable, Equatable, Hashable, CustomDebugStringConvertible {
 	
+	public var canProceed: Bool {
+		self.formStructure.formStructure.allSatisfy {
+			$0._required ? $0.cssClass.isFulfilled : false
+		}
+	}
+	
 	public var debugDescription: String {
 			return name
 	}

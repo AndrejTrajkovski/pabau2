@@ -1,7 +1,24 @@
 import Model
 
 public enum MetaForm: Equatable, Hashable {
-
+	
+	var canProceed: Bool {
+		switch self {
+		case .template(let template):
+			return template.canProceed
+		case .patientDetails(let patDetails):
+			return patDetails.canProceed
+		case .aftercare(let aftercare):
+			return true
+		case .patientComplete(_):
+			return true
+		case .checkPatient(_):
+			return true
+		case .recall(_):
+			return true
+		}
+	}
+	
 	init(_ patD: PatientDetails) {
 //		guard let patD = patD else { return nil }
 		self = .patientDetails(patD)

@@ -3,7 +3,34 @@
 import Foundation
 
 public enum CSSClass: Codable, Equatable, Hashable {
-
+	
+	public var isFulfilled: Bool {
+		switch self {
+		case .staticText(_):
+			return true
+		case .input_text(let inputText):
+			return !inputText.text.isEmpty
+		case .textarea(let textAreaText):
+			return !textAreaText.text.isEmpty
+		case .radio(_):
+			return true
+		case .signature(let signature):
+			return true
+		case .checkboxes(_):
+			return true
+		case .select(_):
+			return true
+		case .heading(_):
+			return true
+		case .cl_drugs(_):
+			return true
+		case .diagram_mini(_):
+			return true
+		case .unknown:
+			return true
+		}
+	}
+	
 	case staticText(StaticText)
 	case input_text(InputText)
 	case textarea(TextArea)
