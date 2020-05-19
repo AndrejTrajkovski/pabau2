@@ -106,8 +106,7 @@ struct CheckInBody: View {
 	}
 
 	var body: some View {
-		print("check in main body")
-		return GeometryReader { geo in
+		GeometryReader { geo in
 			VStack(spacing: 8) {
 				StepsCollectionView(steps: self.viewStore.state.forms,
 														selectedIdx: self.viewStore.state.selectedIndex) {

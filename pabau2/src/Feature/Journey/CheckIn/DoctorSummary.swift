@@ -10,12 +10,6 @@ struct DoctorSummaryState: Equatable {
 	var isChooseTreatmentActive: Bool
 	var isDoctorCheckInMainActive: Bool
 	var doctorCheckIn: CheckInViewState
-	var closeAlert: String?
-}
-
-struct CloseAlert: Equatable, Identifiable {
-  let title: String
-  var id: String { self.title }
 }
 
 let doctorSummaryReducer = Reducer <DoctorSummaryState, DoctorSummaryAction, JourneyEnvironment> { state, action, _ in
@@ -41,7 +35,7 @@ let doctorSummaryReducer = Reducer <DoctorSummaryState, DoctorSummaryAction, Jou
 	case .didTouchStep(let idx):
 		state.isDoctorCheckInMainActive = true
 	case .xOnDoctorCheckIn:
-		break //handled elsewhere
+		break //handled in checkInMiddleware
 	}
 	return .none
 }
@@ -171,8 +165,7 @@ struct DoctorSummaryStepList: View {
 						.onTapGesture { self.onSelect(self.stepsVMs.firstIndex(of: step)!) }
 						.frame(height: 59)
 					Divider()
-				}
-				.padding(0)
+				}.padding(0)
 			}
 		}
 	}

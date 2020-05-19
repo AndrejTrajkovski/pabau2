@@ -14,29 +14,27 @@ struct DynamicForm: View {
 	}
 
 	public var body: some View {
-		print("pabau form body")
-		return
-			List {
-				ForEach(template.formStructure.formStructure.indices, id: \.self ) { index in
-					FormSectionField(cssField:
-						Binding(
-							get: {
-								if self.template.formStructure.formStructure.count > index {
-									return self.template.formStructure.formStructure[index]
-								} else {
-									return CSSField.defaultEmpty
-								}
-						},
-							set: {
-								if self.template.formStructure.formStructure.count > index {
-									self.template.formStructure.formStructure[index] = $0
-								} else {
-								}
+		List {
+			ForEach(template.formStructure.formStructure.indices, id: \.self ) { index in
+				FormSectionField(cssField:
+					Binding(
+						get: {
+							if self.template.formStructure.formStructure.count > index {
+								return self.template.formStructure.formStructure[index]
+							} else {
+								return CSSField.defaultEmpty
 							}
-						)
-					).equatable()
-				}
+					},
+						set: {
+							if self.template.formStructure.formStructure.count > index {
+								self.template.formStructure.formStructure[index] = $0
+							} else {
+							}
+					}
+					)
+				).equatable()
 			}
+		}
 	}
 }
 

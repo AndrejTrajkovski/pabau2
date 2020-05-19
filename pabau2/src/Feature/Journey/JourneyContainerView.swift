@@ -185,8 +185,7 @@ public struct JourneyContainerView: View {
 		print("JourneyContainerView init")
 	}
 	public var body: some View {
-		print("JourneyContainerView body")
-		return VStack {
+		VStack {
 			SwiftUICalendar.init(viewStore.state.selectedDate,
 													 self.$calendarHeight,
 													 .week) { date in
