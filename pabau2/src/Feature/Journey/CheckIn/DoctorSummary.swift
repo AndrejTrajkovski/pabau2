@@ -10,28 +10,38 @@ struct DoctorSummaryState: Equatable {
 	var isChooseTreatmentActive: Bool
 	var isDoctorCheckInMainActive: Bool
 	var doctorCheckIn: CheckInViewState
+	var closeAlert: String?
+}
+
+struct CloseAlert: Equatable, Identifiable {
+  let title: String
+  var id: String { self.title }
 }
 
 let doctorSummaryReducer = Reducer <DoctorSummaryState, DoctorSummaryAction, JourneyEnvironment> { state, action, _ in
 	switch action {
 	case .didTouchBackFrom(let mode):
 		switch mode {
-		case .consents:
+		case .consentsCheckIn:
 			state.isChooseConsentActive = false
 		case .treatmentNotes:
 			state.isChooseTreatmentActive = false
+		case .consentsPreCheckIn:
+			fatalError("should be handled pre checkin")
 		}
 	case .didTouchAdd(let mode):
 		switch mode {
-		case .consents:
+		case .consentsCheckIn:
 			state.isChooseConsentActive = true
 		case .treatmentNotes:
 			state.isChooseTreatmentActive = true
+		case .consentsPreCheckIn:
+			fatalError("should be handled pre checkin")
 		}
 	case .didTouchStep(let idx):
 		state.isDoctorCheckInMainActive = true
-	case .backOnDoctorCheckIn:
-		state.isDoctorCheckInMainActive = false
+	case .xOnDoctorCheckIn:
+		break //handled elsewhere
 	}
 	return .none
 }
@@ -40,7 +50,7 @@ public enum DoctorSummaryAction {
 	case didTouchAdd(ChooseFormMode)
 	case didTouchStep(Int)
 	case didTouchBackFrom(ChooseFormMode)
-	case backOnDoctorCheckIn
+	case xOnDoctorCheckIn
 }
 
 struct DoctorSummary: View {
@@ -67,7 +77,7 @@ struct DoctorSummary: View {
 			.frame(width: geo.size.width * 0.75)
 			.journeyBase(self.viewStore.state.journey, .long)
 			.navigationBarItems(leading:
-				XButton(onTap: { self.viewStore.send(.backOnDoctorCheckIn)}))
+				XButton(onTap: { self.viewStore.send(.xOnDoctorCheckIn)}))
 		}
 	}
 }
@@ -97,9 +107,9 @@ struct DoctorNavigation: View {
 						 ChooseFormList(store: self.store.scope(
 							state: { $0.chooseConsents },
 							action: { .chooseConsents($0)}),
-							mode: .consents)
+							mode: .consentsCheckIn)
 							.customBackButton {
-								viewStore.send(.didTouchBackFrom(.consents))
+								viewStore.send(.didTouchBackFrom(.consentsCheckIn))
 							}
 					)
 			}
@@ -111,7 +121,7 @@ struct AddConsentBtns: View {
 	let onSelect: (ChooseFormMode) -> Void
 	var body: some View {
 		HStack {
-			AddFormButton(mode: .consents, action: onSelect)
+			AddFormButton(mode: .consentsCheckIn, action: onSelect)
 			AddFormButton(mode: .treatmentNotes, action: onSelect)
 		}
 	}
@@ -125,8 +135,8 @@ struct AddFormButton: View {
 
 	init(mode: ChooseFormMode, action: @escaping (ChooseFormMode) -> Void) {
 		self.mode = mode
-		self.btnTxt = mode == .consents ? "Add Consent" : "Add Treatment Note"
-		self.imageName = mode == .consents ? "ico-journey-consent" : "ico-journey-treatment-notes"
+		self.btnTxt = mode == .treatmentNotes ? "Add Treatment Note": "Add Consent"
+		self.imageName = mode == .treatmentNotes ? "ico-journey-treatment-notes": "ico-journey-consent"
 		self.onSelect = action
 	}
 
@@ -135,13 +145,12 @@ struct AddFormButton: View {
 			HStack {
 				Image(imageName)
 				Text(btnTxt)
-					.font(Font.system(size: 16.0, weight: .bold))
-					.frame(minWidth: 0, maxWidth: .infinity)
-			}
+					.font(Font.system(size: 16.0, weight: .regular))
+			}.frame(minWidth: 0, maxWidth: .infinity)
 		}).buttonStyle(PathwayWhiteButtonStyle())
 			.shadow(color: .bigBtnShadow2,
 							radius: 8.0,
-							y: 2)
+							y: 4)
 			.background(Color.white)
 	}
 }
@@ -155,11 +164,15 @@ struct DoctorSummaryStepList: View {
 	}
 
 	var body: some View {
-		ForEach(self.stepsVMs, id: \.stepType) { step in
-			VStack(spacing: 0) {
-				DoctorSummaryRow(step: step)
-					.onTapGesture { self.onSelect(self.stepsVMs.firstIndex(of: step)!) }
-				Divider()
+		VStack(spacing: 0) {
+			ForEach(self.stepsVMs, id: \.stepType) { step in
+				VStack(spacing: 0) {
+					DoctorSummaryRow(step: step)
+						.onTapGesture { self.onSelect(self.stepsVMs.firstIndex(of: step)!) }
+						.frame(height: 59)
+					Divider()
+				}
+				.padding(0)
 			}
 		}
 	}
@@ -168,16 +181,15 @@ struct DoctorSummaryStepList: View {
 struct DoctorSummaryRow: View {
 	let step: StepState
 	var body: some View {
-		VStack {
-			HStack {
-				Text(step.stepType.title).font(.semibold17)
-				Spacer()
-				Image(systemName: "checkmark.circle.fill")
-					.foregroundColor(step.isComplete ? .blue : .gray)
-					.frame(width: 30, height: 30)
-				Image(systemName: "chevron.right")
-					.frame(width: 8, height: 13)
-			}
+		HStack {
+			Text(step.stepType.title).font(.semibold17)
+			Spacer()
+			Image(systemName: "checkmark.circle.fill")
+				.foregroundColor(step.isComplete ? .blue : .lightBlueGrey)
+				.frame(width: 30, height: 30)
+			Image(systemName: "chevron.right")
+				.foregroundColor(.arrowGray)
+				.frame(width: 8, height: 13)
 		}
 	}
 }

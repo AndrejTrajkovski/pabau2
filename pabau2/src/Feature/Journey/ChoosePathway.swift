@@ -93,13 +93,11 @@ public struct ChoosePathway: View {
 		self.viewStore = ViewStore(self.store
 			.scope(state: State.init(state:),
 						 action: { $0 }))
-		print("ChoosePathway init")
 	}
 	public var body: some View {
-		print("ChoosePathway body")
-		return HStack {
-			self.pathwayCells
-			self.chooseFormNavLink
+		HStack {
+			pathwayCells
+			chooseFormNavLink
 		}
 		.journeyBase(self.viewStore.state.journey, .long)
 	}
@@ -107,8 +105,8 @@ public struct ChoosePathway: View {
 	var chooseFormNavLink: some View {
 		NavigationLink.emptyHidden(self.viewStore.state.isChooseConsentShown,
 															 ChooseFormList(store: self.store.scope(
-																	state: { $0.chooseConsentState },
-																	action: { .chooseConsent($0)}), mode: .consents)
+																state: { $0.chooseConsentState },
+																action: { .chooseConsent($0)}), mode: .consentsPreCheckIn)
 																.customBackButton {
 																	self.viewStore.send(.choosePathway(.didTouchSelectConsentBackBtn))
 			}
@@ -117,68 +115,30 @@ public struct ChoosePathway: View {
 
 	var pathwayCells: some View {
 		HStack {
-			PathwayCell(style: .blue) {
-				ChoosePathwayListContent.init(.blue,
-																			Image(systemName: "arrow.right"),
-																			self.viewStore.state.standardPathway.steps.count,
-																			"Standard Pathway",
-																			"Provides a basic standard pathway, defined for the company.",
-																			self.viewStore.state.standardPathway.steps.map { $0.stepType.title },
-																			"Standard") {
-																				self.viewStore.send(.choosePathway(.didChoosePathway(self.viewStore.state.standardPathway)))
+			ListFrame(style: .blue) {
+				ChoosePathwayListContent(
+					.blue,
+					Image(systemName: "arrow.right"),
+					self.viewStore.state.standardPathway.steps.count,
+					"Standard Pathway",
+					"Provides a basic standard pathway, defined for the company.",
+					self.viewStore.state.standardPathway.steps.map { $0.stepType.title },
+					"Standard") {
+						self.viewStore.send(.choosePathway(.didChoosePathway(self.viewStore.state.standardPathway)))
 				}
 			}
-			PathwayCell(style: .white) {
-				ChoosePathwayListContent.init(.white,
-																			Image("ico-journey-consulting"),
-																			self.viewStore.state.consultationPathway.steps.count,
-																			"Consultation Pathway",
-																			"Provides a consultation pathway, to hear out the person's needs.",
-																			self.viewStore.state.consultationPathway.steps.map { $0.stepType.title },
-																			"Consultation") {
-																				self.viewStore.send(.choosePathway(.didChoosePathway(self.viewStore.state.consultationPathway)))
+			ListFrame(style: .white) {
+				ChoosePathwayListContent(
+					.white,
+					Image("ico-journey-consulting"),
+					self.viewStore.state.consultationPathway.steps.count,
+					"Consultation Pathway",
+					"Provides a consultation pathway, to hear out the person's needs.",
+					self.viewStore.state.consultationPathway.steps.map { $0.stepType.title },
+					"Consultation") {
+						self.viewStore.send(.choosePathway(.didChoosePathway(self.viewStore.state.consultationPathway)))
 				}
 			}
-		}
-	}
-}
-
-enum PathwayCellStyle {
-	case blue
-	case white
-	var bgColor: Color {
-		switch self {
-		case .blue:
-			return .gray249
-		case .white:
-			return .white
-		}
-	}
-
-	var btnColor: Color {
-		switch self {
-		case .blue:
-			return .blue2
-		case .white:
-			return .white
-		}
-	}
-
-	var btnShadowColor: Color {
-		switch self {
-		case .blue:
-			return .bigBtnShadow1
-		case .white:
-			return .bigBtnShadow2
-		}
-	}
-
-	var btnShadowBlur: CGFloat {
-		switch self {
-		case .blue:
-			return 4.0
-		case .white:
-			return 8.0
 		}
 	}
 }
@@ -220,54 +180,6 @@ struct ChoosePathwayListContent: View {
 			PathwayBulletList(bulletPoints: bulletPoints, bgColor: style.bgColor)
 			Spacer()
 			ChoosePathwayButton(btnTxt: btnTxt, style: style, action: btnAction)
-		}
-	}
-}
-
-struct PathwayCell<Content: View>: View {
-	init(style: PathwayCellStyle,
-			 @ViewBuilder _ content: @escaping () -> Content) {
-		self.style = style
-		self.content = content
-	}
-
-	let style: PathwayCellStyle
-	let content: () -> Content
-
-	public var body: some View {
-		VStack(spacing: 0) {
-			Rectangle().fill(style.btnColor).frame(height: 8)
-			content()
-				.padding(32)
-				.background(style.bgColor)
-		}
-	}
-}
-
-struct ChoosePathwayButton: View {
-	let btnTxt: String
-	let style: PathwayCellStyle
-	let action: () -> Void
-	var body: some View {
-		Group {
-			if self.style == .blue {
-				BigButton.init(text: btnTxt,
-											 btnTapAction: action)
-					.shadow(color: style.btnShadowColor,
-									radius: style.btnShadowBlur,
-									y: 2)
-					.background(style.btnColor)
-			} else {
-				Button.init(action: action, label: {
-					Text(btnTxt)
-						.font(Font.system(size: 16.0, weight: .bold))
-						.frame(minWidth: 0, maxWidth: .infinity)
-				}).buttonStyle(PathwayWhiteButtonStyle())
-					.shadow(color: style.btnShadowColor,
-									radius: style.btnShadowBlur,
-									y: 2)
-					.background(style.btnColor)
-			}
 		}
 	}
 }

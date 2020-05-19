@@ -40,31 +40,10 @@ let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, JourneyEn
 			state.templates.isEmpty ?
 				environment.apiClient.getTemplates(formType)
 				.map(ChooseFormAction.gotResponse)
-		.eraseToEffect() : .none
+		.eraseToEffect()
+				: .none
 	}
 	return .none
-}
-
-struct ChooseTreatmentNote: View {
-	let store: Store<CheckInContainerState, CheckInContainerAction>
-	@ObservedObject var viewStore: ViewStore<CheckInContainerState, CheckInContainerAction>
-	init (store: Store<CheckInContainerState, CheckInContainerAction>) {
-		self.store = store
-		self.viewStore = ViewStore(store)
-	}
-
-	var body: some View {
-		VStack {
-			ChooseFormList(store: store.scope(state: { $0.chooseTreatments },
-																				action: { .chooseTreatments($0)}),
-										 mode: .treatmentNotes)
-			NavigationLink.emptyHidden(self.viewStore.state.isDoctorSummaryActive,
-																 DoctorSummary(store: self.store)
-																	.navigationBarTitle("Summary")
-																	.navigationBarHidden(self.viewStore.state.isDoctorCheckInMainActive)
-			)
-		}
-	}
 }
 
 struct ChooseFormList: View {
@@ -114,9 +93,9 @@ struct ChooseFormList: View {
 
 	var chooseFormCells: some View {
 		HStack {
-			PathwayCell(style: .blue) {
+			ListFrame(style: .blue) {
 				VStack(alignment: .leading) {
-					Text("Selected " + (self.mode == .consents ? "Consents" : "Treatments"))
+					Text(Texts.selected + " " + (self.mode == .treatmentNotes ? Texts.treatmentNotes : Texts.consents ))
 						.font(.bold17)
 					FormTemplateList(templates: self.viewStore.state.selectedTemplates,
 													 bgColor: PathwayCellStyle.blue.bgColor,
@@ -133,7 +112,7 @@ struct ChooseFormList: View {
 					})
 				}
 			}
-			PathwayCell(style: .white) {
+			ListFrame(style: .white) {
 				VStack {
 					TextField("TODO: search: ", text: self.$searchText)
 					FormTemplateList(templates: self.viewStore.state.notSelectedTemplates,
@@ -158,8 +137,8 @@ struct FormTemplateList<Row: View>: View {
 	init (templates: [FormTemplate],
 				bgColor: Color,
 				@ViewBuilder templateRow: @escaping (FormTemplate) -> Row,
-										 onSelect: @escaping (FormTemplate) -> Void
-										 ) {
+				onSelect: @escaping (FormTemplate) -> Void
+	) {
 		self.templates = templates
 		self.templateRow = templateRow
 		self.onSelect = onSelect
@@ -213,12 +192,13 @@ struct TemplateRow: View {
 }
 
 public enum ChooseFormMode {
-	case consents
+	case consentsCheckIn
+	case consentsPreCheckIn
 	case treatmentNotes
 
 	var navigationTitle: String {
 		switch self {
-		case .consents:
+		case .consentsCheckIn, .consentsPreCheckIn:
 			return Texts.chooseConsent
 		case .treatmentNotes:
 			return Texts.chooseTreatmentNote
@@ -227,7 +207,9 @@ public enum ChooseFormMode {
 	
 	var btnTitle: String {
 		switch self {
-		case .consents:
+		case .consentsCheckIn:
+			return Texts.toPatientMode
+		case .consentsPreCheckIn:
 			return Texts.checkIn
 		case .treatmentNotes:
 			return Texts.proceed
@@ -236,7 +218,7 @@ public enum ChooseFormMode {
 
 	var formType: FormType {
 		switch self {
-		case .consents:
+		case .consentsPreCheckIn, .consentsCheckIn:
 			return .consent
 		case .treatmentNotes:
 			return .treatment

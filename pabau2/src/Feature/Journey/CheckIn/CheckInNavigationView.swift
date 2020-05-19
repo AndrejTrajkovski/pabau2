@@ -61,8 +61,15 @@ public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction
 
 public let navigationReducer = Reducer<CheckInContainerState, CheckInContainerAction, Any> { state, action, _ in
 	switch action {
+	case .chooseConsents(.proceed):
+		state.isChooseConsentActive = false
+		state.isDoctorSummaryActive = false
+		state.passcode = PasscodeState()
+		state.isHandBackDeviceActive = false
+		state.isEnterPasscodeActive = false
 	case .chooseTreatments(.proceed):
 		state.isDoctorSummaryActive = true
+		state.isChooseTreatmentActive = false
 	case .didTouchHandbackDevice:
 		state.isEnterPasscodeActive = true
 	default:

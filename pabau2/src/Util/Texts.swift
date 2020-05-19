@@ -80,9 +80,13 @@ public struct Texts {
 	public static let proceed = "Proceed"
 	public static let addConsent = "Add Consent"
 	public static let addTreatment = "Add Treatment Note"
-	
 	public static let chooseConsent = "Choose Consent"
+	public static let selected = "Selected"
+	public static let consents = "Consents"
+	public static let treatmentNotes = "Treatment Notes"
 	public static let chooseTreatmentNote = "Choose Treatment Note"
+	public static let summary = "Summary"
+	public static let toPatientMode = "To Patient Mode"
 }
 
 extension String {

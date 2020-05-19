@@ -68,6 +68,10 @@
 		8247762C24704DC800508434 /* JourneyMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247762B24704DC800508434 /* JourneyMocks.swift */; };
 		8247763224728F0200508434 /* PullbackCasePath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247763124728F0200508434 /* PullbackCasePath.swift */; };
 		8247763424729DE800508434 /* CheckInPatient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247763324729DE800508434 /* CheckInPatient.swift */; };
+		824776362473CE9700508434 /* ChooseTreatmentNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824776352473CE9700508434 /* ChooseTreatmentNote.swift */; };
+		824776382473D03700508434 /* ListFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824776372473D03700508434 /* ListFrame.swift */; };
+		8247763A2473D07F00508434 /* PathwayCellStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824776392473D07F00508434 /* PathwayCellStyle.swift */; };
+		8247763C2473D0ED00508434 /* ChoosePathwayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247763B2473D0ED00508434 /* ChoosePathwayButton.swift */; };
 		8250D7C9242BCFD000F8F3FC /* ChooseFormList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7C8242BCFD000F8F3FC /* ChooseFormList.swift */; };
 		8250D7CB242BD25B00F8F3FC /* JourneyBaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7CA242BD25B00F8F3FC /* JourneyBaseView.swift */; };
 		8250D7D0242C575A00F8F3FC /* ModalTransitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7CD242C575A00F8F3FC /* ModalTransitions.swift */; };
@@ -471,6 +475,10 @@
 		8247762B24704DC800508434 /* JourneyMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyMocks.swift; sourceTree = "<group>"; };
 		8247763124728F0200508434 /* PullbackCasePath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullbackCasePath.swift; sourceTree = "<group>"; };
 		8247763324729DE800508434 /* CheckInPatient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInPatient.swift; sourceTree = "<group>"; };
+		824776352473CE9700508434 /* ChooseTreatmentNote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ChooseTreatmentNote.swift; path = pabau2/src/Feature/Journey/CheckIn/ChooseTreatmentNote.swift; sourceTree = SOURCE_ROOT; };
+		824776372473D03700508434 /* ListFrame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListFrame.swift; sourceTree = "<group>"; };
+		824776392473D07F00508434 /* PathwayCellStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathwayCellStyle.swift; sourceTree = "<group>"; };
+		8247763B2473D0ED00508434 /* ChoosePathwayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoosePathwayButton.swift; sourceTree = "<group>"; };
 		8250D7C8242BCFD000F8F3FC /* ChooseFormList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseFormList.swift; sourceTree = "<group>"; };
 		8250D7CA242BD25B00F8F3FC /* JourneyBaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyBaseView.swift; sourceTree = "<group>"; };
 		8250D7CD242C575A00F8F3FC /* ModalTransitions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalTransitions.swift; sourceTree = "<group>"; };
@@ -909,6 +917,7 @@
 		82622B5324468C9F00BECF9A /* CheckIn */ = {
 			isa = PBXGroup;
 			children = (
+				824776352473CE9700508434 /* ChooseTreatmentNote.swift */,
 				82E6D82A245E09ED00CB359A /* HandBackDevice.swift */,
 				82E6D82C245E0A4400CB359A /* GradientBackground.swift */,
 				82E6D82E245E177900CB359A /* JourneyTransitionView.swift */,
@@ -984,6 +993,9 @@
 				825BE7E124361ABD00422910 /* StaffFilterPicker.swift */,
 				8247762B24704DC800508434 /* JourneyMocks.swift */,
 				8247763124728F0200508434 /* PullbackCasePath.swift */,
+				824776372473D03700508434 /* ListFrame.swift */,
+				824776392473D07F00508434 /* PathwayCellStyle.swift */,
+				8247763B2473D0ED00508434 /* ChoosePathwayButton.swift */,
 			);
 			path = Journey;
 			sourceTree = "<group>";
@@ -1862,11 +1874,13 @@
 				82FB74F6245A9E51001C2DF3 /* PabauFormWrap.swift in Sources */,
 				82477612246C333500508434 /* PatientDetails.swift in Sources */,
 				8247760F246C27F200508434 /* TopView.swift in Sources */,
+				8247763C2473D0ED00508434 /* ChoosePathwayButton.swift in Sources */,
 				82E6D829245DF4D200CB359A /* PatientCompleteForm.swift in Sources */,
 				8250D7D4242C980100F8F3FC /* ChooseService.swift in Sources */,
 				82E6D82B245E09ED00CB359A /* HandBackDevice.swift in Sources */,
 				8280D479245FEAA80077A73F /* DoctorSummary.swift in Sources */,
 				82477614246C334600508434 /* Recall.swift in Sources */,
+				824776362473CE9700508434 /* ChooseTreatmentNote.swift in Sources */,
 				82648404244F42F300544703 /* FormSectionField.swift in Sources */,
 				82292BD8244097C600080F74 /* StepsCollectionView.swift in Sources */,
 				82477616246C335500508434 /* Aftercare.swift in Sources */,
@@ -1877,6 +1891,8 @@
 				82E253FA241B9EB500F16C30 /* JourneyAction.swift in Sources */,
 				82D43D9024351F5000AC74FA /* EmployeesList.swift in Sources */,
 				826952772454E0A5001B806E /* SignatureField.swift in Sources */,
+				8247763A2473D07F00508434 /* PathwayCellStyle.swift in Sources */,
+				824776382473D03700508434 /* ListFrame.swift in Sources */,
 				82E6D827245C213300CB359A /* PatientDetailsForm.swift in Sources */,
 				82E253FC241B9ED000F16C30 /* JourneyState.swift in Sources */,
 				8250D7CB242BD25B00F8F3FC /* JourneyBaseView.swift in Sources */,

@@ -178,6 +178,10 @@ extension CheckInContainerState {
 		}
 		set {
 			self.selectedConsentsIds = newValue.selectedTemplatesIds
+			self.consentsCompleted = newValue.selectedTemplatesIds.reduce(into: [Int: Bool]()) {
+				$0[$1] = false
+			}
+			self.runningConsents = selected(allConsents, newValue.selectedTemplatesIds)
 		}
 	}
 
