@@ -53,19 +53,22 @@ struct DoctorSummary: View {
 						 action: { .doctorSummary($0)}))
 	}
 	var body: some View {
-		VStack(spacing: 32) {
-			DoctorSummaryStepList(self.viewStore.state.steps) {
-				self.viewStore.send(.didTouchStep($0))
+		GeometryReader { geo in
+			VStack(spacing: 32) {
+				DoctorSummaryStepList(self.viewStore.state.steps) {
+					self.viewStore.send(.didTouchStep($0))
+				}
+				AddConsentBtns {
+					self.viewStore.send(.didTouchAdd($0))
+				}
+				Spacer()
+				DoctorNavigation(store: self.store)
 			}
-			AddConsentBtns {
-				self.viewStore.send(.didTouchAdd($0))
-			}
-			Spacer()
-			DoctorNavigation(store: self.store)
+			.frame(width: geo.size.width * 0.75)
+			.journeyBase(self.viewStore.state.journey, .long)
+			.navigationBarItems(leading:
+				XButton(onTap: { self.viewStore.send(.backOnDoctorCheckIn)}))
 		}
-		.journeyBase(self.viewStore.state.journey, .long)
-		.navigationBarItems(leading:
-			XButton(onTap: { self.viewStore.send(.backOnDoctorCheckIn)}))
 	}
 }
 
