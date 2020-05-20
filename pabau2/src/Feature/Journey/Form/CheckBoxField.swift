@@ -51,7 +51,7 @@ struct ChoiceRow: View {
 struct Checkbox: View {
 	let isSelected: Bool
 	var body: some View {
-		Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+		Image(systemName: isSelected ? "x.square" : "square")
 			.resizable()
 			.foregroundColor( isSelected ? .blue : .checkBoxGray)
 			.frame(width: 24, height: 24)
