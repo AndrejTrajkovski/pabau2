@@ -1,6 +1,6 @@
 import Model
 
-public enum MetaForm: Equatable, Hashable {
+public enum MetaForm: Equatable {
 	
 	var canProceed: Bool {
 		switch self {

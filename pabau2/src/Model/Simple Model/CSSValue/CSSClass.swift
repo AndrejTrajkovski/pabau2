@@ -2,7 +2,7 @@
 
 import Foundation
 
-public enum CSSClass: Codable, Equatable, Hashable {
+public enum CSSClass: Codable, Equatable {
 	
 	public var isFulfilled: Bool {
 		switch self {

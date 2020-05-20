@@ -3,7 +3,7 @@
 
 import Foundation
 
-public struct FormTemplate: Codable, Identifiable, Equatable, Hashable, CustomDebugStringConvertible {
+public struct FormTemplate: Codable, Identifiable, Equatable, CustomDebugStringConvertible {
 	
 	public var canProceed: Bool {
 		self.formStructure.formStructure.allSatisfy {

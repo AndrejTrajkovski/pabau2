@@ -1,6 +1,6 @@
 import Model
 
-public struct MetaFormAndStatus: Hashable {
+public struct MetaFormAndStatus: Equatable {
 
 	static let defaultEmpty = MetaFormAndStatus.init(MetaForm.template(FormTemplate.defaultEmpty), false)
 

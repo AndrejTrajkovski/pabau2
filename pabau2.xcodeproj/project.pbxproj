@@ -72,6 +72,11 @@
 		824776382473D03700508434 /* ListFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824776372473D03700508434 /* ListFrame.swift */; };
 		8247763A2473D07F00508434 /* PathwayCellStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824776392473D07F00508434 /* PathwayCellStyle.swift */; };
 		8247763C2473D0ED00508434 /* ChoosePathwayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247763B2473D0ED00508434 /* ChoosePathwayButton.swift */; };
+		8247763E24756BC800508434 /* Signature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247763D24756BC700508434 /* Signature.swift */; };
+		8247764424756C0700508434 /* DiagramMini.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247764324756C0700508434 /* DiagramMini.swift */; };
+		8247764524756C0C00508434 /* Select.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247764124756BF800508434 /* Select.swift */; };
+		8247764624756C0F00508434 /* SignatureDrawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247763F24756BE800508434 /* SignatureDrawing.swift */; };
+		8247764824756C2900508434 /* CIDrugs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247764724756C2900508434 /* CIDrugs.swift */; };
 		8250D7C9242BCFD000F8F3FC /* ChooseFormList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7C8242BCFD000F8F3FC /* ChooseFormList.swift */; };
 		8250D7CB242BD25B00F8F3FC /* JourneyBaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7CA242BD25B00F8F3FC /* JourneyBaseView.swift */; };
 		8250D7D0242C575A00F8F3FC /* ModalTransitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7CD242C575A00F8F3FC /* ModalTransitions.swift */; };
@@ -240,7 +245,7 @@
 		82D43D9024351F5000AC74FA /* EmployeesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D43D8F24351F5000AC74FA /* EmployeesList.swift */; };
 		82D43D92243522CD00AC74FA /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D43D91243522CD00AC74FA /* Settings.swift */; };
 		82D7C2BF2446FEB3000B1CD5 /* CSSClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D7C2BE2446FEB3000B1CD5 /* CSSClass.swift */; };
-		82D7C2C124471854000B1CD5 /* CSSValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D7C2C024471854000B1CD5 /* CSSValues.swift */; };
+		82D7C2C124471854000B1CD5 /* Heading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D7C2C024471854000B1CD5 /* Heading.swift */; };
 		82D7C2C324479CAF000B1CD5 /* CheckInContainerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D7C2C224479CAF000B1CD5 /* CheckInContainerState.swift */; };
 		82E253F8241B661100F16C30 /* RoundedCorners.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E253F7241B661100F16C30 /* RoundedCorners.swift */; };
 		82E253FA241B9EB500F16C30 /* JourneyAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E253F9241B9EB500F16C30 /* JourneyAction.swift */; };
@@ -479,6 +484,11 @@
 		824776372473D03700508434 /* ListFrame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListFrame.swift; sourceTree = "<group>"; };
 		824776392473D07F00508434 /* PathwayCellStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathwayCellStyle.swift; sourceTree = "<group>"; };
 		8247763B2473D0ED00508434 /* ChoosePathwayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoosePathwayButton.swift; sourceTree = "<group>"; };
+		8247763D24756BC700508434 /* Signature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Signature.swift; sourceTree = "<group>"; };
+		8247763F24756BE800508434 /* SignatureDrawing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignatureDrawing.swift; sourceTree = "<group>"; };
+		8247764124756BF800508434 /* Select.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Select.swift; sourceTree = "<group>"; };
+		8247764324756C0700508434 /* DiagramMini.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagramMini.swift; sourceTree = "<group>"; };
+		8247764724756C2900508434 /* CIDrugs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CIDrugs.swift; sourceTree = "<group>"; };
 		8250D7C8242BCFD000F8F3FC /* ChooseFormList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseFormList.swift; sourceTree = "<group>"; };
 		8250D7CA242BD25B00F8F3FC /* JourneyBaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyBaseView.swift; sourceTree = "<group>"; };
 		8250D7CD242C575A00F8F3FC /* ModalTransitions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalTransitions.swift; sourceTree = "<group>"; };
@@ -660,7 +670,7 @@
 		82D43D8F24351F5000AC74FA /* EmployeesList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmployeesList.swift; sourceTree = "<group>"; };
 		82D43D91243522CD00AC74FA /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		82D7C2BE2446FEB3000B1CD5 /* CSSClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSSClass.swift; sourceTree = "<group>"; };
-		82D7C2C024471854000B1CD5 /* CSSValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSSValues.swift; sourceTree = "<group>"; };
+		82D7C2C024471854000B1CD5 /* Heading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Heading.swift; sourceTree = "<group>"; };
 		82D7C2C224479CAF000B1CD5 /* CheckInContainerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInContainerState.swift; sourceTree = "<group>"; };
 		82E253F7241B661100F16C30 /* RoundedCorners.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedCorners.swift; sourceTree = "<group>"; };
 		82E253F9241B9EB500F16C30 /* JourneyAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyAction.swift; sourceTree = "<group>"; };
@@ -960,12 +970,17 @@
 			isa = PBXGroup;
 			children = (
 				82D7C2BE2446FEB3000B1CD5 /* CSSClass.swift */,
-				82D7C2C024471854000B1CD5 /* CSSValues.swift */,
+				82D7C2C024471854000B1CD5 /* Heading.swift */,
 				8269526E2452E02A001B806E /* StaticText.swift */,
 				826952702452E04D001B806E /* CheckBoxChoice.swift */,
 				826952722452E064001B806E /* Radio.swift */,
 				826952742452E07E001B806E /* TextArea.swift */,
 				8269527A2456F4BA001B806E /* InputText.swift */,
+				8247763D24756BC700508434 /* Signature.swift */,
+				8247763F24756BE800508434 /* SignatureDrawing.swift */,
+				8247764124756BF800508434 /* Select.swift */,
+				8247764324756C0700508434 /* DiagramMini.swift */,
+				8247764724756C2900508434 /* CIDrugs.swift */,
 			);
 			path = CSSValue;
 			sourceTree = "<group>";
@@ -1770,10 +1785,12 @@
 				8227FBA7240BB41500F653B5 /* Navigation.swift in Sources */,
 				827B45EC24126D4E00A5975E /* InlineResponse200.swift in Sources */,
 				82104531240C434A004EA838 /* UserDefault.swift in Sources */,
+				8247763E24756BC800508434 /* Signature.swift in Sources */,
 				825C52592417895D00A33A29 /* RequestBuilderImpl.swift in Sources */,
 				827B45FB24126D4E00A5975E /* BaseFormTemplate.swift in Sources */,
 				825C527A241A134F00A33A29 /* JourneyLiveAPI.swift in Sources */,
 				827B45D824126D4E00A5975E /* AppointmentStatus.swift in Sources */,
+				8247764824756C2900508434 /* CIDrugs.swift in Sources */,
 				827B45DF24126D4E00A5975E /* Shift.swift in Sources */,
 				827B45F524126D4E00A5975E /* Media.swift in Sources */,
 				827B45F024126D4E00A5975E /* Step.swift in Sources */,
@@ -1825,6 +1842,7 @@
 				827B45E424126D4E00A5975E /* FormDetails.swift in Sources */,
 				827B460324126D4E00A5975E /* Postcare.swift in Sources */,
 				827B45FA24126D4E00A5975E /* Drawing.swift in Sources */,
+				8247764524756C0C00508434 /* Select.swift in Sources */,
 				827B45FF24126D4E00A5975E /* FieldType.swift in Sources */,
 				827B45E924126D4E00A5975E /* User.swift in Sources */,
 				827B45E624126D4E00A5975E /* JourneyPhotos.swift in Sources */,
@@ -1836,12 +1854,14 @@
 				827B45F924126D4E00A5975E /* AnyValue.swift in Sources */,
 				827B45E724126D4E00A5975E /* Appointment.swift in Sources */,
 				827B45DA24126D4E00A5975E /* JourneyPostCare.swift in Sources */,
+				8247764624756C0F00508434 /* SignatureDrawing.swift in Sources */,
 				827B460624126D4E00A5975E /* JourneyForms.swift in Sources */,
 				827B45F724126D4E00A5975E /* FormData.swift in Sources */,
-				82D7C2C124471854000B1CD5 /* CSSValues.swift in Sources */,
+				82D7C2C124471854000B1CD5 /* Heading.swift in Sources */,
 				827B45EF24126D4E00A5975E /* Bookout.swift in Sources */,
 				827B45F124126D4E00A5975E /* BaseClient.swift in Sources */,
 				825C5278241A130900A33A29 /* JourneyMockAPI.swift in Sources */,
+				8247764424756C0700508434 /* DiagramMini.swift in Sources */,
 				827B45DB24126D4E00A5975E /* Service.swift in Sources */,
 				8210452F240C2258004EA838 /* LoginMockAPI.swift in Sources */,
 				827B45EA24126D4E00A5975E /* CheckBoxValue.swift in Sources */,

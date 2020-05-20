@@ -18,7 +18,7 @@ struct FormSectionField: View, Equatable {
 
 	var body: some View {
 		return Section(header:
-			Text(cssField.title ?? "")
+			Text((cssField.title ?? "") + (cssField._required ? " (*)Required" : ""))
 				.font(isSignature ? .bold18: .semibold18)
 				.frame(minWidth: 0, maxWidth: .infinity,
 							 alignment: isSignature ? .center : .leading)

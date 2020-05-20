@@ -109,7 +109,8 @@ extension JourneyMockAPI {
 								 _required: true,
 								 title: "Please enter some text below"
 				),
-				CSSField(id: 1, cssClass:
+				CSSField(id: 1,
+								 cssClass:
 					.checkboxes(
 						[
 							CheckBoxChoice(1, "Are you currently receiving any medical treatment at present?", false),
@@ -121,6 +122,7 @@ extension JourneyMockAPI {
 							 CheckBoxChoice(7, "Have you been treated with any dermal fillers on either your face and/or body?", false)
 						]
 					),
+					_required: true,
 					title: "Choose please"
 				),
 				CSSField(id: 2, cssClass:

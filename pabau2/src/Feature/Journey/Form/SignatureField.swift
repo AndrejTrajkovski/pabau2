@@ -1,16 +1,16 @@
 import CoreGraphics
 import Foundation
 import SwiftUI
-
+import Model
 //for creating Image: https://www.hackingwithswift.com/read/27/3/drawing-into-a-core-graphics-context-with-uigraphicsimagerenderer
 struct SignatureField: View {
-	@State private var currentDrawing: Drawing = Drawing()
-	@State private var drawings: [Drawing] = [Drawing]()
+	@State private var currentDrawing = SignatureDrawing()
+	@State private var drawings = [SignatureDrawing]()
 
 	var body: some View {
 		VStack(alignment: .trailing) {
 			Button("Resign") {
-					self.drawings = [Drawing]()
+					self.drawings = [SignatureDrawing]()
 			}.font(.regular16).foregroundColor(.blue2)
 			DrawingPad(currentDrawing: $currentDrawing,
 								 drawings: $drawings)
@@ -22,8 +22,8 @@ struct SignatureField: View {
 }
 
 struct DrawingPad: View {
-	@Binding var currentDrawing: Drawing
-	@Binding var drawings: [Drawing]
+	@Binding var currentDrawing: SignatureDrawing
+	@Binding var drawings: [SignatureDrawing]
 
 	var body: some View {
 		GeometryReader { geometry in
@@ -46,14 +46,14 @@ struct DrawingPad: View {
 					})
 					.onEnded({ _ in
 						self.drawings.append(self.currentDrawing)
-						self.currentDrawing = Drawing()
+						self.currentDrawing = SignatureDrawing()
 					})
 			)
 		}
 		.frame(maxHeight: .infinity)
 	}
 
-	private func add(drawing: Drawing, toPath path: inout Path) {
+	private func add(drawing: SignatureDrawing, toPath path: inout Path) {
 		let points = drawing.points
 		if points.count > 1 {
 			for idx in 0..<points.count-1 {
@@ -64,8 +64,4 @@ struct DrawingPad: View {
 			}
 		}
 	}
-}
-
-struct Drawing {
-	var points: [CGPoint] = [CGPoint]()
 }
