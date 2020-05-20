@@ -4,9 +4,7 @@ import NonEmpty
 import SwiftDate
 
 public struct JourneyState: Equatable {
-	public init () {
-		print("init journey state")
-	}
+	public init () { }
 	public var loadingState: LoadingState = .initial
 	var journeys: Set<Journey> = Set()
 	var selectedFilter: CompleteFilter = .all

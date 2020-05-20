@@ -81,12 +81,15 @@ extension JourneyMockAPI {
 	]
 
 	public static let mockConsents  = [
-		FormTemplate(id: 1, name: "Consent - Transplant", formType: .consent,
+		FormTemplate(id: 1,
+								 name: "Consent - Transplant",
+								 formType: .consent,
 								 ePaper: false,
 								 formStructure:
 			FormStructure(formStructure: [
 				CSSField(id: 8,
-								 cssClass: .input_text(InputText(text: "input text 1")),
+								 cssClass: .input_text(InputText(text: "")),
+								 _required: true,
 								 title: "Insert some text"
 				),
 				CSSField(id: 6,
@@ -103,6 +106,7 @@ extension JourneyMockAPI {
 				),
 				CSSField(id: 5,
 								 cssClass: .textarea(TextArea(text: "some text")),
+								 _required: true,
 								 title: "Please enter some text below"
 				),
 				CSSField(id: 1, cssClass:

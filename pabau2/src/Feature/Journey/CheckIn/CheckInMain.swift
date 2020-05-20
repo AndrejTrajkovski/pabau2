@@ -39,7 +39,7 @@ public enum StepFormsAction {
 	case childForm(Indexed<ChildFormAction>)
 }
 
-public enum ChildFormAction {
+public enum ChildFormAction: Equatable {
 	case patientComplete(PatientCompleteAction)
 	case didUpdateTemplate(FormTemplate)
 	case didUpdatePatientDetails(PatientDetails)
@@ -106,7 +106,8 @@ struct CheckInBody: View {
 	}
 
 	var body: some View {
-		GeometryReader { geo in
+		print("check in main body")
+		return GeometryReader { geo in
 			VStack(spacing: 8) {
 				StepsCollectionView(steps: self.viewStore.state.forms,
 														selectedIdx: self.viewStore.state.selectedIndex) {
@@ -125,17 +126,45 @@ struct CheckInBody: View {
 				Spacer()
 				if self.keyboardHandler.keyboardHeight == 0 &&
 					!self.viewStore.state.isOnCompleteStep {
-					BigButton(text: Texts.next) {
-						self.viewStore.send(.didSelectNextForm)
-						self.viewStore.send(.childForm(
-							Indexed<ChildFormAction>(self.viewStore.state.selectedIndex,
-																				.didFinishTemplate(self.viewStore.state.forms[self.viewStore.state.selectedIndex]))))
-					}
+					NextButton(store: self.store)
 					.frame(width: 230)
 					.padding(8)
 				}
 			}	.padding(.leading, 40)
 				.padding(.trailing, 40)
 		}
+	}
+}
+
+struct NextButton: View {
+	let store: Store<CheckInViewState, StepFormsAction>
+	struct State: Equatable {
+		static func == (lhs: NextButton.State, rhs: NextButton.State) -> Bool {
+			return lhs.canProceed == rhs.canProceed &&
+			lhs.indexedForm == rhs.indexedForm
+		}
+		let indexedForm: Indexed<ChildFormAction>
+		let canProceed: Bool
+	}
+
+	var body: some View {
+		print("next button body")
+		return WithViewStore(store.scope(
+			state: State.init(state:),
+			action: { $0 })) { viewStore in
+			BigButton(text: Texts.next) {
+				viewStore.send(.didSelectNextForm)
+				viewStore.send(.childForm(viewStore.state.indexedForm))
+			}
+			.disabled(!viewStore.state.canProceed)
+		}
+	}
+}
+
+extension NextButton.State {
+	init (state: CheckInViewState) {
+		print("next button init")
+		self.indexedForm = Indexed(state.selectedIndex, .didFinishTemplate(state.selectedForm))
+		self.canProceed = state.selectedForm.form.canProceed
 	}
 }

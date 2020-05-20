@@ -92,13 +92,8 @@ func forms(_ journeyMode: JourneyMode,
 	state.stepTypes
 		.filter(with(journeyMode, filterStepType))
 		.reduce(into: [MetaFormAndStatus]()) {
-			print("\($1)")
 			$0.append(contentsOf:
 				with($1, (with(state, curry(wrapForm(_:_:))))))
-	}
-	.map {
-		print($0.form.title)
-		return $0
 	}
 	.sorted(by: their(pipe(get(\.form), stepType(form:), get(\.order))))
 }

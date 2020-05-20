@@ -148,11 +148,9 @@ struct ForgotPasswordView: View {
 		self.store = store
 		self.viewStore = ViewStore.init(store)
 		_email = email
-		print("ForgotPasswordView init")
 	}
 	var body: some View {
-		print("ForgotPasswordView body")
-		return VStack(alignment: .leading, spacing: 36) {
+		VStack(alignment: .leading, spacing: 36) {
 			ForgotPassword(self.store.scope(state: { $0.forgotPass }, action: { .forgotPass($0)}), self.$email)
 			NavigationLink.emptyHidden(
 				self.viewStore.state.navigation.contains(.checkEmailScreen),

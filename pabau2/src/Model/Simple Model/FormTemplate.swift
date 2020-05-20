@@ -7,7 +7,7 @@ public struct FormTemplate: Codable, Identifiable, Equatable, Hashable, CustomDe
 	
 	public var canProceed: Bool {
 		self.formStructure.formStructure.allSatisfy {
-			$0._required ? $0.cssClass.isFulfilled : false
+			$0._required ? $0.cssClass.isFulfilled : true
 		}
 	}
 	
@@ -29,7 +29,11 @@ public struct FormTemplate: Codable, Identifiable, Equatable, Hashable, CustomDe
     public let ePaper: Bool?
 
     public var formStructure: FormStructure
-    public init(id: Int, name: String, formType: FormType, ePaper: Bool? = nil, formStructure: FormStructure) {
+    public init(id: Int,
+								name: String,
+								formType: FormType,
+								ePaper: Bool? = nil,
+								formStructure: FormStructure) {
         self.id = id
         self.name = name
         self.formType = formType

@@ -13,8 +13,7 @@ public struct JourneyNavigationView: View {
 						 action: { $0 }))
 	}
 	public var body: some View {
-		print("JourneyNavigationView body")
-		return NavigationView {
+		NavigationView {
 			JourneyContainerView(self.store.scope(state: { $0 },
 																					 action: { $0 }))
 		}

@@ -18,9 +18,8 @@ public enum MetaForm: Equatable, Hashable {
 			return true
 		}
 	}
-	
+
 	init(_ patD: PatientDetails) {
-//		guard let patD = patD else { return nil }
 		self = .patientDetails(patD)
 	}
 
