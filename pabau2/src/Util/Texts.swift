@@ -87,6 +87,8 @@ public struct Texts {
 	public static let chooseTreatmentNote = "Choose Treatment Note"
 	public static let summary = "Summary"
 	public static let toPatientMode = "To Patient Mode"
+	public static let done = "Done"
+	public static let resign = "Resign"
 }
 
 extension String {

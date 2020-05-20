@@ -2,30 +2,94 @@ import CoreGraphics
 import Foundation
 import SwiftUI
 import Model
+import Util
 //for creating Image: https://www.hackingwithswift.com/read/27/3/drawing-into-a-core-graphics-context-with-uigraphicsimagerenderer
+
+enum SigningState {
+	case notSigned
+	case signing
+	case signed
+	init(signature: Signature) {
+		self = signature.drawings.isEmpty ? .notSigned : .signed
+	}
+}
+
 struct SignatureField: View {
 	@Binding var signature: Signature
-	@State private var currentDrawing = SignatureDrawing()
-//	@State private var drawings = [SignatureDrawing]()
-
+	@State private var signingState: SigningState
+	init (signature: Binding<Signature>) {
+		self._signature = signature
+		let initialV = SigningState(signature: signature.wrappedValue)
+		self._signingState = State.init(initialValue: initialV)
+	}
 	var body: some View {
-		VStack(alignment: .trailing) {
-			Button("Resign") {
-				self.signature.resetDrawings()
-			}.font(.regular16).foregroundColor(.blue2)
-			DrawingPad(currentDrawing: $currentDrawing,
-								 drawings: $signature.drawings)
-				.background(Color(hex: "F6F6F6"))
-				.border(Color(hex: "DADADA"), width: 1)
-				.frame(height: 200)
+		Group {
+			if self.signingState == .notSigned {
+				TapToSign(signingState: $signingState)
+			} else if self.signingState == .signing {
+				DrawingPad(drawings: $signature.drawings)
+					.disabled(true)
+					.sheet(isPresented: .constant(true)) {
+						SigningComponent(signingState: self.$signingState,
+														 signature: self.$signature)
+				}
+			} else {
+				SignedComponent(signingState: $signingState, signature: $signature)
+			}
+		}
+	}
+}
+
+struct SignedComponent: View {
+	@Binding var signingState: SigningState
+	@Binding var signature: Signature
+	var body: some View {
+		VStack {
+			HStack {
+				Spacer()
+				Text(Texts.resign)
+					.font(.regular16).foregroundColor(.blue2)
+					.onTapGesture {
+						self.signature.resetDrawings()
+						self.signingState = .signing
+				}
+			}
+			DrawingPad(drawings: $signature.drawings)
+				.disabled(true)
+		}
+	}
+}
+
+struct SigningComponent: View {
+	@Binding var signingState: SigningState
+	@Binding var signature: Signature
+	var body: some View {
+		VStack {
+			DrawingPad(drawings: $signature.drawings)
+								.disabled(false)
+			BigButton(text: Texts.done) {
+				self.signingState = .signed
+			}
+			.disabled(signature.drawings.isEmpty)
+		}.fixedSize(horizontal: false, vertical: true)
+	}
+}
+
+struct TapToSign: View {
+	@Binding var signingState: SigningState
+	var body: some View {
+		Image("ico-journey-tap-to-sign")
+		.resizable()
+		.frame(width: 137, height: 137)
+		.onTapGesture {
+			self.signingState = .signing
 		}
 	}
 }
 
 struct DrawingPad: View {
-	@Binding var currentDrawing: SignatureDrawing
+	@State private var currentDrawing = SignatureDrawing()
 	@Binding var drawings: [SignatureDrawing]
-
 	var body: some View {
 		GeometryReader { geometry in
 			Path { path in
@@ -51,7 +115,9 @@ struct DrawingPad: View {
 					})
 			)
 		}
-		.frame(maxHeight: .infinity)
+		.background(Color(hex: "F6F6F6"))
+		.border(Color(hex: "DADADA"), width: 1)
+		.frame(height: 200)
 	}
 
 	private func add(drawing: SignatureDrawing, toPath path: inout Path) {
