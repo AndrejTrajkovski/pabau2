@@ -148,7 +148,7 @@ extension JourneyMockAPI {
 				),
 				CSSField(id: 51,
 								 cssClass: .select(Select(4,
-																				[SelectChoice(1, "select choice 1"),
+																				[SelectChoice(1, "select choice with a multiline text with a multiline text with a multiline text with a multiline text with a multiline text with a multiline text with a multiline text"),
 																				 SelectChoice(2, "select choice 2"),
 																				 SelectChoice(3, "select choice 3"),
 																					SelectChoice(4, "select choice 4")
@@ -851,6 +851,28 @@ extension JourneyMockAPI {
 								 ePaper: false,
 								 formStructure:
 			FormStructure(formStructure: [
+				CSSField(id: 51,
+								 cssClass: .select(Select(4,
+																				[SelectChoice(1, "select choice with a multiline text with a multiline text with a multiline text with a multiline text with a multiline text with a multiline text with a multiline text"),
+																				 SelectChoice(2, "select choice 2"),
+																				 SelectChoice(3, "select choice 3"),
+																					SelectChoice(4, "select choice 4")
+																				],
+																				1)
+					), title: "Select title"
+				),
+				CSSField(id: 51,
+								 cssClass: .select(Select(4,
+																				[SelectChoice(1, "select choice 1"),
+																				 SelectChoice(2, "select choice 2"),
+																				 SelectChoice(3, "select choice 3"),
+																					SelectChoice(4, "select choice 4")
+																				],
+																				nil)
+					),
+								 _required: true,
+								 title: "Select field that's required"
+				),
 				CSSField(id: 8,
 								 cssClass: .input_text(InputText(text: "This is med history input 1")),
 								 title: "Insert some text"
