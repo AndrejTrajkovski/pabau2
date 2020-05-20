@@ -12,13 +12,13 @@ public enum CSSClass: Codable, Equatable {
 			return !inputText.text.isEmpty
 		case .textarea(let textAreaText):
 			return !textAreaText.text.isEmpty
-		case .radio(_):
+		case .radio(let radio):
 			return true
 		case .signature(let signature):
-			return true
-		case .checkboxes(_):
-			return true
-		case .select(_):
+			return !signature.drawing.points.isEmpty//add image
+		case .checkboxes(let checkboxes):
+			return checkboxes.first(where: { $0.isSelected }) != nil
+		case .select(let select):
 			return true
 		case .heading(_):
 			return true
