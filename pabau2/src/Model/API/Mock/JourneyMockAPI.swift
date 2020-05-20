@@ -145,6 +145,16 @@ extension JourneyMockAPI {
 																				 RadioChoice(2, "radio choice 2")],
 																				1)
 					), title: "Radio title"
+				),
+				CSSField(id: 51,
+								 cssClass: .select(Select(4,
+																				[SelectChoice(1, "select choice 1"),
+																				 SelectChoice(2, "select choice 2"),
+																				 SelectChoice(3, "select choice 3"),
+																					SelectChoice(4, "select choice 4")
+																				],
+																				1)
+					), title: "Select title"
 				)
 			])),
 		
@@ -188,6 +198,16 @@ extension JourneyMockAPI {
 				),
 				title: "Choose smth else"
 			),
+			CSSField(id: 51,
+							 cssClass: .select(Select(4,
+																			[SelectChoice(1, "select choice 1"),
+																			 SelectChoice(2, "select choice 2"),
+																			 SelectChoice(3, "select choice 3"),
+																				SelectChoice(4, "select choice 4")
+																			],
+																			1)
+				), title: "Select title"
+			),
 			CSSField(id: 3, cssClass:
 				.staticText(StaticText(1, "Hey what's going on?")),
 							 title: "This is some static text "
@@ -215,6 +235,16 @@ extension JourneyMockAPI {
 			CSSField(id: 5,
 							 cssClass: .textarea(TextArea(text: "some text")),
 							 title: "Please enter some text below"
+			),
+			CSSField(id: 51,
+							 cssClass: .select(Select(4,
+																			[SelectChoice(1, "select choice 1"),
+																			 SelectChoice(2, "select choice 2"),
+																			 SelectChoice(3, "select choice 3"),
+																				SelectChoice(4, "select choice 4")
+																			],
+																			1)
+				), title: "Select title"
 			),
 			CSSField(id: 1, cssClass:
 				.checkboxes(
@@ -315,6 +345,16 @@ extension JourneyMockAPI {
 			CSSField(id: 3, cssClass:
 				.staticText(StaticText(1, "Hey what's going on?")),
 							 title: "This is some static text "
+			),
+			CSSField(id: 51,
+							 cssClass: .select(Select(4,
+																			[SelectChoice(1, "select choice 1"),
+																			 SelectChoice(2, "select choice 2"),
+																			 SelectChoice(3, "select choice 3"),
+																				SelectChoice(4, "select choice 4")
+																			],
+																			1)
+				), title: "Select title"
 			),
 			CSSField(id: 4,
 							 cssClass: .radio(Radio(4,

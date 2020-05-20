@@ -31,9 +31,6 @@ struct FormSectionField: View, Equatable {
 }
 
 struct FormField: View {
-//	static func == (lhs: FormField, rhs: FormField) -> Bool {
-//		return lhs.myValue == rhs.myValue
-//	}
 	@Binding var cssField: CSSField
 	let myValue: ViewState
 
@@ -51,6 +48,7 @@ struct FormField: View {
 		let textArea: TextArea?
 		let signature: Signature?
 		let inputText: InputText?
+		let select: Select?
 	}
 
 	var body: some View {
@@ -81,6 +79,14 @@ struct FormField: View {
 					)
 					.frame(height: 150)
 				}
+				if self.myValue.select != nil {
+					SelectField(select:
+						Binding.init(
+								get: { self.myValue.select! },
+								set: { self.cssField.cssClass = CSSClass.select($0) }
+						)
+					)
+				}
 				if self.myValue.signature != nil {
 					SignatureField()
 				}
@@ -109,6 +115,7 @@ extension FormField.ViewState {
 		self.textArea = extract(case: CSSClass.textarea, from: state.cssClass)
 		self.signature = extract(case: CSSClass.signature, from: state.cssClass)
 		self.inputText = extract(case: CSSClass.input_text, from: state.cssClass)
+		self.select = extract(case: CSSClass.select, from: state.cssClass)
 	}
 }
 
