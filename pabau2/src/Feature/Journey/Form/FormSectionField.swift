@@ -88,7 +88,11 @@ struct FormField: View {
 					)
 				}
 				if self.myValue.signature != nil {
-					SignatureField()
+					SignatureField(signature:
+						Binding(
+							get: { self.myValue.signature! },
+							set: { self.cssField.cssClass = CSSClass.signature($0) })
+					)
 				}
 				if self.myValue.inputText != nil {
 					InputTextField.init(initialValue: self.myValue.inputText!.text) {

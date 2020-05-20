@@ -4,16 +4,17 @@ import SwiftUI
 import Model
 //for creating Image: https://www.hackingwithswift.com/read/27/3/drawing-into-a-core-graphics-context-with-uigraphicsimagerenderer
 struct SignatureField: View {
+	@Binding var signature: Signature
 	@State private var currentDrawing = SignatureDrawing()
-	@State private var drawings = [SignatureDrawing]()
+//	@State private var drawings = [SignatureDrawing]()
 
 	var body: some View {
 		VStack(alignment: .trailing) {
 			Button("Resign") {
-					self.drawings = [SignatureDrawing]()
+				self.signature.resetDrawings()
 			}.font(.regular16).foregroundColor(.blue2)
 			DrawingPad(currentDrawing: $currentDrawing,
-								 drawings: $drawings)
+								 drawings: $signature.drawings)
 				.background(Color(hex: "F6F6F6"))
 				.border(Color(hex: "DADADA"), width: 1)
 				.frame(height: 200)

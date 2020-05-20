@@ -879,6 +879,7 @@ extension JourneyMockAPI {
 				),
 				CSSField(id: 6,
 								 cssClass: .signature(Signature()),
+								 _required: true,
 								 title: "Patient signature"
 				),
 				CSSField(id: 9,

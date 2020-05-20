@@ -15,7 +15,7 @@ public enum CSSClass: Codable, Equatable {
 		case .radio(let radio):
 			return true//TODO: check requirements due to radio picker always having one selected
 		case .signature(let signature):
-			return !signature.drawing.points.isEmpty//TODO: add image url in check
+			return !signature.drawings.isEmpty//TODO: add image url in check
 		case .checkboxes(let checkboxes):
 			return checkboxes.first(where: { $0.isSelected }) != nil
 		case .select(let select):
