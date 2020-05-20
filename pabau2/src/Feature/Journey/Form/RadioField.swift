@@ -35,7 +35,7 @@ struct RadioField: View {
 						self.selectedId = id
 						self.radio.selectedChoiceId = id
 				}),
-						 label: Text("Radio")) {
+						 label: EmptyView()) {
 				ForEach(radio.choices, id: \.id) { (choice: RadioChoice) in
 					Text(String(choice.title)).tag(choice.id)
 				}
