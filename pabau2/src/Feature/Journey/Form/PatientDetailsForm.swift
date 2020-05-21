@@ -173,24 +173,3 @@ public let patientDetailsReducer: Reducer<PatientDetails, PatientDetailsAction, 
 		environment: { $0 }
 	)
 )
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-)

@@ -21,3 +21,26 @@ public struct PatientDetails: Equatable {
 	var phoneComm: Bool
 	var postComm: Bool
 }
+
+extension PatientDetails {
+	static let mock = PatientDetails(
+		salutation: "Test ",
+		firstName: "Test ",
+		lastName: "Test ",
+		dob: "Test ",
+		phone: "Test ",
+		cellPhone: "Test ",
+		email: "Test ",
+		addressLine1: "Test ",
+		addressLine2: "Test ",
+		postCode: "Test ",
+		city: "Test ",
+		county: "Test ",
+		country: "Test ",
+		howDidYouHear: "Test ",
+		emailComm: false,
+		smsComm: false,
+		phoneComm: false,
+		postComm: false
+	)
+}

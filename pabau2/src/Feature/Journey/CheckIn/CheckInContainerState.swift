@@ -324,7 +324,7 @@ extension CheckInContainerState {
 		self.treatmentFormsCompleted = [:]
 		self.aftercare = Aftercare()
 		self.aftercareCompleted = false
-		self.patientDetails = PatientDetails()
+		self.patientDetails = patientDetails
 		self.patientDetailsCompleted = false
 		self.patientComplete = patientComplete
 		self.patientSelectedIndex = 0

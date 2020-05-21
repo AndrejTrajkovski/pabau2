@@ -43,7 +43,7 @@ struct PabauFormWrap: View {
 			)
 		} else if self.viewStore.state.patientDetails != nil {
 			return AnyView(
-				PatientDetailsForm(patientDetails: self.viewStore.state.patientDetails)
+				PatientDetailsForm(patientDetails: self.viewStore.state.patientDetails!)
 					.padding()
 			)
 		} else if self.viewStore.state.patientCompleteForm != nil {

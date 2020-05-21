@@ -74,7 +74,7 @@ struct JourneyMocks {
 												 Step(id: 5, stepType: .prescriptions),
 												 Step(id: 6, stepType: .aftercares)
 		]),
-		patientDetails: PatientDetails(),
+		patientDetails: PatientDetails.mock,
 		medHistory: JourneyMockAPI.getMedHistory(),
 		allConsents: flatten(JourneyMockAPI.mockConsents),
 		selectedConsentsIds: [])
