@@ -43,8 +43,12 @@ struct PabauFormWrap: View {
 			)
 		} else if self.viewStore.state.patientDetails != nil {
 			return AnyView(
-				PatientDetailsForm(patientDetails: self.viewStore.state.patientDetails!)
-					.padding()
+				IfLetStore(
+					self.store.scope(
+						state: { extract(case: MetaForm.patientDetails, from: $0.form) },
+						action: { .patientDetails($0) }),
+					then: PatientDetailsForm.init(store:)
+				).padding()
 			)
 		} else if self.viewStore.state.patientCompleteForm != nil {
 			return AnyView(

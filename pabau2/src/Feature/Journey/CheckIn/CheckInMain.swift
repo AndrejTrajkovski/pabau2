@@ -40,6 +40,7 @@ public enum StepFormsAction {
 }
 
 public enum ChildFormAction: Equatable {
+	case patientDetails(PatientDetailsAction)
 	case patientComplete(PatientCompleteAction)
 	case didUpdateTemplate(FormTemplate)
 	case didUpdatePatientDetails(PatientDetails)
@@ -51,8 +52,8 @@ let anyFormReducer: Reducer<MetaFormAndStatus, ChildFormAction, JourneyEnvironme
 	.combine (
 		Reducer { state, action, _ in
 			switch action {
-			case .didFinishPatientDetails:
-				break
+			case .didFinishPatientDetails(let patD):
+				state = .init(.patientDetails(patD), state.isComplete)
 			case .didUpdateTemplate(let template):
 				state = .init(.template(template), state.isComplete)
 			case .didUpdatePatientDetails:
@@ -60,6 +61,8 @@ let anyFormReducer: Reducer<MetaFormAndStatus, ChildFormAction, JourneyEnvironme
 			case .didFinishTemplate(let template):
 				state.isComplete = true
 			case .patientComplete(_):
+				break
+			case .patientDetails(_):
 				break
 			}
 			return .none
@@ -77,6 +80,10 @@ let metaFormReducer: Reducer<MetaForm, ChildFormAction, JourneyEnvironment> =
 		patientCompleteReducer.pullbackCp(
 			state: /MetaForm.patientComplete,
 			action: /ChildFormAction.patientComplete,
+			environment: { $0 }),
+		patientDetailsReducer.pullbackCp(
+			state: /MetaForm.patientDetails,
+			action: /ChildFormAction.patientDetails,
 			environment: { $0 })
 )
 

@@ -2,36 +2,114 @@ import SwiftUI
 import Util
 import ComposableArchitecture
 
+//struct TCATextField: View {
+//	let placeholder: String
+//	let store: Store<String, TextFieldAction>
+//	var body: some View {
+//		WithViewStore(store) { viewStore in
+//			TextField(
+//				self.placeholder,
+//				text: viewStore.binding(
+//					get: { $0 },
+//					send: TextFieldAction.textFieldChanged)
+//			)
+//		}
+//	}
+//}
+
 struct PatientDetailsForm: View {
+	let store: Store<PatientDetails, PatientDetailsAction>
+	@ObservedObject var viewStore: ViewStore<PatientDetails, PatientDetailsAction>
+	let vms: [[TextAndTextViewVM]]
 	
-	var patientDetails: PatientDetails
-	
-	let vms: [[TextAndTextViewVM]] = [
-		[
-			TextAndTextViewVM(.constant("Mr"), Texts.salutation),
-			TextAndTextViewVM(.constant("Jonathan"), Texts.firstName),
-			TextAndTextViewVM(.constant("Davis"), Texts.lastName)
-		],
-		[
-			TextAndTextViewVM(.constant("October 18th 1991"), Texts.dob),
-			TextAndTextViewVM(.constant("+ 389 70 999 111"), Texts.phone),
-			TextAndTextViewVM(.constant("+ 389 70 999 111"), Texts.cellPhone)
-		],
-		[
-			TextAndTextViewVM(.constant("October 18th 1991"), Texts.email),
-			TextAndTextViewVM(.constant("+ 389 70 999 111"), Texts.addressLine1),
-			TextAndTextViewVM(.constant("+ 389 70 999 111"), Texts.addressLine2)
-		],
-		[
-			TextAndTextViewVM(.constant("October 18th 1991"), Texts.postCode),
-			TextAndTextViewVM(.constant("+ 389 70 999 111"), Texts.city),
-			TextAndTextViewVM(.constant("+ 389 70 999 111"), Texts.county)
-		],
-		[
-			TextAndTextViewVM(.constant("October 18th 1991"), Texts.country),
-			TextAndTextViewVM(.constant("+ 389 70 999 111"), Texts.howDidUHear)
+	init(store: Store<PatientDetails, PatientDetailsAction>) {
+		self.store = store
+		let viewStore = ViewStore(store)
+		self.vms
+			= [
+				[
+					TextAndTextViewVM(
+						viewStore.binding(
+							get: { $0.salutation },
+							send: { .salutation(.textFieldChanged($0)) })
+						, Texts.salutation),
+					TextAndTextViewVM(
+						viewStore.binding(
+							get: { $0.firstName },
+							send: { .firstName(.textFieldChanged($0)) })
+						, Texts.firstName),
+					TextAndTextViewVM(
+						viewStore.binding(
+							get: { $0.lastName },
+							send: { .lastName(.textFieldChanged($0)) })
+						, Texts.lastName)
+				],
+				[
+					TextAndTextViewVM(
+						viewStore.binding(
+							get: { $0.dob },
+							send: { .dob(.textFieldChanged($0)) })
+						, Texts.dob),
+					TextAndTextViewVM(
+						viewStore.binding(
+							get: { $0.phone },
+							send: { .phone(.textFieldChanged($0)) })
+						, Texts.phone),
+					TextAndTextViewVM(
+						viewStore.binding(
+							get: { $0.cellPhone },
+							send: { .cellPhone(.textFieldChanged($0)) })
+						, Texts.cellPhone)
+				],
+				[
+					TextAndTextViewVM(
+						viewStore.binding(
+							get: { $0.email },
+							send: { .email(.textFieldChanged($0)) })
+						, Texts.email),
+					TextAndTextViewVM(
+						viewStore.binding(
+							get: { $0.addressLine1 },
+							send: { .addressLine1(.textFieldChanged($0)) })
+						, Texts.addressLine1),
+					TextAndTextViewVM(
+						viewStore.binding(
+							get: { $0.addressLine2 },
+							send: { .addressLine2(.textFieldChanged($0)) })
+						, Texts.addressLine2)
+				],
+				[
+					TextAndTextViewVM(
+						viewStore.binding(
+							get: { $0.postCode },
+							send: { .postCode(.textFieldChanged($0)) })
+						, Texts.postCode),
+					TextAndTextViewVM(
+						viewStore.binding(
+							get: { $0.city },
+							send: { .city(.textFieldChanged($0)) })
+						, Texts.city),
+					TextAndTextViewVM(
+						viewStore.binding(
+							get: { $0.county },
+							send: { .county(.textFieldChanged($0)) })
+						, Texts.county)
+				],
+				[
+					TextAndTextViewVM(
+						viewStore.binding(
+							get: { $0.country },
+							send: { .country(.textFieldChanged($0)) })
+						, Texts.country),
+					TextAndTextViewVM(
+						viewStore.binding(
+							get: { $0.howDidYouHear },
+							send: { .howDidYouHear(.textFieldChanged($0)) })
+						, Texts.howDidUHear)
+				]
 		]
-	]
+		self.viewStore = viewStore
+	}
 
 	var body: some View {
 		print("Patient details body")
@@ -84,7 +162,7 @@ struct ThreeTextColumns: View {
 }
 
 
-public enum PatientDetailsAction {
+public enum PatientDetailsAction: Equatable {
 	case salutation(TextFieldAction)
 	case firstName(TextFieldAction)
 	case lastName(TextFieldAction)
@@ -101,75 +179,77 @@ public enum PatientDetailsAction {
 	case howDidYouHear(TextFieldAction)
 }
 
-public let patientDetailsReducer: Reducer<PatientDetails, PatientDetailsAction, Any> = .combine(
-	textFieldReducer.pullback(
-		state: \.salutation,
-		action: /TextFieldAction.salutation,
+public let patientDetailsReducer: Reducer<PatientDetails, PatientDetailsAction, Any> = (
+	.combine(
+		textFieldReducer.pullback(
+		state: \PatientDetails.salutation,
+		action: /PatientDetailsAction.salutation,
 		environment: { $0 }
 	),
 	textFieldReducer.pullback(
-		state: \.firstName,
-		action: /TextFieldAction.firstName,
+		state: \PatientDetails.firstName,
+		action: /PatientDetailsAction.firstName,
 		environment: { $0 }
 	),
 	textFieldReducer.pullback(
-		state: \.lastName,
-		action: /TextFieldAction.lastName,
+		state: \PatientDetails.lastName,
+		action: /PatientDetailsAction.lastName,
 		environment: { $0 }
 	),
 	textFieldReducer.pullback(
-		state: \.dob,
-		action: /TextFieldAction.dob,
+		state: \PatientDetails.dob,
+		action: /PatientDetailsAction.dob,
 		environment: { $0 }
 	),
 	textFieldReducer.pullback(
-		state: \.phone,
-		action: /TextFieldAction.phone,
+		state: \PatientDetails.phone,
+		action: /PatientDetailsAction.phone,
 		environment: { $0 }
 	),
 	textFieldReducer.pullback(
-		state: \.cellPhone,
-		action: /TextFieldAction.cellPhone,
+		state: \PatientDetails.cellPhone,
+		action: /PatientDetailsAction.cellPhone,
 		environment: { $0 }
 	),
 	textFieldReducer.pullback(
-		state: \.email,
-		action: /TextFieldAction.email,
+		state: \PatientDetails.email,
+		action: /PatientDetailsAction.email,
 		environment: { $0 }
 	),
 	textFieldReducer.pullback(
-		state: \.addressLine1,
-		action: /TextFieldAction.addressLine1,
+		state: \PatientDetails.addressLine1,
+		action: /PatientDetailsAction.addressLine1,
 		environment: { $0 }
 	),
 	textFieldReducer.pullback(
-		state: \.addressLine2,
-		action: /TextFieldAction.addressLine2,
+		state: \PatientDetails.addressLine2,
+		action: /PatientDetailsAction.addressLine2,
 		environment: { $0 }
 	),
 	textFieldReducer.pullback(
-		state: \.postCode,
-		action: /TextFieldAction.postCode,
+		state: \PatientDetails.postCode,
+		action: /PatientDetailsAction.postCode,
 		environment: { $0 }
 	),
 	textFieldReducer.pullback(
-		state: \.city,
-		action: /TextFieldAction.city,
+		state: \PatientDetails.city,
+		action: /PatientDetailsAction.city,
 		environment: { $0 }
 	),
 	textFieldReducer.pullback(
-		state: \.county,
-		action: /TextFieldAction.county,
+		state: \PatientDetails.county,
+		action: /PatientDetailsAction.county,
 		environment: { $0 }
 	),
 	textFieldReducer.pullback(
-		state: \.country,
-		action: /TextFieldAction.country,
+		state: \PatientDetails.country,
+		action: /PatientDetailsAction.country,
 		environment: { $0 }
 	),
 	textFieldReducer.pullback(
-		state: \.howDidYouHear,
-		action: /TextFieldAction.howDidYouHear,
+		state: \PatientDetails.howDidYouHear,
+		action: /PatientDetailsAction.howDidYouHear,
 		environment: { $0 }
+	)
 	)
 )
