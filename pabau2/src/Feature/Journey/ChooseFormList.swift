@@ -98,13 +98,13 @@ struct ChooseFormList: View {
 					Text(Texts.selected + " " + (self.mode == .treatmentNotes ? Texts.treatmentNotes : Texts.consents ))
 						.font(.bold17)
 					FormTemplateList(templates: self.viewStore.state.selectedTemplates,
-													 bgColor: PathwayCellStyle.blue.bgColor,
+													 bgColor: PabauButtonStyle.blue.bgColor,
 													 templateRow: { template in
 														SelectedTemplateRow(template: template)
 					}, onSelect: {
 						self.viewStore.send(.removeTemplateId($0.id))
 					})
-					ChoosePathwayButton(btnTxt: self.mode.btnTitle, style: .blue,
+					PabauButton(btnTxt: self.mode.btnTitle, style: .blue,
 							action: {
 						withAnimation(Animation.linear(duration: 1)) {
 							self.viewStore.send(.proceed)
@@ -116,7 +116,7 @@ struct ChooseFormList: View {
 				VStack {
 					TextField("TODO: search: ", text: self.$searchText)
 					FormTemplateList(templates: self.viewStore.state.notSelectedTemplates,
-													 bgColor: PathwayCellStyle.white.bgColor,
+													 bgColor: PabauButtonStyle.white.bgColor,
 													 templateRow: { template in
 														NotSelectedTemplateRow(template: template)
 					}, onSelect: {

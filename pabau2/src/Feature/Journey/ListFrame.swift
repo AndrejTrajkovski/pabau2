@@ -1,13 +1,13 @@
 import SwiftUI
 
 struct ListFrame<Content: View>: View {
-	init(style: PathwayCellStyle,
+	init(style: PabauButtonStyle,
 			 @ViewBuilder _ content: @escaping () -> Content) {
 		self.style = style
 		self.content = content
 	}
 
-	let style: PathwayCellStyle
+	let style: PabauButtonStyle
 	let content: () -> Content
 
 	public var body: some View {
