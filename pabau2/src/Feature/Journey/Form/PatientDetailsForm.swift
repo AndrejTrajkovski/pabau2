@@ -2,6 +2,9 @@ import SwiftUI
 import Util
 
 struct PatientDetailsForm: View {
+	
+	var patientDetails: PatientDetails
+	
 	let vms: [[TextAndTextViewVM]] = [
 		[
 			TextAndTextViewVM(.constant("Mr"), Texts.salutation),
