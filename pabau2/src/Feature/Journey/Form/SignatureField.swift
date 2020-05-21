@@ -5,17 +5,9 @@ import Model
 import Util
 //for creating Image: https://www.hackingwithswift.com/read/27/3/drawing-into-a-core-graphics-context-with-uigraphicsimagerenderer
 
-enum SignatureState {
-	case notSigned
-	case signed
-}
-
 struct SignatureField: View {
 	@State private var isSigning: Bool
 	@Binding var signature: Signature
-	var signingState: SignatureState {
-		signature.drawings.isEmpty ? .notSigned : .signed
-	}
 	
 	init (signature: Binding<Signature>) {
 		self._signature = signature
@@ -31,7 +23,7 @@ struct SignatureField: View {
 						SigningComponent(isActive: self.$isSigning,
 														 onDone: { self.signature = $0 })
 				}
-			} else if self.signingState == .notSigned {
+			} else if signature.drawings.isEmpty {
 				TapToSign(isSigning: $isSigning)
 			} else {
 				SignedComponent(isSigning: $isSigning,
