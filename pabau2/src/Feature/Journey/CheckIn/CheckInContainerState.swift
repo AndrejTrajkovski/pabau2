@@ -190,19 +190,29 @@ extension CheckInContainerState {
 	}
 }
 
+extension Collection {
+	/// Returns the element at the specified index if it is within bounds, otherwise nil.
+	subscript (safe index: Index) -> Element? {
+		return indices.contains(index) ? self[index] : nil
+	}
+}
+
 public struct CheckInViewState: Equatable {
 	var selectedIndex: Int
 	var forms: [MetaFormAndStatus]
 	var xButtonActiveFlag: Bool
 	var journey: Journey
 
-	var selectedForm: MetaFormAndStatus {
-		return forms[selectedIndex]
+	var selectedForm: MetaFormAndStatus? {
+		return forms[safe: selectedIndex]
 	}
 
 	var topView: TopViewState {
 		get {
-			TopViewState(totalSteps: self.forms.count,
+			TopViewState(totalSteps:
+				self.forms
+					.filter { extract(case: MetaForm.patientComplete, from: $0.form) == nil }
+					.count,
 									 completedSteps: self.forms.filter(\.isComplete).count,
 									 xButtonActiveFlag: xButtonActiveFlag,
 									 journey: journey)
@@ -213,7 +223,8 @@ public struct CheckInViewState: Equatable {
 	}
 
 	var isOnCompleteStep: Bool {
-		stepType(form: selectedForm.form) == .patientComplete
+		guard let selectedForm = selectedForm else { return false}
+		return stepType(form: selectedForm.form) == .patientComplete
 	}
 }
 
