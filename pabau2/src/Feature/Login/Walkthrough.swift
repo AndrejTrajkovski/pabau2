@@ -28,7 +28,7 @@ public struct Walkthrough: View {
 			BigButton(text: Texts.signIn,
 								btnTapAction: {
 									self.action()
-			})
+			}).frame(minWidth: 304, maxWidth: 495)
 		}
 	}
 }

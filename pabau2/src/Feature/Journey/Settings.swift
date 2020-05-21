@@ -37,7 +37,7 @@ public struct Settings: View {
 		VStack {
 			BigButton(text: "Logout") {
 				self.viewStore.send(.logoutTapped)
-			}
+			}.frame(minWidth: 304, maxWidth: 495)
 		}
 	}
 }

@@ -57,21 +57,21 @@ struct SigningComponent: View {
 	@Binding var isActive: Bool
 	let onDone: (Signature) -> Void
 	var body: some View {
-		VStack {
+		VStack(spacing: 32.0) {
 			DrawingPad(drawings: $signature.drawings)
-								.disabled(false)
 			HStack {
 				PabauButton(btnTxt: Texts.cancel,
 										style: .white) {
 					self.isActive = false
 				}
 				PabauButton(btnTxt: Texts.done,
-										style: .blue) {
+										style: .blue,
+										isDisabled: signature.drawings.isEmpty) {
 					self.isActive = false
 					self.onDone(self.signature)
 				}
 				.disabled(signature.drawings.isEmpty)
-			}.fixedSize(horizontal: true, vertical: false)
+			}.padding()
 		}.fixedSize(horizontal: false, vertical: true)
 	}
 }

@@ -179,7 +179,9 @@ struct ChoosePathwayListContent: View {
 			Text(subtitle).font(.medium15)
 			PathwayBulletList(bulletPoints: bulletPoints, bgColor: style.bgColor)
 			Spacer()
-			PabauButton(btnTxt: btnTxt, style: style, action: btnAction)
+			PabauButton(btnTxt: btnTxt,
+									style: style,
+									action: btnAction)
 		}
 	}
 }

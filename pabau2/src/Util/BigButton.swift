@@ -16,7 +16,6 @@ public struct BigButton: View {
 				.frame(minWidth: 0, maxWidth: .infinity)
 		}).buttonStyle(BigButtonStyle())
 			.cornerRadius(10)
-			.frame(minWidth: 304, maxWidth: 495)
 	}
 }
 

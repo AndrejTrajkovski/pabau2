@@ -126,7 +126,7 @@ struct Login: View {
 									btnTapAction: {
 										viewStore.send(.loginTapped(email: self.email,
 																								password: self.password))
-				})
+				}).frame(minWidth: 304, maxWidth: 495)
 			}
 			.navigationBarBackButtonHidden(true)
 			.frame(minWidth: 280, maxWidth: 495, alignment: .center)

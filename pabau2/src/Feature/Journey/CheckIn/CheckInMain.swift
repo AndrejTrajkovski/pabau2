@@ -157,6 +157,7 @@ struct NextButton: View {
 				viewStore.send(.childForm(viewStore.state.indexedForm))
 			}
 			.disabled(!viewStore.state.canProceed)
+			.frame(minWidth: 304, maxWidth: 495)
 		}
 	}
 }

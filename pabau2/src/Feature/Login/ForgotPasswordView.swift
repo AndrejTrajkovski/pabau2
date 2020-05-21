@@ -130,7 +130,7 @@ struct ForgotPassword: View {
 			}.frame(maxWidth: 319)
 			BigButton(text: Texts.sendRequest) {
 				self.viewStore.send(.sendRequest(email: self.email))
-			}
+			}.frame(minWidth: 304, maxWidth: 495)
 		}
 		.frame(minWidth: 280, maxWidth: 495)
 		.fixedSize(horizontal: false, vertical: true)

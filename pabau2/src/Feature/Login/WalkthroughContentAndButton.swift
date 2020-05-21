@@ -10,7 +10,7 @@ public struct WalkthroughContentAndButton: View {
 			WalkthroughContentView.init(state: content)
 			BigButton(text: self.btnTitle) {
 				self.btnAction()
-			}
+			}.frame(minWidth: 304, maxWidth: 495)
 		}
 	}
 }

@@ -109,7 +109,7 @@ struct ChooseFormList: View {
 						withAnimation(Animation.linear(duration: 1)) {
 							self.viewStore.send(.proceed)
 						}
-					})
+					}).frame(minWidth: 0, maxWidth: .infinity)
 				}
 			}
 			ListFrame(style: .white) {
