@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct BigButton: View {
+public struct PrimaryButton: View {
 	public init (text: String, btnTapAction: @escaping () -> Void) {
 		self.text = text
 		self.buttonTapAction = btnTapAction
@@ -14,12 +14,12 @@ public struct BigButton: View {
 			Text(text)
 				.font(Font.system(size: 16.0, weight: .bold))
 				.frame(minWidth: 0, maxWidth: .infinity)
-		}).buttonStyle(BigButtonStyle())
+		}).buttonStyle(PrimaryButtonStyle())
 			.cornerRadius(10)
 	}
 }
 
-struct BigButtonStyle: ButtonStyle {
+struct PrimaryButtonStyle: ButtonStyle {
 	func makeBody(configuration: Configuration) -> some View {
 		configuration.label
 			.padding()

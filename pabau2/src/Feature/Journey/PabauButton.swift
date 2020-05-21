@@ -2,7 +2,6 @@ import SwiftUI
 import Util
 
 struct PabauButton: View {
-	
 	init(
 		btnTxt: String,
 		style: PabauButtonStyle,
@@ -14,7 +13,6 @@ struct PabauButton: View {
 		self.isDisabled = isDisabled
 		self.action = action
 	}
-	
 	let btnTxt: String
 	let style: PabauButtonStyle
 	let isDisabled: Bool
@@ -22,7 +20,7 @@ struct PabauButton: View {
 	var body: some View {
 		Group {
 			if self.style == .blue {
-				BigButton.init(text: btnTxt,
+				PrimaryButton.init(text: btnTxt,
 											 btnTapAction: action)
 					.shadow(color: isDisabled ? .clear : style.btnShadowColor,
 									radius: style.btnShadowBlur,

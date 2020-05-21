@@ -152,7 +152,7 @@ struct NextButton: View {
 		return WithViewStore(store.scope(
 			state: State.init(state:),
 			action: { $0 })) { viewStore in
-			BigButton(text: Texts.next) {
+			PrimaryButton(text: Texts.next) {
 				viewStore.send(.didSelectNextForm)
 				viewStore.send(.childForm(viewStore.state.indexedForm))
 			}

@@ -34,7 +34,7 @@
 		8227FB66240BAC8400F653B5 /* Util.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8227FB51240BAC8300F653B5 /* Util.framework */; };
 		8227FB67240BAC8400F653B5 /* Util.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8227FB51240BAC8300F653B5 /* Util.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8227FB6E240BAC9600F653B5 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8297A2BA23DA08F200D091FF /* Colors.swift */; };
-		8227FB6F240BAC9600F653B5 /* BigButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F5591F23DC255B008032F4 /* BigButton.swift */; };
+		8227FB6F240BAC9600F653B5 /* PrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F5591F23DC255B008032F4 /* PrimaryButton.swift */; };
 		8227FB70240BAC9600F653B5 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820961D423ED9AE2004A510A /* ActivityIndicator.swift */; };
 		8227FB71240BAC9600F653B5 /* TextAndTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EFF23E49F090066AFDC /* TextAndTextField.swift */; };
 		8227FB72240BAC9600F653B5 /* TextFieldWithBottomLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811F0123E6FAE10066AFDC /* TextFieldWithBottomLine.swift */; };
@@ -687,7 +687,7 @@
 		82E6D830245ECBA000CB359A /* Passcode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Passcode.swift; sourceTree = "<group>"; };
 		82EE570523F029900033B43C /* BackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
 		82EE570823F0335F0033B43C /* NavigationLinkExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationLinkExtension.swift; sourceTree = "<group>"; };
-		82F5591F23DC255B008032F4 /* BigButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BigButton.swift; sourceTree = "<group>"; };
+		82F5591F23DC255B008032F4 /* PrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryButton.swift; sourceTree = "<group>"; };
 		82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PabauTabBar.swift; sourceTree = "<group>"; };
 		82FB74F5245A9E51001C2DF3 /* PabauFormWrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PabauFormWrap.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -820,7 +820,7 @@
 				82811F0C23E955F70066AFDC /* KeyboardFollower.swift */,
 				82811EFF23E49F090066AFDC /* TextAndTextField.swift */,
 				82811F0123E6FAE10066AFDC /* TextFieldWithBottomLine.swift */,
-				82F5591F23DC255B008032F4 /* BigButton.swift */,
+				82F5591F23DC255B008032F4 /* PrimaryButton.swift */,
 				82EE570823F0335F0033B43C /* NavigationLinkExtension.swift */,
 				8227FB53240BAC8300F653B5 /* Util.h */,
 				8227FB54240BAC8300F653B5 /* Info.plist */,
@@ -1759,7 +1759,7 @@
 				8227FB71240BAC9600F653B5 /* TextAndTextField.swift in Sources */,
 				8227FB73240BAC9600F653B5 /* NavigationLinkExtension.swift in Sources */,
 				8227FB78240BAC9600F653B5 /* Texts.swift in Sources */,
-				8227FB6F240BAC9600F653B5 /* BigButton.swift in Sources */,
+				8227FB6F240BAC9600F653B5 /* PrimaryButton.swift in Sources */,
 				8227FB72240BAC9600F653B5 /* TextFieldWithBottomLine.swift in Sources */,
 				8269526A2452D90F001B806E /* UITextViewWrapper.swift in Sources */,
 				8250D7D2242C575A00F8F3FC /* ScalableShape.swift in Sources */,

@@ -128,7 +128,7 @@ struct ForgotPassword: View {
 												 "",
 												 self.viewStore.state.fpValidation)
 			}.frame(maxWidth: 319)
-			BigButton(text: Texts.sendRequest) {
+			PrimaryButton(text: Texts.sendRequest) {
 				self.viewStore.send(.sendRequest(email: self.email))
 			}.frame(minWidth: 304, maxWidth: 495)
 		}

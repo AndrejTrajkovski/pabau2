@@ -122,7 +122,7 @@ struct Login: View {
 												passwordValidation: viewStore.state.passValidationText,
 												onForgotPass: { viewStore.send(.forgotPassTapped) })
 				Spacer(minLength: 30)
-				BigButton(text: Texts.signIn,
+				PrimaryButton(text: Texts.signIn,
 									btnTapAction: {
 										viewStore.send(.loginTapped(email: self.email,
 																								password: self.password))
