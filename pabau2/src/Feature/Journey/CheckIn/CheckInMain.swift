@@ -54,6 +54,15 @@ let metaFormAndStatusReducer: Reducer<MetaFormAndStatus, UpdateFormAction, Journ
 
 let metaFormReducer: Reducer<MetaForm, UpdateFormAction, JourneyEnvironment> =
 	Reducer.combine(
+		Reducer.init { state, action, _ in
+			switch action {
+			case .didUpdateTemplate(let template):
+				state = MetaForm.init(template)
+			default:
+				break
+			}
+			return .none
+		},
 		patientCompleteReducer.pullbackCp(
 			state: /MetaForm.patientComplete,
 			action: /UpdateFormAction.patientComplete,
@@ -72,6 +81,9 @@ let checkInBodyReducer = Reducer<CheckInViewState, StepFormsAction, JourneyEnvir
 		break
 	case .didSelectCompleteFormIdx(let idx):
 		state.forms[idx].isComplete = true
+		if state.selectedIndex + 1 < state.forms.count {
+			state.selectedIndex += 1
+		}
 	}
 	return .none
 }
