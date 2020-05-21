@@ -56,6 +56,7 @@ let metaFormReducer: Reducer<MetaForm, UpdateFormAction, JourneyEnvironment> =
 	Reducer.combine(
 		Reducer.init { state, action, _ in
 			switch action {
+			//FIXME: GO WITH REDUX FOR TEMPLATES
 			case .didUpdateTemplate(let template):
 				state = MetaForm.init(template)
 			default:
