@@ -6,10 +6,10 @@ import Util
 public typealias Indexed<T> = (Int, T)
 
 struct PabauFormWrap: View {
-	let store: Store<MetaFormAndStatus, ChildFormAction>
-	@ObservedObject var viewStore: ViewStore<State, ChildFormAction>
+	let store: Store<MetaForm, UpdateFormAction>
+	@ObservedObject var viewStore: ViewStore<State, UpdateFormAction>
 
-	init(store: Store<MetaFormAndStatus, ChildFormAction>) {
+	init(store: Store<MetaForm, UpdateFormAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store.scope(
 			state: State.init(state:),
@@ -21,14 +21,12 @@ struct PabauFormWrap: View {
 		var template: FormTemplate?
 		var aftercare: Aftercare?
 		var patientCompleteForm: PatientComplete?
-		static var defaultEmpty: State {
-			State.init(state: MetaFormAndStatus.defaultEmpty)
-		}
-		init (state: MetaFormAndStatus) {
-			self.patientDetails = extract(case: MetaForm.patientDetails, from: state.form)
-			self.template = extract(case: MetaForm.template, from: state.form)
-			self.aftercare = extract(case: MetaForm.aftercare, from: state.form)
-			self.patientCompleteForm = extract(case: MetaForm.patientComplete, from: state.form)
+		
+		init (state: MetaForm) {
+			self.patientDetails = extract(case: MetaForm.patientDetails, from: state)
+			self.template = extract(case: MetaForm.template, from: state)
+			self.aftercare = extract(case: MetaForm.aftercare, from: state)
+			self.patientCompleteForm = extract(case: MetaForm.patientComplete, from: state)
 		}
 	}
 
@@ -45,7 +43,7 @@ struct PabauFormWrap: View {
 			return AnyView(
 				IfLetStore(
 					self.store.scope(
-						state: { extract(case: MetaForm.patientDetails, from: $0.form) },
+						state: { extract(case: MetaForm.patientDetails, from: $0) },
 						action: { .patientDetails($0) }),
 					then: PatientDetailsForm.init(store:)
 				).padding()
@@ -54,7 +52,7 @@ struct PabauFormWrap: View {
 			return AnyView(
 				IfLetStore(
 					self.store.scope(
-						state: { extract(case: MetaForm.patientComplete, from: $0.form) },
+						state: { extract(case: MetaForm.patientComplete, from: $0) },
 						action: { .patientComplete($0) }),
 					then: PatientCompleteForm.init(store:)
 				)

@@ -34,56 +34,33 @@ struct CheckInMain: View {
 }
 
 public enum StepFormsAction {
-	case didSelectNextForm
 	case didSelectFormIndex(Int)
-	case childForm(Indexed<ChildFormAction>)
+	case updateForm(Indexed<UpdateFormAction>)
+	case didSelectCompleteFormIdx(Int)
 }
 
-public enum ChildFormAction: Equatable {
-	case patientDetails(PatientDetailsAction)
+public enum UpdateFormAction: Equatable {
 	case patientComplete(PatientCompleteAction)
 	case didUpdateTemplate(FormTemplate)
-	case didUpdatePatientDetails(PatientDetails)
-	case didFinishTemplate(MetaFormAndStatus)
-	case didFinishPatientDetails(PatientDetails)
+	case patientDetails(PatientDetailsAction)
 }
 
-let anyFormReducer: Reducer<MetaFormAndStatus, ChildFormAction, JourneyEnvironment> = (
-	.combine (
-		Reducer { state, action, _ in
-			switch action {
-			case .didFinishPatientDetails(let patD):
-				state = .init(.patientDetails(patD), state.isComplete)
-			case .didUpdateTemplate(let template):
-				state = .init(.template(template), state.isComplete)
-			case .didUpdatePatientDetails:
-				break
-			case .didFinishTemplate(let template):
-				state.isComplete = true
-			case .patientComplete(_):
-				break
-			case .patientDetails(_):
-				break
-			}
-			return .none
-		},
-		metaFormReducer.pullback(
-			state: \MetaFormAndStatus.form,
-			action: /ChildFormAction.self,
-			environment: { $0 }
-		)
-	)
+let metaFormAndStatusReducer: Reducer<MetaFormAndStatus, UpdateFormAction, JourneyEnvironment> =
+	metaFormReducer.pullback(
+		state: \MetaFormAndStatus.form,
+		action: /UpdateFormAction.self,
+		environment: { $0 }
 )
 
-let metaFormReducer: Reducer<MetaForm, ChildFormAction, JourneyEnvironment> =
+let metaFormReducer: Reducer<MetaForm, UpdateFormAction, JourneyEnvironment> =
 	Reducer.combine(
 		patientCompleteReducer.pullbackCp(
 			state: /MetaForm.patientComplete,
-			action: /ChildFormAction.patientComplete,
+			action: /UpdateFormAction.patientComplete,
 			environment: { $0 }),
 		patientDetailsReducer.pullbackCp(
 			state: /MetaForm.patientDetails,
-			action: /ChildFormAction.patientDetails,
+			action: /UpdateFormAction.patientDetails,
 			environment: { $0 })
 )
 
@@ -91,12 +68,10 @@ let checkInBodyReducer = Reducer<CheckInViewState, StepFormsAction, JourneyEnvir
 	switch action {
 	case .didSelectFormIndex(let idx):
 		state.selectedIndex = idx
-	case .childForm:
+	case .updateForm:
 		break
-	case .didSelectNextForm:
-		if state.forms.count > state.selectedIndex + 1 {
-			state.selectedIndex += 1
-		}
+	case .didSelectCompleteFormIdx(let idx):
+		state.forms[idx].isComplete = true
 	}
 	return .none
 }
@@ -125,8 +100,8 @@ struct CheckInBody: View {
 					.frame(width: geo.size.width)
 					.shadow(color: Color(hex: "C1C1C1"), radius: 4, y: 2)
 				PabauFormWrap(store: self.store
-					.scope(state: { $0.selectedForm },
-								 action: { .childForm(Indexed(self.viewStore.state.selectedIndex, $0))
+					.scope(state: { $0.selectedForm.form },
+								 action: { .updateForm(Indexed(self.viewStore.state.selectedIndex, $0))
 					}))
 					.padding(.bottom, self.keyboardHandler.keyboardHeight > 0 ? self.keyboardHandler.keyboardHeight : 32)
 					.padding([.leading, .trailing, .top], 32)
@@ -146,11 +121,7 @@ struct CheckInBody: View {
 struct NextButton: View {
 	let store: Store<CheckInViewState, StepFormsAction>
 	struct State: Equatable {
-		static func == (lhs: NextButton.State, rhs: NextButton.State) -> Bool {
-			return lhs.canProceed == rhs.canProceed &&
-			lhs.indexedForm == rhs.indexedForm
-		}
-		let indexedForm: Indexed<ChildFormAction>
+		let index: Int
 		let canProceed: Bool
 	}
 
@@ -160,8 +131,7 @@ struct NextButton: View {
 			state: State.init(state:),
 			action: { $0 })) { viewStore in
 			PrimaryButton(text: Texts.next) {
-				viewStore.send(.didSelectNextForm)
-				viewStore.send(.childForm(viewStore.state.indexedForm))
+				viewStore.send(.didSelectCompleteFormIdx(viewStore.state.index))
 			}
 			.disabled(!viewStore.state.canProceed)
 			.frame(minWidth: 304, maxWidth: 495)
@@ -172,7 +142,7 @@ struct NextButton: View {
 extension NextButton.State {
 	init (state: CheckInViewState) {
 		print("next button init")
-		self.indexedForm = Indexed(state.selectedIndex, .didFinishTemplate(state.selectedForm))
+		self.index = state.selectedIndex
 		self.canProceed = state.selectedForm.form.canProceed
 	}
 }

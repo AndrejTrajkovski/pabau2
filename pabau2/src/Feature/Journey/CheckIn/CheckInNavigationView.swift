@@ -79,9 +79,9 @@ public let navigationReducer = Reducer<CheckInContainerState, CheckInContainerAc
 }
 
 public let checkInMainReducer: Reducer<CheckInViewState, CheckInMainAction, JourneyEnvironment> = .combine(
-	anyFormReducer.forEach(
+	metaFormAndStatusReducer.forEach(
 		state: \CheckInViewState.forms,
-		action: /CheckInMainAction.stepForms..StepFormsAction.childForm,
+		action: /CheckInMainAction.stepForms..StepFormsAction.updateForm,
 		environment: { $0 }),
 	checkInBodyReducer.pullback(
 		state: \CheckInViewState.self,
