@@ -22,6 +22,7 @@ struct SignatureField: View {
 		let initialV = SigningState(signature: signature.wrappedValue)
 		self._signingState = State.init(initialValue: initialV)
 	}
+	
 	var body: some View {
 		Group {
 			if self.signingState == .notSigned {
@@ -67,10 +68,16 @@ struct SigningComponent: View {
 		VStack {
 			DrawingPad(drawings: $signature.drawings)
 								.disabled(false)
-			BigButton(text: Texts.done) {
-				self.signingState = .signed
-			}
-			.disabled(signature.drawings.isEmpty)
+			HStack {
+				BigButton(text: Texts.cancel) {
+//					self.signature.resetDrawings()
+					self.signingState = .notSigned
+				}
+				BigButton(text: Texts.done) {
+					self.signingState = .signed
+				}
+				.disabled(signature.drawings.isEmpty)
+			}.fixedSize(horizontal: true, vertical: false)
 		}.fixedSize(horizontal: false, vertical: true)
 	}
 }

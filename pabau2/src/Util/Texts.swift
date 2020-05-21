@@ -89,6 +89,7 @@ public struct Texts {
 	public static let toPatientMode = "To Patient Mode"
 	public static let done = "Done"
 	public static let resign = "Resign"
+	public static let cancel = "Cancel"
 }
 
 extension String {
