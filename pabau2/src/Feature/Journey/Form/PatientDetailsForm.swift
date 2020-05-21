@@ -1,5 +1,6 @@
 import SwiftUI
 import Util
+import ComposableArchitecture
 
 struct PatientDetailsForm: View {
 	
@@ -81,3 +82,115 @@ struct ThreeTextColumns: View {
 		}
 	}
 }
+
+
+public enum PatientDetailsAction {
+	case salutation(TextFieldAction)
+	case firstName(TextFieldAction)
+	case lastName(TextFieldAction)
+	case dob(TextFieldAction)
+	case phone(TextFieldAction)
+	case cellPhone(TextFieldAction)
+	case email(TextFieldAction)
+	case addressLine1(TextFieldAction)
+	case addressLine2(TextFieldAction)
+	case postCode(TextFieldAction)
+	case city(TextFieldAction)
+	case county(TextFieldAction)
+	case country(TextFieldAction)
+	case howDidYouHear(TextFieldAction)
+}
+
+public let patientDetailsReducer: Reducer<PatientDetails, PatientDetailsAction, Any> = .combine(
+	textFieldReducer.pullback(
+		state: \.salutation,
+		action: /TextFieldAction.salutation,
+		environment: { $0 }
+	),
+	textFieldReducer.pullback(
+		state: \.firstName,
+		action: /TextFieldAction.firstName,
+		environment: { $0 }
+	),
+	textFieldReducer.pullback(
+		state: \.lastName,
+		action: /TextFieldAction.lastName,
+		environment: { $0 }
+	),
+	textFieldReducer.pullback(
+		state: \.dob,
+		action: /TextFieldAction.dob,
+		environment: { $0 }
+	),
+	textFieldReducer.pullback(
+		state: \.phone,
+		action: /TextFieldAction.phone,
+		environment: { $0 }
+	),
+	textFieldReducer.pullback(
+		state: \.cellPhone,
+		action: /TextFieldAction.cellPhone,
+		environment: { $0 }
+	),
+	textFieldReducer.pullback(
+		state: \.email,
+		action: /TextFieldAction.email,
+		environment: { $0 }
+	),
+	textFieldReducer.pullback(
+		state: \.addressLine1,
+		action: /TextFieldAction.addressLine1,
+		environment: { $0 }
+	),
+	textFieldReducer.pullback(
+		state: \.addressLine2,
+		action: /TextFieldAction.addressLine2,
+		environment: { $0 }
+	),
+	textFieldReducer.pullback(
+		state: \.postCode,
+		action: /TextFieldAction.postCode,
+		environment: { $0 }
+	),
+	textFieldReducer.pullback(
+		state: \.city,
+		action: /TextFieldAction.city,
+		environment: { $0 }
+	),
+	textFieldReducer.pullback(
+		state: \.county,
+		action: /TextFieldAction.county,
+		environment: { $0 }
+	),
+	textFieldReducer.pullback(
+		state: \.country,
+		action: /TextFieldAction.country,
+		environment: { $0 }
+	),
+	textFieldReducer.pullback(
+		state: \.howDidYouHear,
+		action: /TextFieldAction.howDidYouHear,
+		environment: { $0 }
+	)
+)
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+)

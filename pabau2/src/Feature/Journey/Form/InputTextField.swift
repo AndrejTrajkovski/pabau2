@@ -2,18 +2,18 @@ import SwiftUI
 import ComposableArchitecture
 import Model
 
-//public let inputTextFieldReducer =
-//	Reducer<InputText, InputTextFieldAction, JourneyEnvironemnt> { state, action, _ in
-//	switch action {
-//	case .didChangeText(let text):
-//		state.text = text
-//		return .none
-//	}
-//}
-//
-//public enum InputTextFieldAction {
-//	case didChangeText(String)
-//}
+public let textFieldReducer =
+	Reducer<String, TextFieldAction, Any> { state, action, _ in
+	switch action {
+	case .textFieldChanged(let text):
+		state = text
+		return .none
+	}
+}
+
+public enum TextFieldAction {
+	case textFieldChanged(String)
+}
 
 struct InputTextField: View {
 	@State var myText: String
