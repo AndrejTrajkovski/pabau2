@@ -34,6 +34,7 @@ struct CheckInMain: View {
 }
 
 public enum StepFormsAction {
+	case toPatientMode
 	case didSelectFormIndex(Int)
 	case updateForm(Indexed<UpdateFormAction>)
 	case didSelectCompleteFormIdx(Int)
@@ -85,6 +86,8 @@ let checkInBodyReducer = Reducer<CheckInViewState, StepFormsAction, JourneyEnvir
 		if state.selectedIndex + 1 < state.forms.count {
 			state.selectedIndex += 1
 		}
+	case .toPatientMode:
+		break//handled in navigationReducer
 	}
 	return .none
 }
@@ -122,13 +125,46 @@ struct CheckInBody: View {
 				Spacer()
 				if self.keyboardHandler.keyboardHeight == 0 &&
 					!self.viewStore.state.isOnCompleteStep {
-					NextButton(store: self.store)
+					FooterButtons(store: self.store)
 					.frame(width: 230)
 					.padding(8)
 				}
 			}	.padding(.leading, 40)
 				.padding(.trailing, 40)
 		}
+	}
+}
+
+struct FooterButtons: View {
+	let store: Store<CheckInViewState, StepFormsAction>
+	struct State: Equatable {
+		let isOnCheckPatient: Bool
+	}
+	var body: some View {
+		WithViewStore(store.scope(
+			state: State.init(state:),
+			action: { $0 }
+		)) { viewStore in
+			HStack {
+				if viewStore.state.isOnCheckPatient {
+					PabauButton(btnTxt: Texts.toPatientMode,
+											style: .white,
+											action: {
+												viewStore.send(.toPatientMode)
+					})
+				}
+				NextButton(store: self.store)
+			}
+		}
+	}
+}
+
+extension FooterButtons.State {
+	init(state: CheckInViewState) {
+		self.isOnCheckPatient = {
+			guard let selectedForm = state.selectedForm else { return false }
+			return stepType(form: selectedForm.form) == .checkpatient
+		}()
 	}
 }
 

@@ -1,7 +1,6 @@
 import Model
 import SwiftUI
 import ComposableArchitecture
-
 import Util
 
 struct ListDynamicForm: View {
@@ -11,7 +10,6 @@ struct ListDynamicForm: View {
 		UITableViewHeaderFooterView.appearance().tintColor = UIColor.white
 		UITableView.appearance().separatorStyle = .none
 	}
-	
 	var body: some View {
 		List {
 			DynamicForm(template: $template)

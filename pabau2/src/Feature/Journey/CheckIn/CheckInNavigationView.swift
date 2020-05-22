@@ -72,6 +72,13 @@ public let navigationReducer = Reducer<CheckInContainerState, CheckInContainerAc
 		state.isChooseTreatmentActive = false
 	case .didTouchHandbackDevice:
 		state.isEnterPasscodeActive = true
+	case .doctor(.stepForms(.toPatientMode)):
+		state.isChooseConsentActive = false
+		state.isDoctorSummaryActive = false
+		state.passcode = PasscodeState()
+		state.isHandBackDeviceActive = false
+		state.isEnterPasscodeActive = false
+		state.isDoctorCheckInMainActive = false
 	default:
 		break
 	}
