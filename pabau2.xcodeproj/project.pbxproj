@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		820F16A82477EA0500DB33DE /* CollectionSafeSubscript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16A72477EA0500DB33DE /* CollectionSafeSubscript.swift */; };
+		820F16AA2477ECCE00DB33DE /* FourSwitchesSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16A92477ECCE00DB33DE /* FourSwitchesSection.swift */; };
 		82104525240C21B9004EA838 /* ForgotPassSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104524240C21B9004EA838 /* ForgotPassSuccess.swift */; };
 		82104527240C21E3004EA838 /* ForgotPassError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104526240C21E3004EA838 /* ForgotPassError.swift */; };
 		82104529240C2218004EA838 /* LoginError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104528240C2218004EA838 /* LoginError.swift */; };
@@ -447,6 +448,7 @@
 		820961D423ED9AE2004A510A /* ActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
 		820961D623ED9AF7004A510A /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		820F16A72477EA0500DB33DE /* CollectionSafeSubscript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionSafeSubscript.swift; sourceTree = "<group>"; };
+		820F16A92477ECCE00DB33DE /* FourSwitchesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FourSwitchesSection.swift; sourceTree = "<group>"; };
 		82104524240C21B9004EA838 /* ForgotPassSuccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassSuccess.swift; sourceTree = "<group>"; };
 		82104526240C21E3004EA838 /* ForgotPassError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassError.swift; sourceTree = "<group>"; };
 		82104528240C2218004EA838 /* LoginError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginError.swift; sourceTree = "<group>"; };
@@ -968,6 +970,7 @@
 				82E6D828245DF4D200CB359A /* PatientCompleteForm.swift */,
 				82477621246D189C00508434 /* JourneyUtil.swift */,
 				8247764924758B7700508434 /* SelectField.swift */,
+				820F16A92477ECCE00DB33DE /* FourSwitchesSection.swift */,
 			);
 			path = Form;
 			sourceTree = "<group>";
@@ -1889,6 +1892,7 @@
 				8247761C246C339800508434 /* MetaFormAndStatus.swift in Sources */,
 				8269526C2452DA93001B806E /* TextAreaField.swift in Sources */,
 				827B459B241136D900A5975E /* JourneyContainerView.swift in Sources */,
+				820F16AA2477ECCE00DB33DE /* FourSwitchesSection.swift in Sources */,
 				82C479DE242E17B50037F140 /* CheckInNavigationView.swift in Sources */,
 				8247763224728F0200508434 /* PullbackCasePath.swift in Sources */,
 				82477624246D47A000508434 /* CheckPatientForm.swift in Sources */,

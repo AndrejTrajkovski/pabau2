@@ -31,7 +31,7 @@ public struct AddAppointmentState: Equatable {
 	var participants: PickerContainerState<Employee>
 }
 
-public enum AddAppointmentAction {
+public enum AddAppointmentAction: Equatable {
 	case clients(PickerContainerAction<Client>)
 	case termins(PickerContainerAction<MyTermin>)
 	case services(ChooseServiceAction)
@@ -250,19 +250,26 @@ struct AddAppSections: View {
 			Section1(store: self.store)
 			Section2(store: self.store)
 			NotesSection()
-			CommunicationsSection(
-				reminder: viewStore.binding(
+			FourSwitchesSection(
+				swithc1: viewStore.binding(
 					get: { $0.reminder },
 					send: { .reminder(.setTo($0)) }),
-				email: viewStore.binding(
+				switch2: viewStore.binding(
 					get: { $0.email },
 					send: { .email(.setTo($0)) }),
-				sms: viewStore.binding(
+				switch3: viewStore.binding(
 					get: { $0.sms },
 					send: { .sms(.setTo($0)) }),
-				feedback: viewStore.binding(
+				switch4: viewStore.binding(
 					get: { $0.feedback },
-					send: { .feedback(.setTo($0)) })
+					send: { .feedback(.setTo($0)) }),
+				switchNames: [
+					Texts.sendReminder,
+					Texts.sendConfirmationEmail,
+					Texts.sendConfirmationSMS,
+					Texts.sendFeedbackSurvey
+				],
+				title: Texts.communications
 			)
 		}.padding(.bottom, keyboardHandler.keyboardHeight)
 			.navigationBarTitle(Text("New Appointment").font(.semibold24))
@@ -283,7 +290,7 @@ extension Client: ListPickerElement {
 	}
 }
 
-public enum PickerContainerAction <Model: ListPickerElement> {
+public enum PickerContainerAction <Model: ListPickerElement>: Equatable {
 	case didChooseItem(Model.ID)
 	case didSelectPicker
 	case backBtnTap
@@ -421,7 +428,7 @@ struct LabelAndLowerContent<Content: View>: View {
 	}
 }
 
-public enum ToggleAction {
+public enum ToggleAction: Equatable {
 	case setTo(Bool)
 }
 
@@ -490,24 +497,6 @@ struct NotesSection: View {
 					.foregroundColor(Color.textFieldAndTextLabel)
 					.font(.semibold15)
 			}
-		}
-	}
-}
-
-struct CommunicationsSection: View {
-	@Binding var reminder: Bool
-	@Binding var email: Bool
-	@Binding var sms: Bool
-	@Binding var feedback: Bool
-
-	public var body: some View {
-		VStack(alignment: .leading, spacing: 8.0) {
-			Text("Communications").font(.semibold24)
-			Spacer()
-			SwitchCell.init(text: "Send Reminder", value: $reminder)
-			SwitchCell.init(text: "Send Confirmation Email", value: $email)
-			SwitchCell.init(text: "Send Confirmation SMS", value: $sms)
-			SwitchCell.init(text: "Send Feedback Survey", value: $feedback)
 		}
 	}
 }

@@ -65,7 +65,7 @@ public struct ChooseServiceState: Equatable {
 	}
 }
 
-public enum ChooseServiceAction {
+public enum ChooseServiceAction: Equatable {
 	case didSelectServiceId(Int)
 	case didSelectFilter(ChooseServiceFilter)
 	case didTapBackBtn

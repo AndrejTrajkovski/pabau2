@@ -116,7 +116,8 @@ struct CheckInBody: View {
 					.scope(state: { $0.selectedForm?.form },
 								 action: { .updateForm(Indexed(self.viewStore.state.selectedIndex, $0))
 					}), then: PabauFormWrap.init(store:))
-					.padding(.bottom, self.keyboardHandler.keyboardHeight > 0 ? self.keyboardHandler.keyboardHeight : 32)
+					.padding(.bottom,
+									 self.keyboardHandler.keyboardHeight > 0 ? self.keyboardHandler.keyboardHeight : 32)
 					.padding([.leading, .trailing, .top], 32)
 				Spacer()
 				if self.keyboardHandler.keyboardHeight == 0 &&

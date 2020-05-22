@@ -18,5 +18,6 @@ public class KeyboardFollower: ObservableObject {
 
 		isVisible = keyboardEndFrame.minY < UIScreen.main.bounds.height
 		keyboardHeight = isVisible ? keyboardEndFrame.height : 0
+		print(keyboardHeight)
 	}
 }
