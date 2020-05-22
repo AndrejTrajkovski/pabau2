@@ -8,10 +8,12 @@ import Util
 struct SignatureField: View {
 	@State private var isSigning: Bool
 	@Binding var signature: Signature
-
-	init (signature: Binding<Signature>) {
+	let title: String
+	
+	init (signature: Binding<Signature>, title: String) {
 		self._signature = signature
 		self._isSigning = State.init(initialValue: false)
+		self.title = title
 	}
 
 	var body: some View {
@@ -20,7 +22,8 @@ struct SignatureField: View {
 				DrawingPad(drawings: $signature.drawings)
 					.disabled(true)
 					.sheet(isPresented: .constant(true)) {
-						SigningComponent(isActive: self.$isSigning,
+						SigningComponent(title: self.title,
+														isActive: self.$isSigning,
 														 onDone: { self.signature = $0 })
 				}
 			} else if signature.drawings.isEmpty {
@@ -53,11 +56,13 @@ struct SignedComponent: View {
 }
 
 struct SigningComponent: View {
+	let title: String
 	@State private var signature: Signature = Signature()
 	@Binding var isActive: Bool
 	let onDone: (Signature) -> Void
 	var body: some View {
 		VStack(spacing: 32.0) {
+			Text(title).font(.largeTitle)
 			DrawingPad(drawings: $signature.drawings)
 			HStack {
 				PabauButton(btnTxt: Texts.cancel,
@@ -72,7 +77,7 @@ struct SigningComponent: View {
 				}
 				.disabled(signature.drawings.isEmpty)
 			}.padding()
-		}.fixedSize(horizontal: false, vertical: true)
+		}
 	}
 }
 
