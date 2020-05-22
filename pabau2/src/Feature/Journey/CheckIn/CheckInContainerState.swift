@@ -1,6 +1,7 @@
 import Model
 import ComposableArchitecture
 import Overture
+import Util
 
 enum JourneyMode: Equatable {
 	case patient
@@ -187,13 +188,6 @@ extension CheckInContainerState {
 		set {
 			self.passcodeState = newValue
 		}
-	}
-}
-
-extension Collection {
-	/// Returns the element at the specified index if it is within bounds, otherwise nil.
-	subscript (safe index: Index) -> Element? {
-		return indices.contains(index) ? self[index] : nil
 	}
 }
 

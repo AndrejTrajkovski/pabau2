@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		820F16A82477EA0500DB33DE /* CollectionSafeSubscript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16A72477EA0500DB33DE /* CollectionSafeSubscript.swift */; };
 		82104525240C21B9004EA838 /* ForgotPassSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104524240C21B9004EA838 /* ForgotPassSuccess.swift */; };
 		82104527240C21E3004EA838 /* ForgotPassError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104526240C21E3004EA838 /* ForgotPassError.swift */; };
 		82104529240C2218004EA838 /* LoginError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104528240C2218004EA838 /* LoginError.swift */; };
@@ -445,6 +446,7 @@
 		820961D223ED881A004A510A /* ResetPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPassword.swift; sourceTree = "<group>"; };
 		820961D423ED9AE2004A510A /* ActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
 		820961D623ED9AF7004A510A /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		820F16A72477EA0500DB33DE /* CollectionSafeSubscript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionSafeSubscript.swift; sourceTree = "<group>"; };
 		82104524240C21B9004EA838 /* ForgotPassSuccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassSuccess.swift; sourceTree = "<group>"; };
 		82104526240C21E3004EA838 /* ForgotPassError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassError.swift; sourceTree = "<group>"; };
 		82104528240C2218004EA838 /* LoginError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginError.swift; sourceTree = "<group>"; };
@@ -832,6 +834,7 @@
 				826952692452D90E001B806E /* UITextViewWrapper.swift */,
 				8280D4802463F1790077A73F /* ExplodingStack.swift */,
 				8247761D246C4C1800508434 /* SortByKeyPath.swift */,
+				820F16A72477EA0500DB33DE /* CollectionSafeSubscript.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -1761,6 +1764,7 @@
 				8227FB78240BAC9600F653B5 /* Texts.swift in Sources */,
 				8227FB6F240BAC9600F653B5 /* PrimaryButton.swift in Sources */,
 				8227FB72240BAC9600F653B5 /* TextFieldWithBottomLine.swift in Sources */,
+				820F16A82477EA0500DB33DE /* CollectionSafeSubscript.swift in Sources */,
 				8269526A2452D90F001B806E /* UITextViewWrapper.swift in Sources */,
 				8250D7D2242C575A00F8F3FC /* ScalableShape.swift in Sources */,
 				82CEA225244E0F9B00A895F6 /* ForEachWithindex.swift in Sources */,
