@@ -4,36 +4,47 @@ import ComposableArchitecture
 
 import Util
 
-struct DynamicForm: View {
-
+struct ListDynamicForm: View {
 	@Binding var template: FormTemplate
 	init(template: Binding<FormTemplate>) {
 		self._template = template
 		UITableViewHeaderFooterView.appearance().tintColor = UIColor.white
 		UITableView.appearance().separatorStyle = .none
 	}
+	
+	var body: some View {
+		List {
+			DynamicForm(template: $template)
+		}
+	}
+}
+
+struct DynamicForm: View {
+
+	@Binding var template: FormTemplate
+	init(template: Binding<FormTemplate>) {
+		self._template = template
+	}
 
 	public var body: some View {
-		List {
-			ForEach(template.formStructure.formStructure.indices, id: \.self ) { index in
-				FormSectionField(cssField:
-					Binding(
-						get: {
-							if self.template.formStructure.formStructure.count > index {
-								return self.template.formStructure.formStructure[index]
-							} else {
-								return CSSField.defaultEmpty
-							}
-					},
-						set: {
-							if self.template.formStructure.formStructure.count > index {
-								self.template.formStructure.formStructure[index] = $0
-							} else {
-							}
-					}
-					)
-				).equatable()
-			}
+		ForEach(template.formStructure.formStructure.indices, id: \.self ) { index in
+			FormSectionField(cssField:
+				Binding(
+					get: {
+						if self.template.formStructure.formStructure.count > index {
+							return self.template.formStructure.formStructure[index]
+						} else {
+							return CSSField.defaultEmpty
+						}
+				},
+					set: {
+						if self.template.formStructure.formStructure.count > index {
+							self.template.formStructure.formStructure[index] = $0
+						} else {
+						}
+				}
+				)
+			).equatable()
 		}
 	}
 }

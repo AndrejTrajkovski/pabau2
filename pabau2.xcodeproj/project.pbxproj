@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		820F16A82477EA0500DB33DE /* CollectionSafeSubscript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16A72477EA0500DB33DE /* CollectionSafeSubscript.swift */; };
 		820F16AA2477ECCE00DB33DE /* FourSwitchesSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16A92477ECCE00DB33DE /* FourSwitchesSection.swift */; };
+		820F16AC24780A0900DB33DE /* CheckPatientForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16AB24780A0900DB33DE /* CheckPatientForm.swift */; };
 		82104525240C21B9004EA838 /* ForgotPassSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104524240C21B9004EA838 /* ForgotPassSuccess.swift */; };
 		82104527240C21E3004EA838 /* ForgotPassError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104526240C21E3004EA838 /* ForgotPassError.swift */; };
 		82104529240C2218004EA838 /* LoginError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104528240C2218004EA838 /* LoginError.swift */; };
@@ -65,7 +66,6 @@
 		8247761C246C339800508434 /* MetaFormAndStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247761B246C339800508434 /* MetaFormAndStatus.swift */; };
 		8247761E246C4C1800508434 /* SortByKeyPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247761D246C4C1800508434 /* SortByKeyPath.swift */; };
 		82477622246D189C00508434 /* JourneyUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82477621246D189C00508434 /* JourneyUtil.swift */; };
-		82477624246D47A000508434 /* CheckPatientForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82477623246D47A000508434 /* CheckPatientForm.swift */; };
 		8247762A246DE77E00508434 /* Overture in Frameworks */ = {isa = PBXBuildFile; productRef = 82477629246DE77E00508434 /* Overture */; };
 		8247762C24704DC800508434 /* JourneyMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247762B24704DC800508434 /* JourneyMocks.swift */; };
 		8247763224728F0200508434 /* PullbackCasePath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247763124728F0200508434 /* PullbackCasePath.swift */; };
@@ -449,6 +449,7 @@
 		820961D623ED9AF7004A510A /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		820F16A72477EA0500DB33DE /* CollectionSafeSubscript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionSafeSubscript.swift; sourceTree = "<group>"; };
 		820F16A92477ECCE00DB33DE /* FourSwitchesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FourSwitchesSection.swift; sourceTree = "<group>"; };
+		820F16AB24780A0900DB33DE /* CheckPatientForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckPatientForm.swift; sourceTree = "<group>"; };
 		82104524240C21B9004EA838 /* ForgotPassSuccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassSuccess.swift; sourceTree = "<group>"; };
 		82104526240C21E3004EA838 /* ForgotPassError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassError.swift; sourceTree = "<group>"; };
 		82104528240C2218004EA838 /* LoginError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginError.swift; sourceTree = "<group>"; };
@@ -481,7 +482,6 @@
 		8247761B246C339800508434 /* MetaFormAndStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaFormAndStatus.swift; sourceTree = "<group>"; };
 		8247761D246C4C1800508434 /* SortByKeyPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortByKeyPath.swift; sourceTree = "<group>"; };
 		82477621246D189C00508434 /* JourneyUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyUtil.swift; sourceTree = "<group>"; };
-		82477623246D47A000508434 /* CheckPatientForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckPatientForm.swift; sourceTree = "<group>"; };
 		8247762B24704DC800508434 /* JourneyMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyMocks.swift; sourceTree = "<group>"; };
 		8247763124728F0200508434 /* PullbackCasePath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullbackCasePath.swift; sourceTree = "<group>"; };
 		8247763324729DE800508434 /* CheckInPatient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInPatient.swift; sourceTree = "<group>"; };
@@ -865,7 +865,6 @@
 				82477617246C336300508434 /* PatientComplete.swift */,
 				82477619246C337D00508434 /* MetaForm.swift */,
 				8247761B246C339800508434 /* MetaFormAndStatus.swift */,
-				82477623246D47A000508434 /* CheckPatientForm.swift */,
 			);
 			path = StaticModel;
 			sourceTree = "<group>";
@@ -971,6 +970,7 @@
 				82477621246D189C00508434 /* JourneyUtil.swift */,
 				8247764924758B7700508434 /* SelectField.swift */,
 				820F16A92477ECCE00DB33DE /* FourSwitchesSection.swift */,
+				820F16AB24780A0900DB33DE /* CheckPatientForm.swift */,
 			);
 			path = Form;
 			sourceTree = "<group>";
@@ -1892,10 +1892,10 @@
 				8247761C246C339800508434 /* MetaFormAndStatus.swift in Sources */,
 				8269526C2452DA93001B806E /* TextAreaField.swift in Sources */,
 				827B459B241136D900A5975E /* JourneyContainerView.swift in Sources */,
+				820F16AC24780A0900DB33DE /* CheckPatientForm.swift in Sources */,
 				820F16AA2477ECCE00DB33DE /* FourSwitchesSection.swift in Sources */,
 				82C479DE242E17B50037F140 /* CheckInNavigationView.swift in Sources */,
 				8247763224728F0200508434 /* PullbackCasePath.swift in Sources */,
-				82477624246D47A000508434 /* CheckPatientForm.swift in Sources */,
 				829BFBB1243F693E005DDCB9 /* CheckInMain.swift in Sources */,
 				82E6D82D245E0A4400CB359A /* GradientBackground.swift in Sources */,
 				82E6D82F245E177900CB359A /* JourneyTransitionView.swift in Sources */,

@@ -21,19 +21,21 @@ struct PabauFormWrap: View {
 		var template: FormTemplate?
 		var aftercare: Aftercare?
 		var patientCompleteForm: PatientComplete?
+		var isCheckPatient: Bool
 
 		init (state: MetaForm) {
 			self.patientDetails = extract(case: MetaForm.patientDetails, from: state)
 			self.template = extract(case: MetaForm.template, from: state)
 			self.aftercare = extract(case: MetaForm.aftercare, from: state)
 			self.patientCompleteForm = extract(case: MetaForm.patientComplete, from: state)
+			self.isCheckPatient = MetaForm.checkPatient == state
 		}
 	}
 
 	var body: some View {
 		if self.viewStore.state.template != nil {
 			return AnyView(
-				DynamicForm(template:
+				ListDynamicForm(template:
 					Binding.init(
 						get: { self.viewStore.state.template ?? FormTemplate.defaultEmpty },
 						set: { self.viewStore.send(.didUpdateTemplate($0)) })
@@ -56,6 +58,12 @@ struct PabauFormWrap: View {
 						action: { .patientComplete($0) }),
 					then: PatientCompleteForm.init(store:)
 				)
+			)
+		} else if self.viewStore.state.isCheckPatient {
+			return AnyView(
+				CheckPatientForm(didTouchDone: { },
+												 patDetails: PatientDetails.mock,
+												 patientForms: JourneyMockAPI.mockConsents)
 			)
 		} else {
 			return AnyView(Text("Aftercare"))

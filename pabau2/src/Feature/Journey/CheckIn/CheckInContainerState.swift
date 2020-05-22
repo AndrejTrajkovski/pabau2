@@ -29,7 +29,6 @@ public struct CheckInContainerState: Equatable {
 	var checkPatientCompleted: Bool
 	var medHistory: FormTemplate
 	var medHistoryCompleted: Bool
-	var checkPatientForm: CheckPatientForm
 	var patientSelectedIndex: Int
 	var doctorSelectedIndex: Int
 	var photosCompleted: Bool
@@ -238,7 +237,7 @@ func wrapForm(_ state: CheckInContainerState,
 			return MetaFormAndStatus(form, status)
 		}
 	case .checkpatient:
-		let form = MetaForm.checkPatient(state.checkPatientForm)
+		let form = MetaForm.checkPatient
 		return [MetaFormAndStatus(form, state.checkPatientCompleted)]
 	case .treatmentnotes:
 		return state.runningTreatmentForms.map {
@@ -282,7 +281,6 @@ func unwrap(_ state: inout CheckInContainerState,
 		state.runningConsents[consent.id] = consent
 		state.consentsCompleted[consent.id] = isComplete
 	case .checkpatient:
-		state.checkPatientForm = extract(case: MetaForm.checkPatient, from: metaForm)!
 		state.checkPatientCompleted = isComplete
 	case .treatmentnotes:
 		let treatmentnote = extract(case: MetaForm.template, from: metaForm)!
@@ -313,7 +311,7 @@ extension CheckInContainerState {
 			 medHistory: FormTemplate,
 			 allConsents: [Int: FormTemplate],
 			 selectedConsentsIds: [Int],
-			 patientComplete: PatientComplete = PatientComplete(isPatientComplete: false)) {
+			 patientComplete: PatientComplete = PatientComplete(isPatientComplete: true)) {
 		self.journey = journey
 		self.stepTypes = pathway.steps.map { $0.stepType }
 		self.stepTypes.append(StepType.patientComplete)
@@ -342,6 +340,5 @@ extension CheckInContainerState {
 		self.recallCompleted = false
 		self.medHistory = JourneyMockAPI.getMedHistory()
 		self.medHistoryCompleted = false
-		self.checkPatientForm = CheckPatientForm()
 	}
 }
