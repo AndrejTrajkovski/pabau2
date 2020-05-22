@@ -1,7 +1,6 @@
 import Model
 
 public enum MetaForm: Equatable {
-	
 	var canProceed: Bool {
 		switch self {
 		case .template(let template):
@@ -10,11 +9,11 @@ public enum MetaForm: Equatable {
 			return patDetails.canProceed
 		case .aftercare(let aftercare):
 			return true
-		case .patientComplete(_):
+		case .patientComplete:
 			return true
-		case .checkPatient(_):
+		case .checkPatient:
 			return true
-		case .recall(_):
+		case .recall:
 			return true
 		}
 	}

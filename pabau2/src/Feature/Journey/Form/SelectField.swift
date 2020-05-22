@@ -20,7 +20,7 @@ struct SelectField: View {
 struct SelectRow: View {
 	let choice: SelectChoice
 	let isSelected: Bool
-	
+
 	var body: some View {
 		HStack (alignment: .center, spacing: 16) {
 			SelectImage(isSelected: isSelected)

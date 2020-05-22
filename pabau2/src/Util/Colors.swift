@@ -79,6 +79,6 @@ public extension Color {
 	static let checkInSubtitle = Color(hex: "C3E0FF")
 
 	static let checkBoxGray = Color(hex: "C0C0C0")
-	
+
 	static let arrowGray = Color(hex: "D1D1D6")
 }

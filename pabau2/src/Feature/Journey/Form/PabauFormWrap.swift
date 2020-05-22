@@ -21,7 +21,7 @@ struct PabauFormWrap: View {
 		var template: FormTemplate?
 		var aftercare: Aftercare?
 		var patientCompleteForm: PatientComplete?
-		
+
 		init (state: MetaForm) {
 			self.patientDetails = extract(case: MetaForm.patientDetails, from: state)
 			self.template = extract(case: MetaForm.template, from: state)

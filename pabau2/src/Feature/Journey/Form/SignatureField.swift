@@ -8,12 +8,12 @@ import Util
 struct SignatureField: View {
 	@State private var isSigning: Bool
 	@Binding var signature: Signature
-	
+
 	init (signature: Binding<Signature>) {
 		self._signature = signature
 		self._isSigning = State.init(initialValue: false)
 	}
-	
+
 	var body: some View {
 		Group {
 			if self.isSigning {

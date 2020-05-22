@@ -204,7 +204,7 @@ public enum ChooseFormMode {
 			return Texts.chooseTreatmentNote
 		}
 	}
-	
+
 	var btnTitle: String {
 		switch self {
 		case .consentsCheckIn:

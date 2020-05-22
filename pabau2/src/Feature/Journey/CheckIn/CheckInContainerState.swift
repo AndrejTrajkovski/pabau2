@@ -50,7 +50,7 @@ public struct CheckInContainerState: Equatable {
 			self.patientComplete.isPatientComplete = newValue
 		}
 	}
-	
+
 	var isEnterPasscodeActive: Bool = false
 	var isChooseConsentActive: Bool = false
 	var isChooseTreatmentActive: Bool = false

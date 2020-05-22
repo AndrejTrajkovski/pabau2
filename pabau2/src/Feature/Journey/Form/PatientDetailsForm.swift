@@ -21,7 +21,7 @@ struct PatientDetailsForm: View {
 	let store: Store<PatientDetails, PatientDetailsAction>
 	@ObservedObject var viewStore: ViewStore<PatientDetails, PatientDetailsAction>
 	let vms: [[TextAndTextViewVM]]
-	
+
 	init(store: Store<PatientDetails, PatientDetailsAction>) {
 		self.store = store
 		let viewStore = ViewStore(store)
@@ -31,81 +31,81 @@ struct PatientDetailsForm: View {
 					TextAndTextViewVM(
 						viewStore.binding(
 							get: { $0.salutation },
-							send: { .salutation(.textFieldChanged($0)) })
-						, Texts.salutation),
+							send: { .salutation(.textFieldChanged($0)) }),
+						Texts.salutation),
 					TextAndTextViewVM(
 						viewStore.binding(
 							get: { $0.firstName },
-							send: { .firstName(.textFieldChanged($0)) })
-						, Texts.firstName),
+							send: { .firstName(.textFieldChanged($0)) }),
+						Texts.firstName),
 					TextAndTextViewVM(
 						viewStore.binding(
 							get: { $0.lastName },
-							send: { .lastName(.textFieldChanged($0)) })
-						, Texts.lastName)
+							send: { .lastName(.textFieldChanged($0)) }),
+						Texts.lastName)
 				],
 				[
 					TextAndTextViewVM(
 						viewStore.binding(
 							get: { $0.dob },
-							send: { .dob(.textFieldChanged($0)) })
-						, Texts.dob),
+							send: { .dob(.textFieldChanged($0)) }),
+						Texts.dob),
 					TextAndTextViewVM(
 						viewStore.binding(
 							get: { $0.phone },
-							send: { .phone(.textFieldChanged($0)) })
-						, Texts.phone),
+							send: { .phone(.textFieldChanged($0)) }),
+						Texts.phone),
 					TextAndTextViewVM(
 						viewStore.binding(
 							get: { $0.cellPhone },
-							send: { .cellPhone(.textFieldChanged($0)) })
-						, Texts.cellPhone)
+							send: { .cellPhone(.textFieldChanged($0)) }),
+						Texts.cellPhone)
 				],
 				[
 					TextAndTextViewVM(
 						viewStore.binding(
 							get: { $0.email },
-							send: { .email(.textFieldChanged($0)) })
-						, Texts.email),
+							send: { .email(.textFieldChanged($0)) }),
+						Texts.email),
 					TextAndTextViewVM(
 						viewStore.binding(
 							get: { $0.addressLine1 },
-							send: { .addressLine1(.textFieldChanged($0)) })
-						, Texts.addressLine1),
+							send: { .addressLine1(.textFieldChanged($0)) }),
+						Texts.addressLine1),
 					TextAndTextViewVM(
 						viewStore.binding(
 							get: { $0.addressLine2 },
-							send: { .addressLine2(.textFieldChanged($0)) })
-						, Texts.addressLine2)
+							send: { .addressLine2(.textFieldChanged($0)) }),
+						Texts.addressLine2)
 				],
 				[
 					TextAndTextViewVM(
 						viewStore.binding(
 							get: { $0.postCode },
-							send: { .postCode(.textFieldChanged($0)) })
-						, Texts.postCode),
+							send: { .postCode(.textFieldChanged($0)) }),
+						Texts.postCode),
 					TextAndTextViewVM(
 						viewStore.binding(
 							get: { $0.city },
-							send: { .city(.textFieldChanged($0)) })
-						, Texts.city),
+							send: { .city(.textFieldChanged($0)) }),
+						Texts.city),
 					TextAndTextViewVM(
 						viewStore.binding(
 							get: { $0.county },
-							send: { .county(.textFieldChanged($0)) })
-						, Texts.county)
+							send: { .county(.textFieldChanged($0)) }),
+						Texts.county)
 				],
 				[
 					TextAndTextViewVM(
 						viewStore.binding(
 							get: { $0.country },
-							send: { .country(.textFieldChanged($0)) })
-						, Texts.country),
+							send: { .country(.textFieldChanged($0)) }),
+						Texts.country),
 					TextAndTextViewVM(
 						viewStore.binding(
 							get: { $0.howDidYouHear },
-							send: { .howDidYouHear(.textFieldChanged($0)) })
-						, Texts.howDidUHear)
+							send: { .howDidYouHear(.textFieldChanged($0)) }),
+						Texts.howDidUHear)
 				]
 		]
 		self.viewStore = viewStore
@@ -160,7 +160,6 @@ struct ThreeTextColumns: View {
 		}
 	}
 }
-
 
 public enum PatientDetailsAction: Equatable {
 	case salutation(TextFieldAction)
