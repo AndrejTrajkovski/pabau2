@@ -150,11 +150,11 @@ struct ChoosePathwayListContent: View {
 	let subtitle: String
 	let bulletPoints: [String]
 	let btnTxt: String
-	let style: PabauButtonStyle
+	let style: ChoosePathwayStyle
 	let btnAction: () -> Void
 
 	init(
-		_ style: PabauButtonStyle,
+		_ style: ChoosePathwayStyle,
 		_ bottomLeading: Image,
 		_ numberOfSteps: Int,
 		_ title: String,
