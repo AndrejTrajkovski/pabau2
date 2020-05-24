@@ -99,6 +99,7 @@ struct CheckInBody: View {
 	@ObservedObject var viewStore: ViewStore<CheckInViewState, StepFormsAction>
 
 	init(store: Store<CheckInViewState, StepFormsAction>) {
+		print("check in body init")
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
