@@ -104,12 +104,11 @@ struct ChooseFormList: View {
 					}, onSelect: {
 						self.viewStore.send(.removeTemplateId($0.id))
 					})
-					PabauButton(btnTxt: self.mode.btnTitle, style: .blue,
-							action: {
+					PrimaryButton(self.mode.btnTitle) {
 						withAnimation(Animation.linear(duration: 1)) {
 							self.viewStore.send(.proceed)
 						}
-					}).frame(minWidth: 0, maxWidth: .infinity)
+					}.frame(minWidth: 0, maxWidth: .infinity)
 				}
 			}
 			ListFrame(style: .white) {

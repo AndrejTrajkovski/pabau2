@@ -8,9 +8,8 @@ public struct WalkthroughContentAndButton: View {
 	public var body: some View {
 		VStack(spacing: 50) {
 			WalkthroughContentView.init(state: content)
-			PrimaryButton(text: self.btnTitle) {
-				self.btnAction()
-			}.frame(minWidth: 304, maxWidth: 495)
+			PrimaryButton(btnTitle, btnAction)
+				.frame(minWidth: 304, maxWidth: 495)
 		}
 	}
 }

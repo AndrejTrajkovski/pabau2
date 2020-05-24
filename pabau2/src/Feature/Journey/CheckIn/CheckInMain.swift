@@ -147,11 +147,9 @@ struct FooterButtons: View {
 		)) { viewStore in
 			HStack {
 				if viewStore.state.isOnCheckPatient {
-					PabauButton(btnTxt: Texts.toPatientMode,
-											style: .white,
-											action: {
+					SecondaryButton(Texts.toPatientMode) {
 												viewStore.send(.toPatientMode)
-					})
+					}
 				}
 				NextButton(store: self.store)
 			}
@@ -172,7 +170,7 @@ struct NextButton: View {
 	let store: Store<CheckInViewState, StepFormsAction>
 	struct State: Equatable {
 		let index: Int
-		let canProceed: Bool
+		let isDisabled: Bool
 	}
 
 	var body: some View {
@@ -180,10 +178,10 @@ struct NextButton: View {
 		return WithViewStore(store.scope(
 			state: State.init(state:),
 			action: { $0 })) { viewStore in
-			PrimaryButton(text: Texts.next) {
+			PrimaryButton(Texts.next, isDisabled: viewStore.state.isDisabled) {
 				viewStore.send(.didSelectCompleteFormIdx(viewStore.state.index))
 			}
-			.disabled(!viewStore.state.canProceed)
+			.disabled(viewStore.state.isDisabled)
 			.frame(minWidth: 304, maxWidth: 495)
 		}
 	}
@@ -193,6 +191,6 @@ extension NextButton.State {
 	init (state: CheckInViewState) {
 		print("next button init")
 		self.index = state.selectedIndex
-		self.canProceed = state.selectedForm?.form.canProceed ?? true
+		self.isDisabled = !(state.selectedForm?.form.canProceed ?? true)
 	}
 }

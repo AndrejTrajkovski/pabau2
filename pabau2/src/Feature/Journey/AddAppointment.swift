@@ -144,13 +144,10 @@ public struct AddAppointment: View {
 				VStack(spacing: 32) {
 					AddAppSections(store: self.store)
 						.environmentObject(KeyboardFollower())
-					Button.init("Save Appointment", action: {
+					PrimaryButton(Texts.saveAppointment){
 						self.viewStore.send(.addAppointmentTap)
-					})
-					.font(.bold16)
-					.foregroundColor(.white)
+					}
 					.frame(width: 315, height: 52)
-					.background(Color.deepSkyBlue)
 					Spacer()
 				}
 			}

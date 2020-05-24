@@ -122,11 +122,10 @@ struct Login: View {
 												passwordValidation: viewStore.state.passValidationText,
 												onForgotPass: { viewStore.send(.forgotPassTapped) })
 				Spacer(minLength: 30)
-				PrimaryButton(text: Texts.signIn,
-									btnTapAction: {
-										viewStore.send(.loginTapped(email: self.email,
-																								password: self.password))
-				}).frame(minWidth: 304, maxWidth: 495)
+				PrimaryButton(Texts.signIn) {
+					viewStore.send(.loginTapped(email: self.email,
+																			password: self.password))
+				}.frame(minWidth: 304, maxWidth: 495)
 			}
 			.navigationBarBackButtonHidden(true)
 			.frame(minWidth: 280, maxWidth: 495, alignment: .center)

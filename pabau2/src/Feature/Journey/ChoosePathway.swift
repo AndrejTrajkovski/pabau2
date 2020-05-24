@@ -179,19 +179,12 @@ struct ChoosePathwayListContent: View {
 			Text(subtitle).font(.medium15)
 			PathwayBulletList(bulletPoints: bulletPoints, bgColor: style.bgColor)
 			Spacer()
-			PabauButton(btnTxt: btnTxt,
-									style: style,
-									action: btnAction)
+			if style == .blue {
+				PrimaryButton(btnTxt, btnAction)
+			} else {
+				SecondaryButton(btnTxt, btnAction)
+			}
 		}
-	}
-}
-
-struct PathwayWhiteButtonStyle: ButtonStyle {
-	func makeBody(configuration: Configuration) -> some View {
-		configuration.label
-			.padding()
-			.foregroundColor(Color.black)
-			.background(Color.white)
 	}
 }
 

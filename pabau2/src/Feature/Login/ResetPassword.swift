@@ -182,8 +182,9 @@ struct ResetPassword: View {
 														Texts.confirmPassPlaceholder,
 														self.viewStore.state.confirmPassValidator)
 				}.frame(maxWidth: 319)
-				PrimaryButton(text: Texts.changePass) {
-					self.viewStore.send(.changePassTapped(self.code, self.newPass, self.confirmPass))
+				PrimaryButton(Texts.changePass) {
+					self.viewStore.send(
+						.changePassTapped(self.code, self.newPass, self.confirmPass))
 				}.frame(minWidth: 304, maxWidth: 495)
 				NavigationLink.emptyHidden(
 					self.viewStore.state.navigation.contains(.passChangedScreen),

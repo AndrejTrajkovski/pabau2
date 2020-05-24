@@ -9,7 +9,7 @@ struct SignatureField: View {
 	@State private var isSigning: Bool
 	@Binding var signature: Signature
 	let title: String
-	
+
 	init (signature: Binding<Signature>, title: String) {
 		self._signature = signature
 		self._isSigning = State.init(initialValue: false)
@@ -65,13 +65,11 @@ struct SigningComponent: View {
 			Text(title).font(.largeTitle)
 			DrawingPad(drawings: $signature.drawings)
 			HStack {
-				PabauButton(btnTxt: Texts.cancel,
-										style: .white) {
+				SecondaryButton(Texts.cancel) {
 					self.isActive = false
 				}
-				PabauButton(btnTxt: Texts.done,
-										style: .blue,
-										isDisabled: signature.drawings.isEmpty) {
+				PrimaryButton(Texts.done,
+											isDisabled: signature.drawings.isEmpty) {
 					self.isActive = false
 					self.onDone(self.signature)
 				}

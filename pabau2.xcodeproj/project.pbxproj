@@ -73,7 +73,7 @@
 		824776362473CE9700508434 /* ChooseTreatmentNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824776352473CE9700508434 /* ChooseTreatmentNote.swift */; };
 		824776382473D03700508434 /* ListFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824776372473D03700508434 /* ListFrame.swift */; };
 		8247763A2473D07F00508434 /* PabauButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824776392473D07F00508434 /* PabauButtonStyle.swift */; };
-		8247763C2473D0ED00508434 /* PabauButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247763B2473D0ED00508434 /* PabauButton.swift */; };
+		8247763C2473D0ED00508434 /* SecondaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247763B2473D0ED00508434 /* SecondaryButton.swift */; };
 		8247763E24756BC800508434 /* Signature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247763D24756BC700508434 /* Signature.swift */; };
 		8247764424756C0700508434 /* DiagramMini.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247764324756C0700508434 /* DiagramMini.swift */; };
 		8247764524756C0C00508434 /* Select.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247764124756BF800508434 /* Select.swift */; };
@@ -488,7 +488,7 @@
 		824776352473CE9700508434 /* ChooseTreatmentNote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ChooseTreatmentNote.swift; path = pabau2/src/Feature/Journey/CheckIn/ChooseTreatmentNote.swift; sourceTree = SOURCE_ROOT; };
 		824776372473D03700508434 /* ListFrame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListFrame.swift; sourceTree = "<group>"; };
 		824776392473D07F00508434 /* PabauButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PabauButtonStyle.swift; sourceTree = "<group>"; };
-		8247763B2473D0ED00508434 /* PabauButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PabauButton.swift; sourceTree = "<group>"; };
+		8247763B2473D0ED00508434 /* SecondaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondaryButton.swift; sourceTree = "<group>"; };
 		8247763D24756BC700508434 /* Signature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Signature.swift; sourceTree = "<group>"; };
 		8247763F24756BE800508434 /* SignatureDrawing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignatureDrawing.swift; sourceTree = "<group>"; };
 		8247764124756BF800508434 /* Select.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Select.swift; sourceTree = "<group>"; };
@@ -1019,7 +1019,7 @@
 				8247763124728F0200508434 /* PullbackCasePath.swift */,
 				824776372473D03700508434 /* ListFrame.swift */,
 				824776392473D07F00508434 /* PabauButtonStyle.swift */,
-				8247763B2473D0ED00508434 /* PabauButton.swift */,
+				8247763B2473D0ED00508434 /* SecondaryButton.swift */,
 			);
 			path = Journey;
 			sourceTree = "<group>";
@@ -1905,7 +1905,7 @@
 				82FB74F6245A9E51001C2DF3 /* PabauFormWrap.swift in Sources */,
 				82477612246C333500508434 /* PatientDetails.swift in Sources */,
 				8247760F246C27F200508434 /* TopView.swift in Sources */,
-				8247763C2473D0ED00508434 /* PabauButton.swift in Sources */,
+				8247763C2473D0ED00508434 /* SecondaryButton.swift in Sources */,
 				82E6D829245DF4D200CB359A /* PatientCompleteForm.swift in Sources */,
 				8250D7D4242C980100F8F3FC /* ChooseService.swift in Sources */,
 				82E6D82B245E09ED00CB359A /* HandBackDevice.swift in Sources */,

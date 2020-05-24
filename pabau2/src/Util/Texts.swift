@@ -91,15 +91,14 @@ public struct Texts {
 	public static let resign = "Resign"
 	public static let cancel = "Cancel"
 	public static let communications = "Communications"
-	
 	public static let sendReminder = "Send Reminder"
 	public static let sendConfirmationEmail = "Send Confirmation Email"
 	public static let sendConfirmationSMS = "Send Confirmation SMS"
 	public static let sendFeedbackSurvey = "Send Feedback Survey"
-	
 	public static let emailConfirmations = "Email Confirmations"
 	public static let smsReminders = "SMS Reminders"
 	public static let post = "Post"
+	public static let saveAppointment = "Save Appointment"
 }
 
 extension String {

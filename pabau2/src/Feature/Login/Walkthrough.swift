@@ -25,10 +25,9 @@ public struct Walkthrough: View {
 		return VStack {
 			PageView(state.map { WalkthroughContentView(state: $0)})
 				.frame(maxHeight: 686.0)
-			PrimaryButton(text: Texts.signIn,
-								btnTapAction: {
+			PrimaryButton(Texts.signIn) {
 									self.action()
-			}).frame(minWidth: 304, maxWidth: 495)
+			}.frame(minWidth: 304, maxWidth: 495)
 		}
 	}
 }
