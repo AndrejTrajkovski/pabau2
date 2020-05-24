@@ -1,7 +1,7 @@
 import SwiftUI
 import Util
 
-enum ChoosePathwayStyle {
+enum JourneyListStyle {
 	case blue
 	case white
 	var bgColor: Color {

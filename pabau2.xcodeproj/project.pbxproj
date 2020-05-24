@@ -74,7 +74,7 @@
 		8247763424729DE800508434 /* CheckInPatient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247763324729DE800508434 /* CheckInPatient.swift */; };
 		824776362473CE9700508434 /* ChooseTreatmentNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824776352473CE9700508434 /* ChooseTreatmentNote.swift */; };
 		824776382473D03700508434 /* ListFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824776372473D03700508434 /* ListFrame.swift */; };
-		8247763A2473D07F00508434 /* ChoosePathwayStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824776392473D07F00508434 /* ChoosePathwayStyle.swift */; };
+		8247763A2473D07F00508434 /* JourneyListStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824776392473D07F00508434 /* JourneyListStyle.swift */; };
 		8247763C2473D0ED00508434 /* SecondaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247763B2473D0ED00508434 /* SecondaryButton.swift */; };
 		8247763E24756BC800508434 /* Signature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247763D24756BC700508434 /* Signature.swift */; };
 		8247764424756C0700508434 /* DiagramMini.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247764324756C0700508434 /* DiagramMini.swift */; };
@@ -491,7 +491,7 @@
 		8247763324729DE800508434 /* CheckInPatient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInPatient.swift; sourceTree = "<group>"; };
 		824776352473CE9700508434 /* ChooseTreatmentNote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ChooseTreatmentNote.swift; path = pabau2/src/Feature/Journey/CheckIn/ChooseTreatmentNote.swift; sourceTree = SOURCE_ROOT; };
 		824776372473D03700508434 /* ListFrame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListFrame.swift; sourceTree = "<group>"; };
-		824776392473D07F00508434 /* ChoosePathwayStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoosePathwayStyle.swift; sourceTree = "<group>"; };
+		824776392473D07F00508434 /* JourneyListStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyListStyle.swift; sourceTree = "<group>"; };
 		8247763B2473D0ED00508434 /* SecondaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondaryButton.swift; sourceTree = "<group>"; };
 		8247763D24756BC700508434 /* Signature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Signature.swift; sourceTree = "<group>"; };
 		8247763F24756BE800508434 /* SignatureDrawing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignatureDrawing.swift; sourceTree = "<group>"; };
@@ -1024,7 +1024,7 @@
 				8247762B24704DC800508434 /* JourneyMocks.swift */,
 				8247763124728F0200508434 /* PullbackCasePath.swift */,
 				824776372473D03700508434 /* ListFrame.swift */,
-				824776392473D07F00508434 /* ChoosePathwayStyle.swift */,
+				824776392473D07F00508434 /* JourneyListStyle.swift */,
 				8247763B2473D0ED00508434 /* SecondaryButton.swift */,
 			);
 			path = Journey;
@@ -1930,7 +1930,7 @@
 				82E253FA241B9EB500F16C30 /* JourneyAction.swift in Sources */,
 				82D43D9024351F5000AC74FA /* EmployeesList.swift in Sources */,
 				826952772454E0A5001B806E /* SignatureField.swift in Sources */,
-				8247763A2473D07F00508434 /* ChoosePathwayStyle.swift in Sources */,
+				8247763A2473D07F00508434 /* JourneyListStyle.swift in Sources */,
 				824776382473D03700508434 /* ListFrame.swift in Sources */,
 				82E6D827245C213300CB359A /* PatientDetailsForm.swift in Sources */,
 				82E253FC241B9ED000F16C30 /* JourneyState.swift in Sources */,

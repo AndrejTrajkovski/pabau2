@@ -98,7 +98,7 @@ struct ChooseFormList: View {
 					Text(Texts.selected + " " + (self.mode == .treatmentNotes ? Texts.treatmentNotes : Texts.consents ))
 						.font(.bold17)
 					FormTemplateList(templates: self.viewStore.state.selectedTemplates,
-													 bgColor: ChoosePathwayStyle.blue.bgColor,
+													 bgColor: JourneyListStyle.blue.bgColor,
 													 templateRow: { template in
 														SelectedTemplateRow(template: template)
 					}, onSelect: {
@@ -115,7 +115,7 @@ struct ChooseFormList: View {
 				VStack {
 					TextField("TODO: search: ", text: self.$searchText)
 					FormTemplateList(templates: self.viewStore.state.notSelectedTemplates,
-													 bgColor: ChoosePathwayStyle.white.bgColor,
+													 bgColor: JourneyListStyle.white.bgColor,
 													 templateRow: { template in
 														NotSelectedTemplateRow(template: template)
 					}, onSelect: {
