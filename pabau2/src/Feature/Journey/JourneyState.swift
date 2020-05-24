@@ -14,7 +14,9 @@ public struct JourneyState: Equatable {
 	public var employeesState: EmployeesState = EmployeesState()
 	public var selectedJourney: Journey?
 	public var selectedPathway: Pathway?
-	var selectedConsentsIds: [Int] = []
+	
+	var runningSelectedConsentsIds: [Int] = []
+	var finalSelectedConsentsIds: [Int] = []
 	var allConsents: [Int: FormTemplate] = [:]
 	public var checkIn: CheckInContainerState?
 		= JourneyMocks.checkIn
@@ -39,14 +41,16 @@ extension JourneyState {
 	var choosePathway: ChoosePathwayState {
 		get {
 			ChoosePathwayState(selectedJourney: selectedJourney,
-											selectedPathway: selectedPathway,
-											selectedConsentsIds: selectedConsentsIds,
-											allConsents: allConsents)
+												 selectedPathway: selectedPathway,
+												 runningSelectedConsentsIds: runningSelectedConsentsIds,
+												 finalSelectedConsentsIds: finalSelectedConsentsIds,
+												 allConsents: allConsents)
 		}
 		set {
 			self.selectedJourney = newValue.selectedJourney
 			self.selectedPathway = newValue.selectedPathway
-			self.selectedConsentsIds = newValue.selectedConsentsIds
+			self.runningSelectedConsentsIds = newValue.runningSelectedConsentsIds
+			self.finalSelectedConsentsIds = newValue.finalSelectedConsentsIds
 			self.allConsents = newValue.allConsents
 		}
 	}

@@ -14,11 +14,13 @@ public struct CheckInContainerState: Equatable {
 	var runningPrescriptions: [Int: FormTemplate]
 	var prescriptionsCompleted: [Int: Bool]
 	var allConsents: [Int: FormTemplate]
-	var selectedConsentsIds: [Int]
+	var runningSelectedConsentsIds: [Int]
+	var finalSelectedConsentsIds: [Int]
 	var consentsCompleted: [Int: Bool]
 	var runningConsents: [Int: FormTemplate]
 	var allTreatmentForms: [Int: FormTemplate]
-	var selectedTreatmentFormsIds: [Int]
+	var runningSelectedTreatmentFormsIds: [Int]
+	var finalSelectedTreatmentFormsIds: [Int]
 	var treatmentFormsCompleted: [Int: Bool]
 	var runningTreatmentForms: [Int: FormTemplate]
 	var aftercare: Aftercare
@@ -118,32 +120,52 @@ extension CheckInContainerState {
 	var chooseTreatments: ChooseFormState {
 		get {
 			return ChooseFormState(selectedJourney: journey,
-														 selectedTemplatesIds: selectedTreatmentFormsIds,
+														 finalSelectedTemplatesIds: finalSelectedTreatmentFormsIds,
 														 templates: allTreatmentForms,
-														 templatesLoadingState: .initial)
+														 templatesLoadingState: .initial,
+														 runningSelectedTemplatesIds:
+				runningSelectedTreatmentFormsIds)
 		}
 		set {
-			self.selectedTreatmentFormsIds = newValue.selectedTemplatesIds
-			self.treatmentFormsCompleted = newValue.selectedTemplatesIds.reduce(into: [Int: Bool]()) {
+			self.finalSelectedTreatmentFormsIds = newValue.finalSelectedTemplatesIds
+			self.allTreatmentForms = newValue.templates
+			self.runningSelectedTreatmentFormsIds = newValue.runningSelectedTemplatesIds
+			
+			self.treatmentFormsCompleted = newValue.finalSelectedTemplatesIds.reduce(into: [Int: Bool]()) {
 				$0[$1] = false
 			}
-			self.runningTreatmentForms = selected(allTreatmentForms, newValue.selectedTemplatesIds)
+			
+			let new = selected(allTreatmentForms, newValue.finalSelectedTemplatesIds)
+			self.runningTreatmentForms = self.runningTreatmentForms.merging(new,
+																																			uniquingKeysWith: {
+																																				(old, _) in
+																																				return old
+			})
 		}
 	}
 
 	var chooseConsents: ChooseFormState {
 		get {
 			return ChooseFormState(selectedJourney: journey,
-														 selectedTemplatesIds: selectedConsentsIds,
+														 finalSelectedTemplatesIds: finalSelectedConsentsIds,
 														 templates: allConsents,
-														 templatesLoadingState: .initial)
+														 templatesLoadingState: .initial,
+														 runningSelectedTemplatesIds: runningSelectedConsentsIds)
 		}
 		set {
-			self.selectedConsentsIds = newValue.selectedTemplatesIds
-			self.consentsCompleted = newValue.selectedTemplatesIds.reduce(into: [Int: Bool]()) {
+			self.finalSelectedConsentsIds = newValue.finalSelectedTemplatesIds
+			self.allConsents = newValue.templates
+			self.runningSelectedConsentsIds = newValue.runningSelectedTemplatesIds
+			
+			self.consentsCompleted = newValue.finalSelectedTemplatesIds.reduce(into: [Int: Bool]()) {
 				$0[$1] = false
 			}
-			self.runningConsents = selected(allConsents, newValue.selectedTemplatesIds)
+			let new = selected(allConsents, newValue.finalSelectedTemplatesIds)
+			self.runningConsents = self.runningConsents.merging(new,
+																													uniquingKeysWith: {
+																														(old, _) in
+																														return old
+			})
 		}
 	}
 
@@ -183,14 +205,14 @@ extension CheckInContainerState {
 		self.stepTypes = pathway.steps.map { $0.stepType }
 		self.stepTypes.append(StepType.patientComplete)
 		self.allConsents = allConsents
-		self.selectedConsentsIds = selectedConsentsIds
+		self.finalSelectedConsentsIds = selectedConsentsIds
 		self.allTreatmentForms = flatten(JourneyMockAPI.mockTreatmentN)
 		self.runningConsents = selected(allConsents, selectedConsentsIds)
 		self.runningTreatmentForms = [:]
 		self.consentsCompleted = runningConsents.map { $0.key }.reduce(into: [Int: Bool]()) {
 			$0[$1] = false
 		}
-		self.selectedTreatmentFormsIds = []
+		self.finalSelectedTreatmentFormsIds = []
 		self.treatmentFormsCompleted = [:]
 		self.aftercare = Aftercare()
 		self.aftercareCompleted = false
@@ -207,5 +229,7 @@ extension CheckInContainerState {
 		self.recallCompleted = false
 		self.medHistory = JourneyMockAPI.getMedHistory()
 		self.medHistoryCompleted = false
+		self.runningSelectedConsentsIds = selectedConsentsIds
+		self.runningSelectedTreatmentFormsIds = []
 	}
 }

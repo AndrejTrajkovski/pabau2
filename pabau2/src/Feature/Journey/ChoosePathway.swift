@@ -39,18 +39,21 @@ public enum ChoosePathwayAction {
 public struct ChoosePathwayState: Equatable {
 	var selectedJourney: Journey?
 	var selectedPathway: Pathway?
-	var selectedConsentsIds: [Int]
+	var runningSelectedConsentsIds: [Int]
+	var finalSelectedConsentsIds: [Int]
 	var allConsents: [Int: FormTemplate]
 	var chooseConsentState: ChooseFormState {
 		get {
 			ChooseFormState(selectedJourney: selectedJourney,
-											selectedTemplatesIds: selectedConsentsIds,
-											templates: allConsents)
+											finalSelectedTemplatesIds: finalSelectedConsentsIds,
+											templates: allConsents,
+											runningSelectedTemplatesIds: runningSelectedConsentsIds)
 		}
 		set {
 			self.selectedJourney = newValue.selectedJourney
-			self.selectedConsentsIds = newValue.selectedTemplatesIds
+			self.finalSelectedConsentsIds = newValue.finalSelectedTemplatesIds
 			self.allConsents = newValue.templates
+			self.runningSelectedConsentsIds = newValue.runningSelectedTemplatesIds
 		}
 	}
 }

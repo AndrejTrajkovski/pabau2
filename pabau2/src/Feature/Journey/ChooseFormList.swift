@@ -5,9 +5,10 @@ import ComposableArchitecture
 
 public struct ChooseFormState: Equatable {
 	var selectedJourney: Journey?
-	var selectedTemplatesIds: [Int]
+	var finalSelectedTemplatesIds: [Int]
 	var templates: [Int: FormTemplate]
 	var templatesLoadingState: LoadingState = .initial
+	var runningSelectedTemplatesIds: [Int]
 }
 
 public enum ChooseFormAction {
@@ -21,16 +22,16 @@ public enum ChooseFormAction {
 let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, JourneyEnvironment> { state, action, environment in
 	switch action {
 	case .addTemplateId(let templateId):
-		state.selectedTemplatesIds.append(templateId)
+		state.runningSelectedTemplatesIds.append(templateId)
 	case .removeTemplateId(let templateId):
-		state.selectedTemplatesIds.removeAll(where: { $0 == templateId})
+		state.runningSelectedTemplatesIds.removeAll(where: { $0 == templateId})
 	case .proceed:
+		state.finalSelectedTemplatesIds = state.runningSelectedTemplatesIds
 		return .none//handled elsewhere
 	case .gotResponse(let result):
 		switch result {
 		case .success(let templates):
 			state.templates = flatten(templates)
-			state.selectedTemplatesIds = []
 			state.templatesLoadingState = .gotSuccess
 		case .failure:
 			state.templatesLoadingState = .gotError
@@ -67,7 +68,7 @@ struct ChooseFormList: View {
 		var selectedTemplatesIds: [Int]
 		init(_ state: ChooseFormState) {
 			self.templates = state.templates
-			self.selectedTemplatesIds = state.selectedTemplatesIds
+			self.selectedTemplatesIds = state.runningSelectedTemplatesIds
 			self.journey = state.selectedJourney
 		}
 
