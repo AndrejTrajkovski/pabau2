@@ -36,20 +36,6 @@ public struct CheckInContainerState: Equatable {
 	var recallCompleted: Bool
 
 	var passcodeState = PasscodeState()
-	//NAVIGATION
-	var isHandBackDeviceActive: Bool {
-		get {
-			let pcform = patientArray.filter { stepType(form: $0.form) == .patientComplete }.first!
-			let res = extract(case: MetaForm.patientComplete,
-												from: pcform.form)!
-				.isPatientComplete
-			return res
-		}
-		set {
-			self.patientComplete.isPatientComplete = newValue
-		}
-	}
-
 	var isEnterPasscodeActive: Bool = false
 	var isChooseConsentActive: Bool = false
 	var isChooseTreatmentActive: Bool = false
@@ -62,40 +48,25 @@ extension CheckInContainerState {
 	//TODO: OPTIMIZE FILTERING ON PATIENT VS DOCTOR
 	var patientArray: [MetaFormAndStatus] {
 		get {
-			return forms(.patient, self)
+			return transformInFormsArray(.patient, self)
 		}
 		set {
-			newValue.filter(
-				with(.patient, filterMetaFormsByJourneyMode)
-			).forEach {
-				unwrap(&self, $0)
-			}
+			transformBack(.patient,
+										newValue,
+										&self)
 		}
 	}
 
 	var doctorArray: [MetaFormAndStatus] {
 		get {
-			return forms(.doctor, self)
+			return transformInFormsArray(.doctor, self)
 		}
 		set {
-			newValue.filter(
-				with(.doctor, filterMetaFormsByJourneyMode)
-			).forEach {
-					unwrap(&self, $0)
-			}
+			transformBack(.doctor,
+										newValue,
+										&self)
 		}
 	}
-}
-
-func forms(_ journeyMode: JourneyMode,
-					 _ state: CheckInContainerState) -> [MetaFormAndStatus] {
-	state.stepTypes
-		.filter(with(journeyMode, filterStepType))
-		.reduce(into: [MetaFormAndStatus]()) {
-			$0.append(contentsOf:
-				with($1, (with(state, curry(wrapForm(_:_:))))))
-	}
-	.sorted(by: their(pipe(get(\.form), stepType(form:), get(\.order))))
 }
 
 extension CheckInContainerState {
@@ -105,7 +76,7 @@ extension CheckInContainerState {
 			CheckInViewState(
 				selectedIndex: patientSelectedIndex,
 				forms: patientArray,
-				xButtonActiveFlag: true,
+				xButtonActiveFlag: true,//handled in checkInMiddleware
 				journey: journey)
 		}
 		set {
@@ -188,118 +159,18 @@ extension CheckInContainerState {
 			self.passcodeState = newValue
 		}
 	}
-}
 
-public struct CheckInViewState: Equatable {
-	var selectedIndex: Int
-	var forms: [MetaFormAndStatus]
-	var xButtonActiveFlag: Bool
-	var journey: Journey
-
-	var selectedForm: MetaFormAndStatus? {
-		return forms[safe: selectedIndex]
-	}
-
-	var topView: TopViewState {
+	var isHandBackDeviceActive: Bool {
 		get {
-			TopViewState(totalSteps:
-				self.forms
-					.filter { extract(case: MetaForm.patientComplete, from: $0.form) == nil }
-					.count,
-									 completedSteps: self.forms.filter(\.isComplete).count,
-									 xButtonActiveFlag: xButtonActiveFlag,
-									 journey: journey)
+			let pcform = patientArray.filter { stepType(form: $0.form) == .patientComplete }.first!
+			let res = extract(case: MetaForm.patientComplete,
+												from: pcform.form)!
+				.isPatientComplete
+			return res
 		}
 		set {
-			self.xButtonActiveFlag = newValue.xButtonActiveFlag
+			self.patientComplete.isPatientComplete = newValue
 		}
-	}
-
-	var isOnCompleteStep: Bool {
-		guard let selectedForm = selectedForm else { return false}
-		return stepType(form: selectedForm.form) == .patientComplete
-	}
-}
-
-func wrapForm(_ state: CheckInContainerState,
-							_ stepType: StepType) -> [MetaFormAndStatus] {
-	switch stepType {
-	case .patientdetails:
-		let form = MetaForm.patientDetails(state.patientDetails)
-		return [MetaFormAndStatus(form, state.patientDetailsCompleted)]
-	case .medicalhistory:
-		let form = MetaForm.template(state.medHistory)
-		return [MetaFormAndStatus(form, state.medHistoryCompleted)]
-	case .consents:
-		return state.runningConsents.map {
-			let form = MetaForm.template($0.value)
-			guard let status = state.consentsCompleted[$0.value.id] else { fatalError() }
-			return MetaFormAndStatus(form, status)
-		}
-	case .checkpatient:
-		let form = MetaForm.checkPatient
-		return [MetaFormAndStatus(form, state.checkPatientCompleted)]
-	case .treatmentnotes:
-		return state.runningTreatmentForms.map {
-			let form = MetaForm.template($0.value)
-			guard let status = state.treatmentFormsCompleted[$0.value.id] else { fatalError() }
-			return MetaFormAndStatus(form, status)
-		}
-	case .prescriptions:
-		return state.runningPrescriptions.map {
-			let form = MetaForm.template($0.value)
-			guard let status = state.prescriptionsCompleted[$0.value.id] else { fatalError() }
-			return MetaFormAndStatus(form, status)
-		}
-	case .photos:
-		return [] //TODO
-	case .recalls:
-		let form = MetaForm.recall(state.recall)
-		return [MetaFormAndStatus(form, state.recallCompleted)]
-	case .aftercares:
-		let form = MetaForm.aftercare(state.aftercare)
-		return [MetaFormAndStatus(form, state.aftercareCompleted)]
-	case .patientComplete:
-		let form = MetaForm.patientComplete(state.patientComplete)
-		return [MetaFormAndStatus(form, false)]
-	}
-}
-
-func unwrap(_ state: inout CheckInContainerState,
-						_ metaFormAndStatus: MetaFormAndStatus) {
-	let metaForm = metaFormAndStatus.form
-	let isComplete = metaFormAndStatus.isComplete
-	switch stepType(form: metaForm) {
-	case .patientdetails:
-		state.patientDetails = extract(case: MetaForm.patientDetails, from: metaForm)!
-		state.patientDetailsCompleted = isComplete
-	case .medicalhistory:
-		state.medHistory = extract(case: MetaForm.template, from: metaForm)!
-		state.medHistoryCompleted = isComplete
-	case .consents:
-		let consent = extract(case: MetaForm.template, from: metaForm)!
-		state.runningConsents[consent.id] = consent
-		state.consentsCompleted[consent.id] = isComplete
-	case .checkpatient:
-		state.checkPatientCompleted = isComplete
-	case .treatmentnotes:
-		let treatmentnote = extract(case: MetaForm.template, from: metaForm)!
-		state.runningTreatmentForms[treatmentnote.id] = treatmentnote
-		state.treatmentFormsCompleted[treatmentnote.id] = isComplete
-	case .prescriptions:
-		let prescription = extract(case: MetaForm.template, from: metaForm)!
-		state.runningPrescriptions[prescription.id] = prescription
-		state.prescriptionsCompleted[prescription.id] = isComplete
-	case .photos:
-		return
-	case .recalls:
-		state.recall = extract(case: MetaForm.recall, from: metaForm)!
-		state.recallCompleted = isComplete
-	case .aftercares:
-		state.aftercare = extract(case: MetaForm.aftercare, from: metaForm)!
-		state.aftercareCompleted = isComplete
-	case .patientComplete:
-		state.patientComplete = extract(case: MetaForm.patientComplete, from: metaForm)!
 	}
 }
 
