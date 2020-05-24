@@ -5,7 +5,7 @@ struct SecondaryButton: View {
 
 	let btnTxt: String
 	let action: () -> Void
-	
+
 	init (_ btnTxt: String, _ action: @escaping () -> Void) {
 		self.btnTxt = btnTxt
 		self.action = action

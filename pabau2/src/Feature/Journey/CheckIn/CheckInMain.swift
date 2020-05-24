@@ -126,7 +126,7 @@ struct CheckInBody: View {
 				if self.keyboardHandler.keyboardHeight == 0 &&
 					!self.viewStore.state.isOnCompleteStep {
 					FooterButtons(store: self.store)
-					.frame(width: 230)
+					.frame(maxWidth: 500)
 					.padding(8)
 				}
 			}	.padding(.leading, 40)
@@ -151,7 +151,7 @@ struct FooterButtons: View {
 												viewStore.send(.toPatientMode)
 					}
 				}
-				NextButton(store: self.store)
+				NextButton(store: self.store).frame(maxWidth: 250)
 			}
 		}
 	}
@@ -182,7 +182,6 @@ struct NextButton: View {
 				viewStore.send(.didSelectCompleteFormIdx(viewStore.state.index))
 			}
 			.disabled(viewStore.state.isDisabled)
-			.frame(minWidth: 304, maxWidth: 495)
 		}
 	}
 }
