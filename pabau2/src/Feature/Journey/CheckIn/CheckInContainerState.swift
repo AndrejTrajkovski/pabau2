@@ -51,9 +51,7 @@ extension CheckInContainerState {
 			return transformInFormsArray(.patient, self)
 		}
 		set {
-			transformBack(.patient,
-										newValue,
-										&self)
+			transformBack(.patient, newValue, &self)
 		}
 	}
 
@@ -62,9 +60,7 @@ extension CheckInContainerState {
 			return transformInFormsArray(.doctor, self)
 		}
 		set {
-			transformBack(.doctor,
-										newValue,
-										&self)
+			transformBack(.doctor, newValue, &self)
 		}
 	}
 }
