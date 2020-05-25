@@ -5,10 +5,9 @@ import ComposableArchitecture
 
 public struct ChooseFormState: Equatable {
 	var selectedJourney: Journey?
-	var finalSelectedTemplatesIds: [Int]
 	var templates: [Int: FormTemplate]
 	var templatesLoadingState: LoadingState = .initial
-	var runningSelectedTemplatesIds: [Int]
+	var selectedTemplatesIds: [Int]
 	var runningTemplates: [Int: FormTemplate]
 	var templatesCompleted: [Int: Bool]
 }
@@ -24,16 +23,15 @@ public enum ChooseFormAction {
 let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, JourneyEnvironment> { state, action, environment in
 	switch action {
 	case .addTemplateId(let templateId):
-		state.runningSelectedTemplatesIds.append(templateId)
+		state.selectedTemplatesIds.append(templateId)
 	case .removeTemplateId(let templateId):
-		state.runningSelectedTemplatesIds.removeAll(where: { $0 == templateId})
+		state.selectedTemplatesIds.removeAll(where: { $0 == templateId})
 	case .proceed:
-		state.finalSelectedTemplatesIds = state.runningSelectedTemplatesIds
 		updateWithKeepingOld(runningForms: &state.runningTemplates,
-												 finalSelectedTemplatesIds: state.finalSelectedTemplatesIds,
+												 finalSelectedTemplatesIds: state.selectedTemplatesIds,
 												 allTemplates: state.templates)
 		updateWithKeepingOld(formsCompleted: &state.templatesCompleted,
-												 finalSelectedTemplatesIds: state.finalSelectedTemplatesIds)
+												 finalSelectedTemplatesIds: state.selectedTemplatesIds)
 		return .none//handled elsewhere
 	case .gotResponse(let result):
 		switch result {
@@ -75,7 +73,7 @@ struct ChooseFormList: View {
 		var selectedTemplatesIds: [Int]
 		init(_ state: ChooseFormState) {
 			self.templates = state.templates
-			self.selectedTemplatesIds = state.runningSelectedTemplatesIds
+			self.selectedTemplatesIds = state.selectedTemplatesIds
 			self.journey = state.selectedJourney
 		}
 

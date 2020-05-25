@@ -15,7 +15,7 @@ public struct JourneyState: Equatable {
 	public var selectedJourney: Journey?
 	public var selectedPathway: Pathway?
 	
-	var runningSelectedConsentsIds: [Int] = []
+	var selectedConsentsIds: [Int] = []
 	var finalSelectedConsentsIds: [Int] = []
 	var allConsents: [Int: FormTemplate] = [:]
 	public var checkIn: CheckInContainerState?
@@ -42,14 +42,14 @@ extension JourneyState {
 		get {
 			ChoosePathwayState(selectedJourney: selectedJourney,
 												 selectedPathway: selectedPathway,
-												 runningSelectedConsentsIds: runningSelectedConsentsIds,
+												 selectedConsentsIds: selectedConsentsIds,
 												 finalSelectedConsentsIds: finalSelectedConsentsIds,
 												 allConsents: allConsents)
 		}
 		set {
 			self.selectedJourney = newValue.selectedJourney
 			self.selectedPathway = newValue.selectedPathway
-			self.runningSelectedConsentsIds = newValue.runningSelectedConsentsIds
+			self.selectedConsentsIds = newValue.selectedConsentsIds
 			self.finalSelectedConsentsIds = newValue.finalSelectedConsentsIds
 			self.allConsents = newValue.allConsents
 		}
