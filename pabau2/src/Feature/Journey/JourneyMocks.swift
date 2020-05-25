@@ -76,6 +76,7 @@ struct JourneyMocks {
 		]),
 		patientDetails: PatientDetails.mock,
 		medHistory: JourneyMockAPI.getMedHistory(),
-		allConsents: flatten(JourneyMockAPI.mockConsents),
-		selectedConsentsIds: [])
+		consents: FormsCollection(ids: [], fromAll: []),
+		allConsents: flatten(JourneyMockAPI.mockConsents)
+	)
 }

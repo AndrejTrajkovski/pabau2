@@ -33,18 +33,18 @@ func wrapForm(_ state: CheckInContainerState,
 		let form = MetaForm.template(state.medHistory)
 		return [MetaFormAndStatus(form, state.medHistoryCompleted)]
 	case .consents:
-		return state.runningConsents.map {
-			let form = MetaForm.template($0.value)
-			guard let status = state.consentsCompleted[$0.value.id] else { fatalError() }
+		return state.consents.sorted.map {
+			let form = MetaForm.template($0)
+			guard let status = state.consents.completed[$0.id] else { fatalError() }
 			return MetaFormAndStatus(form, status)
 		}
 	case .checkpatient:
 		let form = MetaForm.checkPatient(state.checkPatient)
 		return [MetaFormAndStatus(form, state.checkPatientCompleted)]
 	case .treatmentnotes:
-		return state.runningTreatmentForms.map {
-			let form = MetaForm.template($0.value)
-			guard let status = state.treatmentFormsCompleted[$0.value.id] else { fatalError() }
+		return state.treatments.sorted.map {
+			let form = MetaForm.template($0)
+			guard let status = state.treatments.completed[$0.id] else { fatalError() }
 			return MetaFormAndStatus(form, status)
 		}
 	case .prescriptions:
@@ -67,6 +67,15 @@ func wrapForm(_ state: CheckInContainerState,
 	}
 }
 
+func wrap(_ forms: inout FormsCollection,
+					_ metaForm: MetaForm,
+					_ isComplete: Bool) {
+	let consent = extract(case: MetaForm.template, from: metaForm)!
+	forms.byId[consent.id] = consent
+	forms.completed[consent.id] = isComplete
+//	forms.allIds.append(consent.id)
+}
+
 func unwrap(_ state: inout CheckInContainerState,
 						_ metaFormAndStatus: MetaFormAndStatus) {
 	let metaForm = metaFormAndStatus.form
@@ -79,15 +88,11 @@ func unwrap(_ state: inout CheckInContainerState,
 		state.medHistory = extract(case: MetaForm.template, from: metaForm)!
 		state.medHistoryCompleted = isComplete
 	case .consents:
-		let consent = extract(case: MetaForm.template, from: metaForm)!
-		state.runningConsents[consent.id] = consent
-		state.consentsCompleted[consent.id] = isComplete
+		wrap(&state.consents, metaForm, isComplete)
 	case .checkpatient:
 		state.checkPatientCompleted = isComplete
 	case .treatmentnotes:
-		let treatmentnote = extract(case: MetaForm.template, from: metaForm)!
-		state.runningTreatmentForms[treatmentnote.id] = treatmentnote
-		state.treatmentFormsCompleted[treatmentnote.id] = isComplete
+		wrap(&state.treatments, metaForm, isComplete)
 	case .prescriptions:
 		let prescription = extract(case: MetaForm.template, from: metaForm)!
 		state.runningPrescriptions[prescription.id] = prescription
@@ -105,30 +110,29 @@ func unwrap(_ state: inout CheckInContainerState,
 	}
 }
 
-func updateWithKeepingOld(runningForms: inout [Int: FormTemplate],
+func updateWithKeepingOld(forms: inout FormsCollection,
 													finalSelectedTemplatesIds: [Int],
 													allTemplates: [Int: FormTemplate]) {
-	let oldWithData = runningForms.filter { old in
+	let oldWithData = forms.byId.filter { old in
 		finalSelectedTemplatesIds.contains(old.key)
 	}
 	let new = selected(allTemplates, finalSelectedTemplatesIds)
-	runningForms = oldWithData.merging(new,
-																		 uniquingKeysWith: { (old, _) in
-																			return old
+	forms.byId = oldWithData.merging(new,
+																	 uniquingKeysWith: { (old, _) in
+																		return old
 	})
-}
-
-func updateWithKeepingOld(formsCompleted: inout [Int: Bool],
-													finalSelectedTemplatesIds: [Int]) {
-	let oldWithDataCompleted = formsCompleted.filter { old in
+	
+	let oldWithDataCompleted = forms.completed.filter { old in
 		finalSelectedTemplatesIds.contains(old.key)
 	}
 	let newCompleted = finalSelectedTemplatesIds.reduce(into: [Int: Bool]()) {
 		$0[$1] = false
 	}
-	formsCompleted = oldWithDataCompleted.merging(newCompleted,
-																								uniquingKeysWith: {
+	forms.completed = oldWithDataCompleted.merging(newCompleted,
+																								 uniquingKeysWith: {
 																									(old, _) in
 																									return old
 	})
+	
+	forms.allIds = finalSelectedTemplatesIds
 }

@@ -46,8 +46,8 @@ public struct ChoosePathwayState: Equatable {
 			ChooseFormState(selectedJourney: selectedJourney,
 											templates: allConsents,
 											selectedTemplatesIds: selectedConsentsIds,
-											runningTemplates: [:],
-											templatesCompleted: [:])
+											forms: FormsCollection(ids: [], fromAll: [])
+			)
 		}
 		set {
 			self.selectedJourney = newValue.selectedJourney

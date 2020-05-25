@@ -8,8 +8,7 @@ public struct ChooseFormState: Equatable {
 	var templates: [Int: FormTemplate]
 	var templatesLoadingState: LoadingState = .initial
 	var selectedTemplatesIds: [Int]
-	var runningTemplates: [Int: FormTemplate]
-	var templatesCompleted: [Int: Bool]
+	var forms: FormsCollection
 }
 
 public enum ChooseFormAction {
@@ -27,11 +26,9 @@ let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, JourneyEn
 	case .removeTemplateId(let templateId):
 		state.selectedTemplatesIds.removeAll(where: { $0 == templateId})
 	case .proceed:
-		updateWithKeepingOld(runningForms: &state.runningTemplates,
+		updateWithKeepingOld(forms: &state.forms,
 												 finalSelectedTemplatesIds: state.selectedTemplatesIds,
 												 allTemplates: state.templates)
-		updateWithKeepingOld(formsCompleted: &state.templatesCompleted,
-												 finalSelectedTemplatesIds: state.selectedTemplatesIds)
 		return .none//handled elsewhere
 	case .gotResponse(let result):
 		switch result {
@@ -81,11 +78,12 @@ struct ChooseFormList: View {
 			templates
 				.filter { !selectedTemplatesIds.contains($0.key) }
 				.map { $0.value }
+				.sorted(by: \.name)
 		}
 		var selectedTemplates: [FormTemplate] {
-			templates
-				.filter { selectedTemplatesIds.contains($0.key) }
-				.map { $0.value }
+			selectedTemplatesIds.map {
+				templates[$0]!
+			}
 		}
 	}
 
