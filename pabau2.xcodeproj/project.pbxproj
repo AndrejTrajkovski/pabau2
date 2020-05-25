@@ -12,6 +12,7 @@
 		820F16AC24780A0900DB33DE /* CheckPatientForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16AB24780A0900DB33DE /* CheckPatientForm.swift */; };
 		820F16AE247AD0F900DB33DE /* CheckInContainerStateAdapters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16AD247AD0F900DB33DE /* CheckInContainerStateAdapters.swift */; };
 		820F16B0247AD12D00DB33DE /* CheckInViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16AF247AD12D00DB33DE /* CheckInViewState.swift */; };
+		820F16B2247BE3FE00DB33DE /* CheckPatient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16B1247BE3FE00DB33DE /* CheckPatient.swift */; };
 		82104525240C21B9004EA838 /* ForgotPassSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104524240C21B9004EA838 /* ForgotPassSuccess.swift */; };
 		82104527240C21E3004EA838 /* ForgotPassError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104526240C21E3004EA838 /* ForgotPassError.swift */; };
 		82104529240C2218004EA838 /* LoginError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104528240C2218004EA838 /* LoginError.swift */; };
@@ -454,6 +455,7 @@
 		820F16AB24780A0900DB33DE /* CheckPatientForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckPatientForm.swift; sourceTree = "<group>"; };
 		820F16AD247AD0F900DB33DE /* CheckInContainerStateAdapters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInContainerStateAdapters.swift; sourceTree = "<group>"; };
 		820F16AF247AD12D00DB33DE /* CheckInViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInViewState.swift; sourceTree = "<group>"; };
+		820F16B1247BE3FE00DB33DE /* CheckPatient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckPatient.swift; sourceTree = "<group>"; };
 		82104524240C21B9004EA838 /* ForgotPassSuccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassSuccess.swift; sourceTree = "<group>"; };
 		82104526240C21E3004EA838 /* ForgotPassError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassError.swift; sourceTree = "<group>"; };
 		82104528240C2218004EA838 /* LoginError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginError.swift; sourceTree = "<group>"; };
@@ -869,6 +871,7 @@
 				82477617246C336300508434 /* PatientComplete.swift */,
 				82477619246C337D00508434 /* MetaForm.swift */,
 				8247761B246C339800508434 /* MetaFormAndStatus.swift */,
+				820F16B1247BE3FE00DB33DE /* CheckPatient.swift */,
 			);
 			path = StaticModel;
 			sourceTree = "<group>";
@@ -1926,6 +1929,7 @@
 				8247764A24758B7700508434 /* SelectField.swift in Sources */,
 				826952792456F436001B806E /* InputTextField.swift in Sources */,
 				820F16AE247AD0F900DB33DE /* CheckInContainerStateAdapters.swift in Sources */,
+				820F16B2247BE3FE00DB33DE /* CheckPatient.swift in Sources */,
 				82D43D92243522CD00AC74FA /* Settings.swift in Sources */,
 				82E253FA241B9EB500F16C30 /* JourneyAction.swift in Sources */,
 				82D43D9024351F5000AC74FA /* EmployeesList.swift in Sources */,

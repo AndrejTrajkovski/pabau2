@@ -66,7 +66,7 @@ extension CheckInContainerState {
 }
 
 extension CheckInContainerState {
-
+	
 	var patientCheckIn: CheckInViewState {
 		get {
 			CheckInViewState(
@@ -174,6 +174,12 @@ extension CheckInContainerState {
 		set {
 			self.patientComplete.isPatientComplete = newValue
 		}
+	}
+	
+	var checkPatient: CheckPatient {
+		let forms = [medHistory] + Array(self.runningConsents.values)
+		return CheckPatient(patDetails: self.patientDetails,
+												patForms: forms)
 	}
 }
 

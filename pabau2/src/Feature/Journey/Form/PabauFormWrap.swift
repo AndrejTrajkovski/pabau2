@@ -21,14 +21,14 @@ struct PabauFormWrap: View {
 		var template: FormTemplate?
 		var aftercare: Aftercare?
 		var patientCompleteForm: PatientComplete?
-		var isCheckPatient: Bool
+		var checkPatient: CheckPatient?
 
 		init (state: MetaForm) {
 			self.patientDetails = extract(case: MetaForm.patientDetails, from: state)
 			self.template = extract(case: MetaForm.template, from: state)
 			self.aftercare = extract(case: MetaForm.aftercare, from: state)
 			self.patientCompleteForm = extract(case: MetaForm.patientComplete, from: state)
-			self.isCheckPatient = MetaForm.checkPatient == state
+			self.checkPatient = extract(case: MetaForm.checkPatient, from: state)
 		}
 	}
 
@@ -59,11 +59,11 @@ struct PabauFormWrap: View {
 					then: PatientCompleteForm.init(store:)
 				)
 			)
-		} else if self.viewStore.state.isCheckPatient {
+		} else if self.viewStore.state.checkPatient != nil {
 			return AnyView(
 				CheckPatientForm(didTouchDone: { },
-												 patDetails: PatientDetails.mock,
-												 patientForms: JourneyMockAPI.mockConsents)
+												 patDetails: self.viewStore.state.checkPatient!.patDetails,
+												 patientForms: self.viewStore.state.checkPatient!.patForms)
 			)
 		} else {
 			return AnyView(Text("Aftercare"))

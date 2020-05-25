@@ -39,7 +39,7 @@ func wrapForm(_ state: CheckInContainerState,
 			return MetaFormAndStatus(form, status)
 		}
 	case .checkpatient:
-		let form = MetaForm.checkPatient
+		let form = MetaForm.checkPatient(state.checkPatient)
 		return [MetaFormAndStatus(form, state.checkPatientCompleted)]
 	case .treatmentnotes:
 		return state.runningTreatmentForms.map {

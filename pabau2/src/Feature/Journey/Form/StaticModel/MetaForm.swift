@@ -38,7 +38,7 @@ public enum MetaForm: Equatable {
 	case aftercare(Aftercare)
 	case template(FormTemplate)
 	case patientComplete(PatientComplete)
-	case checkPatient
+	case checkPatient(CheckPatient)
 	case recall(Recall)
 
 	var title: String {
