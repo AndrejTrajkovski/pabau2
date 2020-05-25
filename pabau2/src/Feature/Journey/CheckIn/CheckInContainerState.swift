@@ -124,17 +124,20 @@ extension CheckInContainerState {
 														 templates: allTreatmentForms,
 														 templatesLoadingState: .initial,
 														 runningSelectedTemplatesIds:
-				runningSelectedTreatmentFormsIds)
+				runningSelectedTreatmentFormsIds,
+														 runningTemplates: runningTreatmentForms, templatesCompleted: treatmentFormsCompleted)
 		}
 		set {
 			self.finalSelectedTreatmentFormsIds = newValue.finalSelectedTemplatesIds
 			self.allTreatmentForms = newValue.templates
 			self.runningSelectedTreatmentFormsIds = newValue.runningSelectedTemplatesIds
-			updateWithKeepingOld(runningForms: &runningTreatmentForms,
-													 finalSelectedTemplatesIds: finalSelectedTreatmentFormsIds,
-													 allTemplates: allTreatmentForms)
-			updateWithKeepingOld(formsCompleted: &treatmentFormsCompleted,
-													 finalSelectedTemplatesIds: finalSelectedTreatmentFormsIds)
+			self.runningTreatmentForms = newValue.runningTemplates
+			self.treatmentFormsCompleted = newValue.templatesCompleted
+//			updateWithKeepingOld(runningForms: &runningTreatmentForms,
+//													 finalSelectedTemplatesIds: finalSelectedTreatmentFormsIds,
+//													 allTemplates: allTreatmentForms)
+//			updateWithKeepingOld(formsCompleted: &treatmentFormsCompleted,
+//													 finalSelectedTemplatesIds: finalSelectedTreatmentFormsIds)
 		}
 	}
 
@@ -144,18 +147,16 @@ extension CheckInContainerState {
 														 finalSelectedTemplatesIds: finalSelectedConsentsIds,
 														 templates: allConsents,
 														 templatesLoadingState: .initial,
-														 runningSelectedTemplatesIds: runningSelectedConsentsIds)
+														 runningSelectedTemplatesIds: runningSelectedConsentsIds,
+														 runningTemplates: runningConsents,
+														 templatesCompleted: consentsCompleted)
 		}
 		set {
 			self.finalSelectedConsentsIds = newValue.finalSelectedTemplatesIds
 			self.allConsents = newValue.templates
 			self.runningSelectedConsentsIds = newValue.runningSelectedTemplatesIds
-			
-			updateWithKeepingOld(runningForms: &runningConsents,
-													 finalSelectedTemplatesIds: finalSelectedConsentsIds,
-													 allTemplates: allConsents)
-			updateWithKeepingOld(formsCompleted: &consentsCompleted,
-													 finalSelectedTemplatesIds: finalSelectedConsentsIds)
+			self.runningConsents = newValue.runningTemplates
+			self.consentsCompleted = newValue.templatesCompleted
 		}
 	}
 
