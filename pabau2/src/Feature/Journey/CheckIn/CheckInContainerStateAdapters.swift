@@ -104,3 +104,31 @@ func unwrap(_ state: inout CheckInContainerState,
 		state.patientComplete = extract(case: MetaForm.patientComplete, from: metaForm)!
 	}
 }
+
+func updateWithKeepingOld(runningForms: inout [Int: FormTemplate],
+													finalSelectedTemplatesIds: [Int],
+													allTemplates: [Int: FormTemplate]) {
+	let oldWithData = runningForms.filter { old in
+		finalSelectedTemplatesIds.contains(old.key)
+	}
+	let new = selected(allTemplates, finalSelectedTemplatesIds)
+	runningForms = oldWithData.merging(new,
+																		 uniquingKeysWith: { (old, _) in
+																			return old
+	})
+}
+
+func updateWithKeepingOld(formsCompleted: inout [Int: Bool],
+													finalSelectedTemplatesIds: [Int]) {
+	let oldWithDataCompleted = formsCompleted.filter { old in
+		finalSelectedTemplatesIds.contains(old.key)
+	}
+	let newCompleted = finalSelectedTemplatesIds.reduce(into: [Int: Bool]()) {
+		$0[$1] = false
+	}
+	formsCompleted = oldWithDataCompleted.merging(newCompleted,
+																								uniquingKeysWith: {
+																									(old, _) in
+																									return old
+	})
+}

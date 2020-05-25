@@ -130,35 +130,11 @@ extension CheckInContainerState {
 			self.finalSelectedTreatmentFormsIds = newValue.finalSelectedTemplatesIds
 			self.allTreatmentForms = newValue.templates
 			self.runningSelectedTreatmentFormsIds = newValue.runningSelectedTemplatesIds
-			
-			let oldWithData = self.runningTreatmentForms.filter { old in
-				newValue.finalSelectedTemplatesIds.contains(old.key)
-			}
-			let new = selected(allTreatmentForms, newValue.finalSelectedTemplatesIds)
-			self.runningTreatmentForms = oldWithData.merging(new,
-																								 uniquingKeysWith: {
-																									(old, _) in
-																									return old
-			})
-			let oldWithDataCompleted = self.treatmentFormsCompleted.filter { old in
-				newValue.finalSelectedTemplatesIds.contains(old.key)
-			}
-			let newCompleted = newValue.finalSelectedTemplatesIds.reduce(into: [Int: Bool]()) {
-				$0[$1] = false
-			}
-			self.treatmentFormsCompleted = oldWithDataCompleted.merging(newCompleted,
-																																	uniquingKeysWith: {
-																																		(old, _) in
-																																		return old
-			})
-//			let allCompleted = newValue.finalSelectedTemplatesIds.reduce(into: [Int: Bool]()) {
-//				$0[$1] = false
-//			}
-//			self.treatmentFormsCompleted = self.treatmentFormsCompleted.merging(allCompleted,
-//																															uniquingKeysWith: {
-//																																(old, _) in
-//																																return old
-//			})
+			updateWithKeepingOld(runningForms: &runningTreatmentForms,
+													 finalSelectedTemplatesIds: finalSelectedTreatmentFormsIds,
+													 allTemplates: allTreatmentForms)
+			updateWithKeepingOld(formsCompleted: &treatmentFormsCompleted,
+													 finalSelectedTemplatesIds: finalSelectedTreatmentFormsIds)
 		}
 	}
 
@@ -175,23 +151,11 @@ extension CheckInContainerState {
 			self.allConsents = newValue.templates
 			self.runningSelectedConsentsIds = newValue.runningSelectedTemplatesIds
 			
-			let oldWithData = self.runningConsents.filter { old in
-				newValue.finalSelectedTemplatesIds.contains(old.key)
-			}
-			let new = selected(allConsents, newValue.finalSelectedTemplatesIds)
-			self.runningConsents = oldWithData.merging(new,
-																								 uniquingKeysWith: {
-																									(old, _) in
-																									return old
-			})
-//			let allCompleted = newValue.finalSelectedTemplatesIds.reduce(into: [Int: Bool]()) {
-//				$0[$1] = false
-//			}
-//			self.consentsCompleted = self.consentsCompleted.merging(allCompleted,
-//																															uniquingKeysWith: {
-//																																(old, _) in
-//																																return old
-//			})
+			updateWithKeepingOld(runningForms: &runningConsents,
+													 finalSelectedTemplatesIds: finalSelectedConsentsIds,
+													 allTemplates: allConsents)
+			updateWithKeepingOld(formsCompleted: &consentsCompleted,
+													 finalSelectedTemplatesIds: finalSelectedConsentsIds)
 		}
 	}
 
