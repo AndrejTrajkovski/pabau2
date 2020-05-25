@@ -67,7 +67,7 @@ let checkInMiddleware2 = Reducer<JourneyState, ChooseFormAction, JourneyEnvironm
 			patientDetails: PatientDetails.mock,
 			medHistory: JourneyMockAPI.getMedHistory(),
 			allConsents: state.allConsents,
-			selectedConsentsIds: state.finalSelectedConsentsIds)
+			selectedConsentsIds: state.selectedConsentsIds)
 	default:
 		return .none
 	}

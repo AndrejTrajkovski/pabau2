@@ -40,7 +40,6 @@ public struct ChoosePathwayState: Equatable {
 	var selectedJourney: Journey?
 	var selectedPathway: Pathway?
 	var selectedConsentsIds: [Int]
-	var finalSelectedConsentsIds: [Int]
 	var allConsents: [Int: FormTemplate]
 	var chooseConsentState: ChooseFormState {
 		get {
