@@ -491,27 +491,27 @@ extension JourneyMockAPI {
 								 ePaper: false,
 								 formStructure:
 			FormStructure(formStructure: [
-				CSSField(id: 8,
+				CSSField(id: 81,
 								 cssClass: .input_text(InputText(text: "input text 1")),
 								 title: "Insert some text"
 				),
-				CSSField(id: 6,
+				CSSField(id: 61,
 								 cssClass: .signature(Signature()),
 								 title: "Patient signature"
 				),
-				CSSField(id: 9,
+				CSSField(id: 91,
 								 cssClass: .input_text(InputText(text: "input text 2")),
 								 title: "Insert some text 2"
 				),
-				CSSField(id: 7,
+				CSSField(id: 71,
 								 cssClass: .signature(Signature()),
 								 title: "Practitioner signature"
 				),
-				CSSField(id: 5,
+				CSSField(id: 51,
 								 cssClass: .textarea(TextArea(text: "some text")),
 								 title: "Please enter some text below"
 				),
-				CSSField(id: 1, cssClass:
+				CSSField(id: 11, cssClass:
 					.checkboxes(
 						[
 							CheckBoxChoice(1, "Are you currently receiving any medical treatment at present?", false),
@@ -525,7 +525,7 @@ extension JourneyMockAPI {
 					),
 					title: "Choose please"
 				),
-				CSSField(id: 2, cssClass:
+				CSSField(id: 21, cssClass:
 					.checkboxes(
 						[
 							CheckBoxChoice(3, "choice 3", false),
@@ -535,11 +535,11 @@ extension JourneyMockAPI {
 					),
 					title: "Choose smth else"
 				),
-				CSSField(id: 3, cssClass:
+				CSSField(id: 31, cssClass:
 					.staticText(StaticText(1, "Hey what's going on?")),
 								 title: "This is some static text "
 				),
-				CSSField(id: 4,
+				CSSField(id: 41,
 								 cssClass: .radio(Radio(4,
 																				[RadioChoice(1, "radio choice 1"),
 																				 RadioChoice(2, "radio choice 2")],
@@ -551,7 +551,7 @@ extension JourneyMockAPI {
 							 ePaper: false,
 							 formStructure:
 		FormStructure(formStructure: [
-			CSSField(id: 1, cssClass:
+			CSSField(id: 12, cssClass:
 				.checkboxes(
 					[
 						CheckBoxChoice(1, "Are you currently receiving any medical treatment at present?", false),
@@ -562,23 +562,23 @@ extension JourneyMockAPI {
 				),
 				title: "Choose please"
 			),
-			CSSField(id: 6,
+			CSSField(id: 62,
 							 cssClass: .signature(Signature()),
 							 title: "Patient signatureeee"
 			),
-			CSSField(id: 9,
+			CSSField(id: 92,
 							 cssClass: .input_text(InputText(text: "input text 2")),
 							 title: "yada yada yada"
 			),
-			CSSField(id: 7,
+			CSSField(id: 72,
 							 cssClass: .signature(Signature()),
 							 title: "Sign this please"
 			),
-			CSSField(id: 5,
+			CSSField(id: 52,
 							 cssClass: .textarea(TextArea(text: "some text")),
 							 title: "Please enter some text below"
 			),
-			CSSField(id: 2, cssClass:
+			CSSField(id: 22, cssClass:
 				.checkboxes(
 					[
 						CheckBoxChoice(3, "choice 3", false),
@@ -587,18 +587,18 @@ extension JourneyMockAPI {
 				),
 				title: "Choose smth else"
 			),
-			CSSField(id: 3, cssClass:
+			CSSField(id: 32, cssClass:
 				.staticText(StaticText(1, "Hey what's going on?")),
 							 title: "This is some static text "
 			),
-			CSSField(id: 4,
+			CSSField(id: 42,
 							 cssClass: .radio(Radio(4,
 																			[RadioChoice(1, "radio choice 3"),
 																			 RadioChoice(2, "radio choice 4")],
 																			1)
 				), title: "Radio title"
 			),
-			CSSField(id: 8,
+			CSSField(id: 82,
 							 cssClass: .input_text(InputText(text: "input some text")),
 							 title: "Insert some text bla bla"
 			)
@@ -607,27 +607,27 @@ extension JourneyMockAPI {
 							 ePaper: false,
 							 formStructure:
 		FormStructure(formStructure: [
-			CSSField(id: 8,
+			CSSField(id: 83,
 							 cssClass: .input_text(InputText(text: "input text 1")),
 							 title: "Insert some text"
 			),
-			CSSField(id: 6,
+			CSSField(id: 63,
 							 cssClass: .signature(Signature()),
 							 title: "Patient signature"
 			),
-			CSSField(id: 9,
+			CSSField(id: 93,
 							 cssClass: .input_text(InputText(text: "input text 2")),
 							 title: "Insert some text 2"
 			),
-			CSSField(id: 7,
+			CSSField(id: 73,
 							 cssClass: .signature(Signature()),
 							 title: "Practitioner signature"
 			),
-			CSSField(id: 5,
+			CSSField(id: 53,
 							 cssClass: .textarea(TextArea(text: "some text")),
 							 title: "Please enter some text below"
 			),
-			CSSField(id: 1, cssClass:
+			CSSField(id: 13, cssClass:
 				.checkboxes(
 					[
 						CheckBoxChoice(1, "Are you currently receiving any medical treatment at present?", false),
@@ -641,7 +641,7 @@ extension JourneyMockAPI {
 				),
 				title: "Choose please"
 			),
-			CSSField(id: 2, cssClass:
+			CSSField(id: 23, cssClass:
 				.checkboxes(
 					[
 						CheckBoxChoice(3, "choice 3", false),
@@ -651,11 +651,11 @@ extension JourneyMockAPI {
 				),
 				title: "Choose smth else"
 			),
-			CSSField(id: 3, cssClass:
+			CSSField(id: 33, cssClass:
 				.staticText(StaticText(1, "Hey what's going on?")),
 							 title: "This is some static text "
 			),
-			CSSField(id: 4,
+			CSSField(id: 43,
 							 cssClass: .radio(Radio(4,
 																			[RadioChoice(1, "radio choice 5"),
 																			 RadioChoice(2, "radio choice 6")],
@@ -667,27 +667,27 @@ extension JourneyMockAPI {
 							 ePaper: false,
 							 formStructure:
 		FormStructure(formStructure: [
-			CSSField(id: 8,
+			CSSField(id: 84,
 							 cssClass: .input_text(InputText(text: "input text 1")),
 							 title: "Insert some text"
 			),
-			CSSField(id: 6,
+			CSSField(id: 64,
 							 cssClass: .signature(Signature()),
 							 title: "Patient signature"
 			),
-			CSSField(id: 9,
+			CSSField(id: 94,
 							 cssClass: .input_text(InputText(text: "input text 2")),
 							 title: "Insert some text 2"
 			),
-			CSSField(id: 7,
+			CSSField(id: 74,
 							 cssClass: .signature(Signature()),
 							 title: "Practitioner signature"
 			),
-			CSSField(id: 5,
+			CSSField(id: 54,
 							 cssClass: .textarea(TextArea(text: "some text")),
 							 title: "Please enter some text below"
 			),
-			CSSField(id: 1, cssClass:
+			CSSField(id: 14, cssClass:
 				.checkboxes(
 					[
 						CheckBoxChoice(1, "Are you currently receiving any medical treatment at present?", false),
@@ -701,7 +701,7 @@ extension JourneyMockAPI {
 				),
 				title: "Choose please"
 			),
-			CSSField(id: 2, cssClass:
+			CSSField(id: 24, cssClass:
 				.checkboxes(
 					[
 						CheckBoxChoice(3, "choice 3", false),
@@ -711,11 +711,11 @@ extension JourneyMockAPI {
 				),
 				title: "Choose smth else"
 			),
-			CSSField(id: 3, cssClass:
+			CSSField(id: 34, cssClass:
 				.staticText(StaticText(1, "Hey what's going on?")),
 							 title: "This is some static text "
 			),
-			CSSField(id: 4,
+			CSSField(id: 44,
 							 cssClass: .radio(Radio(4,
 																			[RadioChoice(1, "radio choice 7"),
 																			 RadioChoice(2, "radio choice 8")],
@@ -727,27 +727,27 @@ extension JourneyMockAPI {
 							 ePaper: false,
 							 formStructure:
 		FormStructure(formStructure: [
-			CSSField(id: 8,
+			CSSField(id: 85,
 							 cssClass: .input_text(InputText(text: "input text 1")),
 							 title: "Insert some text"
 			),
-			CSSField(id: 6,
+			CSSField(id: 65,
 							 cssClass: .signature(Signature()),
 							 title: "Patient signature"
 			),
-			CSSField(id: 9,
+			CSSField(id: 95,
 							 cssClass: .input_text(InputText(text: "input text 2")),
 							 title: "Insert some text 2"
 			),
-			CSSField(id: 7,
+			CSSField(id: 75,
 							 cssClass: .signature(Signature()),
 							 title: "Practitioner signature"
 			),
-			CSSField(id: 5,
+			CSSField(id: 55,
 							 cssClass: .textarea(TextArea(text: "some text")),
 							 title: "Please enter some text below"
 			),
-			CSSField(id: 1, cssClass:
+			CSSField(id: 15, cssClass:
 				.checkboxes(
 					[
 						CheckBoxChoice(1, "Are you currently receiving any medical treatment at present?", false),
@@ -761,7 +761,7 @@ extension JourneyMockAPI {
 				),
 				title: "Choose please"
 			),
-			CSSField(id: 2, cssClass:
+			CSSField(id: 25, cssClass:
 				.checkboxes(
 					[
 						CheckBoxChoice(3, "choice 3", false),
@@ -771,11 +771,11 @@ extension JourneyMockAPI {
 				),
 				title: "Choose smth else"
 			),
-			CSSField(id: 3, cssClass:
+			CSSField(id: 35, cssClass:
 				.staticText(StaticText(1, "Hey what's going on?")),
 							 title: "This is some static text "
 			),
-			CSSField(id: 4,
+			CSSField(id: 45,
 							 cssClass: .radio(Radio(4,
 																			[RadioChoice(1, "radio choice 11"),
 																			 RadioChoice(2, "radio choice 12")],
@@ -787,27 +787,27 @@ extension JourneyMockAPI {
 							 ePaper: false,
 							 formStructure:
 		FormStructure(formStructure: [
-			CSSField(id: 8,
+			CSSField(id: 86,
 							 cssClass: .input_text(InputText(text: "input text 1")),
 							 title: "Insert some text"
 			),
-			CSSField(id: 6,
+			CSSField(id: 66,
 							 cssClass: .signature(Signature()),
 							 title: "Patient signature"
 			),
-			CSSField(id: 9,
+			CSSField(id: 96,
 							 cssClass: .input_text(InputText(text: "input text 2")),
 							 title: "Insert some text 2"
 			),
-			CSSField(id: 7,
+			CSSField(id: 76,
 							 cssClass: .signature(Signature()),
 							 title: "Practitioner signature"
 			),
-			CSSField(id: 5,
+			CSSField(id: 56,
 							 cssClass: .textarea(TextArea(text: "some text")),
 							 title: "Please enter some text below"
 			),
-			CSSField(id: 1, cssClass:
+			CSSField(id: 16, cssClass:
 				.checkboxes(
 					[
 						CheckBoxChoice(1, "Are you currently receiving any medical treatment at present?", false),
@@ -821,7 +821,7 @@ extension JourneyMockAPI {
 				),
 				title: "Choose please"
 			),
-			CSSField(id: 2, cssClass:
+			CSSField(id: 26, cssClass:
 				.checkboxes(
 					[
 						CheckBoxChoice(3, "choice 3", false),
@@ -831,11 +831,11 @@ extension JourneyMockAPI {
 				),
 				title: "Choose smth else"
 			),
-			CSSField(id: 3, cssClass:
+			CSSField(id: 36, cssClass:
 				.staticText(StaticText(1, "Hey what's going on?")),
 							 title: "This is some static text "
 			),
-			CSSField(id: 4,
+			CSSField(id: 46,
 							 cssClass: .radio(Radio(4,
 																			[RadioChoice(1, "radio choice 1"),
 																			 RadioChoice(2, "radio choice 2")],
