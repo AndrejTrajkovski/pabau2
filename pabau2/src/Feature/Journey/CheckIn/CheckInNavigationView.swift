@@ -49,7 +49,7 @@ public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction
 		action: /CheckInContainerAction.doctorSummary,
 		environment: { $0 }
 		),
-	passcodeReducer.pullback(
+	passcodeContainerReducer.pullback(
 		state: \CheckInContainerState.passcode,
 		action: /CheckInContainerAction.passcode,
 		environment: { $0 })
@@ -60,25 +60,25 @@ public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction
 )
 
 public let navigationReducer = Reducer<CheckInContainerState, CheckInContainerAction, Any> { state, action, _ in
-	switch action {
-	case .chooseConsents(.proceed):
+	func backToPatientMode() {
 		state.isChooseConsentActive = false
 		state.isDoctorSummaryActive = false
-		state.passcode = PasscodeState()
+		state.isDoctorSummaryActive = false
+		state.passcodeState = PasscodeState()
 		state.isHandBackDeviceActive = false
 		state.isEnterPasscodeActive = false
+		state.didGoBackToPatientMode = true
+	}
+	switch action {
+	case .chooseConsents(.proceed):
+		backToPatientMode()
 	case .chooseTreatments(.proceed):
 		state.isDoctorSummaryActive = true
 		state.isChooseTreatmentActive = false
 	case .didTouchHandbackDevice:
 		state.isEnterPasscodeActive = true
 	case .doctor(.stepForms(.toPatientMode)):
-		state.isChooseConsentActive = false
-		state.isDoctorSummaryActive = false
-		state.passcode = PasscodeState()
-		state.isHandBackDeviceActive = false
-		state.isEnterPasscodeActive = false
-		state.isDoctorCheckInMainActive = false
+		backToPatientMode()
 	default:
 		break
 	}

@@ -9,6 +9,12 @@ let validPasscodes: [[String]] = [
 	["2", "2", "5", "6"]
 ]
 
+public struct PasscodeContainerState: Equatable {
+	var passcode: PasscodeState
+	var didGoBackToPatientMode: Bool
+	var isDoctorCheckInMainActive: Bool
+}
+
 public struct PasscodeState: Equatable {
 	var runningDigits: [String] = []
 	var unlocked: Bool = false
@@ -42,6 +48,14 @@ let passcodeReducer = Reducer<PasscodeState, PasscodeAction, Any> { state, actio
 	return .none
 }
 
+let passcodeContainerReducer : Reducer<PasscodeContainerState, PasscodeAction, Any>
+	= (
+		passcodeReducer.pullback(
+			state: \PasscodeContainerState.passcode,
+			action: /PasscodeAction.self,
+			environment: { $0 })
+)
+
 struct Passcode: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>
 
@@ -53,10 +67,11 @@ struct Passcode: View {
 				Text(Texts.enterPass).font(.semibold20)
 				HStack(spacing: 16) {
 					ForEach(0..<4) { idx in
-						DotView(isFilled: viewStore.state.runningDigits.count > idx)
+						DotView(isFilled: viewStore.state.passcode.runningDigits.count > idx)
 					}
 				}
-				.modifier(Shake(animatableData: CGFloat(viewStore.state.wrongAttempts)))
+				.modifier(Shake(animatableData:
+					CGFloat(viewStore.state.passcode.wrongAttempts)))
 				Digits(onTouch: { viewStore.send(.touchDigit($0)) })
 				HStack {
 					Text("Cancel")
@@ -66,14 +81,22 @@ struct Passcode: View {
 					}
 				}
 				.font(.regular16)
-				NavigationLink.emptyHidden(viewStore.state.unlocked,
-																	 ChooseTreatmentNote(store:
-																		self.store.scope(
-																			state: { $0 },
-																			action: { $0 }))
-																		.navigationBarHidden(false)
-																		.navigationBarTitle("Choose Tretment Note", displayMode: .inline)
-																		.navigationBarBackButtonHidden(true)
+				NavigationLink.emptyHidden(
+					viewStore.state.passcode.unlocked,
+					Group {
+						if viewStore.state.didGoBackToPatientMode {
+							DoctorSummary(store: self.store.scope(
+								state: { $0 }, action: { $0 }))
+								.navigationBarTitle(Text(Texts.summary), displayMode: .inline)
+								.navigationBarHidden(viewStore.state.isDoctorCheckInMainActive)
+						} else {
+							ChooseTreatmentNote(store: self.store.scope(
+									state: { $0 }, action: { $0 }))
+							.navigationBarHidden(false)
+							.navigationBarTitle("Choose Tretment Note", displayMode: .inline)
+							.navigationBarBackButtonHidden(true)
+						}
+					}
 				)
 			}
 			.foregroundColor(.white)

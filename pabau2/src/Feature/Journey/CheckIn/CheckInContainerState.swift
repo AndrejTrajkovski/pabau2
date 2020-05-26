@@ -70,6 +70,7 @@ public struct CheckInContainerState: Equatable {
 	var isChooseTreatmentActive: Bool = false
 	var isDoctorCheckInMainActive: Bool = false
 	var isDoctorSummaryActive: Bool = false
+	var didGoBackToPatientMode: Bool = false
 }
 
 extension CheckInContainerState {
@@ -175,12 +176,18 @@ extension CheckInContainerState {
 		}
 	}
 
-	var passcode: PasscodeState {
+	var passcode: PasscodeContainerState {
 		get {
-			self.passcodeState
+			PasscodeContainerState(
+				passcode: self.passcodeState,
+				didGoBackToPatientMode: self.didGoBackToPatientMode,
+				isDoctorCheckInMainActive: self.isDoctorCheckInMainActive
+			)
 		}
 		set {
-			self.passcodeState = newValue
+			self.passcodeState = newValue.passcode
+			self.didGoBackToPatientMode = newValue.didGoBackToPatientMode
+			self.isDoctorCheckInMainActive = newValue.isDoctorCheckInMainActive
 		}
 	}
 

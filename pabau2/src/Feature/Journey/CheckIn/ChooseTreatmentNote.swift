@@ -16,7 +16,9 @@ struct ChooseTreatmentNote: View {
 																				action: { .chooseTreatments($0)}),
 										 mode: .treatmentNotes)
 			NavigationLink.emptyHidden(self.viewStore.state.isDoctorSummaryActive,
-																 DoctorSummary(store: self.store)
+																 DoctorSummary(store:
+																	self.store.scope(state: { $0 }, action: { $0 })
+																)
 																	.navigationBarTitle(Texts.summary)
 																	.navigationBarHidden(self.viewStore.state.isDoctorCheckInMainActive)
 			)

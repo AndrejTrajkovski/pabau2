@@ -85,7 +85,7 @@ public struct Texts {
 	public static let consents = "Consents"
 	public static let treatmentNotes = "Treatment Notes"
 	public static let chooseTreatmentNote = "Choose Treatment Note"
-	public static let summary = "Summary"
+	public static let summary = "Summary".localized
 	public static let toPatientMode = "To Patient Mode"
 	public static let done = "Done"
 	public static let resign = "Resign"
