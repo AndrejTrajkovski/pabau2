@@ -14,7 +14,11 @@ struct CheckInPatient: View {
 					.navigationBarTitle("")
 					.navigationBarHidden(true)
 				NavigationLink.emptyHidden(viewStore.state,
-																	 HandBackDevice(store: self.store)
+																	 HandBackDevice(
+																		store: self.store.scope(
+																			state: { $0 }, action: { $0 }
+																		)
+																	)
 																		.navigationBarTitle("")
 																		.navigationBarHidden(true)
 				)

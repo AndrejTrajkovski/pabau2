@@ -25,7 +25,7 @@ struct CheckInAnimation: View {
 extension CheckInAnimation {
 	var animationDuration: Double {
 		#if DEBUG
-			return 0.0
+			return 2.0
 		#else
 			return 2.0
 		#endif

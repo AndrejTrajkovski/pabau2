@@ -63,7 +63,7 @@ public let navigationReducer = Reducer<CheckInContainerState, CheckInContainerAc
 	func backToPatientMode() {
 		state.isChooseConsentActive = false
 		state.isDoctorSummaryActive = false
-		state.isDoctorSummaryActive = false
+		state.isDoctorCheckInMainActive = false
 		state.passcodeState = PasscodeState()
 		state.isHandBackDeviceActive = false
 		state.isEnterPasscodeActive = false
@@ -113,10 +113,12 @@ public struct CheckInNavigationView: View {
 			VStack {
 				CheckInAnimation(isRunningAnimation: self.$isRunningAnimation)
 				NavigationLink.init(destination:
-					CheckInPatient(store: self.store),
+					CheckInPatient(store: self.store.scope(
+						state: { $0 }, action: { $0 })),
 														isActive: self.$isRunningAnimation,
 														label: { EmptyView() })
 			}
-		}.navigationViewStyle(StackNavigationViewStyle())
+		}
+		.navigationViewStyle(StackNavigationViewStyle())
 	}
 }

@@ -209,6 +209,15 @@ extension CheckInContainerState {
 		return CheckPatient(patDetails: self.patientDetails,
 												patForms: forms)
 	}
+	
+	var handback: HandBackDeviceState {
+		get {
+			HandBackDeviceState(isEnterPasscodeActive: self.isEnterPasscodeActive,
+													isNavBarHidden: !self.passcode.passcode.unlocked
+//														&& self.isEnterPasscodeActive
+			)
+		}
+	}
 }
 
 extension CheckInContainerState {
