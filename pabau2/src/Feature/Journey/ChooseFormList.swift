@@ -22,7 +22,9 @@ public enum ChooseFormAction {
 let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, JourneyEnvironment> { state, action, environment in
 	switch action {
 	case .addTemplateId(let templateId):
-		state.selectedTemplatesIds.append(templateId)
+		if !state.selectedTemplatesIds.contains(templateId) {
+			state.selectedTemplatesIds.append(templateId)
+		}
 	case .removeTemplateId(let templateId):
 		state.selectedTemplatesIds.removeAll(where: { $0 == templateId})
 	case .proceed:
