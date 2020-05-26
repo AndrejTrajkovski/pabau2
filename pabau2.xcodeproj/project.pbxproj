@@ -14,6 +14,10 @@
 		820F16B0247AD12D00DB33DE /* CheckInViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16AF247AD12D00DB33DE /* CheckInViewState.swift */; };
 		820F16B2247BE3FE00DB33DE /* CheckPatient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16B1247BE3FE00DB33DE /* CheckPatient.swift */; };
 		820F16B4247D617400DB33DE /* AftercareForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16B3247D617400DB33DE /* AftercareForm.swift */; };
+		820F16B8247D73F100DB33DE /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16B7247D73F100DB33DE /* ImageCell.swift */; };
+		820F16BA247D792A00DB33DE /* AftercareOptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16B9247D792A00DB33DE /* AftercareOptionCell.swift */; };
+		820F16BC247D7CD200DB33DE /* AftercareCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16BB247D7CD200DB33DE /* AftercareCell.swift */; };
+		820F16BE247D7CF500DB33DE /* RecallCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16BD247D7CF500DB33DE /* RecallCell.swift */; };
 		82104525240C21B9004EA838 /* ForgotPassSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104524240C21B9004EA838 /* ForgotPassSuccess.swift */; };
 		82104527240C21E3004EA838 /* ForgotPassError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104526240C21E3004EA838 /* ForgotPassError.swift */; };
 		82104529240C2218004EA838 /* LoginError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104528240C2218004EA838 /* LoginError.swift */; };
@@ -458,6 +462,10 @@
 		820F16AF247AD12D00DB33DE /* CheckInViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInViewState.swift; sourceTree = "<group>"; };
 		820F16B1247BE3FE00DB33DE /* CheckPatient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckPatient.swift; sourceTree = "<group>"; };
 		820F16B3247D617400DB33DE /* AftercareForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AftercareForm.swift; sourceTree = "<group>"; };
+		820F16B7247D73F100DB33DE /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
+		820F16B9247D792A00DB33DE /* AftercareOptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AftercareOptionCell.swift; sourceTree = "<group>"; };
+		820F16BB247D7CD200DB33DE /* AftercareCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AftercareCell.swift; sourceTree = "<group>"; };
+		820F16BD247D7CF500DB33DE /* RecallCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecallCell.swift; sourceTree = "<group>"; };
 		82104524240C21B9004EA838 /* ForgotPassSuccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassSuccess.swift; sourceTree = "<group>"; };
 		82104526240C21E3004EA838 /* ForgotPassError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassError.swift; sourceTree = "<group>"; };
 		82104528240C2218004EA838 /* LoginError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginError.swift; sourceTree = "<group>"; };
@@ -983,6 +991,10 @@
 				820F16A92477ECCE00DB33DE /* FourSwitchesSection.swift */,
 				820F16AB24780A0900DB33DE /* CheckPatientForm.swift */,
 				820F16B3247D617400DB33DE /* AftercareForm.swift */,
+				820F16B7247D73F100DB33DE /* ImageCell.swift */,
+				820F16B9247D792A00DB33DE /* AftercareOptionCell.swift */,
+				820F16BB247D7CD200DB33DE /* AftercareCell.swift */,
+				820F16BD247D7CF500DB33DE /* RecallCell.swift */,
 			);
 			path = Form;
 			sourceTree = "<group>";
@@ -1913,18 +1925,22 @@
 				82E6D82F245E177900CB359A /* JourneyTransitionView.swift in Sources */,
 				825BE7E424361C4400422910 /* SoundPlayer.swift in Sources */,
 				829B40D12423B8F2009B7E71 /* AddAppointment.swift in Sources */,
+				820F16BE247D7CF500DB33DE /* RecallCell.swift in Sources */,
 				82622B5024464E0800BECF9A /* RibbonView.swift in Sources */,
 				82FB74F6245A9E51001C2DF3 /* PabauFormWrap.swift in Sources */,
+				820F16BA247D792A00DB33DE /* AftercareOptionCell.swift in Sources */,
 				82477612246C333500508434 /* PatientDetails.swift in Sources */,
 				8247760F246C27F200508434 /* TopView.swift in Sources */,
 				8247763C2473D0ED00508434 /* SecondaryButton.swift in Sources */,
 				82E6D829245DF4D200CB359A /* PatientCompleteForm.swift in Sources */,
 				8250D7D4242C980100F8F3FC /* ChooseService.swift in Sources */,
+				820F16BC247D7CD200DB33DE /* AftercareCell.swift in Sources */,
 				82E6D82B245E09ED00CB359A /* HandBackDevice.swift in Sources */,
 				8280D479245FEAA80077A73F /* DoctorSummary.swift in Sources */,
 				82477614246C334600508434 /* Recall.swift in Sources */,
 				824776362473CE9700508434 /* ChooseTreatmentNote.swift in Sources */,
 				82648404244F42F300544703 /* FormSectionField.swift in Sources */,
+				820F16B8247D73F100DB33DE /* ImageCell.swift in Sources */,
 				82292BD8244097C600080F74 /* StepsCollectionView.swift in Sources */,
 				82477616246C335500508434 /* Aftercare.swift in Sources */,
 				829BFBAF243F5D6F005DDCB9 /* CheckInAnimation.swift in Sources */,

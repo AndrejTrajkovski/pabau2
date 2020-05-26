@@ -31,7 +31,6 @@ func stepToModeMap(_ stepType: StepType) -> JourneyMode {
 	case .treatmentnotes: return .doctor
 	case .prescriptions: return .doctor
 	case .photos: return .doctor
-	case .recalls: return .doctor
 	case .aftercares: return .doctor
 	}
 }
@@ -48,8 +47,6 @@ func stepType(form: MetaForm) -> StepType {
 		return .patientComplete
 	case .checkPatient:
 		return .checkpatient
-	case .recall:
-		return .recalls
 	}
 }
 

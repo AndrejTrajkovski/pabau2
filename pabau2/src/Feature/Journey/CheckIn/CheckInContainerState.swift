@@ -61,8 +61,6 @@ public struct CheckInContainerState: Equatable {
 	var patientSelectedIndex: Int
 	var doctorSelectedIndex: Int
 	var photosCompleted: Bool
-	var recall: Recall
-	var recallCompleted: Bool
 
 	var passcodeState = PasscodeState()
 	var isEnterPasscodeActive: Bool = false
@@ -236,7 +234,7 @@ extension CheckInContainerState {
 		self.allTreatmentForms = flatten(JourneyMockAPI.mockTreatmentN)
 		self.consents = consents
 		self.treatments = FormsCollection(ids: [], fromAll: [])
-		self.aftercare = Aftercare()
+		self.aftercare = JourneyMocks.aftercare
 		self.aftercareCompleted = false
 		self.patientDetails = patientDetails
 		self.patientDetailsCompleted = false
@@ -247,8 +245,6 @@ extension CheckInContainerState {
 		self.prescriptionsCompleted = [:]
 		self.checkPatientCompleted = false
 		self.photosCompleted = false
-		self.recall = Recall()
-		self.recallCompleted = false
 		self.medHistory = JourneyMockAPI.getMedHistory()
 		self.medHistoryCompleted = false
 		self.selectedConsentsIds = []

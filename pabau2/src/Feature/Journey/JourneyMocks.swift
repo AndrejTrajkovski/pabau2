@@ -80,3 +80,24 @@ struct JourneyMocks {
 		allConsents: flatten(JourneyMockAPI.mockConsents)
 	)
 }
+
+extension JourneyMocks {
+	
+	static let aftercare = Aftercare(
+		profileImages: ["emily", "emily", "emily", "emily"],
+		shareImages: ["emily", "emily", "emily", "emily", "emily", "emily", "emily", "emily"],
+		aftercares: [
+			AftercareOption("Aftercare", .sms),
+			AftercareOption("Botox Aftercare", .sms),
+			AftercareOption("Hyalase Aftercare", .sms),
+			AftercareOption("PRP Aftercare Advice", .sms),
+			AftercareOption("Chemical Peel Aftercare", .sms),
+			AftercareOption("Aftercare Template", .sms),
+		],
+		recalls: [
+			Recall("Appointment Rescheduled"),
+			Recall("Birthday Wishes SMS"),
+			Recall("Sorry you were unable to attend."),
+		]
+	)
+}

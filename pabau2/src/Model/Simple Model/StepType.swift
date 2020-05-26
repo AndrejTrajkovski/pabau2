@@ -11,7 +11,6 @@ public enum StepType: String, Codable, Equatable, CaseIterable {
 	case treatmentnotes = "treatmentNotes"
 	case prescriptions = "prescriptions"
 	case photos = "photos"
-	case recalls = "recalls"
 	case aftercares = "aftercares"
 	case patientComplete = "complete"
 //	case mediaimages = "mediaImages"
@@ -33,12 +32,10 @@ public enum StepType: String, Codable, Equatable, CaseIterable {
 			return 5
 		case .photos:
 			return 6
-		case .recalls:
-			return 7
 		case .aftercares:
-			return 8
+			return 7
 		case .patientComplete:
-			return 9
+			return 8
 		}
 	}
 	
@@ -58,8 +55,6 @@ public enum StepType: String, Codable, Equatable, CaseIterable {
 			return "Prescriptions"
 		case .photos:
 			return "Photos"
-		case .recalls:
-			return "Recall"
 		case .aftercares:
 			return "Aftercare"
 //		case .mediaimages:
