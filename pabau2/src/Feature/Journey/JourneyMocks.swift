@@ -84,8 +84,12 @@ struct JourneyMocks {
 extension JourneyMocks {
 	
 	static let aftercare = Aftercare(
-		profileImages: ["emily", "emily", "emily", "emily"],
-		shareImages: ["emily", "emily", "emily", "emily", "emily", "emily", "emily", "emily"],
+		profile: SingleSelectImages(
+			images: ["emily", "emily", "emily", "emily"],
+			selectedIdx: nil),
+		share: SingleSelectImages(
+			images: ["emily", "emily", "emily", "emily", "emily", "emily"],
+			selectedIdx: nil),
 		aftercares: [
 			AftercareOption("Aftercare", .sms),
 			AftercareOption("Botox Aftercare", .sms),

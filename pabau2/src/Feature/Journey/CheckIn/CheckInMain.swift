@@ -40,10 +40,11 @@ public enum StepFormsAction {
 	case didSelectCompleteFormIdx(Int)
 }
 
-public enum UpdateFormAction: Equatable {
+public enum UpdateFormAction {
 	case patientComplete(PatientCompleteAction)
 	case didUpdateTemplate(FormTemplate)
 	case patientDetails(PatientDetailsAction)
+	case aftercare(AftercareAction)
 }
 
 let metaFormAndStatusReducer: Reducer<MetaFormAndStatus, UpdateFormAction, JourneyEnvironment> =
@@ -72,6 +73,10 @@ let metaFormReducer: Reducer<MetaForm, UpdateFormAction, JourneyEnvironment> =
 		patientDetailsReducer.pullbackCp(
 			state: /MetaForm.patientDetails,
 			action: /UpdateFormAction.patientDetails,
+			environment: { $0 }),
+		aftercareReducer.pullbackCp(
+			state: /MetaForm.aftercare,
+			action: /UpdateFormAction.aftercare,
 			environment: { $0 })
 )
 

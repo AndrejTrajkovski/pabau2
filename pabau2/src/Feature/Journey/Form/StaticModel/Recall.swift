@@ -1,4 +1,4 @@
-struct Recall: Equatable {
+public struct Recall: Equatable {
 	let title: String
 	var isSelected: Bool
 
