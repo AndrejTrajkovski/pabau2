@@ -14,7 +14,7 @@ public struct JourneyState: Equatable {
 	public var employeesState: EmployeesState = EmployeesState()
 	public var selectedJourney: Journey?
 	public var selectedPathway: Pathway?
-	
+
 	var selectedConsentsIds: [Int] = []
 	var allConsents: [Int: FormTemplate] = [:]
 	public var checkIn: CheckInContainerState?

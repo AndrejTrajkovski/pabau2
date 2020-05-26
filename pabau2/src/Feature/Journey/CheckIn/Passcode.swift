@@ -48,7 +48,7 @@ let passcodeReducer = Reducer<PasscodeState, PasscodeAction, Any> { state, actio
 	return .none
 }
 
-let passcodeContainerReducer : Reducer<PasscodeContainerState, PasscodeAction, Any>
+let passcodeContainerReducer: Reducer<PasscodeContainerState, PasscodeAction, Any>
 	= (
 		passcodeReducer.pullback(
 			state: \PasscodeContainerState.passcode,

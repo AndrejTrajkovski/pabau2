@@ -6,7 +6,7 @@ struct PatientDetailsForm: View {
 	let store: Store<PatientDetails, PatientDetailsAction>
 	@ObservedObject var viewStore: ViewStore<PatientDetails, PatientDetailsAction>
 	let vms: [[TextAndTextViewVM]]
-	
+
 	init(store: Store<PatientDetails, PatientDetailsAction>) {
 		self.store = store
 		let viewStore = ViewStore(store)

@@ -11,13 +11,13 @@ protocol MyCollection {
 
 struct FormsCollection: MyCollection, Equatable {
 	typealias A = FormTemplate
-	var byId: [Int : FormTemplate]
+	var byId: [Int: FormTemplate]
 	var allIds: [Int]
 	var completed: [Int: Bool]
 	var sorted: [FormTemplate] {
 		allIds.map { byId[$0]! }
 	}
-	
+
 	init(ids: [Int],
 		   fromAll: [FormTemplate]) {
 		self.allIds = ids
@@ -36,20 +36,20 @@ public struct CheckInContainerState: Equatable {
 	var stepTypes: [StepType]
 	var runningPrescriptions: [Int: FormTemplate]
 	var prescriptionsCompleted: [Int: Bool]
-	
+
 	var allTreatmentForms: [Int: FormTemplate]
 	var allConsents: [Int: FormTemplate]
-	
+
 	var selectedConsentsIds: [Int]
 	var selectedTreatmentFormsIds: [Int]
-	
+
 	var consents: FormsCollection
 	var treatments: FormsCollection
 //	var consentsCompleted: [Int: Bool]
 //	var runningConsents: [Int: FormTemplate]
 //	var treatmentFormsCompleted: [Int: Bool]
 //	var runningTreatmentForms: [Int: FormTemplate]
-	
+
 	var aftercare: Aftercare
 	var aftercareCompleted: Bool
 	var patientDetails: PatientDetails
@@ -96,13 +96,13 @@ extension CheckInContainerState {
 }
 
 extension CheckInContainerState {
-	
+
 	var patientCheckIn: CheckInViewState {
 		get {
 			CheckInViewState(
 				selectedIndex: patientSelectedIndex,
 				forms: patientArray,
-				xButtonActiveFlag: true,//handled in checkInMiddleware
+				xButtonActiveFlag: true, //handled in checkInMiddleware
 				journey: journey)
 		}
 		set {
@@ -203,13 +203,13 @@ extension CheckInContainerState {
 			self.patientComplete.isPatientComplete = newValue
 		}
 	}
-	
+
 	var checkPatient: CheckPatient {
 		let forms = [medHistory] + self.consents.sorted
 		return CheckPatient(patDetails: self.patientDetails,
 												patForms: forms)
 	}
-	
+
 	var handback: HandBackDeviceState {
 		get {
 			HandBackDeviceState(isEnterPasscodeActive: self.isEnterPasscodeActive,

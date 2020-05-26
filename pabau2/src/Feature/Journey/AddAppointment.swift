@@ -144,7 +144,7 @@ public struct AddAppointment: View {
 				VStack(spacing: 32) {
 					AddAppSections(store: self.store)
 						.environmentObject(KeyboardFollower())
-					PrimaryButton(Texts.saveAppointment){
+					PrimaryButton(Texts.saveAppointment) {
 						self.viewStore.send(.addAppointmentTap)
 					}
 					.frame(width: 315, height: 52)

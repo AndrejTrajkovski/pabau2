@@ -7,7 +7,7 @@ struct CheckPatientForm: View {
 	let didTouchDone: () -> Void
 	let patDetails: PatientDetails
 	let patientForms: [FormTemplate]
-	
+
 	var body: some View {
 		ScrollView {
 			VStack {

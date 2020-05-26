@@ -121,7 +121,7 @@ func updateWithKeepingOld(forms: inout FormsCollection,
 																	 uniquingKeysWith: { (old, _) in
 																		return old
 	})
-	
+
 	let oldWithDataCompleted = forms.completed.filter { old in
 		finalSelectedTemplatesIds.contains(old.key)
 	}
@@ -133,6 +133,6 @@ func updateWithKeepingOld(forms: inout FormsCollection,
 																									(old, _) in
 																									return old
 	})
-	
+
 	forms.allIds = finalSelectedTemplatesIds
 }
