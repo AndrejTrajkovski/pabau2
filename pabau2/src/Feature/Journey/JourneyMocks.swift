@@ -85,10 +85,22 @@ extension JourneyMocks {
 	
 	static let aftercare = Aftercare(
 		profile: SingleSelectImages(
-			images: ["emily", "emily", "emily", "emily"],
+			images: [ImageUrl("emily"),
+							 ImageUrl("dummy1"),
+							 ImageUrl("dummy2"),
+							 ImageUrl("dummy3")],
 			selectedIdx: nil),
 		share: SingleSelectImages(
-			images: ["emily", "emily", "emily", "emily", "emily", "emily"],
+			images: [
+				ImageUrl("dummy1"),
+				ImageUrl("dummy2"),
+				ImageUrl("dummy3"),
+				ImageUrl("dummy4"),
+				ImageUrl("dummy5"),
+				ImageUrl("dummy6"),
+				ImageUrl("dummy7"),
+				ImageUrl("emily")
+			],
 			selectedIdx: nil),
 		aftercares: [
 			AftercareOption("Aftercare", .sms),

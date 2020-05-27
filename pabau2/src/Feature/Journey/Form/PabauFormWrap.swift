@@ -66,7 +66,14 @@ struct PabauFormWrap: View {
 												 patientForms: self.viewStore.state.checkPatient!.patForms)
 			)
 		} else {
-			return AnyView(Text("Aftercare"))
+			return AnyView(
+				IfLetStore(
+					self.store.scope(
+						state: { extract(case: MetaForm.aftercare, from: $0) },
+						action: { .aftercare($0) }),
+					then: AftercareForm.init(store:)
+				)
+			)
 		}
 	}
 }

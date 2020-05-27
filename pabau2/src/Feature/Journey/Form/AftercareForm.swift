@@ -36,8 +36,23 @@ struct AftercareForm: View {
 
 	let store: Store<Aftercare, AftercareAction>
 	@ObservedObject var viewStore: ViewStore<Aftercare, AftercareAction>
+	init(store: Store<Aftercare, AftercareAction>) {
+		self.store = store
+		self.viewStore = ViewStore(store)
+	}
 
 	var body: some View {
-		Text("Aftercare")
+		ScrollView {
+			VStack {
+				SIngleSelectImagesField(
+					store: self.store.scope(
+						state: { $0.profile }, action: { .profile($0) })
+				)
+				SIngleSelectImagesField(
+					store: self.store.scope(
+						state: { $0.share }, action: { .share($0) })
+				)
+			}
+		}
 	}
 }

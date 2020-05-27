@@ -131,7 +131,9 @@ struct CheckInBody: View {
 				Spacer()
 				if self.keyboardHandler.keyboardHeight == 0 &&
 					!self.viewStore.state.isOnCompleteStep {
-					FooterButtons(store: self.store)
+					FooterButtons(store: self.store.scope(
+						state: { $0 }, action: { $0 }
+					))
 					.frame(maxWidth: 500)
 					.padding(8)
 				}
