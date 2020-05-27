@@ -17,7 +17,7 @@ public struct PasscodeContainerState: Equatable {
 
 public struct PasscodeState: Equatable {
 	var runningDigits: [String] = []
-	var unlocked: Bool = true
+	var unlocked: Bool = false
 	var wrongAttempts: Int = 0
 }
 
@@ -87,8 +87,9 @@ struct Passcode: View {
 						if viewStore.state.didGoBackToPatientMode {
 							DoctorSummary(store: self.store.scope(
 								state: { $0 }, action: { $0 }))
-								.navigationBarTitle(Text(Texts.summary), displayMode: .inline)
+								.navigationBarTitle(viewStore.state.isDoctorCheckInMainActive ? "" : Texts.summary)
 								.navigationBarHidden(viewStore.state.isDoctorCheckInMainActive)
+								.navigationBarBackButtonHidden(viewStore.state.isDoctorCheckInMainActive)
 						} else {
 							ChooseTreatmentNote(store: self.store.scope(
 									state: { $0 }, action: { $0 }))

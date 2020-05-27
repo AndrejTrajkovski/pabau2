@@ -35,7 +35,6 @@ public let aftercareReducer: Reducer<Aftercare, AftercareAction, Any> = (
 )
 
 struct AftercareForm: View {
-	
 	let store: Store<Aftercare, AftercareAction>
 	@ObservedObject var viewStore: ViewStore<Aftercare, AftercareAction>
 	init(store: Store<Aftercare, AftercareAction>) {
@@ -91,15 +90,15 @@ struct AftercareForm: View {
 										 lineSpacing: 2.5)
 			case 2:
 				return
-					.list(itemSize: .absolute(60),
-								sectionInsets: NSDirectionalEdgeInsets(
-									top: 0, leading: 0, bottom: 0, trailing: 0
-						)
-				)
+					.list(itemSize: .absolute(60))
 			default:
 				fatalError()
 			}
 		}
+		.scrollIndicatorsEnabled(horizontal: false, vertical: false)
+		.navigationBarTitle("")
+		.navigationBarBackButtonHidden(true)
+		.navigationBarHidden(true)
 	}
 }
 
@@ -111,7 +110,7 @@ struct AftercareHeader: View {
 	var body: some View {
 		Text(title)
 			.font(.bold24)
-			.padding()
 			.frame(maxWidth: .infinity, alignment: .leading)
+			.padding([.top, .bottom], 16)
 	}
 }

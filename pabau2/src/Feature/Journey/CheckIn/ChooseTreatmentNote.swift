@@ -19,8 +19,9 @@ struct ChooseTreatmentNote: View {
 																 DoctorSummary(store:
 																	self.store.scope(state: { $0 }, action: { $0 })
 																)
-																	.navigationBarTitle(Texts.summary)
+																	.navigationBarTitle(self.viewStore.state.isDoctorCheckInMainActive ? "" : Texts.summary)
 																	.navigationBarHidden(self.viewStore.state.isDoctorCheckInMainActive)
+																	.navigationBarBackButtonHidden(viewStore.state.isDoctorCheckInMainActive)
 			)
 		}
 	}
