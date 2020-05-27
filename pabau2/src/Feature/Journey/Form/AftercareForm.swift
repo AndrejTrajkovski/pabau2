@@ -41,33 +41,28 @@ struct AftercareForm: View {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
-
+	
 	var body: some View {
-		GeometryReader { geo in
-			ScrollView (.vertical) {
-				VStack {
-					AftercareImageSection(
-						Texts.setProfilePhoto,
-						self.store.scope(
-							state: { $0.profile }, action: { .profile($0) })
-					)
-						.background(GeometryReader { proxy in
-							Color.clear.preference(key: HeightKey.self, value: proxy.size.width)
-						})
-					AftercareImageSection(
-						Texts.sharePhoto,
-						self.store.scope(
-							state: { $0.share }, action: { .share($0) })
-					)
-					ForEachStore(self.store.scope(
-						state: { $0.aftercares },
-						action: { AftercareAction.aftercares(Indexed($0, $1)) }
-					),
-						content: AftercareOptionCell.init(store:)
-					)
-				}.frame(width: geo.size.width, height: 1000)
-			}
+//		ScrollView (.vertical) {
+			VStack {
+				AftercareImageSection(
+					Texts.setProfilePhoto,
+					self.store.scope(
+						state: { $0.profile }, action: { .profile($0) })
+				).border(Color.red, width: 3.0)
+				AftercareImageSection(
+					Texts.sharePhoto,
+					self.store.scope(
+						state: { $0.share }, action: { .share($0) })
+				).border(Color.red, width: 3.0)
+//				ForEachStore(self.store.scope(
+//					state: { $0.aftercares },
+//					action: { AftercareAction.aftercares(Indexed($0, $1)) }
+//					),
+//										 content: AftercareOptionCell.init(store:)
+//				)
 		}
+//		}
 	}
 }
 
@@ -118,8 +113,20 @@ struct AftercareImageSection: View {
 }
 
 
-struct HeightKey: PreferenceKey {
-	static let defaultValue: CGFloat? = nil static func reduce(value: inout CGFloat?,
-																														 nextValue: () -> CGFloat?) {
-		value = value ?? nextValue() }
-}
+//@State private var height: CGFloat?
+//.background(
+//	GeometryReader { proxy in
+//		Color.clear.preference(key: HeightKey.self, value: proxy.size.height)
+//})
+//	.onPreferenceChange(HeightKey.self) {
+//		self.height = $0
+//}
+//struct HeightKey: PreferenceKey {
+//	static let defaultValue: CGFloat? = nil
+//	static func reduce(value: inout CGFloat?,
+//										 nextValue: () -> CGFloat?) {
+//		let nextValue = nextValue()
+//		print("value: \(String(describing: value)) \n next value: \(String(describing: nextValue))")
+//		value = (value ?? 0) + (nextValue ?? 0)
+//	}
+//}

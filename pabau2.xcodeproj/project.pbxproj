@@ -19,7 +19,6 @@
 		820F16BC247D7CD200DB33DE /* AftercareCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16BB247D7CD200DB33DE /* AftercareCell.swift */; };
 		820F16BE247D7CF500DB33DE /* RecallCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16BD247D7CF500DB33DE /* RecallCell.swift */; };
 		820F16C0247D7F5300DB33DE /* SIngleSelectImagesField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16BF247D7F5300DB33DE /* SIngleSelectImagesField.swift */; };
-		820F16C8247E5F0700DB33DE /* QGrid in Frameworks */ = {isa = PBXBuildFile; productRef = 820F16C7247E5F0700DB33DE /* QGrid */; };
 		82104525240C21B9004EA838 /* ForgotPassSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104524240C21B9004EA838 /* ForgotPassSuccess.swift */; };
 		82104527240C21E3004EA838 /* ForgotPassError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104526240C21E3004EA838 /* ForgotPassError.swift */; };
 		82104529240C2218004EA838 /* LoginError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104528240C2218004EA838 /* LoginError.swift */; };
@@ -748,7 +747,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				820F16C8247E5F0700DB33DE /* QGrid in Frameworks */,
 				8253709C246497800095CEFA /* ComposableArchitecture in Frameworks */,
 				827B45992411368F00A5975E /* FSCalendarSwiftUI.framework in Frameworks */,
 				8247762A246DE77E00508434 /* Overture in Frameworks */,
@@ -1464,7 +1462,6 @@
 			packageProductDependencies = (
 				8253709B246497800095CEFA /* ComposableArchitecture */,
 				82477629246DE77E00508434 /* Overture */,
-				820F16C7247E5F0700DB33DE /* QGrid */,
 			);
 			productName = Journey;
 			productReference = 827B457A2411368100A5975E /* Journey.framework */;
@@ -1651,7 +1648,6 @@
 				82E253FF241E5ABF00F16C30 /* XCRemoteSwiftPackageReference "SwiftDate" */,
 				8280D47D2463E6FC0077A73F /* XCRemoteSwiftPackageReference "swift-overture" */,
 				8280D4822463F2BE0077A73F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
-				820F16C6247E5F0700DB33DE /* XCRemoteSwiftPackageReference "QGrid" */,
 			);
 			productRefGroup = 82BE2F4523D97D9C00B3678A /* Products */;
 			projectDirPath = "";
@@ -2884,14 +2880,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		820F16C6247E5F0700DB33DE /* XCRemoteSwiftPackageReference "QGrid" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Q-Mobile/QGrid";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.1.4;
-			};
-		};
 		8227FBAC240BC68400F653B5 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing.git";
@@ -2935,11 +2923,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		820F16C7247E5F0700DB33DE /* QGrid */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 820F16C6247E5F0700DB33DE /* XCRemoteSwiftPackageReference "QGrid" */;
-			productName = QGrid;
-		};
 		82477629246DE77E00508434 /* Overture */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8280D47D2463E6FC0077A73F /* XCRemoteSwiftPackageReference "swift-overture" */;
