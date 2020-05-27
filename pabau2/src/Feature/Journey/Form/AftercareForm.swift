@@ -1,6 +1,7 @@
 import SwiftUI
 import ComposableArchitecture
 import Util
+import ASCollectionView
 
 public enum AftercareAction {
 	case aftercares(Indexed<ToggleAction>)
@@ -43,90 +44,54 @@ struct AftercareForm: View {
 	}
 	
 	var body: some View {
-//		ScrollView (.vertical) {
-			VStack {
-				AftercareImageSection(
-					Texts.setProfilePhoto,
-					self.store.scope(
-						state: { $0.profile }, action: { .profile($0) })
-				).border(Color.red, width: 3.0)
-				AftercareImageSection(
-					Texts.sharePhoto,
-					self.store.scope(
-						state: { $0.share }, action: { .share($0) })
-				).border(Color.red, width: 3.0)
-//				ForEachStore(self.store.scope(
-//					state: { $0.aftercares },
-//					action: { AftercareAction.aftercares(Indexed($0, $1)) }
-//					),
-//										 content: AftercareOptionCell.init(store:)
-//				)
+		ASCollectionView {
+			ASCollectionViewSection(
+				id: 0,
+				data: self.viewStore.state.profile.images,
+				dataID: \.self) { imageUrl, context in
+				GridCell(title: imageUrl.title,
+								 isSelected: self.viewStore.state.profile.isSelected(url: imageUrl))
+					.onTapGesture {
+						self.viewStore.send(.profile(.didSelectIdx(context.index)))
+				}
+			}
+			.sectionHeader {
+				AftercareHeader(Texts.setProfilePhoto)
+			}
+			ASCollectionViewSection(
+				id: 1,
+				data: self.viewStore.state.share.images,
+				dataID: \.self) { imageUrl, context in
+				GridCell(title: imageUrl.title,
+								 isSelected: self.viewStore.state.share.isSelected(url: imageUrl))
+					.onTapGesture {
+						self.viewStore.send(.share(.didSelectIdx(context.index)))
+				}
+			}
+		.sectionHeader { AftercareHeader(Texts.sharePhoto) }
+		}.layout { sectionID in
+			switch sectionID {
+				case 0, 1:
+				// Here we use one of the provided convenience layouts
+				return .grid(layoutMode: .fixedNumberOfColumns(4),
+										 itemSpacing: 2.5,
+										 lineSpacing: 2.5)
+				default:
+				fatalError()
+			}
 		}
-//		}
 	}
 }
 
-struct AftercareSection<Content: View>: View {
+struct AftercareHeader: View {
 	let title: String
-	let content: () -> Content
-	init (title: String, @ViewBuilder content: @escaping () -> Content) {
+	init (_ title: String) {
 		self.title = title
-		self.content = content
 	}
-	
 	var body: some View {
-		VStack {
-			Text(title).font(.title)
-			content()
-		}
+		Text(title)
+			.font(.bold24)
+			.padding()
+			.frame(maxWidth: .infinity, alignment: .leading)
 	}
 }
-
-//struct AftercareBooleanSection: View {
-//	let title: String
-//	let store: Store<[AftercareOption], [ToggleAction]>
-//
-//	var body: some View {
-//		ForEachStore(self.store) { viewStore in
-//
-//		}
-//	}
-//}
-
-struct AftercareImageSection: View {
-	let title: String
-	let store: Store<SingleSelectImages, SingleSelectImagesAction>
-
-	init (_ title: String, _ store: Store<SingleSelectImages, SingleSelectImagesAction>) {
-		self.title = title
-		self.store = store
-	}
-
-	var body: some View {
-		AftercareSection(title: title) {
-			SIngleSelectImagesField(
-				store: self.store.scope(
-					state: { $0 }, action: { $0 })
-			)
-		}
-	}
-}
-
-
-//@State private var height: CGFloat?
-//.background(
-//	GeometryReader { proxy in
-//		Color.clear.preference(key: HeightKey.self, value: proxy.size.height)
-//})
-//	.onPreferenceChange(HeightKey.self) {
-//		self.height = $0
-//}
-//struct HeightKey: PreferenceKey {
-//	static let defaultValue: CGFloat? = nil
-//	static func reduce(value: inout CGFloat?,
-//										 nextValue: () -> CGFloat?) {
-//		let nextValue = nextValue()
-//		print("value: \(String(describing: value)) \n next value: \(String(describing: nextValue))")
-//		value = (value ?? 0) + (nextValue ?? 0)
-//	}
-//}

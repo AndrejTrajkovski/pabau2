@@ -128,6 +128,7 @@
 		826952772454E0A5001B806E /* SignatureField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826952762454E0A5001B806E /* SignatureField.swift */; };
 		826952792456F436001B806E /* InputTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826952782456F436001B806E /* InputTextField.swift */; };
 		8269527C2456F583001B806E /* InputText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8269527A2456F4BA001B806E /* InputText.swift */; };
+		82755AE3247EE44F00A3BBC2 /* ASCollectionView in Frameworks */ = {isa = PBXBuildFile; productRef = 82755AE2247EE44F00A3BBC2 /* ASCollectionView */; };
 		827B4572241135A700A5975E /* FSCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82CACE772411293C0021E1DE /* FSCalendar.framework */; };
 		827B45832411368100A5975E /* Journey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 827B457A2411368100A5975E /* Journey.framework */; };
 		827B458A2411368100A5975E /* JourneyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45892411368100A5975E /* JourneyTests.swift */; };
@@ -750,6 +751,7 @@
 				8253709C246497800095CEFA /* ComposableArchitecture in Frameworks */,
 				827B45992411368F00A5975E /* FSCalendarSwiftUI.framework in Frameworks */,
 				8247762A246DE77E00508434 /* Overture in Frameworks */,
+				82755AE3247EE44F00A3BBC2 /* ASCollectionView in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1462,6 +1464,7 @@
 			packageProductDependencies = (
 				8253709B246497800095CEFA /* ComposableArchitecture */,
 				82477629246DE77E00508434 /* Overture */,
+				82755AE2247EE44F00A3BBC2 /* ASCollectionView */,
 			);
 			productName = Journey;
 			productReference = 827B457A2411368100A5975E /* Journey.framework */;
@@ -1648,6 +1651,7 @@
 				82E253FF241E5ABF00F16C30 /* XCRemoteSwiftPackageReference "SwiftDate" */,
 				8280D47D2463E6FC0077A73F /* XCRemoteSwiftPackageReference "swift-overture" */,
 				8280D4822463F2BE0077A73F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
+				82755ADE247EDC0100A3BBC2 /* XCRemoteSwiftPackageReference "ASCollectionView" */,
 			);
 			productRefGroup = 82BE2F4523D97D9C00B3678A /* Products */;
 			projectDirPath = "";
@@ -2888,6 +2892,14 @@
 				minimumVersion = 1.7.2;
 			};
 		};
+		82755ADE247EDC0100A3BBC2 /* XCRemoteSwiftPackageReference "ASCollectionView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apptekstudios/ASCollectionView";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.6.3;
+			};
+		};
 		827B46092413C0C300A5975E /* XCRemoteSwiftPackageReference "swift-nonempty" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-nonempty.git";
@@ -2937,6 +2949,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8280D4822463F2BE0077A73F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
 			productName = ComposableArchitecture;
+		};
+		82755AE2247EE44F00A3BBC2 /* ASCollectionView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 82755ADE247EDC0100A3BBC2 /* XCRemoteSwiftPackageReference "ASCollectionView" */;
+			productName = ASCollectionView;
 		};
 		827B460C2413C14D00A5975E /* NonEmpty */ = {
 			isa = XCSwiftPackageProductDependency;

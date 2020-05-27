@@ -2,6 +2,24 @@
   "object": {
     "pins": [
       {
+        "package": "ASCollectionView",
+        "repositoryURL": "https://github.com/apptekstudios/ASCollectionView",
+        "state": {
+          "branch": null,
+          "revision": "91c0984c2c95d35fcff68bd0def8106086844b71",
+          "version": "1.6.3"
+        }
+      },
+      {
+        "package": "DifferenceKit",
+        "repositoryURL": "https://github.com/ra1028/DifferenceKit",
+        "state": {
+          "branch": null,
+          "revision": "14c66681e12a38b81045f44c6c29724a0d4b0e72",
+          "version": "1.1.5"
+        }
+      },
+      {
         "package": "swift-composable-architecture",
         "repositoryURL": "https://github.com/pointfreeco/swift-composable-architecture.git",
         "state": {

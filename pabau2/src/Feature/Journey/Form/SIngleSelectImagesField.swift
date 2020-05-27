@@ -1,6 +1,7 @@
 import SwiftUI
 import ComposableArchitecture
 import Util
+import ASCollectionView
 
 public let singleSelectImagesReducer = Reducer<SingleSelectImages, SingleSelectImagesAction, Any>.init { state, action, _ in
 	switch action {
@@ -10,7 +11,7 @@ public let singleSelectImagesReducer = Reducer<SingleSelectImages, SingleSelectI
 	return .none
 }
 
-public struct ImageUrl: Identifiable, Equatable {
+public struct ImageUrl: Identifiable, Hashable {
 	public var id: String { return title }
 	let title: String
 
@@ -66,9 +67,7 @@ struct GridCell: View {
 		Image(title)
 		.resizable()
 		.aspectRatio(contentMode: .fit)
-		.frame(width: 100, height: 100)
-			.background(Color.clear)
-			.border(isSelected ?
-				Color.accentColor : Color.clear, width: 12.0)
+		.padding(8)
+		.border(isSelected ? Color.accentColor : Color.clear, width: 8.0)
 	}
 }
