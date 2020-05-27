@@ -99,6 +99,10 @@ public struct Texts {
 	public static let smsReminders = "SMS Reminders"
 	public static let post = "Post"
 	public static let saveAppointment = "Save Appointment"
+	public static let setProfilePhoto = "Set profile photo"
+	public static let sharePhoto = "Share photo"
+	public static let sendAftercareQ = "Would you like to send aftercare?"
+	public static let recallsQ = "Schedule any recalls?"
 }
 
 extension String {

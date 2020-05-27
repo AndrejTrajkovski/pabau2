@@ -44,13 +44,14 @@ struct SIngleSelectImagesField: View {
 
 	var body: some View {
 		QGrid(viewStore.state.images,
-					columns: 4) { imageUrl in
+					columns: 4,
+					isScrollable: false) { imageUrl in
 						GridCell(title: imageUrl.title,
 										 isSelected: self.viewStore.state.isSelected(url: imageUrl)
 						).onTapGesture {
 							self.viewStore.send(
 								.didSelectIdx(
-								self.viewStore.state.images.firstIndex(of: imageUrl)!)
+									self.viewStore.state.images.firstIndex(of: imageUrl)!)
 							)
 						}
 		}
@@ -63,9 +64,10 @@ struct GridCell: View {
 	var body: some View {
 		Image(title)
 		.resizable()
-		.scaledToFit()
+		.aspectRatio(contentMode: .fit)
+		.frame(width: 100, height: 100)
 			.background(Color.clear)
 			.border(isSelected ?
-				Color.accentColor : Color.clear, width: 3.0)
+				Color.accentColor : Color.clear, width: 12.0)
 	}
 }
