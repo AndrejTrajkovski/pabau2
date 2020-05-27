@@ -35,7 +35,7 @@ public let aftercareReducer: Reducer<Aftercare, AftercareAction, Any> = (
 )
 
 struct AftercareForm: View {
-
+	
 	let store: Store<Aftercare, AftercareAction>
 	@ObservedObject var viewStore: ViewStore<Aftercare, AftercareAction>
 	init(store: Store<Aftercare, AftercareAction>) {
@@ -49,11 +49,11 @@ struct AftercareForm: View {
 				id: 0,
 				data: self.viewStore.state.profile.images,
 				dataID: \.self) { imageUrl, context in
-				GridCell(title: imageUrl.title,
-								 isSelected: self.viewStore.state.profile.isSelected(url: imageUrl))
-					.onTapGesture {
-						self.viewStore.send(.profile(.didSelectIdx(context.index)))
-				}
+					GridCell(title: imageUrl.title,
+									 isSelected: self.viewStore.state.profile.isSelected(url: imageUrl))
+						.onTapGesture {
+							self.viewStore.send(.profile(.didSelectIdx(context.index)))
+					}
 			}
 			.sectionHeader {
 				AftercareHeader(Texts.setProfilePhoto)
@@ -62,21 +62,41 @@ struct AftercareForm: View {
 				id: 1,
 				data: self.viewStore.state.share.images,
 				dataID: \.self) { imageUrl, context in
-				GridCell(title: imageUrl.title,
-								 isSelected: self.viewStore.state.share.isSelected(url: imageUrl))
-					.onTapGesture {
-						self.viewStore.send(.share(.didSelectIdx(context.index)))
-				}
+					GridCell(title: imageUrl.title,
+									 isSelected: self.viewStore.state.share.isSelected(url: imageUrl))
+						.onTapGesture {
+							self.viewStore.send(.share(.didSelectIdx(context.index)))
+					}
 			}
-		.sectionHeader { AftercareHeader(Texts.sharePhoto) }
+			.sectionHeader { AftercareHeader(Texts.sharePhoto) }
+			ASCollectionViewSection(
+				id: 2,
+				data: self.viewStore.state.aftercares,
+				dataID: \.self) { aftercare, context in
+					AftercareCell(type: .init(channel: aftercare.channel),
+												title: aftercare.title,
+												value: Binding.init(
+													get: { aftercare.isSelected },
+													set: { self.viewStore
+														.send(.aftercares(Indexed(context.index, ToggleAction.setTo($0)))) })
+					)
+			}
+			.sectionHeader { AftercareHeader(Texts.sendAftercareQ) }
 		}.layout { sectionID in
 			switch sectionID {
-				case 0, 1:
+			case 0, 1:
 				// Here we use one of the provided convenience layouts
 				return .grid(layoutMode: .fixedNumberOfColumns(4),
 										 itemSpacing: 2.5,
 										 lineSpacing: 2.5)
-				default:
+			case 2:
+				return
+					.list(itemSize: .absolute(60),
+								sectionInsets: NSDirectionalEdgeInsets(
+									top: 0, leading: 0, bottom: 0, trailing: 0
+						)
+				)
+			default:
 				fatalError()
 			}
 		}

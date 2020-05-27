@@ -6,10 +6,13 @@ struct AftercareCell: View {
 	@Binding var value: Bool
 
 	var body: some View {
-		HStack {
-			Image(systemName: type == .sms ? "message.circle" : "envelope.circle")
-			Text(title).font(.body)
-			Toggle(isOn: $value, label: { EmptyView() })
+		VStack {
+			HStack {
+				Image(systemName: type == .sms ? "message.circle" : "envelope.circle")
+				Text(title).font(.body)
+				Toggle(isOn: $value, label: { EmptyView() })
+			}.padding([.leading, .trailing])
+			Divider()
 		}
 	}
 }

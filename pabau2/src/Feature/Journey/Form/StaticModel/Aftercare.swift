@@ -5,13 +5,11 @@ public struct Aftercare: Equatable {
 	var recalls: [Recall]
 }
 
-public struct AftercareOption: Equatable, Identifiable {
+public struct AftercareOption: Hashable, Identifiable {
 	let title: String
 	let channel: AftercareChannel
 	var isSelected: Bool
-	
 	public var id: String { return title }
-	
 	public init (_ title: String,
 							 _ channel: AftercareChannel,
 							 _ isSelected: Bool = false) {
