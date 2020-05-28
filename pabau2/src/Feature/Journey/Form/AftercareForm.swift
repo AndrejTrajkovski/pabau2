@@ -41,7 +41,7 @@ struct AftercareForm: View {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
-	
+
 	var body: some View {
 		ASCollectionView {
 			ASCollectionViewSection(

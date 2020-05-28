@@ -87,14 +87,13 @@ struct Passcode: View {
 						if viewStore.state.didGoBackToPatientMode {
 							DoctorSummary(store: self.store.scope(
 								state: { $0 }, action: { $0 }))
-								.navigationBarTitle(viewStore.state.isDoctorCheckInMainActive ? "" : Texts.summary)
-								.navigationBarHidden(viewStore.state.isDoctorCheckInMainActive)
-								.navigationBarBackButtonHidden(viewStore.state.isDoctorCheckInMainActive)
+								.hideNavBar(viewStore.state.isDoctorCheckInMainActive,
+														Texts.summary)
 						} else {
 							ChooseTreatmentNote(store: self.store.scope(
 									state: { $0 }, action: { $0 }))
 							.navigationBarHidden(false)
-							.navigationBarTitle("Choose Tretment Note", displayMode: .inline)
+							.navigationBarTitle(Texts.chooseTreatmentNote, displayMode: .inline)
 							.navigationBarBackButtonHidden(true)
 						}
 					}
