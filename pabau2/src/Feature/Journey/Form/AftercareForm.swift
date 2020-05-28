@@ -44,19 +44,6 @@ struct AftercareForm: View {
 
 	var body: some View {
 		ASCollectionView {
-//			ASCollectionViewSection(
-//				id: 0,
-//				data: self.viewStore.state.profile.images,
-//				dataID: \.self) { imageUrl, context in
-//					GridCell(title: imageUrl.title,
-//									 isSelected: self.viewStore.state.profile.isSelected(url: imageUrl))
-//						.onTapGesture {
-//							self.viewStore.send(.profile(.didSelectIdx(context.index)))
-//					}
-//			}
-//			.sectionHeader {
-//				AftercareHeader(Texts.setProfilePhoto)
-//			}
 			AftercareImagesSection(
 				id: 0,
 				title: Texts.setProfilePhoto,
