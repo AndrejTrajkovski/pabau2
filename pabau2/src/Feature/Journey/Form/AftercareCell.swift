@@ -9,6 +9,9 @@ struct AftercareCell: View {
 		VStack {
 			HStack {
 				Image(systemName: channel == .sms ? "message.circle" : "envelope.circle")
+					.resizable()
+					.frame(width: 26, height: 26)
+					.foregroundColor(.accentColor)
 				Text(title).font(.body)
 				Toggle(isOn: $value, label: { EmptyView() })
 			}.padding([.leading, .trailing])

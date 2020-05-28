@@ -104,16 +104,16 @@ extension JourneyMocks {
 			selectedIdx: nil),
 		aftercares: [
 			AftercareOption("Aftercare", .sms),
-			AftercareOption("Botox Aftercare", .sms),
-			AftercareOption("Hyalase Aftercare", .sms),
-			AftercareOption("PRP Aftercare Advice", .sms),
-			AftercareOption("Chemical Peel Aftercare", .sms),
-			AftercareOption("Aftercare Template", .sms)
+			AftercareOption("Botox Aftercare", .email),
+			AftercareOption("Hyalase Aftercare", .email),
+			AftercareOption("PRP Aftercare Advice", .email),
+			AftercareOption("Chemical Peel Aftercare", .email),
+			AftercareOption("Aftercare Template", .email)
 		],
 		recalls: [
-			AftercareOption("Appointment Rescheduled", .sms),
-			AftercareOption("Birthday Wishes SMS", .sms),
-			AftercareOption("Sorry you were unable to attend.", .sms)
+			AftercareOption("Appointment Rescheduled", .email),
+			AftercareOption("Birthday Wishes SMS", .email),
+			AftercareOption("Sorry you were unable to attend.", .email)
 		]
 	)
 }
