@@ -38,18 +38,17 @@ struct StepsCollectionView: View {
 	let cellWidth: CGFloat = 100
 	let cellHeight: CGFloat = 80
 	let spacing: CGFloat = 8
-	
 	struct State: Equatable {
 		let maxVisibleCells = 5
 		let formVms: [FormVM]
 		let selectedIndex: Int
 		let numberOfVisibleSteps: Int
-		let shouldShowArrows: Bool
+		let shouldShowLeftArrow: Bool
+		let shouldShowRightArrow: Bool
 	}
-
+	
 	let store: Store<StepsViewState, StepsViewAction>
 	@ObservedObject var viewStore: ViewStore<State, StepsViewAction>
-
 	init (store: Store<StepsViewState, StepsViewAction>) {
 		self.store = store
 		self.viewStore = ViewStore(
@@ -71,12 +70,15 @@ struct StepsCollectionView: View {
 			self.viewStore.send(.didSelectFormIndex(viewModel.idx))
 		}.frame(maxWidth: cellWidth, maxHeight: cellHeight, alignment: .top)
 	}
-
+	
 	var body: some View {
-		HStack(alignment: .top, spacing: 16) {
-			if viewStore.state.shouldShowArrows {
+		HStack(alignment: .top, spacing: 24) {
+			if viewStore.state.shouldShowLeftArrow {
 				Image(systemName: "chevron.left")
 					.font(.regular30).foregroundColor(.gray)
+					.onTapGesture {
+						self.viewStore.send(.didSelectPrevStep)
+				}
 			}
 			CollectionView(viewStore.state.formVms, viewStore.state.selectedIndex) {
 				stepView(for: $0)
@@ -92,26 +94,33 @@ struct StepsCollectionView: View {
 				.layout({ (layout) in
 					layout.interGroupSpacing = spacing
 				})
-				.frame(width: ((cellWidth + spacing) * CGFloat()),
+				.frame(width: ((cellWidth + spacing) * CGFloat(viewStore.state.numberOfVisibleSteps)),
 							 height: cellHeight)
-			if viewStore.state.shouldShowArrows {
+			if viewStore.state.shouldShowRightArrow {
 				Image(systemName: "chevron.right")
 					.font(.regular30).foregroundColor(.gray)
+					.onTapGesture {
+						self.viewStore.send(.didSelectNextStep)
+				}
 			}
 		}
 	}
 }
 
 extension StepsCollectionView.State {
-	
 	init(state: StepsViewState) {
 		let forms = state.forms
-		self.formVms = zip(forms, forms.indices).map { Self.formVm(form: $0, selection: state.selectedIndex)}
-		self.selectedIndex = state.selectedIndex
+		let formVms = zip(forms, forms.indices).map { Self.formVm(form: $0, selection: state.selectedIndex)}
+		let selIdx = state.selectedIndex
+		let shouldShowArrows = formVms.count > maxVisibleCells
+		
+		self.formVms = formVms
+		self.selectedIndex = selIdx
 		self.numberOfVisibleSteps = min(formVms.count, maxVisibleCells)
-		self.shouldShowArrows = formVms.count > maxVisibleCells
+		self.shouldShowLeftArrow = shouldShowArrows && (selIdx != 0)
+		self.shouldShowRightArrow = shouldShowArrows && (selIdx != formVms.count - 1)
 	}
-	
+
 	static func formVm(form: (MetaFormAndStatus, Int), selection: Int) -> FormVM {
 		FormVM(idx: form.1,
 					 isSelected: form.1 == selection,

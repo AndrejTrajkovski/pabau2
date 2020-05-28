@@ -78,21 +78,29 @@ let metaFormReducer: Reducer<MetaForm, UpdateFormAction, JourneyEnvironment> =
 			environment: { $0 })
 )
 
-let checkInBodyReducer = Reducer<CheckInViewState, StepFormsAction, JourneyEnvironment> { state, action, _ in
-	switch action {
-	case .updateForm:
-		break
-	case .didSelectCompleteFormIdx(let idx):
-		state.forms[idx].isComplete = true
-		goToNextStep(&state.stepsViewState)
-	case .toPatientMode:
-		break//handled in navigationReducer
-	case .stepsView(_):
-		break
-	}
-	return .none
-}
-
+let checkInBodyReducer: Reducer<CheckInViewState, StepFormsAction, JourneyEnvironment> =
+	(
+	.combine(
+		.init { state, action, _ in
+			switch action {
+			case .updateForm:
+				break
+			case .didSelectCompleteFormIdx(let idx):
+				state.forms[idx].isComplete = true
+				goToNextStep(&state.stepsViewState)
+			case .toPatientMode:
+				break//handled in navigationReducer
+			case .stepsView(_):
+				break
+			}
+			return .none
+		},
+		stepsViewReducer.pullback(
+			state: \.stepsViewState,
+			action: /StepFormsAction.stepsView,
+			environment: { $0 })
+		)
+	)
 struct CheckInBody: View {
 
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
