@@ -18,7 +18,7 @@
 		820F16BA247D792A00DB33DE /* AftercareOptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16B9247D792A00DB33DE /* AftercareOptionCell.swift */; };
 		820F16BC247D7CD200DB33DE /* AftercareCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16BB247D7CD200DB33DE /* AftercareCell.swift */; };
 		820F16BE247D7CF500DB33DE /* RecallCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16BD247D7CF500DB33DE /* RecallCell.swift */; };
-		820F16C0247D7F5300DB33DE /* SIngleSelectImagesField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16BF247D7F5300DB33DE /* SIngleSelectImagesField.swift */; };
+		820F16C0247D7F5300DB33DE /* AftercareImagesSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16BF247D7F5300DB33DE /* AftercareImagesSection.swift */; };
 		82104525240C21B9004EA838 /* ForgotPassSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104524240C21B9004EA838 /* ForgotPassSuccess.swift */; };
 		82104527240C21E3004EA838 /* ForgotPassError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104526240C21E3004EA838 /* ForgotPassError.swift */; };
 		82104529240C2218004EA838 /* LoginError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104528240C2218004EA838 /* LoginError.swift */; };
@@ -468,7 +468,7 @@
 		820F16B9247D792A00DB33DE /* AftercareOptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AftercareOptionCell.swift; sourceTree = "<group>"; };
 		820F16BB247D7CD200DB33DE /* AftercareCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AftercareCell.swift; sourceTree = "<group>"; };
 		820F16BD247D7CF500DB33DE /* RecallCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecallCell.swift; sourceTree = "<group>"; };
-		820F16BF247D7F5300DB33DE /* SIngleSelectImagesField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SIngleSelectImagesField.swift; sourceTree = "<group>"; };
+		820F16BF247D7F5300DB33DE /* AftercareImagesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AftercareImagesSection.swift; sourceTree = "<group>"; };
 		82104524240C21B9004EA838 /* ForgotPassSuccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassSuccess.swift; sourceTree = "<group>"; };
 		82104526240C21E3004EA838 /* ForgotPassError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassError.swift; sourceTree = "<group>"; };
 		82104528240C2218004EA838 /* LoginError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginError.swift; sourceTree = "<group>"; };
@@ -999,7 +999,7 @@
 				820F16B9247D792A00DB33DE /* AftercareOptionCell.swift */,
 				820F16BB247D7CD200DB33DE /* AftercareCell.swift */,
 				820F16BD247D7CF500DB33DE /* RecallCell.swift */,
-				820F16BF247D7F5300DB33DE /* SIngleSelectImagesField.swift */,
+				820F16BF247D7F5300DB33DE /* AftercareImagesSection.swift */,
 			);
 			path = Form;
 			sourceTree = "<group>";
@@ -1935,7 +1935,7 @@
 				820F16BE247D7CF500DB33DE /* RecallCell.swift in Sources */,
 				82622B5024464E0800BECF9A /* RibbonView.swift in Sources */,
 				82FB74F6245A9E51001C2DF3 /* PabauFormWrap.swift in Sources */,
-				820F16C0247D7F5300DB33DE /* SIngleSelectImagesField.swift in Sources */,
+				820F16C0247D7F5300DB33DE /* AftercareImagesSection.swift in Sources */,
 				820F16BA247D792A00DB33DE /* AftercareOptionCell.swift in Sources */,
 				82477612246C333500508434 /* PatientDetails.swift in Sources */,
 				8247760F246C27F200508434 /* TopView.swift in Sources */,

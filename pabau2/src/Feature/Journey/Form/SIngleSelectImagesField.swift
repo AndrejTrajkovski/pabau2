@@ -33,30 +33,28 @@ public enum SingleSelectImagesAction: Equatable {
 	case didSelectIdx(Int)
 }
 
-struct SIngleSelectImagesField: View {
+struct AftercareImagesSection {
 	let store: Store<SingleSelectImages, SingleSelectImagesAction>
 	@ObservedObject var viewStore: ViewStore<SingleSelectImages, SingleSelectImagesAction>
 
-	public init(store: Store<SingleSelectImages, SingleSelectImagesAction>) {
+	public init(store: Store<SingleSelectImages, SingleSelectImagesAction>,
+							title: String) {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
-
-	@State private var height: CGFloat?
-	var body: some View {
-		EmptyView()
-//		QGrid(viewStore.state.images,
-//					columns: 4,
-//					isScrollable: false) { imageUrl in
-//						GridCell(title: imageUrl.title,
-//										 isSelected: self.viewStore.state.isSelected(url: imageUrl)
-//						).onTapGesture {
-//							self.viewStore.send(
-//								.didSelectIdx(
-//									self.viewStore.state.images.firstIndex(of: imageUrl)!)
-//							)
-//						}
-//		}
+	
+	func makeSection() -> ASCollectionViewSection<Int> {
+		return ASCollectionViewSection(
+			id: 1,
+			data: self.viewStore.state.images,
+			dataID: \.self) { imageUrl, context in
+				return GridCell(title: imageUrl.title,
+												isSelected: self.viewStore.state.isSelected(url: imageUrl))
+					.onTapGesture {
+						self.viewStore.send(.didSelectIdx(context.index))
+				}
+		}
+		.sectionHeader { AftercareHeader(title) }
 	}
 }
 

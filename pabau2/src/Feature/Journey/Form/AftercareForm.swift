@@ -44,30 +44,31 @@ struct AftercareForm: View {
 
 	var body: some View {
 		ASCollectionView {
-			ASCollectionViewSection(
+//			ASCollectionViewSection(
+//				id: 0,
+//				data: self.viewStore.state.profile.images,
+//				dataID: \.self) { imageUrl, context in
+//					GridCell(title: imageUrl.title,
+//									 isSelected: self.viewStore.state.profile.isSelected(url: imageUrl))
+//						.onTapGesture {
+//							self.viewStore.send(.profile(.didSelectIdx(context.index)))
+//					}
+//			}
+//			.sectionHeader {
+//				AftercareHeader(Texts.setProfilePhoto)
+//			}
+			AftercareImagesSection(
 				id: 0,
-				data: self.viewStore.state.profile.images,
-				dataID: \.self) { imageUrl, context in
-					GridCell(title: imageUrl.title,
-									 isSelected: self.viewStore.state.profile.isSelected(url: imageUrl))
-						.onTapGesture {
-							self.viewStore.send(.profile(.didSelectIdx(context.index)))
-					}
-			}
-			.sectionHeader {
-				AftercareHeader(Texts.setProfilePhoto)
-			}
-			ASCollectionViewSection(
+				title: Texts.setProfilePhoto,
+				store: self.store.scope(
+					state: { $0.profile }, action: { .profile($0) })
+				).makeSection()
+			AftercareImagesSection(
 				id: 1,
-				data: self.viewStore.state.share.images,
-				dataID: \.self) { imageUrl, context in
-					GridCell(title: imageUrl.title,
-									 isSelected: self.viewStore.state.share.isSelected(url: imageUrl))
-						.onTapGesture {
-							self.viewStore.send(.share(.didSelectIdx(context.index)))
-					}
-			}
-			.sectionHeader { AftercareHeader(Texts.sharePhoto) }
+				title: Texts.sharePhoto,
+				store: self.store.scope(
+					state: { $0.share }, action: { .share($0) })
+			).makeSection()
 			ASCollectionViewSection(
 				id: 2,
 				data: self.viewStore.state.aftercares,
