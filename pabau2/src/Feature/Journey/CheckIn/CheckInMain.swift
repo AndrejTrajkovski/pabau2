@@ -4,8 +4,23 @@ import ComposableArchitecture
 import Util
 import Overture
 
+public let checkInMainReducer: Reducer<CheckInViewState, CheckInMainAction, JourneyEnvironment> = .combine(
+	metaFormAndStatusReducer.forEach(
+		state: \CheckInViewState.forms,
+		action: /CheckInMainAction.checkInBody..CheckInBodyAction.updateForm,
+		environment: { $0 }),
+	checkInBodyReducer.pullback(
+		state: \CheckInViewState.self,
+		action: /CheckInMainAction.checkInBody,
+		environment: { $0 }),
+	topViewReducer.pullback(
+		state: \CheckInViewState.topView,
+		action: /CheckInMainAction.topView,
+		environment: { $0 })
+)
+
 public enum CheckInMainAction {
-	case stepForms(StepFormsAction)
+	case checkInBody(CheckInBodyAction)
 	case complete
 	case topView(TopViewAction)
 }
@@ -25,129 +40,14 @@ struct CheckInMain: View {
 							 action: { .topView($0) }))
 			CheckInBody(store: self.store.scope(
 				state: { $0 },
-				action: { .stepForms($0) }))
+				action: { .checkInBody($0) }))
 			Spacer()
 		}
 	}
 }
 
-public enum StepFormsAction {
-	case toPatientMode
-	case updateForm(Indexed<UpdateFormAction>)
-	case didSelectCompleteFormIdx(Int)
-	case stepsView(StepsViewAction)
-}
-
-public enum UpdateFormAction {
-	case patientComplete(PatientCompleteAction)
-	case didUpdateTemplate(FormTemplate)
-	case patientDetails(PatientDetailsAction)
-	case aftercare(AftercareAction)
-}
-
-let metaFormAndStatusReducer: Reducer<MetaFormAndStatus, UpdateFormAction, JourneyEnvironment> =
-	metaFormReducer.pullback(
-		state: \MetaFormAndStatus.form,
-		action: /UpdateFormAction.self,
-		environment: { $0 }
-)
-
-let metaFormReducer: Reducer<MetaForm, UpdateFormAction, JourneyEnvironment> =
-	Reducer.combine(
-		Reducer.init { state, action, _ in
-			switch action {
-			//FIXME: GO WITH REDUX FOR TEMPLATES
-			case .didUpdateTemplate(let template):
-				state = MetaForm.init(template)
-			default:
-				break
-			}
-			return .none
-		},
-		patientCompleteReducer.pullbackCp(
-			state: /MetaForm.patientComplete,
-			action: /UpdateFormAction.patientComplete,
-			environment: { $0 }),
-		patientDetailsReducer.pullbackCp(
-			state: /MetaForm.patientDetails,
-			action: /UpdateFormAction.patientDetails,
-			environment: { $0 }),
-		aftercareReducer.pullbackCp(
-			state: /MetaForm.aftercare,
-			action: /UpdateFormAction.aftercare,
-			environment: { $0 })
-)
-
-let checkInBodyReducer: Reducer<CheckInViewState, StepFormsAction, JourneyEnvironment> =
-	(
-	.combine(
-		.init { state, action, _ in
-			switch action {
-			case .updateForm:
-				break
-			case .didSelectCompleteFormIdx(let idx):
-				state.forms[idx].isComplete = true
-				goToNextStep(&state.stepsViewState)
-			case .toPatientMode:
-				break//handled in navigationReducer
-			case .stepsView(_):
-				break
-			}
-			return .none
-		},
-		stepsViewReducer.pullback(
-			state: \.stepsViewState,
-			action: /StepFormsAction.stepsView,
-			environment: { $0 })
-		)
-	)
-struct CheckInBody: View {
-
-	@EnvironmentObject var keyboardHandler: KeyboardFollower
-	let store: Store<CheckInViewState, StepFormsAction>
-	@ObservedObject var viewStore: ViewStore<CheckInViewState, StepFormsAction>
-
-	init(store: Store<CheckInViewState, StepFormsAction>) {
-		print("check in body init")
-		self.store = store
-		self.viewStore = ViewStore(store)
-	}
-
-	var body: some View {
-		print("check in main body")
-		return GeometryReader { geo in
-			VStack(spacing: 8) {
-				StepsCollectionView(store:
-					self.store.scope(
-						state: { $0.stepsViewState}, action: { .stepsView($0) })
-				).frame(height: 80)
-				Divider()
-					.frame(width: geo.size.width)
-					.shadow(color: Color(hex: "C1C1C1"), radius: 4, y: 2)
-				IfLetStore(self.store
-					.scope(state: { $0.selectedForm?.form },
-								 action: { .updateForm(Indexed(self.viewStore.state.selectedIndex, $0))
-					}), then: PabauFormWrap.init(store:))
-					.padding(.bottom,
-									 self.keyboardHandler.keyboardHeight > 0 ? self.keyboardHandler.keyboardHeight : 32)
-					.padding([.leading, .trailing, .top], 32)
-				Spacer()
-				if self.keyboardHandler.keyboardHeight == 0 &&
-					!self.viewStore.state.isOnCompleteStep {
-					FooterButtons(store: self.store.scope(
-						state: { $0 }, action: { $0 }
-					))
-					.frame(maxWidth: 500)
-					.padding(8)
-				}
-			}	.padding(.leading, 40)
-				.padding(.trailing, 40)
-		}
-	}
-}
-
 struct FooterButtons: View {
-	let store: Store<CheckInViewState, StepFormsAction>
+	let store: Store<CheckInViewState, CheckInBodyAction>
 	struct State: Equatable {
 		let isOnCheckPatient: Bool
 	}
@@ -178,7 +78,7 @@ extension FooterButtons.State {
 }
 
 struct NextButton: View {
-	let store: Store<CheckInViewState, StepFormsAction>
+	let store: Store<CheckInViewState, CheckInBodyAction>
 	struct State: Equatable {
 		let index: Int
 		let isDisabled: Bool

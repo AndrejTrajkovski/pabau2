@@ -82,28 +82,13 @@ public let navigationReducer = Reducer<CheckInContainerState, CheckInContainerAc
 		state.isChooseTreatmentActive = false
 	case .didTouchHandbackDevice:
 		state.isEnterPasscodeActive = true
-	case .doctor(.stepForms(.toPatientMode)):
+	case .doctor(.checkInBody(.toPatientMode)):
 		backToPatientMode()
 	default:
 		break
 	}
 	return .none
 }
-
-public let checkInMainReducer: Reducer<CheckInViewState, CheckInMainAction, JourneyEnvironment> = .combine(
-	metaFormAndStatusReducer.forEach(
-		state: \CheckInViewState.forms,
-		action: /CheckInMainAction.stepForms..StepFormsAction.updateForm,
-		environment: { $0 }),
-	checkInBodyReducer.pullback(
-		state: \CheckInViewState.self,
-		action: /CheckInMainAction.stepForms,
-		environment: { $0 }),
-	topViewReducer.pullback(
-		state: \CheckInViewState.topView,
-		action: /CheckInMainAction.topView,
-		environment: { $0 })
-)
 
 public struct CheckInNavigationView: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>

@@ -46,7 +46,7 @@ struct StepsCollectionView: View {
 		let shouldShowLeftArrow: Bool
 		let shouldShowRightArrow: Bool
 	}
-	
+
 	let store: Store<StepsViewState, StepsViewAction>
 	@ObservedObject var viewStore: ViewStore<State, StepsViewAction>
 	init (store: Store<StepsViewState, StepsViewAction>) {
@@ -70,7 +70,7 @@ struct StepsCollectionView: View {
 			self.viewStore.send(.didSelectFormIndex(viewModel.idx))
 		}.frame(maxWidth: cellWidth, maxHeight: cellHeight, alignment: .top)
 	}
-	
+
 	var body: some View {
 		HStack(alignment: .top, spacing: 24) {
 			if viewStore.state.shouldShowLeftArrow {
@@ -113,7 +113,7 @@ extension StepsCollectionView.State {
 		let formVms = zip(forms, forms.indices).map { Self.formVm(form: $0, selection: state.selectedIndex)}
 		let selIdx = state.selectedIndex
 		let shouldShowArrows = formVms.count > maxVisibleCells
-		
+
 		self.formVms = formVms
 		self.selectedIndex = selIdx
 		self.numberOfVisibleSteps = min(formVms.count, maxVisibleCells)

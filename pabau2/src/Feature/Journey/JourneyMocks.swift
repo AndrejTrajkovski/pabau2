@@ -82,7 +82,7 @@ struct JourneyMocks {
 }
 
 extension JourneyMocks {
-	
+
 	static let aftercare = Aftercare(
 		profile: SingleSelectImages(
 			images: [ImageUrl("emily"),

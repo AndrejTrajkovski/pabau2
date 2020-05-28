@@ -37,7 +37,7 @@ struct AftercareImagesSection {
 	let title: String
 	let store: Store<SingleSelectImages, SingleSelectImagesAction>
 	@ObservedObject var viewStore: ViewStore<SingleSelectImages, SingleSelectImagesAction>
-	
+
 	public init(
 		id: Int,
 		title: String,

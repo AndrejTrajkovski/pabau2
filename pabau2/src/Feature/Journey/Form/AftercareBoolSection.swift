@@ -42,7 +42,7 @@ struct AftercareBoolSection {
 }
 
 private struct AftercareBoolHeader: View {
-	
+
 	let title: String
 	let desc: String
 	var body: some View {

@@ -126,6 +126,7 @@
 		826952792456F436001B806E /* InputTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826952782456F436001B806E /* InputTextField.swift */; };
 		8269527C2456F583001B806E /* InputText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8269527A2456F4BA001B806E /* InputText.swift */; };
 		826F65AD247FE5A40086E187 /* AftercareBoolSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826F65AC247FE5A40086E187 /* AftercareBoolSection.swift */; };
+		826F65AF24802AEA0086E187 /* CheckInBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826F65AE24802AEA0086E187 /* CheckInBody.swift */; };
 		82755AE3247EE44F00A3BBC2 /* ASCollectionView in Frameworks */ = {isa = PBXBuildFile; productRef = 82755AE2247EE44F00A3BBC2 /* ASCollectionView */; };
 		827B4572241135A700A5975E /* FSCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82CACE772411293C0021E1DE /* FSCalendar.framework */; };
 		827B45832411368100A5975E /* Journey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 827B457A2411368100A5975E /* Journey.framework */; };
@@ -271,7 +272,7 @@
 		82E6D82F245E177900CB359A /* JourneyTransitionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E6D82E245E177900CB359A /* JourneyTransitionView.swift */; };
 		82E6D831245ECBA000CB359A /* Passcode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E6D830245ECBA000CB359A /* Passcode.swift */; };
 		82F6ADAE23F2C7B1001B3ACE /* PabauTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */; };
-		82FB74F6245A9E51001C2DF3 /* PabauFormWrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FB74F5245A9E51001C2DF3 /* PabauFormWrap.swift */; };
+		82FB74F6245A9E51001C2DF3 /* FormWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FB74F5245A9E51001C2DF3 /* FormWrapper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -545,6 +546,7 @@
 		826952782456F436001B806E /* InputTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputTextField.swift; sourceTree = "<group>"; };
 		8269527A2456F4BA001B806E /* InputText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputText.swift; sourceTree = "<group>"; };
 		826F65AC247FE5A40086E187 /* AftercareBoolSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AftercareBoolSection.swift; sourceTree = "<group>"; };
+		826F65AE24802AEA0086E187 /* CheckInBody.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInBody.swift; sourceTree = "<group>"; };
 		827B457A2411368100A5975E /* Journey.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Journey.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		827B457C2411368100A5975E /* Journey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Journey.h; sourceTree = "<group>"; };
 		827B457D2411368100A5975E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -708,7 +710,7 @@
 		82EE570823F0335F0033B43C /* NavigationLinkExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationLinkExtension.swift; sourceTree = "<group>"; };
 		82F5591F23DC255B008032F4 /* PrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryButton.swift; sourceTree = "<group>"; };
 		82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PabauTabBar.swift; sourceTree = "<group>"; };
-		82FB74F5245A9E51001C2DF3 /* PabauFormWrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PabauFormWrap.swift; sourceTree = "<group>"; };
+		82FB74F5245A9E51001C2DF3 /* FormWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormWrapper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -967,6 +969,7 @@
 				8247763324729DE800508434 /* CheckInPatient.swift */,
 				820F16AD247AD0F900DB33DE /* CheckInContainerStateAdapters.swift */,
 				820F16AF247AD12D00DB33DE /* CheckInViewState.swift */,
+				826F65AE24802AEA0086E187 /* CheckInBody.swift */,
 			);
 			path = CheckIn;
 			sourceTree = "<group>";
@@ -982,7 +985,7 @@
 				8269526B2452DA93001B806E /* TextAreaField.swift */,
 				826952762454E0A5001B806E /* SignatureField.swift */,
 				826952782456F436001B806E /* InputTextField.swift */,
-				82FB74F5245A9E51001C2DF3 /* PabauFormWrap.swift */,
+				82FB74F5245A9E51001C2DF3 /* FormWrapper.swift */,
 				82E6D826245C213300CB359A /* PatientDetailsForm.swift */,
 				82E6D828245DF4D200CB359A /* PatientCompleteForm.swift */,
 				82477621246D189C00508434 /* JourneyUtil.swift */,
@@ -1917,6 +1920,7 @@
 				8247761C246C339800508434 /* MetaFormAndStatus.swift in Sources */,
 				8269526C2452DA93001B806E /* TextAreaField.swift in Sources */,
 				827B459B241136D900A5975E /* JourneyContainerView.swift in Sources */,
+				826F65AF24802AEA0086E187 /* CheckInBody.swift in Sources */,
 				820F16AC24780A0900DB33DE /* CheckPatientForm.swift in Sources */,
 				820F16AA2477ECCE00DB33DE /* FourSwitchesSection.swift in Sources */,
 				82C479DE242E17B50037F140 /* CheckInNavigationView.swift in Sources */,
@@ -1927,7 +1931,7 @@
 				825BE7E424361C4400422910 /* SoundPlayer.swift in Sources */,
 				829B40D12423B8F2009B7E71 /* AddAppointment.swift in Sources */,
 				82622B5024464E0800BECF9A /* RibbonView.swift in Sources */,
-				82FB74F6245A9E51001C2DF3 /* PabauFormWrap.swift in Sources */,
+				82FB74F6245A9E51001C2DF3 /* FormWrapper.swift in Sources */,
 				820F16C0247D7F5300DB33DE /* AftercareImagesSection.swift in Sources */,
 				820F16BA247D792A00DB33DE /* AftercareOptionCell.swift in Sources */,
 				82477612246C333500508434 /* PatientDetails.swift in Sources */,

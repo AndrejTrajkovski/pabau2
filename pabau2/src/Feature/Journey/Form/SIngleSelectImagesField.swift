@@ -42,7 +42,7 @@ struct AftercareImagesSection {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
-	
+
 	func makeSection() -> ASCollectionViewSection<Int> {
 		return ASCollectionViewSection(
 			id: 1,
