@@ -108,12 +108,12 @@ extension JourneyMocks {
 			AftercareOption("Hyalase Aftercare", .sms),
 			AftercareOption("PRP Aftercare Advice", .sms),
 			AftercareOption("Chemical Peel Aftercare", .sms),
-			AftercareOption("Aftercare Template", .sms),
+			AftercareOption("Aftercare Template", .sms)
 		],
 		recalls: [
-			Recall("Appointment Rescheduled"),
-			Recall("Birthday Wishes SMS"),
-			Recall("Sorry you were unable to attend."),
+			AftercareOption("Appointment Rescheduled", .sms),
+			AftercareOption("Birthday Wishes SMS", .sms),
+			AftercareOption("Sorry you were unable to attend.", .sms)
 		]
 	)
 }

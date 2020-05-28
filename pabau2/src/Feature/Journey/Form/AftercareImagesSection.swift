@@ -1,6 +1,5 @@
 import SwiftUI
 import ComposableArchitecture
-import Util
 import ASCollectionView
 
 public let singleSelectImagesReducer = Reducer<SingleSelectImages, SingleSelectImagesAction, Any>.init { state, action, _ in
@@ -49,7 +48,7 @@ struct AftercareImagesSection {
 		self.viewStore = ViewStore(store)
 		self.title = title
 	}
-	
+
 	func makeSection() -> ASCollectionViewSection<Int> {
 		return ASCollectionViewSection(
 			id: self.id,
@@ -61,7 +60,7 @@ struct AftercareImagesSection {
 						self.viewStore.send(.didSelectIdx(context.index))
 				}
 		}
-		.sectionHeader { AftercareHeader(self.title) }
+		.sectionHeader { AftercareTitle(self.title) }
 	}
 }
 

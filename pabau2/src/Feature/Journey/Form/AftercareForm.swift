@@ -4,8 +4,8 @@ import Util
 import ASCollectionView
 
 public enum AftercareAction {
-	case aftercares(Indexed<ToggleAction>)
-	case recalls(Indexed<ToggleAction>)
+	case aftercares(AftercareBoolAction)
+	case recalls(AftercareBoolAction)
 	case profile(SingleSelectImagesAction)
 	case share(SingleSelectImagesAction)
 }
@@ -14,12 +14,12 @@ public let aftercareReducer: Reducer<Aftercare, AftercareAction, Any> = (
 	.combine(
 		aftercareOptionReducer.forEach(
 			state: \Aftercare.aftercares,
-			action: /AftercareAction.aftercares,
+			action: /AftercareAction.aftercares..AftercareBoolAction.indexedToggle,
 			environment: { $0 }
 		),
-		recallReducer.forEach(
+		aftercareOptionReducer.forEach(
 			state: \Aftercare.recalls,
-			action: /AftercareAction.recalls,
+			action: /AftercareAction.recalls..AftercareBoolAction.indexedToggle,
 			environment: { $0 }
 		),
 		singleSelectImagesReducer.pullback(
@@ -56,19 +56,20 @@ struct AftercareForm: View {
 				store: self.store.scope(
 					state: { $0.share }, action: { .share($0) })
 			).makeSection()
-			ASCollectionViewSection(
+			AftercareBoolSection(
 				id: 2,
-				data: self.viewStore.state.aftercares,
-				dataID: \.self) { aftercare, context in
-					AftercareCell(type: .init(channel: aftercare.channel),
-												title: aftercare.title,
-												value: Binding.init(
-													get: { aftercare.isSelected },
-													set: { self.viewStore
-														.send(.aftercares(Indexed(context.index, ToggleAction.setTo($0)))) })
-					)
-			}
-			.sectionHeader { AftercareHeader(Texts.sendAftercareQ) }
+				title: Texts.sendAftercareQ,
+				desc: Texts.sendAftercareDesc,
+				store: self.store.scope(state: { $0.aftercares },
+																action: { .aftercares($0) })
+			).makeSection()
+			AftercareBoolSection(
+				id: 3,
+				title: Texts.recallsQ,
+				desc: Texts.recallsDesc,
+				store: self.store.scope(state: { $0.recalls },
+																action: { .recalls($0) })
+			).makeSection()
 		}.layout { sectionID in
 			switch sectionID {
 			case 0, 1:
@@ -76,7 +77,7 @@ struct AftercareForm: View {
 				return .grid(layoutMode: .fixedNumberOfColumns(4),
 										 itemSpacing: 2.5,
 										 lineSpacing: 2.5)
-			case 2:
+			case 2, 3:
 				return
 					.list(itemSize: .absolute(60))
 			default:
@@ -90,7 +91,7 @@ struct AftercareForm: View {
 	}
 }
 
-struct AftercareHeader: View {
+struct AftercareTitle: View {
 	let title: String
 	init (_ title: String) {
 		self.title = title

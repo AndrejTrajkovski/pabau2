@@ -14,10 +14,8 @@
 		820F16B0247AD12D00DB33DE /* CheckInViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16AF247AD12D00DB33DE /* CheckInViewState.swift */; };
 		820F16B2247BE3FE00DB33DE /* CheckPatient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16B1247BE3FE00DB33DE /* CheckPatient.swift */; };
 		820F16B4247D617400DB33DE /* AftercareForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16B3247D617400DB33DE /* AftercareForm.swift */; };
-		820F16B8247D73F100DB33DE /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16B7247D73F100DB33DE /* ImageCell.swift */; };
 		820F16BA247D792A00DB33DE /* AftercareOptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16B9247D792A00DB33DE /* AftercareOptionCell.swift */; };
 		820F16BC247D7CD200DB33DE /* AftercareCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16BB247D7CD200DB33DE /* AftercareCell.swift */; };
-		820F16BE247D7CF500DB33DE /* RecallCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16BD247D7CF500DB33DE /* RecallCell.swift */; };
 		820F16C0247D7F5300DB33DE /* AftercareImagesSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16BF247D7F5300DB33DE /* AftercareImagesSection.swift */; };
 		82104525240C21B9004EA838 /* ForgotPassSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104524240C21B9004EA838 /* ForgotPassSuccess.swift */; };
 		82104527240C21E3004EA838 /* ForgotPassError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104526240C21E3004EA838 /* ForgotPassError.swift */; };
@@ -68,7 +66,6 @@
 		8247760D246BD9C100508434 /* StepsState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247760C246BD9C100508434 /* StepsState.swift */; };
 		8247760F246C27F200508434 /* TopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247760E246C27F200508434 /* TopView.swift */; };
 		82477612246C333500508434 /* PatientDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82477611246C333500508434 /* PatientDetails.swift */; };
-		82477614246C334600508434 /* Recall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82477613246C334600508434 /* Recall.swift */; };
 		82477616246C335500508434 /* Aftercare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82477615246C335500508434 /* Aftercare.swift */; };
 		82477618246C336300508434 /* PatientComplete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82477617246C336300508434 /* PatientComplete.swift */; };
 		8247761A246C337D00508434 /* MetaForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82477619246C337D00508434 /* MetaForm.swift */; };
@@ -128,6 +125,7 @@
 		826952772454E0A5001B806E /* SignatureField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826952762454E0A5001B806E /* SignatureField.swift */; };
 		826952792456F436001B806E /* InputTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826952782456F436001B806E /* InputTextField.swift */; };
 		8269527C2456F583001B806E /* InputText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8269527A2456F4BA001B806E /* InputText.swift */; };
+		826F65AD247FE5A40086E187 /* AftercareBoolSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826F65AC247FE5A40086E187 /* AftercareBoolSection.swift */; };
 		82755AE3247EE44F00A3BBC2 /* ASCollectionView in Frameworks */ = {isa = PBXBuildFile; productRef = 82755AE2247EE44F00A3BBC2 /* ASCollectionView */; };
 		827B4572241135A700A5975E /* FSCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82CACE772411293C0021E1DE /* FSCalendar.framework */; };
 		827B45832411368100A5975E /* Journey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 827B457A2411368100A5975E /* Journey.framework */; };
@@ -464,10 +462,8 @@
 		820F16AF247AD12D00DB33DE /* CheckInViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInViewState.swift; sourceTree = "<group>"; };
 		820F16B1247BE3FE00DB33DE /* CheckPatient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckPatient.swift; sourceTree = "<group>"; };
 		820F16B3247D617400DB33DE /* AftercareForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AftercareForm.swift; sourceTree = "<group>"; };
-		820F16B7247D73F100DB33DE /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
 		820F16B9247D792A00DB33DE /* AftercareOptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AftercareOptionCell.swift; sourceTree = "<group>"; };
 		820F16BB247D7CD200DB33DE /* AftercareCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AftercareCell.swift; sourceTree = "<group>"; };
-		820F16BD247D7CF500DB33DE /* RecallCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecallCell.swift; sourceTree = "<group>"; };
 		820F16BF247D7F5300DB33DE /* AftercareImagesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AftercareImagesSection.swift; sourceTree = "<group>"; };
 		82104524240C21B9004EA838 /* ForgotPassSuccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassSuccess.swift; sourceTree = "<group>"; };
 		82104526240C21E3004EA838 /* ForgotPassError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassError.swift; sourceTree = "<group>"; };
@@ -494,7 +490,6 @@
 		8247760C246BD9C100508434 /* StepsState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsState.swift; sourceTree = "<group>"; };
 		8247760E246C27F200508434 /* TopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopView.swift; sourceTree = "<group>"; };
 		82477611246C333500508434 /* PatientDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientDetails.swift; sourceTree = "<group>"; };
-		82477613246C334600508434 /* Recall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Recall.swift; sourceTree = "<group>"; };
 		82477615246C335500508434 /* Aftercare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Aftercare.swift; sourceTree = "<group>"; };
 		82477617246C336300508434 /* PatientComplete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientComplete.swift; sourceTree = "<group>"; };
 		82477619246C337D00508434 /* MetaForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaForm.swift; sourceTree = "<group>"; };
@@ -549,6 +544,7 @@
 		826952762454E0A5001B806E /* SignatureField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignatureField.swift; sourceTree = "<group>"; };
 		826952782456F436001B806E /* InputTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputTextField.swift; sourceTree = "<group>"; };
 		8269527A2456F4BA001B806E /* InputText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputText.swift; sourceTree = "<group>"; };
+		826F65AC247FE5A40086E187 /* AftercareBoolSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AftercareBoolSection.swift; sourceTree = "<group>"; };
 		827B457A2411368100A5975E /* Journey.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Journey.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		827B457C2411368100A5975E /* Journey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Journey.h; sourceTree = "<group>"; };
 		827B457D2411368100A5975E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -880,7 +876,6 @@
 			isa = PBXGroup;
 			children = (
 				82477611246C333500508434 /* PatientDetails.swift */,
-				82477613246C334600508434 /* Recall.swift */,
 				82477615246C335500508434 /* Aftercare.swift */,
 				82477617246C336300508434 /* PatientComplete.swift */,
 				82477619246C337D00508434 /* MetaForm.swift */,
@@ -995,11 +990,10 @@
 				820F16A92477ECCE00DB33DE /* FourSwitchesSection.swift */,
 				820F16AB24780A0900DB33DE /* CheckPatientForm.swift */,
 				820F16B3247D617400DB33DE /* AftercareForm.swift */,
-				820F16B7247D73F100DB33DE /* ImageCell.swift */,
 				820F16B9247D792A00DB33DE /* AftercareOptionCell.swift */,
 				820F16BB247D7CD200DB33DE /* AftercareCell.swift */,
-				820F16BD247D7CF500DB33DE /* RecallCell.swift */,
 				820F16BF247D7F5300DB33DE /* AftercareImagesSection.swift */,
+				826F65AC247FE5A40086E187 /* AftercareBoolSection.swift */,
 			);
 			path = Form;
 			sourceTree = "<group>";
@@ -1932,7 +1926,6 @@
 				82E6D82F245E177900CB359A /* JourneyTransitionView.swift in Sources */,
 				825BE7E424361C4400422910 /* SoundPlayer.swift in Sources */,
 				829B40D12423B8F2009B7E71 /* AddAppointment.swift in Sources */,
-				820F16BE247D7CF500DB33DE /* RecallCell.swift in Sources */,
 				82622B5024464E0800BECF9A /* RibbonView.swift in Sources */,
 				82FB74F6245A9E51001C2DF3 /* PabauFormWrap.swift in Sources */,
 				820F16C0247D7F5300DB33DE /* AftercareImagesSection.swift in Sources */,
@@ -1945,10 +1938,8 @@
 				820F16BC247D7CD200DB33DE /* AftercareCell.swift in Sources */,
 				82E6D82B245E09ED00CB359A /* HandBackDevice.swift in Sources */,
 				8280D479245FEAA80077A73F /* DoctorSummary.swift in Sources */,
-				82477614246C334600508434 /* Recall.swift in Sources */,
 				824776362473CE9700508434 /* ChooseTreatmentNote.swift in Sources */,
 				82648404244F42F300544703 /* FormSectionField.swift in Sources */,
-				820F16B8247D73F100DB33DE /* ImageCell.swift in Sources */,
 				82292BD8244097C600080F74 /* StepsCollectionView.swift in Sources */,
 				82477616246C335500508434 /* Aftercare.swift in Sources */,
 				829BFBAF243F5D6F005DDCB9 /* CheckInAnimation.swift in Sources */,
@@ -1956,6 +1947,7 @@
 				8247764A24758B7700508434 /* SelectField.swift in Sources */,
 				826952792456F436001B806E /* InputTextField.swift in Sources */,
 				820F16AE247AD0F900DB33DE /* CheckInContainerStateAdapters.swift in Sources */,
+				826F65AD247FE5A40086E187 /* AftercareBoolSection.swift in Sources */,
 				820F16B2247BE3FE00DB33DE /* CheckPatient.swift in Sources */,
 				82D43D92243522CD00AC74FA /* Settings.swift in Sources */,
 				82E253FA241B9EB500F16C30 /* JourneyAction.swift in Sources */,
