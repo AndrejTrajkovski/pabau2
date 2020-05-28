@@ -19,27 +19,23 @@ struct CheckInMain: View {
 	}
 
 	var body: some View {
-//		WithViewStore(store) { _ in
-			VStack (alignment: .center, spacing: 0) {
-				TopView(store: self.store
-					.scope(state: { $0.topView },
-								 action: { .topView($0) }))
-				CheckInBody(store: self.store.scope(
-					state: { $0 },
-					action: { .stepForms($0) }))
-				Spacer()
-			}
-//		}
+		VStack (alignment: .center, spacing: 0) {
+			TopView(store: self.store
+				.scope(state: { $0.topView },
+							 action: { .topView($0) }))
+			CheckInBody(store: self.store.scope(
+				state: { $0 },
+				action: { .stepForms($0) }))
+			Spacer()
+		}
 	}
 }
 
 public enum StepFormsAction {
 	case toPatientMode
-	case didSelectFormIndex(Int)
 	case updateForm(Indexed<UpdateFormAction>)
 	case didSelectCompleteFormIdx(Int)
-	case didSelectNextStep
-	case didSelectPrevStep
+	case stepsView(StepsViewAction)
 }
 
 public enum UpdateFormAction {
@@ -82,29 +78,17 @@ let metaFormReducer: Reducer<MetaForm, UpdateFormAction, JourneyEnvironment> =
 			environment: { $0 })
 )
 
-func goToNextStep(_ state: inout CheckInViewState) {
-	if state.selectedIndex + 1 < state.forms.count {
-		state.selectedIndex += 1
-	}
-}
-
 let checkInBodyReducer = Reducer<CheckInViewState, StepFormsAction, JourneyEnvironment> { state, action, _ in
 	switch action {
-	case .didSelectFormIndex(let idx):
-		state.selectedIndex = idx
 	case .updateForm:
 		break
 	case .didSelectCompleteFormIdx(let idx):
 		state.forms[idx].isComplete = true
-		goToNextStep(&state)
+		goToNextStep(&state.stepsViewState)
 	case .toPatientMode:
 		break//handled in navigationReducer
-	case .didSelectNextStep:
-		goToNextStep(&state)
-	case .didSelectPrevStep:
-		if state.selectedIndex > 0 {
-			state.selectedIndex -= 1
-		}
+	case .stepsView(_):
+		break
 	}
 	return .none
 }
@@ -125,11 +109,10 @@ struct CheckInBody: View {
 		print("check in main body")
 		return GeometryReader { geo in
 			VStack(spacing: 8) {
-				StepsCollectionView(steps: self.viewStore.state.forms,
-														selectedIdx: self.viewStore.state.selectedIndex) {
-															self.viewStore.send(.didSelectFormIndex($0))
-				}
-				.frame(height: 80)
+				StepsCollectionView(store:
+					self.store.scope(
+						state: { $0.stepsViewState}, action: { .stepsView($0) })
+				).frame(height: 80)
 				Divider()
 					.frame(width: geo.size.width)
 					.shadow(color: Color(hex: "C1C1C1"), radius: 4, y: 2)

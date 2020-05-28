@@ -1,35 +1,59 @@
 import Util
 import SwiftUI
 import Model
+import ComposableArchitecture
+
+struct StepsViewState: Equatable {
+	var selectedIndex: Int
+	let forms: [MetaFormAndStatus]
+}
+
+public enum StepsViewAction {
+	case didSelectFormIndex(Int)
+	case didSelectNextStep
+	case didSelectPrevStep
+}
+
+func goToNextStep(_ state: inout StepsViewState) {
+	if state.selectedIndex + 1 < state.forms.count {
+		state.selectedIndex += 1
+	}
+}
+
+let stepsViewReducer = Reducer<StepsViewState, StepsViewAction, JourneyEnvironment> { state, action, _ in
+	switch action {
+	case .didSelectFormIndex(let idx):
+		state.selectedIndex = idx
+	case .didSelectNextStep:
+		goToNextStep(&state)
+	case .didSelectPrevStep:
+		if state.selectedIndex > 0 {
+			state.selectedIndex -= 1
+		}
+	}
+	return .none
+}
 
 struct StepsCollectionView: View {
-	let maxVisibleCells = 5
 	let cellWidth: CGFloat = 100
 	let cellHeight: CGFloat = 80
 	let spacing: CGFloat = 8
-
-	let formVms: [FormVM]
-	let selectedIdx: Int
-	let didSelect: (Int) -> Void
-
-	init (steps: [MetaFormAndStatus],
-				selectedIdx: Int,
-				didSelect: @escaping (Int) -> Void) {
-		self.selectedIdx = selectedIdx
-		self.formVms = zip(steps, steps.indices).map { Self.stepVM(step: $0, selection: selectedIdx)}
-		self.didSelect = didSelect
+	
+	struct State: Equatable {
+		let maxVisibleCells = 5
+		let formVms: [FormVM]
+		let selectedIndex: Int
+		let numberOfVisibleSteps: Int
+		let shouldShowArrows: Bool
 	}
 
-	struct FormVM: Hashable {
-		let idx: Int
-		let isSelected: Bool
-		let title: String
-	}
+	let store: Store<StepsViewState, StepsViewAction>
+	@ObservedObject var viewStore: ViewStore<State, StepsViewAction>
 
-	static func stepVM(step: (MetaFormAndStatus, Int), selection: Int) -> FormVM {
-		FormVM(idx: step.1,
-					 isSelected: step.1 == selection,
-					 title: step.0.form.title)
+	init (store: Store<StepsViewState, StepsViewAction>) {
+		self.store = store
+		self.viewStore = ViewStore(
+			store.scope( state: State.init(state:), action: { $0 }))
 	}
 
 	func stepView(for viewModel: FormVM) -> some View {
@@ -44,17 +68,17 @@ struct StepsCollectionView: View {
 				.font(.medium10)
 				.foregroundColor(Color(hex: "909090"))
 		}.onTapGesture {
-			self.didSelect(viewModel.idx)
+			self.viewStore.send(.didSelectFormIndex(viewModel.idx))
 		}.frame(maxWidth: cellWidth, maxHeight: cellHeight, alignment: .top)
 	}
 
 	var body: some View {
 		HStack(alignment: .top, spacing: 16) {
-			if formVms.count > maxVisibleCells {
+			if viewStore.state.shouldShowArrows {
 				Image(systemName: "chevron.left")
 					.font(.regular30).foregroundColor(.gray)
 			}
-			CollectionView(formVms, selectedIdx) {
+			CollectionView(viewStore.state.formVms, viewStore.state.selectedIndex) {
 				stepView(for: $0)
 			}
 			.axis(.horizontal)
@@ -68,12 +92,35 @@ struct StepsCollectionView: View {
 				.layout({ (layout) in
 					layout.interGroupSpacing = spacing
 				})
-				.frame(width: ((cellWidth + spacing) * CGFloat(min(formVms.count, maxVisibleCells))),
+				.frame(width: ((cellWidth + spacing) * CGFloat()),
 							 height: cellHeight)
-			if formVms.count > maxVisibleCells {
+			if viewStore.state.shouldShowArrows {
 				Image(systemName: "chevron.right")
 					.font(.regular30).foregroundColor(.gray)
 			}
 		}
 	}
+}
+
+extension StepsCollectionView.State {
+	
+	init(state: StepsViewState) {
+		let forms = state.forms
+		self.formVms = zip(forms, forms.indices).map { Self.formVm(form: $0, selection: state.selectedIndex)}
+		self.selectedIndex = state.selectedIndex
+		self.numberOfVisibleSteps = min(formVms.count, maxVisibleCells)
+		self.shouldShowArrows = formVms.count > maxVisibleCells
+	}
+	
+	static func formVm(form: (MetaFormAndStatus, Int), selection: Int) -> FormVM {
+		FormVM(idx: form.1,
+					 isSelected: form.1 == selection,
+					 title: form.0.form.title)
+	}
+}
+
+struct FormVM: Hashable {
+	let idx: Int
+	let isSelected: Bool
+	let title: String
 }

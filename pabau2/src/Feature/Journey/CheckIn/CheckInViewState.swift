@@ -30,4 +30,14 @@ public struct CheckInViewState: Equatable {
 		guard let selectedForm = selectedForm else { return false}
 		return stepType(form: selectedForm.form) == .patientComplete
 	}
+	
+	var stepsViewState: StepsViewState {
+		get {
+			StepsViewState(selectedIndex: selectedIndex,
+										 forms: self.forms)
+		}
+		set {
+			self.selectedIndex = newValue.selectedIndex
+		}
+	}
 }
