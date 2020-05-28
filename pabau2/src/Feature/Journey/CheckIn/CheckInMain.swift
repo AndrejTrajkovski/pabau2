@@ -38,6 +38,8 @@ public enum StepFormsAction {
 	case didSelectFormIndex(Int)
 	case updateForm(Indexed<UpdateFormAction>)
 	case didSelectCompleteFormIdx(Int)
+	case didSelectNextStep
+	case didSelectPrevStep
 }
 
 public enum UpdateFormAction {
@@ -80,6 +82,12 @@ let metaFormReducer: Reducer<MetaForm, UpdateFormAction, JourneyEnvironment> =
 			environment: { $0 })
 )
 
+func goToNextStep(_ state: inout CheckInViewState) {
+	if state.selectedIndex + 1 < state.forms.count {
+		state.selectedIndex += 1
+	}
+}
+
 let checkInBodyReducer = Reducer<CheckInViewState, StepFormsAction, JourneyEnvironment> { state, action, _ in
 	switch action {
 	case .didSelectFormIndex(let idx):
@@ -88,11 +96,15 @@ let checkInBodyReducer = Reducer<CheckInViewState, StepFormsAction, JourneyEnvir
 		break
 	case .didSelectCompleteFormIdx(let idx):
 		state.forms[idx].isComplete = true
-		if state.selectedIndex + 1 < state.forms.count {
-			state.selectedIndex += 1
-		}
+		goToNextStep(&state)
 	case .toPatientMode:
 		break//handled in navigationReducer
+	case .didSelectNextStep:
+		goToNextStep(&state)
+	case .didSelectPrevStep:
+		if state.selectedIndex > 0 {
+			state.selectedIndex -= 1
+		}
 	}
 	return .none
 }

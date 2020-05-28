@@ -49,21 +49,31 @@ struct StepsCollectionView: View {
 	}
 
 	var body: some View {
-		CollectionView(formVms, selectedIdx) {
-			stepView(for: $0)
+		HStack(alignment: .top, spacing: 16) {
+			if formVms.count > maxVisibleCells {
+				Image(systemName: "chevron.left")
+					.font(.regular30).foregroundColor(.gray)
+			}
+			CollectionView(formVms, selectedIdx) {
+				stepView(for: $0)
+			}
+			.axis(.horizontal)
+			.indicators(false)
+			.groupSize(
+				.init(
+					widthDimension: .absolute(cellWidth),
+					heightDimension: .absolute(cellHeight)))
+				.itemSize(.init(widthDimension: .absolute(cellWidth),
+												heightDimension: .absolute(cellHeight)))
+				.layout({ (layout) in
+					layout.interGroupSpacing = spacing
+				})
+				.frame(width: ((cellWidth + spacing) * CGFloat(min(formVms.count, maxVisibleCells))),
+							 height: cellHeight)
+			if formVms.count > maxVisibleCells {
+				Image(systemName: "chevron.right")
+					.font(.regular30).foregroundColor(.gray)
+			}
 		}
-		.axis(.horizontal)
-		.indicators(false)
-		.groupSize(
-			.init(
-				widthDimension: .absolute(cellWidth),
-				heightDimension: .absolute(cellHeight)))
-			.itemSize(.init(widthDimension: .absolute(cellWidth),
-											heightDimension: .absolute(cellHeight)))
-			.layout({ (layout) in
-				layout.interGroupSpacing = spacing
-			})
-			.frame(width: ((cellWidth + spacing) * CGFloat(min(formVms.count, maxVisibleCells))),
-						 height: cellHeight)
 	}
 }
