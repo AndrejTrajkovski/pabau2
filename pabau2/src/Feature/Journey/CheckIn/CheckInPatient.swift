@@ -10,7 +10,8 @@ struct CheckInPatient: View {
 				CheckInMain(store:
 					self.store.scope(state: { $0.patientCheckIn },
 													 action: { .patient($0) }
-				))
+					)
+				)
 					.navigationBarTitle("")
 					.navigationBarHidden(true)
 				NavigationLink.emptyHidden(viewStore.state,

@@ -58,7 +58,7 @@ struct StepsCollectionView: View {
 	func stepView(for viewModel: FormVM) -> some View {
 		VStack {
 			Image(systemName: "checkmark.circle.fill")
-				.foregroundColor(viewModel.isSelected ? .blue : .gray)
+				.foregroundColor(viewModel.isSelected ? .blue : Color(hex: "C7C7CC"))
 				.frame(width: 30, height: 30)
 			Text(viewModel.title.uppercased())
 				.fixedSize(horizontal: false, vertical: true)
@@ -75,7 +75,7 @@ struct StepsCollectionView: View {
 		HStack(alignment: .top, spacing: 24) {
 			if viewStore.state.shouldShowLeftArrow {
 				Image(systemName: "chevron.left")
-					.font(.regular30).foregroundColor(.gray)
+					.font(.regular30).foregroundColor(Color(hex: "909090"))
 					.onTapGesture {
 						self.viewStore.send(.didSelectPrevStep)
 				}
@@ -98,7 +98,7 @@ struct StepsCollectionView: View {
 							 height: cellHeight)
 			if viewStore.state.shouldShowRightArrow {
 				Image(systemName: "chevron.right")
-					.font(.regular30).foregroundColor(.gray)
+					.font(.regular30).foregroundColor(Color(hex: "909090"))
 					.onTapGesture {
 						self.viewStore.send(.didSelectNextStep)
 				}
