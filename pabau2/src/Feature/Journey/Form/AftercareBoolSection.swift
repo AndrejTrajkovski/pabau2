@@ -54,7 +54,5 @@ private struct AftercareBoolHeader: View {
 		}
 		.frame(maxWidth: .infinity, alignment: .leading)
 		.padding()
-//		.frame(maxWidth: .infinity, alignment: .leading)
-//		.padding([.top, .bottom], 16)
 	}
 }
