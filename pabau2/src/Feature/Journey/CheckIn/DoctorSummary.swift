@@ -12,6 +12,23 @@ struct DoctorSummaryState: Equatable {
 	var doctorCheckIn: CheckInViewState
 }
 
+func calcFormsSelectedIndex(steps: [StepState],
+														selectedStepIdx: Int,
+														forms: [MetaFormAndStatus]) -> Int? {
+	let selectedType = steps[selectedStepIdx]
+	let grouped = Dictionary.init(grouping: forms,
+																by: pipe(get(\.form), stepType(form:)))
+	guard let formsForSelectedStep = grouped[selectedType.stepType] else { return nil}
+	let selForm = { () -> MetaFormAndStatus? in
+		if let notCompleteForm = formsForSelectedStep.first(where: { !$0.isComplete}) {
+			return notCompleteForm
+		} else {
+			return formsForSelectedStep.first
+		}
+	}()
+	return forms.firstIndex(where: { $0 == selForm })
+}
+
 let doctorSummaryReducer = Reducer <DoctorSummaryState, DoctorSummaryAction, JourneyEnvironment> { state, action, _ in
 	switch action {
 	case .didTouchBackFrom(let mode):
@@ -33,6 +50,9 @@ let doctorSummaryReducer = Reducer <DoctorSummaryState, DoctorSummaryAction, Jou
 			fatalError("should be handled pre checkin")
 		}
 	case .didTouchStep(let idx):
+		calcFormsSelectedIndex(steps: state.steps, selectedStepIdx: idx, forms: state.doctorCheckIn.forms).map {
+			state.doctorCheckIn.selectedIndex = $0
+		}
 		state.isDoctorCheckInMainActive = true
 	case .xOnDoctorCheckIn:
 		break //handled in checkInMiddleware

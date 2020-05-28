@@ -60,6 +60,10 @@ public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction
 )
 
 public let navigationReducer = Reducer<CheckInContainerState, CheckInContainerAction, Any> { state, action, _ in
+	func calculateNextPatientSelectedIndex(state: CheckInContainerState) -> Int {
+		let forms = state.patientCheckIn.forms
+		return forms.firstIndex(where: { !$0.isComplete }) ?? (forms.count - 1)
+	}
 	func backToPatientMode() {
 		state.isChooseConsentActive = false
 		state.isDoctorSummaryActive = false
@@ -68,6 +72,7 @@ public let navigationReducer = Reducer<CheckInContainerState, CheckInContainerAc
 		state.isHandBackDeviceActive = false
 		state.isEnterPasscodeActive = false
 		state.didGoBackToPatientMode = true
+		state.patientSelectedIndex = calculateNextPatientSelectedIndex(state: state)
 	}
 	switch action {
 	case .chooseConsents(.proceed):

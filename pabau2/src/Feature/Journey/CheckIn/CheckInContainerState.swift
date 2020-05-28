@@ -212,7 +212,6 @@ extension CheckInContainerState {
 		get {
 			HandBackDeviceState(isEnterPasscodeActive: self.isEnterPasscodeActive,
 													isNavBarHidden: !self.passcode.passcode.unlocked
-//														&& self.isEnterPasscodeActive
 			)
 		}
 	}
