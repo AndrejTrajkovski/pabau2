@@ -128,7 +128,7 @@
 		826F65AD247FE5A40086E187 /* AftercareBoolSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826F65AC247FE5A40086E187 /* AftercareBoolSection.swift */; };
 		826F65AF24802AEA0086E187 /* CheckInBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826F65AE24802AEA0086E187 /* CheckInBody.swift */; };
 		826F65B12480FA2E0086E187 /* CompleteJourneyBtn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826F65B02480FA2E0086E187 /* CompleteJourneyBtn.swift */; };
-		826F65B3248122480086E187 /* NextButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826F65B2248122480086E187 /* NextButton.swift */; };
+		826F65B3248122480086E187 /* CompleteFormBtn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826F65B2248122480086E187 /* CompleteFormBtn.swift */; };
 		826F65B5248123C40086E187 /* FooterButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826F65B4248123C40086E187 /* FooterButtons.swift */; };
 		82755AE3247EE44F00A3BBC2 /* ASCollectionView in Frameworks */ = {isa = PBXBuildFile; productRef = 82755AE2247EE44F00A3BBC2 /* ASCollectionView */; };
 		827B4572241135A700A5975E /* FSCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82CACE772411293C0021E1DE /* FSCalendar.framework */; };
@@ -551,7 +551,7 @@
 		826F65AC247FE5A40086E187 /* AftercareBoolSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AftercareBoolSection.swift; sourceTree = "<group>"; };
 		826F65AE24802AEA0086E187 /* CheckInBody.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInBody.swift; sourceTree = "<group>"; };
 		826F65B02480FA2E0086E187 /* CompleteJourneyBtn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteJourneyBtn.swift; sourceTree = "<group>"; };
-		826F65B2248122480086E187 /* NextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextButton.swift; sourceTree = "<group>"; };
+		826F65B2248122480086E187 /* CompleteFormBtn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteFormBtn.swift; sourceTree = "<group>"; };
 		826F65B4248123C40086E187 /* FooterButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterButtons.swift; sourceTree = "<group>"; };
 		827B457A2411368100A5975E /* Journey.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Journey.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		827B457C2411368100A5975E /* Journey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Journey.h; sourceTree = "<group>"; };
@@ -977,7 +977,7 @@
 				820F16AF247AD12D00DB33DE /* CheckInViewState.swift */,
 				826F65AE24802AEA0086E187 /* CheckInBody.swift */,
 				826F65B02480FA2E0086E187 /* CompleteJourneyBtn.swift */,
-				826F65B2248122480086E187 /* NextButton.swift */,
+				826F65B2248122480086E187 /* CompleteFormBtn.swift */,
 				826F65B4248123C40086E187 /* FooterButtons.swift */,
 			);
 			path = CheckIn;
@@ -1921,7 +1921,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				826F65B3248122480086E187 /* NextButton.swift in Sources */,
+				826F65B3248122480086E187 /* CompleteFormBtn.swift in Sources */,
 				82477618246C336300508434 /* PatientComplete.swift in Sources */,
 				8247763424729DE800508434 /* CheckInPatient.swift in Sources */,
 				82CEA223244CB28500A895F6 /* RadioField.swift in Sources */,

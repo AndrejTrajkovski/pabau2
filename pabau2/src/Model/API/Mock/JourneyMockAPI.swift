@@ -783,20 +783,24 @@ extension JourneyMockAPI {
 				), title: "Radio title"
 			)
 		])),
-		FormTemplate(id: 123423, name: "Treatmentzzz", formType: .treatment,
+		FormTemplate(id: 123423, name: "Treatmentzzz",
+								 formType: .treatment,
 							 ePaper: false,
 							 formStructure:
 		FormStructure(formStructure: [
 			CSSField(id: 86,
 							 cssClass: .input_text(InputText(text: "input text 1")),
+							 _required: true,
 							 title: "Insert some text"
 			),
 			CSSField(id: 66,
 							 cssClass: .signature(Signature()),
+							 _required: true,
 							 title: "Patient signature"
 			),
 			CSSField(id: 96,
 							 cssClass: .input_text(InputText(text: "input text 2")),
+							 _required: true,
 							 title: "Insert some text 2"
 			),
 			CSSField(id: 76,

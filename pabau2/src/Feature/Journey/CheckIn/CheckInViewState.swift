@@ -43,7 +43,7 @@ public struct CheckInViewState: Equatable {
 	
 	var footer: FooterButtonsState {
 		get {
-			FooterButtonsState(forms: forms,
+			FooterButtonsState(forms: self.forms,
 												 selectedIndex: selectedIndex,
 												 selectedForm: selectedForm)
 		}

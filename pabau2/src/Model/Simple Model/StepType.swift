@@ -42,13 +42,13 @@ public enum StepType: String, Codable, Equatable, CaseIterable {
 	public var title: String {
 		switch self {
 		case .patientdetails:
-			return "Check Details"
+			return "Enter Patient Details"
 		case .medicalhistory:
 			return "Medical History"
 		case .consents:
 			return "Consents"
 		case .checkpatient:
-			return "Check Details"
+			return "Check Patient Details"
 		case .treatmentnotes:
 			return "Treatment Notes"
 		case .prescriptions:
