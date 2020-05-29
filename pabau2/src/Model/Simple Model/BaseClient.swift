@@ -42,3 +42,9 @@ public struct BaseClient: Codable, Identifiable, Equatable {
 	}
 
 }
+
+public extension BaseClient {
+	var initials: String {
+		return String(self.firstName.first ?? Character.init("")) + String(self.lastName.first ?? Character.init(""))
+	}
+}

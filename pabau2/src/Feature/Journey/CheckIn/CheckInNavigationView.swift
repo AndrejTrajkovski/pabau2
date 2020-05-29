@@ -99,16 +99,19 @@ public struct CheckInNavigationView: View {
 	}
 
 	public var body: some View {
-		NavigationView {
-			VStack {
-				CheckInAnimation(isRunningAnimation: self.$isRunningAnimation)
-				NavigationLink.init(destination:
-					CheckInPatient(store: self.store.scope(
-						state: { $0 }, action: { $0 })),
-														isActive: self.$isRunningAnimation,
-														label: { EmptyView() })
+		WithViewStore(store) { viewStore in
+			NavigationView {
+				VStack {
+					CheckInAnimation(isRunningAnimation: self.$isRunningAnimation,
+													 journey: viewStore.state.journey)
+					NavigationLink.init(destination:
+						CheckInPatient(store: self.store.scope(
+							state: { $0 }, action: { $0 })),
+															isActive: self.$isRunningAnimation,
+															label: { EmptyView() })
+				}
 			}
+			.navigationViewStyle(StackNavigationViewStyle())
 		}
-		.navigationViewStyle(StackNavigationViewStyle())
 	}
 }

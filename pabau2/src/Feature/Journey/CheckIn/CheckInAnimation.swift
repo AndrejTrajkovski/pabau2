@@ -1,9 +1,11 @@
 import SwiftUI
 import ComposableArchitecture
 import Util
+import Model
 
 struct CheckInAnimation: View {
 	@Binding var isRunningAnimation: Bool
+	let journey: Journey
 	var player = Player()
 	var body: some View {
 			VStack(spacing: 24) {
@@ -12,7 +14,9 @@ struct CheckInAnimation: View {
 				})
 				JourneyTransitionView(title: Texts.checkInDesc,
 															description: Texts.checkInTitle,
-															circleContent: { Text("SC").font(.regular90)})
+															circleContent: { AvatarView(journey: self.journey,
+																													font: .regular90,
+																													bgColor: .clear) })
 			}.offset(x: 0, y: -50)
 				.gradientView()
 				.edgesIgnoringSafeArea(.top)
@@ -22,10 +26,36 @@ struct CheckInAnimation: View {
 	}
 }
 
+struct AvatarView: View {
+	let journey: Journey
+	let font: Font
+	let bgColor: Color
+	var body: some View {
+		Circle()
+			.fill(bgColor)
+			.overlay(
+				ZStack {
+					Group {
+						if journey.patient.avatar != nil {
+							Image("\(journey.patient.avatar!)")
+								.resizable()
+								.aspectRatio(contentMode: .fill)
+								.clipShape(Circle())
+						} else {
+							Text(journey.patient.initials.uppercased())
+								.font(font)
+								.foregroundColor(.white)
+						}
+					}
+				}
+		)
+	}
+}
+
 extension CheckInAnimation {
 	var animationDuration: Double {
 		#if DEBUG
-			return 0.0
+			return 2.0
 		#else
 			return 2.0
 		#endif

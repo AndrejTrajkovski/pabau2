@@ -328,6 +328,7 @@ public struct JourneyContainerView: View {
 
 func journeyCellAdapter(journey: Journey) -> JourneyCell {
 	return JourneyCell(
+		journey: journey,
 		color: Color.init(hex: journey.appointments.head.service!.color),
 		time: "12:30",
 		imageUrl: journey.patient.avatar,
@@ -360,6 +361,7 @@ struct JourneyList: View {
 }
 
 struct JourneyCell: View {
+	let journey: Journey
 	let color: Color
 	let time: String
 	let imageUrl: String?
@@ -378,10 +380,8 @@ struct JourneyCell: View {
 				Group {
 					Text(time).font(Font.semibold11)
 					Spacer()
-					Image(imageUrl ?? "emily")
-						.resizable()
+					AvatarView(journey: journey, font: .regular18, bgColor: .accentColor)
 						.frame(width: 55, height: 55)
-						.clipShape(Circle())
 					VStack(alignment: .leading, spacing: 4) {
 						Text(name).font(Font.semibold14)
 						Text(services).font(Font.regular12)
