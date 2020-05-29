@@ -18,7 +18,7 @@ struct SecondaryButton: View {
 				.font(Font.system(size: 16.0, weight: .bold))
 				.frame(minWidth: 0, maxWidth: .infinity)
 		}).buttonStyle(PathwayWhiteButtonStyle())
-			.cornerRadius(10)
+			.cornerRadius(4)
 			.shadow(color: .bigBtnShadow2,
 							radius: 8.0,
 							y: 2)

@@ -9,6 +9,7 @@ public enum CheckInBodyAction {
 	case updateForm(Indexed<UpdateFormAction>)
 	case didSelectCompleteFormIdx(Int)
 	case stepsView(StepsViewAction)
+	case completeJourney(CompleteJourneyBtnAction)
 }
 
 let checkInBodyReducer: Reducer<CheckInViewState, CheckInBodyAction, JourneyEnvironment> =
@@ -25,6 +26,8 @@ let checkInBodyReducer: Reducer<CheckInViewState, CheckInBodyAction, JourneyEnvi
 				break//handled in navigationReducer
 			case .stepsView:
 				break
+			case .completeJourney(_):
+				break//handled in checkInMiddleware
 			}
 			return .none
 		},
@@ -69,7 +72,7 @@ struct CheckInBody: View {
 				if self.keyboardHandler.keyboardHeight == 0 &&
 					!self.viewStore.state.isOnCompleteStep {
 					FooterButtons(store: self.store.scope(
-						state: { $0 }, action: { $0 }
+						state: { $0.footer }, action: { $0 }
 					))
 					.frame(maxWidth: 500)
 					.padding(8)
@@ -77,68 +80,5 @@ struct CheckInBody: View {
 			}	.padding(.leading, 40)
 				.padding(.trailing, 40)
 		}
-	}
-}
-
-struct FooterButtons: View {
-	let store: Store<CheckInViewState, CheckInBodyAction>
-	struct State: Equatable {
-		let isOnCheckPatient: Bool
-	}
-	var body: some View {
-		WithViewStore(store.scope(
-			state: State.init(state:),
-			action: { $0 }
-		)) { viewStore in
-			HStack {
-				if viewStore.state.isOnCheckPatient {
-					SecondaryButton(Texts.toPatientMode) {
-												viewStore.send(.toPatientMode)
-					}
-				}
-				NextButton(store: self.store).frame(maxWidth: 250)
-			}
-		}
-	}
-}
-
-extension FooterButtons.State {
-	init(state: CheckInViewState) {
-		self.isOnCheckPatient = {
-			guard let selectedForm = state.selectedForm else { return false }
-			return stepType(form: selectedForm.form) == .checkpatient
-		}()
-	}
-}
-
-struct NextButton: View {
-	let store: Store<CheckInViewState, CheckInBodyAction>
-	struct State: Equatable {
-		let index: Int
-		let isDisabled: Bool
-		let title: String
-	}
-
-	var body: some View {
-		WithViewStore(store.scope(
-			state: State.init(state:),
-			action: { $0 })
-		) { viewStore in
-			PrimaryButton(viewStore.state.title, isDisabled: viewStore.state.isDisabled) {
-				viewStore.send(.didSelectCompleteFormIdx(viewStore.state.index))
-			}
-			.disabled(viewStore.state.isDisabled)
-		}
-	}
-}
-
-extension NextButton.State {
-	init (state: CheckInViewState) {
-		print("next button init")
-		self.index = state.selectedIndex
-		self.isDisabled = !(state.selectedForm?.form.canProceed ?? true)
-		let isDoctorMode = state.forms.map(pipe(get(\.form), stepType(form:))).allSatisfy(with(.doctor, filterBy))
-		let isLastIndex = state.selectedIndex == state.forms.count - 1
-		self.title = isDoctorMode && isLastIndex ? Texts.completeJourney : Texts.next
 	}
 }

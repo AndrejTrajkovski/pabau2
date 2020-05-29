@@ -82,8 +82,14 @@ struct DoctorSummary: View {
 				DoctorSummaryStepList(self.viewStore.state.steps) {
 					self.viewStore.send(.didTouchStep($0))
 				}
-				AddConsentBtns {
-					self.viewStore.send(.didTouchAdd($0))
+				VStack {
+					AddConsentBtns {
+						self.viewStore.send(.didTouchAdd($0))
+					}
+					DoctorSummaryCompleteBtn(
+						store: self.store.scope(state: { $0.doctorArray },
+																		action: { .doctor(.checkInBody(.completeJourney($0))) })
+					)
 				}
 				Spacer()
 				DoctorNavigation(store: self.store)

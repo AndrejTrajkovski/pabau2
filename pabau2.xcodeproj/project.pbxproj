@@ -127,6 +127,9 @@
 		8269527C2456F583001B806E /* InputText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8269527A2456F4BA001B806E /* InputText.swift */; };
 		826F65AD247FE5A40086E187 /* AftercareBoolSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826F65AC247FE5A40086E187 /* AftercareBoolSection.swift */; };
 		826F65AF24802AEA0086E187 /* CheckInBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826F65AE24802AEA0086E187 /* CheckInBody.swift */; };
+		826F65B12480FA2E0086E187 /* CompleteJourneyBtn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826F65B02480FA2E0086E187 /* CompleteJourneyBtn.swift */; };
+		826F65B3248122480086E187 /* NextButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826F65B2248122480086E187 /* NextButton.swift */; };
+		826F65B5248123C40086E187 /* FooterButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826F65B4248123C40086E187 /* FooterButtons.swift */; };
 		82755AE3247EE44F00A3BBC2 /* ASCollectionView in Frameworks */ = {isa = PBXBuildFile; productRef = 82755AE2247EE44F00A3BBC2 /* ASCollectionView */; };
 		827B4572241135A700A5975E /* FSCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82CACE772411293C0021E1DE /* FSCalendar.framework */; };
 		827B45832411368100A5975E /* Journey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 827B457A2411368100A5975E /* Journey.framework */; };
@@ -547,6 +550,9 @@
 		8269527A2456F4BA001B806E /* InputText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputText.swift; sourceTree = "<group>"; };
 		826F65AC247FE5A40086E187 /* AftercareBoolSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AftercareBoolSection.swift; sourceTree = "<group>"; };
 		826F65AE24802AEA0086E187 /* CheckInBody.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInBody.swift; sourceTree = "<group>"; };
+		826F65B02480FA2E0086E187 /* CompleteJourneyBtn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteJourneyBtn.swift; sourceTree = "<group>"; };
+		826F65B2248122480086E187 /* NextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextButton.swift; sourceTree = "<group>"; };
+		826F65B4248123C40086E187 /* FooterButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterButtons.swift; sourceTree = "<group>"; };
 		827B457A2411368100A5975E /* Journey.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Journey.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		827B457C2411368100A5975E /* Journey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Journey.h; sourceTree = "<group>"; };
 		827B457D2411368100A5975E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -970,6 +976,9 @@
 				820F16AD247AD0F900DB33DE /* CheckInContainerStateAdapters.swift */,
 				820F16AF247AD12D00DB33DE /* CheckInViewState.swift */,
 				826F65AE24802AEA0086E187 /* CheckInBody.swift */,
+				826F65B02480FA2E0086E187 /* CompleteJourneyBtn.swift */,
+				826F65B2248122480086E187 /* NextButton.swift */,
+				826F65B4248123C40086E187 /* FooterButtons.swift */,
 			);
 			path = CheckIn;
 			sourceTree = "<group>";
@@ -1912,6 +1921,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				826F65B3248122480086E187 /* NextButton.swift in Sources */,
 				82477618246C336300508434 /* PatientComplete.swift in Sources */,
 				8247763424729DE800508434 /* CheckInPatient.swift in Sources */,
 				82CEA223244CB28500A895F6 /* RadioField.swift in Sources */,
@@ -1921,6 +1931,7 @@
 				8269526C2452DA93001B806E /* TextAreaField.swift in Sources */,
 				827B459B241136D900A5975E /* JourneyContainerView.swift in Sources */,
 				826F65AF24802AEA0086E187 /* CheckInBody.swift in Sources */,
+				826F65B5248123C40086E187 /* FooterButtons.swift in Sources */,
 				820F16AC24780A0900DB33DE /* CheckPatientForm.swift in Sources */,
 				820F16AA2477ECCE00DB33DE /* FourSwitchesSection.swift in Sources */,
 				82C479DE242E17B50037F140 /* CheckInNavigationView.swift in Sources */,
@@ -1972,6 +1983,7 @@
 				82622B52244650E000BECF9A /* CheckBoxField.swift in Sources */,
 				8269526824506F18001B806E /* DynamicForm.swift in Sources */,
 				827B459D24118ABD00A5975E /* JourneyNavigationView.swift in Sources */,
+				826F65B12480FA2E0086E187 /* CompleteJourneyBtn.swift in Sources */,
 				825BE7E224361ABD00422910 /* StaffFilterPicker.swift in Sources */,
 				82477622246D189C00508434 /* JourneyUtil.swift in Sources */,
 				820F16B0247AD12D00DB33DE /* CheckInViewState.swift in Sources */,

@@ -20,10 +20,11 @@ public struct PrimaryButton: View {
 				.font(Font.system(size: 16.0, weight: .bold))
 				.frame(minWidth: 0, maxWidth: .infinity)
 		}).buttonStyle(PrimaryButtonStyle(isDisabled: isDisabled))
+			.disabled(isDisabled)
 			.shadow(color: isDisabled ? .clear : Color.bigBtnShadow1,
 							radius: 4.0,
 							y: 2)
-			.cornerRadius(10)
+			.cornerRadius(4)
 	}
 }
 

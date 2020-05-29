@@ -40,4 +40,13 @@ public struct CheckInViewState: Equatable {
 			self.selectedIndex = newValue.selectedIndex
 		}
 	}
+	
+	var footer: FooterButtonsState {
+		get {
+			FooterButtonsState(forms: forms,
+												 selectedIndex: selectedIndex,
+												 selectedForm: selectedForm)
+		}
+		set { }
+	}
 }
