@@ -8,7 +8,7 @@ struct JourneyProfileView: View {
 	let viewState: ViewState
 	struct ViewState: Equatable {
 //		let hasJourney: Bool
-		let imageUrl: String
+		let imageUrl: String?
 		let name: String
 		let services: String
 		let employeeName: String
@@ -18,10 +18,14 @@ struct JourneyProfileView: View {
 	}
 	var body: some View {
 		VStack {
-			Image(viewState.imageUrl)
-				.resizable()
-				.frame(width: profileImageRadius, height: profileImageRadius)
-				.clipShape(Circle())
+			Group {
+				if viewState.imageUrl != nil {
+					Image(viewState.imageUrl!).resizable().scaledToFill().clipShape(Circle())
+				} else {
+					Image(systemName: "person").resizable()
+				}
+			}
+			.frame(width: profileImageRadius, height: profileImageRadius)
 			Text(viewState.name).font(nameFont)
 			Text(viewState.services).foregroundColor(.gray838383).font(serviceFont)
 			if self.style == .short {
@@ -54,7 +58,7 @@ struct JourneyProfileView: View {
 
 extension JourneyProfileView.ViewState {
 	init(journey: Journey?) {
-		self.imageUrl = journey?.patient.avatar ?? "placeholder"
+		self.imageUrl = journey?.patient.avatar
 		self.name = (journey?.patient.firstName ?? "") + " " + (journey?.patient.lastName ?? "")
 		self.services = journey?.servicesString ?? ""
 		self.employeeName = journey?.employee.name ?? ""
