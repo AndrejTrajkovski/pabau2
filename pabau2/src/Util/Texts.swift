@@ -66,6 +66,7 @@ public struct Texts {
 
 	public static let next = "Next"
 	public static let completeForm = "Complete Form"
+	public static let patientDetailsOK = "Patient Details OK"
 
 	public static let journeyCompleteDesc = "Please use the checkout button at the end of the page."
 	public static let journeyCompleteTitle = "You have successfully completed the journey."

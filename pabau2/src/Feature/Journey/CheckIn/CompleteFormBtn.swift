@@ -12,6 +12,7 @@ struct CompleteFormBtn: View {
 	struct State: Equatable {
 		let index: Int
 		let isDisabled: Bool
+		let btnTitle: String
 	}
 
 	var body: some View {
@@ -19,7 +20,7 @@ struct CompleteFormBtn: View {
 			state: State.init(state:),
 			action: { $0 })
 		) { viewStore in
-			PrimaryButton(Texts.completeForm,
+			PrimaryButton(viewStore.state.btnTitle,
 										isDisabled: viewStore.state.isDisabled) {
 											viewStore.send(.didSelectCompleteFormIdx(viewStore.state.index))
 			}
@@ -31,6 +32,16 @@ extension CompleteFormBtn.State {
 	init (state: CompletBtnState) {
 		print("next button init")
 		self.index = state.selectedIndex
-		self.isDisabled = !(state.selectedForm?.form.canProceed ?? true)
+		if let selectedForm = state.selectedForm {
+			self.isDisabled = !selectedForm.form.canProceed
+			if case .checkPatient = selectedForm.form {
+				self.btnTitle = Texts.patientDetailsOK
+			} else {
+				self.btnTitle = Texts.completeForm
+			}
+		} else {
+			self.isDisabled = true
+			self.btnTitle = ""
+		}
 	}
 }

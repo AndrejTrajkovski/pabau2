@@ -37,7 +37,7 @@ struct DoctorSummaryButtons: View {
 	@State var btnWidth: CGFloat = 0
 	var body: some View {
 		WithViewStore(store) { viewStore in
-			VStack {
+			VStack(spacing: 24) {
 				AddConsentBtns {
 					viewStore.send(.doctorSummary(.didTouchAdd($0)))
 				}

@@ -43,7 +43,6 @@ struct CheckInBody: View {
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
 	let store: Store<CheckInViewState, CheckInBodyAction>
 	@ObservedObject var viewStore: ViewStore<CheckInViewState, CheckInBodyAction>
-	
 	init(store: Store<CheckInViewState, CheckInBodyAction>) {
 		print("check in body init")
 		self.store = store
