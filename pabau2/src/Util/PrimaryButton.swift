@@ -21,7 +21,7 @@ public struct PrimaryButton: View {
 				.frame(minWidth: 0, maxWidth: .infinity)
 		}).buttonStyle(PrimaryButtonStyle(isDisabled: isDisabled))
 			.disabled(isDisabled)
-			.shadow(color: isDisabled ? .clear : Color.bigBtnShadow1,
+			.shadow(color: Color.bigBtnShadow1,
 							radius: 4.0,
 							y: 2)
 			.cornerRadius(4)
@@ -34,6 +34,6 @@ struct PrimaryButtonStyle: ButtonStyle {
 		configuration.label
 			.padding()
 			.foregroundColor(Color.white)
-			.background(Color.accentColor)
+			.background(Color.blue2.opacity(isDisabled ? 0.3 : 1.0))
 	}
 }

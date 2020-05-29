@@ -83,7 +83,7 @@ public struct ChoosePathway: View {
 													 Step(id: 2, stepType: .medicalhistory),
 													 Step(id: 3, stepType: .consents),
 													 Step(id: 3, stepType: .treatmentnotes),
-//													 Step(id: 6, stepType: .aftercares),
+													 Step(id: 6, stepType: .aftercares),
 													 Step(id: 5, stepType: .checkpatient)])
 		init(state: ChoosePathwayState) {
 			self.isChooseConsentShown = state.selectedPathway != nil

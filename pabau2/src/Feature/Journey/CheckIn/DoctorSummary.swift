@@ -67,41 +67,6 @@ public enum DoctorSummaryAction {
 	case xOnDoctorCheckIn
 }
 
-struct DoctorSummary: View {
-	let store: Store<CheckInContainerState, CheckInContainerAction>
-	@ObservedObject var viewStore: ViewStore<DoctorSummaryState, DoctorSummaryAction>
-	init (store: Store<CheckInContainerState, CheckInContainerAction>) {
-		self.store = store
-		self.viewStore = ViewStore(store
-			.scope(state: { $0.doctorSummary },
-						 action: { .doctorSummary($0)}))
-	}
-	var body: some View {
-		GeometryReader { geo in
-			VStack(spacing: 32) {
-				DoctorSummaryStepList(self.viewStore.state.steps) {
-					self.viewStore.send(.didTouchStep($0))
-				}
-				VStack {
-					AddConsentBtns {
-						self.viewStore.send(.didTouchAdd($0))
-					}
-					DoctorSummaryCompleteBtn(
-						store: self.store.scope(state: { $0.doctorArray },
-																		action: { .doctor(.checkInBody(.completeJourney($0))) })
-					)
-				}
-				Spacer()
-				DoctorNavigation(store: self.store)
-			}
-			.frame(width: geo.size.width * 0.75)
-			.journeyBase(self.viewStore.state.journey, .long)
-			.navigationBarItems(leading:
-				XButton(onTap: { self.viewStore.send(.xOnDoctorCheckIn)}))
-		}
-	}
-}
-
 struct DoctorNavigation: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>
 	var body: some View {
@@ -134,44 +99,6 @@ struct DoctorNavigation: View {
 					)
 			}
 		}
-	}
-}
-
-struct AddConsentBtns: View {
-	let onSelect: (ChooseFormMode) -> Void
-	var body: some View {
-		HStack {
-			AddFormButton(mode: .consentsCheckIn, action: onSelect)
-			AddFormButton(mode: .treatmentNotes, action: onSelect)
-		}
-	}
-}
-
-struct AddFormButton: View {
-	let mode: ChooseFormMode
-	let btnTxt: String
-	let imageName: String
-	let onSelect: (ChooseFormMode) -> Void
-
-	init(mode: ChooseFormMode, action: @escaping (ChooseFormMode) -> Void) {
-		self.mode = mode
-		self.btnTxt = mode == .treatmentNotes ? "Add Treatment Note": "Add Consent"
-		self.imageName = mode == .treatmentNotes ? "ico-journey-treatment-notes": "ico-journey-consent"
-		self.onSelect = action
-	}
-
-	var body: some View {
-		Button.init(action: { self.onSelect(self.mode) }, label: {
-			HStack {
-				Image(imageName)
-				Text(btnTxt)
-					.font(Font.system(size: 16.0, weight: .regular))
-			}.frame(minWidth: 0, maxWidth: .infinity)
-		}).buttonStyle(PathwayWhiteButtonStyle())
-			.shadow(color: .bigBtnShadow2,
-							radius: 8.0,
-							y: 4)
-			.background(Color.white)
 	}
 }
 
