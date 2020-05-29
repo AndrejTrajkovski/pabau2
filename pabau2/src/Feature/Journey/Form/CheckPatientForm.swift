@@ -26,7 +26,10 @@ struct CheckPatientForm: View {
 					title: Texts.communications
 				)
 				ForEach(patientForms.indices, id: \.self ) { index in
-					DynamicForm(template: .constant(self.patientForms[index]))
+					DynamicForm(
+						template: .constant(self.patientForms[index]),
+						isCheckingDetails: true
+					)
 				}
 			}.disabled(true)
 		}

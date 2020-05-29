@@ -12,16 +12,19 @@ struct ListDynamicForm: View {
 	}
 	var body: some View {
 		List {
-			DynamicForm(template: $template)
+			DynamicForm(template: $template, isCheckingDetails: false)
 		}
 	}
 }
 
 struct DynamicForm: View {
 
+	let isCheckingDetails: Bool
 	@Binding var template: FormTemplate
-	init(template: Binding<FormTemplate>) {
+	init(template: Binding<FormTemplate>,
+			 isCheckingDetails: Bool) {
 		self._template = template
+		self.isCheckingDetails = isCheckingDetails
 	}
 
 	public var body: some View {
@@ -41,8 +44,9 @@ struct DynamicForm: View {
 						} else {
 						}
 				}
-				)
-			).equatable()
+			),
+			isCheckingDetails: self.isCheckingDetails)
+				.equatable()
 		}
 	}
 }

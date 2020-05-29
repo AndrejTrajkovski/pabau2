@@ -8,12 +8,14 @@ struct FormSectionField: View, Equatable {
 	static func == (lhs: FormSectionField, rhs: FormSectionField) -> Bool {
 		return lhs.cssField == rhs.cssField
 	}
-
+	let isCheckingDetails: Bool
 	let isSignature: Bool
 	@Binding var cssField: CSSField
-	init (cssField: Binding<CSSField>) {
+	init (cssField: Binding<CSSField>,
+				isCheckingDetails: Bool) {
 		self._cssField = cssField
 		self.isSignature = extract(case: CSSClass.signature, from: cssField.wrappedValue.cssClass) != nil
+		self.isCheckingDetails = isCheckingDetails
 	}
 
 	var body: some View {
@@ -27,6 +29,11 @@ struct FormSectionField: View, Equatable {
 		) {
 			FormField(cssField: $cssField)
 		}.background(Color.white)
+		.border(borderColor, width: 2.0)
+	}
+	
+	var borderColor: Color {
+		return !self.cssField.cssClass.isFulfilled && self.isCheckingDetails ? .red : .clear
 	}
 }
 
