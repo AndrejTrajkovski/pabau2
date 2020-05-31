@@ -128,9 +128,9 @@
 		826F65B5248123C40086E187 /* FooterButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826F65B4248123C40086E187 /* FooterButtons.swift */; };
 		826F65B72481657B0086E187 /* DoctorSummaryButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826F65B62481657B0086E187 /* DoctorSummaryButtons.swift */; };
 		826F65CC248260820086E187 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 826F65CB248260820086E187 /* ComposableArchitecture */; };
-		826F65CD248260820086E187 /* ComposableArchitecture in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 826F65CB248260820086E187 /* ComposableArchitecture */; };
+		826F65CD248260820086E187 /* ComposableArchitecture in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 826F65CB248260820086E187 /* ComposableArchitecture */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		826F65CF248260AD0086E187 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 826F65CE248260AD0086E187 /* ComposableArchitecture */; };
-		826F65D0248260AD0086E187 /* ComposableArchitecture in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 826F65CE248260AD0086E187 /* ComposableArchitecture */; };
+		826F65D0248260AD0086E187 /* ComposableArchitecture in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 826F65CE248260AD0086E187 /* ComposableArchitecture */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		826F65D2248261060086E187 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 826F65D1248261060086E187 /* ComposableArchitecture */; };
 		826F65D3248261060086E187 /* ComposableArchitecture in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 826F65D1248261060086E187 /* ComposableArchitecture */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		82755AE3247EE44F00A3BBC2 /* ASCollectionView in Frameworks */ = {isa = PBXBuildFile; productRef = 82755AE2247EE44F00A3BBC2 /* ASCollectionView */; };
@@ -406,7 +406,7 @@
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolderSpec = 11;
+			dstSubfolderSpec = 10;
 			files = (
 				826F65D0248260AD0086E187 /* ComposableArchitecture in Embed Frameworks */,
 			);
@@ -417,7 +417,7 @@
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolderSpec = 11;
+			dstSubfolderSpec = 10;
 			files = (
 				826F65D3248261060086E187 /* ComposableArchitecture in Embed Frameworks */,
 			);
@@ -428,7 +428,7 @@
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolderSpec = 11;
+			dstSubfolderSpec = 10;
 			files = (
 				826F65CD248260820086E187 /* ComposableArchitecture in Embed Frameworks */,
 			);
