@@ -406,7 +406,7 @@
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolderSpec = 10;
+			dstSubfolderSpec = 11;
 			files = (
 				826F65D0248260AD0086E187 /* ComposableArchitecture in Embed Frameworks */,
 			);
@@ -417,7 +417,7 @@
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolderSpec = 10;
+			dstSubfolderSpec = 11;
 			files = (
 				826F65D3248261060086E187 /* ComposableArchitecture in Embed Frameworks */,
 			);
@@ -428,7 +428,7 @@
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolderSpec = 10;
+			dstSubfolderSpec = 11;
 			files = (
 				826F65CD248260820086E187 /* ComposableArchitecture in Embed Frameworks */,
 			);
@@ -1525,7 +1525,6 @@
 				82BE2F4223D97D9C00B3678A /* Resources */,
 				82BE2F7E23D9983C00B3678A /* Embed Frameworks */,
 				82BE2F8323D9A5E500B3678A /* ShellScript */,
-				826F65D4248261FE0086E187 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1759,23 +1758,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		826F65D4248261FE0086E187 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd \"${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/\"\nif [[ -d \"Frameworks\" ]]; then\nrm -fr Frameworks\nfi\n";
-		};
 		82BE2F8323D9A5E500B3678A /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2632,7 +2614,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_ASSET_PATHS = "\"pabau2/Preview Content\"";
 				DEVELOPMENT_TEAM = 7M6BMQR36X;
 				ENABLE_BITCODE = NO;
@@ -2657,7 +2639,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_ASSET_PATHS = "\"pabau2/Preview Content\"";
 				DEVELOPMENT_TEAM = 7M6BMQR36X;
 				ENABLE_BITCODE = NO;
