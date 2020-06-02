@@ -31,7 +31,7 @@ struct FormSectionField: View, Equatable {
 		}.background(Color.white)
 		.border(borderColor, width: 2.0)
 	}
-	
+
 	var borderColor: Color {
 		return !self.cssField.cssClass.isFulfilled && self.isCheckingDetails ? .red : .clear
 	}

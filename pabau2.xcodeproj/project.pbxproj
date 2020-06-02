@@ -255,6 +255,11 @@
 		82CACEEF241131460021E1DE /* SwiftUICalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CACE6A24110A250021E1DE /* SwiftUICalendarViewModel.swift */; };
 		82CEA223244CB28500A895F6 /* RadioField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CEA222244CB28500A895F6 /* RadioField.swift */; };
 		82CEA225244E0F9B00A895F6 /* ForEachWithindex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CEA224244E0F9B00A895F6 /* ForEachWithindex.swift */; };
+		82D286F824868C5E003A703B /* DrawingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D286F724868C5E003A703B /* DrawingViewController.swift */; };
+		82D286FA2486BD0F003A703B /* CameraOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D286F92486BD0F003A703B /* CameraOverlayView.swift */; };
+		82D286FC2486C893003A703B /* EditPhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D286FB2486C893003A703B /* EditPhotoViewController.swift */; };
+		82D286FE2486D39A003A703B /* EditPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D286FD2486D39A003A703B /* EditPhoto.swift */; };
+		82D287002486D688003A703B /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D286FF2486D688003A703B /* ImagePicker.swift */; };
 		82D43D9024351F5000AC74FA /* EmployeesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D43D8F24351F5000AC74FA /* EmployeesList.swift */; };
 		82D43D92243522CD00AC74FA /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D43D91243522CD00AC74FA /* Settings.swift */; };
 		82D7C2BF2446FEB3000B1CD5 /* CSSClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D7C2BE2446FEB3000B1CD5 /* CSSClass.swift */; };
@@ -662,6 +667,11 @@
 		82CACEE5241131260021E1DE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		82CEA222244CB28500A895F6 /* RadioField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioField.swift; sourceTree = "<group>"; };
 		82CEA224244E0F9B00A895F6 /* ForEachWithindex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForEachWithindex.swift; sourceTree = "<group>"; };
+		82D286F724868C5E003A703B /* DrawingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingViewController.swift; sourceTree = "<group>"; };
+		82D286F92486BD0F003A703B /* CameraOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraOverlayView.swift; sourceTree = "<group>"; };
+		82D286FB2486C893003A703B /* EditPhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhotoViewController.swift; sourceTree = "<group>"; };
+		82D286FD2486D39A003A703B /* EditPhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhoto.swift; sourceTree = "<group>"; };
+		82D286FF2486D688003A703B /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		82D43D8F24351F5000AC74FA /* EmployeesList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmployeesList.swift; sourceTree = "<group>"; };
 		82D43D91243522CD00AC74FA /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		82D7C2BE2446FEB3000B1CD5 /* CSSClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSSClass.swift; sourceTree = "<group>"; };
@@ -846,7 +856,7 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
-		82477610246C331400508434 /* StaticModel */ = {
+		82477610246C331400508434 /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				82477611246C333500508434 /* PatientDetails.swift */,
@@ -856,7 +866,7 @@
 				8247761B246C339800508434 /* MetaFormAndStatus.swift */,
 				820F16B1247BE3FE00DB33DE /* CheckPatient.swift */,
 			);
-			path = StaticModel;
+			path = Model;
 			sourceTree = "<group>";
 		};
 		8250D7CC242C575A00F8F3FC /* Modal */ = {
@@ -953,7 +963,8 @@
 		8269526624506ED2001B806E /* Form */ = {
 			isa = PBXGroup;
 			children = (
-				82477610246C331400508434 /* StaticModel */,
+				82477610246C331400508434 /* Model */,
+				82D286F624868C37003A703B /* Photos */,
 				8269526724506F18001B806E /* DynamicForm.swift */,
 				82648403244F42F300544703 /* FormSectionField.swift */,
 				82CEA222244CB28500A895F6 /* RadioField.swift */,
@@ -1269,6 +1280,18 @@
 				82CACEE5241131260021E1DE /* Info.plist */,
 			);
 			path = FSCalendarSwiftUI;
+			sourceTree = "<group>";
+		};
+		82D286F624868C37003A703B /* Photos */ = {
+			isa = PBXGroup;
+			children = (
+				82D286F724868C5E003A703B /* DrawingViewController.swift */,
+				82D286F92486BD0F003A703B /* CameraOverlayView.swift */,
+				82D286FB2486C893003A703B /* EditPhotoViewController.swift */,
+				82D286FD2486D39A003A703B /* EditPhoto.swift */,
+				82D286FF2486D688003A703B /* ImagePicker.swift */,
+			);
+			path = Photos;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1896,6 +1919,7 @@
 				827B459B241136D900A5975E /* JourneyContainerView.swift in Sources */,
 				826F65AF24802AEA0086E187 /* CheckInBody.swift in Sources */,
 				826F65B5248123C40086E187 /* FooterButtons.swift in Sources */,
+				82D286FC2486C893003A703B /* EditPhotoViewController.swift in Sources */,
 				820F16AC24780A0900DB33DE /* CheckPatientForm.swift in Sources */,
 				820F16AA2477ECCE00DB33DE /* FourSwitchesSection.swift in Sources */,
 				82C479DE242E17B50037F140 /* CheckInNavigationView.swift in Sources */,
@@ -1905,10 +1929,12 @@
 				826F65B72481657B0086E187 /* DoctorSummaryButtons.swift in Sources */,
 				82E6D82F245E177900CB359A /* JourneyTransitionView.swift in Sources */,
 				825BE7E424361C4400422910 /* SoundPlayer.swift in Sources */,
+				82D287002486D688003A703B /* ImagePicker.swift in Sources */,
 				829B40D12423B8F2009B7E71 /* AddAppointment.swift in Sources */,
 				82622B5024464E0800BECF9A /* RibbonView.swift in Sources */,
 				82FB74F6245A9E51001C2DF3 /* FormWrapper.swift in Sources */,
 				820F16C0247D7F5300DB33DE /* AftercareImagesSection.swift in Sources */,
+				82D286FE2486D39A003A703B /* EditPhoto.swift in Sources */,
 				820F16BA247D792A00DB33DE /* AftercareOptionCell.swift in Sources */,
 				82477612246C333500508434 /* PatientDetails.swift in Sources */,
 				8247760F246C27F200508434 /* TopView.swift in Sources */,
@@ -1932,6 +1958,7 @@
 				82D43D92243522CD00AC74FA /* Settings.swift in Sources */,
 				82E253FA241B9EB500F16C30 /* JourneyAction.swift in Sources */,
 				820F16B4247D617400DB33DE /* AftercareForm.swift in Sources */,
+				82D286FA2486BD0F003A703B /* CameraOverlayView.swift in Sources */,
 				82D43D9024351F5000AC74FA /* EmployeesList.swift in Sources */,
 				826952772454E0A5001B806E /* SignatureField.swift in Sources */,
 				8247763A2473D07F00508434 /* JourneyListStyle.swift in Sources */,
@@ -1951,6 +1978,7 @@
 				826F65B12480FA2E0086E187 /* CompleteJourneyBtn.swift in Sources */,
 				825BE7E224361ABD00422910 /* StaffFilterPicker.swift in Sources */,
 				82477622246D189C00508434 /* JourneyUtil.swift in Sources */,
+				82D286F824868C5E003A703B /* DrawingViewController.swift in Sources */,
 				820F16B0247AD12D00DB33DE /* CheckInViewState.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

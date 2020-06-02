@@ -36,7 +36,7 @@ public struct CheckInContainerState: Equatable {
 	var stepTypes: [StepType]
 	var runningPrescriptions: [Int: FormTemplate]
 	var prescriptionsCompleted: [Int: Bool]
-
+	
 	var allTreatmentForms: [Int: FormTemplate]
 	var allConsents: [Int: FormTemplate]
 

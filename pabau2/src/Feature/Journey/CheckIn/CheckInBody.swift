@@ -26,7 +26,7 @@ let checkInBodyReducer: Reducer<CheckInViewState, CheckInBodyAction, JourneyEnvi
 				break//handled in navigationReducer
 			case .stepsView:
 				break
-			case .completeJourney(_):
+			case .completeJourney:
 				break//handled in checkInMiddleware
 			}
 			return .none

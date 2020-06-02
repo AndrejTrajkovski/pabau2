@@ -54,7 +54,7 @@ func wrapForm(_ state: CheckInContainerState,
 			return MetaFormAndStatus(form, status)
 		}
 	case .photos:
-		return [] //TODO
+		return
 	case .aftercares:
 		let form = MetaForm.aftercare(state.aftercare)
 		return [MetaFormAndStatus(form, state.aftercareCompleted)]

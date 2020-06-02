@@ -12,7 +12,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		if let windowScene = scene as? UIWindowScene {
 			let reducer = appReducer
 //				.debug()
-//			let reducer = appReducer
       let window = UIWindow(windowScene: windowScene)
 			let userDefaults = StandardUDConfig()
 			let user = userDefaults.loggedInUser
