@@ -62,6 +62,7 @@ struct FormWrapper: View {
 		var aftercare: Aftercare?
 		var patientCompleteForm: PatientComplete?
 		var checkPatient: CheckPatient?
+		var photos: [JourneyPhotos]?
 
 		init (state: MetaForm) {
 			self.patientDetails = extract(case: MetaForm.patientDetails, from: state)
@@ -69,6 +70,7 @@ struct FormWrapper: View {
 			self.aftercare = extract(case: MetaForm.aftercare, from: state)
 			self.patientCompleteForm = extract(case: MetaForm.patientComplete, from: state)
 			self.checkPatient = extract(case: MetaForm.checkPatient, from: state)
+			self.photos = extract(case: MetaForm.photos, from: state)
 		}
 	}
 
@@ -104,6 +106,10 @@ struct FormWrapper: View {
 				CheckPatientForm(didTouchDone: { },
 												 patDetails: self.viewStore.state.checkPatient!.patDetails,
 												 patientForms: self.viewStore.state.checkPatient!.patForms)
+			)
+		} else if self.viewStore.state.photos != nil {
+			return AnyView(
+				EmptyView()
 			)
 		} else {
 			return AnyView(

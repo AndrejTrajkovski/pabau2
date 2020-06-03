@@ -7,12 +7,14 @@ public enum MetaForm: Equatable {
 			return template.canProceed
 		case .patientDetails(let patDetails):
 			return patDetails.canProceed
-		case .aftercare(let aftercare):
+		case .aftercare:
 			return true
 		case .patientComplete:
 			return true
 		case .checkPatient:
 			return true
+		case .photos(let photos):
+			return !photos.isEmpty
 		}
 	}
 
@@ -37,6 +39,7 @@ public enum MetaForm: Equatable {
 	case template(FormTemplate)
 	case patientComplete(PatientComplete)
 	case checkPatient(CheckPatient)
+	case photos([JourneyPhotos])
 
 	var title: String {
 		switch self {
@@ -50,6 +53,8 @@ public enum MetaForm: Equatable {
 			return "COMPLETE"
 		case .checkPatient:
 			return "CHECK PATIENT DETAILS"
+		case .photos:
+			return "PHOTOS"
 		}
 	}
 
@@ -61,8 +66,6 @@ public enum MetaForm: Equatable {
 			return "HISTORY"
 		case .prescription:
 			return "PRESCRIPTION"
-		case .photos:
-			return "PHOTOS"
 		}
 	}
 }

@@ -6,9 +6,7 @@ import Foundation
 public struct FormTemplate: Codable, Identifiable, Equatable, CustomDebugStringConvertible {
 	
 	public var canProceed: Bool {
-		self.formStructure.formStructure.allSatisfy {
-			$0._required ? $0.cssClass.isFulfilled : true
-		}
+		self.formStructure.canProceed
 	}
 	
 	public var debugDescription: String {

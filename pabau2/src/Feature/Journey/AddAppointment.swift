@@ -1,7 +1,6 @@
 import SwiftUI
 import Model
 import ComposableArchitecture
-
 import Util
 
 public struct Duration: ListPickerElement {
@@ -435,22 +434,6 @@ let switchCellReducer = Reducer<Bool, ToggleAction, Any> { state, action, _ in
 		state = value
 	}
 	return .none
-}
-
-struct SwitchCell: View {
-	let text: String
-	@Binding var value: Bool
-	var body: some View {
-		VStack {
-			HStack {
-				Text(text).font(.regular17)
-				Spacer()
-				Toggle.init(isOn: $value, label: { EmptyView() })
-				Spacer()
-			}
-			Divider()
-		}
-	}
 }
 
 public protocol ListPickerElement: Identifiable, Equatable {
