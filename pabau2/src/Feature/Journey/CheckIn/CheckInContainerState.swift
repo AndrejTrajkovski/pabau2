@@ -7,23 +7,43 @@ protocol MyCollection {
 	associatedtype A: Identifiable
 	var byId: [A.ID: A] { get set }
 	var allIds: [A.ID] { get set }
+	var completed: [A.ID: Bool] { get set }
 }
 
-struct FormsCollection: MyCollection, Equatable {
-	typealias A = FormTemplate
-	var byId: [Int: FormTemplate]
-	var allIds: [Int]
-	var completed: [Int: Bool]
-	var sorted: [FormTemplate] {
+extension MyCollection {
+	var sorted: [A] {
 		allIds.map { byId[$0]! }
 	}
+}
 
-	init(ids: [Int],
-		   fromAll: [FormTemplate]) {
+protocol EmptyInitializable {
+	init ()
+}
+
+extension MyCollection where Self: EmptyInitializable {
+	init(ids: [A.ID],
+		   fromAll: [A]) {
+		self.init()
 		self.allIds = ids
-		self.byId = flatten(fromAll.filter(pipe(get(\FormTemplate.id), ids.contains)))
+		self.byId = flatten(fromAll.filter(pipe(get(\A.id), ids.contains)))
 		self.completed = allIds.reduce(into: [:], { $0[$1] = false })
 	}
+}
+
+extension MyCollection where A == FormTemplate {
+	func toMetaFormArray() -> [MetaFormAndStatus] {
+		return sorted.map {
+			let form = MetaForm.template($0)
+			guard let status = completed[$0.id] else { fatalError() }
+			return MetaFormAndStatus(form, status)
+		}
+	}
+}
+
+struct FormsCollection: MyCollection, Equatable, EmptyInitializable {
+	var byId: [Int: FormTemplate] = [:]
+	var allIds: [Int] = []
+	var completed: [Int: Bool] = [:]
 }
 
 enum JourneyMode: Equatable {
@@ -36,7 +56,7 @@ public struct CheckInContainerState: Equatable {
 	var stepTypes: [StepType]
 	var runningPrescriptions: [Int: FormTemplate]
 	var prescriptionsCompleted: [Int: Bool]
-	
+
 	var allTreatmentForms: [Int: FormTemplate]
 	var allConsents: [Int: FormTemplate]
 
@@ -45,21 +65,24 @@ public struct CheckInContainerState: Equatable {
 
 	var consents: FormsCollection
 	var treatments: FormsCollection
-//	var consentsCompleted: [Int: Bool]
-//	var runningConsents: [Int: FormTemplate]
-//	var treatmentFormsCompleted: [Int: Bool]
-//	var runningTreatmentForms: [Int: FormTemplate]
 
 	var aftercare: Aftercare
 	var aftercareCompleted: Bool
+
 	var patientDetails: PatientDetails
 	var patientDetailsCompleted: Bool
+
 	var patientComplete: PatientComplete
+
 	var checkPatientCompleted: Bool
+
 	var medHistory: FormTemplate
 	var medHistoryCompleted: Bool
+
 	var patientSelectedIndex: Int
 	var doctorSelectedIndex: Int
+
+	var photos: FormsCollection
 	var photosCompleted: Bool
 
 	var passcodeState = PasscodeState()
@@ -248,5 +271,6 @@ extension CheckInContainerState {
 		self.medHistoryCompleted = false
 		self.selectedConsentsIds = []
 		self.selectedTreatmentFormsIds = []
+		self.photos = FormsCollection(ids: [], fromAll: [])
 	}
 }

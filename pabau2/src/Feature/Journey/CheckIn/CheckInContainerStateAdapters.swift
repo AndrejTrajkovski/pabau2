@@ -33,20 +33,12 @@ func wrapForm(_ state: CheckInContainerState,
 		let form = MetaForm.template(state.medHistory)
 		return [MetaFormAndStatus(form, state.medHistoryCompleted)]
 	case .consents:
-		return state.consents.sorted.map {
-			let form = MetaForm.template($0)
-			guard let status = state.consents.completed[$0.id] else { fatalError() }
-			return MetaFormAndStatus(form, status)
-		}
+		return state.consents.toMetaFormArray()
 	case .checkpatient:
 		let form = MetaForm.checkPatient(state.checkPatient)
 		return [MetaFormAndStatus(form, state.checkPatientCompleted)]
 	case .treatmentnotes:
-		return state.treatments.sorted.map {
-			let form = MetaForm.template($0)
-			guard let status = state.treatments.completed[$0.id] else { fatalError() }
-			return MetaFormAndStatus(form, status)
-		}
+		return state.treatments.toMetaFormArray()
 	case .prescriptions:
 		return state.runningPrescriptions.map {
 			let form = MetaForm.template($0.value)
@@ -54,7 +46,7 @@ func wrapForm(_ state: CheckInContainerState,
 			return MetaFormAndStatus(form, status)
 		}
 	case .photos:
-		return
+		return state.photos.toMetaFormArray()
 	case .aftercares:
 		let form = MetaForm.aftercare(state.aftercare)
 		return [MetaFormAndStatus(form, state.aftercareCompleted)]

@@ -11,7 +11,7 @@ struct EditPhoto: View {
 			images.first?
 				.resizable()
 				.scaledToFit()
-			
+
 			Button("Select Image") {
 				self.showingImagePicker = .camera
 			}
@@ -30,7 +30,7 @@ struct EditPhoto: View {
 				ImagePicker(image: self.$inputImage)
 		}.onAppear(perform: { self.showingImagePicker = .camera })
 	}
-	
+
 	func loadImage() {
 		guard let inputImage = inputImage else { return }
 		images.append(Image(uiImage: inputImage))
@@ -38,18 +38,18 @@ struct EditPhoto: View {
 }
 
 extension EditPhoto {
-	
+
 	func showImagePickerForCamera(_ sender: UIButton) {
 		let authStatus = AVCaptureDevice.authorizationStatus(for: AVMediaType.video)
-		
+
 		if authStatus == AVAuthorizationStatus.denied {
 			let alert = UIAlertController(title: "Unable to access the Camera",
 																		message: "To turn on camera access, choose Settings > Privacy > Camera and turn on Camera access for this app.",
 																		preferredStyle: UIAlertController.Style.alert)
-			
+
 			let okAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
 			alert.addAction(okAction)
-			
+
 			let settingsAction = UIAlertAction(title: "Settings", style: .default, handler: { _ in
 				// Take the user to the Settings app to change permissions.
 				guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else { return }

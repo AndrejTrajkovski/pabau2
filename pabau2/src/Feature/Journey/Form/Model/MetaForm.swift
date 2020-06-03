@@ -37,7 +37,7 @@ public enum MetaForm: Equatable {
 	case template(FormTemplate)
 	case patientComplete(PatientComplete)
 	case checkPatient(CheckPatient)
-	
+
 	var title: String {
 		switch self {
 		case .patientDetails:
