@@ -1,9 +1,20 @@
 import SwiftUI
 import ComposableArchitecture
+import Util
 
-struct PhotosStepForm: View {
+public PhotosFormAction {
+	
+}
+
+struct PhotosForm: View {
+	
+	let store: Store<[JourneyPhotos], PhotosFormAction>
 	
 	var body: some View {
-		Text("")
+		CollectionView(data: strings, layout: flowLayout) {
+			Text($0)
+				.padding(10)
+				.background(Color.gray)
+		}
 	}
 }

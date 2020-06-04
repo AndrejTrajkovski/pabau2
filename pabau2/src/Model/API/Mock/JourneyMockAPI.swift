@@ -998,3 +998,22 @@ extension JourneyMockAPI {
 			]))
 	}
 }
+
+extension JourneyMockAPI {
+	
+	public static func photos() -> [Int: JourneyPhotos] {
+		[
+			1: JourneyPhotos(id: 1, url: "dummy1"),
+			2: JourneyPhotos(id: 2, url: "dummy2"),
+			3: JourneyPhotos(id: 3, url: "dummy3"),
+			4: JourneyPhotos(id: 4, url: "dummy4"),
+			5: JourneyPhotos(id: 5, url: "dummy5"),
+			6: JourneyPhotos(id: 6, url: "dummy6"),
+			7: JourneyPhotos(id: 7, url: "dummy7"),
+			8: JourneyPhotos(id: 8, url: "dummy8"),
+			9: JourneyPhotos(id: 9, url: "dummy9"),
+			10: JourneyPhotos(id:10, url: "dummy10")
+		]
+	}
+	
+}

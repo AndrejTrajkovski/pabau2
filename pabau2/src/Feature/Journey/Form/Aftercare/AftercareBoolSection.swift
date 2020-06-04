@@ -21,7 +21,12 @@ struct AftercareBoolSection {
 		self.title = title
 		self.desc = desc
 		self.store = store
-		self.viewStore = ViewStore(store)
+		self.viewStore = ViewStore(store, removeDuplicates: { lhs, rhs in
+			guard lhs.count == rhs.count else { return false }
+			return zip(lhs, rhs).allSatisfy {
+				$0.id == $1.id }
+			}
+		)
 	}
 
 	func makeSection() -> ASCollectionViewSection<Int> {

@@ -72,12 +72,14 @@ struct JourneyMocks {
 												 Step(id: 3, stepType: .consents),
 												 Step(id: 4, stepType: .treatmentnotes),
 												 Step(id: 5, stepType: .checkpatient),
-												 Step(id: 6, stepType: .aftercares)
+												 Step(id: 6, stepType: .aftercares),
+												 Step(id: 7, stepType: .photos)
 		]),
 		patientDetails: PatientDetails.mock,
 		medHistory: JourneyMockAPI.getMedHistory(),
 		consents: FormsCollection(ids: [], fromAll: []),
-		allConsents: flatten(JourneyMockAPI.mockConsents)
+		allConsents: flatten(JourneyMockAPI.mockConsents),
+		photos: JourneyMockAPI.photos()
 	)
 }
 

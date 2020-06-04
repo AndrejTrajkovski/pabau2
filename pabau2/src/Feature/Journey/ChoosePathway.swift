@@ -74,7 +74,8 @@ public struct ChoosePathway: View {
 													 Step(id: 4, stepType: .treatmentnotes),
 													 Step(id: 5, stepType: .prescriptions),
 													 Step(id: 6, stepType: .aftercares),
-													 Step(id: 7, stepType: .checkpatient)
+													 Step(id: 7, stepType: .checkpatient),
+													 Step(id: 8, stepType: .photos)
 			])
 		let consultationPathway =
 			Pathway.init(id: 1,
@@ -84,7 +85,10 @@ public struct ChoosePathway: View {
 													 Step(id: 3, stepType: .consents),
 													 Step(id: 3, stepType: .treatmentnotes),
 													 Step(id: 6, stepType: .aftercares),
-													 Step(id: 5, stepType: .checkpatient)])
+													 Step(id: 5, stepType: .checkpatient),
+													 Step(id: 8, stepType: .photos)
+				]
+		)
 		init(state: ChoosePathwayState) {
 			self.isChooseConsentShown = state.selectedPathway != nil
 			self.journey = state.selectedJourney

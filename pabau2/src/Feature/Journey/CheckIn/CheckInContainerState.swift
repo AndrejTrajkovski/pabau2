@@ -82,15 +82,17 @@ public struct CheckInContainerState: Equatable {
 	var patientSelectedIndex: Int
 	var doctorSelectedIndex: Int
 
-	var photos: [JourneyPhotos]
-	var photosCompleted: Bool
+	var photosState: PhotosState
+	var photosCompleted: Bool {
+		!photosState.photos.isEmpty
+	}
 
 	var passcodeState = PasscodeState()
-	var isEnterPasscodeActive: Bool = false
+	var isEnterPasscodeActive: Bool = true
 	var isChooseConsentActive: Bool = false
 	var isChooseTreatmentActive: Bool = false
-	var isDoctorCheckInMainActive: Bool = false
-	var isDoctorSummaryActive: Bool = false
+	var isDoctorCheckInMainActive: Bool = true
+	var isDoctorSummaryActive: Bool = true
 	var didGoBackToPatientMode: Bool = false
 }
 
@@ -248,7 +250,8 @@ extension CheckInContainerState {
 			 medHistory: FormTemplate,
 			 consents: FormsCollection,
 			 allConsents: [Int: FormTemplate],
-			 patientComplete: PatientComplete = PatientComplete(isPatientComplete: false)) {
+			 patientComplete: PatientComplete = PatientComplete(isPatientComplete: true),
+			 photos: [Int: JourneyPhotos]) {
 		self.journey = journey
 		self.stepTypes = pathway.steps.map { $0.stepType }
 		self.stepTypes.append(StepType.patientComplete)
@@ -270,7 +273,8 @@ extension CheckInContainerState {
 		self.medHistoryCompleted = false
 		self.selectedConsentsIds = []
 		self.selectedTreatmentFormsIds = []
-		self.photos = []
-		self.photosCompleted = false
+	
+		self.photosState = PhotosState(photosOrderedIds: photos.map(\.value.id).sorted(by: \.self),
+																	 photos: photos)
 	}
 }

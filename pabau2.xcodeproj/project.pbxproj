@@ -260,7 +260,8 @@
 		82D286FE2486D39A003A703B /* EditPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D286FD2486D39A003A703B /* EditPhoto.swift */; };
 		82D287002486D688003A703B /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D286FF2486D688003A703B /* ImagePicker.swift */; };
 		82D287062487F7E9003A703B /* FourSwitchesSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16A92477ECCE00DB33DE /* FourSwitchesSection.swift */; };
-		82D287082487F914003A703B /* PhotosStepForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D287072487F914003A703B /* PhotosStepForm.swift */; };
+		82D287082487F914003A703B /* PhotosForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D287072487F914003A703B /* PhotosForm.swift */; };
+		82D2870B248853D8003A703B /* OICollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D2870924885123003A703B /* OICollectionView.swift */; };
 		82D43D9024351F5000AC74FA /* EmployeesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D43D8F24351F5000AC74FA /* EmployeesList.swift */; };
 		82D43D92243522CD00AC74FA /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D43D91243522CD00AC74FA /* Settings.swift */; };
 		82D7C2BF2446FEB3000B1CD5 /* CSSClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D7C2BE2446FEB3000B1CD5 /* CSSClass.swift */; };
@@ -673,7 +674,8 @@
 		82D286FB2486C893003A703B /* EditPhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhotoViewController.swift; sourceTree = "<group>"; };
 		82D286FD2486D39A003A703B /* EditPhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhoto.swift; sourceTree = "<group>"; };
 		82D286FF2486D688003A703B /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
-		82D287072487F914003A703B /* PhotosStepForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosStepForm.swift; sourceTree = "<group>"; };
+		82D287072487F914003A703B /* PhotosForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosForm.swift; sourceTree = "<group>"; };
+		82D2870924885123003A703B /* OICollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OICollectionView.swift; sourceTree = "<group>"; };
 		82D43D8F24351F5000AC74FA /* EmployeesList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmployeesList.swift; sourceTree = "<group>"; };
 		82D43D91243522CD00AC74FA /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		82D7C2BE2446FEB3000B1CD5 /* CSSClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSSClass.swift; sourceTree = "<group>"; };
@@ -840,6 +842,7 @@
 				8280D4802463F1790077A73F /* ExplodingStack.swift */,
 				8247761D246C4C1800508434 /* SortByKeyPath.swift */,
 				820F16A72477EA0500DB33DE /* CollectionSafeSubscript.swift */,
+				82D2870924885123003A703B /* OICollectionView.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -1281,7 +1284,7 @@
 				82D286FB2486C893003A703B /* EditPhotoViewController.swift */,
 				82D286FD2486D39A003A703B /* EditPhoto.swift */,
 				82D286FF2486D688003A703B /* ImagePicker.swift */,
-				82D287072487F914003A703B /* PhotosStepForm.swift */,
+				82D287072487F914003A703B /* PhotosForm.swift */,
 			);
 			path = Photos;
 			sourceTree = "<group>";
@@ -1845,6 +1848,7 @@
 				8227FB70240BAC9600F653B5 /* ActivityIndicator.swift in Sources */,
 				8247761E246C4C1800508434 /* SortByKeyPath.swift in Sources */,
 				82D287062487F7E9003A703B /* FourSwitchesSection.swift in Sources */,
+				82D2870B248853D8003A703B /* OICollectionView.swift in Sources */,
 				8227FB79240BAC9A00F653B5 /* Util.swift in Sources */,
 				8227FB75240BAC9600F653B5 /* LoadingView.swift in Sources */,
 				82E254092422388600F16C30 /* Hidden.swift in Sources */,
@@ -2004,7 +2008,7 @@
 				82D286FA2486BD0F003A703B /* CameraOverlayView.swift in Sources */,
 				82D43D9024351F5000AC74FA /* EmployeesList.swift in Sources */,
 				826952772454E0A5001B806E /* SignatureField.swift in Sources */,
-				82D287082487F914003A703B /* PhotosStepForm.swift in Sources */,
+				82D287082487F914003A703B /* PhotosForm.swift in Sources */,
 				8247763A2473D07F00508434 /* JourneyListStyle.swift in Sources */,
 				824776382473D03700508434 /* ListFrame.swift in Sources */,
 				82E6D827245C213300CB359A /* PatientDetailsForm.swift in Sources */,

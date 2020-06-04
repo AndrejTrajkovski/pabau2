@@ -45,7 +45,12 @@ struct AftercareImagesSection {
 		) {
 		self.id = id
 		self.store = store
-		self.viewStore = ViewStore(store)
+		self.viewStore = ViewStore(store, removeDuplicates: { lhs, rhs in
+			return lhs.selectedIdx == rhs.selectedIdx
+//			guard lhs.images.count == rhs.images.count else { return false }
+//			return zip(lhs.images, rhs.images).allSatisfy {
+//				$0.id == $1.id }
+		})
 		self.title = title
 	}
 

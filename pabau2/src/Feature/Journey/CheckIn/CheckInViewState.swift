@@ -5,7 +5,7 @@ public struct CheckInViewState: Equatable {
 	var selectedIndex: Int
 	var forms: [MetaFormAndStatus]
 	var xButtonActiveFlag: Bool
-	var journey: Journey
+	let journey: Journey
 
 	var selectedForm: MetaFormAndStatus? {
 		return forms[safe: selectedIndex]

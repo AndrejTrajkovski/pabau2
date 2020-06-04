@@ -1,39 +1,66 @@
 import SwiftUI
 import AVFoundation
+import Model
+import PencilKit
+import ComposableArchitecture
+
+let editPhotoReducer = Reducer<EditPhotoState, EditPhotoAction, JourneyEnvironment>.init { state, action, env in
+	switch action {
+	case .openCamera:
+		state.showingImagePicker = .camera
+	}
+	return .none
+}
+
+public enum EditPhotoAction {
+	case openCamera
+}
+
+struct EditPhotoState: Equatable {
+	var showingImagePicker: UIImagePickerController.SourceType?
+	var editingPhotoId: Int
+	var photosOrderedIds: [Int]
+	var photos: [Int: JourneyPhotos]
+	var drawings: [Int: [PKDrawing]]
+	var sortedPhotos: [JourneyPhotos] {
+		photosOrderedIds.map { photos[$0]! }
+	}
+	var editingPhoto: JourneyPhotos {
+		photos[editingPhotoId]!
+	}
+	var editingDrawings: [PKDrawing] {
+		drawings[editingPhotoId]!
+	}
+}
 
 struct EditPhoto: View {
-	@State private var images: [Image]
-	@State private var showingImagePicker: UIImagePickerController.SourceType?
-	@State private var inputImage: UIImage?
+
+	let store: Store<EditPhotoState, EditPhotoAction>
 
 	var body: some View {
-		VStack {
-			images.first?
-				.resizable()
-				.scaledToFit()
-
-			Button("Select Image") {
-				self.showingImagePicker = .camera
+		WithViewStore(store) { viewStore in
+			VStack {
+				Image(viewStore.state.editingPhoto.url)
+					.resizable()
+					.scaledToFit()
+				Button("Select Image") {
+					viewStore.send(.openCamera)
+				}
 			}
 		}
-//		.popover(isPresented: Binding(
-//			get: { self.showingImagePicker == .some(.photoLibrary) },
-//			set: { self.showingImagePicker = $0 == true ? .some(.photoLibrary) : nil}
-//			), content: {
+////		.popover(isPresented: Binding(
+////			get: { self.showingImagePicker == .some(.photoLibrary) },
+////			set: { self.showingImagePicker = $0 == true ? .some(.photoLibrary) : nil}
+////			), content: {
+////				ImagePicker(image: self.$inputImage)
+////		})
+//			.sheet(isPresented: Binding(
+//				get: { self.showingImagePicker == .some(.camera) },
+//				set: { self.showingImagePicker = $0 == true ? .some(.camera) : nil}
+//				),
+//						 onDismiss: loadImage) {
 //				ImagePicker(image: self.$inputImage)
-//		})
-			.sheet(isPresented: Binding(
-				get: { self.showingImagePicker == .some(.camera) },
-				set: { self.showingImagePicker = $0 == true ? .some(.camera) : nil}
-				),
-						 onDismiss: loadImage) {
-				ImagePicker(image: self.$inputImage)
-		}.onAppear(perform: { self.showingImagePicker = .camera })
-	}
-
-	func loadImage() {
-		guard let inputImage = inputImage else { return }
-		images.append(Image(uiImage: inputImage))
+//		}.onAppear(perform: { self.showingImagePicker = .camera })
 	}
 }
 

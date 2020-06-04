@@ -6,9 +6,9 @@ import Foundation
 public struct JourneyPhotos: Codable, Identifiable, Equatable {
 
     public let id: Int
-    public let url: String?
+    public let url: String
 
-    public init(id: Int, url: String? = nil) {
+    public init(id: Int, url: String) {
         self.id = id
         self.url = url
     }

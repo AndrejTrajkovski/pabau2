@@ -43,6 +43,7 @@ public enum UpdateFormAction {
 	case didUpdateTemplate(FormTemplate)
 	case patientDetails(PatientDetailsAction)
 	case aftercare(AftercareAction)
+	case photos(PhotosFormAction)
 }
 
 struct FormWrapper: View {
@@ -62,7 +63,7 @@ struct FormWrapper: View {
 		var aftercare: Aftercare?
 		var patientCompleteForm: PatientComplete?
 		var checkPatient: CheckPatient?
-		var photos: [JourneyPhotos]?
+		var photos: PhotosState?
 
 		init (state: MetaForm) {
 			self.patientDetails = extract(case: MetaForm.patientDetails, from: state)
@@ -109,7 +110,12 @@ struct FormWrapper: View {
 			)
 		} else if self.viewStore.state.photos != nil {
 			return AnyView(
-				EmptyView()
+				IfLetStore(
+					self.store.scope(
+						state: { extract(case: MetaForm.photos, from: $0) },
+						action: { .photos($0) }),
+					then: PhotosForm.init(store:)
+				)
 			)
 		} else {
 			return AnyView(
