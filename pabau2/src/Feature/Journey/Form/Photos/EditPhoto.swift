@@ -3,17 +3,24 @@ import AVFoundation
 import Model
 import PencilKit
 import ComposableArchitecture
+import Util
 
-let editPhotoReducer = Reducer<EditPhotoState, EditPhotoAction, JourneyEnvironment>.init { state, action, env in
+let editPhotoReducer = Reducer<EditPhotoState, EditPhotoAction, JourneyEnvironment>.init { state, action, _ in
 	switch action {
 	case .openCamera:
 		state.showingImagePicker = .camera
+	case .closeCamera:
+		state.showingImagePicker = nil
+	case .didGetUIImage(let image):
+		state.editingUIImage = image
 	}
 	return .none
 }
 
-public enum EditPhotoAction {
+public enum EditPhotoAction: Equatable {
 	case openCamera
+	case closeCamera
+	case didGetUIImage(UIImage?)
 }
 
 struct EditPhotoState: Equatable {
@@ -26,10 +33,15 @@ struct EditPhotoState: Equatable {
 		photosOrderedIds.map { photos[$0]! }
 	}
 	var editingPhoto: JourneyPhotos {
-		photos[editingPhotoId]!
+		get { photos[editingPhotoId]! } set { photos[editingPhotoId] = newValue }
 	}
+	var editingUIImage: UIImage?
 	var editingDrawings: [PKDrawing] {
 		drawings[editingPhotoId]!
+	}
+	var isShowingCamera: Bool {
+		get { self.showingImagePicker == .some(.camera) }
+//		set { self.showingImagePicker = newValue == true ? .some(.camera) : nil }
 	}
 }
 
@@ -47,6 +59,28 @@ struct EditPhoto: View {
 					viewStore.send(.openCamera)
 				}
 			}
+			.modalLink(isPresented: .constant(viewStore.state.isShowingCamera),
+									 linkType: ModalTransition.fullScreenModal,
+									 destination: {
+										ImagePicker(image:
+											viewStore.binding(
+												get: { $0.editingUIImage },
+												send: { .didGetUIImage($0) }
+											)
+										)
+			})
+//			.sheet(isPresented: viewStore.binding(
+//				get: { $0.isShowingCamera }, send: { _ in EditPhotoAction.closeCamera }),
+//							content: {
+//								ImagePicker(image:
+//									viewStore.binding(
+//										get: { $0.editingUIImage },
+//										send: { .didGetUIImage($0) }
+//									)
+//								)
+//			}
+//			)
+//			.onAppear(perform: { //show camera })
 		}
 ////		.popover(isPresented: Binding(
 ////			get: { self.showingImagePicker == .some(.photoLibrary) },
@@ -54,13 +88,6 @@ struct EditPhoto: View {
 ////			), content: {
 ////				ImagePicker(image: self.$inputImage)
 ////		})
-//			.sheet(isPresented: Binding(
-//				get: { self.showingImagePicker == .some(.camera) },
-//				set: { self.showingImagePicker = $0 == true ? .some(.camera) : nil}
-//				),
-//						 onDismiss: loadImage) {
-//				ImagePicker(image: self.$inputImage)
-//		}.onAppear(perform: { self.showingImagePicker = .camera })
 	}
 }
 

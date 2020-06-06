@@ -13,17 +13,25 @@ public struct PhotosState: Equatable {
 	var editPhoto: EditPhotoState?
 }
 
-let photosFormReducer = Reducer<PhotosState, PhotosFormAction, JourneyEnvironment>.init { state, action, _ in
-	switch action {
-	case .didSelectPhoto(let id):
-			state.editPhoto = EditPhotoState(editingPhotoId: id,
-																			 photosOrderedIds: state.photosOrderedIds,
-																			 photos: state.photos,
-																			 drawings: [:])
-	case .editPhoto: break
-	}
-	return .none
-}
+let photosFormReducer: Reducer<PhotosState, PhotosFormAction, JourneyEnvironment> =
+	.combine(
+		Reducer.init { state, action, _ in
+			switch action {
+			case .didSelectPhoto(let id):
+				state.editPhoto = EditPhotoState(editingPhotoId: id,
+																				 photosOrderedIds: state.photosOrderedIds,
+																				 photos: state.photos,
+																				 drawings: [:])
+			case .editPhoto: break
+			}
+			return .none
+		},
+		editPhotoReducer.optional.pullback(
+			state: \PhotosState.editPhoto,
+			action: /PhotosFormAction.editPhoto,
+			environment: { $0 })
+)
+
 
 public enum PhotosFormAction {
 	case didSelectPhoto(Int)

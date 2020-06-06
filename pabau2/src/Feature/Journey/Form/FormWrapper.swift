@@ -35,6 +35,10 @@ let metaFormReducer: Reducer<MetaForm, UpdateFormAction, JourneyEnvironment> =
 		aftercareReducer.pullbackCp(
 			state: /MetaForm.aftercare,
 			action: /UpdateFormAction.aftercare,
+			environment: { $0 }),
+		photosFormReducer.pullbackCp(
+			state: /MetaForm.photos,
+			action: /UpdateFormAction.photos,
 			environment: { $0 })
 )
 

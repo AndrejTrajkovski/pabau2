@@ -8,16 +8,16 @@ import SwiftUI
 public struct FlowLayout {
 	let spacing: UIOffset
 	let containerSize: CGSize
-	
+
 	init(containerSize: CGSize, spacing: UIOffset = UIOffset(horizontal: 10, vertical: 10)) {
 		self.spacing = spacing
 		self.containerSize = containerSize
 	}
-	
+
 	var currentX = 0 as CGFloat
 	var currentY = 0 as CGFloat
 	var lineHeight = 0 as CGFloat
-	
+
 	mutating func add(element size: CGSize) -> CGRect {
 		if currentX + size.width > containerSize.width {
 			currentX = 0
@@ -46,7 +46,6 @@ public func flowLayout<Elements>(for elements: Elements, containerSize: CGSize, 
 	return result
 }
 
-
 public func singleLineLayout<Elements>(for elements: Elements, containerSize: CGSize, sizes: [Elements.Element.ID: CGSize]) -> [Elements.Element.ID: CGSize] where Elements: RandomAccessCollection, Elements.Element: Identifiable {
 	var result: [Elements.Element.ID: CGSize] = [:]
 	var offset = CGSize.zero
@@ -57,7 +56,6 @@ public func singleLineLayout<Elements>(for elements: Elements, containerSize: CG
 	}
 	return result
 }
-
 
 public struct OICollectionView<Elements, Content>: View where Elements: RandomAccessCollection, Content: View, Elements.Element: Identifiable {
 	public init (
@@ -89,7 +87,7 @@ public struct OICollectionView<Elements, Content>: View where Elements: RandomAc
 			self.sizes = $0
 		}.background(Color.red)
 	}
-	
+
 	public var body: some View {
 		GeometryReader { proxy in
 			self.bodyHelper(containerSize: proxy.size, offsets: self.layout(self.data, proxy.size, self.sizes))
@@ -99,7 +97,7 @@ public struct OICollectionView<Elements, Content>: View where Elements: RandomAc
 
 struct CollectionViewSizeKey<ID: Hashable>: PreferenceKey {
 	typealias Value = [ID: CGSize]
-	
+
 	static var defaultValue: [ID: CGSize] { [:] }
 	static func reduce(value: inout [ID:CGSize], nextValue: () -> [ID:CGSize]) {
 		value.merge(nextValue(), uniquingKeysWith: { $1 })
