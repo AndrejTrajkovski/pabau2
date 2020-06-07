@@ -21,6 +21,11 @@ struct ImagePicker: UIViewControllerRepresentable {
 //		picker.sourceType = 
 		picker.delegate = context.coordinator
 		picker.sourceType = .camera
+		picker.showsCameraControls = false
+		let overlay = UIHostingController(rootView: CameraOverlay())
+		overlay.view.frame = (picker.cameraOverlayView?.frame)!
+		overlay.view.backgroundColor = UIColor.clear
+		picker.cameraOverlayView = overlay.view
 		return picker
 	}
 

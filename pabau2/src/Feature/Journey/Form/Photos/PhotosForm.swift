@@ -32,7 +32,6 @@ let photosFormReducer: Reducer<PhotosState, PhotosFormAction, JourneyEnvironment
 			environment: { $0 })
 )
 
-
 public enum PhotosFormAction {
 	case didSelectPhoto(Int)
 	case editPhoto(EditPhotoAction)
