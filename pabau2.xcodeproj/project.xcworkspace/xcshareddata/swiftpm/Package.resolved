@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/apptekstudios/ASCollectionView",
         "state": {
           "branch": null,
-          "revision": "91c0984c2c95d35fcff68bd0def8106086844b71",
-          "version": "1.6.3"
+          "revision": "4550cd5b5cfc3f437f8ff838939c6be21edfe992",
+          "version": "1.7.1"
         }
       },
       {
@@ -20,12 +20,21 @@
         }
       },
       {
+        "package": "swift-case-paths",
+        "repositoryURL": "https://github.com/pointfreeco/swift-case-paths",
+        "state": {
+          "branch": null,
+          "revision": "fb733d87aabb5b053ad782902f2f3d67e0a65ac5",
+          "version": "0.1.1"
+        }
+      },
+      {
         "package": "swift-composable-architecture",
         "repositoryURL": "https://github.com/pointfreeco/swift-composable-architecture.git",
         "state": {
           "branch": null,
-          "revision": "4016008d87db1e6c9b1533a8f74e607758bcaacf",
-          "version": "0.1.1"
+          "revision": "1005bbd39347f5cc6e993d25a1c0ffe52b8f42d4",
+          "version": "0.3.0"
         }
       },
       {

@@ -126,9 +126,6 @@
 		826F65B3248122480086E187 /* CompleteFormBtn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826F65B2248122480086E187 /* CompleteFormBtn.swift */; };
 		826F65B5248123C40086E187 /* FooterButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826F65B4248123C40086E187 /* FooterButtons.swift */; };
 		826F65B72481657B0086E187 /* DoctorSummaryButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826F65B62481657B0086E187 /* DoctorSummaryButtons.swift */; };
-		826F65CC248260820086E187 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 826F65CB248260820086E187 /* ComposableArchitecture */; };
-		826F65CF248260AD0086E187 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 826F65CE248260AD0086E187 /* ComposableArchitecture */; };
-		826F65D2248261060086E187 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 826F65D1248261060086E187 /* ComposableArchitecture */; };
 		82755AE3247EE44F00A3BBC2 /* ASCollectionView in Frameworks */ = {isa = PBXBuildFile; productRef = 82755AE2247EE44F00A3BBC2 /* ASCollectionView */; };
 		827B4572241135A700A5975E /* FSCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82CACE772411293C0021E1DE /* FSCalendar.framework */; };
 		827B45832411368100A5975E /* Journey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 827B457A2411368100A5975E /* Journey.framework */; };
@@ -193,8 +190,6 @@
 		827B460D2413C14D00A5975E /* NonEmpty in Frameworks */ = {isa = PBXBuildFile; productRef = 827B460C2413C14D00A5975E /* NonEmpty */; };
 		8280D479245FEAA80077A73F /* DoctorSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8280D478245FEAA80077A73F /* DoctorSummary.swift */; };
 		8280D4812463F1790077A73F /* ExplodingStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8280D4802463F1790077A73F /* ExplodingStack.swift */; };
-		8280D4842463F2BE0077A73F /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 8280D4832463F2BE0077A73F /* ComposableArchitecture */; };
-		8280D4852463F2BE0077A73F /* ComposableArchitecture in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 8280D4832463F2BE0077A73F /* ComposableArchitecture */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		82811EF423E06BCB0066AFDC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EF323E06BCB0066AFDC /* ContentView.swift */; };
 		828626B12424CA64003ADA24 /* JourneyProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828626B02424CA64003ADA24 /* JourneyProfileView.swift */; };
 		828626B32424CEFB003ADA24 /* ChoosePathway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828626B22424CEFB003ADA24 /* ChoosePathway.swift */; };
@@ -281,6 +276,16 @@
 		82E6D831245ECBA000CB359A /* Passcode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E6D830245ECBA000CB359A /* Passcode.swift */; };
 		82F6ADAE23F2C7B1001B3ACE /* PabauTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */; };
 		82FB74F6245A9E51001C2DF3 /* FormWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FB74F5245A9E51001C2DF3 /* FormWrapper.swift */; };
+		82FF6C97248F92980014C4DC /* PabauCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 82FF6C95248F92980014C4DC /* PabauCommon.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		82FF6C9A248F92980014C4DC /* PabauCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82FF6C93248F92980014C4DC /* PabauCommon.framework */; };
+		82FF6C9B248F92980014C4DC /* PabauCommon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 82FF6C93248F92980014C4DC /* PabauCommon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		82FF6CA0248F92A00014C4DC /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 82FF6C9F248F92A00014C4DC /* ComposableArchitecture */; };
+		82FF6CA1248F92AC0014C4DC /* PabauCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82FF6C93248F92980014C4DC /* PabauCommon.framework */; };
+		82FF6CA2248F92AC0014C4DC /* PabauCommon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 82FF6C93248F92980014C4DC /* PabauCommon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		82FF6CA6248F92B40014C4DC /* PabauCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82FF6C93248F92980014C4DC /* PabauCommon.framework */; };
+		82FF6CA7248F92B40014C4DC /* PabauCommon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 82FF6C93248F92980014C4DC /* PabauCommon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		82FF6CAB248F92BD0014C4DC /* PabauCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82FF6C93248F92980014C4DC /* PabauCommon.framework */; };
+		82FF6CAC248F92BD0014C4DC /* PabauCommon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 82FF6C93248F92980014C4DC /* PabauCommon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -403,6 +408,34 @@
 			remoteGlobalIDString = 8227FB89240BB40300F653B5;
 			remoteInfo = Model;
 		};
+		82FF6C98248F92980014C4DC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 82BE2F3C23D97D9C00B3678A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 82FF6C92248F92980014C4DC;
+			remoteInfo = PabauCommon;
+		};
+		82FF6CA3248F92AC0014C4DC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 82BE2F3C23D97D9C00B3678A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 82FF6C92248F92980014C4DC;
+			remoteInfo = PabauCommon;
+		};
+		82FF6CA8248F92B40014C4DC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 82BE2F3C23D97D9C00B3678A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 82FF6C92248F92980014C4DC;
+			remoteInfo = PabauCommon;
+		};
+		82FF6CAD248F92BD0014C4DC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 82BE2F3C23D97D9C00B3678A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 82FF6C92248F92980014C4DC;
+			remoteInfo = PabauCommon;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -414,12 +447,45 @@
 			files = (
 				8227FB67240BAC8400F653B5 /* Util.framework in Embed Frameworks */,
 				827B45902411368100A5975E /* Journey.framework in Embed Frameworks */,
-				8280D4852463F2BE0077A73F /* ComposableArchitecture in Embed Frameworks */,
 				82CACEEA241131260021E1DE /* FSCalendarSwiftUI.framework in Embed Frameworks */,
+				82FF6C9B248F92980014C4DC /* PabauCommon.framework in Embed Frameworks */,
 				8227FB34240BAAB600F653B5 /* Login.framework in Embed Frameworks */,
 				8297A29423D9AD7E00D091FF /* PageControl.framework in Embed Frameworks */,
 				8227FBA0240BB40300F653B5 /* Model.framework in Embed Frameworks */,
 				82CACE7F2411293C0021E1DE /* FSCalendar.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		82FF6CA5248F92AC0014C4DC /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				82FF6CA2248F92AC0014C4DC /* PabauCommon.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		82FF6CAA248F92B40014C4DC /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				82FF6CA7248F92B40014C4DC /* PabauCommon.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		82FF6CAF248F92BE0014C4DC /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				82FF6CAC248F92BD0014C4DC /* PabauCommon.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -697,6 +763,9 @@
 		82F5591F23DC255B008032F4 /* PrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryButton.swift; sourceTree = "<group>"; };
 		82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PabauTabBar.swift; sourceTree = "<group>"; };
 		82FB74F5245A9E51001C2DF3 /* FormWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormWrapper.swift; sourceTree = "<group>"; };
+		82FF6C93248F92980014C4DC /* PabauCommon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PabauCommon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		82FF6C95248F92980014C4DC /* PabauCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PabauCommon.h; sourceTree = "<group>"; };
+		82FF6C96248F92980014C4DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -706,8 +775,8 @@
 			files = (
 				8227FBAB240BB43800F653B5 /* Model.framework in Frameworks */,
 				8227FB7C240BACAC00F653B5 /* Util.framework in Frameworks */,
-				826F65CF248260AD0086E187 /* ComposableArchitecture in Frameworks */,
 				8227FB4B240BAB6A00F653B5 /* PageControl.framework in Frameworks */,
+				82FF6CAB248F92BD0014C4DC /* PabauCommon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -723,8 +792,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				82E25405241EA8D800F16C30 /* SwiftDate in Frameworks */,
+				82FF6CA6248F92B40014C4DC /* PabauCommon.framework in Frameworks */,
 				827B460D2413C14D00A5975E /* NonEmpty in Frameworks */,
-				826F65CC248260820086E187 /* ComposableArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -734,8 +803,8 @@
 			files = (
 				827B45992411368F00A5975E /* FSCalendarSwiftUI.framework in Frameworks */,
 				8247762A246DE77E00508434 /* Overture in Frameworks */,
-				826F65D2248261060086E187 /* ComposableArchitecture in Frameworks */,
 				82755AE3247EE44F00A3BBC2 /* ASCollectionView in Frameworks */,
+				82FF6CA1248F92AC0014C4DC /* PabauCommon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -760,7 +829,7 @@
 			files = (
 				828626B6242A915D003ADA24 /* Journey.framework in Frameworks */,
 				8227FB33240BAAB600F653B5 /* Login.framework in Frameworks */,
-				8280D4842463F2BE0077A73F /* ComposableArchitecture in Frameworks */,
+				82FF6C9A248F92980014C4DC /* PabauCommon.framework in Frameworks */,
 				82CACEE9241131260021E1DE /* FSCalendarSwiftUI.framework in Frameworks */,
 				8227FB9F240BB40300F653B5 /* Model.framework in Frameworks */,
 				8227FB66240BAC8400F653B5 /* Util.framework in Frameworks */,
@@ -787,6 +856,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				827B4572241135A700A5975E /* FSCalendar.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		82FF6C90248F92980014C4DC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				82FF6CA0248F92A00014C4DC /* ComposableArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1138,6 +1215,7 @@
 				825BE7E92436226300422910 /* checkIn.mp4 */,
 				82BE2F4623D97D9C00B3678A /* pabau2 */,
 				827B45882411368100A5975E /* JourneyTests */,
+				82FF6C94248F92980014C4DC /* PabauCommon */,
 				82BE2F4523D97D9C00B3678A /* Products */,
 				82B02FFF23F2581C0015B0B4 /* Frameworks */,
 			);
@@ -1156,6 +1234,7 @@
 				82CACEE2241131250021E1DE /* FSCalendarSwiftUI.framework */,
 				827B457A2411368100A5975E /* Journey.framework */,
 				827B45822411368100A5975E /* JourneyTests.xctest */,
+				82FF6C93248F92980014C4DC /* PabauCommon.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1340,6 +1419,15 @@
 			path = PatientComplete;
 			sourceTree = "<group>";
 		};
+		82FF6C94248F92980014C4DC /* PabauCommon */ = {
+			isa = PBXGroup;
+			children = (
+				82FF6C95248F92980014C4DC /* PabauCommon.h */,
+				82FF6C96248F92980014C4DC /* Info.plist */,
+			);
+			path = PabauCommon;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -1415,6 +1503,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		82FF6C8E248F92980014C4DC /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				82FF6C97248F92980014C4DC /* PabauCommon.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
@@ -1426,6 +1522,7 @@
 				8227FB1A240BAAB600F653B5 /* Sources */,
 				8227FB1B240BAAB600F653B5 /* Frameworks */,
 				8227FB1C240BAAB600F653B5 /* Resources */,
+				82FF6CAF248F92BE0014C4DC /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1433,10 +1530,10 @@
 				8227FBAA240BB43000F653B5 /* PBXTargetDependency */,
 				8227FB7B240BACA700F653B5 /* PBXTargetDependency */,
 				8227FB49240BAB6300F653B5 /* PBXTargetDependency */,
+				82FF6CAE248F92BD0014C4DC /* PBXTargetDependency */,
 			);
 			name = Login;
 			packageProductDependencies = (
-				826F65CE248260AD0086E187 /* ComposableArchitecture */,
 			);
 			productName = Login;
 			productReference = 8227FB1E240BAAB600F653B5 /* Login.framework */;
@@ -1468,16 +1565,17 @@
 				8227FB86240BB40300F653B5 /* Sources */,
 				8227FB87240BB40300F653B5 /* Frameworks */,
 				8227FB88240BB40300F653B5 /* Resources */,
+				82FF6CAA248F92B40014C4DC /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				82FF6CA9248F92B40014C4DC /* PBXTargetDependency */,
 			);
 			name = Model;
 			packageProductDependencies = (
 				827B460C2413C14D00A5975E /* NonEmpty */,
 				82E25404241EA8D800F16C30 /* SwiftDate */,
-				826F65CB248260820086E187 /* ComposableArchitecture */,
 			);
 			productName = Model;
 			productReference = 8227FB8A240BB40300F653B5 /* Model.framework */;
@@ -1491,6 +1589,7 @@
 				827B45762411368100A5975E /* Sources */,
 				827B45772411368100A5975E /* Frameworks */,
 				827B45782411368100A5975E /* Resources */,
+				82FF6CA5248F92AC0014C4DC /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1498,12 +1597,12 @@
 				82E253D4241A6F2A00F16C30 /* PBXTargetDependency */,
 				827B46082413979D00A5975E /* PBXTargetDependency */,
 				827B45982411368A00A5975E /* PBXTargetDependency */,
+				82FF6CA4248F92AC0014C4DC /* PBXTargetDependency */,
 			);
 			name = Journey;
 			packageProductDependencies = (
 				82477629246DE77E00508434 /* Overture */,
 				82755AE2247EE44F00A3BBC2 /* ASCollectionView */,
-				826F65D1248261060086E187 /* ComposableArchitecture */,
 			);
 			productName = Journey;
 			productReference = 827B457A2411368100A5975E /* Journey.framework */;
@@ -1565,10 +1664,10 @@
 				8227FB9E240BB40300F653B5 /* PBXTargetDependency */,
 				82CACE7D2411293C0021E1DE /* PBXTargetDependency */,
 				82CACEE8241131260021E1DE /* PBXTargetDependency */,
+				82FF6C99248F92980014C4DC /* PBXTargetDependency */,
 			);
 			name = pabau2;
 			packageProductDependencies = (
-				8280D4832463F2BE0077A73F /* ComposableArchitecture */,
 			);
 			productName = pabau2;
 			productReference = 82BE2F4423D97D9C00B3678A /* pabau2.app */;
@@ -1630,6 +1729,27 @@
 			productReference = 82CACEE2241131250021E1DE /* FSCalendarSwiftUI.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		82FF6C92248F92980014C4DC /* PabauCommon */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 82FF6C9E248F92980014C4DC /* Build configuration list for PBXNativeTarget "PabauCommon" */;
+			buildPhases = (
+				82FF6C8E248F92980014C4DC /* Headers */,
+				82FF6C8F248F92980014C4DC /* Sources */,
+				82FF6C90248F92980014C4DC /* Frameworks */,
+				82FF6C91248F92980014C4DC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PabauCommon;
+			packageProductDependencies = (
+				82FF6C9F248F92A00014C4DC /* ComposableArchitecture */,
+			);
+			productName = PabauCommon;
+			productReference = 82FF6C93248F92980014C4DC /* PabauCommon.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -1672,6 +1792,9 @@
 					82CACEE1241131250021E1DE = {
 						CreatedOnToolsVersion = 11.3.1;
 					};
+					82FF6C92248F92980014C4DC = {
+						CreatedOnToolsVersion = 11.5;
+					};
 				};
 			};
 			buildConfigurationList = 82BE2F3F23D97D9C00B3678A /* Build configuration list for PBXProject "pabau2" */;
@@ -1706,6 +1829,7 @@
 				82CACEE1241131250021E1DE /* FSCalendarSwiftUI */,
 				827B45792411368100A5975E /* Journey */,
 				827B45812411368100A5975E /* JourneyTests */,
+				82FF6C92248F92980014C4DC /* PabauCommon */,
 			);
 		};
 /* End PBXProject section */
@@ -1779,6 +1903,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		82CACEE0241131250021E1DE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		82FF6C91248F92980014C4DC /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2097,6 +2228,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		82FF6C8F248F92980014C4DC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -2184,6 +2322,26 @@
 			isa = PBXTargetDependency;
 			target = 8227FB89240BB40300F653B5 /* Model */;
 			targetProxy = 82E253D3241A6F2A00F16C30 /* PBXContainerItemProxy */;
+		};
+		82FF6C99248F92980014C4DC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 82FF6C92248F92980014C4DC /* PabauCommon */;
+			targetProxy = 82FF6C98248F92980014C4DC /* PBXContainerItemProxy */;
+		};
+		82FF6CA4248F92AC0014C4DC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 82FF6C92248F92980014C4DC /* PabauCommon */;
+			targetProxy = 82FF6CA3248F92AC0014C4DC /* PBXContainerItemProxy */;
+		};
+		82FF6CA9248F92B40014C4DC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 82FF6C92248F92980014C4DC /* PabauCommon */;
+			targetProxy = 82FF6CA8248F92B40014C4DC /* PBXContainerItemProxy */;
+		};
+		82FF6CAE248F92BD0014C4DC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 82FF6C92248F92980014C4DC /* PabauCommon */;
+			targetProxy = 82FF6CAD248F92BD0014C4DC /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -2838,6 +2996,62 @@
 			};
 			name = Release;
 		};
+		82FF6C9C248F92980014C4DC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 7M6BMQR36X;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = PabauCommon/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.andrejtrajkovski.PabauCommon;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		82FF6C9D248F92980014C4DC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 7M6BMQR36X;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = PabauCommon/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.andrejtrajkovski.PabauCommon;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -2940,6 +3154,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		82FF6C9E248F92980014C4DC /* Build configuration list for PBXNativeTarget "PabauCommon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				82FF6C9C248F92980014C4DC /* Debug */,
+				82FF6C9D248F92980014C4DC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -2999,21 +3222,6 @@
 			package = 8280D47D2463E6FC0077A73F /* XCRemoteSwiftPackageReference "swift-overture" */;
 			productName = Overture;
 		};
-		826F65CB248260820086E187 /* ComposableArchitecture */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8280D4822463F2BE0077A73F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
-			productName = ComposableArchitecture;
-		};
-		826F65CE248260AD0086E187 /* ComposableArchitecture */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8280D4822463F2BE0077A73F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
-			productName = ComposableArchitecture;
-		};
-		826F65D1248261060086E187 /* ComposableArchitecture */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8280D4822463F2BE0077A73F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
-			productName = ComposableArchitecture;
-		};
 		82755AE2247EE44F00A3BBC2 /* ASCollectionView */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 82755ADE247EDC0100A3BBC2 /* XCRemoteSwiftPackageReference "ASCollectionView" */;
@@ -3024,15 +3232,15 @@
 			package = 827B46092413C0C300A5975E /* XCRemoteSwiftPackageReference "swift-nonempty" */;
 			productName = NonEmpty;
 		};
-		8280D4832463F2BE0077A73F /* ComposableArchitecture */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8280D4822463F2BE0077A73F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
-			productName = ComposableArchitecture;
-		};
 		82E25404241EA8D800F16C30 /* SwiftDate */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 82E253FF241E5ABF00F16C30 /* XCRemoteSwiftPackageReference "SwiftDate" */;
 			productName = SwiftDate;
+		};
+		82FF6C9F248F92A00014C4DC /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8280D4822463F2BE0077A73F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

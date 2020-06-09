@@ -2,6 +2,7 @@ import SwiftUI
 import ComposableArchitecture
 import Util
 import ASCollectionView
+import CasePaths
 
 public enum AftercareAction {
 	case aftercares(AftercareBoolAction)

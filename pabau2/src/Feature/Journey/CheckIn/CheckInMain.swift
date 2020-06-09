@@ -3,6 +3,7 @@ import Model
 import ComposableArchitecture
 import Util
 import Overture
+import CasePaths
 
 public let checkInMainReducer: Reducer<CheckInViewState, CheckInMainAction, JourneyEnvironment> = .combine(
 	metaFormAndStatusReducer.forEach(
