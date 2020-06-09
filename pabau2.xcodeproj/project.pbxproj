@@ -206,6 +206,7 @@
 		829B40D12423B8F2009B7E71 /* AddAppointment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829B40D02423B8F2009B7E71 /* AddAppointment.swift */; };
 		829BFBAF243F5D6F005DDCB9 /* CheckInAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829BFBAE243F5D6F005DDCB9 /* CheckInAnimation.swift */; };
 		829BFBB1243F693E005DDCB9 /* CheckInMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829BFBB0243F693E005DDCB9 /* CheckInMain.swift */; };
+		829C9224248D7CA700E918D2 /* CameraOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829C9223248D7CA700E918D2 /* CameraOverlay.swift */; };
 		82BE2F4823D97D9C00B3678A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BE2F4723D97D9C00B3678A /* AppDelegate.swift */; };
 		82BE2F4A23D97D9C00B3678A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BE2F4923D97D9C00B3678A /* SceneDelegate.swift */; };
 		82BE2F4E23D97D9F00B3678A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 82BE2F4D23D97D9F00B3678A /* Assets.xcassets */; };
@@ -255,7 +256,6 @@
 		82CEA223244CB28500A895F6 /* RadioField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CEA222244CB28500A895F6 /* RadioField.swift */; };
 		82CEA225244E0F9B00A895F6 /* ForEachWithindex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CEA224244E0F9B00A895F6 /* ForEachWithindex.swift */; };
 		82D286F824868C5E003A703B /* DrawingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D286F724868C5E003A703B /* DrawingViewController.swift */; };
-		82D286FA2486BD0F003A703B /* CameraOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D286F92486BD0F003A703B /* CameraOverlayView.swift */; };
 		82D286FC2486C893003A703B /* EditPhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D286FB2486C893003A703B /* EditPhotoViewController.swift */; };
 		82D286FE2486D39A003A703B /* EditPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D286FD2486D39A003A703B /* EditPhoto.swift */; };
 		82D287002486D688003A703B /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D286FF2486D688003A703B /* ImagePicker.swift */; };
@@ -612,6 +612,7 @@
 		829B40D02423B8F2009B7E71 /* AddAppointment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAppointment.swift; sourceTree = "<group>"; };
 		829BFBAE243F5D6F005DDCB9 /* CheckInAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInAnimation.swift; sourceTree = "<group>"; };
 		829BFBB0243F693E005DDCB9 /* CheckInMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInMain.swift; sourceTree = "<group>"; };
+		829C9223248D7CA700E918D2 /* CameraOverlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraOverlay.swift; sourceTree = "<group>"; };
 		82B02FF823F17BC90015B0B4 /* CheckEmail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckEmail.swift; sourceTree = "<group>"; };
 		82B02FFA23F17CF50015B0B4 /* PasswordChanged.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordChanged.swift; sourceTree = "<group>"; };
 		82B0300223F2958B0015B0B4 /* Walkthrough.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Walkthrough.swift; sourceTree = "<group>"; };
@@ -670,7 +671,6 @@
 		82CEA222244CB28500A895F6 /* RadioField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioField.swift; sourceTree = "<group>"; };
 		82CEA224244E0F9B00A895F6 /* ForEachWithindex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForEachWithindex.swift; sourceTree = "<group>"; };
 		82D286F724868C5E003A703B /* DrawingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingViewController.swift; sourceTree = "<group>"; };
-		82D286F92486BD0F003A703B /* CameraOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraOverlayView.swift; sourceTree = "<group>"; };
 		82D286FB2486C893003A703B /* EditPhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhotoViewController.swift; sourceTree = "<group>"; };
 		82D286FD2486D39A003A703B /* EditPhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhoto.swift; sourceTree = "<group>"; };
 		82D286FF2486D688003A703B /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
@@ -1279,8 +1279,8 @@
 		82D286F624868C37003A703B /* Photos */ = {
 			isa = PBXGroup;
 			children = (
+				829C9223248D7CA700E918D2 /* CameraOverlay.swift */,
 				82D286F724868C5E003A703B /* DrawingViewController.swift */,
-				82D286F92486BD0F003A703B /* CameraOverlayView.swift */,
 				82D286FB2486C893003A703B /* EditPhotoViewController.swift */,
 				82D286FD2486D39A003A703B /* EditPhoto.swift */,
 				82D286FF2486D688003A703B /* ImagePicker.swift */,
@@ -1997,6 +1997,7 @@
 				82477616246C335500508434 /* Aftercare.swift in Sources */,
 				829BFBAF243F5D6F005DDCB9 /* CheckInAnimation.swift in Sources */,
 				8247760D246BD9C100508434 /* StepsState.swift in Sources */,
+				829C9224248D7CA700E918D2 /* CameraOverlay.swift in Sources */,
 				8247764A24758B7700508434 /* SelectField.swift in Sources */,
 				826952792456F436001B806E /* InputTextField.swift in Sources */,
 				820F16AE247AD0F900DB33DE /* CheckInContainerStateAdapters.swift in Sources */,
@@ -2005,7 +2006,6 @@
 				82D43D92243522CD00AC74FA /* Settings.swift in Sources */,
 				82E253FA241B9EB500F16C30 /* JourneyAction.swift in Sources */,
 				820F16B4247D617400DB33DE /* AftercareForm.swift in Sources */,
-				82D286FA2486BD0F003A703B /* CameraOverlayView.swift in Sources */,
 				82D43D9024351F5000AC74FA /* EmployeesList.swift in Sources */,
 				826952772454E0A5001B806E /* SignatureField.swift in Sources */,
 				82D287082487F914003A703B /* PhotosForm.swift in Sources */,

@@ -1,5 +1,4 @@
 import SwiftUI
-#if DEBUG
 
 struct CameraOverlay: View {
 	var body: some View {
@@ -77,12 +76,11 @@ private struct CameraButtonStyle: ButtonStyle {
 	}
 }
 
+//#if DEBUG
+//struct CameraOverlay_Preview: PreviewProvider {
+//  static var previews: some View {
+//    CameraOverlay()
+//  }
+//}
 
-
-struct CameraOverlay_Preview: PreviewProvider {
-  static var previews: some View {
-    CameraOverlay()
-  }
-}
-
-#endif
+//#endif
