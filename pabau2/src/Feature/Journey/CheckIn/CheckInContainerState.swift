@@ -84,7 +84,7 @@ public struct CheckInContainerState: Equatable {
 
 	var photosState: PhotosState
 	var photosCompleted: Bool {
-		!photosState.photos.isEmpty
+		!photosState.isEmpty
 	}
 
 	var passcodeState = PasscodeState()
@@ -251,7 +251,7 @@ extension CheckInContainerState {
 			 consents: FormsCollection,
 			 allConsents: [Int: FormTemplate],
 			 patientComplete: PatientComplete = PatientComplete(isPatientComplete: true),
-			 photos: [Int: JourneyPhotos]) {
+			 photosState: PhotosState) {
 		self.journey = journey
 		self.stepTypes = pathway.steps.map { $0.stepType }
 		self.stepTypes.append(StepType.patientComplete)
@@ -273,8 +273,6 @@ extension CheckInContainerState {
 		self.medHistoryCompleted = false
 		self.selectedConsentsIds = []
 		self.selectedTreatmentFormsIds = []
-	
-		self.photosState = PhotosState(photosOrderedIds: photos.map(\.value.id).sorted(by: \.self),
-																	 photos: photos)
+		self.photosState = photosState
 	}
 }

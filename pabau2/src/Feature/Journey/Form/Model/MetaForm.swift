@@ -14,7 +14,7 @@ public enum MetaForm: Equatable {
 		case .checkPatient:
 			return true
 		case .photos(let photosState):
-			return !photosState.photos.isEmpty
+			return !photosState.isEmpty
 		}
 	}
 

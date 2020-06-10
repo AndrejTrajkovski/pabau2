@@ -3,7 +3,7 @@
 
 import Foundation
 
-public struct JourneyPhotos: Codable, Identifiable, Equatable {
+public struct SavedPhoto: Codable, Identifiable, Equatable {
 
     public let id: Int
     public let url: String

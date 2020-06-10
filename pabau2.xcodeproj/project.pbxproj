@@ -154,14 +154,13 @@
 		827B45E324126D4E00A5975E /* PostcareType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45AF24126D4D00A5975E /* PostcareType.swift */; };
 		827B45E424126D4E00A5975E /* FormDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45B024126D4D00A5975E /* FormDetails.swift */; };
 		827B45E524126D4E00A5975E /* PostcareTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45B124126D4D00A5975E /* PostcareTemplate.swift */; };
-		827B45E624126D4E00A5975E /* JourneyPhotos.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45B224126D4D00A5975E /* JourneyPhotos.swift */; };
+		827B45E624126D4E00A5975E /* SavedPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45B224126D4D00A5975E /* SavedPhoto.swift */; };
 		827B45E724126D4E00A5975E /* Appointment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45B324126D4D00A5975E /* Appointment.swift */; };
 		827B45E824126D4E00A5975E /* CSSField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45B424126D4E00A5975E /* CSSField.swift */; };
 		827B45E924126D4E00A5975E /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45B524126D4E00A5975E /* User.swift */; };
 		827B45EA24126D4E00A5975E /* CheckBoxValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45B624126D4E00A5975E /* CheckBoxValue.swift */; };
 		827B45EB24126D4E00A5975E /* Room.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45B724126D4E00A5975E /* Room.swift */; };
 		827B45EC24126D4E00A5975E /* InlineResponse200.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45B824126D4E00A5975E /* InlineResponse200.swift */; };
-		827B45ED24126D4E00A5975E /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45B924126D4E00A5975E /* Photo.swift */; };
 		827B45EE24126D4E00A5975E /* CustomField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45BA24126D4E00A5975E /* CustomField.swift */; };
 		827B45EF24126D4E00A5975E /* Bookout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45BB24126D4E00A5975E /* Bookout.swift */; };
 		827B45F024126D4E00A5975E /* Step.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45BC24126D4E00A5975E /* Step.swift */; };
@@ -177,7 +176,6 @@
 		827B45FA24126D4E00A5975E /* Drawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45C624126D4E00A5975E /* Drawing.swift */; };
 		827B45FB24126D4E00A5975E /* BaseFormTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45C724126D4E00A5975E /* BaseFormTemplate.swift */; };
 		827B45FC24126D4E00A5975E /* FormType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45C824126D4E00A5975E /* FormType.swift */; };
-		827B45FD24126D4E00A5975E /* PhotoDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45C924126D4E00A5975E /* PhotoDetails.swift */; };
 		827B45FE24126D4E00A5975E /* Company.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45CA24126D4E00A5975E /* Company.swift */; };
 		827B45FF24126D4E00A5975E /* FieldType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45CB24126D4E00A5975E /* FieldType.swift */; };
 		827B460024126D4E00A5975E /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827B45CC24126D4E00A5975E /* Tag.swift */; };
@@ -251,7 +249,7 @@
 		82CEA223244CB28500A895F6 /* RadioField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CEA222244CB28500A895F6 /* RadioField.swift */; };
 		82CEA225244E0F9B00A895F6 /* ForEachWithindex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CEA224244E0F9B00A895F6 /* ForEachWithindex.swift */; };
 		82D286F824868C5E003A703B /* DrawingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D286F724868C5E003A703B /* DrawingViewController.swift */; };
-		82D286FE2486D39A003A703B /* EditPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D286FD2486D39A003A703B /* EditPhoto.swift */; };
+		82D286FE2486D39A003A703B /* EditPhotos.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D286FD2486D39A003A703B /* EditPhotos.swift */; };
 		82D287002486D688003A703B /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D286FF2486D688003A703B /* ImagePicker.swift */; };
 		82D287062487F7E9003A703B /* FourSwitchesSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16A92477ECCE00DB33DE /* FourSwitchesSection.swift */; };
 		82D287082487F914003A703B /* PhotosForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D287072487F914003A703B /* PhotosForm.swift */; };
@@ -288,7 +286,8 @@
 		82FF6CB12490F3BB0014C4DC /* NewPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CB02490F3BB0014C4DC /* NewPhoto.swift */; };
 		82FF6CB32490F4450014C4DC /* PhotoVariant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CB22490F4450014C4DC /* PhotoVariant.swift */; };
 		82FF6CB52490F57D0014C4DC /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CB42490F57D0014C4DC /* Photo.swift */; };
-		82FF6CB72490FC8D0014C4DC /* SavedPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CB62490FC8D0014C4DC /* SavedPhoto.swift */; };
+		82FF6CB72490FC8D0014C4DC /* PhotoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CB62490FC8D0014C4DC /* PhotoViewModel.swift */; };
+		82FF6CB924916BF10014C4DC /* EditSinglePhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CB824916BF10014C4DC /* EditSinglePhoto.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -622,14 +621,13 @@
 		827B45AF24126D4D00A5975E /* PostcareType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostcareType.swift; sourceTree = "<group>"; };
 		827B45B024126D4D00A5975E /* FormDetails.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormDetails.swift; sourceTree = "<group>"; };
 		827B45B124126D4D00A5975E /* PostcareTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostcareTemplate.swift; sourceTree = "<group>"; };
-		827B45B224126D4D00A5975E /* JourneyPhotos.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JourneyPhotos.swift; sourceTree = "<group>"; };
+		827B45B224126D4D00A5975E /* SavedPhoto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SavedPhoto.swift; sourceTree = "<group>"; };
 		827B45B324126D4D00A5975E /* Appointment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Appointment.swift; sourceTree = "<group>"; };
 		827B45B424126D4E00A5975E /* CSSField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSSField.swift; sourceTree = "<group>"; };
 		827B45B524126D4E00A5975E /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		827B45B624126D4E00A5975E /* CheckBoxValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckBoxValue.swift; sourceTree = "<group>"; };
 		827B45B724126D4E00A5975E /* Room.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Room.swift; sourceTree = "<group>"; };
 		827B45B824126D4E00A5975E /* InlineResponse200.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InlineResponse200.swift; sourceTree = "<group>"; };
-		827B45B924126D4E00A5975E /* Photo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
 		827B45BA24126D4E00A5975E /* CustomField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomField.swift; sourceTree = "<group>"; };
 		827B45BB24126D4E00A5975E /* Bookout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bookout.swift; sourceTree = "<group>"; };
 		827B45BC24126D4E00A5975E /* Step.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Step.swift; sourceTree = "<group>"; };
@@ -645,7 +643,6 @@
 		827B45C624126D4E00A5975E /* Drawing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Drawing.swift; sourceTree = "<group>"; };
 		827B45C724126D4E00A5975E /* BaseFormTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseFormTemplate.swift; sourceTree = "<group>"; };
 		827B45C824126D4E00A5975E /* FormType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormType.swift; sourceTree = "<group>"; };
-		827B45C924126D4E00A5975E /* PhotoDetails.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoDetails.swift; sourceTree = "<group>"; };
 		827B45CA24126D4E00A5975E /* Company.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Company.swift; sourceTree = "<group>"; };
 		827B45CB24126D4E00A5975E /* FieldType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FieldType.swift; sourceTree = "<group>"; };
 		827B45CC24126D4E00A5975E /* Tag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
@@ -740,7 +737,7 @@
 		82CEA222244CB28500A895F6 /* RadioField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioField.swift; sourceTree = "<group>"; };
 		82CEA224244E0F9B00A895F6 /* ForEachWithindex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForEachWithindex.swift; sourceTree = "<group>"; };
 		82D286F724868C5E003A703B /* DrawingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingViewController.swift; sourceTree = "<group>"; };
-		82D286FD2486D39A003A703B /* EditPhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhoto.swift; sourceTree = "<group>"; };
+		82D286FD2486D39A003A703B /* EditPhotos.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhotos.swift; sourceTree = "<group>"; };
 		82D286FF2486D688003A703B /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		82D287072487F914003A703B /* PhotosForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosForm.swift; sourceTree = "<group>"; };
 		82D2870924885123003A703B /* OICollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OICollectionView.swift; sourceTree = "<group>"; };
@@ -771,7 +768,8 @@
 		82FF6CB02490F3BB0014C4DC /* NewPhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPhoto.swift; sourceTree = "<group>"; };
 		82FF6CB22490F4450014C4DC /* PhotoVariant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoVariant.swift; sourceTree = "<group>"; };
 		82FF6CB42490F57D0014C4DC /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
-		82FF6CB62490FC8D0014C4DC /* SavedPhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedPhoto.swift; sourceTree = "<group>"; };
+		82FF6CB62490FC8D0014C4DC /* PhotoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewModel.swift; sourceTree = "<group>"; };
+		82FF6CB824916BF10014C4DC /* EditSinglePhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditSinglePhoto.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1147,14 +1145,13 @@
 				827B45AF24126D4D00A5975E /* PostcareType.swift */,
 				827B45B024126D4D00A5975E /* FormDetails.swift */,
 				827B45B124126D4D00A5975E /* PostcareTemplate.swift */,
-				827B45B224126D4D00A5975E /* JourneyPhotos.swift */,
+				827B45B224126D4D00A5975E /* SavedPhoto.swift */,
 				827B45B324126D4D00A5975E /* Appointment.swift */,
 				827B45B424126D4E00A5975E /* CSSField.swift */,
 				827B45B524126D4E00A5975E /* User.swift */,
 				827B45B624126D4E00A5975E /* CheckBoxValue.swift */,
 				827B45B724126D4E00A5975E /* Room.swift */,
 				827B45B824126D4E00A5975E /* InlineResponse200.swift */,
-				827B45B924126D4E00A5975E /* Photo.swift */,
 				827B45BA24126D4E00A5975E /* CustomField.swift */,
 				827B45BB24126D4E00A5975E /* Bookout.swift */,
 				827B45BC24126D4E00A5975E /* Step.swift */,
@@ -1170,7 +1167,6 @@
 				827B45C624126D4E00A5975E /* Drawing.swift */,
 				827B45C724126D4E00A5975E /* BaseFormTemplate.swift */,
 				827B45C824126D4E00A5975E /* FormType.swift */,
-				827B45C924126D4E00A5975E /* PhotoDetails.swift */,
 				827B45CA24126D4E00A5975E /* Company.swift */,
 				827B45CB24126D4E00A5975E /* FieldType.swift */,
 				827B45CC24126D4E00A5975E /* Tag.swift */,
@@ -1360,15 +1356,16 @@
 		82D286F624868C37003A703B /* Photos */ = {
 			isa = PBXGroup;
 			children = (
-				82FF6CB62490FC8D0014C4DC /* SavedPhoto.swift */,
+				82FF6CB62490FC8D0014C4DC /* PhotoViewModel.swift */,
 				82FF6CB02490F3BB0014C4DC /* NewPhoto.swift */,
 				82FF6CB22490F4450014C4DC /* PhotoVariant.swift */,
 				82FF6CB42490F57D0014C4DC /* Photo.swift */,
 				829C9223248D7CA700E918D2 /* CameraOverlay.swift */,
 				82D286F724868C5E003A703B /* DrawingViewController.swift */,
-				82D286FD2486D39A003A703B /* EditPhoto.swift */,
+				82D286FD2486D39A003A703B /* EditPhotos.swift */,
 				82D286FF2486D688003A703B /* ImagePicker.swift */,
 				82D287072487F914003A703B /* PhotosForm.swift */,
+				82FF6CB824916BF10014C4DC /* EditSinglePhoto.swift */,
 			);
 			path = Photos;
 			sourceTree = "<group>";
@@ -2031,7 +2028,6 @@
 				827B45D924126D4E00A5975E /* FormStructure.swift in Sources */,
 				827B460224126D4E00A5975E /* ClientDetails.swift in Sources */,
 				825C525B2418C61500A33A29 /* APIHelper.swift in Sources */,
-				827B45ED24126D4E00A5975E /* Photo.swift in Sources */,
 				82104529240C2218004EA838 /* LoginError.swift in Sources */,
 				827B45D524126D4E00A5975E /* Location.swift in Sources */,
 				827B45E024126D4E00A5975E /* CustomFieldItems.swift in Sources */,
@@ -2050,7 +2046,6 @@
 				82104533240C4371004EA838 /* UserDefaultsConfig.swift in Sources */,
 				825C526824192DE400A33A29 /* LoginAPI.swift in Sources */,
 				827B45F224126D4E00A5975E /* BaseService.swift in Sources */,
-				827B45FD24126D4E00A5975E /* PhotoDetails.swift in Sources */,
 				82D7C2BF2446FEB3000B1CD5 /* CSSClass.swift in Sources */,
 				827B460524126D4E00A5975E /* Termin.swift in Sources */,
 				8269527C2456F583001B806E /* InputText.swift in Sources */,
@@ -2067,7 +2062,7 @@
 				8247764524756C0C00508434 /* Select.swift in Sources */,
 				827B45FF24126D4E00A5975E /* FieldType.swift in Sources */,
 				827B45E924126D4E00A5975E /* User.swift in Sources */,
-				827B45E624126D4E00A5975E /* JourneyPhotos.swift in Sources */,
+				827B45E624126D4E00A5975E /* SavedPhoto.swift in Sources */,
 				826952712452E04D001B806E /* CheckBoxChoice.swift in Sources */,
 				8210452B240C2234004EA838 /* ResetPassSuccess.swift in Sources */,
 				825C525A2418C61200A33A29 /* RequestBuilder.swift in Sources */,
@@ -2101,7 +2096,7 @@
 				82477618246C336300508434 /* PatientComplete.swift in Sources */,
 				8247763424729DE800508434 /* CheckInPatient.swift in Sources */,
 				82CEA223244CB28500A895F6 /* RadioField.swift in Sources */,
-				82FF6CB72490FC8D0014C4DC /* SavedPhoto.swift in Sources */,
+				82FF6CB72490FC8D0014C4DC /* PhotoViewModel.swift in Sources */,
 				82E6D831245ECBA000CB359A /* Passcode.swift in Sources */,
 				8247761A246C337D00508434 /* MetaForm.swift in Sources */,
 				8247761C246C339800508434 /* MetaFormAndStatus.swift in Sources */,
@@ -2123,7 +2118,7 @@
 				82622B5024464E0800BECF9A /* RibbonView.swift in Sources */,
 				82FB74F6245A9E51001C2DF3 /* FormWrapper.swift in Sources */,
 				820F16C0247D7F5300DB33DE /* AftercareImagesSection.swift in Sources */,
-				82D286FE2486D39A003A703B /* EditPhoto.swift in Sources */,
+				82D286FE2486D39A003A703B /* EditPhotos.swift in Sources */,
 				820F16BA247D792A00DB33DE /* AftercareOptionCell.swift in Sources */,
 				82477612246C333500508434 /* PatientDetails.swift in Sources */,
 				8247760F246C27F200508434 /* TopView.swift in Sources */,
@@ -2154,6 +2149,7 @@
 				82D287082487F914003A703B /* PhotosForm.swift in Sources */,
 				8247763A2473D07F00508434 /* JourneyListStyle.swift in Sources */,
 				824776382473D03700508434 /* ListFrame.swift in Sources */,
+				82FF6CB924916BF10014C4DC /* EditSinglePhoto.swift in Sources */,
 				82E6D827245C213300CB359A /* PatientDetailsForm.swift in Sources */,
 				82E253FC241B9ED000F16C30 /* JourneyState.swift in Sources */,
 				8250D7CB242BD25B00F8F3FC /* JourneyBaseView.swift in Sources */,

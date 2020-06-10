@@ -31,7 +31,7 @@ public struct Journey: Codable, Identifiable, Equatable, Hashable {
 
 	public let forms: [JourneyForms]
 
-	public let photos: [JourneyPhotos]
+	public let photos: [SavedPhoto]
 
 	public let postCare: [JourneyPostCare]
 
@@ -45,7 +45,7 @@ public struct Journey: Codable, Identifiable, Equatable, Hashable {
 							employee: Employee,
 							patientChecked: PatientStatus? = nil,
 							forms: [JourneyForms],
-							photos: [JourneyPhotos],
+							photos: [SavedPhoto],
 							postCare: [JourneyPostCare],
 							media: [Media]? = nil,
 							paid: String) {

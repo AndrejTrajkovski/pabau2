@@ -5,7 +5,7 @@ import PencilKit
 import ComposableArchitecture
 import Util
 
-let editPhotoReducer = Reducer<EditPhotoState, EditPhotoAction, JourneyEnvironment>.init { state, action, _ in
+let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, JourneyEnvironment>.init { state, action, _ in
 	switch action {
 	case .openCamera:
 		state.showingImagePicker = .camera
@@ -23,31 +23,24 @@ public enum EditPhotoAction: Equatable {
 	case didGetUIImage(UIImage?)
 }
 
-struct EditPhotoState: Equatable {
-	var showingImagePicker: UIImagePickerController.SourceType?
+struct EditPhotosState: Equatable {
 	var editingPhotoId: Int
-	var photosOrderedIds: [Int]
-	var photos: [Int: JourneyPhotos]
-	var drawings: [Int: [PKDrawing]]
+	var newPhotosOrder: [UUID]
+	var newPhotos: [UUID: NewPhoto]
+	var savedPhotosOrder: [Int]
+	var savedPhotos: [Int: SavedPhoto]
+	
+	var showingImagePicker: UIImagePickerController.SourceType?
 	var editingUIImage: UIImage?
-	var sortedPhotos: [JourneyPhotos] {
-		photosOrderedIds.map { photos[$0]! }
-	}
-	var editingPhoto: JourneyPhotos {
-		get { photos[editingPhotoId]! } set { photos[editingPhotoId] = newValue }
-	}
-	var editingDrawings: [PKDrawing] {
-		drawings[editingPhotoId]!
-	}
+	
 	var isShowingCamera: Bool {
 		get { self.showingImagePicker == .some(.camera) }
-//		set { self.showingImagePicker = newValue == true ? .some(.camera) : nil }
 	}
 }
 
-struct EditPhoto: View {
+struct EditPhotos: View {
 
-	let store: Store<EditPhotoState, EditPhotoAction>
+	let store: Store<EditPhotosState, EditPhotoAction>
 
 	var body: some View {
 		WithViewStore(store) { viewStore in
@@ -91,7 +84,7 @@ struct EditPhoto: View {
 	}
 }
 
-extension EditPhoto {
+extension EditPhotos {
 
 	func showImagePickerForCamera(_ sender: UIButton) {
 		let authStatus = AVCaptureDevice.authorizationStatus(for: AVMediaType.video)
