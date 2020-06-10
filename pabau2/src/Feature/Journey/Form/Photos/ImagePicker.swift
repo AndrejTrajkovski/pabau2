@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ImagePicker: UIViewControllerRepresentable {
+	
 	@Environment(\.presentationMode) var presentationMode
 	@Binding var image: UIImage?
 
@@ -30,7 +31,7 @@ struct ImagePicker: UIViewControllerRepresentable {
 	}
 
 	func updateUIViewController(_ uiViewController: UIImagePickerController, context: UIViewControllerRepresentableContext<ImagePicker>) {
-
+		
 	}
 }
 

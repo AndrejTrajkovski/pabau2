@@ -44,7 +44,8 @@ struct AftercareForm: View {
 	}
 
 	var body: some View {
-		ASCollectionView {
+		print("AftercareForm body")
+		return ASCollectionView {
 			AftercareImagesSection(
 				id: 0,
 				title: Texts.setProfilePhoto,

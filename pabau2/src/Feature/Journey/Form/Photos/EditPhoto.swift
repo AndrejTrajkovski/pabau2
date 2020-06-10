@@ -29,13 +29,13 @@ struct EditPhotoState: Equatable {
 	var photosOrderedIds: [Int]
 	var photos: [Int: JourneyPhotos]
 	var drawings: [Int: [PKDrawing]]
+	var editingUIImage: UIImage?
 	var sortedPhotos: [JourneyPhotos] {
 		photosOrderedIds.map { photos[$0]! }
 	}
 	var editingPhoto: JourneyPhotos {
 		get { photos[editingPhotoId]! } set { photos[editingPhotoId] = newValue }
 	}
-	var editingUIImage: UIImage?
 	var editingDrawings: [PKDrawing] {
 		drawings[editingPhotoId]!
 	}

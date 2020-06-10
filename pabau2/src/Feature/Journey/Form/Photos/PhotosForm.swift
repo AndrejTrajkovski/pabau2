@@ -42,7 +42,8 @@ struct PhotosForm: View {
 	let store: Store<PhotosState, PhotosFormAction>
 
 	var body: some View {
-		WithViewStore(store) { viewStore in
+		print("PhotosForm body")
+		return WithViewStore(store) { viewStore in
 			OICollectionView(data: viewStore.state.sortedPhotos,
 											 layout: flowLayout) { photo in
 												Image(photo.url)

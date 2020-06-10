@@ -11,7 +11,8 @@ struct ListDynamicForm: View {
 		UITableView.appearance().separatorStyle = .none
 	}
 	var body: some View {
-		List {
+		print("ListDynamicForm body")
+		return List {
 			DynamicForm(template: $template, isCheckingDetails: false)
 		}
 	}

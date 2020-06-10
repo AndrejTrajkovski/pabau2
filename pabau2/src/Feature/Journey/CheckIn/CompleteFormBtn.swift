@@ -30,7 +30,6 @@ struct CompleteFormBtn: View {
 
 extension CompleteFormBtn.State {
 	init (state: CompletBtnState) {
-		print("next button init")
 		self.index = state.selectedIndex
 		if let selectedForm = state.selectedForm {
 			self.isDisabled = !selectedForm.form.canProceed

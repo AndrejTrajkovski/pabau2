@@ -9,7 +9,8 @@ struct CheckPatientForm: View {
 	let patientForms: [FormTemplate]
 
 	var body: some View {
-		ScrollView {
+		print("CheckPatientForm body")
+		return ScrollView {
 			VStack {
 				PatientDetailsTextFields(vms: viewModels(patDetails))
 				FourSwitchesSection(

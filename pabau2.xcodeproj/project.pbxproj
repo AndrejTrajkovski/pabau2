@@ -251,7 +251,6 @@
 		82CEA223244CB28500A895F6 /* RadioField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CEA222244CB28500A895F6 /* RadioField.swift */; };
 		82CEA225244E0F9B00A895F6 /* ForEachWithindex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CEA224244E0F9B00A895F6 /* ForEachWithindex.swift */; };
 		82D286F824868C5E003A703B /* DrawingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D286F724868C5E003A703B /* DrawingViewController.swift */; };
-		82D286FC2486C893003A703B /* EditPhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D286FB2486C893003A703B /* EditPhotoViewController.swift */; };
 		82D286FE2486D39A003A703B /* EditPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D286FD2486D39A003A703B /* EditPhoto.swift */; };
 		82D287002486D688003A703B /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D286FF2486D688003A703B /* ImagePicker.swift */; };
 		82D287062487F7E9003A703B /* FourSwitchesSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16A92477ECCE00DB33DE /* FourSwitchesSection.swift */; };
@@ -286,6 +285,10 @@
 		82FF6CA7248F92B40014C4DC /* PabauCommon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 82FF6C93248F92980014C4DC /* PabauCommon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		82FF6CAB248F92BD0014C4DC /* PabauCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82FF6C93248F92980014C4DC /* PabauCommon.framework */; };
 		82FF6CAC248F92BD0014C4DC /* PabauCommon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 82FF6C93248F92980014C4DC /* PabauCommon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		82FF6CB12490F3BB0014C4DC /* NewPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CB02490F3BB0014C4DC /* NewPhoto.swift */; };
+		82FF6CB32490F4450014C4DC /* PhotoVariant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CB22490F4450014C4DC /* PhotoVariant.swift */; };
+		82FF6CB52490F57D0014C4DC /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CB42490F57D0014C4DC /* Photo.swift */; };
+		82FF6CB72490FC8D0014C4DC /* SavedPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CB62490FC8D0014C4DC /* SavedPhoto.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -737,7 +740,6 @@
 		82CEA222244CB28500A895F6 /* RadioField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioField.swift; sourceTree = "<group>"; };
 		82CEA224244E0F9B00A895F6 /* ForEachWithindex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForEachWithindex.swift; sourceTree = "<group>"; };
 		82D286F724868C5E003A703B /* DrawingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingViewController.swift; sourceTree = "<group>"; };
-		82D286FB2486C893003A703B /* EditPhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhotoViewController.swift; sourceTree = "<group>"; };
 		82D286FD2486D39A003A703B /* EditPhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhoto.swift; sourceTree = "<group>"; };
 		82D286FF2486D688003A703B /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		82D287072487F914003A703B /* PhotosForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosForm.swift; sourceTree = "<group>"; };
@@ -766,6 +768,10 @@
 		82FF6C93248F92980014C4DC /* PabauCommon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PabauCommon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		82FF6C95248F92980014C4DC /* PabauCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PabauCommon.h; sourceTree = "<group>"; };
 		82FF6C96248F92980014C4DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		82FF6CB02490F3BB0014C4DC /* NewPhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPhoto.swift; sourceTree = "<group>"; };
+		82FF6CB22490F4450014C4DC /* PhotoVariant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoVariant.swift; sourceTree = "<group>"; };
+		82FF6CB42490F57D0014C4DC /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
+		82FF6CB62490FC8D0014C4DC /* SavedPhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedPhoto.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -942,12 +948,8 @@
 		82477610246C331400508434 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				82477611246C333500508434 /* PatientDetails.swift */,
-				82477615246C335500508434 /* Aftercare.swift */,
-				82477617246C336300508434 /* PatientComplete.swift */,
 				82477619246C337D00508434 /* MetaForm.swift */,
 				8247761B246C339800508434 /* MetaFormAndStatus.swift */,
-				820F16B1247BE3FE00DB33DE /* CheckPatient.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1358,9 +1360,12 @@
 		82D286F624868C37003A703B /* Photos */ = {
 			isa = PBXGroup;
 			children = (
+				82FF6CB62490FC8D0014C4DC /* SavedPhoto.swift */,
+				82FF6CB02490F3BB0014C4DC /* NewPhoto.swift */,
+				82FF6CB22490F4450014C4DC /* PhotoVariant.swift */,
+				82FF6CB42490F57D0014C4DC /* Photo.swift */,
 				829C9223248D7CA700E918D2 /* CameraOverlay.swift */,
 				82D286F724868C5E003A703B /* DrawingViewController.swift */,
-				82D286FB2486C893003A703B /* EditPhotoViewController.swift */,
 				82D286FD2486D39A003A703B /* EditPhoto.swift */,
 				82D286FF2486D688003A703B /* ImagePicker.swift */,
 				82D287072487F914003A703B /* PhotosForm.swift */,
@@ -1371,6 +1376,7 @@
 		82D287012487F704003A703B /* Aftercare */ = {
 			isa = PBXGroup;
 			children = (
+				82477615246C335500508434 /* Aftercare.swift */,
 				820F16B3247D617400DB33DE /* AftercareForm.swift */,
 				820F16B9247D792A00DB33DE /* AftercareOptionCell.swift */,
 				820F16BB247D7CD200DB33DE /* AftercareCell.swift */,
@@ -1383,8 +1389,8 @@
 		82D287022487F71A003A703B /* DynamicForm */ = {
 			isa = PBXGroup;
 			children = (
-				8247764924758B7700508434 /* SelectField.swift */,
 				8269526724506F18001B806E /* DynamicForm.swift */,
+				8247764924758B7700508434 /* SelectField.swift */,
 				82648403244F42F300544703 /* FormSectionField.swift */,
 				82CEA222244CB28500A895F6 /* RadioField.swift */,
 				82622B51244650E000BECF9A /* CheckBoxField.swift */,
@@ -1398,6 +1404,7 @@
 		82D287032487F768003A703B /* CheckPatient */ = {
 			isa = PBXGroup;
 			children = (
+				820F16B1247BE3FE00DB33DE /* CheckPatient.swift */,
 				820F16AB24780A0900DB33DE /* CheckPatientForm.swift */,
 			);
 			path = CheckPatient;
@@ -1406,6 +1413,7 @@
 		82D287042487F778003A703B /* PatientDetails */ = {
 			isa = PBXGroup;
 			children = (
+				82477611246C333500508434 /* PatientDetails.swift */,
 				82E6D826245C213300CB359A /* PatientDetailsForm.swift */,
 			);
 			path = PatientDetails;
@@ -1414,6 +1422,7 @@
 		82D287052487F786003A703B /* PatientComplete */ = {
 			isa = PBXGroup;
 			children = (
+				82477617246C336300508434 /* PatientComplete.swift */,
 				82E6D828245DF4D200CB359A /* PatientCompleteForm.swift */,
 			);
 			path = PatientComplete;
@@ -2087,18 +2096,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				82FF6CB12490F3BB0014C4DC /* NewPhoto.swift in Sources */,
 				826F65B3248122480086E187 /* CompleteFormBtn.swift in Sources */,
 				82477618246C336300508434 /* PatientComplete.swift in Sources */,
 				8247763424729DE800508434 /* CheckInPatient.swift in Sources */,
 				82CEA223244CB28500A895F6 /* RadioField.swift in Sources */,
+				82FF6CB72490FC8D0014C4DC /* SavedPhoto.swift in Sources */,
 				82E6D831245ECBA000CB359A /* Passcode.swift in Sources */,
 				8247761A246C337D00508434 /* MetaForm.swift in Sources */,
 				8247761C246C339800508434 /* MetaFormAndStatus.swift in Sources */,
 				8269526C2452DA93001B806E /* TextAreaField.swift in Sources */,
 				827B459B241136D900A5975E /* JourneyContainerView.swift in Sources */,
 				826F65AF24802AEA0086E187 /* CheckInBody.swift in Sources */,
+				82FF6CB32490F4450014C4DC /* PhotoVariant.swift in Sources */,
 				826F65B5248123C40086E187 /* FooterButtons.swift in Sources */,
-				82D286FC2486C893003A703B /* EditPhotoViewController.swift in Sources */,
 				820F16AC24780A0900DB33DE /* CheckPatientForm.swift in Sources */,
 				82C479DE242E17B50037F140 /* CheckInNavigationView.swift in Sources */,
 				8247763224728F0200508434 /* PullbackCasePath.swift in Sources */,
@@ -2124,6 +2135,7 @@
 				8280D479245FEAA80077A73F /* DoctorSummary.swift in Sources */,
 				824776362473CE9700508434 /* ChooseTreatmentNote.swift in Sources */,
 				82648404244F42F300544703 /* FormSectionField.swift in Sources */,
+				82FF6CB52490F57D0014C4DC /* Photo.swift in Sources */,
 				82292BD8244097C600080F74 /* StepsCollectionView.swift in Sources */,
 				82477616246C335500508434 /* Aftercare.swift in Sources */,
 				829BFBAF243F5D6F005DDCB9 /* CheckInAnimation.swift in Sources */,
