@@ -1,5 +1,5 @@
 import PencilKit
 
 protocol PhotoVariant {
-	var drawings: [PKDrawing] { get set }
+	var date: Date { get }
 }

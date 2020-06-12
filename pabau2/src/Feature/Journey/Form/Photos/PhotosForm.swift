@@ -3,6 +3,7 @@ import ComposableArchitecture
 import Util
 import Model
 import PencilKit
+import Overture
 
 public struct PhotosState: Equatable {
 	var newPhotosOrder: [UUID] = []
@@ -45,20 +46,36 @@ public enum PhotosFormAction: Equatable {
 struct PhotosForm: View {
 
 	let store: Store<PhotosState, PhotosFormAction>
-	
-	struct State: Equatable {
-		let photos: IdentifiedArray<Int, Photo>
+	struct PhotoElement: Identifiable, Equatable {
+		var id: Int { index }
+		let index: Int
+		let photo: Photo
 	}
-	
+	struct State: Equatable {
+		let photos: IdentifiedArrayOf<PhotoElement>
+		var editPhoto: EditPhotosState?
+		public init (state: PhotosState) {
+			let newOrdered = state.newPhotosOrder
+				.map{ state.newPhotos[$0]!}
+				.map(Photo.new)
+			let savedOrdered = state.savedPhotosOrder
+				.map { state.savedPhotos[$0]! }
+				.map(Photo.saved)
+			let res = newOrdered + savedOrdered
+			let sorted = zip(res.indices, res)
+				.map(PhotoElement.init(index:photo:))
+				.sorted(by: their(\.photo.date))
+			self.photos = IdentifiedArray.init(sorted)
+			self.editPhoto = state.editPhoto
+		}
+	}
+
 	var body: some View {
-		WithViewStore(store) { viewStore in
-			OICollectionView(data: viewStore.state.sortedPhotos,
+		WithViewStore(self.store.scope(
+			state: State.init(state:))) { viewStore in
+			OICollectionView(data: viewStore.state.photos,
 											 layout: flowLayout) { photo in
-												Image(photo.url)
-												.resizable()
-													.aspectRatio(contentMode: .fit)
-													.frame(maxWidth: 150, maxHeight: 150)
-													.padding()
+												PhotoCell(photo: photo.photo)
 													.onTapGesture {
 														viewStore.send(.didSelectPhoto(photo.id))
 												}
@@ -74,8 +91,35 @@ struct PhotosForm: View {
 	}
 }
 
-extension PhotosForm.State {
-	public init (state: PhotosState) {
-		
+struct PhotoCell: View {
+	let photo: Photo
+	var body: some View {
+		Group {
+			if extract(case: Photo.saved, from: photo) != nil {
+				SavedPhotoCell(savedPhoto: extract(case: Photo.saved, from: photo)!)
+			} else if extract(case: Photo.new, from: photo) != nil {
+				NewPhotoCell(newPhoto: extract(case: Photo.new, from: photo)!)
+			}
+		}
+		.frame(maxWidth: 150, maxHeight: 150)
+		.padding()
+	}
+}
+
+struct SavedPhotoCell: View {
+	let savedPhoto: SavedPhoto
+	var body: some View {
+		Image(savedPhoto.url)
+			.resizable()
+			.aspectRatio(contentMode: .fit)
+	}
+}
+
+struct NewPhotoCell: View {
+	let newPhoto: NewPhoto
+	var body: some View {
+		Image(uiImage: newPhoto.image)
+			.resizable()
+			.aspectRatio(contentMode: .fit)
 	}
 }

@@ -41,11 +41,10 @@ struct EditPhotosState: Equatable {
 struct EditPhotos: View {
 
 	let store: Store<EditPhotosState, EditPhotoAction>
-
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			VStack {
-				Image(viewStore.state.editingPhoto.url)
+				Image("dummy1")
 					.resizable()
 					.scaledToFit()
 				Button("Select Image") {
