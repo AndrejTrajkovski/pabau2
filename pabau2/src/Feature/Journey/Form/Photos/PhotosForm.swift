@@ -6,6 +6,7 @@ import PencilKit
 import Overture
 
 public struct PhotosState: Equatable {
+	var selectedPhotoId: PhotoVariantId?
 	var newPhotosOrder: [UUID] = []
 	var newPhotos: [UUID: NewPhoto] = [:]
 	var savedPhotosOrder: [Int]
@@ -19,7 +20,7 @@ let photosFormReducer: Reducer<PhotosState, PhotosFormAction, JourneyEnvironment
 	.combine(
 		Reducer.init { state, action, _ in
 			switch action {
-			case .didSelectPhoto(let id):
+			case .didSelectPhotoId(let id):
 				state.editPhoto =
 					EditPhotosState(
 						editingPhotoId: id,
@@ -39,33 +40,25 @@ let photosFormReducer: Reducer<PhotosState, PhotosFormAction, JourneyEnvironment
 )
 
 public enum PhotosFormAction: Equatable {
-	case didSelectPhoto(Int)
+	case didSelectPhotoId(PhotoVariantId)
 	case editPhoto(EditPhotoAction)
 }
 
 struct PhotosForm: View {
 
 	let store: Store<PhotosState, PhotosFormAction>
-	struct PhotoElement: Identifiable, Equatable {
-		var id: Int { index }
-		let index: Int
-		let photo: Photo
-	}
 	struct State: Equatable {
-		let photos: IdentifiedArrayOf<PhotoElement>
+		let photos: IdentifiedArrayOf<Photo>
 		var editPhoto: EditPhotosState?
 		public init (state: PhotosState) {
 			let newOrdered = state.newPhotosOrder
-				.map{ state.newPhotos[$0]!}
+				.map{ state.newPhotos[$0]! }
 				.map(Photo.new)
 			let savedOrdered = state.savedPhotosOrder
 				.map { state.savedPhotos[$0]! }
 				.map(Photo.saved)
-			let res = newOrdered + savedOrdered
-			let sorted = zip(res.indices, res)
-				.map(PhotoElement.init(index:photo:))
-				.sorted(by: their(\.photo.date))
-			self.photos = IdentifiedArray.init(sorted)
+			let res = (newOrdered + savedOrdered).sorted(by: their(\.date))
+			self.photos = IdentifiedArray.init(res)
 			self.editPhoto = state.editPhoto
 		}
 	}
@@ -75,9 +68,9 @@ struct PhotosForm: View {
 			state: State.init(state:))) { viewStore in
 			OICollectionView(data: viewStore.state.photos,
 											 layout: flowLayout) { photo in
-												PhotoCell(photo: photo.photo)
+												PhotoCell(photo: photo)
 													.onTapGesture {
-														viewStore.send(.didSelectPhoto(photo.id))
+														viewStore.send(.didSelectPhotoId(photo.id))
 												}
 			}.padding()
 			NavigationLink.emptyHidden(

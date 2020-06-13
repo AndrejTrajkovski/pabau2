@@ -23,19 +23,36 @@ public enum EditPhotoAction: Equatable {
 	case didGetUIImage(UIImage?)
 }
 
+public enum PhotoVariantId: Equatable, Hashable {
+	case saved(Int)
+	case new(UUID)
+}
+
+struct PhotosCollection: Equatable {
+	
+}
+
 struct EditPhotosState: Equatable {
-	var editingPhotoId: Int
+	var currentDrawing: PKDrawing = PKDrawing()
+	var editingPhotoId: PhotoVariantId
+	
 	var newPhotosOrder: [UUID]
 	var newPhotos: [UUID: NewPhoto]
+	var drawings: [UUID: PKDrawing]
+	
 	var savedPhotosOrder: [Int]
 	var savedPhotos: [Int: SavedPhoto]
 	
 	var showingImagePicker: UIImagePickerController.SourceType?
 	var editingUIImage: UIImage?
-	
 	var isShowingCamera: Bool {
 		get { self.showingImagePicker == .some(.camera) }
 	}
+//	var editSinglePhoto: EditSinglePhotoState {
+//		get {
+//			EditSinglePhotoState(photo: <#T##Photo#>, drawing: <#T##PKDrawing#>)
+//		}
+//	}
 }
 
 struct EditPhotos: View {
@@ -44,9 +61,7 @@ struct EditPhotos: View {
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			VStack {
-				Image("dummy1")
-					.resizable()
-					.scaledToFit()
+				//EditSinglePhoto
 				Button("Select Image") {
 					viewStore.send(.openCamera)
 				}
@@ -119,4 +134,23 @@ extension EditPhotos {
 //			showImagePicker(sourceType: UIImagePickerController.SourceType.camera, button: sender)
 		}
 	}
+}
+
+extension EditPhotosState {
+	
+	func selectedPhoto() -> Photo {
+		switch editingPhotoId {
+		case .new(let uuid):
+			return Photo.new(newPhotos[uuid]!)
+		case .saved(let id):
+			return Photo.saved(savedPhotos[id]!)
+		}
+	}
+	
+	var editSinglePhoto: EditSinglePhotoState {
+		get { EditSinglePhotoState(photo: self.selectedPhoto(),
+															 drawing: currentDrawing)}
+		set { self.currentDrawing = newValue.drawing }
+	}
+	
 }

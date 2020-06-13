@@ -288,6 +288,7 @@
 		82FF6CB52490F57D0014C4DC /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CB42490F57D0014C4DC /* Photo.swift */; };
 		82FF6CB72490FC8D0014C4DC /* PhotoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CB62490FC8D0014C4DC /* PhotoViewModel.swift */; };
 		82FF6CB924916BF10014C4DC /* EditSinglePhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CB824916BF10014C4DC /* EditSinglePhoto.swift */; };
+		82FF6CBB2493AE890014C4DC /* CanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CBA2493AE890014C4DC /* CanvasView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -770,6 +771,7 @@
 		82FF6CB42490F57D0014C4DC /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
 		82FF6CB62490FC8D0014C4DC /* PhotoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewModel.swift; sourceTree = "<group>"; };
 		82FF6CB824916BF10014C4DC /* EditSinglePhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditSinglePhoto.swift; sourceTree = "<group>"; };
+		82FF6CBA2493AE890014C4DC /* CanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1366,6 +1368,7 @@
 				82D286FF2486D688003A703B /* ImagePicker.swift */,
 				82D287072487F914003A703B /* PhotosForm.swift */,
 				82FF6CB824916BF10014C4DC /* EditSinglePhoto.swift */,
+				82FF6CBA2493AE890014C4DC /* CanvasView.swift */,
 			);
 			path = Photos;
 			sourceTree = "<group>";
@@ -2099,6 +2102,7 @@
 				82FF6CB72490FC8D0014C4DC /* PhotoViewModel.swift in Sources */,
 				82E6D831245ECBA000CB359A /* Passcode.swift in Sources */,
 				8247761A246C337D00508434 /* MetaForm.swift in Sources */,
+				82FF6CBB2493AE890014C4DC /* CanvasView.swift in Sources */,
 				8247761C246C339800508434 /* MetaFormAndStatus.swift in Sources */,
 				8269526C2452DA93001B806E /* TextAreaField.swift in Sources */,
 				827B459B241136D900A5975E /* JourneyContainerView.swift in Sources */,
