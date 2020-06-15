@@ -84,7 +84,7 @@ public struct CheckInContainerState: Equatable {
 
 	var photosState: PhotosState
 	var photosCompleted: Bool {
-		!photosState.isEmpty
+		!photosState.photos.isEmpty
 	}
 
 	var passcodeState = PasscodeState()

@@ -2,19 +2,18 @@ import SwiftUI
 import PencilKit
 import ComposableArchitecture
 
-let editSinglePhotoReducer = Reducer<EditSinglePhotoState, EditSinglePhotoAction, JourneyEnvironment>.init { state, action, env in
+let editSinglePhotoReducer = Reducer<EditSinglePhotoState, EditSinglePhotoAction, JourneyEnvironment>.init { state, action, _ in
 	switch action {
 	case .onSave:
 		break
 	case .onDrawingChange(let drawing):
-		state.drawing = drawing
+		state.photo.drawing = drawing
 	}
 	return .none
 }
 
 struct EditSinglePhotoState: Equatable {
-	let photo: Photo
-	var drawing: PKDrawing
+	var photo: PhotoViewModel
 }
 
 enum EditSinglePhotoAction: Equatable {
@@ -29,7 +28,7 @@ struct EditSinglePhoto: View {
 			ZStack {
 				PhotoCell(photo: viewStore.state.photo)
 				CanvasView(drawing: viewStore.binding(
-					get: { $0.drawing }, send: EditSinglePhotoAction.onDrawingChange)
+					get: { ($0.photo.drawing ?? PKDrawing()) }, send: EditSinglePhotoAction.onDrawingChange)
 				)
 			}
 		}

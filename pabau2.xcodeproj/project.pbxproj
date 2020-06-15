@@ -85,6 +85,7 @@
 		8247764624756C0F00508434 /* SignatureDrawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247763F24756BE800508434 /* SignatureDrawing.swift */; };
 		8247764824756C2900508434 /* CIDrugs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247764724756C2900508434 /* CIDrugs.swift */; };
 		8247764A24758B7700508434 /* SelectField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247764924758B7700508434 /* SelectField.swift */; };
+		824C399024981B5F007133E2 /* MultiplePhotos.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824C398F24981B5F007133E2 /* MultiplePhotos.swift */; };
 		8250D7C9242BCFD000F8F3FC /* ChooseFormList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7C8242BCFD000F8F3FC /* ChooseFormList.swift */; };
 		8250D7CB242BD25B00F8F3FC /* JourneyBaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7CA242BD25B00F8F3FC /* JourneyBaseView.swift */; };
 		8250D7D0242C575A00F8F3FC /* ModalTransitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7CD242C575A00F8F3FC /* ModalTransitions.swift */; };
@@ -289,6 +290,8 @@
 		82FF6CB72490FC8D0014C4DC /* PhotoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CB62490FC8D0014C4DC /* PhotoViewModel.swift */; };
 		82FF6CB924916BF10014C4DC /* EditSinglePhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CB824916BF10014C4DC /* EditSinglePhoto.swift */; };
 		82FF6CBB2493AE890014C4DC /* CanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CBA2493AE890014C4DC /* CanvasView.swift */; };
+		82FF6CBF2496669D0014C4DC /* PhotoVariantId.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CBE2496669D0014C4DC /* PhotoVariantId.swift */; };
+		82FF6CC1249666CB0014C4DC /* SavedPhoto+PhotoVariant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CC0249666CB0014C4DC /* SavedPhoto+PhotoVariant.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -554,6 +557,7 @@
 		8247764324756C0700508434 /* DiagramMini.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagramMini.swift; sourceTree = "<group>"; };
 		8247764724756C2900508434 /* CIDrugs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CIDrugs.swift; sourceTree = "<group>"; };
 		8247764924758B7700508434 /* SelectField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectField.swift; sourceTree = "<group>"; };
+		824C398F24981B5F007133E2 /* MultiplePhotos.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplePhotos.swift; sourceTree = "<group>"; };
 		8250D7C8242BCFD000F8F3FC /* ChooseFormList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseFormList.swift; sourceTree = "<group>"; };
 		8250D7CA242BD25B00F8F3FC /* JourneyBaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyBaseView.swift; sourceTree = "<group>"; };
 		8250D7CD242C575A00F8F3FC /* ModalTransitions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalTransitions.swift; sourceTree = "<group>"; };
@@ -772,6 +776,8 @@
 		82FF6CB62490FC8D0014C4DC /* PhotoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewModel.swift; sourceTree = "<group>"; };
 		82FF6CB824916BF10014C4DC /* EditSinglePhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditSinglePhoto.swift; sourceTree = "<group>"; };
 		82FF6CBA2493AE890014C4DC /* CanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasView.swift; sourceTree = "<group>"; };
+		82FF6CBE2496669D0014C4DC /* PhotoVariantId.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoVariantId.swift; sourceTree = "<group>"; };
+		82FF6CC0249666CB0014C4DC /* SavedPhoto+PhotoVariant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SavedPhoto+PhotoVariant.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1358,10 +1364,7 @@
 		82D286F624868C37003A703B /* Photos */ = {
 			isa = PBXGroup;
 			children = (
-				82FF6CB62490FC8D0014C4DC /* PhotoViewModel.swift */,
-				82FF6CB02490F3BB0014C4DC /* NewPhoto.swift */,
-				82FF6CB22490F4450014C4DC /* PhotoVariant.swift */,
-				82FF6CB42490F57D0014C4DC /* Photo.swift */,
+				82FF6CC2249666D70014C4DC /* Models */,
 				829C9223248D7CA700E918D2 /* CameraOverlay.swift */,
 				82D286F724868C5E003A703B /* DrawingViewController.swift */,
 				82D286FD2486D39A003A703B /* EditPhotos.swift */,
@@ -1369,6 +1372,7 @@
 				82D287072487F914003A703B /* PhotosForm.swift */,
 				82FF6CB824916BF10014C4DC /* EditSinglePhoto.swift */,
 				82FF6CBA2493AE890014C4DC /* CanvasView.swift */,
+				824C398F24981B5F007133E2 /* MultiplePhotos.swift */,
 			);
 			path = Photos;
 			sourceTree = "<group>";
@@ -1435,6 +1439,19 @@
 				82FF6C96248F92980014C4DC /* Info.plist */,
 			);
 			path = PabauCommon;
+			sourceTree = "<group>";
+		};
+		82FF6CC2249666D70014C4DC /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				82FF6CBE2496669D0014C4DC /* PhotoVariantId.swift */,
+				82FF6CB22490F4450014C4DC /* PhotoVariant.swift */,
+				82FF6CB42490F57D0014C4DC /* Photo.swift */,
+				82FF6CB02490F3BB0014C4DC /* NewPhoto.swift */,
+				82FF6CB62490FC8D0014C4DC /* PhotoViewModel.swift */,
+				82FF6CC0249666CB0014C4DC /* SavedPhoto+PhotoVariant.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2103,6 +2120,7 @@
 				82E6D831245ECBA000CB359A /* Passcode.swift in Sources */,
 				8247761A246C337D00508434 /* MetaForm.swift in Sources */,
 				82FF6CBB2493AE890014C4DC /* CanvasView.swift in Sources */,
+				82FF6CBF2496669D0014C4DC /* PhotoVariantId.swift in Sources */,
 				8247761C246C339800508434 /* MetaFormAndStatus.swift in Sources */,
 				8269526C2452DA93001B806E /* TextAreaField.swift in Sources */,
 				827B459B241136D900A5975E /* JourneyContainerView.swift in Sources */,
@@ -2117,12 +2135,14 @@
 				826F65B72481657B0086E187 /* DoctorSummaryButtons.swift in Sources */,
 				82E6D82F245E177900CB359A /* JourneyTransitionView.swift in Sources */,
 				825BE7E424361C4400422910 /* SoundPlayer.swift in Sources */,
+				824C399024981B5F007133E2 /* MultiplePhotos.swift in Sources */,
 				82D287002486D688003A703B /* ImagePicker.swift in Sources */,
 				829B40D12423B8F2009B7E71 /* AddAppointment.swift in Sources */,
 				82622B5024464E0800BECF9A /* RibbonView.swift in Sources */,
 				82FB74F6245A9E51001C2DF3 /* FormWrapper.swift in Sources */,
 				820F16C0247D7F5300DB33DE /* AftercareImagesSection.swift in Sources */,
 				82D286FE2486D39A003A703B /* EditPhotos.swift in Sources */,
+				82FF6CC1249666CB0014C4DC /* SavedPhoto+PhotoVariant.swift in Sources */,
 				820F16BA247D792A00DB33DE /* AftercareOptionCell.swift in Sources */,
 				82477612246C333500508434 /* PatientDetails.swift in Sources */,
 				8247760F246C27F200508434 /* TopView.swift in Sources */,

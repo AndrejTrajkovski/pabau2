@@ -3,7 +3,7 @@
 
 import Foundation
 
-public struct SavedPhoto: Codable, Identifiable, Equatable {
+public struct SavedPhoto: Codable, Identifiable, Hashable {
 	
 	public let url: String
 	

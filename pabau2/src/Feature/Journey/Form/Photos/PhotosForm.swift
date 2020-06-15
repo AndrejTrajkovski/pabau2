@@ -6,14 +6,9 @@ import PencilKit
 import Overture
 
 public struct PhotosState: Equatable {
-	var selectedPhotoId: PhotoVariantId?
-	var newPhotosOrder: [UUID] = []
-	var newPhotos: [UUID: NewPhoto] = [:]
-	var savedPhotosOrder: [Int]
-	var savedPhotos: [Int: SavedPhoto]
-	var drawings: [Int: [PKDrawing]] = [:]
+	var photos: IdentifiedArray<PhotoVariantId, PhotoViewModel> = []
+	var selectedIds: [PhotoVariantId] = []
 	var editPhoto: EditPhotosState?
-	var isEmpty: Bool { savedPhotos.isEmpty && newPhotos.isEmpty }
 }
 
 let photosFormReducer: Reducer<PhotosState, PhotosFormAction, JourneyEnvironment> =
@@ -21,14 +16,10 @@ let photosFormReducer: Reducer<PhotosState, PhotosFormAction, JourneyEnvironment
 		Reducer.init { state, action, _ in
 			switch action {
 			case .didSelectPhotoId(let id):
-				state.editPhoto =
-					EditPhotosState(
-						editingPhotoId: id,
-						newPhotosOrder: state.newPhotosOrder,
-						newPhotos: state.newPhotos,
-						savedPhotosOrder: state.savedPhotosOrder,
-						savedPhotos: state.savedPhotos
-				)
+				state.selectedIds.append(id)
+			case .didSelectEditPhotos:
+				let selPhotos = state.photos.filter { state.selectedIds.contains($0.id) }
+				state.editPhoto = EditPhotosState(selPhotos)
 			case .editPhoto: break
 			}
 			return .none
@@ -41,31 +32,16 @@ let photosFormReducer: Reducer<PhotosState, PhotosFormAction, JourneyEnvironment
 
 public enum PhotosFormAction: Equatable {
 	case didSelectPhotoId(PhotoVariantId)
+	case didSelectEditPhotos
 	case editPhoto(EditPhotoAction)
 }
 
 struct PhotosForm: View {
-
+	
 	let store: Store<PhotosState, PhotosFormAction>
-	struct State: Equatable {
-		let photos: IdentifiedArrayOf<Photo>
-		var editPhoto: EditPhotosState?
-		public init (state: PhotosState) {
-			let newOrdered = state.newPhotosOrder
-				.map{ state.newPhotos[$0]! }
-				.map(Photo.new)
-			let savedOrdered = state.savedPhotosOrder
-				.map { state.savedPhotos[$0]! }
-				.map(Photo.saved)
-			let res = (newOrdered + savedOrdered).sorted(by: their(\.date))
-			self.photos = IdentifiedArray.init(res)
-			self.editPhoto = state.editPhoto
-		}
-	}
 
 	var body: some View {
-		WithViewStore(self.store.scope(
-			state: State.init(state:))) { viewStore in
+		WithViewStore(store) { viewStore in
 			OICollectionView(data: viewStore.state.photos,
 											 layout: flowLayout) { photo in
 												PhotoCell(photo: photo)
@@ -85,13 +61,13 @@ struct PhotosForm: View {
 }
 
 struct PhotoCell: View {
-	let photo: Photo
+	let photo: PhotoViewModel
 	var body: some View {
 		Group {
-			if extract(case: Photo.saved, from: photo) != nil {
-				SavedPhotoCell(savedPhoto: extract(case: Photo.saved, from: photo)!)
-			} else if extract(case: Photo.new, from: photo) != nil {
-				NewPhotoCell(newPhoto: extract(case: Photo.new, from: photo)!)
+			if extract(case: Photo.saved, from: photo.basePhoto) != nil {
+				SavedPhotoCell(savedPhoto: extract(case: Photo.saved, from: photo.basePhoto)!)
+			} else if extract(case: Photo.new, from: photo.basePhoto) != nil {
+				NewPhotoCell(newPhoto: extract(case: Photo.new, from: photo.basePhoto)!)
 			}
 		}
 		.frame(maxWidth: 150, maxHeight: 150)

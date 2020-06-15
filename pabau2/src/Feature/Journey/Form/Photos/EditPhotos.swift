@@ -23,26 +23,15 @@ public enum EditPhotoAction: Equatable {
 	case didGetUIImage(UIImage?)
 }
 
-public enum PhotoVariantId: Equatable, Hashable {
-	case saved(Int)
-	case new(UUID)
-}
-
-struct PhotosCollection: Equatable {
-	
-}
-
 struct EditPhotosState: Equatable {
-	var currentDrawing: PKDrawing = PKDrawing()
+	var photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>
 	var editingPhotoId: PhotoVariantId
-	
-	var newPhotosOrder: [UUID]
-	var newPhotos: [UUID: NewPhoto]
-	var drawings: [UUID: PKDrawing]
-	
-	var savedPhotosOrder: [Int]
-	var savedPhotos: [Int: SavedPhoto]
-	
+
+	init (_ photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>) {
+		self.photos = photos
+		self.editingPhotoId = photos.last!.id
+	}
+
 	var showingImagePicker: UIImagePickerController.SourceType?
 	var editingUIImage: UIImage?
 	var isShowingCamera: Bool {
@@ -137,20 +126,16 @@ extension EditPhotos {
 }
 
 extension EditPhotosState {
-	
-	func selectedPhoto() -> Photo {
-		switch editingPhotoId {
-		case .new(let uuid):
-			return Photo.new(newPhotos[uuid]!)
-		case .saved(let id):
-			return Photo.saved(savedPhotos[id]!)
-		}
-	}
+
 	
 	var editSinglePhoto: EditSinglePhotoState {
-		get { EditSinglePhotoState(photo: self.selectedPhoto(),
-															 drawing: currentDrawing)}
-		set { self.currentDrawing = newValue.drawing }
+		get {
+			EditSinglePhotoState(photo:
+				photos[id: editingPhotoId]!
+			)
+		}
+		set {
+			photos[id: editingPhotoId] = newValue.photo
+		}
 	}
-	
 }

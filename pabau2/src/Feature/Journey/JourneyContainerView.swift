@@ -70,9 +70,7 @@ let checkInMiddleware2 = Reducer<JourneyState, ChooseFormAction, JourneyEnvironm
 			consents: FormsCollection(ids: state.selectedConsentsIds,
 																fromAll: Array(state.allConsents.values)),
 			allConsents: state.allConsents,
-			photosState: PhotosState(
-				savedPhotosOrder: JourneyMockAPI.photosOrder(),
-				savedPhotos: JourneyMockAPI.photos())
+			photosState: PhotosState()
 		)
 	default:
 		return .none
