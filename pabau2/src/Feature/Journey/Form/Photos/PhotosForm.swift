@@ -4,6 +4,7 @@ import Util
 import Model
 import PencilKit
 import Overture
+import ASCollectionView
 
 public struct PhotosState: Equatable {
 	var photos: IdentifiedArray<PhotoVariantId, PhotoViewModel> = []
@@ -42,26 +43,28 @@ struct PhotosForm: View {
 
 	var body: some View {
 		WithViewStore(store) { viewStore in
-			OICollectionView(data: viewStore.state.photos,
-											 layout: flowLayout) { photo in
-												PhotoCell(photo: photo)
-													.onTapGesture {
-														viewStore.send(.didSelectPhotoId(photo.id))
-												}
-			}.padding()
-			NavigationLink.emptyHidden(
-				viewStore.state.editPhoto != nil,
-				IfLetStore(self.store.scope(
-					state: { $0.editPhoto }, action: { .editPhoto($0) }),
-									 then: EditPhotos.init(store:)
+			VStack {
+				EmptyView()
+//				ASCollectionView {
+//					MultiplePhotosSection(id: 0,
+//																title: "",
+//																store: <#T##Store<MultipleSelectPhotos, MultipleSelectPhotosAction>#>)
+//				}.padding()
+				NavigationLink.emptyHidden(
+					viewStore.state.editPhoto != nil,
+					IfLetStore(self.store.scope(
+						state: { $0.editPhoto }, action: { .editPhoto($0) }),
+										 then: EditPhotos.init(store:)
+					)
 				)
-			)
+			}
 		}
 	}
 }
 
 struct PhotoCell: View {
 	let photo: PhotoViewModel
+	let isSelected: Bool
 	var body: some View {
 		Group {
 			if extract(case: Photo.saved, from: photo.basePhoto) != nil {
