@@ -29,7 +29,7 @@ struct AftercareBoolSection {
 		)
 	}
 
-	func makeSection() -> ASCollectionViewSection<Int> {
+	var section: ASCollectionViewSection<Int> {
 		ASCollectionViewSection(
 			id: id,
 			data: self.viewStore.state,
@@ -46,7 +46,7 @@ struct AftercareBoolSection {
 	}
 }
 
-private struct AftercareBoolHeader: View {
+struct AftercareBoolHeader: View {
 
 	let title: String
 	let desc: String

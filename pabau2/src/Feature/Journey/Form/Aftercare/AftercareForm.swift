@@ -51,27 +51,27 @@ struct AftercareForm: View {
 				title: Texts.setProfilePhoto,
 				store: self.store.scope(
 					state: { $0.profile }, action: { .profile($0) })
-				).makeSection()
+				).section
 			AftercareImagesSection(
 				id: 1,
 				title: Texts.sharePhoto,
 				store: self.store.scope(
 					state: { $0.share }, action: { .share($0) })
-			).makeSection()
+			).section
 			AftercareBoolSection(
 				id: 2,
 				title: Texts.sendAftercareQ,
 				desc: Texts.sendAftercareDesc,
 				store: self.store.scope(state: { $0.aftercares },
 																action: { .aftercares($0) })
-			).makeSection()
+			).section
 			AftercareBoolSection(
 				id: 3,
 				title: Texts.recallsQ,
 				desc: Texts.recallsDesc,
 				store: self.store.scope(state: { $0.recalls },
 																action: { .recalls($0) })
-			).makeSection()
+			).section
 		}.layout { sectionID in
 			switch sectionID {
 			case 0, 1:

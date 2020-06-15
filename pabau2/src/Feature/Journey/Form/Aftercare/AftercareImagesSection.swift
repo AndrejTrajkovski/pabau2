@@ -54,7 +54,7 @@ struct AftercareImagesSection {
 		self.title = title
 	}
 
-	func makeSection() -> ASCollectionViewSection<Int> {
+	var section: ASCollectionViewSection<Int> {
 		return ASCollectionViewSection(
 			id: self.id,
 			data: self.viewStore.state.images,
