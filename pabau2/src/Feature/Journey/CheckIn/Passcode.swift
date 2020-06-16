@@ -92,9 +92,6 @@ struct Passcode: View {
 						} else {
 							ChooseTreatmentNote(store: self.store.scope(
 									state: { $0 }, action: { $0 }))
-							.navigationBarHidden(false)
-							.navigationBarTitle(Text(Texts.chooseTreatmentNote),
-																	displayMode: .inline)
 							.navigationBarBackButtonHidden(true)
 						}
 					}

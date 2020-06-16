@@ -158,20 +158,3 @@ extension DoctorSummaryState {
 			.sorted(by: their(get(\.stepType.order)))
 	}
 }
-
-struct NavBarHidden: ViewModifier {
-	let isNavBarHidden: Bool
-	let title: String
-	func body(content: Content) -> some View {
-		content
-			.navigationBarTitle(isNavBarHidden ? Text("") : Text(title), displayMode: .inline)
-			.navigationBarHidden(isNavBarHidden)
-			.navigationBarBackButtonHidden(isNavBarHidden)
-	}
-}
-
-extension View {
-	func hideNavBar(_ isNavBarHidden: Bool, _ title: String = "") -> some View {
-		self.modifier(NavBarHidden(isNavBarHidden: isNavBarHidden, title: title))
-	}
-}

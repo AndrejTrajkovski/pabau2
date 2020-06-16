@@ -26,9 +26,6 @@ struct HandBackDevice: View {
 					NavigationLink.emptyHidden(viewStore.state.isEnterPasscodeActive,
 																		 Passcode(store: self.store.scope(
 																			state: { $0 }, action: { $0 }))
-																			.navigationBarHidden(viewStore.state.isNavBarHidden)
-																			.navigationBarTitle("")
-																			//have to enable nav bar on choose treatment
 					)
 				}
 		}

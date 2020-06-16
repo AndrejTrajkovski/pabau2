@@ -99,9 +99,6 @@ struct AftercareForm: View {
 		}
 		.scrollIndicatorsEnabled(horizontal: false, vertical: false)
 		.edgesIgnoringSafeArea(.all)
-		.navigationBarTitle("")
-		.navigationBarBackButtonHidden(true)
-		.navigationBarHidden(true)
 	}
 }
 
