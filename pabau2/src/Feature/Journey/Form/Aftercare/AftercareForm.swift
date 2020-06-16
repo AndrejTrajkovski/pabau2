@@ -5,24 +5,35 @@ import ASCollectionView
 import CasePaths
 
 public enum AftercareAction {
-	case aftercares(AftercareBoolAction)
-	case recalls(AftercareBoolAction)
+	case didUpdateAftercares([AftercareOption])
+	case didUpdateRecalls([AftercareOption])
 	case profile(SingleSelectImagesAction)
 	case share(SingleSelectImagesAction)
 }
 
 public let aftercareReducer: Reducer<Aftercare, AftercareAction, Any> = (
 	.combine(
-		aftercareOptionReducer.forEach(
-			state: \Aftercare.aftercares,
-			action: /AftercareAction.aftercares..AftercareBoolAction.indexedToggle,
-			environment: { $0 }
-		),
-		aftercareOptionReducer.forEach(
-			state: \Aftercare.recalls,
-			action: /AftercareAction.recalls..AftercareBoolAction.indexedToggle,
-			environment: { $0 }
-		),
+		Reducer.init { state, action, _ in
+			switch action {
+			case .didUpdateAftercares(let options):
+				state.aftercares = options
+			case .didUpdateRecalls(let recalls):
+				state.recalls = recalls
+			default:
+				break
+			}
+			return .none
+		},
+//		aftercareOptionReducer.forEach(
+//			state: \Aftercare.aftercares,
+//			action: /AftercareAction.aftercares..AftercareBoolAction.indexedToggle,
+//			environment: { $0 }
+//		),
+//		aftercareOptionReducer.forEach(
+//			state: \Aftercare.recalls,
+//			action: /AftercareAction.recalls..AftercareBoolAction.indexedToggle,
+//			environment: { $0 }
+//		),
 		singleSelectImagesReducer.pullback(
 			state: \Aftercare.profile,
 			action: /AftercareAction.profile,
@@ -62,15 +73,15 @@ struct AftercareForm: View {
 				id: 2,
 				title: Texts.sendAftercareQ,
 				desc: Texts.sendAftercareDesc,
-				store: self.store.scope(state: { $0.aftercares },
-																action: { .aftercares($0) })
+				options: self.viewStore.binding(
+					get: { $0.aftercares }, send: { .didUpdateAftercares($0) })
 			).section
 			AftercareBoolSection(
 				id: 3,
 				title: Texts.recallsQ,
 				desc: Texts.recallsDesc,
-				store: self.store.scope(state: { $0.recalls },
-																action: { .recalls($0) })
+				options: self.viewStore.binding(
+					get: { $0.recalls }, send: { .didUpdateRecalls($0) })
 			).section
 		}.layout { sectionID in
 			switch sectionID {

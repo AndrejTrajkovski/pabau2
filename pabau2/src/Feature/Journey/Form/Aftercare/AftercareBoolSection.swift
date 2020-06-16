@@ -10,36 +10,26 @@ struct AftercareBoolSection {
 	let id: Int
 	let title: String
 	let desc: String
-	let store: Store<[AftercareOption], AftercareBoolAction>
-	@ObservedObject var viewStore: ViewStore<[AftercareOption], AftercareBoolAction>
+	@Binding var options: [AftercareOption]
 
 	init(id: Int,
 			 title: String,
 			 desc: String,
-			 store: Store<[AftercareOption], AftercareBoolAction>) {
+			 options: Binding<[AftercareOption]>) {
 		self.id = id
 		self.title = title
 		self.desc = desc
-		self.store = store
-		self.viewStore = ViewStore(store, removeDuplicates: { lhs, rhs in
-			guard lhs.count == rhs.count else { return false }
-			return zip(lhs, rhs).allSatisfy {
-				$0.id == $1.id }
-			}
-		)
+		self._options = options
 	}
-
+	
 	var section: ASCollectionViewSection<Int> {
 		ASCollectionViewSection(
 			id: id,
-			data: self.viewStore.state,
+			data: self.options,
 			dataID: \.self) { aftercare, context in
 				AftercareCell(channel: aftercare.channel,
 											title: aftercare.title,
-											value: Binding.init(
-												get: { aftercare.isSelected },
-												set: { self.viewStore
-													.send(.indexedToggle(Indexed(context.index, ToggleAction.setTo($0)))) })
+											value: self.$options[context.index].isSelected
 				)
 		}
 		.sectionHeader { AftercareBoolHeader(title: title, desc: desc) }
