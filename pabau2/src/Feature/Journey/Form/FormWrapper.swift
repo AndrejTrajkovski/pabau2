@@ -121,7 +121,7 @@ struct FormWrapper: View {
 					then: PhotosForm.init(store:)
 				)
 			)
-		} else {
+		} else if self.viewStore.state.aftercare != nil {
 			return AnyView(
 				IfLetStore(
 					self.store.scope(
@@ -130,6 +130,8 @@ struct FormWrapper: View {
 					then: AftercareForm.init(store:)
 				)
 			)
+		} else {
+			return AnyView(EmptyView())
 		}
 	}
 }
