@@ -99,11 +99,11 @@ public struct CheckInNavigationView: View {
 	}
 
 	public var body: some View {
-		WithViewStore(store) { viewStore in
+		WithViewStore(store.scope(state: { $0.journey })) { viewStore in
 			NavigationView {
 				VStack {
 					CheckInAnimation(isRunningAnimation: self.$isRunningAnimation,
-													 journey: viewStore.state.journey)
+													 journey: viewStore.state)
 					NavigationLink.init(destination:
 						CheckInPatient(store: self.store.scope(
 							state: { $0 }, action: { $0 })),
