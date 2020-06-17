@@ -23,6 +23,7 @@ struct FooterButtons: View {
 		let isOnCheckPatient: Bool
 		let isOnLastDoctorStep: Bool
 		let isCompleteJourneyBtnDisabled: Bool
+		let isOnPhotosStep: Bool
 	}
 	var body: some View {
 		WithViewStore(store.scope(
@@ -54,6 +55,10 @@ extension FooterButtons.State {
 		self.isOnCheckPatient = {
 			guard let selectedForm = state.selectedForm else { return false }
 			return stepType(form: selectedForm.form) == .checkpatient
+		}()
+		self.isOnPhotosStep = {
+			guard let selectedForm = state.selectedForm else { return false }
+			return stepType(form: selectedForm.form) == .photos
 		}()
 		let isDoctorMode = state.forms.map(pipe(get(\.form), stepType(form:))).allSatisfy(with(.doctor, filterBy))
 		let isLastIndex = state.selectedIndex == state.forms.count - 1

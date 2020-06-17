@@ -50,6 +50,7 @@ public enum UpdateFormAction {
 	case photos(PhotosFormAction)
 }
 
+//FIXME: REFACTOR TO FACTORY METHOD
 struct FormWrapper: View {
 	let store: Store<MetaForm, UpdateFormAction>
 	@ObservedObject var viewStore: ViewStore<State, UpdateFormAction>

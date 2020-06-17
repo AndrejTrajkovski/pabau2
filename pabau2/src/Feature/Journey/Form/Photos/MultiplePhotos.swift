@@ -2,7 +2,7 @@ import ComposableArchitecture
 import ASCollectionView
 import SwiftUI
 
-public let multipleSelectPhotosReducer: Reducer<MultipleSelectPhotos, MultipleSelectPhotosAction, JourneyEnvironment> = .init {
+public let selectPhotosReducer: Reducer<SelectPhotosState, SelectPhotosAction, JourneyEnvironment> = .init {
 	state, action, _ in
 	switch action {
 	case .didTouchPhotoId(let id):
@@ -12,8 +12,8 @@ public let multipleSelectPhotosReducer: Reducer<MultipleSelectPhotos, MultipleSe
 	return .none
 }
 
-public struct MultipleSelectPhotos: Equatable {
-	var photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>
+public struct SelectPhotosState: Equatable {
+	let photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>
 	var selectedIds: [PhotoVariantId]
 
 	func isSelected(_ photo: PhotoViewModel) -> Bool {
@@ -21,37 +21,32 @@ public struct MultipleSelectPhotos: Equatable {
 	}
 }
 
-public enum MultipleSelectPhotosAction: Equatable {
+public enum SelectPhotosAction: Equatable {
 	case didTouchPhotoId(PhotoVariantId)
 }
 
-struct MultiplePhotosSection {
-	let id: Int
-	let title: String
-	let store: Store<MultipleSelectPhotos, MultipleSelectPhotosAction>
-	@ObservedObject var viewStore: ViewStore<MultipleSelectPhotos, MultipleSelectPhotosAction>
-
-	public init(
-		id: Int,
-		title: String,
-		store: Store<MultipleSelectPhotos, MultipleSelectPhotosAction>
-		) {
-		self.id = id
-		self.store = store
-		self.viewStore = ViewStore(store)
-		self.title = title
-	}
-
-	func makeSection() -> ASCollectionViewSection<Int> {
-		return ASCollectionViewSection(
-			id: self.id,
-			data: self.viewStore.state.photos,
-			dataID: \.self.id) { photo, _ in
-				return PhotoCell(photo: photo,
-												 isSelected: self.viewStore.state.isSelected(photo))
+struct SelectPhotos: View {
+	let store: Store<SelectPhotosState, SelectPhotosAction>
+	
+	var body: some View {
+		WithViewStore(store) { viewStore in
+			ASCollectionView.init(
+			data: viewStore.photos) { (photo, context) in
+				PhotoCell(photo: photo,
+									isSelected: viewStore.state.isSelected(photo))
 					.onTapGesture {
-						self.viewStore.send(.didTouchPhotoId(photo.id))
+						viewStore.send(.didTouchPhotoId(photo.id))
 				}
+			}.layout { sectionID in
+				switch sectionID {
+				case 0:
+					return .grid(layoutMode: .fixedNumberOfColumns(4),
+											 itemSpacing: 2.5,
+											 lineSpacing: 2.5)
+				default:
+					fatalError()
+				}
+			}
 		}
 	}
 }

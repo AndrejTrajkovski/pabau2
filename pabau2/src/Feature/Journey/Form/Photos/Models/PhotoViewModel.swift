@@ -18,4 +18,3 @@ extension PhotoViewModel: Identifiable {
 		basePhoto.id
 	}
 }
-
