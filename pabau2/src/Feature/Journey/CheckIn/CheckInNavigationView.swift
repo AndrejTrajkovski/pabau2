@@ -106,11 +106,9 @@ public struct CheckInNavigationView: View {
 													 journey: viewStore.state.journey)
 					NavigationLink.init(destination:
 						CheckInPatient(store: self.store.scope(
-							state: { $0 }, action: { $0 }))
-						.hideNavBar(viewStore.state.navBarHidden, viewStore.state.navBarTitle),
+							state: { $0 }, action: { $0 })),
 															isActive: self.$isRunningAnimation,
-															label: { EmptyView() }
-					)
+															label: { EmptyView() })
 				}
 			}
 			.navigationViewStyle(StackNavigationViewStyle())

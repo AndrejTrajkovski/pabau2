@@ -18,7 +18,8 @@ struct ChooseTreatmentNote: View {
 			NavigationLink.emptyHidden(self.viewStore.state.isDoctorSummaryActive,
 																 DoctorSummary(store:
 																	self.store.scope(state: { $0 }, action: { $0 })
-																)
+																).hideNavBar(viewStore.state.isDoctorCheckInMainActive,
+																						 Texts.summary)
 			)
 		}
 	}

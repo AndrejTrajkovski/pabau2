@@ -94,7 +94,7 @@ struct ChooseFormList: View {
 			.journeyBase(self.viewStore.state.journey, .long)
 			.onAppear {
 				self.viewStore.send(.onAppear(self.mode.formType))
-		}
+		}.navigationBarTitle(self.mode.navigationTitle)
 	}
 
 	var chooseFormCells: some View {

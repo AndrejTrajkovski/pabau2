@@ -51,11 +51,6 @@ enum JourneyMode: Equatable {
 	case doctor
 }
 
-struct NavBarState: Equatable {
-	var hidden: Bool
-	var title: String
-}
-
 public struct CheckInContainerState: Equatable {
 	var journey: Journey
 	var stepTypes: [StepType]
@@ -99,28 +94,6 @@ public struct CheckInContainerState: Equatable {
 	var isDoctorCheckInMainActive: Bool = true
 	var isDoctorSummaryActive: Bool = true
 	var didGoBackToPatientMode: Bool = false
-	
-	var navBarState: NavBarState {
-		return NavBarState(hidden: navBarHidden, title: navBarTitle)
-	}
-	
-	var navBarHidden: Bool {
-		return true
-//		return !self.isChooseConsentActive || !self.isChooseTreatmentActive || !self.isDoctorSummaryActive
-	}
-	
-	var navBarTitle: String {
-		return ""
-		if self.isChooseConsentActive {
-			return Texts.chooseConsent
-		} else if isChooseTreatmentActive {
-			return Texts.chooseTreatmentNote
-		} else if isDoctorSummaryActive {
-			return Texts.summary
-		} else {
-			return ""
-		}
-	}
 }
 
 extension CheckInContainerState {
