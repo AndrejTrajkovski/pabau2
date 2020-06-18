@@ -4,7 +4,7 @@ import PencilKit
 struct CanvasView: UIViewRepresentable {
 	
 	@Binding var drawing: PKDrawing
-	
+
 	func makeUIView(context: UIViewRepresentableContext<CanvasView>) -> PKCanvasView {
 		let canvasView = PKCanvasView()
 		if let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first,
@@ -13,10 +13,13 @@ struct CanvasView: UIViewRepresentable {
 			toolPicker.addObserver(context.coordinator)
 			toolPicker.setVisible(true, forFirstResponder: canvasView)
 		}
+		canvasView.isScrollEnabled = false
 		canvasView.becomeFirstResponder()
+		canvasView.backgroundColor = UIColor.clear
+		canvasView.isOpaque = false
 		return canvasView
 	}
-	
+
 	func updateUIView(_ canvasView: PKCanvasView, context: UIViewRepresentableContext<CanvasView>) {
 		canvasView.drawing = drawing
 	}

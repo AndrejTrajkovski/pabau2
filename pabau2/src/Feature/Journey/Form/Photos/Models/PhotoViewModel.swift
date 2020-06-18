@@ -1,7 +1,13 @@
 import Model
 import PencilKit
 
-public struct PhotoViewModel: Equatable {
+public struct PhotoViewModel: Hashable {
+	
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(basePhoto.id)
+		hasher.combine(data)
+	}
+	
 	let basePhoto: Photo
 	let data: Data?
 	var drawing: PKDrawing?

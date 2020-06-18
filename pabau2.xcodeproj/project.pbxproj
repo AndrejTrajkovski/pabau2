@@ -25,6 +25,12 @@
 		82104531240C434A004EA838 /* UserDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104530240C434A004EA838 /* UserDefault.swift */; };
 		82104533240C4371004EA838 /* UserDefaultsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104532240C4371004EA838 /* UserDefaultsConfig.swift */; };
 		821C9C71249B631100ACE3ED /* AddOrEditPhotosBtn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 821C9C70249B631100ACE3ED /* AddOrEditPhotosBtn.swift */; };
+		821C9C73249BDBD500ACE3ED /* EditPhotosList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 821C9C72249BDBD500ACE3ED /* EditPhotosList.swift */; };
+		821C9C75249BDF3D00ACE3ED /* MultipleSelectPhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 821C9C74249BDF3D00ACE3ED /* MultipleSelectPhotoCell.swift */; };
+		821C9C77249BDF9100ACE3ED /* PhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 821C9C76249BDF9100ACE3ED /* PhotoCell.swift */; };
+		821C9C79249BDFA800ACE3ED /* SavedPhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 821C9C78249BDFA800ACE3ED /* SavedPhotoCell.swift */; };
+		821C9C7B249BDFC100ACE3ED /* NewPhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 821C9C7A249BDFC100ACE3ED /* NewPhotoCell.swift */; };
+		821C9C7D249BE02600ACE3ED /* SingleSelectPhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 821C9C7C249BE02600ACE3ED /* SingleSelectPhotoCell.swift */; };
 		8227FB30240BAAB600F653B5 /* Login.h in Headers */ = {isa = PBXBuildFile; fileRef = 8227FB20240BAAB600F653B5 /* Login.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8227FB33240BAAB600F653B5 /* Login.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8227FB1E240BAAB600F653B5 /* Login.framework */; };
 		8227FB34240BAAB600F653B5 /* Login.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8227FB1E240BAAB600F653B5 /* Login.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -525,6 +531,12 @@
 		82104534240CE516004EA838 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		82104536240CE524004EA838 /* libswiftXCTest.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftXCTest.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/libswiftXCTest.tbd; sourceTree = DEVELOPER_DIR; };
 		821C9C70249B631100ACE3ED /* AddOrEditPhotosBtn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOrEditPhotosBtn.swift; sourceTree = "<group>"; };
+		821C9C72249BDBD500ACE3ED /* EditPhotosList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhotosList.swift; sourceTree = "<group>"; };
+		821C9C74249BDF3D00ACE3ED /* MultipleSelectPhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleSelectPhotoCell.swift; sourceTree = "<group>"; };
+		821C9C76249BDF9100ACE3ED /* PhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCell.swift; sourceTree = "<group>"; };
+		821C9C78249BDFA800ACE3ED /* SavedPhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedPhotoCell.swift; sourceTree = "<group>"; };
+		821C9C7A249BDFC100ACE3ED /* NewPhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPhotoCell.swift; sourceTree = "<group>"; };
+		821C9C7C249BE02600ACE3ED /* SingleSelectPhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSelectPhotoCell.swift; sourceTree = "<group>"; };
 		821D43E3240667F4004BB17E /* LoadingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingState.swift; sourceTree = "<group>"; };
 		8227FB1E240BAAB600F653B5 /* Login.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Login.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8227FB20240BAAB600F653B5 /* Login.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Login.h; sourceTree = "<group>"; };
@@ -1376,6 +1388,12 @@
 				82FF6CB824916BF10014C4DC /* EditSinglePhoto.swift */,
 				82FF6CBA2493AE890014C4DC /* CanvasView.swift */,
 				824C398F24981B5F007133E2 /* MultiplePhotos.swift */,
+				821C9C72249BDBD500ACE3ED /* EditPhotosList.swift */,
+				821C9C74249BDF3D00ACE3ED /* MultipleSelectPhotoCell.swift */,
+				821C9C76249BDF9100ACE3ED /* PhotoCell.swift */,
+				821C9C78249BDFA800ACE3ED /* SavedPhotoCell.swift */,
+				821C9C7A249BDFC100ACE3ED /* NewPhotoCell.swift */,
+				821C9C7C249BE02600ACE3ED /* SingleSelectPhotoCell.swift */,
 			);
 			path = Photos;
 			sourceTree = "<group>";
@@ -2133,14 +2151,17 @@
 				820F16AC24780A0900DB33DE /* CheckPatientForm.swift in Sources */,
 				82C479DE242E17B50037F140 /* CheckInNavigationView.swift in Sources */,
 				8247763224728F0200508434 /* PullbackCasePath.swift in Sources */,
+				821C9C7B249BDFC100ACE3ED /* NewPhotoCell.swift in Sources */,
 				829BFBB1243F693E005DDCB9 /* CheckInMain.swift in Sources */,
 				82E6D82D245E0A4400CB359A /* GradientBackground.swift in Sources */,
 				826F65B72481657B0086E187 /* DoctorSummaryButtons.swift in Sources */,
+				821C9C73249BDBD500ACE3ED /* EditPhotosList.swift in Sources */,
 				82E6D82F245E177900CB359A /* JourneyTransitionView.swift in Sources */,
 				825BE7E424361C4400422910 /* SoundPlayer.swift in Sources */,
 				824C399024981B5F007133E2 /* MultiplePhotos.swift in Sources */,
 				82D287002486D688003A703B /* ImagePicker.swift in Sources */,
 				829B40D12423B8F2009B7E71 /* AddAppointment.swift in Sources */,
+				821C9C77249BDF9100ACE3ED /* PhotoCell.swift in Sources */,
 				82622B5024464E0800BECF9A /* RibbonView.swift in Sources */,
 				82FB74F6245A9E51001C2DF3 /* FormWrapper.swift in Sources */,
 				820F16C0247D7F5300DB33DE /* AftercareImagesSection.swift in Sources */,
@@ -2151,6 +2172,7 @@
 				8247760F246C27F200508434 /* TopView.swift in Sources */,
 				8247763C2473D0ED00508434 /* SecondaryButton.swift in Sources */,
 				82E6D829245DF4D200CB359A /* PatientCompleteForm.swift in Sources */,
+				821C9C7D249BE02600ACE3ED /* SingleSelectPhotoCell.swift in Sources */,
 				8250D7D4242C980100F8F3FC /* ChooseService.swift in Sources */,
 				820F16BC247D7CD200DB33DE /* AftercareCell.swift in Sources */,
 				82E6D82B245E09ED00CB359A /* HandBackDevice.swift in Sources */,
@@ -2169,6 +2191,7 @@
 				826F65AD247FE5A40086E187 /* AftercareBoolSection.swift in Sources */,
 				820F16B2247BE3FE00DB33DE /* CheckPatient.swift in Sources */,
 				82D43D92243522CD00AC74FA /* Settings.swift in Sources */,
+				821C9C75249BDF3D00ACE3ED /* MultipleSelectPhotoCell.swift in Sources */,
 				82E253FA241B9EB500F16C30 /* JourneyAction.swift in Sources */,
 				820F16B4247D617400DB33DE /* AftercareForm.swift in Sources */,
 				821C9C71249B631100ACE3ED /* AddOrEditPhotosBtn.swift in Sources */,
@@ -2184,6 +2207,7 @@
 				82E253FE241B9F1200F16C30 /* CompleteFilter.swift in Sources */,
 				82D7C2C324479CAF000B1CD5 /* CheckInContainerState.swift in Sources */,
 				8250D7C9242BCFD000F8F3FC /* ChooseFormList.swift in Sources */,
+				821C9C79249BDFA800ACE3ED /* SavedPhotoCell.swift in Sources */,
 				828626B12424CA64003ADA24 /* JourneyProfileView.swift in Sources */,
 				8247762C24704DC800508434 /* JourneyMocks.swift in Sources */,
 				828626B32424CEFB003ADA24 /* ChoosePathway.swift in Sources */,

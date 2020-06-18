@@ -5,31 +5,41 @@ import PencilKit
 import ComposableArchitecture
 import Util
 
-let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, JourneyEnvironment>.init { state, action, _ in
-	switch action {
-	case .openCamera:
-		state.showingImagePicker = .camera
-	case .closeCamera:
-		state.showingImagePicker = nil
-	case .didGetUIImage(let image):
-		state.editingUIImage = image
-	case .editSinglePhoto(_):
-		break// inlinde
-	}
-	return .none
-}
+let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, JourneyEnvironment>
+	.combine(
+		editPhotosListReducer.pullback(
+			state: \.self,
+			action: /EditPhotoAction.editPhotoList,
+			environment: { $0 }),
+		.init { state, action, _ in
+			switch action {
+			case .openCamera:
+				state.showingImagePicker = .camera
+			case .closeCamera:
+				state.showingImagePicker = nil
+			case .didGetUIImage(let image):
+				state.editingUIImage = image
+			case .editSinglePhoto(_):
+			break// inline
+			case .editPhotoList(_):
+				break
+			}
+			return .none
+		}
+)
 
 public enum EditPhotoAction: Equatable {
 	case openCamera
 	case closeCamera
 	case didGetUIImage(UIImage?)
 	case editSinglePhoto(EditSinglePhotoAction)
+	case editPhotoList(EditPhotosListAction)
 }
 
-struct EditPhotosState: Equatable {
+public struct EditPhotosState: Equatable {
 	var photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>
 	var editingPhotoId: PhotoVariantId?
-
+	
 	init (_ photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>) {
 		self.photos = photos
 		self.editingPhotoId = photos.last?.id
@@ -47,19 +57,21 @@ struct EditPhotos: View {
 	let store: Store<EditPhotosState, EditPhotoAction>
 	var body: some View {
 		WithViewStore(store) { viewStore in
-			VStack {
-				IfLetStore(
-					self.store.scope(
-						state: { $0.editSinglePhoto },
-						action: { .editSinglePhoto($0) }
-					),
-					then: EditSinglePhoto.init(store:),
-					else: EmptyView()
+			HStack {
+				EditPhotosList(store:
+					self.store.scope(state: { $0 }, action: { .editPhotoList($0) })
 				)
-				Button("Select Image") {
-					viewStore.send(.openCamera)
+				VStack {
+					IfLetStore(
+						self.store.scope(
+							state: { $0.editSinglePhoto },
+							action: { .editSinglePhoto($0) }
+						),
+						then: EditSinglePhoto.init(store:)
+					)
 				}
 			}
+			.navigationBarHidden(false)
 			.modalLink(isPresented: .constant(viewStore.state.isShowingCamera),
 									 linkType: ModalTransition.fullScreenModal,
 									 destination: {
@@ -132,7 +144,6 @@ extension EditPhotos {
 
 extension EditPhotosState {
 
-	
 	var editSinglePhoto: EditSinglePhotoState? {
 		get {
 			editingPhotoId.map {
@@ -140,8 +151,9 @@ extension EditPhotosState {
 			}
 		}
 		set {
-			editingPhotoId.map {
-				photos[id: $0] = newValue?.photo
+			guard let selId = self.editingPhotoId else { return }
+			newValue.map {
+				photos[id: selId] = $0.photo
 			}
 		}
 	}

@@ -88,11 +88,11 @@ public struct CheckInContainerState: Equatable {
 	}
 
 	var passcodeState = PasscodeState()
-	var isEnterPasscodeActive: Bool = false
+	var isEnterPasscodeActive: Bool = true
 	var isChooseConsentActive: Bool = false
 	var isChooseTreatmentActive: Bool = false
-	var isDoctorCheckInMainActive: Bool = false
-	var isDoctorSummaryActive: Bool = false
+	var isDoctorCheckInMainActive: Bool = true
+	var isDoctorSummaryActive: Bool = true
 	var didGoBackToPatientMode: Bool = false
 }
 

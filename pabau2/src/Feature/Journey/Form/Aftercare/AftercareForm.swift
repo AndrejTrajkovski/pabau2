@@ -57,18 +57,18 @@ struct AftercareForm: View {
 	var body: some View {
 		print("AftercareForm body")
 		return ASCollectionView {
-//			AftercareImagesSection(
-//				id: 0,
-//				title: Texts.setProfilePhoto,
-//				store: self.store.scope(
-//					state: { $0.profile }, action: { .profile($0) })
-//				).section
-//			AftercareImagesSection(
-//				id: 1,
-//				title: Texts.sharePhoto,
-//				store: self.store.scope(
-//					state: { $0.share }, action: { .share($0) })
-//			).section
+			AftercareImagesSection(
+				id: 0,
+				title: Texts.setProfilePhoto,
+				store: self.store.scope(
+					state: { $0.profile }, action: { .profile($0) })
+				).section
+			AftercareImagesSection(
+				id: 1,
+				title: Texts.sharePhoto,
+				store: self.store.scope(
+					state: { $0.share }, action: { .share($0) })
+			).section
 			AftercareBoolSection(
 				id: 2,
 				title: Texts.sendAftercareQ,

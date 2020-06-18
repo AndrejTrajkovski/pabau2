@@ -31,12 +31,13 @@ struct SelectPhotos: View {
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			ASCollectionView.init(
-			data: viewStore.photos) { (photo, context) in
-				PhotoCell(photo: photo,
+			data: viewStore.photos) { photo, _ in
+				MultipleSelectPhotoCell(photo: photo,
 									isSelected: viewStore.state.isSelected(photo))
 					.onTapGesture {
 						viewStore.send(.didTouchPhotoId(photo.id))
 				}
+				.padding()
 			}.layout { sectionID in
 				switch sectionID {
 				case 0:

@@ -67,55 +67,6 @@ struct PhotosForm: View {
 	}
 }
 
-struct PhotoCell: View {
-	let photo: PhotoViewModel
-	let isSelected: Bool
-	var body: some View {
-		ZStack(alignment: .bottomTrailing) {
-			Group {
-				if extract(case: Photo.saved, from: photo.basePhoto) != nil {
-					SavedPhotoCell(savedPhoto: extract(case: Photo.saved, from: photo.basePhoto)!)
-				} else if extract(case: Photo.new, from: photo.basePhoto) != nil {
-					NewPhotoCell(newPhoto: extract(case: Photo.new, from: photo.basePhoto)!)
-				}
-			}
-			if isSelected {
-				ZStack {
-					Circle()
-						.fill(Color.blue)
-					Circle()
-						.strokeBorder(Color.white, lineWidth: 2)
-					Image(systemName: "checkmark")
-						.font(.system(size: 10, weight: .bold))
-						.foregroundColor(.white)
-				}
-				.frame(width: 20, height: 20)
-				.padding(10)
-			}
-		}
-		.frame(maxWidth: 150, maxHeight: 150)
-		.padding()
-	}
-}
-
-struct SavedPhotoCell: View {
-	let savedPhoto: SavedPhoto
-	var body: some View {
-		Image(savedPhoto.url)
-			.resizable()
-			.aspectRatio(contentMode: .fit)
-	}
-}
-
-struct NewPhotoCell: View {
-	let newPhoto: NewPhoto
-	var body: some View {
-		Image(uiImage: newPhoto.image)
-			.resizable()
-			.aspectRatio(contentMode: .fit)
-	}
-}
-
 extension IdentifiedArray where Element == PhotoViewModel, ID == PhotoVariantId {
 	static func wrap (_ savedPhotos: [[Int: SavedPhoto]]) -> Self {
 		let res = savedPhotos.compactMap(Dictionary<PhotoVariantId, PhotoViewModel>.wrap).compactMap(\.values.first)

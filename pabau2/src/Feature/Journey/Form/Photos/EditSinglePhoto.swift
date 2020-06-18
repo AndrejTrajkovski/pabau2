@@ -26,7 +26,7 @@ struct EditSinglePhoto: View {
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			ZStack {
-				PhotoCell(photo: viewStore.state.photo, isSelected: false)
+				PhotoCell(photo: viewStore.state.photo)
 				CanvasView(drawing: viewStore.binding(
 					get: { ($0.photo.drawing ?? PKDrawing()) }, send: EditSinglePhotoAction.onDrawingChange)
 				)

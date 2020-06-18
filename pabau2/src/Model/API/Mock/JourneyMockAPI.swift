@@ -1012,7 +1012,13 @@ extension JourneyMockAPI {
 			[7: SavedPhoto.dummyInit(id: 7, url: "dummy7")],
 			[8: SavedPhoto.dummyInit(id: 8, url: "dummy8")],
 			[9: SavedPhoto.dummyInit(id: 9, url: "dummy9")],
-			[10: SavedPhoto.dummyInit(id:10, url: "dummy10")]
+			[10: SavedPhoto.dummyInit(id:10, url: "dummy10")],
+			[11: SavedPhoto.dummyInit(id:11, url: "emily")],
+			[12: SavedPhoto.dummyInit(id: 6, url: "dummy6")],
+			[13: SavedPhoto.dummyInit(id: 7, url: "dummy7")],
+			[14: SavedPhoto.dummyInit(id: 8, url: "dummy8")],
+			[15: SavedPhoto.dummyInit(id: 9, url: "dummy9")],
+			[16: SavedPhoto.dummyInit(id:10, url: "dummy10")]
 		]
 	}
 }
