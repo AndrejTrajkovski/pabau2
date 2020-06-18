@@ -33,11 +33,12 @@ public struct CheckInViewState: Equatable {
 
 	var stepsViewState: StepsViewState {
 		get {
-			StepsViewState(selectedIndex: selectedIndex,
+			StepsViewState(selectedIndex: self.selectedIndex,
 										 forms: self.forms)
 		}
 		set {
 			self.selectedIndex = newValue.selectedIndex
+			self.forms = newValue.forms
 		}
 	}
 
@@ -47,6 +48,9 @@ public struct CheckInViewState: Equatable {
 												 selectedIndex: selectedIndex,
 												 selectedForm: selectedForm)
 		}
-		set { }
+		set {
+			self.forms = newValue.forms
+			self.selectedIndex = newValue.selectedIndex
+		}
 	}
 }

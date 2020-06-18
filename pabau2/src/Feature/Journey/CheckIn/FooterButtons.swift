@@ -3,10 +3,43 @@ import ComposableArchitecture
 import Util
 import Overture
 
-struct FooterButtonsState {
-	let forms: [MetaFormAndStatus]
-	let selectedIndex: Int
-	let selectedForm: MetaFormAndStatus?
+public let footerButtonsReducer = Reducer<FooterButtonsState, FooterButtonsAction, JourneyEnvironment>.init { state, action, _ in
+	switch action {
+		case .didSelectCompleteFormIdx(let idx):
+			state.forms[idx].isComplete = true
+			goToNextStep(&state.stepsState)
+		case .toPatientMode:
+			break//handled in navigationReducer
+		case .photos:
+		  break//handled in navigationReducer
+		case .completeJourney:
+			break//
+	}
+	return .none
+}
+
+public struct FooterButtonsState {
+	var forms: [MetaFormAndStatus]
+	var selectedIndex: Int
+	var selectedForm: MetaFormAndStatus?
+	
+	var stepsState: StepsViewState {
+		get {
+			StepsViewState(selectedIndex: selectedIndex,
+										 forms: forms)
+		}
+		set {
+			self.selectedIndex = newValue.selectedIndex
+			self.forms = newValue.forms
+		}
+	}
+}
+
+public enum FooterButtonsAction {
+	case photos(AddOrEditPhotosBtnAction)
+	case didSelectCompleteFormIdx(Int)
+	case toPatientMode
+	case completeJourney(CompleteJourneyBtnAction)
 }
 
 extension FooterButtonsState {
@@ -18,7 +51,7 @@ extension FooterButtonsState {
 }
 
 struct FooterButtons: View {
-	let store: Store<FooterButtonsState, CheckInBodyAction>
+	let store: Store<FooterButtonsState, FooterButtonsAction>
 	struct State: Equatable {
 		let isOnCheckPatient: Bool
 		let isOnLastDoctorStep: Bool
@@ -35,6 +68,15 @@ struct FooterButtons: View {
 					SecondaryButton(Texts.toPatientMode) {
 												viewStore.send(.toPatientMode)
 					}
+				} else if viewStore.state.isOnPhotosStep {
+					AddOrEditPhotosBtn(
+						store: self.store.scope(
+							state: {
+								extract(case: MetaForm.photos,
+												from: $0.selectedForm?.form)?.selectedIds.isEmpty ?? false },
+							action: { .photos($0) }
+						)
+					)
 				}
 				CompleteFormBtn(store:
 					self.store.scope(state: { $0.completeBtn }))

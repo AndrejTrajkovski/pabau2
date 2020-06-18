@@ -82,8 +82,12 @@ public let navigationReducer = Reducer<CheckInContainerState, CheckInContainerAc
 		state.isChooseTreatmentActive = false
 	case .didTouchHandbackDevice:
 		state.isEnterPasscodeActive = true
-	case .doctor(.checkInBody(.toPatientMode)):
+	case .doctor(.checkInBody(.footer(.toPatientMode))):
 		backToPatientMode()
+	case .doctor(.checkInBody(.footer(.photos(.addPhotos)))):
+		state.photosState.editPhoto = EditPhotosState([])
+	case .doctor(.checkInBody(.footer(.photos(.editPhotos)))):
+		state.photosState.editPhoto = EditPhotosState(state.photosState.selectedPhotos())
 	default:
 		break
 	}

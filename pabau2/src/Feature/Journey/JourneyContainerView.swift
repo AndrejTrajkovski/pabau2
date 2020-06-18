@@ -85,7 +85,8 @@ let checkInMiddleware = Reducer<JourneyState, CheckInContainerAction, JourneyEnv
 		state.selectedJourney = nil
 		state.selectedPathway = nil
 		state.checkIn = nil
-	case .doctor(.checkInBody(.completeJourney(.onCompleteJourney))):
+	case .doctor(.checkInBody(.completeJourney(.onCompleteJourney))),
+		.doctor(.checkInBody(.footer(.completeJourney(.onCompleteJourney)))):
 		state.selectedJourney = nil
 		state.selectedPathway = nil
 		state.checkIn = nil

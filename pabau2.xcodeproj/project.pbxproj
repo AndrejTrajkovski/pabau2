@@ -24,6 +24,7 @@
 		8210452F240C2258004EA838 /* LoginMockAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8210452E240C2258004EA838 /* LoginMockAPI.swift */; };
 		82104531240C434A004EA838 /* UserDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104530240C434A004EA838 /* UserDefault.swift */; };
 		82104533240C4371004EA838 /* UserDefaultsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82104532240C4371004EA838 /* UserDefaultsConfig.swift */; };
+		821C9C71249B631100ACE3ED /* AddOrEditPhotosBtn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 821C9C70249B631100ACE3ED /* AddOrEditPhotosBtn.swift */; };
 		8227FB30240BAAB600F653B5 /* Login.h in Headers */ = {isa = PBXBuildFile; fileRef = 8227FB20240BAAB600F653B5 /* Login.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8227FB33240BAAB600F653B5 /* Login.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8227FB1E240BAAB600F653B5 /* Login.framework */; };
 		8227FB34240BAAB600F653B5 /* Login.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8227FB1E240BAAB600F653B5 /* Login.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -523,6 +524,7 @@
 		82104532240C4371004EA838 /* UserDefaultsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsConfig.swift; sourceTree = "<group>"; };
 		82104534240CE516004EA838 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		82104536240CE524004EA838 /* libswiftXCTest.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftXCTest.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/libswiftXCTest.tbd; sourceTree = DEVELOPER_DIR; };
+		821C9C70249B631100ACE3ED /* AddOrEditPhotosBtn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOrEditPhotosBtn.swift; sourceTree = "<group>"; };
 		821D43E3240667F4004BB17E /* LoadingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingState.swift; sourceTree = "<group>"; };
 		8227FB1E240BAAB600F653B5 /* Login.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Login.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8227FB20240BAAB600F653B5 /* Login.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Login.h; sourceTree = "<group>"; };
@@ -1047,6 +1049,7 @@
 				826F65B2248122480086E187 /* CompleteFormBtn.swift */,
 				826F65B4248123C40086E187 /* FooterButtons.swift */,
 				826F65B62481657B0086E187 /* DoctorSummaryButtons.swift */,
+				821C9C70249B631100ACE3ED /* AddOrEditPhotosBtn.swift */,
 			);
 			path = CheckIn;
 			sourceTree = "<group>";
@@ -2168,6 +2171,7 @@
 				82D43D92243522CD00AC74FA /* Settings.swift in Sources */,
 				82E253FA241B9EB500F16C30 /* JourneyAction.swift in Sources */,
 				820F16B4247D617400DB33DE /* AftercareForm.swift in Sources */,
+				821C9C71249B631100ACE3ED /* AddOrEditPhotosBtn.swift in Sources */,
 				82D43D9024351F5000AC74FA /* EmployeesList.swift in Sources */,
 				826952772454E0A5001B806E /* SignatureField.swift in Sources */,
 				82D287082487F914003A703B /* PhotosForm.swift in Sources */,

@@ -8,7 +8,7 @@ struct CompletBtnState {
 }
 
 struct CompleteFormBtn: View {
-	let store: Store<CompletBtnState, CheckInBodyAction>
+	let store: Store<CompletBtnState, FooterButtonsAction>
 	struct State: Equatable {
 		let index: Int
 		let isDisabled: Bool

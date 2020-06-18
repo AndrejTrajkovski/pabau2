@@ -112,6 +112,9 @@ Tap the aftercare bellow that you wish to send to the client. The aftercare will
 	public static let recallsDesc = """
 	You can schedule an email or sms to the client X amiunt of days after the appointment.
 	"""
+	
+	public static let addPhotos = "Add Photos"
+	public static let editPhotos = "Edit Photos"
 }
 
 extension String {

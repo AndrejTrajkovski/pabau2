@@ -14,6 +14,9 @@ public struct PhotosState: Equatable {
 		get { SelectPhotosState(photos: photos, selectedIds: selectedIds) }
 		set { self.selectedIds = newValue.selectedIds}
 	}
+	func selectedPhotos() -> IdentifiedArray<PhotoVariantId, PhotoViewModel> {
+		photos.filter { selectedIds.contains($0.id) }
+	}
 }
 
 let photosFormReducer: Reducer<PhotosState, PhotosFormAction, JourneyEnvironment> =

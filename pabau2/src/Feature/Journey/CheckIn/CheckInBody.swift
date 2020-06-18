@@ -5,10 +5,9 @@ import Util
 import Overture
 
 public enum CheckInBodyAction {
-	case toPatientMode
 	case updateForm(Indexed<UpdateFormAction>)
-	case didSelectCompleteFormIdx(Int)
 	case stepsView(StepsViewAction)
+	case footer(FooterButtonsAction)
 	case completeJourney(CompleteJourneyBtnAction)
 }
 
@@ -18,19 +17,20 @@ let checkInBodyReducer: Reducer<CheckInViewState, CheckInBodyAction, JourneyEnvi
 		.init { state, action, _ in
 			switch action {
 			case .updateForm:
-				break
-			case .didSelectCompleteFormIdx(let idx):
-				state.forms[idx].isComplete = true
-				goToNextStep(&state.stepsViewState)
-			case .toPatientMode:
-				break//handled in navigationReducer
+				break//binding
 			case .stepsView:
-				break
+				break//handled inline
 			case .completeJourney:
 				break//handled in checkInMiddleware
+			case .footer(_):
+				break//handled inline
 			}
 			return .none
 		},
+		footerButtonsReducer.pullback(
+			state: \.footer,
+			action: /CheckInBodyAction.footer,
+			environment: { $0 }),
 		stepsViewReducer.pullback(
 			state: \.stepsViewState,
 			action: /CheckInBodyAction.stepsView,
@@ -71,7 +71,7 @@ struct CheckInBody: View {
 				if self.keyboardHandler.keyboardHeight == 0 &&
 					!self.viewStore.state.isOnCompleteStep {
 					FooterButtons(store: self.store.scope(
-						state: { $0.footer }, action: { $0 }
+						state: { $0.footer }, action: { .footer($0) }
 					))
 					.frame(maxWidth: 500)
 					.padding(8)

@@ -13,6 +13,8 @@ let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, JourneyEnviron
 		state.showingImagePicker = nil
 	case .didGetUIImage(let image):
 		state.editingUIImage = image
+	case .editSinglePhoto(_):
+		break// inlinde
 	}
 	return .none
 }
@@ -21,15 +23,16 @@ public enum EditPhotoAction: Equatable {
 	case openCamera
 	case closeCamera
 	case didGetUIImage(UIImage?)
+	case editSinglePhoto(EditSinglePhotoAction)
 }
 
 struct EditPhotosState: Equatable {
 	var photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>
-	var editingPhotoId: PhotoVariantId
+	var editingPhotoId: PhotoVariantId?
 
 	init (_ photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>) {
 		self.photos = photos
-		self.editingPhotoId = photos.last!.id
+		self.editingPhotoId = photos.last?.id
 	}
 
 	var showingImagePicker: UIImagePickerController.SourceType?
@@ -37,11 +40,6 @@ struct EditPhotosState: Equatable {
 	var isShowingCamera: Bool {
 		get { self.showingImagePicker == .some(.camera) }
 	}
-//	var editSinglePhoto: EditSinglePhotoState {
-//		get {
-//			EditSinglePhotoState(photo: <#T##Photo#>, drawing: <#T##PKDrawing#>)
-//		}
-//	}
 }
 
 struct EditPhotos: View {
@@ -50,7 +48,14 @@ struct EditPhotos: View {
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			VStack {
-				//EditSinglePhoto
+				IfLetStore(
+					self.store.scope(
+						state: { $0.editSinglePhoto },
+						action: { .editSinglePhoto($0) }
+					),
+					then: EditSinglePhoto.init(store:),
+					else: EmptyView()
+				)
 				Button("Select Image") {
 					viewStore.send(.openCamera)
 				}
@@ -128,14 +133,16 @@ extension EditPhotos {
 extension EditPhotosState {
 
 	
-	var editSinglePhoto: EditSinglePhotoState {
+	var editSinglePhoto: EditSinglePhotoState? {
 		get {
-			EditSinglePhotoState(photo:
-				photos[id: editingPhotoId]!
-			)
+			editingPhotoId.map {
+				EditSinglePhotoState(photo: photos[id: $0]!)
+			}
 		}
 		set {
-			photos[id: editingPhotoId] = newValue.photo
+			editingPhotoId.map {
+				photos[id: $0] = newValue?.photo
+			}
 		}
 	}
 }

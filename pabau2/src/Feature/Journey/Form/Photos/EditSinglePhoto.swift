@@ -2,12 +2,12 @@ import SwiftUI
 import PencilKit
 import ComposableArchitecture
 
-let editSinglePhotoReducer = Reducer<EditSinglePhotoState, EditSinglePhotoAction, JourneyEnvironment>.init { state, action, _ in
+let editSinglePhotoReducer = Reducer<PhotoViewModel, EditSinglePhotoAction, JourneyEnvironment>.init { state, action, _ in
 	switch action {
 	case .onSave:
 		break
 	case .onDrawingChange(let drawing):
-		state.photo.drawing = drawing
+		state.drawing = drawing
 	}
 	return .none
 }
@@ -16,7 +16,7 @@ struct EditSinglePhotoState: Equatable {
 	var photo: PhotoViewModel
 }
 
-enum EditSinglePhotoAction: Equatable {
+public enum EditSinglePhotoAction: Equatable {
 	case onSave
 	case onDrawingChange(PKDrawing)
 }
