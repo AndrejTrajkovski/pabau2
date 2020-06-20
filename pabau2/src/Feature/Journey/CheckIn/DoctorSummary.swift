@@ -69,36 +69,54 @@ public enum DoctorSummaryAction {
 
 struct DoctorNavigation: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>
+	@ObservedObject var viewStore: ViewStore<State, DoctorSummaryAction>
+	init (_ store: Store<CheckInContainerState, CheckInContainerAction>) {
+		self.store = store
+		self.viewStore = ViewStore(store.scope(
+			state: { State.init($0.doctorSummary) },
+			action: { .doctorSummary($0) }))
+	}
+	struct State: Equatable {
+		var isDoctorCheckInMainActive: Bool
+		var isChooseTreatmentActive: Bool
+		var isChooseConsentActive: Bool
+	}
+
 	var body: some View {
-		WithViewStore(store.scope(
-			state: { $0.doctorSummary },
-			action: { .doctorSummary($0)})) { viewStore in
-				VStack {
-					NavigationLink.emptyHidden(viewStore.state.isDoctorCheckInMainActive,
-							CheckInMain(store: self.store
-								.scope(state: { $0.doctorCheckIn },
-											 action: { .doctor($0) }))
-					)
-					NavigationLink.emptyHidden(viewStore.state.isChooseTreatmentActive,
-						 ChooseFormList(store: self.store.scope(
-							state: { $0.chooseTreatments },
-							action: { .chooseTreatments($0)}),
-							mode: .treatmentNotes)
-							.customBackButton {
-								viewStore.send(.didTouchBackFrom(.treatmentNotes))
-							}
-					)
-					NavigationLink.emptyHidden(viewStore.state.isChooseConsentActive,
-						 ChooseFormList(store: self.store.scope(
-							state: { $0.chooseConsents },
-							action: { .chooseConsents($0)}),
-							mode: .consentsCheckIn)
-							.customBackButton {
-								viewStore.send(.didTouchBackFrom(.consentsCheckIn))
-							}
-					)
-			}
+		print("DoctorNavigation body")
+		return VStack {
+			NavigationLink.emptyHidden(viewStore.state.isDoctorCheckInMainActive,
+																 CheckInMain(store: self.store
+																	.scope(state: { $0.doctorCheckIn },
+																				 action: { .doctor($0) }))
+			)
+			NavigationLink.emptyHidden(viewStore.state.isChooseTreatmentActive,
+																 ChooseFormList(store: self.store.scope(
+																	state: { $0.chooseTreatments },
+																	action: { .chooseTreatments($0)}),
+																								mode: .treatmentNotes)
+																	.customBackButton {
+																		self.viewStore.send(.didTouchBackFrom(.treatmentNotes))
+				}
+			)
+			NavigationLink.emptyHidden(viewStore.state.isChooseConsentActive,
+																 ChooseFormList(store: self.store.scope(
+																	state: { $0.chooseConsents },
+																	action: { .chooseConsents($0)}),
+																								mode: .consentsCheckIn)
+																	.customBackButton {
+																		self.viewStore.send(.didTouchBackFrom(.consentsCheckIn))
+				}
+			)
 		}
+	}
+}
+
+extension DoctorNavigation.State {
+  init(_ state: DoctorSummaryState) {
+		self.isChooseConsentActive = state.isChooseConsentActive
+		self.isChooseTreatmentActive = state.isChooseTreatmentActive
+		self.isDoctorCheckInMainActive = state.isDoctorCheckInMainActive
 	}
 }
 

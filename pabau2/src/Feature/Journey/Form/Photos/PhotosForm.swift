@@ -51,7 +51,7 @@ struct PhotosForm: View {
 
 	var body: some View {
 		WithViewStore(store) { viewStore in
-			VStack {
+			Group {
 				SelectPhotos(store: self.store.scope(
 					state: { $0.selectPhotos },
 					action: { .selectPhotos($0) }))
@@ -61,7 +61,8 @@ struct PhotosForm: View {
 						state: { $0.editPhoto }, action: { .editPhoto($0) }),
 										 then: EditPhotos.init(store:)
 					)
-				)
+				).navigationBarHidden(false)
+				.navigationBarTitle("ASDF")
 			}
 		}
 	}

@@ -2,12 +2,12 @@ import SwiftUI
 import PencilKit
 import ComposableArchitecture
 
-let editSinglePhotoReducer = Reducer<PhotoViewModel, EditSinglePhotoAction, JourneyEnvironment>.init { state, action, _ in
+let editSinglePhotoReducer = Reducer<EditSinglePhotoState, EditSinglePhotoAction, JourneyEnvironment>.init { state, action, _ in
 	switch action {
 	case .onSave:
 		break
 	case .onDrawingChange(let drawing):
-		state.drawing = drawing
+		state.photo.drawing = drawing
 	}
 	return .none
 }
@@ -23,14 +23,44 @@ public enum EditSinglePhotoAction: Equatable {
 
 struct EditSinglePhoto: View {
 	let store: Store<EditSinglePhotoState, EditSinglePhotoAction>
+	var viewStore: ViewStore<EditSinglePhotoState, EditSinglePhotoAction>
+	init (store: Store<EditSinglePhotoState, EditSinglePhotoAction>) {
+		self.store = store
+		self.viewStore = ViewStore(store, removeDuplicates: {
+			$0.photo.id == $1.photo.id
+		})
+	}
+
+	@State var photoSize: CGSize = .zero
 	var body: some View {
-		WithViewStore(store) { viewStore in
-			ZStack {
-				PhotoCell(photo: viewStore.state.photo)
-				CanvasView(drawing: viewStore.binding(
-					get: { ($0.photo.drawing ?? PKDrawing()) }, send: EditSinglePhotoAction.onDrawingChange)
-				)
+		ZStack {
+			PhotoCell(photo: viewStore.state.photo)
+				.background(PhotoSizePreferenceSetter())
+				.onPreferenceChange(PhotoSize.self) { size in
+					self.photoSize = size
 			}
+			CanvasView(self.store.scope(state: { $0.photo },
+																	action: { $0 }))
+				.frame(width: photoSize.width,
+							 height: photoSize.height)
 		}
+	}
+}
+
+struct PhotoSizePreferenceSetter: View {
+	var body: some View {
+		GeometryReader { geometry in
+			Color.clear
+				.preference(key: PhotoSize.self,
+										value: geometry.size)
+		}
+	}
+}
+
+struct PhotoSize: PreferenceKey {
+	typealias Value = CGSize
+	static var defaultValue: CGSize = .zero
+	static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
+		value = nextValue()
 	}
 }

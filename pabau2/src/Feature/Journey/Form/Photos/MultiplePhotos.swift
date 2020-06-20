@@ -37,7 +37,6 @@ struct SelectPhotos: View {
 					.onTapGesture {
 						viewStore.send(.didTouchPhotoId(photo.id))
 				}
-				.padding()
 			}.layout { sectionID in
 				switch sectionID {
 				case 0:

@@ -1,9 +1,17 @@
 import SwiftUI
 import PencilKit
+import ComposableArchitecture
 
 struct CanvasView: UIViewRepresentable {
-	
-	@Binding var drawing: PKDrawing
+
+	let store: Store<PhotoViewModel, EditSinglePhotoAction>
+	let viewStore: ViewStore<PhotoViewModel, EditSinglePhotoAction>
+	init (_ store: Store<PhotoViewModel, EditSinglePhotoAction>) {
+		self.store = store
+		self.viewStore = ViewStore(store, removeDuplicates: {
+			$0.id == $1.id
+		})
+	}
 
 	func makeUIView(context: UIViewRepresentableContext<CanvasView>) -> PKCanvasView {
 		let canvasView = PKCanvasView()
@@ -17,37 +25,43 @@ struct CanvasView: UIViewRepresentable {
 		canvasView.becomeFirstResponder()
 		canvasView.backgroundColor = UIColor.clear
 		canvasView.isOpaque = false
+		canvasView.delegate = context.coordinator
 		return canvasView
 	}
 
 	func updateUIView(_ canvasView: PKCanvasView, context: UIViewRepresentableContext<CanvasView>) {
-		canvasView.drawing = drawing
+		if let drawing = viewStore.state.drawing {
+			canvasView.drawing = drawing
+		} else {
+			canvasView.drawing = PKDrawing()
+		}
 	}
 
 	/// Cleans up the presented `UIView` (and coordinator) in
 	/// anticipation of their removal.
-	static func dismantleUIView(_ uiView: PKCanvasView, coordinator: Coordinator) {
+	static func dismantleUIView(_ canvasView: PKCanvasView, coordinator: Coordinator) {
+		canvasView.delegate = nil
+		canvasView.resignFirstResponder()
 	}
-	
+
 	public func makeCoordinator() -> Coordinator {
-		return Coordinator(self)
+		return Coordinator(viewStore)
 	}
 
 	public class Coordinator: NSObject {
-		var parent: CanvasView
+		var viewStore: ViewStore<PhotoViewModel, EditSinglePhotoAction>
 
-		init(_ parent: CanvasView) {
-			self.parent = parent
+		init(_ viewStore: ViewStore<PhotoViewModel, EditSinglePhotoAction>) {
+			self.viewStore = viewStore
 		}
 	}
 }
 
 extension CanvasView.Coordinator: PKCanvasViewDelegate {
 	public func canvasViewDrawingDidChange(_ canvasView: PKCanvasView) {
-		self.parent.drawing = canvasView.drawing
+//		self.viewStore.send(.onDrawingChange(canvasView.drawing))
 	}
 }
 
 extension CanvasView.Coordinator: PKToolPickerObserver {
-	
 }

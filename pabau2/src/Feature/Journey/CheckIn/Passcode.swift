@@ -60,7 +60,8 @@ struct Passcode: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>
 
 	var body: some View {
-		WithViewStore(self.store.scope(state: { $0.passcode },
+		print("Passcode body")
+		return WithViewStore(self.store.scope(state: { $0.passcode },
 																	 action: { .passcode($0)})) { viewStore in
 			VStack(spacing: 32) {
 				Image("ico-journey-locked").resizable().frame(width: 24, height: 36)

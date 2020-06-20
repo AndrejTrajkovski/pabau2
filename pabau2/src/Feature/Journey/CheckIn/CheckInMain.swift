@@ -36,7 +36,8 @@ struct CheckInMain: View {
 	}
 
 	var body: some View {
-		VStack (alignment: .center, spacing: 0) {
+		print("check in main body")
+		return VStack (alignment: .center, spacing: 0) {
 			TopView(store: self.store
 				.scope(state: { $0.topView },
 							 action: { .topView($0) }))

@@ -11,6 +11,10 @@ let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, JourneyEnviron
 			state: \.self,
 			action: /EditPhotoAction.editPhotoList,
 			environment: { $0 }),
+		editSinglePhotoReducer.optional.pullback(
+			state: \EditPhotosState.editSinglePhoto,
+			action: /EditPhotoAction.editSinglePhoto,
+			environment: { $0 }),
 		.init { state, action, _ in
 			switch action {
 			case .openCamera:
@@ -39,7 +43,7 @@ public enum EditPhotoAction: Equatable {
 public struct EditPhotosState: Equatable {
 	var photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>
 	var editingPhotoId: PhotoVariantId?
-	
+
 	init (_ photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>) {
 		self.photos = photos
 		self.editingPhotoId = photos.last?.id
@@ -67,11 +71,11 @@ struct EditPhotos: View {
 							state: { $0.editSinglePhoto },
 							action: { .editSinglePhoto($0) }
 						),
-						then: EditSinglePhoto.init(store:)
+						then: EditSinglePhoto.init(store:),
+						else: Spacer()
 					)
 				}
 			}
-			.navigationBarHidden(false)
 			.modalLink(isPresented: .constant(viewStore.state.isShowingCamera),
 									 linkType: ModalTransition.fullScreenModal,
 									 destination: {
@@ -151,10 +155,8 @@ extension EditPhotosState {
 			}
 		}
 		set {
-			guard let selId = self.editingPhotoId else { return }
-			newValue.map {
-				photos[id: selId] = $0.photo
-			}
+			guard let newValue = newValue else { return }
+			photos[id: newValue.photo.id] = newValue.photo
 		}
 	}
 }

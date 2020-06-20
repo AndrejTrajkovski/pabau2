@@ -4,7 +4,8 @@ import ComposableArchitecture
 struct CheckInPatient: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>
 	var body: some View {
-		WithViewStore(store.scope(state: { $0.isHandBackDeviceActive },
+		print("CheckInPatientBody")
+		return WithViewStore(store.scope(state: { $0.isHandBackDeviceActive },
 															action: { $0 })) { viewStore in
 			VStack {
 				CheckInMain(store:

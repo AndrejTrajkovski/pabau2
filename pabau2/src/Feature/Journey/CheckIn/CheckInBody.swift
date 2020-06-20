@@ -50,7 +50,7 @@ struct CheckInBody: View {
 	}
 
 	var body: some View {
-		print("check in main body")
+		print("check in body body")
 		return GeometryReader { geo in
 			VStack(spacing: 8) {
 				StepsCollectionView(store:
@@ -68,8 +68,9 @@ struct CheckInBody: View {
 									 self.keyboardHandler.keyboardHeight > 0 ? self.keyboardHandler.keyboardHeight : 32)
 					.padding([.leading, .trailing, .top], 32)
 				Spacer()
-				if self.keyboardHandler.keyboardHeight == 0 &&
-					!self.viewStore.state.isOnCompleteStep {
+				if self.keyboardHandler.keyboardHeight == 0
+//					&& !self.viewStore.state.isOnCompleteStep
+				{
 					FooterButtons(store: self.store.scope(
 						state: { $0.footer }, action: { .footer($0) }
 					))
