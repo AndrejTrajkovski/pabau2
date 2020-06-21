@@ -61,8 +61,9 @@ struct PhotosForm: View {
 						state: { $0.editPhoto }, action: { .editPhoto($0) }),
 										 then: EditPhotos.init(store:)
 					)
-				).navigationBarHidden(false)
-				.navigationBarTitle("ASDF")
+				)
+					.navigationBarHidden(false)
+//				.navigationBarTitle("ASDF")
 			}
 		}
 	}

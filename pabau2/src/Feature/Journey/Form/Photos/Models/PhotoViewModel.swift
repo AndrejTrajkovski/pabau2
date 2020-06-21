@@ -5,12 +5,12 @@ public struct PhotoViewModel: Equatable {
 	
 	let basePhoto: Photo
 	let data: Data?
-	var drawing: PKDrawing?
+	var drawing: PKDrawing
 
 	init (_ savedPhoto: SavedPhoto) {
 		self.basePhoto = .saved(savedPhoto)
 		self.data = nil
-		self.drawing = nil
+		self.drawing = PKDrawing()
 	}
 }
 

@@ -60,8 +60,9 @@ struct EditPhotos: View {
 
 	let store: Store<EditPhotosState, EditPhotoAction>
 	var body: some View {
-		WithViewStore(store) { viewStore in
-			HStack {
+		print("edit photos body")
+//		return WithViewStore(store) { viewStore in
+			return HStack {
 				EditPhotosList(store:
 					self.store.scope(state: { $0 }, action: { .editPhotoList($0) })
 				)
@@ -75,17 +76,17 @@ struct EditPhotos: View {
 						else: Spacer()
 					)
 				}
-			}
-			.modalLink(isPresented: .constant(viewStore.state.isShowingCamera),
-									 linkType: ModalTransition.fullScreenModal,
-									 destination: {
-										ImagePicker(image:
-											viewStore.binding(
-												get: { $0.editingUIImage },
-												send: { .didGetUIImage($0) }
-											)
-										)
-			})
+//			}
+//			.modalLink(isPresented: .constant(viewStore.state.isShowingCamera),
+//									 linkType: ModalTransition.fullScreenModal,
+//									 destination: {
+//										ImagePicker(image:
+//											viewStore.binding(
+//												get: { $0.editingUIImage },
+//												send: { .didGetUIImage($0) }
+//											)
+//										)
+//			})
 //			.sheet(isPresented: viewStore.binding(
 //				get: { $0.isShowingCamera }, send: { _ in EditPhotoAction.closeCamera }),
 //							content: {

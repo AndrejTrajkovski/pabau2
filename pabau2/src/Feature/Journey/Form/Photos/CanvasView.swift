@@ -3,16 +3,9 @@ import PencilKit
 import ComposableArchitecture
 
 struct CanvasView: UIViewRepresentable {
-
-	let store: Store<PhotoViewModel, EditSinglePhotoAction>
-	let viewStore: ViewStore<PhotoViewModel, EditSinglePhotoAction>
-	init (_ store: Store<PhotoViewModel, EditSinglePhotoAction>) {
-		self.store = store
-		self.viewStore = ViewStore(store, removeDuplicates: {
-			$0.id == $1.id
-		})
-	}
-
+	
+	@Binding var drawing: PKDrawing
+	
 	func makeUIView(context: UIViewRepresentableContext<CanvasView>) -> PKCanvasView {
 		let canvasView = PKCanvasView()
 		if let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first,
@@ -26,14 +19,14 @@ struct CanvasView: UIViewRepresentable {
 		canvasView.backgroundColor = UIColor.clear
 		canvasView.isOpaque = false
 		canvasView.delegate = context.coordinator
+		canvasView.drawing = drawing
 		return canvasView
 	}
-
-	func updateUIView(_ canvasView: PKCanvasView, context: UIViewRepresentableContext<CanvasView>) {
-		if let drawing = viewStore.state.drawing {
+	
+	func updateUIView(_ canvasView: PKCanvasView,
+										context: UIViewRepresentableContext<CanvasView>) {
+		if canvasView.drawing != drawing {
 			canvasView.drawing = drawing
-		} else {
-			canvasView.drawing = PKDrawing()
 		}
 	}
 
@@ -43,23 +36,23 @@ struct CanvasView: UIViewRepresentable {
 		canvasView.delegate = nil
 		canvasView.resignFirstResponder()
 	}
-
+	
 	public func makeCoordinator() -> Coordinator {
-		return Coordinator(viewStore)
+		return Coordinator(self)
 	}
-
+	
 	public class Coordinator: NSObject {
-		var viewStore: ViewStore<PhotoViewModel, EditSinglePhotoAction>
-
-		init(_ viewStore: ViewStore<PhotoViewModel, EditSinglePhotoAction>) {
-			self.viewStore = viewStore
+		let parent: CanvasView
+		
+		init(_ parent: CanvasView) {
+			self.parent = parent
 		}
 	}
 }
 
 extension CanvasView.Coordinator: PKCanvasViewDelegate {
 	public func canvasViewDrawingDidChange(_ canvasView: PKCanvasView) {
-//		self.viewStore.send(.onDrawingChange(canvasView.drawing))
+		parent.drawing = canvasView.drawing
 	}
 }
 

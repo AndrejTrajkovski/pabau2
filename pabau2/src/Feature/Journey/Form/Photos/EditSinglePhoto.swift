@@ -23,27 +23,39 @@ public enum EditSinglePhotoAction: Equatable {
 
 struct EditSinglePhoto: View {
 	let store: Store<EditSinglePhotoState, EditSinglePhotoAction>
-	var viewStore: ViewStore<EditSinglePhotoState, EditSinglePhotoAction>
 	init (store: Store<EditSinglePhotoState, EditSinglePhotoAction>) {
 		self.store = store
-		self.viewStore = ViewStore(store, removeDuplicates: {
-			$0.photo.id == $1.photo.id
-		})
 	}
 
 	@State var photoSize: CGSize = .zero
 	var body: some View {
-		ZStack {
-			PhotoCell(photo: viewStore.state.photo)
+		print("edit single photo body")
+		return ZStack {
+			PhotoCell(photo: ViewStore(store).state.photo)
 				.background(PhotoSizePreferenceSetter())
 				.onPreferenceChange(PhotoSize.self) { size in
 					self.photoSize = size
 			}
-			CanvasView(self.store.scope(state: { $0.photo },
-																	action: { $0 }))
+			CanvasParent(store: self.store.scope(state: { $0.photo }))
 				.frame(width: photoSize.width,
 							 height: photoSize.height)
 		}
+	}
+}
+
+struct CanvasParent: View {
+	let store: Store<PhotoViewModel, EditSinglePhotoAction>
+	@ObservedObject var viewStore: ViewStore<PhotoViewModel, EditSinglePhotoAction>
+
+	init(store: Store<PhotoViewModel, EditSinglePhotoAction>) {
+		self.store = store
+		self.viewStore = ViewStore(store)
+	}
+	
+	var body: some View {
+		CanvasView(drawing: self.viewStore.binding(
+			get: { $0.drawing }, send: { .onDrawingChange($0)})
+		)
 	}
 }
 
