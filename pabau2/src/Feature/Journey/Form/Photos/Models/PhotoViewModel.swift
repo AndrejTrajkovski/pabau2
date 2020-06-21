@@ -4,13 +4,13 @@ import PencilKit
 public struct PhotoViewModel: Equatable {
 	
 	let basePhoto: Photo
-	let data: Data?
-	var drawing: PKDrawing
+	let imageData: Data?
+	var drawing: PKDrawing?
 
 	init (_ savedPhoto: SavedPhoto) {
 		self.basePhoto = .saved(savedPhoto)
-		self.data = nil
-		self.drawing = PKDrawing()
+		self.imageData = nil
+		self.drawing = nil
 	}
 }
 

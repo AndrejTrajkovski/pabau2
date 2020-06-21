@@ -3,9 +3,7 @@ import PencilKit
 import ComposableArchitecture
 
 struct CanvasView: UIViewRepresentable {
-	
-	@Binding var drawing: PKDrawing
-	
+	@Binding var drawing: PKDrawing?
 	func makeUIView(context: UIViewRepresentableContext<CanvasView>) -> PKCanvasView {
 		let canvasView = PKCanvasView()
 		if let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first,
@@ -19,14 +17,17 @@ struct CanvasView: UIViewRepresentable {
 		canvasView.backgroundColor = UIColor.clear
 		canvasView.isOpaque = false
 		canvasView.delegate = context.coordinator
-		canvasView.drawing = drawing
 		return canvasView
 	}
-	
+
 	func updateUIView(_ canvasView: PKCanvasView,
 										context: UIViewRepresentableContext<CanvasView>) {
-		if canvasView.drawing != drawing {
-			canvasView.drawing = drawing
+		if let drawing = drawing {
+			if canvasView.drawing != drawing {
+				canvasView.drawing = drawing
+			}
+		} else {
+			canvasView.drawing = PKDrawing()
 		}
 	}
 
@@ -43,7 +44,6 @@ struct CanvasView: UIViewRepresentable {
 	
 	public class Coordinator: NSObject {
 		let parent: CanvasView
-		
 		init(_ parent: CanvasView) {
 			self.parent = parent
 		}

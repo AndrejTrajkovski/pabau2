@@ -35,7 +35,7 @@ struct EditSinglePhoto: View {
 				.background(PhotoSizePreferenceSetter())
 				.onPreferenceChange(PhotoSize.self) { size in
 					self.photoSize = size
-			}
+			}.layoutPriority(1)
 			CanvasParent(store: self.store.scope(state: { $0.photo }))
 				.frame(width: photoSize.width,
 							 height: photoSize.height)
@@ -51,10 +51,16 @@ struct CanvasParent: View {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
-	
+
 	var body: some View {
-		CanvasView(drawing: self.viewStore.binding(
-			get: { $0.drawing }, send: { .onDrawingChange($0)})
+		CanvasView(drawing:
+			Binding<PKDrawing?>.init(
+				get: { return self.viewStore.state.drawing },
+				set: {
+					guard let drawing = $0 else { return }
+					self.viewStore.send(.onDrawingChange(drawing))
+				}
+			)
 		)
 	}
 }
