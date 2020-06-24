@@ -27,6 +27,8 @@ let photosFormReducer: Reducer<PhotosState, PhotosFormAction, JourneyEnvironment
 			case .didSelectEditPhotos:
 				let selPhotos = state.photos.filter { state.selectedIds.contains($0.id) }
 				state.editPhoto = EditPhotosState(selPhotos)
+			case .didTouchBackOnEditPhotos:
+				state.editPhoto = nil
 			case .editPhoto, .selectPhotos: break
 			}
 			return .none
@@ -44,6 +46,7 @@ let photosFormReducer: Reducer<PhotosState, PhotosFormAction, JourneyEnvironment
 public enum PhotosFormAction: Equatable {
 	case selectPhotos(SelectPhotosAction)
 	case didSelectEditPhotos
+	case didTouchBackOnEditPhotos
 	case editPhoto(EditPhotoAction)
 }
 
@@ -60,11 +63,14 @@ struct PhotosForm: View {
 					viewStore.state.editPhoto != nil,
 					IfLetStore(self.store.scope(
 						state: { $0.editPhoto }, action: { .editPhoto($0) }),
-										 then: EditPhotos.init(store:)
+										 then: {
+											EditPhotos(store: $0)
+												.customBackButton {
+													viewStore.send(.didTouchBackOnEditPhotos)
+											}
+						}
 					)
 				)
-					.navigationBarHidden(false)
-//				.navigationBarTitle("ASDF")
 			}
 		}
 	}

@@ -26,6 +26,7 @@ struct PhotoAndCanvas: View {
 	//TODO: UNCOMMENT CODE FOR EQUAL SIZES
 	//TODO: FIX MEMORY LEAKS WITH PKDRAWINGS
 	@State var photoSize: CGSize = .zero
+	@State var bottomPadding: CGFloat = 0
 	var body: some View {
 		print("edit single photo body")
 		return ZStack {
@@ -44,12 +45,13 @@ struct PhotoAndCanvas: View {
 struct CanvasParent: View {
 	let store: Store<PhotoViewModel, PhotoAndCanvasAction>
 	@ObservedObject var viewStore: ViewStore<PhotoViewModel, PhotoAndCanvasAction>
-
-	init(store: Store<PhotoViewModel, PhotoAndCanvasAction>) {
+	
+	init(store: Store<PhotoViewModel, PhotoAndCanvasAction>
+	) {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
-
+	
 	var body: some View {
 		CanvasView(drawing:
 			Binding<PKDrawing?>.init(

@@ -4,6 +4,7 @@ import ComposableArchitecture
 
 struct CanvasView: UIViewRepresentable {
 	@Binding var drawing: PKDrawing?
+
 	func makeUIView(context: UIViewRepresentableContext<CanvasView>) -> PKCanvasView {
 		let canvasView = PKCanvasView()
 		if let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first,
@@ -57,4 +58,7 @@ extension CanvasView.Coordinator: PKCanvasViewDelegate {
 }
 
 extension CanvasView.Coordinator: PKToolPickerObserver {
+	
+	public func toolPickerFramesObscuredDidChange(_ toolPicker: PKToolPicker) {
+	}
 }

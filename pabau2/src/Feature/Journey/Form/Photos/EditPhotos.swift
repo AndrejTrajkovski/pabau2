@@ -76,21 +76,29 @@ public struct EditPhotosState: Equatable {
 struct EditPhotos: View {
 
 	let store: Store<EditPhotosState, EditPhotoAction>
+	init (store: Store<EditPhotosState, EditPhotoAction>) {
+		self.store = store
+	}
+
 	var body: some View {
 		WithViewStore(store.scope(state: { $0.isCameraActive})) { viewStore in
 			HStack {
 				EditPhotosList(store:
 					self.store.scope(state: { $0 }, action: { .editPhotoList($0) })
 				)
+					.frame(width: 92)
+					.padding(8)
 				VStack {
 					IfLetStore(
 						self.store.scope(
 							state: { $0.editingPhoto },
 							action: { .photoAndCanvas($0) }
 						),
-						then: PhotoAndCanvas.init(store:),
+						then:
+						PhotoAndCanvas.init(store:),
 						else: Spacer()
 					)
+						.padding(.bottom, 128)
 				}
 				EditPhotosRightSide(store:
 					self.store.scope(
@@ -98,7 +106,12 @@ struct EditPhotos: View {
 						action: { .rightSide($0)}
 					)
 				)
+					.padding(8)
+					.padding(.bottom, 64)
 			}
+			.navigationBarItems(trailing:
+				EmptyView()
+			)
 			.modalLink(isPresented: .constant(viewStore.state),
 								 linkType: ModalTransition.fullScreenModal,
 								 destination: {

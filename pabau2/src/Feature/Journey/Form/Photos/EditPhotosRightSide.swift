@@ -1,5 +1,6 @@
 import SwiftUI
 import ComposableArchitecture
+import Util
 
 public let editPhotosRightSideReducer = Reducer<EditPhotosRightSideState, EditPhotosRightSideAction, JourneyEnvironment>.init { state, action, _ in
 	switch action {
@@ -9,6 +10,12 @@ public let editPhotosRightSideReducer = Reducer<EditPhotosRightSideState, EditPh
 		state.editingPhoto?.isPrivate.toggle()
 	case .didTouchTrash:
 		guard let editingPhotoId = state.editingPhotoId else { break }
+		let idx = state.photos.ids.firstIndex(where: { $0 == editingPhotoId }).map {
+			Int($0)
+		}!
+		let toBeSelected = state.photos[safe: state.photos.index(after: idx)] ??
+			state.photos[safe: state.photos.index(before: idx)]
+		state.editingPhotoId = toBeSelected.map(\.id)
 		state.photos.remove(id: editingPhotoId)
 	case .didTouchCamera:
 		state.isCameraActive = true
@@ -44,20 +51,33 @@ struct EditPhotosRightSide: View {
 	var body: some View {
 		WithViewStore(store.stateless) { viewStore in
 			VStack {
-				Spacer()
 				Button(action: { viewStore.send(.didTouchTag)}, label: {
-					Image(systemName: "tag")
+					Image(systemName: "tag.circle.fill")
 				})
 				Button(action: { viewStore.send(.didTouchPrivacy)}, label: {
-					Image(systemName: "eye.slash")
+					Image(systemName: "eye.slash.fill")
+						.font(.system(size: 32))
 				})
 				Button(action: { viewStore.send(.didTouchTrash)}, label: {
 					Image(systemName: "trash.circle.fill")
 				})
 				Button(action: { viewStore.send(.didTouchCamera)}, label: {
 					Image(systemName: "camera.circle.fill")
+						.foregroundColor(Color.blue)
+						.font(.system(size: 44))
 				})
-			}.buttonStyle(CameraButtonStyle())
+			}.buttonStyle(EditPhotosButtonStyle())
 		}
+	}
+}
+
+struct EditPhotosButtonStyle: ButtonStyle {
+	func makeBody(configuration: Configuration) -> some View {
+		configuration.label
+			.font(.system(size: 40))
+			.frame(width: 60, height: 60)
+			.foregroundColor(Color.cameraImages)
+			.background(Color.white)
+			.clipShape(Circle())
 	}
 }

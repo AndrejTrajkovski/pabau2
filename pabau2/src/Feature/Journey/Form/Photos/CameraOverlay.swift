@@ -105,7 +105,7 @@ private struct TopButtons: View {
 				Button.init(action: {
 					viewStore.send(.closeCamera)
 				}, label: {
-					Image(systemName: "xmark.circle.fill")
+					Image(systemName: "xmark")
 				})
 				Spacer()
 				Button.init(action: { }, label: {
@@ -131,15 +131,17 @@ private struct RightSideButtons: View {
 	let store: Store<Bool, CameraOverlayAction>
 	var body: some View {
 		WithViewStore(store) { viewStore in
-			VStack {
+			VStack(spacing: 16) {
 				Button.init(action: {
 					viewStore.send(.onToggleStencils)
 				}, label: {
 					Image(systemName: "wand.and.stars")
-						.accentColor(viewStore.state ? .red : .blue)
+						.foregroundColor(viewStore.state ? .white : Color.cameraImages)
 				})
 				Button.init(action: self.onTakePhoto, label: {
 					Image("ico-journey-upload-photos-take-a-photo")
+					.resizable()
+					.frame(width: 54, height: 54)
 				})
 				Button.init(action: {
 					viewStore.send(.onOpenPhotosLibrary)
@@ -154,7 +156,8 @@ private struct RightSideButtons: View {
 struct CameraButtonStyle: ButtonStyle {
 	func makeBody(configuration: Configuration) -> some View {
 		configuration.label
-			.frame(width: 44, height: 44)
+			.font(.system(size: 22))
+			.frame(width: 50, height: 50)
 			.foregroundColor(Color.white)
 			.background(Color.black.opacity(0.2))
 			.clipShape(Circle())

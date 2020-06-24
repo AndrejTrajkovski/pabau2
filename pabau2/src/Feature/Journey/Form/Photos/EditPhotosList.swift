@@ -22,18 +22,18 @@ struct EditPhotosList: View {
 		WithViewStore(store) { viewStore in
 			VStack {
 				Spacer()
-				List {
-					ForEach(viewStore.photos, id: \.id) { photo in
-						SingleSelectPhotoCell(
-							photo: photo,
-							isSelected: viewStore.state.editingPhotoId == photo.id
-						).onTapGesture {
-							viewStore.send(.onSelect(photo.id))
+				VStack {
+					List {
+						ForEach(viewStore.photos, id: \.id) { photo in
+							SingleSelectPhotoCell(
+								photo: photo,
+								isSelected: viewStore.state.editingPhotoId == photo.id
+							).onTapGesture {
+								viewStore.send(.onSelect(photo.id))
+							}
 						}
 					}
 				}
-				.frame(width: 100)
-				.padding()
 			}
 		}
 	}
