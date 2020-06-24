@@ -1,9 +1,16 @@
 import SwiftUI
+import ComposableArchitecture
 
 struct ImagePicker: UIViewControllerRepresentable {
-	
+
 	@Environment(\.presentationMode) var presentationMode
-	@Binding var image: UIImage?
+	let store: Store<CameraOverlayState, CameraOverlayAction>
+	let viewStore: ViewStore<CameraOverlayState, CameraOverlayAction>
+
+	init(store: Store<CameraOverlayState, CameraOverlayAction>) {
+		self.store = store
+		self.viewStore = ViewStore(store)
+	}
 
 	class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
 		var parent: ImagePicker
@@ -19,11 +26,14 @@ struct ImagePicker: UIViewControllerRepresentable {
 
 	func makeUIViewController(context: UIViewControllerRepresentableContext<ImagePicker>) -> UIImagePickerController {
 		let picker = UIImagePickerController()
-//		picker.sourceType = 
 		picker.delegate = context.coordinator
 		picker.sourceType = .camera
 		picker.showsCameraControls = false
-		let overlay = UIHostingController(rootView: CameraOverlay())
+		let cameraOverlay = CameraOverlay(
+			store: self.store,
+			onTakePhoto: picker.takePicture
+		)
+		let overlay = UIHostingController(rootView: cameraOverlay)
 		overlay.view.frame = (picker.cameraOverlayView?.frame)!
 		overlay.view.backgroundColor = UIColor.clear
 		picker.cameraOverlayView = overlay.view
@@ -31,31 +41,31 @@ struct ImagePicker: UIViewControllerRepresentable {
 	}
 
 	func updateUIViewController(_ uiViewController: UIImagePickerController, context: UIViewControllerRepresentableContext<ImagePicker>) {
-		
+
 	}
 }
 
 // MARK: - UIImagePickerControllerDelegate
 extension ImagePicker.Coordinator {
-		func imagePickerController(_ picker: UIImagePickerController,
-															 didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+	func imagePickerController(_ picker: UIImagePickerController,
+														 didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
 
-			let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
+		let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 
-			guard let image = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.originalImage)] as? UIImage else {
-				return
-			}
-			self.parent.image = image
-	//		finishAndUpdate()
+		guard let image = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.originalImage)] as? UIImage else {
+			return
 		}
+		self.parent.viewStore.send(.didTakePhoto(image))
+		//		finishAndUpdate()
+	}
 
-		// MARK: - Utilities
-		private func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
-			return Dictionary(uniqueKeysWithValues: input.map { key, value in (key.rawValue, value) })
-		}
+	// MARK: - Utilities
+	private func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
+		return Dictionary(uniqueKeysWithValues: input.map { key, value in (key.rawValue, value) })
+	}
 
-		private func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey) -> String {
-			return input.rawValue
-		}
+	private func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey) -> String {
+		return input.rawValue
+	}
 
 }

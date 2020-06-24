@@ -10,6 +10,7 @@ public struct PhotosState: Equatable {
 	var photos: IdentifiedArray<PhotoVariantId, PhotoViewModel> = []
 	var selectedIds: [PhotoVariantId] = []
 	var editPhoto: EditPhotosState?
+
 	var selectPhotos: SelectPhotosState {
 		get { SelectPhotosState(photos: photos, selectedIds: selectedIds) }
 		set { self.selectedIds = newValue.selectedIds}
@@ -71,7 +72,9 @@ struct PhotosForm: View {
 
 extension IdentifiedArray where Element == PhotoViewModel, ID == PhotoVariantId {
 	static func wrap (_ savedPhotos: [[Int: SavedPhoto]]) -> Self {
-		let res = savedPhotos.compactMap(Dictionary<PhotoVariantId, PhotoViewModel>.wrap).compactMap(\.values.first)
+		let res = savedPhotos
+			.compactMap(Dictionary<PhotoVariantId, PhotoViewModel>.wrap)
+			.compactMap(\.values.first)
 		return IdentifiedArray(res)
 	}
 }
@@ -86,7 +89,8 @@ extension Dictionary where Key == PhotoVariantId, Value == PhotoViewModel {
 
 extension PhotosState {
 	init(_ savedPhotos: [[Int: SavedPhoto]]) {
-		self.init(photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>.wrap(savedPhotos)
-			, selectedIds: [], editPhoto: nil)
+		self.init(photos: IdentifiedArray.wrap(savedPhotos),
+							selectedIds: [],
+							editPhoto: nil)
 	}
 }

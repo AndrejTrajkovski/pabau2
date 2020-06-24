@@ -2,14 +2,18 @@ import Model
 import PencilKit
 
 public struct PhotoViewModel: Equatable {
-	
 	let basePhoto: Photo
-	let imageData: Data?
 	var drawing: PKDrawing?
+	var isPrivate: Bool = false
+	var tags: [String] = []
 
 	init (_ savedPhoto: SavedPhoto) {
 		self.basePhoto = .saved(savedPhoto)
-		self.imageData = nil
+		self.drawing = nil
+	}
+
+	init (_ newPhoto: NewPhoto) {
+		self.basePhoto = .new(newPhoto)
 		self.drawing = nil
 	}
 }

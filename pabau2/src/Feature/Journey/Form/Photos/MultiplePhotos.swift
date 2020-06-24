@@ -27,7 +27,7 @@ public enum SelectPhotosAction: Equatable {
 
 struct SelectPhotos: View {
 	let store: Store<SelectPhotosState, SelectPhotosAction>
-	
+
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			ASCollectionView.init(

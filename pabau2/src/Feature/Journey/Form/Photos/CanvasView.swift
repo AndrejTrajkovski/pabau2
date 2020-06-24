@@ -37,11 +37,11 @@ struct CanvasView: UIViewRepresentable {
 		canvasView.delegate = nil
 		canvasView.resignFirstResponder()
 	}
-	
+
 	public func makeCoordinator() -> Coordinator {
 		return Coordinator(self)
 	}
-	
+
 	public class Coordinator: NSObject {
 		let parent: CanvasView
 		init(_ parent: CanvasView) {

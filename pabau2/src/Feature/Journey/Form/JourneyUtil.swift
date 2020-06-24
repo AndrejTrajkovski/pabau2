@@ -47,7 +47,7 @@ func stepType(form: MetaForm) -> StepType {
 		return .patientComplete
 	case .checkPatient:
 		return .checkpatient
-	case .photos(_):
+	case .photos:
 		return .photos
 	}
 }

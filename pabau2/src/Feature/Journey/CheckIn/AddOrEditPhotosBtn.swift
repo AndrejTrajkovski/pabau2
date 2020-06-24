@@ -26,7 +26,7 @@ struct AddOrEditPhotosBtn: View {
 			}
 		}
 	}
-	
+
 	private func btnAction(_ addOrEdit: AddOrEdit) -> AddOrEditPhotosBtnAction {
 		switch addOrEdit {
 		case .add:
@@ -35,7 +35,7 @@ struct AddOrEditPhotosBtn: View {
 			return .editPhotos
 		}
 	}
-	
+
 	private func btnText(_ addOrEdit: AddOrEdit) -> String {
 		switch addOrEdit {
 		case .add:

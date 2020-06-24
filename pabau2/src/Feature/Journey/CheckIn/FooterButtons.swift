@@ -22,7 +22,7 @@ public struct FooterButtonsState {
 	var forms: [MetaFormAndStatus]
 	var selectedIndex: Int
 	var selectedForm: MetaFormAndStatus?
-	
+
 	var stepsState: StepsViewState {
 		get {
 			StepsViewState(selectedIndex: selectedIndex,

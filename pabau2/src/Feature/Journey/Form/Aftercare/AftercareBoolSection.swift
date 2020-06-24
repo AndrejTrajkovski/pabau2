@@ -21,7 +21,7 @@ struct AftercareBoolSection {
 		self.desc = desc
 		self._options = options
 	}
-	
+
 	var section: ASCollectionViewSection<Int> {
 		ASCollectionViewSection(
 			id: id,

@@ -12,12 +12,12 @@ struct ChooseTreatmentNote: View {
 								 isDoctorCheckInMainActive: $0.isDoctorCheckInMainActive)
 		}))
 	}
-	
+
 	struct State: Equatable {
 		var isDoctorSummaryActive: Bool
 		var isDoctorCheckInMainActive: Bool
 	}
-	
+
 	var body: some View {
 		VStack {
 			ChooseFormList(store: store.scope(state: { $0.chooseTreatments },

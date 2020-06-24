@@ -30,7 +30,7 @@ public struct FlowLayout {
 		}
 		return CGRect(origin: CGPoint(x: currentX, y: currentY), size: size)
 	}
-	
+
 	var size: CGSize {
 		return CGSize(width: containerSize.width, height: currentY + lineHeight)
 	}
@@ -99,7 +99,7 @@ struct CollectionViewSizeKey<ID: Hashable>: PreferenceKey {
 	typealias Value = [ID: CGSize]
 
 	static var defaultValue: [ID: CGSize] { [:] }
-	static func reduce(value: inout [ID:CGSize], nextValue: () -> [ID:CGSize]) {
+	static func reduce(value: inout [ID: CGSize], nextValue: () -> [ID: CGSize]) {
 		value.merge(nextValue(), uniquingKeysWith: { $1 })
 	}
 }
@@ -113,4 +113,3 @@ struct PropagateSize<V: View, ID: Hashable>: View {
 		})
 	}
 }
-

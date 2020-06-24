@@ -22,7 +22,7 @@ let checkInBodyReducer: Reducer<CheckInViewState, CheckInBodyAction, JourneyEnvi
 				break//handled inline
 			case .completeJourney:
 				break//handled in checkInMiddleware
-			case .footer(_):
+			case .footer:
 				break//handled inline
 			}
 			return .none

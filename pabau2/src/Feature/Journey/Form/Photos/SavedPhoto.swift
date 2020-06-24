@@ -5,7 +5,7 @@ public struct PhotoViewModel: PhotoVariant {
 	let basePhoto: JourneyPhotos
 	let data: Data?
 	var drawings: [PKDrawing]
-	
+
 	init (_ basePhoto: JourneyPhotos) {
 		self.basePhoto = basePhoto
 		self.data = nil

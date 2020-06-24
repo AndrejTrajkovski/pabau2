@@ -7,7 +7,7 @@ public struct FourSwitchesSection: View {
 	@Binding var switch4: Bool
 	let switchNames: [String]
 	let title: String
-	
+
 	public init (
 		swithc1: Binding<Bool>,
 		switch2: Binding<Bool>,
@@ -23,7 +23,7 @@ public struct FourSwitchesSection: View {
 		self.switchNames = switchNames
 		self.title = title
 	}
-	
+
 	public var body: some View {
 		VStack(alignment: .leading, spacing: 8.0) {
 			Text(title).font(.semibold24)
@@ -37,12 +37,12 @@ public struct FourSwitchesSection: View {
 }
 
 public struct SwitchCell: View {
-	
+
 	public init (text: String, value: Binding<Bool>) {
 		self.text = text
 		self._value = value
 	}
-	
+
 	let text: String
 	@Binding var value: Bool
 	public var body: some View {

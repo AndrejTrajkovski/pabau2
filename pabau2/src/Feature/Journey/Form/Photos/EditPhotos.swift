@@ -7,25 +7,29 @@ import Util
 
 let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, JourneyEnvironment>
 	.combine(
+		editPhotosRightSideReducer.pullback(
+			state: \EditPhotosState.rightSide,
+			action: /EditPhotoAction.rightSide,
+			environment: { $0 }),
 		editPhotosListReducer.pullback(
 			state: \.self,
 			action: /EditPhotoAction.editPhotoList,
 			environment: { $0 }),
-		editSinglePhotoReducer.optional.pullback(
-			state: \EditPhotosState.editSinglePhoto,
-			action: /EditPhotoAction.editSinglePhoto,
+		photoAndCanvasReducer.optional.pullback(
+			state: \EditPhotosState.editingPhoto,
+			action: /EditPhotoAction.photoAndCanvas,
+			environment: { $0 }),
+		cameraOverlayReducer.optional.pullback(
+			state: \EditPhotosState.cameraOverlay,
+			action: /EditPhotoAction.cameraOverlay,
 			environment: { $0 }),
 		.init { state, action, _ in
 			switch action {
 			case .openCamera:
-				state.showingImagePicker = .camera
+				state.isCameraActive = true
 			case .closeCamera:
-				state.showingImagePicker = nil
-			case .didGetUIImage(let image):
-				state.editingUIImage = image
-			case .editSinglePhoto(_):
-			break// inline
-			case .editPhotoList(_):
+				state.isCameraActive = false
+			case .photoAndCanvas, .editPhotoList, .rightSide, .cameraOverlay:
 				break
 			}
 			return .none
@@ -35,24 +39,35 @@ let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, JourneyEnviron
 public enum EditPhotoAction: Equatable {
 	case openCamera
 	case closeCamera
-	case didGetUIImage(UIImage?)
-	case editSinglePhoto(EditSinglePhotoAction)
+	case photoAndCanvas(PhotoAndCanvasAction)
 	case editPhotoList(EditPhotosListAction)
+	case rightSide(EditPhotosRightSideAction)
+	case cameraOverlay(CameraOverlayAction)
 }
 
 public struct EditPhotosState: Equatable {
 	var photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>
 	var editingPhotoId: PhotoVariantId?
+	var isTagsAlertActive: Bool = false
+	var stencils = ["stencil1", "stencil2", "stencil3", "stencil4"]
+	var isShowingPhotoLib: Bool = false
+	var isShowingStencils: Bool = false
+	var selectedStencilIdx: Int?
+	
+	private var showingImagePicker: UIImagePickerController.SourceType?
 
 	init (_ photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>) {
 		self.photos = photos
 		self.editingPhotoId = photos.last?.id
 	}
 
-	var showingImagePicker: UIImagePickerController.SourceType?
-	var editingUIImage: UIImage?
-	var isShowingCamera: Bool {
+	var isCameraActive: Bool {
 		get { self.showingImagePicker == .some(.camera) }
+		set { self.showingImagePicker = newValue ? .some(.camera) : nil}
+	}
+	var isPhotosAlbumActive: Bool {
+		get { self.showingImagePicker == .some(.savedPhotosAlbum) }
+		set { self.showingImagePicker = newValue ? .some(.savedPhotosAlbum) : nil}
 	}
 }
 
@@ -60,33 +75,38 @@ struct EditPhotos: View {
 
 	let store: Store<EditPhotosState, EditPhotoAction>
 	var body: some View {
-		print("edit photos body")
-//		return WithViewStore(store) { viewStore in
-			return HStack {
+		WithViewStore(store.scope(state: { $0.isCameraActive})) { viewStore in
+			HStack {
 				EditPhotosList(store:
 					self.store.scope(state: { $0 }, action: { .editPhotoList($0) })
 				)
 				VStack {
 					IfLetStore(
 						self.store.scope(
-							state: { $0.editSinglePhoto },
-							action: { .editSinglePhoto($0) }
+							state: { $0.editingPhoto },
+							action: { .photoAndCanvas($0) }
 						),
-						then: EditSinglePhoto.init(store:),
+						then: PhotoAndCanvas.init(store:),
 						else: Spacer()
 					)
 				}
-//			}
-//			.modalLink(isPresented: .constant(viewStore.state.isShowingCamera),
-//									 linkType: ModalTransition.fullScreenModal,
-//									 destination: {
-//										ImagePicker(image:
-//											viewStore.binding(
-//												get: { $0.editingUIImage },
-//												send: { .didGetUIImage($0) }
-//											)
-//										)
-//			})
+				EditPhotosRightSide(store:
+					self.store.scope(
+						state: { $0.rightSide },
+						action: { .rightSide($0)}
+					)
+				)
+			}
+			.modalLink(isPresented: .constant(viewStore.state),
+								 linkType: ModalTransition.fullScreenModal,
+								 destination: {
+									IfLetStore(self.store.scope(
+										state: { $0.cameraOverlay },
+										action: { .cameraOverlay($0) }),
+														 then: ImagePicker.init(store:)
+									).navigationBarHidden(true)
+										.navigationBarTitle("")
+			})
 //			.sheet(isPresented: viewStore.binding(
 //				get: { $0.isShowingCamera }, send: { _ in EditPhotoAction.closeCamera }),
 //							content: {
@@ -99,7 +119,7 @@ struct EditPhotos: View {
 //			}
 //			)
 //			.onAppear(perform: { //show camera })
-		}
+		}.debug("Edit Photos")
 ////		.popover(isPresented: Binding(
 ////			get: { self.showingImagePicker == .some(.photoLibrary) },
 ////			set: { self.showingImagePicker = $0 == true ? .some(.photoLibrary) : nil}
@@ -149,15 +169,64 @@ extension EditPhotos {
 
 extension EditPhotosState {
 
-	var editSinglePhoto: EditSinglePhotoState? {
+	var cameraOverlay: CameraOverlayState? {
 		get {
-			editingPhotoId.map {
-				EditSinglePhotoState(photo: photos[id: $0]!)
-			}
+			CameraOverlayState(
+				photos: self.photos,
+				editingPhotoId: self.editingPhotoId,
+				isCameraActive: self.isCameraActive,
+				stencils: self.stencils,
+				selectedStencilIdx: self.selectedStencilIdx,
+				isShowingStencils: self.isShowingStencils,
+				isShowingPhotoLib: self.isShowingPhotoLib
+			)
 		}
 		set {
 			guard let newValue = newValue else { return }
-			photos[id: newValue.photo.id] = newValue.photo
+			self.photos = newValue.photos
+			self.editingPhotoId = newValue.editingPhotoId
+			self.isCameraActive = newValue.isCameraActive
+			self.stencils = newValue.stencils
+			self.selectedStencilIdx = newValue.selectedStencilIdx
+			self.isShowingStencils = newValue.isShowingStencils
+			self.isShowingPhotoLib = newValue.isShowingPhotoLib
 		}
+	}
+
+	var rightSide: EditPhotosRightSideState {
+		get {
+			EditPhotosRightSideState(photos: self.photos,
+															 editingPhotoId: self.editingPhotoId,
+															 isCameraActive: self.isCameraActive,
+															 isTagsAlertActive: self.isTagsAlertActive)
+		}
+		set {
+			self.photos = newValue.photos
+			self.editingPhotoId = newValue.editingPhotoId
+			self.isCameraActive = newValue.isCameraActive
+			self.isTagsAlertActive = newValue.isTagsAlertActive
+		}
+	}
+
+	var editingPhoto: PhotoViewModel? {
+		get {
+			getPhoto(photos, editingPhotoId)
+		}
+		set {
+			set(newValue, onto: &photos)
+		}
+	}
+}
+
+func set(_ photo: PhotoViewModel?,
+				 onto photos:inout IdentifiedArrayOf<PhotoViewModel>) {
+	guard let photo = photo else { return }
+	photos[id: photo.id] = photo
+}
+
+func getPhoto(_ photos: IdentifiedArrayOf<PhotoViewModel>,
+							_ id: PhotoVariantId?) -> PhotoViewModel? {
+	return id.map {
+		photos[id: $0]!
 	}
 }

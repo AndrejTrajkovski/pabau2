@@ -197,6 +197,9 @@
 		8280D479245FEAA80077A73F /* DoctorSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8280D478245FEAA80077A73F /* DoctorSummary.swift */; };
 		8280D4812463F1790077A73F /* ExplodingStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8280D4802463F1790077A73F /* ExplodingStack.swift */; };
 		82811EF423E06BCB0066AFDC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EF323E06BCB0066AFDC /* ContentView.swift */; };
+		8283E3B7249FF5F300276645 /* EditPhotosRightSide.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8283E3B6249FF5F300276645 /* EditPhotosRightSide.swift */; };
+		8283E3B924A29F5300276645 /* Stencils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8283E3B824A29F5300276645 /* Stencils.swift */; };
+		8283E3BB24A361B900276645 /* StencilOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8283E3BA24A361B900276645 /* StencilOverlay.swift */; };
 		828626B12424CA64003ADA24 /* JourneyProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828626B02424CA64003ADA24 /* JourneyProfileView.swift */; };
 		828626B32424CEFB003ADA24 /* ChoosePathway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828626B22424CEFB003ADA24 /* ChoosePathway.swift */; };
 		828626B6242A915D003ADA24 /* Journey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 827B457A2411368100A5975E /* Journey.framework */; };
@@ -295,7 +298,7 @@
 		82FF6CB32490F4450014C4DC /* PhotoVariant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CB22490F4450014C4DC /* PhotoVariant.swift */; };
 		82FF6CB52490F57D0014C4DC /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CB42490F57D0014C4DC /* Photo.swift */; };
 		82FF6CB72490FC8D0014C4DC /* PhotoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CB62490FC8D0014C4DC /* PhotoViewModel.swift */; };
-		82FF6CB924916BF10014C4DC /* EditSinglePhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CB824916BF10014C4DC /* EditSinglePhoto.swift */; };
+		82FF6CB924916BF10014C4DC /* PhotoAndCanvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CB824916BF10014C4DC /* PhotoAndCanvas.swift */; };
 		82FF6CBB2493AE890014C4DC /* CanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CBA2493AE890014C4DC /* CanvasView.swift */; };
 		82FF6CBF2496669D0014C4DC /* PhotoVariantId.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CBE2496669D0014C4DC /* PhotoVariantId.swift */; };
 		82FF6CC1249666CB0014C4DC /* SavedPhoto+PhotoVariant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CC0249666CB0014C4DC /* SavedPhoto+PhotoVariant.swift */; };
@@ -681,6 +684,9 @@
 		82811F0423E720570066AFDC /* LoginTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginTitle.swift; sourceTree = "<group>"; };
 		82811F0623E720670066AFDC /* LoginTextFields.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginTextFields.swift; sourceTree = "<group>"; };
 		82811F0C23E955F70066AFDC /* KeyboardFollower.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardFollower.swift; sourceTree = "<group>"; };
+		8283E3B6249FF5F300276645 /* EditPhotosRightSide.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhotosRightSide.swift; sourceTree = "<group>"; };
+		8283E3B824A29F5300276645 /* Stencils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stencils.swift; sourceTree = "<group>"; };
+		8283E3BA24A361B900276645 /* StencilOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StencilOverlay.swift; sourceTree = "<group>"; };
 		828626B02424CA64003ADA24 /* JourneyProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyProfileView.swift; sourceTree = "<group>"; };
 		828626B22424CEFB003ADA24 /* ChoosePathway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoosePathway.swift; sourceTree = "<group>"; };
 		8297A28523D9AB1B00D091FF /* PageControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageControl.swift; sourceTree = "<group>"; };
@@ -788,7 +794,7 @@
 		82FF6CB22490F4450014C4DC /* PhotoVariant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoVariant.swift; sourceTree = "<group>"; };
 		82FF6CB42490F57D0014C4DC /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
 		82FF6CB62490FC8D0014C4DC /* PhotoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewModel.swift; sourceTree = "<group>"; };
-		82FF6CB824916BF10014C4DC /* EditSinglePhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditSinglePhoto.swift; sourceTree = "<group>"; };
+		82FF6CB824916BF10014C4DC /* PhotoAndCanvas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAndCanvas.swift; sourceTree = "<group>"; };
 		82FF6CBA2493AE890014C4DC /* CanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasView.swift; sourceTree = "<group>"; };
 		82FF6CBE2496669D0014C4DC /* PhotoVariantId.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoVariantId.swift; sourceTree = "<group>"; };
 		82FF6CC0249666CB0014C4DC /* SavedPhoto+PhotoVariant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SavedPhoto+PhotoVariant.swift"; sourceTree = "<group>"; };
@@ -1385,7 +1391,7 @@
 				82D286FD2486D39A003A703B /* EditPhotos.swift */,
 				82D286FF2486D688003A703B /* ImagePicker.swift */,
 				82D287072487F914003A703B /* PhotosForm.swift */,
-				82FF6CB824916BF10014C4DC /* EditSinglePhoto.swift */,
+				82FF6CB824916BF10014C4DC /* PhotoAndCanvas.swift */,
 				82FF6CBA2493AE890014C4DC /* CanvasView.swift */,
 				824C398F24981B5F007133E2 /* MultiplePhotos.swift */,
 				821C9C72249BDBD500ACE3ED /* EditPhotosList.swift */,
@@ -1394,6 +1400,9 @@
 				821C9C78249BDFA800ACE3ED /* SavedPhotoCell.swift */,
 				821C9C7A249BDFC100ACE3ED /* NewPhotoCell.swift */,
 				821C9C7C249BE02600ACE3ED /* SingleSelectPhotoCell.swift */,
+				8283E3B6249FF5F300276645 /* EditPhotosRightSide.swift */,
+				8283E3B824A29F5300276645 /* Stencils.swift */,
+				8283E3BA24A361B900276645 /* StencilOverlay.swift */,
 			);
 			path = Photos;
 			sourceTree = "<group>";
@@ -2174,6 +2183,7 @@
 				82E6D829245DF4D200CB359A /* PatientCompleteForm.swift in Sources */,
 				821C9C7D249BE02600ACE3ED /* SingleSelectPhotoCell.swift in Sources */,
 				8250D7D4242C980100F8F3FC /* ChooseService.swift in Sources */,
+				8283E3B924A29F5300276645 /* Stencils.swift in Sources */,
 				820F16BC247D7CD200DB33DE /* AftercareCell.swift in Sources */,
 				82E6D82B245E09ED00CB359A /* HandBackDevice.swift in Sources */,
 				8280D479245FEAA80077A73F /* DoctorSummary.swift in Sources */,
@@ -2190,6 +2200,7 @@
 				820F16AE247AD0F900DB33DE /* CheckInContainerStateAdapters.swift in Sources */,
 				826F65AD247FE5A40086E187 /* AftercareBoolSection.swift in Sources */,
 				820F16B2247BE3FE00DB33DE /* CheckPatient.swift in Sources */,
+				8283E3BB24A361B900276645 /* StencilOverlay.swift in Sources */,
 				82D43D92243522CD00AC74FA /* Settings.swift in Sources */,
 				821C9C75249BDF3D00ACE3ED /* MultipleSelectPhotoCell.swift in Sources */,
 				82E253FA241B9EB500F16C30 /* JourneyAction.swift in Sources */,
@@ -2200,7 +2211,7 @@
 				82D287082487F914003A703B /* PhotosForm.swift in Sources */,
 				8247763A2473D07F00508434 /* JourneyListStyle.swift in Sources */,
 				824776382473D03700508434 /* ListFrame.swift in Sources */,
-				82FF6CB924916BF10014C4DC /* EditSinglePhoto.swift in Sources */,
+				82FF6CB924916BF10014C4DC /* PhotoAndCanvas.swift in Sources */,
 				82E6D827245C213300CB359A /* PatientDetailsForm.swift in Sources */,
 				82E253FC241B9ED000F16C30 /* JourneyState.swift in Sources */,
 				8250D7CB242BD25B00F8F3FC /* JourneyBaseView.swift in Sources */,
@@ -2214,6 +2225,7 @@
 				82622B52244650E000BECF9A /* CheckBoxField.swift in Sources */,
 				8269526824506F18001B806E /* DynamicForm.swift in Sources */,
 				827B459D24118ABD00A5975E /* JourneyNavigationView.swift in Sources */,
+				8283E3B7249FF5F300276645 /* EditPhotosRightSide.swift in Sources */,
 				826F65B12480FA2E0086E187 /* CompleteJourneyBtn.swift in Sources */,
 				825BE7E224361ABD00422910 /* StaffFilterPicker.swift in Sources */,
 				82477622246D189C00508434 /* JourneyUtil.swift in Sources */,

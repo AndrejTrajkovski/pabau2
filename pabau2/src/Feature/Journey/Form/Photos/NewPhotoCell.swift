@@ -5,6 +5,8 @@ struct NewPhotoCell: View {
 	var body: some View {
 		Image(uiImage: newPhoto.image)
 			.resizable()
-			.aspectRatio(contentMode: .fit)
+			.aspectRatio((
+				newPhoto.image.size.width / newPhoto.image.size.height),
+									 contentMode: .fit)
 	}
 }
