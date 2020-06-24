@@ -40,8 +40,9 @@ struct ImagePicker: UIViewControllerRepresentable {
 		return picker
 	}
 
-	func updateUIViewController(_ uiViewController: UIImagePickerController, context: UIViewControllerRepresentableContext<ImagePicker>) {
-
+	func updateUIViewController(_ picker: UIImagePickerController, context: UIViewControllerRepresentableContext<ImagePicker>) {
+		picker.cameraFlashMode = viewStore.isFlashOn ? .on : .off
+		picker.cameraDevice = viewStore.frontOrRear
 	}
 }
 

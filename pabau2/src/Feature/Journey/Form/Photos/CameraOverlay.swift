@@ -9,6 +9,8 @@ public struct CameraOverlayState: Equatable {
 	var selectedStencilIdx: Int?
 	var isShowingStencils: Bool
 	var isShowingPhotoLib: Bool
+	var isFlashOn: Bool
+	var frontOrRear: UIImagePickerController.CameraDevice
 }
 
 public enum CameraOverlayAction: Equatable {
@@ -17,6 +19,8 @@ public enum CameraOverlayAction: Equatable {
 	case didTakePhoto(UIImage)
 	case closeCamera
 	case stencils(StencilsAction)
+	case onToggleFlash
+	case toggleFrontRearCamera
 }
 
 private enum BottomCollectionType {
@@ -44,6 +48,10 @@ let cameraOverlayReducer: Reducer<CameraOverlayState, CameraOverlayAction, Journ
 				state.isCameraActive = false
 			case .onToggleStencils:
 				state.isShowingStencils.toggle()
+			case .onToggleFlash:
+				state.isFlashOn.toggle()
+			case .toggleFrontRearCamera:
+				state.frontOrRear.toggle()
 			case .stencils:
 				break
 			}
@@ -62,7 +70,9 @@ struct CameraOverlay: View {
 				)
 					.padding(128)
 					.zIndex(1)
-				TopButtons(store: self.store.stateless)
+				TopButtons(store: self.store.scope(
+					state: { $0.isFlashOn })
+				)
 					.exploding(.top)
 				RightSideButtons(onTakePhoto: self.onTakePhoto,
 												 store: self.store.scope(
@@ -88,7 +98,7 @@ struct CameraOverlay: View {
 }
 
 private struct TopButtons: View {
-	let store: Store<Void, CameraOverlayAction>
+	let store: Store<Bool, CameraOverlayAction>
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			HStack {
@@ -101,10 +111,14 @@ private struct TopButtons: View {
 				Button.init(action: { }, label: {
 					Text("Edit")
 				})
-				Button.init(action: { }, label: {
+				Button.init(action: {
+					viewStore.send(.toggleFrontRearCamera)
+				}, label: {
 					Image(systemName: "camera")
 				})
-				Button.init(action: { }, label: {
+				Button.init(action: {
+					viewStore.send(.onToggleFlash)
+				}, label: {
 					Image(systemName: "bolt")
 				})
 			}.padding()
@@ -172,5 +186,11 @@ extension CameraOverlayState {
 			self.selectedStencilIdx = newValue.selectedStencilIdx
 			self.isShowingStencils = newValue.isShowingStencils
 		}
+	}
+}
+
+extension UIImagePickerController.CameraDevice {
+	mutating func toggle() {
+		self = self == .rear ? .front : .rear
 	}
 }

@@ -53,6 +53,8 @@ public struct EditPhotosState: Equatable {
 	var isShowingPhotoLib: Bool = false
 	var isShowingStencils: Bool = false
 	var selectedStencilIdx: Int?
+	var isFlashOn: Bool = false
+	var frontOrRear: UIImagePickerController.CameraDevice = .rear
 	
 	private var showingImagePicker: UIImagePickerController.SourceType?
 
@@ -178,7 +180,9 @@ extension EditPhotosState {
 				stencils: self.stencils,
 				selectedStencilIdx: self.selectedStencilIdx,
 				isShowingStencils: self.isShowingStencils,
-				isShowingPhotoLib: self.isShowingPhotoLib
+				isShowingPhotoLib: self.isShowingPhotoLib,
+				isFlashOn: self.isFlashOn,
+				frontOrRear: self.frontOrRear
 			)
 		}
 		set {
@@ -190,6 +194,8 @@ extension EditPhotosState {
 			self.selectedStencilIdx = newValue.selectedStencilIdx
 			self.isShowingStencils = newValue.isShowingStencils
 			self.isShowingPhotoLib = newValue.isShowingPhotoLib
+			self.isFlashOn = newValue.isFlashOn
+			self.frontOrRear = newValue.frontOrRear
 		}
 	}
 
