@@ -20,7 +20,7 @@ struct StencilOverlay: View {
 			if viewStore.state.isShowingStencils && viewStore.state.selectedStencil != nil {
 				Image(viewStore.state.selectedStencil!)
 					.resizable()
-					.frame(width: 100, height: 100)
+					.aspectRatio(contentMode: .fit)
 			} else {
 				EmptyView()
 			}

@@ -59,7 +59,9 @@ struct CameraOverlay: View {
 			ZStack {
 				StencilOverlay(store: self.store.scope(
 					state: { $0.stencilOverlay }).actionless
-				).zIndex(1)
+				)
+					.padding(128)
+					.zIndex(1)
 				TopButtons(store: self.store.stateless)
 					.exploding(.top)
 				RightSideButtons(onTakePhoto: self.onTakePhoto,
@@ -68,14 +70,16 @@ struct CameraOverlay: View {
 														$0.isShowingStencils
 												}
 					)
-				).exploding(.trailing)
+				)
+					.exploding(.trailing)
 				if viewStore.state.isShowingStencils {
 					StencilsCollection(store:
 						self.store.scope(
 							state: { $0.stencilsState },
 							action: { .stencils($0)}
 						)
-					).exploding(.bottom)
+					)
+						.exploding(.bottom)
 				}
 			}
 			.buttonStyle(CameraButtonStyle())
