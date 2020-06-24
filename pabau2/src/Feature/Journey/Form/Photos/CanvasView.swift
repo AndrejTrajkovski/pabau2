@@ -10,7 +10,6 @@ struct CanvasView: UIViewRepresentable {
 		if let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first,
 			let toolPicker = PKToolPicker.shared(for: window) {
 			toolPicker.addObserver(canvasView)
-			toolPicker.addObserver(context.coordinator)
 			toolPicker.setVisible(true, forFirstResponder: canvasView)
 		}
 		canvasView.isScrollEnabled = false
@@ -35,6 +34,10 @@ struct CanvasView: UIViewRepresentable {
 	/// Cleans up the presented `UIView` (and coordinator) in
 	/// anticipation of their removal.
 	static func dismantleUIView(_ canvasView: PKCanvasView, coordinator: Coordinator) {
+		if let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first,
+			let toolPicker = PKToolPicker.shared(for: window) {
+			toolPicker.removeObserver(canvasView)
+		}
 		canvasView.delegate = nil
 		canvasView.resignFirstResponder()
 	}
@@ -54,11 +57,5 @@ struct CanvasView: UIViewRepresentable {
 extension CanvasView.Coordinator: PKCanvasViewDelegate {
 	public func canvasViewDrawingDidChange(_ canvasView: PKCanvasView) {
 		parent.drawing = canvasView.drawing
-	}
-}
-
-extension CanvasView.Coordinator: PKToolPickerObserver {
-	
-	public func toolPickerFramesObscuredDidChange(_ toolPicker: PKToolPicker) {
 	}
 }

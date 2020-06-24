@@ -88,18 +88,16 @@ struct EditPhotos: View {
 				)
 					.frame(width: 92)
 					.padding(8)
-				VStack {
-					IfLetStore(
-						self.store.scope(
-							state: { $0.editingPhoto },
-							action: { .photoAndCanvas($0) }
-						),
-						then:
-						PhotoAndCanvas.init(store:),
-						else: Spacer()
-					)
-						.padding(.bottom, 128)
-				}
+				IfLetStore(
+					self.store.scope(
+						state: { $0.editingPhoto },
+						action: { .photoAndCanvas($0) }
+					),
+					then:
+					PhotoAndCanvas.init(store:),
+					else: Spacer()
+				)
+					.padding(.bottom, 128)
 				EditPhotosRightSide(store:
 					self.store.scope(
 						state: { $0.rightSide },
