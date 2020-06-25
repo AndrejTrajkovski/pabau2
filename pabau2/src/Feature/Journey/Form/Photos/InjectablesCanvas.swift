@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct InjectablesCanvas : View {
+	let size: CGSize
 	@State var injections: [Injection] = [
 		Injection(injectable: JourneyMocks.injectables()[0],
 							units: 0.2,
@@ -18,7 +19,7 @@ struct InjectablesCanvas : View {
 	@State var activeInjection: Injection?
 	
 	var body: some View {
-		return ZStack(alignment: .topLeading) {
+		ZStack(alignment: .topLeading) {
 			TappableView { location in
 				let newInj = Injection(injectable: self.activeInjectable,
 															 units: self.activeInjectable.increment,
@@ -28,8 +29,9 @@ struct InjectablesCanvas : View {
 			}
 			.background(Color.clear)
 			ForEach(self.injections.indices, id: \.self) { idx in
-				InjectableMarker(isActive: self.injections[idx] == self.activeInjection,
-												 injection: self.injections[idx],
+				InjectableMarker(imageSize: self.size,
+												 isActive: self.injections[idx] == self.activeInjection,
+												 injection: self.$injections[idx],
 												 onSelect: {
 													if self.activeInjection == $0 {
 														self.injections[idx].units += self.chosenIncrement
@@ -38,16 +40,14 @@ struct InjectablesCanvas : View {
 														self.activeInjection = $0
 													}
 				})
-					.offset(CGSize(width: self.injections[idx].position.x,
-												 height: self.injections[idx].position.y))
 			}
 		}
 	}
 }
 
-struct TappableView:UIViewRepresentable {
+struct TappableView: UIViewRepresentable {
 	var tappedCallback: ((CGPoint) -> Void)
-	
+
 	func makeUIView(context: UIViewRepresentableContext<TappableView>) -> UIView {
 		let view = UIView(frame: .zero)
 		let gesture = UITapGestureRecognizer(target: context.coordinator,
@@ -55,46 +55,66 @@ struct TappableView:UIViewRepresentable {
 		view.addGestureRecognizer(gesture)
 		return view
 	}
-	
+
 	class Coordinator: NSObject {
 		var tappedCallback: ((CGPoint) -> Void)
 		init(tappedCallback: @escaping ((CGPoint) -> Void)) {
 			self.tappedCallback = tappedCallback
 		}
-		@objc func tapped(gesture:UITapGestureRecognizer) {
+		@objc func tapped(gesture: UITapGestureRecognizer) {
 			let point = gesture.location(in: gesture.view)
 			self.tappedCallback(point)
 		}
 	}
-	
+
 	func makeCoordinator() -> TappableView.Coordinator {
-		return Coordinator(tappedCallback:self.tappedCallback)
+		return Coordinator(tappedCallback: self.tappedCallback)
 	}
-	
+
 	func updateUIView(_ uiView: UIView,
 										context: UIViewRepresentableContext<TappableView>) {
 	}
 }
 
 struct InjectableMarker: View {
+	private static let markerSize = CGSize.init(width: 50, height: 50)
+	let imageSize: CGSize
 	let isActive: Bool
-	let injection: Injection
+	@Binding var injection: Injection
 	let onSelect: (Injection) -> Void
 	var body: some View {
-		ZStack {
-			Group {
-				if isActive {
-					Color.black
-				} else {
-					injection.injectable.color
+//		GeometryReader { geo in
+			ZStack {
+				Group {
+					if self.isActive {
+						Color.black
+					} else {
+						self.injection.injectable.color
+					}
 				}
+				Text(String(self.injection.units))
+					.foregroundColor(.white)
+					.font(.bold10)
 			}
-			Text(String(injection.units))
-				.foregroundColor(.white)
-				.font(.bold10)
-		}.frame(width: 50, height: 50, alignment: .center)
+			.frame(width: Self.markerSize.width,
+						 height: Self.markerSize.height,
+						 alignment: .center)
 			.onTapGesture {
 				self.onSelect(self.injection)
+			}
+			.gesture(DragGesture().onChanged({ value in
+				let calculatedPos =
+					CGPoint(x: self.injection.position.x + value.translation.width,
+									y: self.injection.position.y + value.translation.height)
+				if calculatedPos.x > 0 &&
+					calculatedPos.y > 0 &&
+					calculatedPos.x + Self.markerSize.width < self.imageSize.width &&
+					calculatedPos.y + Self.markerSize.height < self.imageSize.height {
+					self.injection.position = calculatedPos
+				}
+			}))
+				.offset(CGSize(width: self.injection.position.x,
+											 height: self.injection.position.y))
 		}
-	}
+//	}
 }

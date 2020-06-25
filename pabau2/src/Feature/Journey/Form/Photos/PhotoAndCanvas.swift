@@ -36,7 +36,7 @@ struct PhotoAndCanvas: View {
 					self.photoSize = size
 			}.layoutPriority(1)
 			CanvasParent(store: self.store.scope(state: { $0 }))
-			InjectablesCanvas()
+			InjectablesCanvas(size: photoSize)
 				.frame(width: photoSize.width,
 							 height: photoSize.height)
 		}
