@@ -149,7 +149,8 @@ struct TotalInjAndUnits {
 	var totalUnits: Double = 0
 }
 
-struct Injection: Equatable {
+public struct Injection: Equatable, Identifiable {
+	public let id: UUID = UUID()
 	let injectable: Injectable
 	var units: Double
 	var position: CGPoint

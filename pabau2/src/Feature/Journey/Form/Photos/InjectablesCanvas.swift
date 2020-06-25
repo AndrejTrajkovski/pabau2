@@ -1,8 +1,42 @@
 import SwiftUI
+import ComposableArchitecture
 
-struct InjectablesCanvas : View {
+public let injectablesCanvasReducer = Reducer<InjectablesCanvasState, InjectablesCanvasAction, JourneyEnvironment>.init { state, action, _ in
+	switch action {
+	case .didTapOnCanvas(let point):
+		let newInj = Injection(injectable: state.activeInjectable,
+													 units: state.activeInjectable.increment,
+													 position: point)
+		state.photoInjections.append(newInj)
+		state.activeInjection = newInj
+	case .didTapOnInjection(let injection, let idx):
+		if state.activeInjection == injection {
+			state.photoInjections[idx].units += state.chosenIncrement
+			state.activeInjection = state.photoInjections[idx]
+		} else {
+			state.activeInjection = injection
+		}
+	}
+	return .none
+}
+
+public struct InjectablesCanvasState: Equatable {
+	var allProducts: [Injectable]
+	var photoInjections: [Injection]
+	var chosenIncrement: Double
+	var activeInjection: Injection
+	var activeInjectable: Injectable
+}
+
+public enum InjectablesCanvasAction: Equatable {
+	case didTapOnCanvas(CGPoint)
+	case didTapOnInjection(Injection, index: Int)
+}
+
+struct InjectablesCanvas: View {
 	let size: CGSize
-	@State var injections: [Injection] = [
+	let store: Store<InjectablesCanvasState, InjectablesCanvasAction>
+	@State var photoInjections: [Injection] = [
 		Injection(injectable: JourneyMocks.injectables()[0],
 							units: 0.2,
 							position: CGPoint(x: 150, y: 150)),
@@ -13,29 +47,29 @@ struct InjectablesCanvas : View {
 							units: 0.3,
 							position: CGPoint(x: 30, y: 90))
 	]
-	
+
 	@State var activeInjectable: Injectable = JourneyMocks.injectables()[0]
 	@State var chosenIncrement: Double = 0.25
 	@State var activeInjection: Injection?
-	
+
 	var body: some View {
 		ZStack(alignment: .topLeading) {
 			TappableView { location in
 				let newInj = Injection(injectable: self.activeInjectable,
 															 units: self.activeInjectable.increment,
 															 position: location)
-				self.injections.append(newInj)
+				self.photoInjections.append(newInj)
 				self.activeInjection = newInj
 			}
 			.background(Color.clear)
-			ForEach(self.injections.indices, id: \.self) { idx in
+			ForEach(self.photoInjections.indices, id: \.self) { idx in
 				InjectableMarker(imageSize: self.size,
-												 isActive: self.injections[idx] == self.activeInjection,
-												 injection: self.$injections[idx],
+												 isActive: self.photoInjections[idx] == self.activeInjection,
+												 injection: self.$photoInjections[idx],
 												 onSelect: {
 													if self.activeInjection == $0 {
-														self.injections[idx].units += self.chosenIncrement
-														self.activeInjection = self.injections[idx]
+														self.photoInjections[idx].units += self.chosenIncrement
+														self.activeInjection = self.photoInjections[idx]
 													} else {
 														self.activeInjection = $0
 													}
@@ -83,7 +117,6 @@ struct InjectableMarker: View {
 	@Binding var injection: Injection
 	let onSelect: (Injection) -> Void
 	var body: some View {
-//		GeometryReader { geo in
 			ZStack {
 				Group {
 					if self.isActive {
@@ -116,5 +149,4 @@ struct InjectableMarker: View {
 				.offset(CGSize(width: self.injection.position.x,
 											 height: self.injection.position.y))
 		}
-//	}
 }
