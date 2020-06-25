@@ -16,6 +16,13 @@ public let injectablesCanvasReducer = Reducer<InjectablesCanvasState, Injectable
 		} else {
 			state.activeInjection = injection
 		}
+	case .marker(id: let id, action: let action):
+		switch action {
+		case .didSelectInjection(let injection):
+			state.activeInj
+		case .didDragToPosition(let point)
+			<#code#>
+		}
 	}
 	return .none
 }
@@ -24,56 +31,52 @@ public struct InjectablesCanvasState: Equatable {
 	var allProducts: [Injectable]
 	var photoInjections: [Injection]
 	var chosenIncrement: Double
-	var activeInjection: Injection
+	var activeInjection: Injection?
 	var activeInjectable: Injectable
+	
+	var markers: [InjectableMarkerState] {
+		get {
+			self.photoInjections.map {
+				InjectableMarkerState.init(injection: $0,
+																	 activeInjection: self.activeInjection)}
+		}
+		set {
+			self.photoInjections = newValue.map { $0.injection }
+			self.activeInjection = newValue.first?.activeInjection
+		}
+	}
 }
 
 public enum InjectablesCanvasAction: Equatable {
 	case didTapOnCanvas(CGPoint)
 	case didTapOnInjection(Injection, index: Int)
+	case marker(id: Int, action: MarkerAction)
 }
 
 struct InjectablesCanvas: View {
 	let size: CGSize
 	let store: Store<InjectablesCanvasState, InjectablesCanvasAction>
-	@State var photoInjections: [Injection] = [
-		Injection(injectable: JourneyMocks.injectables()[0],
-							units: 0.2,
-							position: CGPoint(x: 150, y: 150)),
-		Injection(injectable: JourneyMocks.injectables()[1],
-							units: 0.1,
-							position: CGPoint(x: 50, y: 50)),
-		Injection(injectable: JourneyMocks.injectables()[2],
-							units: 0.3,
-							position: CGPoint(x: 30, y: 90))
-	]
-
-	@State var activeInjectable: Injectable = JourneyMocks.injectables()[0]
-	@State var chosenIncrement: Double = 0.25
-	@State var activeInjection: Injection?
-
 	var body: some View {
-		ZStack(alignment: .topLeading) {
-			TappableView { location in
-				let newInj = Injection(injectable: self.activeInjectable,
-															 units: self.activeInjectable.increment,
-															 position: location)
-				self.photoInjections.append(newInj)
-				self.activeInjection = newInj
-			}
-			.background(Color.clear)
-			ForEach(self.photoInjections.indices, id: \.self) { idx in
-				InjectableMarker(imageSize: self.size,
-												 isActive: self.photoInjections[idx] == self.activeInjection,
-												 injection: self.$photoInjections[idx],
-												 onSelect: {
-													if self.activeInjection == $0 {
-														self.photoInjections[idx].units += self.chosenIncrement
-														self.activeInjection = self.photoInjections[idx]
-													} else {
-														self.activeInjection = $0
-													}
+		WithViewStore(store) { viewStore in
+			ZStack(alignment: .topLeading) {
+				TappableView { location in
+					viewStore.send(.didTapOnCanvas(location))
+				}
+				.background(Color.clear)
+				ForEachStore(self.store.scope(state: { $0.markers },
+																 action: InjectablesCanvasAction.marker(id: action:)),
+										 content: {
+											InjectableMarker(store: $0,
+																			 imageSize: self.size)
 				})
+//				ForEach(viewStore.state.photoInjections.indices, id: \.self) { idx in
+//					InjectableMarker(imageSize: self.size,
+//													 isActive: viewStore.state.photoInjections[idx] == viewStore.state.activeInjection,
+//													 injection: self.$photoInjections[idx],
+//													 onSelect: {
+//														viewStore.send(.didTapOnInjection($0, index: idx))
+//					})
+//				}
 			}
 		}
 	}
@@ -110,43 +113,67 @@ struct TappableView: UIViewRepresentable {
 	}
 }
 
+public enum MarkerAction: Equatable {
+	case didSelectInjection(Injection)
+	case didDragToPosition(CGPoint)//self.injection.position = calculatedPos
+}
+
+struct InjectableMarkerState: Identifiable {
+	var id: UUID { injection.id }
+	var injection: Injection
+	var activeInjection: Injection?
+}
+
 struct InjectableMarker: View {
+	let store: Store<InjectableMarkerState, MarkerAction>
 	private static let markerSize = CGSize.init(width: 50, height: 50)
 	let imageSize: CGSize
-	let isActive: Bool
-	@Binding var injection: Injection
-	let onSelect: (Injection) -> Void
+	
+	struct State: Equatable {
+		let injection: Injection
+		let isActive: Bool
+		let color: Color
+		let units: String
+		let offset: CGSize
+	}
+	
 	var body: some View {
+		WithViewStore(store.scope(state: State.init(state:))) { viewStore in
 			ZStack {
-				Group {
-					if self.isActive {
-						Color.black
-					} else {
-						self.injection.injectable.color
-					}
-				}
-				Text(String(self.injection.units))
+				viewStore.state.color
+				Text(viewStore.state.units)
 					.foregroundColor(.white)
 					.font(.bold10)
 			}
 			.frame(width: Self.markerSize.width,
 						 height: Self.markerSize.height,
 						 alignment: .center)
-			.onTapGesture {
-				self.onSelect(self.injection)
+				.onTapGesture {
+					viewStore.send(.didSelectInjection(viewStore.state.injection))
 			}
 			.gesture(DragGesture().onChanged({ value in
 				let calculatedPos =
-					CGPoint(x: self.injection.position.x + value.translation.width,
-									y: self.injection.position.y + value.translation.height)
+					CGPoint(x: viewStore.state.injection.position.x + value.translation.width,
+									y: viewStore.state.injection.position.y + value.translation.height)
 				if calculatedPos.x > 0 &&
 					calculatedPos.y > 0 &&
 					calculatedPos.x + Self.markerSize.width < self.imageSize.width &&
 					calculatedPos.y + Self.markerSize.height < self.imageSize.height {
-					self.injection.position = calculatedPos
+					viewStore.send(.didDragToPosition(calculatedPos))
 				}
 			}))
-				.offset(CGSize(width: self.injection.position.x,
-											 height: self.injection.position.y))
+				.offset(viewStore.state.offset)
 		}
+	}
+}
+
+extension InjectableMarker.State {
+	init (state: InjectableMarkerState) {
+		self.injection = state.injection
+		self.isActive = state.injection == state.activeInjection
+		self.color = self.isActive ? Color.black : state.injection.injectable.color
+		self.units = String(state.injection.units)
+		self.offset = CGSize(width: state.injection.position.x,
+												 height: state.injection.position.y)
+	}
 }
