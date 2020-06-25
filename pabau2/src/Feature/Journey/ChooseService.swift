@@ -111,14 +111,10 @@ struct ChooseService: View {
 struct ServiceRow: View {
 	let service: Service
 	var body: some View {
-		HStack {
-			Circle()
-				.fill(Color.init(hex: service.color))
-				.frame(width: 22.0, height: 22.0)
-			Text(service.name).font(.regular17)
-			Spacer()
-			Text(service.duration ?? "Not set").font(.regular17)
-		}
+		ColorCircleRow(
+			title: service.name,
+			subtitle: service.duration ?? "Not set",
+			color: Color(hex: service.color))
 	}
 }
 

@@ -236,11 +236,12 @@ struct Section2: View {
 struct AddAppSections: View {
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
 	let store: Store<AddAppointmentState, AddAppointmentAction>
-	@ObservedObject public var viewStore: ViewStore<AddAppointmentState, AddAppointmentAction>
+	@ObservedObject var viewStore: ViewStore<AddAppointmentState, AddAppointmentAction>
 	init (store: Store<AddAppointmentState, AddAppointmentAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
+	
 	var body: some View {
 		VStack(alignment: .leading, spacing: 32) {
 			Section1(store: self.store)

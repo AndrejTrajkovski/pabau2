@@ -55,6 +55,7 @@ public struct EditPhotosState: Equatable {
 	var selectedStencilIdx: Int?
 	var isFlashOn: Bool = false
 	var frontOrRear: UIImagePickerController.CameraDevice = .rear
+	var allInjectables: [Injectable] = JourneyMocks.injectables()
 	
 	private var showingImagePicker: UIImagePickerController.SourceType?
 
@@ -193,7 +194,8 @@ extension EditPhotosState {
 				isShowingStencils: self.isShowingStencils,
 				isShowingPhotoLib: self.isShowingPhotoLib,
 				isFlashOn: self.isFlashOn,
-				frontOrRear: self.frontOrRear
+				frontOrRear: self.frontOrRear,
+				allInjectables: self.allInjectables
 			)
 		}
 		set {
@@ -207,6 +209,7 @@ extension EditPhotosState {
 			self.isShowingPhotoLib = newValue.isShowingPhotoLib
 			self.isFlashOn = newValue.isFlashOn
 			self.frontOrRear = newValue.frontOrRear
+			self.allInjectables = newValue.allInjectables
 		}
 	}
 

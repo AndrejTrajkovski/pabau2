@@ -31,13 +31,14 @@ struct PhotoAndCanvas: View {
 		print("edit single photo body")
 		return ZStack {
 			PhotoCell(photo: ViewStore(store).state)
-//				.background(PhotoSizePreferenceSetter())
-//				.onPreferenceChange(PhotoSize.self) { size in
-//					self.photoSize = size
-//			}.layoutPriority(1)
+				.background(PhotoSizePreferenceSetter())
+				.onPreferenceChange(PhotoSize.self) { size in
+					self.photoSize = size
+			}.layoutPriority(1)
 			CanvasParent(store: self.store.scope(state: { $0 }))
-//				.frame(width: photoSize.width,
-//							 height: photoSize.height)
+			InjectablesCanvas()
+				.frame(width: photoSize.width,
+							 height: photoSize.height)
 		}
 	}
 }

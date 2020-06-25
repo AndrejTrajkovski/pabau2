@@ -115,6 +115,11 @@ Tap the aftercare bellow that you wish to send to the client. The aftercare will
 
 	public static let addPhotos = "Add Photos"
 	public static let editPhotos = "Edit Photos"
+	
+	public static let usedInProcedure = "Used in Procedure"
+	public static let total = "Total"
+	public static let allProducts = "All Products"
+	public static let increment = "Increment"
 }
 
 extension String {
