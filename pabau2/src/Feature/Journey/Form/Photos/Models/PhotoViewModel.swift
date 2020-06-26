@@ -8,7 +8,7 @@ public struct PhotoViewModel: Equatable {
 	var tags: [String] = []
 	var injections: [Injection]
 	var activeInjection: Injection?
-
+	
 	init (_ savedPhoto: SavedPhoto) {
 		self.basePhoto = .saved(savedPhoto)
 		self.drawing = nil

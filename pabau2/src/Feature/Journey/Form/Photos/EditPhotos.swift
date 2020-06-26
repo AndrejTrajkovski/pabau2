@@ -15,9 +15,9 @@ let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, JourneyEnviron
 			state: \.self,
 			action: /EditPhotoAction.editPhotoList,
 			environment: { $0 }),
-		photoAndCanvasReducer.optional.pullback(
-			state: \EditPhotosState.editingPhoto,
-			action: /EditPhotoAction.photoAndCanvas,
+		singlePhotoEditReducer.optional.pullback(
+			state: \EditPhotosState.singlePhotoEdit,
+			action: /EditPhotoAction.singlePhotoEdit,
 			environment: { $0 }),
 		cameraOverlayReducer.optional.pullback(
 			state: \EditPhotosState.cameraOverlay,
@@ -29,7 +29,7 @@ let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, JourneyEnviron
 				state.isCameraActive = true
 			case .closeCamera:
 				state.isCameraActive = false
-			case .photoAndCanvas, .editPhotoList, .rightSide, .cameraOverlay:
+			case .editPhotoList, .rightSide, .cameraOverlay, .singlePhotoEdit:
 				break
 			}
 			return .none
@@ -39,10 +39,10 @@ let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, JourneyEnviron
 public enum EditPhotoAction: Equatable {
 	case openCamera
 	case closeCamera
-	case photoAndCanvas(PhotoAndCanvasAction)
 	case editPhotoList(EditPhotosListAction)
 	case rightSide(EditPhotosRightSideAction)
 	case cameraOverlay(CameraOverlayAction)
+	case singlePhotoEdit(SinglePhotoEditAction)
 }
 
 public struct EditPhotosState: Equatable {
@@ -56,6 +56,9 @@ public struct EditPhotosState: Equatable {
 	var isFlashOn: Bool = false
 	var frontOrRear: UIImagePickerController.CameraDevice = .rear
 	var allInjectables: [Injectable] = JourneyMocks.injectables()
+	var activeCanvas: ActiveCanvas = .drawing
+	var chosenIncrement: Double = 0
+	var chosenInjectable: Injectable?
 	
 	private var showingImagePicker: UIImagePickerController.SourceType?
 
@@ -91,11 +94,11 @@ struct EditPhotos: View {
 					.padding(8)
 				IfLetStore(
 					self.store.scope(
-						state: { $0.editingPhoto },
-						action: { .photoAndCanvas($0) }
+						state: { $0.singlePhotoEdit },
+						action: { .singlePhotoEdit($0) }
 					),
 					then:
-					PhotoAndCanvas.init(store:),
+					SinglePhotoEdit.init(store:),
 					else: Spacer()
 				)
 					.padding(.bottom, 128)
@@ -227,7 +230,27 @@ extension EditPhotosState {
 			self.isTagsAlertActive = newValue.isTagsAlertActive
 		}
 	}
-
+	
+	var singlePhotoEdit: SinglePhotoEditState? {
+		get {
+			guard let editingPhoto = editingPhoto else {
+				return nil
+			}
+			return SinglePhotoEditState(
+				activeCanvas: self.activeCanvas,
+				photo: editingPhoto,
+				chosenIncrement: self.chosenIncrement,
+				chosenInjectable: self.chosenInjectable)
+		}
+		set {
+			self.editingPhoto = newValue?.photo
+			guard let newValue = newValue else { return }
+			self.activeCanvas = newValue.activeCanvas
+			self.chosenIncrement = newValue.chosenIncrement
+			self.chosenInjectable = newValue.chosenInjectable
+		}
+	}
+	
 	var editingPhoto: PhotoViewModel? {
 		get {
 			getPhoto(photos, editingPhotoId)
