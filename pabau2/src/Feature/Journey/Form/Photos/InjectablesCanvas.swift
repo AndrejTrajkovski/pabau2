@@ -119,7 +119,7 @@ struct InjectableMarker: View {
 	let store: Store<InjectableMarkerState, MarkerAction>
 	private static let markerSize = CGSize.init(width: 50, height: 50)
 	let imageSize: CGSize
-	
+
 	struct State: Equatable {
 		let injection: Injection
 		let isActive: Bool

@@ -19,17 +19,22 @@ public enum PhotoAndCanvasAction: Equatable {
 
 struct PhotoAndCanvas: View {
 	let store: Store<PhotoViewModel, PhotoAndCanvasAction>
-	init (store: Store<PhotoViewModel, PhotoAndCanvasAction>) {
+	init (store: Store<PhotoViewModel, PhotoAndCanvasAction>,
+				_ photoSize: Binding<CGSize>) {
 		self.store = store
+		self._photoSize = photoSize
 	}
-
+	@Binding var photoSize: CGSize
 	//TODO: UNCOMMENT CODE FOR EQUAL SIZES
 	//TODO: FIX MEMORY LEAKS WITH PKDRAWINGS
 	var body: some View {
 		ZStack {
 			PhotoCell(photo: ViewStore(store).state)
 				.background(PhotoSizePreferenceSetter())
-				.layoutPriority(1)
+				.onPreferenceChange(PhotoSize.self) { size in
+					print(size)
+					self.photoSize = size
+			}
 			CanvasParent(store: self.store.scope(state: { $0 }))
 		}
 	}

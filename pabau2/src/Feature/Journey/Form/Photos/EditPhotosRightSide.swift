@@ -19,6 +19,8 @@ public let editPhotosRightSideReducer = Reducer<EditPhotosRightSideState, EditPh
 		state.photos.remove(id: editingPhotoId)
 	case .didTouchCamera:
 		state.isCameraActive = true
+	case .didTouchInjectables:
+		state.isChooseInjectablesActive = true
 	}
 	return .none
 }
@@ -28,7 +30,8 @@ public struct EditPhotosRightSideState {
 	var editingPhotoId: PhotoVariantId?
 	var isCameraActive: Bool
 	var isTagsAlertActive: Bool
-
+	var isChooseInjectablesActive: Bool
+	
 	var editingPhoto: PhotoViewModel? {
 		get {
 			getPhoto(photos, editingPhotoId)
@@ -40,6 +43,7 @@ public struct EditPhotosRightSideState {
 }
 
 public enum EditPhotosRightSideAction {
+	case didTouchInjectables
 	case didTouchTag
 	case didTouchPrivacy
 	case didTouchTrash
@@ -51,6 +55,12 @@ struct EditPhotosRightSide: View {
 	var body: some View {
 		WithViewStore(store.stateless) { viewStore in
 			VStack {
+				Button.init(action: {
+					viewStore.send(.didTouchInjectables)
+				}, label: {
+					Image("ico-journey-upload-photos-injectables")
+						.foregroundColor(.main)
+				})
 				Button(action: { viewStore.send(.didTouchTag)}, label: {
 					Image(systemName: "tag.circle.fill")
 				})

@@ -23,13 +23,17 @@ let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, JourneyEnviron
 			state: \EditPhotosState.cameraOverlay,
 			action: /EditPhotoAction.cameraOverlay,
 			environment: { $0 }),
+		injectablesListReducer.pullback(
+			state: \EditPhotosState.chooseInjectables,
+			action: /EditPhotoAction.chooseInjectables,
+			environment: { $0 }),
 		.init { state, action, _ in
 			switch action {
 			case .openCamera:
 				state.isCameraActive = true
 			case .closeCamera:
 				state.isCameraActive = false
-			case .editPhotoList, .rightSide, .cameraOverlay, .singlePhotoEdit:
+			case .editPhotoList, .rightSide, .cameraOverlay, .singlePhotoEdit, .chooseInjectables:
 				break
 			}
 			return .none
@@ -43,6 +47,7 @@ public enum EditPhotoAction: Equatable {
 	case rightSide(EditPhotosRightSideAction)
 	case cameraOverlay(CameraOverlayAction)
 	case singlePhotoEdit(SinglePhotoEditAction)
+	case chooseInjectables(InjectablesListAction)
 }
 
 public struct EditPhotosState: Equatable {
@@ -59,7 +64,7 @@ public struct EditPhotosState: Equatable {
 	var activeCanvas: ActiveCanvas = .drawing
 	var chosenIncrement: Double = 0
 	var chosenInjectable: Injectable?
-	
+	var isChooseInjectablesActive: Bool = false
 	private var showingImagePicker: UIImagePickerController.SourceType?
 
 	init (_ photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>) {
@@ -83,9 +88,18 @@ struct EditPhotos: View {
 	init (store: Store<EditPhotosState, EditPhotoAction>) {
 		self.store = store
 	}
+	
+	struct State: Equatable {
+		let isCameraActive: Bool
+		let isChooseInjectablesActive: Bool
+		init (state: EditPhotosState) {
+			self.isCameraActive = state.isCameraActive
+			self.isChooseInjectablesActive = state.isChooseInjectablesActive
+		}
+	}
 
 	var body: some View {
-		WithViewStore(store.scope(state: { $0.isCameraActive})) { viewStore in
+		WithViewStore(store.scope(state: State.init(state:))) { viewStore in
 			HStack {
 				EditPhotosList(store:
 					self.store.scope(state: { $0 }, action: { .editPhotoList($0) })
@@ -111,10 +125,17 @@ struct EditPhotos: View {
 					.padding(8)
 					.padding(.bottom, 64)
 			}
+		.sheet(isPresented: .constant(viewStore.state.isChooseInjectablesActive),
+					 content: {
+						InjectablesList(store:
+							self.store.scope(state: { $0.chooseInjectables },
+															 action: { .chooseInjectables($0) })
+						)
+		})
 			.navigationBarItems(trailing:
 				EmptyView()
 			)
-			.modalLink(isPresented: .constant(viewStore.state),
+				.modalLink(isPresented: .constant(viewStore.state.isCameraActive),
 								 linkType: ModalTransition.fullScreenModal,
 								 destination: {
 									IfLetStore(self.store.scope(
@@ -124,63 +145,7 @@ struct EditPhotos: View {
 									).navigationBarHidden(true)
 										.navigationBarTitle("")
 			})
-//			.sheet(isPresented: viewStore.binding(
-//				get: { $0.isShowingCamera }, send: { _ in EditPhotoAction.closeCamera }),
-//							content: {
-//								ImagePicker(image:
-//									viewStore.binding(
-//										get: { $0.editingUIImage },
-//										send: { .didGetUIImage($0) }
-//									)
-//								)
-//			}
-//			)
-//			.onAppear(perform: { //show camera })
 		}.debug("Edit Photos")
-////		.popover(isPresented: Binding(
-////			get: { self.showingImagePicker == .some(.photoLibrary) },
-////			set: { self.showingImagePicker = $0 == true ? .some(.photoLibrary) : nil}
-////			), content: {
-////				ImagePicker(image: self.$inputImage)
-////		})
-	}
-}
-
-extension EditPhotos {
-
-	func showImagePickerForCamera(_ sender: UIButton) {
-		let authStatus = AVCaptureDevice.authorizationStatus(for: AVMediaType.video)
-
-		if authStatus == AVAuthorizationStatus.denied {
-			let alert = UIAlertController(title: "Unable to access the Camera",
-																		message: "To turn on camera access, choose Settings > Privacy > Camera and turn on Camera access for this app.",
-																		preferredStyle: UIAlertController.Style.alert)
-
-			let okAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
-			alert.addAction(okAction)
-
-			let settingsAction = UIAlertAction(title: "Settings", style: .default, handler: { _ in
-				// Take the user to the Settings app to change permissions.
-				guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else { return }
-				if UIApplication.shared.canOpenURL(settingsUrl) {
-					UIApplication.shared.open(settingsUrl, completionHandler: { _ in
-						// The resource finished opening.
-					})
-				}
-			})
-			alert.addAction(settingsAction)
-//			present(alert, animated: true, completion: nil)
-		} else if authStatus == AVAuthorizationStatus.notDetermined {
-			AVCaptureDevice.requestAccess(for: AVMediaType.video, completionHandler: { (granted) in
-				if granted {
-//					DispatchQueue.main.async {
-//						self.showImagePicker(sourceType: UIImagePickerController.SourceType.camera, button: sender)
-//					}
-				}
-			})
-		} else {
-//			showImagePicker(sourceType: UIImagePickerController.SourceType.camera, button: sender)
-		}
 	}
 }
 
@@ -221,16 +186,18 @@ extension EditPhotosState {
 			EditPhotosRightSideState(photos: self.photos,
 															 editingPhotoId: self.editingPhotoId,
 															 isCameraActive: self.isCameraActive,
-															 isTagsAlertActive: self.isTagsAlertActive)
+															 isTagsAlertActive: self.isTagsAlertActive,
+															 isChooseInjectablesActive: self.isChooseInjectablesActive)
 		}
 		set {
 			self.photos = newValue.photos
 			self.editingPhotoId = newValue.editingPhotoId
 			self.isCameraActive = newValue.isCameraActive
 			self.isTagsAlertActive = newValue.isTagsAlertActive
+			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
 		}
 	}
-	
+
 	var singlePhotoEdit: SinglePhotoEditState? {
 		get {
 			guard let editingPhoto = editingPhoto else {
@@ -257,6 +224,23 @@ extension EditPhotosState {
 		}
 		set {
 			set(newValue, onto: &photos)
+		}
+	}
+
+	var chooseInjectables: InjectablesListState {
+		get {
+			InjectablesListState(
+				usedInjections: editingPhoto?.injections ?? [],
+				allInjectables: self.allInjectables,
+				isChooseInjectablesActive: self.isChooseInjectablesActive,
+				chosenInjectable: self.chosenInjectable
+			)
+		}
+		set {
+			self.editingPhoto?.injections = newValue.usedInjections
+			self.allInjectables = newValue.allInjectables
+			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
+			self.chosenInjectable = newValue.chosenInjectable
 		}
 	}
 }

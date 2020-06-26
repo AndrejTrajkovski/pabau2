@@ -26,7 +26,7 @@ struct SinglePhotoEditState: Equatable {
 	var photo: PhotoViewModel
 	var chosenIncrement: Double
 	var chosenInjectable: Injectable?
-	
+
 	var activeInjectable: ActiveInjectableState? {
 		get {
 			guard let chosenInjectable = chosenInjectable else { return nil }
@@ -70,39 +70,42 @@ public enum SinglePhotoEditAction: Equatable {
 
 struct SinglePhotoEdit: View {
 	@State var photoSize: CGSize = .zero
-	
 	let store: Store<SinglePhotoEditState, SinglePhotoEditAction>
 	public init(store: Store<SinglePhotoEditState, SinglePhotoEditAction>) {
 		self.store = store
 	}
-	
 	var body: some View {
 		WithViewStore(store.scope { $0.activeCanvas }) { viewStore in
-			IfLetStore(self.store.scope(
-				state: { $0.activeInjectable },
-				action: { .activeInjectable($0) }
-				),
-								 then: {
-									ActiveInjectable(store: $0)
+			VStack {
+				IfLetStore(self.store.scope(
+					state: { $0.activeInjectable },
+					action: { .activeInjectable($0) }
+					),
+									 then: {
+										ActiveInjectable(store: $0)
+				}
+				)
+				ZStack {
+					IfLetStore(self.store.scope(
+						state: { $0.injectablesCanvas },
+						action: { .injectablesCanvas($0) }),
+										 then: {
+											InjectablesCanvas(size: self.photoSize,
+																				store: $0)
+												.frame(width: self.photoSize.width,
+															 height: self.photoSize.height)
+												.background(Color.red.opacity(0.4))
+												.zIndex(viewStore.state.injectablesCanvas != nil ? 1 : 0)
+					})
+					PhotoAndCanvas(store:
+						self.store.scope(state: { $0.photo },
+														 action: { .photoAndCanvas($0) }),
+												 self.$photoSize
+					)
+					.disabled(viewStore.state.injectablesCanvas != nil)
+					.zIndex(viewStore.state.injectablesCanvas == nil ? 1 : 0)
+				}
 			}
-			)
-			IfLetStore(self.store.scope(
-				state: { $0.injectablesCanvas },
-				action: { .injectablesCanvas($0) }),
-			then: {
-				InjectablesCanvas(size: self.photoSize,
-													store: $0)
-					.frame(width: self.photoSize.width,
-								 height: self.photoSize.height)
-					.zIndex(viewStore.state == .injectables ? 1 : 0)
-			})
-			PhotoAndCanvas(store:
-				self.store.scope(state: { $0.photo },
-										action: { .photoAndCanvas($0) }))
-				.onPreferenceChange(PhotoSize.self) { size in
-					self.photoSize = size
-			}
-				.zIndex(viewStore.state == .drawing ? 1 : 0)
 		}
 	}
 }

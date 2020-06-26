@@ -2,12 +2,25 @@ import SwiftUI
 import ComposableArchitecture
 import Util
 
-struct InjectablesState: Equatable {
-	var usedInjections: [Injection]
-	var allProducts: [Injectable]
+public let injectablesListReducer = Reducer<InjectablesListState, InjectablesListAction, JourneyEnvironment>.init { state, action, _ in
+	switch action {
+	case .onSelectInjectableId(let id):
+		state.chosenInjectable = state.allInjectables.first(where: {
+			$0.id == id
+		})
+		state.isChooseInjectablesActive = false
+	}
+	return .none
 }
 
-public enum InjectablesAction: Equatable {
+public struct InjectablesListState: Equatable {
+	var usedInjections: [Injection]
+	var allInjectables: [Injectable]
+	var isChooseInjectablesActive: Bool
+	var chosenInjectable: Injectable?
+}
+
+public enum InjectablesListAction: Equatable {
 	case onSelectInjectableId(Int)
 }
 
@@ -17,7 +30,7 @@ struct InjectablesList: View {
 		let sections: [SectionViewModel]
 	}
 	
-	let store: Store<InjectablesState, InjectablesAction>
+	let store: Store<InjectablesListState, InjectablesListAction>
 	@State var searchText: String = ""
 	
 	var body: some View {
@@ -40,7 +53,7 @@ struct InjectablesList: View {
 				}
 				.padding()
 				.navigationBarTitle("Injectables")
-			}
+				}.navigationViewStyle(StackNavigationViewStyle())
 		}
 	}
 	
@@ -103,7 +116,7 @@ extension InjectablesList {
 typealias GroupedInj = Dictionary<Injectable, TotalInjAndUnits>
 
 extension InjectablesList.ViewState {
-	init(state: InjectablesState) {
+	init(state: InjectablesListState) {
 		let usedHeader = InjectablesList.HeaderViewModel(title: Texts.usedInProcedure,
 																								 subtitle: Texts.total)
 		let rows = state.usedInjections.reduce(into: GroupedInj.init(), { res, element in
@@ -135,7 +148,7 @@ extension InjectablesList.ViewState {
 																								items: rows)
 		let allHeader = InjectablesList.HeaderViewModel(title: Texts.allProducts,
 																								subtitle: Texts.increment)
-		let allProducts = state.allProducts.map {
+		let allProducts = state.allInjectables.map {
 			InjectablesList.ListItemViewModel(title: $0.title, subtitle: String($0.increment), color: $0.color, injectableId: $0.id)
 		}
 		let section2 = InjectablesList.SectionViewModel(header: allHeader,
