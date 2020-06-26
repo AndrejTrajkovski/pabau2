@@ -16,19 +16,19 @@ public let injectablesCanvasReducer = Reducer<InjectablesCanvasState, Injectable
 		} else {
 			state.activeInjection = injection
 		}
-	case .marker(id: let id, action: let action):
+	case .marker(idx: let idx, action: let action):
 		switch action {
 		case .didSelectInjection(let injection):
-			state.activeInj
-		case .didDragToPosition(let point)
-			<#code#>
+			state.activeInjection = injection
+			state.photoInjections[idx] = injection
+		case .didDragToPosition(let point):
+			state.photoInjections[idx].position = point
 		}
 	}
 	return .none
 }
 
 public struct InjectablesCanvasState: Equatable {
-	var allProducts: [Injectable]
 	var photoInjections: [Injection]
 	var chosenIncrement: Double
 	var activeInjection: Injection?
@@ -50,7 +50,7 @@ public struct InjectablesCanvasState: Equatable {
 public enum InjectablesCanvasAction: Equatable {
 	case didTapOnCanvas(CGPoint)
 	case didTapOnInjection(Injection, index: Int)
-	case marker(id: Int, action: MarkerAction)
+	case marker(idx: Int, action: MarkerAction)
 }
 
 struct InjectablesCanvas: View {
@@ -64,19 +64,11 @@ struct InjectablesCanvas: View {
 				}
 				.background(Color.clear)
 				ForEachStore(self.store.scope(state: { $0.markers },
-																 action: InjectablesCanvasAction.marker(id: action:)),
+																			action: InjectablesCanvasAction.marker(idx: action:)),
 										 content: {
 											InjectableMarker(store: $0,
 																			 imageSize: self.size)
 				})
-//				ForEach(viewStore.state.photoInjections.indices, id: \.self) { idx in
-//					InjectableMarker(imageSize: self.size,
-//													 isActive: viewStore.state.photoInjections[idx] == viewStore.state.activeInjection,
-//													 injection: self.$photoInjections[idx],
-//													 onSelect: {
-//														viewStore.send(.didTapOnInjection($0, index: idx))
-//					})
-//				}
 			}
 		}
 	}
@@ -149,8 +141,8 @@ struct InjectableMarker: View {
 						 height: Self.markerSize.height,
 						 alignment: .center)
 				.onTapGesture {
-					viewStore.send(.didSelectInjection(viewStore.state.injection))
-			}
+						viewStore.send(.didSelectInjection(viewStore.state.injection))
+				}
 			.gesture(DragGesture().onChanged({ value in
 				let calculatedPos =
 					CGPoint(x: viewStore.state.injection.position.x + value.translation.width,

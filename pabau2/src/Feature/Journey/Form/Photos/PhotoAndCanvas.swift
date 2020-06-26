@@ -25,20 +25,12 @@ struct PhotoAndCanvas: View {
 
 	//TODO: UNCOMMENT CODE FOR EQUAL SIZES
 	//TODO: FIX MEMORY LEAKS WITH PKDRAWINGS
-	@State var photoSize: CGSize = .zero
-	@State var bottomPadding: CGFloat = 0
 	var body: some View {
-		print("edit single photo body")
-		return ZStack {
+		ZStack {
 			PhotoCell(photo: ViewStore(store).state)
 				.background(PhotoSizePreferenceSetter())
-				.onPreferenceChange(PhotoSize.self) { size in
-					self.photoSize = size
-			}.layoutPriority(1)
+				.layoutPriority(1)
 			CanvasParent(store: self.store.scope(state: { $0 }))
-			InjectablesCanvas(size: photoSize)
-				.frame(width: photoSize.width,
-							 height: photoSize.height)
 		}
 	}
 }
@@ -47,8 +39,7 @@ struct CanvasParent: View {
 	let store: Store<PhotoViewModel, PhotoAndCanvasAction>
 	@ObservedObject var viewStore: ViewStore<PhotoViewModel, PhotoAndCanvasAction>
 	
-	init(store: Store<PhotoViewModel, PhotoAndCanvasAction>
-	) {
+	init(store: Store<PhotoViewModel, PhotoAndCanvasAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}

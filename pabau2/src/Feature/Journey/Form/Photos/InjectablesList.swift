@@ -160,5 +160,5 @@ public struct Injectable: Hashable {
 	let id: Int
 	let color: Color
 	let title: String
-	let increment: Double
+	var increment: Double
 }

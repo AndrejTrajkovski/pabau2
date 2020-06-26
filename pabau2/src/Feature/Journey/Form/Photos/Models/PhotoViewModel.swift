@@ -7,6 +7,7 @@ public struct PhotoViewModel: Equatable {
 	var isPrivate: Bool = false
 	var tags: [String] = []
 	var injections: [Injection]
+	var activeInjection: Injection?
 
 	init (_ savedPhoto: SavedPhoto) {
 		self.basePhoto = .saved(savedPhoto)
