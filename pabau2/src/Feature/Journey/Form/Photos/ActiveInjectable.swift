@@ -1,13 +1,31 @@
 import SwiftUI
 import ComposableArchitecture
 
-struct ActiveInjectableState: Equatable {
+public let activeInjectableReducer = Reducer<ActiveInjectableState, ActiveInjectableAction, JourneyEnvironment>.init {
+	state, action, _ in
+	switch action {
+	case .increment:
+		state.chosenIncrement += state.chosenInjectable.increment
+		if state.chosenInjection != nil {
+			state.chosenInjection!.units = state.chosenIncrement
+		}
+	case .decrement:
+		state.chosenIncrement -= state.chosenInjectable.increment
+		if state.chosenInjection != nil {
+			state.chosenInjection!.units = state.chosenIncrement
+		}
+	}
+	return .none
+}
+
+public struct ActiveInjectableState: Equatable {
 	var photoInjections: [Injection]
 	var chosenIncrement: Double
 	var chosenInjectable: Injectable
+	var chosenInjection: Injection?
 }
 
-enum ActiveInjectableAction: Equatable{
+public enum ActiveInjectableAction: Equatable{
 	case increment
 	case decrement
 }
