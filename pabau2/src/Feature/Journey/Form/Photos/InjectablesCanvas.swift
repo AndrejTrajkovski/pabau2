@@ -4,45 +4,44 @@ import ComposableArchitecture
 public let injectablesCanvasReducer = Reducer<InjectablesCanvasState, InjectablesCanvasAction, JourneyEnvironment>.init { state, action, _ in
 	switch action {
 	case .didTapOnCanvas(let point):
-		let newInj = Injection(injectable: state.activeInjectable,
-													 units: state.activeInjectable.increment,
+		let newInj = Injection(injectable: state.chosenInjectable,
+													 units: state.chosenInjectable.increment,
 													 position: point)
-		state.photoInjections.append(newInj)
-		state.activeInjection = newInj
+		state.photo.injections.append(newInj)
+		state.photo.activeInjection = newInj
 	case .didTapOnInjection(let injection, let idx):
-		if state.activeInjection == injection {
-			state.photoInjections[idx].units += state.chosenIncrement
-			state.activeInjection = state.photoInjections[idx]
+		if state.photo.activeInjection == injection {
+			state.photo.injections[idx].units += state.chosenIncrement
+			state.photo.activeInjection = state.photo.injections[idx]
 		} else {
-			state.activeInjection = injection
+			state.photo.activeInjection = injection
 		}
 	case .marker(idx: let idx, action: let action):
 		switch action {
 		case .didSelectInjection(let injection):
-			state.activeInjection = injection
-			state.photoInjections[idx] = injection
+			state.photo.activeInjection = injection
+			state.photo.injections[idx] = injection
 		case .didDragToPosition(let point):
-			state.photoInjections[idx].position = point
+			state.photo.injections[idx].position = point
 		}
 	}
 	return .none
 }
 
 public struct InjectablesCanvasState: Equatable {
-	var photoInjections: [Injection]
+	var photo: PhotoViewModel
 	var chosenIncrement: Double
-	var activeInjection: Injection?
-	var activeInjectable: Injectable
+	var chosenInjectable: Injectable
 	
 	var markers: [InjectableMarkerState] {
 		get {
-			self.photoInjections.map {
+			self.photo.injections.map {
 				InjectableMarkerState.init(injection: $0,
-																	 activeInjection: self.activeInjection)}
+																	 activeInjection: self.photo.activeInjection)}
 		}
 		set {
-			self.photoInjections = newValue.map { $0.injection }
-			self.activeInjection = newValue.first?.activeInjection
+			self.photo.injections = newValue.map { $0.injection }
+			self.photo.activeInjection = newValue.first?.activeInjection
 		}
 	}
 }

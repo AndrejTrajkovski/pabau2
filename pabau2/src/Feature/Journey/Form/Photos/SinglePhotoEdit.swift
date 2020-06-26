@@ -9,17 +9,20 @@ enum ActiveCanvas {
 struct SinglePhotoEditState: Equatable {
 	var activeCanvas: ActiveCanvas
 	var photo: PhotoViewModel
+	var chosenIncrement: Double
+	var chosenInjectable: Injectable
 	
 	var injectablesCanvas: InjectablesCanvasState {
 		get {
 			InjectablesCanvasState(
-				photoInjections: photo.injections,
-				chosenIncrement: <#T##Double#>,
-				activeInjection: photo.activeInjection,
-				activeInjectable: <#T##Injectable#>)
+				photo: photo,
+				chosenIncrement: chosenIncrement,
+				chosenInjectable: chosenInjectable)
 		}
 		set {
-			
+			self.photo = newValue.photo
+			self.chosenIncrement = newValue.chosenIncrement
+			self.chosenInjectable = newValue.chosenInjectable
 		}
 	}
 }
