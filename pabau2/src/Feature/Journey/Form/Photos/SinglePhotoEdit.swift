@@ -74,8 +74,27 @@ struct SinglePhotoEdit: View {
 	public init(store: Store<SinglePhotoEditState, SinglePhotoEditAction>) {
 		self.store = store
 	}
+	
+	struct ViewState: Equatable {
+		let injectablesZIndex: Double
+		let drawingCanvasZIndex: Double
+		let isDrawingDisabled: Bool
+		
+		init (state: SinglePhotoEditState) {
+			let isInjectablesActive = state.chosenInjectable != nil ? true : false
+			if isInjectablesActive {
+				self.injectablesZIndex = 1.0
+				self.drawingCanvasZIndex = 0.0
+			} else {
+				self.injectablesZIndex = 0.0
+				self.drawingCanvasZIndex = 1.0
+			}
+			self.isDrawingDisabled = !isInjectablesActive
+		}
+	}
+	
 	var body: some View {
-		WithViewStore(store.scope { $0.activeCanvas }) { viewStore in
+		WithViewStore(store.scope(state: ViewState.init(state:))) { viewStore in
 			VStack {
 				IfLetStore(self.store.scope(
 					state: { $0.activeInjectable },
@@ -83,7 +102,7 @@ struct SinglePhotoEdit: View {
 					),
 									 then: {
 										ActiveInjectable(store: $0)
-				}
+					}
 				)
 				ZStack {
 					IfLetStore(self.store.scope(
@@ -95,15 +114,15 @@ struct SinglePhotoEdit: View {
 												.frame(width: self.photoSize.width,
 															 height: self.photoSize.height)
 												.background(Color.red.opacity(0.4))
-												.zIndex(viewStore.state.injectablesCanvas != nil ? 1 : 0)
+												.zIndex(viewStore.state.injectablesZIndex)
 					})
 					PhotoAndCanvas(store:
 						self.store.scope(state: { $0.photo },
 														 action: { .photoAndCanvas($0) }),
 												 self.$photoSize
 					)
-					.disabled(viewStore.state.injectablesCanvas != nil)
-					.zIndex(viewStore.state.injectablesCanvas == nil ? 1 : 0)
+					.disabled(viewStore.state.isDrawingDisabled)
+					.zIndex(viewStore.state.drawingCanvasZIndex)
 				}
 			}
 		}
