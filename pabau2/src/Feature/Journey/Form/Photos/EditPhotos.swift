@@ -15,18 +15,14 @@ let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, JourneyEnviron
 			state: \.self,
 			action: /EditPhotoAction.editPhotoList,
 			environment: { $0 }),
-//		singlePhotoEditReducer.optional.pullback(
-//			state: \EditPhotosState.singlePhotoEdit,
-//			action: /EditPhotoAction.singlePhotoEdit,
-//			environment: { $0 }),
+		singlePhotoEditReducer.optional.pullback(
+			state: \EditPhotosState.singlePhotoEdit,
+			action: /EditPhotoAction.singlePhotoEdit,
+			environment: { $0 }),
 		cameraOverlayReducer.optional.pullback(
 			state: \EditPhotosState.cameraOverlay,
 			action: /EditPhotoAction.cameraOverlay,
 			environment: { $0 }),
-//		injectablesListReducer.pullback(
-//			state: \EditPhotosState.chooseInjectables,
-//			action: /EditPhotoAction.chooseInjectables,
-//			environment: { $0 }),
 		.init { state, action, _ in
 			switch action {
 			case .openCamera:
@@ -60,11 +56,13 @@ public struct EditPhotosState: Equatable {
 	var selectedStencilIdx: Int?
 	var isFlashOn: Bool = false
 	var frontOrRear: UIImagePickerController.CameraDevice = .rear
-	var allInjectables: [Injectable] = JourneyMocks.injectables()
+	
 	var activeCanvas: CanvasMode = .drawing
-	var stepperInjectable: Injectable?
-	var stepper: InjectableStepperState?
+	var allInjectables: [Injectable] = JourneyMocks.injectables()
 	var isChooseInjectablesActive: Bool = false
+	var stepper: InjectableStepperState?
+	var canvas: InjectablesCanvasState?
+	
 	private var showingImagePicker: UIImagePickerController.SourceType?
 
 	init (_ photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>) {
@@ -125,13 +123,6 @@ struct EditPhotos: View {
 					.padding(8)
 					.padding(.bottom, 64)
 			}
-		.sheet(isPresented: .constant(viewStore.state.isChooseInjectablesActive),
-					 content: {
-						ChooseInjectable(store:
-							self.store.scope(state: { $0.chooseInjectables },
-															 action: { .chooseInjectables($0) })
-						)
-		})
 			.navigationBarItems(trailing:
 				EmptyView()
 			)
@@ -187,14 +178,14 @@ extension EditPhotosState {
 															 editingPhotoId: self.editingPhotoId,
 															 isCameraActive: self.isCameraActive,
 															 isTagsAlertActive: self.isTagsAlertActive,
-															 isChooseInjectablesActive: self.isChooseInjectablesActive)
+															 activeCanvas: self.activeCanvas)
 		}
 		set {
 			self.photos = newValue.photos
 			self.editingPhotoId = newValue.editingPhotoId
 			self.isCameraActive = newValue.isCameraActive
 			self.isTagsAlertActive = newValue.isTagsAlertActive
-			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
+			self.activeCanvas = newValue.activeCanvas
 		}
 	}
 
@@ -206,42 +197,29 @@ extension EditPhotosState {
 			return SinglePhotoEditState(
 				activeCanvas: self.activeCanvas,
 				photo: editingPhoto,
-				chosenIncrement: self.chosenIncrement,
-				chosenInjectable: self.chosenInjectable
+				allInjectables: self.allInjectables,
+				isChooseInjectablesActive: self.isChooseInjectablesActive,
+				stepper: self.stepper,
+				canvas: self.canvas
 			)
 		}
 		set {
 			self.editingPhoto = newValue?.photo
 			guard let newValue = newValue else { return }
 			self.activeCanvas = newValue.activeCanvas
-			self.chosenIncrement = newValue.chosenIncrement
-			self.chosenInjectable = newValue.chosenInjectable
+			self.allInjectables = newValue.allInjectables
+			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
+			self.stepper = newValue.stepper
+			self.canvas = newValue.canvas
 		}
 	}
-	
+
 	var editingPhoto: PhotoViewModel? {
 		get {
 			getPhoto(photos, editingPhotoId)
 		}
 		set {
 			set(newValue, onto: &photos)
-		}
-	}
-
-	var chooseInjectables: ChooseInjectablesState {
-		get {
-			ChooseInjectablesState(
-				usedInjections: editingPhoto?.injections ?? [],
-				allInjectables: self.allInjectables,
-				isChooseInjectablesActive: self.isChooseInjectablesActive,
-				chosenInjectable: self.chosenInjectable
-			)
-		}
-		set {
-			self.editingPhoto?.injections = newValue.usedInjections
-			self.allInjectables = newValue.allInjectables
-			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
-			self.chosenInjectable = newValue.chosenInjectable
 		}
 	}
 }

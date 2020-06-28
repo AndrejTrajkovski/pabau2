@@ -42,11 +42,11 @@ public let injectableStepperReducer = Reducer<InjectableStepperState, Injectable
 				 action: action,
 				 injectable: state.injectable)
 		state.type = .activeInjections(injections)
-	case .emptyInjectable(var emptyInj):
-		calc(increment: &emptyInj.increment,
+	case .noInjections(var increment):
+		calc(increment: &increment,
 				 injectable: state.injectable,
 				 action: action)
-		state.type = .emptyInjectable(emptyInj)
+		state.type = .noInjections(increment: increment)
 	}
 	return .none
 }
@@ -56,7 +56,7 @@ public struct InjectableStepperState: Equatable {
 	var injectable: Injectable
 	
 	init(injectable: Injectable) {
-		self.type = .emptyInjectable(EmptyInjectable(injectable: injectable))
+		self.type = .noInjections(increment: injectable.increment)
 		self.injectable = injectable
 	}
 	
@@ -69,15 +69,7 @@ public struct InjectableStepperState: Equatable {
 
 public enum InjectableStepperType: Equatable {
 	case activeInjections(InjectionsAndActive)
-	case emptyInjectable(EmptyInjectable)
-}
-
-public struct EmptyInjectable: Equatable {
-	var increment: Double
-	
-	init (injectable: Injectable) {
-		self.increment = injectable.increment
-	}
+	case noInjections(increment: Double)
 }
 
 public struct UsedInjectionsState: Equatable {
@@ -150,7 +142,7 @@ extension InjectableStepperTop.State {
 				res.totalInj += 1
 			})
 			self.desc = "Selection: \(total.totalInj) injections - \(total.totalUnits)"
-		case .emptyInjectable:
+		case .noInjections:
 			self.desc = "Selection: 0 injections - 0 units"
 		}
 	}

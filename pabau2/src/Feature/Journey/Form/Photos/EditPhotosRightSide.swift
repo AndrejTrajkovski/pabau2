@@ -20,7 +20,7 @@ public let editPhotosRightSideReducer = Reducer<EditPhotosRightSideState, EditPh
 	case .didTouchCamera:
 		state.isCameraActive = true
 	case .didTouchInjectables:
-		state.isChooseInjectablesActive = true
+		state.activeCanvas = .injectables
 	}
 	return .none
 }
@@ -30,7 +30,7 @@ public struct EditPhotosRightSideState {
 	var editingPhotoId: PhotoVariantId?
 	var isCameraActive: Bool
 	var isTagsAlertActive: Bool
-	var isChooseInjectablesActive: Bool
+	var activeCanvas: CanvasMode
 	
 	var editingPhoto: PhotoViewModel? {
 		get {

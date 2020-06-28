@@ -8,82 +8,64 @@ enum CanvasMode: Equatable {
 	case view
 }
 
-//let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction, JourneyEnvironment> = .combine (
-//	injectablesCanvasReducer.optional.pullback(
-//		state: \SinglePhotoEditState.injectablesCanvas,
-//		action: /SinglePhotoEditAction.injectablesCanvas,
-//		environment: { $0 }),
-//	injectableStepperReducer.optional.pullback(
-//		state: \SinglePhotoEditState.activeInjectable,
-//		action: /SinglePhotoEditAction.activeInjectable,
-//		environment: { $0 }),
-//	photoAndCanvasReducer.pullback(
-//		state: \SinglePhotoEditState.photo,
-//		action: /SinglePhotoEditAction.photoAndCanvas,
-//		environment: { $0 })
-//)
+let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction, JourneyEnvironment> = .combine (
+	injectablesContainerReducer.pullback(
+		state: \SinglePhotoEditState.injectables,
+		action: /SinglePhotoEditAction.injectables,
+		environment: { $0 }),
+	photoAndCanvasReducer.pullback(
+		state: \SinglePhotoEditState.photo,
+		action: /SinglePhotoEditAction.photoAndCanvas,
+		environment: { $0 })
+)
 
 struct SinglePhotoEditState: Equatable {
 	var activeCanvas: CanvasMode
 	var photo: PhotoViewModel
-//	var chosenIncrement: Double
-//	var chosenInjectable: Injectable?
-//
-//	var activeInjectable: ActiveInjectableState? {
-//		get {
-//			guard let chosenInjectable = chosenInjectable else { return nil }
-//			return ActiveInjectableState(photoInjections: photo.injections,
-//														chosenIncrement: chosenIncrement,
-//														chosenInjectable: chosenInjectable,
-//														chosenInjection: photo.activeInjection)
-//		}
-//		set {
-//			self.chosenInjectable = newValue?.chosenInjectable
-//			guard let newValue = newValue else { return  }
-//			self.photo.injections = newValue.photoInjections
-//			self.chosenIncrement = newValue.chosenIncrement
-//			self.photo.activeInjection = newValue.chosenInjection
-//		}
-//	}
-//
-//	var injectablesCanvas: InjectablesCanvasState? {
-//		get {
-//			chosenInjectable.map {
-//				InjectablesCanvasState(
-//					photo: photo,
-//					chosenIncrement: chosenIncrement,
-//					chosenInjectable: $0)
-//			}
-//		}
-//		set {
-//			self.chosenInjectable = newValue?.chosenInjectable
-//			guard let newValue = newValue else { return }
-//			self.photo = newValue.photo
-//			self.chosenIncrement = newValue.chosenIncrement
-//		}
-//	}
+	var allInjectables: [Injectable]
+	var isChooseInjectablesActive: Bool = false
+	var stepper: InjectableStepperState?
+	var canvas: InjectablesCanvasState?
+
+	var injectables: InjectablesState {
+		get {
+			InjectablesState(
+				allInjectables: self.allInjectables,
+				photoInjections: self.photo.injections,
+				isChooseInjectablesActive: self.isChooseInjectablesActive,
+				stepper: self.stepper,
+				canvas: self.canvas)
+		}
+		set {
+			self.allInjectables = newValue.allInjectables
+			self.photo.injections = newValue.photoInjections
+			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
+			self.stepper = newValue.stepper
+			self.canvas = newValue.canvas
+		}
+	}
 }
 
 public enum SinglePhotoEditAction: Equatable {
 	case photoAndCanvas(PhotoAndCanvasAction)
-	case injectablesCanvas(InjectablesCanvasAction)
-	case activeInjectable(InjectableStepperAction)
+	case injectables(InjectablesAction)
 }
 
 struct SinglePhotoEdit: View {
+	let footerHeight: CGFloat = 128.0
 	@State var photoSize: CGSize = .zero
 	let store: Store<SinglePhotoEditState, SinglePhotoEditAction>
 	public init(store: Store<SinglePhotoEditState, SinglePhotoEditAction>) {
 		self.store = store
 	}
-	
+
 	struct ViewState: Equatable {
 		let injectablesZIndex: Double
 		let drawingCanvasZIndex: Double
 		let isDrawingDisabled: Bool
-		
+	
 		init (state: SinglePhotoEditState) {
-			let isInjectablesActive = extract(case: CanvasMode.injectables, from: state.activeCanvas) != nil ? true : false
+			let isInjectablesActive = state.activeCanvas == CanvasMode.injectables ? true : false
 			if isInjectablesActive {
 				self.injectablesZIndex = 1.0
 				self.drawingCanvasZIndex = 0.0
@@ -91,43 +73,30 @@ struct SinglePhotoEdit: View {
 				self.injectablesZIndex = 0.0
 				self.drawingCanvasZIndex = 1.0
 			}
-			self.isDrawingDisabled = !isInjectablesActive
+			self.isDrawingDisabled = isInjectablesActive
 		}
 	}
-	
+
 	var body: some View {
-		EmptyView()
-//		WithViewStore(store.scope(state: ViewState.init(state:))) { viewStore in
-//			VStack {
-//				IfLetStore(self.store.scope(
-//					state: { $0.activeInjectable },
-//					action: { .activeInjectable($0) }
-//					),
-//									 then: {
-//										InjectableStepper(store: $0)
-//					}
-//				)
-//				ZStack {
-//					IfLetStore(self.store.scope(
-//						state: { $0.injectablesCanvas },
-//						action: { .injectablesCanvas($0) }),
-//										 then: {
-//											InjectablesCanvas(size: self.photoSize,
-//																				store: $0)
-//												.frame(width: self.photoSize.width,
-//															 height: self.photoSize.height)
-//												.background(Color.red.opacity(0.4))
-//												.zIndex(viewStore.state.injectablesZIndex)
-//					})
-//					PhotoAndCanvas(store:
-//						self.store.scope(state: { $0.photo },
-//														 action: { .photoAndCanvas($0) }),
-//												 self.$photoSize
-//					)
-//					.disabled(viewStore.state.isDrawingDisabled)
-//					.zIndex(viewStore.state.drawingCanvasZIndex)
-//				}
-//			}
-//		}
+		WithViewStore(store.scope(state: ViewState.init(state:))) { viewStore in
+			ZStack {
+				InjectablesContainer(
+					store: self.store.scope(
+						state: { $0.injectables },
+						action: { .injectables($0) }),
+					photoSize: self.$photoSize,
+					footerHeight: self.footerHeight
+				)
+					.background(Color.red.opacity(0.4))
+					.zIndex(viewStore.state.injectablesZIndex)
+				PhotoAndCanvas(store:
+					self.store.scope(state: { $0.photo },
+													 action: { .photoAndCanvas($0) }),
+											 self.$photoSize
+				)
+					.disabled(viewStore.state.isDrawingDisabled)
+					.zIndex(viewStore.state.drawingCanvasZIndex)
+			}
+		}
 	}
 }
