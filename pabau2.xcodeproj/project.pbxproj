@@ -201,10 +201,11 @@
 		8283E3B924A29F5300276645 /* Stencils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8283E3B824A29F5300276645 /* Stencils.swift */; };
 		8283E3BB24A361B900276645 /* StencilOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8283E3BA24A361B900276645 /* StencilOverlay.swift */; };
 		8283E3BD24A490FE00276645 /* ColorCircleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8283E3BC24A490FE00276645 /* ColorCircleRow.swift */; };
-		8283E3BF24A491E600276645 /* InjectablesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8283E3BE24A491E600276645 /* InjectablesList.swift */; };
+		8283E3BF24A491E600276645 /* ChooseInjectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8283E3BE24A491E600276645 /* ChooseInjectable.swift */; };
 		8283E3C124A50AF400276645 /* InjectablesCanvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8283E3C024A50AF400276645 /* InjectablesCanvas.swift */; };
 		8283E3C324A59C3900276645 /* SinglePhotoEdit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8283E3C224A59C3900276645 /* SinglePhotoEdit.swift */; };
-		8283E3C524A5D62700276645 /* ActiveInjectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8283E3C424A5D62700276645 /* ActiveInjectable.swift */; };
+		8283E3C524A5D62700276645 /* InjectableStepper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8283E3C424A5D62700276645 /* InjectableStepper.swift */; };
+		8283E3C724A8A53C00276645 /* InjectablesContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8283E3C624A8A53C00276645 /* InjectablesContainer.swift */; };
 		828626B12424CA64003ADA24 /* JourneyProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828626B02424CA64003ADA24 /* JourneyProfileView.swift */; };
 		828626B32424CEFB003ADA24 /* ChoosePathway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828626B22424CEFB003ADA24 /* ChoosePathway.swift */; };
 		828626B6242A915D003ADA24 /* Journey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 827B457A2411368100A5975E /* Journey.framework */; };
@@ -693,10 +694,11 @@
 		8283E3B824A29F5300276645 /* Stencils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stencils.swift; sourceTree = "<group>"; };
 		8283E3BA24A361B900276645 /* StencilOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StencilOverlay.swift; sourceTree = "<group>"; };
 		8283E3BC24A490FE00276645 /* ColorCircleRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCircleRow.swift; sourceTree = "<group>"; };
-		8283E3BE24A491E600276645 /* InjectablesList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InjectablesList.swift; sourceTree = "<group>"; };
+		8283E3BE24A491E600276645 /* ChooseInjectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseInjectable.swift; sourceTree = "<group>"; };
 		8283E3C024A50AF400276645 /* InjectablesCanvas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InjectablesCanvas.swift; sourceTree = "<group>"; };
 		8283E3C224A59C3900276645 /* SinglePhotoEdit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SinglePhotoEdit.swift; sourceTree = "<group>"; };
-		8283E3C424A5D62700276645 /* ActiveInjectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveInjectable.swift; sourceTree = "<group>"; };
+		8283E3C424A5D62700276645 /* InjectableStepper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InjectableStepper.swift; sourceTree = "<group>"; };
+		8283E3C624A8A53C00276645 /* InjectablesContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InjectablesContainer.swift; sourceTree = "<group>"; };
 		828626B02424CA64003ADA24 /* JourneyProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyProfileView.swift; sourceTree = "<group>"; };
 		828626B22424CEFB003ADA24 /* ChoosePathway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoosePathway.swift; sourceTree = "<group>"; };
 		8297A28523D9AB1B00D091FF /* PageControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageControl.swift; sourceTree = "<group>"; };
@@ -1414,10 +1416,11 @@
 				8283E3B6249FF5F300276645 /* EditPhotosRightSide.swift */,
 				8283E3B824A29F5300276645 /* Stencils.swift */,
 				8283E3BA24A361B900276645 /* StencilOverlay.swift */,
-				8283E3BE24A491E600276645 /* InjectablesList.swift */,
+				8283E3BE24A491E600276645 /* ChooseInjectable.swift */,
 				8283E3C024A50AF400276645 /* InjectablesCanvas.swift */,
 				8283E3C224A59C3900276645 /* SinglePhotoEdit.swift */,
-				8283E3C424A5D62700276645 /* ActiveInjectable.swift */,
+				8283E3C424A5D62700276645 /* InjectableStepper.swift */,
+				8283E3C624A8A53C00276645 /* InjectablesContainer.swift */,
 			);
 			path = Photos;
 			sourceTree = "<group>";
@@ -2170,7 +2173,7 @@
 				8247761C246C339800508434 /* MetaFormAndStatus.swift in Sources */,
 				8269526C2452DA93001B806E /* TextAreaField.swift in Sources */,
 				827B459B241136D900A5975E /* JourneyContainerView.swift in Sources */,
-				8283E3C524A5D62700276645 /* ActiveInjectable.swift in Sources */,
+				8283E3C524A5D62700276645 /* InjectableStepper.swift in Sources */,
 				826F65AF24802AEA0086E187 /* CheckInBody.swift in Sources */,
 				82FF6CB32490F4450014C4DC /* PhotoVariant.swift in Sources */,
 				826F65B5248123C40086E187 /* FooterButtons.swift in Sources */,
@@ -2184,6 +2187,7 @@
 				821C9C73249BDBD500ACE3ED /* EditPhotosList.swift in Sources */,
 				82E6D82F245E177900CB359A /* JourneyTransitionView.swift in Sources */,
 				8283E3C124A50AF400276645 /* InjectablesCanvas.swift in Sources */,
+				8283E3C724A8A53C00276645 /* InjectablesContainer.swift in Sources */,
 				825BE7E424361C4400422910 /* SoundPlayer.swift in Sources */,
 				824C399024981B5F007133E2 /* MultiplePhotos.swift in Sources */,
 				82D287002486D688003A703B /* ImagePicker.swift in Sources */,
@@ -2191,7 +2195,7 @@
 				821C9C77249BDF9100ACE3ED /* PhotoCell.swift in Sources */,
 				82622B5024464E0800BECF9A /* RibbonView.swift in Sources */,
 				82FB74F6245A9E51001C2DF3 /* FormWrapper.swift in Sources */,
-				8283E3BF24A491E600276645 /* InjectablesList.swift in Sources */,
+				8283E3BF24A491E600276645 /* ChooseInjectable.swift in Sources */,
 				820F16C0247D7F5300DB33DE /* AftercareImagesSection.swift in Sources */,
 				82D286FE2486D39A003A703B /* EditPhotos.swift in Sources */,
 				82FF6CC1249666CB0014C4DC /* SavedPhoto+PhotoVariant.swift in Sources */,

@@ -15,18 +15,18 @@ let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, JourneyEnviron
 			state: \.self,
 			action: /EditPhotoAction.editPhotoList,
 			environment: { $0 }),
-		singlePhotoEditReducer.optional.pullback(
-			state: \EditPhotosState.singlePhotoEdit,
-			action: /EditPhotoAction.singlePhotoEdit,
-			environment: { $0 }),
+//		singlePhotoEditReducer.optional.pullback(
+//			state: \EditPhotosState.singlePhotoEdit,
+//			action: /EditPhotoAction.singlePhotoEdit,
+//			environment: { $0 }),
 		cameraOverlayReducer.optional.pullback(
 			state: \EditPhotosState.cameraOverlay,
 			action: /EditPhotoAction.cameraOverlay,
 			environment: { $0 }),
-		injectablesListReducer.pullback(
-			state: \EditPhotosState.chooseInjectables,
-			action: /EditPhotoAction.chooseInjectables,
-			environment: { $0 }),
+//		injectablesListReducer.pullback(
+//			state: \EditPhotosState.chooseInjectables,
+//			action: /EditPhotoAction.chooseInjectables,
+//			environment: { $0 }),
 		.init { state, action, _ in
 			switch action {
 			case .openCamera:
@@ -47,7 +47,7 @@ public enum EditPhotoAction: Equatable {
 	case rightSide(EditPhotosRightSideAction)
 	case cameraOverlay(CameraOverlayAction)
 	case singlePhotoEdit(SinglePhotoEditAction)
-	case chooseInjectables(InjectablesListAction)
+	case chooseInjectables(ChooseInjectableAction)
 }
 
 public struct EditPhotosState: Equatable {
@@ -61,9 +61,9 @@ public struct EditPhotosState: Equatable {
 	var isFlashOn: Bool = false
 	var frontOrRear: UIImagePickerController.CameraDevice = .rear
 	var allInjectables: [Injectable] = JourneyMocks.injectables()
-	var activeCanvas: ActiveCanvas = .drawing
-	var chosenIncrement: Double = 0
-	var chosenInjectable: Injectable?
+	var activeCanvas: CanvasMode = .drawing
+	var stepperInjectable: Injectable?
+	var stepper: InjectableStepperState?
 	var isChooseInjectablesActive: Bool = false
 	private var showingImagePicker: UIImagePickerController.SourceType?
 
@@ -127,7 +127,7 @@ struct EditPhotos: View {
 			}
 		.sheet(isPresented: .constant(viewStore.state.isChooseInjectablesActive),
 					 content: {
-						InjectablesList(store:
+						ChooseInjectable(store:
 							self.store.scope(state: { $0.chooseInjectables },
 															 action: { .chooseInjectables($0) })
 						)
@@ -207,7 +207,8 @@ extension EditPhotosState {
 				activeCanvas: self.activeCanvas,
 				photo: editingPhoto,
 				chosenIncrement: self.chosenIncrement,
-				chosenInjectable: self.chosenInjectable)
+				chosenInjectable: self.chosenInjectable
+			)
 		}
 		set {
 			self.editingPhoto = newValue?.photo
@@ -227,9 +228,9 @@ extension EditPhotosState {
 		}
 	}
 
-	var chooseInjectables: InjectablesListState {
+	var chooseInjectables: ChooseInjectablesState {
 		get {
-			InjectablesListState(
+			ChooseInjectablesState(
 				usedInjections: editingPhoto?.injections ?? [],
 				allInjectables: self.allInjectables,
 				isChooseInjectablesActive: self.isChooseInjectablesActive,

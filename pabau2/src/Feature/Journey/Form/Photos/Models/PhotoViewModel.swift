@@ -1,24 +1,40 @@
 import Model
 import PencilKit
+import ComposableArchitecture
+
+typealias InjectableId = Int
+
+public struct InjectionsAndActive: Equatable, Identifiable {
+	
+	public var id: Int { return injectableId }
+	
+	var injectableId: InjectableId
+	var injections: IdentifiedArrayOf<Injection>
+	var activeInjectionId: UUID?
+	
+	var totals: TotalInjAndUnits {
+		self.injections.reduce(into: TotalInjAndUnits()) {
+			$0.totalInj += 1
+			$0.totalUnits += $1.units
+		}
+	}
+}
 
 public struct PhotoViewModel: Equatable {
 	let basePhoto: Photo
 	var drawing: PKDrawing?
 	var isPrivate: Bool = false
 	var tags: [String] = []
-	var injections: [Injection]
-	var activeInjection: Injection?
+	var injections: IdentifiedArrayOf<InjectionsAndActive> = []
 	
 	init (_ savedPhoto: SavedPhoto) {
 		self.basePhoto = .saved(savedPhoto)
 		self.drawing = nil
-		self.injections = []
 	}
 
 	init (_ newPhoto: NewPhoto) {
 		self.basePhoto = .new(newPhoto)
 		self.drawing = nil
-		self.injections = []
 	}
 }
 

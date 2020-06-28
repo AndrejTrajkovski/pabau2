@@ -4,44 +4,44 @@ import ComposableArchitecture
 public let injectablesCanvasReducer = Reducer<InjectablesCanvasState, InjectablesCanvasAction, JourneyEnvironment>.init { state, action, _ in
 	switch action {
 	case .didTapOnCanvas(let point):
-		let newInj = Injection(injectable: state.chosenInjectable,
-													 units: state.chosenInjectable.increment,
+		let newInj = Injection(units: state.chosenInjectable.increment,
 													 position: point)
-		state.photo.injections.append(newInj)
-		state.photo.activeInjection = newInj
+		state.injections.append(newInj)
+		state.activeInjection = newInj
 	case .didTapOnInjection(let injection, let idx):
-		if state.photo.activeInjection == injection {
-			state.photo.injections[idx].units += state.chosenIncrement
-			state.photo.activeInjection = state.photo.injections[idx]
+		if state.activeInjection == injection {
+			state.injections[idx].units += state.chosenIncrement
+			state.activeInjection = state.injections[idx]
 		} else {
-			state.photo.activeInjection = injection
+			state.activeInjection = injection
 		}
 	case .marker(idx: let idx, action: let action):
 		switch action {
 		case .didSelectInjection(let injection):
-			state.photo.activeInjection = injection
-			state.photo.injections[idx] = injection
+			state.activeInjection = injection
+			state.injections[idx] = injection
 		case .didDragToPosition(let point):
-			state.photo.injections[idx].position = point
+			state.injections[idx].position = point
 		}
 	}
 	return .none
 }
 
 public struct InjectablesCanvasState: Equatable {
-	var photo: PhotoViewModel
+	var injections: [Injection]
+	var activeInjection: Injection?
 	var chosenIncrement: Double
 	var chosenInjectable: Injectable
 	
 	var markers: [InjectableMarkerState] {
 		get {
-			self.photo.injections.map {
+			self.injections.map {
 				InjectableMarkerState.init(injection: $0,
-																	 activeInjection: self.photo.activeInjection)}
+																	 activeInjection: self.activeInjection, injectable: chosenInjectable)}
 		}
 		set {
-			self.photo.injections = newValue.map { $0.injection }
-			self.photo.activeInjection = newValue.first?.activeInjection
+			self.injections = newValue.map { $0.injection }
+			self.activeInjection = newValue.first?.activeInjection
 		}
 	}
 }
@@ -113,6 +113,7 @@ struct InjectableMarkerState: Identifiable {
 	var id: UUID { injection.id }
 	var injection: Injection
 	var activeInjection: Injection?
+	let injectable: Injectable
 }
 
 struct InjectableMarker: View {
@@ -162,7 +163,7 @@ extension InjectableMarker.State {
 	init (state: InjectableMarkerState) {
 		self.injection = state.injection
 		self.isActive = state.injection == state.activeInjection
-		self.color = self.isActive ? Color.black : state.injection.injectable.color
+		self.color = self.isActive ? Color.black : state.injectable.color
 		self.units = String(state.injection.units)
 		self.offset = CGSize(width: state.injection.position.x,
 												 height: state.injection.position.y)

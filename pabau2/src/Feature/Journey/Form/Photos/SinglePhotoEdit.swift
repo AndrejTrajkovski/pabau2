@@ -1,71 +1,73 @@
 import SwiftUI
 import ComposableArchitecture
+import PencilKit
 
-enum ActiveCanvas {
+enum CanvasMode: Equatable {
 	case drawing
 	case injectables
+	case view
 }
 
-let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction, JourneyEnvironment> = .combine (
-	injectablesCanvasReducer.optional.pullback(
-		state: \SinglePhotoEditState.injectablesCanvas,
-		action: /SinglePhotoEditAction.injectablesCanvas,
-		environment: { $0 }),
-	activeInjectableReducer.optional.pullback(
-		state: \SinglePhotoEditState.activeInjectable,
-		action: /SinglePhotoEditAction.activeInjectable,
-		environment: { $0 }),
-	photoAndCanvasReducer.pullback(
-		state: \SinglePhotoEditState.photo,
-		action: /SinglePhotoEditAction.photoAndCanvas,
-		environment: { $0 })
-)
+//let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction, JourneyEnvironment> = .combine (
+//	injectablesCanvasReducer.optional.pullback(
+//		state: \SinglePhotoEditState.injectablesCanvas,
+//		action: /SinglePhotoEditAction.injectablesCanvas,
+//		environment: { $0 }),
+//	injectableStepperReducer.optional.pullback(
+//		state: \SinglePhotoEditState.activeInjectable,
+//		action: /SinglePhotoEditAction.activeInjectable,
+//		environment: { $0 }),
+//	photoAndCanvasReducer.pullback(
+//		state: \SinglePhotoEditState.photo,
+//		action: /SinglePhotoEditAction.photoAndCanvas,
+//		environment: { $0 })
+//)
 
 struct SinglePhotoEditState: Equatable {
-	var activeCanvas: ActiveCanvas
+	var activeCanvas: CanvasMode
 	var photo: PhotoViewModel
-	var chosenIncrement: Double
-	var chosenInjectable: Injectable?
-
-	var activeInjectable: ActiveInjectableState? {
-		get {
-			guard let chosenInjectable = chosenInjectable else { return nil }
-			return ActiveInjectableState(photoInjections: photo.injections,
-														chosenIncrement: chosenIncrement,
-														chosenInjectable: chosenInjectable,
-														chosenInjection: photo.activeInjection)
-		}
-		set {
-			self.chosenInjectable = newValue?.chosenInjectable
-			guard let newValue = newValue else { return  }
-			self.photo.injections = newValue.photoInjections
-			self.chosenIncrement = newValue.chosenIncrement
-			self.photo.activeInjection = newValue.chosenInjection
-		}
-	}
-	
-	var injectablesCanvas: InjectablesCanvasState? {
-		get {
-			chosenInjectable.map {
-				InjectablesCanvasState(
-					photo: photo,
-					chosenIncrement: chosenIncrement,
-					chosenInjectable: $0)
-			}
-		}
-		set {
-			self.chosenInjectable = newValue?.chosenInjectable
-			guard let newValue = newValue else { return }
-			self.photo = newValue.photo
-			self.chosenIncrement = newValue.chosenIncrement
-		}
-	}
+//	var chosenIncrement: Double
+//	var chosenInjectable: Injectable?
+//
+//	var activeInjectable: ActiveInjectableState? {
+//		get {
+//			guard let chosenInjectable = chosenInjectable else { return nil }
+//			return ActiveInjectableState(photoInjections: photo.injections,
+//														chosenIncrement: chosenIncrement,
+//														chosenInjectable: chosenInjectable,
+//														chosenInjection: photo.activeInjection)
+//		}
+//		set {
+//			self.chosenInjectable = newValue?.chosenInjectable
+//			guard let newValue = newValue else { return  }
+//			self.photo.injections = newValue.photoInjections
+//			self.chosenIncrement = newValue.chosenIncrement
+//			self.photo.activeInjection = newValue.chosenInjection
+//		}
+//	}
+//
+//	var injectablesCanvas: InjectablesCanvasState? {
+//		get {
+//			chosenInjectable.map {
+//				InjectablesCanvasState(
+//					photo: photo,
+//					chosenIncrement: chosenIncrement,
+//					chosenInjectable: $0)
+//			}
+//		}
+//		set {
+//			self.chosenInjectable = newValue?.chosenInjectable
+//			guard let newValue = newValue else { return }
+//			self.photo = newValue.photo
+//			self.chosenIncrement = newValue.chosenIncrement
+//		}
+//	}
 }
 
 public enum SinglePhotoEditAction: Equatable {
 	case photoAndCanvas(PhotoAndCanvasAction)
 	case injectablesCanvas(InjectablesCanvasAction)
-	case activeInjectable(ActiveInjectableAction)
+	case activeInjectable(InjectableStepperAction)
 }
 
 struct SinglePhotoEdit: View {
@@ -81,7 +83,7 @@ struct SinglePhotoEdit: View {
 		let isDrawingDisabled: Bool
 		
 		init (state: SinglePhotoEditState) {
-			let isInjectablesActive = state.chosenInjectable != nil ? true : false
+			let isInjectablesActive = extract(case: CanvasMode.injectables, from: state.activeCanvas) != nil ? true : false
 			if isInjectablesActive {
 				self.injectablesZIndex = 1.0
 				self.drawingCanvasZIndex = 0.0
@@ -94,37 +96,38 @@ struct SinglePhotoEdit: View {
 	}
 	
 	var body: some View {
-		WithViewStore(store.scope(state: ViewState.init(state:))) { viewStore in
-			VStack {
-				IfLetStore(self.store.scope(
-					state: { $0.activeInjectable },
-					action: { .activeInjectable($0) }
-					),
-									 then: {
-										ActiveInjectable(store: $0)
-					}
-				)
-				ZStack {
-					IfLetStore(self.store.scope(
-						state: { $0.injectablesCanvas },
-						action: { .injectablesCanvas($0) }),
-										 then: {
-											InjectablesCanvas(size: self.photoSize,
-																				store: $0)
-												.frame(width: self.photoSize.width,
-															 height: self.photoSize.height)
-												.background(Color.red.opacity(0.4))
-												.zIndex(viewStore.state.injectablesZIndex)
-					})
-					PhotoAndCanvas(store:
-						self.store.scope(state: { $0.photo },
-														 action: { .photoAndCanvas($0) }),
-												 self.$photoSize
-					)
-					.disabled(viewStore.state.isDrawingDisabled)
-					.zIndex(viewStore.state.drawingCanvasZIndex)
-				}
-			}
-		}
+		EmptyView()
+//		WithViewStore(store.scope(state: ViewState.init(state:))) { viewStore in
+//			VStack {
+//				IfLetStore(self.store.scope(
+//					state: { $0.activeInjectable },
+//					action: { .activeInjectable($0) }
+//					),
+//									 then: {
+//										InjectableStepper(store: $0)
+//					}
+//				)
+//				ZStack {
+//					IfLetStore(self.store.scope(
+//						state: { $0.injectablesCanvas },
+//						action: { .injectablesCanvas($0) }),
+//										 then: {
+//											InjectablesCanvas(size: self.photoSize,
+//																				store: $0)
+//												.frame(width: self.photoSize.width,
+//															 height: self.photoSize.height)
+//												.background(Color.red.opacity(0.4))
+//												.zIndex(viewStore.state.injectablesZIndex)
+//					})
+//					PhotoAndCanvas(store:
+//						self.store.scope(state: { $0.photo },
+//														 action: { .photoAndCanvas($0) }),
+//												 self.$photoSize
+//					)
+//					.disabled(viewStore.state.isDrawingDisabled)
+//					.zIndex(viewStore.state.drawingCanvasZIndex)
+//				}
+//			}
+//		}
 	}
 }
