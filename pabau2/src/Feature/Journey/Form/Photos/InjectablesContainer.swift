@@ -120,13 +120,13 @@ struct InjectablesContainer: View {
 							.frame(width: self.photoSize.width,
 										 height: self.photoSize.height)
 				})
-				IfLetStore(self.store.scope(
-					state: { $0.stepper },
-					action: { .stepper($0)})
-					, then: {
-						InjectableStepper(store: $0)
-				})
-					.frame(height: self.footerHeight)
+//				IfLetStore(self.store.scope(
+//					state: { $0.stepper },
+//					action: { .stepper($0)})
+//					, then: {
+//						InjectableStepper(store: $0)
+//				})
+//					.frame(height: self.footerHeight)
 			}.sheet(isPresented: .constant(viewStore.state.isChooseInjectablesActive),
 						 content: {
 							ChooseInjectable(store:

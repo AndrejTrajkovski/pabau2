@@ -104,14 +104,17 @@ extension SectionViewModel {
 	init (used: ChooseInjectablesState) {
 		self.header = HeaderViewModel(title: Texts.usedInProcedure,
 																	subtitle: Texts.total)
-		self.items = used.photoInjections.map { injection in
-			let injectable = used.allInjectables.first(where: { $0.id == injection.injectableId })
-			let totals = injection.totals
+		self.items = used.photoInjections.map { dictionary in
+			let injectable = used.allInjectables.first(where: { $0.id == dictionary.key })
+			let totals = dictionary.value.reduce(into: TotalInjAndUnits(), {
+				$0.totalInj += 1
+				$0.totalUnits += $1.units
+			})
 			let subtitle = String(totals.totalInj) + " injections - " + String(totals.totalUnits) + " units"
 			return ListItemViewModel(title: injectable?.title ?? "",
 															 subtitle: subtitle,
 															 color: injectable?.color ?? .white,
-															 injectableId: injection.id)
+															 injectableId: dictionary.key)
 		}
 	}
 }
@@ -122,7 +125,7 @@ extension SectionViewModel {
 																	subtitle: Texts.increment)
 		self.items = all.allInjectables
 			.filter {
-				!all.photoInjections.map(\.injectableId).contains($0.id)
+				!all.photoInjections.map(\.key).contains($0.id)
 		}
 		.map {
 			ListItemViewModel(title: $0.title, subtitle: String($0.increment), color: $0.color, injectableId: $0.id)
@@ -191,7 +194,7 @@ struct TotalInjAndUnits {
 	var totalUnits: Double = 0
 }
 
-public struct Injection: Hashable, Identifiable {
+public struct Injection: Equatable, Identifiable {
 	public let id: UUID = UUID()
 	var units: Double
 	var position: CGPoint

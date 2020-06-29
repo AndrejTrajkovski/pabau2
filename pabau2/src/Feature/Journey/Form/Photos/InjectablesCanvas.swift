@@ -14,14 +14,16 @@ public let injectablesCanvasReducer = Reducer<InjectablesCanvasState, Injectable
 			state.photoInjections[state.chosenInjectableId] = [newInj]
 		}
 		state.chosenInjectionId = newInj.id
-	case .marker(idx: let idx, action: let action):
-		switch action {
-		case .didSelectInjection(let injection):
-			state.chosenInjectionId = injection.id
-		case .didDragToPosition(let point):
-			break
-//			state.in
-		}
+	case .injectable(let id, let markerAction):
+		switch markerAction {
+		case .didTouchMarker(idx: let idx, action: let action):
+				switch action {
+				case .didSelectInjection(let injection):
+					state.chosenInjectionId = injection.id
+				case .didDragToPosition(let point):
+					state.photoInjections[id]?[idx].position = point
+				}
+			}
 	}
 	return .none
 }
@@ -48,12 +50,11 @@ public struct InjectablesCanvasState: Equatable {
 //					arrayOfMarkers.map(\.injection)
 //			}
 //		}
-	}
 }
 
 public enum InjectablesCanvasAction: Equatable {
 	case didTapOnCanvas(CGPoint)
-	case injection(id: InjectableId, action: MarkerInjectionAction)
+	case injectable(id: InjectableId, action: MarkerInjectionAction)
 }
 
 struct InjectablesCanvas: View {
@@ -62,15 +63,22 @@ struct InjectablesCanvas: View {
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			ZStack(alignment: .topLeading) {
-//				TappableView { location in
-//					viewStore.send(.didTapOnCanvas(location))
-//				}
-//				.background(Color.clear)
-				ForEachStore(self.store.scope(state: { canvasState in
-					IdentifiedArray.init(canvasState.photoInjections, id: \.key)
-				},
-																			action: InjectablesCanvasAction.injection(id: action:)),
-			content: { (injectionsStore: Store<(key: Int, value: Array<Injection>), MarkerInjectionAction>) in
+				TappableView { location in
+					viewStore.send(.didTapOnCanvas(location))
+				}
+				.background(Color.clear)
+				ForEachStore(self.store.scope(
+					state: { canvasState in
+						let markers = canvasState.photoInjections.mapValues { values in
+							values.map { injection in
+								InjectableMarkerState(injection: injection,
+																			isActive: injection.id == viewStore.chosenInjectionId,
+																			injectable: viewStore.allInjectables[id: viewStore.chosenInjectableId]!)
+							}
+						}
+						return IdentifiedArray.init(markers, id: \.key)
+				}, action: InjectablesCanvasAction.injectable(id: action:)),
+				content: { (injectionsStore: Store<(key: Int, value: Array<InjectableMarkerState>), MarkerInjectionAction>) in
 					InjectionsByInjectable(store: injectionsStore)
 				})
 			}
@@ -83,7 +91,7 @@ public enum MarkerInjectionAction: Equatable {
 }
 
 struct InjectionsByInjectable: View {
-	let store: Store<(key: Int, value: Array<Injection>), MarkerInjectionAction>
+	let store: Store<(key: Int, value: Array<InjectableMarkerState>), MarkerInjectionAction>
 	var body: some View {
 		ForEachStore(self.store.scope(
 			state: { $0.value },
@@ -132,7 +140,7 @@ public enum MarkerAction: Equatable {
 	case didDragToPosition(CGPoint)//self.injection.position = calculatedPos
 }
 
-struct InjectableMarkerState: Identifiable {
+struct InjectableMarkerState: Identifiable, Equatable {
 	var id: UUID { injection.id }
 	var injection: Injection
 	var isActive: Bool
@@ -140,7 +148,7 @@ struct InjectableMarkerState: Identifiable {
 }
 
 struct InjectableMarker: View {
-	let store: Store<Injection, MarkerAction>
+	let store: Store<InjectableMarkerState, MarkerAction>
 	private static let markerSize = CGSize.init(width: 50, height: 50)
 	let imageSize: CGSize
 

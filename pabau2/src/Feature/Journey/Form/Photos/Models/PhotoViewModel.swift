@@ -15,15 +15,6 @@ public typealias InjectableId = Int
 //	}
 //}
 
-extension Dictionary where Key == InjectableId, Value == Injection {
-	var totals: TotalInjAndUnits {
-		self.values.reduce(into: TotalInjAndUnits()) {
-			$0.totalInj += 1
-			$0.totalUnits += $1.units
-		}
-	}
-}
-
 public struct PhotoViewModel: Equatable {
 	let basePhoto: Photo
 	var drawing: PKDrawing?
