@@ -79,7 +79,7 @@ struct InjectablesCanvas: View {
 						}
 						return IdentifiedArray.init(markers, id: \.key)
 				}, action: InjectablesCanvasAction.injectable(id: action:)),
-				content: { (injectionsStore: Store<(key: Int, value: Array<InjectableMarkerState>), MarkerInjectionAction>) in
+				content: { (injectionsStore: Store<(key: Int, value: [InjectableMarkerState]), MarkerInjectionAction>) in
 					InjectionsByInjectable(store: injectionsStore,
 																 imageSize: self.size)
 				})
