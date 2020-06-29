@@ -6,25 +6,20 @@ public let chooseInjectableReducer = Reducer<ChooseInjectablesState, ChooseInjec
 	//FIXME: please
 	switch action {
 	case .onSelectInjectableId(let id):
-		let chosenInjectable = state.allInjectables.first(where: {
-			$0.id == id
-		})!
-		state.chosenInjectable = chosenInjectable
+		state.chosenInjectableId = id
 	case .onSelectUsedInjectableId(let id):
-		let chosenInjectable = state.allInjectables.first(where: {
-			$0.id == id
-		})!
-		state.chosenInjectable = chosenInjectable
+		state.chosenInjectableId = id
 	}
 	state.isChooseInjectablesActive = false
 	return .none
 }
 
 public struct ChooseInjectablesState: Equatable {
-	var allInjectables: [Injectable]
-	var photoInjections: IdentifiedArrayOf<InjectionsByInjectable>
+	var allInjectables: IdentifiedArrayOf<Injectable>
+	var photoInjections: [InjectableId: [Injection]]
 	var isChooseInjectablesActive: Bool
-	var chosenInjectable: Injectable?
+	var chosenInjectableId: InjectableId?
+	var chosenInjectionId: UUID?
 }
 
 public enum ChooseInjectableAction: Equatable {
@@ -196,14 +191,15 @@ struct TotalInjAndUnits {
 	var totalUnits: Double = 0
 }
 
-public struct Injection: Equatable, Identifiable {
+public struct Injection: Hashable, Identifiable {
 	public let id: UUID = UUID()
 	var units: Double
 	var position: CGPoint
+	var injectableId: Int
 }
 
-public struct Injectable: Hashable {
-	let id: InjectableId
+public struct Injectable: Hashable, Identifiable {
+	public let id: InjectableId
 	let color: Color
 	let title: String
 	var increment: Double

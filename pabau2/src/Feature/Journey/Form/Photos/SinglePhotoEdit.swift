@@ -22,9 +22,10 @@ let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction,
 struct SinglePhotoEditState: Equatable {
 	var activeCanvas: CanvasMode
 	var photo: PhotoViewModel
-	var allInjectables: [Injectable]
-	var isChooseInjectablesActive: Bool = false
-	var chosenInjectable: Injectable?
+	var allInjectables: IdentifiedArrayOf<Injectable>
+	var isChooseInjectablesActive: Bool
+	var chosenInjectableId: InjectableId?
+	var chosenInjectionId: UUID?
 	
 	var injectables: InjectablesState {
 		get {
@@ -32,13 +33,15 @@ struct SinglePhotoEditState: Equatable {
 				allInjectables: self.allInjectables,
 				photoInjections: self.photo.injections,
 				isChooseInjectablesActive: self.isChooseInjectablesActive,
-				chosenInjectable: self.chosenInjectable)
+				chosenInjectableId: self.chosenInjectableId,
+				chosenInjectionId: self.chosenInjectionId)
 		}
 		set {
 			self.allInjectables = newValue.allInjectables
 			self.photo.injections = newValue.photoInjections
 			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
-			self.chosenInjectable = newValue.chosenInjectable
+			self.chosenInjectableId = newValue.chosenInjectableId
+			self.chosenInjectionId = newValue.chosenInjectionId
 		}
 	}
 }

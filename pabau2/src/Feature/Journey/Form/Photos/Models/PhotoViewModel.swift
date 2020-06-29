@@ -2,14 +2,22 @@ import Model
 import PencilKit
 import ComposableArchitecture
 
-typealias InjectableId = Int
+public typealias InjectableId = Int
+//public struct InjectionsByInjectable: Equatable, Identifiable {
+//	public var id: Int { return injectableId }
+//	var injectableId: InjectableId
+//	var injections: IdentifiedArrayOf<Injection>
+//	var totals: TotalInjAndUnits {
+//		self.injections.reduce(into: TotalInjAndUnits()) {
+//			$0.totalInj += 1
+//			$0.totalUnits += $1.units
+//		}
+//	}
+//}
 
-public struct InjectionsByInjectable: Equatable, Identifiable {
-	public var id: Int { return injectableId }
-	var injectableId: InjectableId
-	var injections: IdentifiedArrayOf<Injection>
+extension Dictionary where Key == InjectableId, Value == Injection {
 	var totals: TotalInjAndUnits {
-		self.injections.reduce(into: TotalInjAndUnits()) {
+		self.values.reduce(into: TotalInjAndUnits()) {
 			$0.totalInj += 1
 			$0.totalUnits += $1.units
 		}
@@ -21,7 +29,7 @@ public struct PhotoViewModel: Equatable {
 	var drawing: PKDrawing?
 	var isPrivate: Bool = false
 	var tags: [String] = []
-	var injections: IdentifiedArrayOf<InjectionsByInjectable> = []
+	var injections: [InjectableId: [Injection]] = [:]
 	
 	init (_ savedPhoto: SavedPhoto) {
 		self.basePhoto = .saved(savedPhoto)

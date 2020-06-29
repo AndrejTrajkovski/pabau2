@@ -2,41 +2,51 @@ import SwiftUI
 import ComposableArchitecture
 
 public struct InjectablesState: Equatable {
-	var allInjectables: [Injectable]
-	var photoInjections: IdentifiedArrayOf<InjectionsByInjectable>
+	var allInjectables: IdentifiedArrayOf<Injectable>
+	var photoInjections: [InjectableId: [Injection]]
 	var isChooseInjectablesActive: Bool
-	var chosenInjectable: Injectable?
+	var chosenInjectableId: InjectableId?
+	var chosenInjectionId: UUID?
 	
 	var stepper: InjectableStepperState? {
 		get {
-			chosenInjectable.map { chosenInjectable in
-				let chosenInjection = photoInjections.first(where: { photoInj in
-					photoInj.injectableId == chosenInjectable.id
-				})?.activeInjection
+			chosenInjectableId.map { chosenInjectableId in
 				return InjectableStepperState(
-					chosenInjection: chosenInjection,
-					chosenInjectable: chosenInjectable
+					allInjectables: self.allInjectables,
+					photoInjections: self.photoInjections,
+					chosenInjectableId: self.chosenInjectableId,
+					chosenInjectionId: self.chosenInjectionId
 				)
 			}
 		}
 		set {
 			newValue.map {
-				self.chosenInjectable = $0.chosenInjectable
-				self.photoInjections[id: $0.chosenInjectable.id]?.activeInjection = $0.chosenInjection
+				self.allInjectables = $0.allInjectables
+				self.photoInjections = $0.photoInjections
+				self.chosenInjectableId = $0.chosenInjectableId
+				self.chosenInjectionId = $0.chosenInjectionId
 			}
 		}
 	}
-	var canvas: InjectablesCanvasState {
+	
+	var canvas: InjectablesCanvasState? {
 		get {
-			chosenInjectable.map {
-				InjectablesCanvasState(
+			chosenInjectableId.map { chosenInjectableId in
+				return InjectablesCanvasState(
+					allInjectables: self.allInjectables,
 					photoInjections: self.photoInjections,
-					chosenInjectable: $0
+					chosenInjectableId: chosenInjectableId,
+					chosenInjectionId: self.chosenInjectionId
 				)
 			}
 		}
 		set {
-			
+			newValue.map {
+				self.allInjectables = $0.allInjectables
+				self.photoInjections = $0.photoInjections
+				self.chosenInjectableId = $0.chosenInjectableId
+				self.chosenInjectionId = $0.chosenInjectionId
+			}
 		}
 	}
 	
@@ -46,14 +56,16 @@ public struct InjectablesState: Equatable {
 				allInjectables: self.allInjectables,
 				photoInjections: self.photoInjections,
 				isChooseInjectablesActive: self.isChooseInjectablesActive,
-				stepper: self.stepper,
-				canvas: self.canvas
+				chosenInjectableId: self.chosenInjectableId,
+				chosenInjectionId: self.chosenInjectionId
 			)
 		}
 		set {
 			self.allInjectables = newValue.allInjectables
 			self.photoInjections = newValue.photoInjections
 			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
+			self.chosenInjectableId = newValue.chosenInjectableId
+			self.chosenInjectionId = newValue.chosenInjectionId
 		}
 	}
 }
@@ -65,10 +77,10 @@ public enum InjectablesAction: Equatable {
 }
 
 public let injectablesContainerReducer: Reducer<InjectablesState, InjectablesAction, JourneyEnvironment> = .combine(
-	injectableStepperReducer.optional.pullback(
-		state: \InjectablesState.stepper,
-		action: /InjectablesAction.stepper,
-		environment: { $0 }),
+//	injectableStepperReducer.optional.pullback(
+//		state: \InjectablesState.stepper,
+//		action: /InjectablesAction.stepper,
+//		environment: { $0 }),
 	injectablesCanvasReducer.optional.pullback(
 		state: \InjectablesState.canvas,
 		action: /InjectablesAction.canvas,

@@ -11,7 +11,7 @@ public struct CameraOverlayState: Equatable {
 	var isShowingPhotoLib: Bool
 	var isFlashOn: Bool
 	var frontOrRear: UIImagePickerController.CameraDevice
-	var allInjectables: [Injectable]
+	var allInjectables: IdentifiedArrayOf<Injectable>
 }
 
 public enum CameraOverlayAction: Equatable {
