@@ -24,24 +24,21 @@ struct SinglePhotoEditState: Equatable {
 	var photo: PhotoViewModel
 	var allInjectables: [Injectable]
 	var isChooseInjectablesActive: Bool = false
-	var stepper: InjectableStepperState?
-	var canvas: InjectablesCanvasState?
-
+	var chosenInjectable: Injectable?
+	
 	var injectables: InjectablesState {
 		get {
 			InjectablesState(
 				allInjectables: self.allInjectables,
 				photoInjections: self.photo.injections,
 				isChooseInjectablesActive: self.isChooseInjectablesActive,
-				stepper: self.stepper,
-				canvas: self.canvas)
+				chosenInjectable: self.chosenInjectable)
 		}
 		set {
 			self.allInjectables = newValue.allInjectables
 			self.photo.injections = newValue.photoInjections
 			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
-			self.stepper = newValue.stepper
-			self.canvas = newValue.canvas
+			self.chosenInjectable = newValue.chosenInjectable
 		}
 	}
 }

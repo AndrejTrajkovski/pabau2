@@ -3,10 +3,42 @@ import ComposableArchitecture
 
 public struct InjectablesState: Equatable {
 	var allInjectables: [Injectable]
-	var photoInjections: IdentifiedArrayOf<InjectionsAndActive>
+	var photoInjections: IdentifiedArrayOf<InjectionsByInjectable>
 	var isChooseInjectablesActive: Bool
-	var stepper: InjectableStepperState?
-	var canvas: InjectablesCanvasState?
+	var chosenInjectable: Injectable?
+	
+	var stepper: InjectableStepperState? {
+		get {
+			chosenInjectable.map { chosenInjectable in
+				let chosenInjection = photoInjections.first(where: { photoInj in
+					photoInj.injectableId == chosenInjectable.id
+				})?.activeInjection
+				return InjectableStepperState(
+					chosenInjection: chosenInjection,
+					chosenInjectable: chosenInjectable
+				)
+			}
+		}
+		set {
+			newValue.map {
+				self.chosenInjectable = $0.chosenInjectable
+				self.photoInjections[id: $0.chosenInjectable.id]?.activeInjection = $0.chosenInjection
+			}
+		}
+	}
+	var canvas: InjectablesCanvasState {
+		get {
+			chosenInjectable.map {
+				InjectablesCanvasState(
+					photoInjections: self.photoInjections,
+					chosenInjectable: $0
+				)
+			}
+		}
+		set {
+			
+		}
+	}
 	
 	var chooseInjectables: ChooseInjectablesState {
 		get {
@@ -22,8 +54,6 @@ public struct InjectablesState: Equatable {
 			self.allInjectables = newValue.allInjectables
 			self.photoInjections = newValue.photoInjections
 			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
-			self.stepper = newValue.stepper
-			self.canvas = newValue.canvas
 		}
 	}
 }

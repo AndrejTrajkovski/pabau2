@@ -9,16 +9,12 @@ public let chooseInjectableReducer = Reducer<ChooseInjectablesState, ChooseInjec
 		let chosenInjectable = state.allInjectables.first(where: {
 			$0.id == id
 		})!
-		state.stepper = InjectableStepperState(injectable: chosenInjectable)
+		state.chosenInjectable = chosenInjectable
 	case .onSelectUsedInjectableId(let id):
 		let chosenInjectable = state.allInjectables.first(where: {
 			$0.id == id
 		})!
-		let chosenInjectionsByInjectable = state.photoInjections.first (where: {
-			$0.injectableId == id
-		})!
-		state.stepper = InjectableStepperState(usedInjections: chosenInjectionsByInjectable,
-																					 injectable: chosenInjectable)
+		state.chosenInjectable = chosenInjectable
 	}
 	state.isChooseInjectablesActive = false
 	return .none
@@ -26,10 +22,9 @@ public let chooseInjectableReducer = Reducer<ChooseInjectablesState, ChooseInjec
 
 public struct ChooseInjectablesState: Equatable {
 	var allInjectables: [Injectable]
-	var photoInjections: IdentifiedArrayOf<InjectionsAndActive>
+	var photoInjections: IdentifiedArrayOf<InjectionsByInjectable>
 	var isChooseInjectablesActive: Bool
-	var stepper: InjectableStepperState?
-	var canvas: InjectablesCanvasState?
+	var chosenInjectable: Injectable?
 }
 
 public enum ChooseInjectableAction: Equatable {
@@ -42,7 +37,7 @@ struct ChooseInjectable: View {
 	struct ViewState: Equatable {
 		let sections: [SectionViewModel]
 	}
-	
+
 	let store: Store<ChooseInjectablesState, ChooseInjectableAction>
 	@State var searchText: String = ""
 	var body: some View {

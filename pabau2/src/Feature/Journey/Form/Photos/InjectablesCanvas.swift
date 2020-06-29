@@ -10,7 +10,7 @@ public let injectablesCanvasReducer = Reducer<InjectablesCanvasState, Injectable
 		state.activeInjection = newInj
 	case .didTapOnInjection(let injection, let idx):
 		if state.activeInjection == injection {
-			state.injections[idx].units += state.chosenIncrement
+			state.injections[idx].units += state.chosenInjectable.increment
 			state.activeInjection = state.injections[idx]
 		} else {
 			state.activeInjection = injection
@@ -28,18 +28,21 @@ public let injectablesCanvasReducer = Reducer<InjectablesCanvasState, Injectable
 }
 
 public struct InjectablesCanvasState: Equatable {
-	var injections: [Injection]
+	var allInjectables: [Injectable]
+	var injections: IdentifiedArrayOf<InjectionsByInjectable>
 	var activeInjection: Injection?
-	var chosenIncrement: Double
 	var chosenInjectable: Injectable
 	
 	var markers: [InjectableMarkerState] {
 		get {
 			self.injections.map {
-				InjectableMarkerState.init(injection: $0,
-																	 activeInjection: self.activeInjection, injectable: chosenInjectable)}
+				return ($0.injections, $0.injectableId)
+			}.flatMap {
+				$0.
+			}
 		}
 		set {
+			
 			self.injections = newValue.map { $0.injection }
 			self.activeInjection = newValue.first?.activeInjection
 		}
@@ -112,7 +115,7 @@ public enum MarkerAction: Equatable {
 struct InjectableMarkerState: Identifiable {
 	var id: UUID { injection.id }
 	var injection: Injection
-	var activeInjection: Injection?
+	var isActive: Bool
 	let injectable: Injectable
 }
 
@@ -131,13 +134,11 @@ struct InjectableMarker: View {
 	
 	var body: some View {
 		WithViewStore(store.scope(state: State.init(state:))) { viewStore in
-			ZStack {
-				viewStore.state.color
-				Text(viewStore.state.units)
-					.foregroundColor(.white)
-					.font(.bold10)
-			}
-			.frame(width: Self.markerSize.width,
+			InjectableMarkerSimple(
+				increment: viewStore.state.units,
+				color: viewStore.state.color
+			)
+				.frame(width: Self.markerSize.width,
 						 height: Self.markerSize.height,
 						 alignment: .center)
 				.onTapGesture {
@@ -159,10 +160,25 @@ struct InjectableMarker: View {
 	}
 }
 
+struct InjectableMarkerSimple: View {
+	let increment: String
+	let color: Color
+	
+	var body: some View {
+		ZStack {
+			color
+			Text(increment)
+				.foregroundColor(.white)
+				.font(.bold10)
+		}
+	}
+}
+
+
 extension InjectableMarker.State {
 	init (state: InjectableMarkerState) {
 		self.injection = state.injection
-		self.isActive = state.injection == state.activeInjection
+		self.isActive = state.isActive
 		self.color = self.isActive ? Color.black : state.injectable.color
 		self.units = String(state.injection.units)
 		self.offset = CGSize(width: state.injection.position.x,

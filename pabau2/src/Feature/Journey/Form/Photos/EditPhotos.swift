@@ -60,8 +60,7 @@ public struct EditPhotosState: Equatable {
 	var activeCanvas: CanvasMode = .drawing
 	var allInjectables: [Injectable] = JourneyMocks.injectables()
 	var isChooseInjectablesActive: Bool = false
-	var stepper: InjectableStepperState?
-	var canvas: InjectablesCanvasState?
+	var chosenInjectable: Injectable?
 	
 	private var showingImagePicker: UIImagePickerController.SourceType?
 
@@ -199,8 +198,7 @@ extension EditPhotosState {
 				photo: editingPhoto,
 				allInjectables: self.allInjectables,
 				isChooseInjectablesActive: self.isChooseInjectablesActive,
-				stepper: self.stepper,
-				canvas: self.canvas
+				chosenInjectable: self.chosenInjectable
 			)
 		}
 		set {
@@ -209,8 +207,6 @@ extension EditPhotosState {
 			self.activeCanvas = newValue.activeCanvas
 			self.allInjectables = newValue.allInjectables
 			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
-			self.stepper = newValue.stepper
-			self.canvas = newValue.canvas
 		}
 	}
 
