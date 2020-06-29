@@ -42,11 +42,20 @@ struct CheckInBody: View {
 
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
 	let store: Store<CheckInViewState, CheckInBodyAction>
-	@ObservedObject var viewStore: ViewStore<CheckInViewState, CheckInBodyAction>
+	@ObservedObject var viewStore: ViewStore<ViewState, CheckInBodyAction>
 	init(store: Store<CheckInViewState, CheckInBodyAction>) {
 		print("check in body init")
 		self.store = store
-		self.viewStore = ViewStore(store)
+		self.viewStore = ViewStore(
+			store.scope(state: ViewState.init(state:))
+		)
+	}
+
+	struct ViewState: Equatable {
+		let selectedIndex: Int
+		init (state: CheckInViewState) {
+			self.selectedIndex = state.selectedIndex
+		}
 	}
 
 	var body: some View {

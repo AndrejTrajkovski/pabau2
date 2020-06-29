@@ -1,6 +1,7 @@
 import Model
 
 public enum MetaForm: Equatable {
+	
 	var canProceed: Bool {
 		switch self {
 		case .template(let template):

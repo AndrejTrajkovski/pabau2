@@ -1,4 +1,5 @@
-public struct PatientDetails: Equatable {
+public struct PatientDetails: Equatable, Identifiable {
+	public var id: UUID = UUID()
 	var canProceed: Bool {
 		return !firstName.isEmpty && !lastName.isEmpty && !email.isEmpty
 	}

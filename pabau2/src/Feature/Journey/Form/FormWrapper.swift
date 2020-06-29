@@ -59,9 +59,26 @@ struct FormWrapper: View {
 		self.store = store
 		self.viewStore = ViewStore(store.scope(
 			state: State.init(state:),
-			action: { $0 }))
+			action: { $0 }), removeDuplicates: { lhs, rhs in
+				if let lhs = lhs.patientDetails, let rhs = rhs.patientDetails {
+					return lhs.id == rhs.id
+				} else if let lhs = lhs.template, let rhs = rhs.template {
+					return lhs.id == rhs.id
+				} else if let lhs = lhs.aftercare, let rhs = rhs.aftercare {
+						return lhs.id == rhs.id
+				} else if let lhs = lhs.patientCompleteForm, let rhs = rhs.patientCompleteForm {
+					return lhs.id == rhs.id
+				} else if let lhs = lhs.checkPatient, let rhs = rhs.checkPatient {
+					return lhs.id == rhs.id
+				} else if let lhs = lhs.photos, let rhs = rhs.photos {
+					return lhs.id == rhs.id
+				} else {
+					return false
+				}
+			}
+		)
 	}
-
+	
 	struct State: Equatable {
 		var patientDetails: PatientDetails?
 		var template: FormTemplate?
@@ -79,8 +96,11 @@ struct FormWrapper: View {
 			self.photos = extract(case: MetaForm.photos, from: state)
 		}
 	}
-
+	
+	//FIXME: With SwiftUI 2.0 use switch inside the body
+	//FIXME: With SwiftUI 2.0 Test with Group instead of AnyView
 	var body: some View {
+		print("form wrap body")
 		if self.viewStore.state.template != nil {
 			return AnyView(
 				ListDynamicForm(template:

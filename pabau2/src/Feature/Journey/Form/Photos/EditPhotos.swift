@@ -86,7 +86,7 @@ struct EditPhotos: View {
 	init (store: Store<EditPhotosState, EditPhotoAction>) {
 		self.store = store
 	}
-	
+
 	struct State: Equatable {
 		let isCameraActive: Bool
 		let isChooseInjectablesActive: Bool

@@ -6,7 +6,8 @@ import PencilKit
 import Overture
 import ASCollectionView
 
-public struct PhotosState: Equatable {
+public struct PhotosState: Equatable, Identifiable {
+	public var id = UUID()
 	var photos: IdentifiedArray<PhotoVariantId, PhotoViewModel> = []
 	var selectedIds: [PhotoVariantId] = []
 	var editPhoto: EditPhotosState?
@@ -52,15 +53,21 @@ public enum PhotosFormAction: Equatable {
 
 struct PhotosForm: View {
 	let store: Store<PhotosState, PhotosFormAction>
+	struct State: Equatable {
+		let isEditPhotosActive: Bool
+		init (state: PhotosState) {
+			self.isEditPhotosActive = state.editPhoto != nil
+		}
+	}
 
 	var body: some View {
-		WithViewStore(store) { viewStore in
+		WithViewStore(store.scope(state: State.init(state:))) { viewStore in
 			Group {
 				SelectPhotos(store: self.store.scope(
 					state: { $0.selectPhotos },
 					action: { .selectPhotos($0) }))
 				NavigationLink.emptyHidden(
-					viewStore.state.editPhoto != nil,
+					viewStore.state.isEditPhotosActive,
 					IfLetStore(self.store.scope(
 						state: { $0.editPhoto }, action: { .editPhoto($0) }),
 										 then: {
@@ -72,7 +79,7 @@ struct PhotosForm: View {
 					)
 				)
 			}
-		}
+		}.debug("Photos form")
 	}
 }
 

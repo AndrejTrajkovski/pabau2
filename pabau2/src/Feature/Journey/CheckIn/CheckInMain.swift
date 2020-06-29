@@ -28,11 +28,9 @@ public enum CheckInMainAction {
 
 struct CheckInMain: View {
 	let store: Store<CheckInViewState, CheckInMainAction>
-	@ObservedObject var viewStore: ViewStore<CheckInViewState, CheckInMainAction>
 
 	init (store: Store<CheckInViewState, CheckInMainAction>) {
 		self.store = store
-		self.viewStore = ViewStore(store)
 	}
 
 	var body: some View {

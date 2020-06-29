@@ -62,8 +62,18 @@ struct InjectablesCanvas: View {
 	let size: CGSize
 	let store: Store<InjectablesCanvasState, InjectablesCanvasAction>
 	
+	struct State: Equatable {
+		let chosenInjectionId: UUID?
+		let injectable: Injectable
+		
+		init(state: InjectablesCanvasState) {
+			self.chosenInjectionId = state.chosenInjectionId
+			self.injectable = state.allInjectables[id: state.chosenInjectableId]!
+		}
+	}
+	
 	var body: some View {
-		WithViewStore(store) { viewStore in
+		WithViewStore(store.scope(state: State.init(state:))) { viewStore in
 			ZStack(alignment: .topLeading) {
 				TappableView { location in
 					viewStore.send(.didTapOnCanvas(location))
@@ -75,7 +85,7 @@ struct InjectablesCanvas: View {
 							values.map { injection in
 								InjectableMarkerState(injection: injection,
 																			isActive: injection.id == viewStore.chosenInjectionId,
-																			injectable: viewStore.allInjectables[id: viewStore.chosenInjectableId]!)
+																			injectable: viewStore.injectable)
 							}
 						}
 						return IdentifiedArray.init(markers, id: \.key)
@@ -91,19 +101,6 @@ struct InjectablesCanvas: View {
 
 public enum MarkerInjectionAction: Equatable {
 	case didTouchMarker(idx: Int, action: MarkerAction)
-}
-
-struct InjectionsByInjectableState: Equatable {
-	static func == (lhs: InjectionsByInjectableState, rhs: InjectionsByInjectableState) -> Bool {
-		lhs.markerInjections.value == rhs.markerInjections.value &&
-			lhs.markerInjections.key == rhs.markerInjections.key &&
-			lhs.chosenInjectableId == rhs.chosenInjectableId &&
-			lhs.chosenInjectionId == rhs.chosenInjectionId
-	}
-	
-	var chosenInjectableId: InjectableId
-	var chosenInjectionId: UUID?
-	var markerInjections: (key: Int, value: [Injection])
 }
 
 struct InjectionsByInjectable: View {
