@@ -59,26 +59,27 @@ struct FormWrapper: View {
 		self.store = store
 		self.viewStore = ViewStore(store.scope(
 			state: State.init(state:),
-			action: { $0 }), removeDuplicates: { lhs, rhs in
+			action: { $0 })
+		, removeDuplicates: { lhs, rhs in
 				if let lhs = lhs.patientDetails, let rhs = rhs.patientDetails {
-					return lhs.id == rhs.id
+					return lhs == rhs
 				} else if let lhs = lhs.template, let rhs = rhs.template {
-					return lhs.id == rhs.id
+					return lhs == rhs
 				} else if let lhs = lhs.aftercare, let rhs = rhs.aftercare {
-						return lhs.id == rhs.id
+						return lhs == rhs
 				} else if let lhs = lhs.patientCompleteForm, let rhs = rhs.patientCompleteForm {
-					return lhs.id == rhs.id
+					return lhs == rhs
 				} else if let lhs = lhs.checkPatient, let rhs = rhs.checkPatient {
-					return lhs.id == rhs.id
+					return lhs == rhs
 				} else if let lhs = lhs.photos, let rhs = rhs.photos {
-					return lhs.id == rhs.id
+					return lhs == rhs
 				} else {
 					return false
 				}
 			}
 		)
 	}
-	
+
 	struct State: Equatable {
 		var patientDetails: PatientDetails?
 		var template: FormTemplate?

@@ -56,13 +56,11 @@ public struct EditPhotosState: Equatable {
 	var selectedStencilIdx: Int?
 	var isFlashOn: Bool = false
 	var frontOrRear: UIImagePickerController.CameraDevice = .rear
-	
 	var activeCanvas: CanvasMode = .drawing
 	var allInjectables: IdentifiedArrayOf<Injectable> = .init(JourneyMocks.injectables())
 	var isChooseInjectablesActive: Bool = false
 	var chosenInjectableId: InjectableId?
 	var chosenInjectionId: UUID?
-	
 	private var showingImagePicker: UIImagePickerController.SourceType?
 
 	init (_ photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>) {
