@@ -10,6 +10,7 @@ public let injectablesCanvasReducer = Reducer<InjectablesCanvasState, Injectable
 													 injectableId: state.chosenInjectableId)
 		if var injections = state.photoInjections[state.chosenInjectableId] {
 			injections.append(newInj)
+			state.photoInjections[state.chosenInjectableId] = injections
 		} else {
 			state.photoInjections[state.chosenInjectableId] = [newInj]
 		}
@@ -79,7 +80,8 @@ struct InjectablesCanvas: View {
 						return IdentifiedArray.init(markers, id: \.key)
 				}, action: InjectablesCanvasAction.injectable(id: action:)),
 				content: { (injectionsStore: Store<(key: Int, value: Array<InjectableMarkerState>), MarkerInjectionAction>) in
-					InjectionsByInjectable(store: injectionsStore)
+					InjectionsByInjectable(store: injectionsStore,
+																 imageSize: self.size)
 				})
 			}
 		}
@@ -91,7 +93,8 @@ public enum MarkerInjectionAction: Equatable {
 }
 
 struct InjectionsByInjectable: View {
-	let store: Store<(key: Int, value: Array<InjectableMarkerState>), MarkerInjectionAction>
+	let store: Store<(key: Int, value: [InjectableMarkerState]), MarkerInjectionAction>
+	let imageSize: CGSize
 	var body: some View {
 		ForEachStore(self.store.scope(
 			state: { $0.value },
@@ -99,7 +102,8 @@ struct InjectionsByInjectable: View {
 				MarkerInjectionAction.didTouchMarker(idx: arg1, action: arg2)
 		}
 		), content: { arg in
-			InjectableMarker(store: arg, imageSize: CGSize.init())
+			InjectableMarker(store: arg,
+											 imageSize: self.imageSize)
 		})
 	}
 }

@@ -77,10 +77,10 @@ public enum InjectablesAction: Equatable {
 }
 
 public let injectablesContainerReducer: Reducer<InjectablesState, InjectablesAction, JourneyEnvironment> = .combine(
-//	injectableStepperReducer.optional.pullback(
-//		state: \InjectablesState.stepper,
-//		action: /InjectablesAction.stepper,
-//		environment: { $0 }),
+	//	injectableStepperReducer.optional.pullback(
+	//		state: \InjectablesState.stepper,
+	//		action: /InjectablesAction.stepper,
+	//		environment: { $0 }),
 	injectablesCanvasReducer.optional.pullback(
 		state: \InjectablesState.canvas,
 		action: /InjectablesAction.canvas,
@@ -99,7 +99,7 @@ struct InjectablesContainer: View {
 	init(store: Store<InjectablesState, InjectablesAction>,
 			 photoSize: Binding<CGSize>,
 			 footerHeight: CGFloat
-			 ) {
+	) {
 		self.store = store
 		self._photoSize = photoSize
 		self.footerHeight = footerHeight
@@ -120,19 +120,19 @@ struct InjectablesContainer: View {
 							.frame(width: self.photoSize.width,
 										 height: self.photoSize.height)
 				})
-//				IfLetStore(self.store.scope(
-//					state: { $0.stepper },
-//					action: { .stepper($0)})
-//					, then: {
-//						InjectableStepper(store: $0)
-//				})
-//					.frame(height: self.footerHeight)
+				//				IfLetStore(self.store.scope(
+				//					state: { $0.stepper },
+				//					action: { .stepper($0)})
+				//					, then: {
+				//						InjectableStepper(store: $0)
+				//				})
+				//					.frame(height: self.footerHeight)
 			}.sheet(isPresented: .constant(viewStore.state.isChooseInjectablesActive),
-						 content: {
-							ChooseInjectable(store:
-								self.store.scope(state: { $0.chooseInjectables },
-																 action: { .chooseInjectables($0) })
-							)
+							content: {
+								ChooseInjectable(store:
+									self.store.scope(state: { $0.chooseInjectables },
+																	 action: { .chooseInjectables($0) })
+								)
 			})
 		}
 	}

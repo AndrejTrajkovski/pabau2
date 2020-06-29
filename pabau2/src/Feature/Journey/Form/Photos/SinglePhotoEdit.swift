@@ -63,7 +63,7 @@ struct SinglePhotoEdit: View {
 		let injectablesZIndex: Double
 		let drawingCanvasZIndex: Double
 		let isDrawingDisabled: Bool
-	
+		
 		init (state: SinglePhotoEditState) {
 			let isInjectablesActive = state.activeCanvas == CanvasMode.injectables ? true : false
 			if isInjectablesActive {

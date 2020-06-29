@@ -178,7 +178,10 @@ extension EditPhotosState {
 															 editingPhotoId: self.editingPhotoId,
 															 isCameraActive: self.isCameraActive,
 															 isTagsAlertActive: self.isTagsAlertActive,
-															 activeCanvas: self.activeCanvas)
+															 activeCanvas: self.activeCanvas,
+															 isChooseInjectablesActive: self.isChooseInjectablesActive,
+															 chosenInjectableId: self.chosenInjectableId
+			)
 		}
 		set {
 			self.photos = newValue.photos
@@ -186,6 +189,8 @@ extension EditPhotosState {
 			self.isCameraActive = newValue.isCameraActive
 			self.isTagsAlertActive = newValue.isTagsAlertActive
 			self.activeCanvas = newValue.activeCanvas
+			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
+			self.chosenInjectableId = newValue.chosenInjectableId
 		}
 	}
 
@@ -209,6 +214,7 @@ extension EditPhotosState {
 			self.activeCanvas = newValue.activeCanvas
 			self.allInjectables = newValue.allInjectables
 			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
+			self.chosenInjectableId = newValue.chosenInjectableId
 			self.chosenInjectionId = newValue.chosenInjectionId
 		}
 	}
