@@ -12,7 +12,7 @@ let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, JourneyEnviron
 			action: /EditPhotoAction.rightSide,
 			environment: { $0 }),
 		editPhotosListReducer.pullback(
-			state: \.self,
+			state: \EditPhotosState.editPhotoList,
 			action: /EditPhotoAction.editPhotoList,
 			environment: { $0 }),
 		singlePhotoEditReducer.optional.pullback(
@@ -90,9 +90,11 @@ struct EditPhotos: View {
 	struct State: Equatable {
 		let isCameraActive: Bool
 		let isChooseInjectablesActive: Bool
+		let editingPhotoId: PhotoVariantId?
 		init (state: EditPhotosState) {
 			self.isCameraActive = state.isCameraActive
 			self.isChooseInjectablesActive = state.isChooseInjectablesActive
+			self.editingPhotoId = state.editingPhotoId
 		}
 	}
 
@@ -100,7 +102,7 @@ struct EditPhotos: View {
 		WithViewStore(store.scope(state: State.init(state:))) { viewStore in
 			HStack {
 				EditPhotosList(store:
-					self.store.scope(state: { $0 }, action: { .editPhotoList($0) })
+					self.store.scope(state: { $0.editPhotoList }, action: { .editPhotoList($0) })
 				)
 					.frame(width: 92)
 					.padding(8)
@@ -225,6 +227,18 @@ extension EditPhotosState {
 		}
 		set {
 			set(newValue, onto: &photos)
+		}
+	}
+	
+	var editPhotoList: EditPhotosListState {
+		get {
+			EditPhotosListState(
+				photos: self.photos,
+				editingPhotoId: self.editingPhotoId)
+		}
+		set {
+			self.photos = newValue.photos
+			self.editingPhotoId = newValue.editingPhotoId
 		}
 	}
 }

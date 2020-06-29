@@ -1,7 +1,12 @@
 import SwiftUI
 import ComposableArchitecture
 
-public let editPhotosListReducer = Reducer<EditPhotosState, EditPhotosListAction, Any>.init { state, action, _ in
+public struct EditPhotosListState: Equatable {
+	var photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>
+	var editingPhotoId: PhotoVariantId?
+}
+
+public let editPhotosListReducer = Reducer<EditPhotosListState, EditPhotosListAction, Any>.init { state, action, _ in
 	switch action {
 	case .onSelect(let id):
 		state.editingPhotoId = state.editingPhotoId == id ? nil : id
@@ -17,7 +22,7 @@ public enum EditPhotosListAction: Equatable {
 }
 
 struct EditPhotosList: View {
-	let store: Store<EditPhotosState, EditPhotosListAction>
+	let store: Store<EditPhotosListState, EditPhotosListAction>
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			VStack {
