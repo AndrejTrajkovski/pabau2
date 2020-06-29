@@ -61,6 +61,7 @@ public enum InjectablesCanvasAction: Equatable {
 struct InjectablesCanvas: View {
 	let size: CGSize
 	let store: Store<InjectablesCanvasState, InjectablesCanvasAction>
+	
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			ZStack(alignment: .topLeading) {
@@ -90,6 +91,19 @@ struct InjectablesCanvas: View {
 
 public enum MarkerInjectionAction: Equatable {
 	case didTouchMarker(idx: Int, action: MarkerAction)
+}
+
+struct InjectionsByInjectableState: Equatable {
+	static func == (lhs: InjectionsByInjectableState, rhs: InjectionsByInjectableState) -> Bool {
+		lhs.markerInjections.value == rhs.markerInjections.value &&
+			lhs.markerInjections.key == rhs.markerInjections.key &&
+			lhs.chosenInjectableId == rhs.chosenInjectableId &&
+			lhs.chosenInjectionId == rhs.chosenInjectionId
+	}
+	
+	var chosenInjectableId: InjectableId
+	var chosenInjectionId: UUID?
+	var markerInjections: (key: Int, value: [Injection])
 }
 
 struct InjectionsByInjectable: View {
