@@ -227,7 +227,7 @@ extension EditPhotosState {
 			set(newValue, onto: &photos)
 		}
 	}
-	
+
 	var editPhotoList: EditPhotosListState {
 		get {
 			EditPhotosListState(

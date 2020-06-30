@@ -7,10 +7,13 @@ public let chooseInjectableReducer = Reducer<ChooseInjectablesState, ChooseInjec
 	switch action {
 	case .onSelectInjectableId(let id):
 		state.chosenInjectableId = id
+		state.isChooseInjectablesActive = false
 	case .onSelectUsedInjectableId(let id):
 		state.chosenInjectableId = id
+		state.isChooseInjectablesActive = false
+	case .onDismissChooseInjectables:
+		state.isChooseInjectablesActive = false
 	}
-	state.isChooseInjectablesActive = false
 	return .none
 }
 
@@ -25,6 +28,7 @@ public struct ChooseInjectablesState: Equatable {
 public enum ChooseInjectableAction: Equatable {
 	case onSelectUsedInjectableId(Int)
 	case onSelectInjectableId(Int)
+	case onDismissChooseInjectables
 }
 
 struct ChooseInjectable: View {

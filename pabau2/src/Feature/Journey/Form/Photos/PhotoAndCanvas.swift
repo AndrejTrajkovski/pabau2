@@ -48,7 +48,7 @@ struct CanvasParent: View {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
-	
+
 	var body: some View {
 		CanvasView(drawing:
 			Binding<PKDrawing?>.init(

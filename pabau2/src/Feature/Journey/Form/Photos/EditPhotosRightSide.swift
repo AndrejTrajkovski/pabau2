@@ -21,12 +21,16 @@ public let editPhotosRightSideReducer = Reducer<EditPhotosRightSideState, EditPh
 		state.isCameraActive = true
 	case .didTouchInjectables:
 		state.activeCanvas = .injectables
-		state.isChooseInjectablesActive = true
+		if state.chosenInjectableId == nil {
+			state.isChooseInjectablesActive = true
+		}
+	case .didTouchPencil:
+		state.activeCanvas = .drawing
 	}
 	return .none
 }
 
-public struct EditPhotosRightSideState {
+public struct EditPhotosRightSideState: Equatable {
 	var photos: IdentifiedArrayOf<PhotoViewModel>
 	var editingPhotoId: PhotoVariantId?
 	var isCameraActive: Bool
@@ -45,42 +49,60 @@ public struct EditPhotosRightSideState {
 	}
 }
 
-public enum EditPhotosRightSideAction {
+public enum EditPhotosRightSideAction: Equatable {
 	case didTouchInjectables
 	case didTouchTag
 	case didTouchPrivacy
 	case didTouchTrash
 	case didTouchCamera
+	case didTouchPencil
 }
 
 struct EditPhotosRightSide: View {
 	let store: Store<EditPhotosRightSideState, EditPhotosRightSideAction>
+	@ObservedObject var viewStore: ViewStore<EditPhotosRightSideState, EditPhotosRightSideAction>
+	
+	init(store: Store<EditPhotosRightSideState, EditPhotosRightSideAction>) {
+		self.store = store
+		self.viewStore = ViewStore(store)
+	}
+
 	var body: some View {
-		WithViewStore(store.stateless) { viewStore in
+		VStack {
+			Spacer()
 			VStack {
-				Button.init(action: {
-					viewStore.send(.didTouchInjectables)
-				}, label: {
-					Image("ico-journey-upload-photos-injectables")
-						.foregroundColor(.main)
-				})
-				Button(action: { viewStore.send(.didTouchTag)}, label: {
+				Button(action: { self.viewStore.send(.didTouchTag)}, label: {
 					Image(systemName: "tag.circle.fill")
 				})
-				Button(action: { viewStore.send(.didTouchPrivacy)}, label: {
+				Button(action: { self.viewStore.send(.didTouchPrivacy)}, label: {
 					Image(systemName: "eye.slash.fill")
+						.foregroundColor((self.viewStore.state.editingPhoto?.isPrivate ?? false) ? .blue : Color.gray184)
 						.font(.system(size: 32))
 				})
-				Button(action: { viewStore.send(.didTouchTrash)}, label: {
+				Button(action: { self.viewStore.send(.didTouchTrash)}, label: {
 					Image(systemName: "trash.circle.fill")
 				})
-				Button(action: { viewStore.send(.didTouchCamera)}, label: {
+				Button(action: { self.viewStore.send(.didTouchCamera)}, label: {
 					Image(systemName: "camera.circle.fill")
 						.foregroundColor(Color.blue)
 						.font(.system(size: 44))
 				})
-			}.buttonStyle(EditPhotosButtonStyle())
-		}
+			}
+		Spacer()
+			VStack {
+				Button(action: { self.viewStore.send(.didTouchPencil) }, label: {
+					Image(systemName: "pencil.tip.crop.circle")
+						.foregroundColor(self.viewStore.state.activeCanvas == .drawing ? .blue : Color.gray184)
+				})
+				Button.init(action: {
+					self.viewStore.send(.didTouchInjectables)
+				}, label: {
+					Image(self.viewStore.state.activeCanvas == .injectables ?
+						"ico-journey-upload-photos-injectables" :
+						"ico-journey-upload-photos-injectables-gray")
+				})
+			}
+		}.buttonStyle(EditPhotosButtonStyle())
 	}
 }
 

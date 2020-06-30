@@ -95,7 +95,7 @@ struct InjectablesContainer: View {
 	let store: Store<InjectablesState, InjectablesAction>
 	@Binding var photoSize: CGSize
 	let footerHeight: CGFloat
-	
+
 	init(store: Store<InjectablesState, InjectablesAction>,
 			 photoSize: Binding<CGSize>,
 			 footerHeight: CGFloat
@@ -104,11 +104,11 @@ struct InjectablesContainer: View {
 		self._photoSize = photoSize
 		self.footerHeight = footerHeight
 	}
-	
+
 	struct ViewState: Equatable {
 		let isChooseInjectablesActive: Bool
 	}
-	
+
 	var body: some View {
 		WithViewStore(store.scope(state: ViewState.init(state:))) { viewStore in
 			VStack {
@@ -127,7 +127,10 @@ struct InjectablesContainer: View {
 				//						InjectableStepper(store: $0)
 				//				})
 				//					.frame(height: self.footerHeight)
-			}.sheet(isPresented: .constant(viewStore.state.isChooseInjectablesActive),
+			}.sheet(isPresented: viewStore.binding(
+				get: { $0.isChooseInjectablesActive },
+				send: { _ in .chooseInjectables(.onDismissChooseInjectables) }
+				),
 							content: {
 								ChooseInjectable(store:
 									self.store.scope(state: { $0.chooseInjectables },

@@ -97,7 +97,7 @@ struct FormWrapper: View {
 			self.photos = extract(case: MetaForm.photos, from: state)
 		}
 	}
-	
+
 	//FIXME: With SwiftUI 2.0 use switch inside the body
 	//FIXME: With SwiftUI 2.0 Test with Group instead of AnyView
 	var body: some View {

@@ -26,7 +26,7 @@ struct SinglePhotoEditState: Equatable {
 	var isChooseInjectablesActive: Bool
 	var chosenInjectableId: InjectableId?
 	var chosenInjectionId: UUID?
-	
+
 	var injectables: InjectablesState {
 		get {
 			InjectablesState(
