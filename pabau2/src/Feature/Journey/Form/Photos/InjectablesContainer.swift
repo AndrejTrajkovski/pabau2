@@ -107,6 +107,7 @@ struct InjectablesContainer: View {
 
 	struct ViewState: Equatable {
 		let isChooseInjectablesActive: Bool
+		let chosenInjectableId: InjectableId?
 	}
 
 	var body: some View {
@@ -144,5 +145,6 @@ struct InjectablesContainer: View {
 extension InjectablesContainer.ViewState {
 	init(state: InjectablesState) {
 		self.isChooseInjectablesActive = state.isChooseInjectablesActive
+		self.chosenInjectableId = state.chosenInjectableId
 	}
 }

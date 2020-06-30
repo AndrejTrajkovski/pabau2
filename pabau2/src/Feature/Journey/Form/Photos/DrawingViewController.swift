@@ -7,7 +7,7 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
 
 	public var viewStore: ViewStore<PKDrawing?, PhotoAndCanvasAction>
 	var cancellables: Set<AnyCancellable> = []
-	
+
 	init(viewStore: ViewStore<PKDrawing?, PhotoAndCanvasAction>) {
 		self.viewStore = viewStore
 		super.init(nibName: nil, bundle: nil)
@@ -17,7 +17,7 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
 		self.viewStore = viewStore
 		canvasView.drawing = viewStore.state ?? PKDrawing()
 	}
-	
+
 	required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
@@ -28,9 +28,9 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		view.backgroundColor = .clear
 		let canvasView = PKCanvasView()
 		view.addSubview(canvasView)
-	
 		if let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first,
 			let toolPicker = PKToolPicker.shared(for: window) {
 			toolPicker.addObserver(canvasView)
@@ -44,7 +44,7 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
 		canvasView.drawing = self.viewStore.state ?? PKDrawing()
 		self.canvasView = canvasView
 	}
-	
+
 	override func viewWillLayoutSubviews() {
 		super.viewWillLayoutSubviews()
 		self.canvasView.frame = self.view.bounds
@@ -61,7 +61,7 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
 			canvasView.becomeFirstResponder()
 		}
 	}
-	
+
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 		if let window = parent?.view.window, let toolPicker = PKToolPicker.shared(for: window) {
@@ -69,17 +69,13 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
 			toolPicker.removeObserver(self)
 		}
 	}
-	
+
 	override var prefersHomeIndicatorAutoHidden: Bool {
 		return true
 	}
 
 	// MARK: Canvas View Delegate
-
-	/// Delegate method: Note that the drawing has changed.
 	func canvasViewDrawingDidChange(_ canvasView: PKCanvasView) {
 		viewStore.send(.onDrawingChange(canvasView.drawing))
-//		updateContentSizeForDrawing()
 	}
-	// MARK: Tool Picker Observer
 }

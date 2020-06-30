@@ -61,14 +61,15 @@ public enum InjectablesCanvasAction: Equatable {
 struct InjectablesCanvas: View {
 	let size: CGSize
 	let store: Store<InjectablesCanvasState, InjectablesCanvasAction>
-	
 	struct State: Equatable {
+		let allInjectables: IdentifiedArrayOf<Injectable>
 		let chosenInjectionId: UUID?
-		let injectable: Injectable
+//		let injectable: Injectable
 		
 		init(state: InjectablesCanvasState) {
 			self.chosenInjectionId = state.chosenInjectionId
-			self.injectable = state.allInjectables[id: state.chosenInjectableId]!
+			self.allInjectables = state.allInjectables
+//			self.injectable = state.allInjectables[id: state.chosenInjectableId]!
 		}
 	}
 	
@@ -85,7 +86,7 @@ struct InjectablesCanvas: View {
 							values.map { injection in
 								InjectableMarkerState(injection: injection,
 																			isActive: injection.id == viewStore.chosenInjectionId,
-																			injectable: viewStore.injectable)
+																			injectable: viewStore.state.allInjectables[id: injection.injectableId]!)
 							}
 						}
 						return IdentifiedArray.init(markers, id: \.key)
