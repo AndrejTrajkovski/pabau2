@@ -36,6 +36,8 @@ struct PhotoAndCanvas: View {
 					self.photoSize = size
 			}
 			CanvasParent(store: self.store.scope(state: { $0 }))
+				.frame(width: photoSize.width,
+							 height: photoSize.height)
 		}
 	}
 }
@@ -43,22 +45,16 @@ struct PhotoAndCanvas: View {
 struct CanvasParent: View {
 	let store: Store<PhotoViewModel, PhotoAndCanvasAction>
 	@ObservedObject var viewStore: ViewStore<PhotoViewModel, PhotoAndCanvasAction>
-	
+
 	init(store: Store<PhotoViewModel, PhotoAndCanvasAction>) {
 		self.store = store
-		self.viewStore = ViewStore(store)
+		self.viewStore = ViewStore(store, removeDuplicates: { lhs, rhs in
+			lhs.id == rhs.id
+		})
 	}
 
 	var body: some View {
-		CanvasView(drawing:
-			Binding<PKDrawing?>.init(
-				get: { return self.viewStore.state.drawing },
-				set: {
-					guard let drawing = $0 else { return }
-					self.viewStore.send(.onDrawingChange(drawing))
-				}
-			)
-		)
+		CanvasView(store: store)
 	}
 }
 
