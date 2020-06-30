@@ -14,7 +14,7 @@ public struct InjectablesState: Equatable {
 				return InjectableStepperState(
 					allInjectables: self.allInjectables,
 					photoInjections: self.photoInjections,
-					chosenInjectableId: self.chosenInjectableId,
+					chosenInjectableId: chosenInjectableId,
 					chosenInjectionId: self.chosenInjectionId
 				)
 			}
@@ -77,10 +77,10 @@ public enum InjectablesAction: Equatable {
 }
 
 public let injectablesContainerReducer: Reducer<InjectablesState, InjectablesAction, JourneyEnvironment> = .combine(
-	//	injectableStepperReducer.optional.pullback(
-	//		state: \InjectablesState.stepper,
-	//		action: /InjectablesAction.stepper,
-	//		environment: { $0 }),
+	injectableStepperReducer.optional.pullback(
+		state: \InjectablesState.stepper,
+		action: /InjectablesAction.stepper,
+		environment: { $0 }),
 	injectablesCanvasReducer.optional.pullback(
 		state: \InjectablesState.canvas,
 		action: /InjectablesAction.canvas,
@@ -121,22 +121,22 @@ struct InjectablesContainer: View {
 							.frame(width: self.photoSize.width,
 										 height: self.photoSize.height)
 				})
-				//				IfLetStore(self.store.scope(
-				//					state: { $0.stepper },
-				//					action: { .stepper($0)})
-				//					, then: {
-				//						InjectableStepper(store: $0)
-				//				})
-				//					.frame(height: self.footerHeight)
+				Spacer()
+				IfLetStore(self.store.scope(
+					state: { $0.stepper },
+					action: { .stepper($0)})
+					, then: {
+						InjectableStepper(store: $0)
+							.frame(height: self.footerHeight)
+				})
 			}.sheet(isPresented: viewStore.binding(
 				get: { $0.isChooseInjectablesActive },
 				send: { _ in .chooseInjectables(.onDismissChooseInjectables) }
-				),
-							content: {
-								ChooseInjectable(store:
-									self.store.scope(state: { $0.chooseInjectables },
-																	 action: { .chooseInjectables($0) })
-								)
+				), content: {
+					ChooseInjectable(store:
+						self.store.scope(state: { $0.chooseInjectables },
+														 action: { .chooseInjectables($0) })
+					)
 			})
 		}
 	}

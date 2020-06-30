@@ -80,6 +80,10 @@ struct SinglePhotoEdit: View {
 	var body: some View {
 		WithViewStore(store.scope(state: ViewState.init(state:))) { viewStore in
 			ZStack {
+				PhotoParent(
+					store: self.store.scope(state: { $0.photo}).actionless,
+					self.$photoSize
+				)
 				InjectablesContainer(
 					store: self.store.scope(
 						state: { $0.injectables },
@@ -87,13 +91,14 @@ struct SinglePhotoEdit: View {
 					photoSize: self.$photoSize,
 					footerHeight: self.footerHeight
 				)
-					.background(Color.red.opacity(0.4))
 					.zIndex(viewStore.state.injectablesZIndex)
-				PhotoAndCanvas(store:
-					self.store.scope(state: { $0.photo },
-													 action: { .photoAndCanvas($0) }),
-											 self.$photoSize
+				CanvasParent(store: self.store.scope(
+					state: { $0.photo },
+					action: { .photoAndCanvas($0) }),
+										 self.footerHeight
 				)
+					.frame(width: self.photoSize.width,
+								 height: self.photoSize.height)
 					.disabled(viewStore.state.isDrawingDisabled)
 					.zIndex(viewStore.state.drawingCanvasZIndex)
 			}

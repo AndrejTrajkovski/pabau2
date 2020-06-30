@@ -17,27 +17,22 @@ public enum PhotoAndCanvasAction: Equatable {
 	case onDrawingChange(PKDrawing)
 }
 
-struct PhotoAndCanvas: View {
-	let store: Store<PhotoViewModel, PhotoAndCanvasAction>
-	init (store: Store<PhotoViewModel, PhotoAndCanvasAction>,
+struct PhotoParent: View {
+	let store: Store<PhotoViewModel, Never>
+	@Binding var photoSize: CGSize
+	
+	init (store: Store<PhotoViewModel, Never>,
 				_ photoSize: Binding<CGSize>) {
 		self.store = store
 		self._photoSize = photoSize
 	}
-	@Binding var photoSize: CGSize
-	//TODO: UNCOMMENT CODE FOR EQUAL SIZES
-	//TODO: FIX MEMORY LEAKS WITH PKDRAWINGS
+	
 	var body: some View {
-		ZStack {
-			PhotoCell(photo: ViewStore(store).state)
-				.background(PhotoSizePreferenceSetter())
-				.onPreferenceChange(PhotoSize.self) { size in
-					print(size)
-					self.photoSize = size
-			}
-			CanvasParent(store: self.store.scope(state: { $0 }))
-				.frame(width: photoSize.width,
-							 height: photoSize.height)
+		PhotoCell(photo: ViewStore(store).state)
+			.background(PhotoSizePreferenceSetter())
+			.onPreferenceChange(PhotoSize.self) { size in
+				print(size)
+				self.photoSize = size
 		}
 	}
 }
@@ -45,16 +40,23 @@ struct PhotoAndCanvas: View {
 struct CanvasParent: View {
 	let store: Store<PhotoViewModel, PhotoAndCanvasAction>
 	@ObservedObject var viewStore: ViewStore<PhotoViewModel, PhotoAndCanvasAction>
-
-	init(store: Store<PhotoViewModel, PhotoAndCanvasAction>) {
+	let footerHeight: CGFloat
+	
+	init(store: Store<PhotoViewModel, PhotoAndCanvasAction>,
+			 _ footerHeight: CGFloat) {
 		self.store = store
 		self.viewStore = ViewStore(store, removeDuplicates: { lhs, rhs in
 			lhs.id == rhs.id
 		})
+		self.footerHeight = footerHeight
 	}
 
 	var body: some View {
-		CanvasView(store: store.scope(state: { $0.drawing }))
+		VStack {
+			CanvasView(store: store.scope(state: { $0.drawing }))
+			EmptyView()
+				.frame(height: self.footerHeight)
+		}
 	}
 }
 

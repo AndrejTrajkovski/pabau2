@@ -65,7 +65,6 @@ struct InjectablesCanvas: View {
 		let allInjectables: IdentifiedArrayOf<Injectable>
 		let chosenInjectionId: UUID?
 //		let injectable: Injectable
-		
 		init(state: InjectablesCanvasState) {
 			self.chosenInjectionId = state.chosenInjectionId
 			self.allInjectables = state.allInjectables
@@ -207,7 +206,6 @@ struct InjectableMarker: View {
 struct InjectableMarkerSimple: View {
 	let increment: String
 	let color: Color
-	
 	var body: some View {
 		ZStack {
 			color
