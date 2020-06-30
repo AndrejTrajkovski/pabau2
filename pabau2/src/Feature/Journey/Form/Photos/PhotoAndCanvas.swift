@@ -54,7 +54,7 @@ struct CanvasParent: View {
 	}
 
 	var body: some View {
-		CanvasView(store: store)
+		CanvasView(store: store.scope(state: { $0.drawing }))
 	}
 }
 

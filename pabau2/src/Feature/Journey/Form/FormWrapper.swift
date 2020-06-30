@@ -72,7 +72,8 @@ struct FormWrapper: View {
 				} else if let lhs = lhs.checkPatient, let rhs = rhs.checkPatient {
 					return lhs == rhs
 				} else if let lhs = lhs.photos, let rhs = rhs.photos {
-					return lhs == rhs
+					return lhs.photos.map(\.id) == rhs.photos.map(\.id) &&
+						lhs.selectedIds == rhs.selectedIds
 				} else {
 					return false
 				}
@@ -102,58 +103,46 @@ struct FormWrapper: View {
 	//FIXME: With SwiftUI 2.0 Test with Group instead of AnyView
 	var body: some View {
 		print("form wrap body")
-		if self.viewStore.state.template != nil {
-			return AnyView(
+		return Group {
+			if self.viewStore.state.template != nil {
 				ListDynamicForm(template:
 					Binding.init(
 						get: { self.viewStore.state.template ?? FormTemplate.defaultEmpty },
 						set: { self.viewStore.send(.didUpdateTemplate($0)) })
 				)
-			)
-		} else if self.viewStore.state.patientDetails != nil {
-			return AnyView(
+			} else if self.viewStore.state.patientDetails != nil {
 				IfLetStore(
 					self.store.scope(
 						state: { extract(case: MetaForm.patientDetails, from: $0) },
 						action: { .patientDetails($0) }),
 					then: PatientDetailsForm.init(store:)
 				)
-			)
-		} else if self.viewStore.state.patientCompleteForm != nil {
-			return AnyView(
+			} else if self.viewStore.state.patientCompleteForm != nil {
 				IfLetStore(
 					self.store.scope(
 						state: { extract(case: MetaForm.patientComplete, from: $0) },
 						action: { .patientComplete($0) }),
 					then: PatientCompleteForm.init(store:)
 				)
-			)
-		} else if self.viewStore.state.checkPatient != nil {
-			return AnyView(
+			} else if self.viewStore.state.checkPatient != nil {
 				CheckPatientForm(didTouchDone: { },
 												 patDetails: self.viewStore.state.checkPatient!.patDetails,
 												 patientForms: self.viewStore.state.checkPatient!.patForms)
-			)
-		} else if self.viewStore.state.photos != nil {
-			return AnyView(
+			} else if self.viewStore.state.photos != nil {
 				IfLetStore(
 					self.store.scope(
 						state: { extract(case: MetaForm.photos, from: $0) },
 						action: { .photos($0) }),
 					then: PhotosForm.init(store:)
 				)
-			)
-		} else if self.viewStore.state.aftercare != nil {
-			return AnyView(
+			} else if self.viewStore.state.aftercare != nil {
 				IfLetStore(
 					self.store.scope(
 						state: { extract(case: MetaForm.aftercare, from: $0) },
 						action: { .aftercare($0) }),
 					then: AftercareForm.init(store:)
 				)
-			)
-		} else {
-			return AnyView(EmptyView())
+			}
 		}
 	}
 }

@@ -5,17 +5,17 @@ import Combine
 
 class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPickerObserver {
 
-	public var viewStore: ViewStore<PhotoViewModel, PhotoAndCanvasAction>
+	public var viewStore: ViewStore<PKDrawing?, PhotoAndCanvasAction>
 	var cancellables: Set<AnyCancellable> = []
 	
-	init(viewStore: ViewStore<PhotoViewModel, PhotoAndCanvasAction>) {
+	init(viewStore: ViewStore<PKDrawing?, PhotoAndCanvasAction>) {
 		self.viewStore = viewStore
 		super.init(nibName: nil, bundle: nil)
 	}
 
-	func updateViewStore(viewStore: ViewStore<PhotoViewModel, PhotoAndCanvasAction>) {
+	func updateViewStore(viewStore: ViewStore<PKDrawing?, PhotoAndCanvasAction>) {
 		self.viewStore = viewStore
-		canvasView.drawing = viewStore.drawing ?? PKDrawing()
+		canvasView.drawing = viewStore.state ?? PKDrawing()
 	}
 	
 	required init?(coder: NSCoder) {
@@ -41,14 +41,10 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
 		canvasView.backgroundColor = UIColor.clear
 		canvasView.isOpaque = false
 		canvasView.delegate = self
-		canvasView.drawing = self.viewStore.drawing ?? PKDrawing()
-//		self.viewStore.publisher
-//			.map { ($0.drawing ?? PKDrawing()) }
-//			.assign(to: \.drawing, on: canvasView)
-//			.store(in: &self.cancellables)
+		canvasView.drawing = self.viewStore.state ?? PKDrawing()
 		self.canvasView = canvasView
 	}
-
+	
 	override func viewWillLayoutSubviews() {
 		super.viewWillLayoutSubviews()
 		self.canvasView.frame = self.view.bounds
@@ -68,7 +64,10 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
 	
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
-		
+		if let window = parent?.view.window, let toolPicker = PKToolPicker.shared(for: window) {
+			toolPicker.removeObserver(canvasView)
+			toolPicker.removeObserver(self)
+		}
 	}
 	
 	override var prefersHomeIndicatorAutoHidden: Bool {
