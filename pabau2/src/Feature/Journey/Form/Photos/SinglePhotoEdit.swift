@@ -97,18 +97,15 @@ struct SinglePhotoEdit: View {
 											 height: self.photoSize.height)
 								.zIndex(viewStore.state.injectablesZIndex)
 					})
-						.background(Color.red.opacity(0.4))
 					CanvasView(store:
 						self.store.scope(
 							state: { $0.photo },
-							action: { .photoAndCanvas($0) }),
-										 isDrawingEnabled: !viewStore.state.isDrawingDisabled
+							action: { .photoAndCanvas($0) })
 					)
 						.frame(width: self.photoSize.width,
 									 height: self.photoSize.height)
 						.disabled(viewStore.state.isDrawingDisabled)
 						.zIndex(viewStore.state.drawingCanvasZIndex)
-					.background(Color.green.opacity(0.4))
 				}
 				Spacer()
 				Group {

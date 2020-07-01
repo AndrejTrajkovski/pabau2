@@ -20,10 +20,14 @@ public let editPhotosRightSideReducer = Reducer<EditPhotosRightSideState, EditPh
 	case .didTouchCamera:
 		state.isCameraActive = true
 	case .didTouchInjectables:
-		state.activeCanvas = .injectables
-//		if state.chosenInjectableId == nil {
+		if state.activeCanvas == .injectables {
 			state.isChooseInjectablesActive = true
-//		}
+		} else if state.activeCanvas == .drawing {
+			if state.chosenInjectableId == nil {
+				state.isChooseInjectablesActive = true
+			}
+			state.activeCanvas = .injectables
+		}
 	case .didTouchPencil:
 		state.activeCanvas = .drawing
 	}

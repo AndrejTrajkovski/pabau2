@@ -5,11 +5,8 @@ import ComposableArchitecture
 struct CanvasView: UIViewControllerRepresentable {
 	let store: Store<PhotoViewModel, PhotoAndCanvasAction>
 	@ObservedObject var viewStore: ViewStore<PhotoViewModel, PhotoAndCanvasAction>
-	let isDrawingEnabled: Bool
 	
-	init(store: Store<PhotoViewModel, PhotoAndCanvasAction>,
-			 isDrawingEnabled: Bool) {
-		self.isDrawingEnabled = isDrawingEnabled
+	init(store: Store<PhotoViewModel, PhotoAndCanvasAction>) {
 		self.store = store
 		self.viewStore = ViewStore(self.store.scope(
 				state: { $0 },
@@ -25,7 +22,6 @@ struct CanvasView: UIViewControllerRepresentable {
 	}
 
 	func updateUIViewController(_ uiViewController: DrawingViewController, context: Context) {
-		uiViewController.updateViewStore(viewStore: viewStore,
-		isDrawingEnabled: isDrawingEnabled)
+		uiViewController.updateViewStore(viewStore: viewStore)
 	}
 }

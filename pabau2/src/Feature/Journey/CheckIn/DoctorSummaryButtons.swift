@@ -1,21 +1,30 @@
 import SwiftUI
 import ComposableArchitecture
 import Util
+import Model
 
 struct DoctorSummary: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>
-	@ObservedObject var viewStore: ViewStore<[StepState], DoctorSummaryAction>
+	@ObservedObject var viewStore: ViewStore<State, DoctorSummaryAction>
+
+	struct State: Equatable {
+		let steps: [StepState]
+		let journey: Journey
+	}
+
 	init (store: Store<CheckInContainerState, CheckInContainerAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store
-			.scope(state: { $0.doctorSummary.steps },
-						 action: { .doctorSummary($0)}))
+			.scope(state: State.init(state:),
+						 action: { .doctorSummary($0)}
+			)
+		)
 	}
 	var body: some View {
 		print("DoctorSummary body")
 		return GeometryReader { geo in
 			VStack(spacing: 32) {
-				DoctorSummaryStepList(self.viewStore.state) {
+				DoctorSummaryStepList(self.viewStore.state.steps) {
 					self.viewStore.send(.didTouchStep($0))
 				}
 				DoctorSummaryButtons(store:
@@ -26,7 +35,7 @@ struct DoctorSummary: View {
 				DoctorNavigation(self.store.scope(state: { $0 }, action: { $0 }))
 			}
 			.frame(width: geo.size.width * 0.75)
-//			.journeyBase(self.viewStore.state.journey, .long)
+			.journeyBase(self.viewStore.state.journey, .long)
 			.navigationBarItems(leading:
 				XButton(onTap: { self.viewStore.send(.xOnDoctorCheckIn)}))
 		}
@@ -103,5 +112,12 @@ struct AddFormButton: View {
 							radius: 8.0,
 							y: 4)
 			.background(Color.white)
+	}
+}
+
+extension DoctorSummary.State {
+	init(state: CheckInContainerState) {
+		self.journey = state.journey
+		self.steps = state.doctorSummary.steps
 	}
 }

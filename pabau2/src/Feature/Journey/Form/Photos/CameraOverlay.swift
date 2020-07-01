@@ -109,9 +109,9 @@ private struct TopButtons: View {
 					Image(systemName: "xmark")
 				})
 				Spacer()
-				Button.init(action: { }, label: {
-					Text("Edit")
-				})
+//				Button.init(action: { }, label: {
+//					Text("Edit")
+//				})
 				Button.init(action: {
 					viewStore.send(.toggleFrontRearCamera)
 				}, label: {

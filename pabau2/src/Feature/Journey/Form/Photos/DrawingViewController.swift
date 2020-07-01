@@ -12,9 +12,7 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
 		super.init(nibName: nil, bundle: nil)
 	}
 
-	func updateViewStore(viewStore: ViewStore<PhotoViewModel, PhotoAndCanvasAction>,
-											 isDrawingEnabled: Bool) {
-		canvasView.isUserInteractionEnabled = isDrawingEnabled
+	func updateViewStore(viewStore: ViewStore<PhotoViewModel, PhotoAndCanvasAction>) {
 		self.viewStore = viewStore
 		canvasView.drawing = viewStore.state.drawing
 	}

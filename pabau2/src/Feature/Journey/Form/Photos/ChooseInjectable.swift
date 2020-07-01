@@ -11,13 +11,15 @@ public let chooseInjectableReducer = Reducer<ChooseInjectablesState, ChooseInjec
 	case .onSelectUsedInjectableId(let id):
 		state.chosenInjectableId = id
 		state.isChooseInjectablesActive = false
-		if let chosenInjectionId = state.chosenInjectionId,
-			let injections = state.photoInjections[id],
-			let injectionId = injections.first(where: { $0.id == chosenInjectionId}) {
-			
-		} else {
-			state.chosenInjectionId = nil
-		}
+		state.chosenInjectionId = nil
+//		if let chosenInjectionId = state.chosenInjectionId,
+//			let injections = state.photoInjections[id],
+//			let injectionId = injections.first(where: { $0.id == chosenInjectionId})
+//		{
+//
+//		} else {
+//
+//		}
 	case .onDismissChooseInjectables:
 		state.isChooseInjectablesActive = false
 	}
@@ -49,10 +51,7 @@ struct ChooseInjectable: View {
 	var body: some View {
 		NavigationView {
 			VStack {
-				HStack {
-					TextField("TODO: search: ", text: self.$searchText)
-					StaffFilterPicker()
-				}
+				TextField("Search: ", text: self.$searchText)
 				List {
 					UsedInjectionsSection(
 						store: self.store.scope(
@@ -78,6 +77,7 @@ struct UsedInjectionsSection: View {
 	@ObservedObject var viewStore: ViewStore<SectionViewModel, ChooseInjectableAction>
 
 	init (store: Store<ChooseInjectablesState, ChooseInjectableAction>) {
+		UITableViewHeaderFooterView.appearance().tintColor = UIColor.clear
 		self.store = store
 		self.viewStore = ViewStore(store.scope(
 			state: SectionViewModel.init(used:),

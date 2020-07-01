@@ -5,15 +5,15 @@ public let injectableStepperReducer = Reducer<InjectableStepperState, Injectable
 	state, action, _ in
 	var chosenInjectable = state.allInjectables[id: state.chosenInjectableId]!
 	if let chosenInjectionId = state.chosenInjectionId,
-		var injections = state.photoInjections[state.chosenInjectableId] {
-		var injectionIdx = injections.firstIndex(where: {
+		var injections = state.photoInjections[state.chosenInjectableId],
+		let injectionIdx = injections.firstIndex(where: {
 			$0.id == chosenInjectionId
-		})!
+		}) {
 		switch action {
 		case .increment:
-			injections[injectionIdx].units += chosenInjectable.runningIncrement
+			injections[injectionIdx].units += chosenInjectable.increment
 		case .decrement:
-			injections[injectionIdx].units -= chosenInjectable.runningIncrement
+			injections[injectionIdx].units -= chosenInjectable.increment
 		}
 		state.photoInjections[state.chosenInjectableId] = injections
 	} else {
@@ -116,7 +116,8 @@ extension InjectableStepper.State {
 		self.color = injectable.color
 		self.injTitle = injectable.title
 		if let chosenInjectionId = state.chosenInjectionId,
-			let injections = state.photoInjections[state.chosenInjectableId] {
+			let injections = state.photoInjections[state.chosenInjectableId],
+			injections.contains(where: { $0.id == state.chosenInjectionId}) {
 			let total = injections.reduce(into: TotalInjAndUnits.init(), { res, element in
 				res.totalUnits += element.units
 				res.totalInj += 1

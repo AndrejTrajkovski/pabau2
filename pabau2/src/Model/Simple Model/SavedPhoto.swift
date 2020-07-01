@@ -15,11 +15,11 @@ public struct SavedPhoto: Codable, Identifiable, Hashable {
 	
 	public let employeeId: Int
 	
-	#if DEBUG
+//	#if DEBUG
 	public static func dummyInit(id: Int, url: String) -> SavedPhoto {
 		self.init(id: id, url: url, dateTaken: Date(), clientId: 0, employeeId: 0)
 	}
-	#endif
+//	#endif
 	public init(id: Int, url: String, dateTaken: Date, clientId: Int, employeeId: Int) {
 		self.url = url
 		self.dateTaken = dateTaken

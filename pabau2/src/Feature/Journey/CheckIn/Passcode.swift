@@ -17,7 +17,7 @@ public struct PasscodeContainerState: Equatable {
 
 public struct PasscodeState: Equatable {
 	var runningDigits: [String] = []
-	var unlocked: Bool = true
+	var unlocked: Bool = false
 	var wrongAttempts: Int = 0
 }
 
