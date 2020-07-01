@@ -37,29 +37,6 @@ struct PhotoParent: View {
 	}
 }
 
-struct CanvasParent: View {
-	let store: Store<PhotoViewModel, PhotoAndCanvasAction>
-	@ObservedObject var viewStore: ViewStore<PhotoViewModel, PhotoAndCanvasAction>
-	let footerHeight: CGFloat
-	
-	init(store: Store<PhotoViewModel, PhotoAndCanvasAction>,
-			 _ footerHeight: CGFloat) {
-		self.store = store
-		self.viewStore = ViewStore(store, removeDuplicates: { lhs, rhs in
-			lhs.id == rhs.id
-		})
-		self.footerHeight = footerHeight
-	}
-
-	var body: some View {
-		VStack {
-			CanvasView(store: store.scope(state: { $0.drawing }))
-			EmptyView()
-				.frame(height: self.footerHeight)
-		}
-	}
-}
-
 struct PhotoSizePreferenceSetter: View {
 	var body: some View {
 		GeometryReader { geometry in

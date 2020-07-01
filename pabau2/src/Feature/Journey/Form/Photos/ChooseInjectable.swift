@@ -225,10 +225,6 @@ public struct Injectable: Hashable, Identifiable {
 		self.runningIncrement = increment
 	}
 	
-	mutating func incrementMe() {
-		self.runningIncrement += self.increment
-	}
-	
 	mutating func decrementMe() {
 		self.runningIncrement -= self.increment
 	}

@@ -5,17 +5,20 @@ import Combine
 
 class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPickerObserver {
 
-	public var viewStore: ViewStore<PKDrawing?, PhotoAndCanvasAction>
-	var cancellables: Set<AnyCancellable> = []
+	var viewStore: ViewStore<PhotoViewModel, PhotoAndCanvasAction>
 
-	init(viewStore: ViewStore<PKDrawing?, PhotoAndCanvasAction>) {
+	init(viewStore: ViewStore<PhotoViewModel, PhotoAndCanvasAction>) {
 		self.viewStore = viewStore
 		super.init(nibName: nil, bundle: nil)
 	}
 
-	func updateViewStore(viewStore: ViewStore<PKDrawing?, PhotoAndCanvasAction>) {
+	func updateViewStore(viewStore: ViewStore<PhotoViewModel, PhotoAndCanvasAction>) {
 		self.viewStore = viewStore
-		canvasView.drawing = viewStore.state ?? PKDrawing()
+		if let drawing = viewStore.state.drawing {
+			canvasView.drawing = drawing
+		} else {
+			canvasView.drawing = PKDrawing()
+		}
 	}
 
 	required init?(coder: NSCoder) {
@@ -41,7 +44,11 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
 		canvasView.backgroundColor = UIColor.clear
 		canvasView.isOpaque = false
 		canvasView.delegate = self
-		canvasView.drawing = self.viewStore.state ?? PKDrawing()
+		if let drawing = viewStore.state.drawing {
+			canvasView.drawing = drawing
+		} else {
+			canvasView.drawing = PKDrawing()
+		}
 		self.canvasView = canvasView
 	}
 
@@ -57,7 +64,6 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
 		if let window = parent?.view.window, let toolPicker = PKToolPicker.shared(for: window) {
 			toolPicker.setVisible(true, forFirstResponder: canvasView)
 			toolPicker.addObserver(canvasView)
-			toolPicker.addObserver(self)
 			canvasView.becomeFirstResponder()
 		}
 	}
@@ -66,7 +72,6 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
 		super.viewWillDisappear(animated)
 		if let window = parent?.view.window, let toolPicker = PKToolPicker.shared(for: window) {
 			toolPicker.removeObserver(canvasView)
-			toolPicker.removeObserver(self)
 		}
 	}
 
@@ -76,6 +81,14 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
 
 	// MARK: Canvas View Delegate
 	func canvasViewDrawingDidChange(_ canvasView: PKCanvasView) {
-		viewStore.send(.onDrawingChange(canvasView.drawing))
+		viewStore?.send(.onDrawingChange(canvasView.drawing))
+	}
+	
+	func who(_ any: Any) -> String {
+			if Mirror(reflecting: any).displayStyle == .class {
+					return "Class"
+			} else {
+					return "Struct"
+			}
 	}
 }

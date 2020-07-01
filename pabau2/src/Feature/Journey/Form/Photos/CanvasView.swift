@@ -3,14 +3,14 @@ import PencilKit
 import ComposableArchitecture
 
 struct CanvasView: UIViewControllerRepresentable {
-	let store: Store<PKDrawing?, PhotoAndCanvasAction>
+	@ObservedObject var viewStore: ViewStore<PhotoViewModel, PhotoAndCanvasAction>
 
 	func makeUIViewController(context: Context) -> DrawingViewController {
-		let drawinVC = DrawingViewController(viewStore: ViewStore(store))
+		let drawinVC = DrawingViewController(viewStore: viewStore)
 		return drawinVC
 	}
 
 	func updateUIViewController(_ uiViewController: DrawingViewController, context: Context) {
-		uiViewController.updateViewStore(viewStore: ViewStore(store))
+		uiViewController.updateViewStore(viewStore: viewStore)
 	}
 }

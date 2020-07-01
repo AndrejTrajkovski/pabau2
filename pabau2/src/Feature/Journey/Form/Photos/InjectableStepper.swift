@@ -4,8 +4,8 @@ import ComposableArchitecture
 public let injectableStepperReducer = Reducer<InjectableStepperState, InjectableStepperAction, JourneyEnvironment>.init {
 	state, action, _ in
 	var chosenInjectable = state.allInjectables[id: state.chosenInjectableId]!
-	if let chosenInjectionId = state.chosenInjectionId {
-		var injections = state.photoInjections[state.chosenInjectableId]!
+	if let chosenInjectionId = state.chosenInjectionId,
+		var injections = state.photoInjections[state.chosenInjectableId] {
 		var injectionIdx = injections.firstIndex(where: {
 			$0.id == chosenInjectionId
 		})!
@@ -15,12 +15,13 @@ public let injectableStepperReducer = Reducer<InjectableStepperState, Injectable
 		case .decrement:
 			injections[injectionIdx].units -= chosenInjectable.runningIncrement
 		}
+		state.photoInjections[state.chosenInjectableId] = injections
 	} else {
 		switch action {
 		case .increment:
-			chosenInjectable.incrementMe()
+			chosenInjectable.runningIncrement += chosenInjectable.increment
 		case .decrement:
-			chosenInjectable.decrementMe()
+			chosenInjectable.runningIncrement -= chosenInjectable.increment
 		}
 		state.allInjectables[id: state.chosenInjectableId] = chosenInjectable
 	}
@@ -47,39 +48,40 @@ struct InjectableStepper: View {
 		let desc: String
 		let number: Double
 		let hasActiveInjection: Bool
+		let chosenInjectableId: InjectableId
+		let chosenInjectionId: UUID?
 	}
 	
 	var body: some View {
 		WithViewStore(store.scope(state: State.init(state:))) { viewStore in
-			HStack {
-				InjectableStepperTop(title: viewStore.state.injTitle,
-														 description: viewStore.state.desc,
-														 color: viewStore.state.color)
-				Spacer()
+			VStack {
+				Divider()
 				HStack {
-					Button(action: { viewStore.send(.decrement) },
-								 label: { Image(systemName: "minus.rectangle.fill") })
-					StepperMiddle(incrementValue: viewStore.state.number,
-												hasActiveInjection: viewStore.state.hasActiveInjection)
-					Button(action: { viewStore.send(.increment )},
-								 label: { Image(systemName: "plus.rectangle.fill") })
+					InjectableStepperTop(title: viewStore.state.injTitle,
+															 description: viewStore.state.desc,
+															 color: viewStore.state.color)
+					Spacer()
+					HStack {
+						Button(action: { viewStore.send(.decrement) },
+									 label: {
+										Image(systemName: "minus.rectangle.fill")
+										.frame(width: 50, height: 50)
+						})
+						ZStack {
+							if viewStore.state.hasActiveInjection {
+								InjectableMarkerSimple(increment: String(viewStore.state.number),
+																			 color: .black)
+							} else {
+								Text(String(viewStore.state.number)).font(.regular17)
+							}
+						}.frame(width: 50, height: 50)
+						Button(action: { viewStore.send(.increment )},
+									 label: {
+										Image(systemName: "plus.rectangle.fill")
+										.frame(width: 50, height: 50)
+						})
+					}
 				}
-			}
-		}
-	}
-}
-
-struct StepperMiddle: View {
-	let incrementValue: Double
-	let hasActiveInjection: Bool
-	var body: some View {
-		ZStack {
-			if hasActiveInjection {
-				InjectableMarkerSimple(increment: String(incrementValue),
-															 color: .black)
-				.frame(width: 75, height: 75)
-			} else {
-				Text(String(incrementValue)).font(.regular17)
 			}
 		}
 	}
@@ -91,7 +93,7 @@ struct InjectableStepperTop: View {
 	let color: Color
 	
 	var body: some View {
-		VStack {
+		VStack(alignment: .leading) {
 			HStack {
 				Circle()
 					.fill(color)
@@ -106,17 +108,19 @@ struct InjectableStepperTop: View {
 extension InjectableStepper.State {
   init(state: InjectableStepperState) {
 		let injectable = state.allInjectables[id: state.chosenInjectableId]!
+		self.chosenInjectableId = injectable.id
+		self.chosenInjectionId = state.chosenInjectionId
 		self.color = injectable.color
 		self.injTitle = injectable.title
-		if let chosenInjectionId = state.chosenInjectionId {
-			let injections = state.photoInjections[state.chosenInjectableId]
-			let total = injections?.reduce(into: TotalInjAndUnits.init(), { res, element in
+		if let chosenInjectionId = state.chosenInjectionId,
+			let injections = state.photoInjections[state.chosenInjectableId] {
+			let total = injections.reduce(into: TotalInjAndUnits.init(), { res, element in
 				res.totalUnits += element.units
 				res.totalInj += 1
-			}) ?? TotalInjAndUnits()
+			})
 			self.hasActiveInjection = true
 			self.desc = "Selection: \(total.totalInj) injections - \(total.totalUnits)"
-			self.number = injections?.first(where: { $0.id == chosenInjectionId})?.units ?? 0
+			self.number = injections.first(where: { $0.id == chosenInjectionId})?.units ?? 0
 		} else {
 			self.hasActiveInjection = false
 			self.desc = ""

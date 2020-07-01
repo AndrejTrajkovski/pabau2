@@ -4,7 +4,7 @@ import ComposableArchitecture
 public let injectablesCanvasReducer = Reducer<InjectablesCanvasState, InjectablesCanvasAction, JourneyEnvironment>.init { state, action, _ in
 	switch action {
 	case .didTapOnCanvas(let point):
-		let units = state.allInjectables[id: state.chosenInjectableId]!.increment
+		let units = state.allInjectables[id: state.chosenInjectableId]!.runningIncrement
 		let newInj = Injection(units: units,
 													 position: point,
 													 injectableId: state.chosenInjectableId)

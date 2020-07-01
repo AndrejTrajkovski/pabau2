@@ -110,18 +110,16 @@ struct EditPhotos: View {
 						action: { .singlePhotoEdit($0) }
 					),
 					then:
-					SinglePhotoEdit.init(store:),
-					else: Spacer()
+					SinglePhotoEdit.init(store:)
 				)
-					.padding(.bottom, 128)
 				EditPhotosRightSide(store:
 					self.store.scope(
 						state: { $0.rightSide },
 						action: { .rightSide($0)}
 					)
 				)
-					.padding(8)
-					.padding(.bottom, 64)
+					.padding([.leading, .trailing, .top], 8)
+					.padding(.bottom, 128)
 			}
 			.navigationBarItems(trailing:
 				EmptyView()

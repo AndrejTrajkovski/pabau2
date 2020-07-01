@@ -91,60 +91,60 @@ public let injectablesContainerReducer: Reducer<InjectablesState, InjectablesAct
 		environment: { $0 })
 )
 
-struct InjectablesContainer: View {
-	let store: Store<InjectablesState, InjectablesAction>
-	@Binding var photoSize: CGSize
-	let footerHeight: CGFloat
-
-	init(store: Store<InjectablesState, InjectablesAction>,
-			 photoSize: Binding<CGSize>,
-			 footerHeight: CGFloat
-	) {
-		self.store = store
-		self._photoSize = photoSize
-		self.footerHeight = footerHeight
-	}
-
-	struct ViewState: Equatable {
-		let isChooseInjectablesActive: Bool
-		let chosenInjectableId: InjectableId?
-	}
-
-	var body: some View {
-		WithViewStore(store.scope(state: ViewState.init(state:))) { viewStore in
-			VStack {
-				IfLetStore(self.store.scope(
-					state: { $0.canvas },
-					action: { .canvas($0)})
-					, then: {
-						InjectablesCanvas(size: self.photoSize, store: $0)
-							.frame(width: self.photoSize.width,
-										 height: self.photoSize.height)
-				})
-				Spacer()
-				IfLetStore(self.store.scope(
-					state: { $0.stepper },
-					action: { .stepper($0)})
-					, then: {
-						InjectableStepper(store: $0)
-							.frame(height: self.footerHeight)
-				})
-			}.sheet(isPresented: viewStore.binding(
-				get: { $0.isChooseInjectablesActive },
-				send: { _ in .chooseInjectables(.onDismissChooseInjectables) }
-				), content: {
-					ChooseInjectable(store:
-						self.store.scope(state: { $0.chooseInjectables },
-														 action: { .chooseInjectables($0) })
-					)
-			})
-		}
-	}
-}
-
-extension InjectablesContainer.ViewState {
-	init(state: InjectablesState) {
-		self.isChooseInjectablesActive = state.isChooseInjectablesActive
-		self.chosenInjectableId = state.chosenInjectableId
-	}
-}
+//struct InjectablesContainer: View {
+//	let store: Store<InjectablesState, InjectablesAction>
+//	@Binding var photoSize: CGSize
+//	let footerHeight: CGFloat
+//
+//	init(store: Store<InjectablesState, InjectablesAction>,
+//			 photoSize: Binding<CGSize>,
+//			 footerHeight: CGFloat
+//	) {
+//		self.store = store
+//		self._photoSize = photoSize
+//		self.footerHeight = footerHeight
+//	}
+//
+//	struct ViewState: Equatable {
+//		let isChooseInjectablesActive: Bool
+//		let chosenInjectableId: InjectableId?
+//	}
+//
+//	var body: some View {
+//		WithViewStore(store.scope(state: ViewState.init(state:))) { viewStore in
+//			VStack {
+//				IfLetStore(self.store.scope(
+//					state: { $0.canvas },
+//					action: { .canvas($0)})
+//					, then: {
+//						InjectablesCanvas(size: self.photoSize, store: $0)
+//							.frame(width: self.photoSize.width,
+//										 height: self.photoSize.height)
+//				})
+//				Spacer()
+//				IfLetStore(self.store.scope(
+//					state: { $0.stepper },
+//					action: { .stepper($0)})
+//					, then: {
+//						InjectableStepper(store: $0)
+//							.frame(height: self.footerHeight)
+//				})
+//			}.sheet(isPresented: viewStore.binding(
+//				get: { $0.isChooseInjectablesActive },
+//				send: { _ in .chooseInjectables(.onDismissChooseInjectables) }
+//				), content: {
+//					ChooseInjectable(store:
+//						self.store.scope(state: { $0.chooseInjectables },
+//														 action: { .chooseInjectables($0) })
+//					)
+//			})
+//		}
+//	}
+//}
+//
+//extension InjectablesContainer.ViewState {
+//	init(state: InjectablesState) {
+//		self.isChooseInjectablesActive = state.isChooseInjectablesActive
+//		self.chosenInjectableId = state.chosenInjectableId
+//	}
+//}
