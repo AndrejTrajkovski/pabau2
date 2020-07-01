@@ -295,11 +295,8 @@
 		82FF6C9B248F92980014C4DC /* PabauCommon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 82FF6C93248F92980014C4DC /* PabauCommon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		82FF6CA0248F92A00014C4DC /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 82FF6C9F248F92A00014C4DC /* ComposableArchitecture */; };
 		82FF6CA1248F92AC0014C4DC /* PabauCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82FF6C93248F92980014C4DC /* PabauCommon.framework */; };
-		82FF6CA2248F92AC0014C4DC /* PabauCommon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 82FF6C93248F92980014C4DC /* PabauCommon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		82FF6CA6248F92B40014C4DC /* PabauCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82FF6C93248F92980014C4DC /* PabauCommon.framework */; };
-		82FF6CA7248F92B40014C4DC /* PabauCommon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 82FF6C93248F92980014C4DC /* PabauCommon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		82FF6CAB248F92BD0014C4DC /* PabauCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82FF6C93248F92980014C4DC /* PabauCommon.framework */; };
-		82FF6CAC248F92BD0014C4DC /* PabauCommon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 82FF6C93248F92980014C4DC /* PabauCommon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		82FF6CB12490F3BB0014C4DC /* NewPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CB02490F3BB0014C4DC /* NewPhoto.swift */; };
 		82FF6CB32490F4450014C4DC /* PhotoVariant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CB22490F4450014C4DC /* PhotoVariant.swift */; };
 		82FF6CB52490F57D0014C4DC /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FF6CB42490F57D0014C4DC /* Photo.swift */; };
@@ -485,7 +482,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				82FF6CA2248F92AC0014C4DC /* PabauCommon.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -496,7 +492,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				82FF6CA7248F92B40014C4DC /* PabauCommon.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -507,7 +502,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				82FF6CAC248F92BD0014C4DC /* PabauCommon.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
