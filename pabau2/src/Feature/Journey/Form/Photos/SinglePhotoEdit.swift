@@ -64,10 +64,6 @@ struct SinglePhotoEdit: View {
 		let drawingCanvasZIndex: Double
 		let isDrawingDisabled: Bool
 		let isChooseInjectablesActive: Bool
-		let chosenInjectableId: InjectableId?
-		let allInjectables: IdentifiedArrayOf<Injectable>
-		let photoInjections: [InjectableId: [Injection]]
-		let chosenInjectionId: UUID?
 		
 		init (state: SinglePhotoEditState) {
 			let isInjectablesActive = state.activeCanvas == CanvasMode.injectables ? true : false
@@ -80,10 +76,6 @@ struct SinglePhotoEdit: View {
 			}
 			self.isDrawingDisabled = isInjectablesActive
 			self.isChooseInjectablesActive = state.isChooseInjectablesActive
-			self.chosenInjectableId = state.chosenInjectableId
-			self.allInjectables = state.allInjectables
-			self.photoInjections = state.photo.injections
-			self.chosenInjectionId = state.chosenInjectionId
 		}
 	}
 
@@ -106,13 +98,12 @@ struct SinglePhotoEdit: View {
 								.zIndex(viewStore.state.injectablesZIndex)
 					})
 						.background(Color.red.opacity(0.4))
-					CanvasView(viewStore: ViewStore(
+					CanvasView(store:
 						self.store.scope(
 							state: { $0.photo },
-							action: { .photoAndCanvas($0) })
-						, removeDuplicates: { lhs, rhs in
-						lhs.id == rhs.id
-					}))
+							action: { .photoAndCanvas($0) }),
+										 isDrawingEnabled: !viewStore.state.isDrawingDisabled
+					)
 						.frame(width: self.photoSize.width,
 									 height: self.photoSize.height)
 						.disabled(viewStore.state.isDrawingDisabled)
@@ -127,12 +118,13 @@ struct SinglePhotoEdit: View {
 							action: { .injectables(InjectablesAction.stepper($0))})
 							, then: {
 								InjectableStepper(store: $0)
-									.padding()
 						})
 					} else {
 						Color.clear
 					}
-				}.frame(height: self.footerHeight)
+				}
+					.frame(height: self.footerHeight)
+					.padding()
 			}
 			.sheet(isPresented: viewStore.binding(
 				get: { $0.isChooseInjectablesActive },

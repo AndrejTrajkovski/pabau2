@@ -21,6 +21,7 @@ public let injectablesCanvasReducer = Reducer<InjectablesCanvasState, Injectable
 				switch action {
 				case .didSelectInjection(let injection):
 					state.chosenInjectionId = injection.id
+					state.chosenInjectableId = injection.injectableId
 				case .didDragToPosition(let point):
 					state.photoInjections[id]?[idx].position = point
 				}

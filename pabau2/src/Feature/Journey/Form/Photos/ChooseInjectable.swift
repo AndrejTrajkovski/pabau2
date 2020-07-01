@@ -11,6 +11,13 @@ public let chooseInjectableReducer = Reducer<ChooseInjectablesState, ChooseInjec
 	case .onSelectUsedInjectableId(let id):
 		state.chosenInjectableId = id
 		state.isChooseInjectablesActive = false
+		if let chosenInjectionId = state.chosenInjectionId,
+			let injections = state.photoInjections[id],
+			let injectionId = injections.first(where: { $0.id == chosenInjectionId}) {
+			
+		} else {
+			state.chosenInjectionId = nil
+		}
 	case .onDismissChooseInjectables:
 		state.isChooseInjectablesActive = false
 	}

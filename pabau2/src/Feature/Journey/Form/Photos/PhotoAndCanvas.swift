@@ -20,13 +20,13 @@ public enum PhotoAndCanvasAction: Equatable {
 struct PhotoParent: View {
 	let store: Store<PhotoViewModel, Never>
 	@Binding var photoSize: CGSize
-	
+
 	init (store: Store<PhotoViewModel, Never>,
 				_ photoSize: Binding<CGSize>) {
 		self.store = store
 		self._photoSize = photoSize
 	}
-	
+
 	var body: some View {
 		PhotoCell(photo: ViewStore(store).state)
 			.background(PhotoSizePreferenceSetter())

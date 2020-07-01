@@ -12,13 +12,11 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
 		super.init(nibName: nil, bundle: nil)
 	}
 
-	func updateViewStore(viewStore: ViewStore<PhotoViewModel, PhotoAndCanvasAction>) {
+	func updateViewStore(viewStore: ViewStore<PhotoViewModel, PhotoAndCanvasAction>,
+											 isDrawingEnabled: Bool) {
+		canvasView.isUserInteractionEnabled = isDrawingEnabled
 		self.viewStore = viewStore
-		if let drawing = viewStore.state.drawing {
-			canvasView.drawing = drawing
-		} else {
-			canvasView.drawing = PKDrawing()
-		}
+		canvasView.drawing = viewStore.state.drawing
 	}
 
 	required init?(coder: NSCoder) {
@@ -44,11 +42,6 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
 		canvasView.backgroundColor = UIColor.clear
 		canvasView.isOpaque = false
 		canvasView.delegate = self
-		if let drawing = viewStore.state.drawing {
-			canvasView.drawing = drawing
-		} else {
-			canvasView.drawing = PKDrawing()
-		}
 		self.canvasView = canvasView
 	}
 
@@ -81,7 +74,7 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
 
 	// MARK: Canvas View Delegate
 	func canvasViewDrawingDidChange(_ canvasView: PKCanvasView) {
-		viewStore?.send(.onDrawingChange(canvasView.drawing))
+		viewStore.send(.onDrawingChange(canvasView.drawing))
 	}
 	
 	func who(_ any: Any) -> String {

@@ -34,7 +34,7 @@ let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, JourneyEnviron
 			}
 			return .none
 		}
-)
+).debug() 
 
 public enum EditPhotoAction: Equatable {
 	case openCamera
