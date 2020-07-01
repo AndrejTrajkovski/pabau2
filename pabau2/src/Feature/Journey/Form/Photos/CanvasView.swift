@@ -3,7 +3,6 @@ import PencilKit
 import ComposableArchitecture
 
 struct CanvasView: UIViewControllerRepresentable {
-	
 	let store: Store<PhotoViewModel, PhotoAndCanvasAction>
 	@ObservedObject var viewStore: ViewStore<PhotoViewModel, PhotoAndCanvasAction>
 	let isDrawingEnabled: Bool

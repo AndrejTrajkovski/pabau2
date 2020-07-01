@@ -64,20 +64,23 @@ struct InjectableStepper: View {
 					HStack {
 						Button(action: { viewStore.send(.decrement) },
 									 label: {
-										Image(systemName: "minus.rectangle.fill")
+										Image("ico-journey-upload-photos-minus")
+//										Image(systemName: "minus.rectangle.fill")
 										.frame(width: 50, height: 50)
 						})
 						ZStack {
 							if viewStore.state.hasActiveInjection {
 								InjectableMarkerSimple(increment: String(viewStore.state.number),
-																			 color: .black)
+																			 color: viewStore.state.color,
+																			 isActive: true)
 							} else {
 								Text(String(viewStore.state.number)).font(.regular17)
 							}
 						}.frame(width: 50, height: 50)
 						Button(action: { viewStore.send(.increment )},
 									 label: {
-										Image(systemName: "plus.rectangle.fill")
+//										Image("systemName: "plus.rectangle.fill"")
+										Image("ico-journey-upload-photos-plus")
 										.frame(width: 50, height: 50)
 						})
 					}

@@ -165,7 +165,7 @@ struct InjectableMarkerState: Identifiable, Equatable {
 
 struct InjectableMarker: View {
 	let store: Store<InjectableMarkerState, MarkerAction>
-	private static let markerSize = CGSize.init(width: 50, height: 50)
+	private static let markerSize = CGSize.init(width: 44, height: 44)
 	let imageSize: CGSize
 
 	struct State: Equatable {
@@ -180,7 +180,8 @@ struct InjectableMarker: View {
 		WithViewStore(store.scope(state: State.init(state:))) { viewStore in
 			InjectableMarkerSimple(
 				increment: viewStore.state.units,
-				color: viewStore.state.color
+				color: viewStore.state.color,
+				isActive: viewStore.state.isActive
 			)
 				.frame(width: Self.markerSize.width,
 						 height: Self.markerSize.height,
@@ -207,9 +208,18 @@ struct InjectableMarker: View {
 struct InjectableMarkerSimple: View {
 	let increment: String
 	let color: Color
+	let isActive: Bool
 	var body: some View {
 		ZStack {
-			color
+			Circle()
+			.overlay(
+				Group {
+					if isActive {
+						Circle()
+							.stroke(Color.white, lineWidth: 2)
+					}
+				}
+			).foregroundColor(color)
 			Text(increment)
 				.foregroundColor(.white)
 				.font(.bold10)
@@ -217,12 +227,24 @@ struct InjectableMarkerSimple: View {
 	}
 }
 
+extension Shape {
+	/// fills and strokes a shape
+	public func fill<S:ShapeStyle>(
+		_ fillContent: S,
+		stroke       : StrokeStyle
+	) -> some View {
+		ZStack {
+			self.fill(fillContent)
+			self.stroke(style:stroke)
+		}
+	}
+}
 
 extension InjectableMarker.State {
 	init (state: InjectableMarkerState) {
 		self.injection = state.injection
 		self.isActive = state.isActive
-		self.color = self.isActive ? Color.black : state.injectable.color
+		self.color = state.injectable.color
 		self.units = String(state.injection.units)
 		self.offset = CGSize(width: state.injection.position.x,
 												 height: state.injection.position.y)
