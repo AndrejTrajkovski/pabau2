@@ -4,9 +4,11 @@ import ComposableArchitecture
 public let injectablesCanvasReducer = Reducer<InjectablesCanvasState, InjectablesCanvasAction, JourneyEnvironment>.init { state, action, _ in
 	switch action {
 	case .didTapOnCanvas(let point):
+		let injCenter = CGPoint(x: point.x - InjectableMarker.markerSize.width / 2,
+														y: point.y - InjectableMarker.markerSize.height / 2)
 		let units = state.allInjectables[id: state.chosenInjectableId]!.runningIncrement
 		let newInj = Injection(units: units,
-													 position: point,
+													 position: injCenter,
 													 injectableId: state.chosenInjectableId)
 		if var injections = state.photoInjections[state.chosenInjectableId] {
 			injections.append(newInj)
@@ -166,7 +168,7 @@ struct InjectableMarkerState: Identifiable, Equatable {
 struct InjectableMarker: View {
 	let store: Store<InjectableMarkerState, MarkerAction>
 	@ObservedObject var viewStore: ViewStore<ViewState, MarkerAction>
-	private static let markerSize = CGSize.init(width: 44, height: 44)
+	public static let markerSize = CGSize.init(width: 44, height: 44)
 	let imageSize: CGSize
 	@State var offset: CGSize
 	
