@@ -7,67 +7,6 @@ public struct InjectablesState: Equatable {
 	var isChooseInjectablesActive: Bool
 	var chosenInjectableId: InjectableId?
 	var chosenInjectionId: UUID?
-	
-	var stepper: InjectableStepperState? {
-		get {
-			chosenInjectableId.map { chosenInjectableId in
-				return InjectableStepperState(
-					allInjectables: self.allInjectables,
-					photoInjections: self.photoInjections,
-					chosenInjectableId: chosenInjectableId,
-					chosenInjectionId: self.chosenInjectionId
-				)
-			}
-		}
-		set {
-			newValue.map {
-				self.allInjectables = $0.allInjectables
-				self.photoInjections = $0.photoInjections
-				self.chosenInjectableId = $0.chosenInjectableId
-				self.chosenInjectionId = $0.chosenInjectionId
-			}
-		}
-	}
-	
-	var canvas: InjectablesCanvasState? {
-		get {
-			chosenInjectableId.map { chosenInjectableId in
-				return InjectablesCanvasState(
-					allInjectables: self.allInjectables,
-					photoInjections: self.photoInjections,
-					chosenInjectableId: chosenInjectableId,
-					chosenInjectionId: self.chosenInjectionId
-				)
-			}
-		}
-		set {
-			newValue.map {
-				self.allInjectables = $0.allInjectables
-				self.photoInjections = $0.photoInjections
-				self.chosenInjectableId = $0.chosenInjectableId
-				self.chosenInjectionId = $0.chosenInjectionId
-			}
-		}
-	}
-	
-	var chooseInjectables: ChooseInjectablesState {
-		get {
-			ChooseInjectablesState(
-				allInjectables: self.allInjectables,
-				photoInjections: self.photoInjections,
-				isChooseInjectablesActive: self.isChooseInjectablesActive,
-				chosenInjectableId: self.chosenInjectableId,
-				chosenInjectionId: self.chosenInjectionId
-			)
-		}
-		set {
-			self.allInjectables = newValue.allInjectables
-			self.photoInjections = newValue.photoInjections
-			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
-			self.chosenInjectableId = newValue.chosenInjectableId
-			self.chosenInjectionId = newValue.chosenInjectionId
-		}
-	}
 }
 
 public enum InjectablesAction: Equatable {
@@ -148,3 +87,66 @@ public let injectablesContainerReducer: Reducer<InjectablesState, InjectablesAct
 //		self.chosenInjectableId = state.chosenInjectableId
 //	}
 //}
+
+extension InjectablesState {
+	var stepper: InjectableStepperState? {
+		get {
+			chosenInjectableId.map { chosenInjectableId in
+				return InjectableStepperState(
+					allInjectables: self.allInjectables,
+					photoInjections: self.photoInjections,
+					chosenInjectableId: chosenInjectableId,
+					chosenInjectionId: self.chosenInjectionId
+				)
+			}
+		}
+		set {
+			newValue.map {
+				self.allInjectables = $0.allInjectables
+				self.photoInjections = $0.photoInjections
+				self.chosenInjectableId = $0.chosenInjectableId
+				self.chosenInjectionId = $0.chosenInjectionId
+			}
+		}
+	}
+	
+	var canvas: InjectablesCanvasState? {
+		get {
+			chosenInjectableId.map { chosenInjectableId in
+				return InjectablesCanvasState(
+					allInjectables: self.allInjectables,
+					photoInjections: self.photoInjections,
+					chosenInjectableId: chosenInjectableId,
+					chosenInjectionId: self.chosenInjectionId
+				)
+			}
+		}
+		set {
+			newValue.map {
+				self.allInjectables = $0.allInjectables
+				self.photoInjections = $0.photoInjections
+				self.chosenInjectableId = $0.chosenInjectableId
+				self.chosenInjectionId = $0.chosenInjectionId
+			}
+		}
+	}
+	
+	var chooseInjectables: ChooseInjectablesState {
+		get {
+			ChooseInjectablesState(
+				allInjectables: self.allInjectables,
+				photoInjections: self.photoInjections,
+				isChooseInjectablesActive: self.isChooseInjectablesActive,
+				chosenInjectableId: self.chosenInjectableId,
+				chosenInjectionId: self.chosenInjectionId
+			)
+		}
+		set {
+			self.allInjectables = newValue.allInjectables
+			self.photoInjections = newValue.photoInjections
+			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
+			self.chosenInjectableId = newValue.chosenInjectableId
+			self.chosenInjectionId = newValue.chosenInjectionId
+		}
+	}
+}

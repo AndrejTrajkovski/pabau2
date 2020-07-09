@@ -88,11 +88,11 @@ public struct CheckInContainerState: Equatable {
 	}
 
 	var passcodeState = PasscodeState()
-	var isEnterPasscodeActive: Bool = false
+	var isEnterPasscodeActive: Bool = true
 	var isChooseConsentActive: Bool = false
 	var isChooseTreatmentActive: Bool = false
-	var isDoctorCheckInMainActive: Bool = false
-	var isDoctorSummaryActive: Bool = false
+	var isDoctorCheckInMainActive: Bool = true
+	var isDoctorSummaryActive: Bool = true
 	var didGoBackToPatientMode: Bool = false
 }
 
@@ -250,7 +250,7 @@ extension CheckInContainerState {
 			 medHistory: FormTemplate,
 			 consents: FormsCollection,
 			 allConsents: [Int: FormTemplate],
-			 patientComplete: PatientComplete = PatientComplete(isPatientComplete: false),
+			 patientComplete: PatientComplete = PatientComplete(isPatientComplete: true),
 			 photosState: PhotosState) {
 		self.journey = journey
 		self.stepTypes = pathway.steps.map { $0.stepType }

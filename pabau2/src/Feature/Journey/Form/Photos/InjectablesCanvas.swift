@@ -17,15 +17,15 @@ public let injectablesCanvasReducer = Reducer<InjectablesCanvasState, Injectable
 			state.photoInjections[state.chosenInjectableId] = [newInj]
 		}
 		state.chosenInjectionId = newInj.id
-	case .injectable(let id, let markerAction):
+	case .injectable(let injectableId, let markerAction):
 		switch markerAction {
 		case .didTouchMarker(idx: let idx, action: let action):
 				switch action {
-				case .didSelectInjection(let injection):
-					state.chosenInjectionId = injection.id
-					state.chosenInjectableId = injection.injectableId
+				case .didSelectInjectionId(let injectionId):
+					state.chosenInjectionId = injectionId
+					state.chosenInjectableId = injectableId
 				case .didDragToPosition(let point):
-					state.photoInjections[id]?[idx].position = point
+					state.photoInjections[injectableId]?[idx].position = point
 				}
 			}
 	}
@@ -37,28 +37,11 @@ public struct InjectablesCanvasState: Equatable {
 	var photoInjections: [InjectableId: [Injection]]
 	var chosenInjectableId: InjectableId
 	var chosenInjectionId: UUID?
-	
-//	var markers: [InjectableMarkerState] {
-//		get {
-//			self.photoInjections.flatMap(\.value).map {
-//				InjectableMarkerState(
-//					injection: $0,
-//					isActive: $0.id == chosenInjectionId,
-//					injectable: allInjectables[id: $0.injectableId]!)
-//			}
-//		}
-//		set {
-//			self.photoInjections = Dictionary.init(grouping: newValue,
-//																						 by: { $0.injectable.id })
-//				.mapValues { arrayOfMarkers in
-//					arrayOfMarkers.map(\.injection)
-//			}
-//		}
 }
 
 public enum InjectablesCanvasAction: Equatable {
 	case didTapOnCanvas(CGPoint)
-	case injectable(id: InjectableId, action: MarkerInjectionAction)
+	case injectable(injectableId: InjectableId, action: MarkerInjectionAction)
 }
 
 struct InjectablesCanvas: View {
@@ -92,7 +75,7 @@ struct InjectablesCanvas: View {
 							}
 						}
 						return IdentifiedArray.init(markers, id: \.key)
-				}, action: InjectablesCanvasAction.injectable(id: action:)),
+				}, action: InjectablesCanvasAction.injectable(injectableId: action:)),
 				content: { (injectionsStore: Store<(key: Int, value: [InjectableMarkerState]), MarkerInjectionAction>) in
 					InjectionsByInjectable(store: injectionsStore,
 																 imageSize: self.size)
@@ -154,7 +137,7 @@ struct TappableView: UIViewRepresentable {
 }
 
 public enum MarkerAction: Equatable {
-	case didSelectInjection(Injection)
+	case didSelectInjectionId(UUID)
 	case didDragToPosition(CGPoint)//self.injection.position = calculatedPos
 }
 
@@ -202,7 +185,7 @@ struct InjectableMarker: View {
 						 height: Self.markerSize.height,
 						 alignment: .center)
 				.onTapGesture {
-//					self.viewStore.send(.didSelectInjection(self.viewStore.state.injection))
+					self.viewStore.send(.didSelectInjectionId(self.viewStore.state.id))
 				}
 			.gesture(
 				DragGesture().onChanged({ value in

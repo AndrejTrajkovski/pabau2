@@ -96,7 +96,8 @@ struct SinglePhotoEdit: View {
 								.frame(width: self.photoSize.width,
 											 height: self.photoSize.height)
 								.zIndex(viewStore.state.injectablesZIndex)
-					})
+						}, else: Spacer()
+					)
 					CanvasView(store:
 						self.store.scope(
 							state: { $0.photo },

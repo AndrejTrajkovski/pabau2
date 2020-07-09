@@ -15,7 +15,7 @@ struct RotationGestureView: View {
 	var body: some View {
 		InjectableMarkerPath()
 			.fill(Color.red)
-			.frame(width: 40, height: 60)
+			.frame(width: 50, height: 70)
 			.rotationEffect(self.angle, anchor: UnitPoint.bottom)
 			.gesture(rotation)
 	}

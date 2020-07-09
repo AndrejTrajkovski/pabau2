@@ -17,6 +17,7 @@ public extension Font {
 	static let medium9 = Font.system(size: 9, weight: .medium)
 	static let medium15 = Font.system(size: 15.0, weight: .medium)
 	static let medium16 = Font.system(size: 16.0, weight: .medium)
+	static let medium18 = Font.system(size: 18.0, weight: .medium)
 	static let medium45 = Font.system(size: 45, weight: .medium)
 
 	static let bold34 = Font.system(size: 34, weight: .bold)

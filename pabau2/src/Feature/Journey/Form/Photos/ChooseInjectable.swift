@@ -218,7 +218,7 @@ public struct Injectable: Hashable, Identifiable {
 	let title: String
 	let increment: Double
 	var runningIncrement: Double
-	
+
 	init(
 		id: InjectableId,
 		color: Color,
@@ -230,9 +230,5 @@ public struct Injectable: Hashable, Identifiable {
 		self.title = title
 		self.increment = increment
 		self.runningIncrement = increment
-	}
-	
-	mutating func decrementMe() {
-		self.runningIncrement -= self.increment
 	}
 }

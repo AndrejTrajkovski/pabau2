@@ -110,7 +110,8 @@ struct EditPhotos: View {
 						action: { .singlePhotoEdit($0) }
 					),
 					then:
-					SinglePhotoEdit.init(store:)
+					SinglePhotoEdit.init(store:),
+					else: Text("No photos selected.").frame(minWidth: 0, maxWidth: .infinity)
 				)
 				EditPhotosRightSide(store:
 					self.store.scope(
