@@ -217,7 +217,7 @@
 		829BFBAF243F5D6F005DDCB9 /* CheckInAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829BFBAE243F5D6F005DDCB9 /* CheckInAnimation.swift */; };
 		829BFBB1243F693E005DDCB9 /* CheckInMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829BFBB0243F693E005DDCB9 /* CheckInMain.swift */; };
 		829C9224248D7CA700E918D2 /* CameraOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829C9223248D7CA700E918D2 /* CameraOverlay.swift */; };
-		82BA360524B47268002F0B93 /* InjectableMarkerPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BA360424B47268002F0B93 /* InjectableMarkerPath.swift */; };
+		82BA360524B47268002F0B93 /* InjectableMarkerPointer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BA360424B47268002F0B93 /* InjectableMarkerPointer.swift */; };
 		82BE2F4823D97D9C00B3678A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BE2F4723D97D9C00B3678A /* AppDelegate.swift */; };
 		82BE2F4A23D97D9C00B3678A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BE2F4923D97D9C00B3678A /* SceneDelegate.swift */; };
 		82BE2F4E23D97D9F00B3678A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 82BE2F4D23D97D9F00B3678A /* Assets.xcassets */; };
@@ -715,7 +715,7 @@
 		82B02FFA23F17CF50015B0B4 /* PasswordChanged.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordChanged.swift; sourceTree = "<group>"; };
 		82B0300223F2958B0015B0B4 /* Walkthrough.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Walkthrough.swift; sourceTree = "<group>"; };
 		82B0300423F29CC10015B0B4 /* WalkthroughContentAndButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkthroughContentAndButton.swift; sourceTree = "<group>"; };
-		82BA360424B47268002F0B93 /* InjectableMarkerPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InjectableMarkerPath.swift; sourceTree = "<group>"; };
+		82BA360424B47268002F0B93 /* InjectableMarkerPointer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InjectableMarkerPointer.swift; sourceTree = "<group>"; };
 		82BE2F4423D97D9C00B3678A /* pabau2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pabau2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		82BE2F4723D97D9C00B3678A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		82BE2F4923D97D9C00B3678A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -1417,7 +1417,7 @@
 				8283E3C224A59C3900276645 /* SinglePhotoEdit.swift */,
 				8283E3C424A5D62700276645 /* InjectableStepper.swift */,
 				8283E3C624A8A53C00276645 /* InjectablesContainer.swift */,
-				82BA360424B47268002F0B93 /* InjectableMarkerPath.swift */,
+				82BA360424B47268002F0B93 /* InjectableMarkerPointer.swift */,
 			);
 			path = Photos;
 			sourceTree = "<group>";
@@ -2179,7 +2179,7 @@
 				8247763224728F0200508434 /* PullbackCasePath.swift in Sources */,
 				821C9C7B249BDFC100ACE3ED /* NewPhotoCell.swift in Sources */,
 				829BFBB1243F693E005DDCB9 /* CheckInMain.swift in Sources */,
-				82BA360524B47268002F0B93 /* InjectableMarkerPath.swift in Sources */,
+				82BA360524B47268002F0B93 /* InjectableMarkerPointer.swift in Sources */,
 				82E6D82D245E0A4400CB359A /* GradientBackground.swift in Sources */,
 				826F65B72481657B0086E187 /* DoctorSummaryButtons.swift in Sources */,
 				821C9C73249BDBD500ACE3ED /* EditPhotosList.swift in Sources */,

@@ -151,10 +151,18 @@ struct InjectableMarkerState: Identifiable, Equatable {
 struct InjectableMarker: View {
 	let store: Store<InjectableMarkerState, MarkerAction>
 	@ObservedObject var viewStore: ViewStore<ViewState, MarkerAction>
-	public static let markerSize = CGSize.init(width: 44, height: 44)
+
+	public static let markerHeight: CGFloat = 150
+	public static let wToHRatio: CGFloat = 0.7
+	public static var markerSize: CGSize {
+		CGSize.init(width: markerHeight * wToHRatio,
+								height: markerHeight)
+	}
+
 	let imageSize: CGSize
 	@State var offset: CGSize
-	
+//	@State var angle: Angle
+
 	init(store: Store<InjectableMarkerState, MarkerAction>,
 			 imageSize: CGSize) {
 		self.store = store
@@ -164,6 +172,7 @@ struct InjectableMarker: View {
 		self.viewStore = viewStore
 		self.imageSize = imageSize
 		self._offset = State.init(initialValue: viewStore.offset)
+//		self._angle = State.init(initialValue: viewStore.angle)
 	}
 
 	struct ViewState: Equatable {
@@ -172,68 +181,56 @@ struct InjectableMarker: View {
 		let color: Color
 		let units: String
 		let offset: CGSize
+//		let angle: Angle
 	}
 
 	var body: some View {
-//		WithViewStore(store.scope(state: ViewState.init(state:))) { viewStore in
-			InjectableMarkerSimple(
-				increment: self.viewStore.state.units,
-				color: self.viewStore.state.color,
-				isActive: self.viewStore.state.isActive
-			)
-				.frame(width: Self.markerSize.width,
-						 height: Self.markerSize.height,
-						 alignment: .center)
-				.onTapGesture {
-					self.viewStore.send(.didSelectInjectionId(self.viewStore.state.id))
-				}
-			.gesture(
-				DragGesture().onChanged({ value in
-					let calculatedPos =
-						CGPoint(x: self.offset.width + value.translation.width,
-										y: self.offset.height + value.translation.height)
-					if calculatedPos.x > 0 &&
-						calculatedPos.y > 0 &&
-						calculatedPos.x + Self.markerSize.width < self.imageSize.width &&
-						calculatedPos.y + Self.markerSize.height < self.imageSize.height {
-						self.offset = CGSize(width: calculatedPos.x, height: calculatedPos.y)
-					}
-				}
-				).onEnded { value in
-					let calculatedPos =
-					CGPoint(x: self.offset.width + value.translation.width,
-										y: self.offset.height + value.translation.height)
-					if calculatedPos.x > 0 &&
-						calculatedPos.y > 0 &&
-						calculatedPos.x + Self.markerSize.width < self.imageSize.width &&
-						calculatedPos.y + Self.markerSize.height < self.imageSize.height {
-						self.viewStore.send(.didDragToPosition(calculatedPos))
-					}
-				}
-			)
-				.offset(self.offset)
+		InjectableMarkerPlain(
+			wToHRatio: Self.wToHRatio,
+			color: self.viewStore.state.color,
+			isActive: self.viewStore.state.isActive,
+			increment: self.viewStore.state.units
+		)
+			.frame(width: Self.markerSize.width,
+						 height: Self.markerSize.height)
+			.onTapGesture {
+				self.viewStore.send(.didSelectInjectionId(self.viewStore.state.id))
+		}
+//		.gesture(rotation)
+//		.rotationEffect(self.angle, anchor: UnitPoint.bottom)
+		.gesture(dragGesture)
+		.offset(self.offset)
+	}
+
+//	var rotation: some Gesture {
+//		RotationGesture()
+//			.onChanged { angle in
+//				self.angle = angle
 //		}
-	}
-}
+//	}
 
-struct InjectableMarkerSimple: View {
-	let increment: String
-	let color: Color
-	let isActive: Bool
-	var body: some View {
-		ZStack {
-			Circle()
-			.overlay(
-				Group {
-					if isActive {
-						Circle()
-							.stroke(Color.white, lineWidth: 2)
-					}
-				}
-			).foregroundColor(color)
-			Text(increment)
-				.foregroundColor(.white)
-				.font(.bold10)
+	var dragGesture: some Gesture {
+		DragGesture().onChanged({ value in
+			let calculatedPos =
+				CGPoint(x: self.offset.width + value.translation.width,
+								y: self.offset.height + value.translation.height)
+			if calculatedPos.x > 0 &&
+				calculatedPos.y > 0 &&
+				calculatedPos.x + Self.markerSize.width < self.imageSize.width &&
+				calculatedPos.y + Self.markerSize.height < self.imageSize.height {
+				self.offset = CGSize(width: calculatedPos.x, height: calculatedPos.y)
+			}
+			}
+		).onEnded { value in
+			let calculatedPos =
+				CGPoint(x: self.offset.width + value.translation.width,
+								y: self.offset.height + value.translation.height)
+			if calculatedPos.x > 0 &&
+				calculatedPos.y > 0 &&
+				calculatedPos.x + Self.markerSize.width < self.imageSize.width &&
+				calculatedPos.y + Self.markerSize.height < self.imageSize.height {
+				self.viewStore.send(.didDragToPosition(calculatedPos))
+			}
 		}
 	}
 }
@@ -259,5 +256,6 @@ extension InjectableMarker.ViewState {
 		self.units = String(state.injection.units)
 		self.offset = CGSize(width: state.injection.position.x,
 												 height: state.injection.position.y)
+//		self.angle = state.injectable.angle
 	}
 }

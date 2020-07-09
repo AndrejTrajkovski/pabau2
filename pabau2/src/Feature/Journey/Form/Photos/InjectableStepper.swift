@@ -67,7 +67,7 @@ struct InjectableStepper: View {
 						})
 						ZStack {
 							if viewStore.state.hasActiveInjection {
-								InjectableMarkerSimple(increment: String(viewStore.state.number),
+								InjectableMarkerCircle(increment: String(viewStore.state.number),
 																			 color: viewStore.state.color,
 																			 isActive: true)
 							} else {

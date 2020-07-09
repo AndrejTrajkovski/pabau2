@@ -4,16 +4,16 @@ import SwiftUI
 
 struct RotationGestureView: View {
 	@State var angle = Angle(degrees: 0.0)
-	
+
 	var rotation: some Gesture {
 		RotationGesture()
 			.onChanged { angle in
 				self.angle = angle
 		}
 	}
-	
+
 	var body: some View {
-		InjectableMarkerPath()
+		InjectableMarkerPointer(isActive: true)
 			.fill(Color.red)
 			.frame(width: 50, height: 70)
 			.rotationEffect(self.angle, anchor: UnitPoint.bottom)
@@ -21,12 +21,13 @@ struct RotationGestureView: View {
 	}
 }
 
-struct InjectableMarkerPath: Shape {
+struct InjectableMarkerPointer: Shape {
 	//	let color: Color
+	let isActive: Bool
+	
 	func path(in rect: CGRect) -> Path {
 		let circleRadius = rect.size.width / 2
 		let bottomLineWidth: CGFloat = 5
-		
 		var path = Path()
 		path.addArc(center: CGPoint(x: rect.size.width / 2,
 																y: rect.size.height / 4),
@@ -34,6 +35,9 @@ struct InjectableMarkerPath: Shape {
 								startAngle: .degrees(0),
 								endAngle: .degrees(360),
 								clockwise: true)
+		if isActive {
+			path = path.strokedPath(StrokeStyle.init(lineWidth: 2.0))
+		}
 		let leftPoint = CGPoint(x: rect.size.width / 2 - bottomLineWidth,
 														y: rect.size.height / 2)
 		path.addLine(to: leftPoint)

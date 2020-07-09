@@ -218,7 +218,7 @@ public struct Injectable: Hashable, Identifiable {
 	let title: String
 	let increment: Double
 	var runningIncrement: Double
-
+	var angle: Angle
 	init(
 		id: InjectableId,
 		color: Color,
@@ -230,5 +230,6 @@ public struct Injectable: Hashable, Identifiable {
 		self.title = title
 		self.increment = increment
 		self.runningIncrement = increment
+		self.angle = Angle(degrees: 0.0)
 	}
 }

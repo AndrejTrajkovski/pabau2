@@ -66,6 +66,7 @@ public struct EditPhotosState: Equatable {
 	init (_ photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>) {
 		self.photos = photos
 		self.editingPhotoId = photos.last?.id
+		self.isCameraActive = self.photos.isEmpty
 	}
 
 	var isCameraActive: Bool {
@@ -111,7 +112,7 @@ struct EditPhotos: View {
 					),
 					then:
 					SinglePhotoEdit.init(store:),
-					else: Text("No photos selected.").frame(minWidth: 0, maxWidth: .infinity)
+					else: Text("No photos selected. Select or take a new photo.").frame(minWidth: 0, maxWidth: .infinity)
 				)
 				EditPhotosRightSide(store:
 					self.store.scope(
