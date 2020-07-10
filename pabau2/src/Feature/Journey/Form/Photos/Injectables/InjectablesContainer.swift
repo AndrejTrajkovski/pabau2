@@ -7,18 +7,19 @@ public struct InjectablesState: Equatable {
 	var isChooseInjectablesActive: Bool
 	var chosenInjectableId: InjectableId?
 	var chosenInjectionId: UUID?
+	var type: InjectablesToolType
 }
 
 public enum InjectablesAction: Equatable {
-	case stepper(InjectableStepperAction)
+	case injectablesTool(InjectablesToolAction)
 	case canvas(InjectablesCanvasAction)
 	case chooseInjectables(ChooseInjectableAction)
 }
 
 public let injectablesContainerReducer: Reducer<InjectablesState, InjectablesAction, JourneyEnvironment> = .combine(
-	injectableStepperReducer.optional.pullback(
-		state: \InjectablesState.stepper,
-		action: /InjectablesAction.stepper,
+	injectablesToolReducer.optional.pullback(
+		state: \InjectablesState.injectablesTool,
+		action: /InjectablesAction.injectablesTool,
 		environment: { $0 }),
 	injectablesCanvasReducer.optional.pullback(
 		state: \InjectablesState.canvas,
@@ -89,14 +90,15 @@ public let injectablesContainerReducer: Reducer<InjectablesState, InjectablesAct
 //}
 
 extension InjectablesState {
-	var stepper: InjectableStepperState? {
+	var injectablesTool: InjectablesToolState? {
 		get {
 			chosenInjectableId.map { chosenInjectableId in
-				return InjectableStepperState(
+				return InjectablesToolState(
 					allInjectables: self.allInjectables,
 					photoInjections: self.photoInjections,
 					chosenInjectableId: chosenInjectableId,
-					chosenInjectionId: self.chosenInjectionId
+					chosenInjectionId: self.chosenInjectionId,
+					type: self.type
 				)
 			}
 		}
@@ -106,6 +108,7 @@ extension InjectablesState {
 				self.photoInjections = $0.photoInjections
 				self.chosenInjectableId = $0.chosenInjectableId
 				self.chosenInjectionId = $0.chosenInjectionId
+				self.type = $0.type
 			}
 		}
 	}

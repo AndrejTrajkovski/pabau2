@@ -3,7 +3,6 @@ import ComposableArchitecture
 import Util
 
 public let chooseInjectableReducer = Reducer<ChooseInjectablesState, ChooseInjectableAction, JourneyEnvironment>.init { state, action, _ in
-	//FIXME: please
 	switch action {
 	case .onSelectInjectableId(let id):
 		state.chosenInjectableId = id
@@ -12,14 +11,6 @@ public let chooseInjectableReducer = Reducer<ChooseInjectablesState, ChooseInjec
 		state.chosenInjectableId = id
 		state.isChooseInjectablesActive = false
 		state.chosenInjectionId = nil
-//		if let chosenInjectionId = state.chosenInjectionId,
-//			let injections = state.photoInjections[id],
-//			let injectionId = injections.first(where: { $0.id == chosenInjectionId})
-//		{
-//
-//		} else {
-//
-//		}
 	case .onDismissChooseInjectables:
 		state.isChooseInjectablesActive = false
 	}
@@ -203,33 +194,4 @@ struct ListItemViewModel: Equatable {
 struct TotalInjAndUnits {
 	var totalInj: Int = 0
 	var totalUnits: Double = 0
-}
-
-public struct Injection: Equatable, Identifiable {
-	public let id: UUID = UUID()
-	var units: Double
-	var position: CGPoint
-	var injectableId: Int
-}
-
-public struct Injectable: Hashable, Identifiable {
-	public let id: InjectableId
-	let color: Color
-	let title: String
-	let increment: Double
-	var runningIncrement: Double
-	var angle: Angle
-	init(
-		id: InjectableId,
-		color: Color,
-		title: String,
-		increment: Double
-	) {
-		self.id = id
-		self.color = color
-		self.title = title
-		self.increment = increment
-		self.runningIncrement = increment
-		self.angle = Angle(degrees: 0.0)
-	}
 }

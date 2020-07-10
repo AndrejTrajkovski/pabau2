@@ -26,6 +26,7 @@ struct SinglePhotoEditState: Equatable {
 	var isChooseInjectablesActive: Bool
 	var chosenInjectableId: InjectableId?
 	var chosenInjectionId: UUID?
+	var injectablesStepperType: InjectablesToolType
 
 	var injectables: InjectablesState {
 		get {
@@ -34,7 +35,8 @@ struct SinglePhotoEditState: Equatable {
 				photoInjections: self.photo.injections,
 				isChooseInjectablesActive: self.isChooseInjectablesActive,
 				chosenInjectableId: self.chosenInjectableId,
-				chosenInjectionId: self.chosenInjectionId)
+				chosenInjectionId: self.chosenInjectionId,
+				type: self.injectablesStepperType)
 		}
 		set {
 			self.allInjectables = newValue.allInjectables
@@ -42,6 +44,7 @@ struct SinglePhotoEditState: Equatable {
 			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
 			self.chosenInjectableId = newValue.chosenInjectableId
 			self.chosenInjectionId = newValue.chosenInjectionId
+			self.injectablesStepperType = newValue.type
 		}
 	}
 }
@@ -112,10 +115,10 @@ struct SinglePhotoEdit: View {
 				Group {
 					if viewStore.state.isDrawingDisabled {
 						IfLetStore(self.store.scope(
-							state: { $0.injectables.stepper },
-							action: { .injectables(InjectablesAction.stepper($0))})
+							state: { $0.injectables.injectablesTool },
+							action: { .injectables(InjectablesAction.injectablesTool($0))})
 							, then: {
-								InjectableStepper(store: $0)
+								InjectablesTool(store: $0)
 						})
 					} else {
 						Color.clear

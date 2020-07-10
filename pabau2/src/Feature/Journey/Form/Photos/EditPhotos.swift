@@ -34,7 +34,12 @@ let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, JourneyEnviron
 			}
 			return .none
 		}
-).debug() 
+) 
+
+public enum InjectablesToolType: Equatable {
+	case stepper
+	case anglePicker
+}
 
 public enum EditPhotoAction: Equatable {
 	case openCamera
@@ -61,6 +66,8 @@ public struct EditPhotosState: Equatable {
 	var isChooseInjectablesActive: Bool = false
 	var chosenInjectableId: InjectableId?
 	var chosenInjectionId: UUID?
+	var injectablesStepperType: InjectablesToolType = InjectablesToolType.anglePicker
+	
 	private var showingImagePicker: UIImagePickerController.SourceType?
 
 	init (_ photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>) {
@@ -205,7 +212,8 @@ extension EditPhotosState {
 				allInjectables: self.allInjectables,
 				isChooseInjectablesActive: self.isChooseInjectablesActive,
 				chosenInjectableId: self.chosenInjectableId,
-				chosenInjectionId: self.chosenInjectionId
+				chosenInjectionId: self.chosenInjectionId,
+				injectablesStepperType: self.injectablesStepperType
 			)
 		}
 		set {

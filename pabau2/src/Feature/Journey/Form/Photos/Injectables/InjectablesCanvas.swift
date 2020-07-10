@@ -26,6 +26,8 @@ public let injectablesCanvasReducer = Reducer<InjectablesCanvasState, Injectable
 					state.chosenInjectableId = injectableId
 				case .didDragToPosition(let point):
 					state.photoInjections[injectableId]?[idx].position = point
+				case .didRotate(let angle):
+					state.photoInjections[injectableId]?[idx].angle = angle
 				}
 			}
 	}
@@ -137,6 +139,7 @@ struct TappableView: UIViewRepresentable {
 }
 
 public enum MarkerAction: Equatable {
+	case didRotate(Angle)
 	case didSelectInjectionId(UUID)
 	case didDragToPosition(CGPoint)//self.injection.position = calculatedPos
 }
@@ -161,56 +164,30 @@ struct InjectableMarker: View {
 
 	let imageSize: CGSize
 	@State var offset: CGSize
-//	@State var angle: Angle
 
 	init(store: Store<InjectableMarkerState, MarkerAction>,
 			 imageSize: CGSize) {
 		self.store = store
-		let viewStore = ViewStore(store.scope(state: ViewState.init(state:)), removeDuplicates: { lhs, rhs in
-			lhs.id == rhs.id
+		let viewStore = ViewStore(store.scope(state: ViewState.init(state:)), removeDuplicates: { (lhs: ViewState, rhs: ViewState) in
+			return (lhs.id == rhs.id && lhs.angle == rhs.angle && lhs.units == rhs.units
+				&& lhs.color == rhs.color && lhs.isActive == rhs.isActive)
 		})
 		self.viewStore = viewStore
 		self.imageSize = imageSize
 		self._offset = State.init(initialValue: viewStore.offset)
-//		self._angle = State.init(initialValue: viewStore.angle)
 	}
 
-	struct ViewState: Equatable {
+	struct ViewState {
 		let id: UUID
 		let isActive: Bool
 		let color: Color
 		let units: String
 		let offset: CGSize
-//		let angle: Angle
+		let angle: Angle
 	}
 
 	var body: some View {
-		InjectableMarkerPlain(
-			wToHRatio: Self.wToHRatio,
-			color: self.viewStore.state.color,
-			isActive: self.viewStore.state.isActive,
-			increment: self.viewStore.state.units
-		)
-			.frame(width: Self.markerSize.width,
-						 height: Self.markerSize.height)
-			.onTapGesture {
-				self.viewStore.send(.didSelectInjectionId(self.viewStore.state.id))
-		}
-//		.gesture(rotation)
-//		.rotationEffect(self.angle, anchor: UnitPoint.bottom)
-		.gesture(dragGesture)
-		.offset(self.offset)
-	}
-
-//	var rotation: some Gesture {
-//		RotationGesture()
-//			.onChanged { angle in
-//				self.angle = angle
-//		}
-//	}
-
-	var dragGesture: some Gesture {
-		DragGesture().onChanged({ value in
+		let dragGesture = DragGesture().onChanged({ value in
 			let calculatedPos =
 				CGPoint(x: self.offset.width + value.translation.width,
 								y: self.offset.height + value.translation.height)
@@ -220,7 +197,7 @@ struct InjectableMarker: View {
 				calculatedPos.y + Self.markerSize.height < self.imageSize.height {
 				self.offset = CGSize(width: calculatedPos.x, height: calculatedPos.y)
 			}
-			}
+		}
 		).onEnded { value in
 			let calculatedPos =
 				CGPoint(x: self.offset.width + value.translation.width,
@@ -232,6 +209,21 @@ struct InjectableMarker: View {
 				self.viewStore.send(.didDragToPosition(calculatedPos))
 			}
 		}
+
+		return InjectableMarkerPlain(
+			wToHRatio: Self.wToHRatio,
+			color: self.viewStore.state.color,
+			isActive: self.viewStore.state.isActive,
+			increment: self.viewStore.state.units
+		)
+			.frame(width: Self.markerSize.width,
+						 height: Self.markerSize.height)
+			.onTapGesture {
+				self.viewStore.send(.didSelectInjectionId(self.viewStore.state.id))
+		}
+		.rotationEffect(self.viewStore.state.angle, anchor: UnitPoint.bottom)
+		.gesture(dragGesture)
+		.offset(self.offset)
 	}
 }
 
@@ -256,6 +248,6 @@ extension InjectableMarker.ViewState {
 		self.units = String(state.injection.units)
 		self.offset = CGSize(width: state.injection.position.x,
 												 height: state.injection.position.y)
-//		self.angle = state.injectable.angle
+		self.angle = state.injection.angle
 	}
 }
