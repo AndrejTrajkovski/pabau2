@@ -8,7 +8,7 @@ public struct AnglePicker : View {
 	public var selectionColor: Color
 	public var selectionBorderColor: Color
 	public var strokeWidth: CGFloat
-	
+
 	public init(angle: Binding<Angle>,
 							circleColor: Color = Color.blue,
 							selectionColor: Color = Color.white,
@@ -20,7 +20,7 @@ public struct AnglePicker : View {
 		self.selectionBorderColor = selectionBorderColor
 		self.strokeWidth = strokeWidth
 	}
-	
+
 	public var body: some View {
 		GeometryReader { geometry -> CircleSlider in
 			return CircleSlider(frame: geometry.frame(in: CoordinateSpace.local),
@@ -41,7 +41,7 @@ public struct CircleSlider: View {
 	public var selectionColor: Color
 	public var selectionBorderColor: Color
 	public var strokeWidth: CGFloat
-	
+
 	@State private var position: CGPoint = CGPoint.zero
 	
 	public var body: some View {
@@ -70,16 +70,11 @@ public struct CircleSlider: View {
 		self.position = value.location
 		self.angle.wrappedValue = Angle(radians: radCenterPoint(value.location, frame: self.frame))
 	}
-	
+
 	internal func radCenterPoint(_ point: CGPoint, frame: CGRect) -> Double {
 		let atan = atan2f(Float(point.x - frame.midX), Float(frame.midY - point.y))
-		print("atan \(Angle.init(radians: Double(atan)).degrees)")
 		let adjustedAngle = atan
-//			+ .pi / 2
-		print("adjustedAngle \(adjustedAngle)")
 		let final = Double(adjustedAngle < 0 ? adjustedAngle + .pi * 2 : adjustedAngle)
-//		print("final \(final)")
-		print("final degrees\((Angle.init(radians: Double(final)).degrees))")
 		return final
 	}
 }

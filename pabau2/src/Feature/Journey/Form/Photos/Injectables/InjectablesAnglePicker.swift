@@ -11,6 +11,7 @@ struct InjectablesAnglePickerState: Equatable {
 let injectablesToolAnglePickerReducer = Reducer<InjectablesAnglePickerState, InjectablesAnglePickerAction, JourneyEnvironment> { state, action, _ in
 	switch action {
 	case .didPickAngle(let angle):
+		print("didPickAngle")
 		if var injections = state.photoInjections[state.chosenInjectableId],
 			let injectionIdx = injections.firstIndex(where: {
 				$0.id == state.chosenInjectionId
@@ -27,14 +28,13 @@ public enum InjectablesAnglePickerAction: Equatable {
 }
 
 struct InjectablesAnglePicker: View {
-	
 	let store: Store<InjectablesAnglePickerState, InjectablesAnglePickerAction>
-	
+
 	struct ViewState: Equatable {
 		let angle: Angle
 		let color: Color
 	}
-	
+
 	var body: some View {
 		WithViewStore(store.scope(state: ViewState.init(state:))) { viewStore in
 			AnglePicker(angle: viewStore.binding(
@@ -42,18 +42,17 @@ struct InjectablesAnglePicker: View {
 				send: { .didPickAngle($0)}
 				),
 									circleColor: viewStore.state.color,
-									selectionColor: .black,
-									selectionBorderColor: .red,
+									selectionColor: .white,
+									selectionBorderColor: .white,
 									strokeWidth: 20
 			)
-//				.rotationEffect(.init(degrees: -90))
-				.background(Color.blue)
 		}
 	}
 }
 
 extension InjectablesAnglePicker.ViewState {
 	init(state: InjectablesAnglePickerState) {
+		print("InjectablesAnglePicker.ViewState init")
 		if let chosenInjection = state.photoInjections[state.chosenInjectableId]?.first(where: {
 			$0.id == state.chosenInjectionId
 		}), let chosenInjectable = state.allInjectables[id: state.chosenInjectableId] {
