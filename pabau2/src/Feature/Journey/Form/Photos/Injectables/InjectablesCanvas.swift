@@ -59,7 +59,7 @@ struct InjectablesCanvas: View {
 //			self.injectable = state.allInjectables[id: state.chosenInjectableId]!
 		}
 	}
-	
+
 	var body: some View {
 		WithViewStore(store.scope(state: State.init(state:))) { viewStore in
 			ZStack(alignment: .topLeading) {
@@ -155,7 +155,7 @@ struct InjectableMarker: View {
 	let store: Store<InjectableMarkerState, MarkerAction>
 	@ObservedObject var viewStore: ViewStore<ViewState, MarkerAction>
 
-	public static let markerHeight: CGFloat = 150
+	public static let markerHeight: CGFloat = 60
 	public static let wToHRatio: CGFloat = 0.7
 	public static var markerSize: CGSize {
 		CGSize.init(width: markerHeight * wToHRatio,
@@ -218,25 +218,24 @@ struct InjectableMarker: View {
 		)
 			.frame(width: Self.markerSize.width,
 						 height: Self.markerSize.height)
-			.onTapGesture {
+		.onTapGesture {
 				self.viewStore.send(.didSelectInjectionId(self.viewStore.state.id))
+		}
+		.contextMenu {
+			Button(action:{
+				//				self.fontColor = Color.blue
+			}){
+				Text("Set color to blue")
+			}
+			Button(action:{
+				//				self.fontColor = Color.red
+			}){
+				Text("Set color to red")
+			}
 		}
 		.rotationEffect(self.viewStore.state.angle, anchor: UnitPoint.bottom)
 		.gesture(dragGesture)
 		.offset(self.offset)
-	}
-}
-
-extension Shape {
-	/// fills and strokes a shape
-	public func fill<S:ShapeStyle>(
-		_ fillContent: S,
-		stroke       : StrokeStyle
-	) -> some View {
-		ZStack {
-			self.fill(fillContent)
-			self.stroke(style:stroke)
-		}
 	}
 }
 

@@ -26,11 +26,9 @@ struct InjectableMarkerPlain: View {
 }
 
 struct InjectableMarkerPointer: Shape {
-	
 	func path(in rect: CGRect) -> Path {
 		let bottomLineWidth: CGFloat = 3
 		var path = Path()
-		
 		let leftPoint = CGPoint(x: rect.size.width / 2 - bottomLineWidth,
 														y: 0)
 		path.move(to: leftPoint)
@@ -61,7 +59,7 @@ struct InjectableMarkerCircle: View {
 			).foregroundColor(color)
 			Text(increment)
 				.foregroundColor(.white)
-				.font(.regular12)
+				.font(.bold12)
 		}
 	}
 }

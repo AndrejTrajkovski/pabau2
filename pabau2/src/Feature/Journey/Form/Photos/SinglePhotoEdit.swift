@@ -67,6 +67,7 @@ struct SinglePhotoEdit: View {
 		let drawingCanvasZIndex: Double
 		let isDrawingDisabled: Bool
 		let isChooseInjectablesActive: Bool
+		let isInjectablesDisabled: Bool
 		
 		init (state: SinglePhotoEditState) {
 			let isInjectablesActive = state.activeCanvas == CanvasMode.injectables ? true : false
@@ -77,6 +78,7 @@ struct SinglePhotoEdit: View {
 				self.injectablesZIndex = 0.0
 				self.drawingCanvasZIndex = 1.0
 			}
+			self.isInjectablesDisabled = !isInjectablesActive
 			self.isDrawingDisabled = isInjectablesActive
 			self.isChooseInjectablesActive = state.isChooseInjectablesActive
 		}
@@ -98,6 +100,7 @@ struct SinglePhotoEdit: View {
 							InjectablesCanvas(size: self.photoSize, store: $0)
 								.frame(width: self.photoSize.width,
 											 height: self.photoSize.height)
+								.disabled(viewStore.state.isInjectablesDisabled)
 								.zIndex(viewStore.state.injectablesZIndex)
 						}, else: Spacer()
 					)
@@ -136,6 +139,6 @@ struct SinglePhotoEdit: View {
 														 action: { .injectables(.chooseInjectables($0)) })
 					)
 			})
-		}
+		}.debug("SinglePhotoEdit")
 	}
 }

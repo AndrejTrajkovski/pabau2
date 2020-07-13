@@ -54,12 +54,14 @@ struct InjectablesAnglePicker: View {
 
 extension InjectablesAnglePicker.ViewState {
 	init(state: InjectablesAnglePickerState) {
-		let chosenInjection = state.photoInjections[state.chosenInjectableId]!.first(where: {
+		if let chosenInjection = state.photoInjections[state.chosenInjectableId]?.first(where: {
 			$0.id == state.chosenInjectionId
-		})!
-		let chosenInjectable = state.allInjectables[id: state.chosenInjectableId]!
-		self.color = chosenInjectable.color
-		self.angle = chosenInjection.angle
-//		print(chosenInjection.angle.degrees)
+		}), let chosenInjectable = state.allInjectables[id: state.chosenInjectableId] {
+			self.color = chosenInjectable.color
+			self.angle = chosenInjection.angle
+		} else {
+			self.color = .white
+			self.angle = .zero
+		}
 	}
 }
