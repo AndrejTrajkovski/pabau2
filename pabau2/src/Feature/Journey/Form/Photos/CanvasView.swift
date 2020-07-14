@@ -2,28 +2,33 @@ import SwiftUI
 import PencilKit
 import ComposableArchitecture
 
+struct CanvasViewState: Equatable {
+	var photo: PhotoViewModel
+	var isDisabled: Bool
+}
+
 struct CanvasView: UIViewRepresentable {
+	let store: Store<CanvasViewState, PhotoAndCanvasAction>
+	@ObservedObject var viewStore: ViewStore<CanvasViewState, PhotoAndCanvasAction>
 	
-	let store: Store<PhotoViewModel, PhotoAndCanvasAction>
-	@ObservedObject var viewStore: ViewStore<PhotoViewModel, PhotoAndCanvasAction>
-	
-	init(store: Store<PhotoViewModel, PhotoAndCanvasAction>) {
+	init(store: Store<CanvasViewState, PhotoAndCanvasAction>) {
 		self.store = store
 		self.viewStore = ViewStore(self.store
 			.scope(
 				state: { $0 },
-				action: { $0 })
+				action: { $0 }
+			)
 			, removeDuplicates: { lhs, rhs in
-			lhs.id == rhs.id
+				lhs.photo.id == rhs.photo.id
 		})
 	}
-	
+
 	func makeUIView(context: Context) -> PKCanvasView {
 		let canvasView = PKCanvasView()
 		if let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first,
 			let toolPicker = PKToolPicker.shared(for: window) {
 			toolPicker.addObserver(canvasView)
-			toolPicker.setVisible(true, forFirstResponder: canvasView)
+			toolPicker.setVisible(!viewStore.state.isDisabled, forFirstResponder: canvasView)
 		}
 		canvasView.isScrollEnabled = false
 		canvasView.becomeFirstResponder()
@@ -34,20 +39,30 @@ struct CanvasView: UIViewRepresentable {
 		return canvasView
 	}
 
-	func updateUIView(_ uiView: PKCanvasView, context: Context) {
-		uiView.drawing = viewStore.state.drawing
+	func updateUIView(_ canvasView: PKCanvasView, context: Context) {
+		canvasView.drawing = viewStore.state.photo.drawing
+		if let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first,
+			let toolPicker = PKToolPicker.shared(for: window) {
+			toolPicker.setVisible(!viewStore.state.isDisabled, forFirstResponder: canvasView)
+		}
 //		uiViewController.updateViewStore(viewStore: viewStore)
 	}
 
-	static func dismantleUIView(_ uiView: PKCanvasView, coordinator: Coordinator) {
-	
+	static func dismantleUIView(_ canvasView: PKCanvasView, coordinator: Coordinator) {
+		canvasView.delegate = nil
+		if let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first,
+			let toolPicker = PKToolPicker.shared(for: window) {
+			toolPicker.setVisible(false, forFirstResponder: canvasView)
+			toolPicker.removeObserver(canvasView)
+		}
+		print("dismantle view")
 	}
-	
+
 	class Coordinator: NSObject, PKCanvasViewDelegate {
 		let parent: CanvasView
-		let viewStore: ViewStore<PhotoViewModel, PhotoAndCanvasAction>
+		let viewStore: ViewStore<CanvasViewState, PhotoAndCanvasAction>
 		init(_ parent: CanvasView,
-				 viewStore: ViewStore<PhotoViewModel, PhotoAndCanvasAction>) {
+				 viewStore: ViewStore<CanvasViewState, PhotoAndCanvasAction>) {
 			self.parent = parent
 			self.viewStore = viewStore
 		}

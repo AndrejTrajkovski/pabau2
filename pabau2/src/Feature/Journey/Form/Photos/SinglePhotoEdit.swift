@@ -5,7 +5,6 @@ import PencilKit
 enum CanvasMode: Equatable {
 	case drawing
 	case injectables
-	case view
 }
 
 let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction, JourneyEnvironment> = .combine (
@@ -24,7 +23,6 @@ struct SinglePhotoEditState: Equatable {
 	var photo: PhotoViewModel
 	var allInjectables: IdentifiedArrayOf<Injectable>
 	var isChooseInjectablesActive: Bool
-	var chosenInjectableId: InjectableId?
 	var chosenInjectionId: UUID?
 	var injectablesStepperType: InjectablesToolType
 
@@ -34,7 +32,7 @@ struct SinglePhotoEditState: Equatable {
 				allInjectables: self.allInjectables,
 				photoInjections: self.photo.injections,
 				isChooseInjectablesActive: self.isChooseInjectablesActive,
-				chosenInjectableId: self.chosenInjectableId,
+				chosenInjectableId: self.photo.chosenInjectableId,
 				chosenInjectionId: self.chosenInjectionId,
 				type: self.injectablesStepperType)
 		}
@@ -42,9 +40,19 @@ struct SinglePhotoEditState: Equatable {
 			self.allInjectables = newValue.allInjectables
 			self.photo.injections = newValue.photoInjections
 			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
-			self.chosenInjectableId = newValue.chosenInjectableId
+			self.photo.chosenInjectableId = newValue.chosenInjectableId
 			self.chosenInjectionId = newValue.chosenInjectionId
 			self.injectablesStepperType = newValue.type
+		}
+	}
+	
+	var canvasState: CanvasViewState {
+		get {
+			CanvasViewState(photo: self.photo,
+											isDisabled: self.activeCanvas != .drawing)
+		}
+		set {
+			self.photo = newValue.photo
 		}
 	}
 }
@@ -80,6 +88,7 @@ struct SinglePhotoEdit: View {
 			}
 			self.isInjectablesDisabled = !isInjectablesActive
 			self.isDrawingDisabled = isInjectablesActive
+			print("isDrawingDisabled \(isInjectablesActive)")
 			self.isChooseInjectablesActive = state.isChooseInjectablesActive
 		}
 	}
@@ -90,7 +99,7 @@ struct SinglePhotoEdit: View {
 				Spacer()
 				ZStack {
 					PhotoParent(
-						store: self.store.scope(state: { $0.photo}).actionless,
+						store: self.store.scope(state: { $0.photo }).actionless,
 						self.$photoSize
 					)
 					IfLetStore(self.store.scope(
@@ -106,12 +115,12 @@ struct SinglePhotoEdit: View {
 					)
 					CanvasView(store:
 						self.store.scope(
-							state: { $0.photo },
+							state: { $0.canvasState },
 							action: { .photoAndCanvas($0) })
 					)
+						.disabled(viewStore.state.isDrawingDisabled)
 						.frame(width: self.photoSize.width,
 									 height: self.photoSize.height)
-						.disabled(viewStore.state.isDrawingDisabled)
 						.zIndex(viewStore.state.drawingCanvasZIndex)
 				}
 				Spacer()

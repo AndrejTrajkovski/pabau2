@@ -7,9 +7,9 @@ public enum InjectablesToolAction: Equatable {
 }
 
 struct InjectablesToolEditor: View {
-	
+
 	let store: Store<InjectablesToolState, InjectablesToolAction>
-	
+
 	var body: some View {
 		WithViewStore(self.store.scope(state: { $0.type })) { viewStore in
 			Group {

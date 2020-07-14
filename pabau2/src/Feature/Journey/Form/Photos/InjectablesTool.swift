@@ -56,9 +56,7 @@ extension InjectablesTool.State {
 				res.totalUnits += element.units
 				res.totalInj += 1
 			})
-			
 			self.desc = "Total: \(total.totalInj) injections - \(total.totalUnits) units"
-			
 		} else {
 			self.desc = ""
 		}

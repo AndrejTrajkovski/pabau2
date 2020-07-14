@@ -34,7 +34,7 @@ let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, JourneyEnviron
 			}
 			return .none
 		}
-) 
+)
 
 public enum InjectablesToolType: Equatable {
 	case stepper
@@ -64,10 +64,9 @@ public struct EditPhotosState: Equatable {
 	var activeCanvas: CanvasMode = .drawing
 	var allInjectables: IdentifiedArrayOf<Injectable> = .init(JourneyMocks.injectables())
 	var isChooseInjectablesActive: Bool = false
-	var chosenInjectableId: InjectableId?
 	var chosenInjectionId: UUID?
 	var injectablesStepperType: InjectablesToolType = InjectablesToolType.anglePicker
-	
+
 	private var showingImagePicker: UIImagePickerController.SourceType?
 
 	init (_ photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>) {
@@ -119,7 +118,8 @@ struct EditPhotos: View {
 					),
 					then:
 					SinglePhotoEdit.init(store:),
-					else: Text("No photos selected. Select or take a new photo.").frame(minWidth: 0, maxWidth: .infinity)
+					else: Text("No photos selected. Select or take a new photo.")
+						.frame(minWidth: 0, maxWidth: .infinity)
 				)
 				EditPhotosRightSide(store:
 					self.store.scope(
@@ -186,8 +186,7 @@ extension EditPhotosState {
 															 isCameraActive: self.isCameraActive,
 															 isTagsAlertActive: self.isTagsAlertActive,
 															 activeCanvas: self.activeCanvas,
-															 isChooseInjectablesActive: self.isChooseInjectablesActive,
-															 chosenInjectableId: self.chosenInjectableId
+															 isChooseInjectablesActive: self.isChooseInjectablesActive
 			)
 		}
 		set {
@@ -197,7 +196,6 @@ extension EditPhotosState {
 			self.isTagsAlertActive = newValue.isTagsAlertActive
 			self.activeCanvas = newValue.activeCanvas
 			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
-			self.chosenInjectableId = newValue.chosenInjectableId
 		}
 	}
 
@@ -211,7 +209,6 @@ extension EditPhotosState {
 				photo: editingPhoto,
 				allInjectables: self.allInjectables,
 				isChooseInjectablesActive: self.isChooseInjectablesActive,
-				chosenInjectableId: self.chosenInjectableId,
 				chosenInjectionId: self.chosenInjectionId,
 				injectablesStepperType: self.injectablesStepperType
 			)
@@ -222,7 +219,6 @@ extension EditPhotosState {
 			self.activeCanvas = newValue.activeCanvas
 			self.allInjectables = newValue.allInjectables
 			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
-			self.chosenInjectableId = newValue.chosenInjectableId
 			self.chosenInjectionId = newValue.chosenInjectionId
 		}
 	}

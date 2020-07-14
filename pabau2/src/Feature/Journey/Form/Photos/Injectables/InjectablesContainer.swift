@@ -133,7 +133,7 @@ extension InjectablesState {
 			}
 		}
 	}
-	
+
 	var chooseInjectables: ChooseInjectablesState {
 		get {
 			ChooseInjectablesState(
