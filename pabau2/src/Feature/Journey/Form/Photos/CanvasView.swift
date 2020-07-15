@@ -10,7 +10,7 @@ struct CanvasViewState: Equatable {
 struct CanvasView: UIViewRepresentable {
 	let store: Store<CanvasViewState, PhotoAndCanvasAction>
 	@ObservedObject var viewStore: ViewStore<CanvasViewState, PhotoAndCanvasAction>
-	
+
 	init(store: Store<CanvasViewState, PhotoAndCanvasAction>) {
 		self.store = store
 		self.viewStore = ViewStore(self.store
@@ -19,7 +19,8 @@ struct CanvasView: UIViewRepresentable {
 				action: { $0 }
 			)
 			, removeDuplicates: { lhs, rhs in
-				lhs.photo.id == rhs.photo.id
+				lhs.photo.id == rhs.photo.id &&
+				lhs.isDisabled == rhs.isDisabled
 		})
 	}
 

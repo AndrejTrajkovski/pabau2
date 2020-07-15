@@ -66,8 +66,10 @@ struct SinglePhotoEdit: View {
 	let footerHeight: CGFloat = 128.0
 	@State var photoSize: CGSize = .zero
 	let store: Store<SinglePhotoEditState, SinglePhotoEditAction>
+	@ObservedObject var viewStore: ViewStore<ViewState, SinglePhotoEditAction>
 	public init(store: Store<SinglePhotoEditState, SinglePhotoEditAction>) {
 		self.store = store
+		self.viewStore = ViewStore(store.scope(state: ViewState.init(state:)))
 	}
 
 	struct ViewState: Equatable {
@@ -104,8 +106,8 @@ struct SinglePhotoEdit: View {
 					)
 					IfLetStore(self.store.scope(
 						state: { $0.injectables.canvas },
-						action: { .injectables(InjectablesAction.canvas($0))})
-						, then: {
+						action: { .injectables(InjectablesAction.canvas($0))}),
+										 then: {
 							InjectablesCanvas(size: self.photoSize, store: $0)
 								.frame(width: self.photoSize.width,
 											 height: self.photoSize.height)

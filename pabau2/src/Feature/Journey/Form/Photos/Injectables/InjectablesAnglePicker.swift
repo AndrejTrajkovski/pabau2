@@ -51,6 +51,7 @@ struct InjectablesAnglePicker: View {
 
 extension InjectablesAnglePicker.ViewState {
 	init(state: InjectablesAnglePickerState) {
+		print("InjectablesAnglePicker.ViewState init")
 		if let chosenInjection = state.photoInjections[state.chosenInjectableId]?.first(where: {
 			$0.id == state.chosenInjectionId
 		}), let chosenInjectable = state.allInjectables[id: state.chosenInjectableId] {

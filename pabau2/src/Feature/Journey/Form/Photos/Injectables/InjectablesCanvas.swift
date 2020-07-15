@@ -83,7 +83,7 @@ struct InjectablesCanvas: View {
 																 imageSize: self.size)
 				})
 			}
-		}
+		}.debug("InjectablesCanvas")
 	}
 }
 
