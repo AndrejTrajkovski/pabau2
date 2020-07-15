@@ -61,11 +61,13 @@ public struct EditPhotosState: Equatable {
 	var selectedStencilIdx: Int?
 	var isFlashOn: Bool = false
 	var frontOrRear: UIImagePickerController.CameraDevice = .rear
+
+
 	var activeCanvas: CanvasMode = .drawing
 	var allInjectables: IdentifiedArrayOf<Injectable> = .init(JourneyMocks.injectables())
 	var isChooseInjectablesActive: Bool = false
-	var chosenInjectionId: UUID?
 	var injectablesStepperType: InjectablesToolType = InjectablesToolType.anglePicker
+	var chosenInjectableId: InjectableId?
 
 	private var showingImagePicker: UIImagePickerController.SourceType?
 
@@ -186,7 +188,8 @@ extension EditPhotosState {
 															 isCameraActive: self.isCameraActive,
 															 isTagsAlertActive: self.isTagsAlertActive,
 															 activeCanvas: self.activeCanvas,
-															 isChooseInjectablesActive: self.isChooseInjectablesActive
+															 isChooseInjectablesActive: self.isChooseInjectablesActive,
+															 chosenInjectableId: self.chosenInjectableId
 			)
 		}
 		set {
@@ -196,6 +199,7 @@ extension EditPhotosState {
 			self.isTagsAlertActive = newValue.isTagsAlertActive
 			self.activeCanvas = newValue.activeCanvas
 			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
+			self.chosenInjectableId = newValue.chosenInjectableId
 		}
 	}
 
@@ -209,7 +213,7 @@ extension EditPhotosState {
 				photo: editingPhoto,
 				allInjectables: self.allInjectables,
 				isChooseInjectablesActive: self.isChooseInjectablesActive,
-				chosenInjectionId: self.chosenInjectionId,
+				chosenInjectatbleId: self.chosenInjectableId,
 				injectablesStepperType: self.injectablesStepperType
 			)
 		}
@@ -219,7 +223,7 @@ extension EditPhotosState {
 			self.activeCanvas = newValue.activeCanvas
 			self.allInjectables = newValue.allInjectables
 			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
-			self.chosenInjectionId = newValue.chosenInjectionId
+			self.chosenInjectableId = newValue.chosenInjectatbleId
 		}
 	}
 

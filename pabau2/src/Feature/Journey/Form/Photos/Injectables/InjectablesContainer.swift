@@ -90,6 +90,7 @@ public let injectablesContainerReducer: Reducer<InjectablesState, InjectablesAct
 //}
 
 extension InjectablesState {
+	
 	var injectablesTool: InjectablesToolState? {
 		get {
 			chosenInjectableId.map { chosenInjectableId in
@@ -112,7 +113,7 @@ extension InjectablesState {
 			}
 		}
 	}
-	
+
 	var canvas: InjectablesCanvasState? {
 		get {
 			chosenInjectableId.map { chosenInjectableId in
@@ -140,8 +141,7 @@ extension InjectablesState {
 				allInjectables: self.allInjectables,
 				photoInjections: self.photoInjections,
 				isChooseInjectablesActive: self.isChooseInjectablesActive,
-				chosenInjectableId: self.chosenInjectableId,
-				chosenInjectionId: self.chosenInjectionId
+				chosenInjectableId: self.chosenInjectableId
 			)
 		}
 		set {
@@ -149,7 +149,6 @@ extension InjectablesState {
 			self.photoInjections = newValue.photoInjections
 			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
 			self.chosenInjectableId = newValue.chosenInjectableId
-			self.chosenInjectionId = newValue.chosenInjectionId
 		}
 	}
 }

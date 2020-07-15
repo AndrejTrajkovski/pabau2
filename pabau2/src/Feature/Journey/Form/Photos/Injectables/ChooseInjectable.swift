@@ -10,7 +10,6 @@ public let chooseInjectableReducer = Reducer<ChooseInjectablesState, ChooseInjec
 	case .onSelectUsedInjectableId(let id):
 		state.chosenInjectableId = id
 		state.isChooseInjectablesActive = false
-		state.chosenInjectionId = nil
 	case .onDismissChooseInjectables:
 		state.isChooseInjectablesActive = false
 	}
@@ -22,7 +21,6 @@ public struct ChooseInjectablesState: Equatable {
 	var photoInjections: [InjectableId: IdentifiedArrayOf<Injection>]
 	var isChooseInjectablesActive: Bool
 	var chosenInjectableId: InjectableId?
-	var chosenInjectionId: UUID?
 }
 
 public enum ChooseInjectableAction: Equatable {

@@ -23,7 +23,7 @@ public let editPhotosRightSideReducer = Reducer<EditPhotosRightSideState, EditPh
 		if state.activeCanvas == .injectables {
 			state.isChooseInjectablesActive = true
 		} else if state.activeCanvas == .drawing {
-			if state.editingPhoto?.chosenInjectableId == nil {
+			if state.chosenInjectableId == nil {
 				state.isChooseInjectablesActive = true
 			}
 			state.activeCanvas = .injectables
@@ -41,6 +41,7 @@ public struct EditPhotosRightSideState: Equatable {
 	var isTagsAlertActive: Bool
 	var activeCanvas: CanvasMode
 	var isChooseInjectablesActive: Bool
+	var chosenInjectableId: Int?
 
 	var editingPhoto: PhotoViewModel? {
 		get {
