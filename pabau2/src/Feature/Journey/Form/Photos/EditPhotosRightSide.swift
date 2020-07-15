@@ -41,7 +41,7 @@ public struct EditPhotosRightSideState: Equatable {
 	var isTagsAlertActive: Bool
 	var activeCanvas: CanvasMode
 	var isChooseInjectablesActive: Bool
-	
+
 	var editingPhoto: PhotoViewModel? {
 		get {
 			getPhoto(photos, editingPhotoId)

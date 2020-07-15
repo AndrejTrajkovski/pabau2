@@ -3,7 +3,7 @@ import ComposableArchitecture
 
 struct InjectablesAnglePickerState: Equatable {
 	var allInjectables: IdentifiedArrayOf<Injectable>
-	var photoInjections: [InjectableId: [Injection]]
+	var photoInjections: [InjectableId: IdentifiedArrayOf<Injection>]
 	var chosenInjectableId: InjectableId
 	var chosenInjectionId: UUID
 }
@@ -11,13 +11,7 @@ struct InjectablesAnglePickerState: Equatable {
 let injectablesToolAnglePickerReducer = Reducer<InjectablesAnglePickerState, InjectablesAnglePickerAction, JourneyEnvironment> { state, action, _ in
 	switch action {
 	case .didPickAngle(let angle):
-		if var injections = state.photoInjections[state.chosenInjectableId],
-			let injectionIdx = injections.firstIndex(where: {
-				$0.id == state.chosenInjectionId
-			}) {
-			injections[injectionIdx].angle = angle
-			state.photoInjections[state.chosenInjectableId] = injections
-		}
+		state.photoInjections[state.chosenInjectableId]?[id: state.chosenInjectionId]?.angle = angle
 	}
 	return .none
 }

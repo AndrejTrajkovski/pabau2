@@ -20,7 +20,7 @@ public struct PhotoViewModel: Equatable {
 	var drawing: PKDrawing = PKDrawing()
 	var isPrivate: Bool = false
 	var tags: [String] = []
-	var injections: [InjectableId: [Injection]] = [:]
+	var injections: [InjectableId: IdentifiedArrayOf<Injection>] = [:]
 	var chosenInjectableId: InjectableId?
 	
 	init (_ savedPhoto: SavedPhoto) {

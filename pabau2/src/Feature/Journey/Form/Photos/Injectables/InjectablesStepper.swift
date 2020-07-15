@@ -3,7 +3,7 @@ import ComposableArchitecture
 
 public let injectablesToolStepperReducer = Reducer<InjectablesToolState, InjectablesStepperAction, JourneyEnvironment>.init {
 	state, action, _ in
-	
+
 	var chosenInjectable = state.allInjectables[id: state.chosenInjectableId]!
 	switch action {
 	case .increment:
@@ -11,18 +11,12 @@ public let injectablesToolStepperReducer = Reducer<InjectablesToolState, Injecta
 	case .decrement:
 		chosenInjectable.runningIncrement -= chosenInjectable.increment
 	}
-
+	
 	state.allInjectables[id: state.chosenInjectableId] = chosenInjectable
 
-	if let chosenInjectionId = state.chosenInjectionId,
-		var injections = state.photoInjections[state.chosenInjectableId],
-		let injectionIdx = injections.firstIndex(where: {
-			$0.id == chosenInjectionId
-		}) {
-		injections[injectionIdx].units = chosenInjectable.runningIncrement
-		state.photoInjections[state.chosenInjectableId] = injections
+	if let chosenInjectionId = state.chosenInjectionId {
+		state.photoInjections[state.chosenInjectableId]?[id: chosenInjectionId]?.units = chosenInjectable.runningIncrement
 	}
-
 	return .none
 }
 

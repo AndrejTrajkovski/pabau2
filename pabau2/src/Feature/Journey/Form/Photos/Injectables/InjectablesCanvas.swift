@@ -36,7 +36,7 @@ public let injectablesCanvasReducer = Reducer<InjectablesCanvasState, Injectable
 
 public struct InjectablesCanvasState: Equatable {
 	var allInjectables: IdentifiedArrayOf<Injectable>
-	var photoInjections: [InjectableId: [Injection]]
+	var photoInjections: [InjectableId: IdentifiedArrayOf<Injection>]
 	var chosenInjectableId: InjectableId
 	var chosenInjectionId: UUID?
 }

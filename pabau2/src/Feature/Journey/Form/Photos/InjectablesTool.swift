@@ -3,7 +3,7 @@ import ComposableArchitecture
 
 public struct InjectablesToolState: Equatable {
 	var allInjectables: IdentifiedArrayOf<Injectable>
-	var photoInjections: [InjectableId: [Injection]]
+	var photoInjections: [InjectableId: IdentifiedArrayOf<Injection>]
 	var chosenInjectableId: InjectableId
 	var chosenInjectionId: UUID?
 	var type: InjectablesToolType

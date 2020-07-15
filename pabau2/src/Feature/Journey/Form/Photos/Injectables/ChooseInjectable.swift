@@ -19,7 +19,7 @@ public let chooseInjectableReducer = Reducer<ChooseInjectablesState, ChooseInjec
 
 public struct ChooseInjectablesState: Equatable {
 	var allInjectables: IdentifiedArrayOf<Injectable>
-	var photoInjections: [InjectableId: [Injection]]
+	var photoInjections: [InjectableId: IdentifiedArrayOf<Injection>]
 	var isChooseInjectablesActive: Bool
 	var chosenInjectableId: InjectableId?
 	var chosenInjectionId: UUID?
