@@ -28,7 +28,6 @@ public enum InjectablesStepperAction: Equatable {
 struct InjectablesStepper: View {
 	
 	let store: Store<InjectablesToolState, InjectablesStepperAction>
-	
 	struct State: Equatable {
 		let color: Color
 		let number: Double

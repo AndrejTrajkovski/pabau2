@@ -124,7 +124,7 @@ struct EditPhotos: View {
 					)
 				)
 					.padding([.leading, .trailing, .top], 8)
-					.padding(.bottom, 128)
+					.padding(.bottom, 136)
 			}
 			.navigationBarItems(trailing:
 				EmptyView()

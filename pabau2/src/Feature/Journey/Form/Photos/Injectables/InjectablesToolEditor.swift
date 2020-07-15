@@ -21,7 +21,7 @@ struct InjectablesToolEditor: View {
 				self.store.scope(state: { $0.anglePicker },
 												 action: { .anglePicker($0)}),
 				then: InjectablesAnglePicker.init(store:),
-				else: Text("Add or select an injection to rotate.")
+				else: Text("Add or select an injection to rotate.").layoutPriority(0)
 			)
 		}
 	}
