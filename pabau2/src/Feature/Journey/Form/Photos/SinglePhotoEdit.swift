@@ -24,7 +24,6 @@ struct SinglePhotoEditState: Equatable {
 	var allInjectables: IdentifiedArrayOf<Injectable>
 	var isChooseInjectablesActive: Bool
 	var chosenInjectatbleId: InjectableId?
-	var injectablesStepperType: InjectablesToolType
 
 	var injectables: InjectablesState {
 		get {
@@ -33,8 +32,7 @@ struct SinglePhotoEditState: Equatable {
 				photoInjections: self.photo.injections,
 				isChooseInjectablesActive: self.isChooseInjectablesActive,
 				chosenInjectableId: self.chosenInjectatbleId,
-				chosenInjectionId: self.photo.chosenInjectionId,
-				type: self.injectablesStepperType)
+				chosenInjectionId: self.photo.chosenInjectionId)
 		}
 		set {
 			self.allInjectables = newValue.allInjectables
@@ -42,7 +40,6 @@ struct SinglePhotoEditState: Equatable {
 			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
 			self.chosenInjectatbleId = newValue.chosenInjectableId
 			self.photo.chosenInjectionId = newValue.chosenInjectionId
-			self.injectablesStepperType = newValue.type
 		}
 	}
 

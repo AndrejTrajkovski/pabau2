@@ -37,20 +37,22 @@ struct InjectablesStepper: View {
 	
 	var body: some View {
 		WithViewStore(store.scope(state: State.init(state:))) { viewStore in
-			HStack {
-				Button(action: { viewStore.send(.decrement) },
-							 label: {
-								Image("ico-journey-upload-photos-minus")
-									.frame(width: 50, height: 50)
-				})
+			VStack {
 				InjectablesToolNumber(number: viewStore.state.number,
 															color: viewStore.state.color,
 															hasActiveInjection: viewStore.state.hasActiveInjection)
-				Button(action: { viewStore.send(.increment )},
-							 label: {
-								Image("ico-journey-upload-photos-plus")
-									.frame(width: 50, height: 50)
-				})
+				HStack {
+					Button(action: { viewStore.send(.decrement) },
+								 label: {
+									Image("ico-journey-upload-photos-minus")
+										.frame(width: 50, height: 50)
+					})
+					Button(action: { viewStore.send(.increment )},
+								 label: {
+									Image("ico-journey-upload-photos-plus")
+										.frame(width: 50, height: 50)
+					})
+				}
 			}
 		}
 	}

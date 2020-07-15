@@ -11,24 +11,18 @@ struct InjectablesToolEditor: View {
 	let store: Store<InjectablesToolState, InjectablesToolAction>
 
 	var body: some View {
-		WithViewStore(self.store.scope(state: { $0.type })) { viewStore in
-			Group {
-				if viewStore.state == InjectablesToolType.stepper {
-					InjectablesStepper(
-						store: self.store.scope(state: { $0 },
-																		action: { .stepper($0) }
-						)
-					)
-				} else if viewStore.state == InjectablesToolType.anglePicker {
-					IfLetStore(
-						self.store.scope(state: { $0.anglePicker },
-														 action: { .anglePicker($0)}),
-						then: InjectablesAnglePicker.init(store:)
-					)
-				} else {
-					EmptyView()
-				}
-			}
+		HStack {
+			InjectablesStepper(
+				store: self.store.scope(state: { $0 },
+																action: { .stepper($0) }
+				)
+			)
+			IfLetStore(
+				self.store.scope(state: { $0.anglePicker },
+												 action: { .anglePicker($0)}),
+				then: InjectablesAnglePicker.init(store:),
+				else: Text("Add or select an injection to rotate.")
+			)
 		}
 	}
 }

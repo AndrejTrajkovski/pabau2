@@ -6,7 +6,6 @@ public struct InjectablesToolState: Equatable {
 	var photoInjections: [InjectableId: IdentifiedArrayOf<Injection>]
 	var chosenInjectableId: InjectableId
 	var chosenInjectionId: UUID?
-	var type: InjectablesToolType
 }
 
 public let injectablesToolReducer: Reducer<InjectablesToolState, InjectablesToolAction, JourneyEnvironment> = .combine(

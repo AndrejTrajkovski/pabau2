@@ -7,7 +7,6 @@ public struct InjectablesState: Equatable {
 	var isChooseInjectablesActive: Bool
 	var chosenInjectableId: InjectableId?
 	var chosenInjectionId: UUID?
-	var type: InjectablesToolType
 }
 
 public enum InjectablesAction: Equatable {
@@ -98,8 +97,7 @@ extension InjectablesState {
 					allInjectables: self.allInjectables,
 					photoInjections: self.photoInjections,
 					chosenInjectableId: chosenInjectableId,
-					chosenInjectionId: self.chosenInjectionId,
-					type: self.type
+					chosenInjectionId: self.chosenInjectionId
 				)
 			}
 		}
@@ -109,7 +107,6 @@ extension InjectablesState {
 				self.photoInjections = $0.photoInjections
 				self.chosenInjectableId = $0.chosenInjectableId
 				self.chosenInjectionId = $0.chosenInjectionId
-				self.type = $0.type
 			}
 		}
 	}

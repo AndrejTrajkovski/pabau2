@@ -36,11 +36,6 @@ let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, JourneyEnviron
 		}
 )
 
-public enum InjectablesToolType: Equatable {
-	case stepper
-	case anglePicker
-}
-
 public enum EditPhotoAction: Equatable {
 	case openCamera
 	case closeCamera
@@ -66,7 +61,6 @@ public struct EditPhotosState: Equatable {
 	var activeCanvas: CanvasMode = .drawing
 	var allInjectables: IdentifiedArrayOf<Injectable> = .init(JourneyMocks.injectables())
 	var isChooseInjectablesActive: Bool = false
-	var injectablesStepperType: InjectablesToolType = InjectablesToolType.anglePicker
 	var chosenInjectableId: InjectableId?
 
 	private var showingImagePicker: UIImagePickerController.SourceType?
@@ -213,8 +207,7 @@ extension EditPhotosState {
 				photo: editingPhoto,
 				allInjectables: self.allInjectables,
 				isChooseInjectablesActive: self.isChooseInjectablesActive,
-				chosenInjectatbleId: self.chosenInjectableId,
-				injectablesStepperType: self.injectablesStepperType
+				chosenInjectatbleId: self.chosenInjectableId
 			)
 		}
 		set {
