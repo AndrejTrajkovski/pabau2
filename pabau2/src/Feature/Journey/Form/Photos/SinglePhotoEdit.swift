@@ -60,7 +60,7 @@ public enum SinglePhotoEditAction: Equatable {
 }
 
 struct SinglePhotoEdit: View {
-	let footerHeight: CGFloat = 128.0
+	
 	@State var photoSize: CGSize = .zero
 	let store: Store<SinglePhotoEditState, SinglePhotoEditAction>
 	@ObservedObject var viewStore: ViewStore<ViewState, SinglePhotoEditAction>
@@ -94,49 +94,31 @@ struct SinglePhotoEdit: View {
 
 	var body: some View {
 		WithViewStore(store.scope(state: ViewState.init(state:))) { viewStore in
-			VStack {
-				Spacer()
-				ZStack {
-					PhotoParent(
-						store: self.store.scope(state: { $0.photo }).actionless,
-						self.$photoSize
-					)
-					IfLetStore(self.store.scope(
-						state: { $0.injectables.canvas },
-						action: { .injectables(InjectablesAction.canvas($0))}),
-										 then: {
-							InjectablesCanvas(size: self.photoSize, store: $0)
-								.frame(width: self.photoSize.width,
-											 height: self.photoSize.height)
-								.disabled(viewStore.state.isInjectablesDisabled)
-								.zIndex(viewStore.state.injectablesZIndex)
-						}, else: Spacer()
-					)
-					CanvasView(store:
-						self.store.scope(
-							state: { $0.canvasState },
-							action: { .photoAndCanvas($0) })
-					)
-						.disabled(viewStore.state.isDrawingDisabled)
-						.frame(width: self.photoSize.width,
-									 height: self.photoSize.height)
-						.zIndex(viewStore.state.drawingCanvasZIndex)
-				}
-				Spacer()
-				Group {
-					if viewStore.state.isDrawingDisabled {
-						IfLetStore(self.store.scope(
-							state: { $0.injectables.injectablesTool },
-							action: { .injectables(InjectablesAction.injectablesTool($0))})
-							, then: {
-								InjectablesTool(store: $0)
-						})
-					} else {
-						Color.clear
-					}
-				}
-					.frame(height: self.footerHeight)
-					.padding()
+			ZStack {
+				PhotoParent(
+					store: self.store.scope(state: { $0.photo }).actionless,
+					self.$photoSize
+				)
+				IfLetStore(self.store.scope(
+					state: { $0.injectables.canvas },
+					action: { .injectables(InjectablesAction.canvas($0))}),
+									 then: {
+										InjectablesCanvas(size: self.photoSize, store: $0)
+											.frame(width: self.photoSize.width,
+														 height: self.photoSize.height)
+											.disabled(viewStore.state.isInjectablesDisabled)
+											.zIndex(viewStore.state.injectablesZIndex)
+				}, else: Spacer()
+				)
+				CanvasView(store:
+					self.store.scope(
+						state: { $0.canvasState },
+						action: { .photoAndCanvas($0) })
+				)
+					.disabled(viewStore.state.isDrawingDisabled)
+					.frame(width: self.photoSize.width,
+								 height: self.photoSize.height)
+					.zIndex(viewStore.state.drawingCanvasZIndex)
 			}
 			.sheet(isPresented: viewStore.binding(
 				get: { $0.isChooseInjectablesActive },

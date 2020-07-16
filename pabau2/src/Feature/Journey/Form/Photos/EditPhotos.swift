@@ -92,43 +92,60 @@ struct EditPhotos: View {
 		let isCameraActive: Bool
 		let isChooseInjectablesActive: Bool
 		let editingPhotoId: PhotoVariantId?
+		let isDrawingDisabled: Bool
 		init (state: EditPhotosState) {
 			self.isCameraActive = state.isCameraActive
 			self.isChooseInjectablesActive = state.isChooseInjectablesActive
 			self.editingPhotoId = state.editingPhotoId
+			self.isDrawingDisabled = state.activeCanvas != .drawing
 		}
 	}
 
 	var body: some View {
 		WithViewStore(store.scope(state: State.init(state:))) { viewStore in
-			HStack {
-				EditPhotosList(store:
-					self.store.scope(state: { $0.editPhotoList }, action: { .editPhotoList($0) })
-				)
-					.frame(width: 92)
-					.padding(8)
-				IfLetStore(
-					self.store.scope(
-						state: { $0.singlePhotoEdit },
-						action: { .singlePhotoEdit($0) }
-					),
-					then:
-					SinglePhotoEdit.init(store:),
-					else: Text("No photos selected. Select or take a new photo.")
-						.frame(minWidth: 0, maxWidth: .infinity)
-				)
-				EditPhotosRightSide(store:
-					self.store.scope(
-						state: { $0.rightSide },
-						action: { .rightSide($0)}
+			VStack {
+				HStack {
+					EditPhotosList(store:
+						self.store.scope(state: { $0.editPhotoList }, action: { .editPhotoList($0) })
 					)
-				)
-					.padding([.leading, .trailing, .top], 8)
-					.padding(.bottom, 136)
+						.frame(width: 92)
+					IfLetStore(
+						self.store.scope(
+							state: { $0.singlePhotoEdit },
+							action: { .singlePhotoEdit($0) }
+						),
+						then:
+						SinglePhotoEdit.init(store:),
+						else: Text("No photos selected. Select or take a new photo.")
+					)
+					.frame(minWidth: 0, maxWidth: .infinity)
+					EditPhotosRightSide(store:
+						self.store.scope(
+							state: { $0.rightSide },
+							action: { .rightSide($0)}
+						)
+					)
+						.frame(width: 92)
+				}
+				Group {
+					if viewStore.state.isDrawingDisabled {
+						IfLetStore(self.store.scope(
+							state: { $0.singlePhotoEdit?.injectables.injectablesTool },
+							action: { .singlePhotoEdit(SinglePhotoEditAction.injectables(InjectablesAction.injectablesTool($0)))})
+							, then: {
+								InjectablesTool(store: $0)
+							}, else: Color.clear
+						)
+					} else {
+						Color.clear
+					}
+				}
+				.frame(height: 128)
+				.padding()
 			}
-			.navigationBarItems(trailing:
-				EmptyView()
-			)
+				.navigationBarItems(trailing:
+					EmptyView()
+				)
 				.modalLink(isPresented: .constant(viewStore.state.isCameraActive),
 								 linkType: ModalTransition.fullScreenModal,
 								 destination: {

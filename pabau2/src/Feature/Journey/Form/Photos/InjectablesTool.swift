@@ -35,9 +35,10 @@ struct InjectablesTool: View {
 					InjectablesToolTitle(title: viewStore.state.injTitle,
 															 description: viewStore.state.desc,
 															 color: viewStore.state.color)
-					Spacer()
+						.frame(maxWidth: .infinity, alignment: .leading)
 					InjectablesToolEditor(store: self.store.scope(state: { $0 }))
-				}
+					.frame(maxWidth: .infinity)
+				}.padding()
 			}
 		}
 	}
@@ -48,16 +49,14 @@ extension InjectablesTool.State {
 		let injectable = state.allInjectables[id: state.chosenInjectableId]!
 		self.color = injectable.color
 		self.injTitle = injectable.title
-		if let chosenInjectionId = state.chosenInjectionId,
-			let injections = state.photoInjections[state.chosenInjectableId],
-			injections.contains(where: { $0.id == chosenInjectionId}) {
+		if let injections = state.photoInjections[state.chosenInjectableId] {
 			let total = injections.reduce(into: TotalInjAndUnits.init(), { res, element in
 				res.totalUnits += element.units
 				res.totalInj += 1
 			})
 			self.desc = "Total: \(total.totalInj) injections - \(total.totalUnits) units"
 		} else {
-			self.desc = ""
+			self.desc = "Total: 0 injections"
 		}
 	}
 }

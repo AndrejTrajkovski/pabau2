@@ -11,11 +11,15 @@ public let injectablesToolStepperReducer = Reducer<InjectablesToolState, Injecta
 	case .decrement:
 		chosenInjectable.runningIncrement -= chosenInjectable.increment
 	}
-	
+
 	state.allInjectables[id: state.chosenInjectableId] = chosenInjectable
 
-	if let chosenInjectionId = state.chosenInjectionId {
-		state.photoInjections[state.chosenInjectableId]?[id: chosenInjectionId]?.units = chosenInjectable.runningIncrement
+	if let chosenInjectionId = state.chosenInjectionId,
+		var injections = state.photoInjections[state.chosenInjectableId],
+		var chosenInjection = injections[id: chosenInjectionId] {
+		chosenInjection.units = chosenInjectable.runningIncrement
+		injections[id: chosenInjectionId] = chosenInjection
+		state.photoInjections[state.chosenInjectableId] = injections
 	}
 	return .none
 }

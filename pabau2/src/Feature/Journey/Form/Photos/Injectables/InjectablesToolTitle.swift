@@ -7,12 +7,12 @@ struct InjectablesToolTitle: View {
 	let color: Color
 
 	var body: some View {
-		VStack(alignment: .leading) {
+		VStack(alignment: .leading, spacing: 8) {
 			HStack {
 				Circle()
 					.fill(color)
-					.frame(width: 10, height: 10)
-				Text(title).font(.medium18)
+					.frame(width: 15, height: 15)
+				Text(title).font(.medium25)
 			}
 			Text(description).font(.regular16)
 		}
