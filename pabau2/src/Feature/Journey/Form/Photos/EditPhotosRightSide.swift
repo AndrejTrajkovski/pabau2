@@ -30,6 +30,8 @@ public let editPhotosRightSideReducer = Reducer<EditPhotosRightSideState, EditPh
 		}
 	case .didTouchPencil:
 		state.activeCanvas = .drawing
+	case .didTouchOpenPhotosLibrary:
+		state.isPhotosAlbumActive = true
 	}
 	return .none
 }
@@ -42,7 +44,8 @@ public struct EditPhotosRightSideState: Equatable {
 	var activeCanvas: CanvasMode
 	var isChooseInjectablesActive: Bool
 	var chosenInjectableId: Int?
-
+	var isPhotosAlbumActive: Bool
+	
 	var editingPhoto: PhotoViewModel? {
 		get {
 			getPhoto(photos, editingPhotoId)
@@ -60,6 +63,7 @@ public enum EditPhotosRightSideAction: Equatable {
 	case didTouchTrash
 	case didTouchCamera
 	case didTouchPencil
+	case didTouchOpenPhotosLibrary
 }
 
 struct EditPhotosRightSide: View {
@@ -90,6 +94,11 @@ struct EditPhotosRightSide: View {
 					Image(systemName: "camera.circle.fill")
 						.foregroundColor(Color.blue)
 						.font(.system(size: 44))
+				})
+				Button.init(action: {
+					self.viewStore.send(.didTouchOpenPhotosLibrary)
+				}, label: {
+					Image(systemName: "photo.on.rectangle")
 				})
 			}
 		Spacer()

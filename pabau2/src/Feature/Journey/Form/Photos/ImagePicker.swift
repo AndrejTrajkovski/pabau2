@@ -6,7 +6,7 @@ struct ImagePicker: UIViewControllerRepresentable {
 	@Environment(\.presentationMode) var presentationMode
 	let store: Store<CameraOverlayState, CameraOverlayAction>
 	let viewStore: ViewStore<CameraOverlayState, CameraOverlayAction>
-
+	
 	init(store: Store<CameraOverlayState, CameraOverlayAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store)

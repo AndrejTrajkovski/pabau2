@@ -144,11 +144,6 @@ private struct RightSideButtons: View {
 					.resizable()
 					.frame(width: 54, height: 54)
 				})
-				Button.init(action: {
-					viewStore.send(.onOpenPhotosLibrary)
-				}, label: {
-					Image(systemName: "photo.on.rectangle")
-				})
 			}.padding()
 		}
 	}

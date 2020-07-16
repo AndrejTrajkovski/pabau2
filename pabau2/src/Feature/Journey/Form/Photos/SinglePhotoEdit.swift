@@ -60,7 +60,7 @@ public enum SinglePhotoEditAction: Equatable {
 }
 
 struct SinglePhotoEdit: View {
-	
+
 	@State var photoSize: CGSize = .zero
 	let store: Store<SinglePhotoEditState, SinglePhotoEditAction>
 	@ObservedObject var viewStore: ViewStore<ViewState, SinglePhotoEditAction>
@@ -75,7 +75,6 @@ struct SinglePhotoEdit: View {
 		let isDrawingDisabled: Bool
 		let isChooseInjectablesActive: Bool
 		let isInjectablesDisabled: Bool
-		
 		init (state: SinglePhotoEditState) {
 			let isInjectablesActive = state.activeCanvas == CanvasMode.injectables ? true : false
 			if isInjectablesActive {
@@ -87,7 +86,6 @@ struct SinglePhotoEdit: View {
 			}
 			self.isInjectablesDisabled = !isInjectablesActive
 			self.isDrawingDisabled = isInjectablesActive
-			print("isDrawingDisabled \(isInjectablesActive)")
 			self.isChooseInjectablesActive = state.isChooseInjectablesActive
 		}
 	}

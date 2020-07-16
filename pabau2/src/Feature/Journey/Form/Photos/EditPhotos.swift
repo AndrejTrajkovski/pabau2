@@ -27,8 +27,8 @@ let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, JourneyEnviron
 			switch action {
 			case .openCamera:
 				state.isCameraActive = true
-			case .closeCamera:
-				state.isCameraActive = false
+			case .openPhotoAlbum:
+				state.isPhotosAlbumActive = true
 			case .editPhotoList, .rightSide, .cameraOverlay, .singlePhotoEdit, .chooseInjectables:
 				break
 			}
@@ -38,7 +38,7 @@ let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, JourneyEnviron
 
 public enum EditPhotoAction: Equatable {
 	case openCamera
-	case closeCamera
+	case openPhotoAlbum
 	case editPhotoList(EditPhotosListAction)
 	case rightSide(EditPhotosRightSideAction)
 	case cameraOverlay(CameraOverlayAction)
@@ -56,8 +56,6 @@ public struct EditPhotosState: Equatable {
 	var selectedStencilIdx: Int?
 	var isFlashOn: Bool = false
 	var frontOrRear: UIImagePickerController.CameraDevice = .rear
-
-
 	var activeCanvas: CanvasMode = .drawing
 	var allInjectables: IdentifiedArrayOf<Injectable> = .init(JourneyMocks.injectables())
 	var isChooseInjectablesActive: Bool = false
@@ -76,8 +74,8 @@ public struct EditPhotosState: Equatable {
 		set { self.showingImagePicker = newValue ? .some(.camera) : nil}
 	}
 	var isPhotosAlbumActive: Bool {
-		get { self.showingImagePicker == .some(.savedPhotosAlbum) }
-		set { self.showingImagePicker = newValue ? .some(.savedPhotosAlbum) : nil}
+		get { self.showingImagePicker == .some(.photoLibrary) }
+		set { self.showingImagePicker = newValue ? .some(.photoLibrary) : nil}
 	}
 }
 
@@ -89,6 +87,7 @@ struct EditPhotos: View {
 	}
 
 	struct State: Equatable {
+		let isPhotosAlbumActive: Bool
 		let isCameraActive: Bool
 		let isChooseInjectablesActive: Bool
 		let editingPhotoId: PhotoVariantId?
@@ -98,6 +97,7 @@ struct EditPhotos: View {
 			self.isChooseInjectablesActive = state.isChooseInjectablesActive
 			self.editingPhotoId = state.editingPhotoId
 			self.isDrawingDisabled = state.activeCanvas != .drawing
+			self.isPhotosAlbumActive = state.isPhotosAlbumActive
 		}
 	}
 
@@ -146,6 +146,16 @@ struct EditPhotos: View {
 				.navigationBarItems(trailing:
 					EmptyView()
 				)
+				.modalLink(isPresented: .constant(viewStore.state.isPhotosAlbumActive),
+									 linkType: ModalTransition.fullScreenModal,
+									 destination: {
+										IfLetStore(self.store.scope(
+											state: { $0.cameraOverlay },
+											action: { .cameraOverlay($0) }),
+															 then: ImagePicker.init(store:)
+										).navigationBarHidden(true)
+											.navigationBarTitle("")
+				})
 				.modalLink(isPresented: .constant(viewStore.state.isCameraActive),
 								 linkType: ModalTransition.fullScreenModal,
 								 destination: {
@@ -200,7 +210,8 @@ extension EditPhotosState {
 															 isTagsAlertActive: self.isTagsAlertActive,
 															 activeCanvas: self.activeCanvas,
 															 isChooseInjectablesActive: self.isChooseInjectablesActive,
-															 chosenInjectableId: self.chosenInjectableId
+															 chosenInjectableId: self.chosenInjectableId,
+															 isPhotosAlbumActive: self.isPhotosAlbumActive
 			)
 		}
 		set {
@@ -211,6 +222,7 @@ extension EditPhotosState {
 			self.activeCanvas = newValue.activeCanvas
 			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
 			self.chosenInjectableId = newValue.chosenInjectableId
+			self.isPhotosAlbumActive = newValue.isPhotosAlbumActive
 		}
 	}
 

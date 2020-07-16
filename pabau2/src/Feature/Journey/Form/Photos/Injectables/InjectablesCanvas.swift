@@ -28,7 +28,9 @@ public let injectablesCanvasReducer = Reducer<InjectablesCanvasState, Injectable
 					state.photoInjections[injectableId]?[idx].position = point
 				case .didRotate(let angle):
 					state.photoInjections[injectableId]?[idx].angle = angle
-				}
+				case .deleteInjectionId(let injectionId):
+					state.photoInjections[injectableId]?.remove(at: idx)
+			}
 			}
 	}
 	return .none
@@ -142,6 +144,7 @@ public enum MarkerAction: Equatable {
 	case didRotate(Angle)
 	case didSelectInjectionId(UUID)
 	case didDragToPosition(CGPoint)//self.injection.position = calculatedPos
+	case deleteInjectionId(UUID)
 }
 
 struct InjectableMarkerState: Identifiable, Equatable {
@@ -222,16 +225,12 @@ struct InjectableMarker: View {
 				self.viewStore.send(.didSelectInjectionId(self.viewStore.state.id))
 		}
 		.contextMenu {
-			Button(action:{
-				//				self.fontColor = Color.blue
-			}){
-				Text("Set color to blue")
-			}
-			Button(action:{
-				//				self.fontColor = Color.red
-			}){
-				Text("Set color to red")
-			}
+			Button(action: {
+				self.viewStore.send(.deleteInjectionId(self.viewStore.state.id))
+			}, label: {
+				Text("Delete").foregroundColor(.red)
+				Image(systemName: "trash")
+			})
 		}
 		.rotationEffect(self.viewStore.state.angle, anchor: UnitPoint.bottom)
 		.gesture(dragGesture)
