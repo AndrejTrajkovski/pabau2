@@ -56,7 +56,7 @@ extension ImagePicker.Coordinator {
 		guard let image = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.originalImage)] as? UIImage else {
 			return
 		}
-		self.parent.viewStore.send(.didTakePhoto(image))
+		self.parent.viewStore.send(.didTakePhotos([image]))
 		//		finishAndUpdate()
 	}
 

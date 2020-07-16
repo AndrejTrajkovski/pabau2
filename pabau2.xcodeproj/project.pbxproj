@@ -104,6 +104,8 @@
 		8247764824756C2900508434 /* CIDrugs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247764724756C2900508434 /* CIDrugs.swift */; };
 		8247764A24758B7700508434 /* SelectField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247764924758B7700508434 /* SelectField.swift */; };
 		824C399024981B5F007133E2 /* MultiplePhotos.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824C398F24981B5F007133E2 /* MultiplePhotos.swift */; };
+		825036B724C068E2002F20EA /* PhotoLibraryPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825036B624C068E2002F20EA /* PhotoLibraryPicker.swift */; };
+		825036B924C06DAB002F20EA /* BSImagePicker in Frameworks */ = {isa = PBXBuildFile; productRef = 825036B824C06DAB002F20EA /* BSImagePicker */; };
 		8250D7C9242BCFD000F8F3FC /* ChooseFormList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7C8242BCFD000F8F3FC /* ChooseFormList.swift */; };
 		8250D7CB242BD25B00F8F3FC /* JourneyBaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7CA242BD25B00F8F3FC /* JourneyBaseView.swift */; };
 		8250D7D0242C575A00F8F3FC /* ModalTransitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8250D7CD242C575A00F8F3FC /* ModalTransitions.swift */; };
@@ -587,6 +589,7 @@
 		8247764724756C2900508434 /* CIDrugs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CIDrugs.swift; sourceTree = "<group>"; };
 		8247764924758B7700508434 /* SelectField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectField.swift; sourceTree = "<group>"; };
 		824C398F24981B5F007133E2 /* MultiplePhotos.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplePhotos.swift; sourceTree = "<group>"; };
+		825036B624C068E2002F20EA /* PhotoLibraryPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryPicker.swift; sourceTree = "<group>"; };
 		8250D7C8242BCFD000F8F3FC /* ChooseFormList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseFormList.swift; sourceTree = "<group>"; };
 		8250D7CA242BD25B00F8F3FC /* JourneyBaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyBaseView.swift; sourceTree = "<group>"; };
 		8250D7CD242C575A00F8F3FC /* ModalTransitions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalTransitions.swift; sourceTree = "<group>"; };
@@ -860,6 +863,7 @@
 				827B45992411368F00A5975E /* FSCalendarSwiftUI.framework in Frameworks */,
 				8247762A246DE77E00508434 /* Overture in Frameworks */,
 				82755AE3247EE44F00A3BBC2 /* ASCollectionView in Frameworks */,
+				825036B924C06DAB002F20EA /* BSImagePicker in Frameworks */,
 				82FF6CA1248F92AC0014C4DC /* PabauCommon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1279,13 +1283,6 @@
 			path = Injectables;
 			sourceTree = "<group>";
 		};
-		82B82EAC24B78EE400773847 /* Camera */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Camera;
-			sourceTree = "<group>";
-		};
 		82BE2F3B23D97D9C00B3678A = {
 			isa = PBXGroup;
 			children = (
@@ -1435,7 +1432,6 @@
 		82D286F624868C37003A703B /* Photos */ = {
 			isa = PBXGroup;
 			children = (
-				82B82EAC24B78EE400773847 /* Camera */,
 				82FF6CC2249666D70014C4DC /* Models */,
 				82B82EA224B78C6400773847 /* Injectables */,
 				829C9223248D7CA700E918D2 /* CameraOverlay.swift */,
@@ -1456,6 +1452,7 @@
 				8283E3B824A29F5300276645 /* Stencils.swift */,
 				8283E3BA24A361B900276645 /* StencilOverlay.swift */,
 				8283E3C224A59C3900276645 /* SinglePhotoEdit.swift */,
+				825036B624C068E2002F20EA /* PhotoLibraryPicker.swift */,
 			);
 			path = Photos;
 			sourceTree = "<group>";
@@ -1714,6 +1711,7 @@
 			packageProductDependencies = (
 				82477629246DE77E00508434 /* Overture */,
 				82755AE2247EE44F00A3BBC2 /* ASCollectionView */,
+				825036B824C06DAB002F20EA /* BSImagePicker */,
 			);
 			productName = Journey;
 			productReference = 827B457A2411368100A5975E /* Journey.framework */;
@@ -1925,6 +1923,7 @@
 				8280D47D2463E6FC0077A73F /* XCRemoteSwiftPackageReference "swift-overture" */,
 				8280D4822463F2BE0077A73F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 				82755ADE247EDC0100A3BBC2 /* XCRemoteSwiftPackageReference "ASCollectionView" */,
+				825036B324C068A7002F20EA /* XCRemoteSwiftPackageReference "BSImagePicker" */,
 			);
 			productRefGroup = 82BE2F4523D97D9C00B3678A /* Products */;
 			projectDirPath = "";
@@ -2218,6 +2217,7 @@
 				82C479DE242E17B50037F140 /* CheckInNavigationView.swift in Sources */,
 				822F9FBD24B7913600642B44 /* InjectablesToolNumber.swift in Sources */,
 				8247763224728F0200508434 /* PullbackCasePath.swift in Sources */,
+				825036B724C068E2002F20EA /* PhotoLibraryPicker.swift in Sources */,
 				821C9C7B249BDFC100ACE3ED /* NewPhotoCell.swift in Sources */,
 				829BFBB1243F693E005DDCB9 /* CheckInMain.swift in Sources */,
 				82E6D82D245E0A4400CB359A /* GradientBackground.swift in Sources */,
@@ -3316,6 +3316,14 @@
 				minimumVersion = 1.7.2;
 			};
 		};
+		825036B324C068A7002F20EA /* XCRemoteSwiftPackageReference "BSImagePicker" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mikaoj/BSImagePicker.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.2.1;
+			};
+		};
 		82755ADE247EDC0100A3BBC2 /* XCRemoteSwiftPackageReference "ASCollectionView" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apptekstudios/ASCollectionView";
@@ -3363,6 +3371,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8280D47D2463E6FC0077A73F /* XCRemoteSwiftPackageReference "swift-overture" */;
 			productName = Overture;
+		};
+		825036B824C06DAB002F20EA /* BSImagePicker */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 825036B324C068A7002F20EA /* XCRemoteSwiftPackageReference "BSImagePicker" */;
+			productName = BSImagePicker;
 		};
 		82755AE2247EE44F00A3BBC2 /* ASCollectionView */ = {
 			isa = XCSwiftPackageProductDependency;

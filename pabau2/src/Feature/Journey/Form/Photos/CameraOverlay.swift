@@ -17,7 +17,8 @@ public struct CameraOverlayState: Equatable {
 public enum CameraOverlayAction: Equatable {
 	case onToggleStencils
 	case onOpenPhotosLibrary
-	case didTakePhoto(UIImage)
+	case onClosePhotosLibrary
+	case didTakePhotos([UIImage])
 	case closeCamera
 	case stencils(StencilsAction)
 	case onToggleFlash
@@ -39,12 +40,15 @@ let cameraOverlayReducer: Reducer<CameraOverlayState, CameraOverlayAction, Journ
 			switch action {
 			case .onOpenPhotosLibrary:
 				state.isShowingPhotoLib = true
-			case .didTakePhoto(let image):
-				let newPhoto = NewPhoto.init(id: UUID(),
-																		 image: image,
-																		 date: Date())
-				state.photos.insert(PhotoViewModel(newPhoto), at: state.photos.count)
-				state.editingPhotoId = .new(newPhoto.id)
+			case .onClosePhotosLibrary:
+				state.isShowingPhotoLib = false
+			case .didTakePhotos(let images):
+				let newPhotos = images.map {
+					PhotoViewModel(NewPhoto.init(id: UUID(), image: $0, date: Date()))
+				}
+				guard !newPhotos.isEmpty else { break }
+				state.photos.insert(contentsOf: newPhotos, at: state.photos.count)
+				state.editingPhotoId = newPhotos.last!.id
 			case .closeCamera:
 				state.isCameraActive = false
 			case .onToggleStencils:

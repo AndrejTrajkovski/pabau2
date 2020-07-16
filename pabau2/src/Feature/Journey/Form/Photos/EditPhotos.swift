@@ -152,7 +152,7 @@ struct EditPhotos: View {
 										IfLetStore(self.store.scope(
 											state: { $0.cameraOverlay },
 											action: { .cameraOverlay($0) }),
-															 then: ImagePicker.init(store:)
+															 then: PhotoLibraryPicker.init(store:)
 										).navigationBarHidden(true)
 											.navigationBarTitle("")
 				})
