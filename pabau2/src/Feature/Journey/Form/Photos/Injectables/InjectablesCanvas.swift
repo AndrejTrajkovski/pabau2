@@ -232,7 +232,7 @@ struct InjectableMarker: View {
 			Button(action: {
 				self.viewStore.send(.deleteInjectionId(self.viewStore.state.id))
 			}, label: {
-				Text("Delete").foregroundColor(.red)
+				Text("Remove injection").foregroundColor(.red)
 				Image(systemName: "trash")
 			})
 		}

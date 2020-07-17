@@ -10,7 +10,7 @@ public let editPhotosRightSideReducer = Reducer<EditPhotosRightSideState, EditPh
 		state.editingPhoto?.isPrivate.toggle()
 	case .didTouchTrash:
 		state.deletePhotoAlert = AlertState(
-			title: "Delete",
+			title: "Delete Photo",
 			message: "Are you sure you want to delete this photo?",
 			primaryButton: .default("Yes", send: .deleteAlertConfirmed),
 			secondaryButton: .cancel()
@@ -44,7 +44,7 @@ public let editPhotosRightSideReducer = Reducer<EditPhotosRightSideState, EditPh
 		state.isPhotosAlbumActive = true
 	}
 	return .none
-}.debug()
+}
 
 public struct EditPhotosRightSideState: Equatable {
 	var photos: IdentifiedArrayOf<PhotoViewModel>

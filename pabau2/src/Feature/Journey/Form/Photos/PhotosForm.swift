@@ -10,7 +10,7 @@ public struct PhotosState: Equatable, Identifiable {
 	public var id = UUID()
 	var photos: IdentifiedArray<PhotoVariantId, PhotoViewModel> = []
 	var selectedIds: [PhotoVariantId] = []
-	var editPhoto: EditPhotosState?
+	var editPhotos: EditPhotosState?
 
 	var selectPhotos: SelectPhotosState {
 		get { SelectPhotosState(photos: photos, selectedIds: selectedIds) }
@@ -27,15 +27,20 @@ let photosFormReducer: Reducer<PhotosState, PhotosFormAction, JourneyEnvironment
 			switch action {
 			case .didSelectEditPhotos:
 				let selPhotos = state.photos.filter { state.selectedIds.contains($0.id) }
-				state.editPhoto = EditPhotosState(selPhotos)
+				state.editPhotos = EditPhotosState(selPhotos)
 			case .didTouchBackOnEditPhotos:
-				state.editPhoto = nil
+				state.editPhotos = nil
+			case .saveEdited:
+				guard let editedPhotos = state.editPhotos?.photos else { break }
+				state.photos = editedPhotos
+				state.editPhotos = nil
+				state.selectedIds.removeAll()
 			case .editPhoto, .selectPhotos: break
 			}
 			return .none
 		},
 		editPhotosReducer.optional.pullback(
-			state: \PhotosState.editPhoto,
+			state: \PhotosState.editPhotos,
 			action: /PhotosFormAction.editPhoto,
 			environment: { $0 }),
 		selectPhotosReducer.pullback(
@@ -49,6 +54,7 @@ public enum PhotosFormAction: Equatable {
 	case didSelectEditPhotos
 	case didTouchBackOnEditPhotos
 	case editPhoto(EditPhotoAction)
+	case saveEdited
 }
 
 struct PhotosForm: View {
@@ -56,7 +62,7 @@ struct PhotosForm: View {
 	struct State: Equatable {
 		let isEditPhotosActive: Bool
 		init (state: PhotosState) {
-			self.isEditPhotosActive = state.editPhoto != nil
+			self.isEditPhotosActive = state.editPhotos != nil
 		}
 	}
 
@@ -69,12 +75,15 @@ struct PhotosForm: View {
 				NavigationLink.emptyHidden(
 					viewStore.state.isEditPhotosActive,
 					IfLetStore(self.store.scope(
-						state: { $0.editPhoto }, action: { .editPhoto($0) }),
+						state: { $0.editPhotos }, action: { .editPhoto($0) }),
 										 then: {
 											EditPhotos(store: $0)
-												.customBackButton {
-													viewStore.send(.didTouchBackOnEditPhotos)
-											}
+												.navigationBarItems(leading:
+													MyBackButton(action: { viewStore.send(.didTouchBackOnEditPhotos)}
+													),trailing:
+													Button(action: { viewStore.send(.saveEdited) },
+																 label: { Text("Save") })
+											)
 						}
 					)
 				)
@@ -104,6 +113,6 @@ extension PhotosState {
 	init(_ savedPhotos: [[Int: SavedPhoto]]) {
 		self.init(photos: IdentifiedArray.wrap(savedPhotos),
 							selectedIds: [],
-							editPhoto: nil)
+							editPhotos: nil)
 	}
 }

@@ -144,9 +144,6 @@ struct EditPhotos: View {
 				.frame(height: 128)
 				.padding()
 			}
-				.navigationBarItems(trailing:
-					EmptyView()
-				)
 				.modalLink(isPresented: .constant(viewStore.state.isPhotosAlbumActive),
 									 linkType: ModalTransition.fullScreenModal,
 									 destination: {
