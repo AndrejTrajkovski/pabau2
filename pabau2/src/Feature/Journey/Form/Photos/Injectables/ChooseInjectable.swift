@@ -31,39 +31,46 @@ public enum ChooseInjectableAction: Equatable {
 
 struct ChooseInjectable: View {
 
-	struct ViewState: Equatable {
-		let sections: [SectionViewModel]
-	}
-
 	let store: Store<ChooseInjectablesState, ChooseInjectableAction>
 	@State var searchText: String = ""
 	var body: some View {
-		NavigationView {
-			VStack {
-				TextField("Search: ", text: self.$searchText)
-				List {
-					UsedInjectionsSection(
-						store: self.store.scope(
-							state: { $0 },
-							action: { $0 })
-					)
-					RestOfInjectionsSection(
-						store: self.store.scope(
-							state: { $0 },
-							action: { $0 })
-					)
+		WithViewStore(store.stateless) { viewStore in
+			NavigationView {
+				VStack {
+					TextField("Search: ", text: self.$searchText)
+						.padding()
+					List {
+						UsedInjectionsSection(
+							store: self.store.scope(
+								state: { $0 },
+								action: { $0 })
+						)
+						RestOfInjectionsSection(
+							store: self.store.scope(
+								state: { $0 },
+								action: { $0 })
+						)
+					}
+					Spacer()
 				}
-				Spacer()
-			}
-			.padding()
-			.navigationBarTitle("Injectables")
-		}.navigationViewStyle(StackNavigationViewStyle())
+				.padding()
+				.navigationBarTitle(Text(Texts.injectables).font(.semibold24))
+				.navigationBarItems(leading:
+					Button.init(action: { viewStore.send(.onDismissChooseInjectables) }, label: {
+						Image(systemName: "xmark")
+							.font(Font.light30)
+							.foregroundColor(.gray142)
+							.frame(width: 30, height: 30)
+					})
+				)
+			}.navigationViewStyle(StackNavigationViewStyle())
+		}
 	}
 }
 
 struct UsedInjectionsSection: View {
 	let store: Store<ChooseInjectablesState, ChooseInjectableAction>
-	@ObservedObject var viewStore: ViewStore<SectionViewModel, ChooseInjectableAction>
+	@ObservedObject var viewStore: ViewStore<SectionViewModel?, ChooseInjectableAction>
 
 	init (store: Store<ChooseInjectablesState, ChooseInjectableAction>) {
 		UITableViewHeaderFooterView.appearance().tintColor = UIColor.clear
@@ -74,11 +81,17 @@ struct UsedInjectionsSection: View {
 	}
 
 	var body: some View {
-		ChooseInjectableSection(
-			viewModel: viewStore.state,
-			onSelectId: {
-			self.viewStore.send(.onSelectUsedInjectableId($0))
-		})
+		Group {
+			if viewStore.state != nil {
+				ChooseInjectableSection(
+					viewModel: viewStore.state!,
+					onSelectId: {
+						self.viewStore.send(.onSelectUsedInjectableId($0))
+				})
+			} else {
+				EmptyView()
+			}
+		}
 	}
 }
 
@@ -101,7 +114,8 @@ struct RestOfInjectionsSection: View {
 }
 
 extension SectionViewModel {
-	init (used: ChooseInjectablesState) {
+	init?(used: ChooseInjectablesState) {
+		guard !used.photoInjections.isEmpty else { return nil }
 		self.header = HeaderViewModel(title: Texts.usedInProcedure,
 																	subtitle: Texts.total)
 		self.items = used.photoInjections.map { dictionary in
@@ -171,7 +185,7 @@ struct InjectableHeader: View {
 		}.font(.bold17)
 	}
 }
-	
+
 struct SectionViewModel: Equatable {
 	let header: HeaderViewModel
 	let items: [ListItemViewModel]

@@ -1,7 +1,6 @@
 import SwiftUI
 import ComposableArchitecture
 import Model
-
 import Util
 
 public enum CheckboxFieldAction {

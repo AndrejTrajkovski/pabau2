@@ -30,6 +30,10 @@ public let injectablesCanvasReducer = Reducer<InjectablesCanvasState, Injectable
 					state.photoInjections[injectableId]?[idx].angle = angle
 				case .deleteInjectionId(let injectionId):
 					state.photoInjections[injectableId]?.remove(at: idx)
+					if let injections = state.photoInjections[injectableId],
+						injections.isEmpty {
+						state.photoInjections[injectableId] = nil
+					}
 			}
 			}
 	}

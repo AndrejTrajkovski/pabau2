@@ -9,6 +9,14 @@ public let editPhotosRightSideReducer = Reducer<EditPhotosRightSideState, EditPh
 	case .didTouchPrivacy:
 		state.editingPhoto?.isPrivate.toggle()
 	case .didTouchTrash:
+		state.deletePhotoAlert = AlertState(
+			title: "Delete",
+			message: "Are you sure you want to delete this photo?",
+			primaryButton: .default("Yes", send: .deleteAlertConfirmed),
+			secondaryButton: .cancel()
+		)
+	case .deleteAlertConfirmed:
+		state.deletePhotoAlert = nil
 		guard let editingPhotoId = state.editingPhotoId else { break }
 		let idx = state.photos.ids.firstIndex(where: { $0 == editingPhotoId }).map {
 			Int($0)
@@ -17,6 +25,8 @@ public let editPhotosRightSideReducer = Reducer<EditPhotosRightSideState, EditPh
 			state.photos[safe: state.photos.index(before: idx)]
 		state.editingPhotoId = toBeSelected.map(\.id)
 		state.photos.remove(id: editingPhotoId)
+	case .deleteAlertCanceled:
+		state.deletePhotoAlert = nil
 	case .didTouchCamera:
 		state.isCameraActive = true
 	case .didTouchInjectables:
@@ -34,7 +44,7 @@ public let editPhotosRightSideReducer = Reducer<EditPhotosRightSideState, EditPh
 		state.isPhotosAlbumActive = true
 	}
 	return .none
-}
+}.debug()
 
 public struct EditPhotosRightSideState: Equatable {
 	var photos: IdentifiedArrayOf<PhotoViewModel>
@@ -45,6 +55,7 @@ public struct EditPhotosRightSideState: Equatable {
 	var isChooseInjectablesActive: Bool
 	var chosenInjectableId: Int?
 	var isPhotosAlbumActive: Bool
+	var deletePhotoAlert: AlertState<EditPhotosRightSideAction>?
 	
 	var editingPhoto: PhotoViewModel? {
 		get {
@@ -64,54 +75,68 @@ public enum EditPhotosRightSideAction: Equatable {
 	case didTouchCamera
 	case didTouchPencil
 	case didTouchOpenPhotosLibrary
+	case deleteAlertConfirmed
+	case deleteAlertCanceled
 }
 
 struct EditPhotosRightSide: View {
 	let store: Store<EditPhotosRightSideState, EditPhotosRightSideAction>
-	@ObservedObject var viewStore: ViewStore<EditPhotosRightSideState, EditPhotosRightSideAction>
-	
-	init(store: Store<EditPhotosRightSideState, EditPhotosRightSideAction>) {
-		self.store = store
-		self.viewStore = ViewStore(store)
+	struct ViewState: Equatable {
+		let isDeleteAlertActive: Bool
+		let isChooseInjectablesActive: Bool
+		let eyeIconColor: Color
+		let pencilIconColor: Color
+		init(state: EditPhotosRightSideState) {
+			self.isDeleteAlertActive = state.deletePhotoAlert != nil
+			self.isChooseInjectablesActive = state.activeCanvas == .injectables
+			self.eyeIconColor = state.editingPhoto?.isPrivate ?? false ? .blue : Color.gray184
+			self.pencilIconColor = state.activeCanvas == .drawing ? .blue : Color.gray184
+		}
 	}
 
 	var body: some View {
-		VStack {
-			Button(action: { self.viewStore.send(.didTouchTrash)}, label: {
-				Image(systemName: "trash.circle.fill")
-			})
-			Button(action: { self.viewStore.send(.didTouchPrivacy)}, label: {
-				Image(systemName: "eye.slash.fill")
-					.foregroundColor((self.viewStore.state.editingPhoto?.isPrivate ?? false) ? .blue : Color.gray184)
-					.font(.system(size: 32))
-			})
-			Button(action: { self.viewStore.send(.didTouchTag)}, label: {
-				Image(systemName: "tag.circle.fill")
-			})
-			Spacer()
-			Button.init(action: { self.viewStore.send(.didTouchOpenPhotosLibrary) }, label: {
-				Image(systemName: "photo.on.rectangle")
-					.foregroundColor(Color.blue)
-					.font(.system(size: 32))
-			})
-			Button(action: { self.viewStore.send(.didTouchCamera)}, label: {
-				Image(systemName: "camera.circle.fill")
-					.foregroundColor(Color.blue)
-					.font(.system(size: 44))
-			})
-			Spacer()
-			Button(action: { self.viewStore.send(.didTouchPencil) }, label: {
-				Image(systemName: "pencil.tip.crop.circle")
-					.foregroundColor(self.viewStore.state.activeCanvas == .drawing ? .blue : Color.gray184)
-			})
-			Button.init(action: {
-				self.viewStore.send(.didTouchInjectables)
-			}, label: {
-				Image(self.viewStore.state.activeCanvas == .injectables ?
-					"ico-journey-upload-photos-injectables" :
-					"ico-journey-upload-photos-injectables-gray")
-			})
-		}.buttonStyle(EditPhotosButtonStyle())
+		WithViewStore(store.scope(state: ViewState.init(state:))) { viewStore in
+			VStack {
+				Button(action: { viewStore.send(.didTouchTrash)}, label: {
+					Image(systemName: "trash.circle.fill")
+				})
+					.alert(
+						self.store.scope(state: \.deletePhotoAlert),
+						dismiss: .deleteAlertCanceled
+				)
+				Button(action: { viewStore.send(.didTouchPrivacy)}, label: {
+					Image(systemName: "eye.slash.fill")
+						.foregroundColor(viewStore.state.eyeIconColor)
+						.font(.system(size: 32))
+				})
+				Button(action: { viewStore.send(.didTouchTag)}, label: {
+					Image(systemName: "tag.circle.fill")
+				})
+				Spacer()
+				Button.init(action: { viewStore.send(.didTouchOpenPhotosLibrary) }, label: {
+					Image(systemName: "photo.on.rectangle")
+						.foregroundColor(Color.blue)
+						.font(.system(size: 32))
+				})
+				Button(action: { viewStore.send(.didTouchCamera)}, label: {
+					Image(systemName: "camera.circle.fill")
+						.foregroundColor(Color.blue)
+						.font(.system(size: 44))
+				})
+				Spacer()
+				Button(action: { viewStore.send(.didTouchPencil) }, label: {
+					Image(systemName: "pencil.tip.crop.circle")
+						.foregroundColor(viewStore.state.pencilIconColor)
+				})
+				Button.init(action: {
+					viewStore.send(.didTouchInjectables)
+				}, label: {
+					Image(viewStore.state.isChooseInjectablesActive ?
+						"ico-journey-upload-photos-injectables" :
+						"ico-journey-upload-photos-injectables-gray")
+				})
+			}.buttonStyle(EditPhotosButtonStyle())
+		}.debug("edit photos right side")
 	}
 }
 

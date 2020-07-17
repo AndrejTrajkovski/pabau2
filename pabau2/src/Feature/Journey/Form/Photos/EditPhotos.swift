@@ -60,6 +60,7 @@ public struct EditPhotosState: Equatable {
 	var allInjectables: IdentifiedArrayOf<Injectable> = .init(JourneyMocks.injectables())
 	var isChooseInjectablesActive: Bool = false
 	var chosenInjectableId: InjectableId?
+	var deletePhotoAlert: AlertState<EditPhotosRightSideAction>?
 
 	private var showingImagePicker: UIImagePickerController.SourceType?
 
@@ -71,11 +72,11 @@ public struct EditPhotosState: Equatable {
 
 	var isCameraActive: Bool {
 		get { self.showingImagePicker == .some(.camera) }
-		set { self.showingImagePicker = newValue ? .some(.camera) : nil}
+		set { self.showingImagePicker = newValue ? .some(.camera) : nil }
 	}
 	var isPhotosAlbumActive: Bool {
 		get { self.showingImagePicker == .some(.photoLibrary) }
-		set { self.showingImagePicker = newValue ? .some(.photoLibrary) : nil}
+		set { self.showingImagePicker = newValue ? .some(.photoLibrary) : nil }
 	}
 }
 
@@ -153,7 +154,8 @@ struct EditPhotos: View {
 											state: { $0.cameraOverlay },
 											action: { .cameraOverlay($0) }),
 															 then: PhotoLibraryPicker.init(store:)
-										).navigationBarHidden(true)
+										)
+											.navigationBarHidden(true)
 											.navigationBarTitle("")
 				})
 				.modalLink(isPresented: .constant(viewStore.state.isCameraActive),
@@ -211,7 +213,8 @@ extension EditPhotosState {
 															 activeCanvas: self.activeCanvas,
 															 isChooseInjectablesActive: self.isChooseInjectablesActive,
 															 chosenInjectableId: self.chosenInjectableId,
-															 isPhotosAlbumActive: self.isPhotosAlbumActive
+															 isPhotosAlbumActive: self.isPhotosAlbumActive,
+															 deletePhotoAlert: self.deletePhotoAlert
 			)
 		}
 		set {
@@ -223,6 +226,7 @@ extension EditPhotosState {
 			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
 			self.chosenInjectableId = newValue.chosenInjectableId
 			self.isPhotosAlbumActive = newValue.isPhotosAlbumActive
+			self.deletePhotoAlert = newValue.deletePhotoAlert
 		}
 	}
 
