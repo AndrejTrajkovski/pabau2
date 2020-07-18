@@ -56,7 +56,7 @@ public struct EditPhotosRightSideState: Equatable {
 	var chosenInjectableId: Int?
 	var isPhotosAlbumActive: Bool
 	var deletePhotoAlert: AlertState<EditPhotosRightSideAction>?
-	
+
 	var editingPhoto: PhotoViewModel? {
 		get {
 			getPhoto(photos, editingPhotoId)

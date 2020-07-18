@@ -6,6 +6,21 @@ struct MultipleSelectPhotoCell: View {
 	var body: some View {
 		ZStack(alignment: .bottomTrailing) {
 			PhotoCell(photo: photo)
+				.overlay(
+					Group {
+						if photo.isPrivate {
+							VStack {
+								Image(systemName: "eye.slash.fill")
+									.foregroundColor(.blue)
+									.font(.system(size: 32))
+								Text("Private photo")
+							}
+							.frame(maxWidth: .infinity, maxHeight: .infinity)
+							.background(Color.white)
+							.border(Color.blue, width: 0.5)
+						}
+					}
+			)
 			if isSelected {
 				ZStack {
 					Circle()

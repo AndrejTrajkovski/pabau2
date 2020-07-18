@@ -32,7 +32,9 @@ let photosFormReducer: Reducer<PhotosState, PhotosFormAction, JourneyEnvironment
 				state.editPhotos = nil
 			case .saveEdited:
 				guard let editedPhotos = state.editPhotos?.photos else { break }
-				state.photos = editedPhotos
+				state.selectedIds.forEach {
+					state.photos[id: $0] = editedPhotos[id: $0]
+				}
 				state.editPhotos = nil
 				state.selectedIds.removeAll()
 			case .editPhoto, .selectPhotos: break
@@ -80,7 +82,7 @@ struct PhotosForm: View {
 											EditPhotos(store: $0)
 												.navigationBarItems(leading:
 													MyBackButton(action: { viewStore.send(.didTouchBackOnEditPhotos)}
-													),trailing:
+													), trailing:
 													Button(action: { viewStore.send(.saveEdited) },
 																 label: { Text("Save") })
 											)

@@ -35,6 +35,8 @@ extension CompleteFormBtn.State {
 			self.isDisabled = !selectedForm.form.canProceed
 			if case .checkPatient = selectedForm.form {
 				self.btnTitle = Texts.patientDetailsOK
+			} else if case .photos = selectedForm.form {
+				self.btnTitle = Texts.completePhotos
 			} else {
 				self.btnTitle = Texts.completeForm
 			}

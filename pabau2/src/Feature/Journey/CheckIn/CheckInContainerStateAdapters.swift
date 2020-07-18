@@ -89,6 +89,7 @@ func unwrap(_ state: inout CheckInContainerState,
 		state.prescriptionsCompleted[prescription.id] = isComplete
 	case .photos:
 		state.photosState = extract(case: MetaForm.photos, from: metaForm)!
+		state.photosCompleted = isComplete
 	case .aftercares:
 		state.aftercare = extract(case: MetaForm.aftercare, from: metaForm)!
 		state.aftercareCompleted = isComplete

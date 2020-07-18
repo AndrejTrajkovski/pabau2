@@ -83,9 +83,7 @@ public struct CheckInContainerState: Equatable {
 	var doctorSelectedIndex: Int
 
 	var photosState: PhotosState
-	var photosCompleted: Bool {
-		!photosState.photos.isEmpty
-	}
+	var photosCompleted: Bool
 
 	var passcodeState = PasscodeState()
 	var isEnterPasscodeActive: Bool = true
@@ -274,5 +272,6 @@ extension CheckInContainerState {
 		self.selectedConsentsIds = []
 		self.selectedTreatmentFormsIds = []
 		self.photosState = photosState
+		self.photosCompleted = false
 	}
 }
