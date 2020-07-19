@@ -70,7 +70,7 @@ struct PhotosForm: View {
 
 	var body: some View {
 		WithViewStore(store.scope(state: State.init(state:))) { viewStore in
-			Group {
+			VStack {
 				SelectPhotos(store: self.store.scope(
 					state: { $0.selectPhotos },
 					action: { .selectPhotos($0) }))

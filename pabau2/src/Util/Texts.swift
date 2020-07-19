@@ -121,7 +121,7 @@ Tap the aftercare bellow that you wish to send to the client. The aftercare will
 	public static let total = "Total"
 	public static let allProducts = "All Products"
 	public static let increment = "Increment"
-	public static let injectables = "Injectables"
+	public static let injectables = "Injectables".localized
 }
 
 extension String {

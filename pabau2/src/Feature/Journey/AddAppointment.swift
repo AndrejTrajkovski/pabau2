@@ -269,7 +269,7 @@ struct AddAppSections: View {
 				title: Texts.communications
 			)
 		}.padding(.bottom, keyboardHandler.keyboardHeight)
-			.navigationBarTitle(Text("New Appointment").font(.semibold24))
+			.navigationBarTitle(Text("New Appointment"), displayMode: .inline)
 			.navigationBarItems(leading:
 				Button.init(action: { self.viewStore.send(.closeBtnTap) }, label: {
 					Image(systemName: "xmark")

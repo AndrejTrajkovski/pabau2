@@ -54,7 +54,7 @@ struct ChooseInjectable: View {
 					Spacer()
 				}
 				.padding()
-				.navigationBarTitle(Text(Texts.injectables).font(.semibold24))
+				.navigationBarTitle(Text(Texts.injectables), displayMode: .inline)
 				.navigationBarItems(leading:
 					Button.init(action: { viewStore.send(.onDismissChooseInjectables) }, label: {
 						Image(systemName: "xmark")
