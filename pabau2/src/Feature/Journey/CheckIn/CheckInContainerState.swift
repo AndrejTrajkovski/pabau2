@@ -166,11 +166,6 @@ extension CheckInContainerState {
 		}
 	}
 
-	var chooseTreatmentsBeforeDoctor: CheckInContainerState? {
-		guard !didGoBackToPatientMode else { return nil }
-		return self
-	}
-
 	var chooseTreatments: ChooseFormState {
 		get {
 			return ChooseFormState(selectedJourney: journey,

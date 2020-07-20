@@ -82,24 +82,17 @@ struct Passcode: View {
 					}
 				}
 				.font(.regular16)
-				Group {
-					NavigationLink.emptyHidden(
-						viewStore.state.passcode.unlocked &&
-							!viewStore.state.didGoBackToPatientMode,
-						IfLetStore(self.store.scope(
-							state: { $0.chooseTreatmentsBeforeDoctor }, action: { $0 }),
-											 then: { store in
-												ChooseTreatmentNote(store: store)
-													.navigationBarHidden(false)
-													.navigationBarTitle(Text(Texts.chooseTreatmentNote),
-																							displayMode: .inline)
-													.navigationBarBackButtonHidden(true)
-						}
-						)
+				if viewStore.state.passcode.unlocked {
+					NavigationLink.emptyHidden(!viewStore.state.didGoBackToPatientMode,
+																		 ChooseTreatmentNote(store: self.store.scope(
+																			state: { $0 }, action: { $0 }))
+																			.navigationBarHidden(false)
+																			.navigationBarTitle(Text(Texts.chooseTreatmentNote),
+																													displayMode: .inline)
+																			.navigationBarBackButtonHidden(true)
 					)
 					NavigationLink.emptyHidden(
-						viewStore.state.passcode.unlocked &&
-							viewStore.state.didGoBackToPatientMode
+						viewStore.state.didGoBackToPatientMode
 						,
 						DoctorSummary(store: self.store.scope(
 							state: { $0 }, action: { $0 }))
@@ -107,22 +100,6 @@ struct Passcode: View {
 													Texts.summary)
 					)
 				}
-//					Group {
-//						if viewStore.state.didGoBackToPatientMode {
-//							DoctorSummary(store: self.store.scope(
-//								state: { $0 }, action: { $0 }))
-//								.hideNavBar(viewStore.state.isDoctorCheckInMainActive,
-//														Texts.summary)
-//						} else {
-//							ChooseTreatmentNote(store: self.store.scope(
-//									state: { $0 }, action: { $0 }))
-//							.navigationBarHidden(false)
-//							.navigationBarTitle(Text(Texts.chooseTreatmentNote),
-//																	displayMode: .inline)
-//							.navigationBarBackButtonHidden(true)
-//						}
-//					}
-//				)
 			}
 			.foregroundColor(.white)
 			.fixedSize(horizontal: true, vertical: false)
