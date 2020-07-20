@@ -90,6 +90,10 @@ struct Passcode: View {
 							state: { $0.chooseTreatmentsBeforeDoctor }, action: { $0 }),
 											 then: { store in
 												ChooseTreatmentNote(store: store)
+													.navigationBarHidden(false)
+													.navigationBarTitle(Text(Texts.chooseTreatmentNote),
+																							displayMode: .inline)
+													.navigationBarBackButtonHidden(true)
 						}
 						)
 					)
