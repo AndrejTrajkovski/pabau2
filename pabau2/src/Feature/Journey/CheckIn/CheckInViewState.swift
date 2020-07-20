@@ -11,22 +11,7 @@ public struct CheckInViewState: Equatable {
 		return forms[safe: selectedIndex]
 	}
 
-	var topView: TopViewState {
-		get {
-			TopViewState(totalSteps:
-				self.forms
-					.filter { extract(case: MetaForm.patientComplete, from: $0.form) == nil }
-					.count,
-									 completedSteps: self.forms.filter(\.isComplete).count,
-									 xButtonActiveFlag: xButtonActiveFlag,
-									 journey: journey)
-		}
-		set {
-			self.xButtonActiveFlag = newValue.xButtonActiveFlag
-		}
-	}
-
-	var isOnCompleteStep: Bool {
+	var isOnPatientCompleteStep: Bool {
 		guard let selectedForm = selectedForm else { return false}
 		return stepType(form: selectedForm.form) == .patientComplete
 	}

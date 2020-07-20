@@ -53,7 +53,7 @@ struct DoctorSummaryButtons: View {
 				}
 				DoctorSummaryCompleteBtn(
 					store: self.store.scope(state: { $0 },
-																	action: { .doctor(.checkInBody(.completeJourney($0))) })
+																	action: { $0 })
 				).frame(width: self.btnWidth)
 			}.onPreferenceChange(WidthPreferenceKey.self, perform: { self.btnWidth = $0 })
 		}

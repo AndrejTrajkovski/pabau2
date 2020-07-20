@@ -89,7 +89,7 @@ public struct CheckInContainerState: Equatable {
 	var isEnterPasscodeActive: Bool = true
 	var isChooseConsentActive: Bool = false
 	var isChooseTreatmentActive: Bool = false
-	var isDoctorCheckInMainActive: Bool = true
+	var isDoctorCheckInMainActive: Bool = false
 	var isDoctorSummaryActive: Bool = true
 	var didGoBackToPatientMode: Bool = false
 }
@@ -164,6 +164,11 @@ extension CheckInContainerState {
 			self.isChooseTreatmentActive = newValue.isChooseTreatmentActive
 			self.isDoctorCheckInMainActive = newValue.isDoctorCheckInMainActive
 		}
+	}
+
+	var chooseTreatmentsBeforeDoctor: CheckInContainerState? {
+		guard !didGoBackToPatientMode else { return nil }
+		return self
 	}
 
 	var chooseTreatments: ChooseFormState {

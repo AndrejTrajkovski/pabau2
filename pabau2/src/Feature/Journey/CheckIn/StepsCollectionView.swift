@@ -58,7 +58,7 @@ struct StepsCollectionView: View {
 	func stepView(for viewModel: FormVM) -> some View {
 		VStack {
 			Image(systemName: "checkmark.circle.fill")
-				.foregroundColor(viewModel.isSelected ? .blue : Color(hex: "C7C7CC"))
+				.foregroundColor(viewModel.isComplete ? .blue : Color(hex: "C7C7CC"))
 				.frame(width: 30, height: 30)
 			Text(viewModel.title.uppercased())
 				.fixedSize(horizontal: false, vertical: true)
@@ -123,13 +123,13 @@ extension StepsCollectionView.State {
 
 	static func formVm(form: (MetaFormAndStatus, Int), selection: Int) -> FormVM {
 		FormVM(idx: form.1,
-					 isSelected: form.1 == selection,
+					 isComplete: form.0.isComplete,
 					 title: form.0.form.title)
 	}
 }
 
 struct FormVM: Hashable {
 	let idx: Int
-	let isSelected: Bool
+	let isComplete: Bool
 	let title: String
 }

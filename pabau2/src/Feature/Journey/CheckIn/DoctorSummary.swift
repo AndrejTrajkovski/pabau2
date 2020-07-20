@@ -90,15 +90,6 @@ struct DoctorNavigation: View {
 																	.scope(state: { $0.doctorCheckIn },
 																				 action: { .doctor($0) }))
 			)
-			NavigationLink.emptyHidden(viewStore.state.isChooseTreatmentActive,
-																 ChooseFormList(store: self.store.scope(
-																	state: { $0.chooseTreatments },
-																	action: { .chooseTreatments($0)}),
-																								mode: .treatmentNotes)
-																	.customBackButton {
-																		self.viewStore.send(.didTouchBackFrom(.treatmentNotes))
-				}
-			)
 			NavigationLink.emptyHidden(viewStore.state.isChooseConsentActive,
 																 ChooseFormList(store: self.store.scope(
 																	state: { $0.chooseConsents },
@@ -106,6 +97,15 @@ struct DoctorNavigation: View {
 																								mode: .consentsCheckIn)
 																	.customBackButton {
 																		self.viewStore.send(.didTouchBackFrom(.consentsCheckIn))
+				}
+			)
+			NavigationLink.emptyHidden(viewStore.state.isChooseTreatmentActive,
+																 ChooseFormList(store: self.store.scope(
+																	state: { $0.chooseTreatments },
+																	action: { .chooseTreatments($0)}),
+																								mode: .treatmentNotes)
+																	.customBackButton {
+																		self.viewStore.send(.didTouchBackFrom(.treatmentNotes))
 				}
 			)
 		}

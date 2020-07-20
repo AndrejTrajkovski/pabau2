@@ -84,11 +84,13 @@ let checkInMiddleware = Reducer<JourneyState, CheckInContainerAction, JourneyEnv
 			 .doctorSummary(.xOnDoctorCheckIn):
 		state.selectedJourney = nil
 		state.selectedPathway = nil
+		state.checkIn?.didGoBackToPatientMode = false
 		state.checkIn = nil
 	case .doctor(.checkInBody(.completeJourney(.onCompleteJourney))),
 		.doctor(.checkInBody(.footer(.completeJourney(.onCompleteJourney)))):
 		state.selectedJourney = nil
 		state.selectedPathway = nil
+		state.checkIn?.didGoBackToPatientMode = false
 		state.checkIn = nil
 	default:
 		return .none
@@ -120,13 +122,13 @@ public let journeyContainerReducer: Reducer<JourneyState, JourneyContainerAction
 					 action: /JourneyContainerAction.choosePathway,
 					 environment: { $0 }),
 		checkInReducer.optional.pullback(
-					 state: \JourneyState.checkIn,
-					 action: /JourneyContainerAction.checkIn,
-					 environment: { $0 }),
+			state: \JourneyState.checkIn,
+			action: /JourneyContainerAction.checkIn,
+			environment: { $0 }),
 		checkInMiddleware.pullback(
-					 state: \JourneyState.self,
-					 action: /JourneyContainerAction.checkIn,
-					 environment: { $0 })
+			state: \JourneyState.self,
+			action: /JourneyContainerAction.checkIn,
+			environment: { $0 })
 )
 
 let journeyReducer = Reducer<JourneyState, JourneyAction, JourneyEnvironment> { state, action, environment in

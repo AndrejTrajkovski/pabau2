@@ -13,6 +13,7 @@ struct CompleteFormBtn: View {
 		let index: Int
 		let isDisabled: Bool
 		let btnTitle: String
+		let shouldShowButton: Bool
 	}
 
 	var body: some View {
@@ -20,9 +21,13 @@ struct CompleteFormBtn: View {
 			state: State.init(state:),
 			action: { $0 })
 		) { viewStore in
-			PrimaryButton(viewStore.state.btnTitle,
-										isDisabled: viewStore.state.isDisabled) {
-											viewStore.send(.didSelectCompleteFormIdx(viewStore.state.index))
+			if viewStore.state.shouldShowButton {
+				PrimaryButton(viewStore.state.btnTitle,
+											isDisabled: viewStore.state.isDisabled) {
+												viewStore.send(.didSelectCompleteFormIdx(viewStore.state.index))
+				}
+			} else {
+				EmptyView()
 			}
 		}
 	}
@@ -40,9 +45,15 @@ extension CompleteFormBtn.State {
 			} else {
 				self.btnTitle = Texts.completeForm
 			}
+			if case .patientComplete = selectedForm.form {
+				self.shouldShowButton = false
+			} else {
+				self.shouldShowButton = true
+			}
 		} else {
 			self.isDisabled = true
 			self.btnTitle = ""
+			self.shouldShowButton = false
 		}
 	}
 }

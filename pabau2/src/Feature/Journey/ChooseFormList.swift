@@ -17,9 +17,11 @@ public enum ChooseFormAction {
 	case proceed//Check-In or Proceed
 	case gotResponse(Result<[FormTemplate], RequestError>)
 	case onAppear(FormType)
+	case cancelRequest
 }
 
 let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, JourneyEnvironment> { state, action, environment in
+	struct OnAppearRequestId: Hashable {}
 	switch action {
 	case .addTemplateId(let templateId):
 		if !state.selectedTemplatesIds.contains(templateId) {
@@ -41,12 +43,17 @@ let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, JourneyEn
 			state.templatesLoadingState = .gotError
 		}
 	case .onAppear(let formType):
+		//FIXME: Crash on Complete Journey:
+//		* An active effect emitted this action while state was "nil". Make sure that effects for this optional reducer are canceled when optional state is set to "nil".
+		print("onAppear: \(formType)")
 		return
 			state.templates.isEmpty ?
 				environment.apiClient.getTemplates(formType)
 				.map(ChooseFormAction.gotResponse)
-		.eraseToEffect()
+					.eraseToEffect()
 				: .none
+	case .cancelRequest:
+		return .cancel(id: OnAppearRequestId())
 	}
 	return .none
 }
@@ -93,8 +100,10 @@ struct ChooseFormList: View {
 		chooseFormCells
 			.journeyBase(self.viewStore.state.journey, .long)
 			.onAppear {
+				print("on Appear \(self.mode)")
 				self.viewStore.send(.onAppear(self.mode.formType))
-		}.navigationBarTitle(self.mode.navigationTitle)
+		}
+		.navigationBarTitle(self.mode.navigationTitle)
 	}
 
 	var chooseFormCells: some View {

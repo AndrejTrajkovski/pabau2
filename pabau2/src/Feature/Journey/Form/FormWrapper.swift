@@ -146,23 +146,3 @@ struct FormWrapper: View {
 		}
 	}
 }
-//
-//self.store = store
-//self.journeyMode = journeyMode
-//self.viewStore = ViewStore(store.scope(
-//	state: {
-//		let forms = getForms(journeyMode, $0)
-//		if forms.count > selectedFormIndex {
-//			return State.init(state: forms[selectedFormIndex])
-//		} else {
-//			return State.defaultEmpty
-//		}
-//},
-//	action: {
-//		switch journeyMode {
-//		case .patient:
-//			return .patient(.stepForms(.childForm(Indexed(selectedFormIndex, $0))))
-//		case .doctor:
-//			return .doctor(.stepForms(.childForm(Indexed(selectedFormIndex, $0))))
-//		}
-//}))

@@ -2,7 +2,7 @@ import SwiftUI
 
 struct RibbonView: View {
 
-	let completedNumberOfSteps: Int
+	let currentStepIdx: Int
 	let totalNumberOfSteps: Int
 
 	private let lineWidth: CGFloat = 1
@@ -16,7 +16,7 @@ struct RibbonView: View {
 						.shadow(color: Color(hex: "007AFF"), radius: 1, x: 0, y: 5)
 			)
 				.padding(lineWidth)
-			Text("\(completedNumberOfSteps)/\(totalNumberOfSteps)")
+			Text("\(currentStepIdx)/\(totalNumberOfSteps)")
 				.foregroundColor(.white)
 				.font(.bold18)
 				.alignmentGuide(.bottom, computeValue: { dim in dim[.bottom] + 24 })

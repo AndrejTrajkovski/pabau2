@@ -82,24 +82,43 @@ struct Passcode: View {
 					}
 				}
 				.font(.regular16)
-				NavigationLink.emptyHidden(
-					viewStore.state.passcode.unlocked,
-					Group {
-						if viewStore.state.didGoBackToPatientMode {
-							DoctorSummary(store: self.store.scope(
-								state: { $0 }, action: { $0 }))
-								.hideNavBar(viewStore.state.isDoctorCheckInMainActive,
-														Texts.summary)
-						} else {
-							ChooseTreatmentNote(store: self.store.scope(
-									state: { $0 }, action: { $0 }))
-							.navigationBarHidden(false)
-							.navigationBarTitle(Text(Texts.chooseTreatmentNote),
-																	displayMode: .inline)
-							.navigationBarBackButtonHidden(true)
+				Group {
+					NavigationLink.emptyHidden(
+						viewStore.state.passcode.unlocked &&
+							!viewStore.state.didGoBackToPatientMode,
+						IfLetStore(self.store.scope(
+							state: { $0.chooseTreatmentsBeforeDoctor }, action: { $0 }),
+											 then: { store in
+												ChooseTreatmentNote(store: store)
 						}
-					}
-				)
+						)
+					)
+					NavigationLink.emptyHidden(
+						viewStore.state.passcode.unlocked &&
+							viewStore.state.didGoBackToPatientMode
+						,
+						DoctorSummary(store: self.store.scope(
+							state: { $0 }, action: { $0 }))
+							.hideNavBar(viewStore.state.isDoctorCheckInMainActive,
+													Texts.summary)
+					)
+				}
+//					Group {
+//						if viewStore.state.didGoBackToPatientMode {
+//							DoctorSummary(store: self.store.scope(
+//								state: { $0 }, action: { $0 }))
+//								.hideNavBar(viewStore.state.isDoctorCheckInMainActive,
+//														Texts.summary)
+//						} else {
+//							ChooseTreatmentNote(store: self.store.scope(
+//									state: { $0 }, action: { $0 }))
+//							.navigationBarHidden(false)
+//							.navigationBarTitle(Text(Texts.chooseTreatmentNote),
+//																	displayMode: .inline)
+//							.navigationBarBackButtonHidden(true)
+//						}
+//					}
+//				)
 			}
 			.foregroundColor(.white)
 			.fixedSize(horizontal: true, vertical: false)

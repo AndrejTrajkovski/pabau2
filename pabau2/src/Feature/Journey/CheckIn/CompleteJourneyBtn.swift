@@ -7,7 +7,7 @@ public enum CompleteJourneyBtnAction {
 }
 
 struct DoctorSummaryCompleteBtn: View {
-	let store: Store<[MetaFormAndStatus], CompleteJourneyBtnAction>
+	let store: Store<[MetaFormAndStatus], CheckInContainerAction>
 	struct State: Equatable {
 		let isBtnDisabled: Bool
 	}
@@ -15,7 +15,9 @@ struct DoctorSummaryCompleteBtn: View {
 		WithViewStore(store.scope(
 			state: State.init(state:), action: { $0 })) { viewStore in
 				CompleteJourneyBtn(isBtnDisabled: viewStore.state.isBtnDisabled,
-													 action: { viewStore.send(.onCompleteJourney) })
+													 action: {
+														viewStore.send(.doctor(.checkInBody(.completeJourney(.onCompleteJourney))))
+				})
 		}
 	}
 }

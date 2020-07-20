@@ -2,7 +2,7 @@ import SwiftUI
 import Model
 import ComposableArchitecture
 
-let topViewReducer = Reducer<TopViewState, TopViewAction, JourneyEnvironment> { state, action, _ in
+let topViewReducer = Reducer<CheckInViewState, TopViewAction, JourneyEnvironment> { state, action, _ in
 	switch action {
 	case .onXButtonTap:
 		state.xButtonActiveFlag = false
@@ -10,32 +10,40 @@ let topViewReducer = Reducer<TopViewState, TopViewAction, JourneyEnvironment> { 
 	return .none
 }
 
-public struct TopViewState: Equatable {
-	var totalSteps: Int
-	var completedSteps: Int
-	var xButtonActiveFlag: Bool
-	var journey: Journey
-}
-
 public enum TopViewAction: Equatable {
 	case onXButtonTap
 }
 
 struct TopView: View {
-	let store: Store<TopViewState, TopViewAction>
+	let store: Store<CheckInViewState, TopViewAction>
+	
+	struct State: Equatable {
+		let totalSteps: Int
+		let currentStepIdx: Int
+		let journey: Journey
+		init(state: CheckInViewState) {
+			self.totalSteps = state.forms
+				.filter { extract(case: MetaForm.patientComplete, from: $0.form) == nil }
+				.count
+			self.currentStepIdx = state.selectedIndex + (state.isOnPatientCompleteStep ? 0 : 1)
+			self.journey = state.journey
+		}
+	}
+
 	var body: some View {
-		WithViewStore(store) { viewStore in
+		WithViewStore(store.scope(state: State.init(state:))) { viewStore in
 			TopViewPlain(totalSteps: viewStore.state.totalSteps,
-									 completedSteps: viewStore.state.completedSteps,
+									 currentStepIdx: viewStore.state.currentStepIdx,
 									 journey: viewStore.state.journey,
-									 onClose: { viewStore.send(.onXButtonTap) })
+									 onClose: { viewStore.send(.onXButtonTap) }
+			)
 		}
 	}
 }
 
 struct TopViewPlain: View {
 	let totalSteps: Int
-	let completedSteps: Int
+	let currentStepIdx: Int
 	let journey: Journey
 	let onClose: () -> Void
 	var body: some View {
@@ -49,7 +57,7 @@ struct TopViewPlain: View {
 				.padding()
 				.exploding(.top)
 			Spacer()
-			RibbonView(completedNumberOfSteps: completedSteps,
+			RibbonView(currentStepIdx: currentStepIdx,
 								 totalNumberOfSteps: totalSteps)
 				.offset(x: -80, y: -60)
 				.exploding(.topTrailing)
