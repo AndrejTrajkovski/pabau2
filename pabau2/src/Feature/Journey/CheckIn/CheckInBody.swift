@@ -5,7 +5,7 @@ import Util
 import Overture
 
 public enum CheckInBodyAction {
-	case updateForm(Indexed<UpdateFormAction>)
+	case updateForm(index: Int, action: UpdateFormAction)
 	case stepsView(StepsViewAction)
 	case footer(FooterButtonsAction)
 	case completeJourney(CompleteJourneyBtnAction)
@@ -69,13 +69,14 @@ struct CheckInBody: View {
 				Divider()
 					.frame(width: geo.size.width)
 					.shadow(color: Color(hex: "C1C1C1"), radius: 4, y: 2)
-				IfLetStore(self.store
-					.scope(state: { $0.selectedForm?.form },
-								 action: { .updateForm(Indexed(self.viewStore.state.selectedIndex, $0))
-					}), then: FormWrapper.init(store:))
+				FormPager(store: self.store)
+//				IfLetStore(self.store
+//					.scope(state: { $0.selectedForm?.form },
+//								 action: { .updateForm(Indexed(self.viewStore.state.selectedIndex, $0))
+//					}), then: FormWrapper.init(store:))
 					.padding(.bottom,
 									 self.keyboardHandler.keyboardHeight > 0 ? self.keyboardHandler.keyboardHeight : 32)
-					.padding([.leading, .trailing, .top], 32)
+					.padding([.top], 32)
 				Spacer()
 				if self.keyboardHandler.keyboardHeight == 0
 //					&& !self.viewStore.state.isOnPatientCompleteStep

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8202050624C5AB5800F2C8F1 /* PagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8202050524C5AB5800F2C8F1 /* PagerView.swift */; };
+		8202050824C5AB7200F2C8F1 /* FormPager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8202050724C5AB7200F2C8F1 /* FormPager.swift */; };
 		820F16A82477EA0500DB33DE /* CollectionSafeSubscript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16A72477EA0500DB33DE /* CollectionSafeSubscript.swift */; };
 		820F16AC24780A0900DB33DE /* CheckPatientForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16AB24780A0900DB33DE /* CheckPatientForm.swift */; };
 		820F16AE247AD0F900DB33DE /* CheckInContainerStateAdapters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820F16AD247AD0F900DB33DE /* CheckInContainerStateAdapters.swift */; };
@@ -520,6 +522,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8202050524C5AB5800F2C8F1 /* PagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagerView.swift; sourceTree = "<group>"; };
+		8202050724C5AB7200F2C8F1 /* FormPager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormPager.swift; sourceTree = "<group>"; };
 		820961C123EBF3AF004A510A /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
 		820961D223ED881A004A510A /* ResetPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPassword.swift; sourceTree = "<group>"; };
 		820961D423ED9AE2004A510A /* ActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
@@ -1096,6 +1100,8 @@
 				826F65B4248123C40086E187 /* FooterButtons.swift */,
 				826F65B62481657B0086E187 /* DoctorSummaryButtons.swift */,
 				821C9C70249B631100ACE3ED /* AddOrEditPhotosBtn.swift */,
+				8202050524C5AB5800F2C8F1 /* PagerView.swift */,
+				8202050724C5AB7200F2C8F1 /* FormPager.swift */,
 			);
 			path = CheckIn;
 			sourceTree = "<group>";
@@ -2260,6 +2266,7 @@
 				82292BD8244097C600080F74 /* StepsCollectionView.swift in Sources */,
 				822F9FC624B794AF00642B44 /* InjectablesAnglePicker.swift in Sources */,
 				82477616246C335500508434 /* Aftercare.swift in Sources */,
+				8202050624C5AB5800F2C8F1 /* PagerView.swift in Sources */,
 				829BFBAF243F5D6F005DDCB9 /* CheckInAnimation.swift in Sources */,
 				8247760D246BD9C100508434 /* StepsState.swift in Sources */,
 				829C9224248D7CA700E918D2 /* CameraOverlay.swift in Sources */,
@@ -2291,6 +2298,7 @@
 				821C9C79249BDFA800ACE3ED /* SavedPhotoCell.swift in Sources */,
 				828626B12424CA64003ADA24 /* JourneyProfileView.swift in Sources */,
 				8247762C24704DC800508434 /* JourneyMocks.swift in Sources */,
+				8202050824C5AB7200F2C8F1 /* FormPager.swift in Sources */,
 				828626B32424CEFB003ADA24 /* ChoosePathway.swift in Sources */,
 				82622B52244650E000BECF9A /* CheckBoxField.swift in Sources */,
 				8269526824506F18001B806E /* DynamicForm.swift in Sources */,

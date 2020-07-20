@@ -142,7 +142,7 @@ struct EditPhotos: View {
 					}
 				}
 				.frame(height: 128)
-				.padding()
+//				.padding()
 			}
 				.modalLink(isPresented: .constant(viewStore.state.isPhotosAlbumActive),
 									 linkType: ModalTransition.fullScreenModal,
