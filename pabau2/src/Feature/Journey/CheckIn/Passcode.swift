@@ -92,8 +92,7 @@ struct Passcode: View {
 																			.navigationBarBackButtonHidden(true)
 					)
 					NavigationLink.emptyHidden(
-						viewStore.state.didGoBackToPatientMode
-						,
+						viewStore.state.didGoBackToPatientMode,
 						DoctorSummary(store: self.store.scope(
 							state: { $0 }, action: { $0 }))
 							.hideNavBar(viewStore.state.isDoctorCheckInMainActive,
