@@ -18,7 +18,7 @@ struct FormPager: View {
 			self.selectedIndex = state.selectedIndex
 		}
 	}
-	
+
 	var body: some View {
 		PagerView(pageCount: self.viewStore.state.formCount,
 							currentIndex:
@@ -35,7 +35,7 @@ struct FormPager: View {
 										FormWrapper.init(store: childStore.scope(state: { $0.form }))
 											.padding([.leading, .trailing], 32)
 								}
-		}
+			}
 		)
 	}
 }
