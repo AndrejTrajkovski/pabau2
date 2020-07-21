@@ -17,8 +17,9 @@ struct HandBackDevice: View {
 					JourneyTransitionView(title: Texts.handBackTitle,
 																description: Texts.handBackDesc,
 																circleContent: {
-																	Image.init(systemName: "slowmo")
-																		.font(.regular100)
+																	Image("gfx-illustration-handback")
+//																	Image.init(systemName: "slowmo")
+//																		.font(.regular100)
 					})
 						.gradientView().onTapGesture {
 							viewStore.send(.didTouchHandbackDevice)

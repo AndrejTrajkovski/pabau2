@@ -2,7 +2,6 @@ import SwiftUI
 import Combine
 import PageControl
 import ComposableArchitecture
-
 import Util
 import Model
 
@@ -69,6 +68,6 @@ func makeState(titles: [String], descs: [String], imageTitles: [String]) -> [Wal
 	let zipped2 = zip(zipped1, imageTitles)
 	return zipped2.map {
 		return WalkthroughContentContent.init(title: $0.0, description: $0.1,
-																				imageTitle: $1)
+																					imageTitle: $1)
 	}
 }
