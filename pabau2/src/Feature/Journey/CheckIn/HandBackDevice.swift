@@ -16,10 +16,12 @@ struct HandBackDevice: View {
 				VStack {
 					JourneyTransitionView(title: Texts.handBackTitle,
 																description: Texts.handBackDesc,
-																circleContent: {
+																content: {
 																	Image("gfx-illustration-handback")
-//																	Image.init(systemName: "slowmo")
-//																		.font(.regular100)
+																	.resizable()
+																		.aspectRatio(contentMode: .fit)
+																	.frame(width: 250, height: 250)
+																		.offset(x: -30)
 					})
 						.gradientView().onTapGesture {
 							viewStore.send(.didTouchHandbackDevice)

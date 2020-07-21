@@ -12,17 +12,35 @@ struct CheckInAnimation: View {
 				Checkmark(animationDuration: self.animationDuration, onAnimationFinish: {
 					self.isRunningAnimation = true
 				})
-				JourneyTransitionView(title: Texts.checkInDesc,
-															description: Texts.checkInTitle,
-															circleContent: { AvatarView(journey: self.journey,
-																													font: .regular90,
-																													bgColor: .clear) })
+				JourneyTransitionCircle(journey: journey)
 			}.offset(x: 0, y: -50)
 				.gradientView()
 				.edgesIgnoringSafeArea(.top)
 				.onAppear(perform: {
 					self.player.playSoundAndVibrate()
 				})
+	}
+}
+
+struct JourneyTransitionCircle: View {
+	let journey: Journey
+	var body: some View {
+		JourneyTransitionView(title: Texts.checkInDesc,
+													description: Texts.checkInTitle,
+													content: {
+														Circle()
+															.overlay(
+																ZStack {
+																	AvatarView(journey: self.journey,
+																						 font: .regular90,
+																						 bgColor: .clear)
+																		.foregroundColor(.white)
+																	Circle()
+																		.stroke(Color.white, lineWidth: 3.0)
+																}
+														).foregroundColor(Color.clear)
+															.frame(width: 214, height: 214)
+		})
 	}
 }
 
