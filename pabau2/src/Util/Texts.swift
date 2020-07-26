@@ -122,6 +122,13 @@ Tap the aftercare bellow that you wish to send to the client. The aftercare will
 	public static let allProducts = "All Products"
 	public static let increment = "Increment"
 	public static let injectables = "Injectables".localized
+	
+	public static let sales = "Sales".localized
+	public static let delete = "Delete".localized
+	public static let status = "Status".localized
+	public static let `repeat` = "Repeat".localized
+	public static let documents = "Documents".localized
+	public static let reschedule = "Reschedule".localized
 }
 
 extension String {

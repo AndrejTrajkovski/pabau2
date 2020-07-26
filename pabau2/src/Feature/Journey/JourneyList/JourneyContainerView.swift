@@ -6,6 +6,7 @@ import NonEmpty
 import ComposableArchitecture
 import SwiftDate
 import CasePaths
+import SwipeCell
 
 public struct EmployeesState: Equatable {
 	var loadingState: LoadingState = .initial
@@ -348,6 +349,7 @@ func journeyCellAdapter(journey: Journey) -> JourneyCell {
 }
 
 struct JourneyList: View {
+	let slotsStyle = SlotStyle.init(background: .white, imageColor: Color.init(hex: "0067D9"), slotWidth: 99)
 	let journeys: [Journey]
 	let onSelect: (Journey) -> Void
 	init (_ journeys: [Journey],
@@ -359,6 +361,9 @@ struct JourneyList: View {
 		List {
 			ForEach(journeys) { journey in
 				journeyCellAdapter(journey: journey)
+					.contextMenu {
+						JourneyListContextMenu()
+					}
 					.onTapGesture { self.onSelect(journey) }
 					.listRowInsets(EdgeInsets())
 			}

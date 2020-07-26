@@ -220,6 +220,8 @@
 		828626B12424CA64003ADA24 /* JourneyProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828626B02424CA64003ADA24 /* JourneyProfileView.swift */; };
 		828626B32424CEFB003ADA24 /* ChoosePathway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828626B22424CEFB003ADA24 /* ChoosePathway.swift */; };
 		828626B6242A915D003ADA24 /* Journey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 827B457A2411368100A5975E /* Journey.framework */; };
+		8296B9D124C6DF1000B3D2F4 /* SwipeCell in Frameworks */ = {isa = PBXBuildFile; productRef = 8296B9D024C6DF1000B3D2F4 /* SwipeCell */; };
+		8296B9D424C6E35200B3D2F4 /* JourneyListContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8296B9D324C6E35200B3D2F4 /* JourneyListContextMenu.swift */; };
 		8297A29023D9AD7E00D091FF /* PageControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 8297A28E23D9AD7E00D091FF /* PageControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8297A29423D9AD7E00D091FF /* PageControl.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8297A28C23D9AD7E00D091FF /* PageControl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8297A29823D9AD8400D091FF /* PageControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8297A28523D9AB1B00D091FF /* PageControl.swift */; };
@@ -714,6 +716,7 @@
 		8283E3C624A8A53C00276645 /* InjectablesContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InjectablesContainer.swift; sourceTree = "<group>"; };
 		828626B02424CA64003ADA24 /* JourneyProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyProfileView.swift; sourceTree = "<group>"; };
 		828626B22424CEFB003ADA24 /* ChoosePathway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoosePathway.swift; sourceTree = "<group>"; };
+		8296B9D324C6E35200B3D2F4 /* JourneyListContextMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyListContextMenu.swift; sourceTree = "<group>"; };
 		8297A28523D9AB1B00D091FF /* PageControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageControl.swift; sourceTree = "<group>"; };
 		8297A28C23D9AD7E00D091FF /* PageControl.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PageControl.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8297A28E23D9AD7E00D091FF /* PageControl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PageControl.h; sourceTree = "<group>"; };
@@ -869,6 +872,7 @@
 				82755AE3247EE44F00A3BBC2 /* ASCollectionView in Frameworks */,
 				825036B924C06DAB002F20EA /* BSImagePicker in Frameworks */,
 				82FF6CA1248F92AC0014C4DC /* PabauCommon.framework in Frameworks */,
+				8296B9D124C6DF1000B3D2F4 /* SwipeCell in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1144,30 +1148,17 @@
 		827B457B2411368100A5975E /* Journey */ = {
 			isa = PBXGroup;
 			children = (
+				8296B9D224C6E32200B3D2F4 /* JourneyList */,
 				8269526624506ED2001B806E /* Form */,
 				82622B5324468C9F00BECF9A /* CheckIn */,
 				827B457C2411368100A5975E /* Journey.h */,
 				827B457D2411368100A5975E /* Info.plist */,
-				827B459A241136D900A5975E /* JourneyContainerView.swift */,
-				827B459C24118AB800A5975E /* JourneyNavigationView.swift */,
-				82E253F9241B9EB500F16C30 /* JourneyAction.swift */,
-				82E253FB241B9ED000F16C30 /* JourneyState.swift */,
-				82E253FD241B9F1200F16C30 /* CompleteFilter.swift */,
-				829B40D02423B8F2009B7E71 /* AddAppointment.swift */,
-				828626B02424CA64003ADA24 /* JourneyProfileView.swift */,
-				828626B22424CEFB003ADA24 /* ChoosePathway.swift */,
-				8250D7C8242BCFD000F8F3FC /* ChooseFormList.swift */,
 				8250D7CA242BD25B00F8F3FC /* JourneyBaseView.swift */,
-				8250D7D3242C980100F8F3FC /* ChooseService.swift */,
-				82D43D8F24351F5000AC74FA /* EmployeesList.swift */,
 				82D43D91243522CD00AC74FA /* Settings.swift */,
-				825BE7E124361ABD00422910 /* StaffFilterPicker.swift */,
 				8247762B24704DC800508434 /* JourneyMocks.swift */,
 				8247763124728F0200508434 /* PullbackCasePath.swift */,
 				824776372473D03700508434 /* ListFrame.swift */,
-				824776392473D07F00508434 /* JourneyListStyle.swift */,
 				8247763B2473D0ED00508434 /* SecondaryButton.swift */,
-				8283E3BC24A490FE00276645 /* ColorCircleRow.swift */,
 			);
 			path = Journey;
 			sourceTree = "<group>";
@@ -1242,6 +1233,28 @@
 				827B45D224126D4E00A5975E /* JourneyForms.swift */,
 			);
 			path = "Simple Model";
+			sourceTree = "<group>";
+		};
+		8296B9D224C6E32200B3D2F4 /* JourneyList */ = {
+			isa = PBXGroup;
+			children = (
+				827B459A241136D900A5975E /* JourneyContainerView.swift */,
+				827B459C24118AB800A5975E /* JourneyNavigationView.swift */,
+				82E253F9241B9EB500F16C30 /* JourneyAction.swift */,
+				82E253FB241B9ED000F16C30 /* JourneyState.swift */,
+				82E253FD241B9F1200F16C30 /* CompleteFilter.swift */,
+				829B40D02423B8F2009B7E71 /* AddAppointment.swift */,
+				828626B02424CA64003ADA24 /* JourneyProfileView.swift */,
+				828626B22424CEFB003ADA24 /* ChoosePathway.swift */,
+				8250D7C8242BCFD000F8F3FC /* ChooseFormList.swift */,
+				8250D7D3242C980100F8F3FC /* ChooseService.swift */,
+				82D43D8F24351F5000AC74FA /* EmployeesList.swift */,
+				825BE7E124361ABD00422910 /* StaffFilterPicker.swift */,
+				824776392473D07F00508434 /* JourneyListStyle.swift */,
+				8283E3BC24A490FE00276645 /* ColorCircleRow.swift */,
+				8296B9D324C6E35200B3D2F4 /* JourneyListContextMenu.swift */,
+			);
+			path = JourneyList;
 			sourceTree = "<group>";
 		};
 		8297A28D23D9AD7E00D091FF /* PageControl */ = {
@@ -1718,6 +1731,7 @@
 				82477629246DE77E00508434 /* Overture */,
 				82755AE2247EE44F00A3BBC2 /* ASCollectionView */,
 				825036B824C06DAB002F20EA /* BSImagePicker */,
+				8296B9D024C6DF1000B3D2F4 /* SwipeCell */,
 			);
 			productName = Journey;
 			productReference = 827B457A2411368100A5975E /* Journey.framework */;
@@ -1930,6 +1944,7 @@
 				8280D4822463F2BE0077A73F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 				82755ADE247EDC0100A3BBC2 /* XCRemoteSwiftPackageReference "ASCollectionView" */,
 				825036B324C068A7002F20EA /* XCRemoteSwiftPackageReference "BSImagePicker" */,
+				8296B9CF24C6DF1000B3D2F4 /* XCRemoteSwiftPackageReference "SwipeCell" */,
 			);
 			productRefGroup = 82BE2F4523D97D9C00B3678A /* Products */;
 			projectDirPath = "";
@@ -2246,6 +2261,7 @@
 				82FF6CC1249666CB0014C4DC /* SavedPhoto+PhotoVariant.swift in Sources */,
 				820F16BA247D792A00DB33DE /* AftercareOptionCell.swift in Sources */,
 				822F9FBB24B7913600642B44 /* InjectablesCanvas.swift in Sources */,
+				8296B9D424C6E35200B3D2F4 /* JourneyListContextMenu.swift in Sources */,
 				82477612246C333500508434 /* PatientDetails.swift in Sources */,
 				8247760F246C27F200508434 /* TopView.swift in Sources */,
 				82B82EAE24B78F4E00773847 /* Injection.swift in Sources */,
@@ -3364,6 +3380,14 @@
 				minimumVersion = 0.6.0;
 			};
 		};
+		8296B9CF24C6DF1000B3D2F4 /* XCRemoteSwiftPackageReference "SwipeCell" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/EnesKaraosman/SwipeCell.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.0.6;
+			};
+		};
 		82E253FF241E5ABF00F16C30 /* XCRemoteSwiftPackageReference "SwiftDate" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/malcommac/SwiftDate.git";
@@ -3394,6 +3418,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 827B46092413C0C300A5975E /* XCRemoteSwiftPackageReference "swift-nonempty" */;
 			productName = NonEmpty;
+		};
+		8296B9D024C6DF1000B3D2F4 /* SwipeCell */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8296B9CF24C6DF1000B3D2F4 /* XCRemoteSwiftPackageReference "SwipeCell" */;
+			productName = SwipeCell;
 		};
 		82E25404241EA8D800F16C30 /* SwiftDate */ = {
 			isa = XCSwiftPackageProductDependency;
