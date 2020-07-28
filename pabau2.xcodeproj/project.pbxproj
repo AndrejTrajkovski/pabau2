@@ -90,7 +90,6 @@
 		8247761A246C337D00508434 /* MetaForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82477619246C337D00508434 /* MetaForm.swift */; };
 		8247761C246C339800508434 /* MetaFormAndStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247761B246C339800508434 /* MetaFormAndStatus.swift */; };
 		8247761E246C4C1800508434 /* SortByKeyPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247761D246C4C1800508434 /* SortByKeyPath.swift */; };
-		82477622246D189C00508434 /* JourneyUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82477621246D189C00508434 /* JourneyUtil.swift */; };
 		8247762A246DE77E00508434 /* Overture in Frameworks */ = {isa = PBXBuildFile; productRef = 82477629246DE77E00508434 /* Overture */; };
 		8247762C24704DC800508434 /* JourneyMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247762B24704DC800508434 /* JourneyMocks.swift */; };
 		8247763224728F0200508434 /* PullbackCasePath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8247763124728F0200508434 /* PullbackCasePath.swift */; };
@@ -303,6 +302,7 @@
 		82E6D82D245E0A4400CB359A /* GradientBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E6D82C245E0A4400CB359A /* GradientBackground.swift */; };
 		82E6D82F245E177900CB359A /* JourneyTransitionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E6D82E245E177900CB359A /* JourneyTransitionView.swift */; };
 		82E6D831245ECBA000CB359A /* Passcode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E6D830245ECBA000CB359A /* Passcode.swift */; };
+		82E9C11B24D020F80023B98B /* JourneyUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E9C11A24D020F80023B98B /* JourneyUtil.swift */; };
 		82F6ADAE23F2C7B1001B3ACE /* PabauTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */; };
 		82FB74F6245A9E51001C2DF3 /* FormWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FB74F5245A9E51001C2DF3 /* FormWrapper.swift */; };
 		82FF6C97248F92980014C4DC /* PabauCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 82FF6C95248F92980014C4DC /* PabauCommon.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -580,7 +580,6 @@
 		82477619246C337D00508434 /* MetaForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaForm.swift; sourceTree = "<group>"; };
 		8247761B246C339800508434 /* MetaFormAndStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaFormAndStatus.swift; sourceTree = "<group>"; };
 		8247761D246C4C1800508434 /* SortByKeyPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortByKeyPath.swift; sourceTree = "<group>"; };
-		82477621246D189C00508434 /* JourneyUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyUtil.swift; sourceTree = "<group>"; };
 		8247762B24704DC800508434 /* JourneyMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyMocks.swift; sourceTree = "<group>"; };
 		8247763124728F0200508434 /* PullbackCasePath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullbackCasePath.swift; sourceTree = "<group>"; };
 		8247763324729DE800508434 /* CheckInPatient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInPatient.swift; sourceTree = "<group>"; };
@@ -816,6 +815,7 @@
 		82E6D82C245E0A4400CB359A /* GradientBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientBackground.swift; sourceTree = "<group>"; };
 		82E6D82E245E177900CB359A /* JourneyTransitionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyTransitionView.swift; sourceTree = "<group>"; };
 		82E6D830245ECBA000CB359A /* Passcode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Passcode.swift; sourceTree = "<group>"; };
+		82E9C11A24D020F80023B98B /* JourneyUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JourneyUtil.swift; sourceTree = "<group>"; };
 		82EE570523F029900033B43C /* BackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
 		82EE570823F0335F0033B43C /* NavigationLinkExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationLinkExtension.swift; sourceTree = "<group>"; };
 		82F5591F23DC255B008032F4 /* PrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryButton.swift; sourceTree = "<group>"; };
@@ -1121,7 +1121,6 @@
 				82D286F624868C37003A703B /* Photos */,
 				82477610246C331400508434 /* Model */,
 				82FB74F5245A9E51001C2DF3 /* FormWrapper.swift */,
-				82477621246D189C00508434 /* JourneyUtil.swift */,
 			);
 			path = Form;
 			sourceTree = "<group>";
@@ -1148,6 +1147,7 @@
 		827B457B2411368100A5975E /* Journey */ = {
 			isa = PBXGroup;
 			children = (
+				82E9C11A24D020F80023B98B /* JourneyUtil.swift */,
 				8296B9D224C6E32200B3D2F4 /* JourneyList */,
 				8269526624506ED2001B806E /* Form */,
 				82622B5324468C9F00BECF9A /* CheckIn */,
@@ -2216,6 +2216,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				82E9C11B24D020F80023B98B /* JourneyUtil.swift in Sources */,
 				82FF6CB12490F3BB0014C4DC /* NewPhoto.swift in Sources */,
 				826F65B3248122480086E187 /* CompleteFormBtn.swift in Sources */,
 				82477618246C336300508434 /* PatientComplete.swift in Sources */,
@@ -2322,7 +2323,6 @@
 				8283E3B7249FF5F300276645 /* EditPhotosRightSide.swift in Sources */,
 				826F65B12480FA2E0086E187 /* CompleteJourneyBtn.swift in Sources */,
 				825BE7E224361ABD00422910 /* StaffFilterPicker.swift in Sources */,
-				82477622246D189C00508434 /* JourneyUtil.swift in Sources */,
 				82D286F824868C5E003A703B /* DrawingViewController.swift in Sources */,
 				820F16B0247AD12D00DB33DE /* CheckInViewState.swift in Sources */,
 			);
