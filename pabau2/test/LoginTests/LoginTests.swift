@@ -1,10 +1,10 @@
 import XCTest
-@testable import Login
+@testable import LoginPackage
 import ComposableArchitecture
 import ComposableArchitectureTestSupport
 import SnapshotTesting
 import SwiftUI
-import Model
+import ModelPackage
 
 class LoginTests: XCTestCase {
 

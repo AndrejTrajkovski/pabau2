@@ -1,7 +1,7 @@
 import SwiftUI
 import ComposableArchitecture
-import Model
-import Util
+import ModelPackage
+import UtilPackage
 import Journey
 
 public typealias TabBarEnvironment = (
