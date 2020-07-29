@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "FSCalendar",
+        "repositoryURL": "/Users/andrejtrajkovski/Desktop/FSCalendarWrapper/FSCalendarSwiftUI/FSCalendar",
+        "state": {
+          "branch": null,
+          "revision": "0d94e2b310e293f844a27d8b71f93fec4b4d939e",
+          "version": "1.0.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

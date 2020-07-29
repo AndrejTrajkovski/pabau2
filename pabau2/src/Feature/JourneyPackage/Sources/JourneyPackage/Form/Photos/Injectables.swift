@@ -149,11 +149,6 @@ struct TotalInjAndUnits {
 	var totalUnits: Double = 0
 }
 
-struct Injection: Hashable {
-	let injectable: Injectable
-	let units: Double
-}
-
 public struct Injectable: Hashable {
 	let id: Int
 	let color: Color

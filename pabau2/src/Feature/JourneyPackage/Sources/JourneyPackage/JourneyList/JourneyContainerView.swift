@@ -6,7 +6,6 @@ import NonEmpty
 import ComposableArchitecture
 import SwiftDate
 import CasePaths
-import SwipeCell
 
 public struct EmployeesState: Equatable {
 	var loadingState: LoadingState = .initial

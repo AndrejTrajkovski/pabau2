@@ -13,8 +13,6 @@ let package = Package(
 			targets: ["JourneyPackage"]),
 	],
 	dependencies: [
-		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git",
-						 from: Version.init(stringLiteral: "0.6.0")),
 		.package(name: "Overture",
 						 url: "https://github.com/pointfreeco/swift-overture.git",
 						 from: Version.init(stringLiteral: "0.5.0")),
@@ -27,6 +25,8 @@ let package = Package(
 		.package(url: "../../UtilPackage",
 						 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../../ModelPackage",
+						 from: Version.init(stringLiteral: "1.0.0")),
+		.package(url: "../../FSCalendarSwiftUI",
 						 from: Version.init(stringLiteral: "1.0.0"))
 	],
 	targets: [
@@ -34,13 +34,13 @@ let package = Package(
 		// Targets can depend on other targets in this package, and on products in packages which this package depends on.
 		.target(
 			name: "JourneyPackage",
-			dependencies: [.product(name: "ComposableArchitecture",
-															package: "swift-composable-architecture"),
+			dependencies: [
 										 "Overture",
 										 "UtilPackage",
 										 "ModelPackage",
 										 "ASCollectionView",
-										 "BSImagePicker"
+										 "BSImagePicker",
+										 "FSCalendarSwiftUI"
 		]),
 		.testTarget(
 			name: "JourneyPackageTests",

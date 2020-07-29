@@ -3,7 +3,7 @@
     "pins": [
       {
         "package": "ASCollectionView",
-        "repositoryURL": "https://github.com/apptekstudios/ASCollectionView",
+        "repositoryURL": "https://github.com/apptekstudios/ASCollectionView.git",
         "state": {
           "branch": null,
           "revision": "4550cd5b5cfc3f437f8ff838939c6be21edfe992",
@@ -35,6 +35,15 @@
           "branch": null,
           "revision": "14c66681e12a38b81045f44c6c29724a0d4b0e72",
           "version": "1.1.5"
+        }
+      },
+      {
+        "package": "FSCalendar",
+        "repositoryURL": "/Users/andrejtrajkovski/Desktop/pabau2/pabau2/src/FSCalendarSwiftUI/FSCalendar",
+        "state": {
+          "branch": null,
+          "revision": "0d94e2b310e293f844a27d8b71f93fec4b4d939e",
+          "version": "1.0.0"
         }
       },
       {
@@ -74,30 +83,12 @@
         }
       },
       {
-        "package": "SnapshotTesting",
-        "repositoryURL": "https://github.com/pointfreeco/swift-snapshot-testing.git",
-        "state": {
-          "branch": null,
-          "revision": "114882386a815f4a2e6d8f2f7ee4857acd372438",
-          "version": "1.7.2"
-        }
-      },
-      {
         "package": "SwiftDate",
         "repositoryURL": "https://github.com/malcommac/SwiftDate.git",
         "state": {
           "branch": null,
           "revision": "700dde1b3417fd4a7fd2bec9f5bc8ab2de1b96b4",
           "version": "6.1.0"
-        }
-      },
-      {
-        "package": "SwipeCell",
-        "repositoryURL": "https://github.com/EnesKaraosman/SwipeCell.git",
-        "state": {
-          "branch": null,
-          "revision": "3f102fc79516a3300e15a45d9fb69224ed1c97ca",
-          "version": "0.0.6"
         }
       }
     ]

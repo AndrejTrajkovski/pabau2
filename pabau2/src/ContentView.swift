@@ -3,7 +3,7 @@ import ComposableArchitecture
 import SwiftUI
 import LoginPackage
 import ModelPackage
-import Journey
+import JourneyPackage
 import UtilPackage
 
 typealias AppEnvironment = (

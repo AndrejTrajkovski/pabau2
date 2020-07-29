@@ -13,7 +13,8 @@ let package = Package(
             targets: ["ModelPackage"]),
     ],
     dependencies: [
-			.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git",
+			.package(name: "swift-composable-architecture",
+							 url: "https://github.com/pointfreeco/swift-composable-architecture.git",
 			from: Version.init(stringLiteral: "0.6.0")),
 			.package(name: "NonEmpty",
 							 url: "https://github.com/pointfreeco/swift-nonempty.git", from: "0.2.2"),
