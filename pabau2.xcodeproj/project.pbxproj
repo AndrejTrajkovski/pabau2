@@ -10,9 +10,9 @@
 		825BE7EA2436226300422910 /* checkIn.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 825BE7E92436226300422910 /* checkIn.mp4 */; };
 		82811EF423E06BCB0066AFDC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EF323E06BCB0066AFDC /* ContentView.swift */; };
 		8297A2B523D9BA0200D091FF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8297A2B223D9BA0200D091FF /* Localizable.strings */; };
-		829D620124D1ACDB0049D5D0 /* LoginPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 829D620024D1ACDB0049D5D0 /* LoginPackage */; };
-		829D620324D1B22E0049D5D0 /* JourneyPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 829D620224D1B22E0049D5D0 /* JourneyPackage */; };
-		829D620524D1B2B40049D5D0 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 829D620424D1B2B40049D5D0 /* ComposableArchitecture */; };
+		829D620724D20A070049D5D0 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 829D620624D20A070049D5D0 /* ComposableArchitecture */; };
+		829D620924D20A1C0049D5D0 /* Journey in Frameworks */ = {isa = PBXBuildFile; productRef = 829D620824D20A1C0049D5D0 /* Journey */; };
+		829D620B24D20A1C0049D5D0 /* Login in Frameworks */ = {isa = PBXBuildFile; productRef = 829D620A24D20A1C0049D5D0 /* Login */; };
 		82BE2F4823D97D9C00B3678A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BE2F4723D97D9C00B3678A /* AppDelegate.swift */; };
 		82BE2F4A23D97D9C00B3678A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BE2F4923D97D9C00B3678A /* SceneDelegate.swift */; };
 		82BE2F4E23D97D9F00B3678A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 82BE2F4D23D97D9F00B3678A /* Assets.xcassets */; };
@@ -37,8 +37,6 @@
 		82104534240CE516004EA838 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		82104536240CE524004EA838 /* libswiftXCTest.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftXCTest.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/libswiftXCTest.tbd; sourceTree = DEVELOPER_DIR; };
 		825BE7E92436226300422910 /* checkIn.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; name = checkIn.mp4; path = pabau2/src/Assets.xcassets/checkIn.mp4; sourceTree = "<group>"; };
-		827B45892411368100A5975E /* JourneyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyTests.swift; sourceTree = "<group>"; };
-		827B458B2411368100A5975E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		82811EF323E06BCB0066AFDC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		8297A2B323D9BA0200D091FF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8297A2B423D9BA0200D091FF /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -49,15 +47,11 @@
 		82BE2F4D23D97D9F00B3678A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		82BE2F5023D97D9F00B3678A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		82BE2F5523D97D9F00B3678A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		82CACE0524102A2F0021E1DE /* LoginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginTests.swift; sourceTree = "<group>"; };
-		82CACE0724102A2F0021E1DE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		82E9C11C24D021550023B98B /* LoginPackage */ = {isa = PBXFileReference; lastKnownFileType = folder; path = LoginPackage; sourceTree = "<group>"; };
-		82E9C11D24D0242E0023B98B /* UtilPackage */ = {isa = PBXFileReference; lastKnownFileType = folder; path = UtilPackage; sourceTree = "<group>"; };
-		82E9C11E24D024E50023B98B /* ModelPackage */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ModelPackage; sourceTree = "<group>"; };
-		82E9C12524D035A60023B98B /* JourneyPackage */ = {isa = PBXFileReference; lastKnownFileType = folder; path = JourneyPackage; sourceTree = "<group>"; };
+		82E9C11C24D021550023B98B /* Login */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Login; sourceTree = "<group>"; };
+		82E9C11D24D0242E0023B98B /* Util */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Util; sourceTree = "<group>"; };
+		82E9C11E24D024E50023B98B /* Model */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Model; sourceTree = "<group>"; };
+		82E9C12524D035A60023B98B /* Journey */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Journey; sourceTree = "<group>"; };
 		82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PabauTabBar.swift; sourceTree = "<group>"; };
-		82FF6C95248F92980014C4DC /* PabauCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PabauCommon.h; sourceTree = "<group>"; };
-		82FF6C96248F92980014C4DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,24 +59,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				829D620324D1B22E0049D5D0 /* JourneyPackage in Frameworks */,
-				829D620124D1ACDB0049D5D0 /* LoginPackage in Frameworks */,
-				829D620524D1B2B40049D5D0 /* ComposableArchitecture in Frameworks */,
+				829D620B24D20A1C0049D5D0 /* Login in Frameworks */,
+				829D620724D20A070049D5D0 /* ComposableArchitecture in Frameworks */,
+				829D620924D20A1C0049D5D0 /* Journey in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		827B45882411368100A5975E /* JourneyTests */ = {
-			isa = PBXGroup;
-			children = (
-				827B45892411368100A5975E /* JourneyTests.swift */,
-				827B458B2411368100A5975E /* Info.plist */,
-			);
-			path = JourneyTests;
-			sourceTree = "<group>";
-		};
 		8297A2B123D9BA0200D091FF /* Locales */ = {
 			isa = PBXGroup;
 			children = (
@@ -105,8 +90,6 @@
 			children = (
 				825BE7E92436226300422910 /* checkIn.mp4 */,
 				82BE2F4623D97D9C00B3678A /* pabau2 */,
-				827B45882411368100A5975E /* JourneyTests */,
-				82FF6C94248F92980014C4DC /* PabauCommon */,
 				82BE2F4523D97D9C00B3678A /* Products */,
 				82B02FFF23F2581C0015B0B4 /* Frameworks */,
 			);
@@ -141,10 +124,11 @@
 		82CACDF7241027320021E1DE /* src */ = {
 			isa = PBXGroup;
 			children = (
+				82E9C12524D035A60023B98B /* Journey */,
+				82E9C11C24D021550023B98B /* Login */,
 				829D61FF24D18CF90049D5D0 /* FSCalendarSwiftUI */,
-				82E9C11E24D024E50023B98B /* ModelPackage */,
-				82E9C11D24D0242E0023B98B /* UtilPackage */,
-				82CACDF9241028080021E1DE /* Feature */,
+				82E9C11E24D024E50023B98B /* Model */,
+				82E9C11D24D0242E0023B98B /* Util */,
 				8297A2B123D9BA0200D091FF /* Locales */,
 				82BE2F4723D97D9C00B3678A /* AppDelegate.swift */,
 				82BE2F4923D97D9C00B3678A /* SceneDelegate.swift */,
@@ -159,36 +143,8 @@
 		82CACDF8241027380021E1DE /* test */ = {
 			isa = PBXGroup;
 			children = (
-				82CACE0424102A2F0021E1DE /* LoginTests */,
 			);
 			path = test;
-			sourceTree = "<group>";
-		};
-		82CACDF9241028080021E1DE /* Feature */ = {
-			isa = PBXGroup;
-			children = (
-				82E9C12524D035A60023B98B /* JourneyPackage */,
-				82E9C11C24D021550023B98B /* LoginPackage */,
-			);
-			path = Feature;
-			sourceTree = "<group>";
-		};
-		82CACE0424102A2F0021E1DE /* LoginTests */ = {
-			isa = PBXGroup;
-			children = (
-				82CACE0524102A2F0021E1DE /* LoginTests.swift */,
-				82CACE0724102A2F0021E1DE /* Info.plist */,
-			);
-			path = LoginTests;
-			sourceTree = "<group>";
-		};
-		82FF6C94248F92980014C4DC /* PabauCommon */ = {
-			isa = PBXGroup;
-			children = (
-				82FF6C95248F92980014C4DC /* PabauCommon.h */,
-				82FF6C96248F92980014C4DC /* Info.plist */,
-			);
-			path = PabauCommon;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -210,9 +166,9 @@
 			);
 			name = pabau2;
 			packageProductDependencies = (
-				829D620024D1ACDB0049D5D0 /* LoginPackage */,
-				829D620224D1B22E0049D5D0 /* JourneyPackage */,
-				829D620424D1B2B40049D5D0 /* ComposableArchitecture */,
+				829D620624D20A070049D5D0 /* ComposableArchitecture */,
+				829D620824D20A1C0049D5D0 /* Journey */,
+				829D620A24D20A1C0049D5D0 /* Login */,
 			);
 			productName = pabau2;
 			productReference = 82BE2F4423D97D9C00B3678A /* pabau2.app */;
@@ -520,18 +476,18 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		829D620024D1ACDB0049D5D0 /* LoginPackage */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = LoginPackage;
-		};
-		829D620224D1B22E0049D5D0 /* JourneyPackage */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = JourneyPackage;
-		};
-		829D620424D1B2B40049D5D0 /* ComposableArchitecture */ = {
+		829D620624D20A070049D5D0 /* ComposableArchitecture */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8280D4822463F2BE0077A73F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
 			productName = ComposableArchitecture;
+		};
+		829D620824D20A1C0049D5D0 /* Journey */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Journey;
+		};
+		829D620A24D20A1C0049D5D0 /* Login */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Login;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -1,10 +1,10 @@
 import Combine
 import ComposableArchitecture
 import SwiftUI
-import LoginPackage
-import ModelPackage
-import JourneyPackage
-import UtilPackage
+import Login
+import Model
+import Journey
+import Util
 
 typealias AppEnvironment = (
 	loginAPI: LoginAPI,

@@ -1,9 +1,9 @@
 import UIKit
 import SwiftUI
 import ComposableArchitecture
-import UtilPackage
-import ModelPackage
-import JourneyPackage
+import Util
+import Model
+import Journey
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
