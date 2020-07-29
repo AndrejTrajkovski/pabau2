@@ -2,7 +2,7 @@ import SwiftUI
 import ComposableArchitecture
 import ModelPackage
 import UtilPackage
-import Journey
+import JourneyPackage
 
 public typealias TabBarEnvironment = (
 	loginAPI: LoginAPI,

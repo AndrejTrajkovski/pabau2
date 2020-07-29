@@ -2,6 +2,7 @@ import ModelPackage
 import UtilPackage
 import NonEmpty
 import SwiftDate
+import Foundation
 
 public struct JourneyState: Equatable {
 	public init () { }

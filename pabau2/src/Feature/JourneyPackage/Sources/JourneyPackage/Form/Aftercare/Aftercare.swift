@@ -1,3 +1,5 @@
+import Foundation
+
 public struct Aftercare: Equatable, Identifiable {
 	public var id: UUID = UUID()
 	var profile: SingleSelectImages

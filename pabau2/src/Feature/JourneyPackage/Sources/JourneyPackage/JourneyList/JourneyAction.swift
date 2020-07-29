@@ -1,4 +1,5 @@
 import ModelPackage
+import Foundation
 
 public enum JourneyContainerAction {
 	case journey(JourneyAction)

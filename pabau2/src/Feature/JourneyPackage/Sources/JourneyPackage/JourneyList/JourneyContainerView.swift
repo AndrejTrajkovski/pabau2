@@ -348,7 +348,6 @@ func journeyCellAdapter(journey: Journey) -> JourneyCell {
 }
 
 struct JourneyList: View {
-	let slotsStyle = SlotStyle.init(background: .white, imageColor: Color.init(hex: "0067D9"), slotWidth: 99)
 	let journeys: [Journey]
 	let onSelect: (Journey) -> Void
 	init (_ journeys: [Journey],

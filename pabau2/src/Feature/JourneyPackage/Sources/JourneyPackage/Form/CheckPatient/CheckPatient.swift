@@ -1,4 +1,5 @@
 import ModelPackage
+import Foundation
 
 public struct CheckPatient: Equatable, Identifiable {
 	public var id: UUID = UUID()

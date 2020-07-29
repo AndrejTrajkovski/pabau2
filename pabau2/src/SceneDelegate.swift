@@ -3,7 +3,7 @@ import SwiftUI
 import ComposableArchitecture
 import UtilPackage
 import ModelPackage
-import Journey
+import JourneyPackage
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
