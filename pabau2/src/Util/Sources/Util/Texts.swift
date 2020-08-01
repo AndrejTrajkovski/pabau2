@@ -132,6 +132,14 @@ Tap the aftercare bellow that you wish to send to the client. The aftercare will
 	
 	public static let clients = "Clients"
 	public static let clientSearchPlaceholder = "Search by first name, last name or email"
+	
+	public static let details = "details".capitalized.localized
+	public static let appointments = "appointments".capitalized.localized
+	public static let photos = "photos".capitalized.localized
+	public static let financials = "financials".capitalized.localized
+	public static let prescriptions = "prescriptions".capitalized.localized
+	public static let alerts = "alerts".capitalized.localized
+	public static let notes = "notes".capitalized.localized
 }
 
 extension String {
