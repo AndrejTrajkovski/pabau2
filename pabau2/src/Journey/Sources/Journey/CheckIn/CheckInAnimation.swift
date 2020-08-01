@@ -31,7 +31,7 @@ struct JourneyTransitionCircle: View {
 														Circle()
 															.overlay(
 																ZStack {
-																	AvatarView(journey: self.journey,
+																	JourneyAvatarView(journey: self.journey,
 																						 font: .regular90,
 																						 bgColor: .clear)
 																		.foregroundColor(.white)
@@ -41,32 +41,6 @@ struct JourneyTransitionCircle: View {
 														).foregroundColor(Color.clear)
 															.frame(width: 214, height: 214)
 		})
-	}
-}
-
-struct AvatarView: View {
-	let journey: Journey
-	let font: Font
-	let bgColor: Color
-	var body: some View {
-		Circle()
-			.fill(bgColor)
-			.overlay(
-				ZStack {
-					Group {
-						if journey.patient.avatar != nil {
-							Image("\(journey.patient.avatar!)")
-								.resizable()
-								.aspectRatio(contentMode: .fill)
-								.clipShape(Circle())
-						} else {
-							Text(journey.patient.initials.uppercased())
-								.font(font)
-								.foregroundColor(.white)
-						}
-					}
-				}
-		)
 	}
 }
 

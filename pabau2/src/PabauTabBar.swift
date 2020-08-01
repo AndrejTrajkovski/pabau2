@@ -3,21 +3,25 @@ import ComposableArchitecture
 import Model
 import Util
 import Journey
+import Clients
 
 public typealias TabBarEnvironment = (
 	loginAPI: LoginAPI,
 	journeyAPI: JourneyAPI,
+	clientsAPI: ClientsAPI,
 	userDefaults: UserDefaultsConfig
 )
 
 public struct TabBarState: Equatable {
 	public var journey: JourneyState
+	public var clients: ClientsState
 	public var settings: SettingsState
 }
 
 public enum TabBarAction {
 	case settings(SettingsAction)
 	case journey(JourneyContainerAction)
+	case clients(ClientsAction)
 }
 
 struct PabauTabBar: View {
@@ -90,7 +94,7 @@ struct PabauTabBar: View {
 	}
 }
 
-public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> = .combine(
+public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> = Reducer.combine(
 	settingsReducer.pullback(
 		state: \TabBarState.settings,
 		action: /TabBarAction.settings,
@@ -102,6 +106,15 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
 		environment: {
 			return JourneyEnvironment(
 				apiClient: $0.journeyAPI,
+				userDefaults: $0.userDefaults)
+	})
+	,
+	clientsContainerReducer.pullback(
+		state: \TabBarState.clients,
+		action: /TabBarAction.clients,
+		environment: {
+			return ClientsEnvironment(
+				apiClient: $0.clientsAPI,
 				userDefaults: $0.userDefaults)
 	})
 )

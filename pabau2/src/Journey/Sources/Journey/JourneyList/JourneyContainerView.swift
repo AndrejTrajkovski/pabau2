@@ -389,7 +389,7 @@ struct JourneyCell: View {
 				Group {
 					Text(time).font(Font.semibold11)
 					Spacer()
-					AvatarView(journey: journey, font: .regular18, bgColor: .accentColor)
+					JourneyAvatarView(journey: journey, font: .regular18, bgColor: .accentColor)
 						.frame(width: 55, height: 55)
 					VStack(alignment: .leading, spacing: 4) {
 						Text(name).font(Font.semibold14)

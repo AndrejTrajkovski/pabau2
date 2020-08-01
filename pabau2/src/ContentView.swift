@@ -5,10 +5,12 @@ import Login
 import Model
 import Journey
 import Util
+import Clients
 
 typealias AppEnvironment = (
 	loginAPI: LoginAPI,
 	journeyAPI: JourneyAPI,
+	clientsAPI: ClientsAPI,
 	userDefaults: UserDefaultsConfig
 )
 
@@ -21,6 +23,7 @@ enum AppState: Equatable {
 			self = .tabBar(
 				TabBarState(
 					journey: JourneyState(),
+					clients: ClientsState(),
 					settings: SettingsState()
 				)
 			)
@@ -96,7 +99,12 @@ struct ContentView: View {
 
 	var tabBarStore: Store<TabBarState, TabBarAction> {
 		return self.store.scope(
-			state: { extract(case: AppState.tabBar, from: $0) ?? TabBarState(journey: JourneyState(), settings: SettingsState()) },
+			state: {
+				extract(case: AppState.tabBar, from: $0) ??
+					TabBarState(journey: JourneyState(),
+											clients: ClientsState(),
+											settings: SettingsState())
+		},
 			action: { .tabBar($0)}
 		)
 	}

@@ -4,6 +4,7 @@ import ComposableArchitecture
 import Util
 import Model
 import Journey
+import Clients
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -19,6 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 			let env = AppEnvironment(
 				loginAPI: LoginMockAPI(delay: 1),
 				journeyAPI: JourneyMockAPI(),
+				clientsAPI: ClientsMockAPI(),
 				userDefaults: userDefaults
 			)
       window.rootViewController = UIHostingController(
