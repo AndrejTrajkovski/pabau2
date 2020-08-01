@@ -6,9 +6,11 @@ import Util
 let clientsListReducer = Reducer<ClientsState, ClientsListAction, ClientsEnvironment> { state, action, _ in
 	switch action {
 	case .identified(let id, ClientRowAction.onSelectClient):
-		state.selectedClient = state.clients[id: id]
+		state.selectedClient = ClientCardState(client: state.clients[id: id]!)
 	case .onSearchText(let text):
 		state.searchText = text
+	case .selectedClient(_):
+		break
 	}
 	return .none
 }
@@ -16,6 +18,7 @@ let clientsListReducer = Reducer<ClientsState, ClientsListAction, ClientsEnviron
 public enum ClientsListAction: Equatable {
 	case identified(id: Int, action: ClientRowAction)
 	case onSearchText(String)
+	case selectedClient(ClientCardAction)
 }
 
 struct ClientsList: View {
@@ -36,6 +39,12 @@ struct ClientsList: View {
 															ClientListRow(store: $0)
 					})
 				}
+				NavigationLink.emptyHidden(
+					viewStore.selectedClient != nil,
+					IfLetStore(self.store.scope(state: { $0.selectedClient },
+																			action: { .selectedClient($0) }),
+										 then: ClientCard.init(store:))
+				)
 			}
 		}.navigationBarTitle(Text(Texts.clients), displayMode: .inline)
 	}

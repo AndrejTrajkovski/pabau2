@@ -1,5 +1,7 @@
 import SwiftUI
 import Util
+import ComposableArchitecture
+import Model
 
 public enum ClientCardTopAction: Equatable {
 	case onMessage
@@ -13,7 +15,7 @@ struct ClientCardTop: View {
 	let store: Store<Client, ClientCardTopAction>
 
 	var body: some View {
-		ViewStore(store) { viewStore in
+		WithViewStore(store) { viewStore in
 			VStack {
 				AvatarView(avatarUrl: viewStore.avatar,
 									 initials: viewStore.initials,

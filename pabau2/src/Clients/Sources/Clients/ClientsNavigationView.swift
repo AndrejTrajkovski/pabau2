@@ -38,7 +38,7 @@ public struct ClientsState: Equatable {
 	var contactListLS: LoadingState = .initial
 	var clients: IdentifiedArrayOf<Client> = []
 	var addClient: AddClientState?
-	var selectedClient: Client?
+	var selectedClient: ClientCardState?
 	var searchText: String = ""
 	
 	var filteredClients: IdentifiedArrayOf<Client> {

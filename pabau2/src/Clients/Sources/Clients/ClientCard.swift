@@ -1,4 +1,6 @@
 import SwiftUI
+import Model
+import ComposableArchitecture
 
 public struct ClientCardState: Equatable {
 	var client: Client

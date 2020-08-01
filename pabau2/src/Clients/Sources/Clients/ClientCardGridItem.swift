@@ -6,7 +6,7 @@ struct ClientCardGridItemView: View {
 	var body: some View {
 		VStack {
 			Image(systemName: item.iconName)
-			Text(item.title).font(Fonts.medium16)
+			Text(item.title).font(Font.medium16)
 		}
 	}
 }
@@ -40,7 +40,7 @@ public enum ClientCardGridItem: Int, Equatable {
 		}
 	}
 
-	var iconName: {
+	var iconName: String {
 		switch self {
 		case .details: return "person"
 		case .appointments: return "calendar"
