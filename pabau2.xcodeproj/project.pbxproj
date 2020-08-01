@@ -10,6 +10,7 @@
 		825BE7EA2436226300422910 /* checkIn.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 825BE7E92436226300422910 /* checkIn.mp4 */; };
 		82811EF423E06BCB0066AFDC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EF323E06BCB0066AFDC /* ContentView.swift */; };
 		8297A2B523D9BA0200D091FF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8297A2B223D9BA0200D091FF /* Localizable.strings */; };
+		8298A11524D566B40079BFE9 /* Clients in Frameworks */ = {isa = PBXBuildFile; productRef = 8298A11424D566B40079BFE9 /* Clients */; };
 		829D620724D20A070049D5D0 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 829D620624D20A070049D5D0 /* ComposableArchitecture */; };
 		829D620924D20A1C0049D5D0 /* Journey in Frameworks */ = {isa = PBXBuildFile; productRef = 829D620824D20A1C0049D5D0 /* Journey */; };
 		829D620B24D20A1C0049D5D0 /* Login in Frameworks */ = {isa = PBXBuildFile; productRef = 829D620A24D20A1C0049D5D0 /* Login */; };
@@ -40,6 +41,7 @@
 		82811EF323E06BCB0066AFDC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		8297A2B323D9BA0200D091FF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8297A2B423D9BA0200D091FF /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		8298A11324D486960079BFE9 /* Clients */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Clients; sourceTree = "<group>"; };
 		829D61FF24D18CF90049D5D0 /* FSCalendarSwiftUI */ = {isa = PBXFileReference; lastKnownFileType = folder; path = FSCalendarSwiftUI; sourceTree = "<group>"; };
 		82BE2F4423D97D9C00B3678A /* pabau2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pabau2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		82BE2F4723D97D9C00B3678A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -60,6 +62,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				829D620B24D20A1C0049D5D0 /* Login in Frameworks */,
+				8298A11524D566B40079BFE9 /* Clients in Frameworks */,
 				829D620724D20A070049D5D0 /* ComposableArchitecture in Frameworks */,
 				829D620924D20A1C0049D5D0 /* Journey in Frameworks */,
 			);
@@ -124,6 +127,7 @@
 		82CACDF7241027320021E1DE /* src */ = {
 			isa = PBXGroup;
 			children = (
+				8298A11324D486960079BFE9 /* Clients */,
 				82E9C12524D035A60023B98B /* Journey */,
 				82E9C11C24D021550023B98B /* Login */,
 				829D61FF24D18CF90049D5D0 /* FSCalendarSwiftUI */,
@@ -169,6 +173,7 @@
 				829D620624D20A070049D5D0 /* ComposableArchitecture */,
 				829D620824D20A1C0049D5D0 /* Journey */,
 				829D620A24D20A1C0049D5D0 /* Login */,
+				8298A11424D566B40079BFE9 /* Clients */,
 			);
 			productName = pabau2;
 			productReference = 82BE2F4423D97D9C00B3678A /* pabau2.app */;
@@ -476,6 +481,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		8298A11424D566B40079BFE9 /* Clients */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Clients;
+		};
 		829D620624D20A070049D5D0 /* ComposableArchitecture */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8280D4822463F2BE0077A73F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
