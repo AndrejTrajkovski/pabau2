@@ -54,9 +54,11 @@ struct ClientsList: View {
 					IfLetStore(self.store.scope(state: { $0.selectedClient },
 																			action: { .selectedClient($0) }),
 										 then: {
-											ClientCard.init(store: $0).customBackButton {
-												viewStore.send(.onBackFromClientCard)
-											}
+											ClientCard.init(store: $0)
+												.customBackButton(text: Texts.clients,
+																					action: {
+																						viewStore.send(.onBackFromClientCard)
+												})
 						}
 					)
 				)

@@ -145,6 +145,8 @@ Tap the aftercare bellow that you wish to send to the client. The aftercare will
 	public static let call = "call".localized
 	public static let facetime = "facetime".localized
 	public static let mail = "mail".localized
+	
+	public static let back = "Back"
 }
 
 extension String {

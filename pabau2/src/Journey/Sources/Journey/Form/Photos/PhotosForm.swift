@@ -81,7 +81,7 @@ struct PhotosForm: View {
 										 then: {
 											EditPhotos(store: $0)
 												.navigationBarItems(leading:
-													MyBackButton(action: { viewStore.send(.didTouchBackOnEditPhotos)}
+													MyBackButton(text: Texts.back, action: { viewStore.send(.didTouchBackOnEditPhotos)}
 													), trailing:
 													Button(action: { viewStore.send(.saveEdited) },
 																 label: { Text("Save") })
