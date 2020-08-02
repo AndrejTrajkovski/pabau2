@@ -16,7 +16,7 @@ public enum TopViewAction: Equatable {
 
 struct TopView: View {
 	let store: Store<CheckInViewState, TopViewAction>
-	
+
 	struct State: Equatable {
 		let totalSteps: Int
 		let currentStepIdx: Int

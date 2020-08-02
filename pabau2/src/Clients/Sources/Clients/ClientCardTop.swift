@@ -21,40 +21,62 @@ struct ClientCardTop: View {
 									 initials: viewStore.initials,
 									 font: .regular18,
 									 bgColor: .accentColor)
-					.frame(width: 50, height: 50)
+					.frame(width: 84, height: 84)
 				Text(viewStore.fullname)
-				ClientCardContactIcons(store:self.store.stateless)
+					.font(Font.semibold24)
+				ClientCardContactIcons(store: self.store.stateless)
 			}
 		}
 	}
 }
 
-struct ClientCardContactIcons: View {
+private struct ClientCardContactIcons: View {
 	let store: Store<Void, ClientCardTopAction>
 	var body: some View {
 		WithViewStore(store) { viewStore in
-			HStack {
-				Button(action: {
-					viewStore.send(.onMessage)
-				}, label: {
-					Image(systemName: "message.circle.fill")
+			HStack(spacing: 32) {
+				ContactButton(text: Texts.mobile,
+											imageName: "message.circle.fill",
+											onAction: {
+												viewStore.send(.onMessage)
 				})
-				Button(action: {
-					viewStore.send(.onCall)
-				}, label: {
-					Image(systemName: "phone.circle.fill")
+				ContactButton(text: Texts.call,
+											imageName: "phone.circle.fill",
+											onAction: {
+												viewStore.send(.onCall)
 				})
-				Button(action: {
-					viewStore.send(.onVideo)
-				}, label: {
-					Image(systemName: "video.circle.fill")
+				ContactButton(text: Texts.facetime,
+											imageName: "video.circle.fill",
+											onAction: {
+												viewStore.send(.onVideo)
 				})
-				Button(action: {
-					viewStore.send(.onEmail)
-				}, label: {
-					Image(systemName: "envelope.circle.fill")
+				ContactButton(text: Texts.mail,
+											imageName: "envelope.circle.fill",
+											onAction: {
+												viewStore.send(.onEmail)
 				})
 			}
 		}
+	}
+}
+
+private struct ContactButton: View {
+	let text: String
+	let imageName: String
+	let onAction: () -> Void
+	var body: some View {
+		Button(action: onAction,
+					 label: {
+						VStack {
+							Image(systemName: imageName)
+								.resizable()
+								.aspectRatio(contentMode: .fit)
+								.frame(width: 36, height: 36)
+							Text(text)
+								.foregroundColor(.accentColor)
+								.font(Font.regular13)
+								.fixedSize(horizontal: true, vertical: false)
+						}
+		}).frame(width: 36)
 	}
 }

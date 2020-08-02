@@ -2,17 +2,31 @@ import SwiftUI
 import Util
 
 struct ClientCardGridItemView: View {
-	let item: ClientCardGridItem
+//	let item: ClientCardGridItem
+	let title: String
+	let iconName: String
+	let number: Int?
 	var body: some View {
-		VStack {
-			Image(systemName: item.iconName)
-			Text(item.title).font(Font.medium16)
-		}
+		GeometryReader { geo in
+			VStack(spacing: 8) {
+				Image(systemName: self.iconName)
+					.resizable()
+					.aspectRatio(contentMode: .fit)
+					.foregroundColor(.accentColor)
+					.frame(height: 50)
+				if self.number != nil {
+					NumberEclipse(text: String(self.number!))
+				}
+				Text(self.title).font(Font.medium16)
+			}
+			.padding(16)
+			.frame(width: geo.size.width, height: geo.size.width)
+		}.border(Color(hex: "D8D8D8"), width: 0.5)
 	}
 }
 
-public enum ClientCardGridItem: Int, Equatable {
-	case details = 0
+public enum ClientCardGridItem: Equatable, CaseIterable {
+	case details
 	case appointments
 	case photos
 	case financials

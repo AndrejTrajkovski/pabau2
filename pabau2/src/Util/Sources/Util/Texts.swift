@@ -140,6 +140,11 @@ Tap the aftercare bellow that you wish to send to the client. The aftercare will
 	public static let prescriptions = "prescriptions".capitalized.localized
 	public static let alerts = "alerts".capitalized.localized
 	public static let notes = "notes".capitalized.localized
+	
+	public static let mobile = "mobile".localized
+	public static let call = "call".localized
+	public static let facetime = "facetime".localized
+	public static let mail = "mail".localized
 }
 
 extension String {

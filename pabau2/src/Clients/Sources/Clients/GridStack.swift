@@ -11,11 +11,13 @@ struct GridStack<Content: View>: View {
 		self.content = content
 	}
 	var body: some View {
-		VStack {
-			ForEach(0..<rows, id: \.self) { row in
-				HStack {
-					ForEach(0..<self.columns, id: \.self) { column in
-						self.content(row, column)
+		GeometryReader { geo in
+			VStack {
+				ForEach(0..<self.rows, id: \.self) { row in
+					HStack {
+						ForEach(0..<self.columns, id: \.self) { column in
+							self.content(row, column)
+						}
 					}
 				}
 			}
