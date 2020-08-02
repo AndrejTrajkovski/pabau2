@@ -40,7 +40,7 @@ public struct ClientsState: Equatable {
 	var addClient: AddClientState?
 	var selectedClient: ClientCardState?
 	var searchText: String = ""
-	
+
 	var filteredClients: IdentifiedArrayOf<Client> {
 		return clients.filter {
 			guard !searchText.isEmpty else { return true }

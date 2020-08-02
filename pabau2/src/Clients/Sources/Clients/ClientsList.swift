@@ -3,26 +3,32 @@ import ComposableArchitecture
 import Model
 import Util
 
-let clientsListReducer = Reducer<ClientsState, ClientsListAction, ClientsEnvironment> { state, action, env in
-	switch action {
-	case .identified(let id, ClientRowAction.onSelectClient):
-		state.selectedClient = ClientCardState(client: state.clients[id: id]!)
-		return env.apiClient.getItemsCount(clientId: id)
-			.map(ClientsListAction.gotItemsResponse)
-			.eraseToEffect()
-	case .onSearchText(let text):
-		state.searchText = text
-	case .gotItemsResponse(let result):
-		guard case .success(let count) = result else { break }
-		state.selectedClient?.client.count = count
-	case .onBackFromClientCard:
-		state.selectedClient = nil
-	case .selectedClient(_):
-		break
-	}
-	return .none
-}
-
+let clientsListReducer: Reducer<ClientsState, ClientsListAction, ClientsEnvironment> =
+	.combine (
+		clientCardReducer.optional.pullback(
+			state: \.selectedClient,
+			action: /ClientsListAction.selectedClient,
+			environment: { $0}),
+		.init { state, action, env in
+		switch action {
+		case .identified(let id, ClientRowAction.onSelectClient):
+			state.selectedClient = ClientCardState(client: state.clients[id: id]!)
+			return env.apiClient.getItemsCount(clientId: id)
+				.map(ClientsListAction.gotItemsResponse)
+				.eraseToEffect()
+		case .onSearchText(let text):
+			state.searchText = text
+		case .gotItemsResponse(let result):
+			guard case .success(let count) = result else { break }
+			state.selectedClient?.client.count = count
+		case .onBackFromClientCard:
+			state.selectedClient = nil
+		case .selectedClient(_):
+			break
+		}
+		return .none
+		}
+)
 public enum ClientsListAction: Equatable {
 	case onBackFromClientCard
 	case identified(id: Int, action: ClientRowAction)
