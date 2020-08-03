@@ -3,11 +3,11 @@ import Model
 import ComposableArchitecture
 
 let clientCardReducer = Reducer<ClientCardState, ClientCardAction, ClientsEnvironment> { state, action, env in
-	switch action {
-	case .top(let topAction):
-		
-	case .grid(let gridAction):
-	}
+//	switch action {
+//	case .top(let topAction):
+//		
+//	case .grid(let gridAction):
+//	}
 	return .none
 }
 

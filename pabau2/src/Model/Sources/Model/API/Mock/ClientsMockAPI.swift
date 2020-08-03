@@ -10,6 +10,32 @@ public struct ClientsMockAPI: MockAPI, ClientsAPI {
 		mockSuccess(ClientItemsCount.init(id: 1, appointments: 2, photos: 4, financials: 6, treatmentNotes: 3, presriptions: 10, documents: 15, communications: 123, consents: 4381, alerts: 123, notes: 0))
 	}
 	
+	public func getAppointments(clientId: Int) -> Effect<Result<[Appointment], RequestError>, Never> {
+		mockSuccess([])
+	}
+	public func getPhotos(clientId: Int) -> Effect<Result<[SavedPhoto], RequestError>, Never> {
+		mockSuccess([])
+	}
+	public func getFinancials(clientId: Int) -> Effect<Result<[Financial], RequestError>, Never> {
+		mockSuccess([])
+	}
+	public func getForms(type: FormType, clientId: Int) -> Effect<Result<[FormData], RequestError>, Never> {
+		mockSuccess([])
+	}
+	public func getDocuments(clientId: Int) -> Effect<Result<[Document], RequestError>, Never> {
+		mockSuccess([])
+	}
+	public func getCommunications(clientId: Int) -> Effect<Result<[Communication], RequestError>, Never> {
+		mockSuccess([])
+	}
+	public func getAlerts(clientId: Int) -> Effect<Result<[Alert], RequestError>, Never> {
+		mockSuccess([])
+	}
+	
+	public func getNotes(clientId: Int) -> Effect<Result<[Note], RequestError>, Never> {
+		mockSuccess([])
+	}
+	
 	public init () {}
 }
 

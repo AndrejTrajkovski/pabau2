@@ -47,5 +47,4 @@ public struct FormTemplate: Codable, Identifiable, Equatable, CustomDebugStringC
         case ePaper
         case formStructure = "form_structure"
     }
-
 }

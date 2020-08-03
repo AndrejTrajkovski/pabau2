@@ -61,5 +61,4 @@ public struct Appointment: Codable, Equatable {
 		case status
 		case service
 	}
-
 }
