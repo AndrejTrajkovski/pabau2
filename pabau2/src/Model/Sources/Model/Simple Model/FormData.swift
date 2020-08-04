@@ -4,7 +4,7 @@
 import Foundation
 
 /** Object representing a form, without the field values. Meant to be returned when the form patient_status is needed but not the form field values. Is a superclass of Form, which contains the field values. */
-public struct FormData: Codable, Identifiable {
+public struct FormData: Codable, Identifiable, Equatable {
 
     public let template: FormTemplate
 

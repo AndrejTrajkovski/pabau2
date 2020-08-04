@@ -2,66 +2,55 @@ import SwiftUI
 import ComposableArchitecture
 import Model
 import Combine
+import Util
 
-protocol ClientCardListable {
-	associatedtype Listable
-	static func getList(clientId: Int) -> EffectWithResult<[Listable], RequestError>
-}
-
-extension Appointment: ClientCardListable {
-	
-	func makeElement() -> some View {
-		HStack {
-			Text("")
-			VStack {
-				Text(self.service?.name ?? "")
+struct ClientCardChild<T: ClientCardListable>: View {
+	let listable: T
+	let list: [T.Listable]
+	var body: some View {
+		List {
+			ForEach(list.indices) { idx in
+				self.listable.makeView(element: self.list[idx])
 			}
 		}
 	}
-	
+}
+
+public struct ClientCardChildState<T: Equatable>: Equatable {
+	var activeItem: T
+	var activeItemLoadingState: LoadingState
+}
+
+public protocol ClientCardModel {}
+
+public protocol ClientCardListable {
+	associatedtype Listable: ClientCardModel
+	associatedtype SomeView: View
+	static func getList(clientId: Int) -> EffectWithResult<[Listable], RequestError>
+	func makeView(element: Listable) -> SomeView
+}
+
+extension ClientCardListable where Listable == Appointment {
 	static func getList(clientId: Int) -> EffectWithResult<[Appointment], RequestError> {
-		ClientsMockAPI().getAppointments(clientId: clientId)
+		return ClientsMockAPI().getAppointments(clientId: clientId)
+	}
+	func makeView(element: Appointment) -> some View {
+		return HStack {
+			Text(element.service?.name ?? "some appointment with no service")
+		}
 	}
 }
 
-extension SavedPhoto: ClientCardListable {
-	static public func getList(clientId: Int) -> EffectWithResult<[SavedPhoto], RequestError> {
-		ClientsMockAPI().getPhotos(clientId: clientId)
-	}
-}
-
-extension Financial: ClientCardListable {
-	static public func getList(clientId: Int) -> EffectWithResult<[Financial], RequestError> {
-		ClientsMockAPI().getFinancials(clientId: clientId)
-	}
-}
-
-//extension FormData: ClientCardListable {
-//	static public func getList(clientId: Int) -> EffectWithResult<[FormData], RequestError> {
-//		ClientsMockAPI().getForms(type: self.template.formType, clientId: clientId)
+//struct ListableAppointment: ClientCardListable {
+//	static func getList(clientId: Int) -> EffectWithResult<[Appointment], RequestError> {
+//		return ClientsMockAPI().getAppointments(clientId: clientId)
+//	}
+//	func makeView(element: Appointment) -> some View {
+//		return HStack {
+//			Text(element.service?.name ?? "some appointment with no service")
+//		}
 //	}
 //}
 
-extension Document: ClientCardListable {
-	static public func getList(clientId: Int) -> EffectWithResult<[Document], RequestError> {
-		ClientsMockAPI().getDocuments(clientId: clientId)
-	}
-}
-
-extension Communication: ClientCardListable {
-	static public func getList(clientId: Int) -> EffectWithResult<[Communication], RequestError> {
-		ClientsMockAPI().getCommunications(clientId: clientId)
-	}
-}
-
-extension Model.Alert: ClientCardListable {
-	static public func getList(clientId: Int) -> EffectWithResult<[Model.Alert], RequestError> {
-		ClientsMockAPI().getAlerts(clientId: clientId)
-	}
-}
-
-extension Note: ClientCardListable {
-	static public func getList(clientId: Int) -> EffectWithResult<[Model.Alert], RequestError> {
-		ClientsMockAPI().getAlerts(clientId: clientId)
-	}
-}
+extension Appointment: ClientCardModel {}
+extension SavedPhoto: ClientCardModel {}

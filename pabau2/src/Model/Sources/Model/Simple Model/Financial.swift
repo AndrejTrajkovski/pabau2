@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Financial: Codable, Identifiable {
+public struct Financial: Codable, Identifiable, Equatable {
 	
 	public let id: Int
 	public let date: Date

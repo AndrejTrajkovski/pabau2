@@ -7,7 +7,7 @@ public struct ClientsMockAPI: MockAPI, ClientsAPI {
 	}
 	
 	public func getItemsCount(clientId: Int) -> Effect<Result<ClientItemsCount, RequestError>, Never> {
-		mockSuccess(ClientItemsCount.init(id: 1, appointments: 2, photos: 4, financials: 6, treatmentNotes: 3, presriptions: 10, documents: 15, communications: 123, consents: 4381, alerts: 123, notes: 0))
+		mockSuccess(ClientItemsCount.init(id: 1, appointments: 2, photos: 4, financials: 6, treatmentNotes: 3, presriptions: 10, documents: 15, communications: 123, consents: 4381, alerts: 123, notes: 0), delay: 4.0)
 	}
 	
 	public func getAppointments(clientId: Int) -> Effect<Result<[Appointment], RequestError>, Never> {

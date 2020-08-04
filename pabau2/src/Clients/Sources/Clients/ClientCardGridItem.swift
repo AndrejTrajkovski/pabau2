@@ -1,5 +1,6 @@
 import SwiftUI
 import Util
+import Model
 
 struct ClientCardGridItemView: View {
 //	let item: ClientCardGridItem
