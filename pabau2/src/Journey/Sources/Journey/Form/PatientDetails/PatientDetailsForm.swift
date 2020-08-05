@@ -1,6 +1,7 @@
 import SwiftUI
 import Util
 import ComposableArchitecture
+import Model
 
 struct PatientDetailsForm: View {
 	let store: Store<PatientDetails, PatientDetailsAction>

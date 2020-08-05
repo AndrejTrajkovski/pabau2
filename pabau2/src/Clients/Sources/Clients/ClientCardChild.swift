@@ -4,53 +4,127 @@ import Model
 import Combine
 import Util
 
-struct ClientCardChild<T: ClientCardListable>: View {
-	let listable: T
-	let list: [T.Listable]
-	var body: some View {
-		List {
-			ForEach(list.indices) { idx in
-				self.listable.makeView(element: self.list[idx])
+struct ClientCardChildReducer<T: Equatable> {
+	let reducer = Reducer<ClientCardChildState<T>, GotClientListAction<T>, ClientsEnvironment> { state, action, _ in
+		switch action {
+		case .gotResult(let result):
+			switch result {
+			case .failure(let error):
+				state.loadingState = .gotError
+			case .success(let success):
+				state.loadingState = .gotSuccess
+				state.state = success
 			}
 		}
+		return .none
+	}
+}
+
+public struct ClientCardListState: Equatable {
+	var appointments: ClientCardChildState<[Appointment]>
+	var details: ClientCardChildState<PatientDetails>
+	var photos: ClientCardChildState<[SavedPhoto]>
+	var financials: ClientCardChildState<[Financial]>
+	var treatmentNotes: ClientCardChildState<[FormData]>
+	var prescriptions: ClientCardChildState<[FormData]>
+	var documents: ClientCardChildState<[Document]>
+	var communications: ClientCardChildState<[Communication]>
+	var consents: ClientCardChildState<[FormData]>
+	var alerts: ClientCardChildState<[Model.Alert]>
+	var notes: ClientCardChildState<[Note]>
+	
+	init() {
+		self.appointments = ClientCardChildState.init(state: [])
+		self.details = ClientCardChildState.init(state: PatientDetails.mock)
+		self.photos = ClientCardChildState.init(state: [])
+		self.financials = ClientCardChildState.init(state: [])
+		self.treatmentNotes = ClientCardChildState.init(state: [])
+		self.prescriptions = ClientCardChildState.init(state: [])
+		self.documents = ClientCardChildState.init(state: [])
+		self.communications = ClientCardChildState.init(state: [])
+		self.consents = ClientCardChildState.init(state: [])
+		self.alerts = ClientCardChildState.init(state: [])
+		self.notes = ClientCardChildState.init(state: [])
 	}
 }
 
 public struct ClientCardChildState<T: Equatable>: Equatable {
-	var activeItem: T
-	var activeItemLoadingState: LoadingState
+	var state: T
+	var loadingState: LoadingState = .initial
 }
 
-public protocol ClientCardModel {}
-
-public protocol ClientCardListable {
-	associatedtype Listable: ClientCardModel
-	associatedtype SomeView: View
-	static func getList(clientId: Int) -> EffectWithResult<[Listable], RequestError>
-	func makeView(element: Listable) -> SomeView
+public enum GotClientListAction<T: Equatable>: Equatable {
+	case gotResult(Result<T, RequestError>)
 }
 
-extension ClientCardListable where Listable == Appointment {
-	static func getList(clientId: Int) -> EffectWithResult<[Appointment], RequestError> {
-		return ClientsMockAPI().getAppointments(clientId: clientId)
-	}
-	func makeView(element: Appointment) -> some View {
-		return HStack {
-			Text(element.service?.name ?? "some appointment with no service")
-		}
-	}
+public enum ClientCardChildAction: Equatable {
+	case appointments(GotClientListAction<[Appointment]>)
+	case details(GotClientListAction<PatientDetails>)
+	case photos(GotClientListAction<[SavedPhoto]>)
+	case financials(GotClientListAction<[Financial]>)
+	case treatmentNotes(GotClientListAction<[FormData]>)
+	case prescriptions(GotClientListAction<[FormData]>)
+	case documents(GotClientListAction<[Document]>)
+	case communications(GotClientListAction<[Communication]>)
+	case consents(GotClientListAction<[FormData]>)
+	case alerts(GotClientListAction<[Model.Alert]>)
+	case notes(GotClientListAction<[Note]>)
 }
 
-//struct ListableAppointment: ClientCardListable {
-//	static func getList(clientId: Int) -> EffectWithResult<[Appointment], RequestError> {
-//		return ClientsMockAPI().getAppointments(clientId: clientId)
-//	}
-//	func makeView(element: Appointment) -> some View {
-//		return HStack {
-//			Text(element.service?.name ?? "some appointment with no service")
-//		}
-//	}
-//}
-
-extension Appointment: ClientCardModel {}
-extension SavedPhoto: ClientCardModel {}
+let clientCardListReducer: Reducer<ClientCardListState, ClientCardChildAction, ClientsEnvironment> = Reducer.combine(
+	ClientCardChildReducer<[Appointment]>().reducer.pullback(
+		state: \ClientCardListState.appointments,
+		action: /ClientCardChildAction.appointments,
+		environment: { $0 }
+	),
+	ClientCardChildReducer<PatientDetails>().reducer.pullback(
+		state: \ClientCardListState.details,
+		action: /ClientCardChildAction.details,
+		environment: { $0 }
+	),
+	ClientCardChildReducer<[SavedPhoto]>().reducer.pullback(
+		state: \ClientCardListState.photos,
+		action: /ClientCardChildAction.photos,
+		environment: { $0 }
+	),
+	ClientCardChildReducer<[Financial]>().reducer.pullback(
+		state: \ClientCardListState.financials,
+		action: /ClientCardChildAction.financials,
+		environment: { $0 }
+	),
+	ClientCardChildReducer<[FormData]>().reducer.pullback(
+		state: \ClientCardListState.treatmentNotes,
+		action: /ClientCardChildAction.treatmentNotes,
+		environment: { $0 }
+	),
+	ClientCardChildReducer<[FormData]>().reducer.pullback(
+		state: \ClientCardListState.prescriptions,
+		action: /ClientCardChildAction.prescriptions,
+		environment: { $0 }
+	),
+	ClientCardChildReducer<[Document]>().reducer.pullback(
+		state: \ClientCardListState.documents,
+		action: /ClientCardChildAction.documents,
+		environment: { $0 }
+	),
+	ClientCardChildReducer<[Communication]>().reducer.pullback(
+		state: \ClientCardListState.communications,
+		action: /ClientCardChildAction.communications,
+		environment: { $0 }
+	),
+	ClientCardChildReducer<[FormData]>().reducer.pullback(
+		state: \ClientCardListState.consents,
+		action: /ClientCardChildAction.consents,
+		environment: { $0 }
+	),
+	ClientCardChildReducer<[Model.Alert]>().reducer.pullback(
+		state: \ClientCardListState.alerts,
+		action: /ClientCardChildAction.alerts,
+		environment: { $0 }
+	),
+	ClientCardChildReducer<[Note]>().reducer.pullback(
+		state: \ClientCardListState.notes,
+		action: /ClientCardChildAction.notes,
+		environment: { $0 }
+	)
+)
