@@ -84,5 +84,7 @@ public extension Color {
 	static let arrowGray = Color(hex: "D1D1D6")
 	
 	static let cameraImages = Color(hex: "B8B8B8")
+	
+	static let clientCardDate = Color(hex: "8C8C8C")
 }
 #endif

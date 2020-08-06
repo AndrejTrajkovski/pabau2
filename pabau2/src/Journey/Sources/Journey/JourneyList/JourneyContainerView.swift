@@ -335,7 +335,7 @@ public struct JourneyContainerView: View {
 func journeyCellAdapter(journey: Journey) -> JourneyCell {
 	return JourneyCell(
 		journey: journey,
-		color: Color.init(hex: journey.appointments.head.service!.color),
+		color: Color.init(hex: journey.appointments.head.service.color),
 		time: "12:30",
 		imageUrl: journey.patient.avatar,
 		name: journey.patient.firstName + " " + journey.patient.lastName,

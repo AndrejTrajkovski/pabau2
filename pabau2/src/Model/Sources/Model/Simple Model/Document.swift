@@ -2,7 +2,23 @@ import Foundation
 
 public struct Document: Codable, Identifiable, Equatable {
 	public let id: Int
-	let title: String
-	let format: String
-	let date: Date
+	public let title: String
+	public let format: DocumentExtension
+	public let date: Date
+}
+
+public enum DocumentExtension: String, Equatable, Codable {
+	case bmp
+	case csv
+	case doc
+	case docx
+	case jpg
+	case numbers
+	case pages
+	case pdf
+	case png
+	case tif
+	case txt
+	case xls
+	case xlsx
 }

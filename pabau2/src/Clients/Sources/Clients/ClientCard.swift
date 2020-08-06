@@ -26,10 +26,13 @@ struct ClientCard: View {
 		VStack {
 			ClientCardTop(store:
 				self.store.scope(state: { $0.client }, action: { .top($0) })
-			).padding(24)
+			)
+				.padding(24)
+			Divider()
 			ClientCardBottom(store:
 				self.store.scope(state: { $0 }, action: { .bottom($0) })
-			).padding(24)
+			)
+				.frame(minHeight: 0, maxHeight: .infinity)
 		}
 	}
 }

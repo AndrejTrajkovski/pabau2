@@ -4,26 +4,36 @@ import ASCollectionView
 import ComposableArchitecture
 import Model
 
-let clientCardGridReducer = Reducer<ClientCardState, ClientCardBottomAction, ClientsEnvironment>.init { state, action, env in
-	switch action {
-	case .grid(.onSelect(let item)):
-		switch item {
-		case .appointments:
-			return env.apiClient.getAppointments(clientId: state.client.id)
-				.map { .child(.appointments(.gotResult($0))) }
-				.eraseToEffect()
-		case .documents:
-			return env.apiClient.getDocuments(clientId: state.client.id)
-				.map { .child(.documents(.gotResult($0))) }
-				.eraseToEffect()
-		default:
-			break
+let clientCardGridReducer: Reducer<ClientCardState, ClientCardBottomAction, ClientsEnvironment> =
+	.combine(
+		clientCardListReducer.pullback(
+			state: \ClientCardState.list,
+			action: /ClientCardBottomAction.child,
+			environment: { $0 }),
+		Reducer.init { state, action, env in
+			switch action {
+			case .grid(.onSelect(let item)):
+				state.activeItem = item
+				switch item {
+				case .appointments:
+					state.list.appointments.loadingState = .loading
+					return env.apiClient.getAppointments(clientId: state.client.id)
+						.map { .child(.appointments(.gotResult($0))) }
+						.eraseToEffect()
+				case .documents:
+					state.list.documents.loadingState = .loading
+					return env.apiClient.getDocuments(clientId: state.client.id)
+						.map { .child(.documents(.gotResult($0))) }
+						.eraseToEffect()
+				default:
+					break
+				}
+			case .child(_):
+				break
+			}
+			return .none
 		}
-	case .child(_):
-		break
-	}
-	return .none
-}
+)
 
 public enum ClientCardGridAction: Equatable {
 	case onSelect(ClientCardGridItem)

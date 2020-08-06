@@ -1,7 +1,6 @@
 import SwiftUI
 
 public struct AvatarView: View {
-	
 	public init(
 		avatarUrl: String?,
 		initials: String,

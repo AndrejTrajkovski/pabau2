@@ -7,11 +7,11 @@ public struct ClientsMockAPI: MockAPI, ClientsAPI {
 	}
 	
 	public func getItemsCount(clientId: Int) -> Effect<Result<ClientItemsCount, RequestError>, Never> {
-		mockSuccess(ClientItemsCount.init(id: 1, appointments: 2, photos: 4, financials: 6, treatmentNotes: 3, presriptions: 10, documents: 15, communications: 123, consents: 4381, alerts: 123, notes: 0), delay: 4.0)
+		mockSuccess(ClientItemsCount.init(id: 1, appointments: 2, photos: 4, financials: 6, treatmentNotes: 3, presriptions: 10, documents: 15, communications: 123, consents: 4381, alerts: 123, notes: 0))
 	}
 	
 	public func getAppointments(clientId: Int) -> Effect<Result<[Appointment], RequestError>, Never> {
-		mockSuccess([])
+		mockSuccess(Self.mockAppointments, delay: 2.0)
 	}
 	public func getPhotos(clientId: Int) -> Effect<Result<[SavedPhoto], RequestError>, Never> {
 		mockSuccess([])
@@ -23,7 +23,7 @@ public struct ClientsMockAPI: MockAPI, ClientsAPI {
 		mockSuccess([])
 	}
 	public func getDocuments(clientId: Int) -> Effect<Result<[Document], RequestError>, Never> {
-		mockSuccess([])
+		mockSuccess(Self.mockDocs, delay: 0.2)
 	}
 	public func getCommunications(clientId: Int) -> Effect<Result<[Communication], RequestError>, Never> {
 		mockSuccess([])
@@ -67,6 +67,54 @@ extension ClientsMockAPI {
 			Client(id:23, firstName: "Olivia", lastName:"Bailey", dOB: Date(), avatar: nil),
 			Client(id:24, firstName: "Penelope", lastName:"Baker", dOB: Date(), avatar: "dummy10"),
 			Client(id:25, firstName: "Pippa", lastName:"Ball", dOB: Date(), avatar: nil),
+	]
+	
+	static let mockAppointments =
+	[
+		Appointment(id: 1,
+								from: Date(),
+								to: Date(),
+								employeeId: 1,
+								employeeInitials: "AT", locationId: 1, locationName: "London", service: BaseService.init(id: 1, name: "Botox", color: "#eb4034")),
+		Appointment(id: 1,
+		from: Date(),
+		to: Date(),
+		employeeId: 1,
+		employeeInitials: "RU", locationId: 1, locationName: "Skopje", service: BaseService.init(id: 1, name: "Fillers", color: "#eb4034")),
+		Appointment(id: 1,
+		from: Date(),
+		to: Date(),
+		employeeId: 1,
+		employeeInitials: "AT", locationId: 1, locationName: "London", service: BaseService.init(id: 1, name: "Wax Job", color: "#eb4034")),
+		Appointment(id: 1,
+		from: Date(),
+		to: Date(),
+		employeeId: 1,
+		employeeInitials: "AT", locationId: 1, locationName: "Thailand", service: BaseService.init(id: 1, name: "Haircut", color: "#eb4034")),
+		Appointment(id: 1,
+		from: Date(),
+		to: Date(),
+		employeeId: 1,
+		employeeInitials: "AT", locationId: 1, locationName: "Manchester", service: BaseService.init(id: 1, name: "Thai Massage", color: "#eb4034"))
+	]
+
+	
+	static let mockDocs =
+	[
+		Document(id: 1, title: "Ticket", format: .txt, date: Date()),
+		Document(id: 3, title: "Some bmp file", format: .bmp, date: Date()),
+		Document(id: 4, title: "Excel List", format: .csv, date: Date()),
+		Document(id: 5, title: "Medical History", format: .doc, date: Date()),
+		Document(id: 6, title: "Homework", format: .docx, date: Date()),
+		Document(id: 7, title: "Drivers License", format: .jpg, date: Date()),
+		Document(id: 8, title: "List", format: .numbers, date: Date()),
+		Document(id: 9, title: "Blah Blah", format: .pages, date: Date()),
+		Document(id: 10, title: "CV", format: .pdf, date: Date()),
+		Document(id: 11, title: "Client Passport", format: .png, date: Date()),
+		Document(id: 12, title: "Tif file", format: .tif, date: Date()),
+		Document(id: 13, title: "Notes", format: .txt, date: Date()),
+		Document(id: 14, title: "XLS", format: .xls, date: Date()),
+		Document(id: 15, title: "XLSX", format: .xlsx, date: Date())
 	]
 }
 

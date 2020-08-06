@@ -27,9 +27,6 @@ let package = Package(
             dependencies: [
 							"Model",
 							"Util"
-				]),
-        .testTarget(
-            name: "ClientsTests",
-            dependencies: ["Clients"]),
+				])
     ]
 )

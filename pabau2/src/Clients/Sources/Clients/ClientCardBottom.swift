@@ -14,8 +14,7 @@ public let clientCardBottomReducer: Reducer<ClientCardState, ClientCardBottomAct
 			state: \ClientCardState.list,
 			action: /ClientCardBottomAction.child,
 			environment: { $0 }
-		)
-		,
+		),
 		clientCardGridReducer.pullback(
 			state: \ClientCardState.self,
 			action: /ClientCardBottomAction.self,
@@ -33,8 +32,12 @@ struct ClientCardBottom: View {
 													 action: { .grid($0)})
 				).padding(.top, 24)
 			} else {
-				
+				ParentClientCardChildView(clientCardState: viewStore.state)
 			}
 		}
 	}
+}
+
+func makeView(documents: [Document]) -> Text {
+	return Text("this is document")
 }

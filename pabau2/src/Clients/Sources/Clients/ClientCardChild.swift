@@ -4,6 +4,59 @@ import Model
 import Combine
 import Util
 
+protocol ClientCardChild: View {
+	associatedtype State: Equatable
+	var state: State { get set }
+	init(state: State)
+}
+
+struct ChildViewHolder<T: Equatable, Child: ClientCardChild>: View
+where T == Child.State {
+	let state: ClientCardChildState<T>
+	let child: Child.Type
+	init(child: Child.Type,
+			 state: ClientCardChildState<T>) {
+		self.child = child
+		self.state = state
+	}
+	var body: some View {
+		ViewBuilder.buildBlock(
+			(state.loadingState == .loading) ?
+				ViewBuilder.buildEither(second: Text("Loading"))
+				:
+				ViewBuilder.buildEither(first: Child.init(state:state.state)
+			)
+		)
+	}
+}
+
+struct ParentClientCardChildView: View {
+	let clientCardState: ClientCardState
+	var body: some View {
+		if clientCardState.activeItem == .appointments {
+			return AnyView(ChildViewHolder(child: AppointmentsList.self,
+																		 state: clientCardState.list.appointments))
+		} else {
+			return AnyView(ChildViewHolder(child:DocumentsList.self,
+																		 state: clientCardState.list.documents))
+		}
+//		ViewBuilder.buildBlock(
+//			(clientCardState.activeItem == .appointments) ?
+//				ViewBuilder.buildEither(second:
+//					ChildViewHolder(makeView(appointments:),
+//													state: clientCardState.list.appointments)
+//				)
+//				:
+//				ViewBuilder.buildEither(first:
+//					ChildViewHolder(makeView(documents:),
+//					state: clientCardState.list.documents)
+//				)
+//		)
+	}
+}
+
+
+
 struct ClientCardChildReducer<T: Equatable> {
 	let reducer = Reducer<ClientCardChildState<T>, GotClientListAction<T>, ClientsEnvironment> { state, action, _ in
 		switch action {
@@ -32,7 +85,7 @@ public struct ClientCardListState: Equatable {
 	var consents: ClientCardChildState<[FormData]>
 	var alerts: ClientCardChildState<[Model.Alert]>
 	var notes: ClientCardChildState<[Note]>
-	
+
 	init() {
 		self.appointments = ClientCardChildState.init(state: [])
 		self.details = ClientCardChildState.init(state: PatientDetails.mock)
