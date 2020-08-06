@@ -25,7 +25,7 @@ struct DayMonthYear: View {
 				.foregroundColor(.accentColor)
 			Text(Self.dateFormat.string(from: date))
 				.font(.regular15)
-				.foregroundColor(.clientCardDate)
+				.foregroundColor(.clientCardNeutral)
 		}
 	}
 }
@@ -43,7 +43,7 @@ struct HourMinutes: View {
 				.foregroundColor(.accentColor)
 			Text(Self.dateFormat.string(from: date))
 				.font(.regular15)
-				.foregroundColor(.clientCardDate)
+				.foregroundColor(.clientCardNeutral)
 		}
 	}
 }

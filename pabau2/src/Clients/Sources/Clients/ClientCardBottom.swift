@@ -37,7 +37,3 @@ struct ClientCardBottom: View {
 		}
 	}
 }
-
-func makeView(documents: [Document]) -> Text {
-	return Text("this is document")
-}

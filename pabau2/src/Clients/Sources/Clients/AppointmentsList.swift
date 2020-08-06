@@ -70,7 +70,7 @@ struct LocationLabel: View {
 				.foregroundColor(.accentColor)
 			Text(location)
 				.font(.regular15)
-				.foregroundColor(.clientCardDate)
+				.foregroundColor(.clientCardNeutral)
 		}
 	}
 }

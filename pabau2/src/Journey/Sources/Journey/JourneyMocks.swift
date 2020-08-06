@@ -78,9 +78,9 @@ struct JourneyMocks {
 												 Step(id: 7, stepType: .photos)
 		]),
 		patientDetails: PatientDetails.mock,
-		medHistory: JourneyMockAPI.getMedHistory(),
+		medHistory: FormTemplate.getMedHistory(),
 		consents: FormsCollection(ids: [], fromAll: []),
-		allConsents: flatten(JourneyMockAPI.mockConsents),
+		allConsents: flatten(FormTemplate.mockConsents),
 		photosState: PhotosState.init(JourneyMockAPI.photos())
 	)
 }

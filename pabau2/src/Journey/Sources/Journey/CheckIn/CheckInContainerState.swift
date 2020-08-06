@@ -254,7 +254,7 @@ extension CheckInContainerState {
 		self.stepTypes = pathway.steps.map { $0.stepType }
 		self.stepTypes.append(StepType.patientComplete)
 		self.allConsents = allConsents
-		self.allTreatmentForms = flatten(JourneyMockAPI.mockTreatmentN)
+		self.allTreatmentForms = flatten(FormTemplate.mockTreatmentN)
 		self.consents = consents
 		self.treatments = FormsCollection(ids: [], fromAll: [])
 		self.aftercare = JourneyMocks.aftercare
@@ -267,7 +267,7 @@ extension CheckInContainerState {
 		self.runningPrescriptions = [:]
 		self.prescriptionsCompleted = [:]
 		self.checkPatientCompleted = false
-		self.medHistory = JourneyMockAPI.getMedHistory()
+		self.medHistory = FormTemplate.getMedHistory()
 		self.medHistoryCompleted = false
 		self.selectedConsentsIds = []
 		self.selectedTreatmentFormsIds = []

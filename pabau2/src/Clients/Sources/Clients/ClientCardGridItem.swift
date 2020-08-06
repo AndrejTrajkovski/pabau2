@@ -70,4 +70,21 @@ public enum ClientCardGridItem: Equatable, CaseIterable {
 		case .notes: return "square.and.pencil"
 		}
 	}
+	
+	func count(model: ClientItemsCount?) -> Int? {
+		guard let model = model else { return nil }
+		switch self {
+		case .details: return nil
+		case .appointments: return model.appointments
+		case .photos: return model.photos
+		case .financials: return model.financials
+		case .treatmentNotes: return model.treatmentNotes
+		case .prescriptions: return model.presriptions
+		case .documents: return model.documents
+		case .communications: return model.communications
+		case .consents: return model.consents
+		case .alerts: return model.alerts
+		case .notes: return model.notes
+		}
+	}
 }

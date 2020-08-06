@@ -24,7 +24,7 @@ where T == Child.State {
 			(state.loadingState == .loading) ?
 				ViewBuilder.buildEither(second: Text("Loading"))
 				:
-				ViewBuilder.buildEither(first: Child.init(state:state.state)
+				ViewBuilder.buildEither(first: Child.init(state: state.state)
 			)
 		)
 	}
@@ -36,10 +36,39 @@ struct ParentClientCardChildView: View {
 		if clientCardState.activeItem == .appointments {
 			return AnyView(ChildViewHolder(child: AppointmentsList.self,
 																		 state: clientCardState.list.appointments))
-		} else {
-			return AnyView(ChildViewHolder(child:DocumentsList.self,
+		} else if clientCardState.activeItem == .documents {
+			return AnyView(ChildViewHolder(child: DocumentsList.self,
 																		 state: clientCardState.list.documents))
+		} else if clientCardState.activeItem == .prescriptions {
+			return AnyView(ChildViewHolder(child: PrescriptionsList.self,
+																		 state: clientCardState.list.prescriptions))
+		} else if clientCardState.activeItem == .treatmentNotes {
+			return AnyView(ChildViewHolder(child: TreatmentsList.self,
+																		 state: clientCardState.list.treatmentNotes))
+		} else if clientCardState.activeItem == .consents {
+			return AnyView(ChildViewHolder(child: ConsentsList.self,
+																		 state: clientCardState.list.consents))
+		} else if clientCardState.activeItem == .financials {
+			return AnyView(ChildViewHolder(child: FinancialsList.self,
+																		 state: clientCardState.list.financials))
+		} else if clientCardState.activeItem == .alerts {
+			return AnyView(ChildViewHolder(child: AlertsList.self,
+																		 state: clientCardState.list.alerts))
+		} else if clientCardState.activeItem == .notes {
+			return AnyView(ChildViewHolder(child: NotesList.self,
+																		 state: clientCardState.list.notes))
+		} else if clientCardState.activeItem == .communications {
+			return AnyView(ChildViewHolder(child: CommunicationsList.self,
+																		 state: clientCardState.list.communications))
+		} else if clientCardState.activeItem == .photos {
+			return AnyView(ChildViewHolder(child: PhotosList.self,
+																		 state: clientCardState.list.photos))
+		} else if clientCardState.activeItem == .details {
+			return EmptyView()
+//			return AnyView(ChildViewHolder(child: PatientDetails.self,
+//																		 state: clientCardState.list.photos))
 		}
+		
 //		ViewBuilder.buildBlock(
 //			(clientCardState.activeItem == .appointments) ?
 //				ViewBuilder.buildEither(second:

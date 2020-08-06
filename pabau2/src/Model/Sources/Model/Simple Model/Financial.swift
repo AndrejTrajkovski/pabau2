@@ -9,6 +9,7 @@ public struct Financial: Codable, Identifiable, Equatable {
 	public let issuedTo: String
 	public let method: String
 	public let amount: Int
+	public let locationName: String
 	
 	public init(
 		id: Int,
@@ -17,7 +18,8 @@ public struct Financial: Codable, Identifiable, Equatable {
 		employeeName: String,
 		issuedTo: String,
 		method: String,
-		amount: Int
+		amount: Int,
+		locationName: String
 	) {
 		self.id = id
 		self.date = date
@@ -26,6 +28,7 @@ public struct Financial: Codable, Identifiable, Equatable {
 		self.issuedTo = issuedTo
 		self.method = method
 		self.amount = amount
+		self.locationName = locationName
 	}
 	public enum CodingKeys: String, CodingKey {
 		case id = "id"
@@ -35,5 +38,6 @@ public struct Financial: Codable, Identifiable, Equatable {
 		case issuedTo
 		case method
 		case amount
+		case locationName
 	}
 }
