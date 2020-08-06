@@ -10,13 +10,21 @@ struct ClientCardItemBaseRow: View {
 				image
 					.frame(width: 36, height: 44)
 					.padding()
-				VStack(alignment: .leading, spacing: 4) {
-					Text(title).font(.semibold17)
-					DateLabel(date: date).font(.regular15)
-				}
+				TitleAndDate(title: title, date: date)
 			}
 			Divider()
 		}
 			.frame(height: 80)
+	}
+}
+
+struct TitleAndDate: View {
+	let title: String
+	let date: Date
+	var body: some View {
+		VStack(alignment: .leading, spacing: 4) {
+			Text(title).font(.semibold17)
+			DateLabel(date: date).font(.regular15)
+		}
 	}
 }

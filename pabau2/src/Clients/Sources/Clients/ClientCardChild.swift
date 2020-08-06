@@ -60,15 +60,17 @@ struct ParentClientCardChildView: View {
 		} else if clientCardState.activeItem == .communications {
 			return AnyView(ChildViewHolder(child: CommunicationsList.self,
 																		 state: clientCardState.list.communications))
-		} else if clientCardState.activeItem == .photos {
-			return AnyView(ChildViewHolder(child: PhotosList.self,
-																		 state: clientCardState.list.photos))
-		} else if clientCardState.activeItem == .details {
-			return EmptyView()
+		}
+//		else if clientCardState.activeItem == .photos {
+//			return AnyView(ChildViewHolder(child: PhotosList.self,
+//																		 state: clientCardState.list.photos))
+//		}
+		else if clientCardState.activeItem == .details {
+			return AnyView(EmptyView())
 //			return AnyView(ChildViewHolder(child: PatientDetails.self,
 //																		 state: clientCardState.list.photos))
 		}
-		
+		else { return AnyView(EmptyView()) }
 //		ViewBuilder.buildBlock(
 //			(clientCardState.activeItem == .appointments) ?
 //				ViewBuilder.buildEither(second:

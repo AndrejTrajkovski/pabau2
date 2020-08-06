@@ -44,6 +44,21 @@ let clientCardGridReducer: Reducer<ClientCardState, ClientCardBottomAction, Clie
 																				clientId: state.client.id)
 						.map { .child(.treatmentNotes(.gotResult($0))) }
 						.eraseToEffect()
+				case .communications:
+					state.list.communications.loadingState = .loading
+					return env.apiClient.getCommunications(clientId: state.client.id)
+					.map { .child(.communications(.gotResult($0))) }
+					.eraseToEffect()
+				case .alerts:
+					state.list.alerts.loadingState = .loading
+					return env.apiClient.getAlerts(clientId: state.client.id)
+					.map { .child(.alerts(.gotResult($0))) }
+					.eraseToEffect()
+				case .notes:
+					state.list.notes.loadingState = .loading
+					return env.apiClient.getNotes(clientId: state.client.id)
+						.map { .child(.notes(.gotResult($0))) }
+						.eraseToEffect()
 				default:
 					break
 				}

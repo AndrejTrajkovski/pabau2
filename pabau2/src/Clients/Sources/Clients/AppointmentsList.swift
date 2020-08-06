@@ -18,14 +18,6 @@ struct AppointmentsList: ClientCardChild {
 	}
 }
 
-public func makeView(appointments: [Appointment]) -> some View {
-	List {
-		ForEach(appointments.indices, id: \.self) { idx in
-			AppointmentRow(app: appointments[idx])
-		}
-	}
-}
-
 struct AppointmentRow: View {
 	let app: Appointment
 	var body: some View {

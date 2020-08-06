@@ -71,3 +71,34 @@ public struct Appointment: Codable, Equatable {
 		case service
 	}
 }
+
+extension Appointment {
+	static let mockAppointments =
+		[
+			Appointment(id: 1,
+									from: Date(),
+									to: Date(),
+									employeeId: 1,
+									employeeInitials: "AT", locationId: 1, locationName: "London", service: BaseService.init(id: 1, name: "Botox", color: "#eb4034")),
+			Appointment(id: 1,
+									from: Date(),
+									to: Date(),
+									employeeId: 1,
+									employeeInitials: "RU", locationId: 1, locationName: "Skopje", service: BaseService.init(id: 1, name: "Fillers", color: "#eb4034")),
+			Appointment(id: 1,
+									from: Date(),
+									to: Date(),
+									employeeId: 1,
+									employeeInitials: "AT", locationId: 1, locationName: "London", service: BaseService.init(id: 1, name: "Wax Job", color: "#eb4034")),
+			Appointment(id: 1,
+									from: Date(),
+									to: Date(),
+									employeeId: 1,
+									employeeInitials: "AT", locationId: 1, locationName: "Thailand", service: BaseService.init(id: 1, name: "Haircut", color: "#eb4034")),
+			Appointment(id: 1,
+									from: Date(),
+									to: Date(),
+									employeeId: 1,
+									employeeInitials: "AT", locationId: 1, locationName: "Manchester", service: BaseService.init(id: 1, name: "Thai Massage", color: "#eb4034"))
+	]
+}
