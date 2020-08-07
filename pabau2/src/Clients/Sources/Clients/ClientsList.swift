@@ -5,7 +5,7 @@ import Util
 
 let clientsListReducer: Reducer<ClientsState, ClientsListAction, ClientsEnvironment> =
 	.combine (
-		clientCardReducer.optional.pullback(
+		clientCardReducer.pullback(
 			state: \.selectedClient,
 			action: /ClientsListAction.selectedClient,
 			environment: { $0}),
@@ -23,7 +23,11 @@ let clientsListReducer: Reducer<ClientsState, ClientsListAction, ClientsEnvironm
 			guard case .success(let count) = result else { break }
 			state.selectedClient?.client.count = count
 		case .onBackFromClientCard:
-			state.selectedClient = nil
+			if state.selectedClient?.activeItem != nil {
+				state.selectedClient!.activeItem = nil
+			} else {
+				state.selectedClient = nil
+			}
 		case .selectedClient(_):
 			break
 		}
@@ -62,10 +66,9 @@ struct ClientsList: View {
 																			action: { .selectedClient($0) }),
 										 then: {
 											ClientCard.init(store: $0)
-												.customBackButton(text: Texts.clients,
-																					action: {
-																						viewStore.send(.onBackFromClientCard)
-												})
+												.customBackButton {
+													viewStore.send(.onBackFromClientCard)
+												}
 						}
 					)
 				)

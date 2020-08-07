@@ -30,7 +30,7 @@ where T == Child.State {
 	}
 }
 
-struct ParentClientCardChildView: View {
+struct ClientCardChildWrapper: View {
 	let clientCardState: ClientCardState
 	var body: some View {
 		if clientCardState.activeItem == .appointments {

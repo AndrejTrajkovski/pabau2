@@ -32,7 +32,7 @@ struct ClientCardBottom: View {
 													 action: { .grid($0)})
 				).padding(.top, 24)
 			} else {
-				ParentClientCardChildView(clientCardState: viewStore.state)
+				ClientCardChildWrapper(clientCardState: viewStore.state)
 			}
 		}
 	}

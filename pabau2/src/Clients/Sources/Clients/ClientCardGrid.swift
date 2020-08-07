@@ -78,7 +78,10 @@ let clientCardGridReducer: Reducer<ClientCardState, ClientCardBottomAction, Clie
 
 public enum ClientCardGridAction: Equatable {
 	case onSelect(ClientCardGridItem)
+	case appointmentsAction(ClientCardAppointments)
 }
+
+public enum ClientCardAppointments: Equatable {}
 
 struct ClientCardGrid: View {
 	let store: Store<ClientItemsCount?, ClientCardGridAction>
