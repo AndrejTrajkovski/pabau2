@@ -8,6 +8,7 @@ struct FinancialsList: ClientCardChild {
 		List {
 			ForEach(self.state.indices, id: \.self) { idx in
 				FinancialRow(financial: self.state[idx])
+					.background(idx % 2 == 0 ? Color.clear : Color(hex: "F9F9F9"))
 			}
 		}
 	}
@@ -25,7 +26,6 @@ private struct FinancialRow: View {
 			FinancialsTextRow(text1: Texts.issuedTo, text2: financial.issuedTo)
 			FinancialsTextRow(text1: Texts.method, text2: financial.method)
 			FinancialsTextRow(text1: Texts.amount, text2: String(financial.amount))
-			Divider()
 		}
 	}
 }
@@ -34,10 +34,13 @@ private struct FinancialsRow<Content: View>: View {
 	let title: String
 	let content: () -> Content
 	var body: some View {
-		HStack {
-			Text(title).font(.semibold17)
-			Spacer()
-			content()
+		VStack(spacing: 0) {
+			HStack {
+				Text(title).font(.semibold17)
+				Spacer()
+				content()
+			}
+			Divider()
 		}.frame(height: 44.0)
 	}
 }

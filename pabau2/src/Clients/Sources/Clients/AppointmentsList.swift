@@ -21,7 +21,7 @@ struct AppointmentsList: ClientCardChild {
 struct AppointmentRow: View {
 	let app: Appointment
 	var body: some View {
-		VStack {
+		VStack(spacing: 0) {
 			HStack {
 				AvatarView(avatarUrl: nil,
 									 initials: app.employeeInitials,
@@ -35,6 +35,7 @@ struct AppointmentRow: View {
 				}
 				Spacer()
 				AppointmentIcons()
+					.padding()
 			}
 			Divider()
 		}

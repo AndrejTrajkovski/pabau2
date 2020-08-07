@@ -5,9 +5,12 @@ struct ClientCardItemBaseRow: View {
 	let date: Date
 	let image: Image
 	var body: some View {
-		VStack(alignment: .leading) {
+		VStack(alignment: .leading, spacing: 0) {
 			HStack {
 				image
+					.resizable()
+					.aspectRatio(contentMode: .fit)
+					.foregroundColor(.accentColor)
 					.frame(width: 36, height: 44)
 					.padding()
 				TitleAndDate(title: title, date: date)
