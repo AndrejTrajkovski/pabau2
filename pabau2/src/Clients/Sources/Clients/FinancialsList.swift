@@ -25,6 +25,7 @@ private struct FinancialRow: View {
 			FinancialsTextRow(text1: Texts.issuedTo, text2: financial.issuedTo)
 			FinancialsTextRow(text1: Texts.method, text2: financial.method)
 			FinancialsTextRow(text1: Texts.amount, text2: String(financial.amount))
+			Divider()
 		}
 	}
 }
@@ -37,7 +38,7 @@ private struct FinancialsRow<Content: View>: View {
 			Text(title).font(.semibold17)
 			Spacer()
 			content()
-		}
+		}.frame(height: 44.0)
 	}
 }
 
@@ -61,7 +62,10 @@ private struct FinancialsTextRow: View {
 	let text2: String
 	var body: some View {
 		FinancialsRow(title: text1,
-									content: { Text(self.text2) })
+									content: {
+										Text(self.text2)
+											.foregroundColor(.clientCardNeutral)
+		})
 	}
 }
 
