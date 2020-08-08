@@ -15,30 +15,24 @@ protocol ClientCardChildParentState: Equatable {
 	var state: ClientCardChildState<T> { get set }
 }
 
-//struct ClientCardChildLoading: View {
-//
+//struct ClientCardChildContainer<State: ClientCardChildParentState, Action: ClientCardChildParentAction, T: Equatable, ClientCardChildView: View>: View {
+//	var store: Store<State, Action>
+//	@ObservedObject var viewStore: ViewStore<State, Action>
+////	var keyPath: KeyPath<State, ClientCardChildState<T>>
+//	let makeChild: (Store<State, Action>) -> ClientCardChildView
+//	var body: some View {
+//		if self.viewStore.state.state.loadingState == .loading {
+//			return AnyView(Text("Loading"))
+//		} else {
+//			return AnyView(makeChild(self.store))
+//		}
+//	}
 //}
-
-struct ClientCardChildContainer<State: ClientCardChildParentState, Action, T: Equatable, ClientCardChildView: View>: View {
-	var store: Store<State, Action>
-	@ObservedObject var viewStore: ViewStore<State, Action>
-//	var keyPath: KeyPath<State, ClientCardChildState<T>>
-	let makeChild: (Store<State, Action>) -> ClientCardChildView
-	var body: some View {
-		if self.viewStore.state.state.loadingState == .loading {
-			return AnyView(Text("Loading"))
-		} else {
-			return AnyView(makeChild(self.store))
-		}
-	}
-}
 
 protocol ClientCardChild: View {
 	associatedtype State: ClientCardChildParentState
 	associatedtype Action: ClientCardChildParentAction
 	var store: Store<State, Action> { get set }
-//	var keyPath: WritableKeyPath<State, ClientCardChildState<T>> { get set }
-//	var casePath: CasePath<Action, GotClientListAction<T>> { get set }
 	init(store: Store<State, Action>)
 }
 //KEYPATH
@@ -55,7 +49,8 @@ Child: ClientCardChild>: View where U == Child.State, V == Child.Action {
 		WithViewStore(store) { viewStore in
 			ViewBuilder.buildBlock(
 				(viewStore.state.state.loadingState == .loading) ?
-					ViewBuilder.buildEither(second: Text("Loading"))
+					ViewBuilder.buildEither(second: LoadingView(title: "Loading",
+																											bindingIsShowing: .constant(true), content: { EmptyView() }))
 					:
 					ViewBuilder.buildEither(first: Child.init(store: self.store)
 				)
@@ -74,7 +69,9 @@ struct ClientCardChildWrapper: View {
 	}
 
 	var body: some View {
-		if viewStore.state.activeItem == .appointments {
+		if viewStore.state.activeItem == .details {
+			return AnyView(EmptyView())
+		} else if viewStore.state.activeItem == .appointments {
 			return AnyView(ChildViewHolder(child: AppointmentsList.self,
 																		 store:
 				self.store.scope(state: { $0.list.appointments },
@@ -84,8 +81,8 @@ struct ClientCardChildWrapper: View {
 			return AnyView(ChildViewHolder(child: DocumentsList.self,
 																		 store:
 				self.store.scope(state: { $0.list.documents },
-												 action: { .child(.documents($0) )}))
-			)
+												 action: { .child(.documents($0) )})
+			))
 		} else {
 			return AnyView(EmptyView())
 		}
