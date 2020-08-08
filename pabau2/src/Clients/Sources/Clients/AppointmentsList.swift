@@ -2,17 +2,48 @@ import Foundation
 import SwiftUI
 import Model
 import Util
+import ComposableArchitecture
 
-//let appointmentReducer = Reducer<ClientCardChildState<[Appointment]>, GotClientListAction<[Appointment]>, ClientsEnvironment> { state, action, env in
-//	return .none
-//}
+public let appointmentsListReducer: Reducer<AppointmentsListState, AppointmentsListAction, ClientsEnvironment> = Reducer.combine(
+	ClientCardChildReducer<[Appointment]>().reducer.pullback(
+		state: \AppointmentsListState.state,
+		action: /AppointmentsListAction.action,
+		environment: { $0 }
+	)
+)
+
+public enum AppointmentsListAction: ClientCardChildParentAction, Equatable {
+	var action: GotClientListAction<[Appointment]>? {
+		get {
+			if case .action(let app) = self {
+				return app
+			} else {
+				return nil
+			}
+		}
+		set {
+			if let newValue = newValue {
+				self = .action(newValue)
+			}
+		}
+	}
+	case action(GotClientListAction<[Appointment]>)
+	typealias T = [Appointment]
+}
+
+public struct AppointmentsListState: ClientCardChildParentState, Equatable {
+	typealias T = [Appointment]
+	var state: ClientCardChildState<[Appointment]>
+}
 
 struct AppointmentsList: ClientCardChild {
-	var state: [Appointment]
+	var store: Store<AppointmentsListState, AppointmentsListAction>
 	var body: some View {
-		List {
-			ForEach(state.indices, id: \.self) { idx in
-				AppointmentRow(app: self.state[idx])
+		WithViewStore(store) { viewStore in
+			List {
+				ForEach(viewStore.state.state.state.indices, id: \.self) { idx in
+					AppointmentRow(app: viewStore.state.state.state[idx])
+				}
 			}
 		}
 	}

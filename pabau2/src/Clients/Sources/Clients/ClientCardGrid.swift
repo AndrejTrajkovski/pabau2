@@ -17,14 +17,14 @@ let clientCardGridReducer: Reducer<ClientCardState, ClientCardBottomAction, Clie
 				state.activeItem = item
 				switch item {
 				case .appointments:
-					state.list.appointments.loadingState = .loading
+					state.list.appointments.state.loadingState = .loading
 					return env.apiClient.getAppointments(clientId: state.client.id)
-						.map { .child(.appointments(.gotResult($0))) }
+						.map { .child(.appointments(.action(.gotResult($0)))) }
 						.eraseToEffect()
 				case .documents:
-					state.list.documents.loadingState = .loading
+					state.list.documents.state.loadingState = .loading
 					return env.apiClient.getDocuments(clientId: state.client.id)
-						.map { .child(.documents(.gotResult($0))) }
+						.map { .child(.documents(.action( .gotResult($0)))) }
 						.eraseToEffect()
 				case .prescriptions:
 					state.list.prescriptions.loadingState = .loading

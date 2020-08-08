@@ -1,16 +1,47 @@
 import SwiftUI
 import Model
+import ComposableArchitecture
 
 private func asset(_ format: DocumentExtension) -> String {
 	return "ico-clients-documents-" + format.rawValue
 }
 
+struct DocumentsListState: ClientCardChildParentState, Equatable {
+	typealias T = [Document]
+	var state: ClientCardChildState<[Document]>
+}
+
+public enum DocumentsListAction: ClientCardChildParentAction, Equatable {
+	var action: GotClientListAction<[Document]>? {
+		get {
+			if case .action(let localAction) = self  {
+				return localAction
+		} else {
+			return nil
+			}
+		}
+		set {
+			if let newValue = newValue {
+				self = .action(newValue)
+			}
+		}
+	}
+	case action(GotClientListAction<[Document]>)
+	typealias T = [Document]
+}
+
 struct DocumentsList: ClientCardChild {
-	var state: [Document]
+	typealias State = DocumentsListState
+	
+	typealias Action = DocumentsListAction
+	
+	var store: Store<DocumentsListState, DocumentsListAction>
 	var body: some View {
-		List {
-			ForEach(state.indices, id: \.self) { idx in
-				DocumentRow(doc: self.state[idx])
+		WithViewStore(store) { viewStore in
+			List {
+				ForEach(viewStore.state.state.state.indices, id: \.self) { idx in
+					DocumentRow(doc: viewStore.state.state.state[idx])
+				}
 			}
 		}
 	}
