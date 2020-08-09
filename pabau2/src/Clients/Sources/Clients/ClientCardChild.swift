@@ -70,7 +70,11 @@ struct ClientCardChildWrapper: View {
 
 	var body: some View {
 		if viewStore.state.activeItem == .details {
-			return AnyView(EmptyView())
+			return AnyView(ChildViewHolder(child: PatientDetailsClientCard.self,
+																		 store:
+				self.store.scope(state: { $0.list.details },
+												 action: { .child(.details($0) )})
+			))
 		} else if viewStore.state.activeItem == .appointments {
 			return AnyView(ChildViewHolder(child: AppointmentsList.self,
 																		 store:
@@ -151,7 +155,7 @@ struct ClientCardChildReducer<T: Equatable> {
 
 public struct ClientCardListState: Equatable {
 	var appointments: AppointmentsListState
-	var details: ClientCardChildState<PatientDetails>
+	var details: PatientDetailsClientCardState
 	var photos: ClientCardChildState<[SavedPhoto]>
 	var financials: ClientCardChildState<[Financial]>
 	var treatmentNotes: ClientCardChildState<[FormData]>
@@ -166,7 +170,7 @@ public struct ClientCardListState: Equatable {
 		self.appointments = AppointmentsListState(
 			state: ClientCardChildState.init(state: [])
 		)
-		self.details = ClientCardChildState.init(state: PatientDetails.mock)
+		self.details = PatientDetailsClientCardState(state: ClientCardChildState.init(state: PatientDetails.mock))
 		self.photos = ClientCardChildState.init(state: [])
 		self.financials = ClientCardChildState.init(state: [])
 		self.treatmentNotes = ClientCardChildState.init(state: [])
@@ -191,7 +195,7 @@ public enum GotClientListAction<T: Equatable>: Equatable {
 
 public enum ClientCardChildAction: Equatable {
 	case appointments(AppointmentsListAction)
-	case details(GotClientListAction<PatientDetails>)
+	case details(PatientDetailsClientCardAction)
 	case photos(GotClientListAction<[SavedPhoto]>)
 	case financials(GotClientListAction<[Financial]>)
 	case treatmentNotes(GotClientListAction<[FormData]>)
@@ -214,7 +218,7 @@ let clientCardListReducer: Reducer<ClientCardListState, ClientCardChildAction, C
 		action: /ClientCardChildAction.photos,
 		environment: { $0 }
 	),
-	ClientCardChildReducer<PatientDetails>().reducer.pullback(
+	patientDetailsClientCardReducer.pullback(
 		state: \ClientCardListState.details,
 		action: /ClientCardChildAction.details,
 		environment: { $0 }

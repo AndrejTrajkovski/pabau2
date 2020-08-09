@@ -12,4 +12,6 @@ public protocol ClientsAPI {
 	func getCommunications(clientId: Int) -> Effect<Result<[Communication], RequestError>, Never>
 	func getAlerts(clientId: Int) -> Effect<Result<[Alert], RequestError>, Never>
 	func getNotes(clientId: Int) -> Effect<Result<[Note], RequestError>, Never>
+	
+	func getPatientDetails(clientId: Int) -> Effect<Result<PatientDetails, RequestError>, Never>
 }

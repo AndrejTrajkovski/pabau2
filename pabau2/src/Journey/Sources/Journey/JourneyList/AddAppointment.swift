@@ -242,7 +242,7 @@ struct AddAppSections: View {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
-	
+
 	var body: some View {
 		VStack(alignment: .leading, spacing: 32) {
 			Section1(store: self.store)

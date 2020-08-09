@@ -1,6 +1,6 @@
 import Foundation
 
-public struct PatientDetails: Equatable, Identifiable {
+public struct PatientDetails: Equatable, Identifiable, Codable {
 	public var id: UUID = UUID()
 	public var canProceed: Bool {
 		return !firstName.isEmpty && !lastName.isEmpty && !email.isEmpty
@@ -45,5 +45,29 @@ extension PatientDetails {
 		smsComm: false,
 		phoneComm: false,
 		postComm: false
+	)
+}
+
+extension PatientDetails {
+	public static let mockA = PatientDetails(
+		id: UUID(),
+		salutation: "Mr",
+		firstName: "Andrej",
+		lastName: "Trajkovski",
+		dob: "28.02.1991",
+		phone: "+38970327425",
+		cellPhone: "",
+		email: "andrej@pabau.com",
+		addressLine1: "Bansko 29-a",
+		addressLine2: "",
+		postCode: "1000",
+		city: "Skopje",
+		county: "Kisela Voda",
+		country: "Macedonia",
+		howDidYouHear: "email",
+		emailComm: true,
+		smsComm: false,
+		phoneComm: false,
+		postComm: true
 	)
 }

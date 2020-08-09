@@ -4,6 +4,7 @@ import Overture
 import Util
 import Form
 
+//TODO: Remove this and use IdentifiedArray from TCA
 protocol MyCollection {
 	associatedtype A: Identifiable
 	var byId: [A.ID: A] { get set }

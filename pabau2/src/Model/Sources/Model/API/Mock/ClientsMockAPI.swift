@@ -2,6 +2,10 @@ import ComposableArchitecture
 import SwiftDate
 
 public struct ClientsMockAPI: MockAPI, ClientsAPI {
+	public func getPatientDetails(clientId: Int) -> Effect<Result<PatientDetails, RequestError>, Never> {
+		mockSuccess(PatientDetails.mockA)
+	}
+	
 	public func getClients() -> Effect<Result<[Client], RequestError>, Never> {
 		mockSuccess(Client.mockClients, delay: 0.2)
 	}

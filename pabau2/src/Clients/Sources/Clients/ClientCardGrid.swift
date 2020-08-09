@@ -63,9 +63,12 @@ let clientCardGridReducer: Reducer<ClientCardState, ClientCardBottomAction, Clie
 					state.list.financials.loadingState = .loading
 					return env.apiClient.getFinancials(clientId: state.client.id)
 						.map { .child(.financials(.gotResult($0))) }
-					.eraseToEffect()
+						.eraseToEffect()
 				case .details:
-					fatalError()
+					state.list.details.state.loadingState = .loading
+					return env.apiClient.getPatientDetails(clientId: state.client.id)
+						.map { .child(.details(.action(.gotResult($0)))) }
+						.eraseToEffect()
 				case .photos:
 					fatalError()
 				}

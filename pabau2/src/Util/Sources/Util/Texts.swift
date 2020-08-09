@@ -113,26 +113,26 @@ Tap the aftercare bellow that you wish to send to the client. The aftercare will
 	public static let recallsDesc = """
 	You can schedule an email or sms to the client X amiunt of days after the appointment.
 	"""
-	
+
 	public static let addPhotos = "Add Photos"
 	public static let editPhotos = "Edit Photos"
-	
+
 	public static let usedInProcedure = "Used in Procedure"
 	public static let total = "Total"
 	public static let allProducts = "All Products"
 	public static let increment = "Increment"
 	public static let injectables = "Injectables".localized
-	
+
 	public static let sales = "Sales".localized
 	public static let delete = "Delete".localized
 	public static let status = "Status".localized
 	public static let `repeat` = "Repeat".localized
 	public static let documents = "Documents".localized
 	public static let reschedule = "Reschedule".localized
-	
+
 	public static let clients = "Clients"
 	public static let clientSearchPlaceholder = "Search by first name, last name or email"
-	
+
 	public static let details = "details".capitalized.localized
 	public static let appointments = "appointments".capitalized.localized
 	public static let photos = "photos".capitalized.localized
@@ -140,20 +140,20 @@ Tap the aftercare bellow that you wish to send to the client. The aftercare will
 	public static let prescriptions = "prescriptions".capitalized.localized
 	public static let alerts = "alerts".capitalized.localized
 	public static let notes = "notes".capitalized.localized
-	
+
 	public static let mobile = "mobile".localized
 	public static let call = "call".localized
 	public static let facetime = "facetime".localized
 	public static let mail = "mail".localized
-	
+
 	public static let back = "Back"
-	
+
 	public static let invoice = "Invoice"
 	public static let location = "Location"
 	public static let issuedTo = "Issued To"
 	public static let method = "Method"
 	public static let amount = "Amount"
-	
+
 }
 
 extension String {

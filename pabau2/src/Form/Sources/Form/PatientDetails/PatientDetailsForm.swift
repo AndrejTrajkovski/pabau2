@@ -3,19 +3,19 @@ import Util
 import ComposableArchitecture
 import Model
 
-struct PatientDetailsForm: View {
+public struct PatientDetailsForm: View {
 	let store: Store<PatientDetails, PatientDetailsAction>
 	@ObservedObject var viewStore: ViewStore<PatientDetails, PatientDetailsAction>
 	let vms: [[TextAndTextViewVM]]
 
-	init(store: Store<PatientDetails, PatientDetailsAction>) {
+	public init(store: Store<PatientDetails, PatientDetailsAction>) {
 		self.store = store
 		let viewStore = ViewStore(store)
 		self.vms = viewModels(viewStore)
 		self.viewStore = viewStore
 	}
 
-	var body: some View {
+	public var body: some View {
 		print("Patient details body")
 		return
 			ScrollView {
