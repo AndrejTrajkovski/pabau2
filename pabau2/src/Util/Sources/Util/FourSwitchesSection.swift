@@ -1,5 +1,10 @@
 import SwiftUI
 #if !os(macOS)
+
+public enum ToggleAction: Equatable {
+	case setTo(Bool)
+}
+
 public struct FourSwitchesSection: View {
 	@Binding var swithc1: Bool
 	@Binding var switch2: Bool

@@ -3,6 +3,7 @@ import Model
 import ComposableArchitecture
 import Util
 import Overture
+import Form
 
 public enum CheckInBodyAction {
 	case updateForm(index: Int, action: UpdateFormAction)

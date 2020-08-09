@@ -2,6 +2,7 @@ import SwiftUI
 import Model
 import ComposableArchitecture
 import Util
+import Form
 
 public struct Duration: ListPickerElement {
 	public var name: String
@@ -423,18 +424,6 @@ struct LabelAndLowerContent<Content: View>: View {
 			Divider().foregroundColor(.textFieldBottomLine)
 		}
 	}
-}
-
-public enum ToggleAction: Equatable {
-	case setTo(Bool)
-}
-
-let switchCellReducer = Reducer<Bool, ToggleAction, Any> { state, action, _ in
-	switch action {
-	case .setTo(let value):
-		state = value
-	}
-	return .none
 }
 
 public protocol ListPickerElement: Identifiable, Equatable {

@@ -1,5 +1,6 @@
 import Model
 import ComposableArchitecture
+import Form
 
 public struct CheckInViewState: Equatable {
 	var selectedIndex: Int

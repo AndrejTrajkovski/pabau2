@@ -39,6 +39,7 @@
 		82104536240CE524004EA838 /* libswiftXCTest.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftXCTest.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/libswiftXCTest.tbd; sourceTree = DEVELOPER_DIR; };
 		825BE7E92436226300422910 /* checkIn.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; name = checkIn.mp4; path = pabau2/src/Assets.xcassets/checkIn.mp4; sourceTree = "<group>"; };
 		82811EF323E06BCB0066AFDC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		828566C024DF3D5B009FA63E /* Form */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Form; sourceTree = "<group>"; };
 		8297A2B323D9BA0200D091FF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8297A2B423D9BA0200D091FF /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8298A11324D486960079BFE9 /* Clients */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Clients; sourceTree = "<group>"; };
@@ -127,6 +128,7 @@
 		82CACDF7241027320021E1DE /* src */ = {
 			isa = PBXGroup;
 			children = (
+				828566C024DF3D5B009FA63E /* Form */,
 				8298A11324D486960079BFE9 /* Clients */,
 				82E9C12524D035A60023B98B /* Journey */,
 				82E9C11C24D021550023B98B /* Login */,
