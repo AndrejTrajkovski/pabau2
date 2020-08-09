@@ -74,6 +74,8 @@ let clientCardGridReducer: Reducer<ClientCardState, ClientCardBottomAction, Clie
 				}
 			case .child(_):
 				break
+			case .backBtnTap:
+				break//handled in clientCardReducer
 			}
 			return .none
 		}

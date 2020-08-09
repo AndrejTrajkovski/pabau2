@@ -1,12 +1,26 @@
 import SwiftUI
 import Model
 import ComposableArchitecture
+import Util
 
 let clientCardReducer: Reducer<ClientCardState?, ClientCardAction, ClientsEnvironment> = .combine(
 	clientCardBottomReducer.optional.pullback(
 		state: \ClientCardState.self,
 		action: /ClientCardAction.bottom,
-		environment: { $0 })
+		environment: { $0 }),
+	.init { state, action, env in
+		switch action {
+		case .bottom(.backBtnTap):
+			if state?.activeItem != nil {
+				state!.activeItem = nil
+			} else {
+				state = nil
+			}
+		case .bottom(_):break
+		case .top(_): break
+		}
+		return .none
+	}
 )
 
 public struct ClientCardState: Equatable {
@@ -18,24 +32,27 @@ public struct ClientCardState: Equatable {
 public enum ClientCardAction: Equatable {
 	case top(ClientCardTopAction)
 	case bottom(ClientCardBottomAction)
-	case backBtnTapped
 }
 
 struct ClientCard: View {
 	let store: Store<ClientCardState, ClientCardAction>
+	@ObservedObject var viewStore: ViewStore<ClientCardState, ClientCardAction>
+	init(store: Store<ClientCardState, ClientCardAction>) {
+		self.store = store
+		self.viewStore = ViewStore(store)
+	}
+	
 	var body: some View {
-		WithViewStore(store) { viewStore in
-			VStack {
-				ClientCardTop(store:
-					self.store.scope(state: { $0.client }, action: { .top($0) })
-				)
-					.padding(24)
-				Divider()
-				ClientCardBottom(store:
-					self.store.scope(state: { $0 }, action: { .bottom($0) })
-				)
-					.frame(minHeight: 0, maxHeight: .infinity)
-			}
+		VStack {
+			ClientCardTop(store:
+				self.store.scope(state: { $0.client }, action: { .top($0) })
+			)
+				.padding(24)
+			Divider()
+			ClientCardBottom(store:
+				self.store.scope(state: { $0 }, action: { .bottom($0) })
+			)
+				.frame(minHeight: 0, maxHeight: .infinity)
 		}
 	}
 }

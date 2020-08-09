@@ -22,12 +22,6 @@ let clientsListReducer: Reducer<ClientsState, ClientsListAction, ClientsEnvironm
 		case .gotItemsResponse(let result):
 			guard case .success(let count) = result else { break }
 			state.selectedClient?.client.count = count
-		case .onBackFromClientCard:
-			if state.selectedClient?.activeItem != nil {
-				state.selectedClient!.activeItem = nil
-			} else {
-				state.selectedClient = nil
-			}
 		case .selectedClient(_):
 			break
 		}
@@ -35,7 +29,6 @@ let clientsListReducer: Reducer<ClientsState, ClientsListAction, ClientsEnvironm
 		}
 )
 public enum ClientsListAction: Equatable {
-	case onBackFromClientCard
 	case identified(id: Int, action: ClientRowAction)
 	case onSearchText(String)
 	case selectedClient(ClientCardAction)
@@ -66,9 +59,6 @@ struct ClientsList: View {
 																			action: { .selectedClient($0) }),
 										 then: {
 											ClientCard.init(store: $0)
-												.customBackButton {
-													viewStore.send(.onBackFromClientCard)
-												}
 						}
 					)
 				)

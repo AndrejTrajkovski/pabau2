@@ -70,11 +70,13 @@ struct ClientCardChildWrapper: View {
 
 	var body: some View {
 		if viewStore.state.activeItem == .details {
-			return AnyView(ChildViewHolder(child: PatientDetailsClientCard.self,
+			return AnyView(
+				ChildViewHolder(child: PatientDetailsClientCard.self,
 																		 store:
 				self.store.scope(state: { $0.list.details },
 												 action: { .child(.details($0) )})
-			))
+				)
+			)
 		} else if viewStore.state.activeItem == .appointments {
 			return AnyView(ChildViewHolder(child: AppointmentsList.self,
 																		 store:
