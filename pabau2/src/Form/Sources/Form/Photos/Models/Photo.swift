@@ -18,7 +18,7 @@ extension Photo: Identifiable {
 }
 
 extension Photo {
-	subscript<T>(dynamicMember keyPath: KeyPath<PhotoVariant, T>) -> T {
+	public subscript<T>(dynamicMember keyPath: KeyPath<PhotoVariant, T>) -> T {
 			switch self {
 			case .saved(let saved):
 					return saved[keyPath: keyPath]

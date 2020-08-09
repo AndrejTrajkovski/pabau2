@@ -11,7 +11,7 @@ public struct PhotosState: Equatable, Identifiable {
 	public var photos: IdentifiedArray<PhotoVariantId, PhotoViewModel> = []
 	public var selectedIds: [PhotoVariantId] = []
 	public var editPhotos: EditPhotosState?
-	
+
 	var selectPhotos: SelectPhotosState {
 		get { SelectPhotosState(photos: photos, selectedIds: selectedIds) }
 		set { self.selectedIds = newValue.selectedIds}

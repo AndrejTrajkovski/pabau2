@@ -82,7 +82,7 @@ struct JourneyMocks {
 		medHistory: FormTemplate.getMedHistory(),
 		consents: FormsCollection(ids: [], fromAll: []),
 		allConsents: flatten(FormTemplate.mockConsents),
-		photosState: PhotosState.init(JourneyMockAPI.photos())
+		photosState: PhotosState.init(SavedPhoto.mock())
 	)
 }
 

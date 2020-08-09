@@ -2,7 +2,7 @@ import ComposableArchitecture
 import ASCollectionView
 import SwiftUI
 
-public let selectPhotosReducer: Reducer<SelectPhotosState, SelectPhotosAction, FormEnvironment> = .init {
+public let selectPhotosReducer: Reducer<SelectPhotosState, SelectPhotosAction, Any> = .init {
 	state, action, _ in
 	switch action {
 	case .didTouchPhotoId(let id):
@@ -13,9 +13,25 @@ public let selectPhotosReducer: Reducer<SelectPhotosState, SelectPhotosAction, F
 }
 
 public struct SelectPhotosState: Equatable {
-	let photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>
-	var selectedIds: [PhotoVariantId]
-
+	public let photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>
+	public var selectedIds: [PhotoVariantId]
+	
+	public init(
+		photos: IdentifiedArrayOf<PhotoViewModel>,
+		selectedIds: [PhotoVariantId]
+	) {
+		self.photos = IdentifiedArrayOf<PhotoViewModel>.init(photos)
+		self.selectedIds = selectedIds
+	}
+	
+	public init(
+		photosArray: [PhotoViewModel],
+		selectedIds: [PhotoVariantId]
+	) {
+		self.photos = IdentifiedArrayOf<PhotoViewModel>.init(photosArray)
+		self.selectedIds = selectedIds
+	}
+	
 	func isSelected(_ photo: PhotoViewModel) -> Bool {
 		return self.selectedIds.contains(photo.id)
 	}
@@ -33,7 +49,7 @@ struct SelectPhotos: View {
 			ASCollectionView.init(
 			data: viewStore.photos) { photo, _ in
 				MultipleSelectPhotoCell(photo: photo,
-									isSelected: viewStore.state.isSelected(photo))
+																isSelected: viewStore.state.isSelected(photo))
 					.onTapGesture {
 						viewStore.send(.didTouchPhotoId(photo.id))
 				}

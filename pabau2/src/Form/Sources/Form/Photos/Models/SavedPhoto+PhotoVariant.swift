@@ -2,5 +2,5 @@ import Model
 import Foundation
 
 extension SavedPhoto: PhotoVariant {
-	var date: Date { dateTaken}
+	public var date: Date { dateTaken}
 }

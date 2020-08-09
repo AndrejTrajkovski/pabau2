@@ -18,7 +18,7 @@ public struct ClientsMockAPI: MockAPI, ClientsAPI {
 		mockSuccess(Appointment.mockAppointments, delay: 2.0)
 	}
 	public func getPhotos(clientId: Int) -> Effect<Result<[SavedPhoto], RequestError>, Never> {
-		mockSuccess([])
+		mockSuccess(SavedPhoto.mockCC)
 	}
 	public func getFinancials(clientId: Int) -> Effect<Result<[Financial], RequestError>, Never> {
 		mockSuccess(Financial.mockFinancials)

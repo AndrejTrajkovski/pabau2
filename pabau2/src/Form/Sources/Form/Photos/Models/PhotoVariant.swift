@@ -1,5 +1,5 @@
 import Foundation
 
-protocol PhotoVariant {
+public protocol PhotoVariant {
 	var date: Date { get }
 }

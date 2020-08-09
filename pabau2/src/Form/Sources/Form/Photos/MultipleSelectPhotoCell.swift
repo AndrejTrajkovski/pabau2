@@ -1,9 +1,19 @@
 import SwiftUI
 
-struct MultipleSelectPhotoCell: View {
+public struct MultipleSelectPhotoCell: View {
+	
 	let photo: PhotoViewModel
 	let isSelected: Bool
-	var body: some View {
+	
+	init(
+		photo: PhotoViewModel,
+		isSelected: Bool
+	) {
+		self.photo = photo
+		self.isSelected = isSelected
+	}
+	
+	public var body: some View {
 		ZStack(alignment: .bottomTrailing) {
 			PhotoCell(photo: photo)
 				.overlay(PrivacyOverlay(isPrivate: photo.isPrivate))

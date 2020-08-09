@@ -16,14 +16,14 @@ public typealias InjectableId = Int
 //}
 
 public struct PhotoViewModel: Equatable {
-	let basePhoto: Photo
+	public let basePhoto: Photo
 	var drawing: PKDrawing = PKDrawing()
 	var isPrivate: Bool = false
 	var tags: [String] = []
 	var injections: [InjectableId: IdentifiedArrayOf<Injection>] = [:]
 	var chosenInjectionId: UUID?
 
-	init (_ savedPhoto: SavedPhoto) {
+	public init (_ savedPhoto: SavedPhoto) {
 		self.basePhoto = .saved(savedPhoto)
 	}
 

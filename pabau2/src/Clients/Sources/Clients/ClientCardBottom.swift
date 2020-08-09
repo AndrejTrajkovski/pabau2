@@ -43,8 +43,8 @@ struct ClientCardBottom: View {
 																											 action: { $0 }))
 			}
 		}.navigationBarItems(leading:
-			MyBackButton(text: Texts.back, action: { self.viewStore.send(.backBtnTap) })
-			, trailing: self.trailingButtons
+			MyBackButton(text: Texts.back, action: { self.viewStore.send(.backBtnTap) }),
+												 trailing: self.trailingButtons
 		)
 	}
 
@@ -59,7 +59,7 @@ struct ClientCardBottom: View {
 			return AnyView(EmptyView())
 		}
 	}
-
+	
 	var patientDetailsTrailingBtns: some View {
 		Group {
 			if self.viewStore.state.list.details.editingClient == nil {

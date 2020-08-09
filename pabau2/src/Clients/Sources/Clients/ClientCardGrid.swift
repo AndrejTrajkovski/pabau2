@@ -3,6 +3,7 @@ import Util
 import ASCollectionView
 import ComposableArchitecture
 import Model
+import Form
 
 let clientCardGridReducer: Reducer<ClientCardState, ClientCardBottomAction, ClientsEnvironment> =
 	.combine(
@@ -70,7 +71,15 @@ let clientCardGridReducer: Reducer<ClientCardState, ClientCardBottomAction, Clie
 						.map { .child(.details(.action(.gotResult($0)))) }
 						.eraseToEffect()
 				case .photos:
-					fatalError()
+					state.list.photos.state.loadingState = .loading
+					return env.apiClient.getPhotos(clientId: state.client.id)
+						.map {
+							let vms = $0.map { sphotos in
+								sphotos.map(PhotoViewModel.init)
+							}
+							return .child(.photos(.action(.gotResult(vms))))
+						}
+						.eraseToEffect()
 				}
 			case .child(_):
 				break
