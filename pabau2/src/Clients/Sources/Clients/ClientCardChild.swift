@@ -48,17 +48,47 @@ struct ClientCardChildWrapper: View {
 				self.store.scope(state: { $0.list.financials },
 												 action: { .child(.financials($0) )})
 			))
+		} else if viewStore.state == .treatmentNotes {
+			return AnyView(ChildViewHolder(child: TreatmentsList.self,
+																		 store:
+				self.store.scope(state: { $0.list.treatmentNotes },
+												 action: { .child(.treatmentNotes($0) )})
+			))
+		} else if viewStore.state == .consents {
+			return AnyView(ChildViewHolder(child: ConsentsList.self,
+																		 store:
+				self.store.scope(state: { $0.list.consents },
+												 action: { .child(.consents($0) )})
+			))
+		} else if viewStore.state == .prescriptions {
+			return AnyView(ChildViewHolder(child: PrescriptionsList.self,
+																		 store:
+				self.store.scope(state: { $0.list.prescriptions },
+												 action: { .child(.prescriptions($0) )})
+			))
+		} else if viewStore.state == .communications {
+			return AnyView(ChildViewHolder(child: CommunicationsList.self,
+																		 store:
+				self.store.scope(state: { $0.list.communications },
+												 action: { .child(.communications($0) )})
+			))
+		} else if viewStore.state == .alerts {
+			return AnyView(ChildViewHolder(child: AlertsList.self,
+																		 store:
+				self.store.scope(state: { $0.list.alerts },
+												 action: { .child(.alerts($0) )})
+			))
+		} else if viewStore.state == .notes {
+			return AnyView(ChildViewHolder(child: NotesList.self,
+																		 store:
+				self.store.scope(state: { $0.list.notes },
+												 action: { .child(.notes($0) )})
+			))
 		} else {
 			return AnyView(EmptyView())
 		}
 	}
 }
-
-//case treatmentNotes
-//case prescriptions
-//case documents
-//case communications
-//case consents
 //case alerts
 //case notes
 

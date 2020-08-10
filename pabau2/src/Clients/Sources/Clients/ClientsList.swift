@@ -41,9 +41,11 @@ struct ClientsList: View {
 	struct State: Equatable {
 		let searchText: String
 		let isSelectedClient: Bool
+		let isLoading: Bool
 		init(state: ClientsState) {
 			self.searchText = state.searchText
 			self.isSelectedClient = state.selectedClient != nil
+			self.isLoading = state.contactListLS == .loading
 		}
 	}
 	
@@ -73,7 +75,7 @@ struct ClientsList: View {
 						}
 					)
 				)
-			}
+			}.loadingView(.constant(viewStore.state.isLoading))
 		}.navigationBarTitle(Text(Texts.clients), displayMode: .inline)
 	}
 }

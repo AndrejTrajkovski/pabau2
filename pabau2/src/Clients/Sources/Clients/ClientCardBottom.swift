@@ -53,8 +53,11 @@ struct ClientCardBottom: View {
 													 action: { .grid($0)})
 				).padding(.top, 24)
 			} else {
-				ClientCardChildWrapper(store: self.store.scope(state: { $0 },
-																											 action: { $0 }))
+				VStack(spacing: 0) {
+					Divider()
+					ClientCardChildWrapper(store: self.store.scope(state: { $0 },
+																												 action: { $0 }))
+				}
 			}
 		}.navigationBarItems(leading:
 			MyBackButton(text: Texts.back, action: { self.viewStore.send(.backBtnTap) }),

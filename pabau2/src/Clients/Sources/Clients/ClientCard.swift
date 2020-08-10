@@ -49,7 +49,6 @@ struct ClientCard: View {
 				self.store.scope(state: { $0.client }, action: { .top($0) })
 			)
 				.padding(24)
-			Divider()
 			ClientCardBottom(store:
 				self.store.scope(state: { $0 }, action: { .bottom($0) })
 			)
