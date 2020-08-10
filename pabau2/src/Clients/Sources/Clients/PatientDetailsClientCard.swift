@@ -6,12 +6,12 @@ import Util
 
 public let patientDetailsClientCardReducer: Reducer<PatientDetailsClientCardState, PatientDetailsClientCardAction, ClientsEnvironment> = .combine(
 	ClientCardChildReducer<PatientDetails>().reducer.pullback(
-		state: \PatientDetailsClientCardState.state,
+		state: \PatientDetailsClientCardState.childState,
 		action: /PatientDetailsClientCardAction.action,
 		environment: { $0 }
 	),
 	patientDetailsReducer.pullback(
-		state: \.state.state,
+		state: \.childState.state,
 		action: /PatientDetailsClientCardAction.form,
 		environment: { $0 }),
 	patientDetailsReducer.optional.pullback(
@@ -21,9 +21,9 @@ public let patientDetailsClientCardReducer: Reducer<PatientDetailsClientCardStat
 	.init { state, action, env in
 		switch action {
 		case .edit:
-			state.editingClient = state.state.state
+			state.editingClient = state.childState.state
 		case .saveChanges:
-			state.editingClient.map { state.state.state = $0 }
+			state.editingClient.map { state.childState.state = $0 }
 			state.editingClient = nil
 		case .cancelEdit:
 			state.editingClient = nil
@@ -39,7 +39,7 @@ public let patientDetailsClientCardReducer: Reducer<PatientDetailsClientCardStat
 )
 
 public struct PatientDetailsClientCardState: ClientCardChildParentState {
-	var state: ClientCardChildState<PatientDetails>
+	var childState: ClientCardChildState<PatientDetails>
 	var editingClient: PatientDetails?
 }
 
@@ -86,7 +86,7 @@ struct PatientDetailsClientCard: ClientCardChild {
 
 	var patientDetailsDisabled: some View {
 		return PatientDetailsForm(store: self.store.scope(
-			state: { $0.state.state }, action: { .form($0) })
+			state: { $0.childState.state }, action: { .form($0) })
 		)
 			.disabled(true)
 	}

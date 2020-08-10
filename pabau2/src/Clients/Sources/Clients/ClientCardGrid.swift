@@ -7,23 +7,18 @@ import Form
 
 let clientCardGridReducer: Reducer<ClientCardState, ClientCardBottomAction, ClientsEnvironment> =
 	.combine(
-		clientCardListReducer.pullback(
-			state: \ClientCardState.list,
-			action: /ClientCardBottomAction.child,
-			environment: { $0 })
-		,
 		Reducer.init { state, action, env in
 			switch action {
 			case .grid(.onSelect(let item)):
 				state.activeItem = item
 				switch item {
 				case .appointments:
-					state.list.appointments.state.loadingState = .loading
+					state.list.appointments.childState.loadingState = .loading
 					return env.apiClient.getAppointments(clientId: state.client.id)
 						.map { .child(.appointments(.action(.gotResult($0)))) }
 						.eraseToEffect()
 				case .documents:
-					state.list.documents.state.loadingState = .loading
+					state.list.documents.childState.loadingState = .loading
 					return env.apiClient.getDocuments(clientId: state.client.id)
 						.map { .child(.documents(.action( .gotResult($0)))) }
 						.eraseToEffect()
@@ -66,17 +61,17 @@ let clientCardGridReducer: Reducer<ClientCardState, ClientCardBottomAction, Clie
 						.map { .child(.financials(.gotResult($0))) }
 						.eraseToEffect()
 				case .details:
-					state.list.details.state.loadingState = .loading
+					state.list.details.childState.loadingState = .loading
 					return env.apiClient.getPatientDetails(clientId: state.client.id)
 						.map { .child(.details(.action(.gotResult($0)))) }
 						.eraseToEffect()
 				case .photos:
-					state.list.photos.state.loadingState = .loading
+					state.list.photos.childState.loadingState = .loading
 					return env.apiClient.getPhotos(clientId: state.client.id)
 						.map {
 							let vms = $0.map { sphotos in
 								sphotos.map(PhotoViewModel.init)
-							}
+							}.map(groupByDay(photoViewModel:))
 							return .child(.photos(.action(.gotResult(vms))))
 						}
 						.eraseToEffect()
@@ -117,4 +112,12 @@ struct ClientCardGrid: View {
 			}
 		}
 	}
+}
+
+func groupByDay(photoViewModel: [PhotoViewModel]) -> [Date: [PhotoViewModel]] {
+	return Dictionary.init(grouping: photoViewModel,
+												 by: {
+													let date = Calendar.current.dateComponents([.day, .year, .month], from: $0.basePhoto.date)
+													return Calendar.current.date(from: date)!
+	})
 }

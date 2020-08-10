@@ -7,15 +7,16 @@ import CasePaths
 
 struct ClientCardChildWrapper: View {
 	let store: Store<ClientCardState, ClientCardBottomAction>
-	@ObservedObject var viewStore: ViewStore<ClientCardState, ClientCardBottomAction>
+	@ObservedObject var viewStore: ViewStore<ClientCardGridItem?, ClientCardBottomAction>
 
 	init(store: Store<ClientCardState, ClientCardBottomAction>) {
 		self.store = store
-		self.viewStore = ViewStore(store)
+		self.viewStore = ViewStore(store.scope(state: { $0.activeItem }))
 	}
 
 	var body: some View {
-		if viewStore.state.activeItem == .details {
+		print("CC Child")
+		if viewStore.state == .details {
 			return AnyView(
 				ChildViewHolder(child: PatientDetailsClientCard.self,
 																		 store:
@@ -23,29 +24,43 @@ struct ClientCardChildWrapper: View {
 												 action: { .child(.details($0) )})
 				)
 			)
-		} else if viewStore.state.activeItem == .appointments {
+		} else if viewStore.state == .appointments {
 			return AnyView(ChildViewHolder(child: AppointmentsList.self,
 																		 store:
 				self.store.scope(state: { $0.list.appointments },
 												 action: { .child(.appointments($0) )}))
 			)
-		} else if viewStore.state.activeItem == .documents {
+		} else if viewStore.state == .documents {
 			return AnyView(ChildViewHolder(child: DocumentsList.self,
 																		 store:
 				self.store.scope(state: { $0.list.documents },
 												 action: { .child(.documents($0) )})
 			))
-		} else if viewStore.state.activeItem == .photos {
-		return AnyView(ChildViewHolder(child: CCPhotos.self,
-																	 store:
-			self.store.scope(state: { $0.list.photos },
-											 action: { .child(.photos($0) )})
-		))
+		} else if viewStore.state == .photos {
+			return AnyView(ChildViewHolder(child: CCPhotos.self,
+																		 store:
+				self.store.scope(state: { $0.list.photos },
+												 action: { .child(.photos($0) )})
+			))
+		} else if viewStore.state == .financials {
+			return AnyView(ChildViewHolder(child: FinancialsList.self,
+																		 store:
+				self.store.scope(state: { $0.list.financials },
+												 action: { .child(.financials($0) )})
+			))
 		} else {
 			return AnyView(EmptyView())
 		}
 	}
 }
+
+//case treatmentNotes
+//case prescriptions
+//case documents
+//case communications
+//case consents
+//case alerts
+//case notes
 
 struct ClientCardChildReducer<T: Equatable> {
 	let reducer = Reducer<ClientCardChildState<T>, GotClientListAction<T>, ClientsEnvironment> { state, action, _ in
@@ -78,15 +93,15 @@ public struct ClientCardListState: Equatable {
 
 	init() {
 		self.appointments = AppointmentsListState(
-			state: ClientCardChildState.init(state: [])
+			childState: ClientCardChildState.init(state: [])
 		)
-		self.details = PatientDetailsClientCardState(state: ClientCardChildState.init(state: PatientDetails.mock))
-		self.photos = CCPhotosState.init(state: ClientCardChildState.init(state: []),
+		self.details = PatientDetailsClientCardState(childState: ClientCardChildState.init(state: PatientDetails.mock))
+		self.photos = CCPhotosState.init(childState: ClientCardChildState.init(state: [:]),
 																		 selectedIds: [])
 		self.financials = ClientCardChildState.init(state: [])
 		self.treatmentNotes = ClientCardChildState.init(state: [])
 		self.prescriptions = ClientCardChildState.init(state: [])
-		self.documents = DocumentsListState(state:
+		self.documents = DocumentsListState(childState:
 		ClientCardChildState.init(state: []))
 		self.communications = ClientCardChildState.init(state: [])
 		self.consents = ClientCardChildState.init(state: [])
@@ -98,7 +113,7 @@ public struct ClientCardListState: Equatable {
 public struct ClientCardChildState<T: Equatable>: Equatable {
 	var state: T
 	var loadingState: LoadingState = .initial
-}
+} 
 
 public enum GotClientListAction<T: Equatable>: Equatable {
 	case gotResult(Result<T, RequestError>)
@@ -149,7 +164,7 @@ let clientCardListReducer: Reducer<ClientCardListState, ClientCardChildAction, C
 		environment: { $0 }
 	),
 	ClientCardChildReducer<[Document]>().reducer.pullback(
-		state: \ClientCardListState.documents.state,
+		state: \ClientCardListState.documents.childState,
 		action: /ClientCardChildAction.documents..DocumentsListAction.action,
 		environment: { $0 }
 	),
@@ -182,7 +197,7 @@ protocol ClientCardChildParentAction: Equatable {
 
 protocol ClientCardChildParentState: Equatable {
 	associatedtype T: Equatable
-	var state: ClientCardChildState<T> { get set }
+	var childState: ClientCardChildState<T> { get set }
 }
 
 protocol ClientCardChild: View {
@@ -204,7 +219,7 @@ Child: ClientCardChild>: View where U == Child.State, V == Child.Action {
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			ViewBuilder.buildBlock(
-				(viewStore.state.state.loadingState == .loading) ?
+				(viewStore.state.childState.loadingState == .loading) ?
 					ViewBuilder.buildEither(second: LoadingView(title: "Loading",
 																											bindingIsShowing: .constant(true), content: { EmptyView() }))
 					:

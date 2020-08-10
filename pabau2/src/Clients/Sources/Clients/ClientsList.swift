@@ -37,8 +37,19 @@ public enum ClientsListAction: Equatable {
 
 struct ClientsList: View {
 	let store: Store<ClientsState, ClientsListAction>
+	
+	struct State: Equatable {
+		let searchText: String
+		let isSelectedClient: Bool
+		init(state: ClientsState) {
+			self.searchText = state.searchText
+			self.isSelectedClient = state.selectedClient != nil
+		}
+	}
+	
 	var body: some View {
-		WithViewStore(store) { viewStore in
+		print("ClientsList")
+		return WithViewStore(store.scope(state: State.init(state:))) { viewStore in
 			VStack {
 				SearchBar(placeholder: Texts.clientSearchPlaceholder,
 									text:
@@ -54,7 +65,7 @@ struct ClientsList: View {
 					})
 				}
 				NavigationLink.emptyHidden(
-					viewStore.selectedClient != nil,
+					viewStore.state.isSelectedClient,
 					IfLetStore(self.store.scope(state: { $0.selectedClient },
 																			action: { .selectedClient($0) }),
 										 then: {

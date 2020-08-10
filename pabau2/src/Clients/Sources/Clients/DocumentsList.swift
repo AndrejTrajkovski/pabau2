@@ -8,7 +8,7 @@ private func asset(_ format: DocumentExtension) -> String {
 
 struct DocumentsListState: ClientCardChildParentState, Equatable {
 	typealias T = [Document]
-	var state: ClientCardChildState<[Document]>
+	var childState: ClientCardChildState<[Document]>
 }
 
 public enum DocumentsListAction: ClientCardChildParentAction, Equatable {
@@ -32,15 +32,15 @@ public enum DocumentsListAction: ClientCardChildParentAction, Equatable {
 
 struct DocumentsList: ClientCardChild {
 	typealias State = DocumentsListState
-	
+
 	typealias Action = DocumentsListAction
-	
+
 	var store: Store<DocumentsListState, DocumentsListAction>
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			List {
-				ForEach(viewStore.state.state.state.indices, id: \.self) { idx in
-					DocumentRow(doc: viewStore.state.state.state[idx])
+				ForEach(viewStore.state.childState.state.indices, id: \.self) { idx in
+					DocumentRow(doc: viewStore.state.childState.state[idx])
 				}
 			}
 		}

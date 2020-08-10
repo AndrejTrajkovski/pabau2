@@ -36,14 +36,15 @@ public enum ClientCardAction: Equatable {
 
 struct ClientCard: View {
 	let store: Store<ClientCardState, ClientCardAction>
-	@ObservedObject var viewStore: ViewStore<ClientCardState, ClientCardAction>
+//	@ObservedObject var viewStore: ViewStore<ClientCardState, ClientCardAction>
 	init(store: Store<ClientCardState, ClientCardAction>) {
 		self.store = store
-		self.viewStore = ViewStore(store)
+//		self.viewStore = ViewStore(store)
 	}
-	
+
 	var body: some View {
-		VStack {
+		print("ClientCard")
+		return VStack {
 			ClientCardTop(store:
 				self.store.scope(state: { $0.client }, action: { .top($0) })
 			)

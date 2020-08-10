@@ -25,15 +25,29 @@ public let clientCardBottomReducer: Reducer<ClientCardState, ClientCardBottomAct
 
 struct ClientCardBottom: View {
 	let store: Store<ClientCardState, ClientCardBottomAction>
-	@ObservedObject var viewStore: ViewStore<ClientCardState, ClientCardBottomAction>
+	@ObservedObject var viewStore: ViewStore<State, ClientCardBottomAction>
 	init(store: Store<ClientCardState, ClientCardBottomAction>) {
 		self.store = store
-		self.viewStore = ViewStore(store)
+		self.viewStore = ViewStore(store.scope(state: State.init(state:)))
+	}
+	
+	struct State: Equatable {
+		var activeItem: ClientCardGridItem?
+		var photosViewMode: CCPhotosViewMode
+		var isEditingClient: Bool
+		var isEditPhotosBtnDisabled: Bool
+		init(state: ClientCardState) {
+			self.activeItem = state.activeItem
+			self.photosViewMode = state.list.photos.mode
+			self.isEditingClient = state.list.details.editingClient != nil
+			self.isEditPhotosBtnDisabled = state.list.photos.selectedIds.isEmpty
+		}
 	}
 
 	var body: some View {
-		Group {
-			if self.viewStore.activeItem == nil {
+		print("ClientCardBottom")
+		return Group {
+			if self.viewStore.state.activeItem == nil {
 				ClientCardGrid(store:
 					self.store.scope(state: { $0.client.count },
 													 action: { .grid($0)})
@@ -54,15 +68,33 @@ struct ClientCardBottom: View {
 		} else if self.viewStore.state.activeItem == .details {
 			return AnyView(patientDetailsTrailingBtns)
 		} else if self.viewStore.state.activeItem == .appointments {
-			return AnyView(Text("apppointments"))
+			return AnyView(EmptyView())
+		} else if self.viewStore.state.activeItem == .photos {
+			return AnyView(photosTrailingBtns)
 		} else {
 			return AnyView(EmptyView())
 		}
 	}
-	
+
+	var photosTrailingBtns: some View {
+		HStack {
+			Picker.init(selection: viewStore.binding(get: { $0.photosViewMode },
+													send: { .child(.photos(.switchMode($0)))
+			}), label: EmptyView()) {
+					ForEach(CCPhotosViewMode.allCases, id: \.self) { (mode: CCPhotosViewMode) in
+						Text(String(mode.description)).tag(mode.rawValue)
+					}
+			}.pickerStyle(SegmentedPickerStyle())
+			Button(action: {
+//				self.viewStore.send(.child(.details(.edit)))
+			}, label: { Text(Texts.edit) })
+				.disabled(viewStore.state.isEditPhotosBtnDisabled)
+		}
+	}
+
 	var patientDetailsTrailingBtns: some View {
 		Group {
-			if self.viewStore.state.list.details.editingClient == nil {
+			if !self.viewStore.state.isEditingClient {
 				Button(action: {
 					self.viewStore.send(.child(.details(.edit)))
 				}, label: { Text(Texts.edit) })

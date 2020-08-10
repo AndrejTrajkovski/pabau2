@@ -6,7 +6,7 @@ import ComposableArchitecture
 
 public let appointmentsListReducer: Reducer<AppointmentsListState, AppointmentsListAction, ClientsEnvironment> = Reducer.combine(
 	ClientCardChildReducer<[Appointment]>().reducer.pullback(
-		state: \AppointmentsListState.state,
+		state: \AppointmentsListState.childState,
 		action: /AppointmentsListAction.action,
 		environment: { $0 }
 	)
@@ -33,7 +33,7 @@ public enum AppointmentsListAction: ClientCardChildParentAction, Equatable {
 
 public struct AppointmentsListState: ClientCardChildParentState, Equatable {
 	typealias T = [Appointment]
-	var state: ClientCardChildState<[Appointment]>
+	var childState: ClientCardChildState<[Appointment]>
 }
 
 struct AppointmentsList: ClientCardChild {
@@ -41,8 +41,8 @@ struct AppointmentsList: ClientCardChild {
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			List {
-				ForEach(viewStore.state.state.state.indices, id: \.self) { idx in
-					AppointmentRow(app: viewStore.state.state.state[idx])
+				ForEach(viewStore.state.childState.state.indices, id: \.self) { idx in
+					AppointmentRow(app: viewStore.state.childState.state[idx])
 				}
 			}
 		}
