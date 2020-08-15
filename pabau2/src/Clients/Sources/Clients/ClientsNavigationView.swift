@@ -2,10 +2,15 @@ import SwiftUI
 import Model
 import ComposableArchitecture
 import Util
+import CasePaths
 
 public typealias ClientsEnvironment = (apiClient: ClientsAPI, userDefaults: UserDefaultsConfig)
 
 public let clientsContainerReducer: Reducer<ClientsState, ClientsAction, ClientsEnvironment> = .combine (
+	addClientReducer.optional.pullback(
+		state: \.addClient,
+		action: /ClientsAction.list..ClientsListAction.addClient,
+		environment: { $0 }),
 	clientsListReducer.pullback(
 		state: \.self,
 		action: /ClientsAction.list,

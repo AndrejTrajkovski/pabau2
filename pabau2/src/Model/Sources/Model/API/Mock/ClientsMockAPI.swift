@@ -50,5 +50,15 @@ public struct ClientsMockAPI: MockAPI, ClientsAPI {
 		mockSuccess(Note.mockNotes)
 	}
 	
+	public func post(patDetails: PatientDetails) -> Effect<Result<Client, RequestError>, Never> {
+		func mockClient(patDetails: PatientDetails) -> Client {
+			Client(id: Client.mockClients.last!.id + 100,
+						 firstName: patDetails.firstName,
+						 lastName: patDetails.lastName,
+						 dOB: Date())
+		}
+		return mockSuccess(mockClient(patDetails: patDetails))
+	}
+	
 	public init () {}
 }

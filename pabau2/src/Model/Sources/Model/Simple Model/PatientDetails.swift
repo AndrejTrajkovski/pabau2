@@ -23,6 +23,7 @@ public struct PatientDetails: Equatable, Identifiable, Codable {
 	public var smsComm: Bool
 	public var phoneComm: Bool
 	public var postComm: Bool
+	public var imageUrl: String?
 }
 
 extension PatientDetails {
@@ -69,5 +70,29 @@ extension PatientDetails {
 		smsComm: false,
 		phoneComm: false,
 		postComm: true
+	)
+}
+
+extension PatientDetails {
+	public static let empty = PatientDetails(
+		id: UUID(),
+		salutation: "",
+		firstName: "",
+		lastName: "",
+		dob: "",
+		phone: "",
+		cellPhone: "",
+		email: "",
+		addressLine1: "",
+		addressLine2: "",
+		postCode: "",
+		city: "",
+		county: "",
+		country: "",
+		howDidYouHear: "",
+		emailComm: false,
+		smsComm: false,
+		phoneComm: false,
+		postComm: false
 	)
 }

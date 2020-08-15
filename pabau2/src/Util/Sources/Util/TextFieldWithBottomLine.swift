@@ -33,7 +33,7 @@ struct TextFieldWithBottomLine: View {
 	var body: some View {
 		VStack(spacing: 0) {
 			TextField(placeholder, text: $text)
-				.frame(minHeight: 36)
+				.frame(height: 36)
 			HorizontalLine(color: .black)
 		}.padding(.bottom, lineThickness)
 	}

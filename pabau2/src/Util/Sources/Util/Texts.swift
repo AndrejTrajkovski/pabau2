@@ -116,7 +116,7 @@ Tap the aftercare bellow that you wish to send to the client. The aftercare will
 
 	public static let addPhotos = "Add Photos"
 	public static let editPhotos = "Edit Photos"
-	
+
 	public static let edit = "Edit"
 	public static let save = "Save"
 

@@ -2,8 +2,19 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Pabau needs access to your photo library to import photos.</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<false/>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>images.unsplash.com</key>
+			<dict>
+				<key>Includes Subdomains</key>
+				<true/>
+			</dict>
+		</dict>
+	</dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -24,6 +35,8 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Pabau needs access to your camera for taking photos.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Pabau needs access to your photo library to import photos.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

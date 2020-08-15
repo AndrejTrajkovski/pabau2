@@ -14,24 +14,20 @@ public let patientDetailsClientCardReducer: Reducer<PatientDetailsClientCardStat
 		state: \.childState.state,
 		action: /PatientDetailsClientCardAction.form,
 		environment: { $0 }),
-	patientDetailsReducer.optional.pullback(
+	addClientReducer.optional.pullback(
 		state: \.editingClient,
-		action: /PatientDetailsClientCardAction.editForm,
+		action: /PatientDetailsClientCardAction.editingClient,
 	environment: { $0 }),
 	.init { state, action, env in
 		switch action {
 		case .edit:
-			state.editingClient = state.childState.state
+			state.editingClient = AddClientState(patDetails: state.childState.state)
 		case .saveChanges:
-			state.editingClient.map { state.childState.state = $0 }
+			state.editingClient.map { state.childState.state = $0.patDetails }
 			state.editingClient = nil
 		case .cancelEdit:
 			state.editingClient = nil
-		case .action(_):
-			break
-		case .form(_):
-			break
-		case .editForm(_):
+		case .action, .form, .editingClient:
 			break
 		}
 		return .none
@@ -40,7 +36,7 @@ public let patientDetailsClientCardReducer: Reducer<PatientDetailsClientCardStat
 
 public struct PatientDetailsClientCardState: ClientCardChildParentState {
 	var childState: ClientCardChildState<PatientDetails>
-	var editingClient: PatientDetails?
+	var editingClient: AddClientState?
 }
 
 public enum PatientDetailsClientCardAction: ClientCardChildParentAction {
@@ -49,7 +45,7 @@ public enum PatientDetailsClientCardAction: ClientCardChildParentAction {
 	case edit
 	case action(GotClientListAction<PatientDetails>?)
 	case form(PatientDetailsAction)
-	case editForm(PatientDetailsAction)
+	case editingClient(AddClientAction)
 	var action: GotClientListAction<PatientDetails>? {
 		get {
 			if case .action(let app) = self {
@@ -77,8 +73,8 @@ struct PatientDetailsClientCard: ClientCardChild {
 
 	var body: some View {
 		IfLetStore(self.store.scope(
-			state: { $0.editingClient }, action: { .editForm($0)}),
-							 then: PatientDetailsForm.init(store:),
+			state: { $0.editingClient }, action: { .editingClient($0)}),
+							 then: AddClient.init(store:),
 							 else: self.patientDetailsDisabled
 		)
 			.padding()

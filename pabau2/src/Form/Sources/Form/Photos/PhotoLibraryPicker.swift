@@ -48,8 +48,9 @@ extension PhotoLibraryPicker.Coordinator: ImagePickerControllerDelegate, UINavig
 		option.isSynchronous = true
 		manager.requestImage(for: asset,
 												 targetSize: PHImageManagerMaximumSize,
-												 contentMode: .aspectFit, options: option,
-												 resultHandler: {(result, info)-> Void in
+												 contentMode: .aspectFit,
+												 options: option,
+												 resultHandler: {(result, info) -> Void in
 													thumbnail = result!
 		})
 		return thumbnail
