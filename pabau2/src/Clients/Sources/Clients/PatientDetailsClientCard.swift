@@ -27,6 +27,8 @@ public let patientDetailsClientCardReducer: Reducer<PatientDetailsClientCardStat
 			state.editingClient = nil
 		case .cancelEdit:
 			state.editingClient = nil
+		case .editingClient(.onResponseSave(let result)):
+			result.map { state.childState.state = $0 }
 		case .action, .form, .editingClient:
 			break
 		}

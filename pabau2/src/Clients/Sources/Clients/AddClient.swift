@@ -22,9 +22,9 @@ public let addClientReducer: Reducer<AddClientState, AddClientAction, ClientsEnv
 		switch action {
 		case .saveClient:
 			return env.apiClient.post(patDetails: state.patDetails)
-				.map(AddClientAction.onResponseSaveClient)
+				.map(AddClientAction.onResponseSave)
 				.eraseToEffect()
-		case .patDetails(_), .addPhoto(_), .onBackFromAddClient, .onResponseSaveClient(_):
+		case .patDetails(_), .addPhoto(_), .onBackFromAddClient, .onResponseSave(_):
 			break
 		}
 		return .none
@@ -42,7 +42,7 @@ public struct AddClientState: Equatable {
 	var newPhoto: UIImage?
 	var selectCameraTypeActionSheet: ActionSheetState<AddPhotoAction>?
 	var cameraType: UIImagePickerController.SourceType?
-	
+
 	var addPhoto: AddPhotoState {
 		get {
 			AddPhotoState(imageUrl: patDetails.imageUrl,
@@ -65,7 +65,7 @@ public enum AddClientAction: Equatable {
 	case addPhoto(AddPhotoAction)
 	case onBackFromAddClient
 	case saveClient
-	case onResponseSaveClient(Result<Client, RequestError>)
+	case onResponseSave(Result<PatientDetails, RequestError>)
 }
 
 struct AddClient: View {

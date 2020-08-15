@@ -1,7 +1,7 @@
 import Foundation
 
 public struct PatientDetails: Equatable, Identifiable, Codable {
-	public var id: UUID = UUID()
+	public var id: Int
 	public var canProceed: Bool {
 		return !firstName.isEmpty && !lastName.isEmpty && !email.isEmpty
 	}
@@ -28,6 +28,7 @@ public struct PatientDetails: Equatable, Identifiable, Codable {
 
 extension PatientDetails {
 	public static let mock = PatientDetails(
+		id: Int.random(in: 1...99999999),
 		salutation: "Test ",
 		firstName: "Test ",
 		lastName: "Test ",
@@ -51,7 +52,7 @@ extension PatientDetails {
 
 extension PatientDetails {
 	public static let mockA = PatientDetails(
-		id: UUID(),
+		id: Int.random(in: 1...99999999),
 		salutation: "Mr",
 		firstName: "Andrej",
 		lastName: "Trajkovski",
@@ -75,7 +76,7 @@ extension PatientDetails {
 
 extension PatientDetails {
 	public static let empty = PatientDetails(
-		id: UUID(),
+		id: Int.random(in: 1...99999999),
 		salutation: "",
 		firstName: "",
 		lastName: "",

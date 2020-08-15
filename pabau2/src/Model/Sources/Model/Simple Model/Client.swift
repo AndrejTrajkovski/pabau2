@@ -173,3 +173,12 @@ extension Client {
 			Client(id:25, firstName: "Pippa", lastName:"Ball", dOB: Date(), avatar: nil),
 	]
 }
+
+extension Client {
+	public static func convert(patDetails: PatientDetails) -> Client {
+		Client(id: patDetails.id,
+					 firstName: patDetails.firstName,
+					 lastName: patDetails.lastName,
+					 dOB: Date())
+	}
+}

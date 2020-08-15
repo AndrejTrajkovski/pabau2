@@ -28,8 +28,10 @@ let clientsListReducer: Reducer<ClientsState, ClientsListAction, ClientsEnvironm
 				state.addClient = AddClientState(patDetails: PatientDetails.empty)
 			case .addClient(.onBackFromAddClient):
 				state.addClient = nil
-			case .addClient(.onResponseSaveClient(let result)):
-				result.map { state.clients.append($0) }
+			case .addClient(.onResponseSave(let result)):
+				result
+					.map(Client.convert(patDetails:))
+					.map { state.clients.append($0) }
 				state.addClient = nil
 			case .addClient: break
 			}
