@@ -13,11 +13,25 @@ extension FormType {
 	}
 }
 
+//protocol FormsChild: ClientCardChild {
+//	var formType: FormType { get }
+//}
+
+public struct FormsListState: ClientCardChildParentState, Equatable {
+	var childState: ClientCardChildState<[FormData]>
+	var formType: FormType
+}
+
+public enum FormsListAction: ClientCardChildParentAction, Equatable {
+	case action(GotClientListAction<[FormData]>)
+}
+
 struct TreatmentsList: ClientCardChild {
-	let store: Store<ClientCardChildState<[FormData]>, GotClientListAction<[FormData]>>
+	let store: Store<FormsListState, FormsListAction>
 	var body: some View {
 		WithViewStore(store) { viewStore in
-			FormsList(formType: .treatment, state: viewStore.state.state)
+			FormsList(formType: viewStore.state.formType,
+								state: viewStore.state.childState.state)
 		}
 	}
 }
@@ -59,5 +73,22 @@ struct FormsListRow: View {
 													date: form.date,
 													image: Image(systemName: form.template.formType.imageName)
 		)
+	}
+}
+
+extension FormsListAction {
+	var action: GotClientListAction<[FormData]>? {
+		get {
+			if case .action(let app) = self {
+				return app
+			} else {
+				return nil
+			}
+		}
+		set {
+			if let newValue = newValue {
+				self = .action(newValue)
+			}
+		}
 	}
 }

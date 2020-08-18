@@ -222,15 +222,11 @@ public struct JourneyContainerView: View {
 		.navigationBarTitle("Manchester", displayMode: .inline)
 		.navigationBarItems(leading:
 			HStack(spacing: 8.0) {
-				Button(action: {
+				PlusButton {
 					withAnimation(Animation.easeIn(duration: 0.5)) {
 						self.viewStore.send(.journey(.addAppointmentTap))
 					}
-				}, label: {
-					Image(systemName: "plus")
-						.font(.system(size: 20))
-						.frame(width: 44, height: 44)
-				})
+				}
 				Button(action: {
 
 				}, label: {

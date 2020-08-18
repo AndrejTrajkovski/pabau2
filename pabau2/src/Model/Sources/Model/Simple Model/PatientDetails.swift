@@ -51,27 +51,34 @@ extension PatientDetails {
 }
 
 extension PatientDetails {
-	public static let mockA = PatientDetails(
-		id: Int.random(in: 1...99999999),
-		salutation: "Mr",
-		firstName: "Andrej",
-		lastName: "Trajkovski",
-		dob: "28.02.1991",
-		phone: "+38970327425",
-		cellPhone: "",
-		email: "andrej@pabau.com",
-		addressLine1: "Bansko 29-a",
-		addressLine2: "",
-		postCode: "1000",
-		city: "Skopje",
-		county: "Kisela Voda",
-		country: "Macedonia",
-		howDidYouHear: "email",
-		emailComm: true,
-		smsComm: false,
-		phoneComm: false,
-		postComm: true
-	)
+	
+	public static func mock(clientId: Int) -> PatientDetails {
+		let client = Client.mockClients.first(where: { clientId == $0.id })!
+		return PatientDetails(id: client.id, salutation: client.salutation ?? "Mr.", firstName: client.firstName,
+													lastName: client.lastName, dob: "", phone: "", cellPhone: "", email: "", addressLine1: "", addressLine2: "", postCode: "", city: "", county: "", country: "", howDidYouHear: "", emailComm: false, smsComm: true, phoneComm: true, postComm: false, imageUrl: nil)
+	}
+	
+//	public static let mockA = PatientDetails(
+//		id: Int.random(in: 1...99999999),
+//		salutation: "Mr",
+//		firstName: "Andrej",
+//		lastName: "Trajkovski",
+//		dob: "28.02.1991",
+//		phone: "+38970327425",
+//		cellPhone: "",
+//		email: "andrej@pabau.com",
+//		addressLine1: "Bansko 29-a",
+//		addressLine2: "",
+//		postCode: "1000",
+//		city: "Skopje",
+//		county: "Kisela Voda",
+//		country: "Macedonia",
+//		howDidYouHear: "email",
+//		emailComm: true,
+//		smsComm: false,
+//		phoneComm: false,
+//		postComm: true
+//	)
 }
 
 extension PatientDetails {

@@ -175,10 +175,10 @@ extension Client {
 }
 
 extension Client {
-	public static func convert(patDetails: PatientDetails) -> Client {
-		Client(id: patDetails.id,
-					 firstName: patDetails.firstName,
-					 lastName: patDetails.lastName,
-					 dOB: Date())
+	public init(patDetails: PatientDetails) {
+		self.init(id: patDetails.id,
+							firstName: patDetails.firstName,
+							lastName: patDetails.lastName,
+							dOB: Date())
 	}
 }

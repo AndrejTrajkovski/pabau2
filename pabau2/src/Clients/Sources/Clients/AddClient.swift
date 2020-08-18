@@ -4,6 +4,22 @@ import Model
 import Form
 import Util
 
+public let addClientOptionalReducer: Reducer<AddClientState?, AddClientAction, ClientsEnvironment> = .combine(
+	addClientReducer.optional.pullback(
+		state: \.self,
+		action: /AddClientAction.self,
+		environment: { $0 }
+	),
+	.init { state, action, env in
+		switch action {
+		case .onBackFromAddClient, .onResponseSave:
+			state = nil
+		default: break
+		}
+		return .none
+	}
+)
+
 public let addClientReducer: Reducer<AddClientState, AddClientAction, ClientsEnvironment> = .combine(
 	.init { state, action, env in
 		return .none
@@ -24,7 +40,7 @@ public let addClientReducer: Reducer<AddClientState, AddClientAction, ClientsEnv
 			return env.apiClient.post(patDetails: state.patDetails)
 				.map(AddClientAction.onResponseSave)
 				.eraseToEffect()
-		case .patDetails(_), .addPhoto(_), .onBackFromAddClient, .onResponseSave(_):
+		case .patDetails, .addPhoto, .onBackFromAddClient, .onResponseSave:
 			break
 		}
 		return .none

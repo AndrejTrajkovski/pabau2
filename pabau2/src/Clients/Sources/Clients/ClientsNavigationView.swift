@@ -7,7 +7,7 @@ import CasePaths
 public typealias ClientsEnvironment = (apiClient: ClientsAPI, userDefaults: UserDefaultsConfig)
 
 public let clientsContainerReducer: Reducer<ClientsState, ClientsAction, ClientsEnvironment> = .combine (
-	addClientReducer.optional.pullback(
+	addClientOptionalReducer.pullback(
 		state: \.addClient,
 		action: /ClientsAction.list..ClientsListAction.addClient,
 		environment: { $0 }),

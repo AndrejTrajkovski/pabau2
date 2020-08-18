@@ -22,18 +22,24 @@ let clientsListReducer: Reducer<ClientsState, ClientsListAction, ClientsEnvironm
 			case .gotItemsResponse(let result):
 				guard case .success(let count) = result else { break }
 				state.selectedClient?.client.count = count
-			case .selectedClient(_):
-				break
+			case .selectedClient(.bottom(.child(.details(.editingClient(.onResponseSave(let result)))))):
+				result
+					.map(Client.init(patDetails:))
+					.map {
+						state.clients[id: $0.id] = $0
+						state.selectedClient!.client = $0
+				}
 			case .onAddClient:
 				state.addClient = AddClientState(patDetails: PatientDetails.empty)
-			case .addClient(.onBackFromAddClient):
-				state.addClient = nil
 			case .addClient(.onResponseSave(let result)):
 				result
-					.map(Client.convert(patDetails:))
+					.map(Client.init(patDetails:))
 					.map { state.clients.append($0) }
 				state.addClient = nil
 			case .addClient: break
+			case .selectedClient(.bottom(.backBtnTap)):
+				break
+			case .selectedClient: break
 			}
 			return .none
 		}
@@ -102,9 +108,7 @@ struct ClientsList: View {
 			.loadingView(.constant(viewStore.state.isLoading))
 			.navigationBarTitle(Text(Texts.clients), displayMode: .inline)
 			.navigationBarItems(trailing:
-				Button(action: {
-					viewStore.send(.onAddClient)
-				}, label: { Image(systemName: "plus") })
+				PlusButton { viewStore.send(.onAddClient) }
 			)
 		}
 	}

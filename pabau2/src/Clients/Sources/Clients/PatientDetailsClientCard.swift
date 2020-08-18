@@ -14,7 +14,7 @@ public let patientDetailsClientCardReducer: Reducer<PatientDetailsClientCardStat
 		state: \.childState.state,
 		action: /PatientDetailsClientCardAction.form,
 		environment: { $0 }),
-	addClientReducer.optional.pullback(
+	addClientOptionalReducer.pullback(
 		state: \.editingClient,
 		action: /PatientDetailsClientCardAction.editingClient,
 	environment: { $0 }),
@@ -74,20 +74,24 @@ struct PatientDetailsClientCard: ClientCardChild {
 	@ObservedObject var viewStore: ViewStore<PatientDetailsClientCardState, PatientDetailsClientCardAction>
 
 	var body: some View {
-		IfLetStore(self.store.scope(
-			state: { $0.editingClient }, action: { .editingClient($0)}),
-							 then: AddClient.init(store:),
-							 else: self.patientDetailsDisabled
-		)
-			.padding()
+		Group {
+			PatientDetailsForm(store: self.store.scope(
+				state: { $0.childState.state }, action: { .form($0) })
+			)
+				.padding()
+				.disabled(true)
+			NavigationLink.emptyHidden(viewStore.state.editingClient != nil,
+																 IfLetStore(self.store.scope(
+																	state: { $0.editingClient }, action: { .editingClient($0)}),
+																						then: AddClient.init(store:)
+				)
+			)
+		}
 	}
 
-	var patientDetailsDisabled: some View {
-		return PatientDetailsForm(store: self.store.scope(
-			state: { $0.childState.state }, action: { .form($0) })
-		)
-			.disabled(true)
-	}
+//	var patientDetailsDisabled: some View {
+//		return
+//	}
 }
 
 //struct EditButtons: View {

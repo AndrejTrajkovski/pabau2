@@ -113,11 +113,11 @@ public struct ClientCardListState: Equatable {
 	var details: PatientDetailsClientCardState
 	var photos: CCPhotosState
 	var financials: ClientCardChildState<[Financial]>
-	var treatmentNotes: ClientCardChildState<[FormData]>
-	var prescriptions: ClientCardChildState<[FormData]>
+	var treatmentNotes: FormsListState
+	var prescriptions: FormsListState
 	var documents: DocumentsListState
 	var communications: ClientCardChildState<[Communication]>
-	var consents: ClientCardChildState<[FormData]>
+	var consents: FormsListState
 	var alerts: ClientCardChildState<[Model.Alert]>
 	var notes: ClientCardChildState<[Note]>
 
@@ -129,12 +129,12 @@ public struct ClientCardListState: Equatable {
 		self.photos = CCPhotosState.init(childState: ClientCardChildState.init(state: [:]),
 																		 selectedIds: [])
 		self.financials = ClientCardChildState.init(state: [])
-		self.treatmentNotes = ClientCardChildState.init(state: [])
-		self.prescriptions = ClientCardChildState.init(state: [])
+		self.treatmentNotes = FormsListState(childState: ClientCardChildState(state: []), formType: .treatment)
+		self.prescriptions = FormsListState(childState: ClientCardChildState(state: []), formType: .prescription)
 		self.documents = DocumentsListState(childState:
 		ClientCardChildState.init(state: []))
 		self.communications = ClientCardChildState.init(state: [])
-		self.consents = ClientCardChildState.init(state: [])
+		self.consents = FormsListState(childState: ClientCardChildState(state: []), formType: .consent)
 		self.alerts = ClientCardChildState.init(state: [])
 		self.notes = ClientCardChildState.init(state: [])
 	}
@@ -143,7 +143,7 @@ public struct ClientCardListState: Equatable {
 public struct ClientCardChildState<T: Equatable>: Equatable {
 	var state: T
 	var loadingState: LoadingState = .initial
-} 
+}
 
 public enum GotClientListAction<T: Equatable>: Equatable {
 	case gotResult(Result<T, RequestError>)
@@ -154,11 +154,11 @@ public enum ClientCardChildAction: Equatable {
 	case details(PatientDetailsClientCardAction)
 	case photos(CCPhotosAction)
 	case financials(GotClientListAction<[Financial]>)
-	case treatmentNotes(GotClientListAction<[FormData]>)
-	case prescriptions(GotClientListAction<[FormData]>)
+	case treatmentNotes(FormsListAction)
+	case prescriptions(FormsListAction)
 	case documents(DocumentsListAction)
 	case communications(GotClientListAction<[Communication]>)
-	case consents(GotClientListAction<[FormData]>)
+	case consents(FormsListAction)
 	case alerts(GotClientListAction<[Model.Alert]>)
 	case notes(GotClientListAction<[Note]>)
 }

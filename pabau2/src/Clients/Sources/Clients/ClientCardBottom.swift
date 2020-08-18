@@ -74,6 +74,8 @@ struct ClientCardBottom: View {
 			return AnyView(EmptyView())
 		} else if self.viewStore.state.activeItem == .photos {
 			return AnyView(photosTrailingBtns)
+//		} else if self.viewStore.state.activeItem == .consents {
+//			return AnyView(PlusButton { viewStore.send(.child(.con))} )
 		} else {
 			return AnyView(EmptyView())
 		}
