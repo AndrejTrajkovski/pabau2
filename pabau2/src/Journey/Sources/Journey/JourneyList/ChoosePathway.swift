@@ -44,14 +44,12 @@ public struct ChoosePathwayState: Equatable {
 	var allConsents: [Int: FormTemplate]
 	var chooseConsentState: ChooseFormState {
 		get {
-			ChooseFormState(selectedJourney: selectedJourney,
-											templates: allConsents,
+			ChooseFormState(templates: allConsents,
 											selectedTemplatesIds: selectedConsentsIds,
 											forms: FormsCollection(ids: [], fromAll: [])
 			)
 		}
 		set {
-			self.selectedJourney = newValue.selectedJourney
 			self.selectedConsentsIds = newValue.selectedTemplatesIds
 			self.allConsents = newValue.templates
 			self.selectedConsentsIds = newValue.selectedTemplatesIds
@@ -113,9 +111,11 @@ public struct ChoosePathway: View {
 
 	var chooseFormNavLink: some View {
 		NavigationLink.emptyHidden(self.viewStore.state.isChooseConsentShown,
-															 ChooseFormList(store: self.store.scope(
+															 ChooseFormJourney(store: self.store.scope(
 																state: { $0.chooseConsentState },
-																action: { .chooseConsent($0)}), mode: .consentsPreCheckIn)
+																action: { .chooseConsent($0)}),
+																								 mode: .consentsPreCheckIn,
+																								 journey: self.viewStore.state.journey)
 																.customBackButton {
 																	self.viewStore.send(.choosePathway(.didTouchSelectConsentBackBtn))
 			}

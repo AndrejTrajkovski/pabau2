@@ -78,9 +78,10 @@ struct DoctorNavigation: View {
 			action: { .doctorSummary($0) }))
 	}
 	struct State: Equatable {
-		var isDoctorCheckInMainActive: Bool
-		var isChooseTreatmentActive: Bool
-		var isChooseConsentActive: Bool
+		let isDoctorCheckInMainActive: Bool
+		let isChooseTreatmentActive: Bool
+		let isChooseConsentActive: Bool
+		let journey: Journey
 	}
 
 	var body: some View {
@@ -92,19 +93,21 @@ struct DoctorNavigation: View {
 																				 action: { .doctor($0) }))
 			)
 			NavigationLink.emptyHidden(viewStore.state.isChooseConsentActive,
-																 ChooseFormList(store: self.store.scope(
+																 ChooseFormJourney(store: self.store.scope(
 																	state: { $0.chooseConsents },
 																	action: { .chooseConsents($0)}),
-																								mode: .consentsCheckIn)
+																									mode: .consentsCheckIn,
+																									journey: self.viewStore.state.journey)
 																	.customBackButton {
 																		self.viewStore.send(.didTouchBackFrom(.consentsCheckIn))
 				}
 			)
 			NavigationLink.emptyHidden(viewStore.state.isChooseTreatmentActive,
-																 ChooseFormList(store: self.store.scope(
+																 ChooseFormJourney(store: self.store.scope(
 																	state: { $0.chooseTreatments },
 																	action: { .chooseTreatments($0)}),
-																								mode: .treatmentNotes)
+																									mode: .treatmentNotes,
+																									journey: self.viewStore.state.journey)
 																	.customBackButton {
 																		self.viewStore.send(.didTouchBackFrom(.treatmentNotes))
 				}
@@ -118,6 +121,7 @@ extension DoctorNavigation.State {
 		self.isChooseConsentActive = state.isChooseConsentActive
 		self.isChooseTreatmentActive = state.isChooseTreatmentActive
 		self.isDoctorCheckInMainActive = state.isDoctorCheckInMainActive
+		self.journey = state.journey
 	}
 }
 

@@ -170,11 +170,9 @@ extension CheckInContainerState {
 
 	var chooseTreatments: ChooseFormState {
 		get {
-			return ChooseFormState(selectedJourney: journey,
-														 templates: allTreatmentForms,
+			return ChooseFormState(templates: allTreatmentForms,
 														 templatesLoadingState: .initial,
-														 selectedTemplatesIds:
-				selectedTreatmentFormsIds,
+														 selectedTemplatesIds: selectedTreatmentFormsIds,
 														 forms: treatments)
 		}
 		set {
@@ -186,8 +184,7 @@ extension CheckInContainerState {
 
 	var chooseConsents: ChooseFormState {
 		get {
-			return ChooseFormState(selectedJourney: journey,
-														 templates: allConsents,
+			return ChooseFormState(templates: allConsents,
 														 templatesLoadingState: .initial,
 														 selectedTemplatesIds: selectedConsentsIds,
 														 forms: consents)

@@ -4,7 +4,6 @@ import Util
 import ComposableArchitecture
 
 public struct ChooseFormState: Equatable {
-	var selectedJourney: Journey?
 	var templates: [Int: FormTemplate]
 	var templatesLoadingState: LoadingState = .initial
 	var selectedTemplatesIds: [Int]
@@ -68,13 +67,11 @@ struct ChooseFormList: View {
 	}
 
 	struct ViewState: Equatable {
-		let journey: Journey?
 		let templates: [Int: FormTemplate]
 		var selectedTemplatesIds: [Int]
 		init(_ state: ChooseFormState) {
 			self.templates = state.templates
 			self.selectedTemplatesIds = state.selectedTemplatesIds
-			self.journey = state.selectedJourney
 		}
 
 		var notSelectedTemplates: [FormTemplate] {
@@ -92,7 +89,7 @@ struct ChooseFormList: View {
 
 	var body: some View {
 		chooseFormCells
-			.journeyBase(self.viewStore.state.journey, .long)
+//			.journeyBase(self.viewStore.state.journey, .long)
 			.onAppear {
 				print("on Appear \(self.mode)")
 				self.viewStore.send(.onAppear(self.mode.formType))
