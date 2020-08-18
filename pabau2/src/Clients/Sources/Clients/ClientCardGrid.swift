@@ -23,22 +23,22 @@ let clientCardGridReducer: Reducer<ClientCardState, ClientCardBottomAction, Clie
 						.map { .child(.documents(.action( .gotResult($0)))) }
 						.eraseToEffect()
 				case .prescriptions:
-					state.list.prescriptions.loadingState = .loading
+					state.list.prescriptions.childState.loadingState = .loading
 					return env.apiClient.getForms(type: .prescription,
 																				clientId: state.client.id)
-						.map { .child(.prescriptions(.gotResult($0))) }
+						.map { .child(.prescriptions(.action(.gotResult($0)))) }
 						.eraseToEffect()
 				case .consents:
-					state.list.consents.loadingState = .loading
+					state.list.consents.childState.loadingState = .loading
 					return env.apiClient.getForms(type: .consent,
 																				clientId: state.client.id)
-						.map { .child(.consents(.gotResult($0))) }
+						.map { .child(.consents(.action(.gotResult($0)))) }
 						.eraseToEffect()
 				case .treatmentNotes:
-					state.list.treatmentNotes.loadingState = .loading
+					state.list.treatmentNotes.childState.loadingState = .loading
 					return env.apiClient.getForms(type: .treatment,
 																				clientId: state.client.id)
-						.map { .child(.treatmentNotes(.gotResult($0))) }
+						.map { .child(.treatmentNotes(.action(.gotResult($0)))) }
 						.eraseToEffect()
 				case .communications:
 					state.list.communications.loadingState = .loading

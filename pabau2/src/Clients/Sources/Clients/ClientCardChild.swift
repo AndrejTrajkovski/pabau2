@@ -49,19 +49,19 @@ struct ClientCardChildWrapper: View {
 												 action: { .child(.financials($0) )})
 			))
 		} else if viewStore.state == .treatmentNotes {
-			return AnyView(ChildViewHolder(child: TreatmentsList.self,
+			return AnyView(ChildViewHolder(child: FormsList.self,
 																		 store:
 				self.store.scope(state: { $0.list.treatmentNotes },
 												 action: { .child(.treatmentNotes($0) )})
 			))
 		} else if viewStore.state == .consents {
-			return AnyView(ChildViewHolder(child: ConsentsList.self,
+			return AnyView(ChildViewHolder(child: FormsList.self,
 																		 store:
 				self.store.scope(state: { $0.list.consents },
 												 action: { .child(.consents($0) )})
 			))
 		} else if viewStore.state == .prescriptions {
-			return AnyView(ChildViewHolder(child: PrescriptionsList.self,
+			return AnyView(ChildViewHolder(child: FormsList.self,
 																		 store:
 				self.store.scope(state: { $0.list.prescriptions },
 												 action: { .child(.prescriptions($0) )})
@@ -183,12 +183,12 @@ let clientCardListReducer: Reducer<ClientCardListState, ClientCardChildAction, C
 		action: /ClientCardChildAction.financials,
 		environment: { $0 }
 	),
-	ClientCardChildReducer<[FormData]>().reducer.pullback(
+	formsListReducer.pullback(
 		state: \ClientCardListState.treatmentNotes,
 		action: /ClientCardChildAction.treatmentNotes,
 		environment: { $0 }
 	),
-	ClientCardChildReducer<[FormData]>().reducer.pullback(
+	formsListReducer.pullback(
 		state: \ClientCardListState.prescriptions,
 		action: /ClientCardChildAction.prescriptions,
 		environment: { $0 }
@@ -203,7 +203,7 @@ let clientCardListReducer: Reducer<ClientCardListState, ClientCardChildAction, C
 		action: /ClientCardChildAction.communications,
 		environment: { $0 }
 	),
-	ClientCardChildReducer<[FormData]>().reducer.pullback(
+	formsListReducer.pullback(
 		state: \ClientCardListState.consents,
 		action: /ClientCardChildAction.consents,
 		environment: { $0 }

@@ -2,20 +2,13 @@ import SwiftUI
 import Model
 import ComposableArchitecture
 
-extension FormType {
-	var imageName: String {
-		switch self {
-		case .treatment: return "doc.text"
-		case .prescription: return "doc.append"
-		case .consent: return "signature"
-		case .history: return ""
-		}
-	}
-}
-
-//protocol FormsChild: ClientCardChild {
-//	var formType: FormType { get }
-//}
+public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnvironment> = .combine (
+	ClientCardChildReducer<[FormData]>().reducer.pullback(
+		state: \FormsListState.childState,
+		action: /FormsListAction.action,
+		environment: { $0 }
+	)
+)
 
 public struct FormsListState: ClientCardChildParentState, Equatable {
 	var childState: ClientCardChildState<[FormData]>
@@ -26,36 +19,17 @@ public enum FormsListAction: ClientCardChildParentAction, Equatable {
 	case action(GotClientListAction<[FormData]>)
 }
 
-struct TreatmentsList: ClientCardChild {
+struct FormsList: ClientCardChild {
 	let store: Store<FormsListState, FormsListAction>
+	
 	var body: some View {
 		WithViewStore(store) { viewStore in
-			FormsList(formType: viewStore.state.formType,
-								state: viewStore.state.childState.state)
+			FormsListRaw(state: viewStore.state.childState.state)
 		}
 	}
 }
 
-struct ConsentsList: ClientCardChild {
-	let store: Store<ClientCardChildState<[FormData]>, GotClientListAction<[FormData]>>
-	var body: some View {
-		WithViewStore(store) { viewStore in
-			FormsList(formType: .consent, state: viewStore.state.state)
-		}
-	}
-}
-
-struct PrescriptionsList: ClientCardChild {
-	let store: Store<ClientCardChildState<[FormData]>, GotClientListAction<[FormData]>>
-	var body: some View {
-		WithViewStore(store) { viewStore in
-			FormsList(formType: .prescription, state: viewStore.state.state)
-		}
-	}
-}
-
-struct FormsList: View {
-	let formType: FormType
+struct FormsListRaw: View {
 	var state: [FormData]
 	var body: some View {
 		List {
@@ -89,6 +63,17 @@ extension FormsListAction {
 			if let newValue = newValue {
 				self = .action(newValue)
 			}
+		}
+	}
+}
+
+extension FormType {
+	var imageName: String {
+		switch self {
+		case .treatment: return "doc.text"
+		case .prescription: return "doc.append"
+		case .consent: return "signature"
+		case .history: return ""
 		}
 	}
 }
