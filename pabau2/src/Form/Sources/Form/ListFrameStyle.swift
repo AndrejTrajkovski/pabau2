@@ -1,10 +1,10 @@
 import SwiftUI
 import Util
 
-enum JourneyListStyle {
+public enum ListFrameStyle {
 	case blue
 	case white
-	var bgColor: Color {
+	public var bgColor: Color {
 		switch self {
 		case .blue:
 			return .gray249
@@ -13,7 +13,7 @@ enum JourneyListStyle {
 		}
 	}
 
-	var btnColor: Color {
+	public var btnColor: Color {
 		switch self {
 		case .blue:
 			return .blue2

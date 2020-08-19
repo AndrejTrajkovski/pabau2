@@ -5,48 +5,48 @@ import Util
 import Form
 
 //TODO: Remove this and use IdentifiedArray from TCA
-protocol MyCollection {
-	associatedtype A: Identifiable
-	var byId: [A.ID: A] { get set }
-	var allIds: [A.ID] { get set }
-	var completed: [A.ID: Bool] { get set }
-}
+//protocol MyCollection {
+//	associatedtype A: Identifiable
+//	var byId: [A.ID: A] { get set }
+//	var allIds: [A.ID] { get set }
+//	var completed: [A.ID: Bool] { get set }
+//}
 
-extension MyCollection {
-	var sorted: [A] {
-		allIds.map { byId[$0]! }
-	}
-}
+//extension MyCollection {
+//	var sorted: [A] {
+//		allIds.map { byId[$0]! }
+//	}
+//}
 
-protocol EmptyInitializable {
-	init ()
-}
+//protocol EmptyInitializable {
+//	init ()
+//}
 
-extension MyCollection where Self: EmptyInitializable {
-	init(ids: [A.ID],
-		   fromAll: [A]) {
-		self.init()
-		self.allIds = ids
-		self.byId = flatten(fromAll.filter(pipe(get(\A.id), ids.contains)))
-		self.completed = allIds.reduce(into: [:], { $0[$1] = false })
-	}
-}
+//extension MyCollection where Self: EmptyInitializable {
+//	init(ids: [A.ID],
+//		   fromAll: [A]) {
+//		self.init()
+//		self.allIds = ids
+//		self.byId = flatten(fromAll.filter(pipe(get(\A.id), ids.contains)))
+//		self.completed = allIds.reduce(into: [:], { $0[$1] = false })
+//	}
+//}
 
-extension MyCollection where A == FormTemplate {
-	func toMetaFormArray() -> [MetaFormAndStatus] {
-		return sorted.map {
-			let form = MetaForm.template($0)
-			guard let status = completed[$0.id] else { fatalError() }
-			return MetaFormAndStatus(form, status)
-		}
-	}
-}
+//extension MyCollection where A == FormTemplate {
+//	func toMetaFormArray() -> [MetaFormAndStatus] {
+//		return sorted.map {
+//			let form = MetaForm.template($0)
+//			guard let status = completed[$0.id] else { fatalError() }
+//			return MetaFormAndStatus(form, status)
+//		}
+//	}
+//}
 
-struct FormsCollection: MyCollection, Equatable, EmptyInitializable {
-	var byId: [Int: FormTemplate] = [:]
-	var allIds: [Int] = []
-	var completed: [Int: Bool] = [:]
-}
+//struct FormsCollection: MyCollection, Equatable, EmptyInitializable {
+//	var byId: [Int: FormTemplate] = [:]
+//	var allIds: [Int] = []
+//	var completed: [Int: Bool] = [:]
+//}
 
 enum JourneyMode: Equatable {
 	case patient
@@ -59,14 +59,14 @@ public struct CheckInContainerState: Equatable {
 	var runningPrescriptions: [Int: FormTemplate]
 	var prescriptionsCompleted: [Int: Bool]
 
-	var allTreatmentForms: [Int: FormTemplate]
-	var allConsents: [Int: FormTemplate]
+	var allTreatmentForms: IdentifiedArrayOf<FormTemplate>
+	var allConsents: IdentifiedArrayOf<FormTemplate>
 
 	var selectedConsentsIds: [Int]
 	var selectedTreatmentFormsIds: [Int]
 
-	var consents: FormsCollection
-	var treatments: FormsCollection
+	var consents: IdentifiedArrayOf<MetaFormAndStatus>
+	var treatments: IdentifiedArrayOf<MetaFormAndStatus>
 
 	var aftercare: Aftercare
 	var aftercareCompleted: Bool

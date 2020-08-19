@@ -80,7 +80,7 @@ struct JourneyMocks {
 		]),
 		patientDetails: PatientDetails.mock,
 		medHistory: FormTemplate.getMedHistory(),
-		consents: FormsCollection(ids: [], fromAll: []),
+		consents: [],
 		allConsents: flatten(FormTemplate.mockConsents),
 		photosState: PhotosState.init(SavedPhoto.mock())
 	)

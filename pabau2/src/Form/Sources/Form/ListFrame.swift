@@ -1,13 +1,13 @@
 import SwiftUI
 
-struct ListFrame<Content: View>: View {
-	init(style: JourneyListStyle,
+public struct ListFrame<Content: View>: View {
+	public init(style: ListFrameStyle,
 			 @ViewBuilder _ content: @escaping () -> Content) {
 		self.style = style
 		self.content = content
 	}
 
-	let style: JourneyListStyle
+	let style: ListFrameStyle
 	let content: () -> Content
 
 	public var body: some View {

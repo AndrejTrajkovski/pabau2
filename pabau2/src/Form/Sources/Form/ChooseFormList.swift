@@ -4,10 +4,10 @@ import Util
 import ComposableArchitecture
 
 public struct ChooseFormState: Equatable {
-	var templates: [Int: FormTemplate]
+	var templates: IdentifiedArrayOf<FormTemplate>
 	var templatesLoadingState: LoadingState = .initial
 	var selectedTemplatesIds: [Int]
-	var forms: FormsCollection
+//	var forms: IdentifiedArrayOf<FormTemplate>
 }
 
 public enum ChooseFormAction {
@@ -18,7 +18,7 @@ public enum ChooseFormAction {
 	case onAppear(FormType)
 }
 
-let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, JourneyEnvironment> { state, action, environment in
+let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, FormEnvironment> { state, action, environment in
 	switch action {
 	case .addTemplateId(let templateId):
 		if !state.selectedTemplatesIds.contains(templateId) {
@@ -27,20 +27,20 @@ let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, JourneyEn
 	case .removeTemplateId(let templateId):
 		state.selectedTemplatesIds.removeAll(where: { $0 == templateId})
 	case .proceed:
-		updateWithKeepingOld(forms: &state.forms,
-												 finalSelectedTemplatesIds: state.selectedTemplatesIds,
-												 allTemplates: state.templates)
-		return .none//handled elsewhere
+//		updateWithKeepingOld(forms: &state.forms,
+//												 finalSelectedTemplatesIds: state.selectedTemplatesIds,
+//												 allTemplates: state.templates)
+		return .none
 	case .gotResponse(let result):
 		switch result {
 		case .success(let templates):
-			state.templates = flatten(templates)
+//			state.templates = flatten(templates)
 			state.templatesLoadingState = .gotSuccess
 		case .failure:
 			state.templatesLoadingState = .gotError
 		}
 	case .onAppear(let formType):
-		print("onAppear: \(formType)")
+		state.templatesLoadingState = .loading
 		return
 			state.templates.isEmpty ?
 				environment.apiClient.getTemplates(formType)
@@ -67,7 +67,7 @@ struct ChooseFormList: View {
 	}
 
 	struct ViewState: Equatable {
-		let templates: [Int: FormTemplate]
+		let templates: IdentifiedArrayOf<FormTemplate>
 		var selectedTemplatesIds: [Int]
 		init(_ state: ChooseFormState) {
 			self.templates = state.templates
@@ -75,21 +75,20 @@ struct ChooseFormList: View {
 		}
 
 		var notSelectedTemplates: [FormTemplate] {
-			templates
-				.filter { !selectedTemplatesIds.contains($0.key) }
-				.map { $0.value }
+			templates.elements
+				.filter { !selectedTemplatesIds.contains($0.id) }
+				.map { $0 }
 				.sorted(by: \.name)
 		}
 		var selectedTemplates: [FormTemplate] {
 			selectedTemplatesIds.map {
-				templates[$0]!
+				templates.elements[$0]
 			}
 		}
 	}
 
 	var body: some View {
 		chooseFormCells
-//			.journeyBase(self.viewStore.state.journey, .long)
 			.onAppear {
 				print("on Appear \(self.mode)")
 				self.viewStore.send(.onAppear(self.mode.formType))
@@ -104,7 +103,7 @@ struct ChooseFormList: View {
 					Text(Texts.selected + " " + (self.mode == .treatmentNotes ? Texts.treatmentNotes : Texts.consents ))
 						.font(.bold17)
 					FormTemplateList(templates: self.viewStore.state.selectedTemplates,
-													 bgColor: JourneyListStyle.blue.bgColor,
+													 bgColor: ListFrameStyle.blue.bgColor,
 													 templateRow: { template in
 														SelectedTemplateRow(template: template)
 					}, onSelect: {
@@ -121,7 +120,7 @@ struct ChooseFormList: View {
 				VStack {
 					TextField("TODO: search: ", text: self.$searchText)
 					FormTemplateList(templates: self.viewStore.state.notSelectedTemplates,
-													 bgColor: JourneyListStyle.white.bgColor,
+													 bgColor: ListFrameStyle.white.bgColor,
 													 templateRow: { template in
 														NotSelectedTemplateRow(template: template)
 					}, onSelect: {

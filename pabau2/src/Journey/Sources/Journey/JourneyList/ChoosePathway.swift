@@ -159,11 +159,11 @@ struct ChoosePathwayListContent: View {
 	let subtitle: String
 	let bulletPoints: [String]
 	let btnTxt: String
-	let style: JourneyListStyle
+	let style: ListFrameStyle
 	let btnAction: () -> Void
 
 	init(
-		_ style: JourneyListStyle,
+		_ style: ListFrameStyle,
 		_ bottomLeading: Image,
 		_ numberOfSteps: Int,
 		_ title: String,
