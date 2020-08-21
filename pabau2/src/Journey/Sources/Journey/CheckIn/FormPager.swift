@@ -30,7 +30,7 @@ struct FormPager: View {
 							content: {
 								ForEachStore(
 									self.store.scope(
-										state: { $0.forms },
+										state: { $0.forms.flatmap { f in f.forms } },
 										action: CheckInBodyAction.updateForm(index:action:)),
 									id: \.form.title) { (childStore: Store<MetaFormAndStatus, UpdateFormAction>) in
 										FormWrapper.init(store: childStore.scope(state: { $0.form }))

@@ -3,6 +3,7 @@ import Util
 import NonEmpty
 import SwiftDate
 import Foundation
+import ComposableArchitecture
 
 public struct JourneyState: Equatable {
 	public init () { }
@@ -17,7 +18,7 @@ public struct JourneyState: Equatable {
 	public var selectedPathway: Pathway?
 
 	var selectedConsentsIds: [Int] = []
-	var allConsents: [Int: FormTemplate] = [:]
+	var allConsents: IdentifiedArrayOf<FormTemplate> = []
 	public var checkIn: CheckInContainerState?
 //		= JourneyMocks.checkIn
 

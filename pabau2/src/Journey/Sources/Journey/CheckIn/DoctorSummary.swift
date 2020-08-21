@@ -13,23 +13,6 @@ struct DoctorSummaryState: Equatable {
 	var doctorCheckIn: CheckInViewState
 }
 
-func calcFormsSelectedIndex(steps: [StepState],
-														selectedStepIdx: Int,
-														forms: [MetaFormAndStatus]) -> Int? {
-	let selectedType = steps[selectedStepIdx]
-	let grouped = Dictionary.init(grouping: forms,
-																by: pipe(get(\.form), stepType(form:)))
-	guard let formsForSelectedStep = grouped[selectedType.stepType] else { return nil}
-	let selForm = { () -> MetaFormAndStatus? in
-		if let notCompleteForm = formsForSelectedStep.first(where: { !$0.isComplete}) {
-			return notCompleteForm
-		} else {
-			return formsForSelectedStep.first
-		}
-	}()
-	return forms.firstIndex(where: { $0 == selForm })
-}
-
 let doctorSummaryReducer = Reducer <DoctorSummaryState, DoctorSummaryAction, JourneyEnvironment> { state, action, _ in
 	switch action {
 	case .didTouchBackFrom(let mode):
@@ -50,10 +33,8 @@ let doctorSummaryReducer = Reducer <DoctorSummaryState, DoctorSummaryAction, Jou
 		case .consentsPreCheckIn:
 			fatalError("should be handled pre checkin")
 		}
-	case .didTouchStep(let idx):
-		calcFormsSelectedIndex(steps: state.steps, selectedStepIdx: idx, forms: state.doctorCheckIn.forms).map {
-			state.doctorCheckIn.selectedIndex = $0
-		}
+	case .didTouchStep(let stepType):
+		state.doctorCheckIn.selectedStepType = stepType
 		state.isDoctorCheckInMainActive = true
 	case .xOnDoctorCheckIn:
 		break //handled in checkInMiddleware
@@ -63,7 +44,7 @@ let doctorSummaryReducer = Reducer <DoctorSummaryState, DoctorSummaryAction, Jou
 
 public enum DoctorSummaryAction {
 	case didTouchAdd(ChooseFormMode)
-	case didTouchStep(Int)
+	case didTouchStep(StepType)
 	case didTouchBackFrom(ChooseFormMode)
 	case xOnDoctorCheckIn
 }
@@ -126,9 +107,9 @@ extension DoctorNavigation.State {
 }
 
 struct DoctorSummaryStepList: View {
-	let onSelect: (Int) -> Void
+	let onSelect: (StepState) -> Void
 	let stepsVMs: [StepState]
-	init (_ stepsVMs: [StepState], _ onSelect: @escaping (Int) -> Void) {
+	init (_ stepsVMs: [StepState], _ onSelect: @escaping (StepState) -> Void) {
 		self.stepsVMs = stepsVMs
 		self.onSelect = onSelect
 	}
@@ -138,7 +119,7 @@ struct DoctorSummaryStepList: View {
 			ForEach(self.stepsVMs, id: \.stepType) { step in
 				VStack(spacing: 0) {
 					DoctorSummaryRow(step: step)
-						.onTapGesture { self.onSelect(self.stepsVMs.firstIndex(of: step)!) }
+						.onTapGesture { self.onSelect(step) }
 						.frame(height: 59)
 					Divider()
 				}.padding(0)
@@ -170,15 +151,18 @@ struct StepState: Equatable {
 
 extension DoctorSummaryState {
 	var steps: [StepState] {
-		return Dictionary.init(grouping: doctorCheckIn.forms,
-															 by: pipe(get(\.form), stepType(form:)))
-			.reduce(into: [StepState](), {
-				$0.append(
-					StepState(stepType: $1.key,
-										isComplete: $1.value.allSatisfy(\.isComplete))
-				)
-			})
-			.sorted(by: their(get(\.stepType.order)))
+		return doctorCheckIn.forms.map {
+			StepState.init(stepType: $0.stepType, isComplete: $0.isComplete)
+		}
+//		return Dictionary.init(grouping: doctorCheckIn.forms,
+//															 by: pipe(get(\.form), stepType(form:)))
+//			.reduce(into: [StepState](), {
+//				$0.append(
+//					StepState(stepType: $1.key,
+//										isComplete: $1.value.allSatisfy(\.isComplete))
+//				)
+//			})
+//			.sorted(by: their(get(\.stepType.order)))
 	}
 }
 
@@ -198,3 +182,19 @@ extension View {
 		self.modifier(NavBarHidden(isNavBarHidden: isNavBarHidden, title: title))
 	}
 }
+
+//func calcFormsSelectedIndex(stepType: StepType,
+//														forms: IdentifiedArrayOf<MetaFormAndStatus>) -> Int? {
+//	let selectedType = steps[selectedStepIdx]
+//	let grouped = Dictionary.init(grouping: forms,
+//																by: pipe(get(\.form), stepType(form:)))
+//	guard let formsForSelectedStep = grouped[selectedType.stepType] else { return nil}
+//	let selForm = { () -> MetaFormAndStatus? in
+//		if let notCompleteForm = formsForSelectedStep.first(where: { !$0.isComplete}) {
+//			return notCompleteForm
+//		} else {
+//			return formsForSelectedStep.first
+//		}
+//	}()
+//	return forms.firstIndex(where: { $0 == selForm })
+//}

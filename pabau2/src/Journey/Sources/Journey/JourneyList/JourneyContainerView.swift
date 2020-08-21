@@ -7,6 +7,7 @@ import ComposableArchitecture
 import SwiftDate
 import CasePaths
 import Form
+import Overture
 
 public struct EmployeesState: Equatable {
 	var loadingState: LoadingState = .initial
@@ -68,8 +69,9 @@ let checkInMiddleware2 = Reducer<JourneyState, ChooseFormAction, JourneyEnvironm
 			pathway: selP,
 			patientDetails: PatientDetails.mock,
 			medHistory: FormTemplate.getMedHistory(),
-			consents: FormsCollection(ids: state.selectedConsentsIds,
-																fromAll: Array(state.allConsents.values)),
+			consents: state.allConsents.filter(
+				pipe(get(\.id), state.selectedConsentsIds.contains)
+			),
 			allConsents: state.allConsents,
 			photosState: PhotosState.init(SavedPhoto.mock())
 		)

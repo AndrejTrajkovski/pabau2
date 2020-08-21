@@ -2,8 +2,10 @@ import SwiftUI
 import ComposableArchitecture
 import Util
 import Form
+import Model
 
 struct CompletBtnState {
+	var selectedStepType: StepType
 	var selectedForm: MetaFormAndStatus?
 	var selectedIndex: Int
 }
@@ -15,6 +17,7 @@ struct CompleteFormBtn: View {
 		let isDisabled: Bool
 		let btnTitle: String
 		let shouldShowButton: Bool
+		let stepType: StepType
 	}
 
 	var body: some View {
@@ -25,7 +28,10 @@ struct CompleteFormBtn: View {
 			if viewStore.state.shouldShowButton {
 				PrimaryButton(viewStore.state.btnTitle,
 											isDisabled: viewStore.state.isDisabled) {
-												viewStore.send(.didSelectCompleteFormIdx(viewStore.state.index))
+												viewStore.send(
+													.didSelectCompleteFormIdx(
+														viewStore.state.stepType, viewStore.state.index)
+												)
 				}
 			} else {
 				EmptyView()
@@ -36,6 +42,7 @@ struct CompleteFormBtn: View {
 
 extension CompleteFormBtn.State {
 	init (state: CompletBtnState) {
+		self.stepType = state.selectedStepType
 		self.index = state.selectedIndex
 		if let selectedForm = state.selectedForm {
 			self.isDisabled = !selectedForm.form.canProceed

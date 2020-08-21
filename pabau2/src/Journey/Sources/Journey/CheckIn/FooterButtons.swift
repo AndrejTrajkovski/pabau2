@@ -3,11 +3,12 @@ import ComposableArchitecture
 import Util
 import Overture
 import Form
+import Model
 
 public let footerButtonsReducer = Reducer<FooterButtonsState, FooterButtonsAction, JourneyEnvironment>.init { state, action, _ in
 	switch action {
-		case .didSelectCompleteFormIdx(let idx):
-			state.forms[idx].isComplete = true
+		case .didSelectCompleteFormIdx(let stepType, let idx):
+			state.forms[id: stepType]?.forms[idx].isComplete = true
 			goToNextStep(&state.stepsState)
 		case .toPatientMode:
 			break//handled in navigationReducer
@@ -20,9 +21,11 @@ public let footerButtonsReducer = Reducer<FooterButtonsState, FooterButtonsActio
 }
 
 public struct FooterButtonsState {
-	var forms: [MetaFormAndStatus]
+	var forms: IdentifiedArrayOf<StepForms>
 	var selectedIndex: Int
+	var selectedStepType: StepType
 	var selectedForm: MetaFormAndStatus?
+	let journeyMode: JourneyMode
 
 	var stepsState: StepsViewState {
 		get {
@@ -38,14 +41,15 @@ public struct FooterButtonsState {
 
 public enum FooterButtonsAction {
 	case photos(AddOrEditPhotosBtnAction)
-	case didSelectCompleteFormIdx(Int)
+	case didSelectCompleteFormIdx(StepType, Int)
 	case toPatientMode
 	case completeJourney(CompleteJourneyBtnAction)
 }
 
 extension FooterButtonsState {
 	var completeBtn: CompletBtnState {
-		get { CompletBtnState(selectedForm: selectedForm,
+		get { CompletBtnState(selectedStepType: selectedStepType,
+													selectedForm: selectedForm,
 													selectedIndex: selectedIndex)}
 		set { }
 	}
@@ -103,9 +107,8 @@ extension FooterButtons.State {
 			guard let selectedForm = state.selectedForm else { return false }
 			return stepType(form: selectedForm.form) == .photos
 		}()
-		let isDoctorMode = state.forms.map(pipe(get(\.form), stepType(form:))).allSatisfy(with(.doctor, filterBy))
 		let isLastIndex = state.selectedIndex == state.forms.count - 1
-		self.isOnLastDoctorStep = isDoctorMode && isLastIndex
+		self.isOnLastDoctorStep = state.journeyMode == .doctor && isLastIndex
 		let canSelectedFormBeCompleted: Bool = {
 			guard let selectedForm = state.selectedForm else { return false }
 			return selectedForm.form.canProceed

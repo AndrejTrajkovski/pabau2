@@ -30,12 +30,12 @@ public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction
 		action: /CheckInContainerAction.doctor,
 		environment: { $0 }
 	),
-	chooseFormListReducer.pullback(
+	chooseFormJourneyReducer.pullback(
 		state: \CheckInContainerState.chooseTreatments,
 		action: /CheckInContainerAction.chooseTreatments,
 		environment: { $0 }
 	),
-	chooseFormListReducer.pullback(
+	chooseFormJourneyReducer.pullback(
 		state: \CheckInContainerState.chooseConsents,
 		action: /CheckInContainerAction.chooseConsents,
 		environment: { $0 }
@@ -86,9 +86,10 @@ public let navigationReducer = Reducer<CheckInContainerState, CheckInContainerAc
 	case .doctor(.checkInBody(.footer(.toPatientMode))):
 		backToPatientMode()
 	case .doctor(.checkInBody(.footer(.photos(.addPhotos)))):
-		state.photosState.editPhotos = EditPhotosState([])
+//		state.photosState.editPhotos = EditPhotosState([])
+		state.doctorArray.photosState.editPhotos = EditPhotosState([])
 	case .doctor(.checkInBody(.footer(.photos(.editPhotos)))):
-		state.photosState.editPhotos = EditPhotosState(state.photosState.selectedPhotos())
+		state.doctorArray.photosState.editPhotos = EditPhotosState(state.doctorArray.photosState.selectedPhotos())
 	default:
 		break
 	}

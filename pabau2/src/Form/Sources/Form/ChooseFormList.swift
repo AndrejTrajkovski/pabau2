@@ -4,10 +4,27 @@ import Util
 import ComposableArchitecture
 
 public struct ChooseFormState: Equatable {
-	var templates: IdentifiedArrayOf<FormTemplate>
-	var templatesLoadingState: LoadingState = .initial
-	var selectedTemplatesIds: [Int]
-//	var forms: IdentifiedArrayOf<FormTemplate>
+	public var templates: IdentifiedArrayOf<FormTemplate>
+	public var templatesLoadingState: LoadingState = .initial
+	public var selectedTemplatesIds: [Int]
+
+	public init(
+		templates: IdentifiedArrayOf<FormTemplate>,
+		selectedTemplatesIds: [Int]
+	) {
+		self.templates = templates
+		self.selectedTemplatesIds = selectedTemplatesIds
+	}
+	
+	public init(
+		templates: IdentifiedArrayOf<FormTemplate>,
+		templatesLoadingState: LoadingState,
+		selectedTemplatesIds: [Int]
+	) {
+		self.templates = templates
+		self.templatesLoadingState = templatesLoadingState
+		self.selectedTemplatesIds = selectedTemplatesIds
+	}
 }
 
 public enum ChooseFormAction {
@@ -18,7 +35,7 @@ public enum ChooseFormAction {
 	case onAppear(FormType)
 }
 
-let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, FormEnvironment> { state, action, environment in
+public let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, FormEnvironment> { state, action, environment in
 	switch action {
 	case .addTemplateId(let templateId):
 		if !state.selectedTemplatesIds.contains(templateId) {
@@ -34,7 +51,7 @@ let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, FormEnvir
 	case .gotResponse(let result):
 		switch result {
 		case .success(let templates):
-//			state.templates = flatten(templates)
+			state.templates = IdentifiedArray(templates)
 			state.templatesLoadingState = .gotSuccess
 		case .failure:
 			state.templatesLoadingState = .gotError
@@ -51,12 +68,12 @@ let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, FormEnvir
 	return .none
 }
 
-struct ChooseFormList: View {
+public struct ChooseFormList: View {
 	let mode: ChooseFormMode
 	let store: Store<ChooseFormState, ChooseFormAction>
 	@ObservedObject var viewStore: ViewStore<ViewState, ChooseFormAction>
 	@State var searchText: String = ""
-	init (store: Store<ChooseFormState, ChooseFormAction>,
+	public init (store: Store<ChooseFormState, ChooseFormAction>,
 				mode: ChooseFormMode) {
 		self.mode = mode
 		self.store = store
@@ -87,7 +104,7 @@ struct ChooseFormList: View {
 		}
 	}
 
-	var body: some View {
+	public var body: some View {
 		chooseFormCells
 			.onAppear {
 				print("on Appear \(self.mode)")
@@ -228,4 +245,8 @@ public enum ChooseFormMode {
 			return .treatment
 		}
 	}
+}
+
+func flatten<T: Identifiable>(_ list: [T]) -> [T.ID: T] {
+	Dictionary(uniqueKeysWithValues: Array(zip(list.map(\.id), list)))
 }

@@ -26,11 +26,11 @@ struct DoctorSummary: View {
 		return GeometryReader { geo in
 			VStack(spacing: 32) {
 				DoctorSummaryStepList(self.viewStore.state.steps) {
-					self.viewStore.send(.didTouchStep($0))
+					self.viewStore.send(.didTouchStep($0.stepType))
 				}
 				DoctorSummaryButtons(store:
 					self.store.scope(
-						state: { $0.doctorArray }, action: { $0 })
+						state: { $0.doctorArray.flatMap(\.forms) }, action: { $0 })
 				)
 				Spacer()
 				DoctorNavigation(self.store.scope(state: { $0 }, action: { $0 }))

@@ -1,6 +1,7 @@
 import Overture
 import Model
 import Form
+import ComposableArchitecture
 
 func flatten<T: Identifiable>(_ list: [T]) -> [T.ID: T] {
 	Dictionary(uniqueKeysWithValues: Array(zip(list.map(\.id), list)))
@@ -68,8 +69,8 @@ func stepType(type: FormType) -> StepType {
 
 let filterStepType = filterBy
 
-func selected(_ templates: [Int: FormTemplate], _ selectedIds: [Int]) -> [Int: FormTemplate] {
-	templates.filter { selectedIds.contains($0.key) }
+func selected(_ templates: IdentifiedArrayOf<FormTemplate>, _ selectedIds: [Int]) -> IdentifiedArrayOf<FormTemplate> {
+	templates.filter { selectedIds.contains($0.id) }
 }
 
 let formTemplatesAllFalse: ([Int: FormTemplate]) -> [Int: Bool] = { state in

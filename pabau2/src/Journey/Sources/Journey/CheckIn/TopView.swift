@@ -24,7 +24,8 @@ struct TopView: View {
 		let journey: Journey
 		init(state: CheckInViewState) {
 			self.totalSteps = state.forms
-				.filter { extract(case: MetaForm.patientComplete, from: $0.form) == nil }
+				.filter { $0.stepType == .patientComplete}
+				.flatMap(\.forms)
 				.count
 			self.currentStepIdx = state.selectedIndex + (state.isOnPatientCompleteStep ? 0 : 1)
 			self.journey = state.journey

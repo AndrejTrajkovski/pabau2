@@ -124,9 +124,9 @@ public struct FormWrapper: View {
 						action: { .patientComplete($0) }),
 					then: PatientCompleteForm.init(store:)
 				)
-			} else if self.viewStore.state.checkPatient != nil {
+			} else if self.viewStore.state.checkPatient?.patDetails != nil {
 				CheckPatientForm(didTouchDone: { },
-												 patDetails: self.viewStore.state.checkPatient!.patDetails,
+												 patDetails: self.viewStore.state.checkPatient!.patDetails!,
 												 patientForms: self.viewStore.state.checkPatient!.patForms)
 			} else if self.viewStore.state.photos != nil {
 				IfLetStore(

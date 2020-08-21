@@ -6,7 +6,7 @@ import Form
 
 struct StepsViewState: Equatable {
 	var selectedIndex: Int
-	let forms: [MetaFormAndStatus]
+	let forms: IdentifiedArrayOf<StepForms>
 }
 
 public enum StepsViewAction {

@@ -3,7 +3,9 @@
 
 import Foundation
 
-public enum StepType: String, Codable, Equatable, CaseIterable {
+public enum StepType: String, Codable, Equatable, CaseIterable, Identifiable {
+	public var id: Int { order }
+	
 	case patientdetails = "patientDetails"
 	case medicalhistory = "medicalHistory"
 	case consents = "consents"

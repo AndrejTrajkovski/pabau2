@@ -4,6 +4,7 @@ import SwiftDate
 import Util
 import SwiftUI
 import Form
+import ComposableArchitecture
 
 struct JourneyMocks {
 	static let clientState: PickerContainerState<Client> =
@@ -81,7 +82,7 @@ struct JourneyMocks {
 		patientDetails: PatientDetails.mock,
 		medHistory: FormTemplate.getMedHistory(),
 		consents: [],
-		allConsents: flatten(FormTemplate.mockConsents),
+		allConsents: IdentifiedArray(FormTemplate.mockConsents),
 		photosState: PhotosState.init(SavedPhoto.mock())
 	)
 }
