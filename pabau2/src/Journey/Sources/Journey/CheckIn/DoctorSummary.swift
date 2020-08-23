@@ -34,7 +34,7 @@ let doctorSummaryReducer = Reducer <DoctorSummaryState, DoctorSummaryAction, Jou
 			fatalError("should be handled pre checkin")
 		}
 	case .didTouchStep(let stepType):
-		state.doctorCheckIn.selectedStepType = stepType
+		state.doctorCheckIn.forms.selectedStep = stepType
 		state.isDoctorCheckInMainActive = true
 	case .xOnDoctorCheckIn:
 		break //handled in checkInMiddleware
@@ -151,7 +151,7 @@ struct StepState: Equatable {
 
 extension DoctorSummaryState {
 	var steps: [StepState] {
-		return doctorCheckIn.forms.map {
+		return doctorCheckIn.forms.forms.map {
 			StepState.init(stepType: $0.stepType, isComplete: $0.isComplete)
 		}
 //		return Dictionary.init(grouping: doctorCheckIn.forms,

@@ -5,32 +5,23 @@ import ComposableArchitecture
 import Form
 
 struct StepsViewState: Equatable {
-	var selectedIndex: Int
-	let forms: IdentifiedArrayOf<StepForms>
+	var forms: Forms
 }
 
 public enum StepsViewAction {
-	case didSelectFormIndex(Int)
+	case didSelectFlatFormIndex(Int)
 	case didSelectNextStep
 	case didSelectPrevStep
 }
 
-func goToNextStep(_ state: inout StepsViewState) {
-	if state.selectedIndex + 1 < state.forms.count {
-		state.selectedIndex += 1
-	}
-}
-
 let stepsViewReducer = Reducer<StepsViewState, StepsViewAction, JourneyEnvironment> { state, action, _ in
 	switch action {
-	case .didSelectFormIndex(let idx):
-		state.selectedIndex = idx
+	case .didSelectFlatFormIndex(let idx):
+		state.forms.flatSelectedIndex = idx
 	case .didSelectNextStep:
-		goToNextStep(&state)
+		state.forms.next()
 	case .didSelectPrevStep:
-		if state.selectedIndex > 0 {
-			state.selectedIndex -= 1
-		}
+		state.forms.previous()
 	}
 	return .none
 }
@@ -68,7 +59,7 @@ struct StepsCollectionView: View {
 				.font(.medium10)
 				.foregroundColor(Color(hex: "909090"))
 		}.onTapGesture {
-			self.viewStore.send(.didSelectFormIndex(viewModel.idx))
+			self.viewStore.send(.didSelectFlatFormIndex(viewModel.idx))
 		}.frame(maxWidth: cellWidth, maxHeight: cellHeight, alignment: .top)
 	}
 
@@ -111,10 +102,9 @@ struct StepsCollectionView: View {
 extension StepsCollectionView.State {
 	init(state: StepsViewState) {
 		let forms = state.forms
-		let formVms = zip(forms, forms.indices).map { Self.formVm(form: $0, selection: state.selectedIndex)}
-		let selIdx = state.selectedIndex
+		let selIdx = state.forms.flatSelectedIndex
+		let formVms = zip(forms.flat, forms.flat.indices).map { Self.formVm(form: $0, selection: selIdx)}
 		let shouldShowArrows = formVms.count > maxVisibleCells
-
 		self.formVms = formVms
 		self.selectedIndex = selIdx
 		self.numberOfVisibleSteps = min(formVms.count, maxVisibleCells)

@@ -87,9 +87,9 @@ public let navigationReducer = Reducer<CheckInContainerState, CheckInContainerAc
 		backToPatientMode()
 	case .doctor(.checkInBody(.footer(.photos(.addPhotos)))):
 //		state.photosState.editPhotos = EditPhotosState([])
-		state.doctorArray.photosState.editPhotos = EditPhotosState([])
+		state.doctorForms.photosState.editPhotos = EditPhotosState([])
 	case .doctor(.checkInBody(.footer(.photos(.editPhotos)))):
-		state.doctorArray.photosState.editPhotos = EditPhotosState(state.doctorArray.photosState.selectedPhotos())
+		state.doctorForms.photosState.editPhotos = EditPhotosState(state.doctorForms.photosState.selectedPhotos())
 	default:
 		break
 	}

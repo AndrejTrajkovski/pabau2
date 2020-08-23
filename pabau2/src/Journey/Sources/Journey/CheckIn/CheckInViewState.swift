@@ -4,9 +4,7 @@ import Form
 import Overture
 
 public struct CheckInViewState: Equatable {
-	var selectedIndex: Int
-	var forms: IdentifiedArrayOf<StepForms>
-	var selectedStepType: StepType
+	var forms: Forms
 	var xButtonActiveFlag: Bool
 	let journey: Journey
 	let journeyMode: JourneyMode
@@ -39,15 +37,10 @@ public struct CheckInViewState: Equatable {
 	var footer: FooterButtonsState {
 		get {
 			FooterButtonsState(forms: self.forms,
-												 selectedIndex: selectedIndex,
-												 selectedStepType: selectedStepType,
-												 selectedForm: selectedForm,
 												 journeyMode: journeyMode)
 		}
 		set {
 			self.forms = newValue.forms
-			self.selectedIndex = newValue.selectedIndex
-			self.selectedStepType = newValue.selectedStepType
 		}
 	}
 }

@@ -30,7 +30,7 @@ struct DoctorSummary: View {
 				}
 				DoctorSummaryButtons(store:
 					self.store.scope(
-						state: { $0.doctorArray.flatMap(\.forms) }, action: { $0 })
+						state: { $0.doctorForms.forms.flatMap(\.forms) }, action: { $0 })
 				)
 				Spacer()
 				DoctorNavigation(self.store.scope(state: { $0 }, action: { $0 }))

@@ -6,10 +6,17 @@ import Overture
 import CasePaths
 import Form
 
-public let checkInMainReducer: Reducer<CheckInViewState, CheckInMainAction, JourneyEnvironment> = .combine(
+public let stepFormsReducer: Reducer<StepForms, StepFormsAction, JourneyEnvironment> = .combine(
 	metaFormAndStatusReducer.forEach(
-		state: \CheckInViewState.forms,
-		action: /CheckInMainAction.checkInBody..CheckInBodyAction.updateForm,
+		state: \StepForms.forms,
+		action: /StepFormsAction.updateForm(index:action:),
+		environment: { $0 })
+)
+
+public let checkInMainReducer: Reducer<CheckInViewState, CheckInMainAction, JourneyEnvironment> = .combine(
+	stepFormsReducer.forEach(
+		state: \CheckInViewState.forms.forms,
+		action: /CheckInMainAction.checkInBody..CheckInBodyAction.stepForms(stepType:action:),
 		environment: { $0 }),
 	checkInBodyReducer.pullback(
 		state: \CheckInViewState.self,

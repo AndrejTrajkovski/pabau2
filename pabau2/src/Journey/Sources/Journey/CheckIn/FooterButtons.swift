@@ -8,8 +8,8 @@ import Model
 public let footerButtonsReducer = Reducer<FooterButtonsState, FooterButtonsAction, JourneyEnvironment>.init { state, action, _ in
 	switch action {
 		case .didSelectCompleteFormIdx(let stepType, let idx):
-			state.forms[id: stepType]?.forms[idx].isComplete = true
-			goToNextStep(&state.stepsState)
+			state.forms.forms[id: stepType]?.forms[idx].isComplete = true
+			state.forms.next()
 		case .toPatientMode:
 			break//handled in navigationReducer
 		case .photos:
@@ -21,19 +21,14 @@ public let footerButtonsReducer = Reducer<FooterButtonsState, FooterButtonsActio
 }
 
 public struct FooterButtonsState {
-	var forms: IdentifiedArrayOf<StepForms>
-	var selectedIndex: Int
-	var selectedStepType: StepType
-	var selectedForm: MetaFormAndStatus?
+	var forms: Forms
 	let journeyMode: JourneyMode
 
 	var stepsState: StepsViewState {
 		get {
-			StepsViewState(selectedIndex: selectedIndex,
-										 forms: forms)
+			StepsViewState(forms: forms)
 		}
 		set {
-			self.selectedIndex = newValue.selectedIndex
 			self.forms = newValue.forms
 		}
 	}
@@ -48,10 +43,7 @@ public enum FooterButtonsAction {
 
 extension FooterButtonsState {
 	var completeBtn: CompletBtnState {
-		get { CompletBtnState(selectedStepType: selectedStepType,
-													selectedForm: selectedForm,
-													selectedIndex: selectedIndex)}
-		set { }
+		get { CompletBtnState(forms: self.forms) }
 	}
 }
 
@@ -78,7 +70,7 @@ struct FooterButtons: View {
 						store: self.store.scope(
 							state: {
 								extract(case: MetaForm.photos,
-												from: $0.selectedForm?.form)?.selectedIds.isEmpty ?? false },
+												from: $0.forms.selectedForm.form)?.selectedIds.isEmpty ?? false },
 							action: { .photos($0) }
 						)
 					)
@@ -99,21 +91,14 @@ struct FooterButtons: View {
 
 extension FooterButtons.State {
 	init(state: FooterButtonsState) {
-		self.isOnCheckPatient = {
-			guard let selectedForm = state.selectedForm else { return false }
-			return stepType(form: selectedForm.form) == .checkpatient
-		}()
-		self.isOnPhotosStep = {
-			guard let selectedForm = state.selectedForm else { return false }
-			return stepType(form: selectedForm.form) == .photos
-		}()
-		let isLastIndex = state.selectedIndex == state.forms.count - 1
-		self.isOnLastDoctorStep = state.journeyMode == .doctor && isLastIndex
-		let canSelectedFormBeCompleted: Bool = {
-			guard let selectedForm = state.selectedForm else { return false }
-			return selectedForm.form.canProceed
-			}()
-		let areRestOfFormsComplete = state.forms.prefix(upTo: state.forms.count - 1).allSatisfy(\.isComplete)
+		self.isOnCheckPatient = state.forms.selectedStep == .checkpatient
+		self.isOnPhotosStep = state.forms.selectedStep == .photos
+		let flatForms = state.forms.forms.flatMap(\.forms)
+		let isLastStep = state.forms.selectedStep == state.forms.forms.elements.last?.stepType &&
+			state.forms.selectedForm == flatForms.last
+		self.isOnLastDoctorStep = state.journeyMode == .doctor && isLastStep
+		let canSelectedFormBeCompleted = state.forms.selectedForm.form.canProceed
+		let areRestOfFormsComplete = flatForms.prefix(upTo: flatForms.count - 1).allSatisfy(\.isComplete)
 		self.isCompleteJourneyBtnDisabled = !(self.isOnLastDoctorStep && canSelectedFormBeCompleted && areRestOfFormsComplete)
 	}
 }

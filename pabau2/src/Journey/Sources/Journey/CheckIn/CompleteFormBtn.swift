@@ -5,9 +5,7 @@ import Form
 import Model
 
 struct CompletBtnState {
-	var selectedStepType: StepType
-	var selectedForm: MetaFormAndStatus?
-	var selectedIndex: Int
+	let forms: Forms
 }
 
 struct CompleteFormBtn: View {
@@ -42,9 +40,9 @@ struct CompleteFormBtn: View {
 
 extension CompleteFormBtn.State {
 	init (state: CompletBtnState) {
-		self.stepType = state.selectedStepType
-		self.index = state.selectedIndex
-		if let selectedForm = state.selectedForm {
+		self.stepType = state.forms.selectedStep
+		self.index = state.forms.selectedStepForms.selFormIndex
+		if let selectedForm = state.forms.selectedForm {
 			self.isDisabled = !selectedForm.form.canProceed
 			if case .checkPatient = selectedForm.form {
 				self.btnTitle = Texts.patientDetailsOK

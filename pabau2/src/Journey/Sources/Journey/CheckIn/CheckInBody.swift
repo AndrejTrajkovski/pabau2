@@ -5,8 +5,12 @@ import Util
 import Overture
 import Form
 
-public enum CheckInBodyAction {
+public enum StepFormsAction {
 	case updateForm(index: Int, action: UpdateFormAction)
+}
+
+public enum CheckInBodyAction {
+	case stepForms(stepType: StepType, action: StepFormsAction)
 	case stepsView(StepsViewAction)
 	case footer(FooterButtonsAction)
 	case completeJourney(CompleteJourneyBtnAction)
@@ -17,7 +21,7 @@ let checkInBodyReducer: Reducer<CheckInViewState, CheckInBodyAction, JourneyEnvi
 	.combine(
 		.init { state, action, _ in
 			switch action {
-			case .updateForm:
+			case .stepForms:
 				break//binding
 			case .stepsView:
 				break//handled inline
@@ -43,21 +47,21 @@ struct CheckInBody: View {
 
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
 	let store: Store<CheckInViewState, CheckInBodyAction>
-	@ObservedObject var viewStore: ViewStore<ViewState, CheckInBodyAction>
+//	@ObservedObject var viewStore: ViewStore<ViewState, CheckInBodyAction>
 	init(store: Store<CheckInViewState, CheckInBodyAction>) {
 		print("check in body init")
 		self.store = store
-		self.viewStore = ViewStore(
-			store.scope(state: ViewState.init(state:))
-		)
+//		self.viewStore = ViewStore(
+//			store.scope(state: ViewState.init(state:))
+//		)
 	}
-
-	struct ViewState: Equatable {
-		let selectedIndex: Int
-		init (state: CheckInViewState) {
-			self.selectedIndex = state.selectedIndex
-		}
-	}
+//
+//	struct ViewState: Equatable {
+//		let selectedIndex: Int
+//		init (state: CheckInViewState) {
+//			self.selectedIndex = state.selectedIndex
+//		}
+//	}
 
 	var body: some View {
 		print("check in body body")
