@@ -27,7 +27,7 @@ struct TopView: View {
 				.filter { $0.stepType == .patientComplete}
 				.flatMap(\.forms)
 				.count
-			self.currentStepIdx = state.forms.flatSelectedIndex + (state.isOnPatientCompleteStep ? 0 : 1)
+			self.currentStepIdx = state.forms.flatSelectedIndex + (state.forms.selectedStep == .patientComplete ? 0 : 1)
 			self.journey = state.journey
 		}
 	}

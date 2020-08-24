@@ -11,7 +11,7 @@ public struct MetaFormAndStatus: Equatable, Identifiable {
 	public var isComplete: Bool
 
 	public init(_ form: MetaForm,
-							_ isComplete: Bool,
+							_ isComplete: Bool = false,
 							index: Int) {
 		self.form = form
 		self.isComplete = isComplete

@@ -22,16 +22,11 @@ struct Forms: Equatable {
 			return upToSum + selectedStepForms.selFormIndex
 		}
 		set {
-			var result: ([[Int]], Int) = ([], 0)
-			result = forms.reduce(result) { (localResult: ([[Int]], Int), stepForms: StepForms) in
-				var previousCount = result.1
-				if previousCount != 0 {
-					previousCount += 1
-				}
+			var result = forms.reduce(into: ([[Int]](), -1)) { localResult, stepForms in
+				let previousCount = localResult.1 + 1
 				let currentMapped = stepForms.forms.indices.map { $0 + previousCount }
-				result.0.append(currentMapped)
-				result.1 = currentMapped.last!
-				return result
+				localResult.0.append(currentMapped)
+				localResult.1 = currentMapped.last!
 			}
 			let indices = result.0.map {
 				($0.first!, $0.last!)
@@ -43,7 +38,10 @@ struct Forms: Equatable {
 				let upper = lowerUpperTup.1
 				if (lower <= newValue && upper >= newValue) {
 					stepIndex = index
-					selFormIndex = upper - newValue - 1
+					selFormIndex = newValue - lower
+//					if selFormIndex > 0 {
+//						 selFormIndex -= 1
+//					}
 				}
 			}
 			selectedStep = forms[stepIndex].stepType
@@ -59,12 +57,12 @@ struct Forms: Equatable {
 	var selectedForm: MetaFormAndStatus {
 		forms[id: selectedStep]!.selectedForm
 	}
-	
+
 	mutating func select(step: StepType, idx: Int) {
 		self.selectedStep = step
 		self.forms[id: step]!.selFormIndex = idx
 	}
-	
+
 	mutating func next() {
 		if !forms[id: selectedStep]!.nextIndex() {
 			if let currentStepTypeIndex = forms.firstIndex(where: { $0.stepType == selectedStep }),
@@ -84,6 +82,12 @@ struct Forms: Equatable {
 			}
 		}
 	}
+	
+	mutating func goToNextUncomplete() {
+		forms.first(where: { !$0.isComplete }).map {
+			selectedStep = $0.stepType
+		}
+	}
 }
 
 enum JourneyMode: Equatable {
@@ -93,19 +97,19 @@ enum JourneyMode: Equatable {
 
 public struct StepForms: Equatable, Identifiable {
 	var stepType: StepType
-	var forms: IdentifiedArrayOf<MetaFormAndStatus>
+	var forms: IdentifiedArray<Int, MetaFormAndStatus>
 	var selFormIndex: Int
-	
+
 	var selectedForm: MetaFormAndStatus {
 		self.forms[selFormIndex]
 	}
-	
+
 	public var id: StepType { stepType }
-	
+
 	var isComplete: Bool {
 		self.forms.allSatisfy(\.isComplete)
 	}
-	
+
 	mutating func previousIndex() -> Bool {
 		if selFormIndex > 0 {
 			selFormIndex -= 1
@@ -114,9 +118,9 @@ public struct StepForms: Equatable, Identifiable {
 			return false
 		}
 	}
-	
+
 	mutating func nextIndex() -> Bool {
-		if forms.count + 1 > selFormIndex {
+		if forms.count - 1 > selFormIndex {
 			selFormIndex += 1
 			return true
 		} else {
@@ -214,7 +218,7 @@ extension CheckInContainerState {
 	var chooseConsents: ChooseFormJourneyState {
 		get {
 			return ChooseFormJourneyState(
-				forms: patientForms.forms[id: .consents]?.forms ?? [],
+				forms: patientForms.forms[id: .consents]?.forms ?? IdentifiedArray([]),
 				templates: allConsents,
 				templatesLoadingState: .initial,
 				selectedTemplatesIds: selectedConsentsIds
@@ -293,24 +297,61 @@ extension CheckInContainerState {
 		self.journey = journey
 		var stepTypes = pathway.steps.map { $0.stepType }
 		stepTypes.append(StepType.patientComplete)
-		let doctorStepTypes = stepTypes.filter(filterBy(.doctor))
-		doctorStepTypes.map {
-			switch $0 {
-				case .patientdetails:
-					return StepForms(stepType: $0, forms: [PatientDetails()], selFormIndex: 0)
-			case .medicalhistory:
-				return StepForms(stepType: $0, forms: [FormTemplate.getMedHistory()],
-												 selFormIndex: 0)
-			case .consents:
-				return StepForms(stepType: $0, forms: consents.map(MetaFormAndStatus.init(form:, <#T##isComplete: Bool##Bool#>, index: <#T##Int#>)), selFormIndex: <#T##Int#>)
-			}
-			
-		}
+		let patientStepTypes = stepTypes.filter(filterBy(.patient))
+		let patientForms = makePatientForms(stepTypes: patientStepTypes, consents: consents)
+		self.patientForms = Forms.init(forms: IdentifiedArray(patientForms),
+																	selectedStep: patientStepTypes.sorted(by: \.order).first!)
+		self.doctorForms = Forms.init(forms: [], selectedStep: StepType.aftercares)
 		self.allConsents = allConsents
 		self.allTreatmentForms = IdentifiedArray(FormTemplate.mockTreatmentN)
 		self.selectedConsentsIds = []
 		self.selectedTreatmentFormsIds = []
 	}
+}
+
+func stepForms(stepType: StepType,
+							 consents: IdentifiedArrayOf<FormTemplate>) -> StepForms {
+	switch stepType {
+		case .patientdetails:
+			return StepForms(stepType: stepType,
+											 forms: IdentifiedArray([
+												MetaFormAndStatus(
+														MetaForm.patientDetails(PatientDetails.empty),
+													index: 0)
+											]),
+											 selFormIndex: 0)
+	case .medicalhistory:
+		return StepForms(stepType: stepType,
+										 forms: IdentifiedArray(
+											[MetaFormAndStatus(MetaForm.init(FormTemplate.getMedHistory()), index: 0)]
+			),
+										 selFormIndex: 0)
+	case .consents:
+		let wrapped = zip(consents.indices, consents).map { idx, consent in
+			return MetaFormAndStatus(MetaForm.template(consent), index: idx)
+		}
+		return StepForms(stepType: stepType,
+										 forms: IdentifiedArray(wrapped),
+										 selFormIndex: 0)
+	case .patientComplete:
+		return StepForms(stepType: stepType,
+										 forms: [
+											MetaFormAndStatus(
+												MetaForm.patientComplete(
+													PatientComplete(isPatientComplete: false)
+												), index: 0
+											)
+			],
+		selFormIndex: 0)
+	case .aftercares, .checkpatient, .photos, .prescriptions, .treatmentnotes:
+		fatalError()
+	}
+}
+
+func makePatientForms(stepTypes: [StepType],
+								 consents: IdentifiedArrayOf<FormTemplate>) -> [StepForms] {
+	stepTypes.map { stepForms(stepType: $0,
+														consents: consents)}
 }
 
 extension Forms {

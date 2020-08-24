@@ -97,9 +97,10 @@ public struct ChooseFormList: View {
 				.map { $0 }
 				.sorted(by: \.name)
 		}
+		
 		var selectedTemplates: [FormTemplate] {
-			selectedTemplatesIds.map {
-				templates.elements[$0]
+			selectedTemplatesIds.compactMap {
+				templates[id: $0]
 			}
 		}
 	}

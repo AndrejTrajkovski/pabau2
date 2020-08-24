@@ -18,6 +18,7 @@
 		82BE2F4A23D97D9C00B3678A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BE2F4923D97D9C00B3678A /* SceneDelegate.swift */; };
 		82BE2F4E23D97D9F00B3678A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 82BE2F4D23D97D9F00B3678A /* Assets.xcassets */; };
 		82BE2F5123D97D9F00B3678A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 82BE2F5023D97D9F00B3678A /* Preview Assets.xcassets */; };
+		82D8240924F2AD0D001F73C8 /* FSCalendarSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 82D8240824F2AD0D001F73C8 /* FSCalendarSwiftUI */; };
 		82F6ADAE23F2C7B1001B3ACE /* PabauTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */; };
 /* End PBXBuildFile section */
 
@@ -62,6 +63,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				82D8240924F2AD0D001F73C8 /* FSCalendarSwiftUI in Frameworks */,
 				829D620B24D20A1C0049D5D0 /* Login in Frameworks */,
 				8298A11524D566B40079BFE9 /* Clients in Frameworks */,
 				829D620724D20A070049D5D0 /* ComposableArchitecture in Frameworks */,
@@ -176,6 +178,7 @@
 				829D620824D20A1C0049D5D0 /* Journey */,
 				829D620A24D20A1C0049D5D0 /* Login */,
 				8298A11424D566B40079BFE9 /* Clients */,
+				82D8240824F2AD0D001F73C8 /* FSCalendarSwiftUI */,
 			);
 			productName = pabau2;
 			productReference = 82BE2F4423D97D9C00B3678A /* pabau2.app */;
@@ -499,6 +502,10 @@
 		829D620A24D20A1C0049D5D0 /* Login */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Login;
+		};
+		82D8240824F2AD0D001F73C8 /* FSCalendarSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FSCalendarSwiftUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

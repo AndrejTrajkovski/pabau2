@@ -3,10 +3,10 @@
     "pins": [
       {
         "package": "FSCalendar",
-        "repositoryURL": "/Users/andrejtrajkovski/Desktop/FSCalendarWrapper/FSCalendarSwiftUI/FSCalendar",
+        "repositoryURL": "/Users/andrejtrajkovski/Desktop/pabau2/pabau2/src/FSCalendarSwiftUI/FSCalendar",
         "state": {
           "branch": null,
-          "revision": "0d94e2b310e293f844a27d8b71f93fec4b4d939e",
+          "revision": "f25ea6099e34b84e27da789c6026551577226505",
           "version": "1.0.0"
         }
       }

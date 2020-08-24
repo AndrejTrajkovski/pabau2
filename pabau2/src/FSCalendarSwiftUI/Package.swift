@@ -7,19 +7,16 @@ let package = Package(
     name: "FSCalendarSwiftUI",
 		platforms: [.iOS("13.0")],
     products: [
-        // Products define the executables and libraries produced by a package, and make them visible to other packages.
         .library(
             name: "FSCalendarSwiftUI",
             targets: ["FSCalendarSwiftUI"]),
     ],
-    dependencies: [
+		dependencies: [
 			.package(name: "FSCalendar",
 							 url: "FSCalendar",
 							 from: "1.0.0")
     ],
     targets: [
-        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(
             name: "FSCalendarSwiftUI",
             dependencies: ["FSCalendar"])
