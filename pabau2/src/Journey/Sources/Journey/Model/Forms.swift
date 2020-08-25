@@ -9,7 +9,7 @@ struct Forms: Equatable {
 	var flat: [MetaFormAndStatus] {
 		forms.flatMap(\.forms)
 	}
-	
+
 	var flatSelectedIndex: Int {
 		get {
 			let indexOfSelStep = forms.firstIndex(where: { $0.stepType == selectedStep })!

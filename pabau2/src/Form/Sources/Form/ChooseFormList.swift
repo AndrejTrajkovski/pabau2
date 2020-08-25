@@ -247,7 +247,3 @@ public enum ChooseFormMode {
 		}
 	}
 }
-
-func flatten<T: Identifiable>(_ list: [T]) -> [T.ID: T] {
-	Dictionary(uniqueKeysWithValues: Array(zip(list.map(\.id), list)))
-}

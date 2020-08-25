@@ -167,7 +167,7 @@ extension CheckInContainerState {
 		var stepTypes = pathway.steps.map { $0.stepType }
 		stepTypes.append(StepType.patientComplete)
 		let patientStepTypes = stepTypes.filter(filterBy(.patient))
-		let patientForms = makePatientForms(stepTypes: patientStepTypes, consents: consents)
+		let patientForms = makePatientForms(stepTypes: patientStepTypes, consents: consents).sorted(by: \.stepType.order)
 		self.patientForms = Forms.init(forms: IdentifiedArray(patientForms),
 																	selectedStep: patientStepTypes.sorted(by: \.order).first!)
 		let doctorStepTypes = stepTypes.filter(filterBy(.doctor))
@@ -178,6 +178,7 @@ extension CheckInContainerState {
 																			treatmentNotes: [],
 																			prescriptions: [],
 																			photos: PhotosState.init([[:]]))
+			.sorted(by: \.stepType.order)
 		self.doctorForms = Forms.init(forms: IdentifiedArray(doctorForms),
 																	selectedStep: doctorStepTypes.sorted(by: \.order).first!)
 		self.allConsents = allConsents

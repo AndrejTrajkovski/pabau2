@@ -24,7 +24,7 @@ struct TopView: View {
 		let journey: Journey
 		init(state: CheckInViewState) {
 			self.totalSteps = state.forms.forms
-				.filter { $0.stepType == .patientComplete}
+				.filter { $0.stepType != .patientComplete}
 				.flatMap(\.forms)
 				.count
 			self.currentStepIdx = state.forms.flatSelectedIndex + (state.forms.selectedStep == .patientComplete ? 0 : 1)
