@@ -20,24 +20,21 @@ struct Forms: Equatable {
 			return upToSum + selectedStepForms.selFormIndex
 		}
 		set {
-			let result = forms.reduce(into: ([[Int]](), -1)) { localResult, stepForms in
-				let previousCount = localResult.1 + 1
-				let currentMapped = stepForms.forms.indices.map { $0 + previousCount }
-				localResult.0.append(currentMapped)
-				localResult.1 = currentMapped.last ?? -1
-			}
-			let indices = result.0.map {
-				($0.first!, $0.last!)
-			}
+			//FIXME
+			var sum = 0
 			var stepIndex = 0
 			var selFormIndex = 0
-			indices.enumerated().forEach { (index, lowerUpperTup) in
-				let lower = lowerUpperTup.0
-				let upper = lowerUpperTup.1
-				if lower <= newValue && upper >= newValue {
+			for (index, stepForm) in forms.sorted(by: \.stepType.order).enumerated() {
+				let lower = sum
+				let upper = lower + stepForm.forms.count
+				if lower <= newValue && upper > newValue {
 					stepIndex = index
 					selFormIndex = newValue - lower
+					break
+				} else {
+					sum = upper
 				}
+				print(lower, upper, sum)
 			}
 			selectedStep = forms[stepIndex].stepType
 			selectedStepForms.selFormIndex = selFormIndex
@@ -61,7 +58,7 @@ struct Forms: Equatable {
 	mutating func next() {
 		if !forms[id: selectedStep]!.nextIndex() {
 			if let currentStepTypeIndex = forms.firstIndex(where: { $0.stepType == selectedStep }),
-			forms.count + 1 > currentStepTypeIndex {
+			forms.count > currentStepTypeIndex {
 				let nextStepIndex = currentStepTypeIndex + 1
 				selectedStep = forms[nextStepIndex].stepType
 			}
