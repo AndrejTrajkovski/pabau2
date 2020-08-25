@@ -4,24 +4,20 @@ import Model
 import ComposableArchitecture
 import Form
 
-struct StepsViewState: Equatable {
-	var forms: Forms
-}
-
 public enum StepsViewAction {
 	case didSelectFlatFormIndex(Int)
 	case didSelectNextStep
 	case didSelectPrevStep
 }
 
-let stepsViewReducer = Reducer<StepsViewState, StepsViewAction, JourneyEnvironment> { state, action, _ in
+let stepsViewReducer = Reducer<Forms, StepsViewAction, JourneyEnvironment> { state, action, _ in
 	switch action {
 	case .didSelectFlatFormIndex(let idx):
-		state.forms.flatSelectedIndex = idx
+		state.flatSelectedIndex = idx
 	case .didSelectNextStep:
-		state.forms.next()
+		state.next()
 	case .didSelectPrevStep:
-		state.forms.previous()
+		state.previous()
 	}
 	return .none
 }
@@ -39,9 +35,9 @@ struct StepsCollectionView: View {
 		let shouldShowRightArrow: Bool
 	}
 
-	let store: Store<StepsViewState, StepsViewAction>
+	let store: Store<Forms, StepsViewAction>
 	@ObservedObject var viewStore: ViewStore<State, StepsViewAction>
-	init (store: Store<StepsViewState, StepsViewAction>) {
+	init (store: Store<Forms, StepsViewAction>) {
 		self.store = store
 		self.viewStore = ViewStore(
 			store.scope( state: State.init(state:), action: { $0 }))
@@ -100,9 +96,9 @@ struct StepsCollectionView: View {
 }
 
 extension StepsCollectionView.State {
-	init(state: StepsViewState) {
-		let forms = state.forms
-		let selIdx = state.forms.flatSelectedIndex
+	init(state: Forms) {
+		let forms = state
+		let selIdx = forms.flatSelectedIndex
 		let formVms = zip(forms.flat, forms.flat.indices).map { Self.formVm(form: $0, selection: selIdx)}
 		let shouldShowArrows = formVms.count > maxVisibleCells
 		self.formVms = formVms

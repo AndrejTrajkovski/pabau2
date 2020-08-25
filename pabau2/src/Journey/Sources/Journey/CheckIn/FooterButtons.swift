@@ -23,15 +23,6 @@ public let footerButtonsReducer = Reducer<FooterButtonsState, FooterButtonsActio
 public struct FooterButtonsState {
 	var forms: Forms
 	let journeyMode: JourneyMode
-
-	var stepsState: StepsViewState {
-		get {
-			StepsViewState(forms: forms)
-		}
-		set {
-			self.forms = newValue.forms
-		}
-	}
 }
 
 public enum FooterButtonsAction {
@@ -39,12 +30,6 @@ public enum FooterButtonsAction {
 	case didSelectCompleteFormIdx(StepType, Int)
 	case toPatientMode
 	case completeJourney(CompleteJourneyBtnAction)
-}
-
-extension FooterButtonsState {
-	var completeBtn: CompletBtnState {
-		get { CompletBtnState(forms: self.forms) }
-	}
 }
 
 struct FooterButtons: View {
@@ -76,7 +61,7 @@ struct FooterButtons: View {
 					)
 				}
 				CompleteFormBtn(store:
-					self.store.scope(state: { $0.completeBtn }))
+					self.store.scope(state: { $0.forms }))
 					.frame(maxWidth: 250)
 				if viewStore.state.isOnLastDoctorStep {
 					CompleteJourneyBtn(isBtnDisabled: viewStore.state.isCompleteJourneyBtnDisabled,

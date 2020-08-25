@@ -26,7 +26,7 @@ struct Forms: Equatable {
 				let previousCount = localResult.1 + 1
 				let currentMapped = stepForms.forms.indices.map { $0 + previousCount }
 				localResult.0.append(currentMapped)
-				localResult.1 = currentMapped.last!
+				localResult.1 = currentMapped.last ?? -1
 			}
 			let indices = result.0.map {
 				($0.first!, $0.last!)

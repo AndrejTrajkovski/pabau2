@@ -37,7 +37,7 @@ let checkInBodyReducer: Reducer<CheckInViewState, CheckInBodyAction, JourneyEnvi
 			action: /CheckInBodyAction.footer,
 			environment: { $0 }),
 		stepsViewReducer.pullback(
-			state: \.stepsViewState,
+			state: \.forms,
 			action: /CheckInBodyAction.stepsView,
 			environment: { $0 })
 		)
@@ -69,7 +69,7 @@ struct CheckInBody: View {
 			VStack(spacing: 8) {
 				StepsCollectionView(store:
 					self.store.scope(
-						state: { $0.stepsViewState}, action: { .stepsView($0) })
+						state: { $0.forms }, action: { .stepsView($0) })
 				).frame(height: 80)
 				Divider()
 					.frame(width: geo.size.width)

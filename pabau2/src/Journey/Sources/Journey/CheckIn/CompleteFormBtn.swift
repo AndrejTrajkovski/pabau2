@@ -4,12 +4,8 @@ import Util
 import Form
 import Model
 
-struct CompletBtnState {
-	let forms: Forms
-}
-
 struct CompleteFormBtn: View {
-	let store: Store<CompletBtnState, FooterButtonsAction>
+	let store: Store<Forms, FooterButtonsAction>
 	struct State: Equatable {
 		let index: Int
 		let isDisabled: Bool
@@ -39,11 +35,10 @@ struct CompleteFormBtn: View {
 }
 
 extension CompleteFormBtn.State {
-	init (state: CompletBtnState) {
-		self.stepType = state.forms.selectedStep
-		self.index = state.forms.selectedStepForms.selFormIndex
-//		if let selectedForm = state.forms.selectedForm {
-		let selectedForm = state.forms.selectedForm
+	init (state: Forms) {
+		self.stepType = state.selectedStep
+		self.index = state.selectedStepForms.selFormIndex
+		let selectedForm = state.selectedForm
 		self.isDisabled = !selectedForm.form.canProceed
 		if case .checkPatient = selectedForm.form {
 			self.btnTitle = Texts.patientDetailsOK
@@ -57,10 +52,5 @@ extension CompleteFormBtn.State {
 		} else {
 			self.shouldShowButton = true
 		}
-//		} else {
-//			self.isDisabled = true
-//			self.btnTitle = ""
-//			self.shouldShowButton = false
-//		}
 	}
 }
