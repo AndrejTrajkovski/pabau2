@@ -20,21 +20,19 @@ struct Forms: Equatable {
 			return upToSum + selectedStepForms.selFormIndex
 		}
 		set {
-			//FIXME
-			var sum = 0
+			var previousUpper = 0
 			var stepIndex = 0
 			var selFormIndex = 0
 			for (index, stepForm) in forms.sorted(by: \.stepType.order).enumerated() {
-				let lower = sum
+				let lower = previousUpper
 				let upper = lower + stepForm.forms.count
 				if lower <= newValue && upper > newValue {
 					stepIndex = index
 					selFormIndex = newValue - lower
 					break
 				} else {
-					sum = upper
+					previousUpper = upper
 				}
-				print(lower, upper, sum)
 			}
 			selectedStep = forms[stepIndex].stepType
 			selectedStepForms.selFormIndex = selFormIndex
