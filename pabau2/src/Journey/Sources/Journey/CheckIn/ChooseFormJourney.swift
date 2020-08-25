@@ -16,9 +16,9 @@ public let chooseFormJourneyReducer: Reducer<ChooseFormJourneyState,
 			switch action {
 			case .proceed:
 				//TODO:
-//				updateWithKeepingOld(forms: &state.forms,
-//														 finalSelectedTemplatesIds: state.selectedTemplatesIds,
-//														 allTemplates: state.templates)
+				updateWithKeepingOld(forms: &state.forms,
+														 finalSelectedTemplatesIds: state.selectedTemplatesIds,
+														 allTemplates: state.templates)
 				return .none
 			default: break
 			}
@@ -27,7 +27,7 @@ public let chooseFormJourneyReducer: Reducer<ChooseFormJourneyState,
 )
 
 public struct ChooseFormJourneyState: Equatable {
-	var forms: IdentifiedArray<Int, MetaFormAndStatus>
+	var forms: IdentifiedArrayOf<MetaFormAndStatus>
 	var templates: IdentifiedArrayOf<FormTemplate>
 	var templatesLoadingState: LoadingState = .initial
 	var selectedTemplatesIds: [Int]

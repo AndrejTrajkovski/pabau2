@@ -99,29 +99,24 @@ import Form
 //	}
 //}
 
-//func updateWithKeepingOld(forms: inout IdentifiedArrayOf<MetaFormAndStatus>,
-//													finalSelectedTemplatesIds: [Int],
-//													allTemplates: IdentifiedArrayOf<FormTemplate>) {
-//	let oldWithData = forms.filter { old in
-//		finalSelectedTemplatesIds.contains(old.id)
-//	}
-//	let new = selected(allTemplates, finalSelectedTemplatesIds)
-//	forms.byId = oldWithData.merging(new,
-//																	 uniquingKeysWith: { (old, _) in
-//																		return old
-//	})
-//
-//	let oldWithDataCompleted = forms.completed.filter { old in
-//		finalSelectedTemplatesIds.contains(old.key)
-//	}
-//	let newCompleted = finalSelectedTemplatesIds.reduce(into: [Int: Bool]()) {
-//		$0[$1] = false
-//	}
-//	forms.completed = oldWithDataCompleted.merging(newCompleted,
-//																								 uniquingKeysWith: {
-//																									(old, _) in
-//																									return old
-//	})
-//
-//	forms.allIds = finalSelectedTemplatesIds
-//}
+func updateWithKeepingOld(forms: inout IdentifiedArrayOf<MetaFormAndStatus>,
+													finalSelectedTemplatesIds: [Int],
+													allTemplates: IdentifiedArrayOf<FormTemplate>) {
+	let oldWithData = forms.filter { old in
+		finalSelectedTemplatesIds.contains(old.id)
+	}.map(\.form)
+		.compactMap {
+			extract(case: MetaForm.template, from: $0)
+	}
+	
+	let allNew = selected(allTemplates, finalSelectedTemplatesIds)
+	let oldWithDataDict = Dictionary.init(grouping: oldWithData,
+																				by: \.id)
+	let allNewDict = Dictionary.init(grouping: allNew,
+																	 by: \.id)
+	let result = oldWithDataDict.merging(allNewDict,
+																	 uniquingKeysWith: { (old, _) in
+																		return old
+	}).flatMap(\.value)
+	forms = IdentifiedArray.init(wrap(IdentifiedArray(result)))
+}

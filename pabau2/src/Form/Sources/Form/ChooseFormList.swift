@@ -42,7 +42,7 @@ public let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, Fo
 			state.selectedTemplatesIds.append(templateId)
 		}
 	case .removeTemplateId(let templateId):
-		state.selectedTemplatesIds.removeAll(where: { $0 == templateId})
+		state.selectedTemplatesIds.removeAll(where: { $0 == templateId })
 	case .proceed:
 //		updateWithKeepingOld(forms: &state.forms,
 //												 finalSelectedTemplatesIds: state.selectedTemplatesIds,

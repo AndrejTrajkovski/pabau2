@@ -69,7 +69,7 @@ struct Forms: Equatable {
 			}
 		}
 	}
-	
+
 	mutating func previous() {
 		if !forms[id: selectedStep]!.previousIndex() {
 			if let currentStepTypeIndex = forms.firstIndex(where: { $0.stepType == selectedStep }),
@@ -79,7 +79,7 @@ struct Forms: Equatable {
 			}
 		}
 	}
-	
+
 	mutating func goToNextUncomplete() {
 		forms.first(where: { !$0.isComplete }).map {
 			selectedStep = $0.stepType
