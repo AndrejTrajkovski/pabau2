@@ -72,13 +72,3 @@ let filterStepType = filterBy
 func selected(_ templates: IdentifiedArrayOf<FormTemplate>, _ selectedIds: [Int]) -> IdentifiedArrayOf<FormTemplate> {
 	templates.filter { selectedIds.contains($0.id) }
 }
-
-let formTemplatesAllFalse: ([Int: FormTemplate]) -> [Int: Bool] = { state in
-	return allFalseCompleted(state.map(\.key))
-}
-
-func allFalseCompleted(_ ids: [Int]) -> [Int: Bool] {
-	ids.reduce(into: [Int: Bool]()) {
-		$0[$1] = false
-	}
-}

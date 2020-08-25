@@ -3,7 +3,6 @@ import ComposableArchitecture
 import Form
 
 struct FormPager: View {
-	
 	let store: Store<CheckInViewState, CheckInBodyAction>
 	@ObservedObject var viewStore: ViewStore<State, CheckInBodyAction>
 	init(store: Store<CheckInViewState, CheckInBodyAction>) {

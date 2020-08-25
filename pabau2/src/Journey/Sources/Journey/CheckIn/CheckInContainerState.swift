@@ -22,7 +22,7 @@ struct Forms: Equatable {
 			return upToSum + selectedStepForms.selFormIndex
 		}
 		set {
-			var result = forms.reduce(into: ([[Int]](), -1)) { localResult, stepForms in
+			let result = forms.reduce(into: ([[Int]](), -1)) { localResult, stepForms in
 				let previousCount = localResult.1 + 1
 				let currentMapped = stepForms.forms.indices.map { $0 + previousCount }
 				localResult.0.append(currentMapped)
@@ -36,24 +36,21 @@ struct Forms: Equatable {
 			indices.enumerated().forEach { (index, lowerUpperTup) in
 				let lower = lowerUpperTup.0
 				let upper = lowerUpperTup.1
-				if (lower <= newValue && upper >= newValue) {
+				if lower <= newValue && upper >= newValue {
 					stepIndex = index
 					selFormIndex = newValue - lower
-//					if selFormIndex > 0 {
-//						 selFormIndex -= 1
-//					}
 				}
 			}
 			selectedStep = forms[stepIndex].stepType
 			selectedStepForms.selFormIndex = selFormIndex
 		}
 	}
-	
+
 	var selectedStepForms: StepForms {
 		get { forms[id: selectedStep]! }
 		set { forms[id: selectedStep] = newValue}
 	}
-	
+
 	var selectedForm: MetaFormAndStatus {
 		forms[id: selectedStep]!.selectedForm
 	}
@@ -130,12 +127,9 @@ public struct StepForms: Equatable, Identifiable {
 }
 
 public struct CheckInContainerState: Equatable {
-	
 	var patientForms: Forms
 	var doctorForms: Forms
-	
-	var journey: Journey
-	
+	let journey: Journey
 	var allTreatmentForms: IdentifiedArrayOf<FormTemplate>
 	var allConsents: IdentifiedArrayOf<FormTemplate>
 
@@ -163,7 +157,6 @@ extension CheckInContainerState {
 		}
 		set {
 			self.patientForms = newValue.forms
-			self.journey = newValue.journey
 		}
 	}
 
@@ -178,7 +171,6 @@ extension CheckInContainerState {
 		set {
 			self.doctorForms = newValue.forms
 			self.isDoctorCheckInMainActive = newValue.xButtonActiveFlag
-			self.journey = newValue.journey
 		}
 	}
 
@@ -191,7 +183,6 @@ extension CheckInContainerState {
 												 doctorCheckIn: doctorCheckIn)
 		}
 		set {
-			self.journey = newValue.journey
 			self.doctorCheckIn = newValue.doctorCheckIn
 			self.isChooseConsentActive = newValue.isChooseConsentActive
 			self.isChooseTreatmentActive = newValue.isChooseTreatmentActive
@@ -214,7 +205,7 @@ extension CheckInContainerState {
 			self.selectedTreatmentFormsIds = newValue.selectedTemplatesIds
 		}
 	}
-	
+
 	var chooseConsents: ChooseFormJourneyState {
 		get {
 			return ChooseFormJourneyState(
@@ -301,7 +292,16 @@ extension CheckInContainerState {
 		let patientForms = makePatientForms(stepTypes: patientStepTypes, consents: consents)
 		self.patientForms = Forms.init(forms: IdentifiedArray(patientForms),
 																	selectedStep: patientStepTypes.sorted(by: \.order).first!)
-		self.doctorForms = Forms.init(forms: [], selectedStep: StepType.aftercares)
+		let doctorStepTypes = stepTypes.filter(filterBy(.doctor))
+		let doctorForms = makeDoctorForms(stepTypes: doctorStepTypes,
+																			patientDetails: patientDetails,
+																			medHistory: medHistory,
+																			consents: consents,
+																			treatmentNotes: [],
+																			prescriptions: [],
+																			photos: PhotosState.init([[:]]))
+		self.doctorForms = Forms.init(forms: IdentifiedArray(doctorForms),
+																	selectedStep: doctorStepTypes.sorted(by: \.order).first!)
 		self.allConsents = allConsents
 		self.allTreatmentForms = IdentifiedArray(FormTemplate.mockTreatmentN)
 		self.selectedConsentsIds = []
@@ -309,49 +309,105 @@ extension CheckInContainerState {
 	}
 }
 
-func stepForms(stepType: StepType,
-							 consents: IdentifiedArrayOf<FormTemplate>) -> StepForms {
+func doctorStepForms(stepType: StepType,
+										 patientDetails: PatientDetails,
+										 medHistory: FormTemplate,
+										 consents: IdentifiedArrayOf<FormTemplate>,
+										 treatmentNotes: IdentifiedArrayOf<FormTemplate>,
+										 prescriptions: IdentifiedArrayOf<FormTemplate>,
+										 photos: PhotosState) -> [MetaFormAndStatus] {
 	switch stepType {
-		case .patientdetails:
-			return StepForms(stepType: stepType,
-											 forms: IdentifiedArray([
-												MetaFormAndStatus(
-														MetaForm.patientDetails(PatientDetails.empty),
-													index: 0)
-											]),
-											 selFormIndex: 0)
-	case .medicalhistory:
-		return StepForms(stepType: stepType,
-										 forms: IdentifiedArray(
-											[MetaFormAndStatus(MetaForm.init(FormTemplate.getMedHistory()), index: 0)]
-			),
-										 selFormIndex: 0)
-	case .consents:
-		let wrapped = zip(consents.indices, consents).map { idx, consent in
-			return MetaFormAndStatus(MetaForm.template(consent), index: idx)
-		}
-		return StepForms(stepType: stepType,
-										 forms: IdentifiedArray(wrapped),
-										 selFormIndex: 0)
-	case .patientComplete:
-		return StepForms(stepType: stepType,
-										 forms: [
-											MetaFormAndStatus(
-												MetaForm.patientComplete(
-													PatientComplete(isPatientComplete: false)
-												), index: 0
-											)
-			],
-		selFormIndex: 0)
-	case .aftercares, .checkpatient, .photos, .prescriptions, .treatmentnotes:
-		fatalError()
+	case .aftercares:
+		return [MetaFormAndStatus(MetaForm.aftercare(JourneyMocks.aftercare), index: 0)]
+	case .checkpatient:
+		let patientForms = [medHistory] + consents
+		let checkPatient = CheckPatient(patDetails: patientDetails, patForms: patientForms)
+		return [MetaFormAndStatus(MetaForm.checkPatient(checkPatient), index: 0)]
+	case .treatmentnotes:
+		return wrap(treatmentNotes)
+	case .photos:
+		return [MetaFormAndStatus(MetaForm.photos(photos), index: 0)]
+	case .prescriptions:
+		return wrap(prescriptions)
+	case .patientdetails, .consents, .patientComplete, .medicalhistory:
+		fatalError("patient steps")
 	}
 }
 
+func wrap(_ templates: IdentifiedArrayOf<FormTemplate>) -> [MetaFormAndStatus] {
+	return zip(templates.indices, templates).map { idx, template in
+		return MetaFormAndStatus(MetaForm.template(template), index: idx)
+	}
+}
+
+func patientStepForms(stepType: StepType,
+											consents: IdentifiedArrayOf<FormTemplate>) -> [MetaFormAndStatus] {
+	switch stepType {
+	case .patientdetails:
+		return [MetaFormAndStatus(MetaForm.patientDetails(PatientDetails.empty), index: 0)]
+	case .medicalhistory:
+		return [MetaFormAndStatus(MetaForm.init(FormTemplate.getMedHistory()), index: 0)]
+	case .consents:
+		return zip(consents.indices, consents).map { idx, consent in
+			return MetaFormAndStatus(MetaForm.template(consent), index: idx)
+		}
+	case .patientComplete:
+		return [MetaFormAndStatus(MetaForm.patientComplete(PatientComplete()), index: 0)]
+	case .aftercares, .checkpatient, .photos, .prescriptions, .treatmentnotes:
+		fatalError("doctor steps")
+	}
+}
+
+func patientStepForms(stepType: StepType,
+											consents: IdentifiedArrayOf<FormTemplate>) -> StepForms {
+	let formsRaw: [MetaFormAndStatus] = patientStepForms(stepType: stepType, consents: consents)
+	return StepForms(stepType: stepType,
+									 forms: IdentifiedArray(formsRaw),
+									 selFormIndex: 0)
+}
+
 func makePatientForms(stepTypes: [StepType],
-								 consents: IdentifiedArrayOf<FormTemplate>) -> [StepForms] {
-	stepTypes.map { stepForms(stepType: $0,
-														consents: consents)}
+											consents: IdentifiedArrayOf<FormTemplate>) -> [StepForms] {
+	stepTypes.map { patientStepForms(stepType: $0,
+														consents: consents)
+	}
+}
+
+func makeDoctorForms(stepTypes:[StepType],
+										 patientDetails: PatientDetails,
+										 medHistory: FormTemplate,
+										 consents: IdentifiedArrayOf<FormTemplate>,
+										 treatmentNotes: IdentifiedArrayOf<FormTemplate>,
+										 prescriptions: IdentifiedArrayOf<FormTemplate>,
+										 photos: PhotosState) -> [StepForms] {
+	stepTypes.map { doctorStepForms(stepType: $0,
+																	patientDetails: patientDetails,
+																	medHistory: medHistory,
+																	consents: consents,
+																	treatmentNotes: treatmentNotes,
+																	prescriptions: prescriptions,
+																	photos: photos)
+	}
+}
+
+func doctorStepForms(stepType: StepType,
+										 patientDetails: PatientDetails,
+										 medHistory: FormTemplate,
+										 consents: IdentifiedArrayOf<FormTemplate>,
+										 treatmentNotes: IdentifiedArrayOf<FormTemplate>,
+										 prescriptions: IdentifiedArrayOf<FormTemplate>,
+										 photos: PhotosState) -> StepForms {
+	let formsRaw: [MetaFormAndStatus] = doctorStepForms(stepType: stepType,
+																											patientDetails: patientDetails,
+																											medHistory: medHistory,
+																											consents: consents,
+																											treatmentNotes: treatmentNotes,
+																											prescriptions: prescriptions,
+																											photos: photos
+	)
+	return StepForms(stepType: stepType,
+									 forms: IdentifiedArray(formsRaw),
+									 selFormIndex: 0)
 }
 
 extension Forms {
