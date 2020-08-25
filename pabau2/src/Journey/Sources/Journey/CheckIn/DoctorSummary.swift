@@ -6,7 +6,7 @@ import Util
 import Form
 
 struct DoctorSummaryState: Equatable {
-	var journey: Journey
+	let journey: Journey
 	var isChooseConsentActive: Bool
 	var isChooseTreatmentActive: Bool
 	var isDoctorCheckInMainActive: Bool

@@ -7,15 +7,15 @@ import Model
 
 public let footerButtonsReducer = Reducer<FooterButtonsState, FooterButtonsAction, JourneyEnvironment>.init { state, action, _ in
 	switch action {
-		case .didSelectCompleteFormIdx(let stepType, let idx):
-			state.forms.forms[id: stepType]?.forms[idx].isComplete = true
-			state.forms.next()
-		case .toPatientMode:
-			break//handled in navigationReducer
-		case .photos:
-		  break//handled in navigationReducer
-		case .completeJourney:
-			break//
+	case .didSelectCompleteFormIdx(let stepType, let idx):
+		state.forms.forms[id: stepType]?.forms[idx].isComplete = true
+		state.forms.next()
+	case .toPatientMode:
+	break//handled in navigationReducer
+	case .photos:
+	break//handled in navigationReducer
+	case .completeJourney:
+		break//
 	}
 	return .none
 }
