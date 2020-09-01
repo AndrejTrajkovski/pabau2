@@ -55,7 +55,7 @@ struct FooterButtons: View {
 						store: self.store.scope(
 							state: {
 								extract(case: MetaForm.photos,
-												from: $0.forms.selectedForm.form)?.selectedIds.isEmpty ?? false },
+												from: $0.forms.selectedForm?.form)?.selectedIds.isEmpty ?? false },
 							action: { .photos($0) }
 						)
 					)
@@ -82,7 +82,7 @@ extension FooterButtons.State {
 		let isLastStep = state.forms.selectedStep == state.forms.forms.elements.last?.stepType &&
 			state.forms.selectedForm == flatForms.last
 		self.isOnLastDoctorStep = state.journeyMode == .doctor && isLastStep
-		let canSelectedFormBeCompleted = state.forms.selectedForm.form.canProceed
+		let canSelectedFormBeCompleted = state.forms.selectedForm?.form.canProceed ?? false
 		let areRestOfFormsComplete = flatForms.prefix(upTo: flatForms.count - 1).allSatisfy(\.isComplete)
 		self.isCompleteJourneyBtnDisabled = !(self.isOnLastDoctorStep && canSelectedFormBeCompleted && areRestOfFormsComplete)
 	}

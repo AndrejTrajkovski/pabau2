@@ -54,7 +54,7 @@ public enum UpdateFormAction {
 public struct FormWrapper: View {
 	let store: Store<MetaForm, UpdateFormAction>
 	@ObservedObject var viewStore: ViewStore<State, UpdateFormAction>
-
+	
 	public init(store: Store<MetaForm, UpdateFormAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store.scope(

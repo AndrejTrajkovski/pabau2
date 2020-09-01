@@ -12,7 +12,7 @@ public let chooseFormJourneyReducer: Reducer<ChooseFormJourneyState,
 			environment: { $0 }
 		)
 		,
-		Reducer.init { state, action , env in
+		Reducer.init { state, action, env in
 			switch action {
 			case .proceed:
 				//TODO:

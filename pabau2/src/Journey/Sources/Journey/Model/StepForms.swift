@@ -1,14 +1,15 @@
 import ComposableArchitecture
 import Model
 import Form
+import Util
 
 public struct StepForms: Equatable, Identifiable {
 	var stepType: StepType
 	var forms: IdentifiedArray<Int, MetaFormAndStatus>
 	var selFormIndex: Int
 
-	var selectedForm: MetaFormAndStatus {
-		self.forms[selFormIndex]
+	var selectedForm: MetaFormAndStatus? {
+		self.forms[safe: selFormIndex]
 	}
 
 	public var id: StepType { stepType }

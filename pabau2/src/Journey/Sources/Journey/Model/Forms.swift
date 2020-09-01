@@ -44,7 +44,7 @@ struct Forms: Equatable {
 		set { forms[id: selectedStep] = newValue}
 	}
 
-	var selectedForm: MetaFormAndStatus {
+	var selectedForm: MetaFormAndStatus? {
 		forms[id: selectedStep]!.selectedForm
 	}
 

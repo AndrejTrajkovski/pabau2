@@ -19,6 +19,7 @@
 		82BE2F4E23D97D9F00B3678A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 82BE2F4D23D97D9F00B3678A /* Assets.xcassets */; };
 		82BE2F5123D97D9F00B3678A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 82BE2F5023D97D9F00B3678A /* Preview Assets.xcassets */; };
 		82D8240924F2AD0D001F73C8 /* FSCalendarSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 82D8240824F2AD0D001F73C8 /* FSCalendarSwiftUI */; };
+		82D8240D24F64A56001F73C8 /* Calendar in Frameworks */ = {isa = PBXBuildFile; productRef = 82D8240C24F64A56001F73C8 /* Calendar */; };
 		82F6ADAE23F2C7B1001B3ACE /* PabauTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */; };
 /* End PBXBuildFile section */
 
@@ -51,6 +52,7 @@
 		82BE2F4D23D97D9F00B3678A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		82BE2F5023D97D9F00B3678A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		82BE2F5523D97D9F00B3678A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		82D8240B24F648CD001F73C8 /* Calendar */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Calendar; sourceTree = "<group>"; };
 		82E9C11C24D021550023B98B /* Login */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Login; sourceTree = "<group>"; };
 		82E9C11D24D0242E0023B98B /* Util */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Util; sourceTree = "<group>"; };
 		82E9C11E24D024E50023B98B /* Model */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Model; sourceTree = "<group>"; };
@@ -67,6 +69,7 @@
 				829D620B24D20A1C0049D5D0 /* Login in Frameworks */,
 				8298A11524D566B40079BFE9 /* Clients in Frameworks */,
 				829D620724D20A070049D5D0 /* ComposableArchitecture in Frameworks */,
+				82D8240D24F64A56001F73C8 /* Calendar in Frameworks */,
 				829D620924D20A1C0049D5D0 /* Journey in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -130,6 +133,7 @@
 		82CACDF7241027320021E1DE /* src */ = {
 			isa = PBXGroup;
 			children = (
+				82D8240B24F648CD001F73C8 /* Calendar */,
 				828566C024DF3D5B009FA63E /* Form */,
 				8298A11324D486960079BFE9 /* Clients */,
 				82E9C12524D035A60023B98B /* Journey */,
@@ -179,6 +183,7 @@
 				829D620A24D20A1C0049D5D0 /* Login */,
 				8298A11424D566B40079BFE9 /* Clients */,
 				82D8240824F2AD0D001F73C8 /* FSCalendarSwiftUI */,
+				82D8240C24F64A56001F73C8 /* Calendar */,
 			);
 			productName = pabau2;
 			productReference = 82BE2F4423D97D9C00B3678A /* pabau2.app */;
@@ -506,6 +511,10 @@
 		82D8240824F2AD0D001F73C8 /* FSCalendarSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FSCalendarSwiftUI;
+		};
+		82D8240C24F64A56001F73C8 /* Calendar */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Calendar;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

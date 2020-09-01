@@ -4,6 +4,7 @@ import Model
 import Util
 import Journey
 import Clients
+import Calendar
 
 public typealias TabBarEnvironment = (
 	loginAPI: LoginAPI,
@@ -15,6 +16,7 @@ public typealias TabBarEnvironment = (
 public struct TabBarState: Equatable {
 	public var journey: JourneyState
 	public var clients: ClientsState
+	public var calendar: CalendarState
 	public var settings: SettingsState
 }
 
@@ -47,6 +49,11 @@ struct PabauTabBar: View {
 	var body: some View {
 		ZStack(alignment: .topTrailing) {
 			TabView {
+				CalendarSwiftUI()
+					.tabItem {
+						Image(systemName: "calendar")
+						Text("Calendar")
+				}
 				JourneyNavigationView(
 					self.store.scope(
 						state: { $0.journey },
@@ -58,11 +65,6 @@ struct PabauTabBar: View {
 				.onAppear {
 					self.viewStore.send(.journey(JourneyContainerAction.journey(JourneyAction.loadJourneys)))
 					self.viewStore.send(.journey(JourneyContainerAction.employees(EmployeesAction.loadEmployees)))
-				}
-				Text("Calendar")
-					.tabItem {
-						Image(systemName: "calendar")
-						Text("Calendar")
 				}
 				ClientsNavigationView(
 					self.store.scope(

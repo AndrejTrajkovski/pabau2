@@ -6,6 +6,7 @@ import Model
 import Journey
 import Util
 import Clients
+import Calendar
 
 typealias AppEnvironment = (
 	loginAPI: LoginAPI,
@@ -24,6 +25,7 @@ enum AppState: Equatable {
 				TabBarState(
 					journey: JourneyState(),
 					clients: ClientsState(),
+					calendar: CalendarState(),
 					settings: SettingsState()
 				)
 			)
@@ -103,6 +105,7 @@ struct ContentView: View {
 				extract(case: AppState.tabBar, from: $0) ??
 					TabBarState(journey: JourneyState(),
 											clients: ClientsState(),
+											calendar: CalendarState(),
 											settings: SettingsState())
 		},
 			action: { .tabBar($0)}

@@ -38,19 +38,24 @@ extension CompleteFormBtn.State {
 	init (state: Forms) {
 		self.stepType = state.selectedStep
 		self.index = state.selectedStepForms.selFormIndex
-		let selectedForm = state.selectedForm
-		self.isDisabled = !selectedForm.form.canProceed
-		if case .checkPatient = selectedForm.form {
-			self.btnTitle = Texts.patientDetailsOK
-		} else if case .photos = selectedForm.form {
-			self.btnTitle = Texts.completePhotos
+		if let selectedForm = state.selectedForm {
+			self.isDisabled = !selectedForm.form.canProceed
+			if case .checkPatient = selectedForm.form {
+				self.btnTitle = Texts.patientDetailsOK
+			} else if case .photos = selectedForm.form {
+				self.btnTitle = Texts.completePhotos
+			} else {
+				self.btnTitle = Texts.completeForm
+			}
+			if case .patientComplete = selectedForm.form {
+				self.shouldShowButton = false
+			} else {
+				self.shouldShowButton = true
+			}
 		} else {
-			self.btnTitle = Texts.completeForm
-		}
-		if case .patientComplete = selectedForm.form {
+			self.btnTitle = ""
 			self.shouldShowButton = false
-		} else {
-			self.shouldShowButton = true
+			self.isDisabled = true
 		}
 	}
 }
