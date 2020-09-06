@@ -12,21 +12,18 @@ let package = Package(
             name: "Login",
             targets: ["Login"]),
     ],
-    dependencies: [
-	.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git",
-					 from: Version.init(stringLiteral: "0.6.0")),
-	.package(url: "../Util",
-					 from: Version.init(stringLiteral: "1.0.0")),
-	.package(url: "../Model",
-					 from: Version.init(stringLiteral: "1.0.0"))
-    ],
+		dependencies: [
+			.package(url: "../Util",
+							 from: Version.init(stringLiteral: "1.0.0")),
+			.package(url: "../Model",
+							 from: Version.init(stringLiteral: "1.0.0"))
+	],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(
 					name: "Login",
-					dependencies: [.product(name: "ComposableArchitecture",
-																	package: "swift-composable-architecture"),
+					dependencies: [
 												 "Util",
 												 "Model"
 				]),

@@ -6,9 +6,9 @@ let package = Package(
 	name: "Journey",
 	platforms: [.iOS(.v13)],
 	products: [
-		.library(
-			name: "Journey",
-			targets: ["Journey"]),
+				.library(
+					name: "Journey",
+					targets: ["Journey"])
 	],
 	dependencies: [
 		.package(url: "../Form",

@@ -1,29 +1,33 @@
-//
-// Appointment.swift
-
-import Foundation
 import SwiftDate
+import Tagged
+import Foundation
 
-public struct Appointment: Codable, Equatable {
+public struct Appointment: Codable, Equatable, Hashable {
 
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(id)
+	}
+	
 	public static var defaultEmpty: Appointment {
 		Appointment.init(id: 1, from: Date() - 1.days, to: Date() - 1.days, employeeId: 1, employeeInitials: "", locationId: 1, locationName: "London", status: AppointmentStatus(id: 1, name: ""), service: BaseService.defaultEmpty)
 	}
 
-	public var id: Int
-
-	public var from: Date
-
-	public var to: Date
-
-	public var employeeId: Int
+	public typealias Id = Tagged<Appointment, String>
 	
-	public var employeeInitials: String
-	
-	public var locationId: Int
-	public var locationName: String
+	public var id: Appointment.Id
 
-	public var _private: Bool?
+	public var start_time: Date
+
+	public var end_time: Date
+
+	public var employeeId: Employee.Id
+	
+	public var employeeInitials: String?
+	
+	public var locationId: String
+	public var locationName: String?
+
+	public var _private: String?
 	public var type: Termin.ModelType?
 
 	public var extraEmployees: [Employee]?
@@ -31,6 +35,48 @@ public struct Appointment: Codable, Equatable {
 	public var status: AppointmentStatus?
 	
 	public var service: BaseService
+	public init(id: String,
+							from: Date,
+							to: Date,
+							employeeId: String,
+							employeeInitials: String,
+							locationId: Int,
+							locationName: String,
+							_private: String? = nil,
+							type: Termin.ModelType? = nil,
+							extraEmployees: [Employee]? = nil,
+							status: AppointmentStatus? = nil,
+							service: BaseService) {
+		self.id = Appointment.Id(rawValue: id)
+		self.start_time = from
+		self.end_time = to
+		self.employeeId = Employee.Id(rawValue: employeeId)
+		self.employeeInitials = employeeInitials
+		self.locationId = String(locationId)
+		self.locationName = locationName
+		self._private = _private
+		self.type = type
+		self.extraEmployees = extraEmployees
+		self.status = status
+		self.service = service
+	}
+	public enum CodingKeys: String, CodingKey {
+		case id
+		case start_time
+		case end_time
+		case employeeId = "user_id"
+		case employeeInitials = "employee_initials"
+		case locationId = "location_id"
+		case locationName = "location_name"
+		case _private = "private"
+		case type
+		case extraEmployees = "extra_employees"
+		case status
+		case service
+	}
+}
+
+extension Appointment {
 	public init(id: Int,
 							from: Date,
 							to: Date,
@@ -43,32 +89,7 @@ public struct Appointment: Codable, Equatable {
 							extraEmployees: [Employee]? = nil,
 							status: AppointmentStatus? = nil,
 							service: BaseService) {
-		self.id = id
-		self.from = from
-		self.to = to
-		self.employeeId = employeeId
-		self.employeeInitials = employeeInitials
-		self.locationId = locationId
-		self.locationName = locationName
-		self._private = _private
-		self.type = type
-		self.extraEmployees = extraEmployees
-		self.status = status
-		self.service = service
-	}
-	public enum CodingKeys: String, CodingKey {
-		case id
-		case from
-		case to
-		case employeeId = "employee_id"
-		case employeeInitials = "employee_initials"
-		case locationId = "location_id"
-		case locationName = "location_name"
-		case _private = "private"
-		case type
-		case extraEmployees = "extra_employees"
-		case status
-		case service
+		self.init(id: String(id), from: from, to: to, employeeId: String(employeeId), employeeInitials: employeeInitials, locationId: locationId, locationName: locationName, service: service)
 	}
 }
 

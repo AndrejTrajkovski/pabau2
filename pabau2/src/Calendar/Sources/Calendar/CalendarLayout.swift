@@ -1,28 +1,19 @@
 import UIKit
 
-struct IntervalInfo {
-	let minuteIntervalsCount: Int
-	init(_ count: Int) {
-		minuteIntervalsCount = count
-	}
-}
-
 class CalendarLayout: UICollectionViewLayout {
-	
 	let verticalItemSpacing: Int = 1
 	let intervalMinutes: Int
 	let sectionWidth: Int
 	let intervalHeight: Int
 	let numberOfIntervals: Int
 
-	var dataSource: [Int: [Int: IntervalInfo]]
-
+	var dataSource: CalendarCells
 	var cached: [UICollectionViewLayoutAttributes] = []
 
 	init(intervalHeight: Int,
 			 sectionWidth: Int,
 			 intervalMinutes: Int,
-			 dataSource: [Int: [Int: IntervalInfo]]) {
+			 dataSource: CalendarCells) {
 		self.intervalHeight = intervalHeight
 		self.sectionWidth = sectionWidth
 		self.intervalMinutes = intervalMinutes
@@ -36,16 +27,19 @@ class CalendarLayout: UICollectionViewLayout {
 		for sectionIdx in 0..<(collectionView?.numberOfSections ?? 0) {
 			var lastFrame = CGRect.zero
 			for itemIdx in 0..<(collectionView?.numberOfItems(inSection: sectionIdx) ?? 0) {
-				let blocksCount = dataSource[sectionIdx]?[itemIdx]?.minuteIntervalsCount ?? 0
+				let blocksCount = dataSource[sectionIdx][itemIdx].intervalsCount
 				let idxP = IndexPath(item: itemIdx, section: sectionIdx)
 				let attr = UICollectionViewLayoutAttributes(forCellWith: idxP)
 				let newY = lastFrame.maxY + CGFloat(verticalItemSpacing)
-				let newX = sectionIdx * sectionWidth + 1
+				let itemWidth = sectionWidth / 2
+				let isEven = itemIdx % 2 == 0
+				let sectionX = sectionIdx * sectionWidth
+				let newX = isEven ? sectionX / 2 : sectionX
 				let yExtraInset = (blocksCount - 1) * verticalItemSpacing
 				let newHeight = (intervalHeight * blocksCount) + yExtraInset
 				let newFrame = CGRect.init(x: newX,
 																	 y: Int(newY),
-																	 width: sectionWidth,
+																	 width: itemWidth,
 																	 height: newHeight)
 				attr.frame = newFrame
 				cached.append(attr)

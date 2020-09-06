@@ -3,7 +3,7 @@
 
 import Foundation
 
-public struct Shift: Codable, Identifiable {
+public struct Shift: Codable, Identifiable, Equatable {
 
     public let id: Int?
 

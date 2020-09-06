@@ -28,7 +28,7 @@ public struct EmployeesListStore: View {
 }
 
 struct EmployeeList: View {
-	public let selectedEmployeesIds: Set<Int>
+	public let selectedEmployeesIds: Set<Employee.Id>
 	public let employees: [Employee]
 	public let header: EmployeeHeader
 	public let didSelectEmployee: (Employee) -> Void

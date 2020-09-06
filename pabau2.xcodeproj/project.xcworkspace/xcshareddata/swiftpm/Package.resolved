@@ -101,6 +101,15 @@
         }
       },
       {
+        "package": "Tagged",
+        "repositoryURL": "https://github.com/pointfreeco/swift-tagged.git",
+        "state": {
+          "branch": null,
+          "revision": "592e1eb4255c571ebffc29955011e352217501b4",
+          "version": "0.5.0"
+        }
+      },
+      {
         "package": "SwiftDate",
         "repositoryURL": "https://github.com/malcommac/SwiftDate.git",
         "state": {

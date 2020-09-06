@@ -55,7 +55,7 @@ struct AppointmentRow: View {
 		VStack(spacing: 0) {
 			HStack {
 				AvatarView(avatarUrl: nil,
-									 initials: app.employeeInitials,
+									 initials: app.employeeInitials ?? "",
 									 font: .regular18,
 									 bgColor: .accentColor)
 					.frame(width: 55, height: 55)
@@ -103,8 +103,8 @@ struct DateLocation: View {
 	let app: Appointment
 	var body: some View {
 		HStack {
-			DateLabel(date: app.from)
-			LocationLabel(location: app.locationName)
+			DateLabel(date: app.start_time)
+			LocationLabel(location: app.locationName ?? "")
 		}
 	}
 }

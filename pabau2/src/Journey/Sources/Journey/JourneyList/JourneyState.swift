@@ -56,8 +56,8 @@ extension JourneyState {
 
 	var filteredJourneys: [Journey] {
 		return self.journeys
-			.filter { $0.appointments.first.from.isInside(date: selectedDate, granularity: .day) }
+			.filter { $0.appointments.first.start_time.isInside(date: selectedDate, granularity: .day) }
 			.filter { employeesState.selectedEmployeesIds.contains($0.employee.id) }
-			.sorted(by: { $0.appointments.first.from > $1.appointments.first.from })
+			.sorted(by: { $0.appointments.first.start_time > $1.appointments.first.start_time })
 	}
 }

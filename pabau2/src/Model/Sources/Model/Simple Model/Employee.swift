@@ -1,15 +1,15 @@
 //
 // Employee.swift
-
-import Foundation
+import Tagged
 
 public struct Employee: Codable, Identifiable, Equatable, Hashable {
+  public typealias Id = Tagged<Employee, String>
 
 	public static var defaultEmpty: Employee {
 		Employee.init(id: -1, name: "")
 	}
 
-	public let id: Int
+	public let id: Employee.Id
 
 	public let name: String
 
@@ -20,7 +20,7 @@ public struct Employee: Codable, Identifiable, Equatable, Hashable {
 							name: String,
 							avatarUrl: String? = nil,
 							pin: Int? = nil) {
-		self.id = id
+		self.id = Employee.Id(rawValue: String(id))
 		self.name = name
 		self.avatarUrl = avatarUrl
 		self.pin = pin

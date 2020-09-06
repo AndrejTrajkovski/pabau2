@@ -16,6 +16,9 @@ let package = Package(
 			.package(name: "swift-composable-architecture",
 							 url: "https://github.com/pointfreeco/swift-composable-architecture.git",
 			from: Version.init(stringLiteral: "0.6.0")),
+			.package(name: "Tagged",
+							 url: "https://github.com/pointfreeco/swift-tagged.git",
+			from: Version.init(stringLiteral: "0.5.0")),
 			.package(name: "NonEmpty",
 							 url: "https://github.com/pointfreeco/swift-nonempty.git", from: "0.2.2"),
 			.package(name: "SwiftDate",
@@ -32,8 +35,10 @@ let package = Package(
 							.product(name: "SwiftDate",
 											 package: "SwiftDate"),
 							.product(name: "NonEmpty",
-											 package: "NonEmpty")
-						]
+											 package: "NonEmpty"),
+							.product(name: "Tagged",
+											 package: "Tagged")
+					]
 			),
         .testTarget(
             name: "ModelTests",

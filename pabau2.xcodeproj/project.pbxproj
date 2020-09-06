@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		820C74DF24FEAA1500B7542F /* Util in Frameworks */ = {isa = PBXBuildFile; productRef = 820C74DE24FEAA1500B7542F /* Util */; };
+		820C74E124FEAA2D00B7542F /* Model in Frameworks */ = {isa = PBXBuildFile; productRef = 820C74E024FEAA2D00B7542F /* Model */; };
+		820C74E424FFA8BE00B7542F /* Tagged in Frameworks */ = {isa = PBXBuildFile; productRef = 820C74E324FFA8BE00B7542F /* Tagged */; };
 		825BE7EA2436226300422910 /* checkIn.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 825BE7E92436226300422910 /* checkIn.mp4 */; };
 		82811EF423E06BCB0066AFDC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EF323E06BCB0066AFDC /* ContentView.swift */; };
 		8297A2B523D9BA0200D091FF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8297A2B223D9BA0200D091FF /* Localizable.strings */; };
@@ -67,9 +70,12 @@
 			files = (
 				82D8240924F2AD0D001F73C8 /* FSCalendarSwiftUI in Frameworks */,
 				829D620B24D20A1C0049D5D0 /* Login in Frameworks */,
+				820C74DF24FEAA1500B7542F /* Util in Frameworks */,
+				820C74E424FFA8BE00B7542F /* Tagged in Frameworks */,
 				8298A11524D566B40079BFE9 /* Clients in Frameworks */,
 				829D620724D20A070049D5D0 /* ComposableArchitecture in Frameworks */,
 				82D8240D24F64A56001F73C8 /* Calendar in Frameworks */,
+				820C74E124FEAA2D00B7542F /* Model in Frameworks */,
 				829D620924D20A1C0049D5D0 /* Journey in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -184,6 +190,9 @@
 				8298A11424D566B40079BFE9 /* Clients */,
 				82D8240824F2AD0D001F73C8 /* FSCalendarSwiftUI */,
 				82D8240C24F64A56001F73C8 /* Calendar */,
+				820C74DE24FEAA1500B7542F /* Util */,
+				820C74E024FEAA2D00B7542F /* Model */,
+				820C74E324FFA8BE00B7542F /* Tagged */,
 			);
 			productName = pabau2;
 			productReference = 82BE2F4423D97D9C00B3678A /* pabau2.app */;
@@ -216,6 +225,7 @@
 			mainGroup = 82BE2F3B23D97D9C00B3678A;
 			packageReferences = (
 				8280D4822463F2BE0077A73F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
+				820C74E224FFA8BE00B7542F /* XCRemoteSwiftPackageReference "swift-tagged" */,
 			);
 			productRefGroup = 82BE2F4523D97D9C00B3678A /* Products */;
 			projectDirPath = "";
@@ -339,7 +349,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -396,7 +406,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -480,6 +490,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		820C74E224FFA8BE00B7542F /* XCRemoteSwiftPackageReference "swift-tagged" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-tagged.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.5.0;
+			};
+		};
 		8280D4822463F2BE0077A73F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture.git";
@@ -491,6 +509,19 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		820C74DE24FEAA1500B7542F /* Util */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Util;
+		};
+		820C74E024FEAA2D00B7542F /* Model */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Model;
+		};
+		820C74E324FFA8BE00B7542F /* Tagged */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 820C74E224FFA8BE00B7542F /* XCRemoteSwiftPackageReference "swift-tagged" */;
+			productName = Tagged;
+		};
 		8298A11424D566B40079BFE9 /* Clients */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Clients;
