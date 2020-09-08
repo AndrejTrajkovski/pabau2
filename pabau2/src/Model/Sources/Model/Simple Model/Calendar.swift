@@ -36,6 +36,10 @@ public struct CalAppointment: Hashable, Codable {
 	
 	public let service: String
 	
+	public let serviceColor: String?
+	
+	public let customerName: String?
+	
 	public enum CodingKeys: String, CodingKey {
 		case id
 		case start_time
@@ -49,5 +53,7 @@ public struct CalAppointment: Hashable, Codable {
 		case extraEmployees = "extra_employees"
 		case status
 		case service
+		case serviceColor = "service_color"
+		case customerName = "customer_name"
 	}
 }

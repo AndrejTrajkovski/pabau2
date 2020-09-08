@@ -7,6 +7,7 @@ class LongPressView: JZLongPressWeekView {
 	
 	override func registerViewClasses() {
 		// Register CollectionViewCell
+		super.registerViewClasses()
 		collectionView.register(BaseCalendarCell.self,
 														forCellWithReuseIdentifier: Self.cellId)
 //		self.collectionView.register(UINib(nibName: "EventCell", bundle: nil), forCellWithReuseIdentifier: "EventCell")
@@ -20,10 +21,11 @@ class LongPressView: JZLongPressWeekView {
 	}
 	
 	override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-		if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Self.cellId, for: indexPath) as? BaseCalendarCell,
-				let event = getCurrentEvent(with: indexPath) as? AllDayEvent {
-				cell.configureCell(event: event)
-				return cell
+		if var cell = collectionView.dequeueReusableCell(withReuseIdentifier: Self.cellId, for: indexPath) as? BaseCalendarCell,
+			let event = getCurrentEvent(with: indexPath) as? AppointmentEvent {
+			CellConfigurator().configure(cell: &cell,
+																	 appointment: event)
+			return cell
 		}
 		preconditionFailure("LongPressEventCell and AllDayEvent should be casted")
 	}

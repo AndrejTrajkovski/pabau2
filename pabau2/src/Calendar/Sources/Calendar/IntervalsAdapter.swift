@@ -4,6 +4,15 @@ import Tagged
 import SwiftDate
 
 enum IntervalsAdapter {
+	
+	static func makeAppointmentEvent(_ appointment: CalAppointment) -> AppointmentEvent {
+		AppointmentEvent(id: String(appointment.id),
+										 patient: appointment.customerName,
+										 service: appointment.service,
+										 color: appointment.serviceColor,
+										 startDate: appointment.start_time,
+										 endDate: appointment.end_time)
+	}
 //	func day(_ calendar: CalendarResponse,
 //					 _ minutesInterval: Int) -> CalendarCells {
 //		let eids: [Employee.Id] = Array(calendar.rota.keys)
@@ -24,31 +33,6 @@ enum IntervalsAdapter {
 													 _ appointments: [CalAppointment],
 													 _ minutesInterval: Int) -> [IntervalInfo] {
 		fatalError()
-	}
-	
-	static func makeList(appointments: [CalAppointment]) -> AdjacencyList<CalAppointment> {
-		let list = AdjacencyList<CalAppointment>()
-		appointments.forEach {
-			list.createVertex(data: $0)
-		}
-//		list.adjacencyDict.forEach { vertex in
-//			list.add(.undirected,
-//							 from: vertex,
-//							 to: <#T##Vertex<AdjacencyList<Appointment>.Element>#>, weight: <#T##Double?#>)
-//		}
-		for idx in 0..<appointments.count {
-			let app = appointments[idx]
-			for idx2 in 0..<appointments.count where idx != idx2 {
-				let otherApp = appointments[idx2]
-				if app.intersectsWith(otherApp: otherApp) {
-					list.add(.directed,
-									 from: Vertex.init(data: app),
-									 to: Vertex.init(data: otherApp),
-									 weight: nil)
-				}
-			}
-		}
-		return list
 	}
 }
 

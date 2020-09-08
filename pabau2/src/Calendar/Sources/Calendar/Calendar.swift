@@ -1,42 +1,24 @@
 import UIKit
 import Model
 import JZCalendarWeekView
+import SwiftDate
 
-typealias CalendarCells = [[IntervalInfo]]
-
-public class CalendarViewController: UICollectionViewController {
+public class CalendarViewController: UIViewController {
 	
 	weak var calendarView: LongPressView!
 	static let cellId = "CalendarCell"
 	var appointments = [CalAppointment]()
-	
-	var dataSource: CalendarCells {
-		didSet {
-			(self.collectionView.collectionViewLayout as! CalendarLayout).dataSource = dataSource
-		}
-	}
-
-	init(dataSource: CalendarCells) {
-		self.dataSource = dataSource
-		let flowLayout = CalendarLayout(intervalHeight: 30,
-																		sectionWidth: 100,
-																		intervalMinutes: 15,
-																		dataSource: dataSource)
-		super.init(collectionViewLayout: flowLayout)
-	}
-	
-	required init?(coder: NSCoder) {
-		fatalError("init(coder:) has not been implemented")
-	}
+	let today = Date() - 1.hours
 	
 	public override func viewDidLoad() {
 		super.viewDidLoad()
 		setupCalendarView()
-		collectionView.register(BaseCalendarCell.self,
-														forCellWithReuseIdentifier: Self.cellId)
-		collectionView.delegate = self
-		collectionView.dataSource = self
-		collectionView.reloadData()
+		calendarView.setupCalendar(numOfDays: 1,
+															 setDate: today,
+															 allEvents: [today:[]],
+															 scrollType: .pageScroll,
+															 scrollableRange: (nil, nil))
+		loadDummyRequest()
 	}
 
 	func setupCalendarView() {
@@ -50,9 +32,6 @@ public class CalendarViewController: UICollectionViewController {
 				calendarView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: 0),
     ])
 		self.calendarView = calendarView
-		calendarView.setupCalendar(numOfDays: 1,
-															 setDate: Date(),
-															 allEvents: [:])
 	}
 	
 	public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -60,65 +39,36 @@ public class CalendarViewController: UICollectionViewController {
 	}
 	
 	public override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+//		loadDummyRequest()
+	}
+	
+	func loadDummyRequest() {
 		let request = URLRequest.init(url: URL(string: Self.calTestUrl)!)
-		let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-			if let data = data {
-				do {
-					let decoder = JSONDecoder()
-					decoder.dateDecodingStrategy = .formatted(DateFormatter.HHmmss)
-					let decodedResponse = try decoder.decode(CalendarResponse.self, from: data)
-					DispatchQueue.main.async {
-						self.appointments = decodedResponse.appointments
-						let grouped = Dictionary.init(grouping: self.appointments,
-																					by: \.employeeId)
-						grouped.forEach {
-							print($0.key)
-							print($0.value.map(\.service))
+				let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+					if let data = data {
+						do {
+							let decoder = JSONDecoder()
+							decoder.dateDecodingStrategy = .formatted(DateFormatter.HHmmss)
+							let decodedResponse = try decoder.decode(CalendarResponse.self, from: data)
+							DispatchQueue.main.async {
+								self.appointments = decodedResponse.appointments
+								let events = self.appointments.map(IntervalsAdapter.makeAppointmentEvent(_:))
+								print("events: \(events)")
+								let dict = [self.today:events]
+								print("dict: \(dict)")
+//								self.calendarView.setupCalendar(numOfDays: 1,
+//																								setDate: Date(),
+//																								allEvents: dict)
+								self.calendarView.forceReload(reloadEvents: dict)
+							}
+						} catch {
+							print(error)
 						}
-						let list = grouped.mapValues(IntervalsAdapter.makeList(appointments:))
-						list.forEach {
-							print($0.key)
-							print($0.value.description)
-						}
+					} else {
+						print("Fetch failed: \(error?.localizedDescription ?? "Unknown error")")
 					}
-				} catch {
-					print(error)
-				}
-			} else {
-				print("Fetch failed: \(error?.localizedDescription ?? "Unknown error")")
-			}
-		}.resume()
-	}
-}
-
-// MARK: UICollectionViewDataSource
-extension CalendarViewController {
-	public override func numberOfSections(in collectionView: UICollectionView) -> Int {
-		dataSource.count
-	}
-
-	public override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-		let res = dataSource[section].count
-		print("numberOfItemsInSection \(section) : \(res)")
-		return res
-	}
-
-	public override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-		print("cell for row \(indexPath)")
-		guard var cell = collectionView.dequeueReusableCell(
-			withReuseIdentifier: Self.cellId,
-			for: indexPath
-			) as? BaseCalendarCell else {
-				fatalError()
-		}
-		let item = dataSource[indexPath.section][indexPath.row]
-		CalendarCellFactory().configure(cell: &cell,
-																		patientName: item.test,
-																		serviceName: "Botox",
-																		serviceColor: UIColor.green,
-																		lighterServiceColor: UIColor.green.makeLighter(),
-																		roomName: "")
-		return cell
+				}.resume()
 	}
 }
 
@@ -135,28 +85,4 @@ extension DateFormatter {
     formatter.locale = Locale(identifier: "en_US_POSIX")
     return formatter
   }()
-}
-
-extension AdjacencyList where T == CalAppointment {
-	public var description: CustomStringConvertible {
-		var result = ""
-		for (vertex, edges) in adjacencyDict {
-			var edgeString = ""
-			for (index, edge) in edges.enumerated() {
-				if index != edges.count - 1 {
-					edgeString.append("\(edge.destination), ")
-				} else {
-					edgeString.append("\(edge.destination)")
-				}
-			}
-			result.append("\(vertex.description) ---> [ \(edgeString.description) ] \n")
-		}
-		return result
-	}
-}
-
-extension Vertex: CustomStringConvertible where T == CalAppointment {
-  public var description: String {
-		return "\(data.service)"
-  }
 }

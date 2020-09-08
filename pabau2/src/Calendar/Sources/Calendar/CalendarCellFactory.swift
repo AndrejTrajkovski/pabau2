@@ -1,19 +1,32 @@
 import Foundation
 import UIKit
+import SwiftUI
 
-struct CalendarCellFactory {
+struct CellConfigurator {
+	
 	func configure(
 		cell: inout BaseCalendarCell,
-		patientName: String,
+		appointment: AppointmentEvent
+		) {
+		configure(cell: &cell,
+							patientName: appointment.patient,
+							serviceName: appointment.service,
+							serviceColor: appointment.color,
+							roomName: "no room")
+	}
+	
+	func configure(
+		cell: inout BaseCalendarCell,
+		patientName: String?,
 		serviceName: String,
-		serviceColor: UIColor,
-		lighterServiceColor: UIColor,
+		serviceColor: String?,
 		roomName: String?
 		) {
-		cell.title.text = patientName
+		cell.title.text = patientName ?? "TODO: parse bookout"
 		let roomString = roomName != nil ? (" " + roomName!) : ""
 		cell.subtitle.text = serviceName + roomString
+		let serviceColor = serviceColor != nil ? UIColor().fromHex(serviceColor!) : UIColor.clear
 		cell.colorBlock.backgroundColor = serviceColor
-		cell.contentView.backgroundColor = lighterServiceColor
+		cell.contentView.backgroundColor = serviceColor.makeLighter()
 	}
 }
