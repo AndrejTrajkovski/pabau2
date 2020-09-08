@@ -4,30 +4,30 @@ import Tagged
 import SwiftDate
 
 enum IntervalsAdapter {
-	func day(_ calendar: CalendarResponse,
-					 _ minutesInterval: Int) -> CalendarCells {
-		let eids: [Employee.Id] = Array(calendar.rota.keys)
-		return eids.map { (employeeId: Employee.Id) in
-			return singleEmployeeCells(employeeId,
-																 calendar.rota[employeeId],
-																 calendar.appointments.filter(with(employeeId, curry(isBy(id:appointment:)))),
-																 minutesInterval)
-		}
-	}
+//	func day(_ calendar: CalendarResponse,
+//					 _ minutesInterval: Int) -> CalendarCells {
+//		let eids: [Employee.Id] = Array(calendar.rota.keys)
+//		return eids.map { (employeeId: Employee.Id) in
+//			return singleEmployeeCells(employeeId,
+//																 calendar.rota[employeeId],
+//																 calendar.appointments.filter(with(employeeId, curry(isBy(id:appointment:)))),
+//																 minutesInterval)
+//		}
+//	}
 	
-	func isBy(id: Employee.Id, appointment: Appointment) -> Bool {
+	func isBy(id: Employee.Id, appointment: CalAppointment) -> Bool {
 		appointment.employeeId == id
 	}
 	
 	func singleEmployeeCells(_ id: Employee.Id,
 													 _ shifts: [Shift]?,
-													 _ appointments: [Appointment],
+													 _ appointments: [CalAppointment],
 													 _ minutesInterval: Int) -> [IntervalInfo] {
 		fatalError()
 	}
 	
-	func makeList(appointments: [Appointment]) -> AdjacencyList<Appointment> {
-		let list = AdjacencyList<Appointment>()
+	static func makeList(appointments: [CalAppointment]) -> AdjacencyList<CalAppointment> {
+		let list = AdjacencyList<CalAppointment>()
 		appointments.forEach {
 			list.createVertex(data: $0)
 		}
@@ -41,7 +41,7 @@ enum IntervalsAdapter {
 			for idx2 in 0..<appointments.count where idx != idx2 {
 				let otherApp = appointments[idx2]
 				if app.intersectsWith(otherApp: otherApp) {
-					list.add(.undirected,
+					list.add(.directed,
 									 from: Vertex.init(data: app),
 									 to: Vertex.init(data: otherApp),
 									 weight: nil)
@@ -52,8 +52,8 @@ enum IntervalsAdapter {
 	}
 }
 
-extension Appointment {
-	func intersectsWith(otherApp: Appointment) -> Bool {
+extension CalAppointment {
+	func intersectsWith(otherApp: CalAppointment) -> Bool {
 		self.start_time.isInRange(date: otherApp.start_time, and: otherApp.end_time) ||
 		self.end_time.isInRange(date: otherApp.start_time, and: otherApp.end_time) ||
 		otherApp.start_time.isInRange(date: self.start_time, and: self.end_time) ||

@@ -1,7 +1,7 @@
 
 protocol Graphable {
   associatedtype Element: Hashable
-  var description: CustomStringConvertible { get }
+//  var description: CustomStringConvertible { get }
   
   func createVertex(data: Element) -> Vertex<Element>
   func add(_ type: EdgeType, from source: Vertex<Element>, to destination: Vertex<Element>, weight: Double?)

@@ -12,8 +12,8 @@ extension Vertex: Hashable {
   }
 }
 
-extension Vertex: CustomStringConvertible {
-  public var description: String {
-    return "\(data)"
-  }
-}
+//extension Vertex: CustomStringConvertible {
+//  public var description: String {
+//    return "\(data)"
+//  }
+//}

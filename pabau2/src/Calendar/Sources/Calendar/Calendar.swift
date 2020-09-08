@@ -1,12 +1,14 @@
 import UIKit
 import Model
+import JZCalendarWeekView
 
 typealias CalendarCells = [[IntervalInfo]]
 
 public class CalendarViewController: UICollectionViewController {
 	
+	weak var calendarView: LongPressView!
 	static let cellId = "CalendarCell"
-	var appointments = [Appointment]()
+	var appointments = [CalAppointment]()
 	
 	var dataSource: CalendarCells {
 		didSet {
@@ -29,11 +31,32 @@ public class CalendarViewController: UICollectionViewController {
 	
 	public override func viewDidLoad() {
 		super.viewDidLoad()
+		setupCalendarView()
 		collectionView.register(BaseCalendarCell.self,
 														forCellWithReuseIdentifier: Self.cellId)
 		collectionView.delegate = self
 		collectionView.dataSource = self
 		collectionView.reloadData()
+	}
+
+	func setupCalendarView() {
+		let calendarView = LongPressView.init(frame: .zero)
+		calendarView.translatesAutoresizingMaskIntoConstraints = false
+		view.addSubview(calendarView)
+    NSLayoutConstraint.activate([
+        calendarView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor),
+        calendarView.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor, constant: 0),
+				calendarView.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor, constant: 0),
+				calendarView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: 0),
+    ])
+		self.calendarView = calendarView
+		calendarView.setupCalendar(numOfDays: 1,
+															 setDate: Date(),
+															 allEvents: [:])
+	}
+	
+	public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+		JZWeekViewHelper.viewTransitionHandler(to: size, weekView: calendarView)
 	}
 	
 	public override func viewDidAppear(_ animated: Bool) {
@@ -42,15 +65,26 @@ public class CalendarViewController: UICollectionViewController {
 			if let data = data {
 				do {
 					let decoder = JSONDecoder()
-					decoder.dateDecodingStrategy = .formatted(DateFormatter.yyyyMMdd)
-					let decodedResponse = try decoder.decode(CalendarState.self, from: data)
+					decoder.dateDecodingStrategy = .formatted(DateFormatter.HHmmss)
+					let decodedResponse = try decoder.decode(CalendarResponse.self, from: data)
 					DispatchQueue.main.async {
 						self.appointments = decodedResponse.appointments
-						print(self.appointments)
+						let grouped = Dictionary.init(grouping: self.appointments,
+																					by: \.employeeId)
+						grouped.forEach {
+							print($0.key)
+							print($0.value.map(\.service))
+						}
+						let list = grouped.mapValues(IntervalsAdapter.makeList(appointments:))
+						list.forEach {
+							print($0.key)
+							print($0.value.description)
+						}
 					}
 				} catch {
 					print(error)
 				}
+			} else {
 				print("Fetch failed: \(error?.localizedDescription ?? "Unknown error")")
 			}
 		}.resume()
@@ -93,12 +127,36 @@ extension CalendarViewController {
 }
 
 extension DateFormatter {
-  static let yyyyMMdd: DateFormatter = {
+  static let HHmmss: DateFormatter = {
     let formatter = DateFormatter()
-    formatter.dateFormat = "hh:mm:ss"
+    formatter.dateFormat = "HH:mm:ss"
     formatter.calendar = Calendar(identifier: .iso8601)
     formatter.timeZone = TimeZone(secondsFromGMT: 0)
     formatter.locale = Locale(identifier: "en_US_POSIX")
     return formatter
   }()
+}
+
+extension AdjacencyList where T == CalAppointment {
+	public var description: CustomStringConvertible {
+		var result = ""
+		for (vertex, edges) in adjacencyDict {
+			var edgeString = ""
+			for (index, edge) in edges.enumerated() {
+				if index != edges.count - 1 {
+					edgeString.append("\(edge.destination), ")
+				} else {
+					edgeString.append("\(edge.destination)")
+				}
+			}
+			result.append("\(vertex.description) ---> [ \(edgeString.description) ] \n")
+		}
+		return result
+	}
+}
+
+extension Vertex: CustomStringConvertible where T == CalAppointment {
+  public var description: String {
+		return "\(data.service)"
+  }
 }

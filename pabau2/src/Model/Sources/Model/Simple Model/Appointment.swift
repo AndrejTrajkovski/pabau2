@@ -14,27 +14,27 @@ public struct Appointment: Codable, Equatable, Hashable {
 
 	public typealias Id = Tagged<Appointment, String>
 	
-	public var id: Appointment.Id
+	public let id: Appointment.Id
 
-	public var start_time: Date
+	public let start_time: Date
 
-	public var end_time: Date
+	public let end_time: Date
 
-	public var employeeId: Employee.Id
+	public let employeeId: Employee.Id
 	
-	public var employeeInitials: String?
+	public let employeeInitials: String?
 	
-	public var locationId: String
-	public var locationName: String?
+	public let locationId: String
+	public let locationName: String?
 
-	public var _private: String?
-	public var type: Termin.ModelType?
+	public let _private: String?
+	public let type: Termin.ModelType?
 
-	public var extraEmployees: [Employee]?
+	public let extraEmployees: [Employee]?
 
-	public var status: AppointmentStatus?
+	public let status: AppointmentStatus?
 	
-	public var service: BaseService
+	public let service: BaseService
 	public init(id: String,
 							from: Date,
 							to: Date,

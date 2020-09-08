@@ -1,4 +1,5 @@
 import UIKit
+import JZCalendarWeekView
 
 struct CellViewModel {
 	let blockColor: UIColor
@@ -7,18 +8,15 @@ struct CellViewModel {
 	let subtitle: String
 }
 
-class BaseCalendarCell: UICollectionViewCell {
+class BaseCalendarCell: JZLongPressEventCell {
 
 	override func prepareForReuse() {
 		title.text = ""
 		subtitle.text = ""
 		colorBlock.backgroundColor = UIColor.clear
-		layoutPassCount = 0
 //		setNeedsUpdateConstraints()
 	}
-
-	var layoutPassCount: Int = 0
-
+	
 	override init(frame: CGRect) {
 		super.init(frame: frame)
 		contentView.addSubview(title)
@@ -30,7 +28,9 @@ class BaseCalendarCell: UICollectionViewCell {
 		title.setContentHuggingPriority(UILayoutPriority(rawValue: 300), for: .vertical)
 //		subtitle.setContentHuggingPriority(UILayoutPriority(rawValue: 300), for: .vertical)
 	}
-
+	
+	
+	
 //	override func layoutSubviews() {
 //		super.layoutSubviews()
 //		if subtitle.frame.maxY >= bounds.maxY {
