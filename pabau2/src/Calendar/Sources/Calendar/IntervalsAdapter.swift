@@ -2,16 +2,17 @@ import Model
 import Overture
 import Tagged
 import SwiftDate
+import Foundation
 
 enum IntervalsAdapter {
 	
 	static func makeAppointmentEvent(_ appointment: CalAppointment) -> AppointmentEvent {
-		AppointmentEvent(id: String(appointment.id),
-										 patient: appointment.customerName,
-										 service: appointment.service,
-										 color: appointment.serviceColor,
-										 startDate: appointment.start_time,
-										 endDate: appointment.end_time)
+		return AppointmentEvent(id: String(appointment.id),
+														patient: appointment.customerName,
+														service: appointment.service,
+														color: appointment.serviceColor,
+														startDate: Date.concat(appointment.start_date, appointment.start_time, Calendar.current),
+														endDate: Date.concat(appointment.start_date, appointment.end_time, Calendar.current))
 	}
 //	func day(_ calendar: CalendarResponse,
 //					 _ minutesInterval: Int) -> CalendarCells {
@@ -42,5 +43,21 @@ extension CalAppointment {
 		self.end_time.isInRange(date: otherApp.start_time, and: otherApp.end_time) ||
 		otherApp.start_time.isInRange(date: self.start_time, and: self.end_time) ||
 		otherApp.end_time.isInRange(date: self.start_time, and: self.end_time)
+	}
+}
+
+extension Date {
+	
+	static func concat(_ yearMonthDay: Date, _ hourMinuteSecond: Date, _ calendar: Calendar) -> Date {
+		let ymdComps = calendar.dateComponents([.year, .month, .day], from: yearMonthDay)
+		let hmsComps = calendar.dateComponents([.hour, .minute, .second], from: hourMinuteSecond)
+		var components = DateComponents()
+		components.year = ymdComps.year
+		components.month = ymdComps.month
+		components.day = ymdComps.day
+		components.hour = hmsComps.hour
+		components.minute = hmsComps.minute
+		components.second = hmsComps.second
+		return calendar.date(from: components)!
 	}
 }

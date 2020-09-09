@@ -26,7 +26,7 @@ struct CellConfigurator {
 		let roomString = roomName != nil ? (" " + roomName!) : ""
 		cell.subtitle.text = serviceName + roomString
 		let serviceColor = serviceColor != nil ? UIColor().fromHex(serviceColor!) : UIColor.clear
-		cell.colorBlock.backgroundColor = serviceColor
-		cell.contentView.backgroundColor = serviceColor.makeLighter()
+		cell.colorBlock.backgroundColor = serviceColor.makeLighter()
+		cell.contentView.backgroundColor = serviceColor
 	}
 }

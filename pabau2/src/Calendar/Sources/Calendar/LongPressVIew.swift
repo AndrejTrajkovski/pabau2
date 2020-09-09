@@ -11,7 +11,6 @@ class LongPressView: JZLongPressWeekView {
 		collectionView.register(BaseCalendarCell.self,
 														forCellWithReuseIdentifier: Self.cellId)
 //		self.collectionView.register(UINib(nibName: "EventCell", bundle: nil), forCellWithReuseIdentifier: "EventCell")
-		
 		// Register DecorationView: must provide corresponding JZDecorationViewKinds
 //		self.flowLayout.register(BlackGridLine.self, forDecorationViewOfKind: JZDecorationViewKinds.verticalGridline)
 //		self.flowLayout.register(BlackGridLine.self, forDecorationViewOfKind: JZDecorationViewKinds.horizontalGridline)
