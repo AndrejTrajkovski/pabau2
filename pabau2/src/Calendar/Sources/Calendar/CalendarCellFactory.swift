@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import SwiftUI
+import JZCalendarWeekView
 
 struct CellConfigurator {
 	
@@ -12,7 +13,8 @@ struct CellConfigurator {
 							patientName: appointment.patient,
 							serviceName: appointment.service,
 							serviceColor: appointment.color,
-							roomName: "no room")
+							roomName: "no room",
+							event: appointment)
 	}
 	
 	func configure(
@@ -20,7 +22,8 @@ struct CellConfigurator {
 		patientName: String?,
 		serviceName: String,
 		serviceColor: String?,
-		roomName: String?
+		roomName: String?,
+		event: JZBaseEvent
 		) {
 		cell.title.text = patientName ?? "TODO: parse bookout"
 		let roomString = roomName != nil ? (" " + roomName!) : ""
@@ -28,5 +31,6 @@ struct CellConfigurator {
 		let serviceColor = serviceColor != nil ? UIColor().fromHex(serviceColor!) : UIColor.clear
 		cell.colorBlock.backgroundColor = serviceColor.makeLighter()
 		cell.contentView.backgroundColor = serviceColor
+		cell.event = event
 	}
 }

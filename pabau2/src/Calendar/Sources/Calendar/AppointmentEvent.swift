@@ -2,7 +2,6 @@ import JZCalendarWeekView
 import Foundation
 
 class AppointmentEvent: JZBaseEvent {
-	
 	var patient: String?
 	var service: String
 	var color: String?

@@ -16,8 +16,8 @@ public struct CalAppointment: Hashable, Codable {
 	
 	public let id: CalAppointment.Id
 	public let start_date: Date
-	public let start_time: Date
-	public let end_time: Date
+	public var start_time: Date
+	public var end_time: Date
 	public let employeeId: Employee.Id
 	public let employeeInitials: String?
 	public let locationId: String
@@ -108,4 +108,65 @@ extension Date {
 			formatter.locale = Locale(identifier: "en_US_POSIX")
 			return formatter
 		}()
+}
+
+extension CalAppointment {
+	
+	public init(
+		id: CalAppointment.Id,
+		start_date: Date,
+		start_time: Date,
+		end_time: Date,
+		employeeId: Employee.Id,
+		employeeInitials: String? = nil,
+		locationId: String,
+		locationName: String?  = nil,
+		_private: String?  = nil,
+		type: Termin.ModelType? = nil,
+		extraEmployees: [Employee]? = nil,
+		status: AppointmentStatus? = nil,
+		service: String,
+		serviceColor: String? = nil,
+		customerName: String? = nil
+	) {
+		self.id = id
+		self.start_date = start_date
+		self.start_time = start_time
+		self.end_time = end_time
+		self.employeeId = employeeId
+		self.employeeInitials = employeeInitials
+		self.locationId = locationId
+		self.locationName = locationName
+		self._private = _private
+		self.type = type
+		self.extraEmployees = extraEmployees
+		self.status = status
+		self.service = service
+		self.serviceColor = serviceColor
+		self.customerName = customerName
+	}
+	
+	public static func dummyInit(start: Date, end: Date) -> CalAppointment {
+		let hmsAndYmd = start.separateHMSandYMD()
+		return CalAppointment(id: CalAppointment.Id(rawValue: String(Int.random(in: 0...1000000000))),
+									 start_date: hmsAndYmd.1!,
+									 start_time: hmsAndYmd.0!,
+									 end_time: end.separateHMSandYMD().0!,
+									 employeeId: Employee.Id.init(rawValue: "1"),
+									 employeeInitials: nil,
+									 locationId: "1",
+									 locationName: nil,
+									 _private: nil,
+									 service: "Botox",
+									 serviceColor: "#800080",
+									 customerName: "Tester")
+	}
+}
+
+extension Date {
+	public func separateHMSandYMD(_ calendar: Calendar = .current) -> (Date?, Date?) {
+		let ymdComps = calendar.dateComponents([.year, .month, .day], from: self)
+		let hmsComps = calendar.dateComponents([.hour, .minute, .second], from: self)
+		return (calendar.date(from: hmsComps), calendar.date(from: ymdComps))
+	}
 }

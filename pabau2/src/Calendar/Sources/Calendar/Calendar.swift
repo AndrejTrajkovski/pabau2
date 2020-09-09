@@ -34,7 +34,7 @@ public class CalendarViewController: UIViewController {
 		calendarView.longPressDelegate = self
 		calendarView.longPressDataSource = self
 		calendarView.longPressTypes = [.addNew, .move]
-		calendarView.addNewDurationMins = 120
+		calendarView.addNewDurationMins = 60
 		calendarView.moveTimeMinInterval = 15
 		self.calendarView = calendarView
 	}
@@ -80,35 +80,32 @@ extension CalendarViewController {
 }
 
 extension CalendarViewController: JZLongPressViewDelegate, JZLongPressViewDataSource {
-	
-	func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date) {
-		let newApp = AllDayEvent(id: UUID().uuidString, title: "New Event", startDate: startDate, endDate: startDate.add(component: .hour, value: weekView.addNewDurationMins/60),
-															 location: "Melbourne", isAllDay: false)
-		
-		if viewModel.eventsByDate[startDate.startOfDay] == nil {
-			viewModel.eventsByDate[startDate.startOfDay] = [AllDayEvent]()
-		}
-		viewModel.events.append(newEvent)
-		viewModel.eventsByDate = JZWeekViewHelper.getIntraEventsByDate(originalEvents: viewModel.events)
-		weekView.forceReload(reloadEvents: viewModel.eventsByDate)
+
+	public func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date) {
+		let endDate = Calendar.current.date(byAdding: .hour, value: weekView.addNewDurationMins/60, to: startDate)!
+		let newApp = CalAppointment.dummyInit(start: startDate,
+																					end: endDate)
+		self.appointments.append(newApp)
+		self.reloadData()
+	}
+
+	public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date) {
+		guard let app = editingEvent as? AppointmentEvent else { return }
+		let duration = Calendar.current.dateComponents([.minute], from: app.startDate, to: app.endDate).minute!
+		let selectedIndex = self.appointments.firstIndex(where: { $0.id.rawValue == app.id })!
+		let startTime = startDate.separateHMSandYMD().0!
+		appointments[selectedIndex].start_time = startTime
+		appointments[selectedIndex].end_time = Calendar.current.date(byAdding: .minute, value: duration, to: startTime)!
+		self.reloadData()
 	}
 	
-	func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date) {
-		guard let event = editingEvent as? AllDayEvent else { return }
-		let duration = Calendar.current.dateComponents([.minute], from: event.startDate, to: event.endDate).minute!
-		let selectedIndex = viewModel.events.firstIndex(where: { $0.id == event.id })!
-		viewModel.events[selectedIndex].startDate = startDate
-		viewModel.events[selectedIndex].endDate = startDate.add(component: .minute, value: duration)
-		
-		viewModel.eventsByDate = JZWeekViewHelper.getIntraEventsByDate(originalEvents: viewModel.events)
-		weekView.forceReload(reloadEvents: viewModel.eventsByDate)
-	}
-	
-	func weekView(_ weekView: JZLongPressWeekView, viewForAddNewLongPressAt startDate: Date) -> UIView {
-		if let view = UINib(nibName: EventCell.className, bundle: nil).instantiate(withOwner: nil, options: nil)[0] as? EventCell {
-			view.titleLabel.text = "New Event"
-			return view
-		}
-		return UIView()
+	public func weekView(_ weekView: JZLongPressWeekView, viewForAddNewLongPressAt startDate: Date) -> UIView {
+//		if let view = UINib(nibName: EventCell.className, bundle: nil).instantiate(withOwner: nil, options: nil)[0] as? EventCell {
+//			view.titleLabel.text = "New Event"
+//			return view
+//		}
+		let view = UIView()
+		view.backgroundColor = .black
+		return view
 	}
 }
