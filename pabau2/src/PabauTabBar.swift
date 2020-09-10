@@ -5,6 +5,7 @@ import Util
 import Journey
 import Clients
 import Calendar
+import EmployeesFilter
 
 public typealias TabBarEnvironment = (
 	loginAPI: LoginAPI,
@@ -18,6 +19,9 @@ public struct TabBarState: Equatable {
 	public var clients: ClientsState
 	public var calendar: CalendarState
 	public var settings: SettingsState
+	
+	public var selectedDate: Date = Date()
+	public var employeesState: EmployeesFilterState = EmployeesFilterState()
 }
 
 public enum TabBarAction {
@@ -64,7 +68,7 @@ struct PabauTabBar: View {
 				}
 				.onAppear {
 					self.viewStore.send(.journey(JourneyContainerAction.journey(JourneyAction.loadJourneys)))
-					self.viewStore.send(.journey(JourneyContainerAction.employees(EmployeesAction.loadEmployees)))
+					self.viewStore.send(.journey(JourneyContainerAction.employees(EmployeesFilterAction.loadEmployees)))
 				}
 				ClientsNavigationView(
 					self.store.scope(
@@ -99,7 +103,7 @@ struct PabauTabBar: View {
 																			 action: { .journey(.addAppointment($0))}))
 			})
 			if self.viewStore.state.isShowingEmployees {
-				EmployeesListStore(
+				EmployeesFilter(
 					self.store.scope(state: { $0.journey.employeesState } ,
 					action: { .journey(.employees($0))})
 				).transition(.moveAndFade)

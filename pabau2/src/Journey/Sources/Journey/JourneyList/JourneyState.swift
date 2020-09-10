@@ -4,18 +4,25 @@ import NonEmpty
 import SwiftDate
 import Foundation
 import ComposableArchitecture
+import EmployeesFilter
 
 public struct JourneyState: Equatable {
-	public init () { }
-	public var loadingState: LoadingState = .initial
+	public init (selectedDate: Date,
+							 employeesState: EmployeesFilterState) {
+		self.selectedDate = selectedDate
+		self.employeesState = employeesState
+	}
+	
+	public var selectedDate: Date
+	public var employeesState: EmployeesFilterState
+	
+	var loadingState: LoadingState = .initial
 	var journeys: Set<Journey> = Set()
 	var selectedFilter: CompleteFilter = .all
-	var selectedDate: Date = Date()
 	var selectedLocation: Location = Location.init(id: 1)
 	var searchText: String = ""
-	public var employeesState: EmployeesState = EmployeesState()
-	public var selectedJourney: Journey?
-	public var selectedPathway: Pathway?
+	var selectedJourney: Journey?
+	var selectedPathway: Pathway?
 
 	var selectedConsentsIds: [Int] = []
 	var allConsents: IdentifiedArrayOf<FormTemplate> = []

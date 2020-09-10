@@ -1,9 +1,10 @@
 import Model
 import Foundation
+import EmployeesFilter
 
 public enum JourneyContainerAction {
 	case journey(JourneyAction)
-	case employees(EmployeesAction)
+	case employees(EmployeesFilterAction)
 	case addAppointment(AddAppointmentAction)
 	case choosePathway(ChoosePathwayContainerAction)
 	case checkIn(CheckInContainerAction)
