@@ -1,32 +1,5 @@
 import SwiftUI
 
-//let header = [
-//	IntervalInfo(1),
-//	IntervalInfo(1),
-//	IntervalInfo(1),
-//	IntervalInfo(1),
-//	IntervalInfo(1),
-//	IntervalInfo(1),
-//	IntervalInfo(1),
-//	IntervalInfo(1),
-//	IntervalInfo(1),
-//	IntervalInfo(1),
-//	IntervalInfo(1),
-//	IntervalInfo(1),
-//	IntervalInfo(1),
-//	IntervalInfo(1),
-//	IntervalInfo(1),
-//	IntervalInfo(1),
-//	IntervalInfo(1),
-//	IntervalInfo(1),
-//	IntervalInfo(1),
-//	IntervalInfo(1),
-//	IntervalInfo(1),
-//	IntervalInfo(1),
-//	IntervalInfo(1),
-//	IntervalInfo(1)
-//]
-
 public struct CalendarSwiftUI: UIViewControllerRepresentable {
 	
 	public init () {}

@@ -2,6 +2,7 @@ import UIKit
 import Model
 import JZCalendarWeekView
 import SwiftDate
+import Util
 
 public class CalendarViewController: UIViewController {
 	
@@ -29,7 +30,7 @@ public class CalendarViewController: UIViewController {
         calendarView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor),
         calendarView.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor, constant: 0),
 				calendarView.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor, constant: 0),
-				calendarView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: 0),
+				calendarView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: 0)
     ])
 		calendarView.longPressDelegate = self
 		calendarView.longPressDataSource = self
@@ -38,11 +39,11 @@ public class CalendarViewController: UIViewController {
 		calendarView.moveTimeMinInterval = 15
 		self.calendarView = calendarView
 	}
-	
+
 	public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
 		JZWeekViewHelper.viewTransitionHandler(to: size, weekView: calendarView)
 	}
-	
+
 	public override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 //		loadDummyRequest()
@@ -98,14 +99,13 @@ extension CalendarViewController: JZLongPressViewDelegate, JZLongPressViewDataSo
 		appointments[selectedIndex].end_time = Calendar.current.date(byAdding: .minute, value: duration, to: startTime)!
 		self.reloadData()
 	}
-	
+
 	public func weekView(_ weekView: JZLongPressWeekView, viewForAddNewLongPressAt startDate: Date) -> UIView {
-//		if let view = UINib(nibName: EventCell.className, bundle: nil).instantiate(withOwner: nil, options: nil)[0] as? EventCell {
-//			view.titleLabel.text = "New Event"
-//			return view
-//		}
-		let view = UIView()
-		view.backgroundColor = .black
-		return view
+		let cell = BaseCalendarCell(frame: CGRect(origin: .zero, size: CGSize(width: 100, height: 100)))
+		cell.layoutSubviews()
+		cell.title.text = "New Appointment"
+		cell.contentView.backgroundColor = UIColor(hex: 0xEEF7FF)
+		cell.colorBlock.backgroundColor = UIColor(hex: 0x0899FF)
+		return cell
 	}
 }
