@@ -3,32 +3,29 @@ import FSCalendar
 import ComposableArchitecture
 
 public struct CalendarDatePicker: View {
-	let store: Store<Date, SwiftUICalendarAction>
-	@Binding var totalHeight: CGFloat?
+	let store: Store<Date, CalendarDatePickerAction>
+	@State var totalHeight: CGFloat?
 	public var body: some View {
 		WithViewStore(store) { viewStore in
 			SwiftUICalendar.init(viewStore.state,
-													 self.$totalHeight,
-													 .week) {
-														viewStore.send(.selectedDate($0))
-			}
+													 .week,
+													 onHeightChange: { self.totalHeight = $0 },
+													 onDateChanged: { viewStore.send(.selectedDate($0))}
+			).frame(height: self.totalHeight)
 		}
 	}
 	
 	public init(
-		store: Store<Date, SwiftUICalendarAction>,
-		totalHeight: Binding<CGFloat?>) {
+		store: Store<Date, CalendarDatePickerAction>) {
 		self.store = store
-		self._totalHeight = totalHeight
 	}
 }
 
-public enum SwiftUICalendarAction: Equatable {
+public enum CalendarDatePickerAction: Equatable {
 	case selectedDate(Date)
 }
 
-public let swiftUICalendarReducer: Reducer<Date, SwiftUICalendarAction, Any> = Reducer.init {
-	state, action, env in
+public let calendarDatePickerReducer: Reducer<Date, CalendarDatePickerAction, Any> = Reducer.init { state, action, _ in
 	switch action {
 	case .selectedDate(let date):
 		state = date
@@ -38,18 +35,18 @@ public let swiftUICalendarReducer: Reducer<Date, SwiftUICalendarAction, Any> = R
 
 struct SwiftUICalendar: UIViewRepresentable {
 	public typealias UIViewType = FSCalendar
-	@Binding var totalHeight: CGFloat?
 	private let scope: FSCalendarScope
 	private let date: Date
+	let onHeightChange: (CGFloat) -> Void
 	private var onDateChanged: (Date) -> Void
 
 	public init(_ date: Date,
-							_ height: Binding<CGFloat?>,
 							_ scope: FSCalendarScope,
-							_ onDateChanged: @escaping (Date) -> Void) {
+							onHeightChange: @escaping (CGFloat) -> Void,
+							onDateChanged: @escaping (Date) -> Void) {
 		self.scope = scope
 		self.date = date
-		self._totalHeight = height
+		self.onHeightChange = onHeightChange
 		self.onDateChanged = onDateChanged
 	}
 
@@ -81,7 +78,7 @@ struct SwiftUICalendar: UIViewRepresentable {
 		}
 
 		public func calendar(_ calendar: FSCalendar, boundingRectWillChange bounds: CGRect, animated: Bool) {
-			self.parent.totalHeight = bounds.size.height
+			self.parent.onHeightChange(bounds.size.height)
 		}
 	}
 }

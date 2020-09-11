@@ -36,6 +36,7 @@ public enum TabBarAction {
 	case settings(SettingsAction)
 	case journey(JourneyContainerAction)
 	case clients(ClientsAction)
+	case calendar(CalendarAction)
 	case employeesFilter(EmployeesFilterAction)
 }
 
@@ -62,7 +63,12 @@ struct PabauTabBar: View {
 	var body: some View {
 		ZStack(alignment: .topTrailing) {
 			TabView {
-				CalendarSwiftUI()
+				CalendarContainer(store:
+					self.store.scope(
+						state: { $0.calendar },
+						action: { .calendar($0)}
+					)
+				)
 					.tabItem {
 						Image(systemName: "calendar")
 						Text("Calendar")
@@ -142,8 +148,7 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
 			return JourneyEnvironment(
 				apiClient: $0.journeyAPI,
 				userDefaults: $0.userDefaults)
-	})
-	,
+	}),
 	clientsContainerReducer.pullback(
 		state: \TabBarState.clients,
 		action: /TabBarAction.clients,
@@ -151,6 +156,14 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
 			return ClientsEnvironment(
 				apiClient: $0.clientsAPI,
 				userDefaults: $0.userDefaults)
+	}),
+	calendarContainerReducer.pullback(
+		state: \TabBarState.calendar,
+		action: /TabBarAction.calendar,
+		environment: {
+			return CalendarEnvironment(
+			apiClient: $0.journeyAPI,
+			userDefaults: $0.userDefaults)
 	})
 )
 

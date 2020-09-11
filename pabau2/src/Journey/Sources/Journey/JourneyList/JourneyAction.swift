@@ -20,5 +20,5 @@ public enum JourneyAction {
 	case gotResponse(Result<[Journey], RequestError>)
 	case selectedJourney(Journey)
 	case choosePathwayBackTap
-	case datePicker(SwiftUICalendarAction)
+	case datePicker(CalendarDatePickerAction)
 }

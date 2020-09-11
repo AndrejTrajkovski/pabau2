@@ -45,7 +45,7 @@ class BaseCalendarCell: JZLongPressEventCell {
 
 	let title: UILabel = {
 		let label = UILabel()
-		label.font = UIFont.boldSystemFont(ofSize: 20)
+		label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
 		label.textColor = .black
 		label.translatesAutoresizingMaskIntoConstraints = false
 		label.numberOfLines = 0
@@ -54,8 +54,8 @@ class BaseCalendarCell: JZLongPressEventCell {
 
 	let subtitle: UILabel = {
 		let label = UILabel()
-		label.font = UIFont.boldSystemFont(ofSize: 14)
-		label.textColor =  .white
+		label.font = UIFont.systemFont(ofSize: 10)
+		label.textColor = .black
 		label.clipsToBounds = true
 		label.translatesAutoresizingMaskIntoConstraints = false
 		label.numberOfLines = 0

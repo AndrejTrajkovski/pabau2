@@ -1,5 +1,6 @@
 import Tagged
 import Foundation
+import SwiftDate
 
 public struct CalendarResponse: Codable {
 //	public let rota: [Employee.Id: [Shift]]
@@ -168,5 +169,46 @@ extension Date {
 		let ymdComps = calendar.dateComponents([.year, .month, .day], from: self)
 		let hmsComps = calendar.dateComponents([.hour, .minute, .second], from: self)
 		return (calendar.date(from: hmsComps), calendar.date(from: ymdComps))
+	}
+}
+
+extension CalAppointment {
+	
+	public static func makeDummy() -> [CalAppointment] {
+		let services: [(String, String)] =
+		[
+			("Brow Lift","#EC75FF"),
+			("Chin Surgery","#46F049"),
+			("Body Wrap","#9268FD"),
+			("Botox","#FFFF5B"),
+			("Manicure","#007AFF"),
+			("Hydrafacial","#108A44"),
+		]
+		var res = [CalAppointment]()
+		for idx in 0...30 {
+			let randomHours = Int.random(in: -23...23)
+			let randomMins = Int.random(in: -59...59)
+			let randomTime = randomHours.hours + randomMins.minutes
+			let today = Date()
+			let startDate = Calendar.current.date(byAdding: .hour,
+																						value: randomHours,
+																						to: today)!
+			
+			let randomEndMins = Int.random(in: 15...100)
+			let randomEnding = startDate + randomEndMins.minutes
+			let service = services.randomElement()
+			let app =  CalAppointment(id: CalAppointment.Id(rawValue: String(idx)),
+																start_date: startDate,
+																start_time: startDate,
+																end_time: randomEnding,
+																employeeId: Employee.Id.init(rawValue: "1"),
+																employeeInitials: nil,
+																locationId: "1",
+																service: service!.0,
+																serviceColor: service!.1,
+																customerName: "Andrej")
+			res.append(app)
+		}
+		return res
 	}
 }

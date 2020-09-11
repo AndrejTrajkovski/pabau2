@@ -3,23 +3,39 @@ import Model
 import JZCalendarWeekView
 import SwiftDate
 import Util
+import ComposableArchitecture
+import Combine
 
 public class CalendarViewController: UIViewController {
 	
+	let viewStore: ViewStore<CalendarState, CalendarAction>
+	var cancellables: Set<AnyCancellable> = []
+	
+	init(_ viewStore: ViewStore<CalendarState, CalendarAction>) {
+		self.viewStore = viewStore
+		super.init(nibName: nil, bundle: nil)
+	}
+	
+	required init?(coder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
+	}
+	
 	weak var calendarView: LongPressView!
 	static let cellId = "CalendarCell"
-	var appointments = [CalAppointment]()
-	let today = Date() - 8.days
+	var appointments = CalAppointment.makeDummy()
 	
 	public override func viewDidLoad() {
 		super.viewDidLoad()
 		setupCalendarView()
 		calendarView.setupCalendar(numOfDays: 1,
-															 setDate: today,
-															 allEvents: [today:[]],
+															 setDate: viewStore.state.selectedDate,
+															 allEvents: [:],
 															 scrollType: .pageScroll,
 															 scrollableRange: (nil, nil))
-		loadDummyRequest()
+		self.viewStore.publisher.selectedDate.removeDuplicates().sink(receiveValue: { [weak self] in
+			self?.calendarView.updateWeekView(to: $0)
+		}).store(in: &self.cancellables)
+//		loadDummyRequest()
 	}
 
 	func setupCalendarView() {
@@ -32,6 +48,7 @@ public class CalendarViewController: UIViewController {
 				calendarView.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor, constant: 0),
 				calendarView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: 0)
     ])
+		calendarView.baseDelegate = self
 		calendarView.longPressDelegate = self
 		calendarView.longPressDataSource = self
 		calendarView.longPressTypes = [.addNew, .move]
@@ -46,6 +63,7 @@ public class CalendarViewController: UIViewController {
 
 	public override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
+		reloadData()
 //		loadDummyRequest()
 	}
 	
@@ -68,7 +86,7 @@ public class CalendarViewController: UIViewController {
 					}
 				}.resume()
 	}
-	
+
 	func reloadData() {
 		let events = self.appointments.map(IntervalsAdapter.makeAppointmentEvent(_:))
 		let sorted = JZWeekViewHelper.getIntraEventsByDate(originalEvents: events)
@@ -107,5 +125,16 @@ extension CalendarViewController: JZLongPressViewDelegate, JZLongPressViewDataSo
 		cell.contentView.backgroundColor = UIColor(hex: 0xEEF7FF)
 		cell.colorBlock.backgroundColor = UIColor(hex: 0x0899FF)
 		return cell
+	}
+}
+
+extension CalendarViewController: JZBaseViewDelegate {
+	public func initDateDidChange(_ weekView: JZBaseWeekView, initDate: Date) {
+		let dateDisplayed = initDate + (weekView.numOfDays).days //JZCalendar holds previous and next pages in cache, initDate is not the date displayed on screen
+		
+		if viewStore.state.selectedDate.compare(toDate: dateDisplayed, granularity: .day) != .orderedSame {
+			//compare in order not to go in an infinite loop
+			viewStore.send(.datePicker(.selectedDate(dateDisplayed)))
+		}
 	}
 }

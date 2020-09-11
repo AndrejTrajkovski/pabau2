@@ -13,7 +13,7 @@ struct CellConfigurator {
 							patientName: appointment.patient,
 							serviceName: appointment.service,
 							serviceColor: appointment.color,
-							roomName: "no room",
+							roomName: "",
 							event: appointment)
 	}
 	
@@ -29,8 +29,8 @@ struct CellConfigurator {
 		let roomString = roomName != nil ? (" " + roomName!) : ""
 		cell.subtitle.text = serviceName + roomString
 		let serviceColor = serviceColor != nil ? UIColor().fromHex(serviceColor!) : UIColor.clear
-		cell.colorBlock.backgroundColor = serviceColor.makeLighter()
-		cell.contentView.backgroundColor = serviceColor
+		cell.colorBlock.backgroundColor = serviceColor
+		cell.contentView.backgroundColor = serviceColor.lighter(by: 0.9)
 		cell.event = event
 	}
 }

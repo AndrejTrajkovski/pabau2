@@ -102,7 +102,7 @@ public let journeyContainerReducer2: Reducer<JourneyState, JourneyContainerActio
 
 let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 	.combine (
-		swiftUICalendarReducer.pullback(
+		calendarDatePickerReducer.pullback(
 			state: \JourneyState.selectedDate,
 			action: /JourneyAction.datePicker,
 			environment: { $0 }),
@@ -145,7 +145,6 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 )
 
 public struct JourneyContainerView: View {
-	@State private var calendarHeight: CGFloat?
 	let store: Store<JourneyContainerState, JourneyContainerAction>
 	@ObservedObject var viewStore: ViewStore<ViewState, JourneyContainerAction>
 	struct ViewState: Equatable {
@@ -172,11 +171,9 @@ public struct JourneyContainerView: View {
 			CalendarDatePicker.init(
 				store: self.store.scope(
 					state: { $0.journey.selectedDate },
-					action: { .journey(.datePicker($0))}),
-				totalHeight: $calendarHeight
+					action: { .journey(.datePicker($0))})
 			)
 			.padding(0)
-			.frame(height: self.calendarHeight)
 			FilterPicker()
 			JourneyList(self.viewStore.state.listedJourneys) {
 				self.viewStore.send(.journey(.selectedJourney($0)))

@@ -2,5 +2,5 @@ import Foundation
 
 public struct CalendarState: Equatable {
 	public init() {}
-	var selectedDate: Date = Date()
+	var selectedDate: Date = Calendar.current.startOfDay(for: Date())
 }
