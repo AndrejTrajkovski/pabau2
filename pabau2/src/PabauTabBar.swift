@@ -15,19 +15,28 @@ public typealias TabBarEnvironment = (
 )
 
 public struct TabBarState: Equatable {
-	public var journey: JourneyState
+	public var journeyState: JourneyState
 	public var clients: ClientsState
 	public var calendar: CalendarState
 	public var settings: SettingsState
-	
-	public var selectedDate: Date = Date()
-	public var employeesState: EmployeesFilterState = EmployeesFilterState()
+	public var employeesFilter: EmployeesFilterState = EmployeesFilterState()
+	public var journeyContainer: JourneyContainerState {
+		get {
+			JourneyContainerState(journey: journeyState,
+														employeesFilter: employeesFilter)
+		}
+		set {
+			self.journeyState = newValue.journey
+			self.employeesFilter = newValue.employeesFilter
+		}
+	}
 }
 
 public enum TabBarAction {
 	case settings(SettingsAction)
 	case journey(JourneyContainerAction)
 	case clients(ClientsAction)
+	case employeesFilter(EmployeesFilterAction)
 }
 
 struct PabauTabBar: View {
@@ -38,9 +47,9 @@ struct PabauTabBar: View {
 		let isShowingCheckin: Bool
 		let isShowingAppointments: Bool
 		init(state: TabBarState) {
-			self.isShowingEmployees = state.journey.employeesState.isShowingEmployees
-			self.isShowingCheckin = state.journey.checkIn != nil
-			self.isShowingAppointments = state.journey.addAppointment.isShowingAddAppointment
+			self.isShowingEmployees = state.employeesFilter.isShowingEmployees
+			self.isShowingCheckin = state.journeyContainer.journey.checkIn != nil
+			self.isShowingAppointments = state.journeyContainer.journey.addAppointment.isShowingAddAppointment
 		}
 	}
 	init (store: Store<TabBarState, TabBarAction>) {
@@ -60,7 +69,7 @@ struct PabauTabBar: View {
 				}
 				JourneyNavigationView(
 					self.store.scope(
-						state: { $0.journey },
+						state: { $0.journeyContainer },
 						action: { .journey($0)})
 				).tabItem {
 						Image(systemName: "staroflife")
@@ -68,7 +77,7 @@ struct PabauTabBar: View {
 				}
 				.onAppear {
 					self.viewStore.send(.journey(JourneyContainerAction.journey(JourneyAction.loadJourneys)))
-					self.viewStore.send(.journey(JourneyContainerAction.employees(EmployeesFilterAction.loadEmployees)))
+					self.viewStore.send(.employeesFilter(EmployeesFilterAction.loadEmployees))
 				}
 				ClientsNavigationView(
 					self.store.scope(
@@ -91,7 +100,7 @@ struct PabauTabBar: View {
 								 linkType: ModalTransition.circleReveal,
 								 destination: {
 									IfLetStore(self.store.scope(
-										state: { $0.journey.checkIn },
+										state: { $0.journeyContainer.journey.checkIn },
 										action: { .journey(.checkIn($0))}
 										),
 														 then: CheckInNavigationView.init(store:))
@@ -99,13 +108,13 @@ struct PabauTabBar: View {
 									 linkType: ModalTransition.fullScreenModal,
 									 destination: {
 										AddAppointment(store:
-											self.store.scope(state: { $0.journey.addAppointment },
+											self.store.scope(state: { $0.journeyState.addAppointment },
 																			 action: { .journey(.addAppointment($0))}))
 			})
 			if self.viewStore.state.isShowingEmployees {
 				EmployeesFilter(
-					self.store.scope(state: { $0.journey.employeesState } ,
-					action: { .journey(.employees($0))})
+					self.store.scope(state: { $0.employeesFilter } ,
+					action: { .employeesFilter($0)})
 				).transition(.moveAndFade)
 			}
 		}
@@ -113,13 +122,21 @@ struct PabauTabBar: View {
 }
 
 public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> = Reducer.combine(
+	employeeFilterReducer.pullback(
+		state: \TabBarState.employeesFilter,
+		action: /TabBarAction.employeesFilter,
+		environment: {
+			return EmployeesFilterEnvironment(
+				apiClient: $0.journeyAPI,
+				userDefaults: $0.userDefaults)
+	}),
 	settingsReducer.pullback(
 		state: \TabBarState.settings,
 		action: /TabBarAction.settings,
 		environment: { SettingsEnvironment($0) }
 	),
 	journeyContainerReducer.pullback(
-		state: \TabBarState.journey,
+		state: \TabBarState.journeyContainer,
 		action: /TabBarAction.journey,
 		environment: {
 			return JourneyEnvironment(

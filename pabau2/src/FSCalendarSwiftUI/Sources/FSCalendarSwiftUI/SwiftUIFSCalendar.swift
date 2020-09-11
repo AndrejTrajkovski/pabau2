@@ -1,7 +1,42 @@
 import SwiftUI
 import FSCalendar
+import ComposableArchitecture
 
-public struct SwiftUICalendar: UIViewRepresentable {
+public struct CalendarDatePicker: View {
+	let store: Store<Date, SwiftUICalendarAction>
+	@Binding var totalHeight: CGFloat?
+	public var body: some View {
+		WithViewStore(store) { viewStore in
+			SwiftUICalendar.init(viewStore.state,
+													 self.$totalHeight,
+													 .week) {
+														viewStore.send(.selectedDate($0))
+			}
+		}
+	}
+	
+	public init(
+		store: Store<Date, SwiftUICalendarAction>,
+		totalHeight: Binding<CGFloat?>) {
+		self.store = store
+		self._totalHeight = totalHeight
+	}
+}
+
+public enum SwiftUICalendarAction: Equatable {
+	case selectedDate(Date)
+}
+
+public let swiftUICalendarReducer: Reducer<Date, SwiftUICalendarAction, Any> = Reducer.init {
+	state, action, env in
+	switch action {
+	case .selectedDate(let date):
+		state = date
+	}
+	return .none
+}
+
+struct SwiftUICalendar: UIViewRepresentable {
 	public typealias UIViewType = FSCalendar
 	@Binding var totalHeight: CGFloat?
 	private let scope: FSCalendarScope

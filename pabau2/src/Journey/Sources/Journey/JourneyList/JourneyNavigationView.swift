@@ -3,10 +3,10 @@ import ComposableArchitecture
 import Util
 
 public struct JourneyNavigationView: View {
-	let store: Store<JourneyState, JourneyContainerAction>
+	let store: Store<JourneyContainerState, JourneyContainerAction>
 	@ObservedObject var viewStore: ViewStore<ViewState, JourneyContainerAction>
 	struct ViewState: Equatable { init() {} }
-	public init(_ store: Store<JourneyState, JourneyContainerAction>) {
+	public init(_ store: Store<JourneyContainerState, JourneyContainerAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store
 			.scope(state: {_ in ViewState()},

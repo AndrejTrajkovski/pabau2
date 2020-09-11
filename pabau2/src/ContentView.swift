@@ -23,7 +23,7 @@ enum AppState: Equatable {
 		if let user = user {
 			self = .tabBar(
 				TabBarState(
-					journey: JourneyState(),
+					journeyState: JourneyState(),
 					clients: ClientsState(),
 					calendar: CalendarState(),
 					settings: SettingsState()
@@ -103,7 +103,7 @@ struct ContentView: View {
 		return self.store.scope(
 			state: {
 				extract(case: AppState.tabBar, from: $0) ??
-					TabBarState(journey: JourneyState(),
+					TabBarState(journeyState: JourneyState(),
 											clients: ClientsState(),
 											calendar: CalendarState(),
 											settings: SettingsState())

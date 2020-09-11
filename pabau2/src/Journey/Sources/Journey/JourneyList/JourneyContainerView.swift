@@ -54,8 +54,25 @@ let checkInMiddleware = Reducer<JourneyState, CheckInContainerAction, JourneyEnv
 	return .none
 }
 
+public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContainerAction, JourneyEnvironment> = .combine(
+	journeyContainerReducer2.pullback(
+		state: \JourneyContainerState.journey,
+		action: /JourneyContainerAction.self,
+		environment: { $0 }
+	),
+	.init { state, action, _ in
+		switch action {
+		case .toggleEmployees:
+			state.employeesFilter.isShowingEmployees.toggle()
+		default:
+			break
+		}
+		return .none
+	}
+)
+
 //JourneyState, ChooseFormAction
-public let journeyContainerReducer: Reducer<JourneyState, JourneyContainerAction, JourneyEnvironment> =
+public let journeyContainerReducer2: Reducer<JourneyState, JourneyContainerAction, JourneyEnvironment> =
 	.combine(
 		checkInMiddleware2.pullback(
 			state: \JourneyState.self,
@@ -64,10 +81,6 @@ public let journeyContainerReducer: Reducer<JourneyState, JourneyContainerAction
 		journeyReducer.pullback(
 					 state: \JourneyState.self,
 					 action: /JourneyContainerAction.journey,
-					 environment: { $0 }),
-		employeeFilterReducer.pullback(
-					 state: \JourneyState.employeesState,
-					 action: /JourneyContainerAction.employees,
 					 environment: { $0 }),
 		addAppointmentReducer.pullback(
 					 state: \JourneyState.addAppointment,
@@ -87,64 +100,68 @@ public let journeyContainerReducer: Reducer<JourneyState, JourneyContainerAction
 			environment: { $0 })
 )
 
-let journeyReducer = Reducer<JourneyState, JourneyAction, JourneyEnvironment> { state, action, environment in
-	switch action {
-	case .selectedFilter(let filter):
-		state.selectedFilter = filter
-	case .selectedDate(let date):
-		state.selectedDate = date
-		state.loadingState = .loading
-		return environment.apiClient.getJourneys(date: date)
-				.map(JourneyAction.gotResponse)
-				.eraseToEffect()
-	case .addAppointmentTap:
-		state.addAppointment.isShowingAddAppointment = true
-	case .addAppointmentDismissed:
-		state.addAppointment.isShowingAddAppointment = false
-	case .gotResponse(let result):
-		switch result {
-		case .success(let journeys):
-			state.journeys.formUnion(journeys)
-			state.loadingState = .gotSuccess
-		case .failure:
-			state.loadingState = .gotError
-		}
-	case .searchedText(let searchText):
-		state.searchText = searchText
-	case .toggleEmployees:
-		state.employeesState.isShowingEmployees.toggle()
-	case .selectedJourney(let journey):
-		state.selectedJourney = journey
-	case .choosePathwayBackTap:
-		state.selectedJourney = nil
-	case .loadJourneys:
-		state.loadingState = .loading
-		return environment.apiClient
-				.getJourneys(date: Date())
-				.map(JourneyAction.gotResponse)
-				.eraseToEffect()
+let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
+	.combine (
+		swiftUICalendarReducer.pullback(
+			state: \JourneyState.selectedDate,
+			action: /JourneyAction.datePicker,
+			environment: { $0 }),
+		.init { state, action, environment in
+			switch action {
+			case .selectedFilter(let filter):
+				state.selectedFilter = filter
+			case .datePicker(.selectedDate(let date)):
+				state.loadingState = .loading
+				return environment.apiClient.getJourneys(date: date)
+					.map(JourneyAction.gotResponse)
+					.eraseToEffect()
+			case .addAppointmentTap:
+				state.addAppointment.isShowingAddAppointment = true
+			case .addAppointmentDismissed:
+				state.addAppointment.isShowingAddAppointment = false
+			case .gotResponse(let result):
+				switch result {
+				case .success(let journeys):
+					state.journeys.formUnion(journeys)
+					state.loadingState = .gotSuccess
+				case .failure:
+					state.loadingState = .gotError
+				}
+			case .searchedText(let searchText):
+				state.searchText = searchText
+			case .selectedJourney(let journey):
+				state.selectedJourney = journey
+			case .choosePathwayBackTap:
+				state.selectedJourney = nil
+			case .loadJourneys:
+				state.loadingState = .loading
+				return environment.apiClient
+					.getJourneys(date: Date())
+					.map(JourneyAction.gotResponse)
+					.eraseToEffect()
+			}
+			return .none
 	}
-	return .none
-}
+)
 
 public struct JourneyContainerView: View {
 	@State private var calendarHeight: CGFloat?
-	let store: Store<JourneyState, JourneyContainerAction>
+	let store: Store<JourneyContainerState, JourneyContainerAction>
 	@ObservedObject var viewStore: ViewStore<ViewState, JourneyContainerAction>
 	struct ViewState: Equatable {
 		let isChoosePathwayShown: Bool
 		let selectedDate: Date
 		let listedJourneys: [Journey]
 		let isLoadingJourneys: Bool
-		init(state: JourneyState) {
-			self.isChoosePathwayShown = state.selectedJourney != nil
-			self.selectedDate = state.selectedDate
+		init(state: JourneyContainerState) {
+			self.isChoosePathwayShown = state.journey.selectedJourney != nil
+			self.selectedDate = state.journey.selectedDate
 			self.listedJourneys = state.filteredJourneys
-			self.isLoadingJourneys = state.loadingState.isLoading
+			self.isLoadingJourneys = state.journey.loadingState.isLoading
 			UITableView.appearance().separatorStyle = .none
 		}
 	}
-	public init(_ store: Store<JourneyState, JourneyContainerAction>) {
+	public init(_ store: Store<JourneyContainerState, JourneyContainerAction>) {
 		self.store = store
 		self.viewStore = ViewStore(self.store
 			.scope(state: ViewState.init(state:),
@@ -152,11 +169,12 @@ public struct JourneyContainerView: View {
 	}
 	public var body: some View {
 		VStack {
-			SwiftUICalendar.init(viewStore.state.selectedDate,
-													 self.$calendarHeight,
-													 .week) { date in
-														self.viewStore.send(.journey(.selectedDate(date)))
-			}
+			CalendarDatePicker.init(
+				store: self.store.scope(
+					state: { $0.journey.selectedDate },
+					action: { .journey(.datePicker($0))}),
+				totalHeight: $calendarHeight
+			)
 			.padding(0)
 			.frame(height: self.calendarHeight)
 			FilterPicker()
@@ -165,7 +183,7 @@ public struct JourneyContainerView: View {
 			}.loadingView(.constant(self.viewStore.state.isLoadingJourneys),
 										Texts.fetchingJourneys)
 			NavigationLink.emptyHidden(self.viewStore.state.isChoosePathwayShown,
-																 ChoosePathway(store: self.store.scope(state: { $0.choosePathway
+																 ChoosePathway(store: self.store.scope(state: { $0.journey.choosePathway
 																 }, action: { .choosePathway($0)}))
 																	.navigationBarTitle("Choose Pathway")
 																	.customBackButton {
@@ -192,7 +210,7 @@ public struct JourneyContainerView: View {
 			}, trailing:
 			Button (action: {
 				withAnimation {
-					self.viewStore.send(.journey(.toggleEmployees))
+					self.viewStore.send(.toggleEmployees)
 				}
 			}, label: {
 				Image(systemName: "person")
