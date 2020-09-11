@@ -35,7 +35,10 @@ public class CalendarViewController: UIViewController {
 		self.viewStore.publisher.selectedDate.removeDuplicates().sink(receiveValue: { [weak self] in
 			self?.calendarView.updateWeekView(to: $0)
 		}).store(in: &self.cancellables)
-//		loadDummyRequest()
+		
+		DispatchQueue.main.async {
+			self.reloadData()
+		}
 	}
 
 	func setupCalendarView() {
@@ -59,12 +62,6 @@ public class CalendarViewController: UIViewController {
 
 	public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
 		JZWeekViewHelper.viewTransitionHandler(to: size, weekView: calendarView)
-	}
-
-	public override func viewDidAppear(_ animated: Bool) {
-		super.viewDidAppear(animated)
-		reloadData()
-//		loadDummyRequest()
 	}
 	
 	func loadDummyRequest() {
