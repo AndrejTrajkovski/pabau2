@@ -17,8 +17,10 @@ let package = Package(
 		.package(url: "../FSCalendarSwiftUI",
 						 from: Version.init(stringLiteral: "1.0.0")),
 		.package(name: "JZCalendarWeekView",
-						 url: "https://github.com/zjfjack/JZCalendarWeekView.git",
-						 from: Version.init(stringLiteral: "0.7.0"))
+						 url: "../../../../workspace/JZCalendarWeekView/.git",
+						 .revision("0a93f6ef0f96d5fc9de8933807baa0804c1ee111")
+//						 .branch("ATSectionsView")
+		)
 	],
 	targets: [
 		.target(

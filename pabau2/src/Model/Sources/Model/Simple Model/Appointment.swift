@@ -38,7 +38,7 @@ public struct Appointment: Codable, Equatable, Hashable {
 	public init(id: String,
 							from: Date,
 							to: Date,
-							employeeId: String,
+							employeeId: Int,
 							employeeInitials: String,
 							locationId: Int,
 							locationName: String,
@@ -89,7 +89,7 @@ extension Appointment {
 							extraEmployees: [Employee]? = nil,
 							status: AppointmentStatus? = nil,
 							service: BaseService) {
-		self.init(id: String(id), from: from, to: to, employeeId: String(employeeId), employeeInitials: employeeInitials, locationId: locationId, locationName: locationName, service: service)
+		self.init(id: String(id), from: from, to: to, employeeId: employeeId, employeeInitials: employeeInitials, locationId: locationId, locationName: locationName, service: service)
 	}
 }
 

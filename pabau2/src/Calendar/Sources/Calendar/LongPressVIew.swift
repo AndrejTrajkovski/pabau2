@@ -1,31 +1,23 @@
 import JZCalendarWeekView
 import UIKit
 
-class LongPressView: JZLongPressWeekView {
+class CalendarView: SectionWeekView {
 	
 	static let cellId = "CalendarCell"
 	
 	override func registerViewClasses() {
 		// Register CollectionViewCell
-		super.registerViewClasses()
+		//		super.registerViewClasses()
 		collectionView.register(BaseCalendarCell.self,
-														forCellWithReuseIdentifier: Self.cellId)
-//		self.collectionView.register(UINib(nibName: "EventCell", bundle: nil), forCellWithReuseIdentifier: "EventCell")
-		// Register DecorationView: must provide corresponding JZDecorationViewKinds
-//		self.flowLayout.register(BlackGridLine.self, forDecorationViewOfKind: JZDecorationViewKinds.verticalGridline)
-//		self.flowLayout.register(BlackGridLine.self, forDecorationViewOfKind: JZDecorationViewKinds.horizontalGridline)
-//
-		// Register SupplementrayView: must override collectionView viewForSupplementaryElementOfKind
-//		collectionView.register(RowHeader.self, forSupplementaryViewOfKind: JZSupplementaryViewKinds.rowHeader, withReuseIdentifier: "RowHeader")
-	}
-	
-	override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-		if var cell = collectionView.dequeueReusableCell(withReuseIdentifier: Self.cellId, for: indexPath) as? BaseCalendarCell,
-			let event = getCurrentEvent(with: indexPath) as? AppointmentEvent {
-			CellConfigurator().configure(cell: &cell,
-																	 appointment: event)
-			return cell
-		}
-		preconditionFailure("LongPressEventCell and AllDayEvent should be casted")
+								forCellWithReuseIdentifier: Self.cellId)
+		
+		self.collectionView.registerSupplimentaryViews([JZCornerHeader.self, JZRowHeader.self, JZAllDayHeader.self, ColumnHeader.self])
+		// decoration
+		flowLayout.registerDecorationViews([JZColumnHeaderBackground.self, JZRowHeaderBackground.self,
+											JZAllDayHeaderBackground.self, JZAllDayCorner.self])
+		flowLayout.register(JZGridLine.self, forDecorationViewOfKind: JZDecorationViewKinds.verticalGridline)
+		flowLayout.register(JZGridLine.self, forDecorationViewOfKind: JZDecorationViewKinds.horizontalGridline)
+		
+		collectionView.register(ColumnHeader.self, forSupplementaryViewOfKind: JZSupplementaryViewKinds.columnHeader, withReuseIdentifier: "ColumnHeader")
 	}
 }

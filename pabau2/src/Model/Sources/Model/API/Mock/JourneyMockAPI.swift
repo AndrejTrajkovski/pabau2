@@ -9,7 +9,7 @@ public struct JourneyMockAPI: MockAPI, JourneyAPI {
 	}
 
 	public func getEmployees() -> EffectWithResult<[Employee], RequestError> {
-		mockSuccess(Self.mockEmployees, delay: 0.0)
+		mockSuccess(Employee.mockEmployees, delay: 0.0)
 	}
 
 	public func getTemplates(_ type: FormType) -> EffectWithResult<[FormTemplate], RequestError> {
@@ -25,37 +25,7 @@ public struct JourneyMockAPI: MockAPI, JourneyAPI {
 }
 
 extension JourneyMockAPI {
-	static let mockEmployees = [
-		Employee.init(id: 1,
-									name: "Dr. Jekil",
-									avatarUrl: "asd",
-									pin: 1234),
-		Employee.init(id: 2,
-									name: "Dr. Off Boley",
-									avatarUrl: "",
-									pin: 1234),
-		Employee.init(id: 3,
-									name: "Michael Jordan",
-									avatarUrl: "",
-									pin: 1234),
-		Employee.init(id: 4,
-									name: "Kobe Bryant",
-									avatarUrl: "",
-									pin: 1234),
-		Employee.init(id: 5,
-									name: "LeBron James",
-									avatarUrl: "",
-									pin: 1234),
-		Employee.init(id: 6,
-									name: "Britney Spears",
-									avatarUrl: "",
-									pin: 1234),
-		Employee.init(id: 7,
-									name: "Dr. Who",
-									avatarUrl: "",
-									pin: 1234)
-	]
-
+	
 	static let mockJourneys = [
 		Journey.init(id: 1,
 								 appointments: NonEmpty.init(Appointment.init(id: 1, from: Date() - 1.days, to: Date() - 1.days, employeeId: 1, employeeInitials: "AT", locationId: 1, locationName: "Thailand", status: AppointmentStatus(id: 1, name: "Checked In"), service: BaseService.init(id: 1, name: "Botox", color: "#9400D3"))),

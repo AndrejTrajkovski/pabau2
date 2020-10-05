@@ -3,7 +3,7 @@
 import Tagged
 
 public struct Employee: Codable, Identifiable, Equatable, Hashable {
-  public typealias Id = Tagged<Employee, String>
+  public typealias Id = Tagged<Employee, Int>
 
 	public static var defaultEmpty: Employee {
 		Employee.init(id: -1, name: "")
@@ -20,7 +20,7 @@ public struct Employee: Codable, Identifiable, Equatable, Hashable {
 							name: String,
 							avatarUrl: String? = nil,
 							pin: Int? = nil) {
-		self.id = Employee.Id(rawValue: String(id))
+		self.id = Employee.Id(rawValue: id)
 		self.name = name
 		self.avatarUrl = avatarUrl
 		self.pin = pin
@@ -32,4 +32,38 @@ public struct Employee: Codable, Identifiable, Equatable, Hashable {
 		case pin
 	}
 
+}
+
+extension Employee {
+	public static let mockEmployees = [
+		Employee.init(id: 1,
+					  name: "Dr. Jekil",
+					  avatarUrl: "asd",
+					  pin: 1234),
+		Employee.init(id: 2,
+					  name: "Dr. Off Boley",
+					  avatarUrl: "",
+					  pin: 1234),
+		Employee.init(id: 3,
+					  name: "Michael Jordan",
+					  avatarUrl: "",
+					  pin: 1234),
+		Employee.init(id: 4,
+					  name: "Kobe Bryant",
+					  avatarUrl: "",
+					  pin: 1234),
+		Employee.init(id: 5,
+					  name: "LeBron James",
+					  avatarUrl: "",
+					  pin: 1234),
+		Employee.init(id: 6,
+					  name: "Britney Spears",
+					  avatarUrl: "",
+					  pin: 1234),
+		Employee.init(id: 7,
+					  name: "Dr. Who",
+					  avatarUrl: "",
+					  pin: 1234)
+	]
+	
 }

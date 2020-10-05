@@ -153,7 +153,7 @@ extension CalAppointment {
 									 start_date: hmsAndYmd.1!,
 									 start_time: hmsAndYmd.0!,
 									 end_time: end.separateHMSandYMD().0!,
-									 employeeId: Employee.Id.init(rawValue: "1"),
+									 employeeId: Employee.Id.init(rawValue: 1),
 									 employeeInitials: nil,
 									 locationId: "1",
 									 locationName: nil,
@@ -201,7 +201,8 @@ extension CalAppointment {
 																start_date: startDate,
 																start_time: startDate,
 																end_time: randomEnding,
-																employeeId: Employee.Id.init(rawValue: "1"),
+																employeeId:
+				Employee.mockEmployees.map(\.id).randomElement()!,
 																employeeInitials: nil,
 																locationId: "1",
 																service: service!.0,

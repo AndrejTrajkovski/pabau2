@@ -14,7 +14,6 @@ class BaseCalendarCell: JZLongPressEventCell {
 		title.text = ""
 		subtitle.text = ""
 		colorBlock.backgroundColor = UIColor.clear
-//		setNeedsUpdateConstraints()
 	}
 	
 	override init(frame: CGRect) {

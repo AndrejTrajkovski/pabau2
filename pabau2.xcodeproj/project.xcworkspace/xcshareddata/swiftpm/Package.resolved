@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "JZCalendarWeekView",
+        "repositoryURL": "/Users/andrejtrajkovski/Desktop/workspace/JZCalendarWeekView/.git",
+        "state": {
+          "branch": "ATSectionsView",
+          "revision": "4e4c93d149f7a76f2fcd5034c34a9c0629f30883",
+          "version": null
+        }
+      },
+      {
         "package": "ASCollectionView",
         "repositoryURL": "https://github.com/apptekstudios/ASCollectionView.git",
         "state": {
@@ -44,15 +53,6 @@
           "branch": null,
           "revision": "f25ea6099e34b84e27da789c6026551577226505",
           "version": "1.0.0"
-        }
-      },
-      {
-        "package": "JZCalendarWeekView",
-        "repositoryURL": "https://github.com/zjfjack/JZCalendarWeekView.git",
-        "state": {
-          "branch": null,
-          "revision": "6177be0ddb1257711186b8a282dfef5dcb274786",
-          "version": "0.7.2"
         }
       },
       {

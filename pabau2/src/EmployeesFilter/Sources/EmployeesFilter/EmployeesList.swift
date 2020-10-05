@@ -9,10 +9,8 @@ public struct EmployeesFilter: View {
 	public init(_ store: Store<EmployeesFilterState, EmployeesFilterAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store)
-		print("EmployeesListStore init")
 	}
 	public var body: some View {
-		print("EmployeesListStore body")
 		return EmployeeList(selectedEmployeesIds: self.viewStore.state.selectedEmployeesIds,
 												employees: self.viewStore.state.employees,
 												header: EmployeeHeader {

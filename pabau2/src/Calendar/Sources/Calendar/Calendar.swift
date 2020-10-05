@@ -6,7 +6,12 @@ import Util
 import ComposableArchitecture
 import Combine
 
+struct TestType {}
 public class CalendarViewController: UIViewController {
+	
+	var employeeKeyPath = \AppointmentEvent.employeeId
+	var roomKeyPath = \AppointmentEvent.roomId
+	var grouper: HashableValueWritableKeyPath!
 	
 	let viewStore: ViewStore<CalendarState, CalendarAction>
 	var cancellables: Set<AnyCancellable> = []
@@ -20,38 +25,32 @@ public class CalendarViewController: UIViewController {
 		fatalError("init(coder:) has not been implemented")
 	}
 	
-	weak var calendarView: LongPressView!
-	static let cellId = "CalendarCell"
+	weak var calendarView: CalendarView!
 	var appointments = CalAppointment.makeDummy()
 	
 	public override func viewDidLoad() {
 		super.viewDidLoad()
+		grouper = HashableValueWritableKeyPath(\AppointmentEvent.roomId)
+		grouper = HashableValueWritableKeyPath(\AppointmentEvent.employeeId)
+		grouper = HashableValueWritableKeyPath(\AppointmentEvent.service)
 		setupCalendarView()
-		calendarView.setupCalendar(numOfDays: 1,
-															 setDate: viewStore.state.selectedDate,
-															 allEvents: [:],
-															 scrollType: .pageScroll,
-															 scrollableRange: (nil, nil))
+		calendarView.setupCalendar(setDate: Date(),
+								   events: [:])
+		self.viewStore.publisher.selectedCalType.removeDuplicates().sink(receiveValue: { [weak self] _ in
+			
+		}).store(in: &self.cancellables)
 		self.viewStore.publisher.selectedDate.removeDuplicates().sink(receiveValue: { [weak self] in
 			self?.calendarView.updateWeekView(to: $0)
 		}).store(in: &self.cancellables)
-		
 		DispatchQueue.main.async {
 			self.reloadData()
 		}
 	}
 
 	func setupCalendarView() {
-		let calendarView = LongPressView.init(frame: .zero)
-		calendarView.translatesAutoresizingMaskIntoConstraints = false
-		view.addSubview(calendarView)
-    NSLayoutConstraint.activate([
-        calendarView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor),
-        calendarView.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor, constant: 0),
-				calendarView.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor, constant: 0),
-				calendarView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: 0)
-    ])
+		let calendarView = makeCalendarView()
 		calendarView.baseDelegate = self
+		calendarView.sectionLongPressDelegate = self
 		calendarView.longPressDelegate = self
 		calendarView.longPressDataSource = self
 		calendarView.longPressTypes = [.addNew, .move]
@@ -59,48 +58,38 @@ public class CalendarViewController: UIViewController {
 		calendarView.moveTimeMinInterval = 15
 		self.calendarView = calendarView
 	}
+	
+	func makeCalendarView() -> CalendarView {
+		let calendarView = CalendarView.init(frame: .zero)
+			calendarView.translatesAutoresizingMaskIntoConstraints = false
+			view.addSubview(calendarView)
+		NSLayoutConstraint.activate([
+			calendarView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor),
+			calendarView.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor, constant: 0),
+					calendarView.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor, constant: 0),
+					calendarView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: 0)
+		])
+		return calendarView
+	}
 
 	public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
 		JZWeekViewHelper.viewTransitionHandler(to: size, weekView: calendarView)
 	}
 	
-	func loadDummyRequest() {
-		let request = URLRequest.init(url: URL(string: Self.calTestUrl)!)
-				let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-					if let data = data {
-						do {
-							let decoder = JSONDecoder()
-							let decodedResponse = try decoder.decode(CalendarResponse.self, from: data)
-							DispatchQueue.main.async {
-								self.appointments = decodedResponse.appointments
-								self.reloadData()
-							}
-						} catch {
-							print(error)
-						}
-					} else {
-						print("Fetch failed: \(error?.localizedDescription ?? "Unknown error")")
-					}
-				}.resume()
-	}
-
 	func reloadData() {
-		let events = self.appointments.map(IntervalsAdapter.makeAppointmentEvent(_:))
-		let sorted = JZWeekViewHelper.getIntraEventsByDate(originalEvents: events)
-		self.calendarView.forceReload(reloadEvents: sorted)
+//		let keyPath = viewStore.state.selectedCalType == .employee ?  : \AppointmentEvent.service
+		let events = self.appointments.map(AppointmentMaker.makeAppointmentEvent(_:))
+		let byDate: [Date: [AppointmentEvent]] = JZWeekViewHelper.getIntraEventsByDate(originalEvents: events)
+		byDate.mapValues(employeeGrouper)
+		calendarView.forceSectionReload(reloadEvents: sorted)
 	}
-}
-
-extension CalendarViewController {
-	static let calTestUrl = "https://crm.pabau.com/OAuth2/appointments/get_appointments_v1.php?user_id=76101&company=3470&api_key=c05c7ef55c70b1d1d7674245f2b2f20184&app_version=4.5.2&start_date=2020-09-01&end_date=2020-09-01&location_id=2503,7282,7283,2668&user_ids=76101,49452,59828,23034,72367,59826,59830,54673,59991,50688,51502,34498,47967,76047,76037,59986,19277,52102,58230,55813,77249,55057,76020,76022,58146,79142,59989,37711,51484,76975,51889,52105,52804,36361,78339,49128,49134,49137,34264,49143,72551,55918,52096,78393,72466,53086,51736,77996,43612,78103,37048,52825,48396,49509,55825,42427,25386,78497,75031,72036,60008,77991,76967,76041,42316,51886,76040,49092,19283,79400,72040,80042,59824,53050,72651,79017,78195,76104,76106,76105,76107,76039,76972,76038,52546,81785,55645,41962,34291%27"
 }
 
 extension CalendarViewController: JZLongPressViewDelegate, JZLongPressViewDataSource {
 
 	public func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date) {
 		let endDate = Calendar.current.date(byAdding: .hour, value: weekView.addNewDurationMins/60, to: startDate)!
-		let newApp = CalAppointment.dummyInit(start: startDate,
-																					end: endDate)
+		let newApp = CalAppointment.dummyInit(start: startDate, end: endDate)
 		self.appointments.append(newApp)
 		self.reloadData()
 	}
@@ -133,5 +122,72 @@ extension CalendarViewController: JZBaseViewDelegate {
 			//compare in order not to go in an infinite loop
 			viewStore.send(.datePicker(.selectedDate(dateDisplayed)))
 		}
+	}
+}
+
+// MARK: - SectionLongPressDelegate
+extension CalendarViewController: SectionLongPressDelegate {
+	public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date, pageAndSectionIdx: (Int, Int)) {
+		
+	}
+
+	public func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date, pageAndSectionIdx: (Int, Int)) {
+
+	}
+}
+
+struct HashableValueWritableKeyPath {
+	
+	let access: (AppointmentEvent) -> AnyHashable
+	let update: (inout AppointmentEvent, AnyHashable) -> ()
+	
+	init<T: Hashable>(_ kp: WritableKeyPath<AppointmentEvent, T>) {
+		update = {
+			$0[keyPath: kp] = $1.base as! T
+		}
+		
+		access = {
+			$0[keyPath: kp]
+		}
+	}
+}
+
+class BaseAppointmentGrouper {
+	
+	public typealias SectionSort = ((key: AnyHashable, value: [AppointmentEvent]),
+									(key: AnyHashable, value: [AppointmentEvent])) -> Bool
+	
+	var events: [[AppointmentEvent]] = []
+	public var groupingProperty: HashableValueWritableKeyPath
+	var sorting: SectionSort
+	
+	public init(groupingProperty: HashableValueWritableKeyPath,
+				sorting: @escaping SectionSort) {
+		self.groupingProperty = groupingProperty
+	}
+	
+	func update(events: [AppointmentEvent]) {
+		self.events = groupAndSortSections(
+			grouping: groupingProperty,
+			sorting: sorting)(events)
+	}
+	
+	func groupAndSortSections(
+		grouping: HashableValueWritableKeyPath,
+		sorting: @escaping SectionSort
+	)
+	-> ([AppointmentEvent]) -> [[AppointmentEvent]] {
+		return { events in
+			let grouped = Dictionary.init(grouping: events,
+										  by: {
+											return grouping.access($0) })
+			let sorted = grouped.sorted(by: sorting)
+			return sorted.map(\.value)
+		}
+	}
+	
+	func getGroupOf(event indexes: (page: Int, withinPage: Int)) -> AnyHashable {
+		let event = events[indexes.page][indexes.withinPage]
+		return groupingProperty.access(event)
 	}
 }

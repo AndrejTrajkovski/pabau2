@@ -284,7 +284,7 @@ public struct JourneyContainerView: View {
 				Employee.init(id: 1, name: "Andrej Trajkovski"),
 				Employee.init(id: 2, name: "Mark Ronson")
 			],
-			chosenItemId: "1",
+			chosenItemId: 1,
 			isActive: false)
 	}
 
@@ -294,7 +294,7 @@ public struct JourneyContainerView: View {
 				Employee.init(id: 1, name: "Participant 1"),
 				Employee.init(id: 2, name: "Participant 2")
 			],
-			chosenItemId: "1",
+			chosenItemId: 1,
 			isActive: false)
 	}
 }

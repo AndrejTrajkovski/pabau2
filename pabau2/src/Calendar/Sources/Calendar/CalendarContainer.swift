@@ -9,7 +9,18 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 	calendarDatePickerReducer.pullback(
 		state: \.selectedDate,
 		action: /CalendarAction.datePicker,
+		environment: { $0 }
+	),
+	calTypePickerReducer.pullback(
+		state: \.calTypePicker,
+		action: /CalendarAction.calTypePicker,
 		environment: { $0 })
+//	,
+//	.init { state, action, _ in
+//		switch action {
+//		case .datePicker: break
+//		case .calTypePicker: break
+//	}
 )
 
 public struct CalendarContainer: View {
@@ -26,7 +37,12 @@ public struct CalendarContainer: View {
 						.padding(0)
 					CalendarSwiftUI(store: self.store)
 					Spacer()
-				}.navigationBarTitle("Day", displayMode: .inline)
+				}.navigationBarItems(trailing:
+					CalendarTypePicker(store:
+					self.store.scope(
+						state: { $0.calTypePicker },
+						action: { .calTypePicker($0)}))
+				)//TODO: with xcode 12 use .toolbar modifier
 			}
 			.navigationViewStyle(StackNavigationViewStyle())
 		}
