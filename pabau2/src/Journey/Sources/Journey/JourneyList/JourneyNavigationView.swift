@@ -15,7 +15,7 @@ public struct JourneyNavigationView: View {
 	public var body: some View {
 		NavigationView {
 			JourneyContainerView(self.store.scope(state: { $0 },
-																					 action: { $0 }))
+																					action: { $0 }))
 		}
 		.navigationViewStyle(StackNavigationViewStyle())
 	}

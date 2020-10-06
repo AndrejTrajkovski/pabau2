@@ -63,6 +63,5 @@ struct CalendarTypeRow: View {
 			self.onTap(self.calendarType)
 		}
 		.frame(height: 48)
-		.background(Color(hex: "F9F9F9"))
 	}
 }

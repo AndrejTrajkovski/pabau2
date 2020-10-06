@@ -58,7 +58,6 @@ struct CalTopBar: View {
 			ZStack {
 				PlusButton {
 				}
-				//			.padding()
 				.padding(.leading, 20)
 				.exploding(.leading)
 				CalendarTypePicker(store:
