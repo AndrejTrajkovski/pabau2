@@ -18,16 +18,16 @@ let package = Package(
 						 from: Version.init(stringLiteral: "1.0.0")),
 		.package(name: "JZCalendarWeekView",
 						 url: "../../../../workspace/JZCalendarWeekView/.git",
-						 .revision("0a93f6ef0f96d5fc9de8933807baa0804c1ee111")
-//						 .branch("ATSectionsView")
+//						 .revision("0a93f6ef0f96d5fc9de8933807baa0804c1ee111")
+						 .branch("ATSectionsView")
 		)
 	],
 	targets: [
 		.target(
 			name: "Calendar",
 			dependencies: ["Form",
-										 "FSCalendarSwiftUI",
-										 "JZCalendarWeekView"
+						   "FSCalendarSwiftUI",
+						   .product(name: "JZCalendarWeekView", package: "JZCalendarWeekView")
 			]
 		)
 	]

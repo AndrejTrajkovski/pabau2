@@ -21,7 +21,7 @@ public struct CalAppointment: Hashable, Codable {
 	public var end_time: Date
 	public let employeeId: Employee.Id
 	public let employeeInitials: String?
-	public let locationId: String
+	public let locationId: Location.ID
 	public let locationName: String?
 	public let _private: String?
 	public let type: Termin.ModelType?
@@ -54,7 +54,7 @@ public struct CalAppointment: Hashable, Codable {
 		id = try container.decode(CalAppointment.Id.self, forKey: .id)
 		employeeId = try container.decode(Employee.Id.self, forKey: .employeeId)
 		employeeInitials = try? container.decode(String.self, forKey: .employeeInitials)
-		locationId = try container.decode(String.self, forKey: .locationId)
+		locationId = try container.decode(Location.ID.self, forKey: .locationId)
 		locationName = try? container.decode(String.self, forKey: .locationName)
 		_private = try container.decode(String.self, forKey: ._private)
 		type = try? container.decode(Termin.ModelType.self, forKey: .type)

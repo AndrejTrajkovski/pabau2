@@ -1,28 +1,33 @@
 import Foundation
 import JZCalendarWeekView
+import Model
 
 public class AppointmentEvent: JZBaseEvent {
-		
+	
 	public override var debugDescription: String {
 		return "id: \(id), employeeId: \(employeeId)"
 	}
 	
-	public var testType: TestType?
-	public var roomId: Int
 	public var employeeId: Int
 	public var patient: String?
 	public var service: String
 	public var color: String?
+	public var locationId: Int
+	public var roomId: Int?
+	public var locationName: String
+	public var isPrivate: Bool
 	
 	public init(id: String,
-			 patient: String? = nil,
-			 service: String = "Botox",
-			 color: String? = "#800080",
-			 startDate: Date,
-			 endDate: Date,
-			 employeeId: Int,
-			 roomId: Int = 1
+				patient: String? = nil,
+				service: String = "Botox",
+				color: String? = "#800080",
+				startDate: Date,
+				endDate: Date,
+				employeeId: Int,
+				roomId: Int? = nil,
+				locationId: Int
 	) {
+		self.locationId = locationId
 		self.roomId = roomId
 		self.patient = patient
 		self.service = service
@@ -33,6 +38,6 @@ public class AppointmentEvent: JZBaseEvent {
 	}
 	
 	public override func copy(with zone: NSZone?) -> Any {
-		return AppointmentEvent(id: id, patient: patient, service: service, color: color, startDate: startDate, endDate: endDate, employeeId: employeeId, roomId: roomId)
+		return AppointmentEvent(id: id, patient: patient, service: service, color: color, startDate: startDate, endDate: endDate, employeeId: employeeId, roomId: roomId, locationId: locationId)
 	}
 }
