@@ -10,11 +10,11 @@ struct CellConfigurator {
 		appointment: AppointmentEvent
 		) {
 		configure(cell: &cell,
-							patientName: appointment.patient,
-							serviceName: appointment.service,
-							serviceColor: appointment.color,
-							roomName: "",
-							event: appointment)
+				  patientName: appointment.app.customerName,
+				  serviceName: appointment.app.service,
+				  serviceColor: appointment.app.serviceColor,
+				  roomName: "",
+				  event: appointment)
 	}
 	
 	func configure(

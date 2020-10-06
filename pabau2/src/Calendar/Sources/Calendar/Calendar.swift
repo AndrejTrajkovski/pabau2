@@ -5,6 +5,7 @@ import SwiftDate
 import Util
 import ComposableArchitecture
 import Combine
+import Model
 
 public class CalendarViewController: UIViewController {
 	
@@ -32,9 +33,23 @@ public class CalendarViewController: UIViewController {
 	
 	var appointments = CalAppointment.makeDummy()
 	
+	func keyPath(calType: CalendarType) -> AnyHashableKeyPath<AppointmentEvent> {
+		let appKp = \AppointmentEvent.app
+		switch calType {
+		case .employee:
+			return AnyHashableKeyPath(appKp.appending(path: \CalAppointment.employeeId))
+		case .room:
+			return AnyHashableKeyPath(appKp.appending(path: \CalAppointment.roomId))
+		default: fatalError()
+		}
+	}
+	
 	public override func viewDidLoad() {
 		super.viewDidLoad()
-		grouper = BaseAppointmentGrouper.init(groupingProperty: AnyHashableKeyPath(\AppointmentEvent.employeeId))
+//		let locationKp: WritableKeyPath = \CalAppointment.locationId
+//		let finalKp: WritableKeyPath = appKeyPath.appending(path: empKP)
+//		let finalFinal = AnyHashableKeyPath<AppointmentEvent>(finalKp)
+//		grouper = BaseAppointmentGrouper.init(groupingProperty: )
 		self.viewStore.publisher.selectedDate.removeDuplicates()
 			.receive(on: RunLoop.main)
 			.sink(receiveValue: { [weak self] in
@@ -66,9 +81,7 @@ public class CalendarViewController: UIViewController {
 	}
 	
 	func reloadData() {
-//		let keyPath = viewStore.state.selectedCalType == .employee ?  : \AppointmentEvent.service
-		let events = self.appointments.map(AppointmentAdapter.makeAppointmentEvent(_:))
-		let byDate: [Date: [AppointmentEvent]] = JZWeekViewHelper.getIntraEventsByDate(originalEvents: events)
+		let byDate: [Date: [AppointmentEvent]] = JZWeekViewHelper.getIntraEventsByDate(originalEvents: appointments.map(AppointmentEvent.init))
 		let grouped: [Date: [[AppointmentEvent]]] = byDate.mapValues {
 			grouper.update(events: $0)
 			return grouper.events
@@ -124,7 +137,6 @@ extension CalendarViewController: SectionLongPressDelegate {
 		if var appointmentEvent = editingEvent as? AppointmentEvent {
 			grouper.update(event: &appointmentEvent,
 						   indexes: pageAndSectionIdx)
-			grouper.update(events: <#T##[AppointmentEvent]#>)
 		} else {
 			fatalError()
 		}

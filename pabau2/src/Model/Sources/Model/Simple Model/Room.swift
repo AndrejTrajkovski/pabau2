@@ -1,15 +1,15 @@
-//
-// Room.swift
-
 import Foundation
+import Tagged
 
 public struct Room: Codable, Identifiable {
-
-    public let id: Int?
+	
+	public typealias Id = Tagged<Room, Int>
+	
+    public let id: Id?
 
     public let name: String?
-    public init(id: Int? = nil, name: String? = nil) {
-        self.id = id
+    public init(id: Int, name: String? = nil) {
+		self.id = Id(rawValue: id)
         self.name = name
     }
     public enum CodingKeys: String, CodingKey {
