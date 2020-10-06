@@ -2,11 +2,8 @@ class BaseAppointmentGrouper {
 	public typealias SectionSort = ((key: AnyHashable, value: [AppointmentEvent]),
 									(key: AnyHashable, value: [AppointmentEvent])) -> Bool
 	var events: [[AppointmentEvent]] = []
-	public var groupingProperty: AnyHashableKeyPath<AppointmentEvent>
+	public var groupingProperty: AnyHashableKeyPath<AppointmentEvent>!
 	var sorting: SectionSort?
-	public init(groupingProperty: AnyHashableKeyPath<AppointmentEvent>) {
-		self.groupingProperty = groupingProperty
-	}
 
 	func update(events: [AppointmentEvent]) {
 		self.events = groupAndSortSections(

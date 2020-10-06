@@ -5,7 +5,7 @@ public struct Room: Codable, Identifiable {
 	
 	public typealias Id = Tagged<Room, Int>
 	
-    public let id: Id?
+    public let id: Id
 
     public let name: String?
     public init(id: Int, name: String? = nil) {

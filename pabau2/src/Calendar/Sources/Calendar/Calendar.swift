@@ -5,11 +5,10 @@ import SwiftDate
 import Util
 import ComposableArchitecture
 import Combine
-import Model
 
 public class CalendarViewController: UIViewController {
 	
-	var grouper: BaseAppointmentGrouper!
+	var grouper = BaseAppointmentGrouper()
 
 	let viewStore: ViewStore<CalendarState, CalendarAction>
 	var cancellables: Set<AnyCancellable> = []
@@ -17,13 +16,15 @@ public class CalendarViewController: UIViewController {
 	init(_ viewStore: ViewStore<CalendarState, CalendarAction>) {
 		self.viewStore = viewStore
 		super.init(nibName: nil, bundle: nil)
+		self.grouper.groupingProperty = keyPath(calType: viewStore.state.selectedCalType)
 	}
-	
+
 	var calendarView: CalendarView {
 		return view as! CalendarView
 	}
 	
 	public override func loadView() {
+		print("loadview")
 		view = setupCalendarView()
 	}
 
@@ -37,31 +38,37 @@ public class CalendarViewController: UIViewController {
 		let appKp = \AppointmentEvent.app
 		switch calType {
 		case .employee:
-			return AnyHashableKeyPath(appKp.appending(path: \CalAppointment.employeeId))
+			let kpe = appKp.appending(path: \CalAppointment.employeeId)
+			return AnyHashableKeyPath(kpe)
 		case .room:
-			return AnyHashableKeyPath(appKp.appending(path: \CalAppointment.roomId))
+			let kps = appKp.appending(path: \CalAppointment.roomId)
+			return AnyHashableKeyPath(kps)
 		default: fatalError()
 		}
 	}
-	
-	public override func viewDidLoad() {
-		super.viewDidLoad()
-//		let locationKp: WritableKeyPath = \CalAppointment.locationId
-//		let finalKp: WritableKeyPath = appKeyPath.appending(path: empKP)
-//		let finalFinal = AnyHashableKeyPath<AppointmentEvent>(finalKp)
-//		grouper = BaseAppointmentGrouper.init(groupingProperty: )
-		self.viewStore.publisher.selectedDate.removeDuplicates()
-			.receive(on: RunLoop.main)
-			.sink(receiveValue: { [weak self] in
-			self?.calendarView.updateWeekView(to: $0)
-		}).store(in: &self.cancellables)
-	}
-	
+
 	public override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		calendarView.setupCalendar(setDate: Date(),
+		print("calendar viewWillAppear")
+	}
+
+	public override func viewDidLoad() {
+		super.viewDidLoad()
+		print("calendar viewDidLoad", self)
+		calendarView.setupCalendar(setDate: viewStore.state.selectedDate,
 								   events: [:])
-		reloadData()
+//		self.viewStore.publisher.selectedCalType
+//			.map(keyPath(calType:))
+//			.receive(on: DispatchQueue.main)
+//			.assign(to: \.groupingProperty, on: grouper)
+//			.store(in: &self.cancellables)
+		self.viewStore.publisher.selectedDate
+			.receive(on: DispatchQueue.main)
+			.sink(receiveValue: { [weak self] in
+			print("selected date changed", $0)
+			self?.calendarView.updateWeekView(to: $0)
+			self?.reloadData()
+		}).store(in: &self.cancellables)
 	}
 
 	func setupCalendarView() -> CalendarView {
@@ -79,7 +86,7 @@ public class CalendarViewController: UIViewController {
 	public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
 		JZWeekViewHelper.viewTransitionHandler(to: size, weekView: calendarView)
 	}
-	
+
 	func reloadData() {
 		let byDate: [Date: [AppointmentEvent]] = JZWeekViewHelper.getIntraEventsByDate(originalEvents: appointments.map(AppointmentEvent.init))
 		let grouped: [Date: [[AppointmentEvent]]] = byDate.mapValues {
@@ -102,7 +109,7 @@ extension CalendarViewController: JZLongPressViewDelegate, JZLongPressViewDataSo
 	public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date) {
 		guard let app = editingEvent as? AppointmentEvent else { return }
 		let duration = Calendar.current.dateComponents([.minute], from: app.startDate, to: app.endDate).minute!
-		let selectedIndex = self.appointments.firstIndex(where: { $0.id.rawValue == app.id })!
+		let selectedIndex = self.appointments.firstIndex(where: { $0.id.rawValue == Int(app.id) })!
 		let startTime = startDate.separateHMSandYMD().0!
 		appointments[selectedIndex].start_time = startTime
 		appointments[selectedIndex].end_time = Calendar.current.date(byAdding: .minute, value: duration, to: startTime)!
@@ -121,12 +128,11 @@ extension CalendarViewController: JZLongPressViewDelegate, JZLongPressViewDataSo
 
 extension CalendarViewController: JZBaseViewDelegate {
 	public func initDateDidChange(_ weekView: JZBaseWeekView, initDate: Date) {
+		//compare in order not to go in an infinite loop
 		let dateDisplayed = initDate + (weekView.numOfDays).days //JZCalendar holds previous and next pages in cache, initDate is not the date displayed on screen
-		if viewStore.state.selectedDate.compare(toDate: dateDisplayed, granularity: .day) != .orderedSame {
-			//compare in order not to go in an infinite loop
-			DispatchQueue.main.async {
-				self.viewStore.send(.datePicker(.selectedDate(dateDisplayed)))
-			}
+		if self.viewStore.state.selectedDate.compare(toDate: dateDisplayed, granularity: .day) != .orderedSame {
+			print("send(.datePicker(.selectedDate(dateDisplayed)))", initDate)
+			self.viewStore.send(.datePicker(.selectedDate(dateDisplayed)))
 		}
 	}
 }
@@ -143,6 +149,6 @@ extension CalendarViewController: SectionLongPressDelegate {
 	}
 
 	public func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date, pageAndSectionIdx: (Int, Int)) {
-		
+	
 	}
 }

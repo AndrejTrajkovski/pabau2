@@ -156,6 +156,7 @@ Tap the aftercare bellow that you wish to send to the client. The aftercare will
 	public static let issuedTo = "Issued To"
 	public static let method = "Method"
 	public static let amount = "Amount"
+	public static let filters = "Filters"
 
 }
 

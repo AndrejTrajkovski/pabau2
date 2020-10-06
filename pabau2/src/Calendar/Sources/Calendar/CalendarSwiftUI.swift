@@ -3,10 +3,11 @@ import ComposableArchitecture
 
 public struct CalendarSwiftUI: UIViewControllerRepresentable {
 	
-	let store: Store<CalendarState, CalendarAction>
+	let viewStore: ViewStore<CalendarState, CalendarAction>
 	
 	public func makeUIViewController(context: Context) -> CalendarViewController {
-		return CalendarViewController(ViewStore.init(store))
+		print("makeUIViewController")
+		return CalendarViewController(viewStore)
 	}
 
 	public func updateUIViewController(_ uiViewController: CalendarViewController, context: Context) {

@@ -61,8 +61,22 @@ struct PabauTabBar: View {
 		print("PabauTabBar init")
 	}
 	var body: some View {
-		ZStack(alignment: .topTrailing) {
+		print("PabauTabBar body")
+		return ZStack(alignment: .topTrailing) {
 			TabView {
+//				NavigationView {
+					CalendarContainer(store:
+						self.store.scope(
+							state: { $0.calendar },
+							action: { .calendar($0)}
+						)
+					)
+//				}
+//				.navigationViewStyle(StackNavigationViewStyle())
+				.tabItem {
+						Image(systemName: "calendar")
+						Text("Calendar")
+				}
 				JourneyNavigationView(
 					self.store.scope(
 						state: { $0.journeyContainer },
@@ -74,16 +88,6 @@ struct PabauTabBar: View {
 				.onAppear {
 					self.viewStore.send(.journey(JourneyContainerAction.journey(JourneyAction.loadJourneys)))
 					self.viewStore.send(.employeesFilter(EmployeesFilterAction.loadEmployees))
-				}
-				CalendarContainer(store:
-					self.store.scope(
-						state: { $0.calendar },
-						action: { .calendar($0)}
-					)
-				)
-					.tabItem {
-						Image(systemName: "calendar")
-						Text("Calendar")
 				}
 				ClientsNavigationView(
 					self.store.scope(

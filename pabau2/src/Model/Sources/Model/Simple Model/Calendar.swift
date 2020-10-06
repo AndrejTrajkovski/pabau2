@@ -30,7 +30,7 @@ public struct CalAppointment: Hashable, Codable {
 	public let service: String
 	public let serviceColor: String?
 	public let customerName: String?
-	public let roomId: Room.Id?
+	public var roomId: Room.Id
 	
 	public enum CodingKeys: String, CodingKey {
 		case id
@@ -75,7 +75,7 @@ public struct CalAppointment: Hashable, Codable {
 		end_time = try Date(container: container,
 							codingKey: .end_time,
 							formatter: DateFormatter.HHmmss)
-		roomId = try? container.decode(Room.ID.self, forKey: .roomId)
+		roomId = try container.decode(Room.Id.self, forKey: .roomId)
 	}
 }
 

@@ -32,14 +32,14 @@ struct CalendarTypePicker: View {
 							onTap: { _ in
 								viewStore.send(.toggleDropdown)
 			}).popover(isPresented: .constant(viewStore.state.isDropdownShown)) {
-				ForEach(CalendarType.allCases.filter { $0 != viewStore.state.selectedCalType
-				}, id: \.self) { calType in
+				ForEach(CalendarType.allCases, id: \.self) { calType in
 					CalendarTypeRow(calendarType: calType,
 									isSelected: false,
 									onTap: {
 										viewStore.send(.onSelect($0))
 					})
-				}
+					Divider()
+				}.background(Color(hex: "F9F9F9"))
 			}
 		}
 	}
@@ -49,25 +49,20 @@ struct CalendarTypeRow: View {
 	let calendarType: CalendarType
 	var isSelected: Bool
 	let onTap: (CalendarType) -> Void
-	
+
 	var body: some View {
 		HStack {
 			Text(self.calendarType.title)
+				.bold()
+				.padding()
 			if self.isSelected {
 				Image(systemName: "chevron.down")
+					.foregroundColor(.blue)
 			}
 		}.onTapGesture {
 			self.onTap(self.calendarType)
-		}.frame(height: 48)
-	}
-}
-
-struct CalendarTypeRowContainer<Content: View>: View {
-	let calendarType: CalendarType
-	let onTap: (CalendarType) -> Void
-	let content: () -> Content
-	var body: some View {
-		content()
-			
+		}
+		.frame(height: 48)
+		.background(Color(hex: "F9F9F9"))
 	}
 }

@@ -53,6 +53,7 @@ struct SwiftUICalendar: UIViewRepresentable {
 	}
 
 	public func makeUIView(context: UIViewRepresentableContext<SwiftUICalendar>) -> FSCalendar {
+		print("makeUIView FSCalendar")
 		let calendar = FSCalendar()
 		calendar.select(date)
 		calendar.delegate = context.coordinator

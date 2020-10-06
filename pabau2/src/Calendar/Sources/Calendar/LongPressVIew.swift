@@ -1,11 +1,11 @@
 import JZCalendarWeekView
 import UIKit
 
-class CalendarView: SectionWeekView {
+public class CalendarView: SectionWeekView {
 	
 	static let cellId = "CalendarCell"
 	
-	override func registerViewClasses() {
+	public override func registerViewClasses() {
 		// Register CollectionViewCell
 		//		super.registerViewClasses()
 		collectionView.register(BaseCalendarCell.self,
@@ -20,7 +20,7 @@ class CalendarView: SectionWeekView {
 		collectionView.register(ColumnHeader.self, forSupplementaryViewOfKind: JZSupplementaryViewKinds.columnHeader, withReuseIdentifier: "ColumnHeader")
 	}
 	
-	override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+	public override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		if var cell = collectionView.dequeueReusableCell(withReuseIdentifier: Self.cellId, for: indexPath) as? BaseCalendarCell,
 			let event = getCurrentEvent(with: indexPath) as? AppointmentEvent {
 			CellConfigurator().configure(cell: &cell,
@@ -32,7 +32,6 @@ class CalendarView: SectionWeekView {
 	
 	override open func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
 		var view = UICollectionReusableView()
-		print(kind)
 		switch kind {
 		case "ColumnHeader":
 			if let columnHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as? ColumnHeader {
