@@ -1,14 +1,19 @@
+import Foundation
+import JZCalendarWeekView
+import Model
+
 class BaseAppointmentGrouper {
 	public typealias SectionSort = ((key: AnyHashable, value: [AppointmentEvent]),
 									(key: AnyHashable, value: [AppointmentEvent])) -> Bool
-	var events: [[AppointmentEvent]] = []
+	var events: [Date:[[AppointmentEvent]]] = [:]
 	public var groupingProperty: AnyHashableKeyPath<AppointmentEvent>!
 	var sorting: SectionSort?
 
 	func update(events: [AppointmentEvent]) {
-		self.events = groupAndSortSections(
-			grouping: groupingProperty,
-			sorting: sorting)(events)
+		let byDate: [Date: [AppointmentEvent]] = JZWeekViewHelper.getIntraEventsByDate(originalEvents: events)
+		self.events = byDate.mapValues(groupAndSortSections(
+										grouping: groupingProperty,
+										sorting: sorting))
 	}
 
 	func groupAndSortSections(
@@ -25,7 +30,7 @@ class BaseAppointmentGrouper {
 					return grouped.sorted(by: sorting!)
 				} else {
 					return grouped.sorted(by: {
-						$0.value.count < $1.value.count
+						($0.key.base as! Employee.Id) < ($1.key.base as! Employee.Id)
 					})
 				}
 			}()
@@ -33,13 +38,17 @@ class BaseAppointmentGrouper {
 		}
 	}
 	
-	func update(event: inout AppointmentEvent, indexes: (page: Int, withinPage: Int)) {
+	func update(event: inout AppointmentEvent, date: Date, indexes: (page: Int, withinPage: Int)) {
+		let oldDate = events.sorted(by: \.key)[indexes.page].key
 		let value = getValueOfEventAt(indexes: indexes)
-		groupingProperty.set(&event, value)
+		value.map { groupingProperty.set(&event, $0) }
+		event.startDate = date
 	}
 	
-	func getValueOfEventAt(indexes: (page: Int, withinPage: Int)) -> AnyHashable {
-		let event = events[indexes.page][indexes.withinPage]
-		return groupingProperty.get(event)
+	func getValueOfEventAt(indexes: (page: Int, withinPage: Int)) -> AnyHashable? {
+		let sorted = events.sorted(by: \.key)
+		let dateElement = sorted[indexes.page]
+		let section = dateElement.value[indexes.withinPage]
+		return section.first.map(groupingProperty.get)
 	}
 }

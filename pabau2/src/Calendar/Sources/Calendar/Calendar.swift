@@ -24,7 +24,6 @@ public class CalendarViewController: UIViewController {
 	}
 	
 	public override func loadView() {
-		print("loadview")
 		view = setupCalendarView()
 	}
 
@@ -33,28 +32,9 @@ public class CalendarViewController: UIViewController {
 	}
 	
 	var appointments = CalAppointment.makeDummy()
-	
-	func keyPath(calType: CalendarType) -> AnyHashableKeyPath<AppointmentEvent> {
-		let appKp = \AppointmentEvent.app
-		switch calType {
-		case .employee:
-			let kpe = appKp.appending(path: \CalAppointment.employeeId)
-			return AnyHashableKeyPath(kpe)
-		case .room:
-			let kps = appKp.appending(path: \CalAppointment.roomId)
-			return AnyHashableKeyPath(kps)
-		default: fatalError()
-		}
-	}
-
-	public override func viewWillAppear(_ animated: Bool) {
-		super.viewWillAppear(animated)
-		print("calendar viewWillAppear")
-	}
 
 	public override func viewDidLoad() {
 		super.viewDidLoad()
-		print("calendar viewDidLoad", self)
 		calendarView.setupCalendar(setDate: viewStore.state.selectedDate,
 								   events: [:])
 //		self.viewStore.publisher.selectedCalType
@@ -62,10 +42,12 @@ public class CalendarViewController: UIViewController {
 //			.receive(on: DispatchQueue.main)
 //			.assign(to: \.groupingProperty, on: grouper)
 //			.store(in: &self.cancellables)
-		self.viewStore.publisher.selectedDate
+		self.viewStore.publisher.selectedDate.removeDuplicates()
 			.receive(on: DispatchQueue.main)
 			.sink(receiveValue: { [weak self] in
 			print("selected date changed", $0)
+			let appts = self?.appointments.map(AppointmentEvent.init) ?? []
+			self?.grouper.update(events: appts)
 			self?.calendarView.updateWeekView(to: $0)
 			self?.reloadData()
 		}).store(in: &self.cancellables)
@@ -88,12 +70,7 @@ public class CalendarViewController: UIViewController {
 	}
 
 	func reloadData() {
-		let byDate: [Date: [AppointmentEvent]] = JZWeekViewHelper.getIntraEventsByDate(originalEvents: appointments.map(AppointmentEvent.init))
-		let grouped: [Date: [[AppointmentEvent]]] = byDate.mapValues {
-			grouper.update(events: $0)
-			return grouper.events
-		}
-		calendarView.forceSectionReload(reloadEvents: grouped)
+		calendarView.forceSectionReload(reloadEvents: grouper.events)
 	}
 }
 
@@ -142,7 +119,13 @@ extension CalendarViewController: SectionLongPressDelegate {
 	public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date, pageAndSectionIdx: (Int, Int)) {
 		if var appointmentEvent = editingEvent as? AppointmentEvent {
 			grouper.update(event: &appointmentEvent,
+						   date: startDate,
 						   indexes: pageAndSectionIdx)
+			let selectedIndex = self.appointments.firstIndex(where: { $0.id.rawValue == Int(appointmentEvent.id) })!
+			self.appointments[selectedIndex] = appointmentEvent.app
+			let appts = appointments.map(AppointmentEvent.init)
+			grouper.update(events: appts)
+			reloadData()
 		} else {
 			fatalError()
 		}
@@ -151,4 +134,20 @@ extension CalendarViewController: SectionLongPressDelegate {
 	public func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date, pageAndSectionIdx: (Int, Int)) {
 	
 	}
+}
+
+extension CalendarViewController {
+	func keyPath(calType: CalendarType) -> AnyHashableKeyPath<AppointmentEvent> {
+		let appKp = \AppointmentEvent.app
+		switch calType {
+		case .employee:
+			let kpe = appKp.appending(path: \CalAppointment.employeeId)
+			return AnyHashableKeyPath(kpe)
+		case .room:
+			let kps = appKp.appending(path: \CalAppointment.roomId)
+			return AnyHashableKeyPath(kps)
+		default: fatalError()
+		}
+	}
+
 }

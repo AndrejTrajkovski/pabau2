@@ -12,7 +12,7 @@ public struct CalendarDatePicker: View {
 													 onHeightChange: { self.totalHeight = $0 },
 													 onDateChanged: { viewStore.send(.selectedDate($0))}
 			).frame(height: self.totalHeight)
-		}
+		}.debug("CalendarDatePicker")
 	}
 	
 	public init(
@@ -43,9 +43,9 @@ struct SwiftUICalendar: UIViewRepresentable {
 	private var onDateChanged: (Date) -> Void
 
 	public init(_ date: Date,
-							_ scope: FSCalendarScope,
-							onHeightChange: @escaping (CGFloat) -> Void,
-							onDateChanged: @escaping (Date) -> Void) {
+				_ scope: FSCalendarScope,
+				onHeightChange: @escaping (CGFloat) -> Void,
+				onDateChanged: @escaping (Date) -> Void) {
 		self.scope = scope
 		self.date = date
 		self.onHeightChange = onHeightChange
