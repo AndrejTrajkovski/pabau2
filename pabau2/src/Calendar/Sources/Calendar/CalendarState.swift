@@ -1,10 +1,13 @@
 import Foundation
+import Model
 
 public struct CalendarState: Equatable {
 	public init() {}
 	var isDropdownShown = false
-	var selectedCalType: CalendarType = .employee
 	var selectedDate: Date = Calendar.current.startOfDay(for: Date())
+	var appointments = Appointments(apps: CalAppointment.makeDummy(),
+									calType: .employee)
+	var employees = Employee.mockEmployees
 }
 
 extension CalendarState {
@@ -12,11 +15,11 @@ extension CalendarState {
 	var calTypePicker: CalendarTypePickerState {
 		get {
 			CalendarTypePickerState(isDropdownShown: isDropdownShown,
-									selectedCalType: selectedCalType)
+									appointments: appointments)
 		}
 		set {
 			self.isDropdownShown = newValue.isDropdownShown
-			self.selectedCalType = newValue.selectedCalType
+			self.appointments = newValue.appointments
 		}
 	}
 }

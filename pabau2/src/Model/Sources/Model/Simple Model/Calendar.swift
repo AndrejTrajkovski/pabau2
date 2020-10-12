@@ -7,7 +7,7 @@ public struct CalendarResponse: Codable {
 	public let appointments: [CalAppointment]
 }
 
-public struct CalAppointment: Hashable, Codable {
+public struct CalAppointment: Hashable, Codable, Equatable {
 	
 	public func hash(into hasher: inout Hasher) {
 		hasher.combine(id)
@@ -216,7 +216,7 @@ extension CalAppointment {
 									  service: service!.0,
 									  serviceColor: service!.1,
 									  customerName: "Andrej",
-									  roomId:  Int.random(in: 0...4)
+									  roomId: Int.random(in: 0...4)
 			)
 			res.append(app)
 		}

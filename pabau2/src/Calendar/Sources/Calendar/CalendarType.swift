@@ -1,4 +1,4 @@
-public enum CalendarType: String, CaseIterable {
+public enum CalendarType: String, CaseIterable, Equatable {
 	case day
 	case employee
 	case room

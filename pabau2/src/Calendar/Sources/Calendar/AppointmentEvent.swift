@@ -8,7 +8,7 @@ public class AppointmentEvent: JZBaseEvent {
 	}
 	
 	public var app: CalAppointment
-	public init(_ appointment: CalAppointment) {
+	public init(appointment: CalAppointment) {
 		self.app = appointment
 		let jzid = String(appointment.id)
 		let startDate = Date.concat(appointment.start_date, appointment.start_time, Calendar.current)
@@ -18,6 +18,6 @@ public class AppointmentEvent: JZBaseEvent {
 	}
 	
 	public override func copy(with zone: NSZone?) -> Any {
-		return AppointmentEvent(app)
+		return AppointmentEvent(appointment: app)
 	}
 }

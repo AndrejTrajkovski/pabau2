@@ -1,5 +1,6 @@
 import UIKit
 import Util
+import Model
 
 open class ColumnHeader: UICollectionReusableView {
 	
@@ -25,7 +26,7 @@ open class ColumnHeader: UICollectionReusableView {
 	open override class var requiresConstraintBasedLayout: Bool {
 		true
 	}
-	
+
 	let title: UILabel = {
 		let label = UILabel()
 		label.font = UIFont.systemFont(ofSize: 12, weight: .medium)

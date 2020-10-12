@@ -7,22 +7,19 @@ import ComposableArchitecture
 import Combine
 
 public class CalendarViewController: UIViewController {
-	
-	var grouper = BaseAppointmentGrouper()
 
 	let viewStore: ViewStore<CalendarState, CalendarAction>
 	var cancellables: Set<AnyCancellable> = []
-
+	
 	init(_ viewStore: ViewStore<CalendarState, CalendarAction>) {
 		self.viewStore = viewStore
 		super.init(nibName: nil, bundle: nil)
-		self.grouper.groupingProperty = keyPath(calType: viewStore.state.selectedCalType)
 	}
 
 	var calendarView: CalendarView {
 		return view as! CalendarView
 	}
-	
+
 	public override func loadView() {
 		view = setupCalendarView()
 	}
@@ -30,8 +27,6 @@ public class CalendarViewController: UIViewController {
 	required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
-	
-	var appointments = CalAppointment.makeDummy()
 
 	public override func viewDidLoad() {
 		super.viewDidLoad()
@@ -43,13 +38,12 @@ public class CalendarViewController: UIViewController {
 //			.assign(to: \.groupingProperty, on: grouper)
 //			.store(in: &self.cancellables)
 		self.viewStore.publisher.selectedDate.removeDuplicates()
+			.combineLatest(self.viewStore.publisher.appointments.removeDuplicates())
 			.receive(on: DispatchQueue.main)
 			.sink(receiveValue: { [weak self] in
-			print("selected date changed", $0)
-			let appts = self?.appointments.map(AppointmentEvent.init) ?? []
-			self?.grouper.update(events: appts)
+				print("selected date changed", $0)
 			self?.calendarView.updateWeekView(to: $0)
-			self?.reloadData()
+			self?.calendarView.forceSectionReload(reloadEvents: $1.grouped)
 		}).store(in: &self.cancellables)
 	}
 
@@ -68,29 +62,25 @@ public class CalendarViewController: UIViewController {
 	public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
 		JZWeekViewHelper.viewTransitionHandler(to: size, weekView: calendarView)
 	}
-
-	func reloadData() {
-		calendarView.forceSectionReload(reloadEvents: grouper.events)
-	}
 }
 
 extension CalendarViewController: JZLongPressViewDelegate, JZLongPressViewDataSource {
 
 	public func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date) {
-		let endDate = Calendar.current.date(byAdding: .hour, value: weekView.addNewDurationMins/60, to: startDate)!
-		let newApp = CalAppointment.dummyInit(start: startDate, end: endDate)
-		self.appointments.append(newApp)
-		self.reloadData()
+//		let endDate = Calendar.current.date(byAdding: .hour, value: weekView.addNewDurationMins/60, to: startDate)!
+//		let newApp = CalAppointment.dummyInit(start: startDate, end: endDate)
+//		self.appointments.append(newApp)
+//		self.reloadData()
 	}
 
 	public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date) {
-		guard let app = editingEvent as? AppointmentEvent else { return }
-		let duration = Calendar.current.dateComponents([.minute], from: app.startDate, to: app.endDate).minute!
-		let selectedIndex = self.appointments.firstIndex(where: { $0.id.rawValue == Int(app.id) })!
-		let startTime = startDate.separateHMSandYMD().0!
-		appointments[selectedIndex].start_time = startTime
-		appointments[selectedIndex].end_time = Calendar.current.date(byAdding: .minute, value: duration, to: startTime)!
-		self.reloadData()
+//		guard let app = editingEvent as? AppointmentEvent else { return }
+//		let duration = Calendar.current.dateComponents([.minute], from: app.startDate, to: app.endDate).minute!
+//		let selectedIndex = self.appointments.firstIndex(where: { $0.id.rawValue == Int(app.id) })!
+//		let startTime = startDate.separateHMSandYMD().0!
+//		appointments[selectedIndex].start_time = startTime
+//		appointments[selectedIndex].end_time = Calendar.current.date(byAdding: .minute, value: duration, to: startTime)!
+//		self.reloadData()
 	}
 
 	public func weekView(_ weekView: JZLongPressWeekView, viewForAddNewLongPressAt startDate: Date) -> UIView {
@@ -118,14 +108,7 @@ extension CalendarViewController: JZBaseViewDelegate {
 extension CalendarViewController: SectionLongPressDelegate {
 	public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date, pageAndSectionIdx: (Int, Int)) {
 		if var appointmentEvent = editingEvent as? AppointmentEvent {
-			grouper.update(event: &appointmentEvent,
-						   date: startDate,
-						   indexes: pageAndSectionIdx)
-			let selectedIndex = self.appointments.firstIndex(where: { $0.id.rawValue == Int(appointmentEvent.id) })!
-			self.appointments[selectedIndex] = appointmentEvent.app
-			let appts = appointments.map(AppointmentEvent.init)
-			grouper.update(events: appts)
-			reloadData()
+			
 		} else {
 			fatalError()
 		}
@@ -137,6 +120,7 @@ extension CalendarViewController: SectionLongPressDelegate {
 }
 
 extension CalendarViewController {
+	
 	func keyPath(calType: CalendarType) -> AnyHashableKeyPath<AppointmentEvent> {
 		let appKp = \AppointmentEvent.app
 		switch calType {
@@ -149,5 +133,4 @@ extension CalendarViewController {
 		default: fatalError()
 		}
 	}
-
 }

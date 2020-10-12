@@ -1,17 +1,21 @@
 import JZCalendarWeekView
 import UIKit
+import Model
+import ComposableArchitecture
 
 public class CalendarView: SectionWeekView {
 	
 	static let cellId = "CalendarCell"
+	static let columnHeaderId = "ColumnHeader"
+	
+	var viewStore: ViewStore<CalendarState, CalendarAction>!
 	
 	public override func registerViewClasses() {
 		// Register CollectionViewCell
 		super.registerViewClasses()
 		collectionView.register(BaseCalendarCell.self,
 								forCellWithReuseIdentifier: Self.cellId)
-		
-		collectionView.register(ColumnHeader.self, forSupplementaryViewOfKind: JZSupplementaryViewKinds.columnHeader, withReuseIdentifier: "ColumnHeader")
+		collectionView.register(ColumnHeader.self, forSupplementaryViewOfKind: JZSupplementaryViewKinds.columnHeader, withReuseIdentifier: Self.columnHeaderId)
 	}
 
 	public override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -29,7 +33,10 @@ public class CalendarView: SectionWeekView {
 		print(kind)
 		switch kind {
 		case JZSupplementaryViewKinds.columnHeader:
-			if let columnHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "ColumnHeader", for: indexPath) as? ColumnHeader {
+			if let columnHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: Self.columnHeaderId, for: indexPath) as? ColumnHeader {
+				guard let (pageIdx, withinPageIdx) = getPageAndWithinPageIndex(indexPath.section) else { break
+				}
+//				viewStore.state.appointments
 				columnHeader.update(title: "title", subtitle: "subtitle", color: UIColor.blue)
 				view = columnHeader
 			}
