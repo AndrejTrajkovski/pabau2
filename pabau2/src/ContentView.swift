@@ -25,7 +25,7 @@ enum AppState: Equatable {
 				TabBarState(
 					journeyState: JourneyState(),
 					clients: ClientsState(),
-					calendar: CalendarState(),
+					calendar: CalendarState(calType: .employee),
 					settings: SettingsState()
 				)
 			)
@@ -105,7 +105,7 @@ struct ContentView: View {
 				extract(case: AppState.tabBar, from: $0) ??
 					TabBarState(journeyState: JourneyState(),
 											clients: ClientsState(),
-											calendar: CalendarState(),
+											calendar: CalendarState(calType: .employee),
 											settings: SettingsState())
 		},
 			action: { .tabBar($0)}

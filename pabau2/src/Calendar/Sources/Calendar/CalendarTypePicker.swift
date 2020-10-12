@@ -4,6 +4,7 @@ import ComposableArchitecture
 public struct CalendarTypePickerState: Equatable {
 	var isDropdownShown: Bool
 	var appointments: Appointments
+	var calendarType: CalendarType
 }
 
 public enum CalendarTypePickerAction {
@@ -14,6 +15,7 @@ public enum CalendarTypePickerAction {
 public let calTypePickerReducer: Reducer<CalendarTypePickerState, CalendarTypePickerAction, CalendarEnvironment> = .init { state, action, _ in
 	switch action {
 	case .onSelect(let calType):
+		state.calendarType = calType
 		state.appointments.switchTo(calType: calType)
 		state.isDropdownShown = false
 	case .toggleDropdown:
@@ -27,7 +29,7 @@ struct CalendarTypePicker: View {
 	
 	var body: some View {
 		WithViewStore(store) { viewStore in
-			CalendarTypeRow(calendarType: viewStore.state.appointments.calendarType,
+			CalendarTypeRow(calendarType: viewStore.state.calendarType,
 							isSelected: true,
 							onTap: { _ in
 								viewStore.send(.toggleDropdown)

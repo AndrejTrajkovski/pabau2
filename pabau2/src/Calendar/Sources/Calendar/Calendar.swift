@@ -43,7 +43,7 @@ public class CalendarViewController: UIViewController {
 			.sink(receiveValue: { [weak self] in
 				print("selected date changed", $0)
 			self?.calendarView.updateWeekView(to: $0)
-			self?.calendarView.forceSectionReload(reloadEvents: $1.grouped)
+			self?.calendarView.forceSectionReload(reloadEvents: $1)
 		}).store(in: &self.cancellables)
 	}
 

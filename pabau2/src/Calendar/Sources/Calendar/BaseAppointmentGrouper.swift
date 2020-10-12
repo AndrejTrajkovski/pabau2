@@ -2,18 +2,33 @@ import Foundation
 import JZCalendarWeekView
 import Model
 
-struct Appointments: Equatable {
-	var calendarType: CalendarType
-	var grouped: [Date: [[AppointmentEvent]]]
+typealias Appointments = [Date: [[AppointmentEvent]]]
+
+extension Appointments {
 	
-	func flatten() -> [AppointmentEvent] {
-		return grouped.flatMap { $0.value }.flatMap { $0 }
+	mutating func switchTo(calType: CalendarType) {
+		self = self.mapValues(regroup(calType: calType))
 	}
 
-	mutating func switchTo(calType: CalendarType) {
-		self = Appointments(apps: self.flatten(), calType: calType)
+	func regroup(calType: CalendarType) -> ([[AppointmentEvent]]) -> [[AppointmentEvent]] {
+		return { byPage in
+			let ungrouped = (byPage.flatMap { $0 })
+			return groupBy(calType)(ungrouped)
+		}
 	}
 	
+	func eventsAt(page: Int) -> [[AppointmentEvent]] {
+		sorted(by: \.key)[page].value
+	}
+
+	func getRoomId(page: Int, section: Int) -> Room.Id {
+		return roomIds(page: page)[section]
+	}
+
+	func roomIds(page: Int) -> [Room.Id] {
+		return eventsAt(page: page).map(\.first?.app.roomId).compactMap { $0 }
+	}
+
 	init(apps: [CalAppointment],
 		 calType: CalendarType) {
 		self.init(apps: apps.map(AppointmentEvent.init(appointment:)),
@@ -22,37 +37,42 @@ struct Appointments: Equatable {
 	
 	init(apps: [AppointmentEvent],
 		 calType: CalendarType) {
-		switch calType {
-		case .day: fatalError()
-		case .employee:
-			self.grouped = groupByEmployee(events: apps)
-		case .room:
-			self.grouped = groupByRoom(events: apps)
-		}
-		self.calendarType = calType
+		let groupingByCalType = groupBy(calType)
+		self = groupByPage(events: apps).mapValues(groupingByCalType)
 	}
 }
 
-fileprivate func groupByRoom(events: [AppointmentEvent]) -> ([Date: [[AppointmentEvent]]]) {
+private func groupByPage(events: [AppointmentEvent]) -> [Date: [AppointmentEvent]] {
+	JZWeekViewHelper.getIntraEventsByDate(originalEvents: events)
+}
+
+private func groupBy(_ calType: CalendarType) -> ([AppointmentEvent]) -> [[AppointmentEvent]] {
+	switch calType {
+	case .day: fatalError()
+	case .employee:
+		return groupByEmployee()
+	case .room:
+		return groupByRoom()
+	}
+}
+
+fileprivate func groupByRoom() -> ([AppointmentEvent]) -> [[AppointmentEvent]] {
 	let appkp = \AppointmentEvent.app
 	let roomKp = \CalAppointment.roomId
 	let finalKp = appkp.appending(path: roomKp)
-	return groupByKeyPath(events: events,
-						  keyPath: finalKp)
+	return groupSectionsWithinPage(keyPath: finalKp)
 }
 
-fileprivate func groupByEmployee(events: [AppointmentEvent]) -> ([Date: [[AppointmentEvent]]]) {
+private func groupByEmployee() -> ([AppointmentEvent]) -> [[AppointmentEvent]] {
 	let appkp = \AppointmentEvent.app
 	let empKp = \CalAppointment.employeeId
 	let finalKp = appkp.appending(path: empKp)
-	return groupByKeyPath(events: events,
-						  keyPath: finalKp)
+	return groupSectionsWithinPage(keyPath: finalKp)
 }
 
-fileprivate func groupByKeyPath<SectionId: Comparable & Hashable>(events: [AppointmentEvent], keyPath: ReferenceWritableKeyPath<AppointmentEvent, SectionId>) -> ([Date: [[AppointmentEvent]]]) {
-	let byDate: [Date: [AppointmentEvent]] = JZWeekViewHelper.getIntraEventsByDate(originalEvents: events)
-	return byDate.mapValues { events in
-		Dictionary.init(grouping: events,
+private func groupSectionsWithinPage<SectionId: Comparable & Hashable>(keyPath: ReferenceWritableKeyPath<AppointmentEvent, SectionId>) -> ([AppointmentEvent]) -> [[AppointmentEvent]] {
+	return { flatEvents in
+		Dictionary.init(grouping: flatEvents,
 						by: { $0[keyPath: keyPath] })
 			.sorted(by: {
 				$0.key < $1.key
