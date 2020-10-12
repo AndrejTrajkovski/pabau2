@@ -9,7 +9,7 @@ extension Appointments {
 	mutating func switchTo(calType: CalendarType) {
 		self = self.mapValues(regroup(calType: calType))
 	}
-
+	
 	func regroup(calType: CalendarType) -> ([[AppointmentEvent]]) -> [[AppointmentEvent]] {
 		return { byPage in
 			let ungrouped = (byPage.flatMap { $0 })
