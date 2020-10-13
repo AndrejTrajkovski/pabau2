@@ -2,7 +2,23 @@ import UIKit
 import Util
 import Model
 
+struct ColumnHeaderViewModel {
+	let title: String
+	let subtitle: String
+	let color: UIColor
+}
+
 open class ColumnHeader: UICollectionReusableView {
+	
+	open override func prepareForReuse() {
+		update(title: "", subtitle: "", color: UIColor.clear)
+	}
+	
+	func update(viewModel: ColumnHeaderViewModel) {
+		self.title.text = viewModel.title
+		self.subtitle.text = viewModel.subtitle
+		self.colorCircle.backgroundColor = viewModel.color
+	}
 	
 	func update(title: String,
 				subtitle: String,

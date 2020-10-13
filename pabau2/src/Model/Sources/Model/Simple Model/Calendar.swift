@@ -212,11 +212,11 @@ extension CalAppointment {
 									  employeeId:
 										Employee.mockEmployees.map(\.id).randomElement()!,
 									  employeeInitials: nil,
-									  locationId: Location.Id(rawValue: Int.random(in: 0...4)),
+									  locationId: Location.mock().randomElement()!.key,
 									  service: service!.0,
 									  serviceColor: service!.1,
 									  customerName: "Andrej",
-									  roomId: Int.random(in: 0...4)
+									  roomId: Room.mock().randomElement()!.key.rawValue
 			)
 			res.append(app)
 		}

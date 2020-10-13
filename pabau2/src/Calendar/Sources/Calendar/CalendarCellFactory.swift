@@ -28,7 +28,7 @@ struct CellConfigurator {
 		cell.title.text = patientName ?? "TODO: parse bookout"
 		let roomString = roomName != nil ? (" " + roomName!) : ""
 		cell.subtitle.text = serviceName + roomString
-		let serviceColor = serviceColor != nil ? UIColor().fromHex(serviceColor!) : UIColor.clear
+		let serviceColor = serviceColor != nil ? UIColor.fromHex(serviceColor!) : UIColor.clear
 		cell.colorBlock.backgroundColor = serviceColor
 		cell.contentView.backgroundColor = serviceColor.lighter(by: 0.9)
 		cell.event = event

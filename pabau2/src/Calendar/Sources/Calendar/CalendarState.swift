@@ -6,7 +6,9 @@ public struct CalendarState: Equatable {
 	var selectedDate: Date
 	var calendarType: CalendarType
 	var appointments: Appointments
-	var employees: [Employee]
+	var employees: [Employee.Id: Employee]
+	var rooms: [Room.Id: Room]
+	var locations: [Location.Id: Location]
 }
 
 extension CalendarState {
@@ -32,6 +34,8 @@ extension CalendarState {
 		self.appointments = Appointments(apps: CalAppointment.makeDummy(),
 										 calType: calType)
 		self.calendarType = calType
-		self.employees = Employee.mockEmployees
+		self.employees = Dictionary.init(grouping: Employee.mockEmployees, by: { $0.id }).mapValues(\.first!)
+		self.rooms = Room.mock()
+		self.locations = Location.mock()
 	}
 }

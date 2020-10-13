@@ -13,7 +13,9 @@ public struct JourneyState: Equatable {
 	public var loadingState: LoadingState = .initial
 	var journeys: Set<Journey> = Set()
 	var selectedFilter: CompleteFilter = .all
-	var selectedLocation: Location = Location.init(id: 1)
+	var selectedLocation: Location = Location.init(id: 1,
+												   name: "Manchester",
+												   color: "#FF0000")
 	var searchText: String = ""
 	var selectedJourney: Journey?
 	var selectedPathway: Pathway?

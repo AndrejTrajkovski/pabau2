@@ -16,18 +16,6 @@ extension Appointments {
 			return groupBy(calType)(ungrouped)
 		}
 	}
-	
-	func eventsAt(page: Int) -> [[AppointmentEvent]] {
-		sorted(by: \.key)[page].value
-	}
-
-	func getRoomId(page: Int, section: Int) -> Room.Id {
-		return roomIds(page: page)[section]
-	}
-
-	func roomIds(page: Int) -> [Room.Id] {
-		return eventsAt(page: page).map(\.first?.app.roomId).compactMap { $0 }
-	}
 
 	init(apps: [CalAppointment],
 		 calType: CalendarType) {

@@ -14,6 +14,7 @@ public class CalendarViewController: UIViewController {
 	init(_ viewStore: ViewStore<CalendarState, CalendarAction>) {
 		self.viewStore = viewStore
 		super.init(nibName: nil, bundle: nil)
+		self.calendarView.viewStore = viewStore
 	}
 
 	var calendarView: CalendarView {
