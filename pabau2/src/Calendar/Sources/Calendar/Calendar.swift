@@ -166,7 +166,7 @@ extension CalendarViewController {
 						_ fromApp: AppointmentEvent) {
 		if calType == .room {
 			appointment.roomId = fromApp.app.roomId
-		} else if calType == .employee {
+		} else if calType == .day {
 			appointment.employeeId = fromApp.app.employeeId
 		}
 	}

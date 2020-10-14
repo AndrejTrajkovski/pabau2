@@ -36,8 +36,14 @@ private func groupByPage(events: [AppointmentEvent]) -> [Date: [AppointmentEvent
 
 private func groupBy(_ calType: CalendarType) -> ([AppointmentEvent]) -> [[AppointmentEvent]] {
 	switch calType {
-	case .day: fatalError()
-	case .employee:
+	case .week:
+		return {
+			return
+			Dictionary.init(grouping: $0, by: { Calendar.current.startOfDay(for: $0.startDate) })
+				.sorted(by: \.key)
+				.map(\.value)
+		}
+	case .day:
 		return groupByEmployee()
 	case .room:
 		return groupByRoom()
