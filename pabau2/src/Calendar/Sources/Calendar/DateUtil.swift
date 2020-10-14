@@ -4,8 +4,8 @@ extension Date {
 	
 	func split(calendar: Calendar = .current) -> (ymd: Date, hms: Date) {
 		let hmsComps = calendar.dateComponents([.hour, .minute, .second], from: self)
-		let ymdComps = calendar.dateComponents([.hour, .minute, .second], from: self)
-		return (calendar.date(from: hmsComps)!, calendar.date(from: ymdComps)!)
+		let ymdComps = calendar.dateComponents([.year, .month, .day], from: self)
+		return (calendar.date(from: ymdComps)!, calendar.date(from: hmsComps)!)
 	}
 	
 	static func concat(_ yearMonthDay: Date, _ hourMinuteSecond: Date, _ calendar: Calendar = .current) -> Date {

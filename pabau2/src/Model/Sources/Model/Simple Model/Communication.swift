@@ -24,7 +24,7 @@ extension Communication {
 			versions have evolved over the years, sometimes by accident, sometimes on
 			purpose (injected humour and the like).
 			""",
-									employee: Employee.init(id: 1, name: ""),
+									employee: Employee.init(id: 1, name: "", locationId: Location.randomId()),
 									initials: "DD",
 									date: Date(),
 									channel: .sms)
@@ -32,7 +32,7 @@ extension Communication {
 		Communication(id: 1,
 		title: "Hello Houston",
 		subtitle: "desktop publishing packages and web page editors",
-		employee: Employee.init(id: 1, name: ""),
+		employee: Employee.init(id: 1, name: "", locationId: Location.randomId()),
 		initials: "OP",
 		date: Date(),
 		channel: .sms)
@@ -40,7 +40,7 @@ extension Communication {
 		Communication(id: 1,
 		title: "Test communication",
 		subtitle: "as opposed to using, making it look like readable English. Many",
-		employee: Employee.init(id: 1, name: ""),
+		employee: Employee.init(id: 1, name: "", locationId: Location.randomId()),
 		initials: "FA",
 		date: Date(),
 		channel: .sms)
@@ -48,7 +48,7 @@ extension Communication {
 		Communication(id: 1,
 		title: "Comm title",
 		subtitle: "Lorem Ipsum is that it has a more-or-less normal distribution of letters",
-		employee: Employee.init(id: 1, name: ""),
+		employee: Employee.init(id: 1, name: "", locationId: Location.randomId()),
 		initials: "BB",
 		date: Date(),
 		channel: .sms)
@@ -56,7 +56,7 @@ extension Communication {
 		Communication(id: 3,
 		title: "Comm title 2",
 		subtitle: "readable content of a page when looking at its layout. The point of using",
-		employee: Employee.init(id: 1, name: ""),
+		employee: Employee.init(id: 1, name: "", locationId: Location.randomId()),
 		initials: "AT",
 		date: Date(),
 		channel: .email)

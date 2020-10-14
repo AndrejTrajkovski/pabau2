@@ -16,7 +16,7 @@ public struct CalAppointment: Hashable, Codable, Equatable {
 	public typealias Id = Tagged<CalAppointment, Int>
 	
 	public let id: CalAppointment.Id
-	public let start_date: Date
+	public var start_date: Date
 	public var start_time: Date
 	public var end_time: Date
 	public var employeeId: Employee.Id

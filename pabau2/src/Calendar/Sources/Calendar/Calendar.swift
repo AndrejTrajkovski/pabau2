@@ -107,31 +107,67 @@ extension CalendarViewController: JZBaseViewDelegate {
 
 // MARK: - SectionLongPressDelegate
 extension CalendarViewController: SectionLongPressDelegate {
-	public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date, pageAndSectionIdx: (Int, Int)) {
-		if var appointmentEvent = editingEvent as? AppointmentEvent {
+	public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date, pageAndSectionIdx: (Int?, Int?), startingIndexPath: IndexPath) {
+		let calendarView = weekView as! CalendarView
+		if let appointmentEvent = editingEvent as? AppointmentEvent {
+			var flat = viewStore.state.appointments.flatMap { $0.value }.flatMap { $0 }
+			let flatIndex = flat.firstIndex(where: { $0.id == appointmentEvent.id })
+			var calEvent = appointmentEvent.app
+			let duration = Calendar.current.dateComponents([.minute], from: calEvent.start_time, to: calEvent.end_time).minute!
+			let splitNewDate = startDate.split()
+			calEvent.start_date = splitNewDate.ymd
+			calEvent.start_time = splitNewDate.hms
+			calEvent.end_time = Calendar.current.date(byAdding: .minute, value: duration, to: splitNewDate.hms)!
 			
-		} else {
-			fatalError()
+			let (pageIdxOpt, withinSectionIdxOpt) = pageAndSectionIdx
+			guard let pageIdx = pageIdxOpt,
+				  let withinSectionIdx = withinSectionIdxOpt else {
+				return
+			}
+			if let firstSectionApp = calendarView.getFirstEvent(pageIdx, withinSectionIdx) as? AppointmentEvent {
+				update(&calEvent,
+					   viewStore.state.calendarType,
+					   firstSectionApp)
+			}
+			flatIndex.map {
+				flat[$0] = AppointmentEvent(appointment: calEvent)
+			}
+			viewStore.send(.reloadApps(flat))
 		}
 	}
 
-	public func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date, pageAndSectionIdx: (Int, Int)) {
-	
+	public func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date, pageAndSectionIdx: (Int?, Int?)) {
 	}
 }
 
 extension CalendarViewController {
 	
-	func keyPath(calType: CalendarType) -> AnyHashableKeyPath<AppointmentEvent> {
-		let appKp = \AppointmentEvent.app
-		switch calType {
-		case .employee:
-			let kpe = appKp.appending(path: \CalAppointment.employeeId)
-			return AnyHashableKeyPath(kpe)
-		case .room:
-			let kps = appKp.appending(path: \CalAppointment.roomId)
-			return AnyHashableKeyPath(kps)
-		default: fatalError()
+//	func keyPath(calType: CalendarType) -> AnyHashableKeyPath<AppointmentEvent> {
+//		let appKp = \AppointmentEvent.app
+//		switch calType {
+//		case .employee:
+//			let kpe = appKp.appending(path: \CalAppointment.employeeId)
+//			return AnyHashableKeyPath(kpe)
+//		case .room:
+//			let kps = appKp.appending(path: \CalAppointment.roomId)
+//			return AnyHashableKeyPath(kps)
+//		default: fatalError()
+//		}
+//	}
+//
+//	private func update(_ appointment: inout AppointmentEvent,
+//						_ fromApp: AppointmentEvent,
+//						_ keyPath: AnyHashableKeyPath<AppointmentEvent>) {
+//		keyPath.set(&appointment, keyPath.get(fromApp))
+//	}
+	
+	private func update(_ appointment: inout CalAppointment,
+						_ calType: CalendarType,
+						_ fromApp: AppointmentEvent) {
+		if calType == .room {
+			appointment.roomId = fromApp.app.roomId
+		} else if calType == .employee {
+			appointment.employeeId = fromApp.app.employeeId
 		}
 	}
 }

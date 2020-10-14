@@ -10,13 +10,14 @@ public struct Location: Codable, Identifiable, Equatable {
     public let name: String
 	public let color: String
 	
-    public init(id: Int,
+	public init(id: Int,
 				name: String,
 				color: String) {
 		self.id = Id(rawValue: id)
-        self.name = name
+		self.name = name
 		self.color = color
-    }
+	}
+	
     public enum CodingKeys: String, CodingKey {
         case id = "id"
         case name

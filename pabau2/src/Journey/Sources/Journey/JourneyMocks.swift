@@ -48,8 +48,8 @@ struct JourneyMocks {
 	static let withState: PickerContainerState<Employee> =
 		PickerContainerState.init(
 			dataSource: [
-				Employee.init(id: 1, name: "Andrej Trajkovski"),
-				Employee.init(id: 2, name: "Mark Ronson")
+				Employee.init(id: 1, name: "Andrej Trajkovski", locationId: Location.randomId()),
+				Employee.init(id: 2, name: "Mark Ronson", locationId: Location.randomId())
 			],
 			chosenItemId: 1,
 			isActive: false)
@@ -57,8 +57,8 @@ struct JourneyMocks {
 	static let participantsState: PickerContainerState<Employee> =
 		PickerContainerState.init(
 			dataSource: [
-				Employee.init(id: 1, name: "Participant 1"),
-				Employee.init(id: 2, name: "Participant 2")
+				Employee.init(id: 1, name: "Participant 1", locationId: Location.randomId()),
+				Employee.init(id: 2, name: "Participant 2", locationId: Location.randomId())
 			],
 			chosenItemId: 1,
 			isActive: false)
@@ -67,7 +67,7 @@ struct JourneyMocks {
 		journey:
 		Journey.init(id: 1,
 								 appointments: NonEmpty.init(Appointment.init(id: 1, from: Date() - 1.days, to: Date() - 1.days, employeeId: 1, employeeInitials: "PO", locationId: 1, locationName: "Skopje", status: AppointmentStatus(id: 1, name: "Checked In"), service: BaseService.init(id: 1, name: "Botox", color: "#9400D3"))),
-								 patient: BaseClient.init(id: 0, firstName: "Andrej", lastName: "Trajkovski", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "Dr. Jekil"), forms: [], photos: [], postCare: [], paid: "Not Paid"),
+								 patient: BaseClient.init(id: 0, firstName: "Andrej", lastName: "Trajkovski", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "Dr. Jekil", locationId: Location.randomId()), forms: [], photos: [], postCare: [], paid: "Not Paid"),
 		pathway:
 		Pathway.init(id: 1,
 								 title: "Standard",

@@ -5,4 +5,5 @@ public enum CalendarAction {
 	case calTypePicker(CalendarTypePickerAction)
 	case addShift
 	case toggleFilters
+	case reloadApps([AppointmentEvent])
 }

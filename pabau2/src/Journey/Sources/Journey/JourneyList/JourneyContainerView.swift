@@ -281,8 +281,8 @@ public struct JourneyContainerView: View {
 	var withState: PickerContainerState<Employee> {
 		PickerContainerState.init(
 			dataSource: [
-				Employee.init(id: 1, name: "Andrej Trajkovski"),
-				Employee.init(id: 2, name: "Mark Ronson")
+				Employee.init(id: 1, name: "Andrej Trajkovski", locationId: Location.randomId()),
+				Employee.init(id: 2, name: "Mark Ronson", locationId: Location.randomId())
 			],
 			chosenItemId: 1,
 			isActive: false)
@@ -291,8 +291,8 @@ public struct JourneyContainerView: View {
 	var participantsState: PickerContainerState<Employee> {
 		PickerContainerState.init(
 			dataSource: [
-				Employee.init(id: 1, name: "Participant 1"),
-				Employee.init(id: 2, name: "Participant 2")
+				Employee.init(id: 1, name: "Participant 1", locationId: Location.randomId()),
+				Employee.init(id: 2, name: "Participant 2", locationId: Location.randomId())
 			],
 			chosenItemId: 1,
 			isActive: false)

@@ -29,12 +29,13 @@ public class CalendarView: SectionWeekView {
 	
 	override open func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
 		var view = UICollectionReusableView()
-		//FIXME: Should lookup in paging dates not in view store!
 		switch kind {
 		case JZSupplementaryViewKinds.columnHeader:
 			if let columnHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: Self.columnHeaderId, for: indexPath) as? ColumnHeader {
 				if let firstSectionApp = getFirstEventAt(indexPath.section) as? AppointmentEvent {
-					configure(firstSectionApp, columnHeader)
+					let viewModel = ColumnHeaderAdapter.makeViewModel(
+						firstSectionApp, viewStore.state.calendarType, viewStore.state.locations, viewStore.state.rooms, viewStore.state.employees)
+					columnHeader.update(viewModel: viewModel)
 				} else {
 					columnHeader.update(title: "", subtitle: "", color: UIColor.clear)
 				}
@@ -44,23 +45,4 @@ public class CalendarView: SectionWeekView {
 		}
 		return view
 	}
-
-	private func configure(_ firstSectionApp: AppointmentEvent, _ columnHeader: ColumnHeader) {
-		let location = viewStore.state.locations[firstSectionApp.app.locationId]
-		if viewStore.state.calendarType == .room {
-			let room = viewStore.state.rooms[firstSectionApp.app.roomId]
-			columnHeader.update(viewModel: RoomHeaderAdapter().viewModel(room: room, location: location))
-		} else if viewStore.state.calendarType == .employee {
-			let employee = viewStore.state.employees[firstSectionApp.app.employeeId]
-			columnHeader.update(viewModel: RoomHeaderAdapter().viewModel(employee: employee, location: location))
-		}
-	}
-
-//	func getRoomId(page: Int, section: Int) -> Room.Id? {
-//		return roomIds(page: page)?[safe: section]
-//	}
-//
-//	func roomIds(page: Int) -> [Room.Id]? {
-//		return getEvents(page)?.first?.map(\.app.roomId)
-//	}
 }
