@@ -98,6 +98,7 @@ extension CalendarViewController: JZBaseViewDelegate {
 	public func initDateDidChange(_ weekView: JZBaseWeekView, initDate: Date) {
 		//compare in order not to go in an infinite loop
 		let dateDisplayed = initDate + (weekView.numOfDays).days //JZCalendar holds previous and next pages in cache, initDate is not the date displayed on screen
+		//FIXME: Maybe Go with start of day here to avoid double reload on publisher emission in calendarviewcontroller
 		if self.viewStore.state.selectedDate.compare(toDate: dateDisplayed, granularity: .day) != .orderedSame {
 			print("send(.datePicker(.selectedDate(dateDisplayed)))", initDate)
 			self.viewStore.send(.datePicker(.selectedDate(dateDisplayed)))
@@ -114,6 +115,9 @@ extension CalendarViewController: SectionLongPressDelegate {
 			let flatIndex = flat.firstIndex(where: { $0.id == appointmentEvent.id })
 			var calEvent = appointmentEvent.app
 			let duration = Calendar.current.dateComponents([.minute], from: calEvent.start_time, to: calEvent.end_time).minute!
+			
+			let previousStartDate = calEvent.start_date
+			
 			let splitNewDate = startDate.split()
 			calEvent.start_date = splitNewDate.ymd
 			calEvent.start_time = splitNewDate.hms
@@ -123,7 +127,7 @@ extension CalendarViewController: SectionLongPressDelegate {
 			print("ended on", endPageAndSectionIdx)
 			if let pageIdx = pageIdxOpt,
 			   let withinSectionIdx = withinSectionIdxOpt,
-			   startPageAndSectionIdx.0 != endPageAndSectionIdx.0,
+			   previousStartDate.startOfDay == startDate.startOfDay,
 			   let firstSectionApp = calendarView.getFirstEvent(pageIdx, withinSectionIdx) as? AppointmentEvent {
 				update(&calEvent,
 					   viewStore.state.calendarType,
