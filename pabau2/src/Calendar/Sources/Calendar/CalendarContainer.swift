@@ -47,10 +47,10 @@ public struct CalendarContainer: View {
 						action: { .datePicker($0)})
 				)
 				.padding(0)
-				CalendarSwiftUI(viewStore: viewStore)
+				CalendarWrapper(store: self.store)
 				Spacer()
 			}
-		}
+		}.debug("Calendar Container")
 	}
 
 	public init(store: Store<CalendarState, CalendarAction>) {

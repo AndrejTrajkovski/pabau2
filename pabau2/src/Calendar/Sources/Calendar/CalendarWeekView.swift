@@ -8,13 +8,13 @@ class CalendarWeekView: JZLongPressWeekView {
 	static let columnHeaderId = "ColumnHeader"
 	
 	var viewStore: ViewStore<CalendarState, CalendarAction>!
-//	public override func registerViewClasses() {
-//		// Register CollectionViewCell
-//		super.registerViewClasses()
-//		collectionView.register(BaseCalendarCell.self,
-//								forCellWithReuseIdentifier: Self.cellId)
+	public override func registerViewClasses() {
+		// Register CollectionViewCell
+		super.registerViewClasses()
+		collectionView.register(BaseCalendarCell.self,
+								forCellWithReuseIdentifier: Self.cellId)
 //		collectionView.register(ColumnHeader.self, forSupplementaryViewOfKind: JZSupplementaryViewKinds.columnHeader, withReuseIdentifier: Self.columnHeaderId)
-//	}
+	}
 
 	public override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		if var cell = collectionView.dequeueReusableCell(withReuseIdentifier: Self.cellId, for: indexPath) as? BaseCalendarCell,

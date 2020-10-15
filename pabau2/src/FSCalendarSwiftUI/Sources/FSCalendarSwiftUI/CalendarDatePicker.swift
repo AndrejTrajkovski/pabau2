@@ -61,7 +61,7 @@ struct SwiftUICalendar: UIViewRepresentable {
 	}
 
 	public func updateUIView(_ uiView: FSCalendar, context: UIViewRepresentableContext<SwiftUICalendar>) {
-		uiView.select(date)
+		uiView.select(uiView.selectedDate)
 		uiView.setScope(scope, animated: false)
 	}
 

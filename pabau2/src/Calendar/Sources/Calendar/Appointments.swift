@@ -49,11 +49,17 @@ extension Appointments {
 		self.init(apps: apps.map(AppointmentEvent.init(appointment:)),
 				  calType: calType)
 	}
-	
+
 	init(apps: [AppointmentEvent],
 		 calType: CalendarType) {
-		let groupingByCalType = groupBy(calType)
-		self = groupByPage(events: apps).mapValues(groupingByCalType)
+		switch calType {
+		case .day, .room:
+			let groupingByCalType = groupBy(calType)
+			self = groupByPage(events: apps).mapValues(groupingByCalType)
+		case .week:
+			let events =  JZWeekViewHelper.getIntraEventsByDate(originalEvents: apps)
+			self = events.mapValues { [$0] }
+		}
 	}
 }
 
@@ -64,7 +70,7 @@ private func groupByPage(events: [AppointmentEvent]) -> [Date: [AppointmentEvent
 private func groupBy(_ calType: CalendarType) -> ([AppointmentEvent]) -> [[AppointmentEvent]] {
 	switch calType {
 	case .week:
-		fatalError()
+		return { [$0] }
 	case .day:
 		return groupByEmployee()
 	case .room:

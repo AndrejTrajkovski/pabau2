@@ -197,7 +197,7 @@ extension CalAppointment {
 			]
 		var res = [CalAppointment]()
 		for idx in 0...30 {
-			let randomHours = Int.random(in: -23...23)
+			let randomHours = Int.random(in: -100...100)
 			let randomMins = Int.random(in: -59...59)
 			let randomTime = randomHours.hours + randomMins.minutes
 			let today = Date()

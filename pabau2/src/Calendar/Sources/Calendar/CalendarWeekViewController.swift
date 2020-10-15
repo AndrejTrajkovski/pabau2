@@ -10,11 +10,11 @@ public class CalendarWeekViewController: BaseCalendarViewController {
 	
 	public override func viewDidLoad() {
 		super.viewDidLoad()
-//		calendarView.setupCalendar(numOfDays: 1,
-//								   setDate: viewStore.state.selectedDate,
-//								   allEvents: [:],
-//								   scrollType: .pageScroll,
-//								   scrollableRange: (nil, nil))
+		weekView.setupCalendar(numOfDays: 7,
+							   setDate: viewStore.state.selectedDate,
+							   allEvents: viewStore.state.appointments.mapValues { $0.flatMap { $0 }},
+							   scrollType: .pageScroll,
+							   scrollableRange: (nil, nil))
 //		self.viewStore.publisher.selectedDate.removeDuplicates().sink(receiveValue: { [weak self] in
 //			self?.calendarView.updateWeekView(to: $0)
 //			let events = CalAppointment.makeDummy().map(AppointmentEvent.init(appointment:))
