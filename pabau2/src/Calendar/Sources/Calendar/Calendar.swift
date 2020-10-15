@@ -107,7 +107,7 @@ extension CalendarViewController: JZBaseViewDelegate {
 
 // MARK: - SectionLongPressDelegate
 extension CalendarViewController: SectionLongPressDelegate {
-	public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date, pageAndSectionIdx: (Int?, Int?), startingIndexPath: IndexPath) {
+	public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date, endPageAndSectionIdx: (Int?, Int?), startPageAndSectionIdx: (Int?, Int?)) {
 		let calendarView = weekView as! CalendarView
 		if let appointmentEvent = editingEvent as? AppointmentEvent {
 			var flat = viewStore.state.appointments.flatMap { $0.value }.flatMap { $0 }
@@ -118,13 +118,13 @@ extension CalendarViewController: SectionLongPressDelegate {
 			calEvent.start_date = splitNewDate.ymd
 			calEvent.start_time = splitNewDate.hms
 			calEvent.end_time = Calendar.current.date(byAdding: .minute, value: duration, to: splitNewDate.hms)!
-			
-			let (pageIdxOpt, withinSectionIdxOpt) = pageAndSectionIdx
-			guard let pageIdx = pageIdxOpt,
-				  let withinSectionIdx = withinSectionIdxOpt else {
-				return
-			}
-			if let firstSectionApp = calendarView.getFirstEvent(pageIdx, withinSectionIdx) as? AppointmentEvent {
+			let (pageIdxOpt, withinSectionIdxOpt) = endPageAndSectionIdx
+			print("started on", startPageAndSectionIdx)
+			print("ended on", endPageAndSectionIdx)
+			if let pageIdx = pageIdxOpt,
+			   let withinSectionIdx = withinSectionIdxOpt,
+			   startPageAndSectionIdx.0 != endPageAndSectionIdx.0,
+			   let firstSectionApp = calendarView.getFirstEvent(pageIdx, withinSectionIdx) as? AppointmentEvent {
 				update(&calEvent,
 					   viewStore.state.calendarType,
 					   firstSectionApp)
