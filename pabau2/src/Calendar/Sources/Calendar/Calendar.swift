@@ -6,11 +6,28 @@ import Util
 import ComposableArchitecture
 
 public class CalendarViewController: BaseCalendarViewController {
-
-	public override func setupCalendarView() -> CalendarView {
-		let calendarView = super.setupCalendarView()
-		calendarView.sectionLongPressDelegate = self
-		return calendarView
+	
+	override init(_ viewStore: ViewStore<CalendarState, CalendarAction>) {
+		super.init(viewStore)
+		self.calendarView.viewStore = viewStore
+	}
+	
+	public override func viewDidLoad() {
+		super.viewDidLoad()
+		calendarView.setupCalendar(setDate: viewStore.state.selectedDate,
+								   events: [:])
+		self.viewStore.publisher.selectedDate.removeDuplicates()
+			.combineLatest(self.viewStore.publisher.appointments.removeDuplicates())
+			.receive(on: DispatchQueue.main)
+			.sink(receiveValue: { [weak self] in
+				print("selected date changed", $0)
+			self?.calendarView.updateWeekView(to: $0)
+			self?.calendarView.forceSectionReload(reloadEvents: $1)
+		}).store(in: &self.cancellables)
+	}
+	
+	required init?(coder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
 	}
 }
 
@@ -80,5 +97,28 @@ extension CalendarViewController {
 		update(&appointment,
 			   fromApp,
 			   keyPath(calType: calType))
+	}
+}
+
+extension CalendarViewController {
+	
+	var calendarView: CalendarView {
+		return view as! CalendarView
+	}
+
+	public override func loadView() {
+		view = setupCalendarView()
+	}
+	
+	open func setupCalendarView() -> CalendarView {
+		let calendarView = CalendarView.init(frame: .zero)
+		calendarView.baseDelegate = self
+		calendarView.longPressDataSource = self
+//		calendarView.longPressDelegate = self
+		calendarView.sectionLongPressDelegate = self
+		calendarView.longPressTypes = [.addNew, .move]
+		calendarView.addNewDurationMins = 60
+		calendarView.moveTimeMinInterval = 15
+		return calendarView
 	}
 }
