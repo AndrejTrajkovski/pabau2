@@ -108,30 +108,23 @@ extension CalendarViewController: JZBaseViewDelegate {
 
 // MARK: - SectionLongPressDelegate
 extension CalendarViewController: SectionLongPressDelegate {
+	
 	public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date, endPageAndSectionIdx: (Int?, Int?), startPageAndSectionIdx: (Int?, Int?)) {
 		let calendarView = weekView as! CalendarView
 		if let appointmentEvent = editingEvent as? AppointmentEvent {
 			var flat = viewStore.state.appointments.flatMap { $0.value }.flatMap { $0 }
 			let flatIndex = flat.firstIndex(where: { $0.id == appointmentEvent.id })
 			var calEvent = appointmentEvent.app
-			let duration = Calendar.current.dateComponents([.minute], from: calEvent.start_time, to: calEvent.end_time).minute!
-			
 			let previousStartDate = calEvent.start_date
-			
-			let splitNewDate = startDate.split()
-			calEvent.start_date = splitNewDate.ymd
-			calEvent.start_time = splitNewDate.hms
-			calEvent.end_time = Calendar.current.date(byAdding: .minute, value: duration, to: splitNewDate.hms)!
+			updateTimeOn(&calEvent, startDate)
 			let (pageIdxOpt, withinSectionIdxOpt) = endPageAndSectionIdx
-			print("started on", startPageAndSectionIdx)
-			print("ended on", endPageAndSectionIdx)
 			if let pageIdx = pageIdxOpt,
 			   let withinSectionIdx = withinSectionIdxOpt,
-			   previousStartDate.startOfDay == startDate.startOfDay,
-			   let firstSectionApp = calendarView.getFirstEvent(pageIdx, withinSectionIdx) as? AppointmentEvent {
+			   let firstSectionApp = calendarView.getFirstEvent(pageIdx, withinSectionIdx) as? AppointmentEvent,
+				previousStartDate.startOfDay == startDate.startOfDay {
 				update(&calEvent,
 					   viewStore.state.calendarType,
-					   firstSectionApp)
+					   firstSectionApp.app)
 			}
 			flatIndex.map {
 				flat[$0] = AppointmentEvent(appointment: calEvent)
@@ -140,38 +133,51 @@ extension CalendarViewController: SectionLongPressDelegate {
 		}
 	}
 
-	public func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date, pageAndSectionIdx: (Int?, Int?)) {
+	public func weekView(_ weekView: JZLongPressWeekView,
+						 didEndAddNewLongPressAt
+							startDate: Date,
+						 pageAndSectionIdx: (Int?, Int?)) {
+		var flat = viewStore.state.appointments.flatMap { $0.value }.flatMap { $0 }
+		let endDate = Calendar.current.date(byAdding: .hour, value: weekView.addNewDurationMins/60, to: startDate)!
+		let newApp = CalAppointment.dummyInit(start: startDate, end: endDate)
+		flat.append(AppointmentEvent.init(appointment: newApp))
+		viewStore.send(.reloadApps(flat))
 	}
 }
 
 extension CalendarViewController {
-	
-//	func keyPath(calType: CalendarType) -> AnyHashableKeyPath<AppointmentEvent> {
-//		let appKp = \AppointmentEvent.app
-//		switch calType {
-//		case .employee:
-//			let kpe = appKp.appending(path: \CalAppointment.employeeId)
-//			return AnyHashableKeyPath(kpe)
-//		case .room:
-//			let kps = appKp.appending(path: \CalAppointment.roomId)
-//			return AnyHashableKeyPath(kps)
-//		default: fatalError()
-//		}
-//	}
-//
-//	private func update(_ appointment: inout AppointmentEvent,
-//						_ fromApp: AppointmentEvent,
-//						_ keyPath: AnyHashableKeyPath<AppointmentEvent>) {
-//		keyPath.set(&appointment, keyPath.get(fromApp))
-//	}
-	
+
+	func keyPath(calType: CalendarType) -> AnyHashableKeyPath<CalAppointment> {
+		switch calType {
+		case .day:
+			let kpe = \CalAppointment.employeeId
+			return AnyHashableKeyPath(kpe)
+		case .room:
+			let kps = \CalAppointment.roomId
+			return AnyHashableKeyPath(kps)
+		default: fatalError()
+		}
+	}
+
+	private func update(_ appointment: inout CalAppointment,
+						_ fromApp: CalAppointment,
+						_ keyPath: AnyHashableKeyPath<CalAppointment>) {
+		keyPath.set(&appointment, keyPath.get(fromApp))
+	}
+
 	private func update(_ appointment: inout CalAppointment,
 						_ calType: CalendarType,
-						_ fromApp: AppointmentEvent) {
-		if calType == .room {
-			appointment.roomId = fromApp.app.roomId
-		} else if calType == .day {
-			appointment.employeeId = fromApp.app.employeeId
-		}
+						_ fromApp: CalAppointment) {
+		update(&appointment,
+			   fromApp,
+			   keyPath(calType: calType))
+	}
+	
+	fileprivate func updateTimeOn(_ calEvent: inout CalAppointment, _ startDate: Date) {
+		let duration = Calendar.current.dateComponents([.minute], from: calEvent.start_time, to: calEvent.end_time).minute!
+		let splitNewDate = startDate.split()
+		calEvent.start_date = splitNewDate.ymd
+		calEvent.start_time = splitNewDate.hms
+		calEvent.end_time = Calendar.current.date(byAdding: .minute, value: duration, to: splitNewDate.hms)!
 	}
 }

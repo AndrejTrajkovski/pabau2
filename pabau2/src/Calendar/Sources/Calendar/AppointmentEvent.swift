@@ -16,7 +16,7 @@ public class AppointmentEvent: JZBaseEvent {
 		// If you want to have you custom uid, you can set the parent class's id with your uid or UUID().uuidString (In this case, we just use the base class id)
 		super.init(id: jzid, startDate: startDate, endDate: endDate)
 	}
-	
+
 	public override func copy(with zone: NSZone?) -> Any {
 		return AppointmentEvent(appointment: app)
 	}

@@ -1,4 +1,4 @@
-struct AnyHashableKeyPath<T> {
+public struct AnyHashableKeyPath<T> {
 	let get: (T) -> AnyHashable
 	let set: (inout T, AnyHashable) -> ()
 	

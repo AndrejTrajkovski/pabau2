@@ -132,7 +132,7 @@ extension CalAppointment {
 		service: String,
 		serviceColor: String? = nil,
 		customerName: String? = nil,
-		roomId: Int
+		roomId: Room.Id
 	) {
 		self.id = id
 		self.start_date = start_date
@@ -149,17 +149,20 @@ extension CalAppointment {
 		self.service = service
 		self.serviceColor = serviceColor
 		self.customerName = customerName
-		self.roomId = Room.Id.init(rawValue: roomId)
+		self.roomId = roomId
 	}
 	
-	public static func dummyInit(start: Date, end: Date) -> CalAppointment {
+	public static func dummyInit(start: Date,
+								 end: Date,
+								 employeeId: Employee.Id? = nil,
+								 roomId: Room.Id? = nil) -> CalAppointment {
 		let hmsAndYmd = start.separateHMSandYMD()
 		return CalAppointment(
 			id: CalAppointment.Id(rawValue: Int.random(in: 0...1000000000)),
 			start_date: hmsAndYmd.1!,
 			start_time: hmsAndYmd.0!,
 			end_time: end.separateHMSandYMD().0!,
-			employeeId: Employee.Id(rawValue: 1),
+			employeeId: employeeId ?? Employee.Id(rawValue: 1),
 			employeeInitials: nil,
 			locationId: Location.Id(rawValue: (Int.random(in: 0...5))),
 			locationName: nil,
@@ -167,7 +170,7 @@ extension CalAppointment {
 			service: "Botox",
 			serviceColor: "#800080",
 			customerName: "Tester",
-			roomId: Int.random(in: 0...5)
+			roomId: roomId ?? Room.mock().randomElement()!.key
 		)
 	}
 }
@@ -216,7 +219,7 @@ extension CalAppointment {
 									  service: service!.0,
 									  serviceColor: service!.1,
 									  customerName: "Andrej",
-									  roomId: Room.mock().randomElement()!.key.rawValue
+									  roomId: Room.mock().randomElement()!.key
 			)
 			res.append(app)
 		}
