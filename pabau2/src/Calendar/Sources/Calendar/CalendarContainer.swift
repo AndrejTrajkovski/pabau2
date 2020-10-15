@@ -23,9 +23,13 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 		case .calTypePicker: break
 		case .addShift: break
 		case .toggleFilters: break
-		case .reloadApps(let newApps):
-			state.appointments = Appointments(apps: newApps,
-											  calType: state.calendarType)
+		case .addAppointment(let newApp):
+			state.appointments.add(newApp: newApp,
+								   calType: state.calendarType)
+		case .replaceAppointment(let newApp, let id):
+			state.appointments.replace(id: id,
+									   app: newApp,
+									   calType: state.calendarType)
 		}
 		return .none
 	}

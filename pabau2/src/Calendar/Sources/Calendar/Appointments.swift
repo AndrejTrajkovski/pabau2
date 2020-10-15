@@ -2,9 +2,36 @@ import Foundation
 import JZCalendarWeekView
 import Model
 
-typealias Appointments = [Date: [[AppointmentEvent]]]
+public typealias Appointments = [Date: [[AppointmentEvent]]]
 
 extension Appointments {
+	
+	public mutating func replace(id: CalAppointment.Id,
+								 app: AppointmentEvent,
+								 calType: CalendarType) {
+		switch calType {
+		case .day, .room:
+			var flat = self.flatMap { $0.value }.flatMap { $0 }
+			let flatIndex = flat.firstIndex(where: { $0.app.id == id })
+			flatIndex.map {
+				flat[$0] = app
+				self = Appointments.init(apps: flat, calType: calType)
+			}
+		case .week:
+			fatalError("to do")
+		}
+	}
+	
+	public mutating func add(newApp: AppointmentEvent, calType: CalendarType) {
+		switch calType {
+		case .day, .room:
+			var flat = self.flatMap { $0.value }.flatMap { $0 }
+			flat.append(newApp)
+			self = Appointments.init(apps: flat, calType: calType)
+		case .week:
+			fatalError("to do")
+		}
+	}
 	
 	mutating func switchTo(calType: CalendarType) {
 		self = self.mapValues(regroup(calType: calType))

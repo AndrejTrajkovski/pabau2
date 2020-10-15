@@ -109,27 +109,28 @@ extension CalendarViewController: JZBaseViewDelegate {
 // MARK: - SectionLongPressDelegate
 extension CalendarViewController: SectionLongPressDelegate {
 	
+	fileprivate func maybeUpdateDateWith(_ endPageAndSectionIdx: (Int?, Int?), _ calEvent: inout CalAppointment) {
+		let (pageIdxOpt, withinSectionIdxOpt) = endPageAndSectionIdx
+		if let pageIdx = pageIdxOpt,
+		   let withinSectionIdx = withinSectionIdxOpt,
+		   let firstSectionApp = calendarView.getFirstEvent(pageIdx, withinSectionIdx) as? AppointmentEvent
+		{
+			update(&calEvent,
+				   viewStore.state.calendarType,
+				   firstSectionApp.app)
+		}
+	}
+	
 	public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date, endPageAndSectionIdx: (Int?, Int?), startPageAndSectionIdx: (Int?, Int?)) {
-		let calendarView = weekView as! CalendarView
 		if let appointmentEvent = editingEvent as? AppointmentEvent {
-			var flat = viewStore.state.appointments.flatMap { $0.value }.flatMap { $0 }
-			let flatIndex = flat.firstIndex(where: { $0.id == appointmentEvent.id })
+			//TODO: Move this logic to reducer
 			var calEvent = appointmentEvent.app
-			let previousStartDate = calEvent.start_date
+			if calEvent.start_date.startOfDay == startDate.startOfDay {
+				maybeUpdateDateWith(endPageAndSectionIdx, &calEvent)
+			}
 			updateTimeOn(&calEvent, startDate)
-			let (pageIdxOpt, withinSectionIdxOpt) = endPageAndSectionIdx
-			if let pageIdx = pageIdxOpt,
-			   let withinSectionIdx = withinSectionIdxOpt,
-			   let firstSectionApp = calendarView.getFirstEvent(pageIdx, withinSectionIdx) as? AppointmentEvent,
-				previousStartDate.startOfDay == startDate.startOfDay {
-				update(&calEvent,
-					   viewStore.state.calendarType,
-					   firstSectionApp.app)
-			}
-			flatIndex.map {
-				flat[$0] = AppointmentEvent(appointment: calEvent)
-			}
-			viewStore.send(.reloadApps(flat))
+			viewStore.send(.replaceAppointment(newApp: AppointmentEvent(appointment: calEvent),
+											   id: calEvent.id))
 		}
 	}
 
@@ -137,11 +138,11 @@ extension CalendarViewController: SectionLongPressDelegate {
 						 didEndAddNewLongPressAt
 							startDate: Date,
 						 pageAndSectionIdx: (Int?, Int?)) {
-		var flat = viewStore.state.appointments.flatMap { $0.value }.flatMap { $0 }
+		//TODO: Move this logic to reducer
 		let endDate = Calendar.current.date(byAdding: .hour, value: weekView.addNewDurationMins/60, to: startDate)!
-		let newApp = CalAppointment.dummyInit(start: startDate, end: endDate)
-		flat.append(AppointmentEvent.init(appointment: newApp))
-		viewStore.send(.reloadApps(flat))
+		var newApp = CalAppointment.dummyInit(start: startDate, end: endDate)
+		maybeUpdateDateWith(pageAndSectionIdx, &newApp)
+		viewStore.send(.addAppointment(AppointmentEvent(appointment: newApp)))
 	}
 }
 
