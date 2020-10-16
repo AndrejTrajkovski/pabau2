@@ -14,18 +14,14 @@ let package = Package(
 		dependencies: [
 			.package(name: "FSCalendar",
 							 url: "FSCalendar",
-							 from: "1.0.0"),
-			.package(name: "swift-composable-architecture",
-							 url: "https://github.com/pointfreeco/swift-composable-architecture.git",
-							 from: Version.init(stringLiteral: "0.6.0"))
+							 from: "1.0.0")
     ],
     targets: [
         .target(
             name: "FSCalendarSwiftUI",
             dependencies: [
-							"FSCalendar",
-							.product(name: "ComposableArchitecture",
-											 package: "swift-composable-architecture"),
-				])
+							"FSCalendar"
+			]
+		)
     ]
 )
