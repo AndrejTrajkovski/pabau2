@@ -12,15 +12,22 @@ public class CalendarWeekViewController: BaseCalendarViewController {
 		super.viewDidLoad()
 		weekView.setupCalendar(numOfDays: 7,
 							   setDate: viewStore.state.selectedDate,
-							   allEvents: viewStore.state.appointments.mapValues { $0.flatMap { $0 }},
+							   allEvents: [:],
 							   scrollType: .pageScroll,
 							   scrollableRange: (nil, nil))
-//		self.viewStore.publisher.selectedDate.removeDuplicates().sink(receiveValue: { [weak self] in
-//			self?.calendarView.updateWeekView(to: $0)
-//			let events = CalAppointment.makeDummy().map(AppointmentEvent.init(appointment:))
-//			let sorted = JZWeekViewHelper.getIntraEventsByDate(originalEvents: events)
-//			self?.weekView.forceReload(reloadEvents: sorted)
-//		}).store(in: &self.cancellables)
+		
+		self.viewStore.publisher.selectedDate.removeDuplicates()
+			.receive(on: DispatchQueue.main)
+			.sink(receiveValue: { [weak self] in
+				self?.weekView.updateWeekView(to: $0)
+		}).store(in: &self.cancellables)
+		
+		self.viewStore.publisher.appointments.removeDuplicates()
+			.receive(on: DispatchQueue.main)
+			.sink(receiveValue: { [weak self] in
+				let events = $0.mapValues { $0.flatMap { $0 }}
+				self?.weekView.forceReload(reloadEvents: events)
+		}).store(in: &self.cancellables)
 	}
 	
 	public override func loadView() {
@@ -42,19 +49,17 @@ public class CalendarWeekViewController: BaseCalendarViewController {
 extension CalendarWeekViewController: JZLongPressViewDelegate {
 	
 	public func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date) {
-		//		let endDate = Calendar.current.date(byAdding: .hour, value: weekView.addNewDurationMins/60, to: startDate)!
-		//		let newApp = CalAppointment.dummyInit(start: startDate, end: endDate)
-		//		self.appointments.append(newApp)
-		//		self.reloadData()
+		let endDate = Calendar.current.date(byAdding: .hour, value: weekView.addNewDurationMins/60, to: startDate)!
+		let newApp = AppointmentEvent(appointment: CalAppointment.dummyInit(start: startDate, end: endDate))
+		viewStore.send(.addAppointment(newApp))
 	}
-	
+
 	public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date) {
-		//		guard let app = editingEvent as? AppointmentEvent else { return }
-		//		let duration = Calendar.current.dateComponents([.minute], from: app.startDate, to: app.endDate).minute!
-		//		let selectedIndex = self.appointments.firstIndex(where: { $0.id.rawValue == Int(app.id) })!
-		//		let startTime = startDate.separateHMSandYMD().0!
-		//		appointments[selectedIndex].start_time = startTime
-		//		appointments[selectedIndex].end_time = Calendar.current.date(byAdding: .minute, value: duration, to: startTime)!
-		//		self.reloadData()
+		guard let app = editingEvent as? AppointmentEvent else { return }
+		var calApp = app.app
+		updateTimeOn(&calApp, startDate)
+		let newApp = AppointmentEvent(appointment: calApp)
+		viewStore.send(.replaceAppointment(newApp: newApp,
+										   id: app.app.id))
 	}
 }

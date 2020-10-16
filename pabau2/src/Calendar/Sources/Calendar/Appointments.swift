@@ -10,15 +10,13 @@ extension Appointments {
 								 app: AppointmentEvent,
 								 calType: CalendarType) {
 		switch calType {
-		case .day, .room:
+		case .day, .room, .week:
 			var flat = self.flatMap { $0.value }.flatMap { $0 }
 			let flatIndex = flat.firstIndex(where: { $0.app.id == id })
 			flatIndex.map {
 				flat[$0] = app
 				self = Appointments.init(apps: flat, calType: calType)
 			}
-		case .week:
-			fatalError("to do")
 		}
 	}
 	
