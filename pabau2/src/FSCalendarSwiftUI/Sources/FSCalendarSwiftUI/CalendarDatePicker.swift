@@ -1,6 +1,7 @@
 import SwiftUI
 import FSCalendar
 import ComposableArchitecture
+import SwiftDate
 
 public struct CalendarDatePicker: View {
 	let store: Store<Date, CalendarDatePickerAction>
@@ -41,7 +42,7 @@ struct SwiftUICalendar: UIViewRepresentable {
 	private let date: Date
 	let onHeightChange: (CGFloat) -> Void
 	private var onDateChanged: (Date) -> Void
-
+	
 	public init(_ date: Date,
 				_ scope: FSCalendarScope,
 				onHeightChange: @escaping (CGFloat) -> Void,
@@ -64,7 +65,21 @@ struct SwiftUICalendar: UIViewRepresentable {
 		uiView.select(uiView.selectedDate)
 		uiView.setScope(scope, animated: false)
 	}
-
+	
+	func update(calendar: FSCalendar,
+				selDate: Date,
+				isWeekView: Bool) {
+		if isWeekView {
+			calendar.allowsMultipleSelection = true
+			selDate.datesInWeekOf().forEach {
+				calendar.select($0)
+			}
+		} else {
+			calendar.allowsMultipleSelection = false
+			calendar.select(selDate)
+		}
+	}
+	
 	public func makeCoordinator() -> Coordinator {
 		return Coordinator(self)
 	}
@@ -84,4 +99,39 @@ struct SwiftUICalendar: UIViewRepresentable {
 			self.parent.onHeightChange(bounds.size.height)
 		}
 	}
+}
+
+extension Date {
+	
+	func datesInWeekOf() -> [Date] {
+		//FIXME: refactor this bs
+		let gregorian = Calendar(identifier: .gregorian)
+		var compsToGet = Set<Calendar.Component>.init()
+		compsToGet.insert(.weekOfYear)
+		let dateComps = gregorian.dateComponents(compsToGet, from: self)
+		var weekStart = gregorian.date(from: dateComps)
+		var moveWeeks = DateComponents()
+		moveWeeks.weekOfYear = 0
+		weekStart = gregorian.date(byAdding: moveWeeks, to: weekStart!)
+		let days = Array(0...6).map {
+			return gregorian.date(byAdding: $0.days, to: weekStart!)!
+		}
+		return days
+	}
+//	-(NSArray*)daysInWeek:(int)weekOffset fromDate:(NSDate*)date
+// {
+//	 //ask for current week
+//	 NSDateComponents *comps = [[NSDateComponents alloc] init];
+//	 comps=[gregorian components:NSWeekCalendarUnit|NSYearCalendarUnit fromDate:date];
+//	 //create date on week start
+//	 NSDate* weekstart=[gregorian dateFromComponents:comps];
+//
+//	 NSDateComponents* moveWeeks=[[NSDateComponents alloc] init];
+//	 moveWeeks.weekOfYear=weekOffset;
+//	 weekstart=[gregorian dateByAddingComponents:moveWeeks toDate:weekstart options:0];
+//
+//
+//	 //add 7 days
+// }
+
 }

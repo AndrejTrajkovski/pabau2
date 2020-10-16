@@ -17,15 +17,19 @@ let package = Package(
 							 from: "1.0.0"),
 			.package(name: "swift-composable-architecture",
 							 url: "https://github.com/pointfreeco/swift-composable-architecture.git",
-							 from: Version.init(stringLiteral: "0.6.0"))
+							 from: Version.init(stringLiteral: "0.6.0")),
+			.package(name: "SwiftDate",
+							 url: "https://github.com/malcommac/SwiftDate.git", from: "6.1.0")
     ],
     targets: [
-        .target(
-            name: "FSCalendarSwiftUI",
-            dependencies: [
-							"FSCalendar",
-							.product(name: "ComposableArchitecture",
-											 package: "swift-composable-architecture"),
-				])
+		.target(
+			name: "FSCalendarSwiftUI",
+			dependencies: [
+				"FSCalendar",
+				.product(name: "ComposableArchitecture",
+						 package: "swift-composable-architecture"),
+				.product(name: "SwiftDate",
+						 package: "SwiftDate"),
+			])
     ]
 )
