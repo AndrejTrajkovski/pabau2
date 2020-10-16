@@ -32,24 +32,37 @@ public class BaseCalendarViewController: UIViewController {
 
 extension BaseCalendarViewController: JZBaseViewDelegate {
 	public func initDateDidChange(_ weekView: JZBaseWeekView, initDate: Date) {
-		//compare in order not to go in an infinite loop
+		print("initDateDidChange: ", initDate)
 		let dateDisplayed = initDate + (weekView.numOfDays).days //JZCalendar holds previous and next pages in cache, initDate is not the date displayed on screen
-		//FIXME: Maybe Go with start of day here to avoid double reload on publisher emission in calendarviewcontroller
-		if self.viewStore.state.selectedDate.compare(toDate: dateDisplayed, granularity: .day) != .orderedSame {
-			print("send(.datePicker(.selectedDate(dateDisplayed)))", initDate)
-			self.viewStore.send(.datePicker(.selectedDate(dateDisplayed)))
+		var date1: Date!
+		if self.isKind(of: CalendarViewController.self) {
+			date1 = viewStore.state.selectedDate
+		} else if self.isKind(of: CalendarWeekViewController.self) {
+			print("dateDisplayed: ", dateDisplayed)
+			date1 = Calendar(identifier: .gregorian).startOfDay(for: viewStore.state.selectedDate.dateAtStartOf(.weekOfYear))
+			print("date1: ", date1!)
 		}
+		
+		//compare in order not to go in an infinite loop
+		if self.areNotSame(date1: date1,
+						   date2: dateDisplayed) {
+			print("self.viewStore.send(.datePicker(.selectedDate(dateDisplayed)))")
+			self.viewStore.send(.datePicker(.selectedDate(date1)))
+		}
+	}
+	
+	func areNotSame(date1: Date, date2: Date) -> Bool {
+		return date1.compare(toDate: date2, granularity: .day) != .orderedSame
 	}
 }
 
 extension BaseCalendarViewController {
-	
 	public func updateTimeOn(_ calEvent: inout CalAppointment, _ startDate: Date) {
-		let duration = Calendar.current.dateComponents([.minute], from: calEvent.start_time, to: calEvent.end_time).minute!
+		let duration = Calendar(identifier: .gregorian).dateComponents([.minute], from: calEvent.start_time, to: calEvent.end_time).minute!
 		let splitNewDate = startDate.split()
 		calEvent.start_date = splitNewDate.ymd
 		calEvent.start_time = splitNewDate.hms
-		calEvent.end_time = Calendar.current.date(byAdding: .minute, value: duration, to: splitNewDate.hms)!
+		calEvent.end_time = Calendar(identifier: .gregorian).date(byAdding: .minute, value: duration, to: splitNewDate.hms)!
 	}
 }
 

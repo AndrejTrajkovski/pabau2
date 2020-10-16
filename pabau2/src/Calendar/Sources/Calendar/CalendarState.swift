@@ -1,5 +1,6 @@
 import Foundation
 import Model
+import SwiftDate
 
 public struct CalendarState: Equatable {
 	var isDropdownShown: Bool
@@ -30,7 +31,7 @@ extension CalendarState {
 extension CalendarState {
 	public init(calType: CalendarType) {
 		self.isDropdownShown = false
-		self.selectedDate = Calendar.current.startOfDay(for: Date())
+		self.selectedDate = Calendar(identifier: .gregorian).startOfDay(for: Date())
 		self.appointments = Appointments(apps: CalAppointment.makeDummy(),
 										 calType: calType)
 		self.calendarType = calType

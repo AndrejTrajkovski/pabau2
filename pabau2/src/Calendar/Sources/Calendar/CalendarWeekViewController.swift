@@ -10,17 +10,19 @@ public class CalendarWeekViewController: BaseCalendarViewController {
 	
 	public override func viewDidLoad() {
 		super.viewDidLoad()
+		let setDate = Calendar(identifier: .gregorian).startOfDay(for: viewStore.state.selectedDate.dateAtStartOf(.weekOfYear))
 		weekView.setupCalendar(numOfDays: 7,
-							   setDate: viewStore.state.selectedDate,
+							   setDate: setDate,
 							   allEvents: [:],
 							   scrollType: .pageScroll,
 							   scrollableRange: (nil, nil))
-		
 		self.viewStore.publisher.selectedDate.removeDuplicates()
 			.receive(on: DispatchQueue.main)
 			.sink(receiveValue: { [weak self] in
-				self?.weekView.updateWeekView(to: $0)
-		}).store(in: &self.cancellables)
+				let setDate = Calendar(identifier: .gregorian).startOfDay(for: $0.dateAtStartOf(.weekOfYear))
+				print("setDate in publisher", setDate)
+				self?.weekView.updateWeekView(to: setDate)
+			}).store(in: &self.cancellables)
 		
 		self.viewStore.publisher.appointments.removeDuplicates()
 			.receive(on: DispatchQueue.main)
@@ -49,7 +51,7 @@ public class CalendarWeekViewController: BaseCalendarViewController {
 extension CalendarWeekViewController: JZLongPressViewDelegate {
 	
 	public func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date) {
-		let endDate = Calendar.current.date(byAdding: .hour, value: weekView.addNewDurationMins/60, to: startDate)!
+		let endDate = Calendar(identifier: .gregorian).date(byAdding: .hour, value: weekView.addNewDurationMins/60, to: startDate)!
 		let newApp = AppointmentEvent(appointment: CalAppointment.dummyInit(start: startDate, end: endDate))
 		viewStore.send(.addAppointment(newApp))
 	}

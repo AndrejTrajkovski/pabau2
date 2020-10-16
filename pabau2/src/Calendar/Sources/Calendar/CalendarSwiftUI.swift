@@ -6,9 +6,10 @@ public struct CalendarWrapper: View {
 	
 	public var body: some View {
 		WithViewStore(store) { viewStore in
-			if viewStore.state.calendarType == .week {
+			switch viewStore.state.calendarType {
+			case .week:
 				CalendarWeekSwiftUI(viewStore: viewStore)
-			} else {
+			case .day, .room:
 				CalendarSwiftUI(viewStore: viewStore)
 			}
 		}
@@ -29,7 +30,6 @@ struct CalendarSwiftUI: UIViewControllerRepresentable {
 }
 
 struct CalendarWeekSwiftUI: UIViewControllerRepresentable {
-	
 	let viewStore: ViewStore<CalendarState, CalendarAction>
 	
 	public func makeUIViewController(context: Context) -> CalendarWeekViewController {

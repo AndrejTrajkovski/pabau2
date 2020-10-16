@@ -9,7 +9,8 @@ public struct CalendarDatePicker: View {
 	public var body: some View {
 		WithViewStore(store) { viewStore in
 			SwiftUICalendar.init(viewStore.state,
-													 .week,
+								 .week,
+								 isWeek: true,
 													 onHeightChange: { self.totalHeight = $0 },
 													 onDateChanged: { viewStore.send(.selectedDate($0))}
 			).frame(height: self.totalHeight)
@@ -40,15 +41,18 @@ struct SwiftUICalendar: UIViewRepresentable {
 	public typealias UIViewType = FSCalendar
 	private let scope: FSCalendarScope
 	private let date: Date
+	private let isWeek: Bool
 	let onHeightChange: (CGFloat) -> Void
 	private var onDateChanged: (Date) -> Void
-	
+
 	public init(_ date: Date,
 				_ scope: FSCalendarScope,
+				isWeek: Bool,
 				onHeightChange: @escaping (CGFloat) -> Void,
 				onDateChanged: @escaping (Date) -> Void) {
-		self.scope = scope
 		self.date = date
+		self.scope = scope
+		self.isWeek = isWeek
 		self.onHeightChange = onHeightChange
 		self.onDateChanged = onDateChanged
 	}
@@ -56,30 +60,35 @@ struct SwiftUICalendar: UIViewRepresentable {
 	public func makeUIView(context: UIViewRepresentableContext<SwiftUICalendar>) -> FSCalendar {
 		print("makeUIView FSCalendar")
 		let calendar = FSCalendar()
-		calendar.select(date)
+		update(calendar: calendar, selDate: date, isWeekView: isWeek)
 		calendar.delegate = context.coordinator
 		return calendar
 	}
 
-	public func updateUIView(_ uiView: FSCalendar, context: UIViewRepresentableContext<SwiftUICalendar>) {
-		uiView.select(uiView.selectedDate)
-		uiView.setScope(scope, animated: false)
+	public func updateUIView(_ calendar: FSCalendar, context: UIViewRepresentableContext<SwiftUICalendar>) {
+		update(calendar: calendar, selDate: date, isWeekView: isWeek)
+		calendar.setScope(scope, animated: false)
 	}
 	
 	func update(calendar: FSCalendar,
 				selDate: Date,
 				isWeekView: Bool) {
+		calendar.selectedDates.forEach {
+			calendar.deselect($0)
+		}
 		if isWeekView {
+			print("updateUIView: selDate: ", selDate)
 			calendar.allowsMultipleSelection = true
 			selDate.datesInWeekOf().forEach {
 				calendar.select($0)
+				print("select date ", $0)
 			}
 		} else {
 			calendar.allowsMultipleSelection = false
 			calendar.select(selDate)
 		}
 	}
-	
+
 	public func makeCoordinator() -> Coordinator {
 		return Coordinator(self)
 	}
@@ -102,21 +111,16 @@ struct SwiftUICalendar: UIViewRepresentable {
 }
 
 extension Date {
-	
+	// mon // tue // wed // thu // fri // sat // sun
+//		12	  13     14  	15	   16      17     18
+//		1      2      3      4      5      6       7
+//		-4	  -3	 -2 	-1	    +0      1      2
 	func datesInWeekOf() -> [Date] {
-		//FIXME: refactor this bs
-		let gregorian = Calendar(identifier: .gregorian)
-		var compsToGet = Set<Calendar.Component>.init()
-		compsToGet.insert(.weekOfYear)
-		let dateComps = gregorian.dateComponents(compsToGet, from: self)
-		var weekStart = gregorian.date(from: dateComps)
-		var moveWeeks = DateComponents()
-		moveWeeks.weekOfYear = 0
-		weekStart = gregorian.date(byAdding: moveWeeks, to: weekStart!)
-		let days = Array(0...6).map {
-			return gregorian.date(byAdding: $0.days, to: weekStart!)!
-		}
-		return days
+		let firstDayOfWeek = Calendar.init(identifier: .gregorian).startOfDay(for: self.dateAtStartOf(.weekOfYear))
+		print("firstDayOfWeek", firstDayOfWeek)
+		let shiftedWeekDaysIdxs = Array(0...6)
+			.map { firstDayOfWeek + $0.days }
+		return shiftedWeekDaysIdxs
 	}
 //	-(NSArray*)daysInWeek:(int)weekOffset fromDate:(NSDate*)date
 // {
