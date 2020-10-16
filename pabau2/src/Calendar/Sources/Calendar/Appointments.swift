@@ -19,15 +19,13 @@ extension Appointments {
 			}
 		}
 	}
-	
+
 	public mutating func add(newApp: AppointmentEvent, calType: CalendarType) {
 		switch calType {
-		case .day, .room:
+		case .day, .room, .week:
 			var flat = self.flatMap { $0.value }.flatMap { $0 }
 			flat.append(newApp)
 			self = Appointments.init(apps: flat, calType: calType)
-		case .week:
-			fatalError("to do")
 		}
 	}
 	
