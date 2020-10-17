@@ -31,6 +31,13 @@ public class BaseCalendarViewController: UIViewController {
 }
 
 extension BaseCalendarViewController: JZBaseViewDelegate {
+	
+//	func newSelectedDateFrom(initDate: Date,
+//							 previousSelectedDate: Date,
+//							 numberOfDays: Int) -> Date {
+//		
+//	}
+	
 	public func initDateDidChange(_ weekView: JZBaseWeekView, initDate: Date) {
 		print("initDateDidChange: ", initDate)
 		let dateDisplayed = initDate + (weekView.numOfDays).days //JZCalendar holds previous and next pages in cache, initDate is not the date displayed on screen
@@ -50,7 +57,7 @@ extension BaseCalendarViewController: JZBaseViewDelegate {
 			self.viewStore.send(.datePicker(.selectedDate(date1)))
 		}
 	}
-	
+
 	func areNotSame(date1: Date, date2: Date) -> Bool {
 		return date1.compare(toDate: date2, granularity: .day) != .orderedSame
 	}
