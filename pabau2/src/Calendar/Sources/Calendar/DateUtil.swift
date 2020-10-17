@@ -1,4 +1,5 @@
 import Foundation
+import SwiftDate
 
 extension Date {
 	
@@ -19,5 +20,9 @@ extension Date {
 		components.minute = hmsComps.minute
 		components.second = hmsComps.second
 		return calendar.date(from: components)!
+	}
+	
+	public func getMondayOfWeek() -> Date {
+		self.dateAtStartOf(.weekOfYear) + 1.days
 	}
 }

@@ -35,7 +35,7 @@ extension BaseCalendarViewController: JZBaseViewDelegate {
 //	func newSelectedDateFrom(initDate: Date,
 //							 previousSelectedDate: Date,
 //							 numberOfDays: Int) -> Date {
-//		
+//
 //	}
 	
 	public func initDateDidChange(_ weekView: JZBaseWeekView, initDate: Date) {
@@ -46,10 +46,9 @@ extension BaseCalendarViewController: JZBaseViewDelegate {
 			date1 = viewStore.state.selectedDate
 		} else if self.isKind(of: CalendarWeekViewController.self) {
 			print("dateDisplayed: ", dateDisplayed)
-			date1 = Calendar(identifier: .gregorian).startOfDay(for: viewStore.state.selectedDate.dateAtStartOf(.weekOfYear))
+			date1 = viewStore.state.selectedDate.getMondayOfWeek()
 			print("date1: ", date1!)
 		}
-		
 		//compare in order not to go in an infinite loop
 		if self.areNotSame(date1: date1,
 						   date2: dateDisplayed) {
@@ -58,6 +57,10 @@ extension BaseCalendarViewController: JZBaseViewDelegate {
 		}
 	}
 
+//	func reverse(initDate: Date) -> Date {
+//		
+//	}
+	
 	func areNotSame(date1: Date, date2: Date) -> Bool {
 		return date1.compare(toDate: date2, granularity: .day) != .orderedSame
 	}

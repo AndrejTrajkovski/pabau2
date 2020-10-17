@@ -60,6 +60,7 @@ struct SwiftUICalendar: UIViewRepresentable {
 	public func makeUIView(context: UIViewRepresentableContext<SwiftUICalendar>) -> FSCalendar {
 		print("makeUIView FSCalendar")
 		let calendar = FSCalendar()
+		calendar.firstWeekday = 2
 		update(calendar: calendar, selDate: date, isWeekView: isWeek)
 		calendar.delegate = context.coordinator
 		return calendar
@@ -69,7 +70,7 @@ struct SwiftUICalendar: UIViewRepresentable {
 		update(calendar: calendar, selDate: date, isWeekView: isWeek)
 		calendar.setScope(scope, animated: false)
 	}
-	
+
 	func update(calendar: FSCalendar,
 				selDate: Date,
 				isWeekView: Bool) {
@@ -78,6 +79,9 @@ struct SwiftUICalendar: UIViewRepresentable {
 		}
 		if isWeekView {
 			print("updateUIView: selDate: ", selDate)
+//			let dateIntervalWeek = Calendar(identifier: .gregorian).dateInterval(of: .weekOfYear, for: selDate)
+//			dateIntervalWeek?.start
+//			print("dateIntervalWeek: ", dateIntervalWeek)
 			calendar.setCurrentPage(selDate, animated: true)
 			calendar.allowsMultipleSelection = true
 			selDate.datesInWeekOf().forEach {
@@ -121,7 +125,7 @@ extension Date {
 //		1      2      3      4      5      6       7
 //		-4	  -3	 -2 	-1	    +0      1      2
 	func datesInWeekOf() -> [Date] {
-		let firstDayOfWeek = self.dateAtStartOf(.weekOfYear)
+		let firstDayOfWeek = self.dateAtStartOf(.weekOfYear) + 1.days
 		print("firstDayOfWeek", firstDayOfWeek)
 		let shiftedWeekDaysIdxs = Array(0...6)
 			.map { firstDayOfWeek + $0.days }
