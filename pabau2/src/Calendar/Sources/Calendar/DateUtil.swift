@@ -21,8 +21,4 @@ extension Date {
 		components.second = hmsComps.second
 		return calendar.date(from: components)!
 	}
-	
-	public func getMondayOfWeek() -> Date {
-		self.dateAtStartOf(.weekOfYear) + 1.days
-	}
 }

@@ -125,12 +125,17 @@ extension Date {
 //		1      2      3      4      5      6       7
 //		-4	  -3	 -2 	-1	    +0      1      2
 	func datesInWeekOf() -> [Date] {
-		let firstDayOfWeek = self.dateAtStartOf(.weekOfYear) + 1.days
+		let firstDayOfWeek = self.getMondayOfWeek()
 		print("firstDayOfWeek", firstDayOfWeek)
 		let shiftedWeekDaysIdxs = Array(0...6)
 			.map { firstDayOfWeek + $0.days }
 		return shiftedWeekDaysIdxs
 	}
+
+	public func getMondayOfWeek() -> Date {
+		self.nextWeekday(.monday) - 1.weeks
+	}
+
 //	-(NSArray*)daysInWeek:(int)weekOffset fromDate:(NSDate*)date
 // {
 //	 //ask for current week

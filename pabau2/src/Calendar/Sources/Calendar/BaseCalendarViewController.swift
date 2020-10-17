@@ -40,20 +40,24 @@ extension BaseCalendarViewController: JZBaseViewDelegate {
 	
 	public func initDateDidChange(_ weekView: JZBaseWeekView, initDate: Date) {
 		print("initDateDidChange: ", initDate)
-		let dateDisplayed = initDate + (weekView.numOfDays).days //JZCalendar holds previous and next pages in cache, initDate is not the date displayed on screen
-		var date1: Date!
 		if self.isKind(of: CalendarViewController.self) {
-			date1 = viewStore.state.selectedDate
+			let dateDisplayed = initDate + (weekView.numOfDays).days //JZCalendar holds previous and next pages in cache, initDate is not the date displayed on screen
+			let date1 = viewStore.state.selectedDate
+			//compare in order not to go in an infinite loop
+			if self.areNotSame(date1: date1,
+							   date2: dateDisplayed) {
+				self.viewStore.send(.datePicker(.selectedDate(dateDisplayed)))
+			}
 		} else if self.isKind(of: CalendarWeekViewController.self) {
+			let dateDisplayed = initDate + (weekView.numOfDays).days //JZCalendar holds previous and next pages in cache, initDate is not the date displayed on screen
 			print("dateDisplayed: ", dateDisplayed)
-			date1 = viewStore.state.selectedDate.getMondayOfWeek()
-			print("date1: ", date1!)
-		}
-		//compare in order not to go in an infinite loop
-		if self.areNotSame(date1: date1,
-						   date2: dateDisplayed) {
-			print("self.viewStore.send(.datePicker(.selectedDate(dateDisplayed)))")
-			self.viewStore.send(.datePicker(.selectedDate(date1)))
+			let date1 = viewStore.state.selectedDate.getMondayOfWeek()
+			print("date1: ", date1)
+			if self.areNotSame(date1: date1,
+							   date2: dateDisplayed) {
+				let oneWeekDiff = viewStore.state.selectedDate - 1.weeks
+				self.viewStore.send(.datePicker(.selectedDate(oneWeekDiff)))
+			}
 		}
 	}
 
