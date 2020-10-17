@@ -55,7 +55,9 @@ extension BaseCalendarViewController: JZBaseViewDelegate {
 			print("date1: ", date1)
 			if self.areNotSame(date1: date1,
 							   date2: dateDisplayed) {
-				let oneWeekDiff = viewStore.state.selectedDate - 1.weeks
+				let isInPast = dateDisplayed < date1
+				let shiftDate = isInPast ? -1.weeks : 1.weeks
+				let oneWeekDiff = viewStore.state.selectedDate + shiftDate
 				self.viewStore.send(.datePicker(.selectedDate(oneWeekDiff)))
 			}
 		}
