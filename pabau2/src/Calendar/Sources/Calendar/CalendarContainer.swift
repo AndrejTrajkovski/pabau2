@@ -44,7 +44,9 @@ public struct CalendarContainer: View {
 				CalendarDatePicker.init(
 					store: self.store.scope(
 						state: { $0.selectedDate },
-						action: { .datePicker($0)})
+						action: { .datePicker($0)}
+					),
+					isWeekView: viewStore.state.calendarType == .week
 				)
 				.padding(0)
 				CalendarWrapper(store: self.store)

@@ -1,5 +1,6 @@
 import FSCalendarSwiftUI
 import Model
+import Foundation
 
 public enum CalendarAction {
 	case datePicker(CalendarDatePickerAction)
@@ -8,4 +9,5 @@ public enum CalendarAction {
 	case toggleFilters
 	case addAppointment(AppointmentEvent)
 	case replaceAppointment(newApp: AppointmentEvent, id: CalAppointment.Id)
+	case didSwipePageTo(initDate: Date)
 }

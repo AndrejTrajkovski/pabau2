@@ -171,7 +171,8 @@ public struct JourneyContainerView: View {
 			CalendarDatePicker.init(
 				store: self.store.scope(
 					state: { $0.journey.selectedDate },
-					action: { .journey(.datePicker($0))})
+					action: { .journey(.datePicker($0))}),
+				isWeekView: false
 			)
 			.padding(0)
 			FilterPicker()
