@@ -15,7 +15,7 @@ enum ColumnHeaderAdapter {
 			let room = rooms[firstSectionApp.app.roomId]
 			let location = room.flatMap { locations[$0.locationId] }
 			return viewModel(room: room, location: location)
-		case .day:
+		case .employee:
 			let employee = employees[firstSectionApp.app.employeeId]
 			let location = employee.flatMap { locations[$0.locationId] }
 			return viewModel(employee: employee, location: location)

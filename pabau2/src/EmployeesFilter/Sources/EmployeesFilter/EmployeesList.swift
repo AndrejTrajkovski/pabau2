@@ -6,22 +6,24 @@ import ComposableArchitecture
 public struct EmployeesFilter: View {
 	let store: Store<EmployeesFilterState, EmployeesFilterAction>
 	@ObservedObject var viewStore: ViewStore<EmployeesFilterState, EmployeesFilterAction>
+	
 	public init(_ store: Store<EmployeesFilterState, EmployeesFilterAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
+	
 	public var body: some View {
-		return EmployeeList(selectedEmployeesIds: self.viewStore.state.selectedEmployeesIds,
-												employees: self.viewStore.state.employees,
-												header: EmployeeHeader {
-													withAnimation {
-														self.viewStore.send(.toggleEmployees)
-													}
-			},
-												didSelectEmployee: { self.viewStore.send(.onTapGestureEmployee($0))}
+		EmployeeList(selectedEmployeesIds: self.viewStore.state.selectedEmployeesIds,
+					 employees: self.viewStore.state.employees,
+					 header: EmployeeHeader {
+						withAnimation {
+							self.viewStore.send(.toggleEmployees)
+						}
+					 },
+					 didSelectEmployee: { self.viewStore.send(.onTapGestureEmployee($0))}
 		)
-			.frame(width: 302)
-			.background(Color.white.shadow(color: .employeeShadow, radius: 40.0, x: -20, y: 2))
+		.frame(width: 302)
+		.background(Color.white.shadow(color: .employeeShadow, radius: 40.0, x: -20, y: 2))
 	}
 }
 
@@ -74,6 +76,7 @@ private struct EmployeeHeader: View {
 			Text(Texts.employee)
 				.foregroundColor(.black)
 				.font(Font.semibold20)
+				.autocapitalization(.words)
 		}
 		.padding(.bottom)
 		.background(Color.employeeBg)

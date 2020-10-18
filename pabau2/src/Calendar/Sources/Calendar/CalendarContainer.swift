@@ -100,7 +100,7 @@ extension CalendarState {
 		switch calendarType {
 		case .week:
 			return 7
-		case .room, .day:
+		case .room, .employee:
 			return 1
 		}
 	}

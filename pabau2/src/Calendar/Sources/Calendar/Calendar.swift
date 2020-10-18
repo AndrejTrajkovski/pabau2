@@ -75,7 +75,7 @@ extension CalendarViewController {
 
 	func keyPath(calType: CalendarType) -> AnyHashableKeyPath<CalAppointment> {
 		switch calType {
-		case .day:
+		case .employee:
 			let kpe = \CalAppointment.employeeId
 			return AnyHashableKeyPath(kpe)
 		case .room:

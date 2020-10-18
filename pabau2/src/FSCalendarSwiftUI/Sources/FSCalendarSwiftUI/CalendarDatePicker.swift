@@ -62,7 +62,7 @@ struct SwiftUICalendar: UIViewRepresentable {
 	public func makeUIView(context: UIViewRepresentableContext<SwiftUICalendar>) -> FSCalendar {
 		print("makeUIView FSCalendar")
 		let calendar = FSCalendar()
-		calendar.firstWeekday = 2
+		calendar.firstWeekday = 2 //Monday
 		update(calendar: calendar, selDate: date, isWeekView: isWeekView)
 		calendar.delegate = context.coordinator
 		return calendar

@@ -10,7 +10,7 @@ extension Appointments {
 								 app: AppointmentEvent,
 								 calType: CalendarType) {
 		switch calType {
-		case .day, .room, .week:
+		case .employee, .room, .week:
 			var flat = self.flatMap { $0.value }.flatMap { $0 }
 			let flatIndex = flat.firstIndex(where: { $0.app.id == id })
 			flatIndex.map {
@@ -22,7 +22,7 @@ extension Appointments {
 
 	public mutating func add(newApp: AppointmentEvent, calType: CalendarType) {
 		switch calType {
-		case .day, .room, .week:
+		case .employee, .room, .week:
 			var flat = self.flatMap { $0.value }.flatMap { $0 }
 			flat.append(newApp)
 			self = Appointments.init(apps: flat, calType: calType)
@@ -49,7 +49,7 @@ extension Appointments {
 	init(apps: [AppointmentEvent],
 		 calType: CalendarType) {
 		switch calType {
-		case .day, .room:
+		case .employee, .room:
 			let groupingByCalType = groupBy(calType)
 			self = groupByPage(events: apps).mapValues(groupingByCalType)
 		case .week:
@@ -67,7 +67,7 @@ private func groupBy(_ calType: CalendarType) -> ([AppointmentEvent]) -> [[Appoi
 	switch calType {
 	case .week:
 		return { [$0] }
-	case .day:
+	case .employee:
 		return groupByEmployee()
 	case .room:
 		return groupByRoom()

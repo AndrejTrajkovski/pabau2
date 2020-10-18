@@ -9,7 +9,7 @@ public struct CalendarWrapper: View {
 			switch viewStore.state.calendarType {
 			case .week:
 				CalendarWeekSwiftUI(viewStore: viewStore)
-			case .day, .room:
+			case .employee, .room:
 				CalendarSwiftUI(viewStore: viewStore)
 			}
 		}
