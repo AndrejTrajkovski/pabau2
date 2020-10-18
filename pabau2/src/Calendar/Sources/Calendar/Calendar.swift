@@ -11,7 +11,7 @@ public class CalendarViewController: BaseCalendarViewController {
 		super.init(viewStore)
 		self.calendarView.viewStore = viewStore
 	}
-	
+
 	public override func viewDidLoad() {
 		super.viewDidLoad()
 		calendarView.setupCalendar(setDate: viewStore.state.selectedDate,
@@ -25,7 +25,7 @@ public class CalendarViewController: BaseCalendarViewController {
 			self?.calendarView.forceSectionReload(reloadEvents: $1)
 		}).store(in: &self.cancellables)
 	}
-	
+
 	required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}

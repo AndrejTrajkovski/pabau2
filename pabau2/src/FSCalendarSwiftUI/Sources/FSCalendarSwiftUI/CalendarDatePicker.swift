@@ -76,20 +76,30 @@ struct SwiftUICalendar: UIViewRepresentable {
 	func update(calendar: FSCalendar,
 				selDate: Date,
 				isWeekView: Bool) {
-		calendar.selectedDates.forEach {
-			calendar.deselect($0)
+		let newDates = datesToSelect(date: selDate, isWeekView: isWeekView)
+		if calendar.selectedDates != newDates {
+			calendar.selectedDates.forEach {
+				calendar.deselect($0)
+			}
+			newDates.forEach {
+				calendar.select($0)
+			}
 		}
+		
 		if isWeekView {
-			print("updateUIView: selDate: ", selDate)
 			calendar.setCurrentPage(selDate, animated: true)
 			calendar.allowsMultipleSelection = true
-			selDate.datesInWeekOf().forEach {
-				calendar.select($0)
-				print("select date ", $0)
-			}
 		} else {
 			calendar.allowsMultipleSelection = false
-			calendar.select(selDate)
+		}
+	}
+	
+	func datesToSelect(date: Date,
+					   isWeekView: Bool) -> [Date] {
+		if isWeekView {
+			return date.datesInWeekOf()
+		} else {
+			return [date]
 		}
 	}
 

@@ -9,5 +9,5 @@ public enum CalendarAction {
 	case toggleFilters
 	case addAppointment(AppointmentEvent)
 	case replaceAppointment(newApp: AppointmentEvent, id: CalAppointment.Id)
-	case didSwipePageTo(initDate: Date)
+	case userDidSwipePageTo(isNext: Bool)
 }

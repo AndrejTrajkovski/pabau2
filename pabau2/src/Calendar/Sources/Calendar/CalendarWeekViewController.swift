@@ -19,7 +19,10 @@ public class CalendarWeekViewController: BaseCalendarViewController {
 		self.viewStore.publisher.selectedDate.removeDuplicates()
 			.receive(on: DispatchQueue.main)
 			.sink(receiveValue: { [weak self] in
-				self?.weekView.updateWeekView(to: $0.getMondayOfWeek())
+				let newInitDate = $0.getMondayOfWeek()
+				if self?.areNotSame(date1: newInitDate, date2: self!.weekView.initDate) ?? false {
+					self?.weekView.updateWeekView(to: newInitDate)
+				}
 			}).store(in: &self.cancellables)
 		
 		self.viewStore.publisher.appointments.removeDuplicates()
@@ -29,7 +32,7 @@ public class CalendarWeekViewController: BaseCalendarViewController {
 				self?.weekView.forceReload(reloadEvents: events)
 		}).store(in: &self.cancellables)
 	}
-	
+
 	public override func loadView() {
 		let calendarView = CalendarWeekView.init(frame: .zero)
 		calendarView.baseDelegate = self
@@ -62,3 +65,25 @@ extension CalendarWeekViewController: JZLongPressViewDelegate {
 										   id: app.app.id))
 	}
 }
+
+//if self.isKind(of: CalendarViewController.self) {
+//	let dateDisplayed = initDate + (weekView.numOfDays).days //JZCalendar holds previous and next pages in cache, initDate is not the date displayed on screen
+//	let date1 = viewStore.state.selectedDate
+//	//compare in order not to go in an infinite loop
+//	if self.areNotSame(date1: date1,
+//					   date2: dateDisplayed) {
+//		self.viewStore.send(.datePicker(.selectedDate(dateDisplayed)))
+//	}
+//} else if self.isKind(of: CalendarWeekViewController.self) {
+//	let dateDisplayed = initDate + (weekView.numOfDays).days //JZCalendar holds previous and next pages in cache, initDate is not the date displayed on screen
+//	print("dateDisplayed: ", dateDisplayed)
+//	let date1 = viewStore.state.selectedDate.getMondayOfWeek()
+//	print("date1: ", date1)
+//	if self.areNotSame(date1: date1,
+//					   date2: dateDisplayed) {
+//		let isInPast = dateDisplayed < date1
+//		let shiftDate = isInPast ? -1.weeks : 1.weeks
+//		let oneWeekDiff = viewStore.state.selectedDate + shiftDate
+//		self.viewStore.send(.datePicker(.selectedDate(oneWeekDiff)))
+//	}
+//}

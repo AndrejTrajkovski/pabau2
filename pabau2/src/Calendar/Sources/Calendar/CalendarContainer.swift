@@ -3,6 +3,7 @@ import FSCalendarSwiftUI
 import ComposableArchitecture
 import Model
 import Util
+import SwiftDate
 
 public typealias CalendarEnvironment = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
 
@@ -30,6 +31,10 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			state.appointments.replace(id: id,
 									   app: newApp,
 									   calType: state.calendarType)
+		case .userDidSwipePageTo(isNext: let isNext):
+			let daysToAdd = isNext ? state.numOfDays : -state.numOfDays
+			let newDate = state.selectedDate + daysToAdd.days
+			state.selectedDate = newDate
 		}
 		return .none
 	}
@@ -85,6 +90,18 @@ struct CalTopBar: View {
 			.frame(height: 50)
 			.background(Color(hex: "F9F9F9"))
 			Divider()
+		}
+	}
+}
+
+extension CalendarState {
+	
+	var numOfDays: Int {
+		switch calendarType {
+		case .week:
+			return 7
+		case .room, .day:
+			return 1
 		}
 	}
 }

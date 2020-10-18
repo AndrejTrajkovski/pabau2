@@ -40,34 +40,14 @@ extension BaseCalendarViewController: JZBaseViewDelegate {
 	
 	public func initDateDidChange(_ weekView: JZBaseWeekView, initDate: Date) {
 		print("initDateDidChange: ", initDate)
-		if self.isKind(of: CalendarViewController.self) {
-			let dateDisplayed = initDate + (weekView.numOfDays).days //JZCalendar holds previous and next pages in cache, initDate is not the date displayed on screen
-			let date1 = viewStore.state.selectedDate
-			//compare in order not to go in an infinite loop
-			if self.areNotSame(date1: date1,
-							   date2: dateDisplayed) {
-				self.viewStore.send(.datePicker(.selectedDate(dateDisplayed)))
-			}
-		} else if self.isKind(of: CalendarWeekViewController.self) {
-			let dateDisplayed = initDate + (weekView.numOfDays).days //JZCalendar holds previous and next pages in cache, initDate is not the date displayed on screen
-			print("dateDisplayed: ", dateDisplayed)
-			let date1 = viewStore.state.selectedDate.getMondayOfWeek()
-			print("date1: ", date1)
-			if self.areNotSame(date1: date1,
-							   date2: dateDisplayed) {
-				let isInPast = dateDisplayed < date1
-				let shiftDate = isInPast ? -1.weeks : 1.weeks
-				let oneWeekDiff = viewStore.state.selectedDate + shiftDate
-				self.viewStore.send(.datePicker(.selectedDate(oneWeekDiff)))
-			}
-		}
+		
+	}
+	
+	public func userDidFlipPage(_ weekView: JZBaseWeekView, isNextPage: Bool) {
+		viewStore.send(.userDidSwipePageTo(isNext: isNextPage))
 	}
 
-//	func reverse(initDate: Date) -> Date {
-//		
-//	}
-	
-	func areNotSame(date1: Date, date2: Date) -> Bool {
+	public func areNotSame(date1: Date, date2: Date) -> Bool {
 		return date1.compare(toDate: date2, granularity: .day) != .orderedSame
 	}
 }
