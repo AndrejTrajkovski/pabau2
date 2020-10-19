@@ -15,7 +15,7 @@ public struct CalendarDatePicker: View {
 								 onHeightChange: { self.totalHeight = $0 },
 								 onDateChanged: { viewStore.send(.selectedDate($0))}
 			).frame(height: self.totalHeight)
-		}.debug("CalendarDatePicker")
+		}
 	}
 	
 	public init(store: Store<Date, CalendarDatePickerAction>,

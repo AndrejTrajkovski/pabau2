@@ -57,7 +57,7 @@ public struct CalendarContainer: View {
 				CalendarWrapper(store: self.store)
 				Spacer()
 			}
-		}.debug("Calendar Container")
+		}
 	}
 
 	public init(store: Store<CalendarState, CalendarAction>) {

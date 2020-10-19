@@ -50,6 +50,16 @@ public class CalendarWeekViewController: BaseCalendarViewController {
 }
 
 extension CalendarWeekViewController: JZLongPressViewDelegate {
+	public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndChangeDurationLongPressAt startDate: Date, endDate: Date) {
+		guard let app = editingEvent as? AppointmentEvent else { return }
+		var calApp = app.app
+		updateStartTimeOn(&calApp, startDate)
+		calApp.end_time = endDate.split().hms
+		let newApp = AppointmentEvent(appointment: calApp)
+		viewStore.send(.replaceAppointment(newApp: newApp,
+										   id: app.app.id))
+	}
+	
 	public func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date) {
 		let endDate = Calendar(identifier: .gregorian).date(byAdding: .hour, value: weekView.addNewDurationMins/60, to: startDate)!
 		let newApp = AppointmentEvent(appointment: CalAppointment.dummyInit(start: startDate, end: endDate))
@@ -59,7 +69,7 @@ extension CalendarWeekViewController: JZLongPressViewDelegate {
 	public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date) {
 		guard let app = editingEvent as? AppointmentEvent else { return }
 		var calApp = app.app
-		updateTimeOn(&calApp, startDate)
+		updateStartTimeOn(&calApp, startDate)
 		let newApp = AppointmentEvent(appointment: calApp)
 		viewStore.send(.replaceAppointment(newApp: newApp,
 										   id: app.app.id))

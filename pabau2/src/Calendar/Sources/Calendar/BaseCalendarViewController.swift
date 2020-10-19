@@ -53,7 +53,7 @@ extension BaseCalendarViewController: JZBaseViewDelegate {
 }
 
 extension BaseCalendarViewController {
-	public func updateTimeOn(_ calEvent: inout CalAppointment, _ startDate: Date) {
+	public func updateStartTimeOn(_ calEvent: inout CalAppointment, _ startDate: Date) {
 		let duration = Calendar(identifier: .gregorian).dateComponents([.minute], from: calEvent.start_time, to: calEvent.end_time).minute!
 		let splitNewDate = startDate.split()
 		calEvent.start_date = splitNewDate.ymd

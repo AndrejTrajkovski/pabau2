@@ -53,7 +53,7 @@ extension CalendarViewController: SectionLongPressDelegate {
 			if calEvent.start_date.startOfDay == startDate.startOfDay {
 				maybeUpdateSectionWith(endPageAndSectionIdx, &calEvent)
 			}
-			updateTimeOn(&calEvent, startDate)
+			updateStartTimeOn(&calEvent, startDate)
 			viewStore.send(.replaceAppointment(newApp: AppointmentEvent(appointment: calEvent),
 											   id: calEvent.id))
 		}
