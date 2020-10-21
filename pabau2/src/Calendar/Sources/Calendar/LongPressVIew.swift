@@ -7,6 +7,7 @@ public class CalendarView: SectionWeekView {
 	
 	static let cellId = "CalendarCell"
 	static let columnHeaderId = "ColumnHeader"
+	static let columnBackground = "ColumnBackground"
 	
 	var viewStore: ViewStore<CalendarState, CalendarAction>!
 	public override func registerViewClasses() {
@@ -15,6 +16,7 @@ public class CalendarView: SectionWeekView {
 		collectionView.register(BaseCalendarCell.self,
 								forCellWithReuseIdentifier: Self.cellId)
 		collectionView.register(ColumnHeader.self, forSupplementaryViewOfKind: JZSupplementaryViewKinds.columnHeader, withReuseIdentifier: Self.columnHeaderId)
+		collectionView.register(JZColumnBackground.self, forSupplementaryViewOfKind: JZSupplementaryViewKinds.columnBackground, withReuseIdentifier: Self.columnBackground)
 	}
 
 	public override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -40,6 +42,10 @@ public class CalendarView: SectionWeekView {
 					columnHeader.update(title: "", subtitle: "", color: UIColor.clear)
 				}
 				view = columnHeader
+			}
+		case JZSupplementaryViewKinds.columnBackground:
+			if let columnBackground = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: Self.columnBackground, for: indexPath) as? JZColumnBackground {
+				view = columnBackground
 			}
 		default: view = super.collectionView(collectionView, viewForSupplementaryElementOfKind: kind, at: indexPath)
 		}
