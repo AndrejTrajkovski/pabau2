@@ -14,15 +14,21 @@ public class CalendarViewController: BaseCalendarViewController {
 
 	public override func viewDidLoad() {
 		super.viewDidLoad()
-		calendarView.setupCalendar(setDate: viewStore.state.selectedDate,
-								   events: [:])
-		self.viewStore.publisher.selectedDate.removeDuplicates()
-			.combineLatest(self.viewStore.publisher.appointments.removeDuplicates())
+		calendarView.setupCalendar(setDate: viewStore.state.selectedDate)
+		self.viewStore.publisher.selectedDate
+			.removeDuplicates()
+			.combineLatest(self.viewStore.publisher.appointments.removeDuplicates()
+			.combineLatest(self.viewStore.publisher.calendarType.removeDuplicates()))
 			.receive(on: DispatchQueue.main)
 			.sink(receiveValue: { [weak self] in
 				print("selected date changed", $0)
-			self?.calendarView.updateWeekView(to: $0)
-			self?.calendarView.forceSectionReload(reloadEvents: $1)
+				let date = $0
+				let appointments = $1.0
+				let calType = $1.1
+			    self?.calendarView.updateWeekView(to: date)
+				self?.calendarView.forceSectionReload(reloadEvents: appointments,
+												  sectionIds: [],
+												  sectionKeyPath: keyPath(calType: calType))
 		}).store(in: &self.cancellables)
 	}
 
@@ -34,28 +40,28 @@ public class CalendarViewController: BaseCalendarViewController {
 // MARK: - SectionLongPressDelegate
 extension CalendarViewController: SectionLongPressDelegate {
 	
-	fileprivate func maybeUpdateSectionWith(_ endPageAndSectionIdx: (Int?, Int?), _ calEvent: inout CalAppointment) {
-		let (pageIdxOpt, withinSectionIdxOpt) = endPageAndSectionIdx
-		if let pageIdx = pageIdxOpt,
-		   let withinSectionIdx = withinSectionIdxOpt,
-		   let firstSectionApp = calendarView.getFirstEvent(pageIdx, withinSectionIdx) as? AppointmentEvent
-		{
-			update(&calEvent,
-				   viewStore.state.calendarType,
-				   firstSectionApp.app)
-		}
-	}
+//	fileprivate func maybeUpdateSectionWith(_ endPageAndSectionIdx: (Int?, Int?), _ calEvent: inout CalAppointment) {
+//		let (pageIdxOpt, withinSectionIdxOpt) = endPageAndSectionIdx
+//		if let pageIdx = pageIdxOpt,
+//		   let withinSectionIdx = withinSectionIdxOpt,
+//		   let firstSectionApp = calendarView.getFirstEvent(pageIdx, withinSectionIdx) as? AppointmentEvent
+//		{
+//			update(&calEvent,
+//				   viewStore.state.calendarType,
+//				   firstSectionApp.app)
+//		}
+//	}
 	
 	public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date, endPageAndSectionIdx: (Int?, Int?), startPageAndSectionIdx: (Int?, Int?)) {
 		if let appointmentEvent = editingEvent as? AppointmentEvent {
 			//TODO: Move this logic to reducer
-			var calEvent = appointmentEvent.app
-			if calEvent.start_date.startOfDay == startDate.startOfDay {
-				maybeUpdateSectionWith(endPageAndSectionIdx, &calEvent)
-			}
-			updateStartTimeOn(&calEvent, startDate)
-			viewStore.send(.replaceAppointment(newApp: AppointmentEvent(appointment: calEvent),
-											   id: calEvent.id))
+//			var calEvent = appointmentEvent.app
+//			if calEvent.start_date.startOfDay == startDate.startOfDay {
+//				maybeUpdateSectionWith(endPageAndSectionIdx, &calEvent)
+//			}
+//			updateStartTimeOn(&calEvent, startDate)
+//			viewStore.send(.replaceAppointment(newApp: AppointmentEvent(appointment: calEvent),
+//											   id: calEvent.id))
 		}
 	}
 
@@ -64,36 +70,39 @@ extension CalendarViewController: SectionLongPressDelegate {
 							startDate: Date,
 						 pageAndSectionIdx: (Int?, Int?)) {
 		//TODO: Move this logic to reducer
-		let endDate = Calendar.current.date(byAdding: .hour, value: weekView.addNewDurationMins/60, to: startDate)!
-		var newApp = CalAppointment.dummyInit(start: startDate, end: endDate)
-		maybeUpdateSectionWith(pageAndSectionIdx, &newApp)
-		viewStore.send(.addAppointment(AppointmentEvent(appointment: newApp)))
+//		let endDate = Calendar.current.date(byAdding: .hour, value: weekView.addNewDurationMins/60, to: startDate)!
+//		var newApp = CalAppointment.dummyInit(start: startDate, end: endDate)
+//		maybeUpdateSectionWith(pageAndSectionIdx, &newApp)
+//		viewStore.send(.addAppointment(AppointmentEvent(appointment: newApp)))
 	}
 }
 
 extension CalendarViewController {
 
-	func keyPath(calType: CalendarType) -> AnyHashableKeyPath<CalAppointment> {
+	func keyPath(calType: CalendarType) -> AnyHashableKeyPaths {
+		let appkp = \AppointmentEvent.app
 		switch calType {
 		case .employee:
-			let kpe = \CalAppointment.employeeId
-			return AnyHashableKeyPath(kpe)
+			let empKp = \CalAppointment.employeeId
+			let finalKp = appkp.appending(path: empKp)
+			return AnyHashableKeyPath(finalKp)
 		case .room:
-			let kps = \CalAppointment.roomId
-			return AnyHashableKeyPath(kps)
+			let roomKp = \CalAppointment.roomId
+			let finalKp = appkp.appending(path: roomKp)
+			return AnyHashableKeyPath(finalKp)
 		default: fatalError()
 		}
 	}
-
-	private func update(_ appointment: inout CalAppointment,
-						_ fromApp: CalAppointment,
-						_ keyPath: AnyHashableKeyPath<CalAppointment>) {
+	
+	private func update(_ appointment: inout AppointmentEvent,
+						_ fromApp: AppointmentEvent,
+						_ keyPath: AnyHashableKeyPath<AppointmentEvent>) {
 		keyPath.set(&appointment, keyPath.get(fromApp))
 	}
 	
-	private func update(_ appointment: inout CalAppointment,
+	private func update(_ appointment: inout AppointmentEvent,
 						_ calType: CalendarType,
-						_ fromApp: CalAppointment) {
+						_ fromApp: AppointmentEvent) {
 		update(&appointment,
 			   fromApp,
 			   keyPath(calType: calType))

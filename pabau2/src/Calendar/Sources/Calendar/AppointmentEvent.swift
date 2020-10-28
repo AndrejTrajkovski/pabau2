@@ -2,9 +2,14 @@ import Foundation
 import JZCalendarWeekView
 import Model
 
+@dynamicMemberLookup
 public class AppointmentEvent: JZBaseEvent {
 	public override var debugDescription: String {
 		return "id: \(app.id), employeeId: \(app.employeeId)"
+	}
+	
+	subscript<Value>(dynamicMember keyPath: WritableKeyPath<CalAppointment, Value>) -> Value {
+		app[keyPath: keyPath]
 	}
 	
 	public var app: CalAppointment

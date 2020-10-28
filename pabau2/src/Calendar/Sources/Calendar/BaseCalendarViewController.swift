@@ -32,12 +32,6 @@ public class BaseCalendarViewController: UIViewController {
 
 extension BaseCalendarViewController: JZBaseViewDelegate {
 	
-//	func newSelectedDateFrom(initDate: Date,
-//							 previousSelectedDate: Date,
-//							 numberOfDays: Int) -> Date {
-//
-//	}
-	
 	public func initDateDidChange(_ weekView: JZBaseWeekView, initDate: Date) {
 		print("initDateDidChange: ", initDate)
 		

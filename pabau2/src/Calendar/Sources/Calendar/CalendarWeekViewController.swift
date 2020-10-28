@@ -28,7 +28,7 @@ public class CalendarWeekViewController: BaseCalendarViewController {
 		self.viewStore.publisher.appointments.removeDuplicates()
 			.receive(on: DispatchQueue.main)
 			.sink(receiveValue: { [weak self] in
-				let events = $0.mapValues { $0.flatMap { $0 }}
+				let events = JZWeekViewHelper.getIntraEventsByDate(originalEvents: $0)
 				self?.weekView.forceReload(reloadEvents: events)
 		}).store(in: &self.cancellables)
 	}

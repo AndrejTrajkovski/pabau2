@@ -3,7 +3,6 @@ import ComposableArchitecture
 
 public struct CalendarTypePickerState: Equatable {
 	var isDropdownShown: Bool
-	var appointments: Appointments
 	var calendarType: CalendarType
 }
 
@@ -16,7 +15,6 @@ public let calTypePickerReducer: Reducer<CalendarTypePickerState, CalendarTypePi
 	switch action {
 	case .onSelect(let calType):
 		state.calendarType = calType
-		state.appointments.switchTo(calType: calType)
 		state.isDropdownShown = false
 	case .toggleDropdown:
 		state.isDropdownShown.toggle()

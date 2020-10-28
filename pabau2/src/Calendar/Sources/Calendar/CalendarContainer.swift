@@ -25,12 +25,10 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 		case .addShift: break
 		case .toggleFilters: break
 		case .addAppointment(let newApp):
-			state.appointments.add(newApp: newApp,
-								   calType: state.calendarType)
+			state.appointments.append(newApp)
 		case .replaceAppointment(let newApp, let id):
-			state.appointments.replace(id: id,
-									   app: newApp,
-									   calType: state.calendarType)
+			let idx = state.appointments.firstIndex(where: { $0.app.id == id })
+			idx.map { state.appointments[$0] = newApp }
 		case .userDidSwipePageTo(isNext: let isNext):
 			let daysToAdd = isNext ? state.numOfDays : -state.numOfDays
 			let newDate = state.selectedDate + daysToAdd.days
