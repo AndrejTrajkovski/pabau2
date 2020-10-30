@@ -1,17 +1,26 @@
 import Foundation
 import Model
 import SwiftDate
+import Overture
 
 public struct CalendarState: Equatable {
 	var isDropdownShown: Bool
 	var selectedDate: Date
 	var calendarType: CalendarType
 	var appointments: [AppointmentEvent]
-	var chosenEmployees: [Employee.Id]
-	var chosenRooms: [Room.Id]
+	var chosenEmployeesIds: [Employee.Id]
+	var chosenRoomsIds: [Room.Id]
 	var employees: [Employee.Id: Employee]
 	var rooms: [Room.Id: Room]
 	var locations: [Location.Id: Location]
+	
+	func chosenEmployees() -> [Employee] {
+		chosenEmployeesIds.compactMap { employees[$0] }
+	}
+	
+	func chosenRooms() -> [Room] {
+		chosenRoomsIds.compactMap { rooms[$0] }
+	}
 }
 
 extension CalendarState {
@@ -37,7 +46,7 @@ extension CalendarState {
 		self.employees = Dictionary.init(grouping: Employee.mockEmployees, by: { $0.id }).mapValues(\.first!)
 		self.rooms = Room.mock()
 		self.locations = Location.mock()
-		self.chosenRooms = self.rooms.map(\.key)
-		self.chosenEmployees = self.employees.map(\.key)
+		self.chosenRoomsIds = self.rooms.map(\.key)
+		self.chosenEmployeesIds = self.employees.map(\.key)
 	}
 }

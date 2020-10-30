@@ -1,10 +1,10 @@
-//import Foundation
-//import JZCalendarWeekView
-//import Model
+import Foundation
+import JZCalendarWeekView
+import Model
 //
-//enum AppointmentsAdapter: Equatable {
-//	case employee([Date: [Employee.Id: [AppointmentEvent]]])
-//	case room([Date: [Room.Id: [AppointmentEvent]]])
+//enum Appointments: Equatable {
+//	case employee(AppointmentsBy<Employee>)
+//	case room(AppointmentsBy<Room>)
 //	case week([Date: [AppointmentEvent]])
 //}
 //
@@ -109,3 +109,16 @@
 ////let appts = appointments.map(AppointmentEvent.init)
 ////grouper.update(events: appts)
 ////reloadData()
+//
+//struct AppointmentsBy<SectionHeader: Identifiable> {
+//	let appointments: [Date: [SectionHeader.ID: [AppointmentEvent]]]
+//	let sections: [SectionHeader]
+//
+//	init(appointments: [AppointmentEvent]) {
+//
+//	}
+//}
+
+//typealias AppointmentsBy<Section: Identifiable> = [Date: [Section.ID: [AppointmentEvent]]]
+//typealias AppointmentsByEmployee = AppointmentsBy<Employee>
+//typealias AppointmentsByRoom = AppointmentsBy<Room>

@@ -28,9 +28,9 @@ enum ColumnHeaderAdapter {
 			return ColumnHeaderViewModel(title: date, subtitle: dayOfWeek, color: UIColor.clear)
 		}
 	}
-
+	
 	static func viewModel(room: Room?,
-				   location: Location?) -> ColumnHeaderViewModel {
+						  location: Location?) -> ColumnHeaderViewModel {
 		let color = location?.color != nil ? UIColor.fromHex(location!.color) : UIColor.clear
 		return ColumnHeaderViewModel(title: room?.name ?? "unknown",
 									 subtitle: location?.name ?? "unknown",

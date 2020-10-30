@@ -34,13 +34,13 @@ public class CalendarView: SectionWeekView {
 		switch kind {
 		case JZSupplementaryViewKinds.columnHeader:
 			if let columnHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: Self.columnHeaderId, for: indexPath) as? ColumnHeader {
-				if let firstSectionApp = getFirstEventAt(indexPath.section) as? AppointmentEvent {
-					let viewModel = ColumnHeaderAdapter.makeViewModel(
-						firstSectionApp, viewStore.state.calendarType, viewStore.state.locations, viewStore.state.rooms, viewStore.state.employees, Calendar.current.startOfDay(for: firstSectionApp.startDate))
-					columnHeader.update(viewModel: viewModel)
-				} else {
-					columnHeader.update(title: "", subtitle: "", color: UIColor.clear)
-				}
+//				if let firstSectionApp = getFirstEventAt(indexPath.section) as? AppointmentEvent {
+//					let viewModel = ColumnHeaderAdapter.makeViewModel(
+//						firstSectionApp, viewStore.state.calendarType, viewStore.state.locations, viewStore.state.rooms, viewStore.state.employees, Calendar.current.startOfDay(for: firstSectionApp.startDate))
+//					columnHeader.update(viewModel: viewModel)
+//				} else {
+//					columnHeader.update(title: "", subtitle: "", color: UIColor.clear)
+//				}
 				view = columnHeader
 			}
 		case JZSupplementaryViewKinds.columnBackground:

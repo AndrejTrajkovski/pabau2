@@ -17,9 +17,7 @@ public struct CalendarWrapper: View {
 }
 
 struct CalendarSwiftUI: UIViewControllerRepresentable {
-	
 	let viewStore: ViewStore<CalendarState, CalendarAction>
-	
 	public func makeUIViewController(context: Context) -> CalendarViewController {
 		print("makeUIViewController")
 		return CalendarViewController(viewStore)
