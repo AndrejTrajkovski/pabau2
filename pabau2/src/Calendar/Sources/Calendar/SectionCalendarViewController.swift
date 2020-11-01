@@ -11,7 +11,6 @@ public class SectionCalendarViewController: BaseCalendarViewController {
 	
 	override init(_ viewStore: ViewStore<CalendarState, CalendarAction>) {
 		super.init(viewStore)
-		self.calendarView.viewStore = viewStore
 	}
 
 	public override func viewDidLoad() {

@@ -99,13 +99,13 @@ extension SectionWeekViewDataSource: SectionDataSource {
 		}
 		return (sectionDate, sectionIds[pageSectionIdx])
 	}
-	
+
 	func getEvents(at section: Int) -> [Event] {
 		let(optDate, optSectionId) = getDateAndSectionId(for: section)
 		guard let date = optDate, let sectionId = optSectionId else { return [] }
 		return allEventsBySection[date]?[sectionId] ?? []
 	}
-	
+
 	func getCurrentEvent(at indexPath: IndexPath) -> JZBaseEvent? {
 		return getEvents(at: indexPath.section)[safe: indexPath.item]
 	}

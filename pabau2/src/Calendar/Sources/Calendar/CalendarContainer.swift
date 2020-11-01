@@ -21,7 +21,9 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 	.init { state, action, _ in
 		switch action {
 		case .datePicker: break
-		case .calTypePicker: break
+		case .calTypePicker(.onSelect(let calTypeId)):
+			state.switchTo(id: calTypeId)
+		case .calTypePicker(.toggleDropdown): break
 		case .addShift: break
 		case .toggleFilters: break
 		case .addAppointment(let newApp):
