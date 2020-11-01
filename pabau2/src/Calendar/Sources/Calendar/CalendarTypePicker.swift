@@ -7,14 +7,14 @@ public struct CalendarTypePickerState: Equatable {
 }
 
 public enum CalendarTypePickerAction {
-	case onSelect(CalendarType)
+	case onSelect(CalendarType.Id)
 	case toggleDropdown
 }
 
 public let calTypePickerReducer: Reducer<CalendarTypePickerState, CalendarTypePickerAction, CalendarEnvironment> = .init { state, action, _ in
 	switch action {
-	case .onSelect(let calType):
-		state.calendarType = calType
+	case .onSelect(let calTypeId):
+//		state.calendarType = calType
 		state.isDropdownShown = false
 	case .toggleDropdown:
 		state.isDropdownShown.toggle()
@@ -27,32 +27,32 @@ struct CalendarTypePicker: View {
 	
 	var body: some View {
 		WithViewStore(store) { viewStore in
-			CalendarTypeRow(calendarType: viewStore.state.calendarType,
+			CalendarTypeRow(id: viewStore.state.calendarType.id,
 							isSelected: true,
 							onTap: { _ in
 								viewStore.send(.toggleDropdown)
-			}).popover(isPresented: .constant(viewStore.state.isDropdownShown)) {
-				ForEach(CalendarType.allCases, id: \.self) { calType in
-					CalendarTypeRow(calendarType: calType,
-									isSelected: false,
-									onTap: {
-										viewStore.send(.onSelect($0))
-					})
-					Divider()
-				}.background(Color(hex: "F9F9F9"))
-			}
+							}).popover(isPresented: .constant(viewStore.state.isDropdownShown)) {
+								ForEach(CalendarType.allIds, id: \.self) { id in
+									CalendarTypeRow(id: id,
+													isSelected: false,
+													onTap: {
+														viewStore.send(.onSelect($0))
+													})
+									Divider()
+								}.background(Color(hex: "F9F9F9"))
+							}
 		}
 	}
 }
 
 struct CalendarTypeRow: View {
-	let calendarType: CalendarType
+	let id: CalendarType.Id
 	var isSelected: Bool
-	let onTap: (CalendarType) -> Void
+	let onTap: (CalendarType.Id) -> Void
 
 	var body: some View {
 		HStack {
-			Text(self.calendarType.title)
+			Text(CalendarType.titleFor(id: id))
 				.bold()
 				.padding()
 			if self.isSelected {
@@ -60,7 +60,7 @@ struct CalendarTypeRow: View {
 					.foregroundColor(.blue)
 			}
 		}.onTapGesture {
-			self.onTap(self.calendarType)
+			self.onTap(self.id)
 		}
 		.frame(height: 48)
 	}

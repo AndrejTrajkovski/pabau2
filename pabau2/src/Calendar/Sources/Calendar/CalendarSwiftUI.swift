@@ -18,12 +18,12 @@ public struct CalendarWrapper: View {
 
 struct CalendarSwiftUI: UIViewControllerRepresentable {
 	let viewStore: ViewStore<CalendarState, CalendarAction>
-	public func makeUIViewController(context: Context) -> CalendarViewController {
+	public func makeUIViewController(context: Context) -> SectionCalendarViewController {
 		print("makeUIViewController")
-		return CalendarViewController(viewStore)
+		return SectionCalendarViewController(viewStore)
 	}
 
-	public func updateUIViewController(_ uiViewController: CalendarViewController, context: Context) {
+	public func updateUIViewController(_ uiViewController: SectionCalendarViewController, context: Context) {
 	}
 }
 

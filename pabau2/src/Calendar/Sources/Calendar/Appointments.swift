@@ -1,7 +1,8 @@
 import Foundation
 import JZCalendarWeekView
 import Model
-//
+import ComposableArchitecture
+
 //enum Appointments: Equatable {
 //	case employee(AppointmentsBy<Employee>)
 //	case room(AppointmentsBy<Room>)
@@ -110,15 +111,46 @@ import Model
 ////grouper.update(events: appts)
 ////reloadData()
 //
-//struct AppointmentsBy<SectionHeader: Identifiable> {
-//	let appointments: [Date: [SectionHeader.ID: [AppointmentEvent]]]
-//	let sections: [SectionHeader]
-//
-//	init(appointments: [AppointmentEvent]) {
-//
-//	}
-//}
 
 //typealias AppointmentsBy<Section: Identifiable> = [Date: [Section.ID: [AppointmentEvent]]]
+
+struct AppointmentsByReducer<Section: Identifiable & Equatable> {
+	let reducer = Reducer<EventsBy<AppointmentEvent, Section>, SectionCalendarAction, Any> { state, action, _ in
+			switch action {
+			case .addAppointment(startDate: let startDate, durationMins: let durationMins, dropIndexes: let dropIndexes):
+				fatalError("TODO")
+			case .editAppointment(startDate: let startDate, startIndexes: let startIndexes, dropIndexes: let dropIndexes):
+				fatalError("TODO")
+			}
+			return .none
+	}
+}
+
+//	fileprivate func maybeUpdateSectionWith(_ endPageAndSectionIdx: (Int?, Int?), _ calEvent: inout CalAppointment) {
+//		let (pageIdxOpt, withinSectionIdxOpt) = endPageAndSectionIdx
+//		if let pageIdx = pageIdxOpt,
+//		   let withinSectionIdx = withinSectionIdxOpt,
+//		   let firstSectionApp = calendarView.getFirstEvent(pageIdx, withinSectionIdx) as? AppointmentEvent
+//		{
+//			update(&calEvent,
+//				   viewStore.state.calendarType,
+//				   firstSectionApp.app)
+//		}
+//	}
+
+//	private func update(_ appointment: inout AppointmentEvent,
+//						_ fromApp: AppointmentEvent,
+//						_ keyPath: AnyHashableKeyPath<AppointmentEvent>) {
+//		keyPath.set(&appointment, keyPath.get(fromApp))
+//	}
+//
+//	private func update(_ appointment: inout AppointmentEvent,
+//						_ calType: CalendarType,
+//						_ fromApp: AppointmentEvent) {
+//		update(&appointment,
+//			   fromApp,
+//			   keyPath(calType: calType))
+//	}
+
 //typealias AppointmentsByEmployee = AppointmentsBy<Employee>
 //typealias AppointmentsByRoom = AppointmentsBy<Room>

@@ -3,7 +3,7 @@ import UIKit
 import Model
 import ComposableArchitecture
 
-public class CalendarView: SectionWeekView {
+public class SectionCalendarView: SectionWeekView {
 	
 	static let cellId = "CalendarCell"
 	static let columnHeaderId = "ColumnHeader"

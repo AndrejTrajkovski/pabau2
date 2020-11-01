@@ -25,10 +25,12 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 		case .addShift: break
 		case .toggleFilters: break
 		case .addAppointment(let newApp):
-			state.appointments.append(newApp)
+			fatalError("todo")
+//			state.appointments.append(newApp)
 		case .replaceAppointment(let newApp, let id):
-			let idx = state.appointments.firstIndex(where: { $0.app.id == id })
-			idx.map { state.appointments[$0] = newApp }
+			fatalError("todo")
+//			let idx = state.appointments.firstIndex(where: { $0.app.id == id })
+//			idx.map { state.appointments[$0] = newApp }
 		case .userDidSwipePageTo(isNext: let isNext):
 			let daysToAdd = isNext ? state.numOfDays : -state.numOfDays
 			let newDate = state.selectedDate + daysToAdd.days
@@ -49,7 +51,7 @@ public struct CalendarContainer: View {
 						state: { $0.selectedDate },
 						action: { .datePicker($0)}
 					),
-					isWeekView: viewStore.state.calendarType == .week
+					isWeekView: viewStore.state.calendarType.id == CalendarType.Id(3)
 				)
 				.padding(0)
 				CalendarWrapper(store: self.store)

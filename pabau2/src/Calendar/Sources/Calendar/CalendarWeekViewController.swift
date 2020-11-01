@@ -25,12 +25,12 @@ public class CalendarWeekViewController: BaseCalendarViewController {
 				}
 			}).store(in: &self.cancellables)
 		
-		self.viewStore.publisher.appointments.removeDuplicates()
-			.receive(on: DispatchQueue.main)
-			.sink(receiveValue: { [weak self] in
-				let events = JZWeekViewHelper.getIntraEventsByDate(originalEvents: $0)
-				self?.weekView.forceReload(reloadEvents: events)
-		}).store(in: &self.cancellables)
+//		self.viewStore.publisher.appointments.removeDuplicates()
+//			.receive(on: DispatchQueue.main)
+//			.sink(receiveValue: { [weak self] in
+//				let events = JZWeekViewHelper.getIntraEventsByDate(originalEvents: $0)
+//				self?.weekView.forceReload(reloadEvents: events)
+//		}).store(in: &self.cancellables)
 	}
 
 	public override func loadView() {

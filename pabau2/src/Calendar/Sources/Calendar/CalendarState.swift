@@ -7,7 +7,7 @@ public struct CalendarState: Equatable {
 	var isDropdownShown: Bool
 	var selectedDate: Date
 	var calendarType: CalendarType
-	var appointments: [AppointmentEvent]
+//	var appointments: Appointments
 	var chosenEmployeesIds: [Employee.Id]
 	var chosenRoomsIds: [Room.Id]
 	var employees: [Employee.Id: Employee]
@@ -20,6 +20,24 @@ public struct CalendarState: Equatable {
 	
 	func chosenRooms() -> [Room] {
 		chosenRoomsIds.compactMap { rooms[$0] }
+	}
+	
+	mutating func switchTo(id: CalendarType.Id) {
+		switch id {
+		case 1: //employee
+			let flatAppts = self.calendarType.flatten()
+			let keyPath = (\AppointmentEvent.app).appending(path: \.employeeId)
+			let appointments = EventsBy<AppointmentEvent, Employee>.init(events: flatAppts, sections: chosenEmployees(), keyPath: keyPath)
+			self.calendarType = CalendarType.employee(appointments)
+		case 2: //room
+			let flatAppts = self.calendarType.flatten()
+			let keyPath = (\AppointmentEvent.app).appending(path: \.roomId)
+			let appointments = EventsBy<AppointmentEvent, Room>.init(events: flatAppts, sections: chosenRooms(), keyPath: keyPath)
+			self.calendarType = CalendarType.room(appointments)
+		case 3: //week
+			break
+		default: break
+		}
 	}
 }
 
@@ -38,12 +56,13 @@ extension CalendarState {
 }
 
 extension CalendarState {
-	public init(calType: CalendarType) {
+	public init() {
 		self.isDropdownShown = false
 		self.selectedDate = Calendar(identifier: .gregorian).startOfDay(for: Date())
-		self.appointments = CalAppointment.makeDummy().map(AppointmentEvent.init(appointment:))
-		self.calendarType = calType
-		self.employees = Dictionary.init(grouping: Employee.mockEmployees, by: { $0.id }).mapValues(\.first!)
+	    let apps = CalAppointment.makeDummy().map(AppointmentEvent.init(appointment:))
+		let employees = Dictionary.init(grouping: Employee.mockEmployees, by: { $0.id }).mapValues(\.first!)
+		self.calendarType = CalendarType.initEmployee(events: apps, sections: employees.values.map({ $0 }))
+		self.employees = employees
 		self.rooms = Room.mock()
 		self.locations = Location.mock()
 		self.chosenRoomsIds = self.rooms.map(\.key)
