@@ -12,8 +12,6 @@ public class SectionCalendarViewController: BaseCalendarViewController {
 	override init(_ viewStore: ViewStore<CalendarState, CalendarAction>) {
 		super.init(viewStore)
 		self.calendarView.viewStore = viewStore
-		self.calendarView.sectionsDataSource =
-		SectionWeekViewDataSource<AppointmentEvent, Employee.Id>.init()
 	}
 
 	public override func viewDidLoad() {
@@ -37,18 +35,22 @@ public class SectionCalendarViewController: BaseCalendarViewController {
 				switch calType {
 					case .employee(let apps):
 						let dataSource = SectionWeekViewDataSource<AppointmentEvent, Employee.Id>.init()
+						
+						self?.sectionDataSource = dataSource
+						self?.calendarView.sectionsDataSource = dataSource
+						
 						dataSource.update(date,
 										  employeesIds,
 										  apps.appointments)
-						self?.sectionDataSource = dataSource
-						self?.calendarView.sectionsDataSource = dataSource
 					case .room(let apps):
 						let dataSource = SectionWeekViewDataSource<AppointmentEvent, Room.Id>.init()
+						
+						self?.sectionDataSource = dataSource
+						self?.calendarView.sectionsDataSource = dataSource
+						
 						dataSource.update(date,
 										  roomIds,
 										  apps.appointments)
-						self?.sectionDataSource = dataSource
-						self?.calendarView.sectionsDataSource = dataSource
 					case .week(_): fatalError()
 				}
 				self?.calendarView.forceReload()
