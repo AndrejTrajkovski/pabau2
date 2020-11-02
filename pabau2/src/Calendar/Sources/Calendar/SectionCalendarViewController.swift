@@ -20,7 +20,12 @@ public class SectionCalendarViewController<Event: JZBaseEvent, Section: Identifi
 		super.viewDidLoad()
 		//		let chosenSections = self.viewStore.publisher.chosenEmployeesIds.removeDuplicates()
 		//			.combineLatest(self.viewStore.publisher.chosenRoomsIds.removeDuplicates())
+		
 		calendarView.setupCalendar(setDate: viewStore.state.selectedDate)
+		sectionDataSource.update(viewStore.state.selectedDate,
+								 viewStore.state.chosenSectionsIds,
+								 viewStore.state.appointments.appointments)
+		calendarView.forceReload()
 		self.viewStore.publisher.selectedDate
 			.removeDuplicates()
 			.combineLatest(
@@ -47,7 +52,7 @@ public class SectionCalendarViewController<Event: JZBaseEvent, Section: Identifi
 	public override func loadView() {
 		view = setupCalendarView()
 	}
-	
+
 	required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
