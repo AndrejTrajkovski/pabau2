@@ -3,7 +3,7 @@ import UIKit
 import Model
 import ComposableArchitecture
 
-public class SectionCalendarView<E: JZBaseEvent, SectionId: Hashable>: SectionWeekView <E, SectionId>{
+public class SectionCalendarView<E: JZBaseEvent, SectionId: Hashable>: SectionWeekView <E, SectionId> {
 	
 	let cellId = "CalendarCell"
 	let columnHeaderId = "ColumnHeader"
@@ -40,6 +40,7 @@ public class SectionCalendarView<E: JZBaseEvent, SectionId: Hashable>: SectionWe
 //				} else {
 //					columnHeader.update(title: "", subtitle: "", color: UIColor.clear)
 //				}
+				let sectionId = sectionsDataSource!.sectionId(for: indexPath.section)
 				view = columnHeader
 			}
 		case JZSupplementaryViewKinds.columnBackground:

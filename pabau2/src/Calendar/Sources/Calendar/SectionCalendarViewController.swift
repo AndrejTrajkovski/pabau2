@@ -18,9 +18,6 @@ public class SectionCalendarViewController<Event: JZBaseEvent, Section: Identifi
 	
 	public override func viewDidLoad() {
 		super.viewDidLoad()
-		//		let chosenSections = self.viewStore.publisher.chosenEmployeesIds.removeDuplicates()
-		//			.combineLatest(self.viewStore.publisher.chosenRoomsIds.removeDuplicates())
-		
 		calendarView.setupCalendar(setDate: viewStore.state.selectedDate)
 		sectionDataSource.update(viewStore.state.selectedDate,
 								 viewStore.state.chosenSectionsIds,
