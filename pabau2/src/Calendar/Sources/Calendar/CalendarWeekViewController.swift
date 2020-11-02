@@ -8,6 +8,19 @@ import Combine
 
 public class CalendarWeekViewController: BaseCalendarViewController {
 	
+	let viewStore: ViewStore<CalendarState, CalendarAction>
+	
+	init(_ viewStore: ViewStore<CalendarState, CalendarAction>) {
+		self.viewStore = viewStore
+		super.init(onFlipPage: {
+			viewStore.send(.userDidSwipePageTo(isNext: $0))
+		})
+	}
+	
+	required init?(coder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
+	}
+	
 	public override func viewDidLoad() {
 		super.viewDidLoad()
 		weekView.setupCalendar(numOfDays: 7,

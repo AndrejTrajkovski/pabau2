@@ -2,6 +2,7 @@ import Foundation
 import Model
 import SwiftDate
 import Overture
+import CasePaths
 
 public struct CalendarState: Equatable {
 	var isDropdownShown: Bool
@@ -51,6 +52,31 @@ extension CalendarState {
 		set {
 			self.isDropdownShown = newValue.isDropdownShown
 			self.calendarType = newValue.calendarType
+		}
+	}
+}
+
+extension CalendarState {
+
+	var employeeSectionState: CalendarSectionViewState<AppointmentEvent, Employee>? {
+		get {
+			guard let groupAppointments = extract(case: CalendarType.employee, from: self.calendarType) else { return nil }
+			return CalendarSectionViewState<AppointmentEvent, Employee>(
+				selectedDate: selectedDate,
+				appointments: groupAppointments,
+				chosenSectionsIds: chosenEmployeesIds,
+				sections: employees)
+		}
+	}
+
+	var roomSectionState: CalendarSectionViewState<AppointmentEvent, Room>? {
+		get {
+			guard let groupAppointments = extract(case: CalendarType.room, from: self.calendarType) else { return nil }
+			return CalendarSectionViewState<AppointmentEvent, Room>(
+				selectedDate: selectedDate,
+				appointments: groupAppointments,
+				chosenSectionsIds: chosenRoomsIds,
+				sections: rooms)
 		}
 	}
 }

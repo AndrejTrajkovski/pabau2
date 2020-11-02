@@ -7,12 +7,12 @@ import ComposableArchitecture
 import Combine
 
 public class BaseCalendarViewController: UIViewController {
-
-	let viewStore: ViewStore<CalendarState, CalendarAction>
-	var cancellables: Set<AnyCancellable> = []
 	
-	init(_ viewStore: ViewStore<CalendarState, CalendarAction>) {
-		self.viewStore = viewStore
+	var cancellables: Set<AnyCancellable> = []
+	var onFlipPage: (Bool) -> Void
+	
+	init(onFlipPage: @escaping (Bool) -> Void) {
+		self.onFlipPage = onFlipPage
 		super.init(nibName: nil, bundle: nil)
 	}
 
@@ -34,11 +34,10 @@ extension BaseCalendarViewController: JZBaseViewDelegate {
 	
 	public func initDateDidChange(_ weekView: JZBaseWeekView, initDate: Date) {
 		print("initDateDidChange: ", initDate)
-		
 	}
 	
 	public func userDidFlipPage(_ weekView: JZBaseWeekView, isNextPage: Bool) {
-		viewStore.send(.userDidSwipePageTo(isNext: isNextPage))
+		self.onFlipPage(isNextPage)
 	}
 
 	public func areNotSame(date1: Date, date2: Date) -> Bool {
