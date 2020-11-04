@@ -5,12 +5,12 @@ import SwiftDate
 import Util
 import ComposableArchitecture
 
-public class SectionCalendarViewController<Event: JZBaseEvent, Section: Identifiable & Equatable>: BaseCalendarViewController {
+public class SectionCalendarViewController<Event: JZBaseEvent, Subsection: Identifiable & Equatable>: BaseCalendarViewController {
 	
-	var sectionDataSource: SectionWeekViewDataSource<Event, Section.ID>!
-	let viewStore: ViewStore<CalendarSectionViewState<Event, Section>, CalendarAction>
-	init(_ viewStore: ViewStore<CalendarSectionViewState<Event, Section>, CalendarAction>) {
-		let dataSource = SectionWeekViewDataSource<Event, Section.ID>.init()
+	var sectionDataSource: SectionWeekViewDataSource<Event, Location, Subsection>!
+	let viewStore: ViewStore<CalendarSectionViewState<Event, Subsection>, CalendarAction>
+	init(_ viewStore: ViewStore<CalendarSectionViewState<Event, Subsection>, CalendarAction>) {
+		let dataSource = SectionWeekViewDataSource<Event, Location,Subsection>.init()
 		self.sectionDataSource = dataSource
 		self.viewStore = viewStore
 		super.init(onFlipPage: { viewStore.send(.userDidSwipePageTo(isNext: $0)) })
@@ -19,31 +19,48 @@ public class SectionCalendarViewController<Event: JZBaseEvent, Section: Identifi
 	public override func viewDidLoad() {
 		super.viewDidLoad()
 		calendarView.setupCalendar(setDate: viewStore.state.selectedDate)
-		sectionDataSource.update(viewStore.state.selectedDate,
-								 viewStore.state.chosenSectionsIds,
-								 viewStore.state.appointments.appointments)
-		calendarView.forceReload()
-		self.viewStore.publisher.selectedDate
-			.removeDuplicates()
+//		sectionDataSource.update(viewStore.state.selectedDate,
+//								 viewStore.state.chosenSections(),
+//								 viewStore.state.appointments.appointments)
+//		calendarView.forceReload()
+		self.viewStore.publisher.selectedDate.removeDuplicates()
 			.combineLatest(
 				self.viewStore.publisher.appointments.removeDuplicates()
-					.combineLatest(
-						self.viewStore.publisher.chosenSectionsIds.removeDuplicates()
-					)
+			).combineLatest(
+				self.viewStore.publisher.chosenSectionsIds.removeDuplicates()
+			).combineLatest(
+				self.viewStore.publisher.chosenLocationsIds.removeDuplicates()
 			)
 			.receive(on: DispatchQueue.main)
 			.sink(receiveValue: { [weak self] in
-				print("selected date changed", $0)
-				let date = $0
-				let appointments = $1.0
-				let sectionIds = $1.1
-				self?.calendarView.updateWeekView(to: date)
-				self?.sectionDataSource.update(date,
-											   sectionIds,
-											   appointments.appointments)
-				self?.calendarView.forceReload()
+				guard let self = self else { return }
+				let date = $0.0.0.0
+				let events = $0.0.0.1
+				let subsections = $0.0.1
+				let chosenLocationsIds = $0.1
+				let locations = chosenLocationsIds.compactMap {
+					self.viewStore.state.locations[id: $0]
+				}
+//				self.reload(selectedDate: date,
+//							locations: locations,
+//							subsections: <#T##[Location.ID : [Equatable & Identifiable]]#>, events: <#T##[Date : [Location.ID : [Hashable : [Event]]]]#>)
+				
 			}).store(in: &self.cancellables)
 		//		self.viewStore.publisher.calendarType.removeDuplicates())
+	}
+	
+	func reload(
+		selectedDate: Date,
+		locations: [Location],
+		subsections: [Location.ID: [Subsection]],
+		events: [Date: [Location.ID: [Subsection.ID: [Event]]]]
+	) {
+		calendarView.updateWeekView(to: selectedDate)
+		sectionDataSource.update(selectedDate,
+									  locations,
+									  subsections,
+									  events)
+		calendarView.forceReload()
 	}
 	
 	public override func loadView() {
@@ -57,6 +74,19 @@ public class SectionCalendarViewController<Event: JZBaseEvent, Section: Identifi
 
 // MARK: - SectionLongPressDelegate
 extension SectionCalendarViewController: SectionLongPressDelegate {
+	public func weekView<SectionId, SubsectionId>(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date, pageAndSectionIdx: (Date?, SectionId?, SubsectionId?)) where SectionId : Hashable, SubsectionId : Hashable {
+		print(pageAndSectionIdx)
+	}
+	
+	public func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date, pageAndSectionIdx: (Date?, Location.ID?, Subsection.ID?)) {
+		
+	}
+	
+	public func weekView<Event, SectionId, SubsectionId>(_ weekView: JZLongPressWeekView, editingEvent: Event, didEndMoveLongPressAt startDate: Date, endPageAndSectionIdx: (Date?, SectionId?, SubsectionId?), startPageAndSectionIdx: (Date?, SectionId?, SubsectionId?)) where Event : JZBaseEvent, SectionId : Hashable, SubsectionId : Hashable {
+		print(startPageAndSectionIdx)
+		print(endPageAndSectionIdx)
+	}
+	
 	
 	public func weekView(_ weekView: JZLongPressWeekView,
 						 editingEvent: JZBaseEvent,
@@ -89,12 +119,12 @@ extension SectionCalendarViewController: SectionLongPressDelegate {
 
 extension SectionCalendarViewController {
 	
-	var calendarView: SectionCalendarView<Event, Section.ID> {
-		return view as! SectionCalendarView<Event, Section.ID>
+	var calendarView: SectionCalendarView<Event, Subsection> {
+		return view as! SectionCalendarView<Event, Subsection>
 	}
 	
-	open func setupCalendarView() -> SectionCalendarView<Event, Section.ID> {
-		let calendarView = SectionCalendarView<Event, Section.ID>.init(frame: .zero)
+	open func setupCalendarView() -> SectionCalendarView<Event, Subsection> {
+		let calendarView = SectionCalendarView<Event, Subsection>.init(frame: .zero)
 		calendarView.sectionsDataSource = sectionDataSource
 		calendarView.baseDelegate = self
 		calendarView.longPressDataSource = self

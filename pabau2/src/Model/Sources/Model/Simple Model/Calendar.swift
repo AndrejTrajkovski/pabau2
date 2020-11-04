@@ -215,7 +215,7 @@ extension CalAppointment {
 									  employeeId:
 										Employee.mockEmployees.map(\.id).randomElement()!,
 									  employeeInitials: nil,
-									  locationId: Location.mock().randomElement()!.key,
+									  locationId: Location.mock().randomElement()!.id,
 									  service: service!.0,
 									  serviceColor: service!.1,
 									  customerName: "Andrej",

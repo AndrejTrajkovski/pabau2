@@ -54,37 +54,37 @@ extension Employee {
 					  name: "Dr. Jekil",
 					  avatarUrl: "asd",
 					  pin: 1234,
-					  locationId: Location.mock().randomElement()!.key.rawValue
+					  locationId: Location.mock().randomElement()!.id.rawValue
 		),
 		Employee.init(id: 3,
 					  name: "Michael Jordan",
 					  avatarUrl: "",
 					  pin: 1234,
-					  locationId: Location.mock().randomElement()!.key.rawValue
+					  locationId: Location.mock().randomElement()!.id.rawValue
 		),
 		Employee.init(id: 4,
 					  name: "Kobe Bryant",
 					  avatarUrl: "",
 					  pin: 1234,
-					  locationId: Location.mock().randomElement()!.key.rawValue
+					  locationId: Location.mock().randomElement()!.id.rawValue
 		),
 		Employee.init(id: 5,
 					  name: "LeBron James",
 					  avatarUrl: "",
 					  pin: 1234,
-					  locationId: Location.mock().randomElement()!.key.rawValue
+					  locationId: Location.mock().randomElement()!.id.rawValue
 		),
 		Employee.init(id: 6,
 					  name: "Britney Spears",
 					  avatarUrl: "",
 					  pin: 1234,
-					  locationId: Location.mock().randomElement()!.key.rawValue
+					  locationId: Location.mock().randomElement()!.id.rawValue
 		),
 		Employee.init(id: 7,
 					  name: "Dr. Who",
 					  avatarUrl: "",
 					  pin: 1234,
-					  locationId: Location.mock().randomElement()!.key.rawValue
+					  locationId: Location.mock().randomElement()!.id.rawValue
 		)
 	]
 	

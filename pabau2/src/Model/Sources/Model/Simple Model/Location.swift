@@ -29,18 +29,18 @@ public struct Location: Codable, Identifiable, Equatable {
 extension Location {
 	
 	public static func randomId() -> Location.Id {
-		mock().randomElement()!.key
+		mock().randomElement()!.id
 	}
 	
-	public static func mock() -> [Location.Id: Location] {
+	public static func mock() -> [Location] {
 		[
-			Location.Id(1): Location(id: 1, name: "Leicester", color: "#FF0000"),
-			Location.Id(2): Location(id: 2, name: "London", color: "#FF00FF"),
-			Location.Id(3): Location(id: 3, name: "Aston Villa", color: "#800080"),
-			Location.Id(4): Location(id: 4, name: "Everton", color: "#00FF00"),
-			Location.Id(5): Location(id: 5, name: "Portsmouth", color: "#FFB6C1"),
-			Location.Id(6): Location(id: 6, name: "Skopje", color: "#FFFF00"),
-			Location.Id(7): Location(id: 7, name: "Shuto Orizari", color: "#9932CC")
+			Location(id: 1, name: "Leicester", color: "#FF0000"),
+			Location(id: 2, name: "London", color: "#FF00FF"),
+			Location(id: 3, name: "Aston Villa", color: "#800080"),
+			Location(id: 4, name: "Everton", color: "#00FF00"),
+			Location(id: 5, name: "Portsmouth", color: "#FFB6C1"),
+			Location(id: 6, name: "Skopje", color: "#FFFF00"),
+			Location(id: 7, name: "Shuto Orizari", color: "#9932CC")
 		]
 	}
 }

@@ -3,37 +3,39 @@ import Model
 import SwiftDate
 import Overture
 import CasePaths
+import ComposableArchitecture
 
 public struct CalendarState: Equatable {
 	var isDropdownShown: Bool
 	var selectedDate: Date
 	var calendarType: CalendarType
-//	var appointments: Appointments
+	//	var appointments: Appointments
 	var chosenEmployeesIds: [Employee.Id]
 	var chosenRoomsIds: [Room.Id]
-	var employees: [Employee.Id: Employee]
-	var rooms: [Room.Id: Room]
-	var locations: [Location.Id: Location]
+	var chosenLocationsIds: [Location.Id]
 	
-	func chosenEmployees() -> [Employee] {
-		chosenEmployeesIds.compactMap { employees[$0] }
-	}
-	
-	func chosenRooms() -> [Room] {
-		chosenRoomsIds.compactMap { rooms[$0] }
-	}
+	var employees: IdentifiedArrayOf<Employee>
+	var rooms: IdentifiedArrayOf<Room>
+	var locations: IdentifiedArrayOf<Location>
 	
 	mutating func switchTo(id: CalendarType.Id) {
+		let locationKeyPath: KeyPath<AppointmentEvent, Location.ID> = (\AppointmentEvent.app).appending(path: \CalAppointment.locationId)
 		switch id {
 		case 1: //employee
 			let flatAppts = self.calendarType.flatten()
 			let keyPath = (\AppointmentEvent.app).appending(path: \.employeeId)
-			let appointments = EventsBy<AppointmentEvent, Employee>.init(events: flatAppts, sections: chosenEmployees(), keyPath: keyPath)
+			let appointments = EventsBy<AppointmentEvent, Employee>.init(events: flatAppts,
+																		 subsections: employees.elements,
+																		 sectionKeypath: locationKeyPath,
+																		 subsKeypath: keyPath)
 			self.calendarType = CalendarType.employee(appointments)
 		case 2: //room
 			let flatAppts = self.calendarType.flatten()
 			let keyPath = (\AppointmentEvent.app).appending(path: \.roomId)
-			let appointments = EventsBy<AppointmentEvent, Room>.init(events: flatAppts, sections: chosenRooms(), keyPath: keyPath)
+			let appointments = EventsBy<AppointmentEvent, Room>.init(events: flatAppts,
+																	 subsections: rooms.elements,
+																	 sectionKeypath: locationKeyPath,
+																	 subsKeypath: keyPath)
 			self.calendarType = CalendarType.room(appointments)
 		case 3: //week
 			break
@@ -43,7 +45,7 @@ public struct CalendarState: Equatable {
 }
 
 extension CalendarState {
-
+	
 	var calTypePicker: CalendarTypePickerState {
 		get {
 			CalendarTypePickerState(isDropdownShown: isDropdownShown,
@@ -57,26 +59,32 @@ extension CalendarState {
 }
 
 extension CalendarState {
-
+	
 	var employeeSectionState: CalendarSectionViewState<AppointmentEvent, Employee>? {
 		get {
 			guard let groupAppointments = extract(case: CalendarType.employee, from: self.calendarType) else { return nil }
 			return CalendarSectionViewState<AppointmentEvent, Employee>(
 				selectedDate: selectedDate,
 				appointments: groupAppointments,
-				chosenSectionsIds: chosenEmployeesIds,
-				sections: employees)
+				locations: locations,
+				chosenLocationsIds: chosenLocationsIds,
+				sections: employees,
+				chosenSectionsIds: chosenEmployeesIds
+			)
 		}
 	}
-
+	
 	var roomSectionState: CalendarSectionViewState<AppointmentEvent, Room>? {
 		get {
 			guard let groupAppointments = extract(case: CalendarType.room, from: self.calendarType) else { return nil }
 			return CalendarSectionViewState<AppointmentEvent, Room>(
 				selectedDate: selectedDate,
 				appointments: groupAppointments,
-				chosenSectionsIds: chosenRoomsIds,
-				sections: rooms)
+				locations: locations,
+				chosenLocationsIds: chosenLocationsIds,
+				sections: rooms,
+				chosenSectionsIds: chosenRoomsIds
+			)
 		}
 	}
 }
@@ -86,12 +94,13 @@ extension CalendarState {
 		self.isDropdownShown = false
 		self.selectedDate = Calendar(identifier: .gregorian).startOfDay(for: Date())
 	    let apps = CalAppointment.makeDummy().map(AppointmentEvent.init(appointment:))
-		let employees = Dictionary.init(grouping: Employee.mockEmployees, by: { $0.id }).mapValues(\.first!)
-		self.calendarType = CalendarType.initEmployee(events: apps, sections: employees.values.map({ $0 }))
-		self.employees = employees
-		self.rooms = Room.mock()
-		self.locations = Location.mock()
-		self.chosenRoomsIds = self.rooms.map(\.key)
-		self.chosenEmployeesIds = self.employees.map(\.key)
+		let employees = Employee.mockEmployees
+		self.calendarType = CalendarType.initEmployee(events: apps, sections: employees)
+		self.employees = IdentifiedArrayOf.init(employees)
+		self.rooms = IdentifiedArrayOf.init(Room.mock().values)
+		self.locations = IdentifiedArrayOf.init(Location.mock())
+		self.chosenLocationsIds = Location.mock().map(\.id)
+		self.chosenRoomsIds = self.rooms.map(\.id)
+		self.chosenEmployeesIds = self.employees.map(\.id)
 	}
 }

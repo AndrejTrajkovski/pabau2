@@ -1,32 +1,27 @@
+
 import Model
 import ComposableArchitecture
 import UIKit
 
 enum ColumnHeaderAdapter {
 	
-	static func makeViewModel(_ firstSectionApp: AppointmentEvent,
-							  _ calType: CalendarType,
-							  _ locations: [Location.Id: Location],
-							  _ rooms: [Room.Id: Room],
-							  _ employees: [Employee.Id: Employee],
-							  _ startOfDay: Date) -> ColumnHeaderViewModel {
-		switch calType {
-		case .room:
-			let room = rooms[firstSectionApp.app.roomId]
-			let location = room.flatMap { locations[$0.locationId] }
+	static func weekViewModel(_ startOfDay: Date) -> ColumnHeaderViewModel {
+		let formatter = DateFormatter()
+		formatter.dateStyle = .short
+		let date = formatter.string(from: startOfDay)
+		formatter.dateFormat = "EEEE"
+		let dayOfWeek = formatter.string(from: startOfDay)
+		return ColumnHeaderViewModel(title: date, subtitle: dayOfWeek, color: UIColor.clear)
+	}
+	
+	static func sectionViewModel(_ section: Any,
+								 _ location: Location) -> ColumnHeaderViewModel? {
+		if let room = section as? Room {
 			return viewModel(room: room, location: location)
-		case .employee:
-			let employee = employees[firstSectionApp.app.employeeId]
-			let location = employee.flatMap { locations[$0.locationId] }
+		} else if let employee = section as? Employee {
 			return viewModel(employee: employee, location: location)
-		case .week:
-			let formatter = DateFormatter()
-			formatter.dateStyle = .short
-			let date = formatter.string(from: startOfDay)
-			formatter.dateFormat = "EEEE"
-			let dayOfWeek = formatter.string(from: startOfDay)
-			return ColumnHeaderViewModel(title: date, subtitle: dayOfWeek, color: UIColor.clear)
 		}
+		return nil
 	}
 	
 	static func viewModel(room: Room?,

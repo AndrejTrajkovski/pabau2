@@ -55,14 +55,22 @@ public enum CalendarType: Equatable {
 extension CalendarType {
 	
 	static func initEmployee(events: [AppointmentEvent], sections: [Employee]) -> CalendarType {
+		let locationKeyPath: KeyPath<AppointmentEvent, Location.ID> = (\AppointmentEvent.app).appending(path: \CalAppointment.locationId)
 		let keyPath = (\AppointmentEvent.app).appending(path: \.employeeId)
-		let appointments = EventsBy<AppointmentEvent, Employee>.init(events: events, sections: sections, keyPath: keyPath)
+		let appointments = EventsBy<AppointmentEvent, Employee>.init(events: events,
+																	 subsections: sections,
+																	 sectionKeypath: locationKeyPath,
+																	 subsKeypath: keyPath)
 		return CalendarType.employee(appointments)
 	}
 	
 	static func initRoom(events: [AppointmentEvent], sections: [Room]) -> CalendarType {
+		let locationKeyPath: KeyPath<AppointmentEvent, Location.ID> = (\AppointmentEvent.app).appending(path: \CalAppointment.locationId)
 		let keyPath = (\AppointmentEvent.app).appending(path: \.roomId)
-		let appointments = EventsBy<AppointmentEvent, Room>.init(events: events, sections: sections, keyPath: keyPath)
+		let appointments = EventsBy<AppointmentEvent, Room>.init(events: events,
+																	 subsections: sections,
+																	 sectionKeypath: locationKeyPath,
+																	 subsKeypath: keyPath)
 		return CalendarType.room(appointments)
 	}
 }
