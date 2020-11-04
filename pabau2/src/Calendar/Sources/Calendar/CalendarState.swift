@@ -10,14 +10,14 @@ public struct CalendarState: Equatable {
 	var selectedDate: Date
 	var calendarType: CalendarType
 	//	var appointments: Appointments
-	var chosenEmployeesIds: [Employee.Id]
-	var chosenRoomsIds: [Room.Id]
-	var chosenLocationsIds: [Location.Id]
-	
-	var employees: IdentifiedArrayOf<Employee>
-	var rooms: IdentifiedArrayOf<Room>
 	var locations: IdentifiedArrayOf<Location>
+	var employees: [Location.Id: IdentifiedArrayOf<Employee>]
+	var rooms: [Location.Id: IdentifiedArrayOf<Room>]
 	
+	var chosenLocationsIds: [Location.Id]
+	var chosenEmployeesIds: [Location.Id: [Employee.Id]]
+	var chosenRoomsIds: [Location.Id: [Room.Id]]
+
 	mutating func switchTo(id: CalendarType.Id) {
 		let locationKeyPath: KeyPath<AppointmentEvent, Location.ID> = (\AppointmentEvent.app).appending(path: \CalAppointment.locationId)
 		switch id {
@@ -25,7 +25,7 @@ public struct CalendarState: Equatable {
 			let flatAppts = self.calendarType.flatten()
 			let keyPath = (\AppointmentEvent.app).appending(path: \.employeeId)
 			let appointments = EventsBy<AppointmentEvent, Employee>.init(events: flatAppts,
-																		 subsections: employees.elements,
+																		 subsections: employees.flatMap({ $0.value }),
 																		 sectionKeypath: locationKeyPath,
 																		 subsKeypath: keyPath)
 			self.calendarType = CalendarType.employee(appointments)
@@ -33,7 +33,7 @@ public struct CalendarState: Equatable {
 			let flatAppts = self.calendarType.flatten()
 			let keyPath = (\AppointmentEvent.app).appending(path: \.roomId)
 			let appointments = EventsBy<AppointmentEvent, Room>.init(events: flatAppts,
-																	 subsections: rooms.elements,
+																	 subsections: rooms.flatMap({ $0.value }),
 																	 sectionKeypath: locationKeyPath,
 																	 subsKeypath: keyPath)
 			self.calendarType = CalendarType.room(appointments)
@@ -45,7 +45,7 @@ public struct CalendarState: Equatable {
 }
 
 extension CalendarState {
-	
+
 	var calTypePicker: CalendarTypePickerState {
 		get {
 			CalendarTypePickerState(isDropdownShown: isDropdownShown,
@@ -68,8 +68,8 @@ extension CalendarState {
 				appointments: groupAppointments,
 				locations: locations,
 				chosenLocationsIds: chosenLocationsIds,
-				sections: employees,
-				chosenSectionsIds: chosenEmployeesIds
+				subsections: employees,
+				chosenSubsectionsIds: chosenEmployeesIds
 			)
 		}
 	}
@@ -82,8 +82,8 @@ extension CalendarState {
 				appointments: groupAppointments,
 				locations: locations,
 				chosenLocationsIds: chosenLocationsIds,
-				sections: rooms,
-				chosenSectionsIds: chosenRoomsIds
+				subsections: rooms,
+				chosenSubsectionsIds: chosenRoomsIds
 			)
 		}
 	}
@@ -95,12 +95,22 @@ extension CalendarState {
 		self.selectedDate = Calendar(identifier: .gregorian).startOfDay(for: Date())
 	    let apps = CalAppointment.makeDummy().map(AppointmentEvent.init(appointment:))
 		let employees = Employee.mockEmployees
+		let rooms = Room.mock().map { $0.value }
+		let locations = Location.mock()
 		self.calendarType = CalendarType.initEmployee(events: apps, sections: employees)
-		self.employees = IdentifiedArrayOf.init(employees)
-		self.rooms = IdentifiedArrayOf.init(Room.mock().values)
-		self.locations = IdentifiedArrayOf.init(Location.mock())
+		let groupedEmployees = Dictionary.init(grouping: employees, by: { $0.locationId })
+			.mapValues { IdentifiedArrayOf.init($0) }
+		self.employees = locations.map(\.id).reduce(into: [Location.ID: IdentifiedArrayOf<Employee>](), {
+			$0[$1] = groupedEmployees[$1] ?? []
+		})
+		let groupedRooms = Dictionary.init(grouping: rooms, by: { $0.locationId })
+			.mapValues { IdentifiedArrayOf.init($0) }
+		self.rooms = locations.map(\.id).reduce(into: [Location.ID: IdentifiedArrayOf<Room>](), {
+			$0[$1] = groupedRooms[$1] ?? []
+		})
+		self.locations = IdentifiedArrayOf.init(locations)
 		self.chosenLocationsIds = Location.mock().map(\.id)
-		self.chosenRoomsIds = self.rooms.map(\.id)
-		self.chosenEmployeesIds = self.employees.map(\.id)
+		self.chosenRoomsIds = self.rooms.mapValues { $0.map(\.id) }
+		self.chosenEmployeesIds = self.employees.mapValues { $0.map(\.id) }
 	}
 }

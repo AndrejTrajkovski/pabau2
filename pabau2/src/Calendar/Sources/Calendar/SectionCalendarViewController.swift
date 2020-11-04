@@ -10,7 +10,7 @@ public class SectionCalendarViewController<Event: JZBaseEvent, Subsection: Ident
 	var sectionDataSource: SectionWeekViewDataSource<Event, Location, Subsection>!
 	let viewStore: ViewStore<CalendarSectionViewState<Event, Subsection>, CalendarAction>
 	init(_ viewStore: ViewStore<CalendarSectionViewState<Event, Subsection>, CalendarAction>) {
-		let dataSource = SectionWeekViewDataSource<Event, Location,Subsection>.init()
+		let dataSource = SectionWeekViewDataSource<Event, Location, Subsection>.init()
 		self.sectionDataSource = dataSource
 		self.viewStore = viewStore
 		super.init(onFlipPage: { viewStore.send(.userDidSwipePageTo(isNext: $0)) })
@@ -27,7 +27,7 @@ public class SectionCalendarViewController<Event: JZBaseEvent, Subsection: Ident
 			.combineLatest(
 				self.viewStore.publisher.appointments.removeDuplicates()
 			).combineLatest(
-				self.viewStore.publisher.chosenSectionsIds.removeDuplicates()
+				self.viewStore.publisher.chosenSubsectionsIds.removeDuplicates()
 			).combineLatest(
 				self.viewStore.publisher.chosenLocationsIds.removeDuplicates()
 			)
@@ -41,10 +41,13 @@ public class SectionCalendarViewController<Event: JZBaseEvent, Subsection: Ident
 				let locations = chosenLocationsIds.compactMap {
 					self.viewStore.state.locations[id: $0]
 				}
-//				self.reload(selectedDate: date,
-//							locations: locations,
-//							subsections: <#T##[Location.ID : [Equatable & Identifiable]]#>, events: <#T##[Date : [Location.ID : [Hashable : [Event]]]]#>)
-				
+				print(events.appointments)
+				print(locations)
+				print(subsections)
+				self.reload(selectedDate: date,
+							locations: locations,
+							subsections: subsections,
+							events: events.appointments)
 			}).store(in: &self.cancellables)
 		//		self.viewStore.publisher.calendarType.removeDuplicates())
 	}
@@ -52,7 +55,7 @@ public class SectionCalendarViewController<Event: JZBaseEvent, Subsection: Ident
 	func reload(
 		selectedDate: Date,
 		locations: [Location],
-		subsections: [Location.ID: [Subsection]],
+		subsections: [Location.ID: [Subsection.ID]],
 		events: [Date: [Location.ID: [Subsection.ID: [Event]]]]
 	) {
 		calendarView.updateWeekView(to: selectedDate)

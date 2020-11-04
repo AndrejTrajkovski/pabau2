@@ -8,10 +8,6 @@ struct CalendarSectionViewState<Event: JZBaseEvent, Subsection: Identifiable & E
 	let appointments: EventsBy<Event, Subsection>
 	let locations: IdentifiedArrayOf<Location>
 	let chosenLocationsIds: [Location.ID]
-	let sections: IdentifiedArrayOf<Subsection>
-	let chosenSectionsIds: [Subsection.ID]
-	
-	func chosenSections() -> [Subsection] {
-		chosenSectionsIds.compactMap { sections[id: $0] }
-	}
+	let subsections: [Location.ID: IdentifiedArrayOf<Subsection>]
+	let chosenSubsectionsIds: [Location.ID: [Subsection.ID]]
 }
