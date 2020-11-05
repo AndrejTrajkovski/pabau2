@@ -19,41 +19,31 @@ public class SectionCalendarViewController<Event: JZBaseEvent, Subsection: Ident
 	public override func viewDidLoad() {
 		super.viewDidLoad()
 		calendarView.setupCalendar(setDate: viewStore.state.selectedDate)
-//		sectionDataSource.update(viewStore.state.selectedDate,
-//								 viewStore.state.chosenSections(),
-//								 viewStore.state.appointments.appointments)
-//		calendarView.forceReload()
-		self.viewStore.publisher.selectedDate.removeDuplicates()
+		let subs = viewStore.state.chosenSubsectionsIds.mapValuesFrom(dict: viewStore.state.subsections)
+		self.reload(selectedDate: viewStore.state.selectedDate,
+					locations: viewStore.state.chosenLocations(),
+					subsections: subs,
+					events: viewStore.state.appointments.appointments)
+		calendarView.forceReload()
+		viewStore.publisher.selectedDate.removeDuplicates()
 			.combineLatest(
-				self.viewStore.publisher.appointments.removeDuplicates()
+				viewStore.publisher.appointments.removeDuplicates()
 			).combineLatest(
-				self.viewStore.publisher.chosenSubsectionsIds.removeDuplicates()
+				viewStore.publisher.chosenSubsectionsIds.removeDuplicates()
 			).combineLatest(
-				self.viewStore.publisher.chosenLocationsIds.removeDuplicates()
+				viewStore.publisher.chosenLocationsIds.removeDuplicates()
 			)
 			.receive(on: DispatchQueue.main)
 			.sink(receiveValue: { [weak self] in
 				guard let self = self else { return }
 				let date = $0.0.0.0
 				let events = $0.0.0.1
-				let subsections = $0.0.1.reduce(into: [Location.ID: [Subsection]]()) { (result, arg1) in
-					let (locationId, subsIds) = arg1
-					let subs = subsIds.compactMap { self.viewStore.state.subsections[locationId]?[id: $0] }
-					result[locationId] = subs
-				}
-				let chosenLocationsIds = $0.1
-				let locations = chosenLocationsIds.compactMap {
-					self.viewStore.state.locations[id: $0]
-				}
-				print(events.appointments)
-				print(locations)
-				print(subsections)
+				let subsections = $0.0.1.mapValuesFrom(dict: self.viewStore.state.subsections)
 				self.reload(selectedDate: date,
-							locations: locations,
+							locations: self.viewStore.state.chosenLocations(),
 							subsections: subsections,
 							events: events.appointments)
 			}).store(in: &self.cancellables)
-		//		self.viewStore.publisher.calendarType.removeDuplicates())
 	}
 	
 	func reload(

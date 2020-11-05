@@ -17,7 +17,7 @@ public struct CalendarState: Equatable {
 	var chosenLocationsIds: [Location.Id]
 	var chosenEmployeesIds: [Location.Id: [Employee.Id]]
 	var chosenRoomsIds: [Location.Id: [Room.Id]]
-
+	
 	mutating func switchTo(id: CalendarType.Id) {
 		let locationKeyPath: KeyPath<AppointmentEvent, Location.ID> = (\AppointmentEvent.app).appending(path: \CalAppointment.locationId)
 		switch id {

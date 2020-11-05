@@ -35,7 +35,7 @@ public class SectionCalendarView<E: JZBaseEvent, Subsection: Identifiable & Equa
 			if let columnHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: columnHeaderId, for: indexPath) as? ColumnHeader {
 				let (sectionOpt, subsection) = sectionsDataSource!.sectionAndSubsection(for: indexPath.section)
 				if let section = sectionOpt,
-				   let viewModel = ColumnHeaderAdapter.sectionViewModel(subsection, section) {
+				   let viewModel = ColumnHeaderAdapter.sectionViewModel(subsection!, section) {
 					columnHeader.update(viewModel: viewModel)
 				} else {
 					columnHeader.update(title: "", subtitle: "", color: UIColor.clear)
