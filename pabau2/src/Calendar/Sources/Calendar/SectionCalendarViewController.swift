@@ -36,7 +36,11 @@ public class SectionCalendarViewController<Event: JZBaseEvent, Subsection: Ident
 				guard let self = self else { return }
 				let date = $0.0.0.0
 				let events = $0.0.0.1
-				let subsections = $0.0.1
+				let subsections = $0.0.1.reduce(into: [Location.ID: [Subsection]]()) { (result, arg1) in
+					let (locationId, subsIds) = arg1
+					let subs = subsIds.compactMap { self.viewStore.state.subsections[locationId]?[id: $0] }
+					result[locationId] = subs
+				}
 				let chosenLocationsIds = $0.1
 				let locations = chosenLocationsIds.compactMap {
 					self.viewStore.state.locations[id: $0]
@@ -55,7 +59,7 @@ public class SectionCalendarViewController<Event: JZBaseEvent, Subsection: Ident
 	func reload(
 		selectedDate: Date,
 		locations: [Location],
-		subsections: [Location.ID: [Subsection.ID]],
+		subsections: [Location.ID: [Subsection]],
 		events: [Date: [Location.ID: [Subsection.ID: [Event]]]]
 	) {
 		calendarView.updateWeekView(to: selectedDate)

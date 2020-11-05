@@ -85,6 +85,12 @@ extension Employee {
 					  avatarUrl: "",
 					  pin: 1234,
 					  locationId: Location.mock().randomElement()!.id.rawValue
+		),
+		Employee.init(id: 8,
+					  name: "Dr. Huberman",
+					  avatarUrl: "",
+					  pin: 1234,
+					  locationId: Location.mock().randomElement()!.id.rawValue
 		)
 	]
 	

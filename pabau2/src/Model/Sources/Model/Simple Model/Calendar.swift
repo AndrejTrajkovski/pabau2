@@ -196,7 +196,7 @@ extension CalAppointment {
 				("Hydrafacial","#108A44"),
 			]
 		var res = [CalAppointment]()
-		for idx in 0...30 {
+		for idx in 0...1000 {
 			let randomHours = Int.random(in: -100...100)
 			let randomMins = Int.random(in: -59...59)
 			let randomTime = randomHours.hours + randomMins.minutes
