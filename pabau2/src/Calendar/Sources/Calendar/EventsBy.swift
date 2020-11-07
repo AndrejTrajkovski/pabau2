@@ -22,3 +22,15 @@ public struct EventsBy<Event: JZBaseEvent, SubsectionHeader: Identifiable & Equa
 }
 
 extension EventsBy: Equatable { }
+
+struct AppointmentsByReducer<Section: Identifiable & Equatable> {
+	let reducer = Reducer<EventsBy<AppointmentEvent, Section>, SectionCalendarAction, Any> { state, action, _ in
+			switch action {
+			case .addAppointment(startDate: let startDate, durationMins: let durationMins, dropIndexes: let dropIndexes):
+				fatalError("TODO")
+			case .editAppointment(startDate: let startDate, startIndexes: let startIndexes, dropIndexes: let dropIndexes):
+				fatalError("TODO")
+			}
+			return .none
+	}
+}

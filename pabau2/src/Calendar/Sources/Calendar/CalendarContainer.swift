@@ -53,7 +53,7 @@ public struct CalendarContainer: View {
 						state: { $0.selectedDate },
 						action: { .datePicker($0)}
 					),
-					isWeekView: viewStore.state.calendarType.id == CalendarType.Id(3)
+					isWeekView: viewStore.state.appointments.calendarType == Appointments.CalendarType.week
 				)
 				.padding(0)
 				CalendarWrapper(store: self.store)
@@ -99,7 +99,7 @@ struct CalTopBar: View {
 extension CalendarState {
 	
 	var numOfDays: Int {
-		switch calendarType {
+		switch appointments {
 		case .week:
 			return 7
 		case .room, .employee:

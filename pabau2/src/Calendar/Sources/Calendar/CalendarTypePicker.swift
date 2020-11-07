@@ -3,11 +3,11 @@ import ComposableArchitecture
 
 public struct CalendarTypePickerState: Equatable {
 	var isDropdownShown: Bool
-	var calendarType: CalendarType
+	var calendarType: Appointments
 }
 
 public enum CalendarTypePickerAction {
-	case onSelect(CalendarType.Id)
+	case onSelect(Appointments.CalendarType)
 	case toggleDropdown
 }
 
@@ -27,13 +27,13 @@ struct CalendarTypePicker: View {
 	
 	var body: some View {
 		WithViewStore(store) { viewStore in
-			CalendarTypeRow(id: viewStore.state.calendarType.id,
+			CalendarTypeRow(calType: viewStore.state.calendarType.calendarType,
 							isSelected: true,
 							onTap: { _ in
 								viewStore.send(.toggleDropdown)
 							}).popover(isPresented: .constant(viewStore.state.isDropdownShown)) {
-								ForEach(CalendarType.allIds, id: \.self) { id in
-									CalendarTypeRow(id: id,
+								ForEach(Appointments.CalendarType.allCases, id: \.self) { calType in
+									CalendarTypeRow(calType: calType,
 													isSelected: false,
 													onTap: {
 														viewStore.send(.onSelect($0))
@@ -46,13 +46,13 @@ struct CalendarTypePicker: View {
 }
 
 struct CalendarTypeRow: View {
-	let id: CalendarType.Id
+	let calType: Appointments.CalendarType
 	var isSelected: Bool
-	let onTap: (CalendarType.Id) -> Void
+	let onTap: (Appointments.CalendarType) -> Void
 
 	var body: some View {
 		HStack {
-			Text(CalendarType.titleFor(id: id))
+			Text(calType.title())
 				.bold()
 				.padding()
 			if self.isSelected {
@@ -60,7 +60,7 @@ struct CalendarTypeRow: View {
 					.foregroundColor(.blue)
 			}
 		}.onTapGesture {
-			self.onTap(self.id)
+			self.onTap(self.calType)
 		}
 		.frame(height: 48)
 	}

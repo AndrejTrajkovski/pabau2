@@ -8,7 +8,7 @@ import ComposableArchitecture
 public struct CalendarState: Equatable {
 	var isDropdownShown: Bool
 	var selectedDate: Date
-	var calendarType: CalendarType
+	var appointments: Appointments
 	//	var appointments: Appointments
 	var locations: IdentifiedArrayOf<Location>
 	var employees: [Location.Id: IdentifiedArrayOf<Employee>]
@@ -18,26 +18,26 @@ public struct CalendarState: Equatable {
 	var chosenEmployeesIds: [Location.Id: [Employee.Id]]
 	var chosenRoomsIds: [Location.Id: [Room.Id]]
 	
-	mutating func switchTo(id: CalendarType.Id) {
+	mutating func switchTo(id: Appointments.CalendarType) {
 		let locationKeyPath: KeyPath<AppointmentEvent, Location.ID> = (\AppointmentEvent.app).appending(path: \CalAppointment.locationId)
 		switch id {
-		case 1: //employee
-			let flatAppts = self.calendarType.flatten()
+		case .employee: //employee
+			let flatAppts = self.appointments.flatten()
 			let keyPath = (\AppointmentEvent.app).appending(path: \.employeeId)
 			let appointments = EventsBy<AppointmentEvent, Employee>.init(events: flatAppts,
 																		 subsections: employees.flatMap({ $0.value }),
 																		 sectionKeypath: locationKeyPath,
 																		 subsKeypath: keyPath)
-			self.calendarType = CalendarType.employee(appointments)
-		case 2: //room
-			let flatAppts = self.calendarType.flatten()
+			self.appointments = Appointments.employee(appointments)
+		case .room: //room
+			let flatAppts = self.appointments.flatten()
 			let keyPath = (\AppointmentEvent.app).appending(path: \.roomId)
 			let appointments = EventsBy<AppointmentEvent, Room>.init(events: flatAppts,
 																	 subsections: rooms.flatMap({ $0.value }),
 																	 sectionKeypath: locationKeyPath,
 																	 subsKeypath: keyPath)
-			self.calendarType = CalendarType.room(appointments)
-		case 3: //week
+			self.appointments = Appointments.room(appointments)
+		case .week: //week
 			break
 		default: break
 		}
@@ -49,11 +49,11 @@ extension CalendarState {
 	var calTypePicker: CalendarTypePickerState {
 		get {
 			CalendarTypePickerState(isDropdownShown: isDropdownShown,
-									calendarType: calendarType)
+									calendarType: appointments)
 		}
 		set {
 			self.isDropdownShown = newValue.isDropdownShown
-			self.calendarType = newValue.calendarType
+			self.appointments = newValue.calendarType
 		}
 	}
 }
@@ -62,7 +62,7 @@ extension CalendarState {
 	
 	var employeeSectionState: CalendarSectionViewState<AppointmentEvent, Employee>? {
 		get {
-			guard let groupAppointments = extract(case: CalendarType.employee, from: self.calendarType) else { return nil }
+			guard let groupAppointments = extract(case: Appointments.employee, from: self.appointments) else { return nil }
 			return CalendarSectionViewState<AppointmentEvent, Employee>(
 				selectedDate: selectedDate,
 				appointments: groupAppointments,
@@ -76,7 +76,7 @@ extension CalendarState {
 	
 	var roomSectionState: CalendarSectionViewState<AppointmentEvent, Room>? {
 		get {
-			guard let groupAppointments = extract(case: CalendarType.room, from: self.calendarType) else { return nil }
+			guard let groupAppointments = extract(case: Appointments.room, from: self.appointments) else { return nil }
 			return CalendarSectionViewState<AppointmentEvent, Room>(
 				selectedDate: selectedDate,
 				appointments: groupAppointments,
@@ -97,7 +97,7 @@ extension CalendarState {
 		let employees = Employee.mockEmployees
 		let rooms = Room.mock().map { $0.value }
 		let locations = Location.mock()
-		self.calendarType = CalendarType.initEmployee(events: apps, sections: employees)
+		self.appointments = Appointments.initEmployee(events: apps, sections: employees)
 		let groupedEmployees = Dictionary.init(grouping: employees, by: { $0.locationId })
 			.mapValues { IdentifiedArrayOf.init($0) }
 		self.employees = locations.map(\.id).reduce(into: [Location.ID: IdentifiedArrayOf<Employee>](), {

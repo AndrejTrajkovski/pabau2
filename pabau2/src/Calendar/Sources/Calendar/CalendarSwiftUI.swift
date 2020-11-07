@@ -8,7 +8,7 @@ public struct CalendarWrapper: View {
 	
 	public var body: some View {
 		WithViewStore(store) { viewStore -> AnyView in
-			switch viewStore.state.calendarType {
+			switch viewStore.state.appointments {
 			case .week:
 				return AnyView(CalendarWeekSwiftUI(viewStore: viewStore))
 			case .employee:
