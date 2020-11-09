@@ -19,17 +19,17 @@ public struct CalendarWrapper: View {
 		}
 	}
 	
-	typealias EmployeeCalView = IfLetStore<CalendarSectionViewState<AppointmentEvent, Employee>, CalendarAction, _ConditionalContent<CalendarSwiftUI<AppointmentEvent, Employee>, EmptyView>>
-	typealias EmployeeRoomView = IfLetStore<CalendarSectionViewState<AppointmentEvent, Room>, CalendarAction,
-											_ConditionalContent<CalendarSwiftUI<AppointmentEvent, Room>, EmptyView>>
+	typealias EmployeeCalView = IfLetStore<CalendarSectionViewState<JZAppointmentEvent, Employee>, CalendarAction, _ConditionalContent<CalendarSwiftUI<JZAppointmentEvent, Employee>, EmptyView>>
+	typealias EmployeeRoomView = IfLetStore<CalendarSectionViewState<JZAppointmentEvent, Room>, CalendarAction,
+											_ConditionalContent<CalendarSwiftUI<JZAppointmentEvent, Room>, EmptyView>>
 	
 	var employeeCalendarView: EmployeeCalView {
-		let ifLetStore = IfLetStore(store.scope(state: { $0.employeeSectionState }), then: CalendarSwiftUI<AppointmentEvent, Employee>.init(store:), else: EmptyView())
+		let ifLetStore = IfLetStore(store.scope(state: { $0.employeeSectionState }), then: CalendarSwiftUI<JZAppointmentEvent, Employee>.init(store:), else: EmptyView())
 		return ifLetStore
 	}
 	
 	var roomCalendarView: EmployeeRoomView {
-		let ifLetStore = IfLetStore(store.scope(state: { $0.roomSectionState }), then: CalendarSwiftUI<AppointmentEvent, Room>.init(store:), else: EmptyView())
+		let ifLetStore = IfLetStore(store.scope(state: { $0.roomSectionState }), then: CalendarSwiftUI<JZAppointmentEvent, Room>.init(store:), else: EmptyView())
 		return ifLetStore
 	}
 }

@@ -2,8 +2,9 @@ import JZCalendarWeekView
 import UIKit
 import Model
 import ComposableArchitecture
+import SwiftDate
 
-public class SectionCalendarView<E: JZBaseEvent, Subsection: Identifiable & Equatable>: SectionWeekView <E, Location, Subsection> {
+public class SectionCalendarView<E: JZBaseEvent, Subsection: Identifiable & Equatable>: SectionWeekView<E, Location, Subsection, JZShift> {
 	
 	let cellId = "CalendarCell"
 	let columnHeaderId = "ColumnHeader"
@@ -20,7 +21,7 @@ public class SectionCalendarView<E: JZBaseEvent, Subsection: Identifiable & Equa
 
 	public override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		if var cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as? BaseCalendarCell,
-			let event = getCurrentEvent(with: indexPath) as? AppointmentEvent {
+			let event = getCurrentEvent(with: indexPath) as? JZAppointmentEvent {
 			CellConfigurator().configure(cell: &cell,
 										 appointment: event)
 			return cell
@@ -49,5 +50,9 @@ public class SectionCalendarView<E: JZBaseEvent, Subsection: Identifiable & Equa
 		default: view = super.collectionView(collectionView, viewForSupplementaryElementOfKind: kind, at: indexPath)
 		}
 		return view
+	}
+	
+	@objc override public func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, backgroundTimesAtSection section: Int) -> [JZBackgroundTime] {
+		return sectionsDataSource!.backgroundTimes(section: section)
 	}
 }

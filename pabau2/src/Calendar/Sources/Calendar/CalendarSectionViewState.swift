@@ -10,6 +10,7 @@ struct CalendarSectionViewState<Event: JZBaseEvent, Subsection: Identifiable & E
 	let chosenLocationsIds: [Location.ID]
 	let subsections: [Location.ID: IdentifiedArrayOf<Subsection>]
 	let chosenSubsectionsIds: [Location.ID: [Subsection.ID]]
+	let shifts: [Date: [Location.ID: [Subsection.ID: [JZShift]]]]
 }
 
 //

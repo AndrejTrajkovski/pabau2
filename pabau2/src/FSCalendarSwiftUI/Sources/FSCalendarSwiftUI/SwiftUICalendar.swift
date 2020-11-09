@@ -148,12 +148,12 @@ extension Date {
 //	-(NSArray*)daysInWeek:(int)weekOffset fromDate:(NSDate*)date
 // {
 //	 //ask for current week
-//	 NSDateComponents *comps = [[NSDateComponents alloc] init];
+//	 DateComponents *comps = [[DateComponents alloc] init];
 //	 comps=[gregorian components:NSWeekCalendarUnit|NSYearCalendarUnit fromDate:date];
 //	 //create date on week start
 //	 NSDate* weekstart=[gregorian dateFromComponents:comps];
 //
-//	 NSDateComponents* moveWeeks=[[NSDateComponents alloc] init];
+//	 DateComponents* moveWeeks=[[DateComponents alloc] init];
 //	 moveWeeks.weekOfYear=weekOffset;
 //	 weekstart=[gregorian dateByAddingComponents:moveWeeks toDate:weekstart options:0];
 //

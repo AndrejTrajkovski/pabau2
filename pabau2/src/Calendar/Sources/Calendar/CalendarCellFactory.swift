@@ -7,7 +7,7 @@ struct CellConfigurator {
 	
 	func configure(
 		cell: inout BaseCalendarCell,
-		appointment: AppointmentEvent
+		appointment: JZAppointmentEvent
 		) {
 		configure(cell: &cell,
 				  patientName: appointment.app.customerName,

@@ -80,9 +80,9 @@ public struct CalAppointment: Hashable, Codable, Equatable {
 }
 
 extension Date {
-	init(container: KeyedDecodingContainer<CalAppointment.CodingKeys>,
-		 codingKey: CalAppointment.CodingKeys,
-		 formatter: DateFormatter) throws {
+	public init(container: KeyedDecodingContainer<CalAppointment.CodingKeys>,
+				codingKey: CalAppointment.CodingKeys,
+				formatter: DateFormatter) throws {
 		let dateString = try container.decode(String.self, forKey: codingKey)
 		if let date = formatter.date(from: dateString) {
 			self = date
@@ -95,7 +95,7 @@ extension Date {
 }
 
 extension DateFormatter {
-	static let HHmmss: DateFormatter = {
+	public static let HHmmss: DateFormatter = {
 		let formatter = DateFormatter()
 		formatter.dateFormat = "HH:mm:ss"
 		formatter.calendar = Calendar(identifier: .iso8601)
@@ -104,7 +104,7 @@ extension DateFormatter {
 		return formatter
 	}()
 	
-	static let yearMonthDay: DateFormatter = {
+	public static let yearMonthDay: DateFormatter = {
 		let formatter = DateFormatter()
 		formatter.dateFormat = "yyyy-MM-dd"
 		formatter.calendar = Calendar(identifier: .iso8601)
@@ -196,34 +196,40 @@ extension CalAppointment {
 				("Hydrafacial","#108A44"),
 			]
 		var res = [CalAppointment]()
-		for idx in 0...1000 {
-			let randomHours = Int.random(in: -100...100)
-			let randomMins = Int.random(in: -59...59)
-			let randomTime = randomHours.hours + randomMins.minutes
-			let today = Date()
-			let startDate = Calendar.current.date(byAdding: .hour,
-												  value: randomHours,
-												  to: today)!
-			
-			let randomEndMins = Int.random(in: 15...100)
-			let randomEnding = startDate + randomEndMins.minutes
+		for idx in 0...100 {
+			let mockStartEnd = Date.mockStartAndEndDate(endRangeMax: 100)
 			let service = services.randomElement()
-			let app =  CalAppointment(id: CalAppointment.Id(rawValue: idx),
-									  start_date: startDate,
-									  start_time: startDate,
-									  end_time: randomEnding,
-									  employeeId:
-										Employee.mockEmployees.map(\.id).randomElement()!,
-									  employeeInitials: nil,
-									  locationId: Location.mock().randomElement()!.id,
-									  service: service!.0,
-									  serviceColor: service!.1,
-									  customerName: "Andrej",
-									  roomId: Room.mock().randomElement()!.key
+			let employee = Employee.mockEmployees.randomElement()!
+			let app = CalAppointment(id: CalAppointment.Id(rawValue: idx),
+									 start_date: mockStartEnd.0,
+									 start_time: mockStartEnd.0,
+									 end_time: mockStartEnd.1,
+									 employeeId: employee.id,
+									 employeeInitials: nil,
+									 locationId: employee.locationId,
+									 service: service!.0,
+									 serviceColor: service!.1,
+									 customerName: "Andrej",
+									 roomId: Room.mock().randomElement()!.key
 			)
 			res.append(app)
 		}
 		return res
+	}
+}
+
+extension Date {
+	static func mockStartAndEndDate(endRangeMax: Int) -> (Date, Date) {
+		let randomHours = Int.random(in: -100...100)
+		let randomMins = Int.random(in: -59...59)
+		let randomTime = randomHours.hours + randomMins.minutes
+		let today = Date()
+		let startDate = Calendar.current.date(byAdding: .hour,
+											  value: randomHours,
+											  to: today)!
+		let randomEndMins = Int.random(in: 15...endRangeMax)
+		let randomEnding = startDate + randomEndMins.minutes
+		return (startDate, randomEnding)
 	}
 }
 

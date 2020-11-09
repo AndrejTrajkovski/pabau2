@@ -6,9 +6,9 @@ import Tagged
 
 public enum Appointments: Equatable {
 	
-	case employee(EventsBy<AppointmentEvent, Employee>)
-	case room(EventsBy<AppointmentEvent, Room>)
-	case week([Date: [AppointmentEvent]])
+	case employee(EventsBy<JZAppointmentEvent, Employee>)
+	case room(EventsBy<JZAppointmentEvent, Room>)
+	case week([Date: [JZAppointmentEvent]])
 	
 	var calendarType: CalendarType {
 		switch self {
@@ -38,7 +38,7 @@ public enum Appointments: Equatable {
 		}
 	}
 	
-	public func flatten() -> [AppointmentEvent] {
+	public func flatten() -> [JZAppointmentEvent] {
 		switch self {
 		case .employee(let apps):
 			return apps.flatten()
@@ -52,20 +52,20 @@ public enum Appointments: Equatable {
 
 extension Appointments {
 
-	static func initEmployee(events: [AppointmentEvent], sections: [Employee]) -> Appointments {
-		let locationKeyPath: KeyPath<AppointmentEvent, Location.ID> = (\AppointmentEvent.app).appending(path: \CalAppointment.locationId)
-		let keyPath = (\AppointmentEvent.app).appending(path: \.employeeId)
-		let appointments = EventsBy<AppointmentEvent, Employee>.init(events: events,
+	static func initEmployee(events: [JZAppointmentEvent], sections: [Employee]) -> Appointments {
+		let locationKeyPath: KeyPath<JZAppointmentEvent, Location.ID> = (\JZAppointmentEvent.app).appending(path: \CalAppointment.locationId)
+		let keyPath = (\JZAppointmentEvent.app).appending(path: \.employeeId)
+		let appointments = EventsBy<JZAppointmentEvent, Employee>.init(events: events,
 																	 subsections: sections,
 																	 sectionKeypath: locationKeyPath,
 																	 subsKeypath: keyPath)
 		return Appointments.employee(appointments)
 	}
 	
-	static func initRoom(events: [AppointmentEvent], sections: [Room]) -> Appointments {
-		let locationKeyPath: KeyPath<AppointmentEvent, Location.ID> = (\AppointmentEvent.app).appending(path: \CalAppointment.locationId)
-		let keyPath = (\AppointmentEvent.app).appending(path: \.roomId)
-		let appointments = EventsBy<AppointmentEvent, Room>.init(events: events,
+	static func initRoom(events: [JZAppointmentEvent], sections: [Room]) -> Appointments {
+		let locationKeyPath: KeyPath<JZAppointmentEvent, Location.ID> = (\JZAppointmentEvent.app).appending(path: \CalAppointment.locationId)
+		let keyPath = (\JZAppointmentEvent.app).appending(path: \.roomId)
+		let appointments = EventsBy<JZAppointmentEvent, Room>.init(events: events,
 																	 subsections: sections,
 																	 sectionKeypath: locationKeyPath,
 																	 subsKeypath: keyPath)

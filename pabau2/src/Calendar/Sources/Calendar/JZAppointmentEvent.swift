@@ -3,7 +3,7 @@ import JZCalendarWeekView
 import Model
 
 @dynamicMemberLookup
-public class AppointmentEvent: JZBaseEvent {
+public class JZAppointmentEvent: JZBaseEvent {
 	public override var debugDescription: String {
 		return "id: \(app.id), employeeId: \(app.employeeId)"
 	}
@@ -23,6 +23,6 @@ public class AppointmentEvent: JZBaseEvent {
 	}
 
 	public override func copy(with zone: NSZone?) -> Any {
-		return AppointmentEvent(appointment: app)
+		return JZAppointmentEvent(appointment: app)
 	}
 }
