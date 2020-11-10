@@ -64,15 +64,12 @@ struct PabauTabBar: View {
 		print("PabauTabBar body")
 		return ZStack(alignment: .topTrailing) {
 			TabView {
-//				NavigationView {
-					CalendarContainer(store:
-						self.store.scope(
-							state: { $0.calendar },
-							action: { .calendar($0)}
-						)
-					)
-//				}
-//				.navigationViewStyle(StackNavigationViewStyle())
+				CalendarContainer(store:
+									self.store.scope(
+										state: { $0.calendar },
+										action: { .calendar($0)}
+									)
+				)
 				.tabItem {
 						Image(systemName: "calendar")
 						Text("Calendar")

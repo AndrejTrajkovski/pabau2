@@ -4,7 +4,7 @@ import ComposableArchitecture
 import Model
 
 struct CalendarSectionViewState<Event: JZBaseEvent, Subsection: Identifiable & Equatable>: Equatable {
-	let selectedDate: Date
+	var selectedDate: Date
 	let appointments: EventsBy<Event, Subsection>
 	let locations: IdentifiedArrayOf<Location>
 	let chosenLocationsIds: [Location.ID]
@@ -12,18 +12,6 @@ struct CalendarSectionViewState<Event: JZBaseEvent, Subsection: Identifiable & E
 	let chosenSubsectionsIds: [Location.ID: [Subsection.ID]]
 	let shifts: [Date: [Location.ID: [Subsection.ID: [JZShift]]]]
 }
-
-//
-//extension CalendarSectionViewState {
-//
-//	func mapLocationSubsections {
-//		let subsections = $0.0.1.reduce(into: [Location.ID: [Subsection]]()) { (result, arg1) in
-//			let (locationId, subsIds) = arg1
-//			let subs = subsIds.compactMap { self.viewStore.state.subsections[locationId]?[id: $0] }
-//			result[locationId] = subs
-//		}
-//	}
-//}
 
 public extension Dictionary {
 	

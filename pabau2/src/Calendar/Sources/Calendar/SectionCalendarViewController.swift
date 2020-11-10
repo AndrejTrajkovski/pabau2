@@ -6,7 +6,7 @@ import Util
 import ComposableArchitecture
 
 public class SectionCalendarViewController<Event: JZBaseEvent, Subsection: Identifiable & Equatable>: BaseCalendarViewController {
-	
+
 	var sectionDataSource: SectionWeekViewDataSource<Event, Location, Subsection, JZShift>!
 	let viewStore: ViewStore<CalendarSectionViewState<Event, Subsection>, CalendarAction>
 	init(_ viewStore: ViewStore<CalendarSectionViewState<Event, Subsection>, CalendarAction>) {
@@ -15,7 +15,7 @@ public class SectionCalendarViewController<Event: JZBaseEvent, Subsection: Ident
 		self.viewStore = viewStore
 		super.init(onFlipPage: { viewStore.send(.userDidSwipePageTo(isNext: $0)) })
 	}
-	
+
 	public override func viewDidLoad() {
 		super.viewDidLoad()
 		calendarView.setupCalendar(setDate: viewStore.state.selectedDate)
@@ -77,25 +77,23 @@ public class SectionCalendarViewController<Event: JZBaseEvent, Subsection: Ident
 	}
 }
 
-extension Dictionary {
-	
-}
-
 // MARK: - SectionLongPressDelegate
 extension SectionCalendarViewController: SectionLongPressDelegate {
 	public func weekView<SectionId, SubsectionId>(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date, pageAndSectionIdx: (Date?, SectionId?, SubsectionId?)) where SectionId : Hashable, SubsectionId : Hashable {
 		print(pageAndSectionIdx)
+		
 	}
-	
+
 	public func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date, pageAndSectionIdx: (Date?, Location.ID?, Subsection.ID?)) {
-	
+		
 	}
 
 	public func weekView<Event, SectionId, SubsectionId>(_ weekView: JZLongPressWeekView, editingEvent: Event, didEndMoveLongPressAt startDate: Date, endPageAndSectionIdx: (Date?, SectionId?, SubsectionId?), startPageAndSectionIdx: (Date?, SectionId?, SubsectionId?)) where Event : JZBaseEvent, SectionId : Hashable, SubsectionId : Hashable {
+		//TODO
 		print(startPageAndSectionIdx)
 		print(endPageAndSectionIdx)
 	}
-	
+
 	public func weekView(_ weekView: JZLongPressWeekView,
 						 editingEvent: JZBaseEvent,
 						 didEndMoveLongPressAt startDate: Date,
@@ -112,7 +110,7 @@ extension SectionCalendarViewController: SectionLongPressDelegate {
 			//											   id: calEvent.id))
 		}
 	}
-	
+
 	public func weekView(_ weekView: JZLongPressWeekView,
 						 didEndAddNewLongPressAt
 							startDate: Date,
@@ -129,7 +127,7 @@ extension SectionCalendarViewController {
 	var calendarView: SectionCalendarView<Event, Subsection> {
 		return view as! SectionCalendarView<Event, Subsection>
 	}
-	
+
 	open func setupCalendarView() -> SectionCalendarView<Event, Subsection> {
 		let calendarView = SectionCalendarView<Event, Subsection>.init(frame: .zero)
 		calendarView.sectionsDataSource = sectionDataSource

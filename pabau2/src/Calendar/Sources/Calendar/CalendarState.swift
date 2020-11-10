@@ -17,7 +17,7 @@ public struct CalendarState: Equatable {
 	var chosenLocationsIds: [Location.Id]
 	var chosenEmployeesIds: [Location.Id: [Employee.Id]]
 	var chosenRoomsIds: [Location.Id: [Room.Id]]
-	
+
 	mutating func switchTo(id: Appointments.CalendarType) {
 		let locationKeyPath: KeyPath<JZAppointmentEvent, Location.ID> = (\JZAppointmentEvent.app).appending(path: \CalAppointment.locationId)
 		switch id {
@@ -58,7 +58,7 @@ extension CalendarState {
 }
 
 extension CalendarState {
-
+	
 	var employeeSectionState: CalendarSectionViewState<JZAppointmentEvent, Employee>? {
 		get {
 			guard let groupAppointments = extract(case: Appointments.employee, from: self.appointments) else { return nil }

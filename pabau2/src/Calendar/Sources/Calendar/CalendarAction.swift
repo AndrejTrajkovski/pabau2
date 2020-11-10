@@ -7,7 +7,8 @@ public enum CalendarAction {
 	case calTypePicker(CalendarTypePickerAction)
 	case addShift
 	case toggleFilters
-	case addAppointment(JZAppointmentEvent)
-	case replaceAppointment(newApp: JZAppointmentEvent, id: CalAppointment.Id)
 	case userDidSwipePageTo(isNext: Bool)
+	case room(SubsectionCalendarAction<Room>)
+	case employee(SubsectionCalendarAction<Employee>)
+	case week(CalendarWeekViewAction)
 }

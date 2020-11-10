@@ -4,7 +4,8 @@ import JZCalendarWeekView
 import ComposableArchitecture
 
 public struct EventsBy<Event: JZBaseEvent, SubsectionHeader: Identifiable & Equatable> {
-	let appointments: [Date: [Location.ID: [SubsectionHeader.ID: [Event]]]]
+	
+	var appointments: [Date: [Location.ID: [SubsectionHeader.ID: [Event]]]]
 	
 	init(events: [Event],
 		 subsections: [SubsectionHeader],
@@ -23,12 +24,16 @@ public struct EventsBy<Event: JZBaseEvent, SubsectionHeader: Identifiable & Equa
 
 extension EventsBy: Equatable { }
 
-struct AppointmentsByReducer<Section: Identifiable & Equatable> {
-	let reducer = Reducer<EventsBy<JZAppointmentEvent, Section>, SectionCalendarAction, Any> { state, action, _ in
+struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
+	let reducer = Reducer<EventsBy<JZAppointmentEvent, Subsection>, SubsectionCalendarAction<Subsection>, Any> { state, action, _ in
 			switch action {
-			case .addAppointment(startDate: let startDate, durationMins: let durationMins, dropIndexes: let dropIndexes):
-				fatalError("TODO")
-			case .editAppointment(startDate: let startDate, startIndexes: let startIndexes, dropIndexes: let dropIndexes):
+			case .addAppointment(startDate: let startDate, durationMins: let durationMins, dropKeys: let dropKeys):
+				break
+			//TODO: Move this logic to reducer
+//					let endDate = Calendar.current.date(byAdding: .minute, value: durationMins, to: startDate)!
+			//		var newApp = CalAppointment.dummyInit(start: startDate, end: endDate)
+//				state.appointments[dropKeys.date][dropKeys.location][dropKeys.subsection] =
+			case .editAppointment(startDate: let startDate, startKeys: let startIndexes, dropKeys: let dropIndexes):
 				fatalError("TODO")
 			}
 			return .none

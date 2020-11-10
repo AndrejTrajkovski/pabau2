@@ -9,7 +9,7 @@ public class SectionCalendarView<E: JZBaseEvent, Subsection: Identifiable & Equa
 	let cellId = "CalendarCell"
 	let columnHeaderId = "ColumnHeader"
 	let columnBackground = "ColumnBackground"
-	
+
 	public override func registerViewClasses() {
 		// Register CollectionViewCell
 		super.registerViewClasses()
