@@ -82,10 +82,6 @@ public let journeyContainerReducer2: Reducer<JourneyState, JourneyContainerActio
 					 state: \JourneyState.self,
 					 action: /JourneyContainerAction.journey,
 					 environment: { $0 }),
-		addAppointmentReducer.pullback(
-					 state: \JourneyState.addAppointment,
-					 action: /JourneyContainerAction.addAppointment,
-					 environment: { $0 }),
 		choosePathwayContainerReducer.pullback(
 					 state: \JourneyState.choosePathway,
 					 action: /JourneyContainerAction.choosePathway,
@@ -115,10 +111,6 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 				return environment.apiClient.getJourneys(date: date)
 					.map(JourneyAction.gotResponse)
 					.eraseToEffect()
-			case .addAppointmentTap:
-				state.addAppointment.isShowingAddAppointment = true
-			case .addAppointmentDismissed:
-				state.addAppointment.isShowingAddAppointment = false
 			case .gotResponse(let result):
 				switch result {
 				case .success(let journeys):
@@ -195,7 +187,7 @@ public struct JourneyContainerView: View {
 			HStack(spacing: 8.0) {
 				PlusButton {
 					withAnimation(Animation.easeIn(duration: 0.5)) {
-						self.viewStore.send(.journey(.addAppointmentTap))
+						self.viewStore.send(.addAppointmentTap)
 					}
 				}
 				Button(action: {

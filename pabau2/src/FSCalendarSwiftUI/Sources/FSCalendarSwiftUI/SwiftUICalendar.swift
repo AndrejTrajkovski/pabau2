@@ -135,7 +135,6 @@ extension Date {
 //		-4	  -3	 -2 	-1	    +0      1      2
 	func datesInWeekOf() -> [Date] {
 		let firstDayOfWeek = self.getMondayOfWeek()
-		print("firstDayOfWeek", firstDayOfWeek)
 		let shiftedWeekDaysIdxs = Array(0...6)
 			.map { firstDayOfWeek + $0.days }
 		return shiftedWeekDaysIdxs
@@ -144,21 +143,4 @@ extension Date {
 	public func getMondayOfWeek() -> Date {
 		self.nextWeekday(.monday) - 1.weeks
 	}
-
-//	-(NSArray*)daysInWeek:(int)weekOffset fromDate:(NSDate*)date
-// {
-//	 //ask for current week
-//	 DateComponents *comps = [[DateComponents alloc] init];
-//	 comps=[gregorian components:NSWeekCalendarUnit|NSYearCalendarUnit fromDate:date];
-//	 //create date on week start
-//	 NSDate* weekstart=[gregorian dateFromComponents:comps];
-//
-//	 DateComponents* moveWeeks=[[DateComponents alloc] init];
-//	 moveWeeks.weekOfYear=weekOffset;
-//	 weekstart=[gregorian dateByAddingComponents:moveWeeks toDate:weekstart options:0];
-//
-//
-//	 //add 7 days
-// }
-
 }

@@ -1,10 +1,10 @@
-// swift-tools-version:5.2
+// swift-tools-version:5.3
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 import PackageDescription
 
 let package = Package(
 	name: "Journey",
-	platforms: [.iOS(.v13)],
+	platforms: [.iOS(.v14)],
 	products: [
 				.library(
 					name: "Journey",
@@ -22,8 +22,8 @@ let package = Package(
 		.target(
 			name: "Journey",
 			dependencies: ["Form",
-										 "FSCalendarSwiftUI",
-										 "EmployeesFilter"
+						   "FSCalendarSwiftUI",
+						   "EmployeesFilter"
 			]
 		)
 	]

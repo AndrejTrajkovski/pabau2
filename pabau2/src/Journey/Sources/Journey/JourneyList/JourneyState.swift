@@ -23,21 +23,6 @@ public struct JourneyState: Equatable {
 	var allConsents: IdentifiedArrayOf<FormTemplate> = []
 	public var checkIn: CheckInContainerState?
 //		= JourneyMocks.checkIn
-
-	public var addAppointment = AddAppointmentState.init(
-		isShowingAddAppointment: false,
-		reminder: false,
-		email: false,
-		sms: false,
-		feedback: false,
-		isAllDay: false,
-		clients: JourneyMocks.clientState,
-		termins: JourneyMocks.terminState,
-		services: ChooseServiceState(isChooseServiceActive: false, chosenServiceId: 1, filterChosen: .allStaff),
-		durations: JourneyMocks.durationState,
-		with: JourneyMocks.withState,
-		participants: JourneyMocks.participantsState
-	)
 }
 
 extension JourneyState {

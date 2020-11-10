@@ -17,7 +17,6 @@ public struct MyTermin: ListPickerElement {
 }
 
 public struct AddAppointmentState: Equatable {
-	public var isShowingAddAppointment: Bool
 	var reminder: Bool
 	var email: Bool
 	var sms: Bool
@@ -32,13 +31,14 @@ public struct AddAppointmentState: Equatable {
 }
 
 public enum AddAppointmentAction: Equatable {
+	case saveAppointmentTap
+	case addAppointmentDismissed
 	case clients(PickerContainerAction<Client>)
 	case termins(PickerContainerAction<MyTermin>)
 	case services(ChooseServiceAction)
 	case durations(PickerContainerAction<Duration>)
 	case with(PickerContainerAction<Employee>)
 	case participants(PickerContainerAction<Employee>)
-	case addAppointmentTap
 	case closeBtnTap
 	case didTapServices
 	case sms(ToggleAction)
@@ -67,23 +67,27 @@ struct PickerReducer<T: ListPickerElement> {
 	}
 }
 
-let addAppTapBtnReducer = Reducer<AddAppointmentState,
+let addAppTapBtnReducer = Reducer<AddAppointmentState?,
 	AddAppointmentAction, JourneyEnvironment> { state, action, _ in
 		switch action {
-		case .addAppointmentTap:
-			state.isShowingAddAppointment = false
+		case .saveAppointmentTap:
+			state = nil
 		case .closeBtnTap:
-			state.isShowingAddAppointment = false
+			state = nil
 		case .didTapServices:
-			state.services.isChooseServiceActive = true
+			state?.services.isChooseServiceActive = true
 		default:
 			break
 		}
 		return .none
 }
 
-let addAppointmentReducer: Reducer<AddAppointmentState,
+public let addAppointmentReducer: Reducer<AddAppointmentState?,
 	AddAppointmentAction, JourneyEnvironment> = .combine(
+		addAppTapBtnReducer.pullback(
+			state: \AddAppointmentState.self,
+			action: /AddAppointmentAction.self,
+			environment: { $0 }),
 		PickerReducer<Client>().reducer.pullback(
 			state: \AddAppointmentState.clients,
 			action: /AddAppointmentAction.clients,
@@ -107,10 +111,6 @@ let addAppointmentReducer: Reducer<AddAppointmentState,
 		PickerReducer<Employee>().reducer.pullback(
 			state: \AddAppointmentState.participants,
 			action: /AddAppointmentAction.participants,
-			environment: { $0 }),
-		addAppTapBtnReducer.pullback(
-			state: \AddAppointmentState.self,
-			action: /AddAppointmentAction.self,
 			environment: { $0 }),
 		switchCellReducer.pullback(
 			state: \AddAppointmentState.sms,
@@ -145,7 +145,7 @@ public struct AddAppointment: View {
 					AddAppSections(store: self.store)
 						.environmentObject(KeyboardFollower())
 					PrimaryButton(Texts.saveAppointment) {
-						self.viewStore.send(.addAppointmentTap)
+						self.viewStore.send(.saveAppointmentTap)
 					}
 					.frame(width: 315, height: 52)
 					Spacer()
@@ -270,7 +270,7 @@ struct AddAppSections: View {
 				title: Texts.communications
 			)
 		}.padding(.bottom, keyboardHandler.keyboardHeight)
-			.navigationBarTitle(Text("New Appointment"), displayMode: .inline)
+			.navigationBarTitle(Text("New Appointment"), displayMode: .large)
 			.navigationBarItems(leading:
 				Button.init(action: { self.viewStore.send(.closeBtnTap) }, label: {
 					Image(systemName: "xmark")
@@ -469,4 +469,22 @@ struct NotesSection: View {
 			}
 		}
 	}
+}
+
+extension AddAppointmentState {
+	
+	public static let dummy = AddAppointmentState.init(
+		isShowingAddAppointment: false,
+		reminder: false,
+		email: false,
+		sms: false,
+		feedback: false,
+		isAllDay: false,
+		clients: JourneyMocks.clientState,
+		termins: JourneyMocks.terminState,
+		services: ChooseServiceState(isChooseServiceActive: false, chosenServiceId: 1, filterChosen: .allStaff),
+		durations: JourneyMocks.durationState,
+		with: JourneyMocks.withState,
+		participants: JourneyMocks.participantsState
+	)
 }

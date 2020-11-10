@@ -15,6 +15,7 @@ public typealias TabBarEnvironment = (
 )
 
 public struct TabBarState: Equatable {
+	public var addAppointment: AddAppointmentState?
 	public var journeyState: JourneyState
 	public var clients: ClientsState
 	public var calendar: CalendarState
@@ -23,7 +24,7 @@ public struct TabBarState: Equatable {
 	public var journeyContainer: JourneyContainerState {
 		get {
 			JourneyContainerState(journey: journeyState,
-														employeesFilter: employeesFilter)
+								  employeesFilter: employeesFilter)
 		}
 		set {
 			self.journeyState = newValue.journey
@@ -38,6 +39,7 @@ public enum TabBarAction {
 	case clients(ClientsAction)
 	case calendar(CalendarAction)
 	case employeesFilter(EmployeesFilterAction)
+	case addAppointment(AddAppointmentAction)
 }
 
 struct PabauTabBar: View {
@@ -50,7 +52,7 @@ struct PabauTabBar: View {
 		init(state: TabBarState) {
 			self.isShowingEmployees = state.employeesFilter.isShowingEmployees
 			self.isShowingCheckin = state.journeyContainer.journey.checkIn != nil
-			self.isShowingAppointments = state.journeyContainer.journey.addAppointment.isShowingAddAppointment
+			self.isShowingAppointments = state.addAppointment != nil
 		}
 	}
 	init (store: Store<TabBarState, TabBarAction>) {
@@ -103,21 +105,30 @@ struct PabauTabBar: View {
 						Image(systemName: "gear")
 						Text("Settings")
 				}
-			}.modalLink(isPresented: .constant(self.viewStore.state.isShowingCheckin),
-								 linkType: ModalTransition.circleReveal,
-								 destination: {
-									IfLetStore(self.store.scope(
-										state: { $0.journeyContainer.journey.checkIn },
-										action: { .journey(.checkIn($0))}
-										),
-														 then: CheckInNavigationView.init(store:))
-			}).modalLink(isPresented: .constant(self.viewStore.state.isShowingAppointments),
-									 linkType: ModalTransition.fullScreenModal,
-									 destination: {
-										AddAppointment(store:
-											self.store.scope(state: { $0.journeyState.addAppointment },
-																			 action: { .journey(.addAppointment($0))}))
-			})
+			}
+			.fullScreenCover(isPresented: .constant(self.viewStore.state.isShowingCheckin)) {
+				IfLetStore(self.store.scope(
+					state: { $0.journeyContainer.journey.checkIn },
+					action: { .journey(.checkIn($0))}
+				),
+				then: CheckInNavigationView.init(store:))
+			}
+//			.modalLink(isPresented: .constant(self.viewStore.state.isShowingCheckin),
+//						linkType: ModalTransition.circleReveal,
+//						destination: {
+//							IfLetStore(self.store.scope(
+//								state: { $0.journeyContainer.journey.checkIn },
+//								action: { .journey(.checkIn($0))}
+//							),
+//							then: CheckInNavigationView.init(store:))
+//						})
+			.fullScreenCover(isPresented: .constant(self.viewStore.state.isShowingAppointments)) {
+				IfLetStore(self.store.scope(
+					state: { $0.addAppointment },
+					action: { .addAppointment($0)}
+				),
+				then: AddAppointment.init(store:))
+			}
 			if self.viewStore.state.isShowingEmployees {
 				EmployeesFilter(
 					self.store.scope(state: { $0.employeesFilter } ,
@@ -129,6 +140,14 @@ struct PabauTabBar: View {
 }
 
 public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> = Reducer.combine(
+	.init { state, action, env in
+		switch action {
+		case .journey(.addAppointmentTap):
+			state.addAppointment = AddAppointmentState.dummy
+		default: break
+		}
+		return .none
+	},
 	employeeFilterReducer.pullback(
 		state: \TabBarState.employeesFilter,
 		action: /TabBarAction.employeesFilter,
@@ -137,6 +156,14 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
 				apiClient: $0.journeyAPI,
 				userDefaults: $0.userDefaults)
 	}),
+	addAppointmentReducer.pullback(
+		state: \TabBarState.addAppointment,
+		action: /TabBarAction.addAppointment,
+		environment: {
+			return JourneyEnvironment(
+				apiClient: $0.journeyAPI,
+				userDefaults: $0.userDefaults)
+		}),
 	settingsReducer.pullback(
 		state: \TabBarState.settings,
 		action: /TabBarAction.settings,
