@@ -82,12 +82,8 @@ let addAppTapBtnReducer = Reducer<AddAppointmentState?,
 		return .none
 }
 
-public let addAppointmentReducer: Reducer<AddAppointmentState?,
+public let addAppointmentValueReducer: Reducer<AddAppointmentState,
 	AddAppointmentAction, JourneyEnvironment> = .combine(
-		addAppTapBtnReducer.pullback(
-			state: \AddAppointmentState.self,
-			action: /AddAppointmentAction.self,
-			environment: { $0 }),
 		PickerReducer<Client>().reducer.pullback(
 			state: \AddAppointmentState.clients,
 			action: /AddAppointmentAction.clients,
@@ -127,6 +123,18 @@ public let addAppointmentReducer: Reducer<AddAppointmentState?,
 		switchCellReducer.pullback(
 			state: \AddAppointmentState.email,
 			action: /AddAppointmentAction.email,
+			environment: { $0 })
+	)
+
+public let addAppointmentReducer: Reducer<AddAppointmentState?,
+	AddAppointmentAction, JourneyEnvironment> = .combine(
+		addAppointmentValueReducer.optional.pullback(
+			state: \AddAppointmentState.self,
+			action: /AddAppointmentAction.self,
+			environment: { $0 }),
+		addAppTapBtnReducer.pullback(
+			state: \AddAppointmentState.self,
+			action: /AddAppointmentAction.self,
 			environment: { $0 })
 		)
 
@@ -474,7 +482,6 @@ struct NotesSection: View {
 extension AddAppointmentState {
 	
 	public static let dummy = AddAppointmentState.init(
-		isShowingAddAppointment: false,
 		reminder: false,
 		email: false,
 		sms: false,
