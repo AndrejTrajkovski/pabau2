@@ -8,12 +8,12 @@ import ComposableArchitecture
 public class SectionCalendarViewController<Event: JZBaseEvent, Subsection: Identifiable & Equatable>: BaseCalendarViewController {
 
 	var sectionDataSource: SectionWeekViewDataSource<Event, Location, Subsection, JZShift>!
-	let viewStore: ViewStore<CalendarSectionViewState<Event, Subsection>, CalendarAction>
-	init(_ viewStore: ViewStore<CalendarSectionViewState<Event, Subsection>, CalendarAction>) {
+	let viewStore: ViewStore<CalendarSectionViewState<Event, Subsection>, SubsectionCalendarAction<Subsection>>
+	init(_ viewStore: ViewStore<CalendarSectionViewState<Event, Subsection>, SubsectionCalendarAction<Subsection>>) {
 		let dataSource = SectionWeekViewDataSource<Event, Location, Subsection, JZShift>.init()
 		self.sectionDataSource = dataSource
 		self.viewStore = viewStore
-		super.init(onFlipPage: { viewStore.send(.userDidSwipePageTo(isNext: $0)) })
+		super.init()
 	}
 
 	public override func viewDidLoad() {
@@ -74,6 +74,10 @@ public class SectionCalendarViewController<Event: JZBaseEvent, Subsection: Ident
 
 	required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
+	}
+
+	public override func userDidFlipPage(_ weekView: JZBaseWeekView, isNextPage: Bool) {
+		viewStore.send(.onPageSwipe(isNext: isNextPage))
 	}
 }
 

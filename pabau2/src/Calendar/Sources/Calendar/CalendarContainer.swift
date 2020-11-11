@@ -18,6 +18,10 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 		action: /CalendarAction.calTypePicker,
 		environment: { $0 })
 	,
+	calendarWeekViewReducer.pullback(
+		state: \.self,
+		action: /CalendarAction.week,
+		environment: { $0 }),
 	AppointmentsByReducer<Employee>().reducer.pullback(
 		state: \.self,
 		action: /CalendarAction.employee,
@@ -34,13 +38,11 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 		case .calTypePicker(.toggleDropdown): break
 		case .addShift: break
 		case .toggleFilters: break
-		case .userDidSwipePageTo(isNext: let isNext):
-			let daysToAdd = isNext ? state.numOfDays : -state.numOfDays
-			let newDate = state.selectedDate + daysToAdd.days
-			state.selectedDate = newDate
 		case .room(_):
 			break
 		case .employee(_):
+			break
+		case .week(_):
 			break
 		}
 		return .none

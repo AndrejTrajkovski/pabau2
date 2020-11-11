@@ -2,6 +2,7 @@ import Model
 import Foundation
 import JZCalendarWeekView
 import ComposableArchitecture
+import SwiftDate
 
 public struct EventsBy<Event: JZBaseEvent, SubsectionHeader: Identifiable & Equatable> {
 
@@ -31,6 +32,10 @@ public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
 				break //handled in tabBarReducer
 			case .editAppointment(startDate: let startDate, startKeys: let startIndexes, dropKeys: let dropIndexes):
 				fatalError("TODO")
+			case .onPageSwipe(isNext: let isNext):
+				let daysToAdd = isNext ? 1 : -1
+				let newDate = state.selectedDate + daysToAdd.days
+				state.selectedDate = newDate
 			}
 			return .none
 	}

@@ -9,10 +9,8 @@ import Combine
 public class BaseCalendarViewController: UIViewController {
 	
 	var cancellables: Set<AnyCancellable> = []
-	var onFlipPage: (Bool) -> Void
 	
-	init(onFlipPage: @escaping (Bool) -> Void) {
-		self.onFlipPage = onFlipPage
+	init() {
 		super.init(nibName: nil, bundle: nil)
 	}
 
@@ -28,16 +26,16 @@ public class BaseCalendarViewController: UIViewController {
 	public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
 		JZWeekViewHelper.viewTransitionHandler(to: size, weekView: view as! JZLongPressWeekView)
 	}
+	
+	@objc public func userDidFlipPage(_ weekView: JZBaseWeekView, isNextPage: Bool) {
+		fatalError("override me")
+	}
 }
 
 extension BaseCalendarViewController: JZBaseViewDelegate {
 	
 	public func initDateDidChange(_ weekView: JZBaseWeekView, initDate: Date) {
 		print("initDateDidChange: ", initDate)
-	}
-	
-	public func userDidFlipPage(_ weekView: JZBaseWeekView, isNextPage: Bool) {
-		self.onFlipPage(isNextPage)
 	}
 
 	public func areNotSame(date1: Date, date2: Date) -> Bool {

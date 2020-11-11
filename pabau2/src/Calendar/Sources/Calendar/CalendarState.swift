@@ -4,6 +4,7 @@ import SwiftDate
 import Overture
 import CasePaths
 import ComposableArchitecture
+import JZCalendarWeekView
 
 public struct CalendarState: Equatable {
 	var isDropdownShown: Bool
@@ -38,7 +39,8 @@ public struct CalendarState: Equatable {
 																	 subsKeypath: keyPath)
 			self.appointments = Appointments.room(appointments)
 		case .week: //week
-			break
+			let flatAppts = self.appointments.flatten()
+			self.appointments = .week(JZWeekViewHelper.getIntraEventsByDate(originalEvents: flatAppts))
 		}
 	}
 }
@@ -48,11 +50,11 @@ extension CalendarState {
 	var calTypePicker: CalendarTypePickerState {
 		get {
 			CalendarTypePickerState(isDropdownShown: isDropdownShown,
-									calendarType: appointments)
+									appointments: appointments)
 		}
 		set {
 			self.isDropdownShown = newValue.isDropdownShown
-			self.appointments = newValue.calendarType
+			self.appointments = newValue.appointments
 		}
 	}
 }

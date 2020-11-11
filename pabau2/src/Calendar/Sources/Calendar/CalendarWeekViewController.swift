@@ -8,19 +8,17 @@ import Combine
 
 public class CalendarWeekViewController: BaseCalendarViewController {
 	
-	let viewStore: ViewStore<CalendarState, CalendarAction>
-	
-	init(_ viewStore: ViewStore<CalendarState, CalendarAction>) {
+	let viewStore: ViewStore<CalendarState, CalendarWeekViewAction>
+
+	init(_ viewStore: ViewStore<CalendarState, CalendarWeekViewAction>) {
 		self.viewStore = viewStore
-		super.init(onFlipPage: {
-			viewStore.send(.userDidSwipePageTo(isNext: $0))
-		})
+		super.init()
 	}
-	
+
 	required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
-	
+
 	public override func viewDidLoad() {
 		super.viewDidLoad()
 		weekView.setupCalendar(numOfDays: 7,
@@ -33,17 +31,8 @@ public class CalendarWeekViewController: BaseCalendarViewController {
 			.receive(on: DispatchQueue.main)
 			.sink(receiveValue: { [weak self] in
 				let newInitDate = $0.getMondayOfWeek()
-				if self?.areNotSame(date1: newInitDate, date2: self!.weekView.initDate) ?? false {
-					self?.weekView.updateWeekView(to: newInitDate)
-				}
+				self?.weekView.updateWeekView(to: newInitDate)
 			}).store(in: &self.cancellables)
-		
-//		self.viewStore.publisher.appointments.removeDuplicates()
-//			.receive(on: DispatchQueue.main)
-//			.sink(receiveValue: { [weak self] in
-//				let events = JZWeekViewHelper.getIntraEventsByDate(originalEvents: $0)
-//				self?.weekView.forceReload(reloadEvents: events)
-//		}).store(in: &self.cancellables)
 	}
 
 	public override func loadView() {
@@ -59,6 +48,10 @@ public class CalendarWeekViewController: BaseCalendarViewController {
 	
 	var weekView: CalendarWeekView {
 		self.view as! CalendarWeekView
+	}
+	
+	public override func userDidFlipPage(_ weekView: JZBaseWeekView, isNextPage: Bool) {
+		viewStore.send(.onPageSwipe(isNext: isNextPage))
 	}
 }
 
