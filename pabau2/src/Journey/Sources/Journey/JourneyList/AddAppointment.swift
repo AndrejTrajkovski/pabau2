@@ -10,12 +10,6 @@ public struct Duration: ListPickerElement {
 	public var duration: TimeInterval
 }
 
-public struct MyTermin: ListPickerElement {
-	public var name: String
-	public var id: Int
-	public var date: Date
-}
-
 public struct AddAppointmentState: Equatable {
 	var reminder: Bool
 	var email: Bool
@@ -23,7 +17,7 @@ public struct AddAppointmentState: Equatable {
 	var feedback: Bool
 	var isAllDay: Bool
 	var clients: PickerContainerState<Client>
-	var termins: PickerContainerState<MyTermin>
+	var startDate: Date
 	var services: ChooseServiceState
 	var durations: PickerContainerState<Duration>
 	var with: PickerContainerState<Employee>
@@ -33,8 +27,8 @@ public struct AddAppointmentState: Equatable {
 public enum AddAppointmentAction: Equatable {
 	case saveAppointmentTap
 	case addAppointmentDismissed
+	case chooseStartDate
 	case clients(PickerContainerAction<Client>)
-	case termins(PickerContainerAction<MyTermin>)
 	case services(ChooseServiceAction)
 	case durations(PickerContainerAction<Duration>)
 	case with(PickerContainerAction<Employee>)
@@ -88,11 +82,7 @@ public let addAppointmentValueReducer: Reducer<AddAppointmentState,
 			state: \AddAppointmentState.clients,
 			action: /AddAppointmentAction.clients,
 			environment: { $0 }),
-		PickerReducer<MyTermin>().reducer.pullback(
-			state: \AddAppointmentState.termins,
-			action: /AddAppointmentAction.termins,
-			environment: { $0 }),
-	chooseServiceReducer.pullback(
+		chooseServiceReducer.pullback(
 			 state: \AddAppointmentState.services,
 			 action: /AddAppointmentAction.services,
 			 environment: { $0 }),
@@ -180,13 +170,9 @@ struct Section1: View {
 				PickerContainerStore.init(content: {
 					LabelAndTextField.init("CLIENT", self.viewStore.state.clients.chosenItemName ?? "")
 				}, store: self.store.scope(state: { $0.clients },
-																	action: { .clients($0) })
+										   action: { .clients($0) })
 				)
-				PickerContainerStore.init(content: {
-					LabelAndTextField.init("DAY", self.viewStore.state.termins.chosenItemName ?? "")
-				}, store: self.store.scope(state: { $0.termins },
-																	action: { .termins($0) })
-				)
+				LabelAndTextField.init("DAY", self.viewStore.state.startDate.toString())
 			}
 		}
 	}
@@ -481,6 +467,24 @@ struct NotesSection: View {
 
 extension AddAppointmentState {
 	
+	public init(startDate: Date,
+				endDate: Date,
+				employee: Employee) {
+		self.init(
+			reminder: false,
+			email: false,
+			sms: false,
+			feedback: false,
+			isAllDay: false,
+			clients: JourneyMocks.clientState,
+			startDate: startDate,
+			services: ChooseServiceState(isChooseServiceActive: false, chosenServiceId: 1, filterChosen: .allStaff),
+			durations: JourneyMocks.durationState,
+			with: JourneyMocks.withState,
+			participants: JourneyMocks.participantsState
+		)
+	}
+	
 	public static let dummy = AddAppointmentState.init(
 		reminder: false,
 		email: false,
@@ -488,7 +492,7 @@ extension AddAppointmentState {
 		feedback: false,
 		isAllDay: false,
 		clients: JourneyMocks.clientState,
-		termins: JourneyMocks.terminState,
+		startDate: Date(),
 		services: ChooseServiceState(isChooseServiceActive: false, chosenServiceId: 1, filterChosen: .allStaff),
 		durations: JourneyMocks.durationState,
 		with: JourneyMocks.withState,

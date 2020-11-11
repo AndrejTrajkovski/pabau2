@@ -18,6 +18,14 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 		action: /CalendarAction.calTypePicker,
 		environment: { $0 })
 	,
+	AppointmentsByReducer<Employee>().reducer.pullback(
+		state: \.self,
+		action: /CalendarAction.employee,
+		environment: { $0 }),
+	AppointmentsByReducer<Room>().reducer.pullback(
+		state: \.self,
+		action: /CalendarAction.room,
+		environment: { $0 }),
 	.init { state, action, _ in
 		switch action {
 		case .datePicker: break

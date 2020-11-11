@@ -14,7 +14,6 @@ struct CalendarSectionViewState<Event: JZBaseEvent, Subsection: Identifiable & E
 }
 
 public extension Dictionary {
-	
 	func mapValuesFrom<T: Identifiable>(dict: Dictionary<Key, IdentifiedArrayOf<T>>) -> [Key: [T]] where Self.Value == Array<T.ID> {
 		return self.reduce(into: [Key: [T]]()) { (result, arg1) in
 			let (locationId, subsIds) = arg1

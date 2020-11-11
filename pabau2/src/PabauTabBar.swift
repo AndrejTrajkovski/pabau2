@@ -144,6 +144,13 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
 		switch action {
 		case .journey(.addAppointmentTap):
 			state.addAppointment = AddAppointmentState.dummy
+		case .calendar(.employee(.addAppointment(let startDate, let durationMins, let dropKeys))):
+			let (date, location, subsection) = dropKeys
+			let endDate = Calendar(identifier: .gregorian).date(byAdding: .minute, value: durationMins, to: startDate)!
+			let employee = state.calendar.employees[location]?[id: subsection]
+			employee.map {
+				state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate, employee: $0)
+			}
 		default: break
 		}
 		return .none

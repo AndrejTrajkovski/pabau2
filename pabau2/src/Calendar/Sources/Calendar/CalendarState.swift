@@ -11,7 +11,7 @@ public struct CalendarState: Equatable {
 	var appointments: Appointments
 	var shifts: [Date: [Location.ID: [Employee.ID: [JZShift]]]]
 	var locations: IdentifiedArrayOf<Location>
-	var employees: [Location.Id: IdentifiedArrayOf<Employee>]
+	public var employees: [Location.Id: IdentifiedArrayOf<Employee>]
 	var rooms: [Location.Id: IdentifiedArrayOf<Room>]
 	
 	var chosenLocationsIds: [Location.Id]

@@ -238,17 +238,6 @@ public struct JourneyContainerView: View {
 			isActive: false)
 	}
 
-	var terminState: PickerContainerState<MyTermin> {
-		PickerContainerState.init(
-			dataSource: [
-				MyTermin.init(name: "02-02-2020 12:30", id: 1, date: Date()),
-				MyTermin.init(name: "01-03-2020 13:30", id: 2, date: Date()),
-				MyTermin.init(name: "01-03-2020 14:30", id: 3, date: Date())
-			],
-			chosenItemId: 1,
-			isActive: false)
-	}
-
 	var serviceState: PickerContainerState<Service> {
 		PickerContainerState.init(
 			dataSource: [

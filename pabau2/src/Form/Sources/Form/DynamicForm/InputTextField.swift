@@ -10,7 +10,7 @@ public let textFieldReducer =
 		return .none
 	}
 }
-//
+
 public enum TextFieldAction: Equatable {
 	case textFieldChanged(String)
 }
