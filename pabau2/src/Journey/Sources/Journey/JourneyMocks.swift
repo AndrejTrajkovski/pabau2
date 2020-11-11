@@ -39,10 +39,10 @@ struct JourneyMocks {
 	static let withState: PickerContainerState<Employee> =
 		PickerContainerState.init(
 			dataSource: [
-				Employee.init(id: 1, name: "Andrej Trajkovski", locationId: Location.randomId()),
-				Employee.init(id: 2, name: "Mark Ronson", locationId: Location.randomId())
+				Employee.init(id: 123, name: "Andrej Trajkovski", locationId: Location.randomId()),
+				Employee.init(id: 456, name: "Mark Ronson", locationId: Location.randomId())
 			],
-			chosenItemId: 1,
+			chosenItemId: 456,
 			isActive: false)
 
 	static let participantsState: PickerContainerState<Employee> =

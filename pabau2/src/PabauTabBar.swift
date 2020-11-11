@@ -151,6 +151,12 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
 			employee.map {
 				state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate, employee: $0)
 			}
+		case .calendar(.room(.addAppointment(let startDate, let durationMins, let dropKeys))):
+			let (date, location, subsection) = dropKeys
+			let endDate = Calendar(identifier: .gregorian).date(byAdding: .minute, value: durationMins, to: startDate)!
+			let room = state.calendar.rooms[location]?[id: subsection]
+			//FIXME: missing room in add appointments screen
+			state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate)
 		default: break
 		}
 		return .none

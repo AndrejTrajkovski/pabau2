@@ -13,8 +13,8 @@ public struct CalendarState: Equatable {
 	var shifts: [Date: [Location.ID: [Employee.ID: [JZShift]]]]
 	var locations: IdentifiedArrayOf<Location>
 	public var employees: [Location.Id: IdentifiedArrayOf<Employee>]
-	var rooms: [Location.Id: IdentifiedArrayOf<Room>]
-	
+	public var rooms: [Location.Id: IdentifiedArrayOf<Room>]
+
 	var chosenLocationsIds: [Location.Id]
 	var chosenEmployeesIds: [Location.Id: [Employee.Id]]
 	var chosenRoomsIds: [Location.Id: [Room.Id]]
@@ -22,7 +22,7 @@ public struct CalendarState: Equatable {
 	mutating func switchTo(id: Appointments.CalendarType) {
 		let locationKeyPath: KeyPath<JZAppointmentEvent, Location.ID> = (\JZAppointmentEvent.app).appending(path: \CalAppointment.locationId)
 		switch id {
-		case .employee: //employee
+		case .employee:
 			let flatAppts = self.appointments.flatten()
 			let keyPath = (\JZAppointmentEvent.app).appending(path: \.employeeId)
 			let appointments = EventsBy<JZAppointmentEvent, Employee>.init(events: flatAppts,
@@ -30,7 +30,7 @@ public struct CalendarState: Equatable {
 																		 sectionKeypath: locationKeyPath,
 																		 subsKeypath: keyPath)
 			self.appointments = Appointments.employee(appointments)
-		case .room: //room
+		case .room:
 			let flatAppts = self.appointments.flatten()
 			let keyPath = (\JZAppointmentEvent.app).appending(path: \.roomId)
 			let appointments = EventsBy<JZAppointmentEvent, Room>.init(events: flatAppts,
@@ -38,7 +38,7 @@ public struct CalendarState: Equatable {
 																	 sectionKeypath: locationKeyPath,
 																	 subsKeypath: keyPath)
 			self.appointments = Appointments.room(appointments)
-		case .week: //week
+		case .week:
 			let flatAppts = self.appointments.flatten()
 			self.appointments = .week(JZWeekViewHelper.getIntraEventsByDate(originalEvents: flatAppts))
 		}

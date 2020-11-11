@@ -7,6 +7,6 @@ public enum SubsectionCalendarAction<Subsection: Identifiable & Equatable> {
 						durationMins: Int,
 						dropKeys:(date: Date, location: Location.ID, subsection: Subsection.ID))
 	case editAppointment(startDate: Date,
-						 startKeys:(page: Int, withinPage: Int),
+						 startKeys:(date: Date, location: Location.ID, subsection: Subsection.ID),
 						 dropKeys:(date: Date, location: Location.ID, subsection: Subsection.ID))
 }

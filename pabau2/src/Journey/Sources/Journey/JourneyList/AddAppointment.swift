@@ -468,8 +468,7 @@ struct NotesSection: View {
 extension AddAppointmentState {
 	
 	public init(startDate: Date,
-				endDate: Date,
-				employee: Employee) {
+				endDate: Date) {
 		self.init(
 			reminder: false,
 			email: false,
@@ -481,6 +480,27 @@ extension AddAppointmentState {
 			services: ChooseServiceState(isChooseServiceActive: false, chosenServiceId: 1, filterChosen: .allStaff),
 			durations: JourneyMocks.durationState,
 			with: JourneyMocks.withState,
+			participants: JourneyMocks.participantsState
+		)
+	}
+	
+	public init(startDate: Date,
+				endDate: Date,
+				employee: Employee) {
+		var employees = JourneyMocks.withState
+		employees.dataSource.append(employee)
+		employees.chosenItemId = employee.id
+		self.init(
+			reminder: false,
+			email: false,
+			sms: false,
+			feedback: false,
+			isAllDay: false,
+			clients: JourneyMocks.clientState,
+			startDate: startDate,
+			services: ChooseServiceState(isChooseServiceActive: false, chosenServiceId: 1, filterChosen: .allStaff),
+			durations: JourneyMocks.durationState,
+			with: employees,
 			participants: JourneyMocks.participantsState
 		)
 	}
