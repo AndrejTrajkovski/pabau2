@@ -60,11 +60,10 @@ extension CalendarState {
 }
 
 extension CalendarState {
-	
-	var employeeSectionState: CalendarSectionViewState<JZAppointmentEvent, Employee>? {
+	var employeeSectionState: CalendarSectionViewState<Employee>? {
 		get {
 			guard let groupAppointments = extract(case: Appointments.employee, from: self.appointments) else { return nil }
-			return CalendarSectionViewState<JZAppointmentEvent, Employee>(
+			return CalendarSectionViewState<Employee>(
 				selectedDate: selectedDate,
 				appointments: groupAppointments,
 				locations: locations,
@@ -74,12 +73,23 @@ extension CalendarState {
 				shifts: self.shifts
 			)
 		}
+		set {
+			newValue.map {
+				self.selectedDate = $0.selectedDate
+				self.appointments = Appointments.employee($0.appointments)
+				self.locations = $0.locations
+				self.chosenLocationsIds = $0.chosenLocationsIds
+				self.employees = $0.subsections
+				self.chosenEmployeesIds = $0.chosenSubsectionsIds
+				self.shifts = $0.shifts
+			}
+		}
 	}
 
-	var roomSectionState: CalendarSectionViewState<JZAppointmentEvent, Room>? {
+	var roomSectionState: CalendarSectionViewState<Room>? {
 		get {
 			guard let groupAppointments = extract(case: Appointments.room, from: self.appointments) else { return nil }
-			return CalendarSectionViewState<JZAppointmentEvent, Room>(
+			return CalendarSectionViewState<Room>(
 				selectedDate: selectedDate,
 				appointments: groupAppointments,
 				locations: locations,
@@ -89,13 +99,23 @@ extension CalendarState {
 				shifts: [:]
 			)
 		}
+		set {
+			newValue.map {
+				self.selectedDate = $0.selectedDate
+				self.appointments = Appointments.room($0.appointments)
+				self.locations = $0.locations
+				self.chosenLocationsIds = $0.chosenLocationsIds
+				self.rooms = $0.subsections
+				self.chosenRoomsIds = $0.chosenSubsectionsIds
+			}
+		}
 	}
 }
 
 extension CalendarState {
 	public init() {
 		self.isDropdownShown = false
-		self.selectedDate = Calendar(identifier: .gregorian).startOfDay(for: Date())
+		self.selectedDate = Calendar.gregorian.startOfDay(for: Date())
 	    let apps = CalAppointment.makeDummy().map(JZAppointmentEvent.init(appointment:))
 		let employees = Employee.mockEmployees
 		let rooms = Room.mock().map { $0.value }

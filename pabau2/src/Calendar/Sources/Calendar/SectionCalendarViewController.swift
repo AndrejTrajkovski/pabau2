@@ -5,13 +5,13 @@ import SwiftDate
 import Util
 import ComposableArchitecture
 
-public class SectionCalendarViewController<Event: JZBaseEvent, Subsection: Identifiable & Equatable>: BaseCalendarViewController {
+public class SectionCalendarViewController<Subsection: Identifiable & Equatable>: BaseCalendarViewController {
 
-	var sectionDataSource: SectionWeekViewDataSource<Event, Location, Subsection, JZShift>!
-	let viewStore: ViewStore<CalendarSectionViewState<Event, Subsection>, SubsectionCalendarAction<Subsection>>
+	var sectionDataSource: SectionWeekViewDataSource<JZAppointmentEvent, Location, Subsection, JZShift>!
+	let viewStore: ViewStore<CalendarSectionViewState<Subsection>, SubsectionCalendarAction<Subsection>>
 	
-	init(_ viewStore: ViewStore<CalendarSectionViewState<Event, Subsection>, SubsectionCalendarAction<Subsection>>) {
-		let dataSource = SectionWeekViewDataSource<Event, Location, Subsection, JZShift>.init()
+	init(_ viewStore: ViewStore<CalendarSectionViewState<Subsection>, SubsectionCalendarAction<Subsection>>) {
+		let dataSource = SectionWeekViewDataSource<JZAppointmentEvent, Location, Subsection, JZShift>.init()
 		self.sectionDataSource = dataSource
 		self.viewStore = viewStore
 		super.init()
@@ -57,14 +57,14 @@ public class SectionCalendarViewController<Event: JZBaseEvent, Subsection: Ident
 		selectedDate: Date,
 		locations: [Location],
 		subsections: [Location.ID: [Subsection]],
-		events: [Date: [Location.ID: [Subsection.ID: [Event]]]],
+		events: [Date: [Location.ID: [Subsection.ID: IdentifiedArrayOf<JZAppointmentEvent>]]],
 		shifts: [Date: [Location.ID: [Subsection.ID: [JZShift]]]]
 	) {
 		calendarView.updateWeekView(to: selectedDate)
 		sectionDataSource.update(selectedDate,
 									  locations,
 									  subsections,
-									  events,
+									  events.mapValues { $0.mapValues { $0.mapValues { $0.elements }}},
 									  shifts)
 		calendarView.forceReload()
 	}
@@ -102,18 +102,18 @@ extension SectionCalendarViewController: SectionLongPressDelegate {
 		guard let date2 = endPageAndSectionIdx.0,
 			  let section2 = endPageAndSectionIdx.1,
 			  let subsection2 = endPageAndSectionIdx.2 else { return }
-		let dropKeys = (date, section as! Location.ID, subsection as! Subsection.ID)
-		viewStore.send(.editAppointment(startDate: startDate, startKeys: startKeys, dropKeys: dropKeys))
+		let dropKeys = (date2, section2 as! Location.ID, subsection2 as! Subsection.ID)
+		viewStore.send(.editAppointment(startDate: startDate, startKeys: startKeys, dropKeys: dropKeys, eventId: CalAppointment.Id.init(rawValue: editingEvent.id)))
 	}
 }
 
 extension SectionCalendarViewController {
-	var calendarView: SectionCalendarView<Event, Subsection> {
-		return view as! SectionCalendarView<Event, Subsection>
+	var calendarView: SectionCalendarView<JZAppointmentEvent, Subsection> {
+		return view as! SectionCalendarView<JZAppointmentEvent, Subsection>
 	}
 
-	open func setupCalendarView() -> SectionCalendarView<Event, Subsection> {
-		let calendarView = SectionCalendarView<Event, Subsection>.init(frame: .zero)
+	open func setupCalendarView() -> SectionCalendarView<JZAppointmentEvent, Subsection> {
+		let calendarView = SectionCalendarView<JZAppointmentEvent, Subsection>.init(frame: .zero)
 		calendarView.sectionsDataSource = sectionDataSource
 		calendarView.baseDelegate = self
 		calendarView.longPressDataSource = self

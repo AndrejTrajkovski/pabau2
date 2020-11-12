@@ -45,11 +45,11 @@ extension BaseCalendarViewController: JZBaseViewDelegate {
 
 extension BaseCalendarViewController {
 	public func updateStartTimeOn(_ calEvent: inout CalAppointment, _ startDate: Date) {
-		let duration = Calendar(identifier: .gregorian).dateComponents([.minute], from: calEvent.start_time, to: calEvent.end_time).minute!
+		let duration = Calendar.gregorian.dateComponents([.minute], from: calEvent.start_time, to: calEvent.end_time).minute!
 		let splitNewDate = startDate.split()
 		calEvent.start_date = splitNewDate.ymd
 		calEvent.start_time = splitNewDate.hms
-		calEvent.end_time = Calendar(identifier: .gregorian).date(byAdding: .minute, value: duration, to: splitNewDate.hms)!
+		calEvent.end_time = Calendar.gregorian.date(byAdding: .minute, value: duration, to: splitNewDate.hms)!
 	}
 }
 

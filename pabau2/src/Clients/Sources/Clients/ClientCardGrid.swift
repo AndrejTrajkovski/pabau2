@@ -117,7 +117,7 @@ struct ClientCardGrid: View {
 func groupByDay(photoViewModel: [PhotoViewModel]) -> [Date: [PhotoViewModel]] {
 	return Dictionary.init(grouping: photoViewModel,
 												 by: {
-													let date = Calendar.current.dateComponents([.day, .year, .month], from: $0.basePhoto.date)
-													return Calendar.current.date(from: date)!
+													let date = Calendar.gregorian.dateComponents([.day, .year, .month], from: $0.basePhoto.date)
+													return Calendar.gregorian.date(from: date)!
 	})
 }

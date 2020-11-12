@@ -3,9 +3,9 @@ import JZCalendarWeekView
 import ComposableArchitecture
 import Model
 
-struct CalendarSectionViewState<Event: JZBaseEvent, Subsection: Identifiable & Equatable>: Equatable {
+struct CalendarSectionViewState<Subsection: Identifiable & Equatable>: Equatable {
 	var selectedDate: Date
-	let appointments: EventsBy<Event, Subsection>
+	var appointments: EventsBy<JZAppointmentEvent, Subsection>
 	let locations: IdentifiedArrayOf<Location>
 	let chosenLocationsIds: [Location.ID]
 	let subsections: [Location.ID: IdentifiedArrayOf<Subsection>]

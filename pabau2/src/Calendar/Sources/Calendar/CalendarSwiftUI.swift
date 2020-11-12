@@ -21,15 +21,15 @@ public struct CalendarWrapper: View {
 		}
 	}
 
-	typealias EmployeeCalView = IfLetStore<CalendarSectionViewState<JZAppointmentEvent, Employee>, SubsectionCalendarAction<Employee>, _ConditionalContent<CalendarSwiftUI<JZAppointmentEvent, Employee>, EmptyView>>
-	typealias RoomCalView = IfLetStore<CalendarSectionViewState<JZAppointmentEvent, Room>, SubsectionCalendarAction<Room>,
-											_ConditionalContent<CalendarSwiftUI<JZAppointmentEvent, Room>, EmptyView>>
+	typealias EmployeeCalView = IfLetStore<CalendarSectionViewState<Employee>, SubsectionCalendarAction<Employee>, _ConditionalContent<CalendarSwiftUI<Employee>, EmptyView>>
+	typealias RoomCalView = IfLetStore<CalendarSectionViewState<Room>, SubsectionCalendarAction<Room>,
+											_ConditionalContent<CalendarSwiftUI<Room>, EmptyView>>
 	
 	var employeeCalendarView: EmployeeCalView {
 		let ifLetStore = IfLetStore(store.scope(
 										state: { $0.employeeSectionState },
 										action: { .employee($0) }),
-									then: CalendarSwiftUI<JZAppointmentEvent, Employee>.init(store:), else: EmptyView())
+									then: CalendarSwiftUI<Employee>.init(store:), else: EmptyView())
 		return ifLetStore
 	}
 	
@@ -37,19 +37,19 @@ public struct CalendarWrapper: View {
 		let ifLetStore = IfLetStore(store.scope(
 										state: { $0.roomSectionState },
 										action: { .room($0) }),
-									then: CalendarSwiftUI<JZAppointmentEvent, Room>.init(store:), else: EmptyView())
+									then: CalendarSwiftUI<Room>.init(store:), else: EmptyView())
 		return ifLetStore
 	}
 }
 
-struct CalendarSwiftUI<Event: JZBaseEvent, Section: Identifiable & Equatable>: UIViewControllerRepresentable {
-	let store: Store<CalendarSectionViewState<Event, Section>, SubsectionCalendarAction<Section>>
-	public func makeUIViewController(context: Context) -> SectionCalendarViewController<Event, Section> {
+struct CalendarSwiftUI<Section: Identifiable & Equatable>: UIViewControllerRepresentable {
+	let store: Store<CalendarSectionViewState<Section>, SubsectionCalendarAction<Section>>
+	public func makeUIViewController(context: Context) -> SectionCalendarViewController<Section> {
 		print("makeUIViewController")
-		return SectionCalendarViewController<Event, Section>(ViewStore(store))
+		return SectionCalendarViewController<Section>(ViewStore(store))
 	}
 
-	public func updateUIViewController(_ uiViewController: SectionCalendarViewController<Event, Section>, context: Context) {
+	public func updateUIViewController(_ uiViewController: SectionCalendarViewController<Section>, context: Context) {
 	}
 }
 

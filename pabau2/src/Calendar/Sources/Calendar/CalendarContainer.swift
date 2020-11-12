@@ -22,12 +22,12 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 		state: \.self,
 		action: /CalendarAction.week,
 		environment: { $0 }),
-	AppointmentsByReducer<Employee>().reducer.pullback(
-		state: \.self,
+	AppointmentsByReducer<Employee>().reducer.optional.pullback(
+		state: \CalendarState.employeeSectionState,
 		action: /CalendarAction.employee,
 		environment: { $0 }),
-	AppointmentsByReducer<Room>().reducer.pullback(
-		state: \.self,
+	AppointmentsByReducer<Room>().reducer.optional.pullback(
+		state: \CalendarState.roomSectionState,
 		action: /CalendarAction.room,
 		environment: { $0 }),
 	.init { state, action, _ in

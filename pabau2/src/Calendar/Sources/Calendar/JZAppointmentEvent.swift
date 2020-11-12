@@ -3,7 +3,7 @@ import JZCalendarWeekView
 import Model
 
 @dynamicMemberLookup
-public class JZAppointmentEvent: JZBaseEvent {
+public class JZAppointmentEvent: JZBaseEvent, Identifiable {
 	public override var debugDescription: String {
 		return "id: \(app.id), employeeId: \(app.employeeId)"
 	}
@@ -15,13 +15,17 @@ public class JZAppointmentEvent: JZBaseEvent {
 	public var app: CalAppointment
 	public init(appointment: CalAppointment) {
 		self.app = appointment
-		let jzid = String(appointment.id)
-		let startDate = Date.concat(appointment.start_date, appointment.start_time, Calendar.current)
-		let endDate = Date.concat(appointment.start_date, appointment.end_time, Calendar.current)
+		let jzid = appointment.id.rawValue
+		let startDate = Date.concat(appointment.start_date, appointment.start_time, Calendar.gregorian)
+		let endDate = Date.concat(appointment.start_date, appointment.end_time, Calendar.gregorian)
 		// If you want to have you custom uid, you can set the parent class's id with your uid or UUID().uuidString (In this case, we just use the base class id)
 		super.init(id: jzid, startDate: startDate, endDate: endDate)
 	}
-
+	
+	func update(startTime: Date, duration: Int) {
+		
+	}
+	
 	public override func copy(with zone: NSZone?) -> Any {
 		return JZAppointmentEvent(appointment: app)
 	}

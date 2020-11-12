@@ -11,8 +11,8 @@ public class JZShift: JZBackgroundTime, Identifiable {
 	public var shift: Shift
 	public init(shift: Shift) {
 		self.shift = shift
-		let start = Calendar.init(identifier: .gregorian).dateComponents([.hour, .minute], from: shift.startTime)
-		let end = Calendar.init(identifier: .gregorian).dateComponents([.hour, .minute], from: shift.endTime)
+		let start = Calendar.gregorian.dateComponents([.hour, .minute], from: shift.startTime)
+		let end = Calendar.gregorian.dateComponents([.hour, .minute], from: shift.endTime)
 		super.init(date: shift.date, start: start, end: end)
 	}
 	

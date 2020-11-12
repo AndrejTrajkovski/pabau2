@@ -1,6 +1,7 @@
 import Tagged
 import Foundation
 import SwiftDate
+import Util
 
 public struct CalendarResponse: Codable {
 	//	public let rota: [Employee.Id: [Shift]]
@@ -176,7 +177,7 @@ extension CalAppointment {
 }
 
 extension Date {
-	public func separateHMSandYMD(_ calendar: Calendar = .current) -> (Date?, Date?) {
+	public func separateHMSandYMD(_ calendar: Calendar = Calendar.init(identifier: .gregorian)) -> (Date?, Date?) {
 		let ymdComps = calendar.dateComponents([.year, .month, .day], from: self)
 		let hmsComps = calendar.dateComponents([.hour, .minute, .second], from: self)
 		return (calendar.date(from: hmsComps), calendar.date(from: ymdComps))
@@ -224,7 +225,7 @@ extension Date {
 		let randomMins = Int.random(in: -59...59)
 		let randomTime = randomHours.hours + randomMins.minutes
 		let today = Date()
-		let startDate = Calendar.current.date(byAdding: .hour,
+		let startDate = Calendar.gregorian.date(byAdding: .hour,
 											  value: randomHours,
 											  to: today)!
 		let randomEndMins = Int.random(in: 15...endRangeMax)

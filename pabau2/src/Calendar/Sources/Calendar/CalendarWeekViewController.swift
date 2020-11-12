@@ -67,7 +67,7 @@ extension CalendarWeekViewController: JZLongPressViewDelegate {
 	}
 	
 	public func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date) {
-		let endDate = Calendar(identifier: .gregorian).date(byAdding: .hour, value: weekView.addNewDurationMins/60, to: startDate)!
+		let endDate = Calendar.gregorian.date(byAdding: .hour, value: weekView.addNewDurationMins/60, to: startDate)!
 //		let newApp = JZAppointmentEvent(appointment: CalAppointment.dummyInit(start: startDate, end: endDate))
 //		viewStore.send(.addAppointment(newApp))
 	}
