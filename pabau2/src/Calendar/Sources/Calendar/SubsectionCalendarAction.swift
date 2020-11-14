@@ -9,5 +9,5 @@ public enum SubsectionCalendarAction<Subsection: Identifiable & Equatable> {
 	case editAppointment(startDate: Date,
 						 startKeys:(date: Date, location: Location.ID, subsection: Subsection.ID),
 						 dropKeys:(date: Date, location: Location.ID, subsection: Subsection.ID),
-						 eventId: CalAppointment.Id)
+						 eventId: Int)
 }

@@ -18,8 +18,7 @@ public struct CalAppointment: Hashable, Codable, Equatable {
 	
 	public let id: CalAppointment.Id
 	public var start_date: Date
-	public var start_time: Date
-	public var end_time: Date
+	public var end_date: Date
 	public var employeeId: Employee.Id
 	public let employeeInitials: String?
 	public let locationId: Location.Id
@@ -36,8 +35,7 @@ public struct CalAppointment: Hashable, Codable, Equatable {
 	public enum CodingKeys: String, CodingKey {
 		case id
 		case start_date
-		case start_time
-		case end_time
+		case end_date
 		case employeeId = "user_id"
 		case employeeInitials = "employee_initials"
 		case locationId = "location_id"
@@ -70,11 +68,8 @@ public struct CalAppointment: Hashable, Codable, Equatable {
 		start_date = try Date(container: container,
 							  codingKey: .start_date,
 							  formatter: DateFormatter.yearMonthDay)
-		start_time = try Date(container: container,
-							  codingKey: .start_time,
-							  formatter: DateFormatter.HHmmss)
-		end_time = try Date(container: container,
-							codingKey: .end_time,
+		end_date = try Date(container: container,
+							codingKey: .end_date,
 							formatter: DateFormatter.HHmmss)
 		roomId = try container.decode(Room.Id.self, forKey: .roomId)
 	}
@@ -120,8 +115,7 @@ extension CalAppointment {
 	public init(
 		id: CalAppointment.Id,
 		start_date: Date,
-		start_time: Date,
-		end_time: Date,
+		end_date: Date,
 		employeeId: Employee.Id,
 		employeeInitials: String? = nil,
 		locationId: Location.ID,
@@ -137,8 +131,7 @@ extension CalAppointment {
 	) {
 		self.id = id
 		self.start_date = start_date
-		self.start_time = start_time
-		self.end_time = end_time
+		self.end_date = end_date
 		self.employeeId = employeeId
 		self.employeeInitials = employeeInitials
 		self.locationId = locationId
@@ -157,12 +150,10 @@ extension CalAppointment {
 								 end: Date,
 								 employeeId: Employee.Id? = nil,
 								 roomId: Room.Id? = nil) -> CalAppointment {
-		let hmsAndYmd = start.separateHMSandYMD()
 		return CalAppointment(
 			id: CalAppointment.Id(rawValue: Int.random(in: 0...1000000000)),
-			start_date: hmsAndYmd.1!,
-			start_time: hmsAndYmd.0!,
-			end_time: end.separateHMSandYMD().0!,
+			start_date: start,
+			end_date: end,
 			employeeId: employeeId ?? Employee.Id(rawValue: 1),
 			employeeInitials: nil,
 			locationId: Location.Id(rawValue: (Int.random(in: 0...5))),
@@ -203,8 +194,7 @@ extension CalAppointment {
 			let employee = Employee.mockEmployees.randomElement()!
 			let app = CalAppointment(id: CalAppointment.Id(rawValue: idx),
 									 start_date: mockStartEnd.0,
-									 start_time: mockStartEnd.0,
-									 end_time: mockStartEnd.1,
+									 end_date: mockStartEnd.1,
 									 employeeId: employee.id,
 									 employeeInitials: nil,
 									 locationId: employee.locationId,
@@ -226,8 +216,8 @@ extension Date {
 		let randomTime = randomHours.hours + randomMins.minutes
 		let today = Date()
 		let startDate = Calendar.gregorian.date(byAdding: .hour,
-											  value: randomHours,
-											  to: today)!
+												value: randomHours,
+												to: today)!
 		let randomEndMins = Int.random(in: 15...endRangeMax)
 		let randomEnding = startDate + randomEndMins.minutes
 		return (startDate, randomEnding)
@@ -235,10 +225,12 @@ extension Date {
 }
 
 extension CalAppointment {
-	func intersectsWith(otherApp: CalAppointment) -> Bool {
-		self.start_time.isInRange(date: otherApp.start_time, and: otherApp.end_time) ||
-			self.end_time.isInRange(date: otherApp.start_time, and: otherApp.end_time) ||
-			otherApp.start_time.isInRange(date: self.start_time, and: self.end_time) ||
-			otherApp.end_time.isInRange(date: self.start_time, and: self.end_time)
+	
+	public mutating func update(start: Date) {
+		let duration = Calendar.gregorian.dateComponents([.hour, .minute], from: start_date, to: end_date)
+		var end = Calendar.gregorian.date(byAdding: .minute, value: duration.minute!, to: start)!
+		end = Calendar.gregorian.date(byAdding: .hour, value: duration.hour!, to: end)!
+		self.start_date = start
+		self.end_date = end
 	}
 }

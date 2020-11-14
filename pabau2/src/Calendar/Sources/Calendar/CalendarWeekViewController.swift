@@ -45,61 +45,32 @@ public class CalendarWeekViewController: BaseCalendarViewController {
 		calendarView.moveTimeMinInterval = 15
 		view = calendarView
 	}
-	
+
 	var weekView: CalendarWeekView {
 		self.view as! CalendarWeekView
 	}
-	
+
 	public override func userDidFlipPage(_ weekView: JZBaseWeekView, isNextPage: Bool) {
 		viewStore.send(.onPageSwipe(isNext: isNextPage))
 	}
 }
 
 extension CalendarWeekViewController: JZLongPressViewDelegate {
-	public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndChangeDurationLongPressAt startDate: Date, endDate: Date) {
+	public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndChangeDurationLongPressAt endDate: Date) {
 		guard let app = editingEvent as? JZAppointmentEvent else { return }
-		var calApp = app.app
-		updateStartTimeOn(&calApp, startDate)
-		calApp.end_time = endDate.split().hms
-//		let newApp = JZAppointmentEvent(appointment: calApp)
-//		viewStore.send(.replaceAppointment(newApp: newApp,
-//										   id: app.app.id))
+		
 	}
 	
 	public func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date) {
-		let endDate = Calendar.gregorian.date(byAdding: .hour, value: weekView.addNewDurationMins/60, to: startDate)!
+//		let endDate = Calendar.gregorian.date(byAdding: .hour, value: weekView.addNewDurationMins/60, to: startDate)!
 //		let newApp = JZAppointmentEvent(appointment: CalAppointment.dummyInit(start: startDate, end: endDate))
 //		viewStore.send(.addAppointment(newApp))
 	}
 
 	public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date) {
 		guard let app = editingEvent as? JZAppointmentEvent else { return }
-		var calApp = app.app
-		updateStartTimeOn(&calApp, startDate)
 //		let newApp = JZAppointmentEvent(appointment: calApp)
 //		viewStore.send(.replaceAppointment(newApp: newApp,
 //										   id: app.app.id))
 	}
 }
-
-//if self.isKind(of: CalendarViewController.self) {
-//	let dateDisplayed = initDate + (weekView.numOfDays).days //JZCalendar holds previous and next pages in cache, initDate is not the date displayed on screen
-//	let date1 = viewStore.state.selectedDate
-//	//compare in order not to go in an infinite loop
-//	if self.areNotSame(date1: date1,
-//					   date2: dateDisplayed) {
-//		self.viewStore.send(.datePicker(.selectedDate(dateDisplayed)))
-//	}
-//} else if self.isKind(of: CalendarWeekViewController.self) {
-//	let dateDisplayed = initDate + (weekView.numOfDays).days //JZCalendar holds previous and next pages in cache, initDate is not the date displayed on screen
-//	print("dateDisplayed: ", dateDisplayed)
-//	let date1 = viewStore.state.selectedDate.getMondayOfWeek()
-//	print("date1: ", date1)
-//	if self.areNotSame(date1: date1,
-//					   date2: dateDisplayed) {
-//		let isInPast = dateDisplayed < date1
-//		let shiftDate = isInPast ? -1.weeks : 1.weeks
-//		let oneWeekDiff = viewStore.state.selectedDate + shiftDate
-//		self.viewStore.send(.datePicker(.selectedDate(oneWeekDiff)))
-//	}
-//}
