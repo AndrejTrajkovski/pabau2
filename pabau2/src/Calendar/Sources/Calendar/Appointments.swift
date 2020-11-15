@@ -8,8 +8,8 @@ public enum Appointments: Equatable {
 	
 	case employee(EventsBy<Employee>)
 	case room(EventsBy<Room>)
-	case week([Date: [JZAppointmentEvent]])
-	
+	case week([Date: [CalAppointment]])
+
 	var calendarType: CalendarType {
 		switch self {
 		case .employee:
@@ -20,7 +20,7 @@ public enum Appointments: Equatable {
 			return .week
 		}
 	}
-	
+
 	public enum CalendarType: Equatable, CaseIterable {
 		case employee
 		case room

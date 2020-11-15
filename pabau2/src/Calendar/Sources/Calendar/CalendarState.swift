@@ -20,34 +20,29 @@ public struct CalendarState: Equatable {
 	var chosenRoomsIds: [Location.Id: [Room.Id]]
 	
 	mutating func switchTo(id: Appointments.CalendarType) {
-		let locationKeyPath: KeyPath<JZAppointmentEvent, Location.ID> = (\JZAppointmentEvent.app).appending(path: \CalAppointment.locationId)
+		let locationKeyPath = \CalAppointment.locationId
 		switch id {
 		case .employee:
 			let flatAppts = self.appointments.flatten()
-			let keyPath = (\JZAppointmentEvent.app).appending(path: \.employeeId)
 			let appointments = EventsBy<Employee>.init(events: flatAppts,
 													   subsections: employees.flatMap({ $0.value }),
 													   sectionKeypath: locationKeyPath,
-													   subsKeypath: keyPath)
+													   subsKeypath: \CalAppointment.employeeId)
 			self.appointments = Appointments.employee(appointments)
 		case .room:
 			let flatAppts = self.appointments.flatten()
-			let keyPath = (\JZAppointmentEvent.app).appending(path: \.roomId)
 			let appointments = EventsBy<Room>.init(events: flatAppts,
 												   subsections: rooms.flatMap({ $0.value }),
 												   sectionKeypath: locationKeyPath,
-												   subsKeypath: keyPath)
+												   subsKeypath: \CalAppointment.roomId)
 			self.appointments = Appointments.room(appointments)
 		case .week:
 			let flatAppts = self.appointments.flatten()
-			self.appointments = .week(JZWeekViewHelper.getIntraEventsByDate(originalEvents: flatAppts))
+			self.appointments = .week(SectionHelper.groupByStartOfDay(originalEvents: flatAppts))
 		}
 	}
 }
 
-extension CalAppointment: JZBaseEvent {
-	
-}
 
 extension CalendarState {
 
@@ -120,7 +115,7 @@ extension CalendarState {
 	public init() {
 		self.isDropdownShown = false
 		self.selectedDate = Calendar.gregorian.startOfDay(for: Date())
-	    let apps = CalAppointment.makeDummy().map(JZAppointmentEvent.init(appointment:))
+	    let apps = CalAppointment.makeDummy()
 		let employees = Employee.mockEmployees
 		let rooms = Room.mock().map { $0.value }
 		let locations = Location.mock()
