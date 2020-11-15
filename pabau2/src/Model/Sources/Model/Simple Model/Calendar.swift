@@ -8,7 +8,7 @@ public struct CalendarResponse: Codable {
 	public let appointments: [CalAppointment]
 }
 
-public struct CalAppointment: Hashable, Codable, Equatable {
+public struct CalAppointment: Hashable, Codable, Equatable, Identifiable {
 	
 	public func hash(into hasher: inout Hasher) {
 		hasher.combine(id)

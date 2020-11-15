@@ -5,7 +5,7 @@ import Model
 
 struct CalendarSectionViewState<Subsection: Identifiable & Equatable>: Equatable {
 	var selectedDate: Date
-	var appointments: EventsBy<JZAppointmentEvent, Subsection>
+	var appointments: EventsBy<Subsection>
 	let locations: IdentifiedArrayOf<Location>
 	let chosenLocationsIds: [Location.ID]
 	let subsections: [Location.ID: IdentifiedArrayOf<Subsection>]

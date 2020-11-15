@@ -14,35 +14,39 @@ public struct CalendarState: Equatable {
 	var locations: IdentifiedArrayOf<Location>
 	public var employees: [Location.Id: IdentifiedArrayOf<Employee>]
 	public var rooms: [Location.Id: IdentifiedArrayOf<Room>]
-
+	
 	var chosenLocationsIds: [Location.Id]
 	var chosenEmployeesIds: [Location.Id: [Employee.Id]]
 	var chosenRoomsIds: [Location.Id: [Room.Id]]
-
+	
 	mutating func switchTo(id: Appointments.CalendarType) {
 		let locationKeyPath: KeyPath<JZAppointmentEvent, Location.ID> = (\JZAppointmentEvent.app).appending(path: \CalAppointment.locationId)
 		switch id {
 		case .employee:
 			let flatAppts = self.appointments.flatten()
 			let keyPath = (\JZAppointmentEvent.app).appending(path: \.employeeId)
-			let appointments = EventsBy<JZAppointmentEvent, Employee>.init(events: flatAppts,
-																		 subsections: employees.flatMap({ $0.value }),
-																		 sectionKeypath: locationKeyPath,
-																		 subsKeypath: keyPath)
+			let appointments = EventsBy<Employee>.init(events: flatAppts,
+													   subsections: employees.flatMap({ $0.value }),
+													   sectionKeypath: locationKeyPath,
+													   subsKeypath: keyPath)
 			self.appointments = Appointments.employee(appointments)
 		case .room:
 			let flatAppts = self.appointments.flatten()
 			let keyPath = (\JZAppointmentEvent.app).appending(path: \.roomId)
-			let appointments = EventsBy<JZAppointmentEvent, Room>.init(events: flatAppts,
-																	 subsections: rooms.flatMap({ $0.value }),
-																	 sectionKeypath: locationKeyPath,
-																	 subsKeypath: keyPath)
+			let appointments = EventsBy<Room>.init(events: flatAppts,
+												   subsections: rooms.flatMap({ $0.value }),
+												   sectionKeypath: locationKeyPath,
+												   subsKeypath: keyPath)
 			self.appointments = Appointments.room(appointments)
 		case .week:
 			let flatAppts = self.appointments.flatten()
 			self.appointments = .week(JZWeekViewHelper.getIntraEventsByDate(originalEvents: flatAppts))
 		}
 	}
+}
+
+extension CalAppointment: JZBaseEvent {
+	
 }
 
 extension CalendarState {

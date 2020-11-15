@@ -4,20 +4,20 @@ import JZCalendarWeekView
 import ComposableArchitecture
 import SwiftDate
 
-public struct EventsBy<Event: JZBaseEvent & Identifiable, SubsectionHeader: Identifiable & Equatable> {
+public struct EventsBy<SubsectionHeader: Identifiable & Equatable> {
 
-	var appointments: [Date: [Location.ID: [SubsectionHeader.ID: IdentifiedArrayOf<Event>]]]
-	init(events: [Event],
+	var appointments: [Date: [Location.ID: [SubsectionHeader.ID: IdentifiedArrayOf<CalAppointment>]]]
+	init(events: [CalAppointment],
 		 subsections: [SubsectionHeader],
-		 sectionKeypath: KeyPath<Event, Location.ID>,
-		 subsKeypath: KeyPath<Event, SubsectionHeader.ID>) {
+		 sectionKeypath: KeyPath<CalAppointment, Location.ID>,
+		 subsKeypath: KeyPath<CalAppointment, SubsectionHeader.ID>) {
 		self.appointments = SectionHelper.group(events,
 												subsections,
 												sectionKeypath,
 												subsKeypath)
 	}
 
-	func flatten() -> [Event] {
+	func flatten() -> [CalAppointment] {
 		return appointments.flatMap { $0.value }.flatMap { $0.value }.flatMap { $0.value }
 	}
 }
@@ -30,18 +30,14 @@ public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
 			case .addAppointment:
 				break //handled in tabBarReducer
 			case .editAppointment(startDate: let startDate, startKeys: let startIndexes, dropKeys: let dropIndexes, eventId: let eventId):
-				print(state.appointments.appointments[startIndexes.date]?[startIndexes.location]?[ startIndexes.subsection]?.map(\.startDate))
-				var app = state.appointments.appointments[startIndexes.date]?[startIndexes.location]?[startIndexes.subsection]?.remove(id: eventId)
-				print(app?.startDate, app?.endDate)
-				app?.update(newStart: startDate)
-				print(app?.startDate, app?.endDate)
+				print(state.appointments.appointments[startIndexes.date]?[startIndexes.location]?[ startIndexes.subsection]?.map(\.start_date))
+				var app = state.appointments.appointments[startIndexes.date]?[startIndexes.location]?[startIndexes.subsection]?.remove(id: CalAppointment.Id(rawValue: eventId))
+				app?.update(start: startDate)
 				var apps = state.appointments
 				app.map {
 					apps.appointments[startIndexes.date]?[startIndexes.location]?[ startIndexes.subsection]?.append($0)
 				}
-				print(state.appointments.appointments[startIndexes.date]?[startIndexes.location]?[ startIndexes.subsection]?.map(\.startDate))
 				state.appointments = apps
-				print(state.appointments.appointments[startIndexes.date]?[startIndexes.location]?[ startIndexes.subsection]?.map(\.startDate))
 			case .onPageSwipe(isNext: let isNext):
 				let daysToAdd = isNext ? 1 : -1
 				let newDate = state.selectedDate + daysToAdd.days

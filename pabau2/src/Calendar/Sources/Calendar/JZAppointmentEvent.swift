@@ -12,13 +12,6 @@ public class JZAppointmentEvent: JZBaseEvent, Identifiable {
 		app[keyPath: keyPath]
 	}
 	
-	public override func isEqual(_ object: Any?) -> Bool {
-		guard let otherApp = object as? JZAppointmentEvent else {
-			return false
-		}
-		return self.app == otherApp.app
-	}
-	
 	public var app: CalAppointment
 	public init(appointment: CalAppointment) {
 		self.app = appointment

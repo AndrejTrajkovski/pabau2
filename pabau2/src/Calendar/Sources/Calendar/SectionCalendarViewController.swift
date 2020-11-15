@@ -57,14 +57,14 @@ public class SectionCalendarViewController<Subsection: Identifiable & Equatable>
 		selectedDate: Date,
 		locations: [Location],
 		subsections: [Location.ID: [Subsection]],
-		events: [Date: [Location.ID: [Subsection.ID: IdentifiedArrayOf<JZAppointmentEvent>]]],
+		events: [Date: [Location.ID: [Subsection.ID: IdentifiedArrayOf<CalAppointment>]]],
 		shifts: [Date: [Location.ID: [Subsection.ID: [JZShift]]]]
 	) {
 		calendarView.updateWeekView(to: selectedDate)
 		sectionDataSource.update(selectedDate,
 									  locations,
 									  subsections,
-									  events.mapValues { $0.mapValues { $0.mapValues { $0.elements }}},
+									  events.mapValues { $0.mapValues { $0.mapValues { $0.elements.map(JZAppointmentEvent.init(appointment:)) }}},
 									  shifts)
 		calendarView.forceReload()
 	}

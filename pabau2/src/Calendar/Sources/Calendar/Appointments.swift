@@ -6,8 +6,8 @@ import Tagged
 
 public enum Appointments: Equatable {
 	
-	case employee(EventsBy<JZAppointmentEvent, Employee>)
-	case room(EventsBy<JZAppointmentEvent, Room>)
+	case employee(EventsBy<Employee>)
+	case room(EventsBy<Room>)
 	case week([Date: [JZAppointmentEvent]])
 	
 	var calendarType: CalendarType {
@@ -38,7 +38,7 @@ public enum Appointments: Equatable {
 		}
 	}
 	
-	public func flatten() -> [JZAppointmentEvent] {
+	public func flatten() -> [CalAppointment] {
 		switch self {
 		case .employee(let apps):
 			return apps.flatten()
@@ -52,23 +52,19 @@ public enum Appointments: Equatable {
 
 extension Appointments {
 
-	static func initEmployee(events: [JZAppointmentEvent], sections: [Employee]) -> Appointments {
-		let locationKeyPath: KeyPath<JZAppointmentEvent, Location.ID> = (\JZAppointmentEvent.app).appending(path: \CalAppointment.locationId)
-		let keyPath = (\JZAppointmentEvent.app).appending(path: \.employeeId)
-		let appointments = EventsBy<JZAppointmentEvent, Employee>.init(events: events,
+	static func initEmployee(events: [CalAppointment], sections: [Employee]) -> Appointments {
+		let appointments = EventsBy<Employee>.init(events: events,
 																	 subsections: sections,
-																	 sectionKeypath: locationKeyPath,
-																	 subsKeypath: keyPath)
+																	 sectionKeypath: \CalAppointment.locationId,
+																	 subsKeypath: \CalAppointment.employeeId)
 		return Appointments.employee(appointments)
 	}
 	
-	static func initRoom(events: [JZAppointmentEvent], sections: [Room]) -> Appointments {
-		let locationKeyPath: KeyPath<JZAppointmentEvent, Location.ID> = (\JZAppointmentEvent.app).appending(path: \CalAppointment.locationId)
-		let keyPath = (\JZAppointmentEvent.app).appending(path: \.roomId)
-		let appointments = EventsBy<JZAppointmentEvent, Room>.init(events: events,
-																	 subsections: sections,
-																	 sectionKeypath: locationKeyPath,
-																	 subsKeypath: keyPath)
+	static func initRoom(events: [CalAppointment], sections: [Room]) -> Appointments {
+		let appointments = EventsBy<Room>.init(events: events,
+											   subsections: sections,
+											   sectionKeypath: \CalAppointment.locationId,
+											   subsKeypath: \CalAppointment.roomId)
 		return Appointments.room(appointments)
 	}
 }
