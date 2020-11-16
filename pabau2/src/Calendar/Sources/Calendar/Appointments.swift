@@ -3,12 +3,13 @@ import Foundation
 import JZCalendarWeekView
 import Util
 import Tagged
+import ComposableArchitecture
 
 public enum Appointments: Equatable {
 	
 	case employee(EventsBy<Employee>)
 	case room(EventsBy<Room>)
-	case week([Date: [CalAppointment]])
+	case week([Date: IdentifiedArrayOf<CalAppointment>])
 
 	var calendarType: CalendarType {
 		switch self {
@@ -45,7 +46,7 @@ public enum Appointments: Equatable {
 		case .room(let apps):
 			return apps.flatten()
 		case .week(let apps):
-			return apps.flatMap { $0.value }
+			return apps.flatMap { $0.value.elements }
 		}
 	}
 }

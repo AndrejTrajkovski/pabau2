@@ -7,9 +7,9 @@ import ComposableArchitecture
 import Combine
 
 public class BaseCalendarViewController: UIViewController {
-	
+
 	var cancellables: Set<AnyCancellable> = []
-	
+
 	init() {
 		super.init(nibName: nil, bundle: nil)
 	}
@@ -22,11 +22,11 @@ public class BaseCalendarViewController: UIViewController {
 		super.viewDidLoad()
 		//fix this line for week view
 	}
-	
+
 	public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
 		JZWeekViewHelper.viewTransitionHandler(to: size, weekView: view as! JZLongPressWeekView)
 	}
-	
+
 	@objc public func userDidFlipPage(_ weekView: JZBaseWeekView, isNextPage: Bool) {
 		fatalError("override me")
 	}

@@ -7,7 +7,7 @@ import ComposableArchitecture
 import Combine
 
 public class CalendarWeekViewController: BaseCalendarViewController {
-	
+
 	let viewStore: ViewStore<CalendarState, CalendarWeekViewAction>
 
 	init(_ viewStore: ViewStore<CalendarState, CalendarWeekViewAction>) {
@@ -57,11 +57,11 @@ public class CalendarWeekViewController: BaseCalendarViewController {
 
 extension CalendarWeekViewController: JZLongPressViewDelegate {
 	public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndChangeDurationLongPressAt endDate: Date) {
-		guard let app = editingEvent as? JZAppointmentEvent else { return }
-		
+		viewStore.send(.editDuration(endDate: endDate, startOfDayDate: <#T##Date#>, eventId: <#T##Int#>))
 	}
 	
 	public func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date) {
+		
 //		let endDate = Calendar.gregorian.date(byAdding: .hour, value: weekView.addNewDurationMins/60, to: startDate)!
 //		let newApp = JZAppointmentEvent(appointment: CalAppointment.dummyInit(start: startDate, end: endDate))
 //		viewStore.send(.addAppointment(newApp))

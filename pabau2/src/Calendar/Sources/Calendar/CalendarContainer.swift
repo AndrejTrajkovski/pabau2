@@ -18,8 +18,8 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 		action: /CalendarAction.calTypePicker,
 		environment: { $0 })
 	,
-	calendarWeekViewReducer.pullback(
-		state: \.self,
+	calendarWeekViewReducer.optional.pullback(
+		state: \CalendarState.week,
 		action: /CalendarAction.week,
 		environment: { $0 }),
 	AppointmentsByReducer<Employee>().reducer.optional.pullback(
@@ -104,7 +104,6 @@ struct CalTopBar: View {
 }
 
 extension CalendarState {
-	
 	var numOfDays: Int {
 		switch appointments {
 		case .week:

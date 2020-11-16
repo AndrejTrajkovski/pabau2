@@ -18,7 +18,7 @@ public struct CalendarState: Equatable {
 	var chosenLocationsIds: [Location.Id]
 	var chosenEmployeesIds: [Location.Id: [Employee.Id]]
 	var chosenRoomsIds: [Location.Id: [Room.Id]]
-	
+
 	mutating func switchTo(id: Appointments.CalendarType) {
 		let locationKeyPath = \CalAppointment.locationId
 		switch id {
@@ -38,11 +38,11 @@ public struct CalendarState: Equatable {
 			self.appointments = Appointments.room(appointments)
 		case .week:
 			let flatAppts = self.appointments.flatten()
-			self.appointments = .week(SectionHelper.groupByStartOfDay(originalEvents: flatAppts))
+			let weekApps = SectionHelper.groupByStartOfDay(originalEvents: flatAppts).mapValues { IdentifiedArrayOf.init($0)}
+			self.appointments = .week(weekApps)
 		}
 	}
 }
-
 
 extension CalendarState {
 
@@ -106,6 +106,31 @@ extension CalendarState {
 				self.chosenLocationsIds = $0.chosenLocationsIds
 				self.rooms = $0.subsections
 				self.chosenRoomsIds = $0.chosenSubsectionsIds
+			}
+		}
+	}
+	
+	var week: CalendarWeekViewState? {
+		get {
+			guard let apps = extract(case: Appointments.week, from: self.appointments) else { return nil }
+			return CalendarWeekViewState(
+				appointments: apps,
+				selectedDate: selectedDate
+//				locations: locations,
+//				chosenLocationsIds: chosenLocationsIds,
+//				subsections: rooms,
+//				chosenSubsectionsIds: chosenRoomsIds,
+//				shifts: [:]
+			)
+		}
+		set {
+			newValue.map {
+				self.selectedDate = $0.selectedDate
+				self.appointments = Appointments.week($0.appointments)
+//				self.locations = $0.locations
+//				self.chosenLocationsIds = $0.chosenLocationsIds
+//				self.rooms = $0.subsections
+//				self.chosenRoomsIds = $0.chosenSubsectionsIds
 			}
 		}
 	}
