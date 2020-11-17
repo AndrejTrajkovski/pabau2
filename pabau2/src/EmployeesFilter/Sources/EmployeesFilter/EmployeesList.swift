@@ -11,7 +11,7 @@ public struct EmployeesFilter: View {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
-	
+
 	public var body: some View {
 		EmployeeList(selectedEmployeesIds: self.viewStore.state.selectedEmployeesIds,
 					 employees: self.viewStore.state.employees,

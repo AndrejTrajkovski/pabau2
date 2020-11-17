@@ -74,10 +74,18 @@ extension Shift {
 	public static func mock () -> [Date: [Location.ID: [Employee.Id: [Shift]]]] {
 		var shifts = [Shift]()
 		for (idx, emp) in Employee.mockEmployees.enumerated() {
-			Array(0...3).forEach { _ in
-				let mockStartEnd = Date.mockStartAndEndDate(endRangeMax: 600)
-				let startOfDay = Calendar.init(identifier: .gregorian).startOfDay(for: mockStartEnd.0)
-				shifts.append(Shift.init(id: idx, employeeId: emp.id, locationId: emp.locationId, date: startOfDay, startTime: mockStartEnd.0, endTime: mockStartEnd.1))
+			let startOfToday = Calendar.init(identifier: .gregorian).startOfDay(for: Date())
+			Array(-5...5).forEach {
+				let startOfDay = Calendar.gregorian.date(byAdding: .day,
+														 value: $0,
+														 to: startOfToday)!
+				let shiftStart = Calendar.gregorian.date(byAdding: .hour,
+														value: Int.random(in: 7...9),
+														to: startOfDay)!
+				let shiftEnd = Calendar.gregorian.date(byAdding: .hour,
+													   value: Int.random(in: 7...12),
+														to: shiftStart)!
+				shifts.append(Shift.init(id: idx, employeeId: emp.id, locationId: emp.locationId, date: startOfDay, startTime: shiftStart, endTime: shiftEnd))
 			}
 		}
 		let byDate = Dictionary.init(grouping: shifts, by: { $0.date })

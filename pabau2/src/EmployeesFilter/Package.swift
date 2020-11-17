@@ -27,6 +27,6 @@ let package = Package(
 		]),
 		.testTarget(
 			name: "EmployeesFilterTests",
-			dependencies: ["EmployeesFilter"]),
+			dependencies: ["EmployeesFilter"])
 	]
 )
