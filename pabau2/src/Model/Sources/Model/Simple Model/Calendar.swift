@@ -189,7 +189,7 @@ extension CalAppointment {
 			]
 		var res = [CalAppointment]()
 		for idx in 0...100 {
-			let mockStartEnd = Date.mockStartAndEndDate(endRangeMax: 100)
+			let mockStartEnd = Date.mockStartAndEndDate(endRangeMax: 90)
 			let service = services.randomElement()
 			let employee = Employee.mockEmployees.randomElement()!
 			let app = CalAppointment(id: CalAppointment.Id(rawValue: idx),

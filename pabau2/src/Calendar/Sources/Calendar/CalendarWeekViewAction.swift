@@ -13,27 +13,27 @@ public let calendarWeekViewReducer: Reducer<CalendarWeekViewState, CalendarWeekV
 		let daysToAdd = isNext ? 7 : -7
 		let newDate = state.selectedDate + daysToAdd.days
 		state.selectedDate = newDate
-	case .editStartTime(let startDate, let startOfDayDate, let eventId):
+	case .editStartTime(let startOfDayDate, let startDate, let eventId):
 		let calId = CalAppointment.ID.init(rawValue: eventId)
-		state.appointments[startOfDayDate]?[id: calId]?.start_date = startDate
-	case .editDuration(let endDate, let startOfDayDate, let eventId):
+		state.appointments[startOfDayDate]?[id: calId]?.update(start: startDate)
+	case .editDuration(let startOfDayDate, let endDate, let eventId):
 		let calId = CalAppointment.ID.init(rawValue: eventId)
 		state.appointments[startOfDayDate]?[id: calId]?.end_date = endDate
-	case .addAppointment(let startDate,let durationMins, let startOfDayDate):
-		break
+	case .addAppointment(let startOfDayDate, let startDate, let durationMins):
+		break// handled in tab bar reducer
 	}
 	return .none
 }
 
 public enum CalendarWeekViewAction {
 	case onPageSwipe(isNext: Bool)
-	case addAppointment(startDate: Date,
-						durationMins: Int,
-						startOfDayDate: Date)
-	case editStartTime(startDate: Date,
-					   startOfDayDate: Date,
+	case addAppointment(startOfDayDate: Date,
+						startDate: Date,
+						durationMins: Int)
+	case editStartTime(startOfDayDate: Date,
+					   startDate: Date,
 					   eventId: Int)
-	case editDuration(endDate: Date,
-					  startOfDayDate: Date,
+	case editDuration(startOfDayDate: Date,
+					  endDate: Date,
 					  eventId: Int)
 }

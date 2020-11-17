@@ -5,12 +5,13 @@ import SwiftDate
 import Util
 import ComposableArchitecture
 import Combine
+import Overture
 
 public class CalendarWeekViewController: BaseCalendarViewController {
 
-	let viewStore: ViewStore<CalendarState, CalendarWeekViewAction>
+	let viewStore: ViewStore<CalendarWeekViewState, CalendarWeekViewAction>
 
-	init(_ viewStore: ViewStore<CalendarState, CalendarWeekViewAction>) {
+	init(_ viewStore: ViewStore<CalendarWeekViewState, CalendarWeekViewAction>) {
 		self.viewStore = viewStore
 		super.init()
 	}
@@ -27,11 +28,13 @@ public class CalendarWeekViewController: BaseCalendarViewController {
 							   scrollType: .pageScroll,
 							   firstDayOfWeek: .Monday,
 							   scrollableRange: (nil, nil))
-		self.viewStore.publisher.selectedDate.removeDuplicates()
+		self.viewStore.publisher.selectedDate
+			.combineLatest(self.viewStore.publisher.appointments)
 			.receive(on: DispatchQueue.main)
 			.sink(receiveValue: { [weak self] in
-				let newInitDate = $0.getMondayOfWeek()
+				let newInitDate = $0.0.getMondayOfWeek()
 				self?.weekView.updateWeekView(to: newInitDate)
+				self?.weekView.forceReload(reloadEvents: $0.1.mapValues(pipe(get(\.elements), map(JZAppointmentEvent.init(appointment:)))))
 			}).store(in: &self.cancellables)
 	}
 
@@ -56,21 +59,15 @@ public class CalendarWeekViewController: BaseCalendarViewController {
 }
 
 extension CalendarWeekViewController: JZLongPressViewDelegate {
-	public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndChangeDurationLongPressAt endDate: Date) {
-		viewStore.send(.editDuration(endDate: endDate, startOfDayDate: <#T##Date#>, eventId: <#T##Int#>))
-	}
-	
-	public func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date) {
-		
-//		let endDate = Calendar.gregorian.date(byAdding: .hour, value: weekView.addNewDurationMins/60, to: startDate)!
-//		let newApp = JZAppointmentEvent(appointment: CalAppointment.dummyInit(start: startDate, end: endDate))
-//		viewStore.send(.addAppointment(newApp))
+	public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndChangeDurationLongPressAt endDate: Date, startOfDayDate: Date) {
+		viewStore.send(.editDuration(startOfDayDate: startOfDayDate, endDate: endDate, eventId: editingEvent.id))
 	}
 
-	public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date) {
-		guard let app = editingEvent as? JZAppointmentEvent else { return }
-//		let newApp = JZAppointmentEvent(appointment: calApp)
-//		viewStore.send(.replaceAppointment(newApp: newApp,
-//										   id: app.app.id))
+	public func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date, startOfDayDate: Date) {
+		viewStore.send(.addAppointment(startOfDayDate: startOfDayDate, startDate: startDate, durationMins: weekView.addNewDurationMins))
+	}
+
+	public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date, startOfDayDate: Date) {
+		viewStore.send(.editStartTime(startOfDayDate: startOfDayDate, startDate: startDate, eventId: editingEvent.id))
 	}
 }

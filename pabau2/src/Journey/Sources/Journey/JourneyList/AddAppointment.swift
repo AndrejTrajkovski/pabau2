@@ -504,7 +504,7 @@ extension AddAppointmentState {
 			participants: JourneyMocks.participantsState
 		)
 	}
-	
+
 	public static let dummy = AddAppointmentState.init(
 		reminder: false,
 		email: false,

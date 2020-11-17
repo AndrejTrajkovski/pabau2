@@ -24,20 +24,8 @@ class BaseCalendarCell: JZLongPressEventCell {
 		addColorBlockConstraints()
 		addTitleLabelConstraints()
 		addSubtitleLabelConstraints()
-		title.setContentHuggingPriority(UILayoutPriority(rawValue: 300), for: .vertical)
-//		subtitle.setContentHuggingPriority(UILayoutPriority(rawValue: 300), for: .vertical)
 	}
 	
-//	override func layoutSubviews() {
-//		super.layoutSubviews()
-//		if subtitle.frame.maxY >= bounds.maxY {
-////				title.setContentCompressionResistancePriority(UILayoutPriority(300), for: .vertical)
-//				subtitle.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
-//			setNeedsUpdateConstraints()
-//			super.layoutSubviews()
-//		}
-//	}
-
 	override class var requiresConstraintBasedLayout: Bool {
 		true
 	}
@@ -105,21 +93,21 @@ class BaseCalendarCell: JZLongPressEventCell {
 						toItem: colorBlock,
 						attribute: .trailing,
 						multiplier: 1.0,
-						constant: 8.0).isActive = true
+						constant: 4.0).isActive = true
 		NSLayoutConstraint(item: title,
 						attribute: .top,
 						relatedBy: .equal,
 						toItem: contentView,
 						attribute: .top,
 						multiplier: 1.0,
-						constant: 8.0).isActive = true
+						constant: 4.0).isActive = true
 		NSLayoutConstraint(item: title,
 						attribute: .trailing,
 						relatedBy: .equal,
 						toItem: contentView,
 						attribute: .trailing,
 						multiplier: 1.0,
-						constant: -8.0).isActive = true
+						constant: 4.0).isActive = true
 	}
 
 	func addSubtitleLabelConstraints() {
@@ -138,19 +126,19 @@ class BaseCalendarCell: JZLongPressEventCell {
 						multiplier: 1.0,
 						constant: 4.0).isActive = true
 		NSLayoutConstraint(item: subtitle,
-						attribute: .trailing,
-						relatedBy: .equal,
-						toItem: title,
-						attribute: .trailing,
-						multiplier: 1.0,
-						constant: 0).isActive = true
+						   attribute: .trailing,
+						   relatedBy: .equal,
+						   toItem: title,
+						   attribute: .trailing,
+						   multiplier: 1.0,
+						   constant: 0).isActive = true
 		let bottom = NSLayoutConstraint(item: subtitle,
-																		attribute: .bottom,
-																		relatedBy: .equal,
-																		toItem: contentView,
-																		attribute: .bottom,
-																		multiplier: 1.0,
-																		constant: 0)
+										attribute: .bottom,
+										relatedBy: .equal,
+										toItem: contentView,
+										attribute: .bottom,
+										multiplier: 1.0,
+										constant: 0)
 		bottom.isActive = true
 	}
 

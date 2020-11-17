@@ -60,7 +60,7 @@ extension Appointments {
 																	 subsKeypath: \CalAppointment.employeeId)
 		return Appointments.employee(appointments)
 	}
-	
+
 	static func initRoom(events: [CalAppointment], sections: [Room]) -> Appointments {
 		let appointments = EventsBy<Room>.init(events: events,
 											   subsections: sections,

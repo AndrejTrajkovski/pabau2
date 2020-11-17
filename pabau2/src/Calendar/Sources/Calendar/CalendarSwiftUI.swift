@@ -10,9 +10,12 @@ public struct CalendarWrapper: View {
 		WithViewStore(store) { viewStore -> AnyView in
 			switch viewStore.state.appointments {
 			case .week:
-				return AnyView(CalendarWeekSwiftUI(store: store.scope(state: { $0 },
-																	  action: { .week($0) }
-				)))
+				return AnyView(
+					IfLetStore.init(store.scope(state: { $0.week },
+												action: { .week($0) }),
+									then: CalendarWeekSwiftUI.init(store:)
+					)
+				)
 			case .employee:
 				return AnyView(employeeCalendarView)
 			case .room:
@@ -54,7 +57,7 @@ struct CalendarSwiftUI<Section: Identifiable & Equatable>: UIViewControllerRepre
 }
 
 struct CalendarWeekSwiftUI: UIViewControllerRepresentable {
-	let store: Store<CalendarState, CalendarWeekViewAction>
+	let store: Store<CalendarWeekViewState, CalendarWeekViewAction>
 
 	public func makeUIViewController(context: Context) -> CalendarWeekViewController {
 		print("makeUIViewController")
