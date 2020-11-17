@@ -11,21 +11,23 @@ let package = Package(
             name: "FSCalendarSwiftUI",
             targets: ["FSCalendarSwiftUI"]),
     ],
-		dependencies: [
-			.package(name: "FSCalendar",
-							 url: "FSCalendar",
-							 from: "1.0.0"),
+	dependencies: [
+		.package(
+			url: "https://github.com/AndrejTrajkovski/FSCalendar",
+			.branch("master")),
 			.package(name: "swift-composable-architecture",
 							 url: "https://github.com/pointfreeco/swift-composable-architecture.git",
 							 from: Version.init(stringLiteral: "0.6.0")),
 			.package(name: "SwiftDate",
-							 url: "https://github.com/malcommac/SwiftDate.git", from: "6.1.0")
+							 url: "https://github.com/malcommac/SwiftDate.git",
+							 from: "6.1.0")
     ],
     targets: [
 		.target(
 			name: "FSCalendarSwiftUI",
 			dependencies: [
-				"FSCalendar",
+				.product(name: "FSCalendar",
+						 package: "FSCalendar"),
 				.product(name: "ComposableArchitecture",
 						 package: "swift-composable-architecture"),
 				.product(name: "SwiftDate",

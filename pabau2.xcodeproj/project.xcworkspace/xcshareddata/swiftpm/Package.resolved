@@ -39,11 +39,11 @@
       },
       {
         "package": "FSCalendar",
-        "repositoryURL": "/Users/andrejtrajkovski/Desktop/pabau2/pabau2/src/FSCalendarSwiftUI/FSCalendar",
+        "repositoryURL": "https://github.com/AndrejTrajkovski/FSCalendar",
         "state": {
-          "branch": null,
-          "revision": "f25ea6099e34b84e27da789c6026551577226505",
-          "version": "1.0.0"
+          "branch": "master",
+          "revision": "4ea283ae0c13d6d901d812a357f024597f7cf0ec",
+          "version": null
         }
       },
       {
