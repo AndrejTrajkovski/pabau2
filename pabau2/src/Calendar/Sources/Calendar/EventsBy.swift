@@ -29,19 +29,16 @@ public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
 			switch action {
 			case .addAppointment:
 				break //handled in tabBarReducer
-			case .editAppointment(startDate: let startDate, startKeys: let startIndexes, dropKeys: let dropIndexes, eventId: let eventId):
-				print(state.appointments.appointments[startIndexes.date]?[startIndexes.location]?[ startIndexes.subsection]?.map(\.start_date))
-				var app = state.appointments.appointments[startIndexes.date]?[startIndexes.location]?[startIndexes.subsection]?.remove(id: CalAppointment.Id(rawValue: eventId))
-				app?.update(start: startDate)
-				var apps = state.appointments
-				app.map {
-					apps.appointments[startIndexes.date]?[startIndexes.location]?[ startIndexes.subsection]?.append($0)
-				}
-				state.appointments = apps
+			case .editStartTime(startDate: let startDate, startKeys: let startIndexes, dropKeys: let dropIndexes, eventId: let eventId):
+				let calId = CalAppointment.Id(rawValue: eventId)
+				state.appointments.appointments[startIndexes.date]?[startIndexes.location]?[startIndexes.subsection]?[id: calId]?.update(start: startDate)
 			case .onPageSwipe(isNext: let isNext):
 				let daysToAdd = isNext ? 1 : -1
 				let newDate = state.selectedDate + daysToAdd.days
 				state.selectedDate = newDate
+			case .editDuration(let endDate, let startIndexes, let eventId):
+				let calId = CalAppointment.Id(rawValue: eventId)
+				state.appointments.appointments[startIndexes.date]?[startIndexes.location]?[startIndexes.subsection]?[id: calId]?.end_date = endDate
 			}
 			return .none
 	}

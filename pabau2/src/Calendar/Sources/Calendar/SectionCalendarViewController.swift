@@ -84,6 +84,14 @@ public class SectionCalendarViewController<Subsection: Identifiable & Equatable>
 
 // MARK: - SectionLongPressDelegate
 extension SectionCalendarViewController: SectionLongPressDelegate {
+	public func weekView<Event, SectionId, SubsectionId>(_ weekView: JZLongPressWeekView, editingEvent: Event, didEndChangeDurationAt endDate: Date, startPageAndSectionIdx: (Date?, SectionId?, SubsectionId?)) where Event : JZBaseEvent, SectionId : Hashable, SubsectionId : Hashable {
+		guard let date = startPageAndSectionIdx.0,
+			  let section = startPageAndSectionIdx.1,
+			  let subsection = startPageAndSectionIdx.2 else { return }
+		let keys = (date, section as! Location.ID, subsection as! Subsection.ID)
+		viewStore.send(.editDuration(endDate: endDate, startKeys: keys, eventId: editingEvent.id))
+	}
+
 	public func weekView<SectionId, SubsectionId>(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date, pageAndSectionIdx: (Date?, SectionId?, SubsectionId?)) where SectionId : Hashable, SubsectionId : Hashable {
 		guard let date = pageAndSectionIdx.0,
 			  let section = pageAndSectionIdx.1,
@@ -103,7 +111,7 @@ extension SectionCalendarViewController: SectionLongPressDelegate {
 			  let section2 = endPageAndSectionIdx.1,
 			  let subsection2 = endPageAndSectionIdx.2 else { return }
 		let dropKeys = (date2, section2 as! Location.ID, subsection2 as! Subsection.ID)
-		viewStore.send(.editAppointment(startDate: startDate, startKeys: startKeys, dropKeys: dropKeys, eventId: editingEvent.id))
+		viewStore.send(.editStartTime(startDate: startDate, startKeys: startKeys, dropKeys: dropKeys, eventId: editingEvent.id))
 	}
 }
 
