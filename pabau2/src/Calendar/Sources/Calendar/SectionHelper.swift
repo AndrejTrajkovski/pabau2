@@ -7,14 +7,17 @@ open class SectionHelper {
 	
 	@available(iOS 13, *)
 	public class func group<SectionId: Hashable, Subsection: Identifiable>(_ events: [CalAppointment],
-																							 _ subsections: [Subsection],
+																		   _ sectionIds: [SectionId],																	 _ subsections: [Subsection],
 																							 _ sectionKeyPath: KeyPath<CalAppointment, SectionId>,
 																							 _ subsectionKeyPath: KeyPath<CalAppointment, Subsection.ID>)
 	-> [Date: [SectionId: [Subsection.ID: IdentifiedArrayOf<CalAppointment>]]] {
 		let byDate = Self.groupByStartOfDay(originalEvents: events)
 		return byDate.mapValues {
 			let byLocation = Dictionary.init(grouping: $0, by: { $0[keyPath: sectionKeyPath] })
-			let final = byLocation.mapValues { eventsByDate in
+			let byLocationAll = sectionIds.reduce(into: [SectionId: [CalAppointment]]()) { res, secId in
+				res[secId] = byLocation[secId, default: []]
+			}
+			let final = byLocationAll.mapValues { eventsByDate in
 				group(subsections,
 					  eventsByDate,
 					  subsectionKeyPath)

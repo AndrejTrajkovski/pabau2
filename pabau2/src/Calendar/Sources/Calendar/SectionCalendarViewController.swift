@@ -111,7 +111,7 @@ extension SectionCalendarViewController: SectionLongPressDelegate {
 			  let section2 = endPageAndSectionIdx.1,
 			  let subsection2 = endPageAndSectionIdx.2 else { return }
 		let dropKeys = (date2, section2 as! Location.ID, subsection2 as! Subsection.ID)
-		viewStore.send(.editStartTime(startDate: startDate, startKeys: startKeys, dropKeys: dropKeys, eventId: editingEvent.id))
+		viewStore.send(.editSections(startDate: startDate, startKeys: startKeys, dropKeys: dropKeys, eventId: editingEvent.id))
 	}
 }
 

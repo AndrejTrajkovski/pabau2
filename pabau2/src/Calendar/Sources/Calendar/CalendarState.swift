@@ -25,6 +25,7 @@ public struct CalendarState: Equatable {
 		case .employee:
 			let flatAppts = self.appointments.flatten()
 			let appointments = EventsBy<Employee>.init(events: flatAppts,
+													   locationsIds: locations.map(\.id),
 													   subsections: employees.flatMap({ $0.value }),
 													   sectionKeypath: locationKeyPath,
 													   subsKeypath: \CalAppointment.employeeId)
@@ -32,6 +33,7 @@ public struct CalendarState: Equatable {
 		case .room:
 			let flatAppts = self.appointments.flatten()
 			let appointments = EventsBy<Room>.init(events: flatAppts,
+												   locationsIds: locations.map(\.id),
 												   subsections: rooms.flatMap({ $0.value }),
 												   sectionKeypath: locationKeyPath,
 												   subsKeypath: \CalAppointment.roomId)
@@ -144,7 +146,7 @@ extension CalendarState {
 		let employees = Employee.mockEmployees
 		let rooms = Room.mock().map { $0.value }
 		let locations = Location.mock()
-		self.appointments = Appointments.initEmployee(events: apps, sections: employees)
+		self.appointments = Appointments.initEmployee(events: apps, locationsIds: locations.map(\.id), sections: employees)
 		let groupedEmployees = Dictionary.init(grouping: employees, by: { $0.locationId })
 			.mapValues { IdentifiedArrayOf.init($0) }
 		self.employees = locations.map(\.id).reduce(into: [Location.ID: IdentifiedArrayOf<Employee>](), {
