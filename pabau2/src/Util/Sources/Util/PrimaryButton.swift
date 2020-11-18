@@ -23,7 +23,7 @@ public struct PrimaryButton: View {
 			.disabled(isDisabled)
 			.shadow(color: Color.bigBtnShadow1,
 							radius: 4.0,
-							y: 2)
+							y: 5)
 			.cornerRadius(4)
 	}
 }

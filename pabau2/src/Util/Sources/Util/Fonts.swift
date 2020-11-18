@@ -20,6 +20,8 @@ public extension Font {
 	static let medium17 = Font.system(size: 17.0, weight: .medium)
 	static let medium18 = Font.system(size: 18.0, weight: .medium)
 	static let medium45 = Font.system(size: 45, weight: .medium)
+	static let medium24 = Font.system(size: 24.0, weight: .medium)
+	static let medium38 = Font.system(size: 38.0, weight: .medium)
 	static let medium25 = Font.system(size: 25.0, weight: .medium)
 	
 	static let bold34 = Font.system(size: 34, weight: .bold)

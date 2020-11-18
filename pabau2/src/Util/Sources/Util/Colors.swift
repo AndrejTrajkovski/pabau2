@@ -69,7 +69,7 @@ public extension Color {
 
 	static let heartRed = Color.init(red: 248/255, green: 92/255, blue: 92/255)
 
-	static let bigBtnShadow1 = Color.init(red: 152/255, green: 152/255, blue: 152/255).opacity(0.5)
+	static let bigBtnShadow1 = Color(hex: "91C6FF")
 
 	static let bigBtnShadow2 = Color.init(red: 196/255, green: 196/255, blue: 196/255).opacity(0.5)
 
