@@ -21,7 +21,7 @@ public struct CalAppointment: Hashable, Codable, Equatable, Identifiable {
 	public var end_date: Date
 	public var employeeId: Employee.Id
 	public let employeeInitials: String?
-	public let locationId: Location.Id
+	public var locationId: Location.Id
 	public let locationName: String?
 	public let _private: String?
 	public let type: Termin.ModelType?

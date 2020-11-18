@@ -31,7 +31,17 @@ public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
 				break //handled in tabBarReducer
 			case .editStartTime(startDate: let startDate, startKeys: let startIndexes, dropKeys: let dropIndexes, eventId: let eventId):
 				let calId = CalAppointment.Id(rawValue: eventId)
-				state.appointments.appointments[startIndexes.date]?[startIndexes.location]?[startIndexes.subsection]?[id: calId]?.update(start: startDate)
+				var app = state.appointments.appointments[startIndexes.date]?[startIndexes.location]?[startIndexes.subsection]?.remove(id: calId)
+				app?.update(start: startDate)
+				app?.locationId = dropIndexes.location
+				if let roomId = dropIndexes.subsection as? Room.ID {
+					app?.roomId = roomId
+				} else if let empId = dropIndexes.subsection as? Employee.ID {
+					app?.employeeId = empId
+				}
+				app.map {
+					state.appointments.appointments[dropIndexes.date]?[dropIndexes.location]?[dropIndexes.subsection]?.append($0)
+				}
 			case .onPageSwipe(isNext: let isNext):
 				let daysToAdd = isNext ? 1 : -1
 				let newDate = state.selectedDate + daysToAdd.days
