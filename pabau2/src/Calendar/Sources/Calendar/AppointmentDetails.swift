@@ -1,5 +1,6 @@
 import SwiftUI
 import Util
+import ComposableArchitecture
 
 struct AppointmentDetails: View {
 	let patientName: String
@@ -130,7 +131,7 @@ struct AppDetailsItems: View {
 		ScrollView {
 			LazyVGrid(columns: columns, spacing: 0) {
 				ForEach(items.indices) { idx in
-					AppDetailsItem(onTap: {
+					TimeSlotsItem(onTap: {
 						items[idx].2
 					}, image: items[idx].0, title: items[idx].1)
 				}
@@ -139,7 +140,7 @@ struct AppDetailsItems: View {
 	}
 }
 
-struct AppDetailsItem: View {
+struct TimeSlotsItem: View {
 	let onTap: () -> Void
 	let image: String
 	let title: String
