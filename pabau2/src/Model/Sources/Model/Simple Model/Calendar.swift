@@ -30,6 +30,7 @@ public struct CalAppointment: Hashable, Codable, Equatable, Identifiable {
 	public let service: String
 	public let serviceColor: String?
 	public let customerName: String?
+	public let customerPhoto: String?
 	public var roomId: Room.Id
 	
 	public enum CodingKeys: String, CodingKey {
@@ -47,6 +48,7 @@ public struct CalAppointment: Hashable, Codable, Equatable, Identifiable {
 		case service
 		case serviceColor = "service_color"
 		case customerName = "customer_name"
+		case customerPhoto = "customer_photo"
 		case roomId = "room_id"
 	}
 	
@@ -64,7 +66,7 @@ public struct CalAppointment: Hashable, Codable, Equatable, Identifiable {
 		service = try container.decode(String.self, forKey: .service)
 		serviceColor = try? container.decode(String.self, forKey: .serviceColor)
 		customerName = try? container.decode(String.self, forKey: .customerName)
-		
+		customerPhoto = try? container.decode(String.self, forKey: .customerPhoto)
 		start_date = try Date(container: container,
 							  codingKey: .start_date,
 							  formatter: DateFormatter.yearMonthDay)
@@ -127,6 +129,7 @@ extension CalAppointment {
 		service: String,
 		serviceColor: String? = nil,
 		customerName: String? = nil,
+		customerPhoto: String? = nil,
 		roomId: Room.Id
 	) {
 		self.id = id
@@ -143,6 +146,7 @@ extension CalAppointment {
 		self.service = service
 		self.serviceColor = serviceColor
 		self.customerName = customerName
+		self.customerPhoto = customerPhoto
 		self.roomId = roomId
 	}
 	
@@ -162,6 +166,7 @@ extension CalAppointment {
 			service: "Botox",
 			serviceColor: "#800080",
 			customerName: "Tester",
+			customerPhoto: nil,
 			roomId: roomId ?? Room.mock().randomElement()!.key
 		)
 	}
@@ -192,6 +197,7 @@ extension CalAppointment {
 			let mockStartEnd = Date.mockStartAndEndDate(endRangeMax: 90)
 			let service = services.randomElement()
 			let employee = Employee.mockEmployees.randomElement()!
+			let client = Client.mockClients.randomElement()!
 			let app = CalAppointment(id: CalAppointment.Id(rawValue: idx),
 									 start_date: mockStartEnd.0,
 									 end_date: mockStartEnd.1,
@@ -200,7 +206,8 @@ extension CalAppointment {
 									 locationId: employee.locationId,
 									 service: service!.0,
 									 serviceColor: service!.1,
-									 customerName: "Andrej",
+									 customerName: client.firstName,
+									 customerPhoto: client.avatar,
 									 roomId: Room.mock().randomElement()!.key
 			)
 			res.append(app)

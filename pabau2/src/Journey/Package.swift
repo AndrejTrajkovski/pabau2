@@ -16,14 +16,17 @@ let package = Package(
 		.package(url: "../FSCalendarSwiftUI",
 						 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../EmployeesFilter",
-						 from: Version.init(stringLiteral: "1.0.0"))
+						 from: Version.init(stringLiteral: "1.0.0")),
+		.package(url: "../ListPicker",
+						 from: Version.init(stringLiteral: "1.0.0")),
 	],
 	targets: [
 		.target(
 			name: "Journey",
 			dependencies: ["Form",
 						   "FSCalendarSwiftUI",
-						   "EmployeesFilter"
+						   "EmployeesFilter",
+						   "ListPicker"
 			]
 		)
 	]

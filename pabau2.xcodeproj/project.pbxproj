@@ -40,6 +40,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		82018FE525667A4300E740A9 /* ListPicker */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ListPicker; sourceTree = "<group>"; };
 		820A343D252E0E1100C6AB29 /* JZCalendarWeekView */ = {isa = PBXFileReference; lastKnownFileType = folder; path = JZCalendarWeekView; sourceTree = "<group>"; };
 		82104534240CE516004EA838 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		82104536240CE524004EA838 /* libswiftXCTest.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftXCTest.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/libswiftXCTest.tbd; sourceTree = DEVELOPER_DIR; };
@@ -142,6 +143,7 @@
 		82CACDF7241027320021E1DE /* src */ = {
 			isa = PBXGroup;
 			children = (
+				82018FE525667A4300E740A9 /* ListPicker */,
 				82A7803A250A6B95006D6DAA /* EmployeesFilter */,
 				82D8240B24F648CD001F73C8 /* Calendar */,
 				828566C024DF3D5B009FA63E /* Form */,

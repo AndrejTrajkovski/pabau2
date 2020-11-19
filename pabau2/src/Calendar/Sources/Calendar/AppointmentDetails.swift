@@ -1,6 +1,16 @@
 import SwiftUI
 import Util
 import ComposableArchitecture
+import Model
+
+struct AppDetailsState: Equatable {
+	var app: CalAppointment
+	var isPaymentActive: Bool
+	var isChooseStatusActive: Bool
+	var isRepeatActive: Bool
+	var isDocumentsActive: Bool
+	var isRescheduleActive: Bool
+}
 
 struct AppointmentDetails: View {
 	let patientName: String
@@ -12,7 +22,7 @@ struct AppointmentDetails: View {
 	let statusColor: String
 	let statusDesc: String
 	let serviceColor: String
-	
+
 	var body: some View {
 		VStack(spacing: 0) {
 			AppDetailsHeader(imageUrl: imageUrl, name: patientName, statusColor: statusColor, statusDesc: statusDesc)
