@@ -250,12 +250,7 @@ struct AddAppSections: View {
 		}.padding(.bottom, keyboardHandler.keyboardHeight)
 			.navigationBarTitle(Text("New Appointment"), displayMode: .large)
 			.navigationBarItems(leading:
-				Button.init(action: { self.viewStore.send(.closeBtnTap) }, label: {
-					Image(systemName: "xmark")
-						.font(Font.light30)
-						.foregroundColor(.gray142)
-						.frame(width: 30, height: 30)
-				})
+									XButton(onTouch: { self.viewStore.send(.closeBtnTap) })
 		)
 	}
 }

@@ -161,6 +161,14 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
 		case .calendar(.week(.addAppointment(let startOfDayDate, let startDate,let durationMins))):
 			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
 			state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate)
+		case .calendar(.appDetails(.addService)):
+			let start = state.calendar.appDetails!.app.start_date
+			let end = state.calendar.appDetails!.app.end_date
+			let employee = state.calendar.employees.flatMap { $0.value }.first(where: { $0.id == state.calendar.appDetails?.app.employeeId })
+			state.calendar.appDetails = nil
+			employee.map {
+				state.addAppointment = AddAppointmentState.init(startDate: start, endDate: end, employee: $0)
+			}
 		default: break
 		}
 		return .none

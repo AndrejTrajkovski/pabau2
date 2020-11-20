@@ -26,16 +26,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 				userDefaults: userDefaults
 			)
       window.rootViewController = UIHostingController(
-        rootView: ContentView(
-          store: Store(
-						initialState: AppState(user: user,
-																	 hasSeenWalkthrough: hasSeenWalkthrough!
-						),
-						reducer: reducer,
-						environment: env
-          )
-				).environmentObject(KeyboardFollower())
-      )
+		rootView: ContentView(
+			store: Store(
+				initialState: AppState(user: user,
+									   hasSeenWalkthrough: hasSeenWalkthrough!
+				),
+				reducer: reducer,
+				environment: env
+			)
+		).environmentObject(KeyboardFollower())
+	)
       self.window = window
       window.makeKeyAndVisible()
     }

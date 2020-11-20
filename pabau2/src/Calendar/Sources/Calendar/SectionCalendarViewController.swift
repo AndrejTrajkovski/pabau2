@@ -113,6 +113,17 @@ extension SectionCalendarViewController: SectionLongPressDelegate {
 		let dropKeys = (date2, section2 as! Location.ID, subsection2 as! Subsection.ID)
 		viewStore.send(.editSections(startDate: startDate, startKeys: startKeys, dropKeys: dropKeys, eventId: editingEvent.id))
 	}
+	
+	public func weekView<Event: JZBaseEvent, SectionId: Hashable, SubsectionId: Hashable>
+	(_ weekView: JZLongPressWeekView,
+	 didSelect editingEvent: Event,
+	 startPageAndSectionIdx: (Date?, SectionId?, SubsectionId?)) {
+		guard let date = startPageAndSectionIdx.0,
+			  let section = startPageAndSectionIdx.1,
+			  let subsection = startPageAndSectionIdx.2 else { return }
+		let startKeys = (date, section as! Location.ID, subsection as! Subsection.ID)
+		viewStore.send(.onSelect(startKeys: startKeys, eventId: editingEvent.id))
+	}
 }
 
 extension SectionCalendarViewController {

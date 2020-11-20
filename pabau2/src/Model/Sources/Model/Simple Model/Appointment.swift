@@ -9,7 +9,7 @@ public struct Appointment: Codable, Equatable, Hashable {
 	}
 	
 	public static var defaultEmpty: Appointment {
-		Appointment.init(id: 1, from: Date() - 1.days, to: Date() - 1.days, employeeId: 1, employeeInitials: "", locationId: 1, locationName: "London", status: AppointmentStatus(id: 1, name: ""), service: BaseService.defaultEmpty)
+		Appointment.init(id: 1, from: Date() - 1.days, to: Date() - 1.days, employeeId: 1, employeeInitials: "", locationId: 1, locationName: "London", status: AppointmentStatus.mock.randomElement()!, service: BaseService.defaultEmpty)
 	}
 
 	public typealias Id = Tagged<Appointment, String>

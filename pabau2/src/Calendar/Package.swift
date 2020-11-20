@@ -17,14 +17,17 @@ let package = Package(
 		.package(url: "../FSCalendarSwiftUI",
 						 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "https://github.com/AndrejTrajkovski/JZCalendarWeekView.git",
-				 .branch("shifts"))
+				 .branch("shifts")),
+		.package(url: "../ListPicker",
+						 from: Version.init(stringLiteral: "1.0.0")),
 	],
 	targets: [
 		.target(
 			name: "Calendar",
 			dependencies: ["Form",
 						   "FSCalendarSwiftUI",
-						   .product(name: "JZCalendarWeekView", package: "JZCalendarWeekView")
+						   .product(name: "JZCalendarWeekView", package: "JZCalendarWeekView"),
+						   "ListPicker"
 			]
 		)
 	]

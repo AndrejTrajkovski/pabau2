@@ -13,4 +13,6 @@ public enum SubsectionCalendarAction<Subsection: Identifiable & Equatable> {
 	case editDuration(endDate: Date,
 					  startKeys:(date: Date, location: Location.ID, subsection: Subsection.ID),
 					  eventId: Int)
+	case onSelect(startKeys:(date: Date, location: Location.ID, subsection: Subsection.ID),
+				  eventId: Int)
 }

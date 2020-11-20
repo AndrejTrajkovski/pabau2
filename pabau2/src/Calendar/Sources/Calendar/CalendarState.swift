@@ -14,11 +14,13 @@ public struct CalendarState: Equatable {
 	var locations: IdentifiedArrayOf<Location>
 	public var employees: [Location.Id: IdentifiedArrayOf<Employee>]
 	public var rooms: [Location.Id: IdentifiedArrayOf<Room>]
-
+	
 	var chosenLocationsIds: [Location.Id]
 	var chosenEmployeesIds: [Location.Id: [Employee.Id]]
 	var chosenRoomsIds: [Location.Id: [Room.Id]]
-
+	
+	public var appDetails: AppDetailsState?
+	
 	mutating func switchTo(id: Appointments.CalendarType) {
 		let locationKeyPath = \CalAppointment.locationId
 		switch id {
@@ -67,6 +69,7 @@ extension CalendarState {
 			return CalendarSectionViewState<Employee>(
 				selectedDate: selectedDate,
 				appointments: groupAppointments,
+				appDetails: appDetails,
 				locations: locations,
 				chosenLocationsIds: chosenLocationsIds,
 				subsections: employees,
@@ -78,6 +81,7 @@ extension CalendarState {
 			newValue.map {
 				self.selectedDate = $0.selectedDate
 				self.appointments = Appointments.employee($0.appointments)
+				self.appDetails = $0.appDetails
 				self.locations = $0.locations
 				self.chosenLocationsIds = $0.chosenLocationsIds
 				self.employees = $0.subsections
@@ -93,6 +97,7 @@ extension CalendarState {
 			return CalendarSectionViewState<Room>(
 				selectedDate: selectedDate,
 				appointments: groupAppointments,
+				appDetails: appDetails,
 				locations: locations,
 				chosenLocationsIds: chosenLocationsIds,
 				subsections: rooms,
@@ -104,6 +109,7 @@ extension CalendarState {
 			newValue.map {
 				self.selectedDate = $0.selectedDate
 				self.appointments = Appointments.room($0.appointments)
+				self.appDetails = $0.appDetails
 				self.locations = $0.locations
 				self.chosenLocationsIds = $0.chosenLocationsIds
 				self.rooms = $0.subsections

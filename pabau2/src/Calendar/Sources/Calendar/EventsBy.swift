@@ -56,6 +56,11 @@ public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
 			let oldDateO = state.appointments.appointments[startIndexes.date]?[startIndexes.location]?[startIndexes.subsection]?[id: calId]?.end_date
 			guard let oldDate = oldDateO else { return .none }
 			state.appointments.appointments[startIndexes.date]?[startIndexes.location]?[startIndexes.subsection]?[id: calId]?.end_date = Date.concat(oldDate, newEndDate)
+		case .onSelect(let keys, let eventId):
+			let (date, location, subsection) = keys
+			let calId = CalAppointment.Id(rawValue: eventId)
+			var app = state.appointments.appointments[keys.date]?[keys.location]?[keys.subsection]?[id: calId]
+			app.map { state.appDetails = AppDetailsState(app: $0) }
 		}
 		return .none
 	}

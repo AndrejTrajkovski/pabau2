@@ -26,12 +26,14 @@ public struct CalAppointment: Hashable, Codable, Equatable, Identifiable {
 	public let _private: String?
 	public let type: Termin.ModelType?
 	public let extraEmployees: [Employee]?
-	public let status: AppointmentStatus?
+	public var status: AppointmentStatus?
 	public let service: String
 	public let serviceColor: String?
 	public let customerName: String?
 	public let customerPhoto: String?
 	public var roomId: Room.Id
+	public let employeeName: String
+	public let roomName: String
 	
 	public enum CodingKeys: String, CodingKey {
 		case id
@@ -50,6 +52,8 @@ public struct CalAppointment: Hashable, Codable, Equatable, Identifiable {
 		case customerName = "customer_name"
 		case customerPhoto = "customer_photo"
 		case roomId = "room_id"
+		case employeeName = "employee_name"
+		case roomName = "room_name"
 	}
 	
 	public init(from decoder: Decoder) throws {
@@ -74,6 +78,8 @@ public struct CalAppointment: Hashable, Codable, Equatable, Identifiable {
 							codingKey: .end_date,
 							formatter: DateFormatter.HHmmss)
 		roomId = try container.decode(Room.Id.self, forKey: .roomId)
+		employeeName = try container.decode(String.self, forKey: .employeeName)
+		roomName = try container.decode(String.self, forKey: .roomName)
 	}
 }
 
@@ -130,7 +136,9 @@ extension CalAppointment {
 		serviceColor: String? = nil,
 		customerName: String? = nil,
 		customerPhoto: String? = nil,
-		roomId: Room.Id
+		roomId: Room.Id,
+		employeeName: String,
+		roomName: String
 	) {
 		self.id = id
 		self.start_date = start_date
@@ -148,27 +156,8 @@ extension CalAppointment {
 		self.customerName = customerName
 		self.customerPhoto = customerPhoto
 		self.roomId = roomId
-	}
-	
-	public static func dummyInit(start: Date,
-								 end: Date,
-								 employeeId: Employee.Id? = nil,
-								 roomId: Room.Id? = nil) -> CalAppointment {
-		return CalAppointment(
-			id: CalAppointment.Id(rawValue: Int.random(in: 0...1000000000)),
-			start_date: start,
-			end_date: end,
-			employeeId: employeeId ?? Employee.Id(rawValue: 1),
-			employeeInitials: nil,
-			locationId: Location.Id(rawValue: (Int.random(in: 0...5))),
-			locationName: nil,
-			_private: nil,
-			service: "Botox",
-			serviceColor: "#800080",
-			customerName: "Tester",
-			customerPhoto: nil,
-			roomId: roomId ?? Room.mock().randomElement()!.key
-		)
+		self.employeeName = employeeName
+		self.roomName = roomName
 	}
 }
 
@@ -198,6 +187,7 @@ extension CalAppointment {
 			let service = services.randomElement()
 			let employee = Employee.mockEmployees.randomElement()!
 			let client = Client.mockClients.randomElement()!
+			let room = Room.mock().randomElement()!.value
 			let app = CalAppointment(id: CalAppointment.Id(rawValue: idx),
 									 start_date: mockStartEnd.0,
 									 end_date: mockStartEnd.1,
@@ -208,7 +198,9 @@ extension CalAppointment {
 									 serviceColor: service!.1,
 									 customerName: client.firstName,
 									 customerPhoto: client.avatar,
-									 roomId: Room.mock().randomElement()!.key
+									 roomId: room.id,
+									 employeeName: employee.name,
+									 roomName: room.name
 			)
 			res.append(app)
 		}

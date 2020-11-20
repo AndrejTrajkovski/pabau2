@@ -38,7 +38,7 @@ struct DoctorSummary: View {
 			.frame(width: geo.size.width * 0.75)
 			.journeyBase(self.viewStore.state.journey, .long)
 			.navigationBarItems(leading:
-				XButton(onTap: { self.viewStore.send(.xOnDoctorCheckIn)}))
+				XButton(onTouch: { self.viewStore.send(.xOnDoctorCheckIn)}))
 		}
 	}
 }

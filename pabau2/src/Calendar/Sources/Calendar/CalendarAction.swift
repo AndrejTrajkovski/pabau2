@@ -10,4 +10,6 @@ public enum CalendarAction {
 	case room(SubsectionCalendarAction<Room>)
 	case employee(SubsectionCalendarAction<Employee>)
 	case week(CalendarWeekViewAction)
+	case appDetails(AppDetailsAction)
+	case onAppDetailsDismiss
 }

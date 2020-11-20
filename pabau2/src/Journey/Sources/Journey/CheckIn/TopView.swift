@@ -2,6 +2,7 @@ import SwiftUI
 import Model
 import ComposableArchitecture
 import Form
+import Util
 
 let topViewReducer = Reducer<CheckInViewState, TopViewAction, JourneyEnvironment> { state, action, _ in
 	switch action {
@@ -50,7 +51,7 @@ struct TopViewPlain: View {
 	let onClose: () -> Void
 	var body: some View {
 		ZStack {
-			XButton(onTap: onClose)
+			XButton(onTouch: onClose)
 				.padding()
 				.exploding(.topLeading)
 			Spacer()
@@ -64,17 +65,5 @@ struct TopViewPlain: View {
 				.offset(x: -80, y: -60)
 				.exploding(.topTrailing)
 		}.frame(height: 168.0)
-	}
-}
-
-struct XButton: View {
-	let onTap: () -> Void
-	var body: some View {
-		Button.init(action: onTap, label: {
-			Image(systemName: "xmark")
-				.font(Font.light30)
-				.foregroundColor(.gray142)
-				.frame(width: 30, height: 30)
-		})
 	}
 }

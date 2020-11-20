@@ -30,19 +30,29 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 		state: \CalendarState.roomSectionState,
 		action: /CalendarAction.room,
 		environment: { $0 }),
+	appDetailsReducer.optional.pullback(
+		state: \CalendarState.appDetails,
+		action: /CalendarAction.appDetails,
+		environment: { $0 }),
 	.init { state, action, _ in
 		switch action {
 		case .datePicker: break
 		case .calTypePicker(.onSelect(let calTypeId)):
 			state.switchTo(id: calTypeId)
+		case .onAppDetailsDismiss:
+			state.appDetails = nil
 		case .calTypePicker(.toggleDropdown): break
 		case .addShift: break
 		case .toggleFilters: break
-		case .room(_):
+		case .room:
 			break
-		case .employee(_):
+		case .week:
 			break
-		case .week(_):
+		case .employee:
+			break
+		case .appDetails(.close):
+			state.appDetails = nil
+		case .appDetails:
 			break
 		}
 		return .none
@@ -65,7 +75,12 @@ public struct CalendarContainer: View {
 				.padding(0)
 				CalendarWrapper(store: self.store)
 				Spacer()
-			}
+			}.sheet(isPresented: viewStore.binding(get: { $0.appDetails != nil },
+												   send: CalendarAction.onAppDetailsDismiss),
+					content: { IfLetStore(store.scope(state: { $0.appDetails },
+													  action: { .appDetails($0) }),
+										  then: AppointmentDetails.init(store:))
+					})
 		}
 	}
 
@@ -99,17 +114,6 @@ struct CalTopBar: View {
 			.frame(height: 50)
 			.background(Color(hex: "F9F9F9"))
 			Divider()
-		}
-	}
-}
-
-extension CalendarState {
-	var numOfDays: Int {
-		switch appointments {
-		case .week:
-			return 7
-		case .room, .employee:
-			return 1
 		}
 	}
 }

@@ -3,14 +3,14 @@ import Util
 import ComposableArchitecture
 
 public struct PickerContainerState <Model: ListPickerElement>: Equatable {
-	public init(dataSource: [Model], chosenItemId: Model.ID, isActive: Bool) {
+	public init(dataSource: IdentifiedArrayOf<Model>, chosenItemId: Model.ID?, isActive: Bool) {
 		self.dataSource = dataSource
 		self.chosenItemId = chosenItemId
 		self.isActive = isActive
 	}
 	
-	public var dataSource: [Model]
-	public var chosenItemId: Model.ID
+	public var dataSource: IdentifiedArrayOf<Model>
+	public var chosenItemId: Model.ID?
 	public var isActive: Bool
 	public var chosenItemName: String? {
 		return dataSource.first(where: { $0.id == chosenItemId })?.name
@@ -28,7 +28,7 @@ public struct PickerContainerStore<Content: View, T: ListPickerElement>: View {
 	@ObservedObject public var viewStore: ViewStore<PickerContainerState<T>, PickerContainerAction<T>>
 	let content: () -> Content
 	public init (@ViewBuilder content: @escaping () -> Content,
-					   store: Store<PickerContainerState<T>, PickerContainerAction<T>>) {
+							  store: Store<PickerContainerState<T>, PickerContainerAction<T>>) {
 		self.content = content
 		self.store = store
 		self.viewStore = ViewStore(store)
@@ -67,15 +67,15 @@ public protocol ListPickerElement: Identifiable, Equatable {
 
 struct PickerContainer<Content: View, T: ListPickerElement>: View {
 	let content: () -> Content
-	let items: [T]
-	let chosenItemId: T.ID
+	let items: IdentifiedArrayOf<T>
+	let chosenItemId: T.ID?
 	let isActive: Bool
 	let onTapGesture: () -> Void
 	let onSelectItem: (T.ID) -> Void
 	let onBackBtn: () -> Void
 	init(@ViewBuilder content: @escaping () -> Content,
-					  items: [T],
-					  choseItemId: T.ID,
+					  items: IdentifiedArrayOf<T>,
+					  choseItemId: T.ID?,
 					  isActive: Bool,
 					  onTapGesture: @escaping () -> Void,
 					  onSelectItem: @escaping (T.ID) -> Void,
@@ -103,28 +103,42 @@ struct PickerContainer<Content: View, T: ListPickerElement>: View {
 }
 
 struct ListPicker<T: ListPickerElement>: View {
-	let items: [T]
-	let selectedId: T.ID
+	let items: IdentifiedArrayOf<T>
+	let selectedId: T.ID?
 	let onSelect: (T.ID) -> Void
 	let onBackBtn: () -> Void
 	var body: some View {
 		List {
 			ForEach(items) { item in
-				VStack {
-					HStack {
-						Text(item.name)
-						Spacer()
-						if item.id == self.selectedId {
-							Image(systemName: "checkmark")
-								.padding(.trailing)
-								.foregroundColor(.deepSkyBlue)
-						}
-					}
-					Divider()
-				}
-				.contentShape(Rectangle())
-				.onTapGesture { self.onSelect(item.id) }
+				ListPickerCell(item.name, selectedId == item.id)
+					.onTapGesture { self.onSelect(item.id) }
 			}
 		}.customBackButton(action: self.onBackBtn)
+	}
+}
+
+public struct ListPickerCell: View {
+
+	let name: String
+	let isSelected: Bool
+	
+	public init(_ name: String, _ isSelected: Bool) {
+		self.name = name
+		self.isSelected = isSelected
+	}
+
+	public var body: some View {
+		VStack {
+			HStack {
+				Text(name)
+				Spacer()
+				if isSelected {
+					Image(systemName: "checkmark")
+						.padding(.trailing)
+						.foregroundColor(.deepSkyBlue)
+				}
+			}
+		}
+		.contentShape(Rectangle())
 	}
 }
