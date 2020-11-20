@@ -7,6 +7,7 @@ import Clients
 import Calendar
 import EmployeesFilter
 import JZCalendarWeekView
+import AddAppointment
 
 public typealias TabBarEnvironment = (
 	loginAPI: LoginAPI,
@@ -22,6 +23,18 @@ public struct TabBarState: Equatable {
 	public var calendar: CalendarState
 	public var settings: SettingsState
 	public var employeesFilter: EmployeesFilterState = EmployeesFilterState()
+	
+	public var calendarContainer: CalendarContainerState {
+		get {
+			CalendarContainerState(addAppointment: addAppointment,
+								   calendar: calendar)
+		}
+		set {
+			self.addAppointment = newValue.addAppointment
+			self.calendar = newValue.calendar
+		}
+	}
+	
 	public var journeyContainer: JourneyContainerState {
 		get {
 			JourneyContainerState(journey: journeyState,
@@ -123,7 +136,7 @@ struct PabauTabBar: View {
 						),
 						then: CheckInNavigationView.init(store:))
 					   })
-			.fullScreenCover(isPresented: .constant(self.viewStore.state.isShowingAppointments)) {
+			.sheet(isPresented: .constant(self.viewStore.state.isShowingAppointments)) {
 				IfLetStore(self.store.scope(
 					state: { $0.addAppointment },
 					action: { .addAppointment($0)}
@@ -187,7 +200,7 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
 				userDefaults: $0.userDefaults)
 	}),
 	calendarContainerReducer.pullback(
-		state: \TabBarState.calendar,
+		state: \TabBarState.calendarContainer,
 		action: /TabBarAction.calendar,
 		environment: {
 			return CalendarEnvironment(

@@ -20,6 +20,8 @@ let package = Package(
 				 .branch("shifts")),
 		.package(url: "../ListPicker",
 						 from: Version.init(stringLiteral: "1.0.0")),
+		.package(url: "../AddAppointment",
+				 from: Version.init(stringLiteral: "1.0.0")),
 	],
 	targets: [
 		.target(
@@ -27,7 +29,8 @@ let package = Package(
 			dependencies: ["Form",
 						   "FSCalendarSwiftUI",
 						   .product(name: "JZCalendarWeekView", package: "JZCalendarWeekView"),
-						   "ListPicker"
+						   "ListPicker",
+						   "AddAppointment"
 			]
 		)
 	]

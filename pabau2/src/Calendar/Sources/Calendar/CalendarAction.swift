@@ -12,4 +12,5 @@ public enum CalendarAction {
 	case week(CalendarWeekViewAction)
 	case appDetails(AppDetailsAction)
 	case onAppDetailsDismiss
+	case showAddApp(startDate: Date, endDate: Date, employee: Employee)
 }

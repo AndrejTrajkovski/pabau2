@@ -6,19 +6,21 @@ let package = Package(
 	name: "Journey",
 	platforms: [.iOS(.v14)],
 	products: [
-				.library(
-					name: "Journey",
-					targets: ["Journey"])
+		.library(
+			name: "Journey",
+			targets: ["Journey"])
 	],
 	dependencies: [
 		.package(url: "../Form",
-						 from: Version.init(stringLiteral: "1.0.0")),
+				 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../FSCalendarSwiftUI",
-						 from: Version.init(stringLiteral: "1.0.0")),
+				 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../EmployeesFilter",
-						 from: Version.init(stringLiteral: "1.0.0")),
+				 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../ListPicker",
-						 from: Version.init(stringLiteral: "1.0.0")),
+				 from: Version.init(stringLiteral: "1.0.0")),
+		.package(url: "../AddAppointment",
+				 from: Version.init(stringLiteral: "1.0.0")),
 	],
 	targets: [
 		.target(
@@ -26,7 +28,8 @@ let package = Package(
 			dependencies: ["Form",
 						   "FSCalendarSwiftUI",
 						   "EmployeesFilter",
-						   "ListPicker"
+						   "ListPicker",
+						   "AddAppointment"
 			]
 		)
 	]

@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "Form",
-		platforms: [.iOS(.v14)],
+	platforms: [.iOS(.v14)],
     products: [
         .library(
             name: "Form",

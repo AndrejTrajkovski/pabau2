@@ -8,52 +8,6 @@ import ComposableArchitecture
 import ListPicker
 
 struct JourneyMocks {
-	static let clientState: PickerContainerState<Client> =
-		PickerContainerState.init(
-			dataSource: [
-				Client.init(id: 1, firstName: "Wayne", lastName: "Rooney", dOB: Date()),
-				Client.init(id: 2, firstName: "Adam", lastName: "Smith", dOB: Date())
-			],
-			chosenItemId: 1,
-			isActive: false)
-
-	static let serviceState: PickerContainerState<Service> =
-		PickerContainerState.init(
-			dataSource: [
-				Service.init(id: 1, name: "Botox", color: "", categoryId: 1, categoryName: "Injectables"),
-				Service.init(id: 2, name: "Fillers", color: "", categoryId: 2, categoryName: "Urethra"),
-				Service.init(id: 3, name: "Facial", color: "", categoryId: 3, categoryName: "Mosaic")
-			],
-			chosenItemId: 1,
-			isActive: false)
-
-	static let durationState: PickerContainerState<Duration> =
-		PickerContainerState.init(
-			dataSource: [
-				Duration.init(name: "00:30", id: 1, duration: 30),
-				Duration.init(name: "01:00", id: 2, duration: 60),
-				Duration.init(name: "01:30", id: 3, duration: 90)
-			],
-			chosenItemId: 1,
-			isActive: false)
-
-	static let withState: PickerContainerState<Employee> =
-		PickerContainerState.init(
-			dataSource: [
-				Employee.init(id: 123, name: "Andrej Trajkovski", locationId: Location.randomId()),
-				Employee.init(id: 456, name: "Mark Ronson", locationId: Location.randomId())
-			],
-			chosenItemId: 456,
-			isActive: false)
-
-	static let participantsState: PickerContainerState<Employee> =
-		PickerContainerState.init(
-			dataSource: [
-				Employee.init(id: 1, name: "Participant 1", locationId: Location.randomId()),
-				Employee.init(id: 2, name: "Participant 2", locationId: Location.randomId())
-			],
-			chosenItemId: 1,
-			isActive: false)
 
 	static let checkIn = CheckInContainerState(
 		journey:

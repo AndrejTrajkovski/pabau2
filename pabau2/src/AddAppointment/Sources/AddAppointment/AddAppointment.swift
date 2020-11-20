@@ -5,6 +5,8 @@ import Util
 import Form
 import ListPicker
 
+public typealias AddAppointmentEnv = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
+
 public struct Duration: ListPickerElement {
 	public var name: String
 	public var id: Int
@@ -46,7 +48,7 @@ extension Employee: ListPickerElement { }
 extension Service: ListPickerElement { }
 
 let addAppTapBtnReducer = Reducer<AddAppointmentState?,
-	AddAppointmentAction, JourneyEnvironment> { state, action, _ in
+	AddAppointmentAction, AddAppointmentEnv> { state, action, _ in
 		switch action {
 		case .saveAppointmentTap:
 			state = nil
@@ -61,7 +63,7 @@ let addAppTapBtnReducer = Reducer<AddAppointmentState?,
 }
 
 public let addAppointmentValueReducer: Reducer<AddAppointmentState,
-	AddAppointmentAction, JourneyEnvironment> = .combine(
+	AddAppointmentAction, AddAppointmentEnv> = .combine(
 		PickerReducer<Client>().reducer.pullback(
 			state: \AddAppointmentState.clients,
 			action: /AddAppointmentAction.clients,
@@ -101,7 +103,7 @@ public let addAppointmentValueReducer: Reducer<AddAppointmentState,
 	)
 
 public let addAppointmentReducer: Reducer<AddAppointmentState?,
-	AddAppointmentAction, JourneyEnvironment> = .combine(
+	AddAppointmentAction, AddAppointmentEnv> = .combine(
 		addAppointmentValueReducer.optional.pullback(
 			state: \AddAppointmentState.self,
 			action: /AddAppointmentAction.self,
@@ -348,19 +350,19 @@ extension AddAppointmentState {
 			sms: false,
 			feedback: false,
 			isAllDay: false,
-			clients: JourneyMocks.clientState,
+			clients: AddAppMocks.clientState,
 			startDate: startDate,
 			services: ChooseServiceState(isChooseServiceActive: false, chosenServiceId: 1, filterChosen: .allStaff),
-			durations: JourneyMocks.durationState,
-			with: JourneyMocks.withState,
-			participants: JourneyMocks.participantsState
+			durations: AddAppMocks.durationState,
+			with: AddAppMocks.withState,
+			participants: AddAppMocks.participantsState
 		)
 	}
 	
 	public init(startDate: Date,
 				endDate: Date,
 				employee: Employee) {
-		var employees = JourneyMocks.withState
+		var employees = AddAppMocks.withState
 		employees.dataSource.append(employee)
 		employees.chosenItemId = employee.id
 		self.init(
@@ -369,12 +371,12 @@ extension AddAppointmentState {
 			sms: false,
 			feedback: false,
 			isAllDay: false,
-			clients: JourneyMocks.clientState,
+			clients: AddAppMocks.clientState,
 			startDate: startDate,
 			services: ChooseServiceState(isChooseServiceActive: false, chosenServiceId: 1, filterChosen: .allStaff),
-			durations: JourneyMocks.durationState,
+			durations: AddAppMocks.durationState,
 			with: employees,
-			participants: JourneyMocks.participantsState
+			participants: AddAppMocks.participantsState
 		)
 	}
 
@@ -384,11 +386,60 @@ extension AddAppointmentState {
 		sms: false,
 		feedback: false,
 		isAllDay: false,
-		clients: JourneyMocks.clientState,
+		clients: AddAppMocks.clientState,
 		startDate: Date(),
 		services: ChooseServiceState(isChooseServiceActive: false, chosenServiceId: 1, filterChosen: .allStaff),
-		durations: JourneyMocks.durationState,
-		with: JourneyMocks.withState,
-		participants: JourneyMocks.participantsState
+		durations: AddAppMocks.durationState,
+		with: AddAppMocks.withState,
+		participants: AddAppMocks.participantsState
 	)
+}
+
+struct AddAppMocks {
+	static let clientState: PickerContainerState<Client> =
+		PickerContainerState.init(
+			dataSource: [
+				Client.init(id: 1, firstName: "Wayne", lastName: "Rooney", dOB: Date()),
+				Client.init(id: 2, firstName: "Adam", lastName: "Smith", dOB: Date())
+			],
+			chosenItemId: 1,
+			isActive: false)
+
+	static let serviceState: PickerContainerState<Service> =
+		PickerContainerState.init(
+			dataSource: [
+				Service.init(id: 1, name: "Botox", color: "", categoryId: 1, categoryName: "Injectables"),
+				Service.init(id: 2, name: "Fillers", color: "", categoryId: 2, categoryName: "Urethra"),
+				Service.init(id: 3, name: "Facial", color: "", categoryId: 3, categoryName: "Mosaic")
+			],
+			chosenItemId: 1,
+			isActive: false)
+
+	static let durationState: PickerContainerState<Duration> =
+		PickerContainerState.init(
+			dataSource: [
+				Duration.init(name: "00:30", id: 1, duration: 30),
+				Duration.init(name: "01:00", id: 2, duration: 60),
+				Duration.init(name: "01:30", id: 3, duration: 90)
+			],
+			chosenItemId: 1,
+			isActive: false)
+
+	static let withState: PickerContainerState<Employee> =
+		PickerContainerState.init(
+			dataSource: [
+				Employee.init(id: 123, name: "Andrej Trajkovski", locationId: Location.randomId()),
+				Employee.init(id: 456, name: "Mark Ronson", locationId: Location.randomId())
+			],
+			chosenItemId: 456,
+			isActive: false)
+
+	static let participantsState: PickerContainerState<Employee> =
+		PickerContainerState.init(
+			dataSource: [
+				Employee.init(id: 1, name: "Participant 1", locationId: Location.randomId()),
+				Employee.init(id: 2, name: "Participant 2", locationId: Location.randomId())
+			],
+			chosenItemId: 1,
+			isActive: false)
 }

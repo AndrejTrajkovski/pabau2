@@ -5,6 +5,17 @@ import Overture
 import CasePaths
 import ComposableArchitecture
 import JZCalendarWeekView
+import AddAppointment
+
+public struct CalendarContainerState: Equatable {
+	public init(addAppointment: AddAppointmentState?, calendar: CalendarState) {
+		self.addAppointment = addAppointment
+		self.calendar = calendar
+	}
+	
+	public var addAppointment: AddAppointmentState?
+	public var calendar: CalendarState
+}
 
 public struct CalendarState: Equatable {
 	var isDropdownShown: Bool
@@ -20,7 +31,6 @@ public struct CalendarState: Equatable {
 	var chosenRoomsIds: [Location.Id: [Room.Id]]
 	
 	public var appDetails: AppDetailsState?
-	public var addAppointment: AddAppointmentState?
 }
 
 extension CalendarState {
