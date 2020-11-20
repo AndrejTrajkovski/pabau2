@@ -20,32 +20,7 @@ public struct CalendarState: Equatable {
 	var chosenRoomsIds: [Location.Id: [Room.Id]]
 	
 	public var appDetails: AppDetailsState?
-	
-	mutating func switchTo(id: Appointments.CalendarType) {
-		let locationKeyPath = \CalAppointment.locationId
-		switch id {
-		case .employee:
-			let flatAppts = self.appointments.flatten()
-			let appointments = EventsBy<Employee>.init(events: flatAppts,
-													   locationsIds: locations.map(\.id),
-													   subsections: employees.flatMap({ $0.value }),
-													   sectionKeypath: locationKeyPath,
-													   subsKeypath: \CalAppointment.employeeId)
-			self.appointments = Appointments.employee(appointments)
-		case .room:
-			let flatAppts = self.appointments.flatten()
-			let appointments = EventsBy<Room>.init(events: flatAppts,
-												   locationsIds: locations.map(\.id),
-												   subsections: rooms.flatMap({ $0.value }),
-												   sectionKeypath: locationKeyPath,
-												   subsKeypath: \CalAppointment.roomId)
-			self.appointments = Appointments.room(appointments)
-		case .week:
-			let flatAppts = self.appointments.flatten()
-			let weekApps = SectionHelper.groupByStartOfDay(originalEvents: flatAppts).mapValues { IdentifiedArrayOf.init($0)}
-			self.appointments = .week(weekApps)
-		}
-	}
+	public var addAppointment: AddAppointmentState?
 }
 
 extension CalendarState {
@@ -174,6 +149,34 @@ extension CalendarState {
 					return [JZShift].init(jzshifts)
 				}
 			}
+		}
+	}
+}
+
+extension CalendarState {
+	mutating func switchTo(id: Appointments.CalendarType) {
+		let locationKeyPath = \CalAppointment.locationId
+		switch id {
+		case .employee:
+			let flatAppts = self.appointments.flatten()
+			let appointments = EventsBy<Employee>.init(events: flatAppts,
+													   locationsIds: locations.map(\.id),
+													   subsections: employees.flatMap({ $0.value }),
+													   sectionKeypath: locationKeyPath,
+													   subsKeypath: \CalAppointment.employeeId)
+			self.appointments = Appointments.employee(appointments)
+		case .room:
+			let flatAppts = self.appointments.flatten()
+			let appointments = EventsBy<Room>.init(events: flatAppts,
+												   locationsIds: locations.map(\.id),
+												   subsections: rooms.flatMap({ $0.value }),
+												   sectionKeypath: locationKeyPath,
+												   subsKeypath: \CalAppointment.roomId)
+			self.appointments = Appointments.room(appointments)
+		case .week:
+			let flatAppts = self.appointments.flatten()
+			let weekApps = SectionHelper.groupByStartOfDay(originalEvents: flatAppts).mapValues { IdentifiedArrayOf.init($0)}
+			self.appointments = .week(weekApps)
 		}
 	}
 }

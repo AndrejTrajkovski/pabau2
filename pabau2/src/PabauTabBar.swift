@@ -145,30 +145,6 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
 		switch action {
 		case .journey(.addAppointmentTap):
 			state.addAppointment = AddAppointmentState.dummy
-		case .calendar(.employee(.addAppointment(let startDate, let durationMins, let dropKeys))):
-			let (date, location, subsection) = dropKeys
-			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
-			let employee = state.calendar.employees[location]?[id: subsection]
-			employee.map {
-				state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate, employee: $0)
-			}
-		case .calendar(.room(.addAppointment(let startDate, let durationMins, let dropKeys))):
-			let (date, location, subsection) = dropKeys
-			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
-			let room = state.calendar.rooms[location]?[id: subsection]
-			//FIXME: missing room in add appointments screen
-			state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate)
-		case .calendar(.week(.addAppointment(let startOfDayDate, let startDate,let durationMins))):
-			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
-			state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate)
-		case .calendar(.appDetails(.addService)):
-			let start = state.calendar.appDetails!.app.start_date
-			let end = state.calendar.appDetails!.app.end_date
-			let employee = state.calendar.employees.flatMap { $0.value }.first(where: { $0.id == state.calendar.appDetails?.app.employeeId })
-			state.calendar.appDetails = nil
-			employee.map {
-				state.addAppointment = AddAppointmentState.init(startDate: start, endDate: end, employee: $0)
-			}
 		default: break
 		}
 		return .none

@@ -52,8 +52,31 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			break
 		case .appDetails(.close):
 			state.appDetails = nil
-		case .appDetails:
-			break
+		case .employee(.addAppointment(let startDate, let durationMins, let dropKeys)):
+			let (date, location, subsection) = dropKeys
+			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
+			let employee = state.employees[location]?[id: subsection]
+			employee.map {
+				state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate, employee: $0)
+			}
+		case .room(.addAppointment(let startDate, let durationMins, let dropKeys)):
+			let (date, location, subsection) = dropKeys
+			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
+			let room = state.rooms[location]?[id: subsection]
+			//FIXME: missing room in add appointments screen
+			state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate)
+		case .week(.addAppointment(let startOfDayDate, let startDate,let durationMins)):
+			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
+			state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate)
+		case .appDetails(.addService):
+			let start = state.appDetails!.app.start_date
+			let end = state.appDetails!.app.end_date
+			let employee = state.employees.flatMap { $0.value }.first(where: { $0.id == state.appDetails?.app.employeeId })
+			state.calendar.appDetails = nil
+			employee.map {
+				state.addAppointment = AddAppointmentState.init(startDate: start, endDate: end, employee: $0)
+			}
+		default: break
 		}
 		return .none
 	}
