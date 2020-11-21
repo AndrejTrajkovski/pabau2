@@ -22,6 +22,8 @@ let package = Package(
 						 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../AddAppointment",
 				 from: Version.init(stringLiteral: "1.0.0")),
+		.package(url: "../TimeSlotButton",
+				 from: Version.init(stringLiteral: "1.0.0"))
 	],
 	targets: [
 		.target(
@@ -30,7 +32,8 @@ let package = Package(
 						   "FSCalendarSwiftUI",
 						   .product(name: "JZCalendarWeekView", package: "JZCalendarWeekView"),
 						   "ListPicker",
-						   "AddAppointment"
+						   "AddAppointment",
+						   "TimeSlotButton"
 			]
 		)
 	]

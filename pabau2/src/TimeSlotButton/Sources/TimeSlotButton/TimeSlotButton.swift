@@ -1,11 +1,19 @@
 import SwiftUI
 import Util
 
-struct TimeSlotsItem: View {
-	let onTap: () -> Void
+public struct TimeSlotButton: View {
+	
+	public init(image: String, title: String, onTap: @escaping () -> Void) {
+		self.onTap = onTap
+		self.image = image
+		self.title = title
+	}
+	
+	var onTap: () -> Void
 	let image: String
 	let title: String
-	var body: some View {
+	
+	public var body: some View {
 		Button (action: onTap) {
 			VStack(spacing: 8) {
 				Image(systemName: image)

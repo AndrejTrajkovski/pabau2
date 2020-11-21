@@ -290,42 +290,6 @@ struct LabelHeartAndTextField: View {
 	}
 }
 
-struct LabelAndTextField: View {
-	let labelTxt: String
-	let valueText: String
-	init(_ labelTxt: String,
-			 _ valueText: String) {
-		self.labelTxt = labelTxt
-		self.valueText = valueText
-	}
-	var body: some View {
-		LabelAndLowerContent(labelTxt) {
-			Text(self.valueText)
-				.foregroundColor(Color.textFieldAndTextLabel)
-				.font(.semibold15)
-		}
-	}
-}
-
-struct LabelAndLowerContent<Content: View>: View {
-	init(_ labelTxt: String,
-			 @ViewBuilder _ lowerContent: @escaping () -> Content) {
-		self.labelTxt = labelTxt
-		self.lowerContent = lowerContent
-	}
-	let labelTxt: String
-	let lowerContent: () -> Content
-	var body: some View {
-		VStack(alignment: .leading, spacing: 12) {
-			Text(labelTxt)
-				.foregroundColor(Color.textFieldAndTextLabel.opacity(0.5))
-				.font(.bold12)
-			lowerContent()
-			Divider().foregroundColor(.textFieldBottomLine)
-		}
-	}
-}
-
 struct NotesSection: View {
 	@State var note: String = ""
 	public var body: some View {

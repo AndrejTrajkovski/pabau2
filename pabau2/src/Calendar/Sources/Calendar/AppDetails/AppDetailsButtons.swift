@@ -3,6 +3,7 @@ import Util
 import ComposableArchitecture
 import Model
 import ListPicker
+import TimeSlotButton
 
 public let appDetailsButtonsReducer: Reducer<AppDetailsButtonsState, AppDetailsButtonsAction, Any?> = .init {
 	state, action, env in
@@ -52,7 +53,9 @@ struct AppDetailsButtons: View {
 	}
 	
 	let columns = [
-		GridItem(.adaptive(minimum: 200), spacing: 0)
+		GridItem(.flexible(), spacing: 0),
+		GridItem(.flexible(), spacing: 0),
+		GridItem(.flexible(), spacing: 0)
 	]
 	
 	let items = [
@@ -95,25 +98,26 @@ struct AppDetailsButtons: View {
 								ViewBuilder.buildEither(first: chooseCancelReason)
 		)
 	}
-
-	func timeSlot(idx: Int) -> TimeSlotsItem {
-		return TimeSlotsItem(onTap: {
+	
+	func timeSlot(idx: Int) -> TimeSlotButton {
+		return TimeSlotButton(
+			image: items[idx].0,
+			title: items[idx].1) {
 			let action = AppDetailsAction.buttons(items[idx].2)
 			self.viewStore.send(action)
-		},
-		image: items[idx].0,
-		title: items[idx].1)
+		}
 	}
 
-	var chooseStatusButton: PickerContainerStore<TimeSlotsItem, AppointmentStatus> {
+	var chooseStatusButton: PickerContainerStore<TimeSlotButton, AppointmentStatus> {
 		PickerContainerStore(
 			content: {
-				TimeSlotsItem(onTap: {
-				let action = AppDetailsAction.buttons(items[2].2)
-				self.viewStore.send(action)
+				TimeSlotButton(
+					image: items[2].0,
+					title: items[2].1) {
+					let action = AppDetailsAction.buttons(items[2].2)
+					self.viewStore.send(action)
+				}
 			},
-			image: items[2].0,
-			title: items[2].1) },
 			store: self.store.scope(
 				state: { $0.chooseStatus },
 				action: { .chooseStatus($0) }
@@ -121,15 +125,16 @@ struct AppDetailsButtons: View {
 		)
 	}
 
-	var chooseCancelReason: PickerContainerStore<TimeSlotsItem, CancelReason> {
+	var chooseCancelReason: PickerContainerStore<TimeSlotButton, CancelReason> {
 		PickerContainerStore(
 			content: {
-				TimeSlotsItem(onTap: {
-				let action = AppDetailsAction.buttons(items[1].2)
-				self.viewStore.send(action)
+				TimeSlotButton(
+					image: items[1].0,
+					title: items[1].1) {
+					let action = AppDetailsAction.buttons(items[1].2)
+					self.viewStore.send(action)
+				}
 			},
-			image: items[1].0,
-			title: items[1].1) },
 			store: self.store.scope(
 				state: { $0.chooseCancelReason },
 				action: { .chooseCancelReason($0) }
@@ -149,12 +154,12 @@ struct AppDetailsButtons: View {
 				send: { $0 ? AppDetailsAction.buttons(.onRepeat) : AppDetailsAction.chooseRepeat(.onBackBtn) }
 			)
 		) {
-			TimeSlotsItem(onTap: {
+			TimeSlotButton(
+				image: items[3].0,
+				title: items[3].1) {
 				let action = AppDetailsAction.buttons(items[3].2)
 				self.viewStore.send(action)
-			},
-			image: items[3].0,
-			title: items[3].1)
+			}
 		}
 	}
 }
