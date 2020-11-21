@@ -19,8 +19,18 @@ public enum SingleChoiceActions<Model: SingleChoiceElement>: Equatable {
 	case action(id: Model.ID, action: SingleChoiceAction<Model>)
 }
 
-public enum SingleChoiceAction<Model: SingleChoiceElement>: Equatable {
-	case onChooseItem
+struct SingleChoicePicker<T: SingleChoiceElement>: View {
+	let store: Store<SingleChoiceState<T>, SingleChoiceActions<T>>
+	
+	var body: some View {
+		ForEachStore(store.scope(state: { state in
+			let array = state.dataSource.map {
+				SingleChoiceItemState.init(item: $0, selectedId: state.chosenItemId) }
+			return IdentifiedArray.init(array)
+		},
+		action: SingleChoiceActions.action(id:action:)),
+		content: SingleChoiceItem.init(store:))
+	}
 }
 
 public struct SingleChoiceReducer<T: SingleChoiceElement> {
