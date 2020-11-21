@@ -4,21 +4,31 @@ import TimeSlotButton
 import Util
 import ListPicker
 import Model
+import AddEventControls
 
 public struct AddBookoutEnvironment {}
 
-public let addBookoutReducer: Reducer<AddBookoutState, AddBookoutAction, AddBookoutEnvironment> = .init { state, action, env in
-	return .none
-}
+public let addBookoutReducer: Reducer<AddBookoutState, AddBookoutAction, AddBookoutEnvironment> =
+	.combine(
+		SingleChoiceReducer<Duration>().reducer.pullback(
+			state: \.durations,
+			action: /AddBookoutAction.chooseDuration,
+			environment: { $0 }
+		),
+		.init { state, action, env in
+			return .none
+		}
+	)
 
 public struct AddBookoutState: Equatable {
 	var chooseEmployee: PickerContainerState<Employee>
-	var durations: PickerContainerState<Duration>
+	var durations: SingleChoiceState<Duration>
 	var startDate: Date
 }
 
 public enum AddBookoutAction {
 	case chooseEmployee(PickerContainerAction<Employee>)
+	case chooseDuration(SingleChoiceAction<Duration>)
 }
 
 extension Employee: ListPickerElement {}
@@ -27,6 +37,11 @@ public struct AddBookout: View {
 	
 	let store: Store<AddBookoutState, AddBookoutAction>
 	@ObservedObject var viewStore: ViewStore<AddBookoutState, AddBookoutAction>
+	
+	init(store: Store<AddBookoutState, AddBookoutAction>) {
+		self.store = store
+		self.viewStore = ViewStore(store)
+	}
 	
 	public var body: some View {
 		NavigationView {
@@ -41,10 +56,6 @@ public struct AddBookout: View {
 				Text("Date & Time").font(.semibold24).frame(maxWidth: .infinity, alignment: .leading)
 				LabelAndTextField.init("DAY", self.viewStore.state.startDate.toString()
 				)
-				HStack {
-					LabelAndTextField.init("DURATION", self.viewStore.state.duration.toString()
-					)
-				}
 			}
 			.navigationBarTitle(Text("Add Bookout"), displayMode: .large)
 			.navigationBarItems(leading:
@@ -59,7 +70,9 @@ public struct AddBookout: View {
 struct AddBookout_Previews: PreviewProvider {
 	
 	static var state: AddBookoutState {
-		AddBookoutState(chooseEmployee: PickerContainerState<Employee>.init(dataSource: IdentifiedArray(Employee.mockEmployees), chosenItemId: nil, isActive: false))
+		AddBookoutState(chooseEmployee: PickerContainerState<Employee>.init(dataSource: IdentifiedArray(Employee.mockEmployees), chosenItemId: nil, isActive: false),
+						durations: SingleChoiceState<Duration>(dataSource: IdentifiedArray.init(Duration.all), chosenItemId: nil),
+						startDate: Date())
 	}
 	
 	static var store: Store<AddBookoutState, AddBookoutAction> {

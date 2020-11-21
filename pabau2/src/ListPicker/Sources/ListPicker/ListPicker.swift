@@ -4,21 +4,26 @@ import ComposableArchitecture
 
 public struct PickerContainerState <Model: ListPickerElement>: Equatable {
 	public init(dataSource: IdentifiedArrayOf<Model>, chosenItemId: Model.ID?, isActive: Bool) {
-		self.dataSource = dataSource
-		self.chosenItemId = chosenItemId
+		self.singleChoice = SingleChoiceState(dataSource: dataSource, chosenItemId: chosenItemId)
 		self.isActive = isActive
 	}
 	
-	public var dataSource: IdentifiedArrayOf<Model>
-	public var chosenItemId: Model.ID?
 	public var isActive: Bool
-	public var chosenItemName: String? {
-		return dataSource.first(where: { $0.id == chosenItemId })?.name
+	var singleChoice: SingleChoiceState<Model>
+
+	public var dataSource: IdentifiedArrayOf<Model> {
+		get { singleChoice.dataSource }
+		set { singleChoice.dataSource = newValue }
 	}
+	public var chosenItemId: Model.ID? {
+		get { singleChoice.chosenItemId }
+		set { singleChoice.chosenItemId = newValue}
+	}
+	public var chosenItemName: String? { singleChoice.chosenItemName }
 }
 
 public enum PickerContainerAction <Model: ListPickerElement>: Equatable {
-	case didChooseItem(Model.ID)
+	case singleChoice(SingleChoiceActions<Model>)
 	case didSelectPicker
 	case backBtnTap
 }
@@ -34,31 +39,37 @@ public struct PickerContainerStore<Content: View, T: ListPickerElement>: View {
 		self.viewStore = ViewStore(store)
 	}
 	public var body: some View {
-		PickerContainer.init(content: content,
-							 items: self.viewStore.state.dataSource,
-							 choseItemId: self.viewStore.state.chosenItemId,
-							 isActive: self.viewStore.state.isActive,
-							 onTapGesture: {self.viewStore.send(.didSelectPicker)},
-							 onSelectItem: {self.viewStore.send(.didChooseItem($0))},
-							 onBackBtn: {self.viewStore.send(.backBtnTap)}
+		PickerContainer(content: content,
+						items: self.viewStore.state.dataSource,
+						choseItemId: self.viewStore.state.chosenItemId,
+						isActive: self.viewStore.state.isActive,
+						onTapGesture: {self.viewStore.send(.didSelectPicker)},
+						onSelectItem: {self.viewStore.send(.singleChoice(.didChooseItem($0)))},
+						onBackBtn: {self.viewStore.send(.backBtnTap)}
 		)
 	}
 }
 
 public struct PickerReducer<T: ListPickerElement> {
 	public init() {}
-	public let reducer = Reducer<PickerContainerState<T>, PickerContainerAction<T>, Any> { state, action, _ in
-		switch action {
-		case .didSelectPicker:
-			state.isActive = true
-		case .didChooseItem(let id):
-			state.isActive = false
-			state.chosenItemId = id
-		case .backBtnTap:
-			state.isActive = false
-		}
-		return .none
-	}
+	public let reducer: Reducer<PickerContainerState<T>, PickerContainerAction<T>, Any> =
+		.combine(
+			.init { state, action, _ in
+				switch action {
+				case .didSelectPicker:
+					state.isActive = true
+				case .singleChoice:
+					state.isActive = false
+				case .backBtnTap:
+					state.isActive = false
+				}
+				return .none
+			},
+			SingleChoiceReducer().reducer.pullback(
+				state: \.singleChoice,
+				action: /PickerContainerAction.singleChoice,
+				environment: { $0 })
+		)
 }
 
 public protocol ListPickerElement: Identifiable, Equatable {

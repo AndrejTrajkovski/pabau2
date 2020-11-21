@@ -3,15 +3,10 @@ import Model
 import ComposableArchitecture
 import Util
 import Form
+import AddEventControls
 import ListPicker
 
 public typealias AddAppointmentEnv = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
-
-public struct Duration: ListPickerElement {
-	public var name: String
-	public var id: Int
-	public var duration: TimeInterval
-}
 
 public struct AddAppointmentState: Equatable {
 	var reminder: Bool
@@ -381,11 +376,7 @@ struct AddAppMocks {
 
 	static let durationState: PickerContainerState<Duration> =
 		PickerContainerState.init(
-			dataSource: [
-				Duration.init(name: "00:30", id: 1, duration: 30),
-				Duration.init(name: "01:00", id: 2, duration: 60),
-				Duration.init(name: "01:30", id: 3, duration: 90)
-			],
+			dataSource: Duration.all,
 			chosenItemId: 1,
 			isActive: false)
 
