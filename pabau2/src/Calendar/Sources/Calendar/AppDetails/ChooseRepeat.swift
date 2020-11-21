@@ -60,12 +60,12 @@ struct ChooseRepeat: View {
 	var body: some View {
 		List {
 			ForEach(RepeatInterval.allCases) { item in
-				ListPickerCell(item.title, item == viewStore.state.chosenRepeat?.interval)
+				SingleChoiceCell(item.title, item == viewStore.state.chosenRepeat?.interval)
 					.onTapGesture {
 						viewStore.send(.onRepeat(item))
 					}
 			}
-			ListPickerCell("No repeat", viewStore.state.chosenRepeat == nil)
+			SingleChoiceCell("No repeat", viewStore.state.chosenRepeat == nil)
 				.onTapGesture {
 					viewStore.send(.onRepeat(nil))
 				}

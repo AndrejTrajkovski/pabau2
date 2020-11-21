@@ -31,7 +31,7 @@ public enum AddBookoutAction {
 	case chooseDuration(SingleChoiceAction<Duration>)
 }
 
-extension Employee: ListPickerElement {}
+extension Employee: SingleChoiceElement {}
 
 public struct AddBookout: View {
 	

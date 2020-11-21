@@ -39,8 +39,8 @@ public enum AddAppointmentAction: Equatable {
 	case feedback(ToggleAction)
 }
 
-extension Employee: ListPickerElement { }
-extension Service: ListPickerElement { }
+extension Employee: SingleChoiceElement { }
+extension Service: SingleChoiceElement { }
 
 let addAppTapBtnReducer = Reducer<AddAppointmentState?,
 	AddAppointmentAction, AddAppointmentEnv> { state, action, _ in
@@ -252,7 +252,7 @@ struct AddAppSections: View {
 	}
 }
 
-extension Client: ListPickerElement {
+extension Client: SingleChoiceElement {
 	public var name: String {
 		return firstName + " " + lastName
 	}
@@ -376,7 +376,7 @@ struct AddAppMocks {
 
 	static let durationState: PickerContainerState<Duration> =
 		PickerContainerState.init(
-			dataSource: Duration.all,
+			dataSource: IdentifiedArray(Duration.all),
 			chosenItemId: 1,
 			isActive: false)
 

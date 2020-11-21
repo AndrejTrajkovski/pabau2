@@ -1,7 +1,7 @@
 import SwiftUI
 import ComposableArchitecture
 
-public struct SingleChoiceState<Model: ListPickerElement>: Equatable {
+public struct SingleChoiceState<Model: SingleChoiceElement>: Equatable {
 
 	public var dataSource: IdentifiedArrayOf<Model>
 	public var chosenItemId: Model.ID?
@@ -15,15 +15,15 @@ public struct SingleChoiceState<Model: ListPickerElement>: Equatable {
 	}
 }
 
-public enum SingleChoiceActions<Model: ListPickerElement>: Equatable {
+public enum SingleChoiceActions<Model: SingleChoiceElement>: Equatable {
 	case action(id: Model.ID, action: SingleChoiceAction<Model>)
 }
 
-public enum SingleChoiceAction<Model: ListPickerElement>: Equatable {
+public enum SingleChoiceAction<Model: SingleChoiceElement>: Equatable {
 	case onChooseItem
 }
 
-public struct SingleChoiceReducer<T: ListPickerElement> {
+public struct SingleChoiceReducer<T: SingleChoiceElement> {
 	public init() {}
 //	metaFormAndStatusReducer.forEach(
 //		state: \StepForms.forms,

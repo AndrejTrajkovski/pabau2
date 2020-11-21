@@ -2,7 +2,7 @@ import SwiftUI
 import Util
 import ComposableArchitecture
 
-public struct PickerContainerState <Model: ListPickerElement>: Equatable {
+public struct PickerContainerState <Model: SingleChoiceElement>: Equatable {
 	public init(dataSource: IdentifiedArrayOf<Model>, chosenItemId: Model.ID?, isActive: Bool) {
 		self.singleChoice = SingleChoiceState(dataSource: dataSource, chosenItemId: chosenItemId)
 		self.isActive = isActive
@@ -22,35 +22,43 @@ public struct PickerContainerState <Model: ListPickerElement>: Equatable {
 	public var chosenItemName: String? { singleChoice.chosenItemName }
 }
 
-public enum PickerContainerAction <Model: ListPickerElement>: Equatable {
+public enum PickerContainerAction <Model: SingleChoiceElement>: Equatable {
 	case singleChoice(SingleChoiceActions<Model>)
 	case didSelectPicker
 	case backBtnTap
 }
 
-public struct PickerContainerStore<Content: View, T: ListPickerElement>: View {
+public struct PickerContainerStore<Content: View, T: SingleChoiceElement>: View {
 	let store: Store<PickerContainerState<T>, PickerContainerAction<T>>
 	@ObservedObject public var viewStore: ViewStore<PickerContainerState<T>, PickerContainerAction<T>>
 	let content: () -> Content
+	
 	public init (@ViewBuilder content: @escaping () -> Content,
 							  store: Store<PickerContainerState<T>, PickerContainerAction<T>>) {
 		self.content = content
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
+	
+	var singleChoicePicker: SingleChoicePicker<T> {
+		SingleChoicePicker.init(store: store.scope(state: { $0.singleChoice }, action: { .singleChoice($0) }))
+	}
+	
 	public var body: some View {
-		PickerContainer(content: content,
-						items: self.viewStore.state.dataSource,
-						choseItemId: self.viewStore.state.chosenItemId,
-						isActive: self.viewStore.state.isActive,
-						onTapGesture: {self.viewStore.send(.didSelectPicker)},
-						onSelectItem: {self.viewStore.send(.singleChoice(.didChooseItem($0)))},
-						onBackBtn: {self.viewStore.send(.backBtnTap)}
-		)
+		return HStack {
+			content()
+				.onTapGesture { self.viewStore.send(.didSelectPicker) }
+			NavigationLink.emptyHidden(viewStore.isActive,
+									   singleChoicePicker
+										.customBackButton {
+											self.viewStore.send(.backBtnTap)
+										}
+			)
+		}
 	}
 }
 
-public struct PickerReducer<T: ListPickerElement> {
+public struct PickerReducer<T: SingleChoiceElement> {
 	public init() {}
 	public let reducer: Reducer<PickerContainerState<T>, PickerContainerAction<T>, Any> =
 		.combine(
@@ -58,10 +66,10 @@ public struct PickerReducer<T: ListPickerElement> {
 				switch action {
 				case .didSelectPicker:
 					state.isActive = true
-				case .singleChoice:
-					state.isActive = false
 				case .backBtnTap:
 					state.isActive = false
+				case .singleChoice:
+					break
 				}
 				return .none
 			},
@@ -72,84 +80,52 @@ public struct PickerReducer<T: ListPickerElement> {
 		)
 }
 
-public protocol ListPickerElement: Identifiable, Equatable {
+public protocol SingleChoiceElement: Identifiable, Equatable {
 	var name: String { get }
 }
 
-struct PickerContainer<Content: View, T: ListPickerElement>: View {
-	let content: () -> Content
-	let items: IdentifiedArrayOf<T>
-	let chosenItemId: T.ID?
-	let isActive: Bool
-	let onTapGesture: () -> Void
-	let onSelectItem: (T.ID) -> Void
-	let onBackBtn: () -> Void
-	init(@ViewBuilder content: @escaping () -> Content,
-					  items: IdentifiedArrayOf<T>,
-					  choseItemId: T.ID?,
-					  isActive: Bool,
-					  onTapGesture: @escaping () -> Void,
-					  onSelectItem: @escaping (T.ID) -> Void,
-					  onBackBtn: @escaping () -> Void) {
-		self.content = content
-		self.items = items
-		self.chosenItemId = choseItemId
-		self.isActive = isActive
-		self.onTapGesture = onTapGesture
-		self.onSelectItem = onSelectItem
-		self.onBackBtn = onBackBtn
-	}
+struct SingleChoicePicker<T: SingleChoiceElement>: View {
+	let store: Store<SingleChoiceState<T>, SingleChoiceActions<T>>
 	
 	var body: some View {
-		HStack {
-			content().onTapGesture(perform: onTapGesture)
-			NavigationLink.emptyHidden(self.isActive,
-									   ListPicker<T>.init(items: self.items,
-														  selectedId: self.chosenItemId,
-														  onSelect: self.onSelectItem,
-														  onBackBtn: onBackBtn)
-			)
-		}
+		ForEachStore(store.scope(state: { state in
+			let array = state.dataSource.map {
+				SingleChoiceItemState.init(item: $0, selectedId: state.chosenItemId) }
+			return IdentifiedArray.init(array)
+		},
+		action: SingleChoiceActions.action(id:action:)),
+		content: SingleChoiceCell.init(store:))
 	}
 }
 
-struct ListPicker<T: ListPickerElement>: View {
-	let items: IdentifiedArrayOf<T>
-	let selectedId: T.ID?
-	let onSelect: (T.ID) -> Void
-	let onBackBtn: () -> Void
-	var body: some View {
-		List {
-			ForEach(items) { item in
-				ListPickerCell(item.name, selectedId == item.id)
-					.onTapGesture { self.onSelect(item.id) }
-			}
-		}.customBackButton(action: self.onBackBtn)
-	}
+struct SingleChoiceItemState<T: SingleChoiceElement>: Equatable, Identifiable {
+	var id: T.ID { item.id }
+	
+	var item: T
+	var selectedId: T.ID?
+	
+	var isSelected: Bool { item.id == selectedId }
 }
 
-public struct ListPickerCell: View {
+public struct SingleChoiceCell<T: SingleChoiceElement>: View {
 
-	let name: String
-	let isSelected: Bool
-	
-	public init(_ name: String, _ isSelected: Bool) {
-		self.name = name
-		self.isSelected = isSelected
-	}
+	let store: Store<SingleChoiceItemState<T>, SingleChoiceAction<T>>
 
 	public var body: some View {
-		VStack {
-			HStack {
-				Text(name)
-				Spacer()
-				if isSelected {
-					Image(systemName: "checkmark")
-						.padding(.trailing)
-						.foregroundColor(.deepSkyBlue)
+		WithViewStore(store) { viewStore in
+			VStack {
+				HStack {
+					Text(viewStore.item.name)
+					Spacer()
+					if viewStore.isSelected {
+						Image(systemName: "checkmark")
+							.padding(.trailing)
+							.foregroundColor(.deepSkyBlue)
+					}
 				}
 			}
+			.contentShape(Rectangle())
+			.onTapGesture { viewStore.send(.onChooseItem) }
 		}
-		.contentShape(Rectangle())
 	}
 }

@@ -4,7 +4,7 @@ import SwiftUI
 import Util
 import ComposableArchitecture
 
-public struct Duration: ListPickerElement {
+public struct Duration: SingleChoiceElement {
 	
 	public init(name: String, id: Int, duration: TimeInterval, nameInCircle: String) {
 		self.name = name

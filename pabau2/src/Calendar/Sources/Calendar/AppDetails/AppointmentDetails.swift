@@ -133,8 +133,8 @@ extension AppDetailsState {
 	}
 
 }
-extension AppointmentStatus: ListPickerElement { }
-extension CancelReason: ListPickerElement {}
+extension AppointmentStatus: SingleChoiceElement { }
+extension CancelReason: SingleChoiceElement {}
 
 struct AppointmentDetails_Previews: PreviewProvider {
 	static var state: AppDetailsState {
