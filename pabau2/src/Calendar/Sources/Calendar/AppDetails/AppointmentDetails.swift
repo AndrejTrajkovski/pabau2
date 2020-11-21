@@ -10,11 +10,11 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, Calenda
 		action: /AppDetailsAction.buttons,
 		environment: { $0 }
 	),
-	PickerReducer<AppointmentStatus>().reducer.pullback(
+	SingleChoiceLinkReducer<AppointmentStatus>().reducer.pullback(
 		state: \AppDetailsState.chooseStatus,
 		action: /AppDetailsAction.chooseStatus,
 		environment: { $0 }),
-	PickerReducer<CancelReason>().reducer.pullback(
+	SingleChoiceLinkReducer<CancelReason>().reducer.pullback(
 		state: \AppDetailsState.chooseCancelReason,
 		action: /AppDetailsAction.chooseCancelReason,
 		environment: { $0 }),
@@ -47,8 +47,8 @@ public struct AppDetailsState: Equatable {
 
 public enum AppDetailsAction {
 	case buttons(AppDetailsButtonsAction)
-	case chooseStatus(PickerContainerAction<AppointmentStatus>)
-	case chooseCancelReason(PickerContainerAction<CancelReason>)
+	case chooseStatus(SingleChoiceLinkAction<AppointmentStatus>)
+	case chooseCancelReason(SingleChoiceLinkAction<CancelReason>)
 	case addService
 	case chooseRepeat(ChooseRepeatAction)
 	case close
@@ -84,9 +84,9 @@ public struct AppointmentDetails: View {
 }
 
 extension AppDetailsState {
-	var chooseCancelReason: PickerContainerState<CancelReason> {
+	var chooseCancelReason: SingleChoiceLinkState<CancelReason> {
 		get {
-			PickerContainerState<CancelReason>.init(
+			SingleChoiceLinkState<CancelReason>.init(
 				dataSource: cancelReasons,
 				chosenItemId: chosenCancelReasonId,
 				isActive: isCancelActive)
@@ -98,9 +98,9 @@ extension AppDetailsState {
 		}
 	}
 	
-	var chooseStatus: PickerContainerState<AppointmentStatus> {
+	var chooseStatus: SingleChoiceLinkState<AppointmentStatus> {
 		get {
-			PickerContainerState<AppointmentStatus>(
+			SingleChoiceLinkState<AppointmentStatus>(
 				dataSource: appStatuses,
 				chosenItemId: app.status?.id,
 				isActive: isStatusActive)

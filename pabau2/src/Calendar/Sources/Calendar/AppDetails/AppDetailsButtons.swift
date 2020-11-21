@@ -108,8 +108,8 @@ struct AppDetailsButtons: View {
 		}
 	}
 
-	var chooseStatusButton: PickerContainerStore<TimeSlotButton, AppointmentStatus> {
-		PickerContainerStore(
+	var chooseStatusButton: SingleChoiceLink<TimeSlotButton, AppointmentStatus> {
+		SingleChoiceLink(
 			content: {
 				TimeSlotButton(
 					image: items[2].0,
@@ -125,8 +125,8 @@ struct AppDetailsButtons: View {
 		)
 	}
 
-	var chooseCancelReason: PickerContainerStore<TimeSlotButton, CancelReason> {
-		PickerContainerStore(
+	var chooseCancelReason: SingleChoiceLink<TimeSlotButton, CancelReason> {
+		SingleChoiceLink(
 			content: {
 				TimeSlotButton(
 					image: items[1].0,

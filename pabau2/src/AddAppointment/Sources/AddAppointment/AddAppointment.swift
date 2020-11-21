@@ -14,23 +14,23 @@ public struct AddAppointmentState: Equatable {
 	var sms: Bool
 	var feedback: Bool
 	var isAllDay: Bool
-	var clients: PickerContainerState<Client>
+	var clients: SingleChoiceLinkState<Client>
 	var startDate: Date
 	var services: ChooseServiceState
-	var durations: PickerContainerState<Duration>
-	var with: PickerContainerState<Employee>
-	var participants: PickerContainerState<Employee>
+	var durations: SingleChoiceLinkState<Duration>
+	var with: SingleChoiceLinkState<Employee>
+	var participants: SingleChoiceLinkState<Employee>
 }
 
 public enum AddAppointmentAction: Equatable {
 	case saveAppointmentTap
 	case addAppointmentDismissed
 	case chooseStartDate
-	case clients(PickerContainerAction<Client>)
+	case clients(SingleChoiceLinkAction<Client>)
 	case services(ChooseServiceAction)
-	case durations(PickerContainerAction<Duration>)
-	case with(PickerContainerAction<Employee>)
-	case participants(PickerContainerAction<Employee>)
+	case durations(SingleChoiceLinkAction<Duration>)
+	case with(SingleChoiceLinkAction<Employee>)
+	case participants(SingleChoiceLinkAction<Employee>)
 	case closeBtnTap
 	case didTapServices
 	case sms(ToggleAction)
@@ -59,7 +59,7 @@ let addAppTapBtnReducer = Reducer<AddAppointmentState?,
 
 public let addAppointmentValueReducer: Reducer<AddAppointmentState,
 	AddAppointmentAction, AddAppointmentEnv> = .combine(
-		PickerReducer<Client>().reducer.pullback(
+		SingleChoiceLinkReducer<Client>().reducer.pullback(
 			state: \AddAppointmentState.clients,
 			action: /AddAppointmentAction.clients,
 			environment: { $0 }),
@@ -67,15 +67,15 @@ public let addAppointmentValueReducer: Reducer<AddAppointmentState,
 			 state: \AddAppointmentState.services,
 			 action: /AddAppointmentAction.services,
 			 environment: { $0 }),
-		PickerReducer<Duration>().reducer.pullback(
+		SingleChoiceLinkReducer<Duration>().reducer.pullback(
 			state: \AddAppointmentState.durations,
 			action: /AddAppointmentAction.durations,
 			environment: { $0 }),
-		PickerReducer<Employee>().reducer.pullback(
+		SingleChoiceLinkReducer<Employee>().reducer.pullback(
 			state: \AddAppointmentState.with,
 			action: /AddAppointmentAction.with,
 			environment: { $0 }),
-		PickerReducer<Employee>().reducer.pullback(
+		SingleChoiceLinkReducer<Employee>().reducer.pullback(
 			state: \AddAppointmentState.participants,
 			action: /AddAppointmentAction.participants,
 			environment: { $0 }),
@@ -148,7 +148,7 @@ struct Section1: View {
 		VStack (spacing: 24.0) {
 			SwitchCell(text: "All Day", value: $isAllDay)
 			HStack(spacing: 24.0) {
-				PickerContainerStore.init(content: {
+				SingleChoiceLink.init(content: {
 					LabelAndTextField.init("CLIENT", self.viewStore.state.clients.chosenItemName ?? "")
 				}, store: self.store.scope(state: { $0.clients },
 										   action: { .clients($0) })
@@ -178,20 +178,20 @@ struct Section2: View {
 																		.services($0)
 																		}))
 				)
-				PickerContainerStore.init(content: {
+				SingleChoiceLink.init(content: {
 					LabelAndTextField.init("DURATION", self.viewStore.state.durations.chosenItemName ?? "")
 				}, store: self.store.scope(state: { $0.durations },
 																	action: { .durations($0) })
 				)
 			}
 			HStack(spacing: 24.0) {
-				PickerContainerStore.init(content: {
+				SingleChoiceLink.init(content: {
 					LabelHeartAndTextField.init("WITH", self.viewStore.state.with.chosenItemName ?? "",
 																			true)
 				}, store: self.store.scope(state: { $0.with },
 																	action: { .with($0) })
 				)
-				PickerContainerStore.init(content: {
+				SingleChoiceLink.init(content: {
 					HStack {
 						Image(systemName: "plus.circle")
 							.foregroundColor(.deepSkyBlue)
@@ -355,8 +355,8 @@ extension AddAppointmentState {
 }
 
 struct AddAppMocks {
-	static let clientState: PickerContainerState<Client> =
-		PickerContainerState.init(
+	static let clientState: SingleChoiceLinkState<Client> =
+		SingleChoiceLinkState.init(
 			dataSource: [
 				Client.init(id: 1, firstName: "Wayne", lastName: "Rooney", dOB: Date()),
 				Client.init(id: 2, firstName: "Adam", lastName: "Smith", dOB: Date())
@@ -364,8 +364,8 @@ struct AddAppMocks {
 			chosenItemId: 1,
 			isActive: false)
 
-	static let serviceState: PickerContainerState<Service> =
-		PickerContainerState.init(
+	static let serviceState: SingleChoiceLinkState<Service> =
+		SingleChoiceLinkState.init(
 			dataSource: [
 				Service.init(id: 1, name: "Botox", color: "", categoryId: 1, categoryName: "Injectables"),
 				Service.init(id: 2, name: "Fillers", color: "", categoryId: 2, categoryName: "Urethra"),
@@ -374,14 +374,14 @@ struct AddAppMocks {
 			chosenItemId: 1,
 			isActive: false)
 
-	static let durationState: PickerContainerState<Duration> =
-		PickerContainerState.init(
+	static let durationState: SingleChoiceLinkState<Duration> =
+		SingleChoiceLinkState.init(
 			dataSource: IdentifiedArray(Duration.all),
 			chosenItemId: 1,
 			isActive: false)
 
-	static let withState: PickerContainerState<Employee> =
-		PickerContainerState.init(
+	static let withState: SingleChoiceLinkState<Employee> =
+		SingleChoiceLinkState.init(
 			dataSource: [
 				Employee.init(id: 123, name: "Andrej Trajkovski", locationId: Location.randomId()),
 				Employee.init(id: 456, name: "Mark Ronson", locationId: Location.randomId())
@@ -389,8 +389,8 @@ struct AddAppMocks {
 			chosenItemId: 456,
 			isActive: false)
 
-	static let participantsState: PickerContainerState<Employee> =
-		PickerContainerState.init(
+	static let participantsState: SingleChoiceLinkState<Employee> =
+		SingleChoiceLinkState.init(
 			dataSource: [
 				Employee.init(id: 1, name: "Participant 1", locationId: Location.randomId()),
 				Employee.init(id: 2, name: "Participant 2", locationId: Location.randomId())
