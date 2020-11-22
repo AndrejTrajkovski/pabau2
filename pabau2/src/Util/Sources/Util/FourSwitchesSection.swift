@@ -41,8 +41,8 @@ public struct FourSwitchesSection: View {
 	}
 }
 
+//FIXME: Refactor with store object here
 public struct SwitchCell: View {
-
 	public init (text: String, value: Binding<Bool>) {
 		self.text = text
 		self._value = value

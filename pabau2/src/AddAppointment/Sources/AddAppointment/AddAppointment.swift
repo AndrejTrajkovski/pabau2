@@ -20,6 +20,7 @@ public struct AddAppointmentState: Equatable {
 	var durations: SingleChoiceLinkState<Duration>
 	var with: SingleChoiceLinkState<Employee>
 	var participants: SingleChoiceLinkState<Employee>
+	var note: String = ""
 }
 
 public enum AddAppointmentAction: Equatable {
@@ -37,6 +38,7 @@ public enum AddAppointmentAction: Equatable {
 	case reminder(ToggleAction)
 	case email(ToggleAction)
 	case feedback(ToggleAction)
+	case note(TextChangeAction)
 }
 
 extension Employee: SingleChoiceElement { }
@@ -94,6 +96,10 @@ public let addAppointmentValueReducer: Reducer<AddAppointmentState,
 		switchCellReducer.pullback(
 			state: \AddAppointmentState.email,
 			action: /AddAppointmentAction.email,
+			environment: { $0 }),
+		textFieldReducer.pullback(
+			state: \AddAppointmentState.note,
+			action: /AddAppointmentAction.note,
 			environment: { $0 })
 	)
 
@@ -149,12 +155,12 @@ struct Section1: View {
 			SwitchCell(text: "All Day", value: $isAllDay)
 			HStack(spacing: 24.0) {
 				SingleChoiceLink.init(content: {
-					LabelAndTextField.init("CLIENT", self.viewStore.state.clients.chosenItemName ?? "")
+					TitleAndValueLabel.init("CLIENT", self.viewStore.state.clients.chosenItemName ?? "")
 				}, store: self.store.scope(state: { $0.clients },
 										   action: { .clients($0) }),
 				cell: TextAndCheckMarkContainer.init(state:)
 				)
-				LabelAndTextField.init("DAY", self.viewStore.state.startDate.toString())
+				TitleAndValueLabel.init("DAY", self.viewStore.state.startDate.toString())
 			}
 		}
 	}
@@ -171,7 +177,7 @@ struct Section2: View {
 		VStack(alignment: .leading, spacing: 24.0) {
 			Text("Services").font(.semibold24)
 			HStack(spacing: 24.0) {
-				LabelAndTextField.init("SERVICE", self.viewStore.state.services.chosenServiceName).onTapGesture {
+				TitleAndValueLabel.init("SERVICE", self.viewStore.state.services.chosenServiceName).onTapGesture {
 					self.viewStore.send(.didTapServices)
 				}
 				NavigationLink.emptyHidden(self.viewStore.state.services.isChooseServiceActive,
@@ -180,7 +186,7 @@ struct Section2: View {
 																		}))
 				)
 				SingleChoiceLink.init(content: {
-					LabelAndTextField.init("DURATION", self.viewStore.state.durations.chosenItemName ?? "")
+					TitleAndValueLabel.init("DURATION", self.viewStore.state.durations.chosenItemName ?? "")
 				}, store: self.store.scope(state: { $0.durations },
 										   action: { .durations($0) }),
 				cell: TextAndCheckMarkContainer.init(state:)
@@ -226,7 +232,8 @@ struct AddAppSections: View {
 		VStack(alignment: .leading, spacing: 32) {
 			Section1(store: self.store)
 			Section2(store: self.store)
-			NotesSection()
+			NotesSection(store: store.scope(state: { $0.note },
+											action: { .note($0) }))
 			FourSwitchesSection(
 				swithc1: viewStore.binding(
 					get: { $0.reminder },
@@ -274,7 +281,7 @@ struct LabelHeartAndTextField: View {
 		self._isHearted = State.init(initialValue: isHearted)
 	}
 	var body: some View {
-		LabelAndLowerContent(labelTxt) {
+		TitleAndLowerContent(labelTxt) {
 			HStack {
 				Image(systemName: self.isHearted ? "heart.fill" : "heart")
 					.foregroundColor(.heartRed)
@@ -290,21 +297,19 @@ struct LabelHeartAndTextField: View {
 }
 
 struct NotesSection: View {
-	@State var note: String = ""
+	let store: Store<String, TextChangeAction>
 	public var body: some View {
 		VStack(alignment: .leading, spacing: 24.0) {
 			Text("Notes").font(.semibold24)
-			LabelAndLowerContent.init("BOOKING NOTE") {
-				TextField.init("Add a booking note", text: self.$note)
-					.foregroundColor(Color.textFieldAndTextLabel)
-					.font(.semibold15)
-			}
+			TitleAndTextField(title: "BOOKING NOTE",
+							  tfLabel: "Add a booking note",
+							  store: self.store)
 		}
 	}
 }
 
 extension AddAppointmentState {
-	
+
 	public init(startDate: Date,
 				endDate: Date) {
 		self.init(

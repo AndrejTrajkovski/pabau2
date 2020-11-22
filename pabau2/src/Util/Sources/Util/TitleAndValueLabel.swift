@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct LabelAndTextField: View {
+public struct TitleAndValueLabel: View {
 	let labelTxt: String
 	let valueText: String
 	public init(_ labelTxt: String,
@@ -9,7 +9,7 @@ public struct LabelAndTextField: View {
 		self.valueText = valueText
 	}
 	public var body: some View {
-		LabelAndLowerContent(labelTxt) {
+		TitleAndLowerContent(labelTxt) {
 			Text(self.valueText)
 				.foregroundColor(Color.textFieldAndTextLabel)
 				.font(.semibold15)
@@ -17,7 +17,7 @@ public struct LabelAndTextField: View {
 	}
 }
 
-public struct LabelAndLowerContent<Content: View>: View {
+public struct TitleAndLowerContent<Content: View>: View {
 	public init(_ labelTxt: String,
 				@ViewBuilder _ lowerContent: @escaping () -> Content) {
 		self.labelTxt = labelTxt
