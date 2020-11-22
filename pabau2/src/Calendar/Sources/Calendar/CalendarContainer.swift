@@ -5,6 +5,7 @@ import Model
 import Util
 import SwiftDate
 import AddAppointment
+import AddBookout
 import Combine
 
 public typealias CalendarEnvironment = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
@@ -18,6 +19,13 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 	.init { state, action, env in
 		switch action {
 		case .employee(.addAppointment(let startDate, let durationMins, let dropKeys)):
+			let (date, location, subsection) = dropKeys
+			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
+			let employee = state.calendar.employees[location]?[id: subsection]
+			employee.map {
+				state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate, employee: $0)
+			}
+		case .employee(.addBookout(let startDate, let durationMins, let dropKeys)):
 			let (date, location, subsection) = dropKeys
 			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
 			let employee = state.calendar.employees[location]?[id: subsection]
@@ -80,6 +88,10 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 		state: \CalendarState.appDetails,
 		action: /CalendarAction.appDetails,
 		environment: { $0 }),
+	addBookoutReducer.optional.pullback(
+		state: \CalendarState.addBookout,
+		action: /CalendarAction.addBookout,
+		environment: { $0 }),
 	.init { state, action, _ in
 		switch action {
 		case .datePicker: break
@@ -87,6 +99,8 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 			state.switchTo(id: calTypeId)
 		case .onAppDetailsDismiss:
 			state.appDetails = nil
+		case .onBookoutDismiss:
+			state.addBookout = nil
 		case .calTypePicker(.toggleDropdown): break
 		case .addShift: break
 		case .toggleFilters: break
@@ -98,6 +112,8 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 			break
 		case .appDetails(.close):
 			state.appDetails = nil
+		case .addBookout(.close):
+			state.addBookout = nil
 		default: break
 		}
 		return .none
@@ -120,12 +136,18 @@ public struct CalendarContainer: View {
 				.padding(0)
 				CalendarWrapper(store: self.store)
 				Spacer()
-			}.sheet(isPresented: viewStore.binding(get: { $0.appDetails != nil },
-												   send: CalendarAction.onAppDetailsDismiss),
-					content: { IfLetStore(store.scope(state: { $0.appDetails },
-													  action: { .appDetails($0) }),
-										  then: AppointmentDetails.init(store:))
-					})
+			}.fullScreenCover(isPresented: viewStore.binding(get: { $0.appDetails != nil },
+															 send: CalendarAction.onAppDetailsDismiss),
+							  content: { IfLetStore(store.scope(state: { $0.appDetails },
+																action: { .appDetails($0) }),
+													then: AppointmentDetails.init(store:))
+							  })
+			.fullScreenCover(isPresented: viewStore.binding(get: { $0.addBookout != nil },
+															 send: CalendarAction.onAppDetailsDismiss),
+							  content: { IfLetStore(store.scope(state: { $0.addBookout },
+																action: { .addBookout($0) }),
+													then: AddBookout.init(store:))
+							  })
 		}
 	}
 

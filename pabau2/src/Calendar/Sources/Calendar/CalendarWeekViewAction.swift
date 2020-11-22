@@ -26,8 +26,8 @@ public let calendarWeekViewReducer: Reducer<CalendarWeekViewState, CalendarWeekV
 	case .editDuration(let startOfDayDate, let endDate, let eventId):
 		let calId = CalAppointment.ID.init(rawValue: eventId)
 		state.appointments[startOfDayDate]?[id: calId]?.end_date = endDate
-	case .addAppointment(let startOfDayDate, let startDate, let durationMins):
-		break// handled in tab bar reducer
+	case .addAppointment, .addBookout:
+		break// handled in calendarContainerReducer
 	}
 	return .none
 }
@@ -37,6 +37,9 @@ public enum CalendarWeekViewAction {
 	case addAppointment(startOfDayDate: Date,
 						startDate: Date,
 						durationMins: Int)
+	case addBookout(startOfDayDate: Date,
+					startDate: Date,
+					durationMins: Int)
 	case editStartTime(startOfDayDate: Date,
 					   startDate: Date,
 					   eventId: Int,

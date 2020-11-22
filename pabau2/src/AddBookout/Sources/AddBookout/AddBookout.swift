@@ -5,7 +5,7 @@ import ListPicker
 import Model
 import AddEventControls
 
-public struct AddBookoutEnvironment {}
+public typealias AddBookoutEnvironment = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
 
 public let addBookoutReducer: Reducer<AddBookoutState, AddBookoutAction, AddBookoutEnvironment> =
 	.combine(
@@ -29,7 +29,7 @@ public let addBookoutReducer: Reducer<AddBookoutState, AddBookoutAction, AddBook
 		switchCellReducer.pullback(
 			state: \.isPrivate,
 			action: /AddBookoutAction.isPrivate,
-			end: { $0 }
+			environment: { $0 }
 		),
 		.init { state, action, env in
 			return .none
@@ -51,6 +51,7 @@ public enum AddBookoutAction {
 	case isPrivate(ToggleAction)
 	case note(TextChangeAction)
 	case description(TextChangeAction)
+	case close
 }
 
 extension Employee: SingleChoiceElement {}
@@ -60,7 +61,7 @@ public struct AddBookout: View {
 	let store: Store<AddBookoutState, AddBookoutAction>
 	@ObservedObject var viewStore: ViewStore<AddBookoutState, AddBookoutAction>
 
-	init(store: Store<AddBookoutState, AddBookoutAction>) {
+	public init(store: Store<AddBookoutState, AddBookoutAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
@@ -108,30 +109,30 @@ public struct AddBookout: View {
 			}
 			.navigationBarTitle(Text("Add Bookout"), displayMode: .large)
 			.navigationBarItems(leading:
-									XButton(onTouch: { })
+									XButton(onTouch: { viewStore.send(.close)})
 			)
 		}
 		.navigationViewStyle(StackNavigationViewStyle())
 	}
 }
 
-struct AddBookout_Previews: PreviewProvider {
-	
-	static var state: AddBookoutState {
-		AddBookoutState(chooseEmployee: SingleChoiceLinkState<Employee>.init(dataSource: IdentifiedArray(Employee.mockEmployees), chosenItemId: nil, isActive: false),
-						chooseDuration: SingleChoiceState<Duration>(dataSource: IdentifiedArray.init(Duration.all), chosenItemId: nil),
-						startDate: Date(), isPrivate: false)
-	}
-
-	static var store: Store<AddBookoutState, AddBookoutAction> {
-		Store.init(initialState: state, reducer: addBookoutReducer, environment: (AddBookoutEnvironment())
-		)
-	}
-
-	static var previews: some View {
-		Group {
-			AddBookout(store: store)
-				.previewDevice("iPad Air (4th generation)")
-		}
-	}
-}
+//struct AddBookout_Previews: PreviewProvider {
+//
+//	static var state: AddBookoutState {
+//		AddBookoutState(chooseEmployee: SingleChoiceLinkState<Employee>.init(dataSource: IdentifiedArray(Employee.mockEmployees), chosenItemId: nil, isActive: false),
+//						chooseDuration: SingleChoiceState<Duration>(dataSource: IdentifiedArray.init(Duration.all), chosenItemId: nil),
+//						startDate: Date(), isPrivate: false)
+//	}
+//
+//	static var store: Store<AddBookoutState, AddBookoutAction> {
+//		Store.init(initialState: state, reducer: addBookoutReducer, environment: (AddBookoutEnvironment())
+//		)
+//	}
+//
+//	static var previews: some View {
+//		Group {
+//			AddBookout(store: store)
+//				.previewDevice("iPad Air (4th generation)")
+//		}
+//	}
+//}

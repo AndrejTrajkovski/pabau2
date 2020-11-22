@@ -29,8 +29,8 @@ extension EventsBy: Equatable { }
 public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
 	let reducer = Reducer<CalendarSectionViewState<Subsection>, SubsectionCalendarAction<Subsection>, Any> { state, action, _ in
 		switch action {
-		case .addAppointment:
-			break //handled in tabBarReducer
+		case .addAppointment, .addBookout:
+			break //handled in calendarContainerReducer
 		case .editSections(startDate: let startDate, startKeys: let startIndexes, dropKeys: let dropIndexes, eventId: let eventId):
 			let calId = CalAppointment.Id(rawValue: eventId)
 			var app = state.appointments.appointments[startIndexes.date]?[startIndexes.location]?[startIndexes.subsection]?.remove(id: calId)

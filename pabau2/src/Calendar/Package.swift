@@ -23,6 +23,8 @@ let package = Package(
 		.package(url: "../AddAppointment",
 				 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../AddEventControls",
+				 from: Version.init(stringLiteral: "1.0.0")),
+		.package(url: "../AddBookout",
 				 from: Version.init(stringLiteral: "1.0.0"))
 	],
 	targets: [
@@ -33,7 +35,8 @@ let package = Package(
 						   .product(name: "JZCalendarWeekView", package: "JZCalendarWeekView"),
 						   "ListPicker",
 						   "AddAppointment",
-						   "AddEventControls"
+						   "AddEventControls",
+						   "AddBookout"
 			]
 		)
 	]

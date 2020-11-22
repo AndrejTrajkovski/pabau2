@@ -21,7 +21,7 @@ public struct TitleAndTextField: View {
 		self.tfLabel = tfLabel
 		self.store = store
 	}
-	
+
 	let title: String
 	let tfLabel: String
 	let store: Store<String, TextChangeAction>
@@ -35,12 +35,12 @@ public struct TitleAndTextField: View {
 }
 
 public struct TextFieldStore: View {
-	
+
 	public init(tfLabel: String? = nil, store: Store<String, TextChangeAction>) {
 		self.tfLabel = tfLabel
 		self.store = store
 	}
-	
+
 	let tfLabel: String?
 	let store: Store<String, TextChangeAction>
 	public var body: some View {
