@@ -1,10 +1,6 @@
 import SwiftUI
 #if !os(macOS)
 
-public enum ToggleAction: Equatable {
-	case setTo(Bool)
-}
-
 public struct FourSwitchesSection: View {
 	@Binding var swithc1: Bool
 	@Binding var switch2: Bool
@@ -37,28 +33,6 @@ public struct FourSwitchesSection: View {
 			SwitchCell.init(text: switchNames[1], value: $switch2)
 			SwitchCell.init(text: switchNames[2], value: $switch3)
 			SwitchCell.init(text: switchNames[3], value: $switch4)
-		}
-	}
-}
-
-//FIXME: Refactor with store object here
-public struct SwitchCell: View {
-	public init (text: String, value: Binding<Bool>) {
-		self.text = text
-		self._value = value
-	}
-
-	let text: String
-	@Binding var value: Bool
-	public var body: some View {
-		VStack {
-			HStack {
-				Text(text).font(.regular17)
-				Spacer()
-				Toggle.init(isOn: $value, label: { EmptyView() })
-				Spacer()
-			}
-			Divider()
 		}
 	}
 }

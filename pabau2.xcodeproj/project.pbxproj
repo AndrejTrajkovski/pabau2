@@ -45,7 +45,6 @@
 		82018FE62567D59300E740A9 /* AddAppointment */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AddAppointment; sourceTree = "<group>"; };
 		82018FE72569657100E740A9 /* AddBookout */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AddBookout; sourceTree = "<group>"; };
 		82018FE82569658200E740A9 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		82018FEA2569734500E740A9 /* TimeSlotButton */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TimeSlotButton; sourceTree = "<group>"; };
 		820A343D252E0E1100C6AB29 /* JZCalendarWeekView */ = {isa = PBXFileReference; lastKnownFileType = folder; path = JZCalendarWeekView; sourceTree = "<group>"; };
 		82104534240CE516004EA838 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		82104536240CE524004EA838 /* libswiftXCTest.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftXCTest.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/libswiftXCTest.tbd; sourceTree = DEVELOPER_DIR; };
@@ -150,7 +149,6 @@
 			isa = PBXGroup;
 			children = (
 				8253342325698BE4005755D6 /* AddEventControls */,
-				82018FEA2569734500E740A9 /* TimeSlotButton */,
 				82018FE72569657100E740A9 /* AddBookout */,
 				82018FE82569658200E740A9 /* README.md */,
 				82018FE62567D59300E740A9 /* AddAppointment */,

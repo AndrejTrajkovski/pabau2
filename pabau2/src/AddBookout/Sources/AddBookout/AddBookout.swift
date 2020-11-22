@@ -1,6 +1,5 @@
 import SwiftUI
 import ComposableArchitecture
-import TimeSlotButton
 import Util
 import ListPicker
 import Model
@@ -27,6 +26,11 @@ public let addBookoutReducer: Reducer<AddBookoutState, AddBookoutAction, AddBook
 			state: \.description,
 			action: /AddBookoutAction.description,
 			environment: { $0 }),
+		switchCellReducer.pullback(
+			state: \.isPrivate,
+			action: /AddBookoutAction.isPrivate,
+			end: { $0 }
+		),
 		.init { state, action, env in
 			return .none
 		}

@@ -1,6 +1,6 @@
 import SwiftUI
 import ComposableArchitecture
-import TimeSlotButton
+import AddEventControls
 import Util
 
 enum ButtonsActions {

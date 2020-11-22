@@ -2,6 +2,7 @@ import SwiftUI
 import ComposableArchitecture
 import Util
 import Model
+import AddEventControls
 
 struct CheckPatientForm: View {
 	let didTouchDone: () -> Void

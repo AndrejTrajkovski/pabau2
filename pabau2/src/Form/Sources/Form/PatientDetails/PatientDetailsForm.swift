@@ -2,6 +2,7 @@ import SwiftUI
 import Util
 import ComposableArchitecture
 import Model
+import AddEventControls
 
 public struct PatientDetailsForm: View {
 	let store: Store<PatientDetails, PatientDetailsAction>

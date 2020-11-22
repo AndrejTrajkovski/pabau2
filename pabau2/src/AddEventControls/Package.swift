@@ -13,8 +13,6 @@ let package = Package(
             targets: ["AddEventControls"]),
     ],
     dependencies: [
-		.package(url: "../TimeSlotButton",
-			from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../ListPicker",
 			from: Version.init(stringLiteral: "1.0.0"))
     ],
@@ -23,8 +21,7 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "AddEventControls",
-            dependencies: ["TimeSlotButton",
-						   "ListPicker"]),
+            dependencies: ["ListPicker"]),
         .testTarget(
             name: "AddEventControlsTests",
             dependencies: ["AddEventControls"]),
