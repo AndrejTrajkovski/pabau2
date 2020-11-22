@@ -68,7 +68,7 @@ public struct SingleChoiceLinkReducer<T: SingleChoiceElement> {
 				case .backBtnTap:
 					state.isActive = false
 				case .singleChoice:
-					break
+					state.isActive = false
 				}
 				return .none
 			},
