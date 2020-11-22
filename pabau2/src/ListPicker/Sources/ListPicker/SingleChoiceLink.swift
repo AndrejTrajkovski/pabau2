@@ -43,10 +43,12 @@ public struct SingleChoiceLink<Content: View, T: SingleChoiceElement, Cell: View
 		self.viewStore = ViewStore(store)
 	}
 
-	var singleChoicePicker: SingleChoicePicker<T, Cell> {
-		SingleChoicePicker.init(store: store.scope(state: { $0.singleChoice },
-												   action: { .singleChoice($0) }),
-								cell: cell)
+	var listSingleChoicePicker: List<Never, SingleChoicePicker<T, Cell>> {
+		List {
+			SingleChoicePicker.init(store: store.scope(state: { $0.singleChoice },
+													   action: { .singleChoice($0) }),
+									cell: cell)
+		}
 	}
 
 	public var body: some View {
@@ -54,7 +56,7 @@ public struct SingleChoiceLink<Content: View, T: SingleChoiceElement, Cell: View
 			content()
 				.onTapGesture { self.viewStore.send(.didSelectPicker) }
 			NavigationLink.emptyHidden(viewStore.isActive,
-									   singleChoicePicker
+									   listSingleChoicePicker
 										.customBackButton {
 											self.viewStore.send(.backBtnTap)
 										}

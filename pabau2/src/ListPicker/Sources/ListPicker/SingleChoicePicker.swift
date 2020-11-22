@@ -20,7 +20,7 @@ public enum SingleChoiceActions<Model: SingleChoiceElement>: Equatable {
 }
 
 public struct SingleChoicePicker<T: SingleChoiceElement, Cell: View>: View {
-	
+
 	let store: Store<SingleChoiceState<T>, SingleChoiceActions<T>>
 	let cell: (SingleChoiceItemState<T>) -> Cell
 	
@@ -31,17 +31,15 @@ public struct SingleChoicePicker<T: SingleChoiceElement, Cell: View>: View {
 	}
 	
 	public var body: some View {
-		List {
-			ForEachStore(store.scope(state: { state in
-				let array = state.dataSource.map {
-					SingleChoiceItemState.init(item: $0, selectedId: state.chosenItemId) }
-				return IdentifiedArray.init(array)
-			},
-			action: SingleChoiceActions.action(id:action:)),
-			content: {
-				SingleChoiceItem.init(store:$0, cell: cell)
-			})
-		}
+		ForEachStore(store.scope(state: { state in
+			let array = state.dataSource.map {
+				SingleChoiceItemState.init(item: $0, selectedId: state.chosenItemId) }
+			return IdentifiedArray.init(array)
+		},
+		action: SingleChoiceActions.action(id:action:)),
+		content: {
+			SingleChoiceItem.init(store: $0, cell: cell)
+		})
 	}
 }
 

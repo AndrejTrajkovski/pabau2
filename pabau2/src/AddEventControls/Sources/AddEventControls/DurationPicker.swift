@@ -19,14 +19,19 @@ public struct Duration: SingleChoiceElement {
 	public var nameInCircle: String
 }
 
-struct DurationPicker: View {
-
-	let store: Store<SingleChoiceState<Duration>, SingleChoiceAction<Duration>>
-
-	var body: some View {
-		HStack {
-//			SingleChoicePicker(
-		}
+public struct DurationPicker: View {
+	let store: Store<SingleChoiceState<Duration>, SingleChoiceActions<Duration>>
+	
+	public init (store: Store<SingleChoiceState<Duration>, SingleChoiceActions<Duration>>) {
+		self.store = store
+	}
+	
+	public var body: some View {
+		SingleChoicePicker(store: store,
+						   cell: {
+							DurationPickerItem(duration: $0.item)
+						   }
+		)
 	}
 }
 
@@ -46,12 +51,11 @@ struct DurationPickerItem: View {
 }
 
 extension Duration {
-	
 	public static let all = [
 		Duration(name: "00:15", id: 1, duration: 15, nameInCircle: "15m"),
 		Duration(name: "00:00", id: 2, duration: 30, nameInCircle: "30m"),
 		Duration(name: "00:45", id: 3, duration: 45, nameInCircle: "45m"),
-		Duration(name: "01:00", id: 1, duration: 60, nameInCircle: "1h"),
-		Duration(name: "02:00", id: 2, duration: 120, nameInCircle: "2h")
+		Duration(name: "01:00", id: 4, duration: 60, nameInCircle: "1h"),
+		Duration(name: "02:00", id: 5, duration: 120, nameInCircle: "2h")
 	]
 }

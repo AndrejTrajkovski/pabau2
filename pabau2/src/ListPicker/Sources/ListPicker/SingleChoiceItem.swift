@@ -4,10 +4,10 @@ import ComposableArchitecture
 public struct SingleChoiceItemState<T: SingleChoiceElement>: Equatable, Identifiable {
 	public var id: T.ID { item.id }
 	
-	var item: T
-	var selectedId: T.ID?
+	public var item: T
+	public var selectedId: T.ID?
 	
-	var isSelected: Bool { item.id == selectedId }
+	public var isSelected: Bool { item.id == selectedId }
 }
 
 public enum SingleChoiceAction<Model: SingleChoiceElement>: Equatable {
@@ -39,7 +39,7 @@ public struct TextAndCheckMarkContainer<T: SingleChoiceElement>: View {
 	public init(state: SingleChoiceItemState<T>) {
 		self.state = state
 	}
-	
+
 	public var body: some View {
 		TextAndCheckMark(state.item.name, state.isSelected)
 	}
