@@ -20,7 +20,7 @@ public enum RepeatInterval: Int, Identifiable, CaseIterable, Equatable {
 	case everyMonth
 	case everyYear
 	case custom
-
+	
 	var title: String {
 		switch self {
 		case .everyDay: return "Every Day"
@@ -48,28 +48,28 @@ public enum ChooseRepeatAction {
 }
 
 struct ChooseRepeat: View {
-
+	
 	public let store: Store<ChooseRepeatState, ChooseRepeatAction>
 	@ObservedObject var viewStore: ViewStore<ChooseRepeatState, ChooseRepeatAction>
-
+	
 	init(store: Store<ChooseRepeatState, ChooseRepeatAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
 
 	var body: some View {
-		EmptyView()
-//		List {
-//			ForEach(RepeatInterval.allCases) { item in
-//				SingleChoiceCell(item.title, item == viewStore.state.chosenRepeat?.interval)
-//					.onTapGesture {
-//						viewStore.send(.onRepeat(item))
-//					}
-//			}
-//			SingleChoiceCell("No repeat", viewStore.state.chosenRepeat == nil)
-//				.onTapGesture {
-//					viewStore.send(.onRepeat(nil))
-//				}
-//		}
+		List {
+			ForEach(RepeatInterval.allCases) { item in
+				SingleChoiceCell(item.title,
+								 item == viewStore.state.chosenRepeat?.interval)
+					.onTapGesture {
+						viewStore.send(.onRepeat(item))
+					}
+			}
+			SingleChoiceCell("No repeat", viewStore.state.chosenRepeat == nil)
+				.onTapGesture {
+					viewStore.send(.onRepeat(nil))
+				}
+		}
 	}
 }
