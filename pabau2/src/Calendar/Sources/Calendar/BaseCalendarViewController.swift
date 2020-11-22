@@ -33,7 +33,6 @@ public class BaseCalendarViewController: UIViewController {
 	
 	public func presentAlert(_ date: Date,
 							 _ anchorView: UIView,
-							 _ startOfDayDate: Date,
 							 _ weekView: JZLongPressWeekView,
 							 onAddBookout: @escaping () -> Void,
 							 onAddAppointment: @escaping () -> Void) {
