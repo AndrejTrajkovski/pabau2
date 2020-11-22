@@ -1,8 +1,8 @@
 import SwiftUI
 import ComposableArchitecture
 
-struct SingleChoiceItemState<T: SingleChoiceElement>: Equatable, Identifiable {
-	var id: T.ID { item.id }
+public struct SingleChoiceItemState<T: SingleChoiceElement>: Equatable, Identifiable {
+	public var id: T.ID { item.id }
 	
 	var item: T
 	var selectedId: T.ID?
@@ -14,20 +14,38 @@ public enum SingleChoiceAction<Model: SingleChoiceElement>: Equatable {
 	case onChooseItem
 }
 
-public struct SingleChoiceItem<T: SingleChoiceElement>: View {
+public struct SingleChoiceItem<T: SingleChoiceElement, Cell: View>: View {
 
 	let store: Store<SingleChoiceItemState<T>, SingleChoiceAction<T>>
-
+	let cell: (SingleChoiceItemState<T>) -> Cell
+	
+	init(store: Store<SingleChoiceItemState<T>, SingleChoiceAction<T>>,
+		 cell: @escaping (SingleChoiceItemState<T>) -> Cell) {
+		self.store = store
+		self.cell = cell
+	}
+	
 	public var body: some View {
 		WithViewStore(store) { viewStore in
-			SingleChoiceCell(viewStore.item.name,
-							 viewStore.isSelected)
+			cell(viewStore.state)
 			.onTapGesture { viewStore.send(.onChooseItem) }
 		}
 	}
 }
 
-public struct SingleChoiceCell: View {
+public struct TextAndCheckMarkContainer<T: SingleChoiceElement>: View {
+	let state: SingleChoiceItemState<T>
+	
+	public init(state: SingleChoiceItemState<T>) {
+		self.state = state
+	}
+	
+	public var body: some View {
+		TextAndCheckMark(state.item.name, state.isSelected)
+	}
+}
+
+public struct TextAndCheckMark: View {
 	
 	public init(_ name: String, _ isSelected: Bool) {
 		self.name = name

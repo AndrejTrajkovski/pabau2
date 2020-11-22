@@ -151,7 +151,8 @@ struct Section1: View {
 				SingleChoiceLink.init(content: {
 					LabelAndTextField.init("CLIENT", self.viewStore.state.clients.chosenItemName ?? "")
 				}, store: self.store.scope(state: { $0.clients },
-										   action: { .clients($0) })
+										   action: { .clients($0) }),
+				cell: TextAndCheckMarkContainer.init(state:)
 				)
 				LabelAndTextField.init("DAY", self.viewStore.state.startDate.toString())
 			}
@@ -181,15 +182,17 @@ struct Section2: View {
 				SingleChoiceLink.init(content: {
 					LabelAndTextField.init("DURATION", self.viewStore.state.durations.chosenItemName ?? "")
 				}, store: self.store.scope(state: { $0.durations },
-																	action: { .durations($0) })
+										   action: { .durations($0) }),
+				cell: TextAndCheckMarkContainer.init(state:)
 				)
 			}
 			HStack(spacing: 24.0) {
 				SingleChoiceLink.init(content: {
 					LabelHeartAndTextField.init("WITH", self.viewStore.state.with.chosenItemName ?? "",
-																			true)
+												true)
 				}, store: self.store.scope(state: { $0.with },
-																	action: { .with($0) })
+										   action: { .with($0) }),
+				cell: TextAndCheckMarkContainer.init(state:)
 				)
 				SingleChoiceLink.init(content: {
 					HStack {
@@ -202,7 +205,8 @@ struct Section2: View {
 						Spacer()
 					}
 				}, store: self.store.scope(state: { $0.participants },
-																	action: { .participants($0) })
+										   action: { .participants($0) }),
+				cell: TextAndCheckMarkContainer.init(state:)
 				)
 			}
 		}

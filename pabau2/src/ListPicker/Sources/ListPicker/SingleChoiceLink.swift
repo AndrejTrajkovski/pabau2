@@ -28,19 +28,25 @@ public enum SingleChoiceLinkAction <Model: SingleChoiceElement>: Equatable {
 	case backBtnTap
 }
 
-public struct SingleChoiceLink<Content: View, T: SingleChoiceElement>: View {
+public struct SingleChoiceLink<Content: View, T: SingleChoiceElement, Cell: View>: View {
 	let store: Store<SingleChoiceLinkState<T>, SingleChoiceLinkAction<T>>
 	@ObservedObject public var viewStore: ViewStore<SingleChoiceLinkState<T>, SingleChoiceLinkAction<T>>
 	let content: () -> Content
+	let cell: (SingleChoiceItemState<T>) -> Cell
+	
 	public init (@ViewBuilder content: @escaping () -> Content,
-							  store: Store<SingleChoiceLinkState<T>, SingleChoiceLinkAction<T>>) {
+							  store: Store<SingleChoiceLinkState<T>, SingleChoiceLinkAction<T>>,
+							  cell: @escaping (SingleChoiceItemState<T>) -> Cell) {
 		self.content = content
 		self.store = store
+		self.cell = cell
 		self.viewStore = ViewStore(store)
 	}
 
-	var singleChoicePicker: SingleChoicePicker<T> {
-		SingleChoicePicker.init(store: store.scope(state: { $0.singleChoice }, action: { .singleChoice($0) }))
+	var singleChoicePicker: SingleChoicePicker<T, Cell> {
+		SingleChoicePicker.init(store: store.scope(state: { $0.singleChoice },
+												   action: { .singleChoice($0) }),
+								cell: cell)
 	}
 
 	public var body: some View {

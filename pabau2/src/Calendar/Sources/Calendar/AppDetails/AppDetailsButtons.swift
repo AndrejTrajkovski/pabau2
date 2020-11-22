@@ -108,7 +108,7 @@ struct AppDetailsButtons: View {
 		}
 	}
 
-	var chooseStatusButton: SingleChoiceLink<TimeSlotButton, AppointmentStatus> {
+	var chooseStatusButton: SingleChoiceLink<TimeSlotButton, AppointmentStatus, TextAndCheckMarkContainer<AppointmentStatus>> {
 		SingleChoiceLink(
 			content: {
 				TimeSlotButton(
@@ -121,11 +121,12 @@ struct AppDetailsButtons: View {
 			store: self.store.scope(
 				state: { $0.chooseStatus },
 				action: { .chooseStatus($0) }
-			)
+			),
+			cell: TextAndCheckMarkContainer.init(state:)
 		)
 	}
 
-	var chooseCancelReason: SingleChoiceLink<TimeSlotButton, CancelReason> {
+	var chooseCancelReason: SingleChoiceLink<TimeSlotButton, CancelReason, TextAndCheckMarkContainer<CancelReason>> {
 		SingleChoiceLink(
 			content: {
 				TimeSlotButton(
@@ -138,7 +139,8 @@ struct AppDetailsButtons: View {
 			store: self.store.scope(
 				state: { $0.chooseCancelReason },
 				action: { .chooseCancelReason($0) }
-			)
+			),
+			cell: TextAndCheckMarkContainer.init(state:)
 		)
 	}
 	

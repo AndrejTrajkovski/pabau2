@@ -19,16 +19,16 @@ public struct Duration: SingleChoiceElement {
 	public var nameInCircle: String
 }
 
-//struct DurationPicker: View {
-//
-//	let store: Store<SingleChoiceState<Duration>, SingleChoiceAction<Duration>>
-//
-//	var body: some View {
-//		HStack {
-//			ForEach()
-//		}
-//	}
-//}
+struct DurationPicker: View {
+
+	let store: Store<SingleChoiceState<Duration>, SingleChoiceAction<Duration>>
+
+	var body: some View {
+		HStack {
+//			SingleChoicePicker(
+		}
+	}
+}
 
 struct DurationPickerItem: View {
 	let duration: Duration
