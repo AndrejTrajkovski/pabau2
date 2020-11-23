@@ -176,7 +176,7 @@ struct ServicesDurationSection: View {
 		Group {
 			Text("Services").font(.semibold24).frame(maxWidth: .infinity, alignment: .leading)
 			HStack(spacing: 24.0) {
-				TitleAndValueLabel.init("SERVICE", self.viewStore.state.services.chosenServiceName).onTapGesture {
+				TitleAndValueLabel("SERVICE", self.viewStore.state.services.chosenServiceName).onTapGesture {
 					self.viewStore.send(.didTapServices)
 				}
 				NavigationLink.emptyHidden(self.viewStore.state.services.isChooseServiceActive,

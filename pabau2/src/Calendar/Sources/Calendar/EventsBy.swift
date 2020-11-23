@@ -62,7 +62,7 @@ public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
 			let calId = CalAppointment.Id(rawValue: eventId)
 			var app = state.appointments.appointments[keys.date]?[keys.location]?[keys.subsection]?[id: calId]
 			app.map { state.appDetails = AppDetailsState(app: $0) }
-		case .addBookout(startDate: let startDate, durationMins: let durationMins, dropKeys: let dropKeys):
+		case .addBookout(startDate: let startDxate, durationMins: let durationMins, dropKeys: let dropKeys):
 			break
 		}
 		return .none

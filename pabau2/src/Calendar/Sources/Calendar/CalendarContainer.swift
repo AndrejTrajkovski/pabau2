@@ -130,6 +130,7 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 
 public struct CalendarContainer: View {
 	let store: Store<CalendarState, CalendarAction>
+	
 	public var body: some View {
 		WithViewStore(store) { viewStore in
 			VStack(spacing: 0) {
@@ -144,7 +145,7 @@ public struct CalendarContainer: View {
 				.padding(0)
 				CalendarWrapper(store: self.store)
 				Spacer()
-			}.fullScreenCover(isPresented: viewStore.binding(get: { $0.appDetails != nil },
+			}.sheet(isPresented: viewStore.binding(get: { $0.appDetails != nil },
 															 send: CalendarAction.onAppDetailsDismiss),
 							  content: { IfLetStore(store.scope(state: { $0.appDetails },
 																action: { .appDetails($0) }),

@@ -74,55 +74,46 @@ public struct AddBookout: View {
 	}
 
 	public var body: some View {
-		NavigationView {
-			ScrollView {
-				VStack(spacing: 32) {
-					Buttons()
-					SwitchCell(text: Texts.allDay,
-							   store: store.scope(state: { $0.isAllDay },
-												  action: { .isAllDay($0)})
-					)
-					SingleChoiceLink(content: {
-						TitleAndValueLabel(Texts.employee.uppercased(), viewStore.state.chooseEmployee.chosenItemName ?? "")
-					}, store: self.store.scope(state: { $0.chooseEmployee },
-											   action: { .chooseEmployee($0) }),
-					cell: TextAndCheckMarkContainer.init(state:)
-					)
-					Text("Date & Time").font(.semibold24).frame(maxWidth: .infinity, alignment: .leading)
-					HStack {
-						TitleAndValueLabel.init("DAY", self.viewStore.state.startDate.toString()
-						)
-						TitleAndValueLabel.init("Time", self.viewStore.state.startDate.toString()
-						)
-					}
-					HStack {
-						TitleAndValueLabel.init("DURATION", self.viewStore.state.chooseDuration.chosenItemName ?? ""
-						)
-						DurationPicker(store: store.scope(state: { $0.chooseDuration }, action: { .chooseDuration($0) }))
-					}
-					Text("Description & Notes").font(.semibold24).frame(maxWidth: .infinity, alignment: .leading)
-					TitleAndTextField(title: "DESCRIPTION",
-									  tfLabel: "Add description.",
-									  store: store.scope(state: { $0.description },
-														 action: { .description($0)})
-					)
-					TitleAndTextField(title: "NOTE",
-									  tfLabel: "Add a note.",
-									  store: store.scope(state: { $0.note },
-														 action: { .note($0)})
-					)
-					SwitchCell(text: "Private Bookout",
-							   store: store.scope(state: { $0.isPrivate },
-												  action: { .isPrivate($0) })
-					)
-				}
-			}.padding(56)
-			.navigationBarTitle(Text("Add Bookout"), displayMode: .large)
-			.navigationBarItems(leading:
-									XButton(onTouch: { viewStore.send(.close)})
+		Group {
+			Buttons()
+			SwitchCell(text: Texts.allDay,
+					   store: store.scope(state: { $0.isAllDay },
+										  action: { .isAllDay($0)})
 			)
-		}
-		.navigationViewStyle(StackNavigationViewStyle())
+			SingleChoiceLink(content: {
+				TitleAndValueLabel(Texts.employee.uppercased(), viewStore.state.chooseEmployee.chosenItemName ?? "")
+			}, store: self.store.scope(state: { $0.chooseEmployee },
+									   action: { .chooseEmployee($0) }),
+			cell: TextAndCheckMarkContainer.init(state:)
+			)
+			Text("Date & Time").font(.semibold24).frame(maxWidth: .infinity, alignment: .leading)
+			HStack {
+				TitleAndValueLabel("DAY", self.viewStore.state.startDate.toString())
+				TitleAndValueLabel("Time", self.viewStore.state.startDate.toString())
+			}
+			HStack {
+				TitleAndValueLabel("DURATION", self.viewStore.state.chooseDuration.chosenItemName ?? ""
+				)
+				DurationPicker(store: store.scope(state: { $0.chooseDuration }, action: { .chooseDuration($0) }))
+			}
+			Text("Description & Notes").font(.semibold24).frame(maxWidth: .infinity, alignment: .leading)
+			TitleAndTextField(title: "DESCRIPTION",
+							  tfLabel: "Add description.",
+							  store: store.scope(state: { $0.description },
+												 action: { .description($0)})
+			)
+			TitleAndTextField(title: "NOTE",
+							  tfLabel: "Add a note.",
+							  store: store.scope(state: { $0.note },
+												 action: { .note($0)})
+			)
+			SwitchCell(text: "Private Bookout",
+					   store: store.scope(state: { $0.isPrivate },
+										  action: { .isPrivate($0) })
+			)
+		}.addEventWrapper(title: "Add Bookout",
+						  onXBtnTap: { viewStore.send(.close)}
+		)
 	}
 }
 
