@@ -1,10 +1,12 @@
 import ComposableArchitecture
 import SwiftDate
 import Model
+import AddBookout
 
 public struct CalendarWeekViewState: Equatable {
 	var appointments: [Date: IdentifiedArrayOf<CalAppointment>]
 	var selectedDate: Date
+	var addBookout: AddBookoutState?
 }
 
 public let calendarWeekViewReducer: Reducer<CalendarWeekViewState, CalendarWeekViewAction, CalendarEnvironment> = .init { state, action, env in
@@ -26,8 +28,14 @@ public let calendarWeekViewReducer: Reducer<CalendarWeekViewState, CalendarWeekV
 	case .editDuration(let startOfDayDate, let endDate, let eventId):
 		let calId = CalAppointment.ID.init(rawValue: eventId)
 		state.appointments[startOfDayDate]?[id: calId]?.end_date = endDate
-	case .addAppointment, .addBookout:
+	case .addAppointment:
 		break// handled in calendarContainerReducer
+	case .addBookout(let startOfDayDate,
+					 let startDate,
+					 let durationMins):
+		state.addBookout = AddBookoutState(employees: IdentifiedArray(Employee.mockEmployees),
+										   chosenEmployee: nil,
+										   start: startDate)
 	}
 	return .none
 }

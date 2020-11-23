@@ -25,20 +25,28 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 			employee.map {
 				state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate, employee: $0)
 			}
-		case .employee(.addBookout(let startDate, let durationMins, let dropKeys)):
-			let (date, location, subsection) = dropKeys
-			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
-			let employee = state.calendar.employees[location]?[id: subsection]
-			employee.map {
-				state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate, employee: $0)
-			}
 		case .room(.addAppointment(let startDate, let durationMins, let dropKeys)):
 			let (date, location, subsection) = dropKeys
 			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
 			let room = state.calendar.rooms[location]?[id: subsection]
 			//FIXME: missing room in add appointments screen
 			state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate)
-		case .week(.addAppointment(let startOfDayDate, let startDate,let durationMins)):
+		case .employee(.addBookout(let startDate, let durationMins, let dropKeys)):
+			let (date, location, subsection) = dropKeys
+			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
+			let employees = state.calendar.employees[location] ?? []
+			let chosenEmployee = employees[id: subsection]
+			state.calendar.addBookout = AddBookoutState(employees: employees,
+														chosenEmployee: chosenEmployee?.id,
+														start: startDate)
+		case .room(.addBookout(let startDate, let durationMins, let dropKeys)):
+			let (date, location, subsection) = dropKeys
+			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
+			let employees = state.calendar.employees[location] ?? []
+			state.calendar.addBookout = AddBookoutState(employees: employees,
+														chosenEmployee: nil,
+														start: startDate)
+		case .week(.addAppointment(let startOfDayDate, let startDate, let durationMins)):
 			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
 			state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate)
 		case .appDetails(.addService):

@@ -116,6 +116,7 @@ public let addAppointmentReducer: Reducer<AddAppointmentState?,
 		)
 
 public struct AddAppointment: View {
+	@State var isAllDay: Bool = true
 	let store: Store<AddAppointmentState, AddAppointmentAction>
 	@ObservedObject var viewStore: ViewStore<AddAppointmentState, AddAppointmentAction>
 	public init(store: Store<AddAppointmentState, AddAppointmentAction>) {
@@ -124,26 +125,20 @@ public struct AddAppointment: View {
 	}
 
 	public var body: some View {
-		NavigationView {
-			ScrollView {
-				VStack(spacing: 32) {
-					AddAppSections(store: self.store)
-						.environmentObject(KeyboardFollower())
-					PrimaryButton(Texts.saveAppointment) {
-						self.viewStore.send(.saveAppointmentTap)
-					}
-					.frame(width: 315, height: 52)
-					Spacer()
-				}
-			}
-			.padding(24)
-		}
-		.navigationViewStyle(StackNavigationViewStyle())
+		Group {
+			SwitchCell(text: "All Day", value: $isAllDay)
+			AddAppSections(store: self.store)
+				.environmentObject(KeyboardFollower())
+			PrimaryButton(Texts.saveAppointment) {
+				self.viewStore.send(.saveAppointmentTap)
+			}.frame(width: 315, height: 52)
+			Spacer()
+		}.addEventWrapper(title: "Add Appointment",
+						  onXBtnTap: { self.viewStore.send(.closeBtnTap) })
 	}
 }
 
 struct Section1: View {
-	@State var isAllDay: Bool = true
 	let store: Store<AddAppointmentState, AddAppointmentAction>
 	@ObservedObject var viewStore: ViewStore<AddAppointmentState, AddAppointmentAction>
 	init (store: Store<AddAppointmentState, AddAppointmentAction>) {
@@ -151,17 +146,14 @@ struct Section1: View {
 		self.viewStore = ViewStore(store)
 	}
 	var body: some View {
-		VStack (spacing: 24.0) {
-			SwitchCell(text: "All Day", value: $isAllDay)
-			HStack(spacing: 24.0) {
-				SingleChoiceLink.init(content: {
-					TitleAndValueLabel.init("CLIENT", self.viewStore.state.clients.chosenItemName ?? "")
-				}, store: self.store.scope(state: { $0.clients },
-										   action: { .clients($0) }),
-				cell: TextAndCheckMarkContainer.init(state:)
-				)
-				TitleAndValueLabel.init("DAY", self.viewStore.state.startDate.toString())
-			}
+		HStack(spacing: 24.0) {
+			SingleChoiceLink.init(content: {
+				TitleAndValueLabel.init("CLIENT", self.viewStore.state.clients.chosenItemName ?? "")
+			}, store: self.store.scope(state: { $0.clients },
+									   action: { .clients($0) }),
+			cell: TextAndCheckMarkContainer.init(state:)
+			)
+			TitleAndValueLabel.init("DAY", self.viewStore.state.startDate.toString())
 		}
 	}
 }
@@ -229,7 +221,7 @@ struct AddAppSections: View {
 	}
 
 	var body: some View {
-		VStack(alignment: .leading, spacing: 32) {
+		Group {
 			Section1(store: self.store)
 			Section2(store: self.store)
 			NotesSection(store: store.scope(state: { $0.note },
@@ -256,55 +248,12 @@ struct AddAppSections: View {
 				title: Texts.communications
 			)
 		}.padding(.bottom, keyboardHandler.keyboardHeight)
-			.navigationBarTitle(Text("New Appointment"), displayMode: .large)
-			.navigationBarItems(leading:
-									XButton(onTouch: { self.viewStore.send(.closeBtnTap) })
-		)
 	}
 }
 
 extension Client: SingleChoiceElement {
 	public var name: String {
 		return firstName + " " + lastName
-	}
-}
-
-struct LabelHeartAndTextField: View {
-	let labelTxt: String
-	let valueText: String
-	@State var isHearted: Bool
-	init(_ labelTxt: String,
-			 _ valueText: String,
-			 _ isHearted: Bool) {
-		self.labelTxt = labelTxt
-		self.valueText = valueText
-		self._isHearted = State.init(initialValue: isHearted)
-	}
-	var body: some View {
-		TitleAndLowerContent(labelTxt) {
-			HStack {
-				Image(systemName: self.isHearted ? "heart.fill" : "heart")
-					.foregroundColor(.heartRed)
-					.onTapGesture {
-						self.isHearted.toggle()
-				}
-				Text(self.valueText)
-					.foregroundColor(Color.textFieldAndTextLabel)
-					.font(.semibold15)
-			}
-		}
-	}
-}
-
-struct NotesSection: View {
-	let store: Store<String, TextChangeAction>
-	public var body: some View {
-		VStack(alignment: .leading, spacing: 24.0) {
-			Text("Notes").font(.semibold24)
-			TitleAndTextField(title: "BOOKING NOTE",
-							  tfLabel: "Add a booking note",
-							  store: self.store)
-		}
 	}
 }
 
@@ -326,7 +275,7 @@ extension AddAppointmentState {
 			participants: AddAppMocks.participantsState
 		)
 	}
-	
+
 	public init(startDate: Date,
 				endDate: Date,
 				employee: Employee) {

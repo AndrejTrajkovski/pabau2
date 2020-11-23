@@ -57,6 +57,7 @@ extension CalendarState {
 				selectedDate: selectedDate,
 				appointments: groupAppointments,
 				appDetails: appDetails,
+				addBookout: addBookout,
 				locations: locations,
 				chosenLocationsIds: chosenLocationsIds,
 				subsections: employees,
@@ -69,6 +70,7 @@ extension CalendarState {
 				self.selectedDate = $0.selectedDate
 				self.appointments = Appointments.employee($0.appointments)
 				self.appDetails = $0.appDetails
+				self.addBookout = $0.addBookout
 				self.locations = $0.locations
 				self.chosenLocationsIds = $0.chosenLocationsIds
 				self.employees = $0.subsections
@@ -85,6 +87,7 @@ extension CalendarState {
 				selectedDate: selectedDate,
 				appointments: groupAppointments,
 				appDetails: appDetails,
+				addBookout: addBookout,
 				locations: locations,
 				chosenLocationsIds: chosenLocationsIds,
 				subsections: rooms,
@@ -97,6 +100,7 @@ extension CalendarState {
 				self.selectedDate = $0.selectedDate
 				self.appointments = Appointments.room($0.appointments)
 				self.appDetails = $0.appDetails
+				self.addBookout = $0.addBookout
 				self.locations = $0.locations
 				self.chosenLocationsIds = $0.chosenLocationsIds
 				self.rooms = $0.subsections
@@ -110,7 +114,8 @@ extension CalendarState {
 			guard let apps = extract(case: Appointments.week, from: self.appointments) else { return nil }
 			return CalendarWeekViewState(
 				appointments: apps,
-				selectedDate: selectedDate
+				selectedDate: selectedDate,
+				addBookout: addBookout
 //				locations: locations,
 //				chosenLocationsIds: chosenLocationsIds,
 //				subsections: rooms,
@@ -122,6 +127,7 @@ extension CalendarState {
 			newValue.map {
 				self.selectedDate = $0.selectedDate
 				self.appointments = Appointments.week($0.appointments)
+				self.addBookout = $0.addBookout
 //				self.locations = $0.locations
 //				self.chosenLocationsIds = $0.chosenLocationsIds
 //				self.rooms = $0.subsections

@@ -31,6 +31,11 @@ public let addBookoutReducer: Reducer<AddBookoutState, AddBookoutAction, AddBook
 			action: /AddBookoutAction.isPrivate,
 			environment: { $0 }
 		),
+		switchCellReducer.pullback(
+			state: \.isAllDay,
+			action: /AddBookoutAction.isAllDay,
+			environment: { $0 }
+		),
 		.init { state, action, env in
 			return .none
 		}
@@ -42,13 +47,15 @@ public struct AddBookoutState: Equatable {
 	var startDate: Date
 	var description: String = ""
 	var note: String = ""
-	var isPrivate: Bool
+	var isPrivate: Bool = false
+	var isAllDay: Bool = false
 }
 
 public enum AddBookoutAction {
 	case chooseEmployee(SingleChoiceLinkAction<Employee>)
 	case chooseDuration(SingleChoiceActions<Duration>)
 	case isPrivate(ToggleAction)
+	case isAllDay(ToggleAction)
 	case note(TextChangeAction)
 	case description(TextChangeAction)
 	case close
@@ -69,11 +76,11 @@ public struct AddBookout: View {
 	public var body: some View {
 		NavigationView {
 			ScrollView {
-				VStack {
+				VStack(spacing: 32) {
 					Buttons()
 					SwitchCell(text: Texts.allDay, value: .constant(true))
 					SingleChoiceLink(content: {
-						TitleAndValueLabel(Texts.employee.uppercased(), "Andrej Trajkovski")
+						TitleAndValueLabel(Texts.employee.uppercased(), viewStore.state.chooseEmployee.chosenItemName ?? "")
 					}, store: self.store.scope(state: { $0.chooseEmployee },
 											   action: { .chooseEmployee($0) }),
 					cell: TextAndCheckMarkContainer.init(state:)
@@ -106,7 +113,7 @@ public struct AddBookout: View {
 														send: { .isPrivate(.setTo($0)) })
 					)
 				}
-			}
+			}.padding(56)
 			.navigationBarTitle(Text("Add Bookout"), displayMode: .large)
 			.navigationBarItems(leading:
 									XButton(onTouch: { viewStore.send(.close)})
@@ -136,3 +143,11 @@ public struct AddBookout: View {
 //		}
 //	}
 //}
+
+extension AddBookoutState {
+	public init(employees: IdentifiedArrayOf<Employee>,
+				chosenEmployee: Employee.ID?,
+				start: Date) {
+		self.init(chooseEmployee: SingleChoiceLinkState.init(dataSource: employees, chosenItemId: chosenEmployee, isActive: false), chooseDuration: SingleChoiceState<Duration>(dataSource: IdentifiedArray.init(Duration.all), chosenItemId: nil), startDate: start, description: "", note: "", isPrivate: false)
+	}
+}
