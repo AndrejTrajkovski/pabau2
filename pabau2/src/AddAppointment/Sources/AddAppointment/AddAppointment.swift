@@ -145,7 +145,7 @@ public struct AddAppointment: View {
 	}
 }
 
-struct Section1: View {
+struct ClientDaySection: View {
 	let store: Store<AddAppointmentState, AddAppointmentAction>
 	@ObservedObject var viewStore: ViewStore<AddAppointmentState, AddAppointmentAction>
 	init (store: Store<AddAppointmentState, AddAppointmentAction>) {
@@ -165,7 +165,7 @@ struct Section1: View {
 	}
 }
 
-struct Section2: View {
+struct ServicesDurationSection: View {
 	let store: Store<AddAppointmentState, AddAppointmentAction>
 	@ObservedObject var viewStore: ViewStore<AddAppointmentState, AddAppointmentAction>
 	init (store: Store<AddAppointmentState, AddAppointmentAction>) {
@@ -173,8 +173,8 @@ struct Section2: View {
 		self.viewStore = ViewStore(store)
 	}
 	var body: some View {
-		VStack(alignment: .leading, spacing: 24.0) {
-			Text("Services").font(.semibold24)
+		Group {
+			Text("Services").font(.semibold24).frame(maxWidth: .infinity, alignment: .leading)
 			HStack(spacing: 24.0) {
 				TitleAndValueLabel.init("SERVICE", self.viewStore.state.services.chosenServiceName).onTapGesture {
 					self.viewStore.send(.didTapServices)
@@ -229,8 +229,8 @@ struct AddAppSections: View {
 
 	var body: some View {
 		Group {
-			Section1(store: self.store)
-			Section2(store: self.store)
+			ClientDaySection(store: self.store)
+			ServicesDurationSection(store: self.store)
 			NotesSection(store: store.scope(state: { $0.note },
 											action: { .note($0) }))
 			Group {
