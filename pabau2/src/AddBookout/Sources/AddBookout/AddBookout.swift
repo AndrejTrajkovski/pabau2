@@ -78,7 +78,10 @@ public struct AddBookout: View {
 			ScrollView {
 				VStack(spacing: 32) {
 					Buttons()
-					SwitchCell(text: Texts.allDay, value: .constant(true))
+					SwitchCell(text: Texts.allDay,
+							   store: store.scope(state: { $0.isAllDay },
+												  action: { .isAllDay($0)})
+					)
 					SingleChoiceLink(content: {
 						TitleAndValueLabel(Texts.employee.uppercased(), viewStore.state.chooseEmployee.chosenItemName ?? "")
 					}, store: self.store.scope(state: { $0.chooseEmployee },
@@ -109,8 +112,8 @@ public struct AddBookout: View {
 														 action: { .note($0)})
 					)
 					SwitchCell(text: "Private Bookout",
-							   value: viewStore.binding(get: { $0.isPrivate },
-														send: { .isPrivate(.setTo($0)) })
+							   store: store.scope(state: { $0.isPrivate },
+												  action: { .isPrivate($0) })
 					)
 				}
 			}.padding(56)

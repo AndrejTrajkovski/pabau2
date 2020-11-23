@@ -41,7 +41,7 @@ struct AppDetailsHeader: View {
 }
 
 extension AppDetailsHeader.ViewState {
-	
+
 	init(state: AppDetailsState) {
 		self.imageUrl = state.app.customerPhoto
 		self.name = state.app.customerName ?? ""

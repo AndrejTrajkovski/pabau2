@@ -34,6 +34,7 @@ public enum AddAppointmentAction: Equatable {
 	case participants(SingleChoiceLinkAction<Employee>)
 	case closeBtnTap
 	case didTapServices
+	case isAllDay(ToggleAction)
 	case sms(ToggleAction)
 	case reminder(ToggleAction)
 	case email(ToggleAction)
@@ -82,6 +83,10 @@ public let addAppointmentValueReducer: Reducer<AddAppointmentState,
 			action: /AddAppointmentAction.participants,
 			environment: { $0 }),
 		switchCellReducer.pullback(
+			state: \AddAppointmentState.isAllDay,
+			action: /AddAppointmentAction.isAllDay,
+			environment: { $0 }),
+		switchCellReducer.pullback(
 			state: \AddAppointmentState.sms,
 			action: /AddAppointmentAction.sms,
 			environment: { $0 }),
@@ -126,7 +131,9 @@ public struct AddAppointment: View {
 
 	public var body: some View {
 		Group {
-			SwitchCell(text: "All Day", value: $isAllDay)
+			SwitchCell(text: "All Day", store: store.scope(state: { $0.isAllDay },
+														   action: { .isAllDay($0)})
+			)
 			AddAppSections(store: self.store)
 				.environmentObject(KeyboardFollower())
 			PrimaryButton(Texts.saveAppointment) {
@@ -226,27 +233,28 @@ struct AddAppSections: View {
 			Section2(store: self.store)
 			NotesSection(store: store.scope(state: { $0.note },
 											action: { .note($0) }))
-			FourSwitchesSection(
-				swithc1: viewStore.binding(
-					get: { $0.reminder },
-					send: { .reminder(.setTo($0)) }),
-				switch2: viewStore.binding(
-					get: { $0.email },
-					send: { .email(.setTo($0)) }),
-				switch3: viewStore.binding(
-					get: { $0.sms },
-					send: { .sms(.setTo($0)) }),
-				switch4: viewStore.binding(
-					get: { $0.feedback },
-					send: { .feedback(.setTo($0)) }),
-				switchNames: [
-					Texts.sendReminder,
-					Texts.sendConfirmationEmail,
-					Texts.sendConfirmationSMS,
-					Texts.sendFeedbackSurvey
-				],
-				title: Texts.communications
-			)
+			Group {
+				SwitchCell(text: Texts.sendReminder,
+						   store: store.scope(
+								state: { $0.reminder },
+								action: { .reminder($0) })
+				)
+				SwitchCell(text: Texts.sendConfirmationEmail,
+						   store: store.scope(
+								state: { $0.email },
+								action: { .email($0) })
+				)
+				SwitchCell(text: Texts.sendConfirmationSMS,
+						   store: store.scope(
+								state: { $0.sms },
+								action: { .sms($0) })
+				)
+				SwitchCell(text: Texts.sendFeedbackSurvey,
+						   store: store.scope(
+								state: { $0.feedback },
+								action: { .feedback($0) })
+				)
+			}.switchesSection(title: Texts.communications)
 		}.padding(.bottom, keyboardHandler.keyboardHeight)
 	}
 }
