@@ -36,11 +36,13 @@ struct ClientCardBottom: View {
 		var photosViewMode: CCPhotosViewMode
 		var isEditingClient: Bool
 		var isEditPhotosBtnDisabled: Bool
+        var isSelectedPhoto: Bool
 		init(state: ClientCardState) {
 			self.activeItem = state.activeItem
 			self.photosViewMode = state.list.photos.mode
 			self.isEditingClient = state.list.details.editingClient != nil
 			self.isEditPhotosBtnDisabled = state.list.photos.selectedIds.isEmpty
+            self.isSelectedPhoto = !state.list.photos.selectedIds.isEmpty
 		}
 	}
 
@@ -55,8 +57,16 @@ struct ClientCardBottom: View {
 			} else {
 				VStack(spacing: 0) {
 					Divider()
+                    NavigationLink.emptyHidden(viewStore.isSelectedPhoto,
+                                                                   PhotoCompareView(store: Store(initialState: PhotoCompareState(),
+                                                                             reducer: photoCompareReducer,
+                                                                             environment: PhotosEnvironment(apiClient: ClientsMockAPI(),
+                                                                                                            userDefaults: StandardUDConfig())
+                                                                        )
+                                                                   )
+                                        )
 					ClientCardChildWrapper(store: self.store.scope(state: { $0 },
-																												 action: { $0 }))
+                                                                   action: { $0 }))
 				}
 			}
 		}.navigationBarItems(leading:
