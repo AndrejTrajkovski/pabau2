@@ -2,7 +2,6 @@ import SwiftUI
 import Util
 import ComposableArchitecture
 import Model
-import ListPicker
 import SharedComponents
 
 public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, CalendarEnvironment> = .combine(

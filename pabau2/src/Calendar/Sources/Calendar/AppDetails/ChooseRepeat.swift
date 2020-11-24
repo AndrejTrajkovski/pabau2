@@ -1,6 +1,6 @@
 import ComposableArchitecture
 import SwiftUI
-import ListPicker
+import SharedComponents
 
 public let chooseRepeatReducer: Reducer<ChooseRepeatState, ChooseRepeatAction, CalendarEnvironment> = .init { state, action, env in
 	switch action {

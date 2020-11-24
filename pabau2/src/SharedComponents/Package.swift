@@ -10,20 +10,25 @@ let package = Package(
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "SharedComponents",
-            targets: ["SharedComponents"]),
+            targets: ["SharedComponents"])
     ],
     dependencies: [
-		.package(url: "../ListPicker",
-			from: Version.init(stringLiteral: "1.0.0"))
+		.package(url: "../Util",
+				 from: Version.init(stringLiteral: "1.0.0")),
+		.package(name: "swift-composable-architecture",
+				 url: "https://github.com/pointfreeco/swift-composable-architecture.git",
+				 from: Version.init(stringLiteral: "0.6.0"))
     ],
     targets: [
-        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "SharedComponents",
-            dependencies: ["ListPicker"]),
+            dependencies: [
+				"Util",
+				.product(name: "ComposableArchitecture",
+						 package: "swift-composable-architecture")
+			]),
         .testTarget(
             name: "SharedComponentsTests",
-            dependencies: ["SharedComponents"]),
+            dependencies: ["SharedComponents"])
     ]
 )
