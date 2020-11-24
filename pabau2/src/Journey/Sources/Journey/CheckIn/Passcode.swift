@@ -84,19 +84,19 @@ struct Passcode: View {
 				.font(.regular16)
 				if viewStore.state.passcode.unlocked {
 					NavigationLink.emptyHidden(!viewStore.state.didGoBackToPatientMode,
-																		 ChooseTreatmentNote(store: self.store.scope(
-																			state: { $0 }, action: { $0 }))
-																			.navigationBarHidden(false)
-																			.navigationBarTitle(Text(Texts.chooseTreatmentNote),
-																													displayMode: .inline)
-																			.navigationBarBackButtonHidden(true)
+											   ChooseTreatmentNote(store: self.store.scope(
+																	state: { $0 }, action: { $0 }))
+												.navigationBarHidden(false)
+												.navigationBarTitle(Text(Texts.chooseTreatmentNote),
+																	displayMode: .inline)
+												.navigationBarBackButtonHidden(true)
 					)
 					NavigationLink.emptyHidden(
 						viewStore.state.didGoBackToPatientMode,
 						DoctorSummary(store: self.store.scope(
-							state: { $0 }, action: { $0 }))
+										state: { $0 }, action: { $0 }))
 							.hideNavBar(viewStore.state.isDoctorCheckInMainActive,
-													Texts.summary)
+										Texts.summary)
 					)
 				}
 			}

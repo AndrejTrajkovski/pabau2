@@ -23,7 +23,7 @@ struct DoctorSummary: View {
 	}
 	var body: some View {
 		print("DoctorSummary body")
-		return GeometryReader { geo in
+		return GeometryReaderPatch { geo in
 			VStack(spacing: 32) {
 				DoctorSummaryStepList(self.viewStore.state.steps) {
 					self.viewStore.send(.didTouchStep($0.stepType))
@@ -39,6 +39,7 @@ struct DoctorSummary: View {
 			.journeyBase(self.viewStore.state.journey, .long)
 			.navigationBarItems(leading:
 				XButton(onTouch: { self.viewStore.send(.xOnDoctorCheckIn)}))
+			.frame(width: geo.size.width, height: geo.size.height, alignment: .center)
 		}
 	}
 }
@@ -71,7 +72,7 @@ struct WidthPreferenceKey: PreferenceKey {
 
 struct BtnGeometry: View {
 	var body: some View {
-		GeometryReader { geometry in
+		GeometryReaderPatch { geometry in
 			return Rectangle().fill(Color.clear).preference(key: WidthPreferenceKey.self, value: geometry.size.width)
 		}
 	}

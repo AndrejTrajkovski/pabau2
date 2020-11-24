@@ -8,7 +8,7 @@ struct ClientCardGridItemView: View {
 	let iconName: String
 	let number: Int?
 	var body: some View {
-		GeometryReader { geo in
+		GeometryReaderPatch { geo in
 			VStack(spacing: 8) {
 				Image(systemName: self.iconName)
 					.resizable()

@@ -89,7 +89,7 @@ public struct OICollectionView<Elements, Content>: View where Elements: RandomAc
 	}
 
 	public var body: some View {
-		GeometryReader { proxy in
+		GeometryReaderPatch { proxy in
 			self.bodyHelper(containerSize: proxy.size, offsets: self.layout(self.data, proxy.size, self.sizes))
 		}
 	}
@@ -108,7 +108,7 @@ struct PropagateSize<V: View, ID: Hashable>: View {
 	var content: V
 	var id: ID
 	var body: some View {
-		content.background(GeometryReader { proxy in
+		content.background(GeometryReaderPatch { proxy in
 			Color.clear.preference(key: CollectionViewSizeKey<ID>.self, value: [self.id: proxy.size])
 		})
 	}

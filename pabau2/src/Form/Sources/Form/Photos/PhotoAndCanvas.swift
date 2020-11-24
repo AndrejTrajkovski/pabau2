@@ -1,6 +1,7 @@
 import SwiftUI
 import PencilKit
 import ComposableArchitecture
+import Util
 
 let photoAndCanvasReducer = Reducer<PhotoViewModel, PhotoAndCanvasAction, FormEnvironment>.init { state, action, _ in
 	switch action {
@@ -39,7 +40,7 @@ struct PhotoParent: View {
 
 struct PhotoSizePreferenceSetter: View {
 	var body: some View {
-		GeometryReader { geometry in
+		GeometryReaderPatch { geometry in
 			Color.clear
 				.preference(key: PhotoSize.self,
 										value: geometry.size)

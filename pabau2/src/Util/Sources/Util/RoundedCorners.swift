@@ -22,7 +22,7 @@ public struct RoundedCorners: View {
 	public var br: CGFloat = 0.0
 
 	public var body: some View {
-		GeometryReader { geometry in
+		GeometryReaderPatch { geometry in
 			Path { path in
 
 				let w = geometry.size.width

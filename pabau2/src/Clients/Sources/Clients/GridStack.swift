@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import Util
 
 struct GridStack<Content: View>: View {
 	let rows: Int
@@ -11,7 +12,7 @@ struct GridStack<Content: View>: View {
 		self.content = content
 	}
 	var body: some View {
-		GeometryReader { geo in
+		GeometryReaderPatch { geo in
 			VStack {
 				ForEach(0..<self.rows, id: \.self) { row in
 					HStack {

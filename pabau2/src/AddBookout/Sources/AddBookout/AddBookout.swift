@@ -122,7 +122,7 @@ struct DateAndTime: View {
 				TitleAndValueLabel("DAY", self.viewStore.state.startDate.toString())
 				TitleAndValueLabel("TIME", self.viewStore.state.startDate.toString())
 			}
-			GeometryReader { geo in
+			GeometryReaderPatch { geo in
 				HStack {
 					TitleAndValueLabel("DURATION", self.viewStore.state.chooseDuration.chosenItemName ?? ""
 					).frame(width: geo.size.width / 2)

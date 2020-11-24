@@ -1,4 +1,5 @@
 import SwiftUI
+import Util
 
 struct PagerView<Content: View>: View {
 	let pageCount: Int
@@ -14,7 +15,7 @@ struct PagerView<Content: View>: View {
 	}
 	
 	var body: some View {
-		GeometryReader { geometry in
+		GeometryReaderPatch { geometry in
 			HStack(spacing: 0) {
 				self.content.frame(width: geometry.size.width)
 			}

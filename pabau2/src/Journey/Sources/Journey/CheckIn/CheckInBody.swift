@@ -65,7 +65,7 @@ struct CheckInBody: View {
 
 	var body: some View {
 		print("check in body body")
-		return GeometryReader { geo in
+		return GeometryReaderPatch { geo in
 			VStack(spacing: 8) {
 				StepsCollectionView(store:
 					self.store.scope(
