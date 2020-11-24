@@ -97,6 +97,7 @@ struct Passcode: View {
 										state: { $0 }, action: { $0 }))
 							.hideNavBar(viewStore.state.isDoctorCheckInMainActive,
 										Texts.summary)
+							.navigationBarBackButtonHidden(true)
 					)
 				}
 			}

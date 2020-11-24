@@ -103,7 +103,7 @@ struct AddClient: View {
 				Button(action: { viewStore.send(.saveClient) },
 							 label: { Text(Texts.save) }
 				)
-			)
+			).navigationBarBackButtonHidden(true)
 		}
 	}
 }
