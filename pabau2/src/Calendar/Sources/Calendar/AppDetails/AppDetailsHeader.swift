@@ -20,17 +20,17 @@ struct AppDetailsHeader: View {
 	
 	var body: some View {
 		VStack {
-			if let imageU = viewStore.imageUrl {
-				Image(imageU)
-					.resizable()
-					.scaledToFill()
-					.clipShape(Circle())
-					.frame(width: 84, height: 84)
-			} else {
-				Image(systemName: "person")
-					.resizable()
-					.frame(width: 84, height: 84)
-			}
+			Group {
+				if let imageU = viewStore.imageUrl {
+					Image(imageU)
+						.resizable()
+						.scaledToFill()
+						.clipShape(Circle())
+				} else {
+					Image(systemName: "person")
+						.resizable()
+				}
+			}.frame(width: 84, height: 84)
 			Text(viewStore.name).font(.semibold24)
 			HStack {
 				Circle().fill(Color.init(hex: viewStore.statusColor))
