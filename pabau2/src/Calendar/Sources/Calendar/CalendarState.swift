@@ -108,14 +108,15 @@ extension CalendarState {
 			}
 		}
 	}
-	
+
 	var week: CalendarWeekViewState? {
 		get {
 			guard let apps = extract(case: Appointments.week, from: self.appointments) else { return nil }
 			return CalendarWeekViewState(
 				appointments: apps,
 				selectedDate: selectedDate,
-				addBookout: addBookout
+				addBookout: addBookout,
+				appDetails: appDetails
 //				locations: locations,
 //				chosenLocationsIds: chosenLocationsIds,
 //				subsections: rooms,
@@ -128,6 +129,7 @@ extension CalendarState {
 				self.selectedDate = $0.selectedDate
 				self.appointments = Appointments.week($0.appointments)
 				self.addBookout = $0.addBookout
+				self.appDetails = $0.appDetails
 //				self.locations = $0.locations
 //				self.chosenLocationsIds = $0.chosenLocationsIds
 //				self.rooms = $0.subsections

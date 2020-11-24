@@ -112,7 +112,7 @@ public struct AddBookout: View {
 										  action: { .isPrivate($0) })
 			)
 		}.addEventWrapper(title: "Add Bookout",
-						  onXBtnTap: { viewStore.send(.close)}
+						  onXBtnTap: { viewStore.send(.close) }
 		)
 	}
 }

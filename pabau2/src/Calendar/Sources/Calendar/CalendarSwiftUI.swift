@@ -5,7 +5,7 @@ import Model
 
 public struct CalendarWrapper: View {
 	let store: Store<CalendarState, CalendarAction>
-	
+
 	public var body: some View {
 		WithViewStore(store) { viewStore -> AnyView in
 			switch viewStore.state.appointments {
@@ -27,7 +27,7 @@ public struct CalendarWrapper: View {
 	typealias EmployeeCalView = IfLetStore<CalendarSectionViewState<Employee>, SubsectionCalendarAction<Employee>, _ConditionalContent<CalendarSwiftUI<Employee>, EmptyView>>
 	typealias RoomCalView = IfLetStore<CalendarSectionViewState<Room>, SubsectionCalendarAction<Room>,
 											_ConditionalContent<CalendarSwiftUI<Room>, EmptyView>>
-	
+
 	var employeeCalendarView: EmployeeCalView {
 		let ifLetStore = IfLetStore(store.scope(
 										state: { $0.employeeSectionState },

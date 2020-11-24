@@ -7,6 +7,7 @@ public struct CalendarWeekViewState: Equatable {
 	var appointments: [Date: IdentifiedArrayOf<CalAppointment>]
 	var selectedDate: Date
 	var addBookout: AddBookoutState?
+	var appDetails: AppDetailsState?
 }
 
 public let calendarWeekViewReducer: Reducer<CalendarWeekViewState, CalendarWeekViewAction, CalendarEnvironment> = .init { state, action, env in
@@ -36,6 +37,11 @@ public let calendarWeekViewReducer: Reducer<CalendarWeekViewState, CalendarWeekV
 		state.addBookout = AddBookoutState(employees: IdentifiedArray(Employee.mockEmployees),
 										   chosenEmployee: nil,
 										   start: startDate)
+	case .onSelect(startOfDayDate: let startOfDayDate, eventId: let eventId):
+		let calId = CalAppointment.ID.init(rawValue: eventId)
+		state.appointments[startOfDayDate]?[id: calId].map {
+			state.appDetails = AppDetailsState(app: $0)
+		}
 	}
 	return .none
 }
@@ -55,4 +61,6 @@ public enum CalendarWeekViewAction {
 	case editDuration(startOfDayDate: Date,
 					  endDate: Date,
 					  eventId: Int)
+	case onSelect(startOfDayDate: Date,
+				  eventId: Int)
 }

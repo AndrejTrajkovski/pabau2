@@ -63,23 +63,19 @@ public struct AppointmentDetails: View {
 	}
 	
 	public var body: some View {
-		NavigationView {
-			VStack(spacing: 0) {
-				AppDetailsHeader(store: self.store)
-				Spacer().frame(height: 32)
-				AppDetailsInfo(store: self.store)
-				AppDetailsButtons(store: self.store)
-					.fixedSize(horizontal: false, vertical: true)
-				Spacer().frame(height: 32)
-				PrimaryButton(Texts.addService,
-							  isDisabled: false,
-							  { self.viewStore.send(.addService)})
-				Spacer().frame(maxHeight: .infinity)
-			}.padding(60)
-			.navigationBarItems(leading:
-									XButton(onTouch: { self.viewStore.send(.close) })
-			)
-		}.navigationViewStyle(StackNavigationViewStyle())
+		Group {
+			AppDetailsHeader(store: self.store)
+			Spacer().frame(height: 32)
+			AppDetailsInfo(store: self.store)
+			AppDetailsButtons(store: self.store)
+				.fixedSize(horizontal: false, vertical: true)
+			Spacer().frame(height: 32)
+			PrimaryButton(Texts.addService,
+						  isDisabled: false,
+						  { self.viewStore.send(.addService) })
+			Spacer().frame(maxHeight: .infinity)
+		}.addEventWrapper(title: "",
+						  onXBtnTap: { self.viewStore.send(.close) })
 	}
 }
 
@@ -140,11 +136,11 @@ struct AppointmentDetails_Previews: PreviewProvider {
 	static var state: AppDetailsState {
 		AppDetailsState(app: CalAppointment.makeDummy().first!)
 	}
-	
+
 	static var env: CalendarEnvironment {
 		return CalendarEnvironment(JourneyMockAPI(), StandardUDConfig())
 	}
-	
+
 	static var previews: some View {
 		EmptyView().frame(maxWidth: .infinity,  maxHeight: .infinity)
 			.sheet(isPresented: .constant(true), content: {

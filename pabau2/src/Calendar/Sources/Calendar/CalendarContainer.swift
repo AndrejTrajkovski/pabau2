@@ -145,23 +145,51 @@ public struct CalendarContainer: View {
 				.padding(0)
 				CalendarWrapper(store: self.store)
 				Spacer()
-			}.sheet(isPresented: viewStore.binding(get: { $0.appDetails != nil },
-															 send: CalendarAction.onAppDetailsDismiss),
-							  content: { IfLetStore(store.scope(state: { $0.appDetails },
-																action: { .appDetails($0) }),
-													then: AppointmentDetails.init(store:))
-							  })
-			.fullScreenCover(isPresented: viewStore.binding(get: { $0.addBookout != nil },
-															 send: CalendarAction.onAppDetailsDismiss),
-							  content: { IfLetStore(store.scope(state: { $0.addBookout },
-																action: { .addBookout($0) }),
-													then: AddBookout.init(store:))
-							  })
+			}
+			.fullScreenCover(isPresented:
+								Binding(get: { activeSheet(state: viewStore.state) != nil },
+										set: { _ in dismissAction(state: viewStore.state).map(viewStore.send) }
+								), content: {
+									Group {
+										IfLetStore(store.scope(state: { $0.appDetails },
+															   action: { .appDetails($0) }),
+												   then: AppointmentDetails.init(store:))
+										IfLetStore(store.scope(state: { $0.addBookout },
+															   action: { .addBookout($0) }),
+												   then: AddBookout.init(store:))
+									}
+								}
+			)
 		}
 	}
 
 	public init(store: Store<CalendarState, CalendarAction>) {
 		self.store = store
+	}
+	
+	enum ActiveSheet {
+		case appDetails
+		case addBookout
+	}
+
+	func activeSheet(state: CalendarState) -> ActiveSheet? {
+		if state.addBookout != nil {
+			return .addBookout
+		} else if state.appDetails != nil {
+			return .appDetails
+		} else {
+			return nil
+		}
+	}
+	
+	func dismissAction(state: CalendarState) -> CalendarAction? {
+		if state.addBookout != nil {
+			return .onBookoutDismiss
+		} else if state.appDetails != nil {
+			return .onAppDetailsDismiss
+		} else {
+			return nil
+		}
 	}
 }
 

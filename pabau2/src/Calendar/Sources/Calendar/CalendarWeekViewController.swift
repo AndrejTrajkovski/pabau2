@@ -79,4 +79,10 @@ extension CalendarWeekViewController: JZLongPressViewDelegate {
 						self.viewStore.send(.addAppointment(startOfDayDate: startOfDayDate, startDate: date, durationMins: weekView.addNewDurationMins))
 					})
 	}
+
+	public func weekView(_ weekView: JZLongPressWeekView,
+						 didSelect editingEvent: JZBaseEvent,
+						 startOfDay: Date) {
+		viewStore.send(.onSelect(startOfDayDate: startOfDay, eventId: editingEvent.id))
+	}
 }
