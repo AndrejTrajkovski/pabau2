@@ -1,6 +1,6 @@
 import SwiftUI
 import ComposableArchitecture
-import AddEventControls
+import SharedComponents
 import ListPicker
 import Model
 import Util

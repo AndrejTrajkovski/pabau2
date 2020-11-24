@@ -3,7 +3,7 @@ import ComposableArchitecture
 import Util
 import ListPicker
 import Model
-import AddEventControls
+import SharedComponents
 
 public typealias AddBookoutEnvironment = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
 

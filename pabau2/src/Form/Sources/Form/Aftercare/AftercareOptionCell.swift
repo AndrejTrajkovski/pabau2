@@ -1,7 +1,7 @@
 import SwiftUI
 import ComposableArchitecture
 import Util
-import AddEventControls
+import SharedComponents
 
 public let aftercareOptionReducer: Reducer<AftercareOption, ToggleAction, Any> = (
 	switchCellReducer.pullback(

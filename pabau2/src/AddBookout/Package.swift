@@ -16,7 +16,7 @@ let package = Package(
 				 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../ListPicker",
 				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../AddEventControls",
+		.package(url: "../SharedComponents",
 						 from: Version.init(stringLiteral: "1.0.0"))
     ],
     targets: [
@@ -25,7 +25,7 @@ let package = Package(
             dependencies: [
 				"Form",
 				"ListPicker",
-				"AddEventControls"
+				"SharedComponents"
 			]),
         .testTarget(
             name: "AddBookoutTests",

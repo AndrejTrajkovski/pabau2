@@ -2,7 +2,7 @@ import ComposableArchitecture
 import SwiftUI
 import ASCollectionView
 import Util
-import AddEventControls
+import SharedComponents
 
 public enum AftercareBoolAction {
 	case indexedToggle(Indexed<ToggleAction>)

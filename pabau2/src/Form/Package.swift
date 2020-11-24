@@ -25,7 +25,7 @@ let package = Package(
 							 from: Version.init(stringLiteral: "1.0.0")),
 			.package(url: "../Model",
 							 from: Version.init(stringLiteral: "1.0.0")),
-			.package(url: "../AddEventControls",
+			.package(url: "../SharedComponents",
 							 from: Version.init(stringLiteral: "1.0.0")),
     ],
     targets: [
@@ -39,7 +39,7 @@ let package = Package(
 					"Model",
 					"ASCollectionView",
 					"BSImagePicker",
-					"AddEventControls"
+					"SharedComponents"
 			]),
 			.testTarget(
 				name: "FormTests",

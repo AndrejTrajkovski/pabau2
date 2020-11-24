@@ -3,7 +3,7 @@ import Util
 import ComposableArchitecture
 import Model
 import ListPicker
-import AddEventControls
+import SharedComponents
 
 public let appDetailsButtonsReducer: Reducer<AppDetailsButtonsState, AppDetailsButtonsAction, Any?> = .init {
 	state, action, env in

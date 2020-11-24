@@ -3,7 +3,7 @@ import Util
 import ComposableArchitecture
 import Model
 import ListPicker
-import AddEventControls
+import SharedComponents
 
 public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, CalendarEnvironment> = .combine(
 	appDetailsButtonsReducer.pullback(

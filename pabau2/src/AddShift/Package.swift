@@ -14,7 +14,7 @@ let package = Package(
     dependencies: [
 		.package(url: "../ListPicker",
 				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../AddEventControls",
+		.package(url: "../SharedComponents",
 						 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../Model",
 				 from: Version.init(stringLiteral: "1.0.0")),
@@ -22,7 +22,7 @@ let package = Package(
     targets: [
         .target(
             name: "AddShift",
-            dependencies: ["ListPicker", "AddEventControls", "Model"]),
+            dependencies: ["ListPicker", "SharedComponents", "Model"]),
         .testTarget(
             name: "AddShiftTests",
             dependencies: ["AddShift"]),

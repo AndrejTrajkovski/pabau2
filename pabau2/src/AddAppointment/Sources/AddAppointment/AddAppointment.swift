@@ -3,7 +3,7 @@ import Model
 import ComposableArchitecture
 import Util
 import Form
-import AddEventControls
+import SharedComponents
 import ListPicker
 
 public typealias AddAppointmentEnv = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
