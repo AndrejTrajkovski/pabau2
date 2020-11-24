@@ -130,18 +130,16 @@ public struct AddAppointment: View {
 	}
 
 	public var body: some View {
-		Group {
+		VStack {
 			SwitchCell(text: "All Day", store: store.scope(state: { $0.isAllDay },
 														   action: { .isAllDay($0)})
-			)
+			).wrapAsSection(title: "Add Appointment")
 			AddAppSections(store: self.store)
 				.environmentObject(KeyboardFollower())
-			PrimaryButton(Texts.saveAppointment) {
+			AddEventPrimaryBtn(title: Texts.saveAppointment) {
 				self.viewStore.send(.saveAppointmentTap)
-			}.frame(width: 315, height: 52)
-			Spacer()
-		}.addEventWrapper(title: "Add Appointment",
-						  onXBtnTap: { self.viewStore.send(.closeBtnTap) })
+			}
+		}.addEventWrapper(onXBtnTap: { self.viewStore.send(.closeBtnTap) })
 	}
 }
 
@@ -173,16 +171,15 @@ struct ServicesDurationSection: View {
 		self.viewStore = ViewStore(store)
 	}
 	var body: some View {
-		Group {
-			Text("Services").font(.semibold24).frame(maxWidth: .infinity, alignment: .leading)
+		VStack {
 			HStack(spacing: 24.0) {
 				TitleAndValueLabel("SERVICE", self.viewStore.state.services.chosenServiceName).onTapGesture {
 					self.viewStore.send(.didTapServices)
 				}
 				NavigationLink.emptyHidden(self.viewStore.state.services.isChooseServiceActive,
-																	 ChooseService(store: self.store.scope(state: { $0.services }, action: {
-																		.services($0)
-																		}))
+										   ChooseService(store: self.store.scope(state: { $0.services }, action: {
+											.services($0)
+										   }))
 				)
 				SingleChoiceLink.init(content: {
 					TitleAndValueLabel.init("DURATION", self.viewStore.state.durations.chosenItemName ?? "")
@@ -214,7 +211,7 @@ struct ServicesDurationSection: View {
 				cell: TextAndCheckMarkContainer.init(state:)
 				)
 			}
-		}
+		}.wrapAsSection(title: "Services")
 	}
 }
 

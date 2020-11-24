@@ -4,31 +4,27 @@
 import PackageDescription
 
 let package = Package(
-    name: "AddBookout",
+    name: "AddShift",
 	platforms: [.iOS(.v14)],
     products: [
         .library(
-            name: "AddBookout",
-            targets: ["AddBookout"]),
+            name: "AddShift",
+            targets: ["AddShift"]),
     ],
     dependencies: [
-		.package(url: "../Form",
-				 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../ListPicker",
 				 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../AddEventControls",
-						 from: Version.init(stringLiteral: "1.0.0"))
+						 from: Version.init(stringLiteral: "1.0.0")),
+		.package(url: "../Model",
+				 from: Version.init(stringLiteral: "1.0.0")),
     ],
     targets: [
         .target(
-            name: "AddBookout",
-            dependencies: [
-				"Form",
-				"ListPicker",
-				"AddEventControls"
-			]),
+            name: "AddShift",
+            dependencies: ["ListPicker", "AddEventControls", "Model"]),
         .testTarget(
-            name: "AddBookoutTests",
-            dependencies: ["AddBookout"]),
+            name: "AddShiftTests",
+            dependencies: ["AddShift"]),
     ]
 )

@@ -7,6 +7,7 @@ import SwiftDate
 import AddAppointment
 import AddBookout
 import Combine
+import AddShift
 
 public typealias CalendarEnvironment = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
 
@@ -100,6 +101,10 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 		state: \CalendarState.addBookout,
 		action: /CalendarAction.addBookout,
 		environment: { $0 }),
+	addShiftOptReducer.pullback(
+		state: \CalendarState.addShift,
+		action: /CalendarAction.addShift,
+		environment: { $0 }),
 	.init { state, action, _ in
 		switch action {
 		case .datePicker: break
@@ -110,7 +115,8 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 		case .onBookoutDismiss:
 			state.addBookout = nil
 		case .calTypePicker(.toggleDropdown): break
-		case .addShift: break
+		case .onAddShift:
+			state.addShift = AddShiftState.makeEmpty()
 		case .toggleFilters: break
 		case .room:
 			break
@@ -130,7 +136,7 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 
 public struct CalendarContainer: View {
 	let store: Store<CalendarState, CalendarAction>
-	
+
 	public var body: some View {
 		WithViewStore(store) { viewStore in
 			VStack(spacing: 0) {
@@ -157,6 +163,9 @@ public struct CalendarContainer: View {
 										IfLetStore(store.scope(state: { $0.addBookout },
 															   action: { .addBookout($0) }),
 												   then: AddBookout.init(store:))
+										IfLetStore(store.scope(state: { $0.addShift },
+															   action: { .addShift($0) }),
+												   then: AddShift.init(store:))
 									}
 								}
 			)
@@ -166,10 +175,11 @@ public struct CalendarContainer: View {
 	public init(store: Store<CalendarState, CalendarAction>) {
 		self.store = store
 	}
-	
+
 	enum ActiveSheet {
 		case appDetails
 		case addBookout
+		case addShift
 	}
 
 	func activeSheet(state: CalendarState) -> ActiveSheet? {
@@ -177,16 +187,20 @@ public struct CalendarContainer: View {
 			return .addBookout
 		} else if state.appDetails != nil {
 			return .appDetails
+		} else if state.addShift != nil {
+			return .addShift
 		} else {
 			return nil
 		}
 	}
-	
+
 	func dismissAction(state: CalendarState) -> CalendarAction? {
 		if state.addBookout != nil {
 			return .onBookoutDismiss
 		} else if state.appDetails != nil {
 			return .onAppDetailsDismiss
+		} else if state.addShift != nil {
+			return .onAddShiftDismiss
 		} else {
 			return nil
 		}
@@ -196,28 +210,31 @@ public struct CalendarContainer: View {
 struct CalTopBar: View {
 	let store: Store<CalendarState, CalendarAction>
 	var body: some View {
-		VStack(spacing: 0) {
-			ZStack {
-				PlusButton {
+		WithViewStore(store) { viewStore in
+			VStack(spacing: 0) {
+				ZStack {
+					PlusButton {
+						viewStore.send(.onAddShift)
+					}
+					.padding(.leading, 20)
+					.exploding(.leading)
+					CalendarTypePicker(store:
+										self.store.scope(
+											state: { $0.calTypePicker },
+											action: { .calTypePicker($0)})
+					)
+					.padding()
+					.exploding(.center)
+					Button.init(Texts.filters, action: {
+					})
+					.padding()
+					.padding(.trailing, 20)
+					.exploding(.trailing)
 				}
-				.padding(.leading, 20)
-				.exploding(.leading)
-				CalendarTypePicker(store:
-									self.store.scope(
-										state: { $0.calTypePicker },
-										action: { .calTypePicker($0)})
-				)
-				.padding()
-				.exploding(.center)
-				Button.init(Texts.filters, action: {
-				})
-				.padding()
-				.padding(.trailing, 20)
-				.exploding(.trailing)
+				.frame(height: 50)
+				.background(Color(hex: "F9F9F9"))
+				Divider()
 			}
-			.frame(height: 50)
-			.background(Color(hex: "F9F9F9"))
-			Divider()
 		}
 	}
 }

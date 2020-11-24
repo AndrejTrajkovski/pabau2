@@ -29,6 +29,7 @@ struct AppDetailsHeader: View {
 			} else {
 				Image(systemName: "person")
 					.resizable()
+					.frame(width: 84, height: 84)
 			}
 			Text(viewStore.name).font(.semibold24)
 			HStack {
@@ -41,7 +42,7 @@ struct AppDetailsHeader: View {
 }
 
 extension AppDetailsHeader.ViewState {
-
+	
 	init(state: AppDetailsState) {
 		self.imageUrl = state.app.customerPhoto
 		self.name = state.app.customerName ?? ""

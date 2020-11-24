@@ -86,3 +86,11 @@ public struct SingleChoiceLinkReducer<T: SingleChoiceElement> {
 				environment: { $0 })
 		)
 }
+
+extension SingleChoiceLinkState {
+	
+	public init(_ dataSource: [Model]) {
+		isActive = false
+		singleChoice = SingleChoiceState(dataSource: IdentifiedArrayOf(dataSource), chosenItemId: nil)
+	}
+}

@@ -29,7 +29,7 @@ public struct TitleAndLowerContent<Content: View>: View {
 		VStack(alignment: .leading, spacing: 12) {
 			Text(labelTxt)
 				.foregroundColor(Color.textFieldAndTextLabel.opacity(0.5))
-				.font(.bold12)
+				.font(.semibold12)
 			lowerContent()
 			Divider().foregroundColor(.textFieldBottomLine)
 		}

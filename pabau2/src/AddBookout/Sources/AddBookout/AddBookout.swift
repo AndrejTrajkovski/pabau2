@@ -59,6 +59,7 @@ public enum AddBookoutAction {
 	case note(TextChangeAction)
 	case description(TextChangeAction)
 	case close
+	case saveBookout
 }
 
 extension Employee: SingleChoiceElement {}
@@ -74,29 +75,76 @@ public struct AddBookout: View {
 	}
 
 	public var body: some View {
-		Group {
-			Buttons()
-			SwitchCell(text: Texts.allDay,
-					   store: store.scope(state: { $0.isAllDay },
-										  action: { .isAllDay($0)})
-			)
-			SingleChoiceLink(content: {
-				TitleAndValueLabel(Texts.employee.uppercased(), viewStore.state.chooseEmployee.chosenItemName ?? "")
-			}, store: self.store.scope(state: { $0.chooseEmployee },
-									   action: { .chooseEmployee($0) }),
-			cell: TextAndCheckMarkContainer.init(state:)
-			)
-			Text("Date & Time").font(.semibold24).frame(maxWidth: .infinity, alignment: .leading)
+		VStack {
+			FirstSection(store: store)
+			DateAndTime(store: store)
+			DescriptionAndNotes(store: store)
+			AddEventPrimaryBtn(title: "Save Bookout") {
+				viewStore.send(.saveBookout)
+			}
+		}.addEventWrapper(onXBtnTap: { viewStore.send(.close) })
+	}
+}
+
+struct FirstSection: View {
+	
+	let store: Store<AddBookoutState, AddBookoutAction>
+	
+	var body: some View {
+		WithViewStore(store) { viewStore in
+			VStack(spacing: 16) {
+				Buttons()
+				SwitchCell(text: Texts.allDay,
+						   store: store.scope(state: { $0.isAllDay },
+											  action: { .isAllDay($0)})
+				)
+				SingleChoiceLink(content: {
+					TitleAndValueLabel(Texts.employee.uppercased(), viewStore.state.chooseEmployee.chosenItemName ?? "")
+				}, store: self.store.scope(state: { $0.chooseEmployee },
+										   action: { .chooseEmployee($0) }),
+				cell: TextAndCheckMarkContainer.init(state:))
+			}.wrapAsSection(title: "Add Bookout")
+		}
+	}
+}
+
+struct DateAndTime: View {
+	let store: Store<AddBookoutState, AddBookoutAction>
+	@ObservedObject var viewStore: ViewStore<AddBookoutState, AddBookoutAction>
+
+	init(store: Store<AddBookoutState, AddBookoutAction>) {
+		self.store = store
+		self.viewStore = ViewStore(store)
+	}
+
+	var body: some View {
+		VStack(spacing: 16) {
 			HStack {
 				TitleAndValueLabel("DAY", self.viewStore.state.startDate.toString())
-				TitleAndValueLabel("Time", self.viewStore.state.startDate.toString())
+				TitleAndValueLabel("TIME", self.viewStore.state.startDate.toString())
 			}
-			HStack {
-				TitleAndValueLabel("DURATION", self.viewStore.state.chooseDuration.chosenItemName ?? ""
-				)
-				DurationPicker(store: store.scope(state: { $0.chooseDuration }, action: { .chooseDuration($0) }))
+			GeometryReader { geo in
+				HStack {
+					TitleAndValueLabel("DURATION", self.viewStore.state.chooseDuration.chosenItemName ?? ""
+					).frame(width: geo.size.width / 2)
+					DurationPicker(store: store.scope(state: { $0.chooseDuration }, action: { .chooseDuration($0) }))
+						.frame(maxWidth: .infinity)
+				}
 			}
-			Text("Description & Notes").font(.semibold24).frame(maxWidth: .infinity, alignment: .leading)
+		}.wrapAsSection(title: "Date & Time")
+	}
+}
+
+struct DescriptionAndNotes: View {
+	
+	let store: Store<AddBookoutState, AddBookoutAction>
+
+	public init(store: Store<AddBookoutState, AddBookoutAction>) {
+		self.store = store
+	}
+
+	var body: some View {
+		VStack(spacing: 16) {
 			TitleAndTextField(title: "DESCRIPTION",
 							  tfLabel: "Add description.",
 							  store: store.scope(state: { $0.description },
@@ -111,32 +159,9 @@ public struct AddBookout: View {
 					   store: store.scope(state: { $0.isPrivate },
 										  action: { .isPrivate($0) })
 			)
-		}.addEventWrapper(title: "Add Bookout",
-						  onXBtnTap: { viewStore.send(.close) }
-		)
+		}.wrapAsSection(title: "Description & Notes")
 	}
 }
-
-//struct AddBookout_Previews: PreviewProvider {
-//
-//	static var state: AddBookoutState {
-//		AddBookoutState(chooseEmployee: SingleChoiceLinkState<Employee>.init(dataSource: IdentifiedArray(Employee.mockEmployees), chosenItemId: nil, isActive: false),
-//						chooseDuration: SingleChoiceState<Duration>(dataSource: IdentifiedArray.init(Duration.all), chosenItemId: nil),
-//						startDate: Date(), isPrivate: false)
-//	}
-//
-//	static var store: Store<AddBookoutState, AddBookoutAction> {
-//		Store.init(initialState: state, reducer: addBookoutReducer, environment: (AddBookoutEnvironment())
-//		)
-//	}
-//
-//	static var previews: some View {
-//		Group {
-//			AddBookout(store: store)
-//				.previewDevice("iPad Air (4th generation)")
-//		}
-//	}
-//}
 
 extension AddBookoutState {
 	public init(employees: IdentifiedArrayOf<Employee>,

@@ -7,6 +7,7 @@ import ComposableArchitecture
 import JZCalendarWeekView
 import AddAppointment
 import AddBookout
+import AddShift
 
 public struct CalendarContainerState: Equatable {
 	public init(addAppointment: AddAppointmentState?, calendar: CalendarState) {
@@ -33,6 +34,7 @@ public struct CalendarState: Equatable {
 	
 	public var appDetails: AppDetailsState?
 	public var addBookout: AddBookoutState?
+	public var addShift: AddShiftState?
 }
 
 extension CalendarState {

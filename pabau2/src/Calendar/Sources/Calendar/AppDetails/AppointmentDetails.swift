@@ -3,6 +3,7 @@ import Util
 import ComposableArchitecture
 import Model
 import ListPicker
+import AddEventControls
 
 public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, CalendarEnvironment> = .combine(
 	appDetailsButtonsReducer.pullback(
@@ -38,10 +39,8 @@ public struct AppDetailsState: Equatable {
 	var isCancelActive: Bool = false
 	var chosenCancelReasonId: CancelReason.ID?
 	var cancelReasons = IdentifiedArrayOf(CancelReason.mock)
-	
 	var isStatusActive: Bool = false
 	var appStatuses = IdentifiedArrayOf(AppointmentStatus.mock)
-	
 	var chooseRepeat: ChooseRepeatState = ChooseRepeatState()
 }
 
@@ -61,21 +60,19 @@ public struct AppointmentDetails: View {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
-	
+
 	public var body: some View {
-		Group {
+		VStack {
 			AppDetailsHeader(store: self.store)
 			Spacer().frame(height: 32)
 			AppDetailsInfo(store: self.store)
 			AppDetailsButtons(store: self.store)
 				.fixedSize(horizontal: false, vertical: true)
-			Spacer().frame(height: 32)
-			PrimaryButton(Texts.addService,
-						  isDisabled: false,
-						  { self.viewStore.send(.addService) })
-			Spacer().frame(maxHeight: .infinity)
-		}.addEventWrapper(title: "",
-						  onXBtnTap: { self.viewStore.send(.close) })
+			AddEventPrimaryBtn(title: Texts.addService) {
+				self.viewStore.send(.addService)
+			}
+		}.addEventWrapper(
+			onXBtnTap: { self.viewStore.send(.close) })
 	}
 }
 
