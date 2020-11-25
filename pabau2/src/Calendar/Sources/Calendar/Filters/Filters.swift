@@ -35,9 +35,15 @@ public struct FiltersState<S: Identifiable & Equatable & Named> {
 			newValue.map { sectionState in
 				let locId = sectionState.location.id
 				if !sectionState.isLocationChosen && chosenLocationsIds.contains(locId) {
-					chosenLocationsIds.remove(locId)
+					chosenLocationsIds.removeAll(where: { $0 == locId })
 				} else if sectionState.isLocationChosen && !chosenLocationsIds.contains(locId) {
 					chosenLocationsIds.append(locId)
+				}
+				chosenSubsectionsIds[locId] = sectionState.chosenValues
+				if !sectionState.isExpanded && expandedLocationsIds.contains(locId) {
+					expandedLocationsIds.removeAll(where: { $0 == locId })
+				} else if sectionState.isExpanded && !expandedLocationsIds.contains(locId) {
+					expandedLocationsIds.append(locId)
 				}
 			}
 		}

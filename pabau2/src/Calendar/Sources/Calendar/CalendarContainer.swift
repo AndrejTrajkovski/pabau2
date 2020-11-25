@@ -105,6 +105,10 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 		state: \CalendarState.addShift,
 		action: /CalendarAction.addShift,
 		environment: { $0 }),
+	FiltersReducer<Employee>().reducer.pullback(
+		state: \.employeeFilters,
+		action: /CalendarAction.employeeFilters,
+		environment: { $0 }),
 	.init { state, action, _ in
 		switch action {
 		case .datePicker: break

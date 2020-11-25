@@ -27,9 +27,9 @@ public struct CalendarState: Equatable {
 	var locations: IdentifiedArrayOf<Location>
 	public var employees: [Location.Id: IdentifiedArrayOf<Employee>]
 	public var rooms: [Location.Id: IdentifiedArrayOf<Room>]
-	var chosenLocationsIds: [Location.Id: Bool]
-	var chosenEmployeesIds: [Location.Id: [Employee.Id: Bool]]
-	var chosenRoomsIds: [Location.Id: [Room.Id: Bool]]
+	var chosenLocationsIds: [Location.Id]
+	var chosenEmployeesIds: [Location.Id: [Employee.Id]]
+	var chosenRoomsIds: [Location.Id: [Room.Id]]
 	
 	var isShowingFilters: Bool
 	var expandedLocationsIds: [Location.Id]

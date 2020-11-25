@@ -66,6 +66,7 @@ public class SectionCalendarViewController<Subsection: Identifiable & Equatable>
 									  subsections,
 									  events.mapValues { $0.mapValues { $0.mapValues { $0.elements.map(JZAppointmentEvent.init(appointment:)) }}},
 									  shifts)
+		calendarView.layoutSubviews()
 		calendarView.forceReload()
 	}
 
