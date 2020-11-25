@@ -19,4 +19,6 @@ public enum CalendarAction {
 	case onBookoutDismiss
 	case onAddShiftDismiss
 	case showAddApp(startDate: Date, endDate: Date, employee: Employee)
+	case employeeFilters(FiltersAction<Employee>)
+	case roomFilters(FiltersAction<Room>)
 }

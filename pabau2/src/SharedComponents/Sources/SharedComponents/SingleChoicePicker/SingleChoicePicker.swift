@@ -45,10 +45,6 @@ public struct SingleChoicePicker<T: SingleChoiceElement, Cell: View>: View {
 
 public struct SingleChoiceReducer<T: SingleChoiceElement> {
 	public init() {}
-//	metaFormAndStatusReducer.forEach(
-//		state: \StepForms.forms,
-//		action: /StepFormsAction.updateForm(index:action:),
-	//		environment: { $0 })
 	public let reducer: Reducer<SingleChoiceState<T>, SingleChoiceActions<T>, Any> =
 		.combine(
 			.init {

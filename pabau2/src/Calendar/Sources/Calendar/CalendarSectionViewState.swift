@@ -10,9 +10,9 @@ struct CalendarSectionViewState<Subsection: Identifiable & Equatable>: Equatable
 	var appDetails: AppDetailsState?
 	var addBookout: AddBookoutState?
 	let locations: IdentifiedArrayOf<Location>
-	let chosenLocationsIds: [Location.ID]
+	let chosenLocationsIds: [Location.ID: Bool]
 	let subsections: [Location.ID: IdentifiedArrayOf<Subsection>]
-	let chosenSubsectionsIds: [Location.ID: [Subsection.ID]]
+	let chosenSubsectionsIds: [Location.ID: [Subsection.ID: Bool]]
 	let shifts: [Date: [Location.ID: [Subsection.ID: [JZShift]]]]
 }
 
@@ -29,6 +29,6 @@ public extension Dictionary {
 extension CalendarSectionViewState {
 
 	public func chosenLocations() -> [Location] {
-		chosenLocationsIds.compactMap { locations[id: $0] }
+		chosenLocationsIds.filter { $0.value }.compactMap { locations[id: $0.key] }
 	}
 }

@@ -14,7 +14,7 @@ public struct CalendarContainerState: Equatable {
 		self.addAppointment = addAppointment
 		self.calendar = calendar
 	}
-	
+
 	public var addAppointment: AddAppointmentState?
 	public var calendar: CalendarState
 }
@@ -27,11 +27,12 @@ public struct CalendarState: Equatable {
 	var locations: IdentifiedArrayOf<Location>
 	public var employees: [Location.Id: IdentifiedArrayOf<Employee>]
 	public var rooms: [Location.Id: IdentifiedArrayOf<Room>]
+	var chosenLocationsIds: [Location.Id: Bool]
+	var chosenEmployeesIds: [Location.Id: [Employee.Id: Bool]]
+	var chosenRoomsIds: [Location.Id: [Room.Id: Bool]]
 	
-	var chosenLocationsIds: [Location.Id]
-	var chosenEmployeesIds: [Location.Id: [Employee.Id]]
-	var chosenRoomsIds: [Location.Id: [Room.Id]]
-	
+	var isShowingFilters: Bool
+	var expandedLocationsIds: [Location.Id]
 	public var appDetails: AppDetailsState?
 	public var addBookout: AddBookoutState?
 	public var addShift: AddShiftState?
@@ -139,6 +140,44 @@ extension CalendarState {
 			}
 		}
 	}
+	
+	var roomFilters: FiltersState<Room> {
+		get {
+			FiltersState(
+				locations: self.locations,
+				chosenLocationsIds: self.chosenLocationsIds,
+				subsections: self.rooms,
+				chosenSubsectionsIds: self.chosenRoomsIds,
+				expandedLocationsIds: self.expandedLocationsIds)
+		}
+		set {
+			self.locations = newValue.locations
+			self.chosenLocationsIds = newValue.chosenLocationsIds
+			self.rooms = newValue.subsections
+			self.chosenRoomsIds = newValue.chosenSubsectionsIds
+			self.expandedLocationsIds = newValue.expandedLocationsIds
+		}
+	}
+	
+	var employeeFilters: FiltersState<Employee> {
+		get {
+			FiltersState(
+				locations: self.locations,
+				chosenLocationsIds: self.chosenLocationsIds,
+				subsections: self.employees,
+				chosenSubsectionsIds: self.chosenEmployeesIds,
+				expandedLocationsIds: self.expandedLocationsIds)
+		}
+		set {
+			self.locations = newValue.locations
+			self.chosenLocationsIds = newValue.chosenLocationsIds
+			self.employees = newValue.subsections
+			self.chosenEmployeesIds = newValue.chosenSubsectionsIds
+			self.expandedLocationsIds = newValue.expandedLocationsIds
+		}
+	}
+	
+	
 }
 
 extension CalendarState {
@@ -172,6 +211,8 @@ extension CalendarState {
 				}
 			}
 		}
+		self.expandedLocationsIds = locations.map(\.id)
+		self.isShowingFilters = true
 	}
 }
 

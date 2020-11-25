@@ -117,7 +117,8 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 		case .calTypePicker(.toggleDropdown): break
 		case .onAddShift:
 			state.addShift = AddShiftState.makeEmpty()
-		case .toggleFilters: break
+		case .toggleFilters:
+			state.isShowingFilters.toggle()
 		case .room:
 			break
 		case .week:
@@ -139,18 +140,23 @@ public struct CalendarContainer: View {
 
 	public var body: some View {
 		WithViewStore(store) { viewStore in
-			VStack(spacing: 0) {
-				CalTopBar(store: self.store)
-				CalendarDatePicker.init(
-					store: self.store.scope(
-						state: { $0.selectedDate },
-						action: { .datePicker($0)}
-					),
-					isWeekView: viewStore.state.appointments.calendarType == Appointments.CalendarType.week
-				)
-				.padding(0)
-				CalendarWrapper(store: self.store)
-				Spacer()
+			ZStack {
+				VStack(spacing: 0) {
+					CalTopBar(store: self.store)
+					CalendarDatePicker.init(
+						store: self.store.scope(
+							state: { $0.selectedDate },
+							action: { .datePicker($0)}
+						),
+						isWeekView: viewStore.state.appointments.calendarType == Appointments.CalendarType.week
+					)
+					.padding(0)
+					CalendarWrapper(store: self.store)
+					Spacer()
+				}
+				if viewStore.state.isShowingFilters {
+					FiltersWrapper(store: store).transition(.moveAndFade)
+				}
 			}
 			.fullScreenCover(isPresented:
 								Binding(get: { activeSheet(state: viewStore.state) != nil },

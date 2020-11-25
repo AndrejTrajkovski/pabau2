@@ -208,9 +208,3 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
 			userDefaults: $0.userDefaults)
 	})
 )
-
-extension AnyTransition {
-    static var moveAndFade: AnyTransition {
-        AnyTransition.move(edge: .trailing)
-    }
-}
