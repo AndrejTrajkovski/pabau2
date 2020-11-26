@@ -11,10 +11,16 @@ public enum PhotoCompareAction {
 
 struct PhotoCompareState: Equatable {
     public init() { }
-    var selectedImage: String = "emily"
     
-    var images: [String] = (1...9).map { "dummy\($0)" }
-    var client: Client?
+    public init(date: Date?, photos: [PhotoViewModel]) {
+        self.date = date
+        self.photos = photos
+        selectedPhoto = self.photos.first
+    }
+    
+    var selectedPhoto: PhotoViewModel?
+    var date: Date?
+    var photos: [PhotoViewModel] = []
 }
 
 public struct PhotosEnvironment {
@@ -22,10 +28,12 @@ public struct PhotosEnvironment {
     var userDefaults: UserDefaultsConfig
 }
 
-var photoCompareReducer = Reducer<PhotoCompareState, PhotoCompareAction, PhotosEnvironment> { state, action, environment in
+var photoCompareReducer = Reducer<PhotoCompareState, CCPhotosAction, PhotosEnvironment> { state, action, environment in
     switch action {
-    case .didChangeSelectedPhoto(let image):
-        state.selectedImage = image
+    case .didTouchPhoto(let photoId):
+        if let photo = state.photos.filter { $0.id == photoId}.first {
+            state.selectedPhoto = photo
+        }
     default:
         break
     }
@@ -35,24 +43,26 @@ var photoCompareReducer = Reducer<PhotoCompareState, PhotoCompareAction, PhotosE
 
 struct PhotoCompareView: View {
     
-    let store: Store<PhotoCompareState, PhotoCompareAction>
-    
-    var images: [String] = (1...9).map { "dummy\($0)" }
+    let store: Store<PhotoCompareState, CCPhotosAction>
     
     var body: some View {
         print("PhotoCompareView")
         return WithViewStore(self.store) { viewStore in
             VStack {
                 ZStack {
-                    Image(viewStore.selectedImage)
-                        .resizable()
+                    if let photo = viewStore.selectedPhoto {
+                        PhotoCell(photo: photo)
+                    }
+  
                     VStack {
                         Spacer()
                         Text("Today")
                             .font(.regular32)
                             .foregroundColor(.white)
-                        Text("23/11/2020")
-                            .foregroundColor(.white)
+                        if let _ = viewStore.date {
+                            Text("\(viewStore.date!)")
+                                .foregroundColor(.white)
+                        }
                         Spacer()
                             .frame(height: 20)
                     }
@@ -60,12 +70,11 @@ struct PhotoCompareView: View {
                 Spacer()
                 ScrollView(.horizontal) {
                     HStack(spacing: 20) {
-                        ForEach(self.images, id: \.self) { item in
+                        ForEach(viewStore.photos) { item in
                             Button(action: {
-                                viewStore.send(.didChangeSelectedPhoto(item))
+                                
                             }) {
-                                Image(item)
-                                    .resizable()
+                                PhotoCell(photo: item)
                                     .frame(width: 90, height: 110)
                             }
                         }

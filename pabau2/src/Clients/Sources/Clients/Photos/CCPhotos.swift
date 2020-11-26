@@ -2,6 +2,7 @@ import SwiftUI
 import ComposableArchitecture
 import Form
 import Util
+import Model
 
 public let ccPhotosReducer: Reducer<CCPhotosState, CCPhotosAction, ClientsEnvironment> = Reducer.combine(
 	ClientCardChildReducer<[Date: [PhotoViewModel]]>().reducer.pullback(
@@ -43,11 +44,23 @@ public enum CCPhotosViewMode: Int, Equatable, CaseIterable, CustomStringConverti
 	}
 }
 
+public enum CCPhotosViewDisplayMode: Int, Equatable {
+    case photos
+    case compare
+}
+
 public struct CCPhotosState: ClientCardChildParentState, Equatable {
 	var childState: ClientCardChildState<[Date: [PhotoViewModel]]>
 	var selectedIds: [PhotoVariantId]
 	var selectedDate: Date?
 	var mode: CCPhotosViewMode = .grouped
+    var displayMode: CCPhotosViewDisplayMode = .photos
+}
+
+extension CCPhotosState {
+    var photoCompareState: PhotoCompareState {
+        .init(date: self.selectedDate, photos: self.childState.state[self.selectedDate!]!)
+    }
 }
 
 public enum CCPhotosAction: Equatable {
@@ -60,22 +73,24 @@ public enum CCPhotosAction: Equatable {
 struct CCPhotos: ClientCardChild {
 	let store: Store<CCPhotosState, CCPhotosAction>
 	var body: some View {
-		WithViewStore(self.store.scope(state: { $0.mode }).actionless) { viewStore in
-			Group {
-				if viewStore.state == .grouped {
-					CCGroupedPhotos(store:
-						self.store.scope(state: { $0.childState.state },
-														 action: { $0 })
-					)
-				} else if viewStore.state == .expanded {
-					CCExpandedPhotos(store:
-						self.store.scope(state: { $0 },
-						action: { $0 })
-					)
-				} else {
-					EmptyView()
-				}
-			}
+        WithViewStore(self.store.scope(state: { $0 }).actionless) { viewStore in
+            Group {
+                if viewStore.mode == .grouped {
+                    CCGroupedPhotos(store: self.store.scope(state: { $0.childState.state },
+                                                            action: { $0 }))
+                } else if viewStore.mode == .expanded {
+                    NavigationLink.emptyHidden(true,
+                                               PhotoCompareView(store: self.store.scope(state: { $0.photoCompareState },
+                                                                                        action: { $0 })))
+//                    CCExpandedPhotos(store:
+//                        self.store.scope(state: { $0 },
+//                        action: { $0 })
+//                    )
+                    
+                } else {
+                    EmptyView()
+                }
+            }
 		}.debug("CCPhotos")
 	}
 }
