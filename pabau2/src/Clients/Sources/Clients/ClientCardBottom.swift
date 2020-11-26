@@ -41,7 +41,7 @@ struct ClientCardBottom: View {
 			self.activeItem = state.activeItem
 			self.photosViewMode = state.list.photos.mode
 			self.isEditingClient = state.list.details.editingClient != nil
-			self.isEditPhotosBtnDisabled = state.list.photos.selectedIds.isEmpty
+            self.isEditPhotosBtnDisabled = false
             self.isSelectedPhoto = !state.list.photos.selectedIds.isEmpty
 		}
 	}
@@ -67,7 +67,7 @@ struct ClientCardBottom: View {
                                         )
 					ClientCardChildWrapper(store: self.store.scope(state: { $0 },
                                                                    action: { $0 }))
-				}
+                }
 			}
 		}.navigationBarItems(leading:
 			MyBackButton(text: Texts.back, action: { self.viewStore.send(.backBtnTap) }),
@@ -93,6 +93,7 @@ struct ClientCardBottom: View {
 
 	var photosTrailingBtns: some View {
 		HStack {
+            /*
 			Picker.init(selection: viewStore.binding(get: { $0.photosViewMode },
 													send: { .child(.photos(.switchMode($0)))
 			}), label: EmptyView()) {
@@ -100,6 +101,7 @@ struct ClientCardBottom: View {
 						Text(String(mode.description)).tag(mode.rawValue)
 					}
 			}.pickerStyle(SegmentedPickerStyle())
+            */
 			Button(action: {
 //				self.viewStore.send(.child(.details(.edit)))
 			}, label: { Text(Texts.edit) })
