@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		74DD9D34256EAB1A00CC3920 /* Communication in Frameworks */ = {isa = PBXBuildFile; productRef = 74DD9D33256EAB1A00CC3920 /* Communication */; };
+		74DD9D39256EB41200CC3920 /* Intercom.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74DD9D37256EB28C00CC3920 /* Intercom.framework */; };
+		74DD9D3A256EB41200CC3920 /* Intercom.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 74DD9D37256EB28C00CC3920 /* Intercom.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		82182C4725265C5D00E5479F /* Calendar in Frameworks */ = {isa = PBXBuildFile; productRef = 82182C4625265C5D00E5479F /* Calendar */; };
 		82182C4925265C5D00E5479F /* Clients in Frameworks */ = {isa = PBXBuildFile; productRef = 82182C4825265C5D00E5479F /* Clients */; };
 		82182C4B25265C5D00E5479F /* EmployeesFilter in Frameworks */ = {isa = PBXBuildFile; productRef = 82182C4A25265C5D00E5479F /* EmployeesFilter */; };
@@ -33,6 +36,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				74DD9D3A256EB41200CC3920 /* Intercom.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -40,6 +44,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		74DD9D31256EAB0E00CC3920 /* Communication */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Communication; sourceTree = "<group>"; };
+		74DD9D37256EB28C00CC3920 /* Intercom.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intercom.framework; path = pabau2/Intercom.framework; sourceTree = "<group>"; };
 		82018FE62567D59300E740A9 /* AddAppointment */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AddAppointment; sourceTree = "<group>"; };
 		82018FE72569657100E740A9 /* AddBookout */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AddBookout; sourceTree = "<group>"; };
 		820A343D252E0E1100C6AB29 /* JZCalendarWeekView */ = {isa = PBXFileReference; lastKnownFileType = folder; path = JZCalendarWeekView; sourceTree = "<group>"; };
@@ -74,6 +80,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74DD9D39256EB41200CC3920 /* Intercom.framework in Frameworks */,
 				82182C4F25265C5D00E5479F /* FSCalendarSwiftUI in Frameworks */,
 				82182C4D25265C5D00E5479F /* Form in Frameworks */,
 				82182C4725265C5D00E5479F /* Calendar in Frameworks */,
@@ -81,6 +88,7 @@
 				82182C5125265C5D00E5479F /* Journey in Frameworks */,
 				82182C4B25265C5D00E5479F /* EmployeesFilter in Frameworks */,
 				82182C5525265C5D00E5479F /* Model in Frameworks */,
+				74DD9D34256EAB1A00CC3920 /* Communication in Frameworks */,
 				82182C4925265C5D00E5479F /* Clients in Frameworks */,
 				82182C5725265C5D00E5479F /* Util in Frameworks */,
 			);
@@ -100,6 +108,7 @@
 		82B02FFF23F2581C0015B0B4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				74DD9D37256EB28C00CC3920 /* Intercom.framework */,
 				82104536240CE524004EA838 /* libswiftXCTest.tbd */,
 				82104534240CE516004EA838 /* XCTest.framework */,
 			);
@@ -146,6 +155,7 @@
 		82CACDF7241027320021E1DE /* src */ = {
 			isa = PBXGroup;
 			children = (
+				74DD9D31256EAB0E00CC3920 /* Communication */,
 				82533425256D8393005755D6 /* SharedComponents */,
 				82533424256D0C69005755D6 /* AddShift */,
 				82018FE72569657100E740A9 /* AddBookout */,
@@ -205,6 +215,7 @@
 				82182C5225265C5D00E5479F /* Login */,
 				82182C5425265C5D00E5479F /* Model */,
 				82182C5625265C5D00E5479F /* Util */,
+				74DD9D33256EAB1A00CC3920 /* Communication */,
 			);
 			productName = pabau2;
 			productReference = 82BE2F4423D97D9C00B3678A /* pabau2.app */;
@@ -431,7 +442,6 @@
 		82BE2F5923D97D9F00B3678A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
@@ -440,6 +450,10 @@
 				DEVELOPMENT_TEAM = 7M6BMQR36X;
 				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/pabau2",
+				);
 				INFOPLIST_FILE = pabau2/src/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -457,7 +471,6 @@
 		82BE2F5A23D97D9F00B3678A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
@@ -466,6 +479,10 @@
 				DEVELOPMENT_TEAM = 7M6BMQR36X;
 				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/pabau2",
+				);
 				INFOPLIST_FILE = pabau2/src/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -523,6 +540,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		74DD9D33256EAB1A00CC3920 /* Communication */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Communication;
+		};
 		82182C4625265C5D00E5479F /* Calendar */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Calendar;
