@@ -8,6 +8,7 @@ import JZCalendarWeekView
 import AddAppointment
 import AddBookout
 import AddShift
+import Filters
 
 public struct CalendarContainerState: Equatable {
 	public init(addAppointment: AddAppointmentState?, calendar: CalendarState) {
@@ -148,7 +149,9 @@ extension CalendarState {
 				chosenLocationsIds: self.chosenLocationsIds,
 				subsections: self.rooms,
 				chosenSubsectionsIds: self.chosenRoomsIds,
-				expandedLocationsIds: self.expandedLocationsIds)
+				expandedLocationsIds: self.expandedLocationsIds,
+				isShowingFilters: self.isShowingFilters
+			)
 		}
 		set {
 			self.locations = newValue.locations
@@ -156,6 +159,7 @@ extension CalendarState {
 			self.rooms = newValue.subsections
 			self.chosenRoomsIds = newValue.chosenSubsectionsIds
 			self.expandedLocationsIds = newValue.expandedLocationsIds
+			self.isShowingFilters = newValue.isShowingFilters
 		}
 	}
 
@@ -166,7 +170,8 @@ extension CalendarState {
 				chosenLocationsIds: self.chosenLocationsIds,
 				subsections: self.employees,
 				chosenSubsectionsIds: self.chosenEmployeesIds,
-				expandedLocationsIds: self.expandedLocationsIds)
+				expandedLocationsIds: self.expandedLocationsIds,
+				isShowingFilters: self.isShowingFilters)
 		}
 		set {
 			self.locations = newValue.locations
@@ -174,6 +179,7 @@ extension CalendarState {
 			self.employees = newValue.subsections
 			self.chosenEmployeesIds = newValue.chosenSubsectionsIds
 			self.expandedLocationsIds = newValue.expandedLocationsIds
+			self.isShowingFilters = newValue.isShowingFilters
 		}
 	}
 }

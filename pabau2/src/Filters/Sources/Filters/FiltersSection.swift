@@ -3,7 +3,7 @@ import ComposableArchitecture
 import Model
 
 public struct FilterSectionReducer<S: Identifiable & Equatable & Named> {
-	let reducer: Reducer<FilterSectionState<S>, FilterSectionAction<S>, CalendarEnvironment> = Reducer.combine(
+	let reducer: Reducer<FilterSectionState<S>, FilterSectionAction<S>, Any> = Reducer.combine(
 		SelectFilterReducer<S>().reducer.forEach(
 			state: \.rows,
 			action: /FilterSectionAction<S>.rows,
@@ -56,24 +56,24 @@ public enum FilterSectionAction<S: Identifiable & Equatable> {
 
 struct FilterSection<S: Identifiable & Equatable & Named> : View {
 	let store: Store<FilterSectionState<S>, FilterSectionAction<S>>
-	
 	var body: some View {
 		WithViewStore(store) { viewStore in
-			Section {
-				FilterSectionHeader(store: store.scope(state: { $0.header },
-													   action: { .header($0) })
-				).frame(maxHeight: .infinity)
-				if viewStore.isExpanded {
-					ForEachStore(store.scope(state: { $0.rows },
-											 action: FilterSectionAction<S>.rows(id:action:)),
-								 content: { rowStore in
-									SelectableRow(store: rowStore,
-												  textFont: Font.regular15)
-										.padding()
-								 }
-					)
-				}
-			}
+			Section(header:
+						FilterSectionHeader(store: store.scope(state: { $0.header },
+															   action: { .header($0) })
+						).frame(height: 40)
+					, content: {
+						if viewStore.isExpanded {
+							ForEachStore(store.scope(state: { $0.rows },
+													 action: FilterSectionAction<S>.rows(id:action:)),
+										 content: { rowStore in
+											SelectableRow(store: rowStore,
+														  textFont: Font.regular15)
+										 }
+							)
+						}
+					}
+			)
 			.listRowInsets(EdgeInsets(
 							top: 0,
 							leading: 0,

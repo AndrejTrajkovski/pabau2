@@ -1,6 +1,7 @@
 import SwiftUI
 import ComposableArchitecture
 import Model
+import Filters
 
 struct FiltersWrapper: View {
 	let store: Store<CalendarState, CalendarAction>

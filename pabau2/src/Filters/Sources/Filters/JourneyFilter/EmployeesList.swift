@@ -3,11 +3,11 @@ import Util
 import Model
 import ComposableArchitecture
 
-public struct EmployeesFilter: View {
-	let store: Store<EmployeesFilterState, EmployeesFilterAction>
-	@ObservedObject var viewStore: ViewStore<EmployeesFilterState, EmployeesFilterAction>
+public struct JourneyFilter: View {
+	let store: Store<JourneyFilterState, JourneyFilterAction>
+	@ObservedObject var viewStore: ViewStore<JourneyFilterState, JourneyFilterAction>
 	
-	public init(_ store: Store<EmployeesFilterState, EmployeesFilterAction>) {
+	public init(_ store: Store<JourneyFilterState, JourneyFilterAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
@@ -61,34 +61,5 @@ private struct EmployeeRow: View {
 		}.onTapGesture {
 			self.didSelectEmployee(self.employee)
 		}.listRowBackground(Color.employeeBg)
-	}
-}
-
-struct EmployeeHeader: View {
-	let onTap: () -> Void
-	var body: some View {
-		FilterHeader(title: Texts.employee,
-					 image: { Image(systemName: "person").font(.system(size: 28)) },
-					 didTouchHeaderButton: onTap
-		)
-	}
-}
-
-public struct FilterHeader<FilterImage: View>: View {
-	let title: String
-	let image: () -> FilterImage
-	let didTouchHeaderButton: () -> Void
-	public var body: some View {
-		HStack {
-			Button (action: {
-				self.didTouchHeaderButton()
-			}, label: { image() })
-			Text(title)
-				.foregroundColor(.black)
-				.font(Font.semibold20)
-				.autocapitalization(.words)
-		}
-		.padding(.bottom)
-		.background(Color.employeeBg)
 	}
 }

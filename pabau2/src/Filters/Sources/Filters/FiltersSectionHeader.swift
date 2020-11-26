@@ -2,7 +2,7 @@ import SwiftUI
 import ComposableArchitecture
 import Model
 
-public let filterSectionHeaderReducer: Reducer<FilterSectionHeaderState, FilterSectionHeaderAction, CalendarEnvironment> = .combine(
+public let filterSectionHeaderReducer: Reducer<FilterSectionHeaderState, FilterSectionHeaderAction, Any> = .combine(
 	SelectFilterReducer<Location>().reducer.pullback(
 		state: \.selectable,
 		action: /FilterSectionHeaderAction.select,
@@ -11,7 +11,7 @@ public let filterSectionHeaderReducer: Reducer<FilterSectionHeaderState, FilterS
 		switch action {
 		case .expand(let value):
 			state.isExpanded = value
-		case .select(_):
+		case .select:
 			break
 		}
 		return .none
@@ -38,15 +38,12 @@ struct FilterSectionHeader: View {
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			HStack {
-				Text(viewStore.location.name).font(Font.semibold20)
+				Text(viewStore.location.name)
 				Spacer()
-//				CheckmarkView(isSelected: viewStore.selectable.isSelected)
-//					.onTapGesture {
-//						viewStore.send(.select(.select))
-//					}
 				ExpandableButton(expanded: viewStore.binding(get: { $0.isExpanded },
 															 send: { .expand($0) }))
 			}.padding()
-		}
+		}.foregroundColor(.black)
+		.font(Font.semibold17)
 	}
 }

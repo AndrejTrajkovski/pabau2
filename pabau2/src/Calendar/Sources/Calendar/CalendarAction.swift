@@ -3,6 +3,7 @@ import Model
 import Foundation
 import AddBookout
 import AddShift
+import Filters
 
 public enum CalendarAction {
 	case datePicker(CalendarDatePickerAction)

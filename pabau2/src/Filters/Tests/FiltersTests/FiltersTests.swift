@@ -1,12 +1,12 @@
 import XCTest
-@testable import EmployeesFilter
+@testable import Filters
 
-final class EmployeesFilterTests: XCTestCase {
+final class FiltersTests: XCTestCase {
     func testExample() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
-        XCTAssertEqual(EmployeesFilter().text, "Hello, World!")
+        XCTAssertEqual(Filters().text, "Hello, World!")
     }
 
     static var allTests = [

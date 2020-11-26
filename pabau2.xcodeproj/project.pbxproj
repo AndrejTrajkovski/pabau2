@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		82182C4725265C5D00E5479F /* Calendar in Frameworks */ = {isa = PBXBuildFile; productRef = 82182C4625265C5D00E5479F /* Calendar */; };
 		82182C4925265C5D00E5479F /* Clients in Frameworks */ = {isa = PBXBuildFile; productRef = 82182C4825265C5D00E5479F /* Clients */; };
-		82182C4B25265C5D00E5479F /* EmployeesFilter in Frameworks */ = {isa = PBXBuildFile; productRef = 82182C4A25265C5D00E5479F /* EmployeesFilter */; };
 		82182C4D25265C5D00E5479F /* Form in Frameworks */ = {isa = PBXBuildFile; productRef = 82182C4C25265C5D00E5479F /* Form */; };
 		82182C4F25265C5D00E5479F /* FSCalendarSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 82182C4E25265C5D00E5479F /* FSCalendarSwiftUI */; };
 		82182C5125265C5D00E5479F /* Journey in Frameworks */ = {isa = PBXBuildFile; productRef = 82182C5025265C5D00E5479F /* Journey */; };
@@ -45,6 +44,7 @@
 		820A343D252E0E1100C6AB29 /* JZCalendarWeekView */ = {isa = PBXFileReference; lastKnownFileType = folder; path = JZCalendarWeekView; sourceTree = "<group>"; };
 		82104534240CE516004EA838 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		82104536240CE524004EA838 /* libswiftXCTest.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftXCTest.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/libswiftXCTest.tbd; sourceTree = DEVELOPER_DIR; };
+		8246DB37256FCE2300F5D87E /* Filters */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Filters; sourceTree = "<group>"; };
 		82533424256D0C69005755D6 /* AddShift */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AddShift; sourceTree = "<group>"; };
 		82533425256D8393005755D6 /* SharedComponents */ = {isa = PBXFileReference; lastKnownFileType = folder; path = SharedComponents; sourceTree = "<group>"; };
 		825BE7E92436226300422910 /* checkIn.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; name = checkIn.mp4; path = pabau2/src/Assets.xcassets/checkIn.mp4; sourceTree = "<group>"; };
@@ -54,7 +54,6 @@
 		8297A2B423D9BA0200D091FF /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8298A11324D486960079BFE9 /* Clients */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Clients; sourceTree = "<group>"; };
 		829D61FF24D18CF90049D5D0 /* FSCalendarSwiftUI */ = {isa = PBXFileReference; lastKnownFileType = folder; path = FSCalendarSwiftUI; sourceTree = "<group>"; };
-		82A7803A250A6B95006D6DAA /* EmployeesFilter */ = {isa = PBXFileReference; lastKnownFileType = folder; path = EmployeesFilter; sourceTree = "<group>"; };
 		82BE2F4423D97D9C00B3678A /* pabau2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pabau2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		82BE2F4723D97D9C00B3678A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		82BE2F4923D97D9C00B3678A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -79,7 +78,6 @@
 				82182C4725265C5D00E5479F /* Calendar in Frameworks */,
 				82182C5325265C5D00E5479F /* Login in Frameworks */,
 				82182C5125265C5D00E5479F /* Journey in Frameworks */,
-				82182C4B25265C5D00E5479F /* EmployeesFilter in Frameworks */,
 				82182C5525265C5D00E5479F /* Model in Frameworks */,
 				82182C4925265C5D00E5479F /* Clients in Frameworks */,
 				82182C5725265C5D00E5479F /* Util in Frameworks */,
@@ -146,11 +144,11 @@
 		82CACDF7241027320021E1DE /* src */ = {
 			isa = PBXGroup;
 			children = (
+				8246DB37256FCE2300F5D87E /* Filters */,
 				82533425256D8393005755D6 /* SharedComponents */,
 				82533424256D0C69005755D6 /* AddShift */,
 				82018FE72569657100E740A9 /* AddBookout */,
 				82018FE62567D59300E740A9 /* AddAppointment */,
-				82A7803A250A6B95006D6DAA /* EmployeesFilter */,
 				82D8240B24F648CD001F73C8 /* Calendar */,
 				828566C024DF3D5B009FA63E /* Form */,
 				8298A11324D486960079BFE9 /* Clients */,
@@ -198,7 +196,6 @@
 			packageProductDependencies = (
 				82182C4625265C5D00E5479F /* Calendar */,
 				82182C4825265C5D00E5479F /* Clients */,
-				82182C4A25265C5D00E5479F /* EmployeesFilter */,
 				82182C4C25265C5D00E5479F /* Form */,
 				82182C4E25265C5D00E5479F /* FSCalendarSwiftUI */,
 				82182C5025265C5D00E5479F /* Journey */,
@@ -530,10 +527,6 @@
 		82182C4825265C5D00E5479F /* Clients */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Clients;
-		};
-		82182C4A25265C5D00E5479F /* EmployeesFilter */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = EmployeesFilter;
 		};
 		82182C4C25265C5D00E5479F /* Form */ = {
 			isa = XCSwiftPackageProductDependency;

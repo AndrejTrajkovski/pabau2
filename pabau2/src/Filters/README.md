@@ -1,3 +1,3 @@
-# EmployeesFilter
+# Filters
 
 A description of this package.

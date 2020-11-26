@@ -3,7 +3,7 @@ import ComposableArchitecture
 
 public struct SelectFilterReducer<S: Identifiable & Equatable & Named> {
 	public init() {}
-	public let reducer: Reducer<SelectableState<S>, SelectableAction, CalendarEnvironment> = .init { state, action, env in
+	public let reducer: Reducer<SelectableState<S>, SelectableAction, Any> = .init { state, action, env in
 		switch action {
 		case .select:
 			state.isSelected.toggle()
@@ -37,6 +37,8 @@ struct SelectableRow<T: Equatable & Identifiable & Named>: View {
 				viewStore.send(.select)
 			}
 		}.listRowBackground(Color.employeeBg)
+		.padding()
+		.frame(height: 44)
 		.frame(maxWidth: .infinity, alignment: .leading)
 	}
 }

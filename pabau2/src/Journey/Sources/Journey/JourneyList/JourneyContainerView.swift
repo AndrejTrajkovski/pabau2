@@ -8,7 +8,7 @@ import SwiftDate
 import CasePaths
 import Form
 import Overture
-import EmployeesFilter
+import Filters
 
 public typealias JourneyEnvironment = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
 
