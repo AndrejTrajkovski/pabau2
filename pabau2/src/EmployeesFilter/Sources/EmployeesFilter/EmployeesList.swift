@@ -64,16 +64,26 @@ private struct EmployeeRow: View {
 	}
 }
 
-private struct EmployeeHeader: View {
-	let didTouchHeaderButton: () -> Void
+struct EmployeeHeader: View {
+	let onTap: () -> Void
 	var body: some View {
+		FilterHeader(title: Texts.employee,
+					 image: { Image(systemName: "person").font(.system(size: 28)) },
+					 didTouchHeaderButton: onTap
+		)
+	}
+}
+
+public struct FilterHeader<FilterImage: View>: View {
+	let title: String
+	let image: () -> FilterImage
+	let didTouchHeaderButton: () -> Void
+	public var body: some View {
 		HStack {
 			Button (action: {
 				self.didTouchHeaderButton()
-			}, label: {
-				Image(systemName: "person").font(.system(size: 28))
-			})
-			Text(Texts.employee)
+			}, label: { image() })
+			Text(title)
 				.foregroundColor(.black)
 				.font(Font.semibold20)
 				.autocapitalization(.words)

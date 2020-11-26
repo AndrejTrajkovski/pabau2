@@ -58,25 +58,29 @@ struct FilterSection<S: Identifiable & Equatable & Named> : View {
 	let store: Store<FilterSectionState<S>, FilterSectionAction<S>>
 	
 	var body: some View {
-		Section {
-			FilterSectionHeader(store: store.scope(state: { $0.header },
-												   action: { .header($0) })
-			).frame(maxHeight: .infinity)
-			ForEachStore(store.scope(state: { $0.rows },
-									 action: FilterSectionAction<S>.rows(id:action:)),
-						 content: { rowStore in
-							SelectableRow(store: rowStore,
-										  inHeader: false)
-								.padding()
-						 }
+		WithViewStore(store) { viewStore in
+			Section {
+				FilterSectionHeader(store: store.scope(state: { $0.header },
+													   action: { .header($0) })
+				).frame(maxHeight: .infinity)
+				if viewStore.isExpanded {
+					ForEachStore(store.scope(state: { $0.rows },
+											 action: FilterSectionAction<S>.rows(id:action:)),
+								 content: { rowStore in
+									SelectableRow(store: rowStore,
+												  textFont: Font.regular15)
+										.padding()
+								 }
+					)
+				}
+			}
+			.listRowInsets(EdgeInsets(
+							top: 0,
+							leading: 0,
+							bottom: 0,
+							trailing: 0)
 			)
+			.background(Color.employeeBg)
 		}
-		.listRowInsets(EdgeInsets(
-						top: 0,
-						leading: 0,
-						bottom: 0,
-						trailing: 0)
-		)
-		.background(Color.employeeBg)
 	}
 }

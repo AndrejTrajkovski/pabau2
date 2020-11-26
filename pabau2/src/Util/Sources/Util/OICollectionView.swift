@@ -57,44 +57,6 @@ public func singleLineLayout<Elements>(for elements: Elements, containerSize: CG
 	return result
 }
 
-public struct OICollectionView<Elements, Content>: View where Elements: RandomAccessCollection, Content: View, Elements.Element: Identifiable {
-	public init (
-		data: Elements,
-		layout: @escaping (Elements, CGSize, [Elements.Element.ID: CGSize]) -> [Elements.Element.ID: CGSize],
-		content: @escaping (Elements.Element) -> Content
-	) {
-		self.data = data
-		self.layout = layout
-		self.content = content
-	}
-
-	var data: Elements
-	var layout: (Elements, CGSize, [Elements.Element.ID: CGSize]) -> [Elements.Element.ID: CGSize]
-	var content: (Elements.Element) -> Content
-	@State private var sizes: [Elements.Element.ID: CGSize] = [:]
-
-	private func bodyHelper(containerSize: CGSize, offsets: [Elements.Element.ID: CGSize]) -> some View {
-		ZStack(alignment: .topLeading) {
-			ForEach(data) {
-				PropagateSize(content: self.content($0), id: $0.id)
-					.offset(offsets[$0.id] ?? CGSize.zero)
-					.animation(.default)
-			}
-			Color.clear
-				.frame(width: containerSize.width, height: containerSize.height)
-				.fixedSize()
-		}.onPreferenceChange(CollectionViewSizeKey.self) {
-			self.sizes = $0
-		}.background(Color.red)
-	}
-
-	public var body: some View {
-		GeometryReaderPatch { proxy in
-			self.bodyHelper(containerSize: proxy.size, offsets: self.layout(self.data, proxy.size, self.sizes))
-		}
-	}
-}
-
 struct CollectionViewSizeKey<ID: Hashable>: PreferenceKey {
 	typealias Value = [ID: CGSize]
 

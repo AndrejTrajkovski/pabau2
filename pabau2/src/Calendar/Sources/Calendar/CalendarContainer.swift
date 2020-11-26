@@ -109,6 +109,10 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 		state: \.employeeFilters,
 		action: /CalendarAction.employeeFilters,
 		environment: { $0 }),
+	FiltersReducer<Room>().reducer.pullback(
+		state: \.roomFilters,
+		action: /CalendarAction.roomFilters,
+		environment: { $0 }),
 	.init { state, action, _ in
 		switch action {
 		case .datePicker: break
@@ -144,7 +148,7 @@ public struct CalendarContainer: View {
 
 	public var body: some View {
 		WithViewStore(store) { viewStore in
-			ZStack {
+			ZStack(alignment: .topTrailing) {
 				VStack(spacing: 0) {
 					CalTopBar(store: self.store)
 					CalendarDatePicker.init(
@@ -159,7 +163,8 @@ public struct CalendarContainer: View {
 					Spacer()
 				}
 				if viewStore.state.isShowingFilters {
-					FiltersWrapper(store: store).transition(.moveAndFade)
+					FiltersWrapper(store: store)
+						.transition(.moveAndFade)
 				}
 			}
 			.fullScreenCover(isPresented:
@@ -236,6 +241,7 @@ struct CalTopBar: View {
 					.padding()
 					.exploding(.center)
 					Button.init(Texts.filters, action: {
+						viewStore.send(.toggleFilters)
 					})
 					.padding()
 					.padding(.trailing, 20)

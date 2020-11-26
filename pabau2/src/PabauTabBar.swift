@@ -145,7 +145,7 @@ struct PabauTabBar: View {
 			}
 			if self.viewStore.state.isShowingEmployees {
 				EmployeesFilter(
-					self.store.scope(state: { $0.employeesFilter } ,
+					self.store.scope(state: { $0.employeesFilter },
 					action: { .employeesFilter($0)})
 				).transition(.moveAndFade)
 			}

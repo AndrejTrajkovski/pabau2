@@ -55,14 +55,16 @@ public enum FiltersAction<S: Identifiable & Equatable & Named> {
 }
 
 struct Filters<S: Identifiable & Equatable & Named>: View {
-	
+
 	let store: Store<FiltersState<S>, FiltersAction<S>>
-	
+
 	var body: some View {
-		List {
-			ForEachStore(store.scope(state: { $0.rows },
-									 action: FiltersAction.rows(id:action:)),
-						 content: FilterSection.init(store:))
+		Form {
+			List {
+				ForEachStore(store.scope(state: { $0.rows },
+										 action: FiltersAction.rows(id:action:)),
+							 content: FilterSection.init(store:))
+			}
 		}
 		.frame(width: 302)
 		.background(Color.white.shadow(color: .employeeShadow, radius: 40.0, x: -20, y: 2))

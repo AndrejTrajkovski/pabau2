@@ -25,21 +25,28 @@ public enum SelectableAction {
 struct SelectableRow<T: Equatable & Identifiable & Named>: View {
 
 	let store: Store<SelectableState<T>, SelectableAction>
-	let inHeader: Bool
-
+	let textFont: Font
+	
 	public var body: some View {
 		WithViewStore(store) { viewStore in
 			HStack {
-				Image(systemName: viewStore.isSelected ? "checkmark.circle.fill" : "circle")
-					.resizable()
-					.frame(width: 22, height: 22)
-					.foregroundColor(viewStore.isSelected ? Color.deepSkyBlue : Color.gray192)
+				CheckmarkView(isSelected: viewStore.isSelected)
 				Text(viewStore.item.name)
-					.font(inHeader ? Font.semibold20 : Font.regular15)
+					.font(textFont)
 			}.onTapGesture {
 				viewStore.send(.select)
-			}.listRowBackground(Color.employeeBg)
-			.frame(maxWidth: .infinity, alignment: .leading)
-		}
+			}
+		}.listRowBackground(Color.employeeBg)
+		.frame(maxWidth: .infinity, alignment: .leading)
+	}
+}
+
+struct CheckmarkView: View {
+	let isSelected: Bool
+	var body: some View {
+		Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+			.resizable()
+			.frame(width: 22, height: 22)
+			.foregroundColor(isSelected ? Color.deepSkyBlue : Color.gray192)
 	}
 }

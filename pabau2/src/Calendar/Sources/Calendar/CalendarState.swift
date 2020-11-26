@@ -140,7 +140,7 @@ extension CalendarState {
 			}
 		}
 	}
-	
+
 	var roomFilters: FiltersState<Room> {
 		get {
 			FiltersState(
@@ -158,7 +158,7 @@ extension CalendarState {
 			self.expandedLocationsIds = newValue.expandedLocationsIds
 		}
 	}
-	
+
 	var employeeFilters: FiltersState<Employee> {
 		get {
 			FiltersState(
@@ -176,8 +176,6 @@ extension CalendarState {
 			self.expandedLocationsIds = newValue.expandedLocationsIds
 		}
 	}
-	
-	
 }
 
 extension CalendarState {
@@ -212,7 +210,7 @@ extension CalendarState {
 			}
 		}
 		self.expandedLocationsIds = locations.map(\.id)
-		self.isShowingFilters = true
+		self.isShowingFilters = false
 	}
 }
 

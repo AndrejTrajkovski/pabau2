@@ -38,11 +38,12 @@ struct FilterSectionHeader: View {
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			HStack {
-				SelectableRow(store: store.scope(state: { $0.selectable },
-												 action: { .select($0) }),
-							  inHeader: true
-				)
+				Text(viewStore.location.name).font(Font.semibold20)
 				Spacer()
+//				CheckmarkView(isSelected: viewStore.selectable.isSelected)
+//					.onTapGesture {
+//						viewStore.send(.select(.select))
+//					}
 				ExpandableButton(expanded: viewStore.binding(get: { $0.isExpanded },
 															 send: { .expand($0) }))
 			}.padding()

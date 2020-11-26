@@ -171,14 +171,14 @@ public struct JourneyContainerView: View {
 			JourneyList(self.viewStore.state.listedJourneys) {
 				self.viewStore.send(.journey(.selectedJourney($0)))
 			}.loadingView(.constant(self.viewStore.state.isLoadingJourneys),
-										Texts.fetchingJourneys)
+						  Texts.fetchingJourneys)
 			NavigationLink.emptyHidden(self.viewStore.state.isChoosePathwayShown,
-																 ChoosePathway(store: self.store.scope(state: { $0.journey.choosePathway
-																 }, action: { .choosePathway($0)}))
-																	.navigationBarTitle("Choose Pathway")
-																	.customBackButton {
-																		self.viewStore.send(.journey(.choosePathwayBackTap))
-				}
+									   ChoosePathway(store: self.store.scope(state: { $0.journey.choosePathway
+									   }, action: { .choosePathway($0)}))
+									   .navigationBarTitle("Choose Pathway")
+									   .customBackButton {
+										self.viewStore.send(.journey(.choosePathwayBackTap))
+									}
 			)
 			Spacer()
 		}
