@@ -72,7 +72,7 @@ struct ClientCardBottom: View {
 		}.navigationBarItems(leading:
 			MyBackButton(text: Texts.back, action: { self.viewStore.send(.backBtnTap) }),
 												 trailing: self.trailingButtons
-		)
+		).navigationBarBackButtonHidden(true)
 	}
 
 	var trailingButtons: some View {

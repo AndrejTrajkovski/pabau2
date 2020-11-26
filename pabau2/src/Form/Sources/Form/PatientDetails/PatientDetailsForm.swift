@@ -2,6 +2,7 @@ import SwiftUI
 import Util
 import ComposableArchitecture
 import Model
+import SharedComponents
 
 public struct PatientDetailsForm: View {
 	let store: Store<PatientDetails, PatientDetailsAction>
@@ -21,27 +22,28 @@ public struct PatientDetailsForm: View {
 			ScrollView {
 				VStack {
 					PatientDetailsTextFields(vms: self.vms)
-					FourSwitchesSection(
-						swithc1: viewStore.binding(
-							get: { $0.emailComm },
-							send: { .emailComm(.setTo($0)) }),
-						switch2: viewStore.binding(
-							get: { $0.smsComm },
-							send: { .smsComm(.setTo($0)) }),
-						switch3: viewStore.binding(
-							get: { $0.phoneComm },
-							send: { .phoneComm(.setTo($0)) }),
-						switch4: viewStore.binding(
-							get: { $0.postComm },
-							send: { .postComm(.setTo($0)) }),
-						switchNames: [
-							Texts.emailConfirmations,
-							Texts.smsReminders,
-							Texts.phone,
-							Texts.post
-						],
-						title: Texts.communications
-					)
+					Group {
+						SwitchCell(text: Texts.emailConfirmations,
+								   store: store.scope(
+										state: { $0.emailComm },
+										action: { .emailComm($0) })
+						)
+						SwitchCell(text: Texts.smsReminders,
+								   store: store.scope(
+										state: { $0.smsComm },
+										action: { .smsComm($0) })
+						)
+						SwitchCell(text: Texts.phone,
+								   store: store.scope(
+										state: { $0.phoneComm },
+										action: { .phoneComm($0) })
+						)
+						SwitchCell(text: Texts.post,
+								   store: store.scope(
+										state: { $0.postComm },
+										action: { .postComm($0) })
+						)
+					}.switchesSection(title: Texts.communications)
 				}
 		}
 	}

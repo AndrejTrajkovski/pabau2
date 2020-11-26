@@ -1,7 +1,7 @@
 import XCTest
 
-import ListPickerTests
+import AddShiftTests
 
 var tests = [XCTestCaseEntry]()
-tests += ListPickerTests.allTests()
+tests += AddShiftTests.allTests()
 XCTMain(tests)

@@ -1,4 +1,5 @@
 import SwiftUI
+import Util
 
 struct InjectableMarkerPlain: View {
 
@@ -8,7 +9,7 @@ struct InjectableMarkerPlain: View {
 	let increment: String
 
 	var body: some View {
-		GeometryReader { geo in
+		GeometryReaderPatch { geo in
 			VStack(spacing: 0) {
 				InjectableMarkerCircle(
 					increment: self.increment,

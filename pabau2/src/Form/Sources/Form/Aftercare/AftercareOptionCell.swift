@@ -1,14 +1,7 @@
 import SwiftUI
 import ComposableArchitecture
 import Util
-
-public let switchCellReducer = Reducer<Bool, ToggleAction, Any> { state, action, _ in
-	switch action {
-	case .setTo(let value):
-		state = value
-	}
-	return .none
-}
+import SharedComponents
 
 public let aftercareOptionReducer: Reducer<AftercareOption, ToggleAction, Any> = (
 	switchCellReducer.pullback(

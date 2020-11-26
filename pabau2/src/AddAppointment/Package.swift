@@ -15,7 +15,7 @@ let package = Package(
     dependencies: [
 		.package(url: "../Form",
 				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../ListPicker",
+		.package(url: "../SharedComponents",
 						 from: Version.init(stringLiteral: "1.0.0"))
     ],
     targets: [
@@ -23,7 +23,7 @@ let package = Package(
             name: "AddAppointment",
             dependencies: [
 				"Form",
-				"ListPicker"
+				"SharedComponents"
 			]),
         .testTarget(
             name: "AddAppointmentTests",

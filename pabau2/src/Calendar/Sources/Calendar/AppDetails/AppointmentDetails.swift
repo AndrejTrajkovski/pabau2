@@ -2,7 +2,7 @@ import SwiftUI
 import Util
 import ComposableArchitecture
 import Model
-import ListPicker
+import SharedComponents
 
 public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, CalendarEnvironment> = .combine(
 	appDetailsButtonsReducer.pullback(
@@ -10,11 +10,11 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, Calenda
 		action: /AppDetailsAction.buttons,
 		environment: { $0 }
 	),
-	PickerReducer<AppointmentStatus>().reducer.pullback(
+	SingleChoiceLinkReducer<AppointmentStatus>().reducer.pullback(
 		state: \AppDetailsState.chooseStatus,
 		action: /AppDetailsAction.chooseStatus,
 		environment: { $0 }),
-	PickerReducer<CancelReason>().reducer.pullback(
+	SingleChoiceLinkReducer<CancelReason>().reducer.pullback(
 		state: \AppDetailsState.chooseCancelReason,
 		action: /AppDetailsAction.chooseCancelReason,
 		environment: { $0 }),
@@ -38,15 +38,47 @@ public struct AppDetailsState: Equatable {
 	var isCancelActive: Bool = false
 	var chosenCancelReasonId: CancelReason.ID?
 	var cancelReasons = IdentifiedArrayOf(CancelReason.mock)
-	
 	var isStatusActive: Bool = false
 	var appStatuses = IdentifiedArrayOf(AppointmentStatus.mock)
-	
 	var chooseRepeat: ChooseRepeatState = ChooseRepeatState()
-	
-	var chooseCancelReason: PickerContainerState<CancelReason> {
+}
+
+public enum AppDetailsAction {
+	case buttons(AppDetailsButtonsAction)
+	case chooseStatus(SingleChoiceLinkAction<AppointmentStatus>)
+	case chooseCancelReason(SingleChoiceLinkAction<CancelReason>)
+	case addService
+	case chooseRepeat(ChooseRepeatAction)
+	case close
+}
+
+public struct AppointmentDetails: View {
+	public let store: Store<AppDetailsState, AppDetailsAction>
+	@ObservedObject var viewStore: ViewStore<AppDetailsState, AppDetailsAction>
+	public init(store: Store<AppDetailsState, AppDetailsAction>) {
+		self.store = store
+		self.viewStore = ViewStore(store)
+	}
+
+	public var body: some View {
+		VStack {
+			AppDetailsHeader(store: self.store)
+			Spacer().frame(height: 32)
+			AppDetailsInfo(store: self.store)
+			AppDetailsButtons(store: self.store)
+				.fixedSize(horizontal: false, vertical: true)
+			AddEventPrimaryBtn(title: Texts.addService) {
+				self.viewStore.send(.addService)
+			}
+		}.addEventWrapper(
+			onXBtnTap: { self.viewStore.send(.close) })
+	}
+}
+
+extension AppDetailsState {
+	var chooseCancelReason: SingleChoiceLinkState<CancelReason> {
 		get {
-			PickerContainerState<CancelReason>.init(
+			SingleChoiceLinkState<CancelReason>.init(
 				dataSource: cancelReasons,
 				chosenItemId: chosenCancelReasonId,
 				isActive: isCancelActive)
@@ -58,9 +90,9 @@ public struct AppDetailsState: Equatable {
 		}
 	}
 	
-	var chooseStatus: PickerContainerState<AppointmentStatus> {
+	var chooseStatus: SingleChoiceLinkState<AppointmentStatus> {
 		get {
-			PickerContainerState<AppointmentStatus>(
+			SingleChoiceLinkState<AppointmentStatus>(
 				dataSource: appStatuses,
 				chosenItemId: app.status?.id,
 				isActive: isStatusActive)
@@ -91,45 +123,27 @@ public struct AppDetailsState: Equatable {
 			self.isRescheduleActive = newValue.isRescheduleActive
 		}
 	}
-}
 
-public enum AppDetailsAction {
-	case buttons(AppDetailsButtonsAction)
-	case chooseStatus(PickerContainerAction<AppointmentStatus>)
-	case chooseCancelReason(PickerContainerAction<CancelReason>)
-	case addService
-	case chooseRepeat(ChooseRepeatAction)
-	case close
 }
+extension AppointmentStatus: SingleChoiceElement { }
+extension CancelReason: SingleChoiceElement {}
 
-public struct AppointmentDetails: View {
-	public let store: Store<AppDetailsState, AppDetailsAction>
-	@ObservedObject var viewStore: ViewStore<AppDetailsState, AppDetailsAction>
-	public init(store: Store<AppDetailsState, AppDetailsAction>) {
-		self.store = store
-		self.viewStore = ViewStore(store)
+struct AppointmentDetails_Previews: PreviewProvider {
+	static var state: AppDetailsState {
+		AppDetailsState(app: CalAppointment.makeDummy().first!)
 	}
-	
-	public var body: some View {
-		NavigationView {
-			VStack(spacing: 0) {
-				AppDetailsHeader(store: self.store)
-				Spacer().frame(height: 32)
-				AppDetailsInfo(store: self.store)
-				AppDetailsButtons(store: self.store)
-					.fixedSize(horizontal: false, vertical: true)
-				Spacer().frame(height: 32)
-				PrimaryButton(Texts.addService,
-							  isDisabled: false,
-							  { self.viewStore.send(.addService)})
-				Spacer().frame(maxHeight: .infinity)
-			}.padding(60)
-			.navigationBarItems(leading:
-									XButton(onTouch: { self.viewStore.send(.close) })
-			)
-		}.navigationViewStyle(StackNavigationViewStyle())
+
+	static var env: CalendarEnvironment {
+		return CalendarEnvironment(JourneyMockAPI(), StandardUDConfig())
+	}
+
+	static var previews: some View {
+		EmptyView().frame(maxWidth: .infinity,  maxHeight: .infinity)
+			.sheet(isPresented: .constant(true), content: {
+				AppointmentDetails(store: Store.init(initialState: state, reducer: appDetailsReducer, environment: env)
+				)
+			})
+		.previewDevice("iPad (8th generation)")
 	}
 }
 
-extension AppointmentStatus: ListPickerElement { }
-extension CancelReason: ListPickerElement {}

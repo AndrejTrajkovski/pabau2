@@ -3,6 +3,7 @@ import Foundation
 import JZCalendarWeekView
 import ComposableArchitecture
 import SwiftDate
+import AddBookout
 
 public struct EventsBy<SubsectionHeader: Identifiable & Equatable> {
 	
@@ -30,7 +31,7 @@ public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
 	let reducer = Reducer<CalendarSectionViewState<Subsection>, SubsectionCalendarAction<Subsection>, Any> { state, action, _ in
 		switch action {
 		case .addAppointment:
-			break //handled in tabBarReducer
+			break //handled in calendarContainerReducer
 		case .editSections(startDate: let startDate, startKeys: let startIndexes, dropKeys: let dropIndexes, eventId: let eventId):
 			let calId = CalAppointment.Id(rawValue: eventId)
 			var app = state.appointments.appointments[startIndexes.date]?[startIndexes.location]?[startIndexes.subsection]?.remove(id: calId)
@@ -61,6 +62,8 @@ public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
 			let calId = CalAppointment.Id(rawValue: eventId)
 			var app = state.appointments.appointments[keys.date]?[keys.location]?[keys.subsection]?[id: calId]
 			app.map { state.appDetails = AppDetailsState(app: $0) }
+		case .addBookout(startDate: let startDxate, durationMins: let durationMins, dropKeys: let dropKeys):
+			break
 		}
 		return .none
 	}

@@ -40,11 +40,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		82018FE525667A4300E740A9 /* ListPicker */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ListPicker; sourceTree = "<group>"; };
 		82018FE62567D59300E740A9 /* AddAppointment */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AddAppointment; sourceTree = "<group>"; };
+		82018FE72569657100E740A9 /* AddBookout */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AddBookout; sourceTree = "<group>"; };
 		820A343D252E0E1100C6AB29 /* JZCalendarWeekView */ = {isa = PBXFileReference; lastKnownFileType = folder; path = JZCalendarWeekView; sourceTree = "<group>"; };
 		82104534240CE516004EA838 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		82104536240CE524004EA838 /* libswiftXCTest.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftXCTest.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/libswiftXCTest.tbd; sourceTree = DEVELOPER_DIR; };
+		82533424256D0C69005755D6 /* AddShift */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AddShift; sourceTree = "<group>"; };
+		82533425256D8393005755D6 /* SharedComponents */ = {isa = PBXFileReference; lastKnownFileType = folder; path = SharedComponents; sourceTree = "<group>"; };
 		825BE7E92436226300422910 /* checkIn.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; name = checkIn.mp4; path = pabau2/src/Assets.xcassets/checkIn.mp4; sourceTree = "<group>"; };
 		82811EF323E06BCB0066AFDC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		828566C024DF3D5B009FA63E /* Form */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Form; sourceTree = "<group>"; };
@@ -144,8 +146,10 @@
 		82CACDF7241027320021E1DE /* src */ = {
 			isa = PBXGroup;
 			children = (
+				82533425256D8393005755D6 /* SharedComponents */,
+				82533424256D0C69005755D6 /* AddShift */,
+				82018FE72569657100E740A9 /* AddBookout */,
 				82018FE62567D59300E740A9 /* AddAppointment */,
-				82018FE525667A4300E740A9 /* ListPicker */,
 				82A7803A250A6B95006D6DAA /* EmployeesFilter */,
 				82D8240B24F648CD001F73C8 /* Calendar */,
 				828566C024DF3D5B009FA63E /* Form */,

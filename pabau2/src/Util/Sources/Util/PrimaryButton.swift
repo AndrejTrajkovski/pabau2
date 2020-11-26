@@ -1,9 +1,10 @@
 import SwiftUI
 #if !os(macOS)
 public struct PrimaryButton: View {
+	
 	public init (_ text: String,
-							 isDisabled: Bool = false,
-							 _ btnTapAction: @escaping () -> Void) {
+				 isDisabled: Bool = false,
+				 _ btnTapAction: @escaping () -> Void) {
 		self.text = text
 		self.isDisabled = isDisabled
 		self.buttonTapAction = btnTapAction

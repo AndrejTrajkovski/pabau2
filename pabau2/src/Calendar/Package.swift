@@ -18,10 +18,14 @@ let package = Package(
 						 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "https://github.com/AndrejTrajkovski/JZCalendarWeekView.git",
 				 .branch("shifts")),
-		.package(url: "../ListPicker",
-						 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../AddAppointment",
 				 from: Version.init(stringLiteral: "1.0.0")),
+		.package(url: "../SharedComponents",
+				 from: Version.init(stringLiteral: "1.0.0")),
+		.package(url: "../AddBookout",
+				 from: Version.init(stringLiteral: "1.0.0")),
+		.package(url: "../AddShift",
+				 from: Version.init(stringLiteral: "1.0.0"))
 	],
 	targets: [
 		.target(
@@ -29,8 +33,10 @@ let package = Package(
 			dependencies: ["Form",
 						   "FSCalendarSwiftUI",
 						   .product(name: "JZCalendarWeekView", package: "JZCalendarWeekView"),
-						   "ListPicker",
-						   "AddAppointment"
+						   "AddAppointment",
+						   "SharedComponents",
+						   "AddBookout",
+						   "AddShift"
 			]
 		)
 	]

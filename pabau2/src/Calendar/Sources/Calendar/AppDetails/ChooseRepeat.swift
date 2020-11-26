@@ -1,6 +1,6 @@
 import ComposableArchitecture
 import SwiftUI
-import ListPicker
+import SharedComponents
 
 public let chooseRepeatReducer: Reducer<ChooseRepeatState, ChooseRepeatAction, CalendarEnvironment> = .init { state, action, env in
 	switch action {
@@ -20,7 +20,7 @@ public enum RepeatInterval: Int, Identifiable, CaseIterable, Equatable {
 	case everyMonth
 	case everyYear
 	case custom
-	
+
 	var title: String {
 		switch self {
 		case .everyDay: return "Every Day"
@@ -48,10 +48,10 @@ public enum ChooseRepeatAction {
 }
 
 struct ChooseRepeat: View {
-	
+
 	public let store: Store<ChooseRepeatState, ChooseRepeatAction>
 	@ObservedObject var viewStore: ViewStore<ChooseRepeatState, ChooseRepeatAction>
-
+	
 	init(store: Store<ChooseRepeatState, ChooseRepeatAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store)
@@ -60,12 +60,13 @@ struct ChooseRepeat: View {
 	var body: some View {
 		List {
 			ForEach(RepeatInterval.allCases) { item in
-				ListPickerCell(item.title, item == viewStore.state.chosenRepeat?.interval)
+				TextAndCheckMark(item.title,
+								 item == viewStore.state.chosenRepeat?.interval)
 					.onTapGesture {
 						viewStore.send(.onRepeat(item))
 					}
 			}
-			ListPickerCell("No repeat", viewStore.state.chosenRepeat == nil)
+			TextAndCheckMark("No repeat", viewStore.state.chosenRepeat == nil)
 				.onTapGesture {
 					viewStore.send(.onRepeat(nil))
 				}

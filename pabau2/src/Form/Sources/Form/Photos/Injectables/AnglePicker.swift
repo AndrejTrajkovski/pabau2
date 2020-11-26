@@ -1,6 +1,7 @@
 //from: https://github.com/JacopoMangiavacchi/AnglePicker
 
 import SwiftUI
+import Util
 
 public struct AnglePicker : View {
 	public var angle: Binding<Angle>
@@ -22,7 +23,7 @@ public struct AnglePicker : View {
 	}
 
 	public var body: some View {
-		GeometryReader { geometry -> CircleSlider in
+		GeometryReaderPatch { geometry -> CircleSlider in
 			return CircleSlider(frame: geometry.frame(in: CoordinateSpace.local),
 													angle: self.angle,
 													circleColor: self.circleColor,

@@ -3,15 +3,9 @@ import Model
 import ComposableArchitecture
 import Util
 import Form
-import ListPicker
+import SharedComponents
 
 public typealias AddAppointmentEnv = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
-
-public struct Duration: ListPickerElement {
-	public var name: String
-	public var id: Int
-	public var duration: TimeInterval
-}
 
 public struct AddAppointmentState: Equatable {
 	var reminder: Bool
@@ -19,33 +13,36 @@ public struct AddAppointmentState: Equatable {
 	var sms: Bool
 	var feedback: Bool
 	var isAllDay: Bool
-	var clients: PickerContainerState<Client>
+	var clients: SingleChoiceLinkState<Client>
 	var startDate: Date
 	var services: ChooseServiceState
-	var durations: PickerContainerState<Duration>
-	var with: PickerContainerState<Employee>
-	var participants: PickerContainerState<Employee>
+	var durations: SingleChoiceLinkState<Duration>
+	var with: SingleChoiceLinkState<Employee>
+	var participants: SingleChoiceLinkState<Employee>
+	var note: String = ""
 }
 
 public enum AddAppointmentAction: Equatable {
 	case saveAppointmentTap
 	case addAppointmentDismissed
 	case chooseStartDate
-	case clients(PickerContainerAction<Client>)
+	case clients(SingleChoiceLinkAction<Client>)
 	case services(ChooseServiceAction)
-	case durations(PickerContainerAction<Duration>)
-	case with(PickerContainerAction<Employee>)
-	case participants(PickerContainerAction<Employee>)
+	case durations(SingleChoiceLinkAction<Duration>)
+	case with(SingleChoiceLinkAction<Employee>)
+	case participants(SingleChoiceLinkAction<Employee>)
 	case closeBtnTap
 	case didTapServices
+	case isAllDay(ToggleAction)
 	case sms(ToggleAction)
 	case reminder(ToggleAction)
 	case email(ToggleAction)
 	case feedback(ToggleAction)
+	case note(TextChangeAction)
 }
 
-extension Employee: ListPickerElement { }
-extension Service: ListPickerElement { }
+extension Employee: SingleChoiceElement { }
+extension Service: SingleChoiceElement { }
 
 let addAppTapBtnReducer = Reducer<AddAppointmentState?,
 	AddAppointmentAction, AddAppointmentEnv> { state, action, _ in
@@ -64,7 +61,7 @@ let addAppTapBtnReducer = Reducer<AddAppointmentState?,
 
 public let addAppointmentValueReducer: Reducer<AddAppointmentState,
 	AddAppointmentAction, AddAppointmentEnv> = .combine(
-		PickerReducer<Client>().reducer.pullback(
+		SingleChoiceLinkReducer<Client>().reducer.pullback(
 			state: \AddAppointmentState.clients,
 			action: /AddAppointmentAction.clients,
 			environment: { $0 }),
@@ -72,17 +69,21 @@ public let addAppointmentValueReducer: Reducer<AddAppointmentState,
 			 state: \AddAppointmentState.services,
 			 action: /AddAppointmentAction.services,
 			 environment: { $0 }),
-		PickerReducer<Duration>().reducer.pullback(
+		SingleChoiceLinkReducer<Duration>().reducer.pullback(
 			state: \AddAppointmentState.durations,
 			action: /AddAppointmentAction.durations,
 			environment: { $0 }),
-		PickerReducer<Employee>().reducer.pullback(
+		SingleChoiceLinkReducer<Employee>().reducer.pullback(
 			state: \AddAppointmentState.with,
 			action: /AddAppointmentAction.with,
 			environment: { $0 }),
-		PickerReducer<Employee>().reducer.pullback(
+		SingleChoiceLinkReducer<Employee>().reducer.pullback(
 			state: \AddAppointmentState.participants,
 			action: /AddAppointmentAction.participants,
+			environment: { $0 }),
+		switchCellReducer.pullback(
+			state: \AddAppointmentState.isAllDay,
+			action: /AddAppointmentAction.isAllDay,
 			environment: { $0 }),
 		switchCellReducer.pullback(
 			state: \AddAppointmentState.sms,
@@ -99,6 +100,10 @@ public let addAppointmentValueReducer: Reducer<AddAppointmentState,
 		switchCellReducer.pullback(
 			state: \AddAppointmentState.email,
 			action: /AddAppointmentAction.email,
+			environment: { $0 }),
+		textFieldReducer.pullback(
+			state: \AddAppointmentState.note,
+			action: /AddAppointmentAction.note,
 			environment: { $0 })
 	)
 
@@ -115,6 +120,7 @@ public let addAppointmentReducer: Reducer<AddAppointmentState?,
 		)
 
 public struct AddAppointment: View {
+	@State var isAllDay: Bool = true
 	let store: Store<AddAppointmentState, AddAppointmentAction>
 	@ObservedObject var viewStore: ViewStore<AddAppointmentState, AddAppointmentAction>
 	public init(store: Store<AddAppointmentState, AddAppointmentAction>) {
@@ -123,26 +129,20 @@ public struct AddAppointment: View {
 	}
 
 	public var body: some View {
-		NavigationView {
-			ScrollView {
-				VStack(spacing: 32) {
-					AddAppSections(store: self.store)
-						.environmentObject(KeyboardFollower())
-					PrimaryButton(Texts.saveAppointment) {
-						self.viewStore.send(.saveAppointmentTap)
-					}
-					.frame(width: 315, height: 52)
-					Spacer()
-				}
+		VStack {
+			SwitchCell(text: "All Day", store: store.scope(state: { $0.isAllDay },
+														   action: { .isAllDay($0)})
+			).wrapAsSection(title: "Add Appointment")
+			AddAppSections(store: self.store)
+				.environmentObject(KeyboardFollower())
+			AddEventPrimaryBtn(title: Texts.saveAppointment) {
+				self.viewStore.send(.saveAppointmentTap)
 			}
-			.padding(24)
-		}
-		.navigationViewStyle(StackNavigationViewStyle())
+		}.addEventWrapper(onXBtnTap: { self.viewStore.send(.closeBtnTap) })
 	}
 }
 
-struct Section1: View {
-	@State var isAllDay: Bool = true
+struct ClientDaySection: View {
 	let store: Store<AddAppointmentState, AddAppointmentAction>
 	@ObservedObject var viewStore: ViewStore<AddAppointmentState, AddAppointmentAction>
 	init (store: Store<AddAppointmentState, AddAppointmentAction>) {
@@ -150,21 +150,19 @@ struct Section1: View {
 		self.viewStore = ViewStore(store)
 	}
 	var body: some View {
-		VStack (spacing: 24.0) {
-			SwitchCell(text: "All Day", value: $isAllDay)
-			HStack(spacing: 24.0) {
-				PickerContainerStore.init(content: {
-					LabelAndTextField.init("CLIENT", self.viewStore.state.clients.chosenItemName ?? "")
-				}, store: self.store.scope(state: { $0.clients },
-										   action: { .clients($0) })
-				)
-				LabelAndTextField.init("DAY", self.viewStore.state.startDate.toString())
-			}
+		HStack(spacing: 24.0) {
+			SingleChoiceLink.init(content: {
+				TitleAndValueLabel.init("CLIENT", self.viewStore.state.clients.chosenItemName ?? "")
+			}, store: self.store.scope(state: { $0.clients },
+									   action: { .clients($0) }),
+			cell: TextAndCheckMarkContainer.init(state:)
+			)
+			TitleAndValueLabel.init("DAY", self.viewStore.state.startDate.toString())
 		}
 	}
 }
 
-struct Section2: View {
+struct ServicesDurationSection: View {
 	let store: Store<AddAppointmentState, AddAppointmentAction>
 	@ObservedObject var viewStore: ViewStore<AddAppointmentState, AddAppointmentAction>
 	init (store: Store<AddAppointmentState, AddAppointmentAction>) {
@@ -172,31 +170,32 @@ struct Section2: View {
 		self.viewStore = ViewStore(store)
 	}
 	var body: some View {
-		VStack(alignment: .leading, spacing: 24.0) {
-			Text("Services").font(.semibold24)
+		VStack {
 			HStack(spacing: 24.0) {
-				LabelAndTextField.init("SERVICE", self.viewStore.state.services.chosenServiceName).onTapGesture {
+				TitleAndValueLabel("SERVICE", self.viewStore.state.services.chosenServiceName).onTapGesture {
 					self.viewStore.send(.didTapServices)
 				}
 				NavigationLink.emptyHidden(self.viewStore.state.services.isChooseServiceActive,
-																	 ChooseService(store: self.store.scope(state: { $0.services }, action: {
-																		.services($0)
-																		}))
+										   ChooseService(store: self.store.scope(state: { $0.services }, action: {
+											.services($0)
+										   }))
 				)
-				PickerContainerStore.init(content: {
-					LabelAndTextField.init("DURATION", self.viewStore.state.durations.chosenItemName ?? "")
+				SingleChoiceLink.init(content: {
+					TitleAndValueLabel.init("DURATION", self.viewStore.state.durations.chosenItemName ?? "")
 				}, store: self.store.scope(state: { $0.durations },
-																	action: { .durations($0) })
+										   action: { .durations($0) }),
+				cell: TextAndCheckMarkContainer.init(state:)
 				)
 			}
 			HStack(spacing: 24.0) {
-				PickerContainerStore.init(content: {
+				SingleChoiceLink.init(content: {
 					LabelHeartAndTextField.init("WITH", self.viewStore.state.with.chosenItemName ?? "",
-																			true)
+												true)
 				}, store: self.store.scope(state: { $0.with },
-																	action: { .with($0) })
+										   action: { .with($0) }),
+				cell: TextAndCheckMarkContainer.init(state:)
 				)
-				PickerContainerStore.init(content: {
+				SingleChoiceLink.init(content: {
 					HStack {
 						Image(systemName: "plus.circle")
 							.foregroundColor(.deepSkyBlue)
@@ -207,10 +206,11 @@ struct Section2: View {
 						Spacer()
 					}
 				}, store: self.store.scope(state: { $0.participants },
-																	action: { .participants($0) })
+										   action: { .participants($0) }),
+				cell: TextAndCheckMarkContainer.init(state:)
 				)
 			}
-		}
+		}.wrapAsSection(title: "Services")
 	}
 }
 
@@ -224,124 +224,45 @@ struct AddAppSections: View {
 	}
 
 	var body: some View {
-		VStack(alignment: .leading, spacing: 32) {
-			Section1(store: self.store)
-			Section2(store: self.store)
-			NotesSection()
-			FourSwitchesSection(
-				swithc1: viewStore.binding(
-					get: { $0.reminder },
-					send: { .reminder(.setTo($0)) }),
-				switch2: viewStore.binding(
-					get: { $0.email },
-					send: { .email(.setTo($0)) }),
-				switch3: viewStore.binding(
-					get: { $0.sms },
-					send: { .sms(.setTo($0)) }),
-				switch4: viewStore.binding(
-					get: { $0.feedback },
-					send: { .feedback(.setTo($0)) }),
-				switchNames: [
-					Texts.sendReminder,
-					Texts.sendConfirmationEmail,
-					Texts.sendConfirmationSMS,
-					Texts.sendFeedbackSurvey
-				],
-				title: Texts.communications
-			)
+		Group {
+			ClientDaySection(store: self.store)
+			ServicesDurationSection(store: self.store)
+			NotesSection(store: store.scope(state: { $0.note },
+											action: { .note($0) }))
+			Group {
+				SwitchCell(text: Texts.sendReminder,
+						   store: store.scope(
+								state: { $0.reminder },
+								action: { .reminder($0) })
+				)
+				SwitchCell(text: Texts.sendConfirmationEmail,
+						   store: store.scope(
+								state: { $0.email },
+								action: { .email($0) })
+				)
+				SwitchCell(text: Texts.sendConfirmationSMS,
+						   store: store.scope(
+								state: { $0.sms },
+								action: { .sms($0) })
+				)
+				SwitchCell(text: Texts.sendFeedbackSurvey,
+						   store: store.scope(
+								state: { $0.feedback },
+								action: { .feedback($0) })
+				)
+			}.switchesSection(title: Texts.communications)
 		}.padding(.bottom, keyboardHandler.keyboardHeight)
-			.navigationBarTitle(Text("New Appointment"), displayMode: .large)
-			.navigationBarItems(leading:
-									XButton(onTouch: { self.viewStore.send(.closeBtnTap) })
-		)
 	}
 }
 
-extension Client: ListPickerElement {
+extension Client: SingleChoiceElement {
 	public var name: String {
 		return firstName + " " + lastName
 	}
 }
 
-struct LabelHeartAndTextField: View {
-	let labelTxt: String
-	let valueText: String
-	@State var isHearted: Bool
-	init(_ labelTxt: String,
-			 _ valueText: String,
-			 _ isHearted: Bool) {
-		self.labelTxt = labelTxt
-		self.valueText = valueText
-		self._isHearted = State.init(initialValue: isHearted)
-	}
-	var body: some View {
-		LabelAndLowerContent(labelTxt) {
-			HStack {
-				Image(systemName: self.isHearted ? "heart.fill" : "heart")
-					.foregroundColor(.heartRed)
-					.onTapGesture {
-						self.isHearted.toggle()
-				}
-				Text(self.valueText)
-					.foregroundColor(Color.textFieldAndTextLabel)
-					.font(.semibold15)
-			}
-		}
-	}
-}
-
-struct LabelAndTextField: View {
-	let labelTxt: String
-	let valueText: String
-	init(_ labelTxt: String,
-			 _ valueText: String) {
-		self.labelTxt = labelTxt
-		self.valueText = valueText
-	}
-	var body: some View {
-		LabelAndLowerContent(labelTxt) {
-			Text(self.valueText)
-				.foregroundColor(Color.textFieldAndTextLabel)
-				.font(.semibold15)
-		}
-	}
-}
-
-struct LabelAndLowerContent<Content: View>: View {
-	init(_ labelTxt: String,
-			 @ViewBuilder _ lowerContent: @escaping () -> Content) {
-		self.labelTxt = labelTxt
-		self.lowerContent = lowerContent
-	}
-	let labelTxt: String
-	let lowerContent: () -> Content
-	var body: some View {
-		VStack(alignment: .leading, spacing: 12) {
-			Text(labelTxt)
-				.foregroundColor(Color.textFieldAndTextLabel.opacity(0.5))
-				.font(.bold12)
-			lowerContent()
-			Divider().foregroundColor(.textFieldBottomLine)
-		}
-	}
-}
-
-struct NotesSection: View {
-	@State var note: String = ""
-	public var body: some View {
-		VStack(alignment: .leading, spacing: 24.0) {
-			Text("Notes").font(.semibold24)
-			LabelAndLowerContent.init("BOOKING NOTE") {
-				TextField.init("Add a booking note", text: self.$note)
-					.foregroundColor(Color.textFieldAndTextLabel)
-					.font(.semibold15)
-			}
-		}
-	}
-}
-
 extension AddAppointmentState {
-	
+
 	public init(startDate: Date,
 				endDate: Date) {
 		self.init(
@@ -358,7 +279,7 @@ extension AddAppointmentState {
 			participants: AddAppMocks.participantsState
 		)
 	}
-	
+
 	public init(startDate: Date,
 				endDate: Date,
 				employee: Employee) {
@@ -396,8 +317,8 @@ extension AddAppointmentState {
 }
 
 struct AddAppMocks {
-	static let clientState: PickerContainerState<Client> =
-		PickerContainerState.init(
+	static let clientState: SingleChoiceLinkState<Client> =
+		SingleChoiceLinkState.init(
 			dataSource: [
 				Client.init(id: 1, firstName: "Wayne", lastName: "Rooney", dOB: Date()),
 				Client.init(id: 2, firstName: "Adam", lastName: "Smith", dOB: Date())
@@ -405,8 +326,8 @@ struct AddAppMocks {
 			chosenItemId: 1,
 			isActive: false)
 
-	static let serviceState: PickerContainerState<Service> =
-		PickerContainerState.init(
+	static let serviceState: SingleChoiceLinkState<Service> =
+		SingleChoiceLinkState.init(
 			dataSource: [
 				Service.init(id: 1, name: "Botox", color: "", categoryId: 1, categoryName: "Injectables"),
 				Service.init(id: 2, name: "Fillers", color: "", categoryId: 2, categoryName: "Urethra"),
@@ -415,18 +336,14 @@ struct AddAppMocks {
 			chosenItemId: 1,
 			isActive: false)
 
-	static let durationState: PickerContainerState<Duration> =
-		PickerContainerState.init(
-			dataSource: [
-				Duration.init(name: "00:30", id: 1, duration: 30),
-				Duration.init(name: "01:00", id: 2, duration: 60),
-				Duration.init(name: "01:30", id: 3, duration: 90)
-			],
+	static let durationState: SingleChoiceLinkState<Duration> =
+		SingleChoiceLinkState.init(
+			dataSource: IdentifiedArray(Duration.all),
 			chosenItemId: 1,
 			isActive: false)
 
-	static let withState: PickerContainerState<Employee> =
-		PickerContainerState.init(
+	static let withState: SingleChoiceLinkState<Employee> =
+		SingleChoiceLinkState.init(
 			dataSource: [
 				Employee.init(id: 123, name: "Andrej Trajkovski", locationId: Location.randomId()),
 				Employee.init(id: 456, name: "Mark Ronson", locationId: Location.randomId())
@@ -434,8 +351,8 @@ struct AddAppMocks {
 			chosenItemId: 456,
 			isActive: false)
 
-	static let participantsState: PickerContainerState<Employee> =
-		PickerContainerState.init(
+	static let participantsState: SingleChoiceLinkState<Employee> =
+		SingleChoiceLinkState.init(
 			dataSource: [
 				Employee.init(id: 1, name: "Participant 1", locationId: Location.randomId()),
 				Employee.init(id: 2, name: "Participant 2", locationId: Location.randomId())

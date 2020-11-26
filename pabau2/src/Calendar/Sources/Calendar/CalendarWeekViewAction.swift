@@ -1,10 +1,13 @@
 import ComposableArchitecture
 import SwiftDate
 import Model
+import AddBookout
 
 public struct CalendarWeekViewState: Equatable {
 	var appointments: [Date: IdentifiedArrayOf<CalAppointment>]
 	var selectedDate: Date
+	var addBookout: AddBookoutState?
+	var appDetails: AppDetailsState?
 }
 
 public let calendarWeekViewReducer: Reducer<CalendarWeekViewState, CalendarWeekViewAction, CalendarEnvironment> = .init { state, action, env in
@@ -26,8 +29,19 @@ public let calendarWeekViewReducer: Reducer<CalendarWeekViewState, CalendarWeekV
 	case .editDuration(let startOfDayDate, let endDate, let eventId):
 		let calId = CalAppointment.ID.init(rawValue: eventId)
 		state.appointments[startOfDayDate]?[id: calId]?.end_date = endDate
-	case .addAppointment(let startOfDayDate, let startDate, let durationMins):
-		break// handled in tab bar reducer
+	case .addAppointment:
+		break// handled in calendarContainerReducer
+	case .addBookout(let startOfDayDate,
+					 let startDate,
+					 let durationMins):
+		state.addBookout = AddBookoutState(employees: IdentifiedArray(Employee.mockEmployees),
+										   chosenEmployee: nil,
+										   start: startDate)
+	case .onSelect(startOfDayDate: let startOfDayDate, eventId: let eventId):
+		let calId = CalAppointment.ID.init(rawValue: eventId)
+		state.appointments[startOfDayDate]?[id: calId].map {
+			state.appDetails = AppDetailsState(app: $0)
+		}
 	}
 	return .none
 }
@@ -37,6 +51,9 @@ public enum CalendarWeekViewAction {
 	case addAppointment(startOfDayDate: Date,
 						startDate: Date,
 						durationMins: Int)
+	case addBookout(startOfDayDate: Date,
+					startDate: Date,
+					durationMins: Int)
 	case editStartTime(startOfDayDate: Date,
 					   startDate: Date,
 					   eventId: Int,
@@ -44,4 +61,6 @@ public enum CalendarWeekViewAction {
 	case editDuration(startOfDayDate: Date,
 					  endDate: Date,
 					  eventId: Int)
+	case onSelect(startOfDayDate: Date,
+				  eventId: Int)
 }

@@ -1,12 +1,12 @@
 import XCTest
-@testable import ListPicker
+@testable import AddShift
 
-final class ListPickerTests: XCTestCase {
+final class AddShiftTests: XCTestCase {
     func testExample() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
-        XCTAssertEqual(ListPicker().text, "Hello, World!")
+        XCTAssertEqual(AddShift().text, "Hello, World!")
     }
 
     static var allTests = [

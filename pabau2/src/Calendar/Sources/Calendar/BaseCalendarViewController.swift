@@ -30,6 +30,30 @@ public class BaseCalendarViewController: UIViewController {
 	@objc public func userDidFlipPage(_ weekView: JZBaseWeekView, isNextPage: Bool) {
 		fatalError("override me")
 	}
+	
+	public func presentAlert(_ date: Date,
+							 _ anchorView: UIView,
+							 _ weekView: JZLongPressWeekView,
+							 onAddBookout: @escaping () -> Void,
+							 onAddAppointment: @escaping () -> Void) {
+		let alert = UIAlertController(title: date.toString(.dateTime(.short)),
+									  message: nil,
+									  preferredStyle: .actionSheet)
+		alert.addAction(UIAlertAction.init(title: "Add Appointment", style: .default, handler: { _ in
+			anchorView.removeFromSuperview()
+			onAddAppointment()
+		}))
+		alert.addAction(UIAlertAction.init(title: "Add Bookout", style: .default, handler: { _ in
+			anchorView.removeFromSuperview()
+			onAddBookout()
+		}))
+		alert.addAction(UIAlertAction.init(title: "Cancel", style: .cancel, handler: {_ in
+			anchorView.removeFromSuperview()
+		}))
+		alert.popoverPresentationController?.sourceView = anchorView
+		alert.popoverPresentationController?.sourceRect = anchorView.bounds
+		present(alert, animated: true)
+	}
 }
 
 extension BaseCalendarViewController: JZBaseViewDelegate {

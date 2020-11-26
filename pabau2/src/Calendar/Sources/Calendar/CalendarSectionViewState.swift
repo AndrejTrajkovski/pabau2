@@ -2,11 +2,13 @@ import Foundation
 import JZCalendarWeekView
 import ComposableArchitecture
 import Model
+import AddBookout
 
 struct CalendarSectionViewState<Subsection: Identifiable & Equatable>: Equatable {
 	var selectedDate: Date
 	var appointments: EventsBy<Subsection>
 	var appDetails: AppDetailsState?
+	var addBookout: AddBookoutState?
 	let locations: IdentifiedArrayOf<Location>
 	let chosenLocationsIds: [Location.ID]
 	let subsections: [Location.ID: IdentifiedArrayOf<Subsection>]

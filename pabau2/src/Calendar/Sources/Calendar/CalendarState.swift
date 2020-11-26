@@ -6,6 +6,8 @@ import CasePaths
 import ComposableArchitecture
 import JZCalendarWeekView
 import AddAppointment
+import AddBookout
+import AddShift
 
 public struct CalendarContainerState: Equatable {
 	public init(addAppointment: AddAppointmentState?, calendar: CalendarState) {
@@ -31,6 +33,8 @@ public struct CalendarState: Equatable {
 	var chosenRoomsIds: [Location.Id: [Room.Id]]
 	
 	public var appDetails: AppDetailsState?
+	public var addBookout: AddBookoutState?
+	public var addShift: AddShiftState?
 }
 
 extension CalendarState {
@@ -55,6 +59,7 @@ extension CalendarState {
 				selectedDate: selectedDate,
 				appointments: groupAppointments,
 				appDetails: appDetails,
+				addBookout: addBookout,
 				locations: locations,
 				chosenLocationsIds: chosenLocationsIds,
 				subsections: employees,
@@ -67,6 +72,7 @@ extension CalendarState {
 				self.selectedDate = $0.selectedDate
 				self.appointments = Appointments.employee($0.appointments)
 				self.appDetails = $0.appDetails
+				self.addBookout = $0.addBookout
 				self.locations = $0.locations
 				self.chosenLocationsIds = $0.chosenLocationsIds
 				self.employees = $0.subsections
@@ -83,6 +89,7 @@ extension CalendarState {
 				selectedDate: selectedDate,
 				appointments: groupAppointments,
 				appDetails: appDetails,
+				addBookout: addBookout,
 				locations: locations,
 				chosenLocationsIds: chosenLocationsIds,
 				subsections: rooms,
@@ -95,6 +102,7 @@ extension CalendarState {
 				self.selectedDate = $0.selectedDate
 				self.appointments = Appointments.room($0.appointments)
 				self.appDetails = $0.appDetails
+				self.addBookout = $0.addBookout
 				self.locations = $0.locations
 				self.chosenLocationsIds = $0.chosenLocationsIds
 				self.rooms = $0.subsections
@@ -102,13 +110,15 @@ extension CalendarState {
 			}
 		}
 	}
-	
+
 	var week: CalendarWeekViewState? {
 		get {
 			guard let apps = extract(case: Appointments.week, from: self.appointments) else { return nil }
 			return CalendarWeekViewState(
 				appointments: apps,
-				selectedDate: selectedDate
+				selectedDate: selectedDate,
+				addBookout: addBookout,
+				appDetails: appDetails
 //				locations: locations,
 //				chosenLocationsIds: chosenLocationsIds,
 //				subsections: rooms,
@@ -120,6 +130,8 @@ extension CalendarState {
 			newValue.map {
 				self.selectedDate = $0.selectedDate
 				self.appointments = Appointments.week($0.appointments)
+				self.addBookout = $0.addBookout
+				self.appDetails = $0.appDetails
 //				self.locations = $0.locations
 //				self.chosenLocationsIds = $0.chosenLocationsIds
 //				self.rooms = $0.subsections

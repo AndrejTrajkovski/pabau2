@@ -5,7 +5,9 @@ import Model
 import Util
 import SwiftDate
 import AddAppointment
+import AddBookout
 import Combine
+import AddShift
 
 public typealias CalendarEnvironment = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
 
@@ -30,7 +32,22 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 			let room = state.calendar.rooms[location]?[id: subsection]
 			//FIXME: missing room in add appointments screen
 			state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate)
-		case .week(.addAppointment(let startOfDayDate, let startDate,let durationMins)):
+		case .employee(.addBookout(let startDate, let durationMins, let dropKeys)):
+			let (date, location, subsection) = dropKeys
+			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
+			let employees = state.calendar.employees[location] ?? []
+			let chosenEmployee = employees[id: subsection]
+			state.calendar.addBookout = AddBookoutState(employees: employees,
+														chosenEmployee: chosenEmployee?.id,
+														start: startDate)
+		case .room(.addBookout(let startDate, let durationMins, let dropKeys)):
+			let (date, location, subsection) = dropKeys
+			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
+			let employees = state.calendar.employees[location] ?? []
+			state.calendar.addBookout = AddBookoutState(employees: employees,
+														chosenEmployee: nil,
+														start: startDate)
+		case .week(.addAppointment(let startOfDayDate, let startDate, let durationMins)):
 			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
 			state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate)
 		case .appDetails(.addService):
@@ -80,6 +97,14 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 		state: \CalendarState.appDetails,
 		action: /CalendarAction.appDetails,
 		environment: { $0 }),
+	addBookoutReducer.optional.pullback(
+		state: \CalendarState.addBookout,
+		action: /CalendarAction.addBookout,
+		environment: { $0 }),
+	addShiftOptReducer.pullback(
+		state: \CalendarState.addShift,
+		action: /CalendarAction.addShift,
+		environment: { $0 }),
 	.init { state, action, _ in
 		switch action {
 		case .datePicker: break
@@ -87,8 +112,11 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 			state.switchTo(id: calTypeId)
 		case .onAppDetailsDismiss:
 			state.appDetails = nil
+		case .onBookoutDismiss:
+			state.addBookout = nil
 		case .calTypePicker(.toggleDropdown): break
-		case .addShift: break
+		case .onAddShift:
+			state.addShift = AddShiftState.makeEmpty()
 		case .toggleFilters: break
 		case .room:
 			break
@@ -98,6 +126,8 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 			break
 		case .appDetails(.close):
 			state.appDetails = nil
+		case .addBookout(.close):
+			state.addBookout = nil
 		default: break
 		}
 		return .none
@@ -106,6 +136,7 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 
 public struct CalendarContainer: View {
 	let store: Store<CalendarState, CalendarAction>
+
 	public var body: some View {
 		WithViewStore(store) { viewStore in
 			VStack(spacing: 0) {
@@ -120,45 +151,90 @@ public struct CalendarContainer: View {
 				.padding(0)
 				CalendarWrapper(store: self.store)
 				Spacer()
-			}.sheet(isPresented: viewStore.binding(get: { $0.appDetails != nil },
-												   send: CalendarAction.onAppDetailsDismiss),
-					content: { IfLetStore(store.scope(state: { $0.appDetails },
-													  action: { .appDetails($0) }),
-										  then: AppointmentDetails.init(store:))
-					})
+			}
+			.fullScreenCover(isPresented:
+								Binding(get: { activeSheet(state: viewStore.state) != nil },
+										set: { _ in dismissAction(state: viewStore.state).map(viewStore.send) }
+								), content: {
+									Group {
+										IfLetStore(store.scope(state: { $0.appDetails },
+															   action: { .appDetails($0) }),
+												   then: AppointmentDetails.init(store:))
+										IfLetStore(store.scope(state: { $0.addBookout },
+															   action: { .addBookout($0) }),
+												   then: AddBookout.init(store:))
+										IfLetStore(store.scope(state: { $0.addShift },
+															   action: { .addShift($0) }),
+												   then: AddShift.init(store:))
+									}
+								}
+			)
 		}
 	}
 
 	public init(store: Store<CalendarState, CalendarAction>) {
 		self.store = store
 	}
+
+	enum ActiveSheet {
+		case appDetails
+		case addBookout
+		case addShift
+	}
+
+	func activeSheet(state: CalendarState) -> ActiveSheet? {
+		if state.addBookout != nil {
+			return .addBookout
+		} else if state.appDetails != nil {
+			return .appDetails
+		} else if state.addShift != nil {
+			return .addShift
+		} else {
+			return nil
+		}
+	}
+
+	func dismissAction(state: CalendarState) -> CalendarAction? {
+		if state.addBookout != nil {
+			return .onBookoutDismiss
+		} else if state.appDetails != nil {
+			return .onAppDetailsDismiss
+		} else if state.addShift != nil {
+			return .onAddShiftDismiss
+		} else {
+			return nil
+		}
+	}
 }
 
 struct CalTopBar: View {
 	let store: Store<CalendarState, CalendarAction>
 	var body: some View {
-		VStack(spacing: 0) {
-			ZStack {
-				PlusButton {
+		WithViewStore(store) { viewStore in
+			VStack(spacing: 0) {
+				ZStack {
+					PlusButton {
+						viewStore.send(.onAddShift)
+					}
+					.padding(.leading, 20)
+					.exploding(.leading)
+					CalendarTypePicker(store:
+										self.store.scope(
+											state: { $0.calTypePicker },
+											action: { .calTypePicker($0)})
+					)
+					.padding()
+					.exploding(.center)
+					Button.init(Texts.filters, action: {
+					})
+					.padding()
+					.padding(.trailing, 20)
+					.exploding(.trailing)
 				}
-				.padding(.leading, 20)
-				.exploding(.leading)
-				CalendarTypePicker(store:
-									self.store.scope(
-										state: { $0.calTypePicker },
-										action: { .calTypePicker($0)})
-				)
-				.padding()
-				.exploding(.center)
-				Button.init(Texts.filters, action: {
-				})
-				.padding()
-				.padding(.trailing, 20)
-				.exploding(.trailing)
+				.frame(height: 50)
+				.background(Color(hex: "F9F9F9"))
+				Divider()
 			}
-			.frame(height: 50)
-			.background(Color(hex: "F9F9F9"))
-			Divider()
 		}
 	}
 }

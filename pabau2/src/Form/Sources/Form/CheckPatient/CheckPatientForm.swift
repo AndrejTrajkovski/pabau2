@@ -2,6 +2,7 @@ import SwiftUI
 import ComposableArchitecture
 import Util
 import Model
+import SharedComponents
 
 struct CheckPatientForm: View {
 	let didTouchDone: () -> Void
@@ -13,19 +14,20 @@ struct CheckPatientForm: View {
 		return ScrollView {
 			VStack {
 				PatientDetailsTextFields(vms: viewModels(patDetails))
-				FourSwitchesSection(
-					swithc1: .constant(patDetails.emailComm),
-					switch2: .constant(patDetails.smsComm),
-					switch3: .constant(patDetails.phoneComm),
-					switch4: .constant(patDetails.postComm),
-					switchNames: [
-						Texts.emailConfirmations,
-						Texts.smsReminders,
-						Texts.phone,
-						Texts.post
-					],
-					title: Texts.communications
-				)
+				Group {
+					SwitchCellRaw(text: Texts.emailConfirmations,
+								  value: .constant(patDetails.emailComm)
+					)
+					SwitchCellRaw(text: Texts.smsReminders,
+								  value: .constant(patDetails.smsComm)
+					)
+					SwitchCellRaw(text: Texts.phone,
+								  value: .constant(patDetails.phoneComm)
+					)
+					SwitchCellRaw(text: Texts.post,
+								  value: .constant(patDetails.postComm)
+					)
+				}.switchesSection(title: Texts.communications)
 				ForEach(patientForms.indices, id: \.self ) { index in
 					DynamicForm(
 						template: .constant(self.patientForms[index]),

@@ -124,6 +124,24 @@ extension SectionCalendarViewController: SectionLongPressDelegate {
 		let startKeys = (date, section as! Location.ID, subsection as! Subsection.ID)
 		viewStore.send(.onSelect(startKeys: startKeys, eventId: editingEvent.id))
 	}
+	
+	public func weekView<SectionId: Hashable, SubsectionId: Hashable>
+	(_ weekView: JZLongPressWeekView,
+	 didTap onDate: Date,
+	 startPageAndSectionIdx: (Date?, SectionId?, SubsectionId?),
+	 anchorView: UIView)
+	{
+		guard let date = startPageAndSectionIdx.0,
+			  let section = startPageAndSectionIdx.1,
+			  let subsection = startPageAndSectionIdx.2 else { return }
+		let startKeys = (date, section as! Location.ID, subsection as! Subsection.ID)
+		presentAlert(onDate, anchorView, weekView,
+					 onAddBookout: {
+						self.viewStore.send(.addBookout(startDate: onDate, durationMins: weekView.addNewDurationMins, dropKeys: startKeys))
+					 }, onAddAppointment: {
+						self.viewStore.send(.addAppointment(startDate: onDate, durationMins: weekView.addNewDurationMins, dropKeys: startKeys))
+					})
+	}
 }
 
 extension SectionCalendarViewController {

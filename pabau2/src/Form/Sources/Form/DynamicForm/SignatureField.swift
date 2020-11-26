@@ -95,7 +95,7 @@ struct DrawingPad: View {
 	@State private var currentDrawing = SignatureDrawing()
 	@Binding var drawings: [SignatureDrawing]
 	var body: some View {
-		GeometryReader { geometry in
+		GeometryReaderPatch { geometry in
 			Path { path in
 				for drawing in self.drawings {
 					self.add(drawing: drawing, toPath: &path)

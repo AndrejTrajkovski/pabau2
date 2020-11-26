@@ -23,7 +23,7 @@ public struct TabBarState: Equatable {
 	public var calendar: CalendarState
 	public var settings: SettingsState
 	public var employeesFilter: EmployeesFilterState = EmployeesFilterState()
-	
+
 	public var calendarContainer: CalendarContainerState {
 		get {
 			CalendarContainerState(addAppointment: addAppointment,
@@ -136,7 +136,7 @@ struct PabauTabBar: View {
 						),
 						then: CheckInNavigationView.init(store:))
 					   })
-			.sheet(isPresented: .constant(self.viewStore.state.isShowingAppointments)) {
+			.fullScreenCover(isPresented: .constant(self.viewStore.state.isShowingAppointments)) {
 				IfLetStore(self.store.scope(
 					state: { $0.addAppointment },
 					action: { .addAppointment($0)}
