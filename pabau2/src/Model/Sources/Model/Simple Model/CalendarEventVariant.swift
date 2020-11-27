@@ -1,6 +1,7 @@
 import Foundation
 
 protocol CalendarEventVariant: Decodable {
+	var id: CalendarEvent.Id { get }
 	var start_date: Date { get }
 	var end_date: Date { get }
 	var employeeId: Employee.Id { get }

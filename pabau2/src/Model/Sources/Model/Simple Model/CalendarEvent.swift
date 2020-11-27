@@ -1,9 +1,12 @@
 import Foundation
+import Tagged
 
 @dynamicMemberLookup
-public enum CalendarEvent: CalendarEventVariant {
+public enum CalendarEvent: CalendarEventVariant, Identifiable {
 	case appointment(CalAppointment)
 	case bookout(Bookout)
+	
+	public typealias Id = Tagged<CalendarEvent, Int>
 }
 
 extension CalendarEvent {
@@ -18,6 +21,8 @@ extension CalendarEvent {
 }
 
 extension CalendarEvent {
+	public var id: CalendarEvent.Id {
+		get { return self[dynamicMember: \.id] } }
 	var start_date: Date {
 		get { return self[dynamicMember: \.start_date] } }
 	var end_date: Date {
@@ -58,6 +63,7 @@ extension CalendarEvent: Decodable {
 	
 	public init(from decoder: Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
+		let id = try container.decode(CalendarEvent.Id.self, forKey: .id)
 		let employeeId = try container.decode(Employee.Id.self, forKey: .employeeId)
 		let employeeInitials = try? container.decode(String.self, forKey: .employeeInitials)
 		let locationId = try container.decode(Location.ID.self, forKey: .locationId)
@@ -74,7 +80,8 @@ extension CalendarEvent: Decodable {
 		let type = try? container.decode(Termin.ModelType.self, forKey: .type)
 		switch type {
 		case .appointment:
-			let app = try CalAppointment(start_date,
+			let app = try CalAppointment(id,
+										 start_date,
 										 end_date,
 										 employeeId,
 										 employeeInitials,
@@ -86,15 +93,16 @@ extension CalendarEvent: Decodable {
 										 decoder)
 			self = .appointment(app)
 		case .bookout:
-			let bookout = try Bookout(start_date,
-										 end_date,
-										 employeeId,
-										 employeeInitials,
-										 locationId,
-										 locationName,
-										 _private,
-										 employeeName,
-										 decoder)
+			let bookout = try Bookout(id,
+									  start_date,
+									  end_date,
+									  employeeId,
+									  employeeInitials,
+									  locationId,
+									  locationName,
+									  _private,
+									  employeeName,
+									  decoder)
 			self = .bookout(bookout)
 		case .none:
 			throw InvalidTypeError(type: try container.decode(String.self, forKey: .type))
@@ -155,7 +163,7 @@ extension CalendarEvent {
 			let employee = Employee.mockEmployees.randomElement()!
 			let client = Client.mockClients.randomElement()!
 			let room = Room.mock().randomElement()!.value
-			let app = CalAppointment(id: CalAppointment.Id(rawValue: idx),
+			let app = CalAppointment(id: CalendarEvent.Id(rawValue: idx),
 									 start_date: mockStartEnd.0,
 									 end_date: mockStartEnd.1,
 									 employeeId: employee.id,
@@ -176,10 +184,10 @@ extension CalendarEvent {
 			res.append(CalendarEvent.appointment(app))
 		}
 		
-		for idx in 0...10 {
+		for idx in 101...111 {
 			let mockStartEnd = Date.mockStartAndEndDate(endRangeMax: 90)
 			let employee = Employee.mockEmployees.randomElement()!
-			let bookout = Bookout(id: Bookout.Id(rawValue: idx),
+			let bookout = Bookout(id: CalendarEvent.Id(rawValue: idx),
 								  start_date: mockStartEnd.0,
 								  end_date: mockStartEnd.1,
 								  employeeId: employee.id,

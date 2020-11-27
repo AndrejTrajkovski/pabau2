@@ -14,9 +14,7 @@ public struct CalAppointment: Hashable, Codable, Equatable, Identifiable {
 		hasher.combine(id)
 	}
 	
-	public typealias Id = Tagged<CalAppointment, Int>
-	
-	public let id: CalAppointment.Id
+	public let id: CalendarEvent.Id
 	public var start_date: Date
 	public var end_date: Date
 	public var employeeId: Employee.Id
@@ -84,6 +82,7 @@ public struct CalAppointment: Hashable, Codable, Equatable, Identifiable {
 extension CalAppointment {
 	
 	public init(
+		_ id: CalendarEvent.Id,
 		_ start_date: Date,
 		_ end_date: Date,
 		_ employeeId: Employee.Id,
@@ -95,6 +94,7 @@ extension CalAppointment {
 		_ employeeName: String,
 		_ decoder: Decoder
 	) throws {
+		self.id = id
 		self.start_date = start_date
 		self.end_date = end_date
 		self.employeeId = employeeId
@@ -112,7 +112,6 @@ extension CalAppointment {
 		self.customerPhoto = try? container.decode(String.self, forKey: .customerPhoto)
 		self.roomId = try container.decode(Room.Id.self, forKey: .roomId)
 		self.roomName = try container.decode(String.self, forKey: .roomName)
-		self.id = try container.decode(Self.Id, forKey: .id)
 	}
 }
 

@@ -6,11 +6,11 @@ import Model
 open class SectionHelper {
 	
 	@available(iOS 13, *)
-	public class func group<SectionId: Hashable, Subsection: Identifiable>(_ events: [CalAppointment],
+	public class func group<SectionId: Hashable, Subsection: Identifiable>(_ events: [CalendarEvent],
 																		   _ sectionIds: [SectionId],																	 _ subsections: [Subsection],
-																							 _ sectionKeyPath: KeyPath<CalAppointment, SectionId>,
-																							 _ subsectionKeyPath: KeyPath<CalAppointment, Subsection.ID>)
-	-> [Date: [SectionId: [Subsection.ID: IdentifiedArrayOf<CalAppointment>]]] {
+																							 _ sectionKeyPath: KeyPath<CalendarEvent, SectionId>,
+																							 _ subsectionKeyPath: KeyPath<CalendarEvent, Subsection.ID>)
+	-> [Date: [SectionId: [Subsection.ID: IdentifiedArrayOf<CalendarEvent>]]] {
 		let byDate = Self.groupByStartOfDay(originalEvents: events)
 		return byDate.mapValues {
 			let byLocation = Dictionary.init(grouping: $0, by: { $0[keyPath: sectionKeyPath] })
@@ -27,17 +27,17 @@ open class SectionHelper {
 	}
 	
 	@available(iOS 13, *)
-	public class func group<T: Identifiable, CalAppointment>(_ subsections: [T],
-															 _ events: [CalAppointment],
-															 _ keyPath: KeyPath<CalAppointment, T.ID>) -> [T.ID: IdentifiedArrayOf<CalAppointment>] {
+	public class func group<T: Identifiable, CalendarEvent>(_ subsections: [T],
+															 _ events: [CalendarEvent],
+															 _ keyPath: KeyPath<CalendarEvent, T.ID>) -> [T.ID: IdentifiedArrayOf<CalendarEvent>] {
 		let eventsBySection = Dictionary.init(grouping: events, by: { $0[keyPath: keyPath] })
-		return subsections.map(\.id).reduce(into: [T.ID: IdentifiedArrayOf<CalAppointment>](), { res, sectionId in
+		return subsections.map(\.id).reduce(into: [T.ID: IdentifiedArrayOf<CalendarEvent>](), { res, sectionId in
 			let array = eventsBySection[sectionId, default: []]
 			res[sectionId] = IdentifiedArrayOf.init(array)
 		})
 	}
 	
-	open class func groupByStartOfDay(originalEvents: [CalAppointment]) -> [Date: [CalAppointment]] {
+	open class func groupByStartOfDay(originalEvents: [CalendarEvent]) -> [Date: [CalendarEvent]] {
 		return Dictionary.init(grouping: originalEvents, by: { $0.start_date.startOfDay })
 	}
 }

@@ -3,9 +3,7 @@ import Tagged
 
 public struct Bookout: Codable, Identifiable {
 	
-	public typealias Id = Tagged<Bookout, Int>
-	
-	public let id: Bookout.Id
+	public let id: CalendarEvent.Id
 	public var start_date: Date
 	public var end_date: Date
 	public var employeeId: Employee.ID
@@ -17,7 +15,7 @@ public struct Bookout: Codable, Identifiable {
 	var employeeName: String
 	
 //	public let externalGuests: String?
-	public init(id: Bookout.Id,
+	public init(id: CalendarEvent.Id,
 				start_date: Date,
 				end_date: Date,
 				employeeId: Employee.ID,
@@ -53,6 +51,7 @@ extension Bookout: CalendarEventVariant {
 
 extension Bookout {
 	public init(
+		_ id: CalendarEvent.Id,
 		_ start_date: Date,
 		_ end_date: Date,
 		_ employeeId: Employee.Id,
@@ -63,6 +62,7 @@ extension Bookout {
 		_ employeeName: String,
 		_ decoder: Decoder
 	) throws {
+		self.id = id
 		self.start_date = start_date
 		self.end_date = end_date
 		self.employeeId = employeeId
@@ -72,7 +72,6 @@ extension Bookout {
 		self._private = _private
 		self.employeeName = employeeName
 		let container = try decoder.container(keyedBy: CodingKeys.self)
-		self.id = try container.decode(Self.Id, forKey: .id)
 		self._description = try? container.decode(String.self, forKey: ._description)
 	}
 }

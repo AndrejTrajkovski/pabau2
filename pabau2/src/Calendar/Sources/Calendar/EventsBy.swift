@@ -7,20 +7,20 @@ import AddBookout
 
 public struct EventsBy<SubsectionHeader: Identifiable & Equatable> {
 	
-	var appointments: [Date: [Location.ID: [SubsectionHeader.ID: IdentifiedArrayOf<CalAppointment>]]]
-	init(events: [CalAppointment],
+	var appointments: [Date: [Location.ID: [SubsectionHeader.ID: IdentifiedArrayOf<CalendarEvent>]]]
+	init(events: [CalendarEvent],
 		 locationsIds: [Location.ID],
 		 subsections: [SubsectionHeader],
-		 sectionKeypath: KeyPath<CalAppointment, Location.ID>,
-		 subsKeypath: KeyPath<CalAppointment, SubsectionHeader.ID>) {
+		 sectionKeypath: KeyPath<CalendarEvent, Location.ID>,
+		 subsKeypath: KeyPath<CalendarEvent, SubsectionHeader.ID>) {
 		self.appointments = SectionHelper.group(events,
 												locationsIds,
 												subsections,
 												sectionKeypath,
 												subsKeypath)
 	}
-	
-	func flatten() -> [CalAppointment] {
+
+	func flatten() -> [CalendarEvent] {
 		return appointments.flatMap { $0.value }.flatMap { $0.value }.flatMap { $0.value }
 	}
 }
