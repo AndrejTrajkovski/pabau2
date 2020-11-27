@@ -113,15 +113,42 @@ struct LocationAndDate: View {
 	let store: Store<AddShiftState, AddShiftAction>
 	@ObservedObject var viewStore: ViewStore<AddShiftState, AddShiftAction>
 
+    @State private var startDate: Date = Date()
+    @State private var startTime: Date = Date()
+    @State private var endTime: Date = Date()
+
 	var body: some View {
-		VStack (spacing: 16) {
+		VStack(spacing: 16) {
 			HStack(spacing: 16) {
 				chooseLocation
-				TitleAndValueLabel("DAY", self.viewStore.state.startDate?.toString() ?? "")
+
+                ZStack(alignment: .bottom) {
+                    TitleAndValueLabel("DAY", "")
+                    DatePickerTextField(date: $startDate) {
+
+                    }
+                    .font(.semibold15)
+                    .padding(.bottom, 10)
+                }
 			}
 			HStack(spacing: 16) {
-				TitleAndValueLabel("START TIME", self.viewStore.state.startTime?.toString() ?? "")
-				TitleAndValueLabel("END TIME", self.viewStore.state.endTime?.toString() ?? "")
+                ZStack(alignment: .bottom) {
+                    TitleAndValueLabel("START TIME", "")
+                    DatePickerTextField(date: $startTime, mode: .time) {
+
+                    }
+                    .font(.semibold15)
+                    .padding(.bottom, 10)
+                }
+
+                ZStack(alignment: .bottom) {
+                    TitleAndValueLabel("END TIME", "")
+                    DatePickerTextField(date: $endTime, mode: .time) {
+
+                    }
+                    .font(.semibold15)
+                    .padding(.bottom, 10)
+                }
 			}
 		}
 	}
