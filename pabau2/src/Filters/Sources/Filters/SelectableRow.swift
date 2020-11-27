@@ -36,7 +36,7 @@ struct SelectableRow<T: Equatable & Identifiable & Named>: View {
 			}.onTapGesture {
 				viewStore.send(.select)
 			}
-		}.listRowBackground(Color.employeeBg)
+		}
 		.padding()
 		.frame(height: 44)
 		.frame(maxWidth: .infinity, alignment: .leading)

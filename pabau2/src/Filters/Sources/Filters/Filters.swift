@@ -88,17 +88,20 @@ public struct Filters<S: Identifiable & Equatable & Named>: View {
 	}
 	public var body: some View {
 		WithViewStore(store) { viewStore in
-			Form {
-				List {
+			ScrollView {
+				LazyVStack(spacing: 0) {
 					CalendarHeader<S>(onTap: { viewStore.send(.onHeaderTap) } )
+					Divider()
 					ForEachStore(store.scope(state: { $0.rows },
 											 action: FiltersAction.rows(id:action:)),
 								 content: FilterSection.init(store:))
+					Spacer()
 				}
 			}
 			.frame(width: 302)
-			.background(Color.white.shadow(color: .employeeShadow, radius: 40.0, x: -20, y: 2))
+			.frame(maxHeight: .infinity)
 			.background(Color.employeeBg)
+			.background(Color.white.shadow(color: .employeeShadow, radius: 40.0, x: -20, y: 2))
 		}
 	}
 }

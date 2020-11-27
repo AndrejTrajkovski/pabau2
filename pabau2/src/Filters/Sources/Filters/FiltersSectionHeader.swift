@@ -37,12 +37,15 @@ struct FilterSectionHeader: View {
 	let store: Store<FilterSectionHeaderState, FilterSectionHeaderAction>
 	var body: some View {
 		WithViewStore(store) { viewStore in
-			HStack {
-				Text(viewStore.location.name)
-				Spacer()
-				ExpandableButton(expanded: viewStore.binding(get: { $0.isExpanded },
-															 send: { .expand($0) }))
-			}.padding()
+			VStack {
+				HStack {
+					Text(viewStore.location.name)
+					Spacer()
+					ExpandableButton(expanded: viewStore.binding(get: { $0.isExpanded },
+																 send: { .expand($0) }))
+				}
+				Divider()
+			}
 		}.foregroundColor(.black)
 		.font(Font.semibold17)
 	}

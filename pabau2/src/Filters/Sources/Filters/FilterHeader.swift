@@ -16,7 +16,6 @@ public struct CalendarHeader<S: Identifiable & Equatable & Named>: View {
 				RoomHeader(onTap: onTap)
 			}
 		}
-		.frame(maxWidth: .infinity, maxHeight: .infinity)
 		.background(Color.employeeBg)
 	}
 }
