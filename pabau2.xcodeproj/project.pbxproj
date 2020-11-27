@@ -17,7 +17,7 @@
 		82182C5525265C5D00E5479F /* Model in Frameworks */ = {isa = PBXBuildFile; productRef = 82182C5425265C5D00E5479F /* Model */; };
 		82182C5725265C5D00E5479F /* Util in Frameworks */ = {isa = PBXBuildFile; productRef = 82182C5625265C5D00E5479F /* Util */; };
 		8246DB3925716DF900F5D87E /* Intercom.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74DD9D37256EB28C00CC3920 /* Intercom.framework */; };
-		8246DB3A25716DF900F5D87E /* Intercom.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 74DD9D37256EB28C00CC3920 /* Intercom.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8246DB3C2571731C00F5D87E /* Intercom.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 74DD9D37256EB28C00CC3920 /* Intercom.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		825BE7EA2436226300422910 /* checkIn.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 825BE7E92436226300422910 /* checkIn.mp4 */; };
 		82811EF423E06BCB0066AFDC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EF323E06BCB0066AFDC /* ContentView.swift */; };
 		8297A2B523D9BA0200D091FF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8297A2B223D9BA0200D091FF /* Localizable.strings */; };
@@ -31,11 +31,11 @@
 /* Begin PBXCopyFilesBuildPhase section */
 		8246DB3B25716DF900F5D87E /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				8246DB3A25716DF900F5D87E /* Intercom.framework in Embed Frameworks */,
+				8246DB3C2571731C00F5D87E /* Intercom.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -197,6 +197,7 @@
 				82BE2F4223D97D9C00B3678A /* Resources */,
 				82BE2F8323D9A5E500B3678A /* ShellScript */,
 				8246DB3B25716DF900F5D87E /* Embed Frameworks */,
+				8246DB3D257174A500F5D87E /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -271,6 +272,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		8246DB3D257174A500F5D87E /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "APP_PATH=\"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\"\n\n# This script loops through the frameworks embedded in the application and\n# removes unused architectures.\nfind \"$APP_PATH\" -name '*.framework' -type d | while read -r FRAMEWORK\ndo\n    FRAMEWORK_EXECUTABLE_NAME=$(defaults read \"$FRAMEWORK/Info.plist\" CFBundleExecutable)\n    FRAMEWORK_EXECUTABLE_PATH=\"$FRAMEWORK/$FRAMEWORK_EXECUTABLE_NAME\"\n    echo \"Executable is $FRAMEWORK_EXECUTABLE_PATH\"\n\n    EXTRACTED_ARCHS=()\n\n    for ARCH in $ARCHS\n    do\n        echo \"Extracting $ARCH from $FRAMEWORK_EXECUTABLE_NAME\"\n        lipo -extract \"$ARCH\" \"$FRAMEWORK_EXECUTABLE_PATH\" -o \"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\"\n        EXTRACTED_ARCHS+=(\"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\")\n    done\n\n    echo \"Merging extracted architectures: ${ARCHS}\"\n    lipo -o \"$FRAMEWORK_EXECUTABLE_PATH-merged\" -create \"${EXTRACTED_ARCHS[@]}\"\n    rm \"${EXTRACTED_ARCHS[@]}\"\n\n    echo \"Replacing original executable with thinned version\"\n    rm \"$FRAMEWORK_EXECUTABLE_PATH\"\n    mv \"$FRAMEWORK_EXECUTABLE_PATH-merged\" \"$FRAMEWORK_EXECUTABLE_PATH\"\n\ndone\n";
+		};
 		82BE2F8323D9A5E500B3678A /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -442,7 +460,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_ASSET_PATHS = "\"pabau2/Preview Content\"";
 				DEVELOPMENT_TEAM = 7M6BMQR36X;
 				ENABLE_BITCODE = NO;
@@ -471,7 +489,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_ASSET_PATHS = "\"pabau2/Preview Content\"";
 				DEVELOPMENT_TEAM = 7M6BMQR36X;
 				ENABLE_BITCODE = NO;
