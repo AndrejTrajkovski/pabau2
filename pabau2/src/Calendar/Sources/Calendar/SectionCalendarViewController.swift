@@ -57,7 +57,7 @@ public class SectionCalendarViewController<Subsection: Identifiable & Equatable>
 		selectedDate: Date,
 		locations: [Location],
 		subsections: [Location.ID: [Subsection]],
-		events: [Date: [Location.ID: [Subsection.ID: IdentifiedArrayOf<CalAppointment>]]],
+		events: [Date: [Location.ID: [Subsection.ID: IdentifiedArrayOf<CalendarEvent>]]],
 		shifts: [Date: [Location.ID: [Subsection.ID: [JZShift]]]]
 	) {
 		calendarView.updateWeekView(to: selectedDate)

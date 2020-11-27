@@ -1,7 +1,7 @@
 import Foundation
 import Tagged
 
-public struct Bookout: Codable, Identifiable {
+public struct Bookout: Codable, Identifiable, Equatable {
 	
 	public let id: CalendarEvent.Id
 	public var start_date: Date
@@ -10,9 +10,9 @@ public struct Bookout: Codable, Identifiable {
 	public var locationId: Location.ID
 	public let _private: Bool?
 	public let _description: String?
-	var employeeInitials: String?
-	var locationName: String?
-	var employeeName: String
+	public var employeeInitials: String?
+	public var locationName: String?
+	public var employeeName: String
 	
 //	public let externalGuests: String?
 	public init(id: CalendarEvent.Id,

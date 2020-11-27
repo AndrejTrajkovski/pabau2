@@ -182,7 +182,7 @@ extension Date {
 	}
 }
 
-extension CalAppointment {
+extension CalendarEvent {
 	
 	public mutating func update(start: Date) {
 		let duration = Calendar.gregorian.dateComponents([.hour, .minute], from: start_date, to: end_date)

@@ -224,7 +224,7 @@ extension CalendarState {
 
 extension CalendarState {
 	mutating func switchTo(id: Appointments.CalendarType) {
-		let locationKeyPath = \CalAppointment.locationId
+		let locationKeyPath = \CalendarEvent.locationId
 		switch id {
 		case .employee:
 			let flatAppts = self.appointments.flatten()
@@ -232,7 +232,7 @@ extension CalendarState {
 													   locationsIds: locations.map(\.id),
 													   subsections: employees.flatMap({ $0.value }),
 													   sectionKeypath: locationKeyPath,
-													   subsKeypath: \CalAppointment.employeeId)
+													   subsKeypath: \CalendarEvent.employeeId)
 			self.appointments = Appointments.employee(appointments)
 		case .room:
 			let flatAppts = self.appointments.flatten()
@@ -240,7 +240,7 @@ extension CalendarState {
 												   locationsIds: locations.map(\.id),
 												   subsections: rooms.flatMap({ $0.value }),
 												   sectionKeypath: locationKeyPath,
-												   subsKeypath: \CalAppointment.roomId)
+												   subsKeypath: \CalendarEvent.roomId)
 			self.appointments = Appointments.room(appointments)
 		case .week:
 			let flatAppts = self.appointments.flatten()

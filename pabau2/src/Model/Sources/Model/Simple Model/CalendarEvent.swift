@@ -2,7 +2,7 @@ import Foundation
 import Tagged
 
 @dynamicMemberLookup
-public enum CalendarEvent: CalendarEventVariant, Identifiable {
+public enum CalendarEvent: CalendarEventVariant, Identifiable, Equatable {
 	case appointment(CalAppointment)
 	case bookout(Bookout)
 	
@@ -10,34 +10,75 @@ public enum CalendarEvent: CalendarEventVariant, Identifiable {
 }
 
 extension CalendarEvent {
-	subscript<T>(dynamicMember keyPath: KeyPath<CalendarEventVariant, T>) -> T {
-		switch self {
-		case .appointment(let appointment):
-			return appointment[keyPath: keyPath]
-		case .bookout(let bookout):
-			return bookout[keyPath: keyPath]
+	
+	public subscript<T>(dynamicMember keyPath: KeyPath<CalendarEventVariant, T>) -> T
+	{
+		get {
+			switch self {
+			case .appointment(let appointment):
+				return appointment[keyPath: keyPath]
+			case .bookout(let bookout):
+				return bookout[keyPath: keyPath]
+			}
 		}
+		
+		//can't pass, compiler errors with WritableKeyPath
+//		set {
+//			switch self {
+//			case .appointment(let app):
+//				//Compile error, does not recognise type without downacsting
+//				if var calEventVariant = app as? CalendarEventVariant {
+//					calEventVariant[keyPath: keyPath] = newValue
+//					self = .appointment(calEventVariant as! CalAppointment)
+//				}
+//			case .bookout(let bookout):
+//				if var calEventVariant = bookout as? CalendarEventVariant {
+//					calEventVariant[keyPath: keyPath] = newValue
+//					self = .bookout(calEventVariant as! Bookout)
+//				}
+//			}
+//		}
 	}
 }
 
 extension CalendarEvent {
 	public var id: CalendarEvent.Id {
-		get { return self[dynamicMember: \.id] } }
-	var start_date: Date {
-		get { return self[dynamicMember: \.start_date] } }
-	var end_date: Date {
-		get { return self[dynamicMember: \.end_date] } }
-	var employeeId: Employee.Id {
+		return self[dynamicMember: \.id]
+	}
+	
+	public var start_date: Date {
+		get { return self[dynamicMember: \.start_date] }
+		set {
+			switch self {
+			case .appointment(var app):
+				app.start_date = newValue
+			case .bookout(var bookout):
+				bookout.start_date = newValue
+			}
+		}
+	}
+	public var end_date: Date {
+		get { return self[dynamicMember: \.end_date] }
+		set {
+			switch self {
+			case .appointment(var app):
+				app.end_date = newValue
+			case .bookout(var bookout):
+				bookout.end_date = newValue
+			}
+		}
+	}
+	public var employeeId: Employee.Id {
 		get { return self[dynamicMember: \.employeeId] } }
-	var employeeInitials: String? {
+	public var employeeInitials: String? {
 		get { return self[dynamicMember: \.employeeInitials] } }
-	var locationId: Location.Id {
+	public var locationId: Location.Id {
 		get { return self[dynamicMember: \.locationId] } }
-	var locationName: String? {
+	public var locationName: String? {
 		get { return self[dynamicMember: \.locationName] } }
-	var _private: Bool? {
+	public var _private: Bool? {
 		get { return self[dynamicMember: \._private] } }
-	var employeeName: String {
+	public var employeeName: String {
 		get { return self[dynamicMember: \.employeeName] } }
 }
 

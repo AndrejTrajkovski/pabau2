@@ -14,7 +14,7 @@ open class SectionHelper {
 		let byDate = Self.groupByStartOfDay(originalEvents: events)
 		return byDate.mapValues {
 			let byLocation = Dictionary.init(grouping: $0, by: { $0[keyPath: sectionKeyPath] })
-			let byLocationAll = sectionIds.reduce(into: [SectionId: [CalAppointment]]()) { res, secId in
+			let byLocationAll = sectionIds.reduce(into: [SectionId: [CalendarEvent]]()) { res, secId in
 				res[secId] = byLocation[secId, default: []]
 			}
 			let final = byLocationAll.mapValues { eventsByDate in

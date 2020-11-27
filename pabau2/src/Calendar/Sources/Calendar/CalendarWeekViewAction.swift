@@ -4,7 +4,7 @@ import Model
 import AddBookout
 
 public struct CalendarWeekViewState: Equatable {
-	var appointments: [Date: IdentifiedArrayOf<CalAppointment>]
+	var appointments: [Date: IdentifiedArrayOf<CalendarEvent>]
 	var selectedDate: Date
 	var addBookout: AddBookoutState?
 	var appDetails: AppDetailsState?
@@ -17,17 +17,17 @@ public let calendarWeekViewReducer: Reducer<CalendarWeekViewState, CalendarWeekV
 		let newDate = state.selectedDate + daysToAdd.days
 		state.selectedDate = newDate
 	case .editStartTime(let startOfDayDate, let startDate, let eventId, let startingPointStartOfDay):
-		let calId = CalAppointment.ID.init(rawValue: eventId)
+		let calId = CalendarEvent.ID.init(rawValue: eventId)
 		var app = state.appointments[startingPointStartOfDay]?.remove(id: calId)
 		app?.update(start: startDate)
 		app.map {
 			if state.appointments[startOfDayDate] == nil {
-				state.appointments[startOfDayDate] = IdentifiedArrayOf<CalAppointment>.init()
+				state.appointments[startOfDayDate] = IdentifiedArrayOf<CalendarEvent>.init()
 			}
 			state.appointments[startOfDayDate]!.append($0)
 		}
 	case .editDuration(let startOfDayDate, let endDate, let eventId):
-		let calId = CalAppointment.ID.init(rawValue: eventId)
+		let calId = CalendarEvent.ID.init(rawValue: eventId)
 		state.appointments[startOfDayDate]?[id: calId]?.end_date = endDate
 	case .addAppointment:
 		break// handled in calendarContainerReducer
@@ -38,7 +38,7 @@ public let calendarWeekViewReducer: Reducer<CalendarWeekViewState, CalendarWeekV
 										   chosenEmployee: nil,
 										   start: startDate)
 	case .onSelect(startOfDayDate: let startOfDayDate, eventId: let eventId):
-		let calId = CalAppointment.ID.init(rawValue: eventId)
+		let calId = CalendarEvent.ID.init(rawValue: eventId)
 		state.appointments[startOfDayDate]?[id: calId].map {
 			state.appDetails = AppDetailsState(app: $0)
 		}
