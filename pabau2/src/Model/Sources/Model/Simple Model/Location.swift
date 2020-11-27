@@ -36,11 +36,11 @@ extension Location {
 		[
 			Location(id: 1, name: "Leicester", color: "#FF0000"),
 			Location(id: 2, name: "London", color: "#FF00FF"),
-			Location(id: 3, name: "Aston Villa", color: "#800080"),
-			Location(id: 4, name: "Everton", color: "#00FF00"),
+			Location(id: 3, name: "Birmingham", color: "#800080"),
+			Location(id: 4, name: "Manchester", color: "#00FF00"),
 			Location(id: 5, name: "Portsmouth", color: "#FFB6C1"),
 			Location(id: 6, name: "Skopje", color: "#FFFF00"),
-			Location(id: 7, name: "Shuto Orizari", color: "#9932CC")
+			Location(id: 7, name: "Liverpool", color: "#9932CC")
 		]
 	}
 }

@@ -8,6 +8,7 @@ import AddAppointment
 import AddBookout
 import Combine
 import AddShift
+import Filters
 
 public typealias CalendarEnvironment = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
 
@@ -105,6 +106,14 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 		state: \CalendarState.addShift,
 		action: /CalendarAction.addShift,
 		environment: { $0 }),
+	FiltersReducer<Employee>().reducer.pullback(
+		state: \.employeeFilters,
+		action: /CalendarAction.employeeFilters,
+		environment: { $0 }),
+	FiltersReducer<Room>().reducer.pullback(
+		state: \.roomFilters,
+		action: /CalendarAction.roomFilters,
+		environment: { $0 }),
 	.init { state, action, _ in
 		switch action {
 		case .datePicker: break
@@ -117,7 +126,8 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 		case .calTypePicker(.toggleDropdown): break
 		case .onAddShift:
 			state.addShift = AddShiftState.makeEmpty()
-		case .toggleFilters: break
+		case .toggleFilters:
+			state.isShowingFilters.toggle()
 		case .room:
 			break
 		case .week:
@@ -128,6 +138,8 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 			state.appDetails = nil
 		case .addBookout(.close):
 			state.addBookout = nil
+		case .changeCalScope:
+			state.scope = state.scope == .week ? .month : .week
 		default: break
 		}
 		return .none
@@ -139,18 +151,25 @@ public struct CalendarContainer: View {
 
 	public var body: some View {
 		WithViewStore(store) { viewStore in
-			VStack(spacing: 0) {
-				CalTopBar(store: self.store)
-				CalendarDatePicker.init(
-					store: self.store.scope(
-						state: { $0.selectedDate },
-						action: { .datePicker($0)}
-					),
-					isWeekView: viewStore.state.appointments.calendarType == Appointments.CalendarType.week
-				)
-				.padding(0)
-				CalendarWrapper(store: self.store)
-				Spacer()
+			ZStack(alignment: .topTrailing) {
+				VStack(spacing: 0) {
+					CalTopBar(store: self.store)
+					CalendarDatePicker.init(
+						store: self.store.scope(
+							state: { $0.selectedDate },
+							action: { .datePicker($0)}
+						),
+						isWeekView: viewStore.state.appointments.calendarType == Appointments.CalendarType.week,
+						scope: viewStore.scope
+					)
+					.padding(0)
+					CalendarWrapper(store: self.store)
+					Spacer()
+				}
+				if viewStore.state.isShowingFilters {
+					FiltersWrapper(store: store)
+						.transition(.moveAndFade)
+				}
 			}
 			.fullScreenCover(isPresented:
 								Binding(get: { activeSheet(state: viewStore.state) != nil },
@@ -225,8 +244,18 @@ struct CalTopBar: View {
 					)
 					.padding()
 					.exploding(.center)
-					Button.init(Texts.filters, action: {
-					})
+					HStack {
+						Button {
+							viewStore.send(.changeCalScope)
+						} label: {
+							Image("calendar_icon")
+								.renderingMode(.template)
+								.accentColor(.blue)
+						}
+						Button(Texts.filters, action: {
+							viewStore.send(.toggleFilters)
+						})
+					}
 					.padding()
 					.padding(.trailing, 20)
 					.exploding(.trailing)

@@ -4,9 +4,9 @@ import ComposableArchitecture
 
 public typealias EmployeesFilterEnvironment = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
 
-public let employeeFilterReducer = Reducer<EmployeesFilterState, EmployeesFilterAction, EmployeesFilterEnvironment> { state, action, env in
+public let journeyFilterReducer = Reducer<JourneyFilterState, JourneyFilterAction, EmployeesFilterEnvironment> { state, action, env in
 	func handle(result: Result<[Employee], RequestError>,
-							state: inout EmployeesFilterState) -> Effect<EmployeesFilterAction, Never> {
+							state: inout JourneyFilterState) -> Effect<JourneyFilterAction, Never> {
 		switch result {
 		case .success(let employees):
 			state.employees = employees

@@ -6,22 +6,32 @@ import SwiftDate
 public struct CalendarDatePicker: View {
 	let store: Store<Date, CalendarDatePickerAction>
 	let isWeekView: Bool
+	let scope: FSCalendarScope
+
 	@State var totalHeight: CGFloat?
 	public var body: some View {
 		WithViewStore(store) { viewStore in
 			SwiftUICalendar.init(viewStore.state,
-								 .week,
+								 scope,
 								 isWeekView: isWeekView,
-								 onHeightChange: { self.totalHeight = $0 },
+								 onHeightChange: { height in
+									DispatchQueue.main.async {
+										withAnimation {
+											self.totalHeight = height
+										}
+									}
+								 },
 								 onDateChanged: { viewStore.send(.selectedDate($0))}
 			).frame(height: self.totalHeight)
 		}
 	}
-	
+
 	public init(store: Store<Date, CalendarDatePickerAction>,
-				isWeekView: Bool) {
+				isWeekView: Bool,
+				scope: FSCalendarScope) {
 		self.store = store
 		self.isWeekView = isWeekView
+		self.scope = scope
 	}
 }
 
@@ -70,7 +80,7 @@ struct SwiftUICalendar: UIViewRepresentable {
 
 	public func updateUIView(_ calendar: FSCalendar, context: UIViewRepresentableContext<SwiftUICalendar>) {
 		update(calendar: calendar, selDate: date, isWeekView: isWeekView)
-		calendar.setScope(scope, animated: false)
+		calendar.setScope(scope, animated: true)
 	}
 
 	func update(calendar: FSCalendar,
@@ -85,7 +95,7 @@ struct SwiftUICalendar: UIViewRepresentable {
 				calendar.select($0)
 			}
 		}
-		
+
 		if isWeekView {
 			calendar.setCurrentPage(selDate, animated: true)
 			calendar.allowsMultipleSelection = true
@@ -93,7 +103,7 @@ struct SwiftUICalendar: UIViewRepresentable {
 			calendar.allowsMultipleSelection = false
 		}
 	}
-	
+
 	func datesToSelect(date: Date,
 					   isWeekView: Bool) -> [Date] {
 		if isWeekView {

@@ -3,11 +3,11 @@ import Util
 import Model
 import ComposableArchitecture
 
-public struct EmployeesFilter: View {
-	let store: Store<EmployeesFilterState, EmployeesFilterAction>
-	@ObservedObject var viewStore: ViewStore<EmployeesFilterState, EmployeesFilterAction>
+public struct JourneyFilter: View {
+	let store: Store<JourneyFilterState, JourneyFilterAction>
+	@ObservedObject var viewStore: ViewStore<JourneyFilterState, JourneyFilterAction>
 	
-	public init(_ store: Store<EmployeesFilterState, EmployeesFilterAction>) {
+	public init(_ store: Store<JourneyFilterState, JourneyFilterAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
@@ -61,24 +61,5 @@ private struct EmployeeRow: View {
 		}.onTapGesture {
 			self.didSelectEmployee(self.employee)
 		}.listRowBackground(Color.employeeBg)
-	}
-}
-
-private struct EmployeeHeader: View {
-	let didTouchHeaderButton: () -> Void
-	var body: some View {
-		HStack {
-			Button (action: {
-				self.didTouchHeaderButton()
-			}, label: {
-				Image(systemName: "person").font(.system(size: 28))
-			})
-			Text(Texts.employee)
-				.foregroundColor(.black)
-				.font(Font.semibold20)
-				.autocapitalization(.words)
-		}
-		.padding(.bottom)
-		.background(Color.employeeBg)
 	}
 }

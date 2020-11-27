@@ -1,14 +1,14 @@
-import EmployeesFilter
+import Filters
 import Foundation
 import Model
 
 public struct JourneyContainerState: Equatable {
 	public var journey: JourneyState
-	public var employeesFilter: EmployeesFilterState
+	public var employeesFilter: JourneyFilterState
 
 	public init(
 		journey: JourneyState,
-		employeesFilter: EmployeesFilterState
+		employeesFilter: JourneyFilterState
 	) {
 		self.journey = journey
 		self.employeesFilter = employeesFilter

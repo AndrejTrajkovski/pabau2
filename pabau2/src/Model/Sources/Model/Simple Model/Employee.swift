@@ -68,12 +68,6 @@ extension Employee {
 					  pin: 1234,
 					  locationId: Location.mock().randomElement()!.id.rawValue
 		),
-		Employee.init(id: 5,
-					  name: "LeBron James",
-					  avatarUrl: "",
-					  pin: 1234,
-					  locationId: Location.mock().randomElement()!.id.rawValue
-		),
 		Employee.init(id: 6,
 					  name: "Britney Spears",
 					  avatarUrl: "",
@@ -88,6 +82,24 @@ extension Employee {
 		),
 		Employee.init(id: 8,
 					  name: "Dr. Huberman",
+					  avatarUrl: "",
+					  pin: 1234,
+					  locationId: Location.mock().randomElement()!.id.rawValue
+		),
+		Employee.init(id: 11,
+					  name: "Dr. Andrej",
+					  avatarUrl: "asd",
+					  pin: 1234,
+					  locationId: Location.mock().randomElement()!.id.rawValue
+		),
+		Employee.init(id: 31,
+					  name: "Dr. Floki",
+					  avatarUrl: "",
+					  pin: 1234,
+					  locationId: Location.mock().randomElement()!.id.rawValue
+		),
+		Employee.init(id: 41,
+					  name: "Dr. Billy",
 					  avatarUrl: "",
 					  pin: 1234,
 					  locationId: Location.mock().randomElement()!.id.rawValue

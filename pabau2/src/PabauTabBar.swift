@@ -5,7 +5,7 @@ import Util
 import Journey
 import Clients
 import Calendar
-import EmployeesFilter
+import Filters
 import JZCalendarWeekView
 import AddAppointment
 import Communication
@@ -25,7 +25,7 @@ public struct TabBarState: Equatable {
 	public var calendar: CalendarState
 	public var settings: SettingsState
     public var communication: CommunicationState
-	public var employeesFilter: EmployeesFilterState = EmployeesFilterState()
+	public var employeesFilter: JourneyFilterState = JourneyFilterState()
 
 	public var calendarContainer: CalendarContainerState {
 		get {
@@ -55,7 +55,7 @@ public enum TabBarAction {
 	case journey(JourneyContainerAction)
 	case clients(ClientsAction)
 	case calendar(CalendarAction)
-	case employeesFilter(EmployeesFilterAction)
+	case employeesFilter(JourneyFilterAction)
 	case addAppointment(AddAppointmentAction)
     case communication(CommunicationAction)
 }
@@ -104,7 +104,7 @@ struct PabauTabBar: View {
 				}
 				.onAppear {
 					self.viewStore.send(.journey(JourneyContainerAction.journey(JourneyAction.loadJourneys)))
-					self.viewStore.send(.employeesFilter(EmployeesFilterAction.loadEmployees))
+					self.viewStore.send(.employeesFilter(JourneyFilterAction.loadEmployees))
 				}
 				ClientsNavigationView(
 					self.store.scope(
@@ -156,8 +156,8 @@ struct PabauTabBar: View {
 				then: AddAppointment.init(store:))
 			}
 			if self.viewStore.state.isShowingEmployees {
-				EmployeesFilter(
-					self.store.scope(state: { $0.employeesFilter } ,
+				JourneyFilter(
+					self.store.scope(state: { $0.employeesFilter },
 					action: { .employeesFilter($0)})
 				).transition(.moveAndFade)
 			}
@@ -174,7 +174,7 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
 		}
 		return .none
 	},
-	employeeFilterReducer.pullback(
+	journeyFilterReducer.pullback(
 		state: \TabBarState.employeesFilter,
 		action: /TabBarAction.employeesFilter,
 		environment: {
@@ -247,9 +247,3 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
         return .none
     }
 )
-
-extension AnyTransition {
-    static var moveAndFade: AnyTransition {
-        AnyTransition.move(edge: .trailing)
-    }
-}

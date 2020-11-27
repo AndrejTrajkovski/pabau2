@@ -2,7 +2,7 @@ import Util
 import Model
 import ComposableArchitecture
 
-public struct EmployeesFilterState: Equatable {
+public struct JourneyFilterState: Equatable {
 	var loadingState: LoadingState = .initial
 	var employees: [Employee] = []
 	public var selectedEmployeesIds: Set<Employee.Id> = Set()
