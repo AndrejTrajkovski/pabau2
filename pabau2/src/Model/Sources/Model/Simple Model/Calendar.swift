@@ -23,8 +23,7 @@ public struct CalAppointment: Hashable, Codable, Equatable, Identifiable {
 	public let employeeInitials: String?
 	public var locationId: Location.Id
 	public let locationName: String?
-	public let _private: String?
-	public let type: Termin.ModelType?
+	public let _private: Bool?
 	public let extraEmployees: [Employee]?
 	public var status: AppointmentStatus?
 	public let service: String
@@ -44,7 +43,6 @@ public struct CalAppointment: Hashable, Codable, Equatable, Identifiable {
 		case locationId = "location_id"
 		case locationName = "location_name"
 		case _private = "private"
-		case type
 		case extraEmployees = "extra_employees"
 		case status
 		case service
@@ -56,91 +54,47 @@ public struct CalAppointment: Hashable, Codable, Equatable, Identifiable {
 		case roomName = "room_name"
 	}
 	
-	public init(from decoder: Decoder) throws {
-		let container = try decoder.container(keyedBy: CodingKeys.self)
-		id = try container.decode(CalAppointment.Id.self, forKey: .id)
-		employeeId = try container.decode(Employee.Id.self, forKey: .employeeId)
-		employeeInitials = try? container.decode(String.self, forKey: .employeeInitials)
-		locationId = try container.decode(Location.ID.self, forKey: .locationId)
-		locationName = try? container.decode(String.self, forKey: .locationName)
-		_private = try container.decode(String.self, forKey: ._private)
-		type = try? container.decode(Termin.ModelType.self, forKey: .type)
-		extraEmployees = try? container.decode([Employee].self, forKey: .extraEmployees)
-		status = try? container.decode(AppointmentStatus?.self, forKey: .status)
-		service = try container.decode(String.self, forKey: .service)
-		serviceColor = try? container.decode(String.self, forKey: .serviceColor)
-		customerName = try? container.decode(String.self, forKey: .customerName)
-		customerPhoto = try? container.decode(String.self, forKey: .customerPhoto)
-		start_date = try Date(container: container,
-							  codingKey: .start_date,
-							  formatter: DateFormatter.yearMonthDay)
-		end_date = try Date(container: container,
-							codingKey: .end_date,
-							formatter: DateFormatter.HHmmss)
-		roomId = try container.decode(Room.Id.self, forKey: .roomId)
-		employeeName = try container.decode(String.self, forKey: .employeeName)
-		roomName = try container.decode(String.self, forKey: .roomName)
-	}
-}
-
-extension Date {
-	public init(container: KeyedDecodingContainer<CalAppointment.CodingKeys>,
-				codingKey: CalAppointment.CodingKeys,
-				formatter: DateFormatter) throws {
-		let dateString = try container.decode(String.self, forKey: codingKey)
-		if let date = formatter.date(from: dateString) {
-			self = date
-		} else {
-			throw DecodingError.dataCorruptedError(forKey: codingKey,
-												   in: container,
-												   debugDescription: "Date string does not match format expected by formatter.")
-		}
-	}
-}
-
-extension DateFormatter {
-	public static let HHmmss: DateFormatter = {
-		let formatter = DateFormatter()
-		formatter.dateFormat = "HH:mm:ss"
-		formatter.calendar = Calendar(identifier: .iso8601)
-		formatter.timeZone = TimeZone(secondsFromGMT: 0)
-		formatter.locale = Locale(identifier: "en_US_POSIX")
-		return formatter
-	}()
-	
-	public static let yearMonthDay: DateFormatter = {
-		let formatter = DateFormatter()
-		formatter.dateFormat = "yyyy-MM-dd"
-		formatter.calendar = Calendar(identifier: .iso8601)
-		formatter.timeZone = TimeZone(secondsFromGMT: 0)
-		formatter.locale = Locale(identifier: "en_US_POSIX")
-		return formatter
-	}()
+//	public init(from decoder: Decoder) throws {
+//		let container = try decoder.container(keyedBy: CodingKeys.self)
+//		id = try container.decode(CalAppointment.Id.self, forKey: .id)
+//		employeeId = try container.decode(Employee.Id.self, forKey: .employeeId)
+//		employeeInitials = try? container.decode(String.self, forKey: .employeeInitials)
+//		locationId = try container.decode(Location.ID.self, forKey: .locationId)
+//		locationName = try? container.decode(String.self, forKey: .locationName)
+//		_private = try container.decode(Bool.self, forKey: ._private)
+//		type = try? container.decode(Termin.ModelType.self, forKey: .type)
+//		extraEmployees = try? container.decode([Employee].self, forKey: .extraEmployees)
+//		status = try? container.decode(AppointmentStatus?.self, forKey: .status)
+//		service = try container.decode(String.self, forKey: .service)
+//		serviceColor = try? container.decode(String.self, forKey: .serviceColor)
+//		customerName = try? container.decode(String.self, forKey: .customerName)
+//		customerPhoto = try? container.decode(String.self, forKey: .customerPhoto)
+//		start_date = try Date(container: container,
+//							  codingKey: .start_date,
+//							  formatter: DateFormatter.yearMonthDay)
+//		end_date = try Date(container: container,
+//							codingKey: .end_date,
+//							formatter: DateFormatter.HHmmss)
+//		roomId = try container.decode(Room.Id.self, forKey: .roomId)
+//		employeeName = try container.decode(String.self, forKey: .employeeName)
+//		roomName = try container.decode(String.self, forKey: .roomName)
+//	}
 }
 
 extension CalAppointment {
 	
 	public init(
-		id: CalAppointment.Id,
-		start_date: Date,
-		end_date: Date,
-		employeeId: Employee.Id,
-		employeeInitials: String? = nil,
-		locationId: Location.ID,
-		locationName: String?  = nil,
-		_private: String?  = nil,
-		type: Termin.ModelType? = nil,
-		extraEmployees: [Employee]? = nil,
-		status: AppointmentStatus? = nil,
-		service: String,
-		serviceColor: String? = nil,
-		customerName: String? = nil,
-		customerPhoto: String? = nil,
-		roomId: Room.Id,
-		employeeName: String,
-		roomName: String
-	) {
-		self.id = id
+		_ start_date: Date,
+		_ end_date: Date,
+		_ employeeId: Employee.Id,
+		_ employeeInitials: String?,
+		_ locationId: Location.Id,
+		_ locationName: String?,
+		_ _private: Bool?,
+		_ status: AppointmentStatus?,
+		_ employeeName: String,
+		_ decoder: Decoder
+	) throws {
 		self.start_date = start_date
 		self.end_date = end_date
 		self.employeeId = employeeId
@@ -148,17 +102,62 @@ extension CalAppointment {
 		self.locationId = locationId
 		self.locationName = locationName
 		self._private = _private
-		self.type = type
-		self.extraEmployees = extraEmployees
 		self.status = status
-		self.service = service
-		self.serviceColor = serviceColor
-		self.customerName = customerName
-		self.customerPhoto = customerPhoto
-		self.roomId = roomId
 		self.employeeName = employeeName
-		self.roomName = roomName
+		let container = try decoder.container(keyedBy: CodingKeys.self)
+		self.extraEmployees = try? container.decode([Employee].self, forKey: .extraEmployees)
+		self.service = try container.decode(String.self, forKey: .service)
+		self.serviceColor = try? container.decode(String.self, forKey: .serviceColor)
+		self.customerName = try? container.decode(String.self, forKey: .customerName)
+		self.customerPhoto = try? container.decode(String.self, forKey: .customerPhoto)
+		self.roomId = try container.decode(Room.Id.self, forKey: .roomId)
+		self.roomName = try container.decode(String.self, forKey: .roomName)
+		self.id = try container.decode(Self.Id, forKey: .id)
 	}
+}
+
+extension CalAppointment: CalendarEventVariant { }
+extension CalAppointment {
+	
+//	public init(
+//		id: CalAppointment.Id,
+//		start_date: Date,
+//		end_date: Date,
+//		employeeId: Employee.Id,
+//		employeeInitials: String? = nil,
+//		locationId: Location.ID,
+//		locationName: String?  = nil,
+//		_private: Bool?  = nil,
+//		type: Termin.ModelType? = nil,
+//		extraEmployees: [Employee]? = nil,
+//		status: AppointmentStatus? = nil,
+//		service: String,
+//		serviceColor: String? = nil,
+//		customerName: String? = nil,
+//		customerPhoto: String? = nil,
+//		roomId: Room.Id,
+//		employeeName: String,
+//		roomName: String
+//	) {
+//		self.id = id
+//		self.start_date = start_date
+//		self.end_date = end_date
+//		self.employeeId = employeeId
+//		self.employeeInitials = employeeInitials
+//		self.locationId = locationId
+//		self.locationName = locationName
+//		self._private = _private
+//		self.type = type
+//		self.extraEmployees = extraEmployees
+//		self.status = status
+//		self.service = service
+//		self.serviceColor = serviceColor
+//		self.customerName = customerName
+//		self.customerPhoto = customerPhoto
+//		self.roomId = roomId
+//		self.employeeName = employeeName
+//		self.roomName = roomName
+//	}
 }
 
 extension Date {
@@ -166,45 +165,6 @@ extension Date {
 		let ymdComps = calendar.dateComponents([.year, .month, .day], from: self)
 		let hmsComps = calendar.dateComponents([.hour, .minute, .second], from: self)
 		return (calendar.date(from: hmsComps), calendar.date(from: ymdComps))
-	}
-}
-
-extension CalAppointment {
-	
-	public static func makeDummy() -> [CalAppointment] {
-		let services: [(String, String)] =
-			[
-				("Brow Lift","#EC75FF"),
-				("Chin Surgery","#46F049"),
-				("Body Wrap","#9268FD"),
-				("Botox","#FFFF5B"),
-				("Manicure","#007AFF"),
-				("Hydrafacial","#108A44"),
-			]
-		var res = [CalAppointment]()
-		for idx in 0...100 {
-			let mockStartEnd = Date.mockStartAndEndDate(endRangeMax: 90)
-			let service = services.randomElement()
-			let employee = Employee.mockEmployees.randomElement()!
-			let client = Client.mockClients.randomElement()!
-			let room = Room.mock().randomElement()!.value
-			let app = CalAppointment(id: CalAppointment.Id(rawValue: idx),
-									 start_date: mockStartEnd.0,
-									 end_date: mockStartEnd.1,
-									 employeeId: employee.id,
-									 employeeInitials: nil,
-									 locationId: employee.locationId,
-									 service: service!.0,
-									 serviceColor: service!.1,
-									 customerName: client.firstName,
-									 customerPhoto: client.avatar,
-									 roomId: room.id,
-									 employeeName: employee.name,
-									 roomName: room.name
-			)
-			res.append(app)
-		}
-		return res
 	}
 }
 

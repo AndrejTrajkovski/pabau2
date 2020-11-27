@@ -190,7 +190,7 @@ extension CalendarState {
 	public init() {
 		self.isDropdownShown = false
 		self.selectedDate = Calendar.gregorian.startOfDay(for: Date())
-	    let apps = CalAppointment.makeDummy()
+	    let apps = CalendarEvent.makeDummy()
 		let employees = Employee.mockEmployees
 		let rooms = Room.mock().map { $0.value }
 		let locations = Location.mock()
