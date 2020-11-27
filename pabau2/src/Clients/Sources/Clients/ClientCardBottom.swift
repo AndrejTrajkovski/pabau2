@@ -57,21 +57,14 @@ struct ClientCardBottom: View {
 			} else {
 				VStack(spacing: 0) {
 					Divider()
-//                    NavigationLink.emptyHidden(viewStore.isSelectedPhoto,
-//                                                                   PhotoCompareView(store: Store(initialState: PhotoCompareState(),
-//                                                                             reducer: photoCompareReducer,
-//                                                                             environment: PhotosEnvironment(apiClient: ClientsMockAPI(),
-//                                                                                                            userDefaults: StandardUDConfig())
-//                                                                        )
-//                                                                   )
-//                                        )
 					ClientCardChildWrapper(store: self.store.scope(state: { $0 },
                                                                    action: { $0 }))
                 }
 			}
-		}.navigationBarItems(leading:
-			MyBackButton(text: Texts.back, action: { self.viewStore.send(.backBtnTap) }),
-												 trailing: self.trailingButtons
+		}.navigationBarItems(
+            leading: MyBackButton(text: Texts.back,
+                                  action: { self.viewStore.send(.backBtnTap) }),
+            trailing: self.trailingButtons
 		).navigationBarBackButtonHidden(true)
 	}
 

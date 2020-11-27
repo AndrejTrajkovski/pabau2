@@ -99,20 +99,20 @@ struct PhotoCompareView: View {
                 }
             }
             .navigationBarTitle("Progress Gallery")
-            .navigationBarItems(trailing:
-                                    HStack {
-                                        Button(action: {
-                                            viewStore.send(.didSelectComparePhoto(viewStore.state.photoCompareMode == .single ? .multiple : .single))
-                                        }) {
-                                            Image("ico-nav-compare")
-                                                .resizable()
-                                                .frame(width: 24, height: 24)
-                                        }
-                                        Button("Share") {
-                                            viewStore.send(.didSelectShare)
-                                        }
-                                    }
-            )
+            
+            .navigationBarItems(
+                trailing: HStack {
+                    Button(action: {
+                        viewStore.send(.didSelectComparePhoto(viewStore.state.photoCompareMode == .single ? .multiple : .single))
+                    }) {
+                        Image("ico-nav-compare")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                    }
+                    Button("Share") {
+                        viewStore.send(.didSelectShare)
+                    }
+                })
         }
     }
 }
