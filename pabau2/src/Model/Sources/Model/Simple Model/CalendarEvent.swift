@@ -52,8 +52,9 @@ extension CalendarEvent {
 			switch self {
 			case .appointment(var app):
 				app.start_date = newValue
+				self = .appointment(app)
 			case .bookout(var bookout):
-				bookout.start_date = newValue
+				self = .bookout(bookout)
 			}
 		}
 	}
@@ -63,6 +64,7 @@ extension CalendarEvent {
 			switch self {
 			case .appointment(var app):
 				app.end_date = newValue
+				self = .appointment(app)
 			case .bookout(var bookout):
 				bookout.end_date = newValue
 			}
@@ -73,7 +75,18 @@ extension CalendarEvent {
 	public var employeeInitials: String? {
 		get { return self[dynamicMember: \.employeeInitials] } }
 	public var locationId: Location.Id {
-		get { return self[dynamicMember: \.locationId] } }
+		get { return self[dynamicMember: \.locationId] }
+		set {
+			switch self {
+			case .appointment(var app):
+				app.locationId = newValue
+				self = .appointment(app)
+			case .bookout(var bookout):
+				bookout.locationId = newValue
+				self = .bookout(bookout)
+			}
+		}
+	}
 	public var locationName: String? {
 		get { return self[dynamicMember: \.locationName] } }
 	public var _private: Bool? {
