@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		74DD9D34256EAB1A00CC3920 /* Communication in Frameworks */ = {isa = PBXBuildFile; productRef = 74DD9D33256EAB1A00CC3920 /* Communication */; };
-		74DD9D39256EB41200CC3920 /* Intercom.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74DD9D37256EB28C00CC3920 /* Intercom.framework */; };
-		74DD9D3A256EB41200CC3920 /* Intercom.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 74DD9D37256EB28C00CC3920 /* Intercom.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		82182C4725265C5D00E5479F /* Calendar in Frameworks */ = {isa = PBXBuildFile; productRef = 82182C4625265C5D00E5479F /* Calendar */; };
 		82182C4925265C5D00E5479F /* Clients in Frameworks */ = {isa = PBXBuildFile; productRef = 82182C4825265C5D00E5479F /* Clients */; };
 		82182C4D25265C5D00E5479F /* Form in Frameworks */ = {isa = PBXBuildFile; productRef = 82182C4C25265C5D00E5479F /* Form */; };
@@ -18,6 +16,8 @@
 		82182C5325265C5D00E5479F /* Login in Frameworks */ = {isa = PBXBuildFile; productRef = 82182C5225265C5D00E5479F /* Login */; };
 		82182C5525265C5D00E5479F /* Model in Frameworks */ = {isa = PBXBuildFile; productRef = 82182C5425265C5D00E5479F /* Model */; };
 		82182C5725265C5D00E5479F /* Util in Frameworks */ = {isa = PBXBuildFile; productRef = 82182C5625265C5D00E5479F /* Util */; };
+		8246DB3925716DF900F5D87E /* Intercom.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74DD9D37256EB28C00CC3920 /* Intercom.framework */; };
+		8246DB3A25716DF900F5D87E /* Intercom.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 74DD9D37256EB28C00CC3920 /* Intercom.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		825BE7EA2436226300422910 /* checkIn.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 825BE7E92436226300422910 /* checkIn.mp4 */; };
 		82811EF423E06BCB0066AFDC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EF323E06BCB0066AFDC /* ContentView.swift */; };
 		8297A2B523D9BA0200D091FF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8297A2B223D9BA0200D091FF /* Localizable.strings */; };
@@ -29,13 +29,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		82BE2F7E23D9983C00B3678A /* Embed Frameworks */ = {
+		8246DB3B25716DF900F5D87E /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				74DD9D3A256EB41200CC3920 /* Intercom.framework in Embed Frameworks */,
+				8246DB3A25716DF900F5D87E /* Intercom.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -79,7 +79,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				74DD9D39256EB41200CC3920 /* Intercom.framework in Frameworks */,
 				82182C4F25265C5D00E5479F /* FSCalendarSwiftUI in Frameworks */,
 				82182C4D25265C5D00E5479F /* Form in Frameworks */,
 				82182C4725265C5D00E5479F /* Calendar in Frameworks */,
@@ -87,6 +86,7 @@
 				82182C5125265C5D00E5479F /* Journey in Frameworks */,
 				82182C5525265C5D00E5479F /* Model in Frameworks */,
 				74DD9D34256EAB1A00CC3920 /* Communication in Frameworks */,
+				8246DB3925716DF900F5D87E /* Intercom.framework in Frameworks */,
 				82182C4925265C5D00E5479F /* Clients in Frameworks */,
 				82182C5725265C5D00E5479F /* Util in Frameworks */,
 			);
@@ -195,8 +195,8 @@
 				82BE2F4023D97D9C00B3678A /* Sources */,
 				82BE2F4123D97D9C00B3678A /* Frameworks */,
 				82BE2F4223D97D9C00B3678A /* Resources */,
-				82BE2F7E23D9983C00B3678A /* Embed Frameworks */,
 				82BE2F8323D9A5E500B3678A /* ShellScript */,
+				8246DB3B25716DF900F5D87E /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -442,7 +442,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 15;
 				DEVELOPMENT_ASSET_PATHS = "\"pabau2/Preview Content\"";
 				DEVELOPMENT_TEAM = 7M6BMQR36X;
 				ENABLE_BITCODE = NO;
@@ -471,7 +471,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 15;
 				DEVELOPMENT_ASSET_PATHS = "\"pabau2/Preview Content\"";
 				DEVELOPMENT_TEAM = 7M6BMQR36X;
 				ENABLE_BITCODE = NO;
