@@ -9,13 +9,18 @@ public let ccPhotosReducer: Reducer<CCPhotosState, CCPhotosAction, ClientsEnviro
 		state: \CCPhotosState.childState,
 		action: /CCPhotosAction.action,
 		environment: { $0 }
-	)
-	,
-	.init { state, action, env in
+	),
+
+    photoCompareReducer.pullback(
+        state: \CCPhotosState.photoCompareState,
+        action: /CCPhotosAction.actionCompare,
+        environment: { $0 }),
+	
+	Reducer<CCPhotosState, CCPhotosAction, ClientsEnvironment>.init { state, action, env in
 		switch action {
 		case .onSelectGroup(let date):
 			state.selectedDate = date
-			state.mode = .expanded
+            state.displayMode = .compare
 		case .switchMode(let mode):
 			state.mode = mode
 			state.selectedDate = nil
@@ -25,10 +30,12 @@ public let ccPhotosReducer: Reducer<CCPhotosState, CCPhotosAction, ClientsEnviro
 				state.selectedIds.append(id)
 		case .action(_):
 			break
+        default :
+            break
 		}
 		return .none
 	}
-)
+).debug()
 
 public enum CCPhotosViewMode: Int, Equatable, CaseIterable, CustomStringConvertible {
 	case grouped
@@ -55,11 +62,21 @@ public struct CCPhotosState: ClientCardChildParentState, Equatable {
 	var selectedDate: Date?
 	var mode: CCPhotosViewMode = .grouped
     var displayMode: CCPhotosViewDisplayMode = .photos
+    
+    var photosCompare: [PhotoViewModel] {
+        guard let date = self.selectedDate else { return [] }
+        return self.childState.state[date] ?? []
+    }
+
 }
 
 extension CCPhotosState {
     var photoCompareState: PhotoCompareState {
-        .init(date: self.selectedDate, photos: self.childState.state[self.selectedDate!]!)
+        set {
+        }
+        get {
+            PhotoCompareState(date: self.selectedDate, photos: photosCompare)
+        }
     }
 }
 
@@ -68,6 +85,8 @@ public enum CCPhotosAction: Equatable {
 	case onSelectGroup(Date)
 	case didTouchPhoto(PhotoVariantId)
 	case action(GotClientListAction<[Date: [PhotoViewModel]]>)
+    
+    case actionCompare(PhotoCompareAction)
 }
 
 struct CCPhotos: ClientCardChild {
@@ -75,17 +94,31 @@ struct CCPhotos: ClientCardChild {
 	var body: some View {
         WithViewStore(self.store.scope(state: { $0 }).actionless) { viewStore in
             Group {
+                
+                if viewStore.displayMode == .compare {
+                    
+//                    NavigationLink.emptyHidden(true,
+//                                               PhotoCompareView(store: self.store.scope(state: { $0.photoCompareState },
+//                                                                                        action: { .actionCompare($0) })))
+                    
+                    NavigationLink.emptyHidden(true,
+                                                PhotoCompareView(store: Store(initialState: viewStore.photoCompareState,
+                                                          reducer: photoCompareReducer,
+                                                          environment: ClientsEnvironment(apiClient: ClientsMockAPI(),
+                                                                                         userDefaults: StandardUDConfig())
+                                                     )
+                                                )
+                     )
+                    
+                }
                 if viewStore.mode == .grouped {
                     CCGroupedPhotos(store: self.store.scope(state: { $0.childState.state },
                                                             action: { $0 }))
                 } else if viewStore.mode == .expanded {
-                    NavigationLink.emptyHidden(true,
-                                               PhotoCompareView(store: self.store.scope(state: { $0.photoCompareState },
-                                                                                        action: { $0 })))
-//                    CCExpandedPhotos(store:
-//                        self.store.scope(state: { $0 },
-//                        action: { $0 })
-//                    )
+                    CCExpandedPhotos(store:
+                        self.store.scope(state: { $0 },
+                        action: { $0 })
+                    )
                     
                 } else {
                     EmptyView()

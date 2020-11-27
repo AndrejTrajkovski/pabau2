@@ -57,14 +57,14 @@ struct ClientCardBottom: View {
 			} else {
 				VStack(spacing: 0) {
 					Divider()
-                    NavigationLink.emptyHidden(viewStore.isSelectedPhoto,
-                                                                   PhotoCompareView(store: Store(initialState: PhotoCompareState(),
-                                                                             reducer: photoCompareReducer,
-                                                                             environment: PhotosEnvironment(apiClient: ClientsMockAPI(),
-                                                                                                            userDefaults: StandardUDConfig())
-                                                                        )
-                                                                   )
-                                        )
+//                    NavigationLink.emptyHidden(viewStore.isSelectedPhoto,
+//                                                                   PhotoCompareView(store: Store(initialState: PhotoCompareState(),
+//                                                                             reducer: photoCompareReducer,
+//                                                                             environment: PhotosEnvironment(apiClient: ClientsMockAPI(),
+//                                                                                                            userDefaults: StandardUDConfig())
+//                                                                        )
+//                                                                   )
+//                                        )
 					ClientCardChildWrapper(store: self.store.scope(state: { $0 },
                                                                    action: { $0 }))
                 }
@@ -102,8 +102,8 @@ struct ClientCardBottom: View {
 					}
 			}.pickerStyle(SegmentedPickerStyle())
             */
-			Button(action: {
-//				self.viewStore.send(.child(.details(.edit)))
+            Button(action: {
+                self.viewStore.send(.child(.photos(.switchMode(viewStore.photosViewMode == .expanded ? .grouped : .expanded))))
 			}, label: { Text(Texts.edit) })
 				.disabled(viewStore.state.isEditPhotosBtnDisabled)
 		}

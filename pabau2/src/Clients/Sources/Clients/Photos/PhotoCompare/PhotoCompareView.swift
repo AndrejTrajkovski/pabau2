@@ -4,9 +4,15 @@ import Model
 import Form
 import Util
 
-public enum PhotoCompareAction {
-    case didSelectComparePhoto
-    case didChangeSelectedPhoto(String)
+public enum PhotoCompareAction: Equatable {
+    case didSelectComparePhoto(PhotoCompareMode)
+    case didChangeSelectedPhoto(PhotoVariantId)
+    case didSelectShare
+}
+
+public enum PhotoCompareMode: Equatable {
+    case single
+    case multiple
 }
 
 struct PhotoCompareState: Equatable {
@@ -18,61 +24,54 @@ struct PhotoCompareState: Equatable {
         selectedPhoto = self.photos.first
     }
     
+    var photoCompareMode: PhotoCompareMode = .single
     var selectedPhoto: PhotoViewModel?
     var date: Date?
     var photos: [PhotoViewModel] = []
+    
+    var onShareSelected: Bool = false
 }
 
-public struct PhotosEnvironment {
-    var apiClient: ClientsAPI
-    var userDefaults: UserDefaultsConfig
-}
-
-var photoCompareReducer = Reducer<PhotoCompareState, CCPhotosAction, PhotosEnvironment> { state, action, environment in
+var photoCompareReducer = Reducer<PhotoCompareState, PhotoCompareAction, ClientsEnvironment> { state, action, environment in
     switch action {
-    case .didTouchPhoto(let photoId):
+    case .didChangeSelectedPhoto(let photoId):
         if let photo = state.photos.filter { $0.id == photoId}.first {
             state.selectedPhoto = photo
         }
+    case .didSelectShare:
+        state.onShareSelected = true
+    case .didSelectComparePhoto(let mode):
+        state.photoCompareMode = mode
     default:
         break
     }
     return .none
 }
 
-
 struct PhotoCompareView: View {
     
-    let store: Store<PhotoCompareState, CCPhotosAction>
+    let store: Store<PhotoCompareState, PhotoCompareAction>
     
     var body: some View {
         print("PhotoCompareView")
         return WithViewStore(self.store) { viewStore in
+            
             VStack {
-                ZStack {
-                    if let photo = viewStore.selectedPhoto {
-                        PhotoCell(photo: photo)
-                    }
-  
-                    VStack {
-                        Spacer()
-                        Text("Today")
-                            .font(.regular32)
-                            .foregroundColor(.white)
-                        if let _ = viewStore.date {
-                            Text("\(viewStore.date!)")
-                                .foregroundColor(.white)
-                        }
-                        Spacer()
-                            .frame(height: 20)
+                if viewStore.photoCompareMode == .single {
+                    PhotoDetailView(store: self.store)
+                } else {
+                    HStack {
+                        PhotoDetailView(store: self.store)
+                        PhotoDetailView(store: self.store)
                     }
                 }
+                
                 Spacer()
                 ScrollView(.horizontal) {
                     HStack(spacing: 20) {
                         ForEach(viewStore.photos) { item in
                             Button(action: {
-                                
+                                viewStore.send(.didChangeSelectedPhoto(item.id))
                             }) {
                                 PhotoCell(photo: item)
                                     .frame(width: 90, height: 110)
@@ -81,19 +80,24 @@ struct PhotoCompareView: View {
                     }
                 }
                 .frame(width: UIScreen.main.bounds.width, height: 110)
+                
+                if let select = viewStore.selectedPhoto {
+                    NavigationLink.emptyHidden(viewStore.onShareSelected,
+                                           EmptyView())
+                }
             }
             .navigationBarTitle("Progress Gallery")
             .navigationBarItems(trailing:
                                     HStack {
                                         Button(action: {
-                                            
+                                            viewStore.send(.didSelectComparePhoto(viewStore.state.photoCompareMode == .single ? .multiple : .single))
                                         }) {
                                             Image("ico-nav-compare")
                                                 .resizable()
                                                 .frame(width: 24, height: 24)
                                         }
                                         Button("Share") {
-                                            
+                                            viewStore.send(.didSelectShare)
                                         }
                                     }
             )
