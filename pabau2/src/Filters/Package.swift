@@ -14,17 +14,15 @@ let package = Package(
     dependencies: [
 		.package(url: "../Util",
 				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(name: "swift-composable-architecture",
-				 url: "https://github.com/pointfreeco/swift-composable-architecture.git",
-				 from: Version.init(stringLiteral: "0.6.0"))
+		.package(url: "../Model",
+				 from: Version.init(stringLiteral: "1.0.0"))
     ],
     targets: [
         .target(
             name: "Filters",
             dependencies: [
 				"Util",
-				.product(name: "ComposableArchitecture",
-						 package: "swift-composable-architecture")
+				"Model"
 			]),
         .testTarget(
             name: "FiltersTests",

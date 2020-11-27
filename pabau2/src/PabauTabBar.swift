@@ -8,6 +8,8 @@ import Calendar
 import Filters
 import JZCalendarWeekView
 import AddAppointment
+import Communication
+import Intercom
 
 public typealias TabBarEnvironment = (
 	loginAPI: LoginAPI,
@@ -22,6 +24,7 @@ public struct TabBarState: Equatable {
 	public var clients: ClientsState
 	public var calendar: CalendarState
 	public var settings: SettingsState
+    public var communication: CommunicationState
 	public var employeesFilter: JourneyFilterState = JourneyFilterState()
 
 	public var calendarContainer: CalendarContainerState {
@@ -54,6 +57,7 @@ public enum TabBarAction {
 	case calendar(CalendarAction)
 	case employeesFilter(JourneyFilterAction)
 	case addAppointment(AddAppointmentAction)
+    case communication(CommunicationAction)
 }
 
 struct PabauTabBar: View {
@@ -119,6 +123,14 @@ struct PabauTabBar: View {
 						Image(systemName: "gear")
 						Text("Settings")
 				}
+
+                CommunicationView(store:
+                                store.scope(state: { $0.communication },
+                                            action: { .communication($0)}))
+                    .tabItem {
+                        Image(systemName: "ico-tab-tasks")
+                        Text("Intercom")
+                    }
 			}
 			.fullScreenCover(isPresented: .constant(self.viewStore.state.isShowingCheckin)) {
 				IfLetStore(self.store.scope(
@@ -206,5 +218,32 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
 			return CalendarEnvironment(
 			apiClient: $0.journeyAPI,
 			userDefaults: $0.userDefaults)
-	})
+	}),
+    communicationReducer.pullback(
+        state: \TabBarState.communication,
+        action: /TabBarAction.communication,
+        environment: { CommunicationEnvironment($0) }
+    ),
+
+    .init { _, action, _ in
+        switch action {
+        case .communication(.liveChat):
+            Intercom.registerUser(withEmail: "a@a.com")
+            Intercom.presentMessenger()
+            return .none
+
+        case .communication(.helpGuides):
+            Intercom.presentHelpCenter()
+            return .none
+
+        case .communication(.carousel):
+            Intercom.presentCarousel("13796318")
+            return .none
+
+        default:
+            break
+        }
+
+        return .none
+    }
 )
