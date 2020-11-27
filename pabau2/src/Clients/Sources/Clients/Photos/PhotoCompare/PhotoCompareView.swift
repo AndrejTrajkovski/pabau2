@@ -8,6 +8,7 @@ public enum PhotoCompareAction: Equatable {
     case didSelectComparePhoto(PhotoCompareMode)
     case didChangeSelectedPhoto(PhotoVariantId)
     case didSelectShare
+    case shareAction(PhotoShareAction)
 }
 
 public enum PhotoCompareMode: Equatable {
@@ -30,6 +31,14 @@ struct PhotoCompareState: Equatable {
     var photos: [PhotoViewModel] = []
     
     var onShareSelected: Bool = false
+}
+
+extension PhotoCompareState {
+    var shareState: PhotoShareState {
+        get {
+            PhotoShareState(photo: selectedPhoto!)
+        }
+    }
 }
 
 var photoCompareReducer = Reducer<PhotoCompareState, PhotoCompareAction, ClientsEnvironment> { state, action, environment in
@@ -81,9 +90,12 @@ struct PhotoCompareView: View {
                 }
                 .frame(width: UIScreen.main.bounds.width, height: 110)
                 
-                if let select = viewStore.selectedPhoto {
+                if let selectedPhoto = viewStore.selectedPhoto {
                     NavigationLink.emptyHidden(viewStore.onShareSelected,
-                                           EmptyView())
+                                               PhotoShareView(store: self.store.scope(state: { $0.shareState },
+                                                                                      action: { PhotoCompareAction.shareAction($0) })
+                                               ))
+                    
                 }
             }
             .navigationBarTitle("Progress Gallery")
