@@ -164,7 +164,8 @@ public struct JourneyContainerView: View {
 				store: self.store.scope(
 					state: { $0.journey.selectedDate },
 					action: { .journey(.datePicker($0))}),
-				isWeekView: false
+				isWeekView: false,
+				scope: .week
 			)
 			.padding(0)
 			FilterPicker()

@@ -22,4 +22,5 @@ public enum CalendarAction {
 	case showAddApp(startDate: Date, endDate: Date, employee: Employee)
 	case employeeFilters(FiltersAction<Employee>)
 	case roomFilters(FiltersAction<Room>)
+	case changeCalScope
 }

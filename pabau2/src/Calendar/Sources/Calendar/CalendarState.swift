@@ -9,6 +9,7 @@ import AddAppointment
 import AddBookout
 import AddShift
 import Filters
+import FSCalendar
 
 public struct CalendarContainerState: Equatable {
 	public init(addAppointment: AddAppointmentState?, calendar: CalendarState) {
@@ -32,6 +33,7 @@ public struct CalendarState: Equatable {
 	var chosenEmployeesIds: [Location.Id: [Employee.Id]]
 	var chosenRoomsIds: [Location.Id: [Room.Id]]
 	
+	var scope: FSCalendarScope = .week
 	var isShowingFilters: Bool
 	var expandedLocationsIds: [Location.Id]
 	public var appDetails: AppDetailsState?

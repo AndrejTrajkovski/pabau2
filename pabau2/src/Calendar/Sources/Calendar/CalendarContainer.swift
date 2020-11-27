@@ -138,6 +138,8 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 			state.appDetails = nil
 		case .addBookout(.close):
 			state.addBookout = nil
+		case .changeCalScope:
+			state.scope = state.scope == .week ? .month : .week
 		default: break
 		}
 		return .none
@@ -157,7 +159,8 @@ public struct CalendarContainer: View {
 							state: { $0.selectedDate },
 							action: { .datePicker($0)}
 						),
-						isWeekView: viewStore.state.appointments.calendarType == Appointments.CalendarType.week
+						isWeekView: viewStore.state.appointments.calendarType == Appointments.CalendarType.week,
+						scope: viewStore.scope
 					)
 					.padding(0)
 					CalendarWrapper(store: self.store)
@@ -241,9 +244,18 @@ struct CalTopBar: View {
 					)
 					.padding()
 					.exploding(.center)
-					Button.init(Texts.filters, action: {
-						viewStore.send(.toggleFilters)
-					})
+					HStack {
+						Button {
+							viewStore.send(.changeCalScope)
+						} label: {
+							Image("calendar_icon")
+								.renderingMode(.template)
+								.accentColor(.blue)
+						}
+						Button(Texts.filters, action: {
+							viewStore.send(.toggleFilters)
+						})
+					}
 					.padding()
 					.padding(.trailing, 20)
 					.exploding(.trailing)

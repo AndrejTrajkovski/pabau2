@@ -24,44 +24,48 @@ public let calTypePickerReducer: Reducer<CalendarTypePickerState, CalendarTypePi
 
 struct CalendarTypePicker: View {
 	let store: Store<CalendarTypePickerState, CalendarTypePickerAction>
-	
+
 	var body: some View {
 		WithViewStore(store) { viewStore in
-			CalendarTypeRow(calType: viewStore.state.appointments.calendarType,
-							isSelected: true,
-							onTap: { _ in
-								viewStore.send(.toggleDropdown)
-							}).popover(isPresented: .constant(viewStore.state.isDropdownShown)) {
-								ForEach(Appointments.CalendarType.allCases, id: \.self) { calType in
-									CalendarTypeRow(calType: calType,
-													isSelected: false,
-													onTap: {
-														viewStore.send(.onSelect($0))
-													})
-									Divider()
-								}.background(Color(hex: "F9F9F9"))
-							}
+			CalendarTypePickerTitle(calType: viewStore.state.appointments.calendarType,
+									expanded: viewStore.state.isDropdownShown) {
+				viewStore.send(.toggleDropdown)
+			}
+			.popover(isPresented: .constant(viewStore.state.isDropdownShown)) {
+				ForEach(Appointments.CalendarType.allCases, id: \.self) { calType in
+					CalendarTypeRow(calType: calType).onTapGesture {
+						viewStore.send(.onSelect(calType))
+					}
+					Divider()
+				}.background(Color(hex: "F9F9F9"))
+			}
+		}
+	}
+}
+
+struct CalendarTypePickerTitle: View {
+	let calType: Appointments.CalendarType
+	let expanded: Bool
+	let action: () -> Void
+	var body: some View {
+		Button(action: action) {
+			HStack {
+				CalendarTypeRow(calType: calType)
+					.foregroundColor(.black)
+				Image(systemName: expanded ? "chevron.down" : "chevron.up")
+					.foregroundColor(.blue)
+			}
 		}
 	}
 }
 
 struct CalendarTypeRow: View {
 	let calType: Appointments.CalendarType
-	var isSelected: Bool
-	let onTap: (Appointments.CalendarType) -> Void
 
 	var body: some View {
-		HStack {
-			Text(calType.title())
-				.bold()
-				.padding()
-			if self.isSelected {
-				Image(systemName: "chevron.down")
-					.foregroundColor(.blue)
-			}
-		}.onTapGesture {
-			self.onTap(self.calType)
-		}
-		.frame(height: 48)
+		Text(calType.title())
+			.bold()
+			.padding()
+			.frame(height: 48)
 	}
 }

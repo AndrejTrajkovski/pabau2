@@ -7,6 +7,7 @@ struct ExpandableButton: View {
 			   label: {
 				Image(systemName: expanded ? "chevron.down" : "chevron.up")
 					.font(.regular20)
+					.foregroundColor(.blue)
 			   })
 	}
 }
