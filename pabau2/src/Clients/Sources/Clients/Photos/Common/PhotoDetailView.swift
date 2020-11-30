@@ -10,25 +10,28 @@ struct PhotoDetailView: View {
     var body: some View {
         
         return WithViewStore(self.store) { viewStore in
-            ZStack {
-                if let photo = viewStore.selectedPhoto {
-                    ScrollView {
-                        PhotoCell(photo: photo)
-                    }
-                }
-                VStack {
-                    Spacer()
-                    Text("Today")
-                        .font(.regular32)
-                        .foregroundColor(.white)
-                    if let date = viewStore.date {
-                        //DateAndNumber(date: date, number: viewStore.photos.count)
-                        ZStack {
-                            DayMonthYear(date: date)
+            GeometryReader { proxy in
+                ZStack {
+                    if let photo = viewStore.selectedPhoto {
+                        ScrollView {
+                            TimelinePhotoCell(photo: photo)
+                                .frame(width: proxy.size.width, height: proxy.size.height)
                         }
                     }
-                    Spacer()
-                        .frame(height: 20)
+                    VStack {
+                        Spacer()
+                        Text("Today")
+                            .font(.regular32)
+                            .foregroundColor(.white)
+                        if let date = viewStore.date {
+                            //DateAndNumber(date: date, number: viewStore.photos.count)
+                            ZStack {
+                                DayMonthYear(date: date)
+                            }
+                        }
+                        Spacer()
+                            .frame(height: 20)
+                    }
                 }
             }
         }

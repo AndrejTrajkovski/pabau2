@@ -70,7 +70,7 @@ struct PhotoCompareView: View {
                 if viewStore.photoCompareMode == .single {
                     PhotoDetailView(store: self.store)
                 } else {
-                    HStack {
+                    HStack(spacing: 0) {
                         PhotoDetailView(store: self.store)
                         PhotoDetailView(store: self.store)
                     }
