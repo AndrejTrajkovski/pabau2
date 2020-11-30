@@ -94,11 +94,12 @@ struct ClientCardBottom: View {
 						Text(String(mode.description)).tag(mode.rawValue)
 					}
 			}.pickerStyle(SegmentedPickerStyle())
-            */
+            
             Button(action: {
                 self.viewStore.send(.child(.photos(.switchMode(viewStore.photosViewMode == .expanded ? .grouped : .expanded))))
 			}, label: { Text(Texts.edit) })
 				.disabled(viewStore.state.isEditPhotosBtnDisabled)
+             */
 		}
 	}
 

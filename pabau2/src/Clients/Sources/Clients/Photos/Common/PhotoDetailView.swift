@@ -12,7 +12,9 @@ struct PhotoDetailView: View {
         return WithViewStore(self.store) { viewStore in
             ZStack {
                 if let photo = viewStore.selectedPhoto {
-                    PhotoCell(photo: photo)
+                    ScrollView {
+                        PhotoCell(photo: photo)
+                    }
                 }
                 VStack {
                     Spacer()

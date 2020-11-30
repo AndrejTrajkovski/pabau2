@@ -60,6 +60,7 @@ var photoCompareReducer = Reducer<PhotoCompareState, PhotoCompareAction, Clients
 struct PhotoCompareView: View {
     
     let store: Store<PhotoCompareState, PhotoCompareAction>
+    var layout = [GridItem(.flexible())]
     
     var body: some View {
         print("PhotoCompareView")
@@ -76,21 +77,9 @@ struct PhotoCompareView: View {
                 }
                 
                 Spacer()
-                ScrollView(.horizontal) {
-                    HStack(spacing: 20) {
-                        ForEach(viewStore.photos) { item in
-                            Button(action: {
-                                viewStore.send(.didChangeSelectedPhoto(item.id))
-                            }) {
-                                PhotoCell(photo: item)
-                                    .frame(width: 90, height: 110)
-                            }
-                        }
-                    }
-                }
-                .frame(width: UIScreen.main.bounds.width, height: 110)
-                
-                if let selectedPhoto = viewStore.selectedPhoto {
+                PhotosListTimelineView(store: self.store)
+                                
+                if let _ = viewStore.selectedPhoto {
                     NavigationLink.emptyHidden(viewStore.onShareSelected,
                                                PhotoShareView(store: self.store.scope(state: { $0.shareState },
                                                                                       action: { PhotoCompareAction.shareAction($0) })
@@ -99,7 +88,6 @@ struct PhotoCompareView: View {
                 }
             }
             .navigationBarTitle("Progress Gallery")
-            
             .navigationBarItems(
                 trailing: HStack {
                     Button(action: {
