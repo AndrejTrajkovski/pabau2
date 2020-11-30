@@ -54,6 +54,7 @@ extension CalendarEvent {
 				app.start_date = newValue
 				self = .appointment(app)
 			case .bookout(var bookout):
+				bookout.start_date = newValue
 				self = .bookout(bookout)
 			}
 		}
@@ -66,12 +67,24 @@ extension CalendarEvent {
 				app.end_date = newValue
 				self = .appointment(app)
 			case .bookout(var bookout):
+				bookout.start_date = newValue
 				bookout.end_date = newValue
 			}
 		}
 	}
 	public var employeeId: Employee.Id {
-		get { return self[dynamicMember: \.employeeId] } }
+		get { return self[dynamicMember: \.employeeId] }
+		set {
+			switch self {
+			case .appointment(var app):
+				app.employeeId = newValue
+				self = .appointment(app)
+			case .bookout(var bookout):
+				bookout.employeeId = newValue
+				self = .bookout(bookout)
+			}
+		}
+	}
 	public var employeeInitials: String? {
 		get { return self[dynamicMember: \.employeeInitials] } }
 	public var locationId: Location.Id {
@@ -87,12 +100,29 @@ extension CalendarEvent {
 			}
 		}
 	}
+	
 	public var locationName: String? {
 		get { return self[dynamicMember: \.locationName] } }
+	
 	public var _private: Bool? {
 		get { return self[dynamicMember: \._private] } }
+	
 	public var employeeName: String {
-		get { return self[dynamicMember: \.employeeName] } }
+		get { return self[dynamicMember: \.employeeName] }
+	}
+	
+	public var roomId: Room.Id {
+		get { return self[dynamicMember: \.roomId] }
+		set {
+			switch self {
+			case .appointment(var app):
+				app.roomId = newValue
+				self = .appointment(app)
+			case .bookout(var bookout):
+				break
+			}
+		}
+	}
 }
 
 struct InvalidTypeError: Error {
@@ -253,5 +283,4 @@ extension CalendarEvent {
 		}
 		return res
 	}
-
 }

@@ -9,12 +9,23 @@ struct CellConfigurator {
 		cell: inout BaseCalendarCell,
 		appointment: JZAppointmentEvent
 		) {
-		configure(cell: &cell,
-				  patientName: appointment.app.customerName,
-				  serviceName: appointment.app.service,
-				  serviceColor: appointment.app.serviceColor,
-				  roomName: "",
-				  event: appointment)
+		switch appointment.app {
+		case .appointment(let app):
+			configure(cell: &cell,
+					  patientName: app.customerName,
+					  serviceName: app.service,
+					  serviceColor: app.serviceColor,
+					  roomName: "",
+					  event: appointment)
+		case .bookout(let bookout):
+			configure(cell: &cell,
+					  patientName: bookout.employeeName,
+					  serviceName: "Bookout",
+					  serviceColor: "000000",
+					  roomName: "",
+					  event: appointment)
+			break
+		}
 	}
 	
 	func configure(

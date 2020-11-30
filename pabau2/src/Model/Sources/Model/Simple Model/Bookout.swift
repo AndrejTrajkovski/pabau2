@@ -13,6 +13,10 @@ public struct Bookout: Codable, Identifiable, Equatable {
 	public var employeeInitials: String?
 	public var locationName: String?
 	public var employeeName: String
+	public var roomId: Room.Id {
+		get { return Room.Id.init(rawValue: -1) }
+		set { }
+	}
 	
 //	public let externalGuests: String?
 	public init(id: CalendarEvent.Id,

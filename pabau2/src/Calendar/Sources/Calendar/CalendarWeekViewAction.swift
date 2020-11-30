@@ -39,8 +39,12 @@ public let calendarWeekViewReducer: Reducer<CalendarWeekViewState, CalendarWeekV
 										   start: startDate)
 	case .onSelect(startOfDayDate: let startOfDayDate, eventId: let eventId):
 		let calId = CalendarEvent.ID.init(rawValue: eventId)
-		state.appointments[startOfDayDate]?[id: calId].map {
-			state.appDetails = AppDetailsState(app: $0)
+		let event = state.appointments[startOfDayDate]?[id: calId]
+		switch event {
+		case .appointment(let app):
+			state.appDetails = AppDetailsState(app: app)
+		default:
+			break
 		}
 	}
 	return .none

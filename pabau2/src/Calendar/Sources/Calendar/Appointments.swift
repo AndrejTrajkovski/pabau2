@@ -52,22 +52,22 @@ public enum Appointments: Equatable {
 }
 
 extension Appointments {
-
+	
 	static func initEmployee(events: [CalendarEvent], locationsIds: [Location.ID] ,sections: [Employee]) -> Appointments {
 		let appointments = EventsBy<Employee>.init(events: events,
 												   locationsIds: locationsIds,
-																	 subsections: sections,
-																	 sectionKeypath: \CalendarEvent.locationId,
-																	 subsKeypath: \CalendarEvent.employeeId)
+												   subsections: sections,
+												   sectionKeypath: \CalendarEvent.locationId,
+												   subsKeypath: \CalendarEvent.employeeId)
 		return Appointments.employee(appointments)
 	}
 
 	static func initRoom(events: [CalendarEvent], locationsIds: [Location.ID], sections: [Room]) -> Appointments {
-		let appointments = EventsBy<Room>.init(events: events,
-											   locationsIds: locationsIds,
-											   subsections: sections,
-											   sectionKeypath: \CalendarEvent.locationId,
-											   subsKeypath: \CalendarEvent.roomId)
+		let appointments = EventsBy<Room>(events: events,
+										  locationsIds: locationsIds,
+										  subsections: sections,
+										  sectionKeypath: \CalendarEvent.locationId,
+										  subsKeypath: \CalendarEvent.roomId)
 		return Appointments.room(appointments)
 	}
 }

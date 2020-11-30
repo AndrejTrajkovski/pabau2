@@ -19,7 +19,7 @@ public struct EventsBy<SubsectionHeader: Identifiable & Equatable> {
 												sectionKeypath,
 												subsKeypath)
 	}
-
+	
 	func flatten() -> [CalendarEvent] {
 		return appointments.flatMap { $0.value }.flatMap { $0.value }.flatMap { $0.value }
 	}
@@ -60,8 +60,13 @@ public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
 		case .onSelect(let keys, let eventId):
 			let (date, location, subsection) = keys
 			let calId = CalendarEvent.Id(rawValue: eventId)
-			var app = state.appointments.appointments[keys.date]?[keys.location]?[keys.subsection]?[id: calId]
-			app.map { state.appDetails = AppDetailsState(app: $0) }
+			let event = state.appointments.appointments[keys.date]?[keys.location]?[keys.subsection]?[id: calId]
+			switch event {
+			case .appointment(let app):
+				state.appDetails = AppDetailsState(app: app)
+			default:
+				break
+			}
 		case .addBookout(startDate: let startDxate, durationMins: let durationMins, dropKeys: let dropKeys):
 			break
 		}
