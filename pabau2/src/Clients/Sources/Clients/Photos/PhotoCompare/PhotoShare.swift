@@ -12,7 +12,7 @@ public struct PhotoShareState: Equatable {
 }
 
 public enum PhotoShareAction {
-    case  share
+    case share
     case textFieldChanged
 }
 

@@ -5,7 +5,7 @@ import Form
 import Util
 
 public enum PhotoCompareAction: Equatable {
-    case didSelectComparePhoto(PhotoCompareMode)
+    case changeComparePhotoMode
     case didChangeSelectedPhoto(PhotoVariantId)
     case didSelectShare
     case shareAction(PhotoShareAction)
@@ -17,8 +17,6 @@ public enum PhotoCompareMode: Equatable {
 }
 
 struct PhotoCompareState: Equatable {
-    public init() { }
-    
     public init(date: Date?, photos: [PhotoViewModel]) {
         self.date = date
         self.photos = photos
@@ -49,8 +47,8 @@ var photoCompareReducer = Reducer<PhotoCompareState, PhotoCompareAction, Clients
         }
     case .didSelectShare:
         state.onShareSelected = true
-    case .didSelectComparePhoto(let mode):
-        state.photoCompareMode = mode
+    case .changeComparePhotoMode:
+        state.photoCompareMode = state.photoCompareMode == .single ? .multiple : .single
     default:
         break
     }
@@ -65,7 +63,6 @@ struct PhotoCompareView: View {
     var body: some View {
         print("PhotoCompareView")
         return WithViewStore(self.store) { viewStore in
-            
             VStack {
                 if viewStore.photoCompareMode == .single {
                     PhotoDetailView(store: self.store)
@@ -91,7 +88,7 @@ struct PhotoCompareView: View {
             .navigationBarItems(
                 trailing: HStack {
                     Button(action: {
-                        viewStore.send(.didSelectComparePhoto(viewStore.state.photoCompareMode == .single ? .multiple : .single))
+                        viewStore.send(.changeComparePhotoMode)
                     }) {
                         Image("ico-nav-compare")
                             .resizable()
