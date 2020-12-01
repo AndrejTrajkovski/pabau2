@@ -29,13 +29,13 @@ public struct Journey: Codable, Identifiable, Equatable, Hashable {
 
 	public let patientChecked: PatientStatus?
 
-	public let forms: [JourneyForms]
+	public let forms: [JourneyForms]?
 
-	public let photos: [SavedPhoto]
+	public let photos: [SavedPhoto]?
 
-	public let postCare: [JourneyPostCare]
+	public let postCare: [JourneyPostCare]?
 
-	public let paid: String
+	public let paid: String?
 
 	public let media: [Media]?
 	public init(id: Int,
@@ -80,7 +80,7 @@ public extension Journey {
 	var servicesString: String {
 		appointments
 			.map { $0.service }
-			.compactMap { $0.name }
+            .compactMap { $0?.name }
 			.reduce("", +)
 	}
 }

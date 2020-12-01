@@ -12,7 +12,7 @@ public struct Appointment: Codable, Equatable, Hashable {
 		Appointment.init(id: 1, from: Date() - 1.days, to: Date() - 1.days, employeeId: 1, employeeInitials: "", locationId: 1, locationName: "London", status: AppointmentStatus.mock.randomElement()!, service: BaseService.defaultEmpty)
 	}
 
-	public typealias Id = Tagged<Appointment, String>
+	public typealias Id = Tagged<Appointment, Int>
 	
 	public let id: Appointment.Id
 
@@ -24,7 +24,7 @@ public struct Appointment: Codable, Equatable, Hashable {
 	
 	public let employeeInitials: String?
 	
-	public let locationId: String
+	public let locationId: Int
 	public let locationName: String?
 
 	public let _private: String?
@@ -34,8 +34,8 @@ public struct Appointment: Codable, Equatable, Hashable {
 
 	public let status: AppointmentStatus?
 	
-	public let service: BaseService
-	public init(id: String,
+	public let service: BaseService?
+	public init(id: Int,
 							from: Date,
 							to: Date,
 							employeeId: Int,
@@ -52,7 +52,7 @@ public struct Appointment: Codable, Equatable, Hashable {
 		self.end_time = to
 		self.employeeId = Employee.Id(rawValue: employeeId)
 		self.employeeInitials = employeeInitials
-		self.locationId = String(locationId)
+		self.locationId = locationId
 		self.locationName = locationName
 		self._private = _private
 		self.type = type
@@ -62,9 +62,9 @@ public struct Appointment: Codable, Equatable, Hashable {
 	}
 	public enum CodingKeys: String, CodingKey {
 		case id
-		case start_time
-		case end_time
-		case employeeId = "user_id"
+		case start_time = "from"
+		case end_time = "to"
+		case employeeId = "employee_id"
 		case employeeInitials = "employee_initials"
 		case locationId = "location_id"
 		case locationName = "location_name"
@@ -73,23 +73,6 @@ public struct Appointment: Codable, Equatable, Hashable {
 		case extraEmployees = "extra_employees"
 		case status
 		case service
-	}
-}
-
-extension Appointment {
-	public init(id: Int,
-							from: Date,
-							to: Date,
-							employeeId: Int,
-							employeeInitials: String,
-							locationId: Int,
-							locationName: String,
-							_private: Bool? = nil,
-							type: Termin.ModelType? = nil,
-							extraEmployees: [Employee]? = nil,
-							status: AppointmentStatus? = nil,
-							service: BaseService) {
-		self.init(id: String(id), from: from, to: to, employeeId: employeeId, employeeInitials: employeeInitials, locationId: locationId, locationName: locationName, service: service)
 	}
 }
 

@@ -46,7 +46,7 @@ open class RequestBuilderImpl<T: Decodable>: RequestBuilder<T> {
 	func decode<T: Decodable>(_ data: Data) -> AnyPublisher<T,
 		RequestError> {
 			let decoder = JSONDecoder()
-			decoder.dateDecodingStrategy = .secondsSince1970
+        decoder.dateDecodingStrategy = .formatted(.rfc3339)
 
 			return Just(data)
 				.decode(type: T.self, decoder: decoder)

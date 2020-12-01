@@ -27,7 +27,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 			let hasSeenWalkthrough = userDefaults.hasSeenAppIntroduction
 			let env = AppEnvironment(
 				loginAPI: LoginMockAPI(delay: 1),
-				journeyAPI: JourneyMockAPI(),
+				journeyAPI: JourneyLiveAPI(),
 				clientsAPI: ClientsMockAPI(),
 				userDefaults: userDefaults
 			)

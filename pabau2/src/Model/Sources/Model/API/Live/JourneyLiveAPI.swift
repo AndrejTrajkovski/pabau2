@@ -1,6 +1,8 @@
 import ComposableArchitecture
 
 public struct JourneyLiveAPI: JourneyAPI, LiveAPI {
+    public init () {}
+
 	public func getEmployees() -> Effect<Result<[Employee], RequestError>, Never> {
 		fatalError()
 	}
@@ -14,8 +16,8 @@ public struct JourneyLiveAPI: JourneyAPI, LiveAPI {
 	}
 
 	public let requestBuilderFactory: RequestBuilderFactory = RequestBuilderFactoryImpl()
-	public var basePath: String = ""
-	public let route: String = "journeys"
+	public var basePath: String = "https://virtserver.swaggerhub.com/Pa577/iOS/1.0.0/"
+	public let route: String = "journey"
 
 	//    open class func journeyAppointmentPost(body: AppointmentBody? = nil, completion: @escaping ((_ data: Journey?,_ error: Error?) -> Void)) {
 	//        journeyAppointmentPostWithRequestBuilder(body: body).execute { (response, error) -> Void in
@@ -203,11 +205,11 @@ public struct JourneyLiveAPI: JourneyAPI, LiveAPI {
 	*/
 
 	private func getJourneys(date: Date) -> RequestBuilder<[Journey]> {
-		let URLString = basePath + route + "journeys"
+		let URLString = basePath + "journeys"
 		let parameters: [String: Any]? = nil
 		var url = URLComponents(string: URLString)
 		url?.queryItems = APIHelper.mapValuesToQueryItems([
-			"date": try? newJSONEncoder().encode(date)
+            "date": DateFormatter.yearMonthDay.string(from: date)
 		])
 
 		let requestBuilder: RequestBuilder<[Journey]>.Type = requestBuilderFactory.getBuilder()

@@ -129,7 +129,8 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 				state.loadingState = .loading
 				return environment.apiClient
 					.getJourneys(date: Date())
-					.map(JourneyAction.gotResponse)
+                    .map(JourneyAction.gotResponse)
+                    .receive(on: DispatchQueue.main)
 					.eraseToEffect()
 			}
 			return .none
@@ -233,14 +234,14 @@ public struct JourneyContainerView: View {
 func journeyCellAdapter(journey: Journey) -> JourneyCell {
 	return JourneyCell(
 		journey: journey,
-		color: Color.init(hex: journey.appointments.head.service.color),
+        color: Color.init(hex: journey.appointments.head.service?.color ?? "#000000"),
 		time: "12:30",
 		imageUrl: journey.patient.avatar,
 		name: journey.patient.firstName + " " + journey.patient.lastName,
 		services: journey.servicesString,
 		status: journey.appointments.head.status?.name,
 		employee: journey.employee.name,
-		paidStatus: journey.paid,
+		paidStatus: journey.paid ?? "",
 		stepsComplete: 0,
 		stepsTotal: 3)
 }
