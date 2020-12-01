@@ -7,12 +7,12 @@ import AddBookout
 
 public struct EventsBy<SubsectionHeader: Identifiable & Equatable> {
 	
-	var appointments: [Date: [Location.ID: [SubsectionHeader.ID: IdentifiedArrayOf<CalAppointment>]]]
-	init(events: [CalAppointment],
+	var appointments: [Date: [Location.ID: [SubsectionHeader.ID: IdentifiedArrayOf<CalendarEvent>]]]
+	init(events: [CalendarEvent],
 		 locationsIds: [Location.ID],
 		 subsections: [SubsectionHeader],
-		 sectionKeypath: KeyPath<CalAppointment, Location.ID>,
-		 subsKeypath: KeyPath<CalAppointment, SubsectionHeader.ID>) {
+		 sectionKeypath: KeyPath<CalendarEvent, Location.ID>,
+		 subsKeypath: KeyPath<CalendarEvent, SubsectionHeader.ID>) {
 		self.appointments = SectionHelper.group(events,
 												locationsIds,
 												subsections,
@@ -20,7 +20,7 @@ public struct EventsBy<SubsectionHeader: Identifiable & Equatable> {
 												subsKeypath)
 	}
 	
-	func flatten() -> [CalAppointment] {
+	func flatten() -> [CalendarEvent] {
 		return appointments.flatMap { $0.value }.flatMap { $0.value }.flatMap { $0.value }
 	}
 }
@@ -33,7 +33,7 @@ public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
 		case .addAppointment:
 			break //handled in calendarContainerReducer
 		case .editSections(startDate: let startDate, startKeys: let startIndexes, dropKeys: let dropIndexes, eventId: let eventId):
-			let calId = CalAppointment.Id(rawValue: eventId)
+			let calId = CalendarEvent.Id(rawValue: eventId)
 			var app = state.appointments.appointments[startIndexes.date]?[startIndexes.location]?[startIndexes.subsection]?.remove(id: calId)
 			app?.update(start: startDate)
 			app?.locationId = dropIndexes.location
@@ -53,15 +53,20 @@ public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
 			let newDate = state.selectedDate + daysToAdd.days
 			state.selectedDate = newDate
 		case .editDuration(let newEndDate, let startIndexes, let eventId):
-			let calId = CalAppointment.Id(rawValue: eventId)
+			let calId = CalendarEvent.Id(rawValue: eventId)
 			let oldDateO = state.appointments.appointments[startIndexes.date]?[startIndexes.location]?[startIndexes.subsection]?[id: calId]?.end_date
 			guard let oldDate = oldDateO else { return .none }
 			state.appointments.appointments[startIndexes.date]?[startIndexes.location]?[startIndexes.subsection]?[id: calId]?.end_date = Date.concat(oldDate, newEndDate)
 		case .onSelect(let keys, let eventId):
 			let (date, location, subsection) = keys
-			let calId = CalAppointment.Id(rawValue: eventId)
-			var app = state.appointments.appointments[keys.date]?[keys.location]?[keys.subsection]?[id: calId]
-			app.map { state.appDetails = AppDetailsState(app: $0) }
+			let calId = CalendarEvent.Id(rawValue: eventId)
+			let event = state.appointments.appointments[keys.date]?[keys.location]?[keys.subsection]?[id: calId]
+			switch event {
+			case .appointment(let app):
+				state.appDetails = AppDetailsState(app: app)
+			default:
+				break
+			}
 		case .addBookout(startDate: let startDxate, durationMins: let durationMins, dropKeys: let dropKeys):
 			break
 		}

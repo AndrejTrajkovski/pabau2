@@ -9,7 +9,7 @@ public enum Appointments: Equatable {
 	
 	case employee(EventsBy<Employee>)
 	case room(EventsBy<Room>)
-	case week([Date: IdentifiedArrayOf<CalAppointment>])
+	case week([Date: IdentifiedArrayOf<CalendarEvent>])
 
 	var calendarType: CalendarType {
 		switch self {
@@ -39,7 +39,7 @@ public enum Appointments: Equatable {
 		}
 	}
 
-	public func flatten() -> [CalAppointment] {
+	public func flatten() -> [CalendarEvent] {
 		switch self {
 		case .employee(let apps):
 			return apps.flatten()
@@ -52,22 +52,22 @@ public enum Appointments: Equatable {
 }
 
 extension Appointments {
-
-	static func initEmployee(events: [CalAppointment], locationsIds: [Location.ID] ,sections: [Employee]) -> Appointments {
+	
+	static func initEmployee(events: [CalendarEvent], locationsIds: [Location.ID] ,sections: [Employee]) -> Appointments {
 		let appointments = EventsBy<Employee>.init(events: events,
 												   locationsIds: locationsIds,
-																	 subsections: sections,
-																	 sectionKeypath: \CalAppointment.locationId,
-																	 subsKeypath: \CalAppointment.employeeId)
+												   subsections: sections,
+												   sectionKeypath: \CalendarEvent.locationId,
+												   subsKeypath: \CalendarEvent.employeeId)
 		return Appointments.employee(appointments)
 	}
 
-	static func initRoom(events: [CalAppointment], locationsIds: [Location.ID], sections: [Room]) -> Appointments {
-		let appointments = EventsBy<Room>.init(events: events,
-											   locationsIds: locationsIds,
-											   subsections: sections,
-											   sectionKeypath: \CalAppointment.locationId,
-											   subsKeypath: \CalAppointment.roomId)
+	static func initRoom(events: [CalendarEvent], locationsIds: [Location.ID], sections: [Room]) -> Appointments {
+		let appointments = EventsBy<Room>(events: events,
+										  locationsIds: locationsIds,
+										  subsections: sections,
+										  sectionKeypath: \CalendarEvent.locationId,
+										  subsKeypath: \CalendarEvent.roomId)
 		return Appointments.room(appointments)
 	}
 }

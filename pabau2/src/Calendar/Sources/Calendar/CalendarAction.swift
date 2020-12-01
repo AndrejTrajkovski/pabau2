@@ -3,6 +3,7 @@ import Model
 import Foundation
 import AddBookout
 import AddShift
+import Filters
 
 public enum CalendarAction {
 	case datePicker(CalendarDatePickerAction)
@@ -19,4 +20,7 @@ public enum CalendarAction {
 	case onBookoutDismiss
 	case onAddShiftDismiss
 	case showAddApp(startDate: Date, endDate: Date, employee: Employee)
+	case employeeFilters(FiltersAction<Employee>)
+	case roomFilters(FiltersAction<Room>)
+	case changeCalScope
 }

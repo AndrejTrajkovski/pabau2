@@ -4,7 +4,7 @@ import NonEmpty
 import SwiftDate
 import Foundation
 import ComposableArchitecture
-import EmployeesFilter
+import Filters
 
 public struct JourneyState: Equatable {
 	public init() {}

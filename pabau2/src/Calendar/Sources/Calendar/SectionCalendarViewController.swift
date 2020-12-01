@@ -57,7 +57,7 @@ public class SectionCalendarViewController<Subsection: Identifiable & Equatable>
 		selectedDate: Date,
 		locations: [Location],
 		subsections: [Location.ID: [Subsection]],
-		events: [Date: [Location.ID: [Subsection.ID: IdentifiedArrayOf<CalAppointment>]]],
+		events: [Date: [Location.ID: [Subsection.ID: IdentifiedArrayOf<CalendarEvent>]]],
 		shifts: [Date: [Location.ID: [Subsection.ID: [JZShift]]]]
 	) {
 		calendarView.updateWeekView(to: selectedDate)
@@ -66,6 +66,7 @@ public class SectionCalendarViewController<Subsection: Identifiable & Equatable>
 									  subsections,
 									  events.mapValues { $0.mapValues { $0.mapValues { $0.elements.map(JZAppointmentEvent.init(appointment:)) }}},
 									  shifts)
+		calendarView.layoutSubviews()
 		calendarView.forceReload()
 	}
 
@@ -124,7 +125,7 @@ extension SectionCalendarViewController: SectionLongPressDelegate {
 		let startKeys = (date, section as! Location.ID, subsection as! Subsection.ID)
 		viewStore.send(.onSelect(startKeys: startKeys, eventId: editingEvent.id))
 	}
-	
+
 	public func weekView<SectionId: Hashable, SubsectionId: Hashable>
 	(_ weekView: JZLongPressWeekView,
 	 didTap onDate: Date,
