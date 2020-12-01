@@ -9,6 +9,11 @@ public enum PhotoCompareAction: Equatable {
     case didChangeSelectedPhoto(PhotoVariantId)
     case didSelectShare
     case shareAction(PhotoShareAction)
+    
+    case onChangeDragOffset(CGSize)
+    case onEndedDrag(CGSize)
+    case onChangePinchMagnification(CGFloat)
+    case onEndedMagnification(CGFloat)
 }
 
 public enum PhotoCompareMode: Equatable {
@@ -29,6 +34,13 @@ struct PhotoCompareState: Equatable {
     var photos: [PhotoViewModel] = []
     
     var onShareSelected: Bool = false
+    
+    var dragOffset: CGSize = .zero
+    var position: CGSize = .zero
+    
+    var currentMagnification: CGFloat = 1
+    var pinchMagnification: CGFloat = 1
+    
 }
 
 extension PhotoCompareState {
@@ -49,6 +61,18 @@ var photoCompareReducer = Reducer<PhotoCompareState, PhotoCompareAction, Clients
         state.onShareSelected = true
     case .changeComparePhotoMode:
         state.photoCompareMode = state.photoCompareMode == .single ? .multiple : .single
+    case .onChangeDragOffset(let size):
+        state.dragOffset = size
+    case .onEndedMagnification(let value):
+        state.currentMagnification *= value
+        state.pinchMagnification = 1
+        
+    case .onChangePinchMagnification(let value):
+        state.pinchMagnification = value
+    case .onEndedDrag(let value):
+        state.position.width += value.width
+        state.position.height += value.height
+        state.dragOffset = .zero
     default:
         break
     }

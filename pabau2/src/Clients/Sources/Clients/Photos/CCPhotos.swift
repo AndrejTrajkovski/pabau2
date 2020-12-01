@@ -109,6 +109,8 @@ struct CCPhotos: ClientCardChild {
                 if viewStore.displayMode == .compare {
                     NavigationLink
                         .emptyHidden(viewStore.isSelectedGroup,
+//                                     PhotoCompareView(store: store.scope(state: { $0.photoCompare },
+//                                                                         action: { .photoCompare($0) }))
                                      
                                      PhotoCompareView(store: Store(initialState: viewStore.photoCompare,
                                                                    reducer: photoCompareReducer,
