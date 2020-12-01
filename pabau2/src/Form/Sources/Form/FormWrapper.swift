@@ -10,14 +10,14 @@ public let metaFormAndStatusReducer: Reducer<MetaFormAndStatus, UpdateFormAction
 		state: \MetaFormAndStatus.form,
 		action: /UpdateFormAction.self,
 		environment: { $0 }
-)
+	)
 
 let metaFormReducer: Reducer<MetaForm, UpdateFormAction, FormEnvironment> =
 	Reducer<MetaForm, UpdateFormAction, FormEnvironment>.combine(
 		Reducer.init { state, action, _ in
 			switch action {
 			//FIXME: GO WITH REDUX FOR TEMPLATES
-			case .didUpdateTemplate(let template):
+			case .template(let template):
 				state = MetaForm.init(template)
 			default:
 				break
@@ -40,11 +40,11 @@ let metaFormReducer: Reducer<MetaForm, UpdateFormAction, FormEnvironment> =
 			state: /MetaForm.photos,
 			action: /UpdateFormAction.photos,
 			environment: { $0 })
-)
+	)
 
 public enum UpdateFormAction {
 	case patientComplete(PatientCompleteAction)
-	case didUpdateTemplate(FormTemplate)
+	case template(FormTemplate)
 	case patientDetails(PatientDetailsAction)
 	case aftercare(AftercareAction)
 	case photos(PhotosFormAction)
@@ -53,96 +53,88 @@ public enum UpdateFormAction {
 //FIXME: REFACTOR TO FACTORY METHOD
 public struct FormWrapper: View {
 	let store: Store<MetaForm, UpdateFormAction>
-	@ObservedObject var viewStore: ViewStore<State, UpdateFormAction>
-
+	@ObservedObject var viewStore: ViewStore<MetaForm, UpdateFormAction>
 	public init(store: Store<MetaForm, UpdateFormAction>) {
 		self.store = store
-		self.viewStore = ViewStore(store.scope(
-			state: State.init(state:),
-			action: { $0 })
-		, removeDuplicates: { lhs, rhs in
-				if let lhs = lhs.patientDetails, let rhs = rhs.patientDetails {
-					return lhs == rhs
-				} else if let lhs = lhs.template, let rhs = rhs.template {
-					return lhs == rhs
-				} else if let lhs = lhs.aftercare, let rhs = rhs.aftercare {
-						return lhs == rhs
-				} else if let lhs = lhs.patientCompleteForm, let rhs = rhs.patientCompleteForm {
-					return lhs == rhs
-				} else if let lhs = lhs.checkPatient, let rhs = rhs.checkPatient {
-					return lhs == rhs
-				} else if let lhs = lhs.photos, let rhs = rhs.photos {
-					return lhs.photos.map(\.id) == rhs.photos.map(\.id) &&
-						lhs.selectedIds == rhs.selectedIds
-				} else {
-					return false
-				}
-			}
-		)
+		self.viewStore = ViewStore(store)
 	}
-
-	struct State: Equatable {
-		var patientDetails: PatientDetails?
-		var template: FormTemplate?
-		var aftercare: Aftercare?
-		var patientCompleteForm: PatientComplete?
-		var checkPatient: CheckPatient?
-		var photos: PhotosState?
-
-		init (state: MetaForm) {
-			self.patientDetails = extract(case: MetaForm.patientDetails, from: state)
-			self.template = extract(case: MetaForm.template, from: state)
-			self.aftercare = extract(case: MetaForm.aftercare, from: state)
-			self.patientCompleteForm = extract(case: MetaForm.patientComplete, from: state)
-			self.checkPatient = extract(case: MetaForm.checkPatient, from: state)
-			self.photos = extract(case: MetaForm.photos, from: state)
-		}
-	}
-
+	
 	//FIXME: With SwiftUI 2.0 use switch inside the body
 	//FIXME: With SwiftUI 2.0 Test with Group instead of AnyView
 	public var body: some View {
-		print("form wrap body")
-		return Group {
-			if self.viewStore.state.template != nil {
-				ListDynamicForm(template:
-					Binding.init(
-						get: { self.viewStore.state.template ?? FormTemplate.defaultEmpty },
-						set: { self.viewStore.send(.didUpdateTemplate($0)) })
-				)
-			} else if self.viewStore.state.patientDetails != nil {
-				IfLetStore(
-					self.store.scope(
-						state: { extract(case: MetaForm.patientDetails, from: $0) },
+		switch self.viewStore.state {
+		case .patientDetails:
+			IfLetStore(store.scope(
+						state: { extract(case: MetaForm.patientDetails, from: $0)},
 						action: { .patientDetails($0) }),
-					then: PatientDetailsForm.init(store:)
-				)
-			} else if self.viewStore.state.patientCompleteForm != nil {
-				IfLetStore(
-					self.store.scope(
-						state: { extract(case: MetaForm.patientComplete, from: $0) },
-						action: { .patientComplete($0) }),
-					then: PatientCompleteForm.init(store:)
-				)
-			} else if self.viewStore.state.checkPatient?.patDetails != nil {
-				CheckPatientForm(didTouchDone: { },
-												 patDetails: self.viewStore.state.checkPatient!.patDetails!,
-												 patientForms: self.viewStore.state.checkPatient!.patForms)
-			} else if self.viewStore.state.photos != nil {
-				IfLetStore(
-					self.store.scope(
-						state: { extract(case: MetaForm.photos, from: $0) },
-						action: { .photos($0) }),
-					then: PhotosForm.init(store:)
-				)
-			} else if self.viewStore.state.aftercare != nil {
-				IfLetStore(
-					self.store.scope(
-						state: { extract(case: MetaForm.aftercare, from: $0) },
+					   then: PatientDetailsForm.init(store:))
+		case .aftercare:
+			IfLetStore(store.scope(
+						state: { extract(case: MetaForm.aftercare, from: $0)},
 						action: { .aftercare($0) }),
-					then: AftercareForm.init(store:)
-				)
-			}
+					   then: AftercareForm.init(store:))
+		case .template:
+			IfLetStore(store.scope(
+						state: { extract(case: MetaForm.template, from: $0)},
+						action: { .template($0) }),
+					   then: { store in
+						return EmptyView()
+					   })
+		case .patientComplete:
+			IfLetStore(store.scope(
+						state: { extract(case: MetaForm.patientComplete, from: $0)},
+						action: { .patientComplete($0) }),
+					   then: PatientCompleteForm.init(store:))
+		case .checkPatient:
+			IfLetStore(store.scope(
+						state: { extract(case: MetaForm.checkPatient, from: $0)})
+						.actionless,
+					   then: CheckPatientFormStore.init(store:))
+		case .photos:
+			IfLetStore(store.scope(
+						state: { extract(case: MetaForm.photos, from: $0)},
+						action: { .photos($0) }),
+					   then: PhotosForm.init(store:))
 		}
 	}
 }
+
+//if self.viewStore.state.template != nil {
+//	ListDynamicForm(template:
+//		Binding.init(
+//			get: { self.viewStore.state.template ?? FormTemplate.defaultEmpty },
+//			set: { self.viewStore.send(.template($0)) })
+//	)
+//} else if self.viewStore.state.patientDetails != nil {
+//	IfLetStore(
+//		self.store.scope(
+//			state: { extract(case: MetaForm.patientDetails, from: $0) },
+//			action: { .patientDetails($0) }),
+//		then: PatientDetailsForm.init(store:)
+//	)
+//} else if self.viewStore.state.patientCompleteForm != nil {
+//	IfLetStore(
+//		self.store.scope(
+//			state: { extract(case: MetaForm.patientComplete, from: $0) },
+//			action: { .patientComplete($0) }),
+//		then: PatientCompleteForm.init(store:)
+//	)
+//} else if self.viewStore.state.checkPatient?.patDetails != nil {
+//	CheckPatientForm(didTouchDone: { },
+//									 patDetails: self.viewStore.state.checkPatient!.patDetails!,
+//									 patientForms: self.viewStore.state.checkPatient!.patForms)
+//} else if self.viewStore.state.photos != nil {
+//	IfLetStore(
+//		self.store.scope(
+//			state: { extract(case: MetaForm.photos, from: $0) },
+//			action: { .photos($0) }),
+//		then: PhotosForm.init(store:)
+//	)
+//} else if self.viewStore.state.aftercare != nil {
+//	IfLetStore(
+//		self.store.scope(
+//			state: { extract(case: MetaForm.aftercare, from: $0) },
+//			action: { .aftercare($0) }),
+//		then: AftercareForm.init(store:)
+//	)
+//}

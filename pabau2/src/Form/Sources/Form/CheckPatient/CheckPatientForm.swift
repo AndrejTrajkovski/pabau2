@@ -4,8 +4,18 @@ import Util
 import Model
 import SharedComponents
 
+struct CheckPatientFormStore: View {
+	
+	let store: Store<CheckPatient, Never>
+	var body: some View {
+		WithViewStore(store) { viewStore in
+			CheckPatientForm(patDetails: viewStore.patDetails,
+							 patientForms: viewStore.patForms)
+		}
+	}
+}
+
 struct CheckPatientForm: View {
-	let didTouchDone: () -> Void
 	let patDetails: PatientDetails
 	let patientForms: [FormTemplate]
 

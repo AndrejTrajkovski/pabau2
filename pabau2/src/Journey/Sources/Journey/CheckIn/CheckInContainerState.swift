@@ -131,18 +131,19 @@ extension CheckInContainerState {
 		}
 	}
 
-	var checkPatient: CheckPatient {
-		let patDetailsWrapped = patientForms.forms[id: .patientdetails]?.forms.first?.form
-		let patDetails = extract(case: MetaForm.patientDetails,
-														 from: patDetailsWrapped)
-		let medHistory = patientForms.forms[id: .medicalhistory]?.forms.elements ?? []
-		let consents = patientForms.forms[id: .consents]?.forms.elements ?? []
-		let patientForms = (medHistory + consents)
-			.map(\.form)
-			.compactMap { extract(case: MetaForm.template, from: $0) }
-		return CheckPatient(patDetails: patDetails,
-												patForms: patientForms)
-	}
+//	var checkPatient: CheckPatient? {
+//		let patDetailsWrapped = patientForms.forms[id: .patientdetails]?.forms.first?.form
+//		let patDetails = extract(case: MetaForm.patientDetails,
+//														 from: patDetailsWrapped)
+//		return patDetails.map {
+//			let medHistory = patientForms.forms[id: .medicalhistory]?.forms.elements ?? []
+//			let consents = patientForms.forms[id: .consents]?.forms.elements ?? []
+//			let patientForms = (medHistory + consents)
+//				.map(\.form)
+//				.compactMap { extract(case: MetaForm.template, from: $0) }
+//			return CheckPatient(patDetails: $0, patForms: patientForms)
+//		}
+//	}
 
 	var handback: HandBackDeviceState {
 		get {

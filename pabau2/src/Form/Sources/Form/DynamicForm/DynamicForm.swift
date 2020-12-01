@@ -3,6 +3,10 @@ import SwiftUI
 import ComposableArchitecture
 import Util
 
+struct ListDynamicFormStore: View {
+	let store: Store<FormTemplate, FormTemplateAc>
+}
+
 struct ListDynamicForm: View {
 	@Binding var template: FormTemplate
 	init(template: Binding<FormTemplate>) {
@@ -19,36 +23,36 @@ struct ListDynamicForm: View {
 }
 
 struct DynamicForm: View {
-
+	
 	let isCheckingDetails: Bool
 	@Binding var template: FormTemplate
 	init(template: Binding<FormTemplate>,
-			 isCheckingDetails: Bool) {
+		 isCheckingDetails: Bool) {
 		self._template = template
 		self.isCheckingDetails = isCheckingDetails
 	}
-
+	
 	public var body: some View {
 		VStack {
 			Text(template.name).font(.title)
 			ForEach(template.formStructure.formStructure.indices, id: \.self ) { index in
 				FormSectionField(cssField:
-					Binding(
-						get: {
-							if self.template.formStructure.formStructure.count > index {
-								return self.template.formStructure.formStructure[index]
-							} else {
-								return CSSField.defaultEmpty
-							}
-					},
-						set: {
-							if self.template.formStructure.formStructure.count > index {
-								self.template.formStructure.formStructure[index] = $0
-							} else {
-							}
-					}
-					),
-												 isCheckingDetails: self.isCheckingDetails)
+									Binding(
+										get: {
+											if self.template.formStructure.formStructure.count > index {
+												return self.template.formStructure.formStructure[index]
+											} else {
+												return CSSField.defaultEmpty
+											}
+										},
+										set: {
+											if self.template.formStructure.formStructure.count > index {
+												self.template.formStructure.formStructure[index] = $0
+											} else {
+											}
+										}
+									),
+								 isCheckingDetails: self.isCheckingDetails)
 					.equatable()
 			}
 		}
