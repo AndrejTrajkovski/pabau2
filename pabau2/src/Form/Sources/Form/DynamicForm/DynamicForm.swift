@@ -3,9 +3,13 @@ import SwiftUI
 import ComposableArchitecture
 import Util
 
-struct ListDynamicFormStore: View {
-	let store: Store<FormTemplate, FormTemplateAc>
+enum FormTemplateAction {
+	
 }
+
+//struct ListDynamicFormStore: View {
+//	let store: Store<FormTemplate, FormTemplateAction>
+//}
 
 struct ListDynamicForm: View {
 	@Binding var template: FormTemplate

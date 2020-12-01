@@ -131,29 +131,29 @@ extension FormField.ViewState {
 	}
 }
 
-//let cssClassReducer: Reducer<CSSClass, CheckInFormAction, JourneyEnvironemnt> =
-//	.combine(
-//		checkBoxFieldReducer.pullback(
-//			value: /CSSClass.checkboxes,
-//			action: /CheckInFormAction.multipleChoice,
-//			environment: { $0 }),
-//		radioFieldReducer.pullback(
-//			value: /CSSClass.radio,
-//			action: /CheckInFormAction.radio,
-//			environment: { $0 }),
-//		textAreaFieldReducer.pullback(
-//			value: /CSSClass.textarea,
-//			action: /CheckInFormAction.textArea,
-//			environment: { $0 }),
-//		inputTextFieldReducer.pullback(
-//			value: /CSSClass.input_text,
-//			action: /CheckInFormAction.inputText,
-//			environment: { $0 })
-//)
+let cssClassReducer: Reducer<CSSClass, CSSClassAction, FormEnvironment> =
+	.combine(
+		checkBoxFieldReducer.pullbackCp(
+			state: /CSSClass.checkboxes,
+			action: /CSSClassAction.multipleChoice,
+			environment: { $0 }),
+		radioFieldReducer.pullbackCp(
+			state: /CSSClass.radio,
+			action: /CSSClassAction.radio,
+			environment: { $0 }),
+		textAreaFieldReducer.pullbackCp(
+			state: /CSSClass.textarea,
+			action: /CSSClassAction.textArea,
+			environment: { $0 }),
+		textFieldReducer.pullbackCp(
+			state: (/CSSClass.input_text).appending(path: CasePath<InputText, String>.init(embed: InputText.init(text:), extract: { $0.text })),
+			action: /CSSClassAction.inputText,
+			environment: { $0 })
+	)
 
-//public enum CheckInFormAction {
-//	case multipleChoice(CheckboxFieldAction)
-//	case radio(RadioFieldAction)
-//	case textArea(TextAreaFieldAction)
-//	case inputText(InputTextFieldAction)
-//}
+public enum CSSClassAction {
+	case multipleChoice(CheckboxFieldAction)
+	case radio(RadioFieldAction)
+	case textArea(TextAreaFieldAction)
+	case inputText(TextFieldAction)
+}
