@@ -43,7 +43,19 @@ public let addShiftReducer: Reducer<AddShiftState, AddShiftAction, AddShiftEnvir
 		textFieldReducer.pullback(
 			state: \.note,
 			action: /AddShiftAction.note,
-			environment: { $0 })
+			environment: { $0 }),
+		.init { state, action, env in
+			switch action {
+			case .startDate(let date):
+				state.startDate = date
+			case .startTime(let date):
+				state.startTime = date
+			case .endTime(let date):
+				state.endTime = date
+			default: break
+			}
+			return .none
+		}
 	)
 
 public struct AddShiftState: Equatable {
@@ -60,9 +72,9 @@ public enum AddShiftAction {
 	case isPublished(ToggleAction)
 	case chooseEmployee(SingleChoiceLinkAction<Employee>)
 	case chooseLocation(SingleChoiceLinkAction<Location>)
-	case startDate(Date)
-	case startTime
-	case endTime
+	case startDate(Date?)
+	case startTime(Date?)
+	case endTime(Date?)
 	case note(TextChangeAction)
 	case saveShift
 	case close
@@ -112,53 +124,34 @@ struct LocationAndDate: View {
 
 	let store: Store<AddShiftState, AddShiftAction>
 	@ObservedObject var viewStore: ViewStore<AddShiftState, AddShiftAction>
-
-    @State private var startDate: Date = Date()
-    @State private var startTime: Date = Date()
-    @State private var endTime: Date = Date()
-
+	
 	var body: some View {
 		VStack(spacing: 16) {
 			HStack(spacing: 16) {
 				chooseLocation
-
-                ZStack(alignment: .bottom) {
-                    TitleAndValueLabel("DAY", "")
-                    DatePickerTextField(date: $startDate) {
-
-                    }
-                    .font(.semibold15)
-                    .padding(.bottom, 10)
-                }
+				DatePickerControl("Day", viewStore.binding(get: { $0.startDate },
+														   send: { .startDate($0) })
+				)
 			}
 			HStack(spacing: 16) {
-                ZStack(alignment: .bottom) {
-                    TitleAndValueLabel("START TIME", "")
-                    DatePickerTextField(date: $startTime, mode: .time) {
-
-                    }
-                    .font(.semibold15)
-                    .padding(.bottom, 10)
-                }
-
-                ZStack(alignment: .bottom) {
-                    TitleAndValueLabel("END TIME", "")
-                    DatePickerTextField(date: $endTime, mode: .time) {
-
-                    }
-                    .font(.semibold15)
-                    .padding(.bottom, 10)
-                }
+				DatePickerControl("START TIME",
+								  viewStore.binding(get: { $0.startTime },
+													send: { .startTime($0) })
+								  , mode: .time)
+				DatePickerControl("END TIME",
+								  viewStore.binding(get: { $0.endTime },
+													send: { .endTime($0) })
+								  , mode: .time)
 			}
 		}
 	}
 
 	fileprivate var chooseLocation: SingleChoiceLink<TitleAndValueLabel, Location, TextAndCheckMarkContainer<Location>> {
 		SingleChoiceLink(content: {
-									TitleAndValueLabel("LOCATION", self.viewStore.state.chooseLocation.chosenItemName ?? "")},
-								store: self.store.scope(state: { $0.chooseLocation },
-														action: { .chooseLocation($0) }),
-								cell: TextAndCheckMarkContainer.init(state:)
+							TitleAndValueLabel("LOCATION", self.viewStore.state.chooseLocation.chosenItemName ?? "")},
+						 store: self.store.scope(state: { $0.chooseLocation },
+												 action: { .chooseLocation($0) }),
+						 cell: TextAndCheckMarkContainer.init(state:)
 		)
 	}
 

@@ -1,14 +1,7 @@
-//
-//  DatePickerTextField.swift
-//  
-//
-//  Created by Yuriy Berdnikov on 27.11.2020.
-//
-
 import SwiftUI
 
 public struct DatePickerTextField: UIViewRepresentable {
-    @Binding var date: Date
+    @Binding var date: Date?
 
     var didChange: () -> Void = { }
 
@@ -23,15 +16,25 @@ public struct DatePickerTextField: UIViewRepresentable {
     }()
 
     private var font: UIFont?
-    private var foregroundColor: UIColor?
-    private var contentType: UITextContentType?
+    private var textColor: UIColor?
+    private var textContentType: UITextContentType?
     private var keyboardType: UIKeyboardType = .default
     private var isUserInteractionEnabled: Bool = true
-
-    public init(date: Binding<Date>, mode: UIDatePicker.Mode = .date, didChange: @escaping () -> Void = { }) {
+	
+	public init(date: Binding<Date?>,
+				mode: UIDatePicker.Mode,
+				font: UIFont = UIFont.systemFont(ofSize: 15, weight: .semibold),
+				textColor: UIColor = .black,
+				isUserInteractionEnabled: Bool = true,
+				textContentType: UITextContentType? = nil,
+				didChange: @escaping () -> Void = { }) {
         self._date = date
+		self.font = font
+		self.textColor = textColor
         self.didChange = didChange
         self.datePickerMode = mode
+		self.isUserInteractionEnabled = isUserInteractionEnabled
+		self.textContentType = textContentType
 
         dateFormatter.dateStyle = mode == .date ? .long : .none
         dateFormatter.timeStyle = mode == .date ? .none : .short
@@ -41,11 +44,12 @@ public struct DatePickerTextField: UIViewRepresentable {
 
         let textField = UITextField()
         textField.delegate = context.coordinator
-        textField.text = dateFormatter.string(from: date)
+		date.map { textField.text = dateFormatter.string(from: $0) }
         textField.font = font
-        textField.textColor = foregroundColor
-
-        if let contentType = contentType {
+        textField.textColor = textColor
+		textField.borderStyle = .none
+		
+        if let contentType = textContentType {
             textField.textContentType = contentType
         }
 
@@ -72,7 +76,7 @@ public struct DatePickerTextField: UIViewRepresentable {
     }
 
     public func updateUIView(_ uiView: UITextField, context: Context) {
-        uiView.text = dateFormatter.string(from: date)
+		date.map { uiView.text = dateFormatter.string(from: $0) }
     }
 
     private func addDoneButtonToKeyboard(_ view: UITextField) {
@@ -105,10 +109,10 @@ public struct DatePickerTextField: UIViewRepresentable {
     }
 
     final public class Coordinator: NSObject, UITextFieldDelegate {
-        @Binding var date: Date
+        @Binding var date: Date?
         var didChange: () -> Void
 
-        init(date: Binding<Date>, didChange: @escaping () -> Void) {
+        init(date: Binding<Date?>, didChange: @escaping () -> Void) {
             self._date = date
             self.didChange = didChange
         }
@@ -126,61 +130,5 @@ public struct DatePickerTextField: UIViewRepresentable {
             textField.resignFirstResponder()
             return true
         }
-    }
-}
-
-public extension DatePickerTextField {
-    func minimumDate(_ date: Date?) -> some View {
-        var view = self
-        view.minimumDate = date
-        return view
-    }
-
-    func maximumDate(_ date: Date?) -> some View {
-        var view = self
-        view.maximumDate = date
-        return view
-    }
-
-    func placeholder(_ text: String?) -> some View {
-        var view = self
-        view.placeholder = text
-        return view
-    }
-
-    func dateFormatter(_ formatter: DateFormatter) -> some View {
-        var view = self
-        view.dateFormatter = formatter
-        return view
-    }
-
-    func font(_ font: UIFont?) -> some View {
-        var view = self
-        view.font = font
-        return view
-    }
-
-    func foregroundColor(_ color: UIColor?) -> some View {
-        var view = self
-        view.foregroundColor = color
-        return view
-    }
-
-    func textContentType(_ textContentType: UITextContentType?) -> some View {
-        var view = self
-        view.contentType = textContentType
-        return view
-    }
-
-    func keyboardType(_ type: UIKeyboardType) -> some View {
-        var view = self
-        view.keyboardType = type
-        return view
-    }
-
-    func disabled(_ disabled: Bool) -> some View {
-        var view = self
-        view.isUserInteractionEnabled = disabled
-        return view
     }
 }
