@@ -1,6 +1,10 @@
 import SwiftUI
 import Model
 
+let selectFieldReducer: Reducer<Select, SelectFieldAction, FormEnvironment> = .init { state, action. env in
+	return .none
+}
+
 struct SelectField: View {
 
 	@Binding var select: Select

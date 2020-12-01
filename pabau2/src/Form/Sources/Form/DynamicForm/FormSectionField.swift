@@ -131,6 +131,72 @@ extension FormField.ViewState {
 	}
 }
 
+struct FormField: View {
+	let store: Store<CSSClass, CSSClassAction>
+
+	var body: some View {
+		IfLetStore(store.scope(
+					state: { extract(case: CSSClass.staticText, from: $0)}).actionless,
+				   then: { store in
+					return EmptyView()
+				   })
+		IfLetStore(store.scope(
+					state: { extract(case: CSSClass.input_text, from: $0)},
+					action: { .input_text($0)}),
+				   then: { store in
+					return EmptyView()
+				   })
+		IfLetStore(store.scope(
+					state: { extract(case: CSSClass.textarea, from: $0)},
+					action: { .textarea($0)}),
+				   then: { store in
+					return EmptyView()
+				   })
+		IfLetStore(store.scope(
+					state: { extract(case: CSSClass.radio, from: $0)},
+					action: { .radio($0)}),
+				   then: { store in
+					return EmptyView()
+				   })
+		IfLetStore(store.scope(
+					state: { extract(case: CSSClass.signature, from: $0)},
+					action: { .signature($0)}),
+				   then: { store in
+					return EmptyView()
+				   })
+		IfLetStore(store.scope(
+					state: { extract(case: CSSClass.checkboxes, from: $0)},
+					action: { .checkboxes($0)}),
+				   then: { store in
+					return EmptyView()
+				   })
+		IfLetStore(store.scope(
+					state: { extract(case: CSSClass.select, from: $0)},
+					action: { .select($0)}),
+				   then: { store in
+					return EmptyView()
+				   })
+		IfLetStore(store.scope(
+					state: { extract(case: CSSClass.heading, from: $0)},
+					action: { .heading($0)}),
+				   then: { store in
+					return EmptyView()
+				   })
+		IfLetStore(store.scope(
+					state: { extract(case: CSSClass.cl_drugs, from: $0)},
+					action: { .cl_drugs($0)}),
+				   then: { store in
+					return EmptyView()
+				   })
+		IfLetStore(store.scope(
+					state: { extract(case: CSSClass.diagram_mini, from: $0)},
+					action: { .diagram_mini($0)}),
+				   then: { store in
+					return EmptyView()
+				   })
+	}
+}
+
 let cssClassReducer: Reducer<CSSClass, CSSClassAction, FormEnvironment> =
 	.combine(
 		checkBoxFieldReducer.pullbackCp(
@@ -152,8 +218,13 @@ let cssClassReducer: Reducer<CSSClass, CSSClassAction, FormEnvironment> =
 	)
 
 public enum CSSClassAction {
-	case multipleChoice(CheckboxFieldAction)
-	case radio(RadioFieldAction)
-	case textArea(TextAreaFieldAction)
 	case inputText(TextFieldAction)
+	case textArea(TextAreaFieldAction)
+	case radio(RadioFieldAction)
+	case signature()
+	case checkboxes(CheckboxFieldAction)
+	case select()
+	case heading()
+	case cl_drugs()
+	case diagram_mini()
 }
