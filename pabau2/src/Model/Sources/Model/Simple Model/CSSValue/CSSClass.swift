@@ -34,7 +34,7 @@ public enum CSSClass: Codable, Equatable {
 	case staticText(StaticText)
 	case input_text(InputText)
 	case textarea(TextArea)
-	case radio(Radio)
+	case radio(RadioState)
 	case signature(SignatureState)
 	case checkboxes([CheckBoxChoice])
 	case select(SelectState)
@@ -51,7 +51,7 @@ public enum CSSClass: Codable, Equatable {
 			self = .input_text(res)
 		} else if case .success(let res) = Self.decode(container, TextArea.self) {
 			self = .textarea(res)
-		} else if case .success(let res) = Self.decode(container, Radio.self) {
+		} else if case .success(let res) = Self.decode(container, RadioState.self) {
 			self = .radio(res)
 		} else if case .success(let res) = Self.decode(container, SignatureState.self) {
 			self = .signature(res)
