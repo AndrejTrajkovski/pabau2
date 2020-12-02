@@ -14,6 +14,7 @@ public enum PhotoCompareAction: Equatable {
     case onEndedDrag(CGSize)
     case onChangePinchMagnification(CGFloat)
     case onEndedMagnification(CGFloat)
+    case onTappedToZoom
 }
 
 public enum PhotoCompareMode: Equatable {
@@ -37,10 +38,9 @@ struct PhotoCompareState: Equatable {
     
     var dragOffset: CGSize = .zero
     var position: CGSize = .zero
-    
     var currentMagnification: CGFloat = 1
     var pinchMagnification: CGFloat = 1
-    
+    var isTappedToZoom: Bool = false
 }
 
 extension PhotoCompareState {
@@ -66,13 +66,19 @@ var photoCompareReducer = Reducer<PhotoCompareState, PhotoCompareAction, Clients
     case .onEndedMagnification(let value):
         state.currentMagnification *= value
         state.pinchMagnification = 1
-        
     case .onChangePinchMagnification(let value):
         state.pinchMagnification = value
     case .onEndedDrag(let value):
         state.position.width += value.width
         state.position.height += value.height
         state.dragOffset = .zero
+    case .onTappedToZoom:
+        state.isTappedToZoom.toggle()
+        state.currentMagnification = state.isTappedToZoom ? 2 : 1
+        if !state.isTappedToZoom {
+            state.dragOffset = .zero
+            state.position = .zero
+        }
     default:
         break
     }

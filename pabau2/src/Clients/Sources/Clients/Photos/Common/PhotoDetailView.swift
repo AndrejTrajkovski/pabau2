@@ -44,6 +44,13 @@ struct PhotoDetailView: View {
                 })
     }
     
+    var tapGesture: some Gesture {
+        TapGesture(count: 2)
+            .onEnded({
+                viewStore.send(.onTappedToZoom)
+            })
+    }
+    
     var body: some View {
         GeometryReader { proxy in
             ZStack {
@@ -54,6 +61,8 @@ struct PhotoDetailView: View {
                             .frame(width: proxy.size.width, height: proxy.size.height)
                             .gesture(drag)
                             .gesture(magnificationGest)
+                            .gesture(tapGesture)
+                            
                 }
                 VStack {
                     Spacer()
