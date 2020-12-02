@@ -26,27 +26,27 @@ public struct FormTemplate: Codable, Identifiable, Equatable, CustomDebugStringC
 
     public let formType: FormType
 
-    public let ePaper: Bool?
-
-    public var formStructure: FormStructure
-    public init(id: Int,
-								name: String,
-								formType: FormType,
-								ePaper: Bool? = nil,
-								formStructure: FormStructure) {
-        self.id = id
-        self.name = name
-        self.formType = formType
-        self.ePaper = ePaper
-        self.formStructure = formStructure
-    }
-    public enum CodingKeys: String, CodingKey {
-        case id = "id"
-        case name
-        case formType = "form_type"
-        case ePaper
-        case formStructure = "form_structure"
-    }
+	public let ePaper: Bool?
+	
+	public var formStructure: FormStructure
+	public init(id: Int,
+				name: String,
+				formType: FormType,
+				ePaper: Bool? = nil,
+				formStructure: FormStructure) {
+		self.id = id
+		self.name = name
+		self.formType = formType
+		self.ePaper = ePaper
+		self.formStructure = formStructure
+	}
+	public enum CodingKeys: String, CodingKey {
+		case id = "id"
+		case name
+		case formType = "form_type"
+		case ePaper
+		case formStructure = "form_structure"
+	}
 }
 
 extension FormTemplate {
@@ -64,7 +64,7 @@ extension FormTemplate {
 								 title: "Insert some text"
 				),
 				CSSField(id: 6,
-								 cssClass: .signature(Signature()),
+								 cssClass: .signature(SignatureState()),
 								 title: "Patient signature"
 				),
 				CSSField(id: 9,
@@ -72,7 +72,7 @@ extension FormTemplate {
 								 title: "Insert some text 2"
 				),
 				CSSField(id: 7,
-								 cssClass: .signature(Signature()),
+								 cssClass: .signature(SignatureState()),
 								 title: "Practitioner signature"
 				),
 				CSSField(id: 5,
@@ -118,7 +118,7 @@ extension FormTemplate {
 					), title: "Radio title"
 				),
 				CSSField(id: 51,
-								 cssClass: .select(Select(4,
+								 cssClass: .select(SelectState(4,
 																				[SelectChoice(1, "select choice with a multiline text with a multiline text with a multiline text with a multiline text with a multiline text with a multiline text with a multiline text"),
 																				 SelectChoice(2, "select choice 2"),
 																				 SelectChoice(3, "select choice 3"),
@@ -145,7 +145,7 @@ extension FormTemplate {
 				title: "Choose please"
 			),
 			CSSField(id: 6,
-							 cssClass: .signature(Signature()),
+							 cssClass: .signature(SignatureState()),
 							 title: "Patient signatureeee"
 			),
 			CSSField(id: 9,
@@ -153,7 +153,7 @@ extension FormTemplate {
 							 title: "yada yada yada"
 			),
 			CSSField(id: 7,
-							 cssClass: .signature(Signature()),
+							 cssClass: .signature(SignatureState()),
 							 title: "Sign this please"
 			),
 			CSSField(id: 5,
@@ -170,7 +170,7 @@ extension FormTemplate {
 				title: "Choose smth else"
 			),
 			CSSField(id: 51,
-							 cssClass: .select(Select(4,
+							 cssClass: .select(SelectState(4,
 																			[SelectChoice(1, "select choice 1"),
 																			 SelectChoice(2, "select choice 2"),
 																			 SelectChoice(3, "select choice 3"),
@@ -200,7 +200,7 @@ extension FormTemplate {
 							 formStructure:
 		FormStructure(formStructure: [
 			CSSField(id: 7,
-							 cssClass: .signature(Signature()),
+							 cssClass: .signature(SignatureState()),
 							 title: "Practitioner signature"
 			),
 			CSSField(id: 5,
@@ -208,7 +208,7 @@ extension FormTemplate {
 							 title: "Please enter some text below"
 			),
 			CSSField(id: 51,
-							 cssClass: .select(Select(4,
+							 cssClass: .select(SelectState(4,
 																			[SelectChoice(1, "select choice 1"),
 																			 SelectChoice(2, "select choice 2"),
 																			 SelectChoice(3, "select choice 3"),
@@ -257,7 +257,7 @@ extension FormTemplate {
 							 title: "Insert some text"
 			),
 			CSSField(id: 6,
-							 cssClass: .signature(Signature()),
+							 cssClass: .signature(SignatureState()),
 							 title: "Patient signature"
 			),
 			CSSField(id: 9,
@@ -274,7 +274,7 @@ extension FormTemplate {
 							 title: "Insert some text"
 			),
 			CSSField(id: 6,
-							 cssClass: .signature(Signature()),
+							 cssClass: .signature(SignatureState()),
 							 title: "Patient signature"
 			),
 			CSSField(id: 9,
@@ -282,7 +282,7 @@ extension FormTemplate {
 							 title: "Insert some text 2"
 			),
 			CSSField(id: 7,
-							 cssClass: .signature(Signature()),
+							 cssClass: .signature(SignatureState()),
 							 title: "Practitioner signature"
 			),
 			CSSField(id: 5,
@@ -318,7 +318,7 @@ extension FormTemplate {
 							 title: "This is some static text "
 			),
 			CSSField(id: 51,
-							 cssClass: .select(Select(4,
+							 cssClass: .select(SelectState(4,
 																			[SelectChoice(1, "select choice 1"),
 																			 SelectChoice(2, "select choice 2"),
 																			 SelectChoice(3, "select choice 3"),
@@ -344,7 +344,7 @@ extension FormTemplate {
 							 title: "Insert some text"
 			),
 			CSSField(id: 6,
-							 cssClass: .signature(Signature()),
+							 cssClass: .signature(SignatureState()),
 							 title: "Patient signature"
 			),
 			CSSField(id: 9,
@@ -352,7 +352,7 @@ extension FormTemplate {
 							 title: "Insert some text 2"
 			),
 			CSSField(id: 7,
-							 cssClass: .signature(Signature()),
+							 cssClass: .signature(SignatureState()),
 							 title: "Practitioner signature"
 			),
 			CSSField(id: 5,
@@ -404,7 +404,7 @@ extension FormTemplate {
 							 title: "Insert some text"
 			),
 			CSSField(id: 6,
-							 cssClass: .signature(Signature()),
+							 cssClass: .signature(SignatureState()),
 							 title: "Patient signature"
 			),
 			CSSField(id: 9,
@@ -412,7 +412,7 @@ extension FormTemplate {
 							 title: "Insert some text 2"
 			),
 			CSSField(id: 7,
-							 cssClass: .signature(Signature()),
+							 cssClass: .signature(SignatureState()),
 							 title: "Practitioner signature"
 			),
 			CSSField(id: 5,
@@ -467,7 +467,7 @@ extension FormTemplate {
 								 title: "Insert some text"
 				),
 				CSSField(id: 61,
-								 cssClass: .signature(Signature()),
+								 cssClass: .signature(SignatureState()),
 								 title: "Patient signature"
 				),
 				CSSField(id: 91,
@@ -475,7 +475,7 @@ extension FormTemplate {
 								 title: "Insert some text 2"
 				),
 				CSSField(id: 71,
-								 cssClass: .signature(Signature()),
+								 cssClass: .signature(SignatureState()),
 								 title: "Practitioner signature"
 				),
 				CSSField(id: 51,
@@ -534,7 +534,7 @@ extension FormTemplate {
 				title: "Choose please"
 			),
 			CSSField(id: 62,
-							 cssClass: .signature(Signature()),
+							 cssClass: .signature(SignatureState()),
 							 title: "Patient signatureeee"
 			),
 			CSSField(id: 92,
@@ -542,7 +542,7 @@ extension FormTemplate {
 							 title: "yada yada yada"
 			),
 			CSSField(id: 72,
-							 cssClass: .signature(Signature()),
+							 cssClass: .signature(SignatureState()),
 							 title: "Sign this please"
 			),
 			CSSField(id: 52,
@@ -583,7 +583,7 @@ extension FormTemplate {
 							 title: "Insert some text"
 			),
 			CSSField(id: 63,
-							 cssClass: .signature(Signature()),
+							 cssClass: .signature(SignatureState()),
 							 title: "Patient signature"
 			),
 			CSSField(id: 93,
@@ -591,7 +591,7 @@ extension FormTemplate {
 							 title: "Insert some text 2"
 			),
 			CSSField(id: 73,
-							 cssClass: .signature(Signature()),
+							 cssClass: .signature(SignatureState()),
 							 title: "Practitioner signature"
 			),
 			CSSField(id: 53,
@@ -643,7 +643,7 @@ extension FormTemplate {
 							 title: "Insert some text"
 			),
 			CSSField(id: 64,
-							 cssClass: .signature(Signature()),
+							 cssClass: .signature(SignatureState()),
 							 title: "Patient signature"
 			),
 			CSSField(id: 94,
@@ -651,7 +651,7 @@ extension FormTemplate {
 							 title: "Insert some text 2"
 			),
 			CSSField(id: 74,
-							 cssClass: .signature(Signature()),
+							 cssClass: .signature(SignatureState()),
 							 title: "Practitioner signature"
 			),
 			CSSField(id: 54,
@@ -703,7 +703,7 @@ extension FormTemplate {
 							 title: "Insert some text"
 			),
 			CSSField(id: 65,
-							 cssClass: .signature(Signature()),
+							 cssClass: .signature(SignatureState()),
 							 title: "Patient signature"
 			),
 			CSSField(id: 95,
@@ -711,7 +711,7 @@ extension FormTemplate {
 							 title: "Insert some text 2"
 			),
 			CSSField(id: 75,
-							 cssClass: .signature(Signature()),
+							 cssClass: .signature(SignatureState()),
 							 title: "Practitioner signature"
 			),
 			CSSField(id: 55,
@@ -765,7 +765,7 @@ extension FormTemplate {
 							 title: "Insert some text"
 			),
 			CSSField(id: 66,
-							 cssClass: .signature(Signature()),
+							 cssClass: .signature(SignatureState()),
 							 _required: true,
 							 title: "Patient signature"
 			),
@@ -775,7 +775,7 @@ extension FormTemplate {
 							 title: "Insert some text 2"
 			),
 			CSSField(id: 76,
-							 cssClass: .signature(Signature()),
+							 cssClass: .signature(SignatureState()),
 							 title: "Practitioner signature"
 			),
 			CSSField(id: 56,
@@ -827,7 +827,7 @@ extension FormTemplate {
 								 formStructure:
 			FormStructure(formStructure: [
 				CSSField(id: 51,
-								 cssClass: .select(Select(4,
+								 cssClass: .select(SelectState(4,
 																				[SelectChoice(1, "select choice with a multiline text with a multiline text with a multiline text with a multiline text with a multiline text with a multiline text with a multiline text"),
 																				 SelectChoice(2, "select choice 2"),
 																				 SelectChoice(3, "select choice 3"),
@@ -837,7 +837,7 @@ extension FormTemplate {
 					), title: "Select title"
 				),
 				CSSField(id: 51,
-								 cssClass: .select(Select(4,
+								 cssClass: .select(SelectState(4,
 																				[SelectChoice(1, "select choice 1"),
 																				 SelectChoice(2, "select choice 2"),
 																				 SelectChoice(3, "select choice 3"),
@@ -853,7 +853,7 @@ extension FormTemplate {
 								 title: "Insert some text"
 				),
 				CSSField(id: 6,
-								 cssClass: .signature(Signature()),
+								 cssClass: .signature(SignatureState()),
 								 _required: true,
 								 title: "Patient signature"
 				),
@@ -862,7 +862,7 @@ extension FormTemplate {
 								 title: "Insert some text 2"
 				),
 				CSSField(id: 7,
-								 cssClass: .signature(Signature()),
+								 cssClass: .signature(SignatureState()),
 								 title: "Practitioner signature"
 				),
 				CSSField(id: 5,
@@ -916,7 +916,7 @@ extension FormTemplate {
 								 title: "Insert some text"
 				),
 				CSSField(id: 6,
-								 cssClass: .signature(Signature()),
+								 cssClass: .signature(SignatureState()),
 								 title: "Patient signature"
 				),
 				CSSField(id: 9,
@@ -924,7 +924,7 @@ extension FormTemplate {
 								 title: "Insert some text 2"
 				),
 				CSSField(id: 7,
-								 cssClass: .signature(Signature()),
+								 cssClass: .signature(SignatureState()),
 								 title: "Practitioner signature"
 				),
 				CSSField(id: 5,

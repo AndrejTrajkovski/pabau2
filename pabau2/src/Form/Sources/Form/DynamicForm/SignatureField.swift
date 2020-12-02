@@ -5,12 +5,14 @@ import Model
 import Util
 //for creating Image: https://www.hackingwithswift.com/read/27/3/drawing-into-a-core-graphics-context-with-uigraphicsimagerenderer
 
+public enum SignatureAction {}
+
 struct SignatureField: View {
 	@State private var isSigning: Bool
-	@Binding var signature: Signature
+	@Binding var signature: SignatureState
 	let title: String
 
-	init (signature: Binding<Signature>, title: String) {
+	init (signature: Binding<SignatureState>, title: String) {
 		self._signature = signature
 		self._isSigning = State.init(initialValue: false)
 		self.title = title
@@ -38,7 +40,7 @@ struct SignatureField: View {
 
 struct SignedComponent: View {
 	@Binding var isSigning: Bool
-	@Binding var signature: Signature
+	@Binding var signature: SignatureState
 	var body: some View {
 		VStack {
 			HStack {
@@ -57,9 +59,9 @@ struct SignedComponent: View {
 
 struct SigningComponent: View {
 	let title: String
-	@State private var signature: Signature = Signature()
+	@State private var signature: SignatureState = SignatureState()
 	@Binding var isActive: Bool
-	let onDone: (Signature) -> Void
+	let onDone: (SignatureState) -> Void
 	var body: some View {
 		VStack(spacing: 32.0) {
 			Text(title).font(.largeTitle)

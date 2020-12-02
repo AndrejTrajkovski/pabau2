@@ -3,25 +3,28 @@ import SwiftUI
 import ComposableArchitecture
 import Util
 
-enum FormTemplateAction {
-	
+public let formTemplateReducer: Reducer<FormTemplate, FormTemplateAction, FormEnvironment> =
+	cssFieldReducer.forEach(
+		state: \FormTemplate.formStructure.formStructure,
+		action: /FormTemplateAction.fields(idx:action:),
+		environment: { $0 }
+	)
+
+public enum FormTemplateAction {
+	case fields(idx: Int, action: CSSClassAction)
 }
 
-//struct ListDynamicFormStore: View {
-//	let store: Store<FormTemplate, FormTemplateAction>
-//}
-
 struct ListDynamicForm: View {
-	@Binding var template: FormTemplate
-	init(template: Binding<FormTemplate>) {
-		self._template = template
+	let store: Store<FormTemplate, FormTemplateAction>
+	init(store: Store<FormTemplate, FormTemplateAction>) {
+		self.store = store
 		UITableViewHeaderFooterView.appearance().tintColor = UIColor.white
 		UITableView.appearance().separatorStyle = .none
 	}
 	var body: some View {
 		print("ListDynamicForm body")
 		return List {
-			DynamicForm(template: $template, isCheckingDetails: false)
+			DynamicForm(store: store, isCheckingDetails: false)
 		}
 	}
 }
@@ -29,49 +32,25 @@ struct ListDynamicForm: View {
 struct DynamicForm: View {
 	
 	let isCheckingDetails: Bool
-	@Binding var template: FormTemplate
-	init(template: Binding<FormTemplate>,
+	let store: Store<FormTemplate, FormTemplateAction>
+	@ObservedObject var viewStore: ViewStore<String, Never>
+	init(store: Store<FormTemplate, FormTemplateAction>,
 		 isCheckingDetails: Bool) {
-		self._template = template
+		self.store = store
 		self.isCheckingDetails = isCheckingDetails
+		self.viewStore = ViewStore(store.scope(state: { $0.name }).actionless)
 	}
-	
+
 	public var body: some View {
 		VStack {
-			Text(template.name).font(.title)
-			ForEach(template.formStructure.formStructure.indices, id: \.self ) { index in
-				FormSectionField(cssField:
-									Binding(
-										get: {
-											if self.template.formStructure.formStructure.count > index {
-												return self.template.formStructure.formStructure[index]
-											} else {
-												return CSSField.defaultEmpty
-											}
-										},
-										set: {
-											if self.template.formStructure.formStructure.count > index {
-												self.template.formStructure.formStructure[index] = $0
-											} else {
-											}
-										}
-									),
-								 isCheckingDetails: self.isCheckingDetails)
-					.equatable()
-			}
+			Text(self.viewStore.state).font(.title)
+			ForEachStore(store.scope(state: { $0.formStructure.formStructure },
+									 action: FormTemplateAction.fields(idx:action:)),
+						 content: { store in
+							FormSectionField(store: store,
+											 isCheckingDetails: isCheckingDetails)
+						 }
+			)
 		}
 	}
 }
-
-//let fieldsReducer: Reducer<CheckInContainerState, CheckInMainAction, JourneyEnvironemnt> =
-//	indexed(reducer: fieldReducer,
-//					\CheckInContainerState.currentFields,
-//					/CheckInMainAction.form, { $0 })
-
-//let fieldReducer: Reducer<CSSField, CheckInFormAction, JourneyEnvironemnt> =
-//(
-//	cssClassReducer.pullback(
-//					 value: \CSSField.cssClass,
-//					 action: /CheckInFormAction.self,
-//					 environment: { $0 })
-//)

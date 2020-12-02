@@ -40,7 +40,9 @@ struct CheckPatientForm: View {
 				}.switchesSection(title: Texts.communications)
 				ForEach(patientForms.indices, id: \.self ) { index in
 					DynamicForm(
-						template: .constant(self.patientForms[index]),
+						store: Store(initialState: self.patientForms[index],
+									 reducer: Reducer.empty,
+									 environment: { }),
 						isCheckingDetails: true
 					)
 				}

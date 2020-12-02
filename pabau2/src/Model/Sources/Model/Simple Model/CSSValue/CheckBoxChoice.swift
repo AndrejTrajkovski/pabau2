@@ -1,4 +1,4 @@
-public struct CheckBoxChoice: Codable, Equatable, Hashable {
+public struct CheckBoxChoice: Codable, Equatable, Hashable, Identifiable {
 	public init( _ id: Int, _ title: String, _ isSelected: Bool) {
 		self.id = id
 		self.title = title

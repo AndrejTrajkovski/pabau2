@@ -1,21 +1,32 @@
 import SwiftUI
 import Model
+import ComposableArchitecture
 
-let selectFieldReducer: Reducer<Select, SelectFieldAction, FormEnvironment> = .init { state, action. env in
+public enum SelectFieldAction {
+	case select(id: Int)
+}
+
+let selectFieldReducer: Reducer<SelectState, SelectFieldAction, FormEnvironment> = .init { state, action, env in
+	switch action {
+	case .select(let id):
+		state.selectedChoiceId = id
+	}
 	return .none
 }
 
 struct SelectField: View {
-
-	@Binding var select: Select
-
+	
+	let store: Store<SelectState, SelectFieldAction>
+	
 	var body: some View {
-		ForEach(select.choices, id: \.self) { (choice: SelectChoice) in
-			SelectRow(choice: choice, isSelected: self.select.selectedChoiceId == choice.id)
-				.padding(4)
-				.onTapGesture {
-					let idx = self.select.choices.firstIndex(where: { $0.id == choice.id })
-					self.select.selectedChoiceId = self.select.choices[idx!].id
+		WithViewStore(store) { viewStore in
+			ForEach(viewStore.choices, id: \.self) { (choice: SelectChoice) in
+				SelectRow(choice: choice,
+						  isSelected: viewStore.selectedChoiceId == choice.id)
+					.padding(4)
+					.onTapGesture {
+						viewStore.send(.select(id: choice.id))
+					}
 			}
 		}
 	}
