@@ -9,6 +9,7 @@ import CasePaths
 import Form
 import Overture
 import Filters
+import SharedComponents
 
 public typealias JourneyEnvironment = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
 
@@ -141,6 +142,10 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 public struct JourneyContainerView: View {
 	let store: Store<JourneyContainerState, JourneyContainerAction>
 	@ObservedObject var viewStore: ViewStore<ViewState, JourneyContainerAction>
+
+    @State var showSearchBar: Bool = false
+    @State var searchText: String = ""
+
 	struct ViewState: Equatable {
 		let isChoosePathwayShown: Bool
 		let selectedDate: Date
@@ -161,57 +166,70 @@ public struct JourneyContainerView: View {
 						 action: { $0 }))
 	}
 	public var body: some View {
-		VStack {
-			CalendarDatePicker.init(
-				store: self.store.scope(
-					state: { $0.journey.selectedDate },
-					action: { .journey(.datePicker($0))}),
-				isWeekView: false,
-				scope: .week
-			)
-			.padding(0)
-			FilterPicker()
-			JourneyList(self.viewStore.state.listedJourneys) {
-				self.viewStore.send(.journey(.selectedJourney($0)))
-			}.loadingView(.constant(self.viewStore.state.isLoadingJourneys),
-						  Texts.fetchingJourneys)
-			NavigationLink.emptyHidden(self.viewStore.state.isChoosePathwayShown,
-									   ChoosePathway(store: self.store.scope(state: { $0.journey.choosePathway
-									   }, action: { .choosePathway($0)}))
-									   .navigationBarTitle("Choose Pathway")
-									   .customBackButton {
-										self.viewStore.send(.journey(.choosePathwayBackTap))
-									}
-			)
-			Spacer()
-		}
-		.navigationBarTitle("Manchester", displayMode: .inline)
-		.navigationBarItems(leading:
-			HStack(spacing: 8.0) {
-				PlusButton {
-					withAnimation(Animation.easeIn(duration: 0.5)) {
-						self.viewStore.send(.addAppointmentTap)
-					}
-				}
-				Button(action: {
+        VStack {
+            CalendarDatePicker.init(
+                store: self.store.scope(
+                    state: { $0.journey.selectedDate },
+                    action: { .journey(.datePicker($0))}),
+                isWeekView: false,
+                scope: .week
+            )
+            .padding(0)
 
-				}, label: {
-					Image(systemName: "magnifyingglass")
-						.font(.system(size: 20))
-						.frame(width: 44, height: 44)
-				})
-			}, trailing:
-			Button (action: {
-				withAnimation {
-					self.viewStore.send(.toggleEmployees)
-				}
-			}, label: {
-				Image(systemName: "person")
-					.font(.system(size: 20))
-					.frame(width: 44, height: 44)
-			})
-		)
-	}
+            FilterPicker()
+
+            if self.showSearchBar {
+                SearchView(placeholder: "Search", text: $searchText)
+                    .isHidden(!self.showSearchBar)
+                    .padding([.leading, .trailing], 16)
+            }
+
+            JourneyList(self.viewStore.state.listedJourneys) {
+                self.viewStore.send(.journey(.selectedJourney($0)))
+            }.loadingView(.constant(self.viewStore.state.isLoadingJourneys), Texts.fetchingJourneys)
+
+            NavigationLink.emptyHidden(
+                self.viewStore.state.isChoosePathwayShown,
+                ChoosePathway(store: self.store.scope(state: { $0.journey.choosePathway
+                }, action: { .choosePathway($0)}))
+                .navigationBarTitle("Choose Pathway")
+                .customBackButton {
+                    self.viewStore.send(.journey(.choosePathwayBackTap))
+                }
+            )
+            Spacer()
+        }
+        .navigationBarTitle("Manchester", displayMode: .inline)
+        .navigationBarItems(
+            leading:
+                HStack(spacing: 8.0) {
+                    PlusButton {
+                        withAnimation(Animation.easeIn(duration: 0.5)) {
+                            self.viewStore.send(.addAppointmentTap)
+                        }
+                    }
+                    Button(action: {
+                        withAnimation {
+                            self.showSearchBar.toggle()
+                        }
+                    }, label: {
+                        Image(systemName: "magnifyingglass")
+                            .font(.system(size: 20))
+                            .frame(width: 44, height: 44)
+                    })
+                },
+            trailing:
+                Button(action: {
+                    withAnimation {
+                        self.viewStore.send(.toggleEmployees)
+                    }
+                }, label: {
+                    Image(systemName: "person")
+                        .font(.system(size: 20))
+                        .frame(width: 44, height: 44)
+                })
+        )
+    }
 
 	struct ChoosePathwayEither: View {
 		let store: Store<JourneyState, JourneyContainerAction>
