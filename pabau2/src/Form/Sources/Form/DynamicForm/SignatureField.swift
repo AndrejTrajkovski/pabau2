@@ -25,14 +25,14 @@ struct SignatureField: View {
 					.disabled(true)
 					.sheet(isPresented: .constant(true)) {
 						SigningComponent(title: self.title,
-														isActive: self.$isSigning,
-														 onDone: { self.signature = $0 })
-				}
+										 isActive: self.$isSigning,
+										 onDone: { self.signature = $0 })
+					}
 			} else if signature.drawings.isEmpty {
 				TapToSign(isSigning: $isSigning)
 			} else {
 				SignedComponent(isSigning: $isSigning,
-												signature: $signature)
+								signature: $signature)
 			}
 		}
 	}
@@ -125,7 +125,7 @@ struct DrawingPad: View {
 		.border(Color(hex: "DADADA"), width: 1)
 		.frame(height: 200)
 	}
-
+	
 	private func add(drawing: SignatureDrawing, toPath path: inout Path) {
 		let points = drawing.points
 		if points.count > 1 {

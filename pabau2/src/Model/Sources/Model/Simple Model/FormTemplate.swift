@@ -836,7 +836,7 @@ extension FormTemplate {
 																   1)
 									 ), title: "Select title"
 							),
-							CSSField(id: 51,
+							CSSField(id: 1151,
 									 cssClass: .select(SelectState(4,
 																   [SelectChoice(1, "select choice 1"),
 																	SelectChoice(2, "select choice 2"),

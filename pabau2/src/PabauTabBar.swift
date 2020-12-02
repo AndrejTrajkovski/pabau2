@@ -80,89 +80,119 @@ struct PabauTabBar: View {
 						 action: { $0 }))
 		print("PabauTabBar init")
 	}
+		
 	var body: some View {
 		print("PabauTabBar body")
 		return ZStack(alignment: .topTrailing) {
 			TabView {
-				CalendarContainer(store:
+				calendar()
+				journey()
+				clients()
+				settings()
+				communication()
+			}
+//			.fullScreenCover(isPresented: .constant(self.viewStore.state.isShowingCheckin)) {
+//				checkIn()
+//			}
+			.modalLink(isPresented: .constant(self.viewStore.state.isShowingCheckin),
+					   linkType: ModalTransition.circleReveal,
+					   destination: {
+						checkIn()
+					   }
+			)
+			.fullScreenCover(isPresented: .constant(self.viewStore.state.isShowingAppointments)) {
+				addAppointment()
+			}
+			if self.viewStore.state.isShowingEmployees {
+				journeyFilter()
+			}
+		}
+	}
+
+	fileprivate func journey() -> some View {
+		return JourneyNavigationView(
+			self.store.scope(
+				state: { $0.journeyContainer },
+				action: { .journey($0)})
+		).tabItem {
+			Image(systemName: "staroflife")
+			Text("Journey")
+		}
+		.onAppear {
+			self.viewStore.send(.journey(JourneyContainerAction.journey(JourneyAction.loadJourneys)))
+			self.viewStore.send(.employeesFilter(JourneyFilterAction.loadEmployees))
+		}
+	}
+	
+	fileprivate func calendar() -> some View {
+		return CalendarContainer(store:
 									self.store.scope(
 										state: { $0.calendar },
 										action: { .calendar($0)}
 									)
-				)
-				.tabItem {
-						Image(systemName: "calendar")
-						Text("Calendar")
-				}
-				JourneyNavigationView(
-					self.store.scope(
-						state: { $0.journeyContainer },
-						action: { .journey($0)})
-				).tabItem {
-						Image(systemName: "staroflife")
-						Text("Journey")
-				}
-				.onAppear {
-					self.viewStore.send(.journey(JourneyContainerAction.journey(JourneyAction.loadJourneys)))
-					self.viewStore.send(.employeesFilter(JourneyFilterAction.loadEmployees))
-				}
-				ClientsNavigationView(
-					self.store.scope(
-						state: { $0.clients },
-						action: { .clients($0) })
-				).tabItem {
-						Image(systemName: "rectangle.stack.person.crop")
-						Text(Texts.clients)
-				}.onAppear {
-					self.viewStore.send(.clients(ClientsAction.onAppearNavigationView))
-				}
-				Settings(store:
-					store.scope(state: { $0.settings },
-										 action: { .settings($0)}))
-					.tabItem {
-						Image(systemName: "gear")
-						Text("Settings")
-				}
-
-                CommunicationView(store:
-                                store.scope(state: { $0.communication },
-                                            action: { .communication($0)}))
-                    .tabItem {
-                        Image(systemName: "ico-tab-tasks")
-                        Text("Intercom")
-                    }
-			}
-			.fullScreenCover(isPresented: .constant(self.viewStore.state.isShowingCheckin)) {
-				IfLetStore(self.store.scope(
-					state: { $0.journeyContainer.journey.checkIn },
-					action: { .journey(.checkIn($0))}
-				),
-				then: CheckInNavigationView.init(store:))
-			}
-			.modalLink(isPresented: .constant(self.viewStore.state.isShowingCheckin),
-					   linkType: ModalTransition.circleReveal,
-					   destination: {
-						IfLetStore(self.store.scope(
-							state: { $0.journeyContainer.journey.checkIn },
-							action: { .journey(.checkIn($0))}
-						),
-						then: CheckInNavigationView.init(store:))
-					   })
-			.fullScreenCover(isPresented: .constant(self.viewStore.state.isShowingAppointments)) {
-				IfLetStore(self.store.scope(
-					state: { $0.addAppointment },
-					action: { .addAppointment($0)}
-				),
-				then: AddAppointment.init(store:))
-			}
-			if self.viewStore.state.isShowingEmployees {
-				JourneyFilter(
-					self.store.scope(state: { $0.employeesFilter },
-					action: { .employeesFilter($0)})
-				).transition(.moveAndFade)
-			}
+		)
+		.tabItem {
+			Image(systemName: "calendar")
+			Text("Calendar")
 		}
 	}
+	
+	fileprivate func clients() -> some View {
+		return ClientsNavigationView(
+			self.store.scope(
+				state: { $0.clients },
+				action: { .clients($0) })
+		).tabItem {
+			Image(systemName: "rectangle.stack.person.crop")
+			Text(Texts.clients)
+		}.onAppear {
+			self.viewStore.send(.clients(ClientsAction.onAppearNavigationView))
+		}
+	}
+	
+	fileprivate func settings() -> some View {
+		return Settings(store:
+							store.scope(state: { $0.settings },
+										action: { .settings($0)}))
+			.tabItem {
+				Image(systemName: "gear")
+				Text("Settings")
+			}
+	}
+	
+	fileprivate func communication() -> some View {
+		return CommunicationView(store:
+									store.scope(state: { $0.communication },
+												action: { .communication($0)}))
+			.tabItem {
+				Image(systemName: "ico-tab-tasks")
+				Text("Intercom")
+			}
+	}
+
+	fileprivate func checkIn() -> IfLetStore<CheckInContainerState, CheckInContainerAction, CheckInNavigationView?> {
+		return IfLetStore(self.store.scope(
+			state: { $0.journeyContainer.journey.checkIn },
+			action: { .journey(.checkIn($0))}
+		),
+		then: CheckInNavigationView.init(store:))
+	}
+
+	fileprivate func addAppointment() -> IfLetStore<AddAppointmentState, AddAppointmentAction, AddAppointment?> {
+		return IfLetStore(self.store.scope(
+			state: { $0.addAppointment },
+			action: { .addAppointment($0)}
+		),
+		then: AddAppointment.init(store:))
+	}
+
+	fileprivate func journeyFilter() -> some View {
+		return JourneyFilter(
+			self.store.scope(state: { $0.employeesFilter },
+							 action: { .employeesFilter($0)})
+		).transition(.moveAndFade)
+	}
+
 }
 
 public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> = Reducer.combine(

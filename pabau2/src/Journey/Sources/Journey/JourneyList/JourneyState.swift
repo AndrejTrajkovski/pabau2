@@ -22,7 +22,7 @@ public struct JourneyState: Equatable {
 	var selectedConsentsIds: [Int] = []
 	var allConsents: IdentifiedArrayOf<FormTemplate> = []
 	public var checkIn: CheckInContainerState?
-//		= JourneyMocks.checkIn
+		= JourneyMocks.checkIn
 }
 
 extension JourneyState {
