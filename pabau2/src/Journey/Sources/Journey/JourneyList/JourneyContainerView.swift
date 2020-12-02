@@ -110,6 +110,7 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 				state.loadingState = .loading
 				return environment.apiClient.getJourneys(date: date)
 					.map(JourneyAction.gotResponse)
+                    .receive(on: DispatchQueue.main)
 					.eraseToEffect()
 			case .gotResponse(let result):
 				switch result {
