@@ -43,6 +43,34 @@ struct StepsCollectionView: View {
 			store.scope( state: State.init(state:), action: { $0 }))
 	}
 	
+	var body: some View {
+		HStack(alignment: .top, spacing: 24) {
+			previousArrow()
+			scrollView()
+			nextArrow()
+		}
+	}
+	
+	fileprivate func scrollView() {
+		ScrollViewReader { scrollProxy in
+			ScrollView(.horizontal) {
+				HStack(spacing: spacing) {
+					ForEach(viewStore.state.formVms.indices, id: \.self) { idx in
+						stepView(for: viewStore.state.formVms[idx])
+							.frame(width: cellWidth, height: cellHeight)
+							.onTapGesture {
+								self.viewStore.send(.didSelectFlatFormIndex(idx))
+								withAnimation {
+									scrollProxy.scrollTo(idx, anchor: .center)
+								}
+							}
+					}
+				}
+			}.frame(width: ((cellWidth + spacing) * CGFloat(viewStore.state.numberOfVisibleSteps)),
+					height: cellHeight)
+		}
+	}
+	
 	func stepView(for viewModel: FormVM) -> some View {
 		VStack {
 			Image(systemName: "checkmark.circle.fill")
@@ -56,40 +84,24 @@ struct StepsCollectionView: View {
 				.foregroundColor(Color(hex: "909090"))
 		}
 	}
-
-	var body: some View {
-		HStack(alignment: .top, spacing: 24) {
-			if viewStore.state.shouldShowLeftArrow {
-				Image(systemName: "chevron.left")
-					.font(.regular30).foregroundColor(Color(hex: "909090"))
-					.onTapGesture {
-						self.viewStore.send(.didSelectPrevStep)
+	
+	fileprivate func previousArrow() {
+		if viewStore.state.shouldShowLeftArrow {
+			Image(systemName: "chevron.left")
+				.font(.regular30).foregroundColor(Color(hex: "909090"))
+				.onTapGesture {
+					self.viewStore.send(.didSelectPrevStep)
 				}
-			}
-			ScrollViewReader { scrollProxy in
-				ScrollView(.horizontal) {
-					HStack(spacing: spacing) {
-						ForEach(viewStore.state.formVms.indices, id: \.self) { idx in
-							stepView(for: viewStore.state.formVms[idx])
-								.frame(width: cellWidth, height: cellHeight)
-								.onTapGesture {
-									self.viewStore.send(.didSelectFlatFormIndex(idx))
-									withAnimation {
-										scrollProxy.scrollTo(idx, anchor: .center)
-									}
-								}
-						}
-					}
-				}.frame(width: ((cellWidth + spacing) * CGFloat(viewStore.state.numberOfVisibleSteps)),
-					   height: cellHeight)
-			}
-			if viewStore.state.shouldShowRightArrow {
-				Image(systemName: "chevron.right")
-					.font(.regular30).foregroundColor(Color(hex: "909090"))
-					.onTapGesture {
-						self.viewStore.send(.didSelectNextStep)
+		}
+	}
+	
+	fileprivate func nextArrow() {
+		if viewStore.state.shouldShowRightArrow {
+			Image(systemName: "chevron.right")
+				.font(.regular30).foregroundColor(Color(hex: "909090"))
+				.onTapGesture {
+					self.viewStore.send(.didSelectNextStep)
 				}
-			}
 		}
 	}
 }
