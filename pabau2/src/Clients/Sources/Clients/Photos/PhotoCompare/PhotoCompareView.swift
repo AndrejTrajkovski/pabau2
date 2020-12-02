@@ -23,14 +23,32 @@ public enum PhotoCompareMode: Equatable {
 }
 
 struct PhotoCompareState: Equatable {
-    public init(date: Date?, photos: [PhotoViewModel]) {
+    public init(date: Date?, photos: [PhotoViewModel], selectedId: PhotoVariantId?) {
         self.date = date
         self.photos = photos
-        selectedPhoto = self.photos.first
+        
+        if let selectedId = selectedId {
+            selectedPhoto = self.photos.filter { $0.basePhoto.id == selectedId }.first
+        } else {
+            selectedPhoto = self.photos.first
+        }
+        
+        photosCompares[0] = selectedPhoto
+        photosCompares[1] = latestPhotoTaken
     }
     
     var photoCompareMode: PhotoCompareMode = .single
-    var selectedPhoto: PhotoViewModel?
+    var selectedPhoto: PhotoViewModel? {
+        didSet {
+            photosCompares[0] = selectedPhoto
+        }
+    }
+    var latestPhotoTaken: PhotoViewModel? {
+        photos.sorted{ $0.basePhoto.date > $1.basePhoto.date }.first
+    }
+    
+    var photosCompares: Dictionary<Int, PhotoViewModel?> = [:]
+    
     var date: Date?
     var photos: [PhotoViewModel] = []
     
@@ -41,6 +59,7 @@ struct PhotoCompareState: Equatable {
     var currentMagnification: CGFloat = 1
     var pinchMagnification: CGFloat = 1
     var isTappedToZoom: Bool = false
+    
 }
 
 extension PhotoCompareState {
@@ -99,7 +118,7 @@ struct PhotoCompareView: View {
                 } else {
                     HStack(spacing: 0) {
                         PhotoDetailView(store: self.store)
-                        PhotoDetailView(store: self.store)
+                        PhotoDetailView(store: self.store, positionCompare: 1)
                     }
                 }
                 

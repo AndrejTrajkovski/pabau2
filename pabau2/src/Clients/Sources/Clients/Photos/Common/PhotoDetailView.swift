@@ -6,14 +6,16 @@ import Util
 struct PhotoDetailView: View {
 
     let store: Store<PhotoCompareState, PhotoCompareAction>
-    
+    private var positionCompare: Int = 0
     @ObservedObject var viewStore: ViewStore<PhotoCompareState, PhotoCompareAction>
-    init(store: Store<PhotoCompareState, PhotoCompareAction>) {
+    init(store: Store<PhotoCompareState, PhotoCompareAction>, positionCompare: Int = 0) {
         self.store = store
         viewStore = ViewStore(store)
+        self.positionCompare = positionCompare
     }
     
     @GestureState var pinchMagnification: CGFloat = 1
+
     
     var drag: some Gesture {
         DragGesture()
@@ -54,8 +56,8 @@ struct PhotoDetailView: View {
     var body: some View {
         GeometryReader { proxy in
             ZStack {
-                if let photo = viewStore.selectedPhoto {
-                        PhotoDetailCell(photo: photo)
+                if let photo = viewStore.photosCompares[self.positionCompare] {
+                        PhotoDetailCell(photo: photo!)
                             .offset(x: viewStore.dragOffset.width + viewStore.position.width, y: viewStore.dragOffset.height + viewStore.position.height)
                             .scaleEffect(viewStore.pinchMagnification * viewStore.currentMagnification)
                             .frame(width: proxy.size.width, height: proxy.size.height)

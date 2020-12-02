@@ -84,7 +84,7 @@ extension CCPhotosState {
         set {
         }
         get {
-            PhotoCompareState(date: self.selectedDate, photos: photos)
+            PhotoCompareState(date: self.selectedDate, photos: photos, selectedId: selectedIds.first)
         }
     }
     
