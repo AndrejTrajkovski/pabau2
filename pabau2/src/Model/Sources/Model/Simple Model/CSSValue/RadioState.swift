@@ -1,8 +1,8 @@
 public struct RadioState: Codable, Equatable, Hashable {
 	public var choices: [RadioChoice]
-	public var selectedChoiceId: Int?
+	public var selectedChoiceId: Int
 
-	public init (_ id: Int, _ choices: [RadioChoice], _ selectedChoiceId: Int?) {
+	public init (_ id: Int, _ choices: [RadioChoice], _ selectedChoiceId: Int) {
 		self.choices = choices
 		self.selectedChoiceId = selectedChoiceId
 	}

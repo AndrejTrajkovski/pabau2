@@ -156,9 +156,7 @@ struct FormFieldStore: View {
 		IfLetStore(store.scope(
 					state: { extract(case: CSSClass.radio, from: $0)},
 					action: { .radio($0)}),
-				   then: { store in
-					return Text("Radio field")
-				   })
+				   then: RadioField.init(store:))
 		IfLetStore(store.scope(
 					state: { extract(case: CSSClass.signature, from: $0)},
 					action: { .signature($0)}),
