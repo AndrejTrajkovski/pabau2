@@ -145,9 +145,9 @@ struct LoginContainer: View {
 extension AppState {
 	init(loggedInUser: User?, hasSeenWalkthrough: Bool) {
 		if loggedInUser != nil {
-			self = .walkthrough(WalkthroughContainerState(hasSeenWalkthrough: hasSeenWalkthrough))
-		} else {
 			self = .tabBar(TabBarState())
+		} else {
+			self = .walkthrough(WalkthroughContainerState(hasSeenWalkthrough: hasSeenWalkthrough))
 		}
 	}
 }

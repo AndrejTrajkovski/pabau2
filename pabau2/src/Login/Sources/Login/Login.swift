@@ -80,7 +80,10 @@ public let loginReducer = Reducer<WalkthroughContainerState, LoginAction, LoginE
 }
 
 let loginViewReducer: Reducer<WalkthroughContainerState, LoginViewAction, LoginEnvironment> = .combine(
-	loginReducer.pullback(state: \WalkthroughContainerState.self, action: /LoginViewAction.login, environment: { $0 }),
+	loginReducer.pullback(
+		state: \WalkthroughContainerState.self,
+		action: /LoginViewAction.login,
+		environment: { $0 }),
 	forgotPassViewReducer.pullback(
 		state: \WalkthroughContainerState.forgotPass,
 		action: /LoginViewAction.forgotPass,

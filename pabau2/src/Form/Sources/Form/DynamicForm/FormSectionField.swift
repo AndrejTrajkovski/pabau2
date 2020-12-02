@@ -139,7 +139,7 @@ struct FormFieldStore: View {
 		IfLetStore(store.scope(
 					state: { extract(case: CSSClass.staticText, from: $0)}).actionless,
 				   then: { store in
-					return Text("Static field")
+					Text(ViewStore(store).text)
 				   })
 		IfLetStore(store.scope(
 					state: { extract(case: CSSClass.input_text, from: $0)},
@@ -170,9 +170,7 @@ struct FormFieldStore: View {
 		IfLetStore(store.scope(
 					state: { extract(case: CSSClass.select, from: $0)},
 					action: { .select($0)}),
-				   then: { store in
-					return Text("select field")
-				   })
+				   then: SelectField.init(store:))
 //		IfLetStore(store.scope(
 //					state: { extract(case: CSSClass.heading, from: $0)},
 //					action: { .heading($0)}),
@@ -218,6 +216,10 @@ let cssClassReducer: Reducer<CSSClass, CSSClassAction, FormEnvironment> =
 		textFieldReducer.pullbackCp(
 			state: (/CSSClass.input_text).appending(path: CasePath<InputText, String>.init(embed: InputText.init(text:), extract: { $0.text })),
 			action: /CSSClassAction.inputText,
+			environment: { $0 }),
+		selectFieldReducer.pullbackCp(
+			state: /CSSClass.select,
+			action: /CSSClassAction.select,
 			environment: { $0 })
 	)
 
