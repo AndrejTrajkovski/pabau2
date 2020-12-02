@@ -42,7 +42,7 @@ struct StepsCollectionView: View {
 		self.viewStore = ViewStore(
 			store.scope( state: State.init(state:), action: { $0 }))
 	}
-
+	
 	func stepView(for viewModel: FormVM) -> some View {
 		VStack {
 			Image(systemName: "checkmark.circle.fill")
@@ -54,9 +54,7 @@ struct StepsCollectionView: View {
 				.lineLimit(nil)
 				.font(.medium10)
 				.foregroundColor(Color(hex: "909090"))
-		}.onTapGesture {
-			self.viewStore.send(.didSelectFlatFormIndex(viewModel.idx))
-		}.frame(maxWidth: cellWidth, maxHeight: cellHeight, alignment: .top)
+		}
 	}
 
 	var body: some View {
@@ -68,22 +66,23 @@ struct StepsCollectionView: View {
 						self.viewStore.send(.didSelectPrevStep)
 				}
 			}
-			CollectionView(viewStore.state.formVms, viewStore.state.selectedIndex) {
-				stepView(for: $0)
+			ScrollViewReader { scrollProxy in
+				ScrollView(.horizontal) {
+					HStack(spacing: spacing) {
+						ForEach(viewStore.state.formVms.indices, id: \.self) { idx in
+							stepView(for: viewStore.state.formVms[idx])
+								.frame(width: cellWidth, height: cellHeight)
+								.onTapGesture {
+									self.viewStore.send(.didSelectFlatFormIndex(idx))
+									withAnimation {
+										scrollProxy.scrollTo(idx, anchor: .center)
+									}
+								}
+						}
+					}
+				}.frame(width: ((cellWidth + spacing) * CGFloat(viewStore.state.numberOfVisibleSteps)),
+					   height: cellHeight)
 			}
-			.axis(.horizontal)
-			.indicators(false)
-			.groupSize(
-				.init(
-					widthDimension: .absolute(cellWidth),
-					heightDimension: .absolute(cellHeight)))
-				.itemSize(.init(widthDimension: .absolute(cellWidth),
-												heightDimension: .absolute(cellHeight)))
-				.layout({ (layout) in
-					layout.interGroupSpacing = spacing
-				})
-				.frame(width: ((cellWidth + spacing) * CGFloat(viewStore.state.numberOfVisibleSteps)),
-							 height: cellHeight)
 			if viewStore.state.shouldShowRightArrow {
 				Image(systemName: "chevron.right")
 					.font(.regular30).foregroundColor(Color(hex: "909090"))
@@ -99,7 +98,8 @@ extension StepsCollectionView.State {
 	init(state: Forms) {
 		let forms = state
 		let selIdx = forms.flatSelectedIndex
-		let formVms = zip(forms.flat, forms.flat.indices).map { Self.formVm(form: $0, selection: selIdx)}
+		let flatForms = forms.flat
+		let formVms = zip(flatForms, flatForms.indices).map { Self.formVm(form: $0, selection: selIdx)}
 		let shouldShowArrows = formVms.count > maxVisibleCells
 		self.formVms = formVms
 		self.selectedIndex = selIdx
@@ -109,14 +109,14 @@ extension StepsCollectionView.State {
 	}
 
 	static func formVm(form: (MetaFormAndStatus, Int), selection: Int) -> FormVM {
-		FormVM(idx: form.1,
-					 isComplete: form.0.isComplete,
-					 title: form.0.form.title)
+		FormVM(id: form.1,
+			   isComplete: form.0.isComplete,
+			   title: form.0.form.title)
 	}
 }
 
-struct FormVM: Hashable {
-	let idx: Int
+struct FormVM: Identifiable, Equatable {
+	let id: Int
 	let isComplete: Bool
 	let title: String
 }

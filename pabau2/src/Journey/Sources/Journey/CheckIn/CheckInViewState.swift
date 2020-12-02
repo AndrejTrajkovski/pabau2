@@ -8,13 +8,11 @@ public struct CheckInViewState: Equatable {
 	var xButtonActiveFlag: Bool
 	let journey: Journey
 	let journeyMode: JourneyMode
-	
-	func isEqual(int1: Int, int2: Int) -> Bool { return int1 == int2 }
 
 	var footer: FooterButtonsState {
 		get {
 			FooterButtonsState(forms: self.forms,
-												 journeyMode: journeyMode)
+							   journeyMode: journeyMode)
 		}
 		set {
 			self.forms = newValue.forms

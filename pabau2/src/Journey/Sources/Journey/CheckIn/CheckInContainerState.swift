@@ -118,32 +118,18 @@ extension CheckInContainerState {
 	var isHandBackDeviceActive: Bool {
 		get {
 			return extract(case: MetaForm.patientComplete,
-										 from: patientForms.forms[id: .patientComplete]!.forms.first!.form)!
-						.isPatientComplete
+						   from: patientForms.forms[id: .patientComplete]!.forms.first!.form)!
+				.isPatientComplete
 		}
 		set {
 			let patientComplete = MetaForm.patientComplete(PatientComplete(isPatientComplete: newValue))
 			let old = patientForms.forms[id: .patientComplete]!.forms.first!
 			let newForm = MetaFormAndStatus(patientComplete,
-																			old.isComplete,
-																			index: old.index)
+											old.isComplete,
+											index: old.index)
 			patientForms.forms[id: .patientComplete]!.forms = [newForm]
 		}
 	}
-
-//	var checkPatient: CheckPatient? {
-//		let patDetailsWrapped = patientForms.forms[id: .patientdetails]?.forms.first?.form
-//		let patDetails = extract(case: MetaForm.patientDetails,
-//														 from: patDetailsWrapped)
-//		return patDetails.map {
-//			let medHistory = patientForms.forms[id: .medicalhistory]?.forms.elements ?? []
-//			let consents = patientForms.forms[id: .consents]?.forms.elements ?? []
-//			let patientForms = (medHistory + consents)
-//				.map(\.form)
-//				.compactMap { extract(case: MetaForm.template, from: $0) }
-//			return CheckPatient(patDetails: $0, patForms: patientForms)
-//		}
-//	}
 
 	var handback: HandBackDeviceState {
 		get {

@@ -24,11 +24,11 @@ let checkInBodyReducer: Reducer<CheckInViewState, CheckInBodyAction, JourneyEnvi
 			case .stepForms:
 				break//binding
 			case .stepsView:
-				break//handled inline
+				break//handled stepsViewReducer
 			case .completeJourney:
 				break//handled in checkInMiddleware
 			case .footer:
-				break//handled inline
+				break//handled footerButtonsReducer
 			}
 			return .none
 		},
