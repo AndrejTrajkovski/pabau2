@@ -13,7 +13,9 @@ struct DateLabel: View {
 }
 
 struct DayMonthYear: View {
-	let date: Date
+    let date: Date
+    var foregroundColorImage: Color = .accentColor
+	
 	static let dateFormat: DateFormatter = {
 		let formatter = DateFormatter()
 		formatter.dateFormat = "dd/MM/yyyy"
@@ -22,7 +24,7 @@ struct DayMonthYear: View {
 	var body: some View {
 		HStack {
 			Image(systemName: "calendar")
-				.foregroundColor(.accentColor)
+                .foregroundColor(foregroundColorImage)
 			Text(Self.dateFormat.string(from: date))
 				.font(.regular15)
 				.foregroundColor(.clientCardNeutral)

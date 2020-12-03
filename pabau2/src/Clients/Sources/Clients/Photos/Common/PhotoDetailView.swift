@@ -71,9 +71,16 @@ struct PhotoDetailView: View {
                     Text("Today")
                         .font(.regular32)
                         .foregroundColor(.white)
+                    
                     if let date = viewStore.date {
+                        Spacer()
+                            .frame(height: 10)
                         ZStack {
-                            DayMonthYear(date: date)
+                            DayMonthYear(date: date, foregroundColorImage: .white)
+                                .padding([.top, .bottom] , 5)
+                                .padding([.leading, .trailing] , 15)
+                                .background(RoundedCorners(color: Color.black.opacity(0.5),
+                                                                                     tl: 25, tr: 25, bl: 25, br: 25))
                         }
                     }
                     Spacer()
