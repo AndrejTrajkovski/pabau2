@@ -105,9 +105,7 @@ var photoCompareReducer = Reducer<PhotoCompareState, PhotoCompareAction, Clients
 }
 
 struct PhotoCompareView: View {
-    
     let store: Store<PhotoCompareState, PhotoCompareAction>
-    var layout = [GridItem(.flexible())]
     
     var body: some View {
         print("PhotoCompareView")

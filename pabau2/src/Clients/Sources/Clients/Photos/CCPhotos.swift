@@ -15,25 +15,22 @@ public let ccPhotosReducer: Reducer<CCPhotosState, CCPhotosAction, ClientsEnviro
         state: \CCPhotosState.photoCompare,
         action: /CCPhotosAction.photoCompare,
         environment: { $0 }),
-	
+
 	Reducer<CCPhotosState, CCPhotosAction, ClientsEnvironment>.init { state, action, env in
 		switch action {
 		case .onSelectGroup(let date):
 			state.selectedDate = date
-            //state.displayMode = .compare
-            //state.isSelectedGroup = true
             state.mode = .expanded
 		case .switchMode(let mode):
 			state.mode = mode
 			state.selectedDate = nil
 		case .didTouchPhoto(let id):
 			print(id)
-            
 			state.selectedIds.contains(id) ? state.selectedIds.removeAll(where: { $0 == id}) :
 				state.selectedIds.append(id)
             state.isSelectedGroup = true
             state.displayMode = .compare
-            
+            state.photoCompare = PhotoCompareState(date: state.selectedDate, photos: state.photos, selectedId: state.selectedIds.first)
 		case .action(_):
 			break
         case .onDisappearView:
@@ -76,18 +73,15 @@ public struct CCPhotosState: ClientCardChildParentState, Equatable {
         guard let date = self.selectedDate else { return [] }
         return self.childState.state[date] ?? []
     }
-}
-
-extension CCPhotosState {
     
-    var photoCompare: PhotoCompareState {
-        set {
-        }
-        get {
-            PhotoCompareState(date: self.selectedDate, photos: photos, selectedId: selectedIds.first)
-        }
+    init(childState: ClientCardChildState<[Date: [PhotoViewModel]]>, selectedIds: [PhotoVariantId]) {
+        self.childState = childState
+        self.selectedIds = selectedIds
+        
+        self.photoCompare = PhotoCompareState(date: selectedDate, photos: [], selectedId: selectedIds.first)
     }
     
+    var photoCompare: PhotoCompareState
 }
 
 public enum CCPhotosAction: Equatable {
@@ -109,15 +103,8 @@ struct CCPhotos: ClientCardChild {
                 if viewStore.displayMode == .compare {
                     NavigationLink
                         .emptyHidden(viewStore.isSelectedGroup,
-//                                     PhotoCompareView(store: store.scope(state: { $0.photoCompare },
-//                                                                         action: { .photoCompare($0) }))
-                                     
-                                     PhotoCompareView(store: Store(initialState: viewStore.photoCompare,
-                                                                   reducer: photoCompareReducer,
-                                                                   environment: ClientsEnvironment(apiClient: ClientsMockAPI(),
-                                                                                         userDefaults: StandardUDConfig())
-                                                                )
-                                     )
+                                     PhotoCompareView(store: store.scope(state: { $0.photoCompare },
+                                                                         action: { .photoCompare($0) }))
                                      .onDisappear(perform: {
                                         viewStore.send(.onDisappearView)
                                      })
