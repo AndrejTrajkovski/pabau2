@@ -7,6 +7,7 @@ public enum ClientCardBottomAction: Equatable {
 	case grid(ClientCardGridAction)
 	case child(ClientCardChildAction)
 	case backBtnTap
+    case backSelectedPhotosGroup
 }
 
 public let clientCardBottomReducer: Reducer<ClientCardState, ClientCardBottomAction, ClientsEnvironment> =
@@ -20,7 +21,15 @@ public let clientCardBottomReducer: Reducer<ClientCardState, ClientCardBottomAct
 			state: \ClientCardState.self,
 			action: /ClientCardBottomAction.self,
 			environment: { $0 }
-		)
+        ), Reducer<ClientCardState, ClientCardBottomAction, ClientsEnvironment> { state, action, _ in
+            switch action {
+            case .backSelectedPhotosGroup:
+                state.list.photos.mode = .grouped
+            default:
+                break
+            }
+            return .none
+        }
 )
 
 struct ClientCardBottom: View {
@@ -63,7 +72,9 @@ struct ClientCardBottom: View {
 			}
 		}.navigationBarItems(
             leading: MyBackButton(text: Texts.back,
-                                  action: { self.viewStore.send(.backBtnTap) }),
+                                  action: {
+                                    viewStore.send( viewStore.photosViewMode == .expanded ? .backSelectedPhotosGroup: .backBtnTap )
+                                  }),
             trailing: self.trailingButtons
 		).navigationBarBackButtonHidden(true)
 	}

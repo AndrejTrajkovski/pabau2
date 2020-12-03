@@ -33,8 +33,12 @@ public let ccPhotosReducer: Reducer<CCPhotosState, CCPhotosAction, ClientsEnviro
             state.photoCompare = PhotoCompareState(date: state.selectedDate, photos: state.photos, selectedId: state.selectedIds.first)
 		case .action(_):
 			break
-        case .onDisappearView:
+        case .photoCompare(.onBackCompare):
             state.isSelectedGroup = false
+            state.selectedDate = nil
+            state.selectedIds.removeAll()
+            state.mode = .grouped
+            break
         default :
             break
 		}
@@ -91,7 +95,6 @@ public enum CCPhotosAction: Equatable {
 	case action(GotClientListAction<[Date: [PhotoViewModel]]>)
     
     case photoCompare(PhotoCompareAction)
-    case onDisappearView
 }
 
 struct CCPhotos: ClientCardChild {
@@ -105,16 +108,14 @@ struct CCPhotos: ClientCardChild {
                         .emptyHidden(viewStore.isSelectedGroup,
                                      PhotoCompareView(store: store.scope(state: { $0.photoCompare },
                                                                          action: { .photoCompare($0) }))
-                                     .onDisappear(perform: {
-                                        viewStore.send(.onDisappearView)
-                                     })
+                                    .navigationBarBackButtonHidden(true)
                     )
-                    
                 }
     
                 if viewStore.mode == .grouped {
                     CCGroupedPhotos(store: self.store.scope(state: { $0.childState.state },
                                                             action: { $0 }))
+                    
                 } else if viewStore.mode == .expanded {
                     
                     CCExpandedPhotos(store:

@@ -9,6 +9,7 @@ public enum PhotoCompareAction: Equatable {
     case didChangeSelectedPhoto(PhotoVariantId)
     case didSelectShare
     case shareAction(PhotoShareAction)
+    case onBackCompare
     
     case onChangeDragOffset(CGSize)
     case onEndedDrag(CGSize)
@@ -52,6 +53,7 @@ struct PhotoCompareState: Equatable {
     var date: Date?
     var photos: [PhotoViewModel] = []
     
+    var onBackCompare: Bool = false
     var onShareSelected: Bool = false
     
     var dragOffset: CGSize = .zero
@@ -98,6 +100,7 @@ var photoCompareReducer = Reducer<PhotoCompareState, PhotoCompareAction, Clients
             state.dragOffset = .zero
             state.position = .zero
         }
+
     default:
         break
     }
@@ -133,6 +136,11 @@ struct PhotoCompareView: View {
             }
             .navigationBarTitle("Progress Gallery")
             .navigationBarItems(
+                leading: HStack {
+                    MyBackButton(text: Texts.back) {
+                        viewStore.send(.onBackCompare)
+                    }
+                },
                 trailing: HStack {
                     Button(action: {
                         viewStore.send(.changeComparePhotoMode)
