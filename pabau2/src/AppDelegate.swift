@@ -1,4 +1,5 @@
 import UIKit
+import Intercom
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

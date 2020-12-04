@@ -1,6 +1,6 @@
 import Model
 import Foundation
-import EmployeesFilter
+import Filters
 import FSCalendarSwiftUI
 
 public enum JourneyContainerAction {

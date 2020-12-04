@@ -7,6 +7,7 @@ import Journey
 import Util
 import Clients
 import Calendar
+import Communication
 
 typealias AppEnvironment = (
 	loginAPI: LoginAPI,
@@ -26,7 +27,8 @@ enum AppState: Equatable {
 					journeyState: JourneyState(),
 					clients: ClientsState(),
 					calendar: CalendarState(),
-					settings: SettingsState()
+					settings: SettingsState(),
+                    communication: CommunicationState()
 				)
 			)
 		} else {
@@ -102,12 +104,13 @@ struct ContentView: View {
 	var tabBarStore: Store<TabBarState, TabBarAction> {
 		return self.store.scope(
 			state: {
-				extract(case: AppState.tabBar, from: $0) ??
-					TabBarState(journeyState: JourneyState(),
-											clients: ClientsState(),
-											calendar: CalendarState(),
-											settings: SettingsState())
-		},
+                extract(case: AppState.tabBar, from: $0) ??
+                    TabBarState(journeyState: JourneyState(),
+                                clients: ClientsState(),
+                                calendar: CalendarState(),
+                                settings: SettingsState(),
+                                communication: CommunicationState())
+            },
 			action: { .tabBar($0)}
 		)
 	}

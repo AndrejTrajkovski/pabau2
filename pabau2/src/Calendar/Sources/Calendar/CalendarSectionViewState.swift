@@ -17,6 +17,17 @@ struct CalendarSectionViewState<Subsection: Identifiable & Equatable>: Equatable
 }
 
 public extension Dictionary {
+	
+	//bool variant
+//	func chosenSubs() -> [Location.ID: [Subsection]] {
+//		let chosenLocIds = chosenLocationsIds.filter(\.value).map(\.key)
+//		return chosenLocIds.reduce(into: [Location.ID: [Subsection]]()) { (result, chosenLocId) in
+//			let chosenSubIds = chosenSubsectionsIds[chosenLocId]?.filter(\.value).map(\.key)
+//			let locSubs = chosenSubIds?.compactMap { subsections[chosenLocId]?[id: $0]}
+//			result[chosenLocId] = locSubs
+//		}
+//	}
+	
 	func mapValuesFrom<T: Identifiable>(dict: Dictionary<Key, IdentifiedArrayOf<T>>) -> [Key: [T]] where Self.Value == Array<T.ID> {
 		return self.reduce(into: [Key: [T]]()) { (result, arg1) in
 			let (locationId, subsIds) = arg1

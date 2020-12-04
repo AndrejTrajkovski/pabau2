@@ -127,23 +127,3 @@ extension AppDetailsState {
 }
 extension AppointmentStatus: SingleChoiceElement { }
 extension CancelReason: SingleChoiceElement {}
-
-struct AppointmentDetails_Previews: PreviewProvider {
-	static var state: AppDetailsState {
-		AppDetailsState(app: CalAppointment.makeDummy().first!)
-	}
-
-	static var env: CalendarEnvironment {
-		return CalendarEnvironment(JourneyMockAPI(), StandardUDConfig())
-	}
-
-	static var previews: some View {
-		EmptyView().frame(maxWidth: .infinity,  maxHeight: .infinity)
-			.sheet(isPresented: .constant(true), content: {
-				AppointmentDetails(store: Store.init(initialState: state, reducer: appDetailsReducer, environment: env)
-				)
-			})
-		.previewDevice("iPad (8th generation)")
-	}
-}
-

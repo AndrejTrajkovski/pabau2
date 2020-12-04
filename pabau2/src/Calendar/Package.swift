@@ -25,6 +25,8 @@ let package = Package(
 		.package(url: "../AddBookout",
 				 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../AddShift",
+				 from: Version.init(stringLiteral: "1.0.0")),
+		.package(url: "../Filters",
 				 from: Version.init(stringLiteral: "1.0.0"))
 	],
 	targets: [
@@ -36,7 +38,8 @@ let package = Package(
 						   "AddAppointment",
 						   "SharedComponents",
 						   "AddBookout",
-						   "AddShift"
+						   "AddShift",
+						   "Filters"
 			]
 		)
 	]

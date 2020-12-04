@@ -15,7 +15,7 @@ let package = Package(
 				 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../FSCalendarSwiftUI",
 				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../EmployeesFilter",
+		.package(url: "../Filters",
 				 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../AddAppointment",
 				 from: Version.init(stringLiteral: "1.0.0")),
@@ -25,7 +25,7 @@ let package = Package(
 			name: "Journey",
 			dependencies: ["Form",
 						   "FSCalendarSwiftUI",
-						   "EmployeesFilter",
+						   "Filters",
 						   "AddAppointment"
 			]
 		)

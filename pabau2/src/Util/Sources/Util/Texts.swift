@@ -49,6 +49,9 @@ public struct Texts {
 	public static let fetchingJourneys = "Fetching journeys...".localized
 	public static let employee = "Employee".localized
 
+    public static let liveChat = "Live Chat".localized
+    public static let helpGuides = "Help Guides".localized
+
 	public static let salutation = "SALUTATION".localized
 	public static let firstName = "FIRST NAME".localized
 	public static let lastName = "LAST NAME".localized

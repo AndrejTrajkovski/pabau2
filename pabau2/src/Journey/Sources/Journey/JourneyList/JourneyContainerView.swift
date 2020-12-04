@@ -8,7 +8,7 @@ import SwiftDate
 import CasePaths
 import Form
 import Overture
-import EmployeesFilter
+import Filters
 
 public typealias JourneyEnvironment = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
 
@@ -164,21 +164,22 @@ public struct JourneyContainerView: View {
 				store: self.store.scope(
 					state: { $0.journey.selectedDate },
 					action: { .journey(.datePicker($0))}),
-				isWeekView: false
+				isWeekView: false,
+				scope: .week
 			)
 			.padding(0)
 			FilterPicker()
 			JourneyList(self.viewStore.state.listedJourneys) {
 				self.viewStore.send(.journey(.selectedJourney($0)))
 			}.loadingView(.constant(self.viewStore.state.isLoadingJourneys),
-										Texts.fetchingJourneys)
+						  Texts.fetchingJourneys)
 			NavigationLink.emptyHidden(self.viewStore.state.isChoosePathwayShown,
-																 ChoosePathway(store: self.store.scope(state: { $0.journey.choosePathway
-																 }, action: { .choosePathway($0)}))
-																	.navigationBarTitle("Choose Pathway")
-																	.customBackButton {
-																		self.viewStore.send(.journey(.choosePathwayBackTap))
-				}
+									   ChoosePathway(store: self.store.scope(state: { $0.journey.choosePathway
+									   }, action: { .choosePathway($0)}))
+									   .navigationBarTitle("Choose Pathway")
+									   .customBackButton {
+										self.viewStore.send(.journey(.choosePathwayBackTap))
+									}
 			)
 			Spacer()
 		}

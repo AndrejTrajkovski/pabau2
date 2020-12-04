@@ -5,9 +5,11 @@ import Util
 import Journey
 import Clients
 import Calendar
-import EmployeesFilter
+import Filters
 import JZCalendarWeekView
 import AddAppointment
+import Communication
+import Intercom
 
 public typealias TabBarEnvironment = (
 	loginAPI: LoginAPI,
@@ -22,7 +24,8 @@ public struct TabBarState: Equatable {
 	public var clients: ClientsState
 	public var calendar: CalendarState
 	public var settings: SettingsState
-	public var employeesFilter: EmployeesFilterState = EmployeesFilterState()
+    public var communication: CommunicationState
+	public var employeesFilter: JourneyFilterState = JourneyFilterState()
 
 	public var calendarContainer: CalendarContainerState {
 		get {
@@ -52,8 +55,9 @@ public enum TabBarAction {
 	case journey(JourneyContainerAction)
 	case clients(ClientsAction)
 	case calendar(CalendarAction)
-	case employeesFilter(EmployeesFilterAction)
+	case employeesFilter(JourneyFilterAction)
 	case addAppointment(AddAppointmentAction)
+    case communication(CommunicationAction)
 }
 
 struct PabauTabBar: View {
@@ -100,7 +104,7 @@ struct PabauTabBar: View {
 				}
 				.onAppear {
 					self.viewStore.send(.journey(JourneyContainerAction.journey(JourneyAction.loadJourneys)))
-					self.viewStore.send(.employeesFilter(EmployeesFilterAction.loadEmployees))
+					self.viewStore.send(.employeesFilter(JourneyFilterAction.loadEmployees))
 				}
 				ClientsNavigationView(
 					self.store.scope(
@@ -119,6 +123,14 @@ struct PabauTabBar: View {
 						Image(systemName: "gear")
 						Text("Settings")
 				}
+
+                CommunicationView(store:
+                                store.scope(state: { $0.communication },
+                                            action: { .communication($0)}))
+                    .tabItem {
+                        Image(systemName: "ico-tab-tasks")
+                        Text("Intercom")
+                    }
 			}
 			.fullScreenCover(isPresented: .constant(self.viewStore.state.isShowingCheckin)) {
 				IfLetStore(self.store.scope(
@@ -144,8 +156,8 @@ struct PabauTabBar: View {
 				then: AddAppointment.init(store:))
 			}
 			if self.viewStore.state.isShowingEmployees {
-				EmployeesFilter(
-					self.store.scope(state: { $0.employeesFilter } ,
+				JourneyFilter(
+					self.store.scope(state: { $0.employeesFilter },
 					action: { .employeesFilter($0)})
 				).transition(.moveAndFade)
 			}
@@ -162,7 +174,7 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
 		}
 		return .none
 	},
-	employeeFilterReducer.pullback(
+	journeyFilterReducer.pullback(
 		state: \TabBarState.employeesFilter,
 		action: /TabBarAction.employeesFilter,
 		environment: {
@@ -206,11 +218,32 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
 			return CalendarEnvironment(
 			apiClient: $0.journeyAPI,
 			userDefaults: $0.userDefaults)
-	})
-)
+	}),
+    communicationReducer.pullback(
+        state: \TabBarState.communication,
+        action: /TabBarAction.communication,
+        environment: { CommunicationEnvironment($0) }
+    ),
 
-extension AnyTransition {
-    static var moveAndFade: AnyTransition {
-        AnyTransition.move(edge: .trailing)
+    .init { _, action, _ in
+        switch action {
+        case .communication(.liveChat):
+            Intercom.registerUser(withEmail: "a@a.com")
+            Intercom.presentMessenger()
+            return .none
+
+        case .communication(.helpGuides):
+            Intercom.presentHelpCenter()
+            return .none
+
+        case .communication(.carousel):
+            Intercom.presentCarousel("13796318")
+            return .none
+
+        default:
+            break
+        }
+
+        return .none
     }
-}
+)

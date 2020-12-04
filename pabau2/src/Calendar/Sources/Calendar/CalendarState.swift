@@ -8,13 +8,15 @@ import JZCalendarWeekView
 import AddAppointment
 import AddBookout
 import AddShift
+import Filters
+import FSCalendar
 
 public struct CalendarContainerState: Equatable {
 	public init(addAppointment: AddAppointmentState?, calendar: CalendarState) {
 		self.addAppointment = addAppointment
 		self.calendar = calendar
 	}
-	
+
 	public var addAppointment: AddAppointmentState?
 	public var calendar: CalendarState
 }
@@ -27,11 +29,13 @@ public struct CalendarState: Equatable {
 	var locations: IdentifiedArrayOf<Location>
 	public var employees: [Location.Id: IdentifiedArrayOf<Employee>]
 	public var rooms: [Location.Id: IdentifiedArrayOf<Room>]
-	
 	var chosenLocationsIds: [Location.Id]
 	var chosenEmployeesIds: [Location.Id: [Employee.Id]]
 	var chosenRoomsIds: [Location.Id: [Room.Id]]
 	
+	var scope: FSCalendarScope = .week
+	var isShowingFilters: Bool
+	var expandedLocationsIds: [Location.Id]
 	public var appDetails: AppDetailsState?
 	public var addBookout: AddBookoutState?
 	public var addShift: AddShiftState?
@@ -139,13 +143,54 @@ extension CalendarState {
 			}
 		}
 	}
+
+	var roomFilters: FiltersState<Room> {
+		get {
+			FiltersState(
+				locations: self.locations,
+				chosenLocationsIds: self.chosenLocationsIds,
+				subsections: self.rooms,
+				chosenSubsectionsIds: self.chosenRoomsIds,
+				expandedLocationsIds: self.expandedLocationsIds,
+				isShowingFilters: self.isShowingFilters
+			)
+		}
+		set {
+			self.locations = newValue.locations
+			self.chosenLocationsIds = newValue.chosenLocationsIds
+			self.rooms = newValue.subsections
+			self.chosenRoomsIds = newValue.chosenSubsectionsIds
+			self.expandedLocationsIds = newValue.expandedLocationsIds
+			self.isShowingFilters = newValue.isShowingFilters
+		}
+	}
+
+	var employeeFilters: FiltersState<Employee> {
+		get {
+			FiltersState(
+				locations: self.locations,
+				chosenLocationsIds: self.chosenLocationsIds,
+				subsections: self.employees,
+				chosenSubsectionsIds: self.chosenEmployeesIds,
+				expandedLocationsIds: self.expandedLocationsIds,
+				isShowingFilters: self.isShowingFilters)
+		}
+		set {
+			self.locations = newValue.locations
+			self.chosenLocationsIds = newValue.chosenLocationsIds
+			self.employees = newValue.subsections
+			self.chosenEmployeesIds = newValue.chosenSubsectionsIds
+			self.expandedLocationsIds = newValue.expandedLocationsIds
+			self.isShowingFilters = newValue.isShowingFilters
+		}
+	}
 }
 
 extension CalendarState {
 	public init() {
 		self.isDropdownShown = false
 		self.selectedDate = Calendar.gregorian.startOfDay(for: Date())
-	    let apps = CalAppointment.makeDummy()
+	    let apps = CalendarEvent.makeDummy()
 		let employees = Employee.mockEmployees
 		let rooms = Room.mock().map { $0.value }
 		let locations = Location.mock()
@@ -172,12 +217,14 @@ extension CalendarState {
 				}
 			}
 		}
+		self.expandedLocationsIds = locations.map(\.id)
+		self.isShowingFilters = false
 	}
 }
 
 extension CalendarState {
 	mutating func switchTo(id: Appointments.CalendarType) {
-		let locationKeyPath = \CalAppointment.locationId
+		let locationKeyPath = \CalendarEvent.locationId
 		switch id {
 		case .employee:
 			let flatAppts = self.appointments.flatten()
@@ -185,7 +232,7 @@ extension CalendarState {
 													   locationsIds: locations.map(\.id),
 													   subsections: employees.flatMap({ $0.value }),
 													   sectionKeypath: locationKeyPath,
-													   subsKeypath: \CalAppointment.employeeId)
+													   subsKeypath: \CalendarEvent.employeeId)
 			self.appointments = Appointments.employee(appointments)
 		case .room:
 			let flatAppts = self.appointments.flatten()
@@ -193,7 +240,7 @@ extension CalendarState {
 												   locationsIds: locations.map(\.id),
 												   subsections: rooms.flatMap({ $0.value }),
 												   sectionKeypath: locationKeyPath,
-												   subsKeypath: \CalAppointment.roomId)
+												   subsKeypath: \CalendarEvent.roomId)
 			self.appointments = Appointments.room(appointments)
 		case .week:
 			let flatAppts = self.appointments.flatten()
