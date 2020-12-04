@@ -86,6 +86,7 @@ var photoCompareReducer = Reducer<PhotoCompareState, PhotoCompareAction, Clients
         state.dragOffset = size
     case .onEndedMagnification(let value):
         state.currentMagnification *= value
+        if state.currentMagnification < 1 { state.currentMagnification = 1 }
         state.pinchMagnification = 1
     case .onChangePinchMagnification(let value):
         state.pinchMagnification = value
@@ -100,7 +101,6 @@ var photoCompareReducer = Reducer<PhotoCompareState, PhotoCompareAction, Clients
             state.dragOffset = .zero
             state.position = .zero
         }
-
     default:
         break
     }

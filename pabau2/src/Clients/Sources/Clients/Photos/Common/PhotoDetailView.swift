@@ -12,20 +12,20 @@ struct PhotoDetailView: View {
         self.store = store
         viewStore = ViewStore(store)
         self.positionCompare = positionCompare
+        UIScrollView.appearance().bounces = false
     }
     
     @GestureState var pinchMagnification: CGFloat = 1
-
     
     var drag: some Gesture {
         DragGesture()
             .onChanged { value in
-                if viewStore.currentMagnification >= 1.2 {
+                if viewStore.currentMagnification > 1 {
                     viewStore.send(.onChangeDragOffset(value.translation))
                 }
             }
             .onEnded { value in
-                if viewStore.currentMagnification >= 1.2 {
+                if viewStore.currentMagnification > 1 {
                     viewStore.send(.onEndedDrag(value.translation))
                 }
             }
@@ -34,15 +34,11 @@ struct PhotoDetailView: View {
     var magnificationGest: some Gesture {
         MagnificationGesture()
             .updating($pinchMagnification, body: { value, state, _ in
-                if value > 1 {
                     state = value
                     viewStore.send(.onChangePinchMagnification(state))
-                }
             })
             .onEnded( { value in
-                    if value > 1 {
-                        viewStore.send(.onEndedMagnification(value))
-                    }
+                    viewStore.send(.onEndedMagnification(value))
                 })
     }
     
@@ -52,19 +48,30 @@ struct PhotoDetailView: View {
                 viewStore.send(.onTappedToZoom)
             })
     }
-    
+ 
     var body: some View {
         GeometryReader { proxy in
             ZStack {
                 if let photo = viewStore.photosCompares[self.positionCompare] {
+                    
+                        // Implementaton using drag gestura and magnification gesture
+                        // this it's not completed because it has some issues with dragging 
+                        /*
                         PhotoDetailCell(photo: photo!)
-                            .offset(x: viewStore.dragOffset.width + viewStore.position.width, y: viewStore.dragOffset.height + viewStore.position.height)
+                            .offset(x: viewStore.dragOffset.width + viewStore.position.width,
+                                    y: viewStore.dragOffset.height + viewStore.position.height)
                             .scaleEffect(viewStore.pinchMagnification * viewStore.currentMagnification)
                             .frame(width: proxy.size.width, height: proxy.size.height)
                             .gesture(drag)
                             .gesture(magnificationGest)
                             .gesture(tapGesture)
-                            
+                    */
+                    ScrollView([.horizontal, .vertical], showsIndicators: false) {
+                        PhotoDetailCell(photo: photo!)
+                            .frame(width: proxy.size.width * (viewStore.pinchMagnification * viewStore.currentMagnification), height: proxy.size.height * (viewStore.pinchMagnification * viewStore.currentMagnification))
+                            .gesture(magnificationGest)
+                            .gesture(tapGesture)
+                    }
                 }
                 VStack {
                     Spacer()

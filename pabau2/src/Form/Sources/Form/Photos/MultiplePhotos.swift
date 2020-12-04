@@ -49,7 +49,7 @@ struct SelectPhotos: View {
 			ASCollectionView.init(
 			data: viewStore.photos) { photo, _ in
 				MultipleSelectPhotoCell(photo: photo,
-																isSelected: viewStore.state.isSelected(photo))
+                                        isSelected: viewStore.state.isSelected(photo))
 					.onTapGesture {
 						viewStore.send(.didTouchPhotoId(photo.id))
 				}
