@@ -5,15 +5,96 @@ import Util
 import Form
 
 public struct CheckInContainerState: Equatable {
-	var patientForms: Forms
-	var doctorForms: Forms
+	
+	let patientSteps: [StepType]
+	let doctorSteps: [StepType]
+	
+	var doctorForms: Forms {
+		get {
+			let forms = [checkPatient, treatmentNotes, aftercare, prescriptions, photos]
+			return Forms(forms: IdentifiedArrayOf(forms), selectedStep: doctorSelectedStep)
+		}
+		set {
+			doctorSelectedStep = newValue.selectedStep
+			newValue.forms.forEach {
+				switch $0.stepType {
+				case .checkpatient:
+					self.isPatientChecked = $0.forms.first!.isComplete
+				case .treatmentnotes:
+					self.treatmentNotes = $0
+				case .aftercares:
+					self.aftercare = $0
+				case .prescriptions:
+					self.prescriptions = $0
+				case .photos:
+					self.photos = $0
+				default: break
+				}
+			}
+		}
+	}
+	var patientForms: Forms {
+		get {
+			let forms = [patientDetails, medicalHistory, consents, patientComplete]
+			return Forms(forms: IdentifiedArrayOf(forms), selectedStep: patientSelectedStep)
+		}
+		
+		set {
+			patientSelectedStep = newValue.selectedStep
+			newValue.forms.forEach {
+				switch $0.stepType {
+				case .patientdetails:
+					self.patientDetails = $0
+				case .medicalhistory:
+					self.medicalHistory = $0
+				case .consents:
+					self.consents = $0
+				case .patientComplete:
+					self.patientComplete = $0
+				default: break
+				}
+			}
+		}
+	}
+	
+	var isPatientChecked: Bool
+	var checkPatient: StepForms {
+		get {
+			let pdasd = extract(case: MetaForm.patientDetails, from: self.patientDetails.forms.first!.form)!
+			let medH = self.medicalHistory.forms.map(\.form).map {
+				extract(case: MetaForm.template, from: $0)!
+			}
+			let consents = self.consents.forms.map(\.form).map {
+				extract(case: MetaForm.template, from: $0)!
+			}
+			let cpd = CheckPatient(patDetails: pdasd,
+								   patForms: medH + consents)
+			let checkP = MetaFormAndStatus.init(MetaForm.checkPatient(cpd), isPatientChecked, index: 0)
+			return StepForms(stepType: .checkpatient,
+							 forms: IdentifiedArrayOf([checkP]))
+		}
+	}
+	
+	var doctorSelectedStep: StepType
+	var patientSelectedStep: StepType
+	
+	var patientDetails: StepForms
+	var medicalHistory: StepForms
+	var consents: StepForms
+	
+	var treatmentNotes: StepForms
+	var aftercare: StepForms
+	var prescriptions: StepForms
+	var photos: StepForms
+	var patientComplete: StepForms
+	
 	let journey: Journey
+	
 	var allTreatmentForms: IdentifiedArrayOf<FormTemplate>
 	var allConsents: IdentifiedArrayOf<FormTemplate>
-
+	
 	var selectedConsentsIds: [Int]
 	var selectedTreatmentFormsIds: [Int]
-
 	var passcodeState = PasscodeState()
 	var isEnterPasscodeActive: Bool = false
 	var isChooseConsentActive: Bool = false
@@ -24,7 +105,7 @@ public struct CheckInContainerState: Equatable {
 }
 
 extension CheckInContainerState {
-
+	
 	var patientCheckIn: CheckInViewState {
 		get {
 			CheckInViewState(
@@ -37,7 +118,7 @@ extension CheckInContainerState {
 			self.patientForms = newValue.forms
 		}
 	}
-
+	
 	var doctorCheckIn: CheckInViewState {
 		get {
 			CheckInViewState(
@@ -51,14 +132,14 @@ extension CheckInContainerState {
 			self.isDoctorCheckInMainActive = newValue.xButtonActiveFlag
 		}
 	}
-
+	
 	var doctorSummary: DoctorSummaryState {
 		get {
 			DoctorSummaryState(journey: journey,
-												 isChooseConsentActive: isChooseConsentActive,
-												 isChooseTreatmentActive: isChooseTreatmentActive,
-												 isDoctorCheckInMainActive: isDoctorCheckInMainActive,
-												 doctorCheckIn: doctorCheckIn)
+							   isChooseConsentActive: isChooseConsentActive,
+							   isChooseTreatmentActive: isChooseTreatmentActive,
+							   isDoctorCheckInMainActive: isDoctorCheckInMainActive,
+							   doctorCheckIn: doctorCheckIn)
 		}
 		set {
 			self.doctorCheckIn = newValue.doctorCheckIn
@@ -67,7 +148,7 @@ extension CheckInContainerState {
 			self.isDoctorCheckInMainActive = newValue.isDoctorCheckInMainActive
 		}
 	}
-
+	
 	var chooseTreatments: ChooseFormJourneyState {
 		get {
 			return ChooseFormJourneyState(
@@ -83,7 +164,7 @@ extension CheckInContainerState {
 			self.selectedTreatmentFormsIds = newValue.selectedTemplatesIds
 		}
 	}
-
+	
 	var chooseConsents: ChooseFormJourneyState {
 		get {
 			return ChooseFormJourneyState(
@@ -94,12 +175,12 @@ extension CheckInContainerState {
 			)
 		}
 		set {
-			self.patientForms.forms[id: .consents]?.forms = newValue.forms
+			self.consents.forms = newValue.forms
 			self.allConsents = newValue.templates
 			self.selectedConsentsIds = newValue.selectedTemplatesIds
 		}
 	}
-
+	
 	var passcode: PasscodeContainerState {
 		get {
 			PasscodeContainerState(
@@ -114,60 +195,91 @@ extension CheckInContainerState {
 			self.isDoctorCheckInMainActive = newValue.isDoctorCheckInMainActive
 		}
 	}
-
+	
 	var isHandBackDeviceActive: Bool {
 		get {
 			return extract(case: MetaForm.patientComplete,
-						   from: patientForms.forms[id: .patientComplete]!.forms.first!.form)!
+						   from: self.patientComplete.forms.first!.form)!
 				.isPatientComplete
 		}
 		set {
-			let patientComplete = MetaForm.patientComplete(PatientComplete(isPatientComplete: newValue))
-			let old = patientForms.forms[id: .patientComplete]!.forms.first!
-			let newForm = MetaFormAndStatus(patientComplete,
-											old.isComplete,
-											index: old.index)
-			patientForms.forms[id: .patientComplete]!.forms = [newForm]
+			let patientComplete = MetaFormAndStatus(MetaForm(PatientComplete(isPatientComplete: newValue)), false, index: 0)
+			self.patientComplete.forms = [patientComplete]
 		}
 	}
-
+	
 	var handback: HandBackDeviceState {
 		get {
 			HandBackDeviceState(isEnterPasscodeActive: self.isEnterPasscodeActive,
-													isNavBarHidden: !self.passcode.passcode.unlocked
+								isNavBarHidden: !self.passcode.passcode.unlocked
 			)
 		}
 	}
 }
 
 extension CheckInContainerState {
-
+	
 	init(journey: Journey,
-			 pathway: Pathway,
-			 patientDetails: PatientDetails,
-			 medHistory: FormTemplate,
-			 consents: IdentifiedArrayOf<FormTemplate>,
-			 allConsents: IdentifiedArrayOf<FormTemplate>,
-			 patientComplete: PatientComplete = PatientComplete(isPatientComplete: false),
-			 photosState: PhotosState) {
+		 pathway: Pathway,
+		 patientDetails: PatientDetails,
+		 medHistory: FormTemplate,
+		 consents: IdentifiedArrayOf<FormTemplate>,
+		 allConsents: IdentifiedArrayOf<FormTemplate>,
+		 patientComplete: PatientComplete = PatientComplete(isPatientComplete: false),
+		 photosState: PhotosState) {
 		self.journey = journey
 		var stepTypes = pathway.steps.map { $0.stepType }
 		stepTypes.append(StepType.patientComplete)
-		let patientStepTypes = stepTypes.filter(filterBy(.patient))
-		let patientForms = makePatientForms(stepTypes: patientStepTypes, consents: consents).sorted(by: \.stepType.order)
-		self.patientForms = Forms.init(forms: IdentifiedArray(patientForms),
-																	selectedStep: patientStepTypes.sorted(by: \.order).first!)
-		let doctorStepTypes = stepTypes.filter(filterBy(.doctor))
-		let doctorForms = makeDoctorForms(stepTypes: doctorStepTypes,
-																			patientDetails: patientDetails,
-																			medHistory: medHistory,
-																			consents: consents,
-																			treatmentNotes: [],
-																			prescriptions: [],
-																			photos: PhotosState.init([[:]]))
-			.sorted(by: \.stepType.order)
-		self.doctorForms = Forms.init(forms: IdentifiedArray(doctorForms),
-																	selectedStep: doctorStepTypes.sorted(by: \.order).first!)
+		self.patientSteps = stepTypes.filter(filterBy(.patient))
+		self.doctorSteps = stepTypes.filter(filterBy(.doctor))
+		
+		let patDetailsArr = [MetaFormAndStatus(MetaForm(PatientDetails.empty), false, index: 0)]
+		self.patientDetails = StepForms(stepType: .patientdetails,
+										forms: IdentifiedArrayOf(patDetailsArr))
+		
+		let medHistoryArr = [MetaFormAndStatus(MetaForm.template(medHistory), false, index: 0)]
+		self.medicalHistory = StepForms(stepType: .medicalhistory,
+										forms: IdentifiedArrayOf(medHistoryArr))
+		
+		let consentsArr = wrap(consents)
+		self.consents = StepForms(stepType: .consents,
+								  forms: consentsArr)
+		
+		self.treatmentNotes = StepForms(stepType: .treatmentnotes,
+										forms: [])
+		let photosArr = [MetaFormAndStatus(MetaForm.photos(PhotosState.init([[:]])), false, index: 0)]
+		self.photos = StepForms(stepType: .photos,
+								forms: IdentifiedArrayOf(photosArr))
+		
+		let aftercareArr = [MetaFormAndStatus(MetaForm.aftercare(JourneyMocks.aftercare), false, index: 0)]
+		self.aftercare = StepForms(stepType: .aftercares,
+								   forms: IdentifiedArrayOf(aftercareArr))
+		
+		self.prescriptions = StepForms(stepType: .prescriptions,
+									   forms: [])
+		
+		let patCompleteArr = [MetaFormAndStatus(MetaForm.patientComplete(PatientComplete()), false, index: 0)]
+		self.patientComplete = StepForms(stepType: .patientComplete,
+										 forms: IdentifiedArrayOf(patCompleteArr))
+		
+		self.isPatientChecked = false
+		
+		self.patientSelectedStep = .patientdetails
+		self.doctorSelectedStep = .checkpatient
+		//		let patientForms = makePatientForms(stepTypes: patientStepTypes, consents: consents).sorted(by: \.stepType.order)
+		//		self.patientForms = Forms.init(forms: IdentifiedArray(patientForms),
+		//									   selectedStep: patientStepTypes.sorted(by: \.order).first!)
+		
+		//		let doctorForms = makeDoctorForms(stepTypes: doctorStepTypes,
+		//										  patientDetails: patientDetails,
+		//										  medHistory: medHistory,
+		//										  consents: consents,
+		//										  treatmentNotes: [],
+		//										  prescriptions: [],
+		//										  photos: PhotosState.init([[:]]))
+		//			.sorted(by: \.stepType.order)
+		//		self.doctorForms = Forms.init(forms: IdentifiedArray(doctorForms),
+		//									  selectedStep: doctorStepTypes.sorted(by: \.order).first!)
 		self.allConsents = allConsents
 		self.allTreatmentForms = IdentifiedArray(FormTemplate.mockTreatmentN)
 		self.selectedConsentsIds = []
@@ -179,7 +291,7 @@ extension Forms {
 	var photosState: PhotosState {
 		get {
 			return extract(case: MetaForm.photos,
-										 from: forms[id: .photos]!.forms.first!.form)!
+						   from: forms[id: .photos]!.forms.first!.form)!
 		}
 		set {
 			forms[id: .photos]!.forms[0].form = MetaForm.photos(newValue)

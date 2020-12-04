@@ -50,7 +50,7 @@ public struct FormWrapper: View {
 	public init(store: Store<MetaForm, UpdateFormAction>) {
 		self.store = store
 	}
-	
+
 	public var body: some View {
 		IfLetStore(store.scope(
 					state: { extract(case: MetaForm.patientDetails, from: $0)},
@@ -73,7 +73,7 @@ public struct FormWrapper: View {
 		IfLetStore(store.scope(
 					state: { extract(case: MetaForm.checkPatient, from: $0)})
 					.actionless,
-				   then: CheckPatientFormStore.init(store:)
+				   then: CheckPatientForm.init(store:)
 		)
 		IfLetStore(store.scope(
 					state: { extract(case: MetaForm.photos, from: $0)},

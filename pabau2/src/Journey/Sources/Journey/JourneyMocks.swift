@@ -24,7 +24,7 @@ struct JourneyMocks {
 												 Step(id: 6, stepType: .aftercares),
 												 Step(id: 7, stepType: .photos)
 		]),
-		patientDetails: PatientDetails.mock,
+		patientDetails: PatientDetails.empty,
 		medHistory: FormTemplate.getMedHistory(),
 		consents: [],
 		allConsents: IdentifiedArray(FormTemplate.mockConsents),

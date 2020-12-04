@@ -4,9 +4,9 @@ import Form
 import Util
 
 public struct StepForms: Equatable, Identifiable {
-	var stepType: StepType
-	var forms: IdentifiedArray<Int, MetaFormAndStatus>
-	var selFormIndex: Int
+	let stepType: StepType
+	var forms: IdentifiedArrayOf<MetaFormAndStatus>
+	var selFormIndex: Int = 0
 
 	var selectedForm: MetaFormAndStatus? {
 		self.forms[safe: selFormIndex]
