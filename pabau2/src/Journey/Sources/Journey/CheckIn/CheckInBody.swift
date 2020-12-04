@@ -45,24 +45,12 @@ let checkInBodyReducer: Reducer<CheckInViewState, CheckInBodyAction, JourneyEnvi
 
 struct CheckInBody: View {
 
-	@EnvironmentObject var keyboardHandler: KeyboardFollower
+//	@EnvironmentObject var keyboardHandler: KeyboardFollower
 	let store: Store<CheckInViewState, CheckInBodyAction>
-//	@ObservedObject var viewStore: ViewStore<ViewState, CheckInBodyAction>
 	init(store: Store<CheckInViewState, CheckInBodyAction>) {
 		print("check in body init")
 		self.store = store
-//		self.viewStore = ViewStore(
-//			store.scope(state: ViewState.init(state:))
-//		)
 	}
-//
-//	struct ViewState: Equatable {
-//		let selectedIndex: Int
-//		init (state: CheckInViewState) {
-//			self.selectedIndex = state.selectedIndex
-//		}
-//	}
-
 	var body: some View {
 		print("check in body body")
 		return GeometryReaderPatch { geo in
@@ -75,23 +63,25 @@ struct CheckInBody: View {
 					.frame(width: geo.size.width)
 					.shadow(color: Color(hex: "C1C1C1"), radius: 4, y: 2)
 				FormPager(store: self.store)
-//				IfLetStore(self.store
-//					.scope(state: { $0.selectedForm?.form },
-//								 action: { .updateForm(Indexed(self.viewStore.state.selectedIndex, $0))
-//					}), then: FormWrapper.init(store:))
+					/*
+					IfLetStore(self.store
+					.scope(state: { $0.selectedForm?.form },
+					action: { .updateForm(Indexed(self.viewStore.state.selectedIndex, $0))
+					}), then: FormWrapper.init(store:))
 					.padding(.bottom,
-									 self.keyboardHandler.keyboardHeight > 0 ? self.keyboardHandler.keyboardHeight : 32)
+					self.keyboardHandler.keyboardHeight > 0 ? self.keyboardHandler.keyboardHeight : 32)
+					*/
+					.padding([.bottom], 32)
 					.padding([.top], 32)
 				Spacer()
-				if self.keyboardHandler.keyboardHeight == 0
-//					&& !self.viewStore.state.isOnPatientCompleteStep
-				{
+//				if self.keyboardHandler.keyboardHeight == 0
+//				{
 					FooterButtons(store: self.store.scope(
 						state: { $0.footer }, action: { .footer($0) }
 					))
 					.frame(maxWidth: 500)
 					.padding(8)
-				}
+//				}
 			}	.padding(.leading, 40)
 				.padding(.trailing, 40)
 		}

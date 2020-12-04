@@ -5,7 +5,6 @@ import Model
 import SharedComponents
 
 struct CheckPatientFormStore: View {
-	
 	let store: Store<CheckPatient, Never>
 	var body: some View {
 		WithViewStore(store) { viewStore in

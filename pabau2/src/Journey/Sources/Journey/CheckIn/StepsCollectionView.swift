@@ -45,13 +45,13 @@ struct StepsCollectionView: View {
 	
 	var body: some View {
 		HStack(alignment: .top, spacing: 24) {
-			previousArrow()
+			if viewStore.state.shouldShowLeftArrow { previousArrow() }
 			scrollView()
-			nextArrow()
+			if viewStore.state.shouldShowRightArrow { nextArrow() }
 		}
 	}
 	
-	fileprivate func scrollView() {
+	fileprivate func scrollView() -> some View {
 		ScrollViewReader { scrollProxy in
 			ScrollView(.horizontal) {
 				HStack(spacing: spacing) {
@@ -85,24 +85,20 @@ struct StepsCollectionView: View {
 		}
 	}
 	
-	fileprivate func previousArrow() {
-		if viewStore.state.shouldShowLeftArrow {
-			Image(systemName: "chevron.left")
-				.font(.regular30).foregroundColor(Color(hex: "909090"))
-				.onTapGesture {
-					self.viewStore.send(.didSelectPrevStep)
-				}
-		}
+	fileprivate func previousArrow() -> some View  {
+		Image(systemName: "chevron.left")
+			.font(.regular30).foregroundColor(Color(hex: "909090"))
+			.onTapGesture {
+				self.viewStore.send(.didSelectPrevStep)
+			}
 	}
 	
-	fileprivate func nextArrow() {
-		if viewStore.state.shouldShowRightArrow {
-			Image(systemName: "chevron.right")
-				.font(.regular30).foregroundColor(Color(hex: "909090"))
-				.onTapGesture {
-					self.viewStore.send(.didSelectNextStep)
-				}
-		}
+	fileprivate func nextArrow() -> some View {
+		Image(systemName: "chevron.right")
+			.font(.regular30).foregroundColor(Color(hex: "909090"))
+			.onTapGesture {
+				self.viewStore.send(.didSelectNextStep)
+			}
 	}
 }
 
