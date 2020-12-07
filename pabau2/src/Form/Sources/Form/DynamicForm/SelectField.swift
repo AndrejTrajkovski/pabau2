@@ -15,7 +15,7 @@ let selectFieldReducer: Reducer<SelectState, SelectFieldAction, FormEnvironment>
 }
 
 struct SelectField: View {
-	
+
 	let store: Store<SelectState, SelectFieldAction>
 	var body: some View {
 		WithViewStore(store) { viewStore in

@@ -37,7 +37,7 @@ public struct TabBarState: Equatable {
 			self.calendar = newValue.calendar
 		}
 	}
-	
+
 	public var journeyContainer: JourneyContainerState {
 		get {
 			JourneyContainerState(journey: journeyState,
@@ -80,7 +80,7 @@ struct PabauTabBar: View {
 						 action: { $0 }))
 		print("PabauTabBar init")
 	}
-		
+
 	var body: some View {
 		print("PabauTabBar body")
 		return ZStack(alignment: .topTrailing) {
@@ -123,7 +123,7 @@ struct PabauTabBar: View {
 			self.viewStore.send(.employeesFilter(JourneyFilterAction.loadEmployees))
 		}
 	}
-	
+
 	fileprivate func calendar() -> some View {
 		return CalendarContainer(store:
 									self.store.scope(
@@ -136,7 +136,7 @@ struct PabauTabBar: View {
 			Text("Calendar")
 		}
 	}
-	
+
 	fileprivate func clients() -> some View {
 		return ClientsNavigationView(
 			self.store.scope(
@@ -149,7 +149,7 @@ struct PabauTabBar: View {
 			self.viewStore.send(.clients(ClientsAction.onAppearNavigationView))
 		}
 	}
-	
+
 	fileprivate func settings() -> some View {
 		return Settings(store:
 							store.scope(state: { $0.settings },
@@ -159,7 +159,7 @@ struct PabauTabBar: View {
 				Text("Settings")
 			}
 	}
-	
+
 	fileprivate func communication() -> some View {
 		return CommunicationView(store:
 									store.scope(state: { $0.communication },
@@ -196,7 +196,7 @@ struct PabauTabBar: View {
 }
 
 public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> = Reducer.combine(
-	.init { state, action, env in
+	.init { state, action, _ in
 		switch action {
 		case .journey(.addAppointmentTap):
 			state.addAppointment = AddAppointmentState.dummy

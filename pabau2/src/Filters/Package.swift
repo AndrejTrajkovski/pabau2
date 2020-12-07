@@ -9,7 +9,7 @@ let package = Package(
     products: [
         .library(
             name: "Filters",
-            targets: ["Filters"]),
+            targets: ["Filters"])
     ],
     dependencies: [
 		.package(url: "../Util",
@@ -26,6 +26,6 @@ let package = Package(
 			]),
         .testTarget(
             name: "FiltersTests",
-            dependencies: ["Filters"]),
+            dependencies: ["Filters"])
     ]
 )

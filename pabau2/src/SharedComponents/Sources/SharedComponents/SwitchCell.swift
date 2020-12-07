@@ -33,12 +33,12 @@ public struct SwitchCell: View {
 }
 
 public struct SwitchCellRaw: View {
-	
+
 	public init (text: String, value: Binding<Bool>) {
 		self.text = text
 		self._value = value
 	}
-	
+
 	let text: String
 	@Binding var value: Bool
 	public var body: some View {

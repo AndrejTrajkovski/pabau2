@@ -89,7 +89,7 @@ public let injectablesContainerReducer: Reducer<InjectablesState, InjectablesAct
 //}
 
 extension InjectablesState {
-	
+
 	var injectablesTool: InjectablesToolState? {
 		get {
 			chosenInjectableId.map { chosenInjectableId in

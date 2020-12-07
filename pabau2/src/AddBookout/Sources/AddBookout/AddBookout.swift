@@ -86,9 +86,9 @@ public struct AddBookout: View {
 }
 
 struct FirstSection: View {
-	
+
 	let store: Store<AddBookoutState, AddBookoutAction>
-	
+
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			VStack(spacing: 16) {
@@ -135,7 +135,7 @@ struct DateAndTime: View {
 }
 
 struct DescriptionAndNotes: View {
-	
+
 	let store: Store<AddBookoutState, AddBookoutAction>
 
 	public init(store: Store<AddBookoutState, AddBookoutAction>) {

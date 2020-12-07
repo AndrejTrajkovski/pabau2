@@ -6,7 +6,7 @@ import SwiftDate
 import AddBookout
 
 public struct EventsBy<SubsectionHeader: Identifiable & Equatable> {
-	
+
 	var appointments: [Date: [Location.ID: [SubsectionHeader.ID: IdentifiedArrayOf<CalendarEvent>]]]
 	init(events: [CalendarEvent],
 		 locationsIds: [Location.ID],
@@ -19,7 +19,7 @@ public struct EventsBy<SubsectionHeader: Identifiable & Equatable> {
 												sectionKeypath,
 												subsKeypath)
 	}
-	
+
 	func flatten() -> [CalendarEvent] {
 		return appointments.flatMap { $0.value }.flatMap { $0.value }.flatMap { $0.value }
 	}

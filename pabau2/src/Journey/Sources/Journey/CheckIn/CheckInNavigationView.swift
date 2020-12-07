@@ -49,15 +49,15 @@ public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction
 		state: \CheckInContainerState.doctorSummary,
 		action: /CheckInContainerAction.doctorSummary,
 		environment: { $0 }
-		),
+	),
 	passcodeContainerReducer.pullback(
 		state: \CheckInContainerState.passcode,
 		action: /CheckInContainerAction.passcode,
 		environment: { $0 })
-//	fieldsReducer.pullback(
-//					 value: \CheckInContainerState.self,
-//					 action: /CheckInContainerAction.main,
-//					 environment: { $0 })
+	//	fieldsReducer.pullback(
+	//					 value: \CheckInContainerState.self,
+	//					 action: /CheckInContainerAction.main,
+	//					 environment: { $0 })
 )
 
 public let navigationReducer = Reducer<CheckInContainerState, CheckInContainerAction, Any> { state, action, _ in
@@ -83,7 +83,7 @@ public let navigationReducer = Reducer<CheckInContainerState, CheckInContainerAc
 	case .doctor(.checkInBody(.footer(.toPatientMode))):
 		backToPatientMode()
 	case .doctor(.checkInBody(.footer(.photos(.addPhotos)))):
-//		state.photosState.editPhotos = EditPhotosState([])
+		//		state.photosState.editPhotos = EditPhotosState([])
 		state.doctorForms.photosState.editPhotos = EditPhotosState([])
 	case .doctor(.checkInBody(.footer(.photos(.editPhotos)))):
 		state.doctorForms.photosState.editPhotos = EditPhotosState(state.doctorForms.photosState.selectedPhotos())
@@ -106,12 +106,12 @@ public struct CheckInNavigationView: View {
 			NavigationView {
 				VStack {
 					CheckInAnimation(isRunningAnimation: self.$isRunningAnimation,
-													 journey: viewStore.state)
+									 journey: viewStore.state)
 					NavigationLink.init(destination:
-						CheckInPatient(store: self.store.scope(
-							state: { $0 }, action: { $0 })),
-															isActive: self.$isRunningAnimation,
-															label: { EmptyView() })
+											CheckInPatient(store: self.store.scope(
+															state: { $0 }, action: { $0 })),
+										isActive: self.$isRunningAnimation,
+										label: { EmptyView() })
 				}
 			}
 			.navigationViewStyle(StackNavigationViewStyle())

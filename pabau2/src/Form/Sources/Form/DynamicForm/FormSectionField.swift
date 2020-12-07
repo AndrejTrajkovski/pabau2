@@ -5,7 +5,7 @@ import Model
 import Util
 
 struct FormSectionField: View {
-	
+
 	struct State: Equatable {
 		let title: String
 		let titleFont: Font
@@ -23,7 +23,7 @@ struct FormSectionField: View {
 	let store: Store<CSSField, CSSClassAction>
 	@ObservedObject var viewStore: ViewStore<State, Never>
 	let isCheckingDetails: Bool
-	
+
 	init (store: Store<CSSField, CSSClassAction>,
 		  isCheckingDetails: Bool) {
 		self.store = store
@@ -144,13 +144,13 @@ struct FormFieldStore: View {
 		IfLetStore(store.scope(
 					state: { extract(case: CSSClass.input_text, from: $0)},
 					action: { .inputText($0)}),
-				   then: { store in
+				   then: { _ in
 					return Text("Input texts")
 				   })
 		IfLetStore(store.scope(
 					state: { extract(case: CSSClass.textarea, from: $0)},
 					action: { .textArea($0)}),
-				   then: { store in
+				   then: { _ in
 					return Text("TextArea")
 				   })
 		IfLetStore(store.scope(
@@ -160,7 +160,7 @@ struct FormFieldStore: View {
 		IfLetStore(store.scope(
 					state: { extract(case: CSSClass.signature, from: $0)},
 					action: { .signature($0)}),
-				   then: { store in
+				   then: { _ in
 					return Text("Signature field")
 				   })
 		IfLetStore(store.scope(

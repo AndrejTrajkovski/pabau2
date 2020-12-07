@@ -3,11 +3,11 @@ import CasePaths
 
 public struct PhotoCell: View {
 	let photo: PhotoViewModel
-	
+
 	public init(photo: PhotoViewModel) {
 		self.photo = photo
 	}
-	
+
 	public var body: some View {
 		Group {
 			if extract(case: Photo.saved, from: photo.basePhoto) != nil {

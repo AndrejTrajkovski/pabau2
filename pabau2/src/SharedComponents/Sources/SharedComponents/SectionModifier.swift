@@ -7,7 +7,7 @@ public extension View {
 }
 
 struct SectionModifier: ViewModifier {
-	
+
 	let title: String
 
 	func body(content: Content) -> some View {

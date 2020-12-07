@@ -9,7 +9,7 @@ struct FormPager: View {
 		self.store = store
 		self.viewStore = ViewStore(store.scope(state: State.init(state:)))
 	}
-	
+
 	struct State: Equatable {
 		let formCount: Int
 		let flatSelectedIndex: Int
@@ -18,7 +18,7 @@ struct FormPager: View {
 			self.flatSelectedIndex = state.forms.flatSelectedIndex
 		}
 	}
-	
+
 	var body: some View {
 		PagerView(pageCount: self.viewStore.state.formCount,
 				  currentIndex:

@@ -26,7 +26,7 @@ public struct SingleSelectImages: Equatable {
 	func isSelected(url: ImageUrl) -> Bool {
 		return self.images.firstIndex(of: url) == selectedIdx
 	}
-	
+
 	public init (images: [ImageUrl],
 							 selectedIdx: Int?) {
 		self.images = images

@@ -31,7 +31,7 @@ public let clientsContainerReducer: Reducer<ClientsState, ClientsAction, Clients
 			case .failure:
 				state.contactListLS = .gotError
 			}
-		case .list(_):
+		case .list:
 			break
 		}
 		return .none

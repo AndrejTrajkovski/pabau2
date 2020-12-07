@@ -5,7 +5,7 @@ import ComposableArchitecture
 import SwiftDate
 
 public class SectionCalendarView<E: JZBaseEvent, Subsection: Identifiable & Equatable>: SectionWeekView<E, Location, Subsection, JZShift> {
-	
+
 	let cellId = "CalendarCell"
 	let columnHeaderId = "ColumnHeader"
 	let columnBackground = "ColumnBackground"
@@ -28,7 +28,7 @@ public class SectionCalendarView<E: JZBaseEvent, Subsection: Identifiable & Equa
 		}
 		preconditionFailure("LongPressEventCell and AllDayEvent should be casted")
 	}
-	
+
 	override open func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
 		var view = UICollectionReusableView()
 		switch kind {
@@ -51,7 +51,7 @@ public class SectionCalendarView<E: JZBaseEvent, Subsection: Identifiable & Equa
 		}
 		return view
 	}
-	
+
 	@objc override public func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, backgroundTimesAtSection section: Int) -> [JZBackgroundTime] {
 		return sectionsDataSource!.backgroundTimes(section: section)
 	}

@@ -26,9 +26,9 @@ public enum CheckBoxRowAction {
 }
 
 struct CheckBoxField: View {
-	
+
 	let store: Store<[CheckBoxChoice], CheckboxFieldAction>
-	
+
 	var body: some View {
 		ForEachStore(store.scope(state: { $0 },
 								 action: CheckboxFieldAction.rows(idx:action:)), content: ChoiceRow.init(store:))

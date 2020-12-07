@@ -3,13 +3,13 @@ import Model
 import ComposableArchitecture
 
 struct AppDetailsInfo: View {
-	
+
 	@ObservedObject var viewStore: ViewStore<ViewState, Never>
-	
+
 	init (store: Store<AppDetailsState, AppDetailsAction>) {
 		self.viewStore = ViewStore(store.scope(state: ViewState.init(state:)).actionless)
 	}
-	
+
 	struct ViewState: Equatable {
 		let patientName: String
 		let serviceName: String
@@ -18,7 +18,7 @@ struct AppDetailsInfo: View {
 		let roomName: String
 		let serviceColor: String
 	}
-	
+
 	var body: some View {
 		HStack {
 			Rectangle()
@@ -61,7 +61,7 @@ struct AppDetailsInfo: View {
 }
 
 extension AppDetailsInfo.ViewState {
-	
+
 	init(state: AppDetailsState) {
 		self.patientName = state.app.customerName ?? ""
 		self.serviceName = state.app.service

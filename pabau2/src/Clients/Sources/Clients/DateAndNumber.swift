@@ -4,13 +4,13 @@ import Util
 struct DateAndNumber: View {
 	let date: Date
 	let number: Int
-	
+
 	static let dateFormat: DateFormatter = {
 		let formatter = DateFormatter()
 		formatter.dateFormat = "dd/MM/yyyy"
 		return formatter
 	}()
-	
+
 	var body: some View {
 		HStack {
 			NumberEclipse(text: String(number))

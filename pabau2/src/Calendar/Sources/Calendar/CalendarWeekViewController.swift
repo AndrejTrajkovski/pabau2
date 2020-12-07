@@ -70,7 +70,7 @@ extension CalendarWeekViewController: JZLongPressViewDelegate {
 	public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date, startOfDayDate: Date, startingPointStartOfDay: Date) {
 		viewStore.send(.editStartTime(startOfDayDate: startOfDayDate, startDate: startDate, eventId: editingEvent.id, startingPointStartOfDay: startingPointStartOfDay))
 	}
-	
+
 	public func weekView(_ weekView: JZLongPressWeekView, didTapOn date: Date, startOfDayDate: Date, anchorView: UIView) {
 		presentAlert(date, anchorView, weekView,
 					 onAddBookout: {

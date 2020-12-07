@@ -30,7 +30,7 @@ struct ListDynamicForm: View {
 }
 
 struct DynamicForm: View {
-	
+
 	let isCheckingDetails: Bool
 	let store: Store<FormTemplate, FormTemplateAction>
 	@ObservedObject var viewStore: ViewStore<String, Never>

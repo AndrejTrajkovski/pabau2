@@ -25,8 +25,8 @@ public struct FiltersState<S: Identifiable & Equatable & Named>: Equatable {
 
 	public init(locations: IdentifiedArrayOf<Location>,
 				chosenLocationsIds: [Location.ID],
-				subsections: [Location.ID : IdentifiedArrayOf<S>],
-				chosenSubsectionsIds: [Location.ID : [S.ID]],
+				subsections: [Location.ID: IdentifiedArrayOf<S>],
+				chosenSubsectionsIds: [Location.ID: [S.ID]],
 				expandedLocationsIds: [Location.ID],
 				isShowingFilters: Bool) {
 		self.locations = locations
@@ -56,7 +56,7 @@ public struct FiltersState<S: Identifiable & Equatable & Named>: Equatable {
 			}
 			return IdentifiedArrayOf(res)
 		}
-		
+
 		set {
 			newValue.map { sectionState in
 				let locId = sectionState.location.id
@@ -90,7 +90,7 @@ public struct Filters<S: Identifiable & Equatable & Named>: View {
 		WithViewStore(store) { viewStore in
 			ScrollView {
 				LazyVStack(spacing: 0) {
-					CalendarHeader<S>(onTap: { viewStore.send(.onHeaderTap) } )
+					CalendarHeader<S>(onTap: { viewStore.send(.onHeaderTap) })
 					Divider()
 					ForEachStore(store.scope(state: { $0.rows },
 											 action: FiltersAction.rows(id:action:)),

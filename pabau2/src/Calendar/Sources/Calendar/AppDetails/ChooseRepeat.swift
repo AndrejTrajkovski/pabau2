@@ -51,7 +51,7 @@ struct ChooseRepeat: View {
 
 	public let store: Store<ChooseRepeatState, ChooseRepeatAction>
 	@ObservedObject var viewStore: ViewStore<ChooseRepeatState, ChooseRepeatAction>
-	
+
 	init(store: Store<ChooseRepeatState, ChooseRepeatAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store)

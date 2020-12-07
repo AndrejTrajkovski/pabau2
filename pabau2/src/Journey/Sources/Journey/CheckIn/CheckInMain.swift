@@ -37,19 +37,14 @@ public enum CheckInMainAction {
 struct CheckInMain: View {
 	let store: Store<CheckInViewState, CheckInMainAction>
 
-	init (store: Store<CheckInViewState, CheckInMainAction>) {
-		self.store = store
-	}
-
 	var body: some View {
-		print("check in main body")
-		return VStack (alignment: .center, spacing: 0) {
+		VStack (spacing: 0) {
 			TopView(store: self.store
-				.scope(state: { $0 },
-							 action: { .topView($0) }))
+						.scope(state: { $0 },
+							   action: { .topView($0) }))
 			CheckInBody(store: self.store.scope(
-				state: { $0 },
-				action: { .checkInBody($0) }))
+							state: { $0 },
+							action: { .checkInBody($0) }))
 			Spacer()
 		}
 	}

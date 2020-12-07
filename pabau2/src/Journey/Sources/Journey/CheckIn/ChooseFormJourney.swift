@@ -12,7 +12,7 @@ public let chooseFormJourneyReducer: Reducer<ChooseFormJourneyState,
 			environment: { $0 }
 		)
 		,
-		Reducer.init { state, action, env in
+		Reducer.init { state, action, _ in
 			switch action {
 			case .proceed:
 				//TODO:
@@ -37,7 +37,7 @@ struct ChooseFormJourney: View {
 	let store: Store<ChooseFormJourneyState, ChooseFormAction>
 	let mode: ChooseFormMode
 	let journey: Journey?
-	
+
 	var body: some View {
 		ChooseFormList(store:
 			self.store.scope(

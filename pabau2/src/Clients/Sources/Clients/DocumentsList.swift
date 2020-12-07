@@ -14,7 +14,7 @@ struct DocumentsListState: ClientCardChildParentState, Equatable {
 public enum DocumentsListAction: ClientCardChildParentAction, Equatable {
 	var action: GotClientListAction<[Document]>? {
 		get {
-			if case .action(let localAction) = self  {
+			if case .action(let localAction) = self {
 				return localAction
 		} else {
 			return nil

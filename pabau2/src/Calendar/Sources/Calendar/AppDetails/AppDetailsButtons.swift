@@ -50,13 +50,13 @@ struct AppDetailsButtons: View {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
-	
+
 	let columns = [
 		GridItem(.flexible(), spacing: 0),
 		GridItem(.flexible(), spacing: 0),
 		GridItem(.flexible(), spacing: 0)
 	]
-	
+
 	let items = [
 		("briefcase", Texts.payment, AppDetailsButtonsAction.onPayment),
 		("minus.circle", Texts.cancel, AppDetailsButtonsAction.onCancel),
@@ -65,7 +65,7 @@ struct AppDetailsButtons: View {
 		("doc.text", Texts.documents, AppDetailsButtonsAction.onDocuments),
 		("arrowshape.turn.up.right", Texts.reschedule, AppDetailsButtonsAction.onReschedule)
 	]
-	
+
 	var body: some View {
 		ScrollView {
 			LazyVGrid(columns: columns, spacing: 0) {
@@ -88,7 +88,7 @@ struct AppDetailsButtons: View {
 								ViewBuilder.buildEither(first: repeatLink)
 		)
 	}
-	
+
 	@ViewBuilder
 	func chooseStatusOrCancelReason(idx: Int) -> some View {
 		ViewBuilder.buildBlock((idx == 2) ?
@@ -97,7 +97,7 @@ struct AppDetailsButtons: View {
 								ViewBuilder.buildEither(first: chooseCancelReason)
 		)
 	}
-	
+
 	func timeSlot(idx: Int) -> TimeSlotButton {
 		return TimeSlotButton(
 			image: items[idx].0,
@@ -142,7 +142,7 @@ struct AppDetailsButtons: View {
 			cell: TextAndCheckMarkContainer.init(state:)
 		)
 	}
-	
+
 	@ViewBuilder
 	var repeatLink: some View {
 		NavigationLink(

@@ -7,7 +7,7 @@ import SharedComponents
 struct CheckPatientForm: View {
 	let store: Store<CheckPatient, Never>
 	@ObservedObject var viewStore: ViewStore<CheckPatient, Never>
-	
+
 	init(store: Store<CheckPatient, Never>) {
 		self.store = store
 		self.viewStore = ViewStore(store)

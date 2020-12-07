@@ -125,7 +125,7 @@ struct DrawingPad: View {
 		.border(Color(hex: "DADADA"), width: 1)
 		.frame(height: 200)
 	}
-	
+
 	private func add(drawing: SignatureDrawing, toPath path: inout Path) {
 		let points = drawing.points
 		if points.count > 1 {

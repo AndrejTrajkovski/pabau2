@@ -2,8 +2,8 @@ import Foundation
 import UIKit
 
 extension UIColor {
-	
-	public static func fromHex(_ hexString: String, alpha:CGFloat = 1.0) -> UIColor {
+
+	public static func fromHex(_ hexString: String, alpha: CGFloat = 1.0) -> UIColor {
 			// Convert hex string to an integer
 			let hexint = Int(Self.intFromHexString(hexStr: hexString))
 			let red = CGFloat((hexint & 0xff0000) >> 16) / 255.0
@@ -26,4 +26,3 @@ extension UIColor {
 			return hexInt
 	}
 }
-

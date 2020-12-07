@@ -70,7 +70,7 @@ public enum ClientCardGridItem: Equatable, CaseIterable {
 		case .notes: return "square.and.pencil"
 		}
 	}
-	
+
 	func count(model: ClientItemsCount?) -> Int? {
 		guard let model = model else { return nil }
 		switch self {

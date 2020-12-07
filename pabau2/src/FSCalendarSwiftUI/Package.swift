@@ -9,7 +9,7 @@ let package = Package(
     products: [
         .library(
             name: "FSCalendarSwiftUI",
-            targets: ["FSCalendarSwiftUI"]),
+            targets: ["FSCalendarSwiftUI"])
     ],
 	dependencies: [
 		.package(
@@ -31,7 +31,7 @@ let package = Package(
 				.product(name: "ComposableArchitecture",
 						 package: "swift-composable-architecture"),
 				.product(name: "SwiftDate",
-						 package: "SwiftDate"),
+						 package: "SwiftDate")
 			])
     ]
 )

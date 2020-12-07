@@ -42,7 +42,7 @@ struct StepsCollectionView: View {
 		self.viewStore = ViewStore(
 			store.scope( state: State.init(state:), action: { $0 }))
 	}
-	
+
 	var body: some View {
 		HStack(alignment: .top, spacing: 24) {
 			if viewStore.state.shouldShowLeftArrow { previousArrow() }
@@ -50,7 +50,7 @@ struct StepsCollectionView: View {
 			if viewStore.state.shouldShowRightArrow { nextArrow() }
 		}
 	}
-	
+
 	fileprivate func scrollView() -> some View {
 		ScrollViewReader { scrollProxy in
 			ScrollView(.horizontal) {
@@ -70,7 +70,7 @@ struct StepsCollectionView: View {
 					height: cellHeight)
 		}
 	}
-	
+
 	func stepView(for viewModel: FormVM) -> some View {
 		VStack {
 			Image(systemName: "checkmark.circle.fill")
@@ -84,15 +84,15 @@ struct StepsCollectionView: View {
 				.foregroundColor(Color(hex: "909090"))
 		}
 	}
-	
-	fileprivate func previousArrow() -> some View  {
+
+	fileprivate func previousArrow() -> some View {
 		Image(systemName: "chevron.left")
 			.font(.regular30).foregroundColor(Color(hex: "909090"))
 			.onTapGesture {
 				self.viewStore.send(.didSelectPrevStep)
 			}
 	}
-	
+
 	fileprivate func nextArrow() -> some View {
 		Image(systemName: "chevron.right")
 			.font(.regular30).foregroundColor(Color(hex: "909090"))

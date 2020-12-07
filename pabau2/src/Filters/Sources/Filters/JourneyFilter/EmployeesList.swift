@@ -6,7 +6,7 @@ import ComposableArchitecture
 public struct JourneyFilter: View {
 	let store: Store<JourneyFilterState, JourneyFilterAction>
 	@ObservedObject var viewStore: ViewStore<JourneyFilterState, JourneyFilterAction>
-	
+
 	public init(_ store: Store<JourneyFilterState, JourneyFilterAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store)
