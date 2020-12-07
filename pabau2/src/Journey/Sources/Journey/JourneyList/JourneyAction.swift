@@ -9,6 +9,7 @@ public enum JourneyContainerAction {
 	case choosePathway(ChoosePathwayContainerAction)
 	case checkIn(CheckInContainerAction)
 	case toggleEmployees
+    case searchQueryChanged(JourneyAction)
 }
 
 public enum JourneyAction {

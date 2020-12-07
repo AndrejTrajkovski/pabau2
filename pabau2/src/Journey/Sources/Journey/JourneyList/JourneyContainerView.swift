@@ -83,6 +83,10 @@ public let journeyContainerReducer2: Reducer<JourneyState, JourneyContainerActio
 					 state: \JourneyState.self,
 					 action: /JourneyContainerAction.journey,
 					 environment: { $0 }),
+        journeyReducer.pullback(
+                     state: \JourneyState.self,
+                     action: /JourneyContainerAction.searchQueryChanged,
+                     environment: { $0 }),
 		choosePathwayContainerReducer.pullback(
 					 state: \JourneyState.choosePathway,
 					 action: /JourneyContainerAction.choosePathway,
@@ -104,12 +108,14 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 			action: /JourneyAction.datePicker,
 			environment: { $0 }),
 		.init { state, action, environment in
+            struct SearchJourneyId: Hashable {}
+
 			switch action {
 			case .selectedFilter(let filter):
 				state.selectedFilter = filter
 			case .datePicker(.selectedDate(let date)):
 				state.loadingState = .loading
-				return environment.apiClient.getJourneys(date: date)
+				return environment.apiClient.getJourneys(date: date, searchTerm: nil)
 					.map(JourneyAction.gotResponse)
                     .receive(on: DispatchQueue.main)
 					.eraseToEffect()
@@ -123,6 +129,15 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 				}
 			case .searchedText(let searchText):
 				state.searchText = searchText
+
+                return environment.apiClient
+                    .getJourneys(date: Date(), searchTerm: searchText)
+                    .receive(on: DispatchQueue.main)
+                    .eraseToEffect()
+                    .debounce(id: SearchJourneyId(), for: 0.3, scheduler: DispatchQueue.main)
+                    .map(JourneyAction.gotResponse)
+                    .cancellable(id: SearchJourneyId(), cancelInFlight: true)
+
 			case .selectedJourney(let journey):
 				state.selectedJourney = journey
 			case .choosePathwayBackTap:
@@ -130,7 +145,7 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 			case .loadJourneys:
 				state.loadingState = .loading
 				return environment.apiClient
-					.getJourneys(date: Date())
+					.getJourneys(date: Date(), searchTerm: nil)
                     .map(JourneyAction.gotResponse)
                     .receive(on: DispatchQueue.main)
 					.eraseToEffect()
@@ -144,17 +159,18 @@ public struct JourneyContainerView: View {
 	@ObservedObject var viewStore: ViewStore<ViewState, JourneyContainerAction>
 
     @State var showSearchBar: Bool = false
-    @State var searchText: String = ""
 
 	struct ViewState: Equatable {
 		let isChoosePathwayShown: Bool
 		let selectedDate: Date
 		let listedJourneys: [Journey]
 		let isLoadingJourneys: Bool
+        let searchQuery: String
 		init(state: JourneyContainerState) {
 			self.isChoosePathwayShown = state.journey.selectedJourney != nil
 			self.selectedDate = state.journey.selectedDate
 			self.listedJourneys = state.filteredJourneys
+            self.searchQuery = state.journey.searchText
 			self.isLoadingJourneys = state.journey.loadingState.isLoading
 			UITableView.appearance().separatorStyle = .none
 		}
@@ -179,9 +195,12 @@ public struct JourneyContainerView: View {
             FilterPicker()
 
             if self.showSearchBar {
-                SearchView(placeholder: "Search", text: $searchText)
-                    .isHidden(!self.showSearchBar)
-                    .padding([.leading, .trailing], 16)
+                SearchView(placeholder: "Search", text: viewStore.binding(
+                    get: \.searchQuery,
+                    send: { JourneyContainerAction.searchQueryChanged(JourneyAction.searchedText($0)) }
+                ))
+                .isHidden(!self.showSearchBar)
+                .padding([.leading, .trailing], 16)
             }
 
             JourneyList(self.viewStore.state.listedJourneys) {

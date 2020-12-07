@@ -11,8 +11,8 @@ public struct JourneyLiveAPI: JourneyAPI, LiveAPI {
 		fatalError()
 	}
 
-	public func getJourneys(date: Date) -> Effect<Result<[Journey], RequestError>, Never> {
-		getJourneys(date: date).effect()
+    public func getJourneys(date: Date, searchTerm: String?) -> Effect<Result<[Journey], RequestError>, Never> {
+		getJourneys(date: date, searchTerm: searchTerm).effect()
 	}
 
 	public let requestBuilderFactory: RequestBuilderFactory = RequestBuilderFactoryImpl()
@@ -204,12 +204,13 @@ public struct JourneyLiveAPI: JourneyAPI, LiveAPI {
 	- returns: RequestBuilder<[Journey]>
 	*/
 
-	private func getJourneys(date: Date) -> RequestBuilder<[Journey]> {
+    private func getJourneys(date: Date, searchTerm: String?) -> RequestBuilder<[Journey]> {
 		let URLString = basePath + "journeys"
 		let parameters: [String: Any]? = nil
 		var url = URLComponents(string: URLString)
 		url?.queryItems = APIHelper.mapValuesToQueryItems([
-            "date": DateFormatter.yearMonthDay.string(from: date)
+            "date": DateFormatter.yearMonthDay.string(from: date),
+            "searchTerm": searchTerm
 		])
 
 		let requestBuilder: RequestBuilder<[Journey]>.Type = requestBuilderFactory.getBuilder()
