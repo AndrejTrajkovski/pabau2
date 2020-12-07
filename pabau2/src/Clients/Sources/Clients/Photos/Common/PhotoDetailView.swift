@@ -3,6 +3,11 @@ import ComposableArchitecture
 import Form
 import Util
 
+
+struct ScrollListener {
+    var onScroll: ( (CGPoint) -> Void )?
+}
+
 struct PhotoDetailView: View {
 
     let store: Store<PhotoCompareState, PhotoCompareAction>
@@ -12,7 +17,6 @@ struct PhotoDetailView: View {
         self.store = store
         viewStore = ViewStore(store)
         self.positionCompare = positionCompare
-        UIScrollView.appearance().bounces = false
     }
     
     @GestureState var pinchMagnification: CGFloat = 1
@@ -66,14 +70,18 @@ struct PhotoDetailView: View {
                             .gesture(magnificationGest)
                             .gesture(tapGesture)
                     */
-                    ScrollView([.horizontal, .vertical], showsIndicators: false) {
+                        
+                    UIScrollViewWrapper {
                         PhotoDetailCell(photo: photo!)
-                            .frame(width: proxy.size.width * (viewStore.pinchMagnification * viewStore.currentMagnification), height: proxy.size.height * (viewStore.pinchMagnification * viewStore.currentMagnification))
-                            .gesture(magnificationGest)
-                            .gesture(tapGesture)
+                                    .frame(width: proxy.size.width * (viewStore.pinchMagnification * viewStore.currentMagnification),
+                                           height: proxy.size.height * (viewStore.pinchMagnification * viewStore.currentMagnification))
+                                    .gesture(magnificationGest)
+                                    .gesture(tapGesture)
                     }
+                    
                 }
                 VStack {
+
                     Spacer()
                     Text("Today")
                         .font(.regular32)
