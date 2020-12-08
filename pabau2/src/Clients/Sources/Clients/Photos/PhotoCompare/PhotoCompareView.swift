@@ -36,6 +36,7 @@ struct PhotoCompareState: Equatable {
         
         photosCompares[0] = selectedPhoto
         photosCompares[1] = latestPhotoTaken
+        
     }
     
     var photoCompareMode: PhotoCompareMode = .single
@@ -70,42 +71,60 @@ extension PhotoCompareState {
             PhotoShareState(photo: selectedPhoto!)
         }
     }
+    
+    var shareSelectState: PhotoShareSelectState {
+        set {
+
+        }
+        get {
+            PhotoShareSelectState(photo: selectedPhoto!)
+        }
+    }
 }
 
-var photoCompareReducer = Reducer<PhotoCompareState, PhotoCompareAction, ClientsEnvironment> { state, action, environment in
-    switch action {
-    case .didChangeSelectedPhoto(let photoId):
-        if let photo = state.photos.filter { $0.id == photoId}.first {
-            state.selectedPhoto = photo
-        }
-    case .didSelectShare:
-        state.onShareSelected = true
-    case .changeComparePhotoMode:
-        state.photoCompareMode = state.photoCompareMode == .single ? .multiple : .single
-    case .onChangeDragOffset(let size):
-        state.dragOffset = size
-    case .onEndedMagnification(let value):
-        state.currentMagnification *= value
-        if state.currentMagnification < 1 { state.currentMagnification = 1 }
-        state.pinchMagnification = 1
-    case .onChangePinchMagnification(let value):
-        state.pinchMagnification = value
-    case .onEndedDrag(let value):
-        state.position.width += value.width
-        state.position.height += value.height
-        state.dragOffset = .zero
-    case .onTappedToZoom:
-        state.isTappedToZoom.toggle()
-        state.currentMagnification = state.isTappedToZoom ? 2 : 1
-        if !state.isTappedToZoom {
+var photoCompareReducer = Reducer.combine(
+    photoShareSelectViewReducer.pullback(
+        state: \PhotoCompareState.shareSelectState,
+        action: /PhotoCompareAction.shareAction,
+        environment: { $0 }
+    ),
+    Reducer<PhotoCompareState, PhotoCompareAction, ClientsEnvironment> { state, action, environment in
+        switch action {
+        case .didChangeSelectedPhoto(let photoId):
+            if let photo = state.photos.filter { $0.id == photoId}.first {
+                state.selectedPhoto = photo
+            }
+        case .didSelectShare:
+            if let selectedPhoto = state.selectedPhoto {
+                state.shareSelectState = PhotoShareSelectState(photo: selectedPhoto)
+                state.onShareSelected = true
+            }
+        case .changeComparePhotoMode:
+            state.photoCompareMode = state.photoCompareMode == .single ? .multiple : .single
+        case .onChangeDragOffset(let size):
+            state.dragOffset = size
+        case .onEndedMagnification(let value):
+            state.currentMagnification *= value
+            if state.currentMagnification < 1 { state.currentMagnification = 1 }
+            state.pinchMagnification = 1
+        case .onChangePinchMagnification(let value):
+            state.pinchMagnification = value
+        case .onEndedDrag(let value):
+            state.position.width += value.width
+            state.position.height += value.height
             state.dragOffset = .zero
-            state.position = .zero
+        case .onTappedToZoom:
+            state.isTappedToZoom.toggle()
+            state.currentMagnification = state.isTappedToZoom ? 2 : 1
+            if !state.isTappedToZoom {
+                state.dragOffset = .zero
+                state.position = .zero
+            }
+        default:
+            break
         }
-    default:
-        break
-    }
-    return .none
-}
+        return .none
+})
 
 struct PhotoCompareView: View {
     let store: Store<PhotoCompareState, PhotoCompareAction>
@@ -125,10 +144,10 @@ struct PhotoCompareView: View {
                 
                 Spacer()
                 PhotosListTimelineView(store: self.store)
-                                
+                
                 if let _ = viewStore.selectedPhoto {
                     NavigationLink.emptyHidden(viewStore.onShareSelected,
-                                               PhotoShareView(store: self.store.scope(state: { $0.shareState },
+                                               PhotoShareSelectView(store: self.store.scope(state: { $0.shareSelectState },
                                                                                       action: { PhotoCompareAction.shareAction($0) })
                                                ))
                     

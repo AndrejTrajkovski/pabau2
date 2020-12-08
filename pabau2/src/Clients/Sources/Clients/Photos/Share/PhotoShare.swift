@@ -14,6 +14,7 @@ public struct PhotoShareState: Equatable {
 public enum PhotoShareAction {
     case share
     case textFieldChanged
+    case selectedItem
 }
 
 struct PhotoShareView: View {
