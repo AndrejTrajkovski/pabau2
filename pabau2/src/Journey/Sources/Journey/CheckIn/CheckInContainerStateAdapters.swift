@@ -105,7 +105,7 @@ func wrap(_ templates: IdentifiedArrayOf<FormTemplate>) -> IdentifiedArrayOf<Met
 //					 selFormIndex: 0)
 //}
 //
-func updateWithKeepingOld(forms: inout [FormTemplate],
+func updateWithKeepingOld(forms: inout IdentifiedArray<Int, FormTemplate>,
 						  finalSelectedTemplatesIds: [Int],
 						  allTemplates: IdentifiedArrayOf<FormTemplate>) {
 	let oldWithData = forms.filter { old in
@@ -120,5 +120,5 @@ func updateWithKeepingOld(forms: inout [FormTemplate],
 										 uniquingKeysWith: { (old, _) in
 											return old
 										 }).flatMap(\.value)
-	forms = result
+	forms = IdentifiedArrayOf(result)
 }

@@ -1,72 +1,69 @@
 import SwiftUI
 import ComposableArchitecture
 import Model
+import Form
 
-struct CheckInPatient: View {
+struct CheckInPatientContainer: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>
 	var body: some View {
-		print("CheckInPatientBody")
-		return WithViewStore(store.scope(state: { $0.isHandBackDeviceActive },
-										 action: { $0 })) { viewStore in
-			VStack {
-				CheckInMain(store:
-								self.store.scope(state: { $0.patientCheckIn },
-												 action: { .patient($0) }
-								)
-				)
-				.navigationBarTitle("")
-				.navigationBarHidden(true)
-				NavigationLink.emptyHidden(viewStore.state,
-										   HandBackDevice(
-											store: self.store.scope(
-												state: { $0 }, action: { $0 }
-											)
-										   )
-										   .navigationBarTitle("")
-										   .navigationBarHidden(true)
-				)
-			}
+		WithViewStore(store.scope(state: { $0.isHandBackDeviceActive }).actionless) { viewStore in
+			CheckInPatient(store: store.scope(
+							state: { $0.patientCheckIn },
+							action: { .patient($0) })
+			).navigationBarTitle("")
+			 .navigationBarHidden(true)
+			handBackDeviceLink(viewStore.state)
 		}
+	}
+	
+	func handBackDeviceLink(_ active: Bool) -> some View {
+		NavigationLink.emptyHidden(active,
+								   HandBackDevice(
+									store: self.store.scope(
+										state: { $0 },
+										action: { $0 }
+									)
+								   )
+								   .navigationBarTitle("")
+								   .navigationBarHidden(true)
+		)
 	}
 }
 
-let checkInPatientReducer: Reducer<CheckInPatientState, CheckInBodyAction, JourneyEnvironment> =
-	(
-	.combine(
-		.init { state, action, _ in
-			switch action {
-			case .stepForms:
-				break//binding
-			case .stepsView:
-				break//handled stepsViewReducer
-			case .completeJourney:
-				break//handled in checkInMiddleware
-			case .footer:
-				break//handled footerButtonsReducer
-			}
-			return .none
-		}
-//		stepsViewReducer.pullback(
-//			state: \.forms,
-//			action: /CheckInBodyAction.stepsView,
-//			environment: { $0 })
-//		)
-	)
-
+public let checkInPatientReducer: Reducer<CheckInPatientState, CheckInPatientAction, JourneyEnvironment> = .combine(
+	patientDetailsReducer.pullback(
+		state: \CheckInPatientState.patientDetails,
+		action: /CheckInPatientAction.patientDetails,
+		environment: { $0 }),
+	formTemplateReducer.pullback(
+		state: \CheckInPatientState.medicalHistory,
+		action: /CheckInPatientAction.medicalHistory,
+		environment: { $0 }),
+	formTemplateReducer.pullback(
+		state: \CheckInPatientState.consents,
+		action: /CheckInPatientAction.consents(idx:action:),
+		environment: { $0 }),
+	patientCompleteReducer.pullback(
+		state: \CheckInPatientState.isPatientComplete,
+		action: /CheckInPatientAction.patientComplete,
+		environment: { $0 })
+	//	topViewReducer.pullback(
+	//		state: \CheckInViewState.self,
+	//		action: /CheckInMainAction.topView,
+	//		environment: { $0 })
+)
 
 struct CheckInPatientState: Equatable {
-	let patientSteps: [StepType]
-
+	let journey: Journey
+	let pathway: Pathway
 	var patientDetails: PatientDetails
 	var patientDetailsStatus: Bool
-
 	var medicalHistory: FormTemplate
 	var medicalHistoryStatus: Bool
-
-	var consents: [FormTemplate]
+	var consents: IdentifiedArrayOf<FormTemplate>
 	var consentsStatuses: [FormTemplate.ID: Bool]
-
 	var isPatientComplete: Bool
+	var patientSelectedIndex: Int
 }
 
 public enum CheckInPatientAction {
@@ -78,9 +75,9 @@ public enum CheckInPatientAction {
 	case footer(FooterButtonsAction)
 }
 
-struct CheckInPatientMain: View {
+struct CheckInPatient: View {
 	
-	let store: Store<CheckInViewState, CheckInMainAction>
+	let store: Store<CheckInPatientState, CheckInPatientAction>
 	var body: some View {
 		VStack (spacing: 0) {
 			TopView(store: self.store

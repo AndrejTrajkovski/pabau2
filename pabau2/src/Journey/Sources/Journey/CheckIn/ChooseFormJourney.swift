@@ -27,7 +27,7 @@ public let chooseFormJourneyReducer: Reducer<ChooseFormJourneyState,
 )
 
 public struct ChooseFormJourneyState: Equatable {
-	var forms: IdentifiedArray<Int, MetaFormAndStatus>
+	var forms: IdentifiedArrayOf<FormTemplate>
 	var templates: IdentifiedArrayOf<FormTemplate>
 	var templatesLoadingState: LoadingState = .initial
 	var selectedTemplatesIds: [Int]

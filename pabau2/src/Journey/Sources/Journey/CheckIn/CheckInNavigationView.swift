@@ -8,8 +8,8 @@ public enum CheckInContainerAction {
 	case chooseConsents(ChooseFormAction)
 	case passcode(PasscodeAction)
 	case animation(CheckInAnimationAction)
-	case patient(CheckInMainAction)
-	case doctor(CheckInMainAction)
+	case patient(CheckInPatientAction)
+	case doctor(CheckInDoctorAction)
 	case didTouchHandbackDevice
 	case doctorSummary(DoctorSummaryAction)
 	case closeBtnTap
@@ -20,16 +20,16 @@ public enum CheckInAnimationAction {
 }
 
 public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction, JourneyEnvironment> = .combine(
-	checkInMainReducer.pullback(
+	checkInPatientReducer.pullback(
 		state: \CheckInContainerState.patientCheckIn,
 		action: /CheckInContainerAction.patient,
 		environment: { $0 }
 	),
-	checkInMainReducer.pullback(
-		state: \CheckInContainerState.doctorCheckIn,
-		action: /CheckInContainerAction.doctor,
-		environment: { $0 }
-	),
+	//	checkInMainReducer.pullback(
+	//		state: \CheckInContainerState.doctorCheckIn,
+	//		action: /CheckInContainerAction.doctor,
+	//		environment: { $0 }
+	//	),
 	chooseFormJourneyReducer.pullback(
 		state: \CheckInContainerState.chooseTreatments,
 		action: /CheckInContainerAction.chooseTreatments,
@@ -61,7 +61,6 @@ public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction
 )
 
 public let navigationReducer = Reducer<CheckInContainerState, CheckInContainerAction, Any> { state, action, _ in
-
 	func backToPatientMode() {
 		state.isChooseConsentActive = false
 		state.isDoctorSummaryActive = false
@@ -70,7 +69,8 @@ public let navigationReducer = Reducer<CheckInContainerState, CheckInContainerAc
 		state.isHandBackDeviceActive = false
 		state.isEnterPasscodeActive = false
 		state.didGoBackToPatientMode = true
-		state.patientForms.goToNextUncomplete()
+		//TODO goToNextUncomplete
+		//		state.patie.goToNextUncomplete()
 	}
 	switch action {
 	case .chooseConsents(.proceed):
@@ -80,13 +80,13 @@ public let navigationReducer = Reducer<CheckInContainerState, CheckInContainerAc
 		state.isChooseTreatmentActive = false
 	case .didTouchHandbackDevice:
 		state.isEnterPasscodeActive = true
-	case .doctor(.checkInBody(.footer(.toPatientMode))):
-		backToPatientMode()
-	case .doctor(.checkInBody(.footer(.photos(.addPhotos)))):
-		//		state.photosState.editPhotos = EditPhotosState([])
-		state.doctorForms.photosState.editPhotos = EditPhotosState([])
-	case .doctor(.checkInBody(.footer(.photos(.editPhotos)))):
-		state.doctorForms.photosState.editPhotos = EditPhotosState(state.doctorForms.photosState.selectedPhotos())
+		//TODO
+//	case .doctor(.checkInBody(.footer(.toPatientMode))):
+//		backToPatientMode()
+//	case .doctor(.checkInBody(.footer(.photos(.addPhotos)))):
+//		state.doctorForms.photosState.editPhotos = EditPhotosState([])
+//	case .doctor(.checkInBody(.footer(.photos(.editPhotos)))):
+//		state.doctorForms.photosState.editPhotos = EditPhotosState(state.doctorForms.photosState.selectedPhotos())
 	default:
 		break
 	}
@@ -100,18 +100,15 @@ public struct CheckInNavigationView: View {
 		self.store = store
 		self._isRunningAnimation = State.init(initialValue: false)
 	}
-
+	
 	public var body: some View {
 		WithViewStore(store.scope(state: { $0.journey })) { viewStore in
 			NavigationView {
 				VStack {
 					CheckInAnimation(isRunningAnimation: self.$isRunningAnimation,
 									 journey: viewStore.state)
-					NavigationLink.init(destination:
-											CheckInPatient(store: self.store.scope(
-															state: { $0 }, action: { $0 })),
-										isActive: self.$isRunningAnimation,
-										label: { EmptyView() })
+					NavigationLink.emptyHidden(self.isRunningAnimation,
+											   CheckInPatientContainer(store: store.scope(state: { $0 }, action: { $0 })))
 				}
 			}
 			.navigationViewStyle(StackNavigationViewStyle())
