@@ -63,6 +63,8 @@ struct PhotoCompareState: Equatable {
     var pinchMagnification: CGFloat = 1
     var isTappedToZoom: Bool = false
     
+    var shareSelectState: PhotoShareSelectState = PhotoShareSelectState()
+    
 }
 
 extension PhotoCompareState {
@@ -72,14 +74,14 @@ extension PhotoCompareState {
         }
     }
     
-    var shareSelectState: PhotoShareSelectState {
-        set {
-
-        }
-        get {
-            PhotoShareSelectState(photo: selectedPhoto!)
-        }
-    }
+//    var shareSelectState: PhotoShareSelectState {
+//        set {
+//
+//        }
+//        get {
+//            PhotoShareSelectState(photo: selectedPhoto!)
+//        }
+//    }
 }
 
 var photoCompareReducer = Reducer.combine(
@@ -95,8 +97,8 @@ var photoCompareReducer = Reducer.combine(
                 state.selectedPhoto = photo
             }
         case .didSelectShare:
-            if let selectedPhoto = state.selectedPhoto {
-                state.shareSelectState = PhotoShareSelectState(photo: selectedPhoto)
+            if let selectedPhoto = state.selectedPhoto, let comparedPhoto = state.photosCompares[1] {
+                state.shareSelectState = PhotoShareSelectState(photo: selectedPhoto, comparedPhoto: comparedPhoto!)
                 state.onShareSelected = true
             }
         case .changeComparePhotoMode:

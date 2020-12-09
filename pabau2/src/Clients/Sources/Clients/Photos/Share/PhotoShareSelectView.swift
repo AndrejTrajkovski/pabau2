@@ -14,27 +14,39 @@ struct PhotoShareSelectItem: Equatable, Identifiable {
     }
     let id = UUID()
     var type: PhotoShareSelectItemType = .title
+    
+    var photo: PhotoViewModel!
+    var comparedPhoto: PhotoViewModel!
 }
 
 
 struct PhotoShareSelectState: Equatable {
 
-    
-//    var photoBefore: PhotoViewModel
-//    var photoAfter: PhotoViewModel
-//    var dateBefore: Date
-//    var dateAfter: Date
 //    var rating: CGFloat
 //    var review: String
     
-    var photo: PhotoViewModel
+    var photo: PhotoViewModel!
+    var comparedPhoto: PhotoViewModel!
     
-    var items: [PhotoShareSelectItem] = [PhotoShareSelectItem(), PhotoShareSelectItem(type: .review), PhotoShareSelectItem(type: .rating), PhotoShareSelectItem(), PhotoShareSelectItem(), PhotoShareSelectItem()]
+    init(photo: PhotoViewModel, comparedPhoto: PhotoViewModel) {
+        self.photo = photo
+        self.comparedPhoto = comparedPhoto
+        
+        items.append(PhotoShareSelectItem(type: .title, photo: photo, comparedPhoto: comparedPhoto))
+        items.append(PhotoShareSelectItem(type: .review, photo: photo, comparedPhoto: comparedPhoto))
+        items.append(PhotoShareSelectItem(type: .rating, photo: photo, comparedPhoto: comparedPhoto))
+        items.append(PhotoShareSelectItem(type: .review, photo: photo, comparedPhoto: comparedPhoto))
+        items.append(PhotoShareSelectItem(type: .subtitle, photo: photo, comparedPhoto: comparedPhoto))
+        items.append(PhotoShareSelectItem(type: .subtitle, photo: photo, comparedPhoto: comparedPhoto))
+    }
     
+    init() {
+        
+    }
+    
+    var items: [PhotoShareSelectItem] = []
     var selectedItem: PhotoShareSelectItem?
-    
     var photoShareState: PhotoShareState!
-    
     var isItemSelected: Bool = false
 }
 
@@ -63,7 +75,7 @@ struct PhotoShareSelectView: View {
                     ScrollView {
                         LazyVGrid(columns: layout, spacing: 10) {
                             ForEach(Array(viewStore.items)) { item in
-                                PhotoShareCellItemView(item: item)
+                                PhotoShareCellItem(item: item)
                                     .frame(width: geo.size.width / 2, height: geo.size.height / 3 - 10)
                                     .onTapGesture {
                                         viewStore.send(.selectedItem)
@@ -73,7 +85,6 @@ struct PhotoShareSelectView: View {
                     }
                 if viewStore.photoShareState != nil {
                 NavigationLink.emptyHidden(viewStore.isItemSelected,
-                                           //EmptyView())
                                            PhotoShareView(store: self.store.scope(state: { $0.photoShareState},
                                                                                   action: { $0 })
                                                           ))
