@@ -7,16 +7,6 @@ func flatten<T: Identifiable>(_ list: [T]) -> [T.ID: T] {
 	Dictionary(uniqueKeysWithValues: Array(zip(list.map(\.id), list)))
 }
 
-let filterMetaFormsByJourneyMode =
-	flip(
-		pipe(
-			get(\MetaFormAndStatus.form),
-			stepType(form:),
-			flip(curry(isIn(_:_:))
-		)
-	)
-)
-
 func isIn(_ journeyMode: JourneyMode, _ stepType: StepType) -> Bool {
 	stepToModeMap(stepType) == journeyMode
 }
@@ -34,36 +24,6 @@ func stepToModeMap(_ stepType: StepType) -> JourneyMode {
 	case .prescriptions: return .doctor
 	case .photos: return .doctor
 	case .aftercares: return .doctor
-	}
-}
-
-func stepType(form: MetaForm) -> StepType {
-	switch form {
-	case .aftercare:
-		return .aftercares
-	case .template(let template):
-		return stepType(type: template.formType)
-	case .patientDetails:
-		return .patientdetails
-	case .patientComplete:
-		return .patientComplete
-	case .checkPatient:
-		return .checkpatient
-	case .photos:
-		return .photos
-	}
-}
-
-func stepType(type: FormType) -> StepType {
-	switch type {
-	case .consent:
-		return .consents
-	case .history:
-		return .medicalhistory
-	case .prescription:
-		return .prescriptions
-	case .treatment:
-		return .treatmentnotes
 	}
 }
 

@@ -33,6 +33,7 @@ public struct CheckInContainerState: Equatable {
 			}
 		}
 	}
+	
 	var patientForms: Forms {
 		get {
 			let forms = [patientDetails, medicalHistory, consents, patientComplete]
@@ -75,6 +76,19 @@ public struct CheckInContainerState: Equatable {
 		}
 	}
 
+	var patientDetails: PatientDetails
+	var medicalHistory: FormTemplate
+	var consents: [FormTemplate]
+
+	var treatmentNotes: [FormTemplate]
+	var aftercare: Aftercare?
+	var prescriptions: [FormTemplate]
+	var photos: PhotosState?
+	var patientComplete: PatientComplete
+	
+	var doctorSelectedIndex: Int
+	var patientSelectedIndex: Int
+	
 	var doctorSelectedStep: StepType
 	var patientSelectedStep: StepType
 	var patientDetails: StepForms
@@ -103,32 +117,32 @@ public struct CheckInContainerState: Equatable {
 }
 
 extension CheckInContainerState {
-	var patientCheckIn: CheckInViewState {
-		get {
-			CheckInViewState(
-				forms: patientForms,
-				xButtonActiveFlag: true, //handled in checkInMiddleware
-				journey: journey,
-				journeyMode: .patient)
-		}
-		set {
-			self.patientForms = newValue.forms
-		}
-	}
-
-	var doctorCheckIn: CheckInViewState {
-		get {
-			CheckInViewState(
-				forms: doctorForms,
-				xButtonActiveFlag: isDoctorCheckInMainActive,
-				journey: journey,
-				journeyMode: .doctor)
-		}
-		set {
-			self.doctorForms = newValue.forms
-			self.isDoctorCheckInMainActive = newValue.xButtonActiveFlag
-		}
-	}
+//	var patientCheckIn: CheckInViewState {
+//		get {
+//			CheckInViewState(
+//				forms: patientForms,
+//				xButtonActiveFlag: true, //handled in checkInMiddleware
+//				journey: journey,
+//				journeyMode: .patient)
+//		}
+//		set {
+//			self.patientForms = newValue.forms
+//		}
+//	}
+//
+//	var doctorCheckIn: CheckInViewState {
+//		get {
+//			CheckInViewState(
+//				forms: doctorForms,
+//				xButtonActiveFlag: isDoctorCheckInMainActive,
+//				journey: journey,
+//				journeyMode: .doctor)
+//		}
+//		set {
+//			self.doctorForms = newValue.forms
+//			self.isDoctorCheckInMainActive = newValue.xButtonActiveFlag
+//		}
+//	}
 
 	var doctorSummary: DoctorSummaryState {
 		get {
@@ -257,17 +271,5 @@ extension CheckInContainerState {
 		self.allTreatmentForms = IdentifiedArray(FormTemplate.mockTreatmentN)
 		self.selectedConsentsIds = []
 		self.selectedTreatmentFormsIds = []
-	}
-}
-
-extension Forms {
-	var photosState: PhotosState {
-		get {
-			return extract(case: MetaForm.photos,
-						   from: forms[id: .photos]!.forms.first!.form)!
-		}
-		set {
-			forms[id: .photos]!.forms[0].form = MetaForm.photos(newValue)
-		}
 	}
 }

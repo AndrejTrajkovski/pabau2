@@ -5,10 +5,6 @@ import Foundation
 
 public struct FormTemplate: Codable, Identifiable, Equatable, CustomDebugStringConvertible {
 	
-	public var canProceed: Bool {
-		self.formStructure.canProceed
-	}
-	
 	public var debugDescription: String {
 		return name
 	}

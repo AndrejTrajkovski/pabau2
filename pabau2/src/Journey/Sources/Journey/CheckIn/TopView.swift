@@ -4,20 +4,14 @@ import ComposableArchitecture
 import Form
 import Util
 
-let topViewReducer = Reducer<CheckInViewState, TopViewAction, JourneyEnvironment> { state, action, _ in
-	switch action {
-	case .onXButtonTap:
-		state.xButtonActiveFlag = false
-	}
-	return .none
-}
-
+// TODO
+//state.isDoctorCheckInMainActive = false
 public enum TopViewAction: Equatable {
 	case onXButtonTap
 }
 
 struct TopView: View {
-	let store: Store<CheckInViewState, TopViewAction>
+	let store: Store<StepsViewState, TopViewAction>
 
 	struct State: Equatable {
 		let totalSteps: Int

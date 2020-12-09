@@ -27,27 +27,15 @@ struct FormPager: View {
 						send: { .stepsView(.didSelectFlatFormIndex($0)) }
 					),
 				  content: {
-					ForEachStore(
-						self.store.scope(
-							state: { $0.forms.forms },
-							action: CheckInBodyAction.stepForms(stepType:action:)),
-						content: { (childStore: Store<StepForms, StepFormsAction>) in
-							EachStepForms(store: childStore)
-						})
+					EmptyView()
+//					ForEachStore(
+//						self.store.scope(
+//							state: { $0.forms.forms },
+//							action: CheckInBodyAction.stepForms(stepType:action:)),
+//						content: { (childStore: Store<StepForms, StepFormsAction>) in
+//							EachStepForms(store: childStore)
+//						})
 				  }
 		)
-	}
-}
-
-struct EachStepForms: View {
-	let store: Store<StepForms, StepFormsAction>
-	var body: some View {
-		ForEachStore(self.store.scope(
-			state: { $0.forms },
-			action: StepFormsAction.updateForm(index:action:)
-		), content: { (childStore: Store<MetaFormAndStatus, UpdateFormAction>) in
-			FormWrapper(store: childStore.scope(state: { $0.form }))
-				.padding([.leading, .trailing], 32)
-		})
 	}
 }

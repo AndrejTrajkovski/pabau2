@@ -6,17 +6,26 @@ import Overture
 import CasePaths
 import Form
 
-public let stepFormsReducer: Reducer<StepForms, StepFormsAction, JourneyEnvironment> = .combine(
-	metaFormAndStatusReducer.forEach(
-		state: \StepForms.forms,
-		action: /StepFormsAction.updateForm(index:action:),
-		environment: { $0 })
-)
-
 public let checkInMainReducer: Reducer<CheckInViewState, CheckInMainAction, JourneyEnvironment> = .combine(
-	stepFormsReducer.forEach(
-		state: \CheckInViewState.forms.forms,
-		action: /CheckInMainAction.checkInBody..CheckInBodyAction.stepForms(stepType:action:),
+	formTemplateReducer.pullbackCp(
+		state: /MetaForm.template,
+		action: /UpdateFormAction.template,
+		environment: { $0 }),
+	patientCompleteReducer.pullbackCp(
+		state: /MetaForm.patientComplete,
+		action: /UpdateFormAction.patientComplete,
+		environment: { $0 }),
+	patientDetailsReducer.pullbackCp(
+		state: /MetaForm.patientDetails,
+		action: /UpdateFormAction.patientDetails,
+		environment: { $0 }),
+	aftercareReducer.pullbackCp(
+		state: /MetaForm.aftercare,
+		action: /UpdateFormAction.aftercare,
+		environment: { $0 }),
+	photosFormReducer.pullbackCp(
+		state: /MetaForm.photos,
+		action: /UpdateFormAction.photos,
 		environment: { $0 }),
 	checkInBodyReducer.pullback(
 		state: \CheckInViewState.self,

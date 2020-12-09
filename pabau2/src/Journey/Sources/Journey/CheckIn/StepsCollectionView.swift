@@ -4,16 +4,47 @@ import Model
 import ComposableArchitecture
 import Form
 
+public enum StepsViewState: Equatable {
+	let forms: [MetaFormAndStatus]
+	let selectedIdx: Int
+	
+	var selectedForm: MetaFormAndStatus? {
+		forms[selectedIdx]
+	}
+
+	mutating func select(idx: Int) {
+		selectedIdx = idx
+	}
+	
+	mutating func next() {
+		if forms.count - 1 > selectedIdx {
+			selectedIdx += 1
+		}
+	}
+
+	mutating func previous() {
+		if selectedIdx > 0 {
+			selectedIdx -= 1
+		}
+	}
+
+	mutating func goToNextUncomplete() {
+		forms.firstIndex(where: { !$0.isComplete }).map {
+			selectedIdx = $0
+		}
+	}
+}
+
 public enum StepsViewAction {
 	case didSelectFlatFormIndex(Int)
 	case didSelectNextStep
 	case didSelectPrevStep
 }
 
-let stepsViewReducer = Reducer<Forms, StepsViewAction, JourneyEnvironment> { state, action, _ in
+let stepsViewReducer = Reducer<StepsViewState, StepsViewAction, JourneyEnvironment> { state, action, _ in
 	switch action {
 	case .didSelectFlatFormIndex(let idx):
-		state.flatSelectedIndex = idx
+		state.selectedIdx = idx
 	case .didSelectNextStep:
 		state.next()
 	case .didSelectPrevStep:

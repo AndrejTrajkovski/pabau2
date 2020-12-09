@@ -105,23 +105,20 @@ func wrap(_ templates: IdentifiedArrayOf<FormTemplate>) -> IdentifiedArrayOf<Met
 //					 selFormIndex: 0)
 //}
 //
-func updateWithKeepingOld(forms: inout IdentifiedArrayOf<MetaFormAndStatus>,
-													finalSelectedTemplatesIds: [Int],
-													allTemplates: IdentifiedArrayOf<FormTemplate>) {
+func updateWithKeepingOld(forms: inout [FormTemplate],
+						  finalSelectedTemplatesIds: [Int],
+						  allTemplates: IdentifiedArrayOf<FormTemplate>) {
 	let oldWithData = forms.filter { old in
 		finalSelectedTemplatesIds.contains(old.id)
-	}.map(\.form)
-		.compactMap {
-			extract(case: MetaForm.template, from: $0)
 	}
 	let allNew = selected(allTemplates, finalSelectedTemplatesIds)
 	let oldWithDataDict = Dictionary.init(grouping: oldWithData,
-																				by: \.id)
+										  by: \.id)
 	let allNewDict = Dictionary.init(grouping: allNew,
-																	 by: \.id)
+									 by: \.id)
 	let result = oldWithDataDict.merging(allNewDict,
-																	 uniquingKeysWith: { (old, _) in
-																		return old
-	}).flatMap(\.value)
-	forms = IdentifiedArray.init(wrap(IdentifiedArray(result)))
+										 uniquingKeysWith: { (old, _) in
+											return old
+										 }).flatMap(\.value)
+	forms = result
 }

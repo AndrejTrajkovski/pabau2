@@ -30,6 +30,30 @@ struct CheckInPatient: View {
 	}
 }
 
+let checkInPatientReducer: Reducer<CheckInPatientState, CheckInBodyAction, JourneyEnvironment> =
+	(
+	.combine(
+		.init { state, action, _ in
+			switch action {
+			case .stepForms:
+				break//binding
+			case .stepsView:
+				break//handled stepsViewReducer
+			case .completeJourney:
+				break//handled in checkInMiddleware
+			case .footer:
+				break//handled footerButtonsReducer
+			}
+			return .none
+		}
+//		stepsViewReducer.pullback(
+//			state: \.forms,
+//			action: /CheckInBodyAction.stepsView,
+//			environment: { $0 })
+//		)
+	)
+
+
 struct CheckInPatientState: Equatable {
 	let patientSteps: [StepType]
 
@@ -45,8 +69,17 @@ struct CheckInPatientState: Equatable {
 	var isPatientComplete: Bool
 }
 
-struct CheckInPatientMain: View {
+public enum CheckInPatientAction {
+	case patientDetails(PatientDetailsAction)
+	case medicalHistory(FormTemplateAction)
+	case consents(idx: Int, action: FormTemplateAction)
+	case patientComplete(PatientCompleteAction)
+	case stepsView(StepsViewAction)
+	case footer(FooterButtonsAction)
+}
 
+struct CheckInPatientMain: View {
+	
 	let store: Store<CheckInViewState, CheckInMainAction>
 	var body: some View {
 		VStack (spacing: 0) {

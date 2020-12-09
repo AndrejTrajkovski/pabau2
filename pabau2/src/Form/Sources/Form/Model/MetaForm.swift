@@ -1,72 +1,71 @@
 import Model
 
-public enum MetaForm: Equatable {
+public protocol MetaForm: Equatable {
 
+	var canProceed: Bool { get }
+	var title: String { get }
+	var stepType: StepType { get }
+}
+
+extension FormTemplate: MetaForm {
 	public var canProceed: Bool {
-		switch self {
-		case .template(let template):
-			return template.canProceed
-		case .patientDetails(let patDetails):
-			return patDetails.canProceed
-		case .aftercare:
-			return true
-		case .patientComplete:
-			return true
-		case .checkPatient:
-			return true
-		case .photos(let photosState):
-			return !photosState.photos.isEmpty
+		get {
+			formStructure.canProceed
 		}
 	}
-
-	public init(_ patD: PatientDetails) {
-		self = .patientDetails(patD)
-	}
-
-	public init(_ aftercare: Aftercare) {
-		self = .aftercare(aftercare)
-	}
-
-	public init(_ template: FormTemplate) {
-		self = .template(template)
-	}
-
-	public init(_ patientComplete: PatientComplete) {
-		self = .patientComplete(patientComplete)
-	}
-
-	case patientDetails(PatientDetails)
-	case aftercare(Aftercare)
-	case template(FormTemplate)
-	case patientComplete(PatientComplete)
-	case checkPatient(CheckPatient)
-	case photos(PhotosState)
-
+	
 	public var title: String {
-		switch self {
-		case .patientDetails:
-			return "ENTER PATIENT DETAILS"
-		case .template(let template):
-			return title(template: template)
-		case .aftercare:
-			return "AFTERCARE"
-		case .patientComplete:
-			return "COMPLETE"
-		case .checkPatient:
-			return "CHECK PATIENT DETAILS"
-		case .photos:
-			return "PHOTOS"
-		}
-	}
-
-	private func title(template: FormTemplate) -> String {
-		switch template.formType {
+		switch self.formType {
 		case .consent, .treatment:
-			return template.name
+			return name
 		case .history:
 			return "HISTORY"
 		case .prescription:
 			return "PRESCRIPTION"
 		}
 	}
+	
+	public var stepType: StepType {
+		switch formType {
+		case .consent:
+			return .consents
+		case .history:
+			return .medicalhistory
+		case .prescription:
+			return .prescriptions
+		case .treatment:
+			return .treatmentnotes
+		}
+	}
+}
+
+extension PatientDetails: MetaForm {
+	public var title: String {
+		"ENTER PATIENT DETAILS"
+	}
+	public var stepType: StepType { .patientdetails }
+}
+
+extension Aftercare: MetaForm {
+	public var canProceed: Bool { true }
+	public var title: String { "AFTERCARE" }
+	public var stepType: StepType { .aftercares }
+}
+
+extension PatientComplete: MetaForm {
+	public var canProceed: Bool { true }
+	public var title: String { "COMPLETE" }
+	public var stepType: StepType { .patientComplete }
+}
+
+extension CheckPatient: MetaForm {
+	public var canProceed: Bool { true }
+	public var title: String { "CHECK PATIENT DETAILS" }
+	public var stepType: StepType { .checkpatient }
+}
+
+extension PhotosState: MetaForm {
+	public var canProceed: Bool { !photos.isEmpty }
+	public var title: String { "PHOTOS" }
+	public var stepType: StepType { .photos }
 }

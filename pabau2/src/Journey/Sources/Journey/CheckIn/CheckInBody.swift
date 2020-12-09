@@ -5,52 +5,17 @@ import Util
 import Overture
 import Form
 
-public enum StepFormsAction {
-	case updateForm(index: Int, action: UpdateFormAction)
-}
-
-public enum CheckInBodyAction {
-	case stepForms(stepType: StepType, action: StepFormsAction)
+public enum CheckInDoctorAction {
+	case aftercare(AftercareAction)
+	case photos(PhotosFormAction)
+	case completeJourney(CompleteJourneyBtnAction)
 	case stepsView(StepsViewAction)
 	case footer(FooterButtonsAction)
-	case completeJourney(CompleteJourneyBtnAction)
 }
 
-let checkInBodyReducer: Reducer<CheckInViewState, CheckInBodyAction, JourneyEnvironment> =
-	(
-	.combine(
-		.init { state, action, _ in
-			switch action {
-			case .stepForms:
-				break//binding
-			case .stepsView:
-				break//handled stepsViewReducer
-			case .completeJourney:
-				break//handled in checkInMiddleware
-			case .footer:
-				break//handled footerButtonsReducer
-			}
-			return .none
-		},
-		footerButtonsReducer.pullback(
-			state: \.footer,
-			action: /CheckInBodyAction.footer,
-			environment: { $0 }),
-		stepsViewReducer.pullback(
-			state: \.forms,
-			action: /CheckInBodyAction.stepsView,
-			environment: { $0 })
-		)
-	)
-
 struct CheckInBody: View {
-
-//	@EnvironmentObject var keyboardHandler: KeyboardFollower
 	let store: Store<CheckInViewState, CheckInBodyAction>
-	init(store: Store<CheckInViewState, CheckInBodyAction>) {
-		print("check in body init")
-		self.store = store
-	}
+	
 	var body: some View {
 		print("check in body body")
 		return GeometryReaderPatch { geo in
@@ -76,11 +41,11 @@ struct CheckInBody: View {
 				Spacer()
 //				if self.keyboardHandler.keyboardHeight == 0
 //				{
-					FooterButtons(store: self.store.scope(
-						state: { $0.footer }, action: { .footer($0) }
-					))
-					.frame(maxWidth: 500)
-					.padding(8)
+//					FooterButtons(store: self.store.scope(
+//						state: { $0.footer }, action: { .footer($0) }
+//					))
+//					.frame(maxWidth: 500)
+//					.padding(8)
 //				}
 			}	.padding(.leading, 40)
 				.padding(.trailing, 40)
