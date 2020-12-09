@@ -104,7 +104,7 @@ struct PabauTabBar: View {
 				}
 				.onAppear {
 					self.viewStore.send(.journey(JourneyContainerAction.journey(JourneyAction.loadJourneys)))
-					//self.viewStore.send(.employeesFilter(JourneyFilterAction.loadEmployees))
+					self.viewStore.send(.employeesFilter(JourneyFilterAction.loadEmployees))
 				}
 				ClientsNavigationView(
 					self.store.scope(

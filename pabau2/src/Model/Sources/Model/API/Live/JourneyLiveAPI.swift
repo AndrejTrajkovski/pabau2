@@ -4,7 +4,7 @@ public struct JourneyLiveAPI: JourneyAPI, LiveAPI {
     public init () {}
 
 	public func getEmployees() -> Effect<Result<[Employee], RequestError>, Never> {
-		fatalError()
+        getEmployees(companyID: 1).effect()
 	}
 
 	public func getTemplates(_ type: FormType) -> Effect<Result<[FormTemplate], RequestError>, Never> {
@@ -217,4 +217,25 @@ public struct JourneyLiveAPI: JourneyAPI, LiveAPI {
 
 		return requestBuilder.init(method: "GET", URLString: (url?.string ?? URLString), parameters: parameters, isBody: false)
 	}
+
+    /**
+    Get all employees for a specific company.
+    - GET /employees
+    - parameter companyID: (query) Company ID to query employees for.
+
+    - returns: RequestBuilder<[Employee]>
+    */
+
+    private func getEmployees(companyID: Int) -> RequestBuilder<[Employee]> {
+        let URLString = basePath + "employees"
+        let parameters: [String: Any]? = nil
+        var url = URLComponents(string: URLString)
+        url?.queryItems = APIHelper.mapValuesToQueryItems([
+            "company_id": companyID
+        ])
+
+        let requestBuilder: RequestBuilder<[Employee]>.Type = requestBuilderFactory.getBuilder()
+
+        return requestBuilder.init(method: "GET", URLString: (url?.string ?? URLString), parameters: parameters, isBody: false)
+    }
 }
