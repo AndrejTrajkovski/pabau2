@@ -75,7 +75,8 @@ public struct CCPhotosState: ClientCardChildParentState, Equatable {
     var isSelectedGroup: Bool = false
     var photos: [PhotoViewModel] {
         guard let date = self.selectedDate else { return [] }
-        return self.childState.state[date] ?? []
+        
+        return childState.state.values.reduce([], { $0 + $1 })
     }
     
     init(childState: ClientCardChildState<[Date: [PhotoViewModel]]>, selectedIds: [PhotoVariantId]) {
