@@ -50,17 +50,24 @@ struct PhotoShareSelectState: Equatable {
     var isItemSelected: Bool = false
 }
 
-var photoShareSelectViewReducer = Reducer<PhotoShareSelectState, PhotoShareAction, ClientsEnvironment> { state, action, env in
-    switch action {
-    case .selectedItem:
-        state.selectedItem = state.items.first!
-        state.photoShareState = PhotoShareState(photo: state.photo)
-        state.isItemSelected = true
-    default:
-        break
-    }
-    return .none
-}
+var photoShareSelectViewReducer = Reducer<PhotoShareSelectState, PhotoShareAction, ClientsEnvironment>.combine(
+//    photoShareViewReducer.pullback(
+//            state: \PhotoShareSelectState.photoShareState,
+//            action: /PhotoCompareAction.shareAction,
+//            environment: { $0 }
+//        ),
+    
+    Reducer { state, action, env in
+        switch action {
+        case .selectedItem:
+            state.selectedItem = state.items.first!
+            state.photoShareState = PhotoShareState(photo: state.photo)
+            state.isItemSelected = true
+        default:
+            break
+        }
+        return .none
+})
 
 struct PhotoShareSelectView: View {
     

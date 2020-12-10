@@ -7,6 +7,8 @@ public struct PhotoShareState: Equatable {
     var photo: PhotoViewModel
     var message: String = ""
     
+    var isMessagePosted: Bool = false
+    
     init(photo: PhotoViewModel) {
         self.photo = photo
     }
@@ -16,6 +18,17 @@ public enum PhotoShareAction {
     case share
     case textFieldChanged
     case selectedItem
+    case messagePosted
+}
+
+var photoShareViewReducer = Reducer<PhotoShareState, PhotoShareAction, ClientsEnvironment> { state, action, env in
+    switch action {
+    case .messagePosted:
+        state.isMessagePosted = true
+    default:
+        break
+    }
+    return .none
 }
 
 struct PhotoShareView: View {
@@ -23,6 +36,9 @@ struct PhotoShareView: View {
     
     var body: some View {
         return WithViewStore(store) { viewStore in
+            NavigationLink.emptyHidden(viewStore.isMessagePosted,
+                                       MessagePostView())
+            
             ZStack {
                 VStack(spacing: 0) {
                     HStack(alignment: .top, spacing: 5) {
@@ -44,9 +60,14 @@ struct PhotoShareView: View {
                             .font(Font.regular14)
                             .fontWeight(.regular)
                         Spacer()
-                        Text("MyFitnessPal Community")
-                            .font(Font.regular16)
-                            .fontWeight(.regular).foregroundColor(.blue)
+                        
+                        Button(action: {
+                            viewStore.send(.messagePosted)
+                        }) {
+                            Text("MyFitnessPal Community")
+                                .font(Font.regular16)
+                                .fontWeight(.regular).foregroundColor(.blue)
+                        }
                     }.padding()
                     .frame(width: UIScreen.main.bounds.width, height: 50, alignment: .leading)
                     .background(Color.white)
@@ -72,6 +93,8 @@ struct PhotoShareView: View {
                     Spacer()
                     
                 }
+                
+                
                 
             }.background(Color.paleGrey)
             .navigationBarTitle("Status Update").font(Font.semibold17)
