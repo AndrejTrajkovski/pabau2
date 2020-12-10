@@ -46,16 +46,21 @@ struct PhotoShareSelectState: Equatable {
     
     var items: [PhotoShareSelectItem] = []
     var selectedItem: PhotoShareSelectItem?
-    var photoShareState: PhotoShareState!
+    var photoShareState: PhotoShareState = PhotoShareState()
     var isItemSelected: Bool = false
 }
 
-var photoShareSelectViewReducer = Reducer<PhotoShareSelectState, PhotoShareAction, ClientsEnvironment>.combine(
-//    photoShareViewReducer.pullback(
-//            state: \PhotoShareSelectState.photoShareState,
-//            action: /PhotoCompareAction.shareAction,
-//            environment: { $0 }
-//        ),
+public enum PhotoShareSelectAction: Equatable {
+    case selectedItem
+    case shareAction(PhotoShareAction)
+}
+
+var photoShareSelectViewReducer: Reducer<PhotoShareSelectState, PhotoShareSelectAction, ClientsEnvironment> = Reducer.combine(
+    photoShareViewReducer.pullback(
+            state: \PhotoShareSelectState.photoShareState,
+            action: /PhotoShareSelectAction.shareAction,
+            environment: { $0 }
+        ),
     
     Reducer { state, action, env in
         switch action {
@@ -66,12 +71,13 @@ var photoShareSelectViewReducer = Reducer<PhotoShareSelectState, PhotoShareActio
         default:
             break
         }
+        
         return .none
 })
 
 struct PhotoShareSelectView: View {
     
-    var store: Store<PhotoShareSelectState, PhotoShareAction>
+    var store: Store<PhotoShareSelectState, PhotoShareSelectAction>
     
     var layout = [GridItem(.flexible()), GridItem(.flexible())]
     
@@ -93,7 +99,7 @@ struct PhotoShareSelectView: View {
                 if viewStore.photoShareState != nil {
                 NavigationLink.emptyHidden(viewStore.isItemSelected,
                                            PhotoShareView(store: self.store.scope(state: { $0.photoShareState},
-                                                                                  action: { $0 })
+                                                                                  action: { PhotoShareSelectAction.shareAction($0) })
                                                           ))
                 }
             }.navigationBarItems(

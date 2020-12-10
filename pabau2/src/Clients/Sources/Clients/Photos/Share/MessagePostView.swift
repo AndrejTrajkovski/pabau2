@@ -18,10 +18,6 @@ struct MessagePostView: View {
                                 .font(Font.regular17)
                         }
                     }
-                }.onTapGesture {
-                    withAnimation {
-                        //showInfoAlert.toggle()
-                    }
                 }
                 .frame(width: geo.size.width * 0.5,
                        height: geo.size.height * 0.3,

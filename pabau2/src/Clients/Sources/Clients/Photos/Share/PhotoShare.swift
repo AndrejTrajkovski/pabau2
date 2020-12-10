@@ -4,27 +4,26 @@ import Form
 import Util
 
 public struct PhotoShareState: Equatable {
-    var photo: PhotoViewModel
+    var photo: PhotoViewModel!
     var message: String = ""
     
     var isMessagePosted: Bool = false
     
-    init(photo: PhotoViewModel) {
-        self.photo = photo
-    }
+//    init(photo: PhotoViewModel) {
+//        self.photo = photo
+//    }
 }
 
 public enum PhotoShareAction {
     case share
     case textFieldChanged
-    case selectedItem
     case messagePosted
 }
 
 var photoShareViewReducer = Reducer<PhotoShareState, PhotoShareAction, ClientsEnvironment> { state, action, env in
     switch action {
     case .messagePosted:
-        state.isMessagePosted = true
+        state.isMessagePosted = !state.isMessagePosted
     default:
         break
     }
@@ -36,9 +35,7 @@ struct PhotoShareView: View {
     
     var body: some View {
         return WithViewStore(store) { viewStore in
-            NavigationLink.emptyHidden(viewStore.isMessagePosted,
-                                       MessagePostView())
-            
+
             ZStack {
                 VStack(spacing: 0) {
                     HStack(alignment: .top, spacing: 5) {
@@ -94,6 +91,13 @@ struct PhotoShareView: View {
                     
                 }
                 
+                if viewStore.isMessagePosted {
+                    MessagePostView()
+                        .onTapGesture {
+                            viewStore.send(.messagePosted)
+                        }
+                }
+
                 
                 
             }.background(Color.paleGrey)
@@ -121,6 +125,11 @@ struct SocialTitleImage: View {
     
     var body: some View {
         GeometryReader { geo in
+            
+            Button(action: {
+                
+            }) {
+            
             HStack(alignment: .center, spacing: 12) {
                 if isSystemIcon {
                     Image(systemName: imageName)
@@ -132,10 +141,13 @@ struct SocialTitleImage: View {
                     .font(Font.regular14)
                     .fontWeight(.regular)
                 Spacer()
+            }
                 
             }.padding(.leading, 10)
             .frame(width: geo.size.width, height: 60)
             .background(Color.white)
         }
+        
     }
+    
 }

@@ -8,7 +8,7 @@ public enum PhotoCompareAction: Equatable {
     case changeComparePhotoMode
     case didChangeSelectedPhoto(PhotoVariantId)
     case didSelectShare
-    case shareAction(PhotoShareAction)
+    case shareAction(PhotoShareSelectAction)
     case onBackCompare
     
     case onChangeDragOffset(CGSize)
