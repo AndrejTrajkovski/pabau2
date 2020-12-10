@@ -9,12 +9,14 @@ public extension Font {
 	static let semibold10 = Font.system(size: 10, weight: .semibold)
 	static let semibold20 = Font.system(size: 20, weight: .semibold)
 	static let semibold15 = Font.system(size: 15, weight: .semibold)
+    static let semibold16 = Font.system(size: 16, weight: .semibold)
 	static let semibold17 = Font.system(size: 17, weight: .semibold)
+    static let semibold18 = Font.system(size: 18, weight: .semibold)
 	static let semibold22 = Font.system(size: 22, weight: .semibold)
-	static let semibold18 = Font.system(size: 18, weight: .semibold)
-
+	
 	static let medium10 = Font.system(size: 10, weight: .medium)
 	static let medium9 = Font.system(size: 9, weight: .medium)
+    static let medium12 = Font.system(size: 12.0, weight: .medium)
 	static let medium14 = Font.system(size: 14.0, weight: .medium)
 	static let medium15 = Font.system(size: 15.0, weight: .medium)
 	static let medium16 = Font.system(size: 16.0, weight: .medium)

@@ -6,14 +6,15 @@ import Form
 
 
 struct PhotoShareSelectItem: Equatable, Identifiable {
-    enum PhotoShareSelectItemType {
-        case title
+    enum PhotoShareSelectItemType: Equatable {
+        case title(String)
         case subtitle
         case review
         case rating
+        
     }
     let id = UUID()
-    var type: PhotoShareSelectItemType = .title
+    var type: PhotoShareSelectItemType = .title("")
     
     var photo: PhotoViewModel!
     var comparedPhoto: PhotoViewModel!
@@ -32,10 +33,10 @@ struct PhotoShareSelectState: Equatable {
         self.photo = photo
         self.comparedPhoto = comparedPhoto
         
-        items.append(PhotoShareSelectItem(type: .title, photo: photo, comparedPhoto: comparedPhoto))
+        items.append(PhotoShareSelectItem(type: .title("20 Day Difference"), photo: photo, comparedPhoto: comparedPhoto))
         items.append(PhotoShareSelectItem(type: .review, photo: photo, comparedPhoto: comparedPhoto))
         items.append(PhotoShareSelectItem(type: .rating, photo: photo, comparedPhoto: comparedPhoto))
-        items.append(PhotoShareSelectItem(type: .review, photo: photo, comparedPhoto: comparedPhoto))
+        items.append(PhotoShareSelectItem(type: .title("Botox Treatment"), photo: photo, comparedPhoto: comparedPhoto))
         items.append(PhotoShareSelectItem(type: .subtitle, photo: photo, comparedPhoto: comparedPhoto))
         items.append(PhotoShareSelectItem(type: .subtitle, photo: photo, comparedPhoto: comparedPhoto))
     }
@@ -88,14 +89,14 @@ struct PhotoShareSelectView: View {
                     ScrollView {
                         LazyVGrid(columns: layout, spacing: 10) {
                             ForEach(Array(viewStore.items)) { item in
-                                PhotoShareCellItem(item: item)
-                                    .frame(width: geo.size.width / 2, height: geo.size.height / 3 - 10)
+                                PhotoShareCellItemView(item: item)
+                                    .frame(width: geo.size.width / 2 - 30, height: geo.size.height / 3 - 30)
                                     .onTapGesture {
                                         viewStore.send(.selectedItem)
                                     }
                             }
                         }
-                    }
+                    }.padding(20)
                 if viewStore.photoShareState != nil {
                 NavigationLink.emptyHidden(viewStore.isItemSelected,
                                            PhotoShareView(store: self.store.scope(state: { $0.photoShareState},

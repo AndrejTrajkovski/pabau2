@@ -47,7 +47,9 @@ struct PhotoShareView: View {
                         PhotoCell(photo: viewStore.photo)
                             .frame(width: 60, height: 60, alignment: .leading)
                         TextField("Say something abouth your photo",
-                                  text: viewStore.binding(get: { $0.message }, send: PhotoShareAction.textFieldChanged)).font(Font.regular14)
+                                  text: viewStore.binding(get: { $0.message },
+                                                          send: PhotoShareAction.textFieldChanged))
+                            .font(Font.regular14)
                         Spacer()
                     }
                     .frame(width: UIScreen.main.bounds.width, height: 120, alignment: .leading).padding()
@@ -76,9 +78,9 @@ struct PhotoShareView: View {
                     VStack(spacing: 1) {
                         Divider()
                         HStack(alignment: .center, spacing: 2) {
+                            Spacer()
+                                .frame(width: 15)
                             Button(action: {
-                                
-                                
                             }) {
                                 SocialTitleImage(imageName: "ico-share-facebook", socialMediaTitle: "Facebook", isSystemIcon: false)
                             }
@@ -86,6 +88,8 @@ struct PhotoShareView: View {
                         }
                         Divider()
                         HStack(alignment: .center, spacing: 2) {
+                            Spacer()
+                                .frame(width: 15)
                             Button(action: {
                                 viewStore.send(.messagePosted)
                             }) {
@@ -123,12 +127,8 @@ struct PhotoShareView: View {
                 
             }.background(Color.paleGrey)
             .navigationBarTitle("Status Update").font(Font.semibold17)
-            //.navigationBarBackButtonHidden(true)
+
             .navigationBarItems(
-//                leading: HStack {
-//                    MyBackButton(text: Texts.back) {
-//                    }
-//                },
                 trailing: HStack {
                     Button("Share") {
                         print("Share")
@@ -146,11 +146,6 @@ struct SocialTitleImage: View {
     
     var body: some View {
         GeometryReader { geo in
-            
-//            Button(action: {
-//
-//            }) {
-            
             HStack(alignment: .center, spacing: 12) {
                 if isSystemIcon {
                     Image(systemName: imageName)
@@ -162,8 +157,7 @@ struct SocialTitleImage: View {
                     .font(Font.regular14)
                     .fontWeight(.regular)
                 Spacer()
-            //}
-                
+            
             }.padding(.leading, 10)
             .frame(width: geo.size.width, height: 60)
             .background(Color.white)
