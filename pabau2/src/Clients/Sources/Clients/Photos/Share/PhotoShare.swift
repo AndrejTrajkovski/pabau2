@@ -8,6 +8,7 @@ public struct PhotoShareState: Equatable {
     var message: String = ""
     
     var isMessagePosted: Bool = false
+    var shouldDisplayActivity: Bool = false
     
 //    init(photo: PhotoViewModel) {
 //        self.photo = photo
@@ -32,6 +33,8 @@ var photoShareViewReducer = Reducer<PhotoShareState, PhotoShareAction, ClientsEn
 
 struct PhotoShareView: View {
     let store: Store<PhotoShareState, PhotoShareAction>
+    
+    @State var isShownActivity: Bool = false
     
     var body: some View {
         return WithViewStore(store) { viewStore in
@@ -59,7 +62,6 @@ struct PhotoShareView: View {
                         Spacer()
                         
                         Button(action: {
-                            viewStore.send(.messagePosted)
                         }) {
                             Text("MyFitnessPal Community")
                                 .font(Font.regular16)
@@ -74,13 +76,26 @@ struct PhotoShareView: View {
                     VStack(spacing: 1) {
                         Divider()
                         HStack(alignment: .center, spacing: 2) {
-                            SocialTitleImage(imageName: "ico-share-facebook", socialMediaTitle: "Facebook", isSystemIcon: false)
+                            Button(action: {
+                                
+                                
+                            }) {
+                                SocialTitleImage(imageName: "ico-share-facebook", socialMediaTitle: "Facebook", isSystemIcon: false)
+                            }
                             SocialTitleImage(imageName: "ico-share-instagram", socialMediaTitle: "Instagram", isSystemIcon: false)
                         }
                         Divider()
                         HStack(alignment: .center, spacing: 2) {
-                            SocialTitleImage(imageName: "photo", socialMediaTitle: "Save to Camera", isSystemIcon: true)
-                            SocialTitleImage(imageName: "ellipsis", socialMediaTitle: "More", isSystemIcon: true)
+                            Button(action: {
+                                viewStore.send(.messagePosted)
+                            }) {
+                                SocialTitleImage(imageName: "photo", socialMediaTitle: "Save to Camera", isSystemIcon: true)
+                            }
+                            Button(action: {
+                                self.isShownActivity = true
+                            }) {
+                                SocialTitleImage(imageName: "ellipsis", socialMediaTitle: "More", isSystemIcon: true)
+                            }
                         }
                         Divider()
                     }
@@ -89,7 +104,15 @@ struct PhotoShareView: View {
                     
                     Spacer()
                     
-                }
+                }.sheet(isPresented: $isShownActivity, content: {
+                    if extract(case: Photo.saved, from: viewStore.photo.basePhoto) != nil {
+                        if let savedPhoto = extract(case: Photo.saved, from: viewStore.photo.basePhoto) {
+                            ActivityViewController(activityItems: [savedPhoto.url, "Say something"])
+                        }
+
+                    }
+                    
+                })
                 
                 if viewStore.isMessagePosted {
                     MessagePostView()
@@ -97,8 +120,6 @@ struct PhotoShareView: View {
                             viewStore.send(.messagePosted)
                         }
                 }
-
-                
                 
             }.background(Color.paleGrey)
             .navigationBarTitle("Status Update").font(Font.semibold17)
@@ -126,9 +147,9 @@ struct SocialTitleImage: View {
     var body: some View {
         GeometryReader { geo in
             
-            Button(action: {
-                
-            }) {
+//            Button(action: {
+//
+//            }) {
             
             HStack(alignment: .center, spacing: 12) {
                 if isSystemIcon {
@@ -141,7 +162,7 @@ struct SocialTitleImage: View {
                     .font(Font.regular14)
                     .fontWeight(.regular)
                 Spacer()
-            }
+            //}
                 
             }.padding(.leading, 10)
             .frame(width: geo.size.width, height: 60)
