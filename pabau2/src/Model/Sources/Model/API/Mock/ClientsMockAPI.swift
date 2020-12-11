@@ -6,7 +6,7 @@ public struct ClientsMockAPI: MockAPI, ClientsAPI {
 		mockSuccess(PatientDetails.mock(clientId: clientId))
 	}
 	
-	public func getClients() -> Effect<Result<[Client], RequestError>, Never> {
+    public func getClients(search: String? = nil) -> Effect<Result<[Client], RequestError>, Never> {
 		mockSuccess(Client.mockClients, delay: 0.2)
 	}
 	

@@ -16,12 +16,14 @@ public let clientsContainerReducer: Reducer<ClientsState, ClientsAction, Clients
 		action: /ClientsAction.list,
 		environment: { $0 }),
 	.init { state, action, env in
+        
 		switch action {
 		case .onAppearNavigationView:
 			state.contactListLS = .loading
 			return env.apiClient
-				.getClients()
+                .getClients(search: nil)
 				.map(ClientsAction.gotClientsResponse)
+                .receive(on: DispatchQueue.main)
 				.eraseToEffect()
 		case .gotClientsResponse(let result):
 			switch result {
@@ -45,16 +47,6 @@ public struct ClientsState: Equatable {
 	var addClient: AddClientState?
 	var selectedClient: ClientCardState?
 	var searchText: String = ""
-
-	var filteredClients: IdentifiedArrayOf<Client> {
-		return clients.filter {
-			guard !searchText.isEmpty else { return true }
-			return
-				($0.firstName.range(of: searchText, options: .caseInsensitive) != nil) ||
-					($0.lastName.range(of: searchText, options: .caseInsensitive) != nil) ||
-			($0.email?.range(of: searchText, options: .caseInsensitive) != nil)
-		}
-	}
 }
 
 public enum ClientsAction: Equatable {

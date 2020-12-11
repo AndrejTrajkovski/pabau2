@@ -10,6 +10,9 @@ let clientsListReducer: Reducer<ClientsState, ClientsListAction, ClientsEnvironm
 			action: /ClientsListAction.selectedClient,
 			environment: { $0}),
 		.init { state, action, env in
+            
+            struct SearchClientsId: Hashable {}
+            
 			switch action {
 			case .identified(let id, ClientRowAction.onSelectClient):
 				state.selectedClient = ClientCardState(client: state.clients[id: id]!,
@@ -19,6 +22,24 @@ let clientsListReducer: Reducer<ClientsState, ClientsListAction, ClientsEnvironm
 					.eraseToEffect()
 			case .onSearchText(let text):
 				state.searchText = text
+                
+                return env.apiClient
+                    .getClients(search: text)
+                    .receive(on: DispatchQueue.main)
+                    .eraseToEffect()
+                    .debounce(id: SearchClientsId(), for: 0.3, scheduler: DispatchQueue.main)
+                    .map(ClientsListAction.gotSearchClientsResponse)
+                    .cancellable(id: SearchClientsId(), cancelInFlight: true)
+                
+            case .gotSearchClientsResponse(let result):
+                switch result {
+                case .success(let contacts):
+                    state.clients = .init(contacts)
+                    state.contactListLS = .gotSuccess
+                case .failure:
+                    state.contactListLS = .gotError
+                }
+                    
 			case .gotItemsResponse(let result):
 				guard case .success(let count) = result else { break }
 				state.selectedClient?.client.count = count
@@ -47,6 +68,7 @@ let clientsListReducer: Reducer<ClientsState, ClientsListAction, ClientsEnvironm
 public enum ClientsListAction: Equatable {
 	case identified(id: Int, action: ClientRowAction)
 	case onSearchText(String)
+    case gotSearchClientsResponse(Result<[Client], RequestError>)
 	case selectedClient(ClientCardAction)
 	case gotItemsResponse(Result<ClientItemsCount, RequestError>)
 	case onAddClient
@@ -55,6 +77,7 @@ public enum ClientsListAction: Equatable {
 
 struct ClientsList: View {
 	let store: Store<ClientsState, ClientsListAction>
+    
 	struct State: Equatable {
 		let searchText: String
 		let isSelectedClient: Bool
@@ -72,23 +95,29 @@ struct ClientsList: View {
 		print("ClientsList")
 		return WithViewStore(store.scope(state: State.init(state:))) { viewStore in
 			VStack {
-				SearchBar(placeholder: Texts.clientSearchPlaceholder,
-									text:
-					viewStore.binding(
+				SearchBar(
+                    placeholder: Texts.clientSearchPlaceholder,
+					text: viewStore.binding(
 						get: { $0.searchText }, send: { .onSearchText($0) }
 					)
 				)
 				List {
 					ForEachStore(
-						self.store.scope(state: { $0.filteredClients },
-														 action: ClientsListAction.identified(id:action:)), content: {
+						self.store.scope(
+                             state: { $0.clients },
+							 action: ClientsListAction.identified(id:action:)
+                        ),
+                        content: {
 															ClientListRow(store: $0)
 					})
 				}
 				NavigationLink.emptyHidden(
 					viewStore.state.isSelectedClient,
-					IfLetStore(self.store.scope(state: { $0.selectedClient },
-																			action: { .selectedClient($0) }),
+					IfLetStore(
+                        self.store.scope(
+                            state: { $0.selectedClient },
+                            action: { .selectedClient($0) }
+                        ),
 										 then: {
 											ClientCard(store: $0)
 						}
@@ -97,11 +126,12 @@ struct ClientsList: View {
 				NavigationLink.emptyHidden(
 					viewStore.isAddClientActive,
 					IfLetStore(
-						self.store.scope(state: { $0.addClient },
-														 action: { .addClient($0) }),
+						self.store.scope(
+                            state: { $0.addClient },
+                            action: { .addClient($0) }
+                        ),
 						then: {
-							AddClient(store: $0)
-						}
+                         AddClient(store: $0)}
 					)
 				)
 			}
