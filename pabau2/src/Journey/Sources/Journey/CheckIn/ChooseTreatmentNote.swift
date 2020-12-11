@@ -28,11 +28,12 @@ struct ChooseTreatmentNote: View {
 							  mode: .treatmentNotes,
 							  journey: self.viewStore.state.journey)
 			NavigationLink.emptyHidden(self.viewStore.state.isDoctorSummaryActive,
-									   DoctorSummary(store:
-														self.store.scope(state: { $0 }, action: { $0 })
-									   ).hideNavBar(viewStore.state.isDoctorCheckInMainActive,
-													Texts.summary)
-									   .navigationBarBackButtonHidden(true)
+									   EmptyView()
+//									   DoctorSummary(store:
+//														self.store.scope(state: { $0 }, action: { $0 })
+//									   ).hideNavBar(viewStore.state.isDoctorCheckInMainActive,
+//													Texts.summary)
+//									   .navigationBarBackButtonHidden(true)
 			)
 		}
 	}

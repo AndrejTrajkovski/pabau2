@@ -14,14 +14,17 @@ public enum FormTemplateAction {
 	case fields(idx: Int, action: CSSClassAction)
 }
 
-struct ListDynamicForm: View {
+public struct ListDynamicForm: View {
+	
 	let store: Store<FormTemplate, FormTemplateAction>
-	init(store: Store<FormTemplate, FormTemplateAction>) {
+	
+	public init(store: Store<FormTemplate, FormTemplateAction>) {
 		self.store = store
 		UITableViewHeaderFooterView.appearance().tintColor = UIColor.white
 		UITableView.appearance().separatorStyle = .none
 	}
-	var body: some View {
+	
+	public var body: some View {
 		print("ListDynamicForm body")
 		return List {
 			DynamicForm(store: store, isCheckingDetails: false)

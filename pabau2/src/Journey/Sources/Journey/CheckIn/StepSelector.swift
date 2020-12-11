@@ -4,14 +4,19 @@ import Model
 import ComposableArchitecture
 import Form
 
-public enum StepsViewState: Equatable {
-	let forms: [MetaFormAndStatus]
-	let selectedIdx: Int
-	
-	var selectedForm: MetaFormAndStatus? {
+public protocol StepsViewState {
+	var journey: Journey { get }
+	var forms: [MetaFormAndStatus] { get }
+	var selectedIdx: Int { get set }
+	func selectedForm() -> MetaFormAndStatus
+}
+
+extension StepsViewState {
+
+	func selectedForm() -> MetaFormAndStatus {
 		forms[selectedIdx]
 	}
-
+	
 	mutating func select(idx: Int) {
 		selectedIdx = idx
 	}
@@ -35,12 +40,6 @@ public enum StepsViewState: Equatable {
 	}
 }
 
-public enum StepsViewAction {
-	case didSelectFlatFormIndex(Int)
-	case didSelectNextStep
-	case didSelectPrevStep
-}
-
 let stepsViewReducer = Reducer<StepsViewState, StepsViewAction, JourneyEnvironment> { state, action, _ in
 	switch action {
 	case .didSelectFlatFormIndex(let idx):
@@ -53,22 +52,35 @@ let stepsViewReducer = Reducer<StepsViewState, StepsViewAction, JourneyEnvironme
 	return .none
 }
 
-struct StepsCollectionView: View {
+public struct StepSelectorElement: Equatable {
+	let isComplete: Bool
+	let title: String
+}
+
+public enum StepsViewAction {
+	case didSelectFlatFormIndex(Int)
+	case didSelectNextStep
+	case didSelectPrevStep
+}
+
+struct StepSelector: View {
 	let cellWidth: CGFloat = 100
 	let cellHeight: CGFloat = 80
 	let spacing: CGFloat = 8
+	
 	struct State: Equatable {
 		let maxVisibleCells = 5
-		let formVms: [FormVM]
+		let stepForms: [StepSelectorElement]
 		let selectedIndex: Int
 		let numberOfVisibleSteps: Int
 		let shouldShowLeftArrow: Bool
 		let shouldShowRightArrow: Bool
 	}
 
-	let store: Store<Forms, StepsViewAction>
+	let store: Store<StepsViewState, StepsViewAction>
 	@ObservedObject var viewStore: ViewStore<State, StepsViewAction>
-	init (store: Store<Forms, StepsViewAction>) {
+	
+	init (store: Store<StepsViewState, StepsViewAction>) {
 		self.store = store
 		self.viewStore = ViewStore(
 			store.scope( state: State.init(state:), action: { $0 }))
@@ -86,8 +98,8 @@ struct StepsCollectionView: View {
 		ScrollViewReader { scrollProxy in
 			ScrollView(.horizontal) {
 				HStack(spacing: spacing) {
-					ForEach(viewStore.state.formVms.indices, id: \.self) { idx in
-						stepView(for: viewStore.state.formVms[idx])
+					ForEach(viewStore.state.stepForms.indices, id: \.self) { idx in
+						stepView(for: viewStore.state.stepForms[idx])
 							.frame(width: cellWidth, height: cellHeight)
 							.onTapGesture {
 								self.viewStore.send(.didSelectFlatFormIndex(idx))
@@ -102,7 +114,7 @@ struct StepsCollectionView: View {
 		}
 	}
 
-	func stepView(for viewModel: FormVM) -> some View {
+	func stepView(for viewModel: StepSelectorElement) -> some View {
 		VStack {
 			Image(systemName: "checkmark.circle.fill")
 				.foregroundColor(viewModel.isComplete ? .blue : Color(hex: "C7C7CC"))
@@ -133,29 +145,17 @@ struct StepsCollectionView: View {
 	}
 }
 
-extension StepsCollectionView.State {
-	init(state: Forms) {
-		let forms = state
-		let selIdx = forms.flatSelectedIndex
-		let flatForms = forms.flat
-		let formVms = zip(flatForms, flatForms.indices).map { Self.formVm(form: $0, selection: selIdx)}
-		let shouldShowArrows = formVms.count > maxVisibleCells
-		self.formVms = formVms
-		self.selectedIndex = selIdx
-		self.numberOfVisibleSteps = min(formVms.count, maxVisibleCells)
-		self.shouldShowLeftArrow = shouldShowArrows && (selIdx != 0)
-		self.shouldShowRightArrow = shouldShowArrows && (selIdx != formVms.count - 1)
+extension StepSelector.State {
+	init(state: StepsViewState) {
+		let stepForms = zip(state.forms, state.forms.indices).map {
+			StepSelectorElement(isComplete: $0.0.isComplete,
+								title: $0.0.form.title)
+		}
+		let shouldShowArrows = stepForms.count > maxVisibleCells
+		self.stepForms = stepForms
+		self.selectedIndex = state.selectedIdx
+		self.numberOfVisibleSteps = min(stepForms.count, maxVisibleCells)
+		self.shouldShowLeftArrow = shouldShowArrows && (state.selectedIdx != 0)
+		self.shouldShowRightArrow = shouldShowArrows && (state.selectedIdx != stepForms.count - 1)
 	}
-
-	static func formVm(form: (MetaFormAndStatus, Int), selection: Int) -> FormVM {
-		FormVM(id: form.1,
-			   isComplete: form.0.isComplete,
-			   title: form.0.form.title)
-	}
-}
-
-struct FormVM: Identifiable, Equatable {
-	let id: Int
-	let isComplete: Bool
-	let title: String
 }

@@ -1,7 +1,6 @@
 import Model
 
-public protocol MetaForm: Equatable {
-
+public protocol MetaForm {
 	var canProceed: Bool { get }
 	var title: String { get }
 	var stepType: StepType { get }

@@ -17,7 +17,7 @@ struct DoctorSummaryCompleteBtn: View {
 			state: State.init(state:), action: { $0 })) { viewStore in
 				CompleteJourneyBtn(isBtnDisabled: viewStore.state.isBtnDisabled,
 													 action: {
-														viewStore.send(.doctor(.checkInBody(.completeJourney(.onCompleteJourney))))
+//														viewStore.send(.doctor(.checkInBody(.completeJourney(.onCompleteJourney))))
 				})
 		}
 	}

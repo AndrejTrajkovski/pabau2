@@ -36,18 +36,18 @@ let checkInMiddleware2 = Reducer<JourneyState, ChooseFormAction, JourneyEnvironm
 
 let checkInMiddleware = Reducer<JourneyState, CheckInContainerAction, JourneyEnvironment> { state, action, _ in
 	switch action {
-	case .patient(.topView(.onXButtonTap)),
-			 .doctorSummary(.xOnDoctorCheckIn):
-		state.selectedJourney = nil
-		state.selectedPathway = nil
-		state.checkIn?.didGoBackToPatientMode = false
-		state.checkIn = nil
-	case .doctor(.checkInBody(.completeJourney(.onCompleteJourney))),
-		.doctor(.checkInBody(.footer(.completeJourney(.onCompleteJourney)))):
-		state.selectedJourney = nil
-		state.selectedPathway = nil
-		state.checkIn?.didGoBackToPatientMode = false
-		state.checkIn = nil
+//	case .patient(.topView(.onXButtonTap)),
+//			 .doctorSummary(.xOnDoctorCheckIn):
+//		state.selectedJourney = nil
+//		state.selectedPathway = nil
+//		state.checkIn?.didGoBackToPatientMode = false
+//		state.checkIn = nil
+//	case .doctor(.checkInBody(.completeJourney(.onCompleteJourney))),
+//		.doctor(.checkInBody(.footer(.completeJourney(.onCompleteJourney)))):
+//		state.selectedJourney = nil
+//		state.selectedPathway = nil
+//		state.checkIn?.didGoBackToPatientMode = false
+//		state.checkIn = nil
 	default:
 		return .none
 	}

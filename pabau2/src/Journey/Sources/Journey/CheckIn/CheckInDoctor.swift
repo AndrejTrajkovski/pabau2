@@ -2,9 +2,10 @@ import Foundation
 import SwiftUI
 import ComposableArchitecture
 import Form
+import Model
 
 public struct CheckInDoctorState: Equatable {
-	let journey: Journey
+	public let journey: Journey
 	let pathway: Pathway
 	var treatmentNotes: IdentifiedArrayOf<FormTemplate>
 	var treatmentNotesStatuses: [FormTemplate.ID: Bool]

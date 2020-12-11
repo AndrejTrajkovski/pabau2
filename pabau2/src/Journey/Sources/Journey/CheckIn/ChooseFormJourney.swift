@@ -63,3 +63,21 @@ extension ChooseFormJourneyState {
 		}
 	}
 }
+
+fileprivate func updateWithKeepingOld(forms: inout IdentifiedArray<Int, FormTemplate>,
+						  finalSelectedTemplatesIds: [Int],
+						  allTemplates: IdentifiedArrayOf<FormTemplate>) {
+	let oldWithData = forms.filter { old in
+		finalSelectedTemplatesIds.contains(old.id)
+	}
+	let allNew = selected(allTemplates, finalSelectedTemplatesIds)
+	let oldWithDataDict = Dictionary.init(grouping: oldWithData,
+										  by: \.id)
+	let allNewDict = Dictionary.init(grouping: allNew,
+									 by: \.id)
+	let result = oldWithDataDict.merging(allNewDict,
+										 uniquingKeysWith: { (old, _) in
+											return old
+										 }).flatMap(\.value)
+	forms = IdentifiedArrayOf(result)
+}

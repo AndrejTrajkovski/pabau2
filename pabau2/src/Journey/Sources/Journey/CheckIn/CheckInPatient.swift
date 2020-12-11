@@ -30,7 +30,7 @@ struct CheckInPatientContainer: View {
 	}
 }
 
-public let checkInPatientReducer: Reducer<CheckInPatientState, CheckInPatientAction, JourneyEnvironment> = .combine(
+let checkInPatientReducer: Reducer<CheckInPatientState, CheckInPatientAction, JourneyEnvironment> = .combine(
 	patientDetailsReducer.pullback(
 		state: \CheckInPatientState.patientDetails,
 		action: /CheckInPatientAction.patientDetails,
@@ -39,7 +39,7 @@ public let checkInPatientReducer: Reducer<CheckInPatientState, CheckInPatientAct
 		state: \CheckInPatientState.medicalHistory,
 		action: /CheckInPatientAction.medicalHistory,
 		environment: { $0 }),
-	formTemplateReducer.pullback(
+	formTemplateReducer.forEach(
 		state: \CheckInPatientState.consents,
 		action: /CheckInPatientAction.consents(idx:action:),
 		environment: { $0 }),
@@ -53,7 +53,7 @@ public let checkInPatientReducer: Reducer<CheckInPatientState, CheckInPatientAct
 	//		environment: { $0 })
 )
 
-struct CheckInPatientState: Equatable {
+struct CheckInPatientState: Equatable, StepsViewState {
 	let journey: Journey
 	let pathway: Pathway
 	var patientDetails: PatientDetails
@@ -64,6 +64,34 @@ struct CheckInPatientState: Equatable {
 	var consentsStatuses: [FormTemplate.ID: Bool]
 	var isPatientComplete: Bool
 	var patientSelectedIndex: Int
+	
+	var forms: [MetaFormAndStatus] {
+		return pathway.steps.map(\.stepType).filter(filterBy(.patient)).map {
+			getForms($0)
+		}.flatMap { $0 }
+	}
+
+	var selectedIdx: Int {
+		get { patientSelectedIndex }
+		set { patientSelectedIndex = newValue }
+	}
+	
+	func getForms(_ stepType: StepType) -> [MetaFormAndStatus] {
+		switch stepType {
+		case .patientdetails:
+			return [MetaFormAndStatus(patientDetails, patientDetailsStatus)]
+		case .medicalhistory:
+			return [MetaFormAndStatus(medicalHistory, medicalHistoryStatus)]
+		case .consents:
+			return consents.map {
+				MetaFormAndStatus($0, consentsStatuses[$0.id]!)
+			}
+		case .patientComplete:
+			return [MetaFormAndStatus(PatientComplete(), isPatientComplete)]
+		default:
+			return []
+		}
+	}
 }
 
 public enum CheckInPatientAction {
@@ -72,7 +100,8 @@ public enum CheckInPatientAction {
 	case consents(idx: Int, action: FormTemplateAction)
 	case patientComplete(PatientCompleteAction)
 	case stepsView(StepsViewAction)
-	case footer(FooterButtonsAction)
+	case topView(TopViewAction)
+//	case footer(FooterButtonsAction)
 }
 
 struct CheckInPatient: View {
@@ -85,8 +114,22 @@ struct CheckInPatient: View {
 							   action: { .topView($0) }))
 			CheckInBody(store: self.store.scope(
 							state: { $0 },
-							action: { .checkInBody($0) }))
+							action: { .stepsView($0) }))
 			Spacer()
+		}
+	}
+	
+	@ViewBuilder
+	func selectedForm(_ state: CheckInPatientState) -> some View {
+		switch state.selectedForm().form {
+		case is PatientDetails:
+			PatientDetailsForm(store: store.scope(state: { $0.patientDetails }, action: { .patientDetails($0) }
+			))
+		case let medH as FormTemplate where medH.formType == .history:
+			ListDynamicForm(store: store.scope(state: { $0.medicalHistory }, action: { .medicalHistory($0) }
+			))
+		default:
+			EmptyView()
 		}
 	}
 }

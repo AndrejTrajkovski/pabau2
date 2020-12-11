@@ -6,18 +6,15 @@ import Overture
 import Form
 
 struct CheckInBody: View {
-	let store: Store<CheckInViewState, CheckInBodyAction>
+	let store: Store<StepsViewState, StepsViewAction>
 	
 	var body: some View {
 		VStack {
-			StepsCollectionView(store:
-									self.store.scope(
-										state: { $0.forms }, action: { .stepsView($0) })
-			).frame(height: 80)
+			StepSelector(store: store).frame(height: 80)
 			Divider()
 				.frame(maxWidth: .infinity)
 				.shadow(color: Color(hex: "C1C1C1"), radius: 4, y: 2)
-			FormPager(store: self.store)
+				//			FormPager(store: self.store)
 				/*
 				IfLetStore(self.store
 				.scope(state: { $0.selectedForm?.form },

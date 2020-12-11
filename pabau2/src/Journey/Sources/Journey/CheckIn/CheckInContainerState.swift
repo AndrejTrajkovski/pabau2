@@ -9,7 +9,7 @@ public struct CheckInContainerState: Equatable {
 	let journey: Journey
 	let pathway: Pathway
 	
-	var patientDetails: PatientDetails?
+	var patientDetails: PatientDetails
 	var patientDetailsStatus: Bool
 	
 	var medicalHistory: FormTemplate
@@ -115,8 +115,8 @@ extension CheckInContainerState {
 	}
 	
 	var isHandBackDeviceActive: Bool {
-		get { patientStepsComplete }
-		set { patientStepsComplete = newValue }
+		get { isPatientComplete }
+		set { isPatientComplete = newValue }
 	}
 	
 	var handback: HandBackDeviceState {
@@ -146,13 +146,23 @@ extension CheckInContainerState {
 		self.allTreatmentForms = IdentifiedArray(FormTemplate.mockTreatmentN)
 		self.selectedConsentsIds = []
 		self.selectedTreatmentFormsIds = []
+		self.patientDetailsStatus = false
+		self.medicalHistoryStatus = false
+		self.consentsStatuses = Dictionary.init(grouping: consents, by: { $0.id }).mapValues { _ in return false }
+		self.treatmentNotes = []
+		self.treatmentNotesStatuses = [:]
+		self.prescriptions = []
+		self.prescriptionsStatuses = [:]
+		self.aftercareStatus = false
+		self.isPatientComplete = false
+		self.photos = PhotosState([[:]])
+		self.patientSelectedIndex = 0
+		self.doctorSelectedIndex = 0
 	}
 }
 
 
 extension CheckInContainerState {
-	let patientSteps: [StepType]
-	let doctorSteps: [StepType]
 	
 	var doctorCheckIn: CheckInDoctorState {
 		get {
@@ -166,12 +176,10 @@ extension CheckInContainerState {
 				aftercare: self.aftercare,
 				aftercareStatus: self.aftercareStatus,
 				photos: self.photos,
-				doctorSelectedIndex: self.doctorSelectedIndex,
+				doctorSelectedIndex: self.doctorSelectedIndex
 			)
 		}
 		set {
-			self.journey = newValue.journey
-			self.pathway = newValue.pathway
 			self.treatmentNotes = newValue.treatmentNotes
 			self.treatmentNotesStatuses = newValue.treatmentNotesStatuses
 			self.prescriptions = newValue.prescriptions
