@@ -1,23 +1,6 @@
 import SwiftUI
 import ComposableArchitecture
 
-
-//struct PhotoShareCellItem: View {
-//    let item: PhotoShareSelectItem
-//    
-//    var body: some View {
-//        
-//        switch item.type {
-//        case .rating: return PhotoShareCellItemView(item: item)
-//        case .title: return PhotoShareCellItemView(item: item)
-//        case .subtitle: return PhotoShareCellItemView(item: item)
-//        case .review:  return PhotoShareCellItemView(item: item)
-//        default:
-//            return PhotoShareCellItemView(item: item)
-//        }
-//    }
-//}
-
 struct PhotoShareCellItemView: View {
     let item: PhotoShareSelectItem
     

@@ -37,3 +37,16 @@ struct MessagePostView: View {
         }
     }
 }
+
+
+
+extension UIView {
+
+    func asImage() -> UIImage {
+        UIGraphicsBeginImageContext(self.frame.size)
+        self.layer.render(in:UIGraphicsGetCurrentContext()!)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return UIImage(cgImage: image!.cgImage!)
+    }
+}

@@ -69,6 +69,9 @@ var photoShareSelectViewReducer: Reducer<PhotoShareSelectState, PhotoShareSelect
             state.selectedItem = state.items.first!
             state.photoShareState = PhotoShareState(photo: state.photo)
             state.isItemSelected = true
+        case .shareAction(.backButton):
+            state.selectedItem = nil
+            state.isItemSelected = false
         default:
             break
         }
@@ -90,7 +93,8 @@ struct PhotoShareSelectView: View {
                         LazyVGrid(columns: layout, spacing: 10) {
                             ForEach(Array(viewStore.items)) { item in
                                 PhotoShareCellItemView(item: item)
-                                    .frame(width: geo.size.width / 2 - 30, height: geo.size.height / 3 - 30)
+                                    .frame(width: geo.size.width / 2 - 30,
+                                           height: geo.size.height / 3 - 30)
                                     .onTapGesture {
                                         viewStore.send(.selectedItem)
                                     }

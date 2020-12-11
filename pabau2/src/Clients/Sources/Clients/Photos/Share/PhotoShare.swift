@@ -2,6 +2,7 @@ import SwiftUI
 import ComposableArchitecture
 import Form
 import Util
+import UIKit
 
 public struct PhotoShareState: Equatable {
     var photo: PhotoViewModel!
@@ -19,6 +20,7 @@ public enum PhotoShareAction {
     case share
     case textFieldChanged
     case messagePosted
+    case backButton
 }
 
 var photoShareViewReducer = Reducer<PhotoShareState, PhotoShareAction, ClientsEnvironment> { state, action, env in
@@ -111,7 +113,7 @@ struct PhotoShareView: View {
                 }.sheet(isPresented: $isShownActivity, content: {
                     if extract(case: Photo.saved, from: viewStore.photo.basePhoto) != nil {
                         if let savedPhoto = extract(case: Photo.saved, from: viewStore.photo.basePhoto) {
-                            ActivityViewController(activityItems: [savedPhoto.url, "Say something"])
+                            ActivityViewController(activityItems: [UIImage(named: savedPhoto.url)!, "Say something"])
                         }
 
                     }
@@ -127,8 +129,14 @@ struct PhotoShareView: View {
                 
             }.background(Color.paleGrey)
             .navigationBarTitle("Status Update").font(Font.semibold17)
-
+            .navigationBarBackButtonHidden(true)
             .navigationBarItems(
+                leading: HStack {
+                    MyBackButton(text: Texts.back) {
+                        viewStore.send(.backButton)
+                    }
+                },
+
                 trailing: HStack {
                     Button("Share") {
                         print("Share")
