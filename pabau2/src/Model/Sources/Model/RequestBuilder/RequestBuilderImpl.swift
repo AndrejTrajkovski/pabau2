@@ -51,8 +51,29 @@ open class RequestBuilderImpl<T: Decodable>: RequestBuilder<T> {
 			return Just(data)
 				.decode(type: T.self, decoder: decoder)
 				.mapError { error in
-					return RequestError.jsonDecoding(error.localizedDescription + "\n" + (String.init(data: data, encoding: .utf8) ?? ". String not utf8"))
+					var errorMessage = error.localizedDescription + "\n" + (String.init(data: data, encoding: .utf8) ?? ". String not utf8")
+					errorMessage += self.stringIfDecodingError(error) ?? ""
+					return RequestError.jsonDecoding(errorMessage)
 			}
 			.eraseToAnyPublisher()
+	}
+	
+	func stringIfDecodingError(_ error: Error) -> String? {
+		if let decodeError = error as? DecodingError {
+			switch decodeError {
+			case .typeMismatch(let key, let value):
+				return("error \(key), value \(value) and ERROR: \(decodeError.localizedDescription)")
+			case .valueNotFound(let key, let value):
+				return("error \(key), value \(value) and ERROR: \(decodeError.localizedDescription)")
+			case .keyNotFound(let key, let value):
+				return("error \(key), value \(value) and ERROR: \(decodeError.localizedDescription)")
+			case .dataCorrupted(let key):
+				return ("error \(key), and ERROR: \(decodeError.localizedDescription)")
+			default:
+				return ""
+			}
+		} else {
+			return nil
+		}
 	}
 }

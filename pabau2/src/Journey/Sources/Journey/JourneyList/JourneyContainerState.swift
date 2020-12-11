@@ -16,7 +16,7 @@ public struct JourneyContainerState: Equatable {
 }
 
 extension JourneyContainerState {
-	var filteredJourneys: [Journey] {
+	func filteredJourneys() -> [Journey] {
 		return self.journey.journeys
 			.filter { $0.appointments.first.start_time.isInside(date: journey.selectedDate, granularity: .day) }
 			.filter { employeesFilter.selectedEmployeesIds.contains($0.employee.id) }

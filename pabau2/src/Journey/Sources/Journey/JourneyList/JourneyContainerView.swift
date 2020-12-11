@@ -108,8 +108,6 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 			action: /JourneyAction.datePicker,
 			environment: { $0 }),
 		.init { state, action, environment in
-            struct SearchJourneyId: Hashable {}
-
 			switch action {
 			case .selectedFilter(let filter):
 				state.selectedFilter = filter
@@ -117,19 +115,22 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 				state.loadingState = .loading
 				return environment.apiClient.getJourneys(date: date, searchTerm: nil)
 					.map(JourneyAction.gotResponse)
-                    .receive(on: DispatchQueue.main)
+					.receive(on: DispatchQueue.main)
 					.eraseToEffect()
 			case .gotResponse(let result):
+				print(result)
 				switch result {
 				case .success(let journeys):
 					state.journeys.formUnion(journeys)
 					state.loadingState = .gotSuccess
-				case .failure:
+				case .failure(let error):
+					print(error)
 					state.loadingState = .gotError
 				}
 			case .searchedText(let searchText):
+				struct SearchJourneyId: Hashable {}
+				
 				state.searchText = searchText
-
                 return environment.apiClient
                     .getJourneys(date: Date(), searchTerm: searchText)
                     .receive(on: DispatchQueue.main)
@@ -169,7 +170,7 @@ public struct JourneyContainerView: View {
 		init(state: JourneyContainerState) {
 			self.isChoosePathwayShown = state.journey.selectedJourney != nil
 			self.selectedDate = state.journey.selectedDate
-			self.listedJourneys = state.filteredJourneys
+			self.listedJourneys = state.filteredJourneys()
             self.searchQuery = state.journey.searchText
 			self.isLoadingJourneys = state.journey.loadingState.isLoading
 			UITableView.appearance().separatorStyle = .none
