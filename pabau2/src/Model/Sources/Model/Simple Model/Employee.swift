@@ -15,7 +15,7 @@ public struct Employee: Codable, Identifiable, Equatable, Hashable {
 	
 	public let avatarUrl: String?
 	
-	public let locationId: Location.Id
+	public let locationId: Location.Id?
 	
 	public let pin: Int?
 	public init(id: Int,

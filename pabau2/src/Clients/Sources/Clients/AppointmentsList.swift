@@ -61,7 +61,7 @@ struct AppointmentRow: View {
 					.frame(width: 55, height: 55)
 					.padding()
 				VStack(alignment: .leading) {
-					Text(app.service.name).font(.medium17)
+					Text(app.service?.name ?? "").font(.medium17)
 					DateLocation(app: app)
 				}
 				Spacer()

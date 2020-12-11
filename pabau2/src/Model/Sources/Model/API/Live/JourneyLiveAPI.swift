@@ -1,21 +1,23 @@
 import ComposableArchitecture
 
 public struct JourneyLiveAPI: JourneyAPI, LiveAPI {
+    public init () {}
+
 	public func getEmployees() -> Effect<Result<[Employee], RequestError>, Never> {
-		fatalError()
+        getEmployees(companyID: 1).effect()
 	}
 
 	public func getTemplates(_ type: FormType) -> Effect<Result<[FormTemplate], RequestError>, Never> {
 		fatalError()
 	}
 
-	public func getJourneys(date: Date) -> Effect<Result<[Journey], RequestError>, Never> {
-		getJourneys(date: date).effect()
+    public func getJourneys(date: Date, searchTerm: String?) -> Effect<Result<[Journey], RequestError>, Never> {
+		getJourneys(date: date, searchTerm: searchTerm).effect()
 	}
 
 	public let requestBuilderFactory: RequestBuilderFactory = RequestBuilderFactoryImpl()
-	public var basePath: String = ""
-	public let route: String = "journeys"
+	public var basePath: String = "https://virtserver.swaggerhub.com/Pa577/iOS/1.0.0/"
+	public let route: String = "journey"
 
 	//    open class func journeyAppointmentPost(body: AppointmentBody? = nil, completion: @escaping ((_ data: Journey?,_ error: Error?) -> Void)) {
 	//        journeyAppointmentPostWithRequestBuilder(body: body).execute { (response, error) -> Void in
@@ -202,16 +204,38 @@ public struct JourneyLiveAPI: JourneyAPI, LiveAPI {
 	- returns: RequestBuilder<[Journey]>
 	*/
 
-	private func getJourneys(date: Date) -> RequestBuilder<[Journey]> {
-		let URLString = basePath + route + "journeys"
+    private func getJourneys(date: Date, searchTerm: String?) -> RequestBuilder<[Journey]> {
+		let URLString = basePath + "journeys"
 		let parameters: [String: Any]? = nil
 		var url = URLComponents(string: URLString)
 		url?.queryItems = APIHelper.mapValuesToQueryItems([
-			"date": try? newJSONEncoder().encode(date)
+            "date": DateFormatter.yearMonthDay.string(from: date),
+            "searchTerm": searchTerm
 		])
 
 		let requestBuilder: RequestBuilder<[Journey]>.Type = requestBuilderFactory.getBuilder()
 
 		return requestBuilder.init(method: "GET", URLString: (url?.string ?? URLString), parameters: parameters, isBody: false)
 	}
+
+    /**
+    Get all employees for a specific company.
+    - GET /employees
+    - parameter companyID: (query) Company ID to query employees for.
+
+    - returns: RequestBuilder<[Employee]>
+    */
+
+    private func getEmployees(companyID: Int) -> RequestBuilder<[Employee]> {
+        let URLString = basePath + "employees"
+        let parameters: [String: Any]? = nil
+        var url = URLComponents(string: URLString)
+        url?.queryItems = APIHelper.mapValuesToQueryItems([
+            "company_id": companyID
+        ])
+
+        let requestBuilder: RequestBuilder<[Employee]>.Type = requestBuilderFactory.getBuilder()
+
+        return requestBuilder.init(method: "GET", URLString: (url?.string ?? URLString), parameters: parameters, isBody: false)
+    }
 }

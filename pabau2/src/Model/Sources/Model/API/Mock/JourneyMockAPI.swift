@@ -4,7 +4,7 @@ import SwiftDate
 
 public struct JourneyMockAPI: MockAPI, JourneyAPI {
 	public init () {}
-	public func getJourneys(date: Date) -> EffectWithResult<[Journey], RequestError> {
+    public func getJourneys(date: Date, searchTerm: String?) -> EffectWithResult<[Journey], RequestError> {
 		mockSuccess(Self.mockJourneys, delay: 0.2)
 	}
 

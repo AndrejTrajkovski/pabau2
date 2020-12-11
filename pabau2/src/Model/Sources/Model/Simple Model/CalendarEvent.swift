@@ -252,7 +252,7 @@ extension CalendarEvent {
 									 end_date: mockStartEnd.1,
 									 employeeId: employee.id,
 									 employeeInitials: nil,
-									 locationId: employee.locationId,
+									 locationId: employee.locationId ?? -1,
 									 locationName: "",
 									 _private: false,
 									 extraEmployees: [],
@@ -275,7 +275,7 @@ extension CalendarEvent {
 								  start_date: mockStartEnd.0,
 								  end_date: mockStartEnd.1,
 								  employeeId: employee.id,
-								  locationId: employee.locationId,
+								  locationId: employee.locationId ?? -1,
 								  _private: false,
 								  _description: "",
 								  employeeName: employee.name)

@@ -16,7 +16,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         Intercom.setApiKey("ios_sdk-f223a9e3f380f60354bc459db9d5c0349c61fd7c",
                            forAppId: "m3fk3gh1")
 
-		SwiftDate.defaultRegion = Region.local
+		SwiftDate.defaultRegion = Region.UTC
 		if let windowScene = scene as? UIWindowScene {
 			let reducer = appReducer
 //				.debug()
@@ -26,7 +26,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 			let hasSeenWalkthrough = userDefaults.hasSeenAppIntroduction
 			let env = AppEnvironment(
 				loginAPI: LoginMockAPI(delay: 1),
-				journeyAPI: JourneyMockAPI(),
+				journeyAPI: JourneyLiveAPI(),
 				clientsAPI: ClientsMockAPI(),
 				userDefaults: userDefaults
 			)

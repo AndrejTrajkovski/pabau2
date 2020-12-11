@@ -85,7 +85,7 @@ extension Shift {
 				let shiftEnd = Calendar.gregorian.date(byAdding: .hour,
 													   value: Int.random(in: 7...12),
 														to: shiftStart)!
-				shifts.append(Shift.init(id: idx, employeeId: emp.id, locationId: emp.locationId, date: startOfDay, startTime: shiftStart, endTime: shiftEnd))
+				shifts.append(Shift.init(id: idx, employeeId: emp.id, locationId: emp.locationId ?? -1, date: startOfDay, startTime: shiftStart, endTime: shiftEnd))
 			}
 		}
 		let byDate = Dictionary.init(grouping: shifts, by: { $0.date })
