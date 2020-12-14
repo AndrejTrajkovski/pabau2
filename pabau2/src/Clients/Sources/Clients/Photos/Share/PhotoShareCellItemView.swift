@@ -42,7 +42,11 @@ struct ShareThumbnailImageSideBySideView: View {
                             if item.type == .subtitle {
                                 VStack(alignment: .leading) {
                                     HStack {
-                                        Text("BEFORE").foregroundColor(.white).font(Font.semibold17).padding(8).background(Color.turquoiseBlue)
+                                        Text("BEFORE")
+                                            .foregroundColor(.white)
+                                            .font(.proSemibold(size: 17))
+                                            .padding(8)
+                                            .background(Color.turquoiseBlue)
                                         Spacer()
                                     }
                                     
@@ -63,7 +67,11 @@ struct ShareThumbnailImageSideBySideView: View {
                                     Spacer()
                                     HStack {
                                         Spacer()
-                                        Text("AFTER").foregroundColor(.white).font(Font.semibold17).padding(8).background(Color.turquoiseBlue)
+                                        Text("AFTER")
+                                            .foregroundColor(.white)
+                                            .font(.proSemibold(size: 17))
+                                            .padding(8)
+                                            .background(Color.turquoiseBlue)
                                     }
                                 }
                             }
@@ -82,7 +90,9 @@ struct ShareThumbnailBottom: View {
             GeometryReader { geo in
                 VStack {
                     Spacer()
-                    ShareReviewBottom().frame(width: geo.size.width + 2, height: 120).background(Color.clear)
+                    ShareReviewBottom()
+                        .frame(width: geo.size.width + 2, height: 120)
+                        .background(Color.clear)
                 }
             }
         } else {
@@ -112,7 +122,9 @@ struct ShareTitleBottom: View {
     let title: String
     
     var body: some View {
-        Text(title).font(Font.semibold16)
+        Text(title)
+            .font(.proSemibold(size: 16))
+            .foregroundColor(.black42)
     }
 }
 
@@ -128,8 +140,12 @@ struct ShareRatingBottom: View {
 struct ShareSubtitleBottom: View {
     var body: some View {
         VStack(alignment: .leading) {
-            Text("Concept Facelift Results").font(Font.semibold16).foregroundColor(Color.black42)
-            Text("www.conceptfacelit.com").font(Font.medium12).foregroundColor(Color.black42)
+            Text("Concept Facelift Results")
+                .font(.proSemibold(size: 16))
+                .foregroundColor(Color.black42)
+            Text("www.conceptfacelit.com")
+                .font(.proMedium(size: 12))
+                .foregroundColor(Color.black42)
         }
     }
 }
@@ -143,8 +159,11 @@ struct ShareReviewBottom: View {
                 Spacer()
                 ZStack {
                     Spacer()
-                    Image("logo-pabau").padding().background(Color.gray249)
-                }.frame(height: 68).background(Color.gray249)
+                    Image("logo-pabau")
+                        .padding()
+                        .background(Color.gray249)
+                }.frame(height: 68)
+                .background(Color.gray249)
                 
             }
             
@@ -153,7 +172,8 @@ struct ShareReviewBottom: View {
                     Image("ico-quote")
                     Text("I have been going to this place for 2 number of years, and I like what they do to my face")
                         .fixedSize(horizontal: false, vertical: true)
-                        .font(Font.semibold14)
+                        .font(.proSemibold(size: 14))
+                        .foregroundColor(.black42)
                         .lineSpacing(3)
                         .offset(x: 0, y: -28)
                 }.padding()
