@@ -57,3 +57,17 @@ public extension Font {
 	static let light30 = Font.system(size: 30, weight: .light)
 }
 #endif
+
+public extension Font {
+    static func proSemibold(size: CGFloat) -> Font {
+        return Font.custom("SFProText-Semibold", size: size)
+    }
+    
+    static func proMediumItalic(size: CGFloat) -> Font {
+        return Font.custom("SFProText-MediumItalic", size: size)
+    }
+    
+    static func proMedium(size: CGFloat) -> Font {
+        return Font.custom("SFProText-Medium", size: size)
+    }
+}
