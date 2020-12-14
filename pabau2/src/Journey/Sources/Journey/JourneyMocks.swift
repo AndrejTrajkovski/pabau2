@@ -7,7 +7,7 @@ import Form
 import ComposableArchitecture
 
 struct JourneyMocks {
-	
+
 	static let checkIn = CheckInContainerState(
 		journey:
 			Journey.init(id: 1,
@@ -33,7 +33,7 @@ struct JourneyMocks {
 }
 
 extension JourneyMocks {
-	
+
 	static let aftercare = Aftercare(
 		profile: SingleSelectImages(
 			images: [ImageUrl("emily"),

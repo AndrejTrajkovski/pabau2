@@ -14,9 +14,14 @@ public enum PatientCompleteAction {
 	case didTouchComplete
 }
 
-struct PatientCompleteForm: View {
+public struct PatientCompleteForm: View {
 	let store: Store<Bool, PatientCompleteAction>
-	var body: some View {
+
+	public init(store: Store<Bool, PatientCompleteAction>) {
+		self.store = store
+	}
+
+	public var body: some View {
 		print("PatientCompleteForm body")
 		return WithViewStore(store) { viewStore in
 			VStack(spacing: 32) {

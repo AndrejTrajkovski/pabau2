@@ -15,15 +15,15 @@ public enum FormTemplateAction {
 }
 
 public struct ListDynamicForm: View {
-	
+
 	let store: Store<FormTemplate, FormTemplateAction>
-	
+
 	public init(store: Store<FormTemplate, FormTemplateAction>) {
 		self.store = store
 		UITableViewHeaderFooterView.appearance().tintColor = UIColor.white
 		UITableView.appearance().separatorStyle = .none
 	}
-	
+
 	public var body: some View {
 		print("ListDynamicForm body")
 		return List {

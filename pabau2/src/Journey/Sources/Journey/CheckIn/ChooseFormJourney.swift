@@ -37,7 +37,7 @@ struct ChooseFormJourney: View {
 	let store: Store<ChooseFormJourneyState, ChooseFormAction>
 	let mode: ChooseFormMode
 	let journey: Journey?
-	
+
 	var body: some View {
 		ChooseFormList(store:
 						self.store.scope(
@@ -64,7 +64,7 @@ extension ChooseFormJourneyState {
 	}
 }
 
-fileprivate func updateWithKeepingOld(forms: inout IdentifiedArray<Int, FormTemplate>,
+private func updateWithKeepingOld(forms: inout IdentifiedArray<Int, FormTemplate>,
 						  finalSelectedTemplatesIds: [Int],
 						  allTemplates: IdentifiedArrayOf<FormTemplate>) {
 	let oldWithData = forms.filter { old in

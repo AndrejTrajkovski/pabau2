@@ -65,7 +65,7 @@ struct DoctorNavigation: View {
 		let isChooseConsentActive: Bool
 		let journey: Journey
 	}
-	
+
 	var body: some View {
 		print("DoctorNavigation body")
 		return VStack {
@@ -115,7 +115,7 @@ struct DoctorSummaryStepList: View {
 		self.stepsVMs = stepsVMs
 		self.onSelect = onSelect
 	}
-	
+
 	var body: some View {
 		VStack(spacing: 0) {
 			ForEach(self.stepsVMs, id: \.stepType) { step in

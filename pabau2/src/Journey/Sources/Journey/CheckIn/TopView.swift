@@ -12,18 +12,18 @@ public enum TopViewAction: Equatable {
 
 struct TopView: View {
 	let store: Store<StepsViewState, TopViewAction>
-	
+
 	struct State: Equatable {
 		let totalSteps: Int
 		let currentStepIdx: Int
 		let journey: Journey
 		init(state: StepsViewState) {
-			self.totalSteps = state.forms.count
+			self.totalSteps = state.stepForms.count
 			self.currentStepIdx = state.selectedIdx
 			self.journey = state.journey
 		}
 	}
-	
+
 	var body: some View {
 		WithViewStore(store.scope(state: State.init(state:))) { viewStore in
 			TopViewPlain(totalSteps: viewStore.state.totalSteps,

@@ -6,23 +6,18 @@ import Form
 
 public protocol StepsViewState {
 	var journey: Journey { get }
-	var forms: [MetaFormAndStatus] { get }
+	var stepForms: [StepFormInfo] { get }
 	var selectedIdx: Int { get set }
-	func selectedForm() -> MetaFormAndStatus
 }
 
 extension StepsViewState {
 
-	func selectedForm() -> MetaFormAndStatus {
-		forms[selectedIdx]
-	}
-	
 	mutating func select(idx: Int) {
 		selectedIdx = idx
 	}
-	
+
 	mutating func next() {
-		if forms.count - 1 > selectedIdx {
+		if stepForms.count - 1 > selectedIdx {
 			selectedIdx += 1
 		}
 	}
@@ -34,27 +29,24 @@ extension StepsViewState {
 	}
 
 	mutating func goToNextUncomplete() {
-		forms.firstIndex(where: { !$0.isComplete }).map {
+		stepForms.firstIndex(where: { !$0.status }).map {
 			selectedIdx = $0
 		}
 	}
 }
 
-let stepsViewReducer = Reducer<StepsViewState, StepsViewAction, JourneyEnvironment> { state, action, _ in
-	switch action {
-	case .didSelectFlatFormIndex(let idx):
-		state.selectedIdx = idx
-	case .didSelectNextStep:
-		state.next()
-	case .didSelectPrevStep:
-		state.previous()
+struct StepsViewReducer<T: StepsViewState> {
+	let reducer = Reducer<T, StepsViewAction, JourneyEnvironment> { state, action, _ in
+		switch action {
+		case .didSelectFlatFormIndex(let idx):
+			state.selectedIdx = idx
+		case .didSelectNextStep:
+			state.next()
+		case .didSelectPrevStep:
+			state.previous()
+		}
+		return .none
 	}
-	return .none
-}
-
-public struct StepSelectorElement: Equatable {
-	let isComplete: Bool
-	let title: String
 }
 
 public enum StepsViewAction {
@@ -67,10 +59,10 @@ struct StepSelector: View {
 	let cellWidth: CGFloat = 100
 	let cellHeight: CGFloat = 80
 	let spacing: CGFloat = 8
-	
+
 	struct State: Equatable {
 		let maxVisibleCells = 5
-		let stepForms: [StepSelectorElement]
+		let stepForms: [StepFormInfo]
 		let selectedIndex: Int
 		let numberOfVisibleSteps: Int
 		let shouldShowLeftArrow: Bool
@@ -79,7 +71,7 @@ struct StepSelector: View {
 
 	let store: Store<StepsViewState, StepsViewAction>
 	@ObservedObject var viewStore: ViewStore<State, StepsViewAction>
-	
+
 	init (store: Store<StepsViewState, StepsViewAction>) {
 		self.store = store
 		self.viewStore = ViewStore(
@@ -114,10 +106,10 @@ struct StepSelector: View {
 		}
 	}
 
-	func stepView(for viewModel: StepSelectorElement) -> some View {
+	func stepView(for viewModel: StepFormInfo) -> some View {
 		VStack {
 			Image(systemName: "checkmark.circle.fill")
-				.foregroundColor(viewModel.isComplete ? .blue : Color(hex: "C7C7CC"))
+				.foregroundColor(viewModel.status ? .blue : Color(hex: "C7C7CC"))
 				.frame(width: 30, height: 30)
 			Text(viewModel.title.uppercased())
 				.fixedSize(horizontal: false, vertical: true)
@@ -147,15 +139,16 @@ struct StepSelector: View {
 
 extension StepSelector.State {
 	init(state: StepsViewState) {
-		let stepForms = zip(state.forms, state.forms.indices).map {
-			StepSelectorElement(isComplete: $0.0.isComplete,
-								title: $0.0.form.title)
-		}
+//		let stepForms = zip(state.forms, state.forms.indices).map {
+//			StepFormInfo(isComplete: $0.0.isComplete,
+//								title: $0.0.form.title)
+//		}
+		let stepForms = state.stepForms
 		let shouldShowArrows = stepForms.count > maxVisibleCells
-		self.stepForms = stepForms
 		self.selectedIndex = state.selectedIdx
 		self.numberOfVisibleSteps = min(stepForms.count, maxVisibleCells)
 		self.shouldShowLeftArrow = shouldShowArrows && (state.selectedIdx != 0)
 		self.shouldShowRightArrow = shouldShowArrows && (state.selectedIdx != stepForms.count - 1)
+		self.stepForms = state.stepForms
 	}
 }

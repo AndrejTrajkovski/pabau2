@@ -5,41 +5,41 @@ import Util
 import Form
 
 public struct CheckInContainerState: Equatable {
-	
+
 	let journey: Journey
 	let pathway: Pathway
-	
+
 	var patientDetails: PatientDetails
 	var patientDetailsStatus: Bool
-	
+
 	var medicalHistory: FormTemplate
 	var medicalHistoryStatus: Bool
-	
+
 	var consents: IdentifiedArrayOf<FormTemplate>
 	var consentsStatuses: [FormTemplate.ID: Bool]
-	
+
 	var treatmentNotes: IdentifiedArrayOf<FormTemplate>
 	var treatmentNotesStatuses: [FormTemplate.ID: Bool]
-	
+
 	var prescriptions: IdentifiedArrayOf<FormTemplate>
 	var prescriptionsStatuses: [FormTemplate.ID: Bool]
-	
+
 	var allTreatmentForms: IdentifiedArrayOf<FormTemplate>
 	var allConsents: IdentifiedArrayOf<FormTemplate>
-	
+
 	var aftercare: Aftercare?
 	var aftercareStatus: Bool
-	
+
 	var isPatientComplete: Bool
-	
+
 	var photos: PhotosState
-	
+
 	var selectedConsentsIds: [FormTemplate.ID]
 	var selectedTreatmentFormsIds: [FormTemplate.ID]
-	
+
 	var patientSelectedIndex: Int
 	var doctorSelectedIndex: Int
-	
+
 	var passcodeState = PasscodeState()
 	var isEnterPasscodeActive: Bool = false
 	var isChooseConsentActive: Bool = false
@@ -50,7 +50,7 @@ public struct CheckInContainerState: Equatable {
 }
 
 extension CheckInContainerState {
-	
+
 	var doctorSummary: DoctorSummaryState {
 		get {
 			DoctorSummaryState(journey: journey,
@@ -66,7 +66,7 @@ extension CheckInContainerState {
 			self.isDoctorCheckInMainActive = newValue.isDoctorCheckInMainActive
 		}
 	}
-	
+
 	var chooseTreatments: ChooseFormJourneyState {
 		get {
 			return ChooseFormJourneyState(
@@ -82,7 +82,7 @@ extension CheckInContainerState {
 			self.selectedTreatmentFormsIds = newValue.selectedTemplatesIds
 		}
 	}
-	
+
 	var chooseConsents: ChooseFormJourneyState {
 		get {
 			return ChooseFormJourneyState(
@@ -98,7 +98,7 @@ extension CheckInContainerState {
 			self.selectedConsentsIds = newValue.selectedTemplatesIds
 		}
 	}
-	
+
 	var passcode: PasscodeContainerState {
 		get {
 			PasscodeContainerState(
@@ -113,12 +113,12 @@ extension CheckInContainerState {
 			self.isDoctorCheckInMainActive = newValue.isDoctorCheckInMainActive
 		}
 	}
-	
+
 	var isHandBackDeviceActive: Bool {
 		get { isPatientComplete }
 		set { isPatientComplete = newValue }
 	}
-	
+
 	var handback: HandBackDeviceState {
 		get {
 			HandBackDeviceState(isEnterPasscodeActive: self.isEnterPasscodeActive,
@@ -129,7 +129,7 @@ extension CheckInContainerState {
 }
 
 extension CheckInContainerState {
-	
+
 	init(journey: Journey,
 		 pathway: Pathway,
 		 patientDetails: PatientDetails,
@@ -161,9 +161,8 @@ extension CheckInContainerState {
 	}
 }
 
-
 extension CheckInContainerState {
-	
+
 	var doctorCheckIn: CheckInDoctorState {
 		get {
 			CheckInDoctorState(
@@ -190,7 +189,7 @@ extension CheckInContainerState {
 			self.doctorSelectedIndex = newValue.doctorSelectedIndex
 		}
 	}
-	
+
 	var patientCheckIn: CheckInPatientState {
 		get {
 			CheckInPatientState(
@@ -205,7 +204,7 @@ extension CheckInContainerState {
 				isPatientComplete: isPatientComplete,
 				patientSelectedIndex: patientSelectedIndex)
 		}
-		
+
 		set {
 			self.patientDetails = newValue.patientDetails
 			self.patientDetailsStatus = newValue.patientDetailsStatus

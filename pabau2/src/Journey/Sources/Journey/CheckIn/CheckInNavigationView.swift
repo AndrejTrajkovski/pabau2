@@ -100,7 +100,7 @@ public struct CheckInNavigationView: View {
 		self.store = store
 		self._isRunningAnimation = State.init(initialValue: false)
 	}
-	
+
 	public var body: some View {
 		WithViewStore(store.scope(state: { $0.journey })) { viewStore in
 			NavigationView {

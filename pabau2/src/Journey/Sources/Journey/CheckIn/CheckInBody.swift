@@ -7,7 +7,7 @@ import Form
 
 struct CheckInBody: View {
 	let store: Store<StepsViewState, StepsViewAction>
-	
+
 	var body: some View {
 		VStack {
 			StepSelector(store: store).frame(height: 80)

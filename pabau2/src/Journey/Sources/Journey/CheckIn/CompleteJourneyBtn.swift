@@ -8,7 +8,7 @@ public enum CompleteJourneyBtnAction {
 }
 
 struct DoctorSummaryCompleteBtn: View {
-	let store: Store<[MetaFormAndStatus], CheckInContainerAction>
+	let store: Store<[StepFormInfo], CheckInContainerAction>
 	struct State: Equatable {
 		let isBtnDisabled: Bool
 	}
@@ -34,7 +34,7 @@ struct CompleteJourneyBtn: View {
 }
 
 extension DoctorSummaryCompleteBtn.State {
-	init(state: [MetaFormAndStatus]) {
-		self.isBtnDisabled = !state.allSatisfy { $0.isComplete }
+	init(state: [StepFormInfo]) {
+		self.isBtnDisabled = !state.allSatisfy { $0.status }
 	}
 }

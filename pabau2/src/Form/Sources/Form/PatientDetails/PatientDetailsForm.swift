@@ -17,34 +17,32 @@ public struct PatientDetailsForm: View {
 	}
 
 	public var body: some View {
-		print("Patient details body")
-		return
-			ScrollView {
-				VStack {
-					PatientDetailsTextFields(vms: self.vms)
-					Group {
-						SwitchCell(text: Texts.emailConfirmations,
-								   store: store.scope(
-										state: { $0.emailComm },
-										action: { .emailComm($0) })
-						)
-						SwitchCell(text: Texts.smsReminders,
-								   store: store.scope(
-										state: { $0.smsComm },
-										action: { .smsComm($0) })
-						)
-						SwitchCell(text: Texts.phone,
-								   store: store.scope(
-										state: { $0.phoneComm },
-										action: { .phoneComm($0) })
-						)
-						SwitchCell(text: Texts.post,
-								   store: store.scope(
-										state: { $0.postComm },
-										action: { .postComm($0) })
-						)
-					}.switchesSection(title: Texts.communications)
-				}
+		ScrollView {
+			VStack {
+				PatientDetailsTextFields(vms: self.vms)
+				Group {
+					SwitchCell(text: Texts.emailConfirmations,
+							   store: store.scope(
+								state: { $0.emailComm },
+								action: { .emailComm($0) })
+					)
+					SwitchCell(text: Texts.smsReminders,
+							   store: store.scope(
+								state: { $0.smsComm },
+								action: { .smsComm($0) })
+					)
+					SwitchCell(text: Texts.phone,
+							   store: store.scope(
+								state: { $0.phoneComm },
+								action: { .phoneComm($0) })
+					)
+					SwitchCell(text: Texts.post,
+							   store: store.scope(
+								state: { $0.postComm },
+								action: { .postComm($0) })
+					)
+				}.switchesSection(title: Texts.communications)
+			}
 		}
 	}
 }
