@@ -34,8 +34,8 @@ public struct CheckInContainerState: Equatable {
 	
 	var photos: PhotosState
 	
-	var selectedConsentsIds: [Int]
-	var selectedTreatmentFormsIds: [Int]
+	var selectedConsentsIds: [FormTemplate.ID]
+	var selectedTreatmentFormsIds: [FormTemplate.ID]
 	
 	var patientSelectedIndex: Int
 	var doctorSelectedIndex: Int

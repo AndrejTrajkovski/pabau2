@@ -30,19 +30,19 @@ public struct ChooseFormJourneyState: Equatable {
 	var forms: IdentifiedArrayOf<FormTemplate>
 	var templates: IdentifiedArrayOf<FormTemplate>
 	var templatesLoadingState: LoadingState = .initial
-	var selectedTemplatesIds: [Int]
+	var selectedTemplatesIds: [FormTemplate.ID]
 }
 
 struct ChooseFormJourney: View {
 	let store: Store<ChooseFormJourneyState, ChooseFormAction>
 	let mode: ChooseFormMode
 	let journey: Journey?
-
+	
 	var body: some View {
 		ChooseFormList(store:
-			self.store.scope(
-				state: { $0.chooseForm }, action: { $0 }),
-									 mode: self.mode)
+						self.store.scope(
+							state: { $0.chooseForm }, action: { $0 }),
+					   mode: self.mode)
 			.journeyBase(self.journey, .long)
 	}
 }

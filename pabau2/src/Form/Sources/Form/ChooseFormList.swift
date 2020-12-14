@@ -6,20 +6,12 @@ import ComposableArchitecture
 public struct ChooseFormState: Equatable {
 	public var templates: IdentifiedArrayOf<FormTemplate>
 	public var templatesLoadingState: LoadingState = .initial
-	public var selectedTemplatesIds: [Int]
+	public var selectedTemplatesIds: [FormTemplate.ID]
 
 	public init(
 		templates: IdentifiedArrayOf<FormTemplate>,
-		selectedTemplatesIds: [Int]
-	) {
-		self.templates = templates
-		self.selectedTemplatesIds = selectedTemplatesIds
-	}
-
-	public init(
-		templates: IdentifiedArrayOf<FormTemplate>,
-		templatesLoadingState: LoadingState,
-		selectedTemplatesIds: [Int]
+		templatesLoadingState: LoadingState = .initial,
+		selectedTemplatesIds: [FormTemplate.ID]
 	) {
 		self.templates = templates
 		self.templatesLoadingState = templatesLoadingState
