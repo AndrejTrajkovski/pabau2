@@ -11,8 +11,7 @@ struct CheckInPatientContainer: View {
 				CheckInPatient(store: store.scope(
 								state: { $0.patientCheckIn },
 								action: { .patient($0) })
-				).navigationBarTitle("")
-				.navigationBarHidden(true)
+				)
 				handBackDeviceLink(viewStore.state)
 			}
 		}
@@ -122,30 +121,55 @@ public enum CheckInPatientAction {
 struct CheckInPatient: View {
 	let store: Store<CheckInPatientState, CheckInPatientAction>
 	var body: some View {
-		WithViewStore(store) { viewStore in
-			VStack (spacing: 0) {
-				TopView(store: self.store
-							.scope(state: { $0 },
-								   action: { .topView($0) }))
+		VStack (spacing: 0) {
+			TopView(store: store
+						.scope(state: { $0 },
+							   action: { .topView($0) }))
+			VStack {
 				StepSelector(store: store.scope(state: { $0 },
-												action: { .stepsView($0)})
+												action: { .stepsView($0) })
 				).frame(height: 80)
 				Divider()
 					.frame(maxWidth: .infinity)
 					.shadow(color: Color(hex: "C1C1C1"), radius: 4, y: 2)
-				formsStack(viewStore.state)
-					.padding(16)
+				Forms(store: store)
+			}.padding([.leading, .trailing], 40)
+		}
+		.navigationBarTitle("")
+		.navigationBarHidden(true)
+	}
+}
+
+struct Forms: View {
+	let store: Store<CheckInPatientState, CheckInPatientAction>
+
+	struct State: Equatable {
+		let stepTypes: [StepType]
+		let selectedIndex: Int
+		init(state: StepsViewState) {
+			self.stepTypes = state.stepTypes()
+			self.selectedIndex = state.selectedIdx
+		}
+	}
+
+	var body: some View {
+		WithViewStore(store.scope(state: State.init(state:))) { viewStore in
+			//			forms(viewStore.state)
+			SwiftUIPagerView(index: viewStore.binding(get: { $0.selectedIndex },
+													  send: { .stepsView(.didSelectFlatFormIndex($0)) }),
+							 pages: viewStore.stepTypes) { size, item in
+				form(stepType: item).frame(width: size.width, height: size.height)
 			}
+				.padding([.bottom, .top], 32)
 		}
 	}
 
 	@ViewBuilder
-	func formsStack(_ state: CheckInPatientState) -> some View {
+	func forms(_ stepTypes: [StepType]) -> some View {
 		GeometryReader { geo in
 			ScrollView(.horizontal) {
 				HStack {
-					ForEach(state.stepTypes(), content: form(stepType:))
-//						.padding(64)
+					ForEach(stepTypes, content: form(stepType:))
 						.frame(width: geo.size.width, height: geo.size.height)
 				}
 			}
@@ -169,11 +193,51 @@ struct CheckInPatient: View {
 						 content: ListDynamicForm.init(store:)
 			)
 		case .patientComplete:
-			PatientCompleteForm(store:
-									store.scope(state: { $0.isPatientComplete }, action: { .patientComplete($0)})
+			PatientCompleteForm(store: store.scope(state: { $0.isPatientComplete }, action: { .patientComplete($0)})
 			)
 		default:
 			EmptyView()
+		}
+	}
+}
+
+struct SwiftUIPagerView<TModel: Identifiable ,TView: View >: View {
+	@Binding var index: Int
+	@State private var offset: CGFloat = 0
+	@State private var isGestureActive: Bool = false
+	// 1
+	var pages: [TModel]
+	var builder : (CGSize, TModel) -> TView
+	var body: some View {
+		GeometryReader { geometry in
+			ScrollView(.horizontal, showsIndicators: false) {
+				LazyHStack(alignment: .center, spacing: 0) {
+					ForEach(self.pages) { page in
+						self.builder(geometry.size, page)
+					}
+				}
+			}
+			// 2
+			.content.offset(x: self.isGestureActive ? self.offset : -geometry.size.width * CGFloat(self.index))
+			// 3
+			.frame(width: geometry.size.width, height: nil, alignment: .leading)
+			.gesture(DragGesture().onChanged({ value in
+				// 4
+				self.isGestureActive = true
+				// 5
+				self.offset = value.translation.width + -geometry.size.width * CGFloat(self.index)
+			}).onEnded({ value in
+				if -value.predictedEndTranslation.width > geometry.size.width / 2, self.index < self.pages.endIndex - 1 {
+					self.index += 1
+				}
+				if value.predictedEndTranslation.width > geometry.size.width / 2, self.index > 0 {
+					self.index -= 1
+				}
+				// 6
+				withAnimation { self.offset = -geometry.size.width * CGFloat(self.index) }
+				// 7
+				DispatchQueue.main.async { self.isGestureActive = false }
+			}))
 		}
 	}
 }
