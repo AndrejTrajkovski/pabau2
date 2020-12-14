@@ -10,23 +10,42 @@ public struct PhotoShareState: Equatable {
     
     var isMessagePosted: Bool = false
     var shouldDisplayActivity: Bool = false
+    var shouldDisplayFacebookDialog: Bool = false
+    
     
 //    init(photo: PhotoViewModel) {
 //        self.photo = photo
 //    }
 }
 
-public enum PhotoShareAction {
+public enum PhotoShareAction: Equatable {
     case share
     case textFieldChanged
     case messagePosted
     case backButton
+    case facebook(ShareFacebookAction)
+    
+    public enum ShareFacebookAction {
+        case display
+        case didCancel
+        case didComplete
+        case didFailed
+    }
 }
 
 var photoShareViewReducer = Reducer<PhotoShareState, PhotoShareAction, ClientsEnvironment> { state, action, env in
     switch action {
     case .messagePosted:
         state.isMessagePosted = !state.isMessagePosted
+    case .facebook(.display):
+        state.shouldDisplayFacebookDialog = !state.shouldDisplayFacebookDialog
+    case .facebook(.didCancel):
+        state.shouldDisplayFacebookDialog = false
+    case .facebook(.didComplete):
+        state.shouldDisplayFacebookDialog = false
+        state.isMessagePosted = true
+    case .facebook(.didFailed):
+        state.shouldDisplayFacebookDialog = false
     default:
         break
     }
@@ -83,6 +102,7 @@ struct PhotoShareView: View {
                             Spacer()
                                 .frame(width: 15)
                             Button(action: {
+                                viewStore.send(.facebook(.display))
                             }) {
                                 SocialTitleImage(imageName: "ico-share-facebook", socialMediaTitle: "Facebook", isSystemIcon: false)
                             }
@@ -127,6 +147,10 @@ struct PhotoShareView: View {
                         }
                 }
                 
+                if viewStore.shouldDisplayFacebookDialog {
+                    ShareFacebookViewController(viewStore: viewStore)
+                }
+                
             }.background(Color.paleGrey)
             .navigationBarTitle("Status Update").font(Font.semibold17)
             .navigationBarBackButtonHidden(true)
@@ -143,7 +167,8 @@ struct PhotoShareView: View {
                     }.font(Font.regular17)
                 })
         }
-    }
+    }    
+    
 }
 
 struct SocialTitleImage: View {
