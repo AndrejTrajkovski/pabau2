@@ -3,6 +3,8 @@ import Util
 
 struct MessagePostView: View {
     
+    var param: MessageSuccessInfo = MessageSuccessInfo()
+    
     var body: some View {
         GeometryReader { geo in
             ZStack {
@@ -10,11 +12,10 @@ struct MessagePostView: View {
                     VStack(spacing: 15) {
                         Image("ico-success")
                             .clipShape(Circle())
-                        
                         VStack {
-                            Text("Succesfully saved the image.")
+                            Text(param.title)
                                 .font(Font.bold17)
-                            Text("Your images has been saved locally")
+                            Text(param.subtitle)
                                 .font(Font.regular17)
                         }
                     }
@@ -38,15 +39,3 @@ struct MessagePostView: View {
     }
 }
 
-
-
-extension UIView {
-
-    func asImage() -> UIImage {
-        UIGraphicsBeginImageContext(self.frame.size)
-        self.layer.render(in:UIGraphicsGetCurrentContext()!)
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return UIImage(cgImage: image!.cgImage!)
-    }
-}

@@ -70,18 +70,9 @@ struct PhotoCompareState: Equatable {
 extension PhotoCompareState {
     var shareState: PhotoShareState {
         get {
-            PhotoShareState(photo: selectedPhoto!)
+            PhotoShareState()
         }
     }
-    
-//    var shareSelectState: PhotoShareSelectState {
-//        set {
-//
-//        }
-//        get {
-//            PhotoShareSelectState(photo: selectedPhoto!)
-//        }
-//    }
 }
 
 var photoCompareReducer = Reducer.combine(

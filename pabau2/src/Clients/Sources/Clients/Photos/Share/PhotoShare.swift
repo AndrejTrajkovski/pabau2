@@ -5,17 +5,21 @@ import Util
 import UIKit
 
 public struct PhotoShareState: Equatable {
-    var photo: PhotoViewModel!
     var message: String = ""
     
     var isMessagePosted: Bool = false
     var shouldDisplayActivity: Bool = false
     var shouldDisplayFacebookDialog: Bool = false
+    var shouldDisplaySuccessMessage: Bool = false
     
+    var messageSuccess: MessageSuccessInfo = MessageSuccessInfo()
     
-//    init(photo: PhotoViewModel) {
-//        self.photo = photo
-//    }
+    var imageData: Data!
+}
+
+public struct MessageSuccessInfo: Equatable {
+    var title: String = ""
+    var subtitle: String = ""
 }
 
 public enum PhotoShareAction: Equatable {
@@ -24,6 +28,8 @@ public enum PhotoShareAction: Equatable {
     case messagePosted
     case backButton
     case facebook(ShareFacebookAction)
+    case saveToCamera
+    case hideMessageView
     
     public enum ShareFacebookAction {
         case display
@@ -43,9 +49,23 @@ var photoShareViewReducer = Reducer<PhotoShareState, PhotoShareAction, ClientsEn
         state.shouldDisplayFacebookDialog = false
     case .facebook(.didComplete):
         state.shouldDisplayFacebookDialog = false
-        state.isMessagePosted = true
+        state.messageSuccess = MessageSuccessInfo(title: "Succesfully shared an image",
+                                                  subtitle: "Your images has been shared on Facebook")
+        state.shouldDisplaySuccessMessage = true
     case .facebook(.didFailed):
         state.shouldDisplayFacebookDialog = false
+    case .saveToCamera:
+        state.messageSuccess = MessageSuccessInfo(title: "Succesfully saved the image.",
+                                                  subtitle: "Your images has been saved locally")
+        
+        let imageSaver = ImageSaver()
+        if let uiImage = UIImage(data: state.imageData) {
+            imageSaver.writeToPhotoAlbum(image: uiImage)
+        }
+        
+        state.shouldDisplaySuccessMessage = true
+    case .hideMessageView:
+        state.isMessagePosted = false
     default:
         break
     }
@@ -65,8 +85,10 @@ struct PhotoShareView: View {
                     HStack(alignment: .top, spacing: 5) {
                         Spacer()
                             .frame(width: 20, height: 120)
-                        PhotoCell(photo: viewStore.photo)
-                            .frame(width: 60, height: 60, alignment: .leading)
+                        Image(uiImage: UIImage(data: viewStore.imageData)!)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 120, height: 80, alignment: .leading)
                         TextField("Say something abouth your photo",
                                   text: viewStore.binding(get: { $0.message },
                                                           send: PhotoShareAction.textFieldChanged))
@@ -113,7 +135,7 @@ struct PhotoShareView: View {
                             Spacer()
                                 .frame(width: 15)
                             Button(action: {
-                                viewStore.send(.messagePosted)
+                                viewStore.send(.saveToCamera)
                             }) {
                                 SocialTitleImage(imageName: "photo", socialMediaTitle: "Save to Camera", isSystemIcon: true)
                             }
@@ -131,19 +153,15 @@ struct PhotoShareView: View {
                     Spacer()
                     
                 }.sheet(isPresented: $isShownActivity, content: {
-                    if extract(case: Photo.saved, from: viewStore.photo.basePhoto) != nil {
-                        if let savedPhoto = extract(case: Photo.saved, from: viewStore.photo.basePhoto) {
-                            ActivityViewController(activityItems: [UIImage(named: savedPhoto.url)!, "Say something"])
-                        }
-
+                    if let image = UIImage(data: viewStore.imageData) {
+                        ActivityViewController(activityItems: [image])
                     }
-                    
                 })
                 
-                if viewStore.isMessagePosted {
-                    MessagePostView()
+                if viewStore.shouldDisplaySuccessMessage {
+                    MessagePostView(param: viewStore.messageSuccess)
                         .onTapGesture {
-                            viewStore.send(.messagePosted)
+                            viewStore.send(.hideMessageView)
                         }
                 }
                 
@@ -152,7 +170,8 @@ struct PhotoShareView: View {
                 }
                 
             }.background(Color.paleGrey)
-            .navigationBarTitle("Status Update").font(Font.semibold17)
+            .navigationBarTitle("Status Update")
+            .font(Font.semibold17)
             .navigationBarBackButtonHidden(true)
             .navigationBarItems(
                 leading: HStack {

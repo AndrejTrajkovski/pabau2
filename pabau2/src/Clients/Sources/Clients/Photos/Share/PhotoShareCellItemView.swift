@@ -154,7 +154,6 @@ struct ShareReviewBottom: View {
     
     var body: some View {
         HStack(spacing: 0) {
-            
             VStack {
                 Spacer()
                 ZStack {

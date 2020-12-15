@@ -5,7 +5,7 @@ import Util
 import Form
 
 
-struct PhotoShareSelectItem: Equatable, Identifiable {
+public struct PhotoShareSelectItem: Equatable, Identifiable {
     enum PhotoShareSelectItemType: Equatable {
         case title(String)
         case subtitle
@@ -13,7 +13,7 @@ struct PhotoShareSelectItem: Equatable, Identifiable {
         case rating
         
     }
-    let id = UUID()
+    public let id = UUID()
     var type: PhotoShareSelectItemType = .title("")
     
     var photo: PhotoViewModel!
@@ -29,6 +29,8 @@ struct PhotoShareSelectState: Equatable {
     var photo: PhotoViewModel!
     var comparedPhoto: PhotoViewModel!
     
+    var selectedPhoto: SavedPhoto!
+    
     init(photo: PhotoViewModel, comparedPhoto: PhotoViewModel) {
         self.photo = photo
         self.comparedPhoto = comparedPhoto
@@ -39,6 +41,7 @@ struct PhotoShareSelectState: Equatable {
         items.append(PhotoShareSelectItem(type: .title("Botox Treatment"), photo: photo, comparedPhoto: comparedPhoto))
         items.append(PhotoShareSelectItem(type: .subtitle, photo: photo, comparedPhoto: comparedPhoto))
         items.append(PhotoShareSelectItem(type: .subtitle, photo: photo, comparedPhoto: comparedPhoto))
+        
     }
     
     init() {
@@ -52,7 +55,7 @@ struct PhotoShareSelectState: Equatable {
 }
 
 public enum PhotoShareSelectAction: Equatable {
-    case selectedItem
+    case selectedItem(PhotoShareSelectItem, Data)
     case shareAction(PhotoShareAction)
 }
 
@@ -65,9 +68,9 @@ var photoShareSelectViewReducer: Reducer<PhotoShareSelectState, PhotoShareSelect
     
     Reducer { state, action, env in
         switch action {
-        case .selectedItem:
-            state.selectedItem = state.items.first!
-            state.photoShareState = PhotoShareState(photo: state.photo)
+        case .selectedItem(let item, let imageData):
+            state.selectedItem = item
+            state.photoShareState = PhotoShareState(imageData: imageData)
             state.isItemSelected = true
         case .shareAction(.backButton):
             state.selectedItem = nil
@@ -92,12 +95,19 @@ struct PhotoShareSelectView: View {
                     ScrollView {
                         LazyVGrid(columns: layout, spacing: 10) {
                             ForEach(Array(viewStore.items)) { item in
-                                PhotoShareCellItemView(item: item)
+                                let cellItemView = PhotoShareCellItemView(item: item)
                                     .frame(width: geo.size.width / 2 - 30,
                                            height: geo.size.height / 3 - 30)
-                                    .onTapGesture {
-                                        viewStore.send(.selectedItem)
+                                
+                                cellItemView.onTapGesture {
+                                    convertViewToData(view: cellItemView,
+                                                      size: CGSize(width: geo.size.width / 2 - 30,
+                                                                   height: geo.size.height / 3 - 30)) { (data) in
+                                        if let imageData = data {
+                                            viewStore.send(.selectedItem(item, imageData))
+                                        }
                                     }
+                                }
                             }
                         }
                     }.padding(20)
@@ -113,4 +123,20 @@ struct PhotoShareSelectView: View {
             })
         }
     }
+    
+    func convertViewToData<V>(view: V, size: CGSize, completion: @escaping (Data?) -> Void) where V: View {
+        guard let rootVC = UIApplication.shared.windows.first?.rootViewController else {
+            completion(nil)
+            return
+        }
+        let imageVC = UIHostingController(rootView: view.edgesIgnoringSafeArea(.all))
+        imageVC.view.frame = CGRect(origin: .zero, size: size)
+        DispatchQueue.main.async {
+            rootVC.view.insertSubview(imageVC.view, at: 0)
+            let uiImage = imageVC.view.asImage(size: size)
+            imageVC.view.removeFromSuperview()
+            completion(uiImage.pngData())
+        }
+    }
+    
 }

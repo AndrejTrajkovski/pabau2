@@ -36,7 +36,7 @@ class AlertDialogViewController: UIViewController {
     override func viewDidLoad() {
                 
         content = SharePhotoContent()
-        var image: UIImage = UIImage(named: "emily")!
+        var image: UIImage = UIImage(data: viewStore.imageData)!
         
         let photo = SharePhoto()
         photo.image = image;
