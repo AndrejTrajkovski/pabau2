@@ -16,9 +16,11 @@ public let chooseFormJourneyReducer: Reducer<ChooseFormJourneyState,
 			switch action {
 			case .proceed:
 				//TODO:
-				updateWithKeepingOld(forms: &state.forms,
+				updateWithKeepingOld(
+                    forms: &state.forms,
 														 finalSelectedTemplatesIds: state.selectedTemplatesIds,
-														 allTemplates: state.templates)
+                    allTemplates: state.templates
+                )
 				return .none
 			default: break
 			}
@@ -31,6 +33,7 @@ public struct ChooseFormJourneyState: Equatable {
 	var templates: IdentifiedArrayOf<FormTemplate>
 	var templatesLoadingState: LoadingState = .initial
 	var selectedTemplatesIds: [Int]
+    var searchText: String = ""
 }
 
 struct ChooseFormJourney: View {

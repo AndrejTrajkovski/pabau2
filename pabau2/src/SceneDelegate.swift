@@ -28,7 +28,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 			let env = AppEnvironment(
 				loginAPI: LoginMockAPI(delay: 1),
 				journeyAPI: JourneyLiveAPI(),
-				clientsAPI: ClientsMockAPI(),
+				clientsAPI: ClientsLiveAPI(),
 				userDefaults: userDefaults
 			)
       window.rootViewController = UIHostingController(

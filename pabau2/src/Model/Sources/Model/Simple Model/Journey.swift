@@ -4,9 +4,11 @@ import NonEmpty
 public struct Journey: Codable, Identifiable, Equatable, Hashable {
 
 	public static var defaultEmpty: Journey {
-		Journey(id: -1,
+		Journey(
+            id: -1,
 						appointments: NonEmpty.init(Appointment.defaultEmpty),
-						patient: BaseClient.init(id: 0, firstName: "", lastName: "", dOB: "", email: "", avatar: "", phone: ""), employee: Employee.defaultEmpty, forms: [], photos: [], postCare: [], paid: "")
+            patient: BaseClient.init(id: 0, firstName: "", lastName: "", dOB: "", email: "", avatar: "", phone: ""), employee: Employee.defaultEmpty, forms: [], photos: [], postCare: [], paid: ""
+        )
 	}
 
 	public static func == (lhs: Self, rhs: Self) -> Bool {
@@ -38,7 +40,9 @@ public struct Journey: Codable, Identifiable, Equatable, Hashable {
 	public let paid: String?
 
 	public let media: [Media]?
-	public init(id: Int,
+    
+    public init(
+        id: Int,
 							appointments: NonEmpty<[Appointment]>,
 							patient: BaseClient,
 							pathway: Pathway? = nil,
@@ -48,7 +52,8 @@ public struct Journey: Codable, Identifiable, Equatable, Hashable {
 							photos: [SavedPhoto],
 							postCare: [JourneyPostCare],
 							media: [Media]? = nil,
-							paid: String) {
+        paid: String
+    ) {
 		self.id = id
 		self.appointments = appointments
 		self.patient = patient

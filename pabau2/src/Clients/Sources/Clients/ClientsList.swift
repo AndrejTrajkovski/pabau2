@@ -2,6 +2,7 @@ import SwiftUI
 import ComposableArchitecture
 import Model
 import Util
+import SharedComponents
 
 let clientsListReducer: Reducer<ClientsState, ClientsListAction, ClientsEnvironment> =
 	.combine (
@@ -95,12 +96,13 @@ struct ClientsList: View {
 		print("ClientsList")
 		return WithViewStore(store.scope(state: State.init(state:))) { viewStore in
 			VStack {
-				SearchBar(
+                SearchView(
                     placeholder: Texts.clientSearchPlaceholder,
 					text: viewStore.binding(
-						get: { $0.searchText }, send: { .onSearchText($0) }
-					)
+                        get: \.searchText,
+                        send: ClientsListAction.onSearchText
 				)
+                ).padding(.horizontal, 10)
 				List {
 					ForEachStore(
 						self.store.scope(

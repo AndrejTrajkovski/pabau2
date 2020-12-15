@@ -9,16 +9,31 @@ public struct Appointment: Codable, Equatable, Hashable {
 	}
 	
 	public static var defaultEmpty: Appointment {
-		Appointment.init(id: 1, from: Date() - 1.days, to: Date() - 1.days, employeeId: 1, employeeInitials: "", locationId: 1, locationName: "London", status: AppointmentStatus.mock.randomElement()!, service: BaseService.defaultEmpty)
+		Appointment.init(
+            id: 1, from: Date() - 1.days,
+            to: Date() - 1.days,
+            employeeId: 1,
+            employeeInitials: "",
+            locationId: 1,
+            locationName: "London",
+            status: AppointmentStatus.mock.randomElement()!,
+            service: BaseService.defaultEmpty
+        )
 	}
 
 	public typealias Id = Tagged<Appointment, Int>
 	
 	public let id: Appointment.Id
 
-	public let start_time: Date
+    public var start_time: Date {
+        return from.toDate(style: .sql)?.date ?? Date()
+    }
+    private let from: String
 
-	public let end_time: Date
+    public var end_time: Date {
+        to.toDate(style: .sql)?.date ?? Date()
+    }
+    private let to: String
 
 	public let employeeId: Employee.Id
 	
@@ -35,7 +50,9 @@ public struct Appointment: Codable, Equatable, Hashable {
 	public let status: AppointmentStatus?
 	
 	public let service: BaseService?
-	public init(id: Int,
+    
+	public init(
+        id: Int,
 							from: Date,
 							to: Date,
 							employeeId: Int,
@@ -46,10 +63,11 @@ public struct Appointment: Codable, Equatable, Hashable {
 							type: Termin.ModelType? = nil,
 							extraEmployees: [Employee]? = nil,
 							status: AppointmentStatus? = nil,
-							service: BaseService) {
+        service: BaseService
+    ) {
 		self.id = Appointment.Id(rawValue: id)
-		self.start_time = from
-		self.end_time = to
+        self.from = from.toString(.sql)
+		self.to = to.toString(.sql)
 		self.employeeId = Employee.Id(rawValue: employeeId)
 		self.employeeInitials = employeeInitials
 		self.locationId = locationId
@@ -60,10 +78,11 @@ public struct Appointment: Codable, Equatable, Hashable {
 		self.status = status
 		self.service = service
 	}
+    
 	public enum CodingKeys: String, CodingKey {
 		case id
-		case start_time = "from"
-		case end_time = "to"
+		case from
+		case to
 		case employeeId = "employee_id"
 		case employeeInitials = "employee_initials"
 		case locationId = "location_id"

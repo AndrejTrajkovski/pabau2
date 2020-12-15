@@ -2,18 +2,22 @@ import SwiftUI
 import Model
 import Util
 import ComposableArchitecture
+import SharedComponents
 
 public struct ChooseFormState: Equatable {
 	public var templates: IdentifiedArrayOf<FormTemplate>
 	public var templatesLoadingState: LoadingState = .initial
 	public var selectedTemplatesIds: [Int]
+    public var searchText = ""
 
 	public init(
 		templates: IdentifiedArrayOf<FormTemplate>,
-		selectedTemplatesIds: [Int]
+		selectedTemplatesIds: [Int],
+        searchText: String = ""
 	) {
 		self.templates = templates
 		self.selectedTemplatesIds = selectedTemplatesIds
+        self.searchText = searchText
 	}
 	
 	public init(
@@ -33,6 +37,7 @@ public enum ChooseFormAction {
 	case proceed//Check-In or Proceed
 	case gotResponse(Result<[FormTemplate], RequestError>)
 	case onAppear(FormType)
+    case onSearch(String)
 }
 
 public let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, FormEnvironment> { state, action, environment in
@@ -64,6 +69,8 @@ public let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, Fo
 				.map(ChooseFormAction.gotResponse)
 					.eraseToEffect()
 				: .none
+    case .onSearch(let text):
+        state.searchText = text
 	}
 	return .none
 }
@@ -72,32 +79,58 @@ public struct ChooseFormList: View {
 	let mode: ChooseFormMode
 	let store: Store<ChooseFormState, ChooseFormAction>
 	@ObservedObject var viewStore: ViewStore<ViewState, ChooseFormAction>
-	@State var searchText: String = ""
-	public init (store: Store<ChooseFormState, ChooseFormAction>,
-				mode: ChooseFormMode) {
+    
+	public init (
+        store: Store<ChooseFormState, ChooseFormAction>,
+        mode: ChooseFormMode
+    ) {
 		self.mode = mode
 		self.store = store
-		self.viewStore = ViewStore(self.store
-			.scope(state: { ChooseFormList.ViewState.init($0) } ,
-						 action: { $0 }))
+        self.viewStore = ViewStore(
+            self.store
+                .scope(
+                    state: {
+                        ChooseFormList.ViewState.init($0)
+                    },
+                    action: { $0 }
+                )
+        )
 		UITableView.appearance().separatorStyle = .none
 	}
 
 	struct ViewState: Equatable {
 		let templates: IdentifiedArrayOf<FormTemplate>
 		var selectedTemplatesIds: [Int]
+        var notSelectedTemplates: [FormTemplate]  = []
+        var isSearching = false
+        var searchText: String = ""
+
 		init(_ state: ChooseFormState) {
 			self.templates = state.templates
 			self.selectedTemplatesIds = state.selectedTemplatesIds
+            self.searchText = state.searchText
+        
+            self.isSearching = !searchText.isEmpty
+            self.notSelectedTemplates = filterNotSelectedTemplates()
 		}
 
-		var notSelectedTemplates: [FormTemplate] {
-			templates.elements
+        func filterNotSelectedTemplates() -> [FormTemplate] {
+            if searchText.isEmpty {
+                return templates.elements
 				.filter { !selectedTemplatesIds.contains($0.id) }
 				.map { $0 }
 				.sorted(by: \.name)
 		}
-		
+
+            return templates.elements
+                .filter {
+                    !selectedTemplatesIds.contains($0.id) &&
+                    $0.name.lowercased().contains(searchText.lowercased())
+                }
+                .map { $0 }
+                .sorted(by: \.name)
+        }
+
 		var selectedTemplates: [FormTemplate] {
 			selectedTemplatesIds.compactMap {
 				templates[id: $0]
@@ -120,7 +153,8 @@ public struct ChooseFormList: View {
 				VStack(alignment: .leading) {
 					Text(Texts.selected + " " + (self.mode == .treatmentNotes ? Texts.treatmentNotes : Texts.consents ))
 						.font(.bold17)
-					FormTemplateList(templates: self.viewStore.state.selectedTemplates,
+                    FormTemplateList(
+                        templates: self.viewStore.state.selectedTemplates,
 													 bgColor: ListFrameStyle.blue.bgColor,
 													 templateRow: { template in
 														SelectedTemplateRow(template: template)
@@ -136,8 +170,15 @@ public struct ChooseFormList: View {
 			}
 			ListFrame(style: .white) {
 				VStack {
-					TextField("TODO: search: ", text: self.$searchText)
-					FormTemplateList(templates: self.viewStore.state.notSelectedTemplates,
+                    SearchView(
+                        placeholder: "Search",
+                        text: viewStore.binding(
+                            get: \.searchText,
+                            send: ChooseFormAction.onSearch
+                        )
+                    )
+					FormTemplateList(
+                        templates: self.viewStore.state.notSelectedTemplates,
 													 bgColor: ListFrameStyle.white.bgColor,
 													 templateRow: { template in
 														NotSelectedTemplateRow(template: template)
@@ -156,7 +197,8 @@ struct FormTemplateList<Row: View>: View {
 	let onSelect: (FormTemplate) -> Void
 	let bgColor: Color
 
-	init (templates: [FormTemplate],
+    init (
+        templates: [FormTemplate],
 				bgColor: Color,
 				@ViewBuilder templateRow: @escaping (FormTemplate) -> Row,
 				onSelect: @escaping (FormTemplate) -> Void

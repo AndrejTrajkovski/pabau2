@@ -61,7 +61,11 @@ public struct Client: Codable, Identifiable, Equatable {
 
     public let lastName: String
 
-    public let dOB: Date
+    public var dOB: Date? {
+        originalDOB?.toDate()?.date
+    }
+    
+    private var originalDOB: String?
 
     public let email: String?
 
@@ -99,11 +103,11 @@ public struct Client: Codable, Identifiable, Equatable {
         self.id = id
         self.firstName = firstName
         self.lastName = lastName
-        self.dOB = dOB
         self.email = email
         self.avatar = avatar
         self.phone = phone
         self.count = count
+        self.originalDOB = dOB.toString(.iso(.withFullDate))
     }
     public enum CodingKeys: String, CodingKey {
         case mobile
@@ -134,7 +138,7 @@ public struct Client: Codable, Identifiable, Equatable {
         case id = "id"
         case firstName = "first_name"
         case lastName = "last_name"
-        case dOB = "d_o_b"
+        case originalDOB = "d_o_b"
         case email
         case avatar
         case phone
