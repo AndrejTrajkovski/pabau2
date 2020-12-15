@@ -156,51 +156,40 @@ struct Forms: View {
 		}
 	}
 
+	//FIXME: Use PageView (or some implementation of UIPageViewController) or a UIScrollView with custom scrolling offset. Alternatively use LazyHStack
 	var body: some View {
-		GeometryReaderPatch { geo in
-			PagerView(pageCount: viewStore.stepForms.count,
-					  currentIndex: viewStore.binding(get: { $0.selectedIdx },
-													  send: { .stepsView(.didSelectFlatFormIndex($0)) }),
-					  content: { forms(viewStore.stepTypes, size: geo.size) }
-			)
-			.padding([.bottom, .top], 32)
-		}
+		PagerView(pageCount: viewStore.stepForms.count,
+				  currentIndex: viewStore.binding(get: { $0.selectedIdx },
+												  send: { .stepsView(.didSelectFlatFormIndex($0)) }),
+				  content: { forms(viewStore.stepTypes) }
+		)
+		.padding([.bottom, .top], 32)
 	}
 
 	@ViewBuilder
-	func forms(_ stepTypes: [StepType], size: CGSize) -> some View {
-//		ScrollView(.horizontal) {
-//			HStack {
-				ForEach(stepTypes, content: { form(stepType: $0, size: size).modifier(FormFrame()) })
-//			}
-//		}
+	func forms(_ stepTypes: [StepType]) -> some View {
+		ForEach(stepTypes, content: { form(stepType: $0).modifier(FormFrame()) })
 	}
 
 	@ViewBuilder
-	func form(stepType: StepType, size: CGSize) -> some View {
+	func form(stepType: StepType) -> some View {
 		switch stepType {
 		case .patientdetails:
 			PatientDetailsForm(store: store.scope(state: { $0.patientDetails },
 												  action: { .patientDetails($0) })
 			)
-//			.frame(width: size.width)
 		case .medicalhistory:
 			ListDynamicForm(store: store.scope(state: { $0.medicalHistory },
 											   action: { .medicalHistory($0) })
 			)
-//			.frame(width: size.width)
 		case .consents:
 			ForEachStore(store.scope(state: { $0.consents },
 									 action: CheckInPatientAction.consents(idx: action:)),
-						 content: {
-							ListDynamicForm.init(store: $0)
-//								.frame(width: size.width)
-						 }
+						 content: ListDynamicForm.init(store:)
 			)
 		case .patientComplete:
 			PatientCompleteForm(store: store.scope(state: { $0.isPatientComplete }, action: { .patientComplete($0)})
 			)
-//			.frame(width: size.width)
 		default:
 			fatalError()
 		}
