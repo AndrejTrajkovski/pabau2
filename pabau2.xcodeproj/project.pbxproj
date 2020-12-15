@@ -49,6 +49,7 @@
 		08C726E6258764C100F622CB /* SFProText-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-Medium.ttf"; sourceTree = "<group>"; };
 		08C726E7258764C100F622CB /* SFProText-Semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-Semibold.ttf"; sourceTree = "<group>"; };
 		08C726E82587684300F622CB /* SFProText-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-MediumItalic.ttf"; sourceTree = "<group>"; };
+		08EF32862588FC5F00E862B3 /* SFProText-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-Regular.ttf"; sourceTree = "<group>"; };
 		74DD9D31256EAB0E00CC3920 /* Communication */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Communication; sourceTree = "<group>"; };
 		74DD9D37256EB28C00CC3920 /* Intercom.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intercom.framework; path = pabau2/Intercom.framework; sourceTree = "<group>"; };
 		82018FE62567D59300E740A9 /* AddAppointment */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AddAppointment; sourceTree = "<group>"; };
@@ -106,6 +107,7 @@
 			children = (
 				08C726E6258764C100F622CB /* SFProText-Medium.ttf */,
 				08C726E82587684300F622CB /* SFProText-MediumItalic.ttf */,
+				08EF32862588FC5F00E862B3 /* SFProText-Regular.ttf */,
 				08C726E7258764C100F622CB /* SFProText-Semibold.ttf */,
 			);
 			path = Fonts;
@@ -501,7 +503,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Debug;
 		};
@@ -532,7 +534,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Release;
 		};

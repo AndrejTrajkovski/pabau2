@@ -70,4 +70,8 @@ public extension Font {
     static func proMedium(size: CGFloat) -> Font {
         return Font.custom("SFProText-Medium", size: size)
     }
+    
+    static func proRegular(size: CGFloat) -> Font {
+        return Font.custom("SFProText-Regular", size: size)
+    }
 }

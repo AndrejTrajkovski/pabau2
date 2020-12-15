@@ -76,6 +76,7 @@ struct PhotoShareView: View {
     let store: Store<PhotoShareState, PhotoShareAction>
     
     @State var isShownActivity: Bool = false
+    @State private var message: String = ""
     
     var body: some View {
         return WithViewStore(store) { viewStore in
@@ -90,9 +91,11 @@ struct PhotoShareView: View {
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 120, height: 80, alignment: .leading)
                         TextField("Say something abouth your photo",
-                                  text: viewStore.binding(get: { $0.message },
-                                                          send: PhotoShareAction.textFieldChanged))
-                            .font(Font.regular14)
+                                  text: $message,
+//                                  text: viewStore.binding(get: { $0.message },
+//                                                          send: PhotoShareAction.textFieldChanged),
+                                  )
+                            .font(.proRegular(size: 14))
                         Spacer()
                     }
                     .frame(width: UIScreen.main.bounds.width, height: 120, alignment: .leading).padding()
@@ -110,7 +113,8 @@ struct PhotoShareView: View {
                         }) {
                             Text("MyFitnessPal Community")
                                 .font(Font.regular16)
-                                .fontWeight(.regular).foregroundColor(.blue)
+                                .fontWeight(.regular)
+                                .foregroundColor(.blue)
                         }
                     }.padding()
                     .frame(width: UIScreen.main.bounds.width, height: 50, alignment: .leading)
