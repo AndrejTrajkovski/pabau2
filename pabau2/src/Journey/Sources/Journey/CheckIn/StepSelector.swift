@@ -44,12 +44,14 @@ struct StepSelector: View {
 							.frame(width: cellWidth, height: cellHeight)
 							.onTapGesture {
 								self.viewStore.send(.didSelectFlatFormIndex(idx))
+							}
+					}
+				}.onReceive(viewStore.publisher.selectedIndex,
+							perform: { idx in
 								withAnimation {
 									scrollProxy.scrollTo(idx, anchor: .center)
 								}
-							}
-					}
-				}
+							})
 			}.frame(width: ((cellWidth + spacing) * CGFloat(viewStore.state.numberOfVisibleSteps)),
 					height: cellHeight)
 		}

@@ -19,14 +19,15 @@ struct JourneyMocks {
 						 steps: [Step(id: 1, stepType: .patientdetails),
 								 Step(id: 2, stepType: .medicalhistory),
 								 Step(id: 3, stepType: .consents),
-								 Step(id: 4, stepType: .treatmentnotes),
-								 Step(id: 5, stepType: .checkpatient),
-								 Step(id: 6, stepType: .aftercares),
-								 Step(id: 7, stepType: .photos)
+								 Step(id: 4, stepType: .patientComplete),
+								 Step(id: 5, stepType: .treatmentnotes),
+								 Step(id: 6, stepType: .checkpatient),
+								 Step(id: 7, stepType: .aftercares),
+								 Step(id: 8, stepType: .photos)
 						 ]),
 		patientDetails: PatientDetails.empty,
 		medHistory: FormTemplate.getMedHistory(),
-		consents: [],
+		consents: IdentifiedArray(FormTemplate.mockConsents),
 		allConsents: IdentifiedArray(FormTemplate.mockConsents),
 		photosState: PhotosState.init(SavedPhoto.mock())
 	)

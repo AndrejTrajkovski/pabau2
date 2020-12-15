@@ -19,7 +19,7 @@ struct TopView: View {
 		let journey: Journey
 		init(state: StepsViewState) {
 			self.totalSteps = state.stepForms.count
-			self.currentStepIdx = state.selectedIdx
+			self.currentStepIdx = state.selectedIdx + 1
 			self.journey = state.journey
 		}
 	}

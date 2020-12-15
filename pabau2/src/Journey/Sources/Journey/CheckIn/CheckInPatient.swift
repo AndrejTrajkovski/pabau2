@@ -2,6 +2,7 @@ import SwiftUI
 import ComposableArchitecture
 import Model
 import Form
+import Util
 
 struct CheckInPatientContainer: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>
@@ -16,7 +17,7 @@ struct CheckInPatientContainer: View {
 			}
 		}
 	}
-
+	
 	func handBackDeviceLink(_ active: Bool) -> some View {
 		NavigationLink.emptyHidden(active,
 								   HandBackDevice(
@@ -69,21 +70,16 @@ struct CheckInPatientState: Equatable, StepsViewState {
 	var consents: IdentifiedArrayOf<FormTemplate>
 	var consentsStatuses: [FormTemplate.ID: Bool]
 	var isPatientComplete: Bool
-	var patientSelectedIndex: Int
+	var selectedIdx: Int
 
-	func stepTypes() -> [StepType] {
+	var stepTypes: [StepType] {
 		return pathway.steps.map(\.stepType).filter(filterBy(.patient))
 	}
-
+	
 	var stepForms: [StepFormInfo] {
-		return stepTypes().map {
+		return stepTypes.map {
 			getForms($0)
 		}.flatMap { $0 }
-	}
-
-	var selectedIdx: Int {
-		get { patientSelectedIndex }
-		set { patientSelectedIndex = newValue }
 	}
 
 	func getForms(_ stepType: StepType) -> [StepFormInfo] {
@@ -101,7 +97,7 @@ struct CheckInPatientState: Equatable, StepsViewState {
 			}
 		case .patientComplete:
 			return [StepFormInfo(status: isPatientComplete,
-								title: "COMPLETE PATIENT")]
+								 title: "COMPLETE PATIENT")]
 		default:
 			return []
 		}
@@ -115,7 +111,7 @@ public enum CheckInPatientAction {
 	case patientComplete(PatientCompleteAction)
 	case stepsView(StepsViewAction)
 	case topView(TopViewAction)
-//	case footer(FooterButtonsAction)
+	//	case footer(FooterButtonsAction)
 }
 
 struct CheckInPatient: View {
@@ -133,7 +129,8 @@ struct CheckInPatient: View {
 					.frame(maxWidth: .infinity)
 					.shadow(color: Color(hex: "C1C1C1"), radius: 4, y: 2)
 				Forms(store: store)
-			}.padding([.leading, .trailing], 40)
+				Spacer()
+			}
 		}
 		.navigationBarTitle("")
 		.navigationBarHidden(true)
@@ -142,102 +139,77 @@ struct CheckInPatient: View {
 
 struct Forms: View {
 	let store: Store<CheckInPatientState, CheckInPatientAction>
+//	@ObservedObject var viewStore: ViewStore<State, CheckInPatientAction>
+	@ObservedObject var viewStore: ViewStore<CheckInPatientState, CheckInPatientAction>
+	init(store: Store<CheckInPatientState, CheckInPatientAction>) {
+		self.store = store
+//		self.viewStore = ViewStore(store.scope(state: State.init(state:)))
+		self.viewStore = ViewStore(store)
+	}
 
 	struct State: Equatable {
 		let stepTypes: [StepType]
-		let selectedIndex: Int
+		let selectedIdx: Int
 		init(state: StepsViewState) {
-			self.stepTypes = state.stepTypes()
-			self.selectedIndex = state.selectedIdx
+			self.stepTypes = state.stepTypes
+			self.selectedIdx = state.selectedIdx
 		}
 	}
 
 	var body: some View {
-		WithViewStore(store.scope(state: State.init(state:))) { viewStore in
-			//			forms(viewStore.state)
-			SwiftUIPagerView(index: viewStore.binding(get: { $0.selectedIndex },
+		GeometryReaderPatch { geo in
+			PagerView(pageCount: viewStore.stepForms.count,
+					  currentIndex: viewStore.binding(get: { $0.selectedIdx },
 													  send: { .stepsView(.didSelectFlatFormIndex($0)) }),
-							 pages: viewStore.stepTypes) { size, item in
-				form(stepType: item).frame(width: size.width, height: size.height)
-			}
-				.padding([.bottom, .top], 32)
+					  content: { forms(viewStore.stepTypes, size: geo.size) }
+			)
+			.padding([.bottom, .top], 32)
 		}
 	}
 
 	@ViewBuilder
-	func forms(_ stepTypes: [StepType]) -> some View {
-		GeometryReader { geo in
-			ScrollView(.horizontal) {
-				HStack {
-					ForEach(stepTypes, content: form(stepType:))
-						.frame(width: geo.size.width, height: geo.size.height)
-				}
-			}
-		}
+	func forms(_ stepTypes: [StepType], size: CGSize) -> some View {
+//		ScrollView(.horizontal) {
+//			HStack {
+				ForEach(stepTypes, content: { form(stepType: $0, size: size).modifier(FormFrame()) })
+//			}
+//		}
 	}
 
 	@ViewBuilder
-	func form(stepType: StepType) -> some View {
+	func form(stepType: StepType, size: CGSize) -> some View {
 		switch stepType {
 		case .patientdetails:
 			PatientDetailsForm(store: store.scope(state: { $0.patientDetails },
 												  action: { .patientDetails($0) })
 			)
+//			.frame(width: size.width)
 		case .medicalhistory:
 			ListDynamicForm(store: store.scope(state: { $0.medicalHistory },
 											   action: { .medicalHistory($0) })
 			)
+//			.frame(width: size.width)
 		case .consents:
 			ForEachStore(store.scope(state: { $0.consents },
 									 action: CheckInPatientAction.consents(idx: action:)),
-						 content: ListDynamicForm.init(store:)
+						 content: {
+							ListDynamicForm.init(store: $0)
+//								.frame(width: size.width)
+						 }
 			)
 		case .patientComplete:
 			PatientCompleteForm(store: store.scope(state: { $0.isPatientComplete }, action: { .patientComplete($0)})
 			)
+//			.frame(width: size.width)
 		default:
-			EmptyView()
+			fatalError()
 		}
 	}
 }
 
-struct SwiftUIPagerView<TModel: Identifiable ,TView: View >: View {
-	@Binding var index: Int
-	@State private var offset: CGFloat = 0
-	@State private var isGestureActive: Bool = false
-	// 1
-	var pages: [TModel]
-	var builder : (CGSize, TModel) -> TView
-	var body: some View {
-		GeometryReader { geometry in
-			ScrollView(.horizontal, showsIndicators: false) {
-				LazyHStack(alignment: .center, spacing: 0) {
-					ForEach(self.pages) { page in
-						self.builder(geometry.size, page)
-					}
-				}
-			}
-			// 2
-			.content.offset(x: self.isGestureActive ? self.offset : -geometry.size.width * CGFloat(self.index))
-			// 3
-			.frame(width: geometry.size.width, height: nil, alignment: .leading)
-			.gesture(DragGesture().onChanged({ value in
-				// 4
-				self.isGestureActive = true
-				// 5
-				self.offset = value.translation.width + -geometry.size.width * CGFloat(self.index)
-			}).onEnded({ value in
-				if -value.predictedEndTranslation.width > geometry.size.width / 2, self.index < self.pages.endIndex - 1 {
-					self.index += 1
-				}
-				if value.predictedEndTranslation.width > geometry.size.width / 2, self.index > 0 {
-					self.index -= 1
-				}
-				// 6
-				withAnimation { self.offset = -geometry.size.width * CGFloat(self.index) }
-				// 7
-				DispatchQueue.main.async { self.isGestureActive = false }
-			}))
-		}
+struct FormFrame: ViewModifier {
+	func body(content: Content) -> some View {
+		content
+		.padding([.leading, .trailing], 40)
 	}
 }

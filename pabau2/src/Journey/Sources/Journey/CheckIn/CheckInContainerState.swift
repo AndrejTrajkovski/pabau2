@@ -202,7 +202,7 @@ extension CheckInContainerState {
 				consents: consents,
 				consentsStatuses: consentsStatuses,
 				isPatientComplete: isPatientComplete,
-				patientSelectedIndex: patientSelectedIndex)
+				selectedIdx: patientSelectedIndex)
 		}
 
 		set {
@@ -213,7 +213,7 @@ extension CheckInContainerState {
 			self.consents = newValue.consents
 			self.consentsStatuses = newValue.consentsStatuses
 			self.isPatientComplete = newValue.isPatientComplete
-			self.patientSelectedIndex = newValue.patientSelectedIndex
+			self.patientSelectedIndex = newValue.selectedIdx
 		}
 	}
 }

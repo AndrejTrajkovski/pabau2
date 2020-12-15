@@ -5,7 +5,7 @@ protocol StepsViewState {
 	var journey: Journey { get }
 	var stepForms: [StepFormInfo] { get }
 	var selectedIdx: Int { get set }
-	func stepTypes() -> [StepType]
+	var stepTypes: [StepType] { get }
 }
 
 extension StepsViewState {
