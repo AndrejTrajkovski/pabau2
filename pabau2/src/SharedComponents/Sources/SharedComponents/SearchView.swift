@@ -1,10 +1,3 @@
-//
-//  SearchView.swift
-//  
-//
-//  Created by Yuriy Berdnikov on 02.12.2020.
-//
-
 import SwiftUI
 
 public struct SearchView: View {

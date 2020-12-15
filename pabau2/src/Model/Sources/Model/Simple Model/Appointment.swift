@@ -39,7 +39,7 @@ public struct Appointment: Codable, Equatable, Hashable {
 	
 	public let employeeInitials: String?
 	
-	public let locationId: Int
+    public let locationId: Location.Id
 	public let locationName: String?
 
 	public let _private: String?
@@ -57,7 +57,7 @@ public struct Appointment: Codable, Equatable, Hashable {
 							to: Date,
 							employeeId: Int,
 							employeeInitials: String,
-							locationId: Int,
+							locationId: Location.Id,
 							locationName: String,
 							_private: String? = nil,
 							type: Termin.ModelType? = nil,

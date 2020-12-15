@@ -170,7 +170,8 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
 		switch action {
 		case .journey(.addAppointmentTap):
 			state.addAppointment = AddAppointmentState.dummy
-		default: break
+		default:
+			break
 		}
 		return .none
 	},
@@ -224,7 +225,6 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
         action: /TabBarAction.communication,
         environment: { CommunicationEnvironment($0) }
     ),
-
     .init { _, action, _ in
         switch action {
         case .communication(.liveChat):
@@ -247,3 +247,13 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
         return .none
     }
 )
+
+extension TabBarState {
+	public init() {
+		self.journeyState = JourneyState()
+		self.clients = ClientsState()
+		self.calendar = CalendarState()
+		self.settings = SettingsState()
+		self.communication = CommunicationState()
+	}
+}
