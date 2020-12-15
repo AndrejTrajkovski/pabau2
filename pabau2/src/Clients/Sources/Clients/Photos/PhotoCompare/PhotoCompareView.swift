@@ -113,6 +113,8 @@ var photoCompareReducer = Reducer.combine(
                 state.dragOffset = .zero
                 state.position = .zero
             }
+        case .shareAction(.backButton):
+            state.onShareSelected = false
         default:
             break
         }

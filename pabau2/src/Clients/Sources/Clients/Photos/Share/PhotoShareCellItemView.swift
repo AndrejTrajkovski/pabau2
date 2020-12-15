@@ -102,7 +102,7 @@ struct ShareThumbnailBottom: View {
                 Image("logo-pabau")
                 Spacer()
                     switch item.type {
-                    case .rating: ShareRatingBottom(rating: 4)
+                    case .rating(let value): ShareRatingBottom(rating: Int(value))
                     case .subtitle: ShareSubtitleBottom()
                     case .review: ShareReviewBottom()
                     case .title(let title): ShareTitleBottom(title: title)
@@ -205,7 +205,7 @@ struct ShareStarRating: View {
                 self.image(for: number)
                     .foregroundColor(number > rating ? offColor : onColor)
                     .onTapGesture {
-                        self.rating = number
+                        //self.rating = number
                     }
             }
         }

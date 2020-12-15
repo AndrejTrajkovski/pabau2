@@ -13,6 +13,7 @@ public struct PhotoShareState: Equatable {
     var shouldDisplaySuccessMessage: Bool = false
     
     var messageSuccess: MessageSuccessInfo = MessageSuccessInfo()
+    var imageSaveState: ImageSaveState = ImageSaveState()
     
     var imageData: Data!
 }
@@ -58,14 +59,13 @@ var photoShareViewReducer = Reducer<PhotoShareState, PhotoShareAction, ClientsEn
         state.messageSuccess = MessageSuccessInfo(title: "Succesfully saved the image.",
                                                   subtitle: "Your images has been saved locally")
         
-        let imageSaver = ImageSaver()
+        let imageSaverLocally = ImageSaver()
         if let uiImage = UIImage(data: state.imageData) {
-            imageSaver.writeToPhotoAlbum(image: uiImage)
+            imageSaverLocally.writeToPhotoAlbum(image: uiImage)
+            state.shouldDisplaySuccessMessage = true
         }
-        
-        state.shouldDisplaySuccessMessage = true
     case .hideMessageView:
-        state.isMessagePosted = false
+        state.shouldDisplaySuccessMessage = false
     default:
         break
     }
@@ -178,12 +178,6 @@ struct PhotoShareView: View {
                     MyBackButton(text: Texts.back) {
                         viewStore.send(.backButton)
                     }
-                },
-
-                trailing: HStack {
-                    Button("Share") {
-                        print("Share")
-                    }.font(Font.regular17)
                 })
         }
     }    

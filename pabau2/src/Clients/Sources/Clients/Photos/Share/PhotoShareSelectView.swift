@@ -10,7 +10,7 @@ public struct PhotoShareSelectItem: Equatable, Identifiable {
         case title(String)
         case subtitle
         case review
-        case rating
+        case rating(CGFloat)
         
     }
     public let id = UUID()
@@ -23,12 +23,9 @@ public struct PhotoShareSelectItem: Equatable, Identifiable {
 
 struct PhotoShareSelectState: Equatable {
 
-//    var rating: CGFloat
-//    var review: String
-    
+    var rating: CGFloat = 4.0
     var photo: PhotoViewModel!
     var comparedPhoto: PhotoViewModel!
-    
     var selectedPhoto: SavedPhoto!
     
     init(photo: PhotoViewModel, comparedPhoto: PhotoViewModel) {
@@ -37,7 +34,7 @@ struct PhotoShareSelectState: Equatable {
         
         items.append(PhotoShareSelectItem(type: .title("20 Day Difference"), photo: photo, comparedPhoto: comparedPhoto))
         items.append(PhotoShareSelectItem(type: .review, photo: photo, comparedPhoto: comparedPhoto))
-        items.append(PhotoShareSelectItem(type: .rating, photo: photo, comparedPhoto: comparedPhoto))
+        items.append(PhotoShareSelectItem(type: .rating(rating), photo: photo, comparedPhoto: comparedPhoto))
         items.append(PhotoShareSelectItem(type: .title("Botox Treatment"), photo: photo, comparedPhoto: comparedPhoto))
         items.append(PhotoShareSelectItem(type: .subtitle, photo: photo, comparedPhoto: comparedPhoto))
         items.append(PhotoShareSelectItem(type: .subtitle, photo: photo, comparedPhoto: comparedPhoto))
@@ -57,6 +54,7 @@ struct PhotoShareSelectState: Equatable {
 public enum PhotoShareSelectAction: Equatable {
     case selectedItem(PhotoShareSelectItem, Data)
     case shareAction(PhotoShareAction)
+    case backButton
 }
 
 var photoShareSelectViewReducer: Reducer<PhotoShareSelectState, PhotoShareSelectAction, ClientsEnvironment> = Reducer.combine(
@@ -118,9 +116,13 @@ struct PhotoShareSelectView: View {
                                                           ))
                 }
             }.navigationBarItems(
-                trailing: Button("Share") {
-                    
-            })
+                leading: HStack {
+                    MyBackButton(text: Texts.back) {
+                        viewStore.send(.backButton)
+                    }}
+            )
+            .navigationBarBackButtonHidden(true)
+            .navigationBarTitle("Select Photo")
         }
     }
     
