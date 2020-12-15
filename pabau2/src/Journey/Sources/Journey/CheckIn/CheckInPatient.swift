@@ -139,20 +139,22 @@ struct CheckInPatient: View {
 
 struct Forms: View {
 	let store: Store<CheckInPatientState, CheckInPatientAction>
-//	@ObservedObject var viewStore: ViewStore<State, CheckInPatientAction>
-	@ObservedObject var viewStore: ViewStore<CheckInPatientState, CheckInPatientAction>
+	@ObservedObject var viewStore: ViewStore<State, CheckInPatientAction>
+//	@ObservedObject var viewStore: ViewStore<CheckInPatientState, CheckInPatientAction>
 	init(store: Store<CheckInPatientState, CheckInPatientAction>) {
 		self.store = store
-//		self.viewStore = ViewStore(store.scope(state: State.init(state:)))
-		self.viewStore = ViewStore(store)
+		self.viewStore = ViewStore(store.scope(state: State.init(state:)))
+//		self.viewStore = ViewStore(store)
 	}
 
 	struct State: Equatable {
 		let stepTypes: [StepType]
 		let selectedIdx: Int
+		let stepForms: [StepFormInfo]
 		init(state: StepsViewState) {
 			self.stepTypes = state.stepTypes
 			self.selectedIdx = state.selectedIdx
+			self.stepForms = state.stepForms
 		}
 	}
 
