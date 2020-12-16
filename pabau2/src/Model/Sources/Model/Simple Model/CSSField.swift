@@ -4,8 +4,6 @@
 import Foundation
 
 public struct CSSField: Codable, Equatable, Identifiable {
-
-	public static let defaultEmpty: CSSField = CSSField.init(id: -1, cssClass: .unknown)
 	
 	public let id: Int
 

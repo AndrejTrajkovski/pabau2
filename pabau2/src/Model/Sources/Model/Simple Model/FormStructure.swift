@@ -11,11 +11,8 @@ public struct FormStructure: Codable, Equatable {
 		}
 	}
 
-	public static var defaultEmpty: FormStructure {
-		FormStructure(formStructure: [])
-	}
-
 	public var formStructure: [CSSField]
+	
 	public enum CodingKeys: String, CodingKey {
 		case formStructure = "form_structure"
 	}

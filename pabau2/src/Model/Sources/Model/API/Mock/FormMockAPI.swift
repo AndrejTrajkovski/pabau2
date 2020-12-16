@@ -20,7 +20,7 @@ public struct FormMockAPI: FormAPI, MockAPI {
 		case .treatment:
 			return mockSuccess(FormTemplate.mockTreatmentN, delay: 0.1)
 		default:
-		fatalError("TODO")
+			fatalError("TODO")
 		}
 	}
 }

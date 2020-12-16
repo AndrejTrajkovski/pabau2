@@ -5,10 +5,6 @@ import Tagged
 public struct Employee: Codable, Identifiable, Equatable, Hashable {
 	public typealias Id = Tagged<Employee, Int>
 	
-	public static var defaultEmpty: Employee {
-		Employee.init(id: -1, name: "", locationId: 1)
-	}
-	
 	public let id: Employee.Id
 	
 	public let name: String

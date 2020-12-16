@@ -9,13 +9,6 @@ public struct FormTemplate: Codable, Identifiable, Equatable, CustomDebugStringC
 		return name
 	}
 	
-	public static var defaultEmpty: FormTemplate {
-		return FormTemplate(id: -1,
-							name: "", formType: .consent,
-							ePaper: false, formStructure:
-								FormStructure.defaultEmpty)
-	}
-	
 	public let id: Int
 	
 	public let name: String
