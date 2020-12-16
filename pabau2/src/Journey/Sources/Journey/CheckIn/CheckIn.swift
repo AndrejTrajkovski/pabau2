@@ -9,7 +9,8 @@ struct CheckIn<FormsContent: View, S: CheckInState>: View where S: Equatable {
 	let content: () -> FormsContent
 
 	var body: some View {
-		VStack (spacing: 0) {
+		print("CheckIn")
+		return VStack (spacing: 0) {
 			TopView(store: store)
 			VStack {
 				StepSelector(store: store).frame(height: 80)
@@ -29,18 +30,29 @@ struct CheckIn<FormsContent: View, S: CheckInState>: View where S: Equatable {
 
 struct Forms<FormsContent: View, S: CheckInState>: View where S: Equatable {
 	let store: Store<S, CheckInAction>
-	@ObservedObject var viewStore: ViewStore<S, CheckInAction>
+	@ObservedObject var viewStore: ViewStore<State, CheckInAction>
 	let content: () -> FormsContent
+	
+	struct State: Equatable {
+		let selectedIdx: Int
+		let formsCount: Int
+		init(state: S) {
+			self.selectedIdx = state.selectedIdx
+			self.formsCount = state.stepForms.count
+		}
+	}
+	
 	init(store: Store<S, CheckInAction>,
 		 @ViewBuilder content: @escaping () -> FormsContent) {
 		self.store = store
-		self.viewStore = ViewStore(store)
+		self.viewStore = ViewStore(store.scope(state: State.init(state:)))
 		self.content = content
 	}
-	
+
 	//FIXME: Use PageView (or some implementation of UIPageViewController) or a UIScrollView with custom scrolling offset. Alternatively use LazyHStack. because PagerView is laggy
 	var body: some View {
-		PagerView(pageCount: viewStore.stepForms.count,
+		print("Forms")
+		return PagerView(pageCount: viewStore.formsCount,
 				  currentIndex: viewStore.binding(get: { $0.selectedIdx },
 												  send: { .didSelectFlatFormIndex($0) }),
 				  content: content

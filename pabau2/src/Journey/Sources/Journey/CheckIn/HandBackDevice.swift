@@ -34,6 +34,6 @@ struct HandBackDevice: View {
 										   //have to enable nav bar on choose treatment
 				)
 			}
-		}
+		}.debug("HandBackDevice")
 	}
 }

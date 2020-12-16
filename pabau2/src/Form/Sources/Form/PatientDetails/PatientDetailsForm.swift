@@ -17,7 +17,8 @@ public struct PatientDetailsForm: View {
 	}
 
 	public var body: some View {
-		ScrollView {
+		print("PatientDetailsForm")
+		return ScrollView {
 			VStack {
 				PatientDetailsTextFields(vms: self.vms)
 				Group {
