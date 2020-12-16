@@ -16,7 +16,7 @@ struct PagerView<Content: View>: View {
 
 	var body: some View {
 		GeometryReaderPatch { geometry in
-			HStack(spacing: 0) {
+			LazyHStack(spacing: 0) {
 				self.content.frame(width: geometry.size.width)
 			}
 			.frame(width: geometry.size.width, alignment: .leading)

@@ -21,7 +21,7 @@ public enum CheckInDoctorAction {
 	case aftercare(AftercareAction)
 	case photos(PhotosFormAction)
 	case completeJourney(CompleteJourneyBtnAction)
-	case stepsView(StepsViewAction)
+	case stepsView(CheckInAction)
 //	case footer(FooterButtonsAction)
 }
 

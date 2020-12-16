@@ -4,7 +4,7 @@ import Model
 import ComposableArchitecture
 import Form
 
-struct StepSelector: View {
+struct StepSelector<S: CheckInState>: View where S: Equatable {
 	let cellWidth: CGFloat = 100
 	let cellHeight: CGFloat = 80
 	let spacing: CGFloat = 8
@@ -18,10 +18,10 @@ struct StepSelector: View {
 		let shouldShowRightArrow: Bool
 	}
 
-	let store: Store<StepsViewState, StepsViewAction>
-	@ObservedObject var viewStore: ViewStore<State, StepsViewAction>
+	let store: Store<S, CheckInAction>
+	@ObservedObject var viewStore: ViewStore<State, CheckInAction>
 
-	init (store: Store<StepsViewState, StepsViewAction>) {
+	init (store: Store<S, CheckInAction>) {
 		self.store = store
 		self.viewStore = ViewStore(
 			store.scope( state: State.init(state:), action: { $0 }))
@@ -89,7 +89,7 @@ struct StepSelector: View {
 }
 
 extension StepSelector.State {
-	init(state: StepsViewState) {
+	init(state: CheckInState) {
 //		let stepForms = zip(state.forms, state.forms.indices).map {
 //			StepFormInfo(isComplete: $0.0.isComplete,
 //								title: $0.0.form.title)

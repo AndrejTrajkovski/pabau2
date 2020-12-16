@@ -6,18 +6,15 @@ import Util
 
 // TODO
 //state.isDoctorCheckInMainActive = false
-public enum TopViewAction: Equatable {
-	case onXButtonTap
-}
 
-struct TopView: View {
-	let store: Store<StepsViewState, TopViewAction>
-
+struct TopView<S: CheckInState>: View where S: Equatable {
+	let store: Store<S, CheckInAction>
+	
 	struct State: Equatable {
 		let totalSteps: Int
 		let currentStepIdx: Int
 		let journey: Journey
-		init(state: StepsViewState) {
+		init(state: S) {
 			self.totalSteps = state.stepForms.count
 			self.currentStepIdx = state.selectedIdx + 1
 			self.journey = state.journey
@@ -29,7 +26,7 @@ struct TopView: View {
 			TopViewPlain(totalSteps: viewStore.state.totalSteps,
 						 currentStepIdx: viewStore.state.currentStepIdx,
 						 journey: viewStore.state.journey,
-						 onClose: { viewStore.send(.onXButtonTap) }
+						 onClose: { viewStore.send(.onXTap) }
 			)
 		}
 	}

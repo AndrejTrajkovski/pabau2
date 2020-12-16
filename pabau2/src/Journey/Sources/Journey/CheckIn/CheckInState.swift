@@ -1,14 +1,14 @@
 import ComposableArchitecture
 import Model
 
-protocol StepsViewState {
+protocol CheckInState {
 	var journey: Journey { get }
 	var stepForms: [StepFormInfo] { get }
 	var selectedIdx: Int { get set }
 	var stepTypes: [StepType] { get }
 }
 
-extension StepsViewState {
+extension CheckInState {
 
 	mutating func select(idx: Int) {
 		selectedIdx = idx
@@ -33,8 +33,8 @@ extension StepsViewState {
 	}
 }
 
-struct StepsViewReducer<T: StepsViewState> {
-	let reducer = Reducer<T, StepsViewAction, JourneyEnvironment> { state, action, _ in
+struct CheckInReducer<T: CheckInState> {
+	let reducer = Reducer<T, CheckInAction, JourneyEnvironment> { state, action, _ in
 		switch action {
 		case .didSelectFlatFormIndex(let idx):
 			state.selectedIdx = idx
@@ -42,13 +42,16 @@ struct StepsViewReducer<T: StepsViewState> {
 			state.next()
 		case .didSelectPrevStep:
 			state.previous()
+		case .onXTap:
+			break
 		}
 		return .none
 	}
 }
 
-public enum StepsViewAction {
+public enum CheckInAction {
 	case didSelectFlatFormIndex(Int)
 	case didSelectNextStep
 	case didSelectPrevStep
+	case onXTap
 }
