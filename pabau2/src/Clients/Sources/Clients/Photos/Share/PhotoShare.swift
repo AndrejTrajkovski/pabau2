@@ -25,7 +25,7 @@ public struct MessageSuccessInfo: Equatable {
 
 public enum PhotoShareAction: Equatable {
     case share
-    case textFieldChanged
+    case textFieldChanged(String)
     case messagePosted
     case backButton
     case facebook(ShareFacebookAction)
@@ -66,6 +66,8 @@ var photoShareViewReducer = Reducer<PhotoShareState, PhotoShareAction, ClientsEn
         }
     case .hideMessageView:
         state.shouldDisplaySuccessMessage = false
+    case .textFieldChanged(let text):
+        state.message = text
     default:
         break
     }
@@ -76,7 +78,6 @@ struct PhotoShareView: View {
     let store: Store<PhotoShareState, PhotoShareAction>
     
     @State var isShownActivity: Bool = false
-    @State private var message: String = ""
     
     var body: some View {
         return WithViewStore(store) { viewStore in
@@ -91,9 +92,8 @@ struct PhotoShareView: View {
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 120, height: 80, alignment: .leading)
                         TextField("Say something abouth your photo",
-                                  text: $message,
-//                                  text: viewStore.binding(get: { $0.message },
-//                                                          send: PhotoShareAction.textFieldChanged),
+                                  text: viewStore.binding(get: { $0.message },
+                                                          send: PhotoShareAction.textFieldChanged)
                                   )
                             .font(.proRegular(size: 14))
                         Spacer()
@@ -156,11 +156,11 @@ struct PhotoShareView: View {
                     
                     Spacer()
                     
-                }.sheet(isPresented: $isShownActivity, content: {
+                }.sheet(isPresented: $isShownActivity) {
                     if let image = UIImage(data: viewStore.imageData) {
                         ActivityViewController(activityItems: [image])
                     }
-                })
+                }
                 
                 if viewStore.shouldDisplaySuccessMessage {
                     MessagePostView(param: viewStore.messageSuccess)
