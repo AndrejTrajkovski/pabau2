@@ -10,7 +10,16 @@ import Form
 import Overture
 import Filters
 
-public typealias JourneyEnvironment = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
+public typealias JourneyEnvironment = (
+	journeyAPI: JourneyAPI,
+	formAPI: FormAPI,
+	userDefaults: UserDefaultsConfig
+)
+
+func makeFormEnv(_ journeyEnv: JourneyEnvironment) -> FormEnvironment {
+	return FormEnvironment(formAPI: journeyEnv.formAPI,
+						   userDefaults: journeyEnv.userDefaults)
+}
 
 let checkInMiddleware2 = Reducer<JourneyState, ChooseFormAction, JourneyEnvironment> { state, action, _ in
 	switch action {
@@ -108,7 +117,7 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 				state.selectedFilter = filter
 			case .datePicker(.selectedDate(let date)):
 				state.loadingState = .loading
-				return environment.apiClient.getJourneys(date: date)
+				return environment.journeyAPI.getJourneys(date: date)
 					.map(JourneyAction.gotResponse)
 					.eraseToEffect()
 			case .gotResponse(let result):
@@ -127,7 +136,7 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 				state.selectedJourney = nil
 			case .loadJourneys:
 				state.loadingState = .loading
-				return environment.apiClient
+				return environment.journeyAPI
 					.getJourneys(date: Date())
 					.map(JourneyAction.gotResponse)
 					.eraseToEffect()

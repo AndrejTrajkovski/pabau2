@@ -2,7 +2,7 @@ import Foundation
 import Model
 import ComposableArchitecture
 
-public typealias EmployeesFilterEnvironment = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
+public typealias EmployeesFilterEnvironment = (journeyAPI: JourneyAPI, userDefaults: UserDefaultsConfig)
 
 public let journeyFilterReducer = Reducer<JourneyFilterState, JourneyFilterAction, EmployeesFilterEnvironment> { state, action, env in
 	func handle(result: Result<[Employee], RequestError>,
@@ -31,7 +31,7 @@ public let journeyFilterReducer = Reducer<JourneyFilterState, JourneyFilterActio
 		state.isShowingEmployees.toggle()
 	case .loadEmployees:
 		state.loadingState = .loading
-		return env.apiClient.getEmployees()
+		return env.journeyAPI.getEmployees()
 			.map {.gotResponse($0)}
 			.eraseToEffect()
 	}

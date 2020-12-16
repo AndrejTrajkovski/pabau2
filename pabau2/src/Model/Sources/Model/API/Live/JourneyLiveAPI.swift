@@ -5,10 +5,6 @@ public struct JourneyLiveAPI: JourneyAPI, LiveAPI {
 		fatalError()
 	}
 
-	public func getTemplates(_ type: FormType) -> Effect<Result<[FormTemplate], RequestError>, Never> {
-		fatalError()
-	}
-
 	public func getJourneys(date: Date) -> Effect<Result<[Journey], RequestError>, Never> {
 		getJourneys(date: date).effect()
 	}

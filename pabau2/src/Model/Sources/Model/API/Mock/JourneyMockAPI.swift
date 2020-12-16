@@ -11,17 +11,6 @@ public struct JourneyMockAPI: MockAPI, JourneyAPI {
 	public func getEmployees() -> EffectWithResult<[Employee], RequestError> {
 		mockSuccess(Employee.mockEmployees, delay: 0.0)
 	}
-
-	public func getTemplates(_ type: FormType) -> EffectWithResult<[FormTemplate], RequestError> {
-		switch type {
-		case .consent:
-		  return mockSuccess(FormTemplate.mockConsents, delay: 0.1)
-		case .treatment:
-			return mockSuccess(FormTemplate.mockTreatmentN, delay: 0.1)
-		default:
-		fatalError("TODO")
-		}
-	}
 }
 
 extension JourneyMockAPI {

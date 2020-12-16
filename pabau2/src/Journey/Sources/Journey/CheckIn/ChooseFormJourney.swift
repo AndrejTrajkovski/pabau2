@@ -9,7 +9,7 @@ public let chooseFormJourneyReducer: Reducer<ChooseFormJourneyState,
 		chooseFormListReducer.pullback(
 			state: \.chooseForm,
 			action: /ChooseFormAction.self,
-			environment: { $0 }
+			environment: makeFormEnv(_:)
 		)
 		,
 		Reducer.init { state, action, _ in

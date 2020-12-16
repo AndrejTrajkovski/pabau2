@@ -28,6 +28,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 				loginAPI: LoginMockAPI(delay: 1),
 				journeyAPI: JourneyMockAPI(),
 				clientsAPI: ClientsMockAPI(),
+				formAPI: FormMockAPI(),
 				userDefaults: userDefaults
 			)
       window.rootViewController = UIHostingController(

@@ -13,8 +13,24 @@ typealias AppEnvironment = (
 	loginAPI: LoginAPI,
 	journeyAPI: JourneyAPI,
 	clientsAPI: ClientsAPI,
+	formAPI: FormAPI,
 	userDefaults: UserDefaultsConfig
 )
+
+func makeJourneyEnv(_ appEnv: AppEnvironment) -> JourneyEnvironment {
+	return JourneyEnvironment(
+		journeyAPI: appEnv.journeyAPI,
+		formAPI: appEnv.formAPI,
+		userDefaults: appEnv.userDefaults
+	)
+}
+
+func makeClientsEnv(_ appEnv: AppEnvironment) -> ClientsEnvironment {
+	return ClientsEnvironment(
+		apiClient: appEnv.clientsAPI,
+		userDefaults: appEnv.userDefaults
+	)
+}
 
 enum AppState: Equatable {
 	case walkthrough(WalkthroughContainerState)
@@ -35,7 +51,7 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = Reducer.combine(
 	tabBarReducer.pullbackCp(
 		state: /AppState.tabBar,
 		action: /AppAction.tabBar,
-		environment: { TabBarEnvironment($0) }
+		environment: { $0 }
 	),
 	.init { state, action, env in
 		switch action {

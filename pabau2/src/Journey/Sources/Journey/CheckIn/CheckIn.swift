@@ -49,10 +49,9 @@ struct Forms<FormsContent: View, S: CheckInState>: View where S: Equatable {
 		self.content = content
 	}
 
-	//FIXME: Use PageView (or some implementation of UIPageViewController) or a UIScrollView with custom scrolling offset. Alternatively use LazyHStack. because PagerView is laggy
+	//FIXME: Use PageView (or some implementation of UIPageViewController) or a UIScrollView UIViewRepresentable with isPagingEnabled = true. Maybe newer version of SwiftUI will support ScrollView + LazyHStack with paging. See latest SwiftUI docs. Currently, this implementation (with PagerView) is laggy
 	var body: some View {
-		print("Forms")
-		return PagerView(pageCount: viewStore.formsCount,
+		PagerView(pageCount: viewStore.formsCount,
 				  currentIndex: viewStore.binding(get: { $0.selectedIdx },
 												  send: { .didSelectFlatFormIndex($0) }),
 				  content: content

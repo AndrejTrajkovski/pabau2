@@ -11,13 +11,6 @@ import AddAppointment
 import Communication
 import Intercom
 
-public typealias TabBarEnvironment = (
-	loginAPI: LoginAPI,
-	journeyAPI: JourneyAPI,
-	clientsAPI: ClientsAPI,
-	userDefaults: UserDefaultsConfig
-)
-
 public struct TabBarState: Equatable {
 	public var addAppointment: AddAppointmentState?
 	public var journeyState: JourneyState
@@ -195,7 +188,7 @@ struct PabauTabBar: View {
 
 }
 
-public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> = Reducer.combine(
+let tabBarReducer: Reducer<TabBarState, TabBarAction, AppEnvironment> = Reducer.combine(
 	.init { state, action, _ in
 		switch action {
 		case .journey(.addAppointmentTap):
@@ -210,17 +203,17 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
 		action: /TabBarAction.employeesFilter,
 		environment: {
 			return EmployeesFilterEnvironment(
-				apiClient: $0.journeyAPI,
+				journeyAPI: $0.journeyAPI,
 				userDefaults: $0.userDefaults)
 	}),
 	addAppointmentReducer.pullback(
 		state: \TabBarState.addAppointment,
 		action: /TabBarAction.addAppointment,
 		environment: {
-			return JourneyEnvironment(
-				apiClient: $0.journeyAPI,
-				userDefaults: $0.userDefaults)
-		}),
+			AddAppointmentEnv(journeyAPI: $0.journeyAPI,
+							  userDefaults: $0.userDefaults)
+		}
+	),
 	settingsReducer.pullback(
 		state: \TabBarState.settings,
 		action: /TabBarAction.settings,
@@ -229,19 +222,13 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
 	journeyContainerReducer.pullback(
 		state: \TabBarState.journeyContainer,
 		action: /TabBarAction.journey,
-		environment: {
-			return JourneyEnvironment(
-				apiClient: $0.journeyAPI,
-				userDefaults: $0.userDefaults)
-	}),
+		environment: makeJourneyEnv(_:)
+	),
 	clientsContainerReducer.pullback(
 		state: \TabBarState.clients,
 		action: /TabBarAction.clients,
-		environment: {
-			return ClientsEnvironment(
-				apiClient: $0.clientsAPI,
-				userDefaults: $0.userDefaults)
-	}),
+		environment: makeClientsEnv(_:)
+	),
 	calendarContainerReducer.pullback(
 		state: \TabBarState.calendarContainer,
 		action: /TabBarAction.calendar,

@@ -14,8 +14,8 @@ let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayCont
 		chooseFormListReducer.pullback(
 			state: \ChoosePathwayState.chooseConsentState,
 			action: /ChoosePathwayContainerAction.chooseConsent,
-			environment: { $0 })
-		,
+			environment: makeFormEnv(_:)
+		),
 		choosePathwayReducer.pullback(
 			state: \ChoosePathwayState.self,
 			action: /ChoosePathwayContainerAction.choosePathway,

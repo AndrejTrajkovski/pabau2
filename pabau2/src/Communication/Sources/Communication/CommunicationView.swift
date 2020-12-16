@@ -7,6 +7,7 @@ public typealias CommunicationEnvironment = (
     loginAPI: LoginAPI,
     journeyAPI: JourneyAPI,
     clientsAPI: ClientsAPI,
+	formAPI: FormAPI,
     userDefaults: UserDefaultsConfig
 )
 

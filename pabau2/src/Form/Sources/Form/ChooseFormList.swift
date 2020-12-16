@@ -52,7 +52,7 @@ public let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, Fo
 		state.templatesLoadingState = .loading
 		return
 			state.templates.isEmpty ?
-				environment.apiClient.getTemplates(formType)
+				environment.formAPI.getTemplates(formType)
 				.map(ChooseFormAction.gotResponse)
 					.eraseToEffect()
 				: .none

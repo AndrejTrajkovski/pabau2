@@ -3,15 +3,26 @@ import SwiftUI
 import ComposableArchitecture
 import Util
 
-public let formTemplateReducer: Reducer<FormTemplate, FormTemplateAction, FormEnvironment> =
+public let formTemplateReducer: Reducer<FormTemplate, FormTemplateAction, FormEnvironment> = .combine(
+	.init { state, action, env in
+		switch action {
+		case .complete:
+			break
+		case .fields:
+			break
+		}
+		return .none
+	},
 	cssFieldReducer.forEach(
 		state: \FormTemplate.formStructure.formStructure,
 		action: /FormTemplateAction.fields(idx:action:),
 		environment: { $0 }
 	)
+)
 
 public enum FormTemplateAction {
 	case fields(idx: Int, action: CSSClassAction)
+	case complete
 }
 
 public struct ListDynamicForm: View {

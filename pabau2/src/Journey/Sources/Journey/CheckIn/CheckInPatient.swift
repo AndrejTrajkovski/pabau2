@@ -44,15 +44,15 @@ let checkInPatientReducer: Reducer<CheckInPatientState, CheckInPatientAction, Jo
 	formTemplateReducer.pullback(
 		state: \CheckInPatientState.medicalHistory,
 		action: /CheckInPatientAction.medicalHistory,
-		environment: { $0 }),
+		environment: makeFormEnv(_:)),
 	formTemplateReducer.forEach(
 		state: \CheckInPatientState.consents,
 		action: /CheckInPatientAction.consents(idx:action:),
-		environment: { $0 }),
+		environment: makeFormEnv(_:)),
 	patientCompleteReducer.pullback(
 		state: \CheckInPatientState.isPatientComplete,
 		action: /CheckInPatientAction.patientComplete,
-		environment: { $0 }),
+		environment: makeFormEnv(_:)),
 	CheckInReducer<CheckInPatientState>().reducer.pullback(
 		state: \CheckInPatientState.self,
 		action: /CheckInPatientAction.stepsView,
@@ -75,7 +75,10 @@ struct CheckInPatientState: Equatable, CheckInState {
 	var consentsStatuses: [FormTemplate.ID: Bool]
 	var isPatientComplete: Bool
 	var selectedIdx: Int
-	
+}
+
+//MARK: - CheckInState
+extension CheckInPatientState {
 	var stepTypes: [StepType] {
 		return pathway.steps.map(\.stepType).filter(filterBy(.patient))
 	}
@@ -117,7 +120,6 @@ public enum CheckInPatientAction {
 	//	case footer(FooterButtonsAction)
 }
 
-//forms(viewStore.stepTypes)
 @ViewBuilder
 func patientForms(store: Store<CheckInPatientState, CheckInPatientAction>) -> some View {
 	ForEach(ViewStore(store).stepTypes,
@@ -147,3 +149,9 @@ func patientForm(stepType: StepType,
 		fatalError()
 	}
 }
+
+//@ViewBuilder
+//func footer(stepType: StepType,
+//			store: Store<CheckInPatientState, CheckInPatientAction>) -> some View {
+//	
+//}

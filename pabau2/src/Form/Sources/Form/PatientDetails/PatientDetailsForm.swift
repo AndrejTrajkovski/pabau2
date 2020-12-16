@@ -118,6 +118,7 @@ public enum PatientDetailsAction: Equatable {
 	case smsComm(ToggleAction)
 	case phoneComm(ToggleAction)
 	case postComm(ToggleAction)
+	case complete
 }
 
 public let patientDetailsReducer: Reducer<PatientDetails, PatientDetailsAction, Any> = (
