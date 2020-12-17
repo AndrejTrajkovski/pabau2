@@ -135,7 +135,7 @@ struct PhotoShareSelectView: View {
         imageVC.view.frame = CGRect(origin: .zero, size: size)
         DispatchQueue.main.async {
             rootVC.view.insertSubview(imageVC.view, at: 0)
-            let uiImage = imageVC.view.asImage(size: size)
+            let uiImage = imageVC.view.renderedImage(size: size)
             imageVC.view.removeFromSuperview()
             completion(uiImage.pngData())
         }
