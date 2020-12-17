@@ -1,10 +1,7 @@
-//
-// FormTemplateFormData.swift
-
 import Foundation
 
 public struct FormStructure: Codable, Equatable {
-
+	
 	public var canProceed: Bool {
 		return formStructure.allSatisfy {
 			!$0._required || $0.cssClass.isFulfilled

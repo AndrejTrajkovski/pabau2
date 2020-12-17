@@ -64,9 +64,9 @@ extension ChooseFormJourneyState {
 	}
 }
 
-private func updateWithKeepingOld(forms: inout IdentifiedArray<Int, FormTemplate>,
-						  finalSelectedTemplatesIds: [Int],
-						  allTemplates: IdentifiedArrayOf<FormTemplate>) {
+private func updateWithKeepingOld(forms: inout IdentifiedArray<FormTemplate.ID, FormTemplate>,
+								  finalSelectedTemplatesIds: [FormTemplate.ID],
+								  allTemplates: IdentifiedArrayOf<FormTemplate>) {
 	let oldWithData = forms.filter { old in
 		finalSelectedTemplatesIds.contains(old.id)
 	}

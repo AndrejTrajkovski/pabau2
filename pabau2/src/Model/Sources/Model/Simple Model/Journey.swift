@@ -1,5 +1,4 @@
 import Foundation
-import NonEmpty
 
 public struct Journey: Codable, Identifiable, Equatable, Hashable {
 
@@ -13,7 +12,7 @@ public struct Journey: Codable, Identifiable, Equatable, Hashable {
 
 	public let id: Int
 
-	public let appointments: NonEmpty<[Appointment]>
+	public let appointments: [Appointment]
 
 	public let patient: BaseClient
 
@@ -30,19 +29,19 @@ public struct Journey: Codable, Identifiable, Equatable, Hashable {
 	public let postCare: [JourneyPostCare]
 
 	public let paid: String
-
+	
 	public let media: [Media]?
 	public init(id: Int,
-							appointments: NonEmpty<[Appointment]>,
-							patient: BaseClient,
-							pathway: Pathway? = nil,
-							employee: Employee,
-							patientChecked: PatientStatus? = nil,
-							forms: [JourneyForms],
-							photos: [SavedPhoto],
-							postCare: [JourneyPostCare],
-							media: [Media]? = nil,
-							paid: String) {
+				appointments: [Appointment],
+				patient: BaseClient,
+				pathway: Pathway? = nil,
+				employee: Employee,
+				patientChecked: PatientStatus? = nil,
+				forms: [JourneyForms],
+				photos: [SavedPhoto],
+				postCare: [JourneyPostCare],
+				media: [Media]? = nil,
+				paid: String) {
 		self.id = id
 		self.appointments = appointments
 		self.patient = patient

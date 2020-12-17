@@ -13,7 +13,10 @@ struct CheckInPatientContainer: View {
 							state: { $0.patientCheckIn },
 							action: { .patient(.stepsView($0)) }),
 						content: {
-							patientForms(store: store.scope(state: { $0.patientCheckIn }, action: { .patient($0) })
+							patientForms(store:
+											store.scope(state: { $0.patientCheckIn },
+														action: { .patient($0) }
+											)
 							)
 						}
 				)
@@ -21,15 +24,10 @@ struct CheckInPatientContainer: View {
 			}
 		}.debug("CheckInPatientContainer")
 	}
-	
+
 	func handBackDeviceLink(_ active: Bool) -> some View {
 		NavigationLink.emptyHidden(active,
-								   HandBackDevice(
-									store: self.store.scope(
-										state: { $0 },
-										action: { $0 }
-									)
-								   )
+								   HandBackDevice(store: self.store)
 								   .navigationBarTitle("")
 								   .navigationBarHidden(true)
 		)
@@ -37,6 +35,18 @@ struct CheckInPatientContainer: View {
 }
 
 let checkInPatientReducer: Reducer<CheckInPatientState, CheckInPatientAction, JourneyEnvironment> = .combine(
+	.init { state, action, env in
+		switch action {
+		case .consents(let id, .complete):
+			let consent = state.consents[id: id]!
+			env.formAPI.post(form: consent,
+							 appointments: state.journey.appointments.map(\.id))
+			break
+		default:
+			break
+		}
+		return .none
+	},
 	patientDetailsReducer.pullback(
 		state: \CheckInPatientState.patientDetails,
 		action: /CheckInPatientAction.patientDetails,
@@ -47,7 +57,7 @@ let checkInPatientReducer: Reducer<CheckInPatientState, CheckInPatientAction, Jo
 		environment: makeFormEnv(_:)),
 	formTemplateReducer.forEach(
 		state: \CheckInPatientState.consents,
-		action: /CheckInPatientAction.consents(idx:action:),
+		action: /CheckInPatientAction.consents(id:action:),
 		environment: makeFormEnv(_:)),
 	patientCompleteReducer.pullback(
 		state: \CheckInPatientState.isPatientComplete,
@@ -75,16 +85,19 @@ struct CheckInPatientState: Equatable, CheckInState {
 	var consentsStatuses: [FormTemplate.ID: Bool]
 	var isPatientComplete: Bool
 	var selectedIdx: Int
+	var patientDetailsLS: LoadingState
+	var medHistoryLS: LoadingState
+	var consentsLS: [FormTemplate.Id: LoadingState]
 }
 
 //MARK: - CheckInState
 extension CheckInPatientState {
-	var stepTypes: [StepType] {
+	func stepTypes() -> [StepType] {
 		return pathway.steps.map(\.stepType).filter(filterBy(.patient))
 	}
 	
-	var stepForms: [StepFormInfo] {
-		return stepTypes.map {
+	func stepForms() -> [StepFormInfo] {
+		return stepTypes().map {
 			getForms($0)
 		}.flatMap { $0 }
 	}
@@ -114,7 +127,7 @@ extension CheckInPatientState {
 public enum CheckInPatientAction {
 	case patientDetails(PatientDetailsAction)
 	case medicalHistory(FormTemplateAction)
-	case consents(idx: Int, action: FormTemplateAction)
+	case consents(id: FormTemplate.ID, action: FormTemplateAction)
 	case patientComplete(PatientCompleteAction)
 	case stepsView(CheckInAction)
 	//	case footer(FooterButtonsAction)
@@ -122,7 +135,7 @@ public enum CheckInPatientAction {
 
 @ViewBuilder
 func patientForms(store: Store<CheckInPatientState, CheckInPatientAction>) -> some View {
-	ForEach(ViewStore(store).stepTypes,
+	ForEach(ViewStore(store).state.stepTypes(),
 			content: { patientForm(stepType: $0, store: store).modifier(FormFrame()) })
 }
 
@@ -139,7 +152,7 @@ func patientForm(stepType: StepType,
 		)
 	case .consents:
 		ForEachStore(store.scope(state: { $0.consents },
-								 action: CheckInPatientAction.consents(idx: action:)),
+								 action: CheckInPatientAction.consents(id: action:)),
 					 content: ListDynamicForm.init(store:)
 		)
 	case .patientComplete:
@@ -149,9 +162,3 @@ func patientForm(stepType: StepType,
 		fatalError()
 	}
 }
-
-//@ViewBuilder
-//func footer(stepType: StepType,
-//			store: Store<CheckInPatientState, CheckInPatientAction>) -> some View {
-//	
-//}

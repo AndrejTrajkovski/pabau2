@@ -1,10 +1,10 @@
-//
-// Client.swift
-
 import Foundation
+import Tagged
 
 public struct Client: Codable, Identifiable, Equatable {
 
+	public typealias Id = Tagged<Client, Int>
+	
     public let mobile: String?
 
     public let salutation: String?
@@ -177,8 +177,8 @@ extension Client {
 extension Client {
 	public init(patDetails: PatientDetails) {
 		self.init(id: patDetails.id,
-							firstName: patDetails.firstName,
-							lastName: patDetails.lastName,
-							dOB: Date())
+				  firstName: patDetails.firstName,
+				  lastName: patDetails.lastName,
+				  dOB: Date())
 	}
 }

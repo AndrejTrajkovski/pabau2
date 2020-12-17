@@ -39,6 +39,10 @@ public struct CheckInContainerState: Equatable {
 
 	var patientSelectedIndex: Int
 	var doctorSelectedIndex: Int
+	
+	var patientDetailsLS: LoadingState
+	var medHistoryLS: LoadingState
+	var consentsLS: [FormTemplate.Id: LoadingState]
 
 	var passcodeState = PasscodeState()
 	var isEnterPasscodeActive: Bool = false
@@ -148,7 +152,7 @@ extension CheckInContainerState {
 		self.selectedTreatmentFormsIds = []
 		self.patientDetailsStatus = false
 		self.medicalHistoryStatus = false
-		self.consentsStatuses = Dictionary.init(grouping: consents, by: { $0.id }).mapValues { _ in return false }
+		self.consentsStatuses = Dictionary.init(grouping: consents.map(\.id), by: { $0 }).mapValues { _ in return false }
 		self.treatmentNotes = []
 		self.treatmentNotesStatuses = [:]
 		self.prescriptions = []
@@ -158,6 +162,9 @@ extension CheckInContainerState {
 		self.photos = PhotosState([[:]])
 		self.patientSelectedIndex = 0
 		self.doctorSelectedIndex = 0
+		self.patientDetailsLS = .initial
+		self.medHistoryLS = .initial
+		self.consentsLS = Dictionary.init(grouping: consents.map(\.id), by: { $0 }).mapValues { _ in return .initial }
 	}
 }
 
@@ -202,7 +209,11 @@ extension CheckInContainerState {
 				consents: consents,
 				consentsStatuses: consentsStatuses,
 				isPatientComplete: isPatientComplete,
-				selectedIdx: patientSelectedIndex)
+				selectedIdx: patientSelectedIndex,
+				patientDetailsLS: patientDetailsLS,
+				medHistoryLS: medHistoryLS,
+				consentsLS: consentsLS
+			)
 		}
 
 		set {
@@ -214,6 +225,9 @@ extension CheckInContainerState {
 			self.consentsStatuses = newValue.consentsStatuses
 			self.isPatientComplete = newValue.isPatientComplete
 			self.patientSelectedIndex = newValue.selectedIdx
+			self.patientDetailsLS = newValue.patientDetailsLS
+			self.medHistoryLS = newValue.medHistoryLS
+			self.consentsLS = newValue.consentsLS
 		}
 	}
 }

@@ -1,7 +1,5 @@
-//
-// FormTemplate.swift
-
 import Foundation
+import Tagged
 
 public struct FormTemplate: Codable, Identifiable, Equatable, CustomDebugStringConvertible {
 	
@@ -9,7 +7,9 @@ public struct FormTemplate: Codable, Identifiable, Equatable, CustomDebugStringC
 		return name
 	}
 	
-	public let id: Int
+	public typealias Id = Tagged<FormTemplate, Int>
+	
+	public let id: Id
 	
 	public let name: String
 	
@@ -23,7 +23,7 @@ public struct FormTemplate: Codable, Identifiable, Equatable, CustomDebugStringC
 				formType: FormType,
 				ePaper: Bool? = nil,
 				formStructure: FormStructure) {
-		self.id = id
+		self.id = FormTemplate.Id(rawValue: id)
 		self.name = name
 		self.formType = formType
 		self.ePaper = ePaper
@@ -96,7 +96,7 @@ extension FormTemplate {
 									 title: "Choose smth else"
 							),
 							CSSField(id: 3, cssClass:
-										.staticText(StaticText(1, "Hey what's going on?")),
+										.staticText(StaticText( "Hey what's going on?")),
 									 title: "This is some static text "
 							),
 							CSSField(id: 4,
@@ -169,7 +169,7 @@ extension FormTemplate {
 									 ), title: "Select title"
 							),
 							CSSField(id: 3, cssClass:
-										.staticText(StaticText(1, "Hey what's going on?")),
+										.staticText(StaticText( "Hey what's going on?")),
 									 title: "This is some static text "
 							),
 							CSSField(id: 4,
@@ -231,7 +231,7 @@ extension FormTemplate {
 									 title: "Choose smth else"
 							),
 							CSSField(id: 3, cssClass:
-										.staticText(StaticText(1, "Hey what's going on?")),
+										.staticText(StaticText( "Hey what's going on?")),
 									 title: "This is some static text "
 							),
 							CSSField(id: 4,
@@ -303,7 +303,7 @@ extension FormTemplate {
 									 title: "Choose smth else"
 							),
 							CSSField(id: 3, cssClass:
-										.staticText(StaticText(1, "Hey what's going on?")),
+										.staticText(StaticText( "Hey what's going on?")),
 									 title: "This is some static text "
 							),
 							CSSField(id: 51,
@@ -373,7 +373,7 @@ extension FormTemplate {
 									 title: "Choose smth else"
 							),
 							CSSField(id: 3, cssClass:
-										.staticText(StaticText(1, "Hey what's going on?")),
+										.staticText(StaticText( "Hey what's going on?")),
 									 title: "This is some static text "
 							),
 							CSSField(id: 4,
@@ -433,7 +433,7 @@ extension FormTemplate {
 									 title: "Choose smth else"
 							),
 							CSSField(id: 3, cssClass:
-										.staticText(StaticText(1, "Hey what's going on?")),
+										.staticText(StaticText( "Hey what's going on?")),
 									 title: "This is some static text "
 							),
 							CSSField(id: 4,
@@ -496,7 +496,7 @@ extension FormTemplate {
 									 title: "Choose smth else"
 							),
 							CSSField(id: 31, cssClass:
-										.staticText(StaticText(1, "Hey what's going on?")),
+										.staticText(StaticText( "Hey what's going on?")),
 									 title: "This is some static text "
 							),
 							CSSField(id: 41,
@@ -548,7 +548,7 @@ extension FormTemplate {
 									 title: "Choose smth else"
 							),
 							CSSField(id: 32, cssClass:
-										.staticText(StaticText(1, "Hey what's going on?")),
+										.staticText(StaticText( "Hey what's going on?")),
 									 title: "This is some static text "
 							),
 							CSSField(id: 42,
@@ -612,7 +612,7 @@ extension FormTemplate {
 									 title: "Choose smth else"
 							),
 							CSSField(id: 33, cssClass:
-										.staticText(StaticText(1, "Hey what's going on?")),
+										.staticText(StaticText( "Hey what's going on?")),
 									 title: "This is some static text "
 							),
 							CSSField(id: 43,
@@ -672,7 +672,7 @@ extension FormTemplate {
 									 title: "Choose smth else"
 							),
 							CSSField(id: 34, cssClass:
-										.staticText(StaticText(1, "Hey what's going on?")),
+										.staticText(StaticText( "Hey what's going on?")),
 									 title: "This is some static text "
 							),
 							CSSField(id: 44,
@@ -732,7 +732,7 @@ extension FormTemplate {
 									 title: "Choose smth else"
 							),
 							CSSField(id: 35, cssClass:
-										.staticText(StaticText(1, "Hey what's going on?")),
+										.staticText(StaticText( "Hey what's going on?")),
 									 title: "This is some static text "
 							),
 							CSSField(id: 45,
@@ -796,7 +796,7 @@ extension FormTemplate {
 									 title: "Choose smth else"
 							),
 							CSSField(id: 36, cssClass:
-										.staticText(StaticText(1, "Hey what's going on?")),
+										.staticText(StaticText( "Hey what's going on?")),
 									 title: "This is some static text "
 							),
 							CSSField(id: 46,
@@ -883,7 +883,7 @@ extension FormTemplate {
 									 title: "Choose smth else"
 							),
 							CSSField(id: 3, cssClass:
-										.staticText(StaticText(1, "Hey what's going on?")),
+										.staticText(StaticText( "Hey what's going on?")),
 									 title: "This is some static text "
 							),
 							CSSField(id: 4,
@@ -945,7 +945,7 @@ extension FormTemplate {
 									 title: "Choose smth else"
 							),
 							CSSField(id: 3, cssClass:
-										.staticText(StaticText(1, "Hey what's going on?")),
+										.staticText(StaticText( "Hey what's going on?")),
 									 title: "This is some static text "
 							),
 							CSSField(id: 4,

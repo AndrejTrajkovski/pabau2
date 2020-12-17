@@ -20,8 +20,8 @@ public struct ChooseFormState: Equatable {
 }
 
 public enum ChooseFormAction {
-	case addTemplateId(Int)
-	case removeTemplateId(Int)
+	case addTemplateId(FormTemplate.ID)
+	case removeTemplateId(FormTemplate.ID)
 	case proceed//Check-In or Proceed
 	case gotResponse(Result<[FormTemplate], RequestError>)
 	case onAppear(FormType)
@@ -77,7 +77,7 @@ public struct ChooseFormList: View {
 
 	struct ViewState: Equatable {
 		let templates: IdentifiedArrayOf<FormTemplate>
-		var selectedTemplatesIds: [Int]
+		var selectedTemplatesIds: [FormTemplate.ID]
 		init(_ state: ChooseFormState) {
 			self.templates = state.templates
 			self.selectedTemplatesIds = state.selectedTemplatesIds

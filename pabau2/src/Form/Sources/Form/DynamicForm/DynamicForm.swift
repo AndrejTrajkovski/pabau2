@@ -22,7 +22,7 @@ public let formTemplateReducer: Reducer<FormTemplate, FormTemplateAction, FormEn
 
 public enum FormTemplateAction {
 	case fields(idx: Int, action: CSSClassAction)
-	case complete
+	case complete(CompleteBtnAction)
 }
 
 public struct ListDynamicForm: View {
@@ -34,11 +34,16 @@ public struct ListDynamicForm: View {
 		UITableViewHeaderFooterView.appearance().tintColor = UIColor.white
 		UITableView.appearance().separatorStyle = .none
 	}
-
+	
 	public var body: some View {
 		print("ListDynamicForm body")
-		return List {
-			DynamicForm(store: store, isCheckingDetails: false)
+		return VStack {
+			List {
+				DynamicForm(store: store, isCheckingDetails: false)
+			}
+			CompleteButton(store: store.scope(state: { $0 },
+											  action: { .complete($0) })
+			)
 		}
 	}
 }

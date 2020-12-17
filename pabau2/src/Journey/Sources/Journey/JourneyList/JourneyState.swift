@@ -19,7 +19,7 @@ public struct JourneyState: Equatable {
 	var searchText: String = ""
 	var selectedJourney: Journey?
 	var selectedPathway: Pathway?
-	var selectedConsentsIds: [Int] = []
+	var selectedConsentsIds: [FormTemplate.ID] = []
 	var allConsents: IdentifiedArrayOf<FormTemplate> = []
 	public var checkIn: CheckInContainerState?
 		= JourneyMocks.checkIn

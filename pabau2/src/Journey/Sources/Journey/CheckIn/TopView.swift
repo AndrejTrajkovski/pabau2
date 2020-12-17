@@ -9,13 +9,13 @@ import Util
 
 struct TopView<S: CheckInState>: View where S: Equatable {
 	let store: Store<S, CheckInAction>
-	
+
 	struct State: Equatable {
 		let totalSteps: Int
 		let currentStepIdx: Int
 		let journey: Journey
 		init(state: S) {
-			self.totalSteps = state.stepForms.count
+			self.totalSteps = state.stepForms().count
 			self.currentStepIdx = state.selectedIdx + 1
 			self.journey = state.journey
 		}

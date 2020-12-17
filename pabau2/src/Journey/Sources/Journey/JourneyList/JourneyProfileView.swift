@@ -62,9 +62,9 @@ extension JourneyProfileView.ViewState {
 		self.name = (journey?.patient.firstName ?? "") + " " + (journey?.patient.lastName ?? "")
 		self.services = journey?.servicesString ?? ""
 		self.employeeName = journey?.employee.name ?? ""
-		self.time = journey?.appointments.first.start_time.toFormat("HH: mm") ?? ""
+		self.time = journey?.appointments.first!.start_time.toFormat("HH: mm") ?? ""
 		self.rooms = "201, 202"
-		self.date = journey?.appointments.first.start_time.toFormat("MMMM dd yyyy") ?? ""
+		self.date = journey?.appointments.first!.start_time.toFormat("MMMM dd yyyy") ?? ""
 //		self.hasJourney = journey != nil
 	}
 }

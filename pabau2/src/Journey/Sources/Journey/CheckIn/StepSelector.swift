@@ -94,12 +94,12 @@ extension StepSelector.State {
 //			StepFormInfo(isComplete: $0.0.isComplete,
 //								title: $0.0.form.title)
 //		}
-		let stepForms = state.stepForms
+		let stepForms = state.stepForms()
 		let shouldShowArrows = stepForms.count > maxVisibleCells
 		self.selectedIndex = state.selectedIdx
 		self.numberOfVisibleSteps = min(stepForms.count, maxVisibleCells)
 		self.shouldShowLeftArrow = shouldShowArrows && (state.selectedIdx != 0)
 		self.shouldShowRightArrow = shouldShowArrows && (state.selectedIdx != stepForms.count - 1)
-		self.stepForms = state.stepForms
+		self.stepForms = stepForms
 	}
 }

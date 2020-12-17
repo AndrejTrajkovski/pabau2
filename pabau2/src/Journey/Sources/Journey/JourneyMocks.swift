@@ -11,7 +11,7 @@ struct JourneyMocks {
 	static let checkIn = CheckInContainerState(
 		journey:
 			Journey.init(id: 1,
-						 appointments: NonEmpty.init(Appointment.init(id: 1, from: Date() - 1.days, to: Date() - 1.days, employeeId: 1, employeeInitials: "PO", locationId: 1, locationName: "Skopje", status: AppointmentStatus.mock.randomElement()!, service: BaseService.init(id: 1, name: "Botox", color: "#9400D3"))),
+						 appointments: [Appointment.init(id: 1, from: Date() - 1.days, to: Date() - 1.days, employeeId: 1, employeeInitials: "PO", locationId: 1, locationName: "Skopje", status: AppointmentStatus.mock.randomElement()!, service: BaseService.init(id: 1, name: "Botox", color: "#9400D3"))],
 						 patient: BaseClient.init(id: 0, firstName: "Andrej", lastName: "Trajkovski", dOB: "28.02.1991", email: "andrej.", avatar: "emily", phone: ""), employee: Employee.init(id: 1, name: "Dr. Jekil", locationId: Location.randomId()), forms: [], photos: [], postCare: [], paid: "Not Paid"),
 		pathway:
 			Pathway.init(id: 1,

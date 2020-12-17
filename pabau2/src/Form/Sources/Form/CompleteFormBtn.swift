@@ -1,8 +1,19 @@
 import SwiftUI
 import ComposableArchitecture
 import Util
-import Form
 import Model
+
+//protocol CompleteFormBtnState {
+//	var canProceed: Bool { get }
+//}
+//
+//enum CompleteFormBtnAction {
+//	case complete
+//}
+//
+//struct CompleteFormBtn: View {
+//	let store: Store<CompleteFormBtnState, CompleteFormBtnAction>
+//}
 
 //struct CompleteFormBtn: View {
 //	let store: Store<Forms, FooterButtonsAction>
@@ -59,3 +70,40 @@ import Model
 //		}
 //	}
 //}
+
+public protocol CompleteBtnState {
+	var canProceed: Bool { get }
+	var title: String { get }
+}
+
+public enum CompleteBtnAction {
+	case onTap
+}
+
+struct CompleteButton<State>: View where State: Equatable & CompleteBtnState {
+	let store: Store<State, CompleteBtnAction>
+	public var body: some View {
+		WithViewStore(store) { viewStore in
+			PrimaryButton(viewStore.title,
+						  isDisabled: !viewStore.canProceed) {
+				viewStore.send(.onTap)
+			}
+		}
+	}
+}
+
+extension FormTemplate: CompleteBtnState {
+	public var canProceed: Bool {
+		self.formStructure.canProceed
+	}
+	
+	public var title: String {
+		self.name
+	}
+}
+
+extension PatientDetails: CompleteBtnState {
+	public var title: String {
+		"PATIENT DETAILS"
+	}
+}

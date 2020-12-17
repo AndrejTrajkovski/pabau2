@@ -3,9 +3,9 @@ import Model
 
 protocol CheckInState {
 	var journey: Journey { get }
-	var stepForms: [StepFormInfo] { get }
 	var selectedIdx: Int { get set }
-	var stepTypes: [StepType] { get }
+	func stepForms() -> [StepFormInfo]
+	func stepTypes() -> [StepType]
 }
 
 extension CheckInState {
@@ -15,7 +15,7 @@ extension CheckInState {
 	}
 
 	mutating func next() {
-		if stepForms.count - 1 > selectedIdx {
+		if stepForms().count - 1 > selectedIdx {
 			selectedIdx += 1
 		}
 	}
@@ -27,7 +27,7 @@ extension CheckInState {
 	}
 
 	mutating func goToNextUncomplete() {
-		stepForms.firstIndex(where: { !$0.status }).map {
+		stepForms().firstIndex(where: { !$0.status }).map {
 			selectedIdx = $0
 		}
 	}

@@ -32,16 +32,16 @@ struct Forms<FormsContent: View, S: CheckInState>: View where S: Equatable {
 	let store: Store<S, CheckInAction>
 	@ObservedObject var viewStore: ViewStore<State, CheckInAction>
 	let content: () -> FormsContent
-	
+
 	struct State: Equatable {
 		let selectedIdx: Int
 		let formsCount: Int
 		init(state: S) {
 			self.selectedIdx = state.selectedIdx
-			self.formsCount = state.stepForms.count
+			self.formsCount = state.stepForms().count
 		}
 	}
-	
+
 	init(store: Store<S, CheckInAction>,
 		 @ViewBuilder content: @escaping () -> FormsContent) {
 		self.store = store

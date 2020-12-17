@@ -1,7 +1,8 @@
 import Foundation
 
 public struct PatientDetails: Equatable, Identifiable, Codable {
-	public var id: Int
+	
+	public var id: Client.ID
 	public var canProceed: Bool {
 		return !firstName.isEmpty && !lastName.isEmpty && !email.isEmpty
 	}

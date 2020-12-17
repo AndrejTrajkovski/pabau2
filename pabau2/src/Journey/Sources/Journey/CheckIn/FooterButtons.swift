@@ -33,13 +33,16 @@ import Model
 //}
 //
 //struct FooterButtons: View {
-//	let store: Store<FooterButtonsState, FooterButtonsAction>
+//	
+//	let store: Store<CheckInState, CheckInAction>
+//	
 //	struct State: Equatable {
 //		let isOnCheckPatient: Bool
 //		let isOnLastDoctorStep: Bool
 //		let isCompleteJourneyBtnDisabled: Bool
 //		let isOnPhotosStep: Bool
 //	}
+//	
 //	var body: some View {
 //		WithViewStore(store.scope(
 //			state: State.init(state:),
@@ -48,26 +51,26 @@ import Model
 //			HStack {
 //				if viewStore.state.isOnCheckPatient {
 //					SecondaryButton(Texts.toPatientMode) {
-//												viewStore.send(.toPatientMode)
+//						viewStore.send(.toPatientMode)
 //					}
 //				} else if viewStore.state.isOnPhotosStep {
 //					AddOrEditPhotosBtn(
 //						store: self.store.scope(
 //							state: {
 //								extract(case: MetaForm.photos,
-//												from: $0.forms.selectedForm?.form)?.selectedIds.isEmpty ?? false },
+//										from: $0.forms.selectedForm?.form)?.selectedIds.isEmpty ?? false },
 //							action: { .photos($0) }
 //						)
 //					)
 //				}
 //				CompleteFormBtn(store:
-//					self.store.scope(state: { $0.forms }))
+//									self.store.scope(state: { $0.forms }))
 //					.frame(maxWidth: 250)
 //				if viewStore.state.isOnLastDoctorStep {
 //					CompleteJourneyBtn(isBtnDisabled: viewStore.state.isCompleteJourneyBtnDisabled,
-//														 action: {
-//															viewStore.send(.completeJourney(.onCompleteJourney))
-//					})
+//									   action: {
+//										viewStore.send(.completeJourney(.onCompleteJourney))
+//									   })
 //				}
 //			}
 //		}
@@ -75,7 +78,7 @@ import Model
 //}
 //
 //extension FooterButtons.State {
-//	init(state: FooterButtonsState) {
+//	init(state: CheckInState) {
 //		self.isOnCheckPatient = state.forms.selectedStep == .checkpatient
 //		self.isOnPhotosStep = state.forms.selectedStep == .photos
 //		let flatForms = state.forms.forms.flatMap(\.forms)
