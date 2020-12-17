@@ -11,6 +11,7 @@ public struct PhotoShareState: Equatable {
     var shouldDisplayActivity: Bool = false
     var shouldDisplayFacebookDialog: Bool = false
     var shouldDisplaySuccessMessage: Bool = false
+    var shouldDisplayInstagramDialog: Bool = false
     
     var messageSuccess: MessageSuccessInfo = MessageSuccessInfo()
     
@@ -26,11 +27,12 @@ public enum PhotoShareAction: Equatable {
     case textFieldChanged(String)
     case messagePosted
     case backButton
-    case facebook(ShareFacebookAction)
+    case facebook(ShareSocialAction)
+    case instagram(ShareSocialAction)
     case saveToCamera(SaveAlbumAction)
     case hideMessageView
     
-    public enum ShareFacebookAction {
+    public enum ShareSocialAction {
         case display
         case didCancel
         case didComplete
@@ -42,6 +44,7 @@ public enum PhotoShareAction: Equatable {
         case success
         case error
     }
+
 }
 
 var photoShareViewReducer = Reducer<PhotoShareState, PhotoShareAction, ClientsEnvironment> { state, action, env in
@@ -59,6 +62,10 @@ var photoShareViewReducer = Reducer<PhotoShareState, PhotoShareAction, ClientsEn
         state.shouldDisplaySuccessMessage = true
     case .facebook(.didFailed):
         state.shouldDisplayFacebookDialog = false
+    case .instagram(.display):
+            state.shouldDisplayInstagramDialog = !state.shouldDisplayInstagramDialog
+        case .instagram(.didComplete):
+            state.shouldDisplayInstagramDialog = false
     case .saveToCamera(.save):
         if let uiImage = UIImage(data: state.imageData) {
             return ImageSaver().writeToPhotoAlbum(image: uiImage)
@@ -139,7 +146,11 @@ struct PhotoShareView: View {
                             }) {
                                 SocialTitleImage(imageName: "ico-share-facebook", socialMediaTitle: "Facebook", isSystemIcon: false)
                             }
-                            SocialTitleImage(imageName: "ico-share-instagram", socialMediaTitle: "Instagram", isSystemIcon: false)
+                            Button(action: {
+                                viewStore.send(.instagram(.display))
+                            }) {
+                                SocialTitleImage(imageName: "ico-share-instagram", socialMediaTitle: "Instagram", isSystemIcon: false)
+                            }
                         }
                         Divider()
                         HStack(alignment: .center, spacing: 2) {
@@ -178,6 +189,9 @@ struct PhotoShareView: View {
                 
                 if viewStore.shouldDisplayFacebookDialog {
                     ShareFacebookViewController(viewStore: viewStore)
+                }
+                if viewStore.shouldDisplayInstagramDialog {
+                    ShareInstagramView(viewStore: viewStore)
                 }
                 
             }.background(Color.paleGrey)

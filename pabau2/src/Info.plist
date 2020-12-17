@@ -2,13 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>UIAppFonts</key>
-	<array>
-		<string>SFProText-Regular.ttf</string>
-		<string>SFProText-MediumItalic.ttf</string>
-		<string>SFProText-Medium.ttf</string>
-		<string>SFProText-Semibold.ttf</string>
-	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -55,6 +48,7 @@
 		<string>fb-messenger-share-api</string>
 		<string>fbauth2</string>
 		<string>fbshareextension</string>
+        <string>instagram</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
@@ -75,6 +69,13 @@
 	<string>Pabau needs access to your camera for taking photos.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Pabau needs access to your photo library to import photos.</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>SFProText-Regular.ttf</string>
+		<string>SFProText-MediumItalic.ttf</string>
+		<string>SFProText-Medium.ttf</string>
+		<string>SFProText-Semibold.ttf</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
