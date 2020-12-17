@@ -56,6 +56,11 @@ struct PhotoCompareState: Equatable {
     
     var onBackCompare: Bool = false
     var onShareSelected: Bool = false
+    var iconImageNavigationCompareMode: String {
+        get {
+            photoCompareMode == .single ? "ico-nav-compare" : "ico-nav-single"
+        }
+    }
     
     var dragOffset: CGSize = .zero
     var position: CGSize = .zero
@@ -159,7 +164,7 @@ struct PhotoCompareView: View {
                     Button(action: {
                         viewStore.send(.changeComparePhotoMode)
                     }) {
-                        Image("ico-nav-compare")
+                        Image(viewStore.iconImageNavigationCompareMode)
                             .resizable()
                             .frame(width: 24, height: 24)
                     }
