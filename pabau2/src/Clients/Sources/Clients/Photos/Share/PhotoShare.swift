@@ -13,7 +13,6 @@ public struct PhotoShareState: Equatable {
     var shouldDisplaySuccessMessage: Bool = false
     
     var messageSuccess: MessageSuccessInfo = MessageSuccessInfo()
-    var imageSaveState: ImageSaveState = ImageSaveState()
     
     var imageData: Data!
 }
@@ -24,12 +23,11 @@ public struct MessageSuccessInfo: Equatable {
 }
 
 public enum PhotoShareAction: Equatable {
-    case share
     case textFieldChanged(String)
     case messagePosted
     case backButton
     case facebook(ShareFacebookAction)
-    case saveToCamera
+    case saveToCamera(SaveAlbumAction)
     case hideMessageView
     
     public enum ShareFacebookAction {
@@ -37,6 +35,12 @@ public enum PhotoShareAction: Equatable {
         case didCancel
         case didComplete
         case didFailed
+    }
+    
+    public enum SaveAlbumAction {
+        case save
+        case success
+        case error
     }
 }
 
@@ -55,15 +59,14 @@ var photoShareViewReducer = Reducer<PhotoShareState, PhotoShareAction, ClientsEn
         state.shouldDisplaySuccessMessage = true
     case .facebook(.didFailed):
         state.shouldDisplayFacebookDialog = false
-    case .saveToCamera:
+    case .saveToCamera(.save):
+        if let uiImage = UIImage(data: state.imageData) {
+            return ImageSaver().writeToPhotoAlbum(image: uiImage)
+        }
+    case .saveToCamera(.success):
         state.messageSuccess = MessageSuccessInfo(title: "Succesfully saved the image.",
                                                   subtitle: "Your images has been saved locally")
-        
-        let imageSaverLocally = ImageSaver()
-        if let uiImage = UIImage(data: state.imageData) {
-            imageSaverLocally.writeToPhotoAlbum(image: uiImage)
-            state.shouldDisplaySuccessMessage = true
-        }
+        state.shouldDisplaySuccessMessage = true
     case .hideMessageView:
         state.shouldDisplaySuccessMessage = false
     case .textFieldChanged(let text):
@@ -76,12 +79,16 @@ var photoShareViewReducer = Reducer<PhotoShareState, PhotoShareAction, ClientsEn
 
 struct PhotoShareView: View {
     let store: Store<PhotoShareState, PhotoShareAction>
+    @ObservedObject var viewStore: ViewStore<PhotoShareState, PhotoShareAction>
+    
+    init(store: Store<PhotoShareState, PhotoShareAction>) {
+        self.store = store
+        self.viewStore = ViewStore(store)
+    }
     
     @State var isShownActivity: Bool = false
     
     var body: some View {
-        return WithViewStore(store) { viewStore in
-
             ZStack {
                 VStack(spacing: 0) {
                     HStack(alignment: .top, spacing: 5) {
@@ -139,7 +146,7 @@ struct PhotoShareView: View {
                             Spacer()
                                 .frame(width: 15)
                             Button(action: {
-                                viewStore.send(.saveToCamera)
+                                viewStore.send(.saveToCamera(.save))
                             }) {
                                 SocialTitleImage(imageName: "photo", socialMediaTitle: "Save to Camera", isSystemIcon: true)
                             }
@@ -184,8 +191,6 @@ struct PhotoShareView: View {
                     }
                 })
         }
-    }    
-    
 }
 
 struct SocialTitleImage: View {

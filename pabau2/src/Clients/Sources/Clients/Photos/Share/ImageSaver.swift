@@ -3,26 +3,21 @@ import ComposableArchitecture
 
 class ImageSaver: NSObject {
     var successHandler: (() -> Void)?
-    var errorHandler: ((Error) -> Void)?
-
-    func writeToPhotoAlbum(image: UIImage) {
-        UIImageWriteToSavedPhotosAlbum(image, self, #selector(saveError), nil)
+    
+    func writeToPhotoAlbum(image: UIImage) -> Effect<PhotoShareAction, Never> {
+        return Effect<PhotoShareAction, Never>.future { callback in
+            self.successHandler = {
+                callback(.success(.saveToCamera(.success)))
+            }
+            UIImageWriteToSavedPhotosAlbum(image, self, #selector(self.saveError), nil)
+        }
     }
     
     @objc func saveError(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
         if let _ = error {
             
         } else {
+            successHandler?()
         }
     }
-}
-
-struct ImageSaveState: Equatable {
-    static func == (lhs: ImageSaveState, rhs: ImageSaveState) -> Bool {
-        lhs.uuid == rhs.uuid
-    }
-    
-    var uuid: UUID = UUID()
-    var didSaved: Bool = false
-    var error: Error?
 }
