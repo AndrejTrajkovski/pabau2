@@ -3,7 +3,16 @@ import SwiftUI
 import ComposableArchitecture
 import Util
 
-public let formTemplateReducer: Reducer<FormTemplate, FormTemplateAction, FormEnvironment> = .combine(
+public struct FormTemplateState: Equatable, Identifiable {
+	
+	public var id: FormTemplate.ID { form.id }
+	
+	public var form: FormTemplate
+	public var status: Bool
+	public var loadingState: LoadingState
+}
+
+public let formTemplateReducer: Reducer<FormTemplateState, FormTemplateAction, FormEnvironment> = .combine(
 	.init { state, action, env in
 		switch action {
 		case .complete:
@@ -14,7 +23,7 @@ public let formTemplateReducer: Reducer<FormTemplate, FormTemplateAction, FormEn
 		return .none
 	},
 	cssFieldReducer.forEach(
-		state: \FormTemplate.formStructure.formStructure,
+		state: \FormTemplateState.form.formStructure.formStructure,
 		action: /FormTemplateAction.fields(idx:action:),
 		environment: { $0 }
 	)
@@ -26,9 +35,9 @@ public enum FormTemplateAction {
 }
 
 public struct ListDynamicForm: View {
-
+	
 	let store: Store<FormTemplate, FormTemplateAction>
-
+	
 	public init(store: Store<FormTemplate, FormTemplateAction>) {
 		self.store = store
 		UITableViewHeaderFooterView.appearance().tintColor = UIColor.white
@@ -49,7 +58,7 @@ public struct ListDynamicForm: View {
 }
 
 struct DynamicForm: View {
-
+	
 	let isCheckingDetails: Bool
 	let store: Store<FormTemplate, FormTemplateAction>
 	@ObservedObject var viewStore: ViewStore<String, Never>
@@ -59,7 +68,7 @@ struct DynamicForm: View {
 		self.isCheckingDetails = isCheckingDetails
 		self.viewStore = ViewStore(store.scope(state: { $0.name }).actionless)
 	}
-
+	
 	public var body: some View {
 		VStack {
 			Text(self.viewStore.state).font(.title)
