@@ -1,7 +1,7 @@
 import ComposableArchitecture
 
 public protocol ClientsAPI {
-	func getClients(search: String?) -> Effect<Result<[Client], RequestError>, Never>
+    func getClients(search: String?, offset: Int) -> Effect<Result<[Client], RequestError>, Never>
 	func getItemsCount(clientId: Int) -> Effect<Result<ClientItemsCount, RequestError>, Never>
 	
 	func getAppointments(clientId: Int) -> EffectWithResult<[Appointment], RequestError>

@@ -1,6 +1,6 @@
 import ComposableArchitecture
 
-public struct JourneyLiveAPI: JourneyAPI, LiveAPI {
+public struct JourneyLiveAPI: JourneyAPI, LiveAPI, MockAPI {
     public init () {}
 
 	public func getEmployees() -> Effect<Result<[Employee], RequestError>, Never> {
@@ -8,7 +8,14 @@ public struct JourneyLiveAPI: JourneyAPI, LiveAPI {
 	}
 
 	public func getTemplates(_ type: FormType) -> Effect<Result<[FormTemplate], RequestError>, Never> {
-		fatalError()
+        switch type {
+        case .consent:
+            return mockSuccess(FormTemplate.mockConsents, delay: 0.1)
+        case .treatment:
+            return mockSuccess(FormTemplate.mockTreatmentN, delay: 0.1)
+        default:
+            fatalError("TODO")
+        }
 	}
 
     public func getJourneys(date: Date, searchTerm: String?) -> Effect<Result<[Journey], RequestError>, Never> {

@@ -11,36 +11,52 @@ let clientsListReducer: Reducer<ClientsState, ClientsListAction, ClientsEnvironm
 			action: /ClientsListAction.selectedClient,
 			environment: { $0}),
 		.init { state, action, env in
-            
-            struct SearchClientsId: Hashable {}
+            struct ClientsId: Hashable {}
             
 			switch action {
 			case .identified(let id, ClientRowAction.onSelectClient):
-				state.selectedClient = ClientCardState(client: state.clients[id: id]!,
-																							 list: ClientCardListState())
+				state.selectedClient = ClientCardState(
+                    client: state.clients[id: id]!,
+					list: ClientCardListState()
+                )
 				return env.apiClient.getItemsCount(clientId: id)
 					.map(ClientsListAction.gotItemsResponse)
 					.eraseToEffect()
-			case .onSearchText(let text):
-				state.searchText = text
-                
-                return env.apiClient
-                    .getClients(search: text)
+            case .identified(id: let id, action: .onAppear):
+                #warning("FIX ME: API didnt work...")
+                if state.clients.last?.id == id && !state.isSearching && !state.isClientsLoading {
+                    return env.apiClient.getClients(
+                        search: nil,
+                        offset: state.clients.count
+                    )
                     .receive(on: DispatchQueue.main)
                     .eraseToEffect()
-                    .debounce(id: SearchClientsId(), for: 0.3, scheduler: DispatchQueue.main)
-                    .map(ClientsListAction.gotSearchClientsResponse)
-                    .cancellable(id: SearchClientsId(), cancelInFlight: true)
-                
-            case .gotSearchClientsResponse(let result):
+                    .debounce(id: ClientsId(), for: 0.3, scheduler: DispatchQueue.main)
+                    .map(ClientsListAction.gotClientsResponse)
+                    .cancellable(id: ClientsId(), cancelInFlight: true)
+                }
+			case .onSearchText(let text):
+				state.searchText = text
+                return env.apiClient
+                    .getClients(
+                        search: text,
+                        offset: 0
+                    )
+                    .receive(on: DispatchQueue.main)
+                    .eraseToEffect()
+                    .debounce(id: ClientsId(), for: 0.3, scheduler: DispatchQueue.main)
+                    .map(ClientsListAction.gotClientsResponse)
+                    .cancellable(id: ClientsId(), cancelInFlight: true)
+            case .gotClientsResponse(let result):
                 switch result {
                 case .success(let contacts):
-                    state.clients = .init(contacts)
+                    #warning("FIX ME: all time snapshoot same, test code...")
+                    state.clients = .init(state.searchText.isEmpty ? state.clients + contacts : [])
+                    state.notFoundClients = state.clients.isEmpty
                     state.contactListLS = .gotSuccess
                 case .failure:
                     state.contactListLS = .gotError
                 }
-                    
 			case .gotItemsResponse(let result):
 				guard case .success(let count) = result else { break }
 				state.selectedClient?.client.count = count
@@ -66,10 +82,11 @@ let clientsListReducer: Reducer<ClientsState, ClientsListAction, ClientsEnvironm
 			return .none
 		}
 )
+
 public enum ClientsListAction: Equatable {
 	case identified(id: Int, action: ClientRowAction)
 	case onSearchText(String)
-    case gotSearchClientsResponse(Result<[Client], RequestError>)
+    case gotClientsResponse(Result<[Client], RequestError>)
 	case selectedClient(ClientCardAction)
 	case gotItemsResponse(Result<ClientItemsCount, RequestError>)
 	case onAddClient
@@ -78,23 +95,29 @@ public enum ClientsListAction: Equatable {
 
 struct ClientsList: View {
 	let store: Store<ClientsState, ClientsListAction>
-    
+
 	struct State: Equatable {
 		let searchText: String
 		let isSelectedClient: Bool
 		let isLoading: Bool
 		let isAddClientActive: Bool
+        var isSearching = false
+        var notFoundClients = false
+    
 		init(state: ClientsState) {
 			self.searchText = state.searchText
 			self.isSelectedClient = state.selectedClient != nil
 			self.isLoading = state.contactListLS == .loading
 			self.isAddClientActive = state.addClient != nil
+            self.isSearching = state.isSearching
+            self.notFoundClients = state.notFoundClients
 		}
 	}
 
 	var body: some View {
-		print("ClientsList")
-		return WithViewStore(store.scope(state: State.init(state:))) { viewStore in
+        return WithViewStore(
+            store.scope(state: State.init(state:))
+        ) { viewStore in
 			VStack {
                 SearchView(
                     placeholder: Texts.clientSearchPlaceholder,
@@ -103,15 +126,23 @@ struct ClientsList: View {
                         send: ClientsListAction.onSearchText
 				)
                 ).padding(.horizontal, 10)
+                ZStack {
 				List {
 					ForEachStore(
 						self.store.scope(
                              state: { $0.clients },
 							 action: ClientsListAction.identified(id:action:)
                         ),
-                        content: {
-															ClientListRow(store: $0)
-					})
+                            content: { store in
+                                ClientListRow(store: store)
+                            }
+                        )
+                    }
+                    EmptyDataView(
+                        imageName: "clients_image",
+                        title: "Nothing found",
+                        description: "Start searching the clients by name, email or mobile number"
+                    ).show(isVisible: .constant(viewStore.state.notFoundClients && viewStore.state.isSearching))
 				}
 				NavigationLink.emptyHidden(
 					viewStore.state.isSelectedClient,
@@ -136,11 +167,9 @@ struct ClientsList: View {
                          AddClient(store: $0)}
 					)
 				)
-			}
-			.loadingView(.constant(viewStore.state.isLoading))
+            }.loadingView(.constant(viewStore.state.isLoading))
 			.navigationBarTitle(Text(Texts.clients), displayMode: .inline)
-			.navigationBarItems(trailing:
-				PlusButton { viewStore.send(.onAddClient) }
+            .navigationBarItems(trailing: PlusButton { viewStore.send(.onAddClient) }
 			)
 		}
 	}

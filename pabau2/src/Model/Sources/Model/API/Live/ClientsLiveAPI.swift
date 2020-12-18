@@ -9,11 +9,11 @@ public struct ClientsLiveAPI: ClientsAPI, LiveAPI {
     
     public var requestBuilderFactory: RequestBuilderFactory = RequestBuilderFactoryImpl()
     
-    public func getClients(search: String? = nil) -> Effect<Result<[Client], RequestError>, Never> {
+    public func getClients(search: String? = nil, offset: Int) -> Effect<Result<[Client], RequestError>, Never> {
         let URLString = basePath + route
         var url = URLComponents(string: URLString)
         
-        var queryItems: [String: Any] = ["limit": 20, "offset": 0]
+        var queryItems: [String: Any] = ["limit": 20, "offset": offset]
         
         if let search = search {
             queryItems["search"] = search
