@@ -34,7 +34,7 @@ public enum FormTemplateAction {
 	case complete(CompleteBtnAction)
 }
 
-public struct ListDynamicForm: View {
+public struct ListHTMLForm: View {
 	
 	let store: Store<FormTemplate, FormTemplateAction>
 	
@@ -48,7 +48,7 @@ public struct ListDynamicForm: View {
 		print("ListDynamicForm body")
 		return VStack {
 			List {
-				DynamicForm(store: store, isCheckingDetails: false)
+				HTMLForm(store: store, isCheckingDetails: false)
 			}
 			CompleteButton(store: store.scope(state: { $0 },
 											  action: { .complete($0) })
@@ -57,7 +57,7 @@ public struct ListDynamicForm: View {
 	}
 }
 
-struct DynamicForm: View {
+struct HTMLForm: View {
 	
 	let isCheckingDetails: Bool
 	let store: Store<FormTemplate, FormTemplateAction>

@@ -147,13 +147,13 @@ func patientForm(stepType: StepType,
 		PatientDetailsForm(store: store.scope(state: { $0.patientDetails }, action: { .patientDetails($0) })
 		)
 	case .medicalhistory:
-		ListDynamicForm(store: store.scope(state: { $0.medicalHistory },
+		ListHTMLForm(store: store.scope(state: { $0.medicalHistory },
 										   action: { .medicalHistory($0) })
 		)
 	case .consents:
 		ForEachStore(store.scope(state: { $0.consents },
 								 action: CheckInPatientAction.consents(id: action:)),
-					 content: ListDynamicForm.init(store:)
+					 content: ListHTMLForm.init(store:)
 		)
 	case .patientComplete:
 		PatientCompleteForm(store: store.scope(state: { $0.isPatientComplete }, action: { .patientComplete($0)})
