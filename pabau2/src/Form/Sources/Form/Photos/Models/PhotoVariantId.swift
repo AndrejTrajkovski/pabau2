@@ -1,7 +1,8 @@
 import Foundation
+import Model
 
 public enum PhotoVariantId: Equatable, Hashable {
-	case saved(Int)
+	case saved(SavedPhoto.ID)
 	case new(UUID)
 }
 

@@ -102,4 +102,7 @@ extension Employee {
 		)
 	]
 	
+	func initials() -> String {
+		name.split(separator: " ").map(String.init).joined().uppercased()
+	}
 }

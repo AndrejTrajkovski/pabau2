@@ -22,7 +22,7 @@ struct CheckPatientForm: View {
 													 environment: { })
 				)
 				ForEach(viewStore.patForms.indices, id: \.self ) { index in
-					HTMLForm(
+					HTMLFormView(
 						store: Store(initialState: viewStore.patForms[index],
 									 reducer: Reducer.empty,
 									 environment: { }),

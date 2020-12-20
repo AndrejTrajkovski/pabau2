@@ -10,7 +10,7 @@ public struct Bookout: Codable, Identifiable, Equatable {
 	public var locationId: Location.ID
 	public let _private: Bool?
 	public let _description: String?
-	public var employeeInitials: String?
+	public var employeeInitials: String
 	public var locationName: String?
 	public var employeeName: String
 	public var roomId: Room.Id {
@@ -26,7 +26,8 @@ public struct Bookout: Codable, Identifiable, Equatable {
 				locationId: Location.ID,
 				_private: Bool? = nil,
 				_description: String? = nil,
-				employeeName: String) {
+				employeeName: String,
+				employeeInitials: String) {
 		self.id = id
 		self.start_date = start_date
 		self.end_date = end_date
@@ -35,6 +36,7 @@ public struct Bookout: Codable, Identifiable, Equatable {
 		self._private = _private
 		self._description = _description
 		self.employeeName = employeeName
+		self.employeeInitials = employeeInitials
 	}
 	public enum CodingKeys: String, CodingKey {
 		case id = "id"
@@ -59,7 +61,7 @@ extension Bookout {
 		_ start_date: Date,
 		_ end_date: Date,
 		_ employeeId: Employee.Id,
-		_ employeeInitials: String?,
+		_ employeeInitials: String,
 		_ locationId: Location.Id,
 		_ locationName: String?,
 		_ _private: Bool?,

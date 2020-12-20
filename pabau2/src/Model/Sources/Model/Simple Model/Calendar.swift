@@ -2,13 +2,9 @@ import Tagged
 import Foundation
 import SwiftDate
 import Util
+import CasePaths
 
-public struct CalendarResponse: Codable {
-	//	public let rota: [Employee.Id: [Shift]]
-	public let appointments: [CalAppointment]
-}
-
-public struct CalAppointment: Hashable, Codable, Equatable, Identifiable {
+public struct Appointment: Hashable, Codable, Equatable, Identifiable {
 	
 	public func hash(into hasher: inout Hasher) {
 		hasher.combine(id)
@@ -18,7 +14,7 @@ public struct CalAppointment: Hashable, Codable, Equatable, Identifiable {
 	public var start_date: Date
 	public var end_date: Date
 	public var employeeId: Employee.Id
-	public let employeeInitials: String?
+	public let employeeInitials: String
 	public var locationId: Location.Id
 	public let locationName: String?
 	public let _private: Bool?
@@ -26,11 +22,12 @@ public struct CalAppointment: Hashable, Codable, Equatable, Identifiable {
 	public var status: AppointmentStatus?
 	public let service: String
 	public let serviceColor: String?
-	public let customerName: String?
-	public let customerPhoto: String?
+	public let clientName: String?
+	public let clientPhoto: String?
 	public var roomId: Room.Id
 	public let employeeName: String
 	public let roomName: String
+	public let clientId: Client.ID
 	
 	public enum CodingKeys: String, CodingKey {
 		case id
@@ -45,11 +42,12 @@ public struct CalAppointment: Hashable, Codable, Equatable, Identifiable {
 		case status
 		case service
 		case serviceColor = "service_color"
-		case customerName = "customer_name"
-		case customerPhoto = "customer_photo"
+		case clientName = "client_name"
+		case clientPhoto = "client_photo"
 		case roomId = "room_id"
 		case employeeName = "employee_name"
 		case roomName = "room_name"
+		case clientId = "client_id"
 	}
 	
 //	public init(from decoder: Decoder) throws {
@@ -65,8 +63,8 @@ public struct CalAppointment: Hashable, Codable, Equatable, Identifiable {
 //		status = try? container.decode(AppointmentStatus?.self, forKey: .status)
 //		service = try container.decode(String.self, forKey: .service)
 //		serviceColor = try? container.decode(String.self, forKey: .serviceColor)
-//		customerName = try? container.decode(String.self, forKey: .customerName)
-//		customerPhoto = try? container.decode(String.self, forKey: .customerPhoto)
+//		clientName = try? container.decode(String.self, forKey: .clientName)
+//		clientPhoto = try? container.decode(String.self, forKey: .clientPhoto)
 //		start_date = try Date(container: container,
 //							  codingKey: .start_date,
 //							  formatter: DateFormatter.yearMonthDay)
@@ -79,14 +77,14 @@ public struct CalAppointment: Hashable, Codable, Equatable, Identifiable {
 //	}
 }
 
-extension CalAppointment {
+extension Appointment {
 	
 	public init(
 		_ id: CalendarEvent.Id,
 		_ start_date: Date,
 		_ end_date: Date,
 		_ employeeId: Employee.Id,
-		_ employeeInitials: String?,
+		_ employeeInitials: String,
 		_ locationId: Location.Id,
 		_ locationName: String?,
 		_ _private: Bool?,
@@ -108,56 +106,15 @@ extension CalAppointment {
 		self.extraEmployees = try? container.decode([Employee].self, forKey: .extraEmployees)
 		self.service = try container.decode(String.self, forKey: .service)
 		self.serviceColor = try? container.decode(String.self, forKey: .serviceColor)
-		self.customerName = try? container.decode(String.self, forKey: .customerName)
-		self.customerPhoto = try? container.decode(String.self, forKey: .customerPhoto)
+		self.clientName = try? container.decode(String.self, forKey: .clientName)
+		self.clientPhoto = try? container.decode(String.self, forKey: .clientPhoto)
 		self.roomId = try container.decode(Room.Id.self, forKey: .roomId)
 		self.roomName = try container.decode(String.self, forKey: .roomName)
+		self.clientId = try container.decode(Client.ID.self, forKey: .clientId)
 	}
 }
 
-extension CalAppointment: CalendarEventVariant { }
-extension CalAppointment {
-	
-//	public init(
-//		id: CalAppointment.Id,
-//		start_date: Date,
-//		end_date: Date,
-//		employeeId: Employee.Id,
-//		employeeInitials: String? = nil,
-//		locationId: Location.ID,
-//		locationName: String?  = nil,
-//		_private: Bool?  = nil,
-//		type: Termin.ModelType? = nil,
-//		extraEmployees: [Employee]? = nil,
-//		status: AppointmentStatus? = nil,
-//		service: String,
-//		serviceColor: String? = nil,
-//		customerName: String? = nil,
-//		customerPhoto: String? = nil,
-//		roomId: Room.Id,
-//		employeeName: String,
-//		roomName: String
-//	) {
-//		self.id = id
-//		self.start_date = start_date
-//		self.end_date = end_date
-//		self.employeeId = employeeId
-//		self.employeeInitials = employeeInitials
-//		self.locationId = locationId
-//		self.locationName = locationName
-//		self._private = _private
-//		self.type = type
-//		self.extraEmployees = extraEmployees
-//		self.status = status
-//		self.service = service
-//		self.serviceColor = serviceColor
-//		self.customerName = customerName
-//		self.customerPhoto = customerPhoto
-//		self.roomId = roomId
-//		self.employeeName = employeeName
-//		self.roomName = roomName
-//	}
-}
+extension Appointment: CalendarEventVariant { }
 
 extension Date {
 	public func separateHMSandYMD(_ calendar: Calendar = Calendar.init(identifier: .gregorian)) -> (Date?, Date?) {
@@ -190,5 +147,12 @@ extension CalendarEvent {
 		end = Calendar.gregorian.date(byAdding: .hour, value: duration.hour!, to: end)!
 		self.start_date = start
 		self.end_date = end
+	}
+}
+
+extension Appointment {
+	
+	static func makeDummy() -> [Appointment] {
+		return CalendarEvent.makeDummy().compactMap(/CalendarEvent.appointment)
 	}
 }

@@ -35,27 +35,27 @@ struct CheckInPatientContainer: View {
 }
 
 let checkInPatientReducer: Reducer<CheckInPatientState, CheckInPatientAction, JourneyEnvironment> = .combine(
-	.init { state, action, env in
-		switch action {
-		case .consents(let id, .complete):
-			let consent = state.consents[id: id]!
-			env.formAPI.post(form: consent,
-							 appointments: state.journey.appointments.map(\.id))
-			break
-		default:
-			break
-		}
-		return .none
-	},
+//	.init { state, action, env in
+//		switch action {
+//		case .consents(let id, .complete):
+//			let consent = state.consents[id: id]!
+//			env.formAPI.post(form: consent,
+//							 appointments: state.journey.appointments.map(\.id))
+//			break
+//		default:
+//			break
+//		}
+//		return .none
+//	},
 	patientDetailsReducer.pullback(
 		state: \CheckInPatientState.patientDetails,
 		action: /CheckInPatientAction.patientDetails,
 		environment: { $0 }),
-	formTemplateReducer.pullback(
+	htmlFormReducer.pullback(
 		state: \CheckInPatientState.medicalHistory,
 		action: /CheckInPatientAction.medicalHistory,
 		environment: makeFormEnv(_:)),
-	formTemplateReducer.forEach(
+	htmlFormReducer.forEach(
 		state: \CheckInPatientState.consents,
 		action: /CheckInPatientAction.consents(id:action:),
 		environment: makeFormEnv(_:)),
@@ -79,15 +79,16 @@ struct CheckInPatientState: Equatable, CheckInState {
 	let pathway: Pathway
 	var patientDetails: PatientDetails
 	var patientDetailsStatus: Bool
-	var medicalHistory: FormTemplate
+	var medicalHistoryId: HTMLForm.ID
+	var medicalHistory: HTMLForm
 	var medicalHistoryStatus: Bool
-	var consents: IdentifiedArrayOf<FormTemplate>
-	var consentsStatuses: [FormTemplate.ID: Bool]
+	var consents: IdentifiedArray<HTMLForm.ID, HTMLForm>
+	var consentsStatuses: [HTMLForm.ID: Bool]
 	var isPatientComplete: Bool
 	var selectedIdx: Int
 	var patientDetailsLS: LoadingState
 	var medHistoryLS: LoadingState
-	var consentsLS: [FormTemplate.Id: LoadingState]
+	var consentsLS: [HTMLForm.ID: LoadingState]
 }
 
 //MARK: - CheckInState
@@ -122,12 +123,61 @@ extension CheckInPatientState {
 			return []
 		}
 	}
+	
+	var consentsStates: [JourneyFormState<HTMLForm>] {
+		get {
+			return self.consents.map {
+				JourneyFormState(id: $0.id,
+								 form: $0,
+								 status: consentsStatuses[$0.id]!,
+								 loadingState: consentsLS[$0.id]!)
+			}
+		}
+		set {
+			newValue.forEach {
+				self.consents[id: $0.id] = $0.form
+				self.consentsStatuses[$0.id] = $0.status
+				self.consentsLS[$0.id] = $0.loadingState
+			}
+		}
+	}
+	
+	var medHistoryState: JourneyFormState<HTMLForm> {
+		get {
+			JourneyFormState(id: medicalHistoryId,
+							 form: medicalHistory,
+							 status: medicalHistoryStatus,
+							 loadingState: medHistoryLS)
+		}
+		set {
+			self.medicalHistory = newValue.form
+			self.medicalHistoryStatus = newValue.status
+			self.medHistoryLS = newValue.loadingState
+		}
+	}
+	
+	var patientDetailsState: JourneyFormState<PatientDetails> {
+		get {
+			JourneyFormState(id: journey.clientId,
+							 form: patientDetails,
+							 status: patientDetailsStatus,
+							 loadingState: patientDetailsLS)
+		}
+		set {
+			self.patientDetails = newValue.form
+			self.patientDetailsStatus = newValue.status
+			self.patientDetailsLS = newValue.loadingState
+		}
+	}
 }
 
 public enum CheckInPatientAction {
+	case patientDetailsRequests(JourneyFormRequestsAction<PatientDetails>)
 	case patientDetails(PatientDetailsAction)
-	case medicalHistory(FormTemplateAction)
-	case consents(id: FormTemplate.ID, action: FormTemplateAction)
+	case medicalHistoryRequests(JourneyFormRequestsAction<HTMLForm>)
+	case medicalHistory(HTMLFormAction)
+	case consents(id: HTMLForm.ID, action: HTMLFormAction)
+	case consentsRequests(id: HTMLForm.ID, action: JourneyFormRequestsAction<HTMLForm>)
 	case patientComplete(PatientCompleteAction)
 	case stepsView(CheckInAction)
 	//	case footer(FooterButtonsAction)
@@ -144,12 +194,19 @@ func patientForm(stepType: StepType,
 				 store: Store<CheckInPatientState, CheckInPatientAction>) -> some View {
 	switch stepType {
 	case .patientdetails:
-		PatientDetailsForm(store: store.scope(state: { $0.patientDetails }, action: { .patientDetails($0) })
-		)
+		JourneyFormRequests(store: store.scope(state: { $0.patientDetailsState },
+											   action: { .patientDetailsRequests($0) }),
+							content: { PatientDetailsForm(store:
+															store.scope(state: { $0.patientDetails},
+																		action: { .patientDetails($0) })
+							) })
 	case .medicalhistory:
-		ListHTMLForm(store: store.scope(state: { $0.medicalHistory },
-										   action: { .medicalHistory($0) })
-		)
+		JourneyFormRequests(store: store.scope(state: { $0.medHistoryState },
+											   action: { .medicalHistoryRequests($0) }),
+							content: {
+								ListHTMLForm(store: store.scope(state: { $0.medicalHistory },
+																action: { .medicalHistory($0) })
+								) })
 	case .consents:
 		ForEachStore(store.scope(state: { $0.consents },
 								 action: CheckInPatientAction.consents(id: action:)),

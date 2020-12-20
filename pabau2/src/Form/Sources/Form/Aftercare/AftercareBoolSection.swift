@@ -4,6 +4,8 @@ import ASCollectionView
 import Util
 import SharedComponents
 
+public typealias Indexed<T> = (Int, T)
+
 public enum AftercareBoolAction {
 	case indexedToggle(Indexed<ToggleAction>)
 }

@@ -7,8 +7,8 @@ struct JourneyAvatarView: View {
 	let font: Font
 	let bgColor: Color
 	var body: some View {
-		AvatarView(avatarUrl: journey.patient.avatar,
-							 initials: journey.patient.initials,
+		AvatarView(avatarUrl: journey.clientPhoto,
+							 initials: journey.initials,
 							 font: font,
 							 bgColor: bgColor)
 	}

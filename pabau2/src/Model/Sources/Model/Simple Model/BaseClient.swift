@@ -17,7 +17,7 @@ public struct BaseClient: Codable, Identifiable, Equatable {
 		self.phone = phone
 	}
 
-	public let id: Int
+	public let id: Client.ID
 
 	public let firstName: String
 

@@ -11,7 +11,7 @@ import Communication
 
 typealias AppEnvironment = (
 	loginAPI: LoginAPI,
-	journeyAPI: JourneyAPI,
+	appointmentsAPI: AppointmentsAPI,
 	clientsAPI: ClientsAPI,
 	formAPI: FormAPI,
 	userDefaults: UserDefaultsConfig
@@ -19,7 +19,7 @@ typealias AppEnvironment = (
 
 func makeJourneyEnv(_ appEnv: AppEnvironment) -> JourneyEnvironment {
 	return JourneyEnvironment(
-		journeyAPI: appEnv.journeyAPI,
+		appointmentsAPI: appEnv.appointmentsAPI,
 		formAPI: appEnv.formAPI,
 		userDefaults: appEnv.userDefaults
 	)

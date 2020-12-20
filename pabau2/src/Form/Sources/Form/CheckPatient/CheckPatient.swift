@@ -4,11 +4,11 @@ import Foundation
 public struct CheckPatient: Equatable, Identifiable {
 	public let id: UUID = UUID()
 	let patDetails: PatientDetails
-	let patForms: [FormTemplate]
+	let patForms: [HTMLForm]
 
 	public init (
 		patDetails: PatientDetails,
-		patForms: [FormTemplate]
+		patForms: [HTMLForm]
 	) {
 		self.patDetails = patDetails
 		self.patForms = patForms

@@ -26,11 +26,11 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, Calenda
 
 public struct AppDetailsState: Equatable {
 
-	public init(app: CalAppointment) {
+	public init(app: Appointment) {
 		self.app = app
 	}
 
-	public var app: CalAppointment
+	public var app: Appointment
 	var isPaymentActive: Bool = false
 	var isDocumentsActive: Bool = false
 	var isRescheduleActive: Bool = false

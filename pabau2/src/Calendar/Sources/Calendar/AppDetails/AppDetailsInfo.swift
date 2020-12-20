@@ -63,7 +63,7 @@ struct AppDetailsInfo: View {
 extension AppDetailsInfo.ViewState {
 
 	init(state: AppDetailsState) {
-		self.patientName = state.app.customerName ?? ""
+		self.patientName = state.app.clientName ?? ""
 		self.serviceName = state.app.service
 		self.dateString = state.app.start_date.toString(.time(.short))
 		self.employeeName = state.app.employeeName

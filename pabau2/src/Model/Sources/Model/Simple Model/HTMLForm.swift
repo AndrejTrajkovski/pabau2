@@ -1,15 +1,15 @@
 import Foundation
 import Tagged
 
-public struct FormTemplate: Codable, Identifiable, Equatable, CustomDebugStringConvertible {
+public struct HTMLForm: Codable, Identifiable, Equatable, CustomDebugStringConvertible {
 	
 	public var debugDescription: String {
 		return name
 	}
 	
-	public typealias Id = Tagged<FormTemplate, Int>
+	public typealias ID = Tagged<HTMLForm, Int>
 	
-	public let id: Id
+	public let id: HTMLForm.ID
 	
 	public let name: String
 	
@@ -23,7 +23,7 @@ public struct FormTemplate: Codable, Identifiable, Equatable, CustomDebugStringC
 				formType: FormType,
 				ePaper: Bool? = nil,
 				formStructure: FormStructure) {
-		self.id = FormTemplate.Id(rawValue: id)
+		self.id = HTMLForm.ID(rawValue: id)
 		self.name = name
 		self.formType = formType
 		self.ePaper = ePaper
@@ -38,10 +38,10 @@ public struct FormTemplate: Codable, Identifiable, Equatable, CustomDebugStringC
 	}
 }
 
-extension FormTemplate {
+extension HTMLForm {
 	
 	public static let mockConsents  = [
-		FormTemplate(id: 1,
+		HTMLForm(id: 1,
 					 name: "Consent - Transplant",
 					 formType: .consent,
 					 ePaper: false,
@@ -118,7 +118,7 @@ extension FormTemplate {
 							)
 						])),
 		
-		FormTemplate(id: 2, name: "Consent - Botox", formType: .consent,
+		HTMLForm(id: 2, name: "Consent - Botox", formType: .consent,
 					 ePaper: false,
 					 formStructure:
 						FormStructure(formStructure: [
@@ -184,7 +184,7 @@ extension FormTemplate {
 									 title: "Insert some text bla bla"
 							)
 						])),
-		FormTemplate(id: 3, name: "Test Consent", formType: .consent,
+		HTMLForm(id: 3, name: "Test Consent", formType: .consent,
 					 ePaper: false,
 					 formStructure:
 						FormStructure(formStructure: [
@@ -254,7 +254,7 @@ extension FormTemplate {
 									 title: "Insert some text 2"
 							)
 						])),
-		FormTemplate(id: 4, name: "Vaccines", formType: .consent,
+		HTMLForm(id: 4, name: "Vaccines", formType: .consent,
 					 ePaper: false,
 					 formStructure:
 						FormStructure(formStructure: [
@@ -324,7 +324,7 @@ extension FormTemplate {
 									 ), title: "Radio title"
 							)
 						])),
-		FormTemplate(id: 123, name: "Signature Consent", formType: .consent,
+		HTMLForm(id: 123, name: "Signature Consent", formType: .consent,
 					 ePaper: false,
 					 formStructure:
 						FormStructure(formStructure: [
@@ -384,7 +384,7 @@ extension FormTemplate {
 									 ), title: "Radio title"
 							)
 						])),
-		FormTemplate(id: 1234231231231233, name: "Massage Consent", formType: .consent,
+		HTMLForm(id: 1234231231231233, name: "Massage Consent", formType: .consent,
 					 ePaper: false,
 					 formStructure:
 						FormStructure(formStructure: [
@@ -447,7 +447,7 @@ extension FormTemplate {
 	]
 	
 	public static let mockTreatmentN  = [
-		FormTemplate(id: 1, name: "Treatment - Transplant", formType: .treatment,
+		HTMLForm(id: 1, name: "Treatment - Transplant", formType: .treatment,
 					 ePaper: false,
 					 formStructure:
 						FormStructure(formStructure: [
@@ -507,7 +507,7 @@ extension FormTemplate {
 									 ), title: "Radio title"
 							)
 						])),
-		FormTemplate(id: 2, name: "Treatment - Botox", formType: .treatment,
+		HTMLForm(id: 2, name: "Treatment - Botox", formType: .treatment,
 					 ePaper: false,
 					 formStructure:
 						FormStructure(formStructure: [
@@ -563,7 +563,7 @@ extension FormTemplate {
 									 title: "Insert some text bla bla"
 							)
 						])),
-		FormTemplate(id: 3, name: "Test Treatment", formType: .treatment,
+		HTMLForm(id: 3, name: "Test Treatment", formType: .treatment,
 					 ePaper: false,
 					 formStructure:
 						FormStructure(formStructure: [
@@ -623,7 +623,7 @@ extension FormTemplate {
 									 ), title: "Radio title"
 							)
 						])),
-		FormTemplate(id: 4, name: "Treatment Vaccines", formType: .treatment,
+		HTMLForm(id: 4, name: "Treatment Vaccines", formType: .treatment,
 					 ePaper: false,
 					 formStructure:
 						FormStructure(formStructure: [
@@ -683,7 +683,7 @@ extension FormTemplate {
 									 ), title: "Radio title"
 							)
 						])),
-		FormTemplate(id: 123, name: "Signature Treatment", formType: .treatment,
+		HTMLForm(id: 123, name: "Signature Treatment", formType: .treatment,
 					 ePaper: false,
 					 formStructure:
 						FormStructure(formStructure: [
@@ -743,7 +743,7 @@ extension FormTemplate {
 									 ), title: "Radio title"
 							)
 						])),
-		FormTemplate(id: 123423, name: "Treatmentzzz",
+		HTMLForm(id: 123423, name: "Treatmentzzz",
 					 formType: .treatment,
 					 ePaper: false,
 					 formStructure:
@@ -810,8 +810,8 @@ extension FormTemplate {
 	]
 	
 	
-	public static func getMedHistory() -> FormTemplate {
-		FormTemplate(id: 1, name: "Medical History Form", formType: .history,
+	public static func getMedHistory() -> HTMLForm {
+		HTMLForm(id: 1, name: "Medical History Form", formType: .history,
 					 ePaper: false,
 					 formStructure:
 						FormStructure(formStructure: [
@@ -895,8 +895,8 @@ extension FormTemplate {
 							)
 						]))
 	}
-	public static func getPrescription() -> FormTemplate {
-		FormTemplate(id: 1, name: "Prescription Form", formType: .prescription,
+	public static func getPrescription() -> HTMLForm {
+		HTMLForm(id: 1, name: "Prescription Form", formType: .prescription,
 					 ePaper: false,
 					 formStructure:
 						FormStructure(formStructure: [

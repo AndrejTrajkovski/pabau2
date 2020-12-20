@@ -4,7 +4,7 @@ import Util
 import Model
 import SharedComponents
 
-public typealias AddBookoutEnvironment = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
+public typealias AddBookoutEnvironment = (apiClient: AppointmentsAPI, userDefaults: UserDefaultsConfig)
 
 public let addBookoutReducer: Reducer<AddBookoutState, AddBookoutAction, AddBookoutEnvironment> =
 	.combine(

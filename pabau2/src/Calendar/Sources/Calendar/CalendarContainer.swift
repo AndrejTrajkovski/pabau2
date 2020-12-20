@@ -10,7 +10,7 @@ import Combine
 import AddShift
 import Filters
 
-public typealias CalendarEnvironment = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
+public typealias CalendarEnvironment = (apiClient: AppointmentsAPI, userDefaults: UserDefaultsConfig)
 
 public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAction, CalendarEnvironment> = .combine(
 	calendarReducer.pullback(

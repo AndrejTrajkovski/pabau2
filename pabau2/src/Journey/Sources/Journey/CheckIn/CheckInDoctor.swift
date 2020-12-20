@@ -7,10 +7,10 @@ import Model
 public struct CheckInDoctorState: Equatable {
 	public let journey: Journey
 	let pathway: Pathway
-	var treatmentNotes: IdentifiedArrayOf<FormTemplate>
-	var treatmentNotesStatuses: [FormTemplate.ID: Bool]
-	var prescriptions: IdentifiedArrayOf<FormTemplate>
-	var prescriptionsStatuses: [FormTemplate.ID: Bool]
+	var treatmentNotes: IdentifiedArrayOf<HTMLForm>
+	var treatmentNotesStatuses: [HTMLForm.ID: Bool]
+	var prescriptions: IdentifiedArrayOf<HTMLForm>
+	var prescriptionsStatuses: [HTMLForm.ID: Bool]
 	var aftercare: Aftercare?
 	var aftercareStatus: Bool
 	var photos: PhotosState

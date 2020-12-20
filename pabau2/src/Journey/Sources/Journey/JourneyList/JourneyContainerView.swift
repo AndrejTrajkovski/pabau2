@@ -11,7 +11,7 @@ import Overture
 import Filters
 
 public typealias JourneyEnvironment = (
-	journeyAPI: JourneyAPI,
+	appointmentsAPI: AppointmentsAPI,
 	formAPI: FormAPI,
 	userDefaults: UserDefaultsConfig
 )
@@ -30,7 +30,8 @@ let checkInMiddleware2 = Reducer<JourneyState, ChooseFormAction, JourneyEnvironm
 			journey: selJ,
 			pathway: selP,
 			patientDetails: PatientDetails.mock,
-			medHistory: FormTemplate.getMedHistory(),
+			medicalHistoryId: HTMLForm.getMedHistory().id,
+			medHistory: HTMLForm.getMedHistory(),
 			consents: state.allConsents.filter(
 				pipe(get(\.id), state.selectedConsentsIds.contains)
 			),
@@ -117,7 +118,10 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 				state.selectedFilter = filter
 			case .datePicker(.selectedDate(let date)):
 				state.loadingState = .loading
-				return environment.journeyAPI.getJourneys(date: date)
+				return environment.appointmentsAPI.getAppointments(date: date)
+					.map {
+						$0.map(Journey.group(apps:))
+					}
 					.map(JourneyAction.gotResponse)
 					.eraseToEffect()
 			case .gotResponse(let result):
@@ -136,8 +140,11 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 				state.selectedJourney = nil
 			case .loadJourneys:
 				state.loadingState = .loading
-				return environment.journeyAPI
-					.getJourneys(date: Date())
+				return environment.appointmentsAPI
+					.getAppointments(date: Date())
+					.map {
+						$0.map(Journey.group(apps:))
+					}
 					.map(JourneyAction.gotResponse)
 					.eraseToEffect()
 			}
@@ -242,14 +249,14 @@ public struct JourneyContainerView: View {
 func journeyCellAdapter(journey: Journey) -> JourneyCell {
 	return JourneyCell(
 		journey: journey,
-		color: Color.init(hex: journey.appointments.first!.service.color),
+		color: Color.init(hex: journey.appointments.first!.serviceColor ?? "000000"),
 		time: "12:30",
-		imageUrl: journey.patient.avatar,
-		name: journey.patient.firstName + " " + journey.patient.lastName,
+		imageUrl: journey.clientPhoto,
+		name: journey.clientName ?? "",
 		services: journey.servicesString,
 		status: journey.appointments.first!.status?.name,
-		employee: journey.employee.name,
-		paidStatus: journey.paid,
+		employee: journey.employeeName ?? "",
+		paidStatus: "Not paid",
 		stepsComplete: 0,
 		stepsTotal: 3)
 }

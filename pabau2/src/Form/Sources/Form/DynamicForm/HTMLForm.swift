@@ -3,16 +3,7 @@ import SwiftUI
 import ComposableArchitecture
 import Util
 
-public struct FormTemplateState: Equatable, Identifiable {
-	
-	public var id: FormTemplate.ID { form.id }
-	
-	public var form: FormTemplate
-	public var status: Bool
-	public var loadingState: LoadingState
-}
-
-public let formTemplateReducer: Reducer<FormTemplateState, FormTemplateAction, FormEnvironment> = .combine(
+public let htmlFormReducer: Reducer<HTMLForm, HTMLFormAction, FormEnvironment> = .combine(
 	.init { state, action, env in
 		switch action {
 		case .complete:
@@ -23,32 +14,34 @@ public let formTemplateReducer: Reducer<FormTemplateState, FormTemplateAction, F
 		return .none
 	},
 	cssFieldReducer.forEach(
-		state: \FormTemplateState.form.formStructure.formStructure,
-		action: /FormTemplateAction.fields(idx:action:),
+		state: \HTMLForm.formStructure.formStructure,
+		action: /HTMLFormAction.fields(idx:action:),
 		environment: { $0 }
 	)
 )
 
-public enum FormTemplateAction {
+public enum HTMLFormAction {
 	case fields(idx: Int, action: CSSClassAction)
 	case complete(CompleteBtnAction)
+	//idea:
+//	case requests(JourneyFormRequestsAction<HTMLForm>)
 }
 
 public struct ListHTMLForm: View {
 	
-	let store: Store<FormTemplate, FormTemplateAction>
+	let store: Store<HTMLForm, HTMLFormAction>
 	
-	public init(store: Store<FormTemplate, FormTemplateAction>) {
+	public init(store: Store<HTMLForm, HTMLFormAction>) {
 		self.store = store
 		UITableViewHeaderFooterView.appearance().tintColor = UIColor.white
 		UITableView.appearance().separatorStyle = .none
 	}
 	
 	public var body: some View {
-		print("ListDynamicForm body")
+		print("ListHTMLForm body")
 		return VStack {
 			List {
-				HTMLForm(store: store, isCheckingDetails: false)
+				HTMLFormView(store: store, isCheckingDetails: false)
 			}
 			CompleteButton(store: store.scope(state: { $0 },
 											  action: { .complete($0) })
@@ -57,12 +50,12 @@ public struct ListHTMLForm: View {
 	}
 }
 
-struct HTMLForm: View {
+struct HTMLFormView: View {
 	
 	let isCheckingDetails: Bool
-	let store: Store<FormTemplate, FormTemplateAction>
+	let store: Store<HTMLForm, HTMLFormAction>
 	@ObservedObject var viewStore: ViewStore<String, Never>
-	init(store: Store<FormTemplate, FormTemplateAction>,
+	init(store: Store<HTMLForm, HTMLFormAction>,
 		 isCheckingDetails: Bool) {
 		self.store = store
 		self.isCheckingDetails = isCheckingDetails
@@ -73,7 +66,7 @@ struct HTMLForm: View {
 		VStack {
 			Text(self.viewStore.state).font(.title)
 			ForEachStore(store.scope(state: { $0.formStructure.formStructure },
-									 action: FormTemplateAction.fields(idx:action:)),
+									 action: HTMLFormAction.fields(idx:action:)),
 						 content: { store in
 							FormSectionField(store: store,
 											 isCheckingDetails: isCheckingDetails)

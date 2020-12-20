@@ -3,7 +3,7 @@ import Tagged
 
 @dynamicMemberLookup
 public enum CalendarEvent: CalendarEventVariant, Identifiable, Equatable {
-	case appointment(CalAppointment)
+	case appointment(Appointment)
 	case bookout(Bookout)
 	
 	public typealias Id = Tagged<CalendarEvent, Int>
@@ -85,8 +85,9 @@ extension CalendarEvent {
 			}
 		}
 	}
-	public var employeeInitials: String? {
+	public var employeeInitials: String {
 		get { return self[dynamicMember: \.employeeInitials] } }
+	
 	public var locationId: Location.Id {
 		get { return self[dynamicMember: \.locationId] }
 		set {
@@ -149,7 +150,7 @@ extension CalendarEvent: Decodable {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
 		let id = try container.decode(CalendarEvent.Id.self, forKey: .id)
 		let employeeId = try container.decode(Employee.Id.self, forKey: .employeeId)
-		let employeeInitials = try? container.decode(String.self, forKey: .employeeInitials)
+		let employeeInitials = try container.decode(String.self, forKey: .employeeInitials)
 		let locationId = try container.decode(Location.ID.self, forKey: .locationId)
 		let locationName = try? container.decode(String.self, forKey: .locationName)
 		let _private = try container.decode(Bool.self, forKey: ._private)
@@ -164,7 +165,7 @@ extension CalendarEvent: Decodable {
 		let type = try? container.decode(Termin.ModelType.self, forKey: .type)
 		switch type {
 		case .appointment:
-			let app = try CalAppointment(id,
+			let app = try Appointment(id,
 										 start_date,
 										 end_date,
 										 employeeId,
@@ -247,11 +248,11 @@ extension CalendarEvent {
 			let employee = Employee.mockEmployees.randomElement()!
 			let client = Client.mockClients.randomElement()!
 			let room = Room.mock().randomElement()!.value
-			let app = CalAppointment(id: CalendarEvent.Id(rawValue: idx),
+			let app = Appointment(id: CalendarEvent.Id(rawValue: idx),
 									 start_date: mockStartEnd.0,
 									 end_date: mockStartEnd.1,
 									 employeeId: employee.id,
-									 employeeInitials: nil,
+									 employeeInitials: employee.initials(),
 									 locationId: employee.locationId,
 									 locationName: "",
 									 _private: false,
@@ -259,11 +260,12 @@ extension CalendarEvent {
 									 status: AppointmentStatus.mock.randomElement()!,
 									 service: service!.0,
 									 serviceColor: service!.1,
-									 customerName: client.firstName,
-									 customerPhoto: client.avatar,
+									 clientName: client.firstName,
+									 clientPhoto: client.avatar,
 									 roomId: room.id,
 									 employeeName: employee.name,
-									 roomName: room.name
+									 roomName: room.name,
+									 clientId: client.id
 			)
 			res.append(CalendarEvent.appointment(app))
 		}
@@ -278,7 +280,8 @@ extension CalendarEvent {
 								  locationId: employee.locationId,
 								  _private: false,
 								  _description: "",
-								  employeeName: employee.name)
+								  employeeName: employee.name,
+								  employeeInitials: employee.initials())
 			res.append(CalendarEvent.bookout(bookout))
 		}
 		return res

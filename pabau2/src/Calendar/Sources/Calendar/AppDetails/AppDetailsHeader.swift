@@ -44,8 +44,8 @@ struct AppDetailsHeader: View {
 extension AppDetailsHeader.ViewState {
 
 	init(state: AppDetailsState) {
-		self.imageUrl = state.app.customerPhoto
-		self.name = state.app.customerName ?? ""
+		self.imageUrl = state.app.clientPhoto
+		self.name = state.app.clientName ?? ""
 		self.statusColor = state.app.status?.color ?? "000000"
 		self.statusDesc = state.app.status?.name ?? "No Info"
 	}

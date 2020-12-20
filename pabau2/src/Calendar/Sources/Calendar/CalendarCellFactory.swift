@@ -12,7 +12,7 @@ struct CellConfigurator {
 		switch appointment.app {
 		case .appointment(let app):
 			configure(cell: &cell,
-					  patientName: app.customerName,
+					  patientName: app.clientName,
 					  serviceName: app.service,
 					  serviceColor: app.serviceColor,
 					  roomName: "",

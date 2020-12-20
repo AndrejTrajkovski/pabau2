@@ -5,7 +5,7 @@ import Util
 import Form
 import SharedComponents
 
-public typealias AddAppointmentEnv = (journeyAPI: JourneyAPI, userDefaults: UserDefaultsConfig)
+public typealias AddAppointmentEnv = (appointmentsAPI: AppointmentsAPI, userDefaults: UserDefaultsConfig)
 
 public struct AddAppointmentState: Equatable {
 	var reminder: Bool

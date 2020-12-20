@@ -203,14 +203,14 @@ let tabBarReducer: Reducer<TabBarState, TabBarAction, AppEnvironment> = Reducer.
 		action: /TabBarAction.employeesFilter,
 		environment: {
 			return EmployeesFilterEnvironment(
-				journeyAPI: $0.journeyAPI,
+				appointmentsAPI: $0.appointmentsAPI,
 				userDefaults: $0.userDefaults)
 	}),
 	addAppointmentReducer.pullback(
 		state: \TabBarState.addAppointment,
 		action: /TabBarAction.addAppointment,
 		environment: {
-			AddAppointmentEnv(journeyAPI: $0.journeyAPI,
+			AddAppointmentEnv(appointmentsAPI: $0.appointmentsAPI,
 							  userDefaults: $0.userDefaults)
 		}
 	),
@@ -234,7 +234,7 @@ let tabBarReducer: Reducer<TabBarState, TabBarAction, AppEnvironment> = Reducer.
 		action: /TabBarAction.calendar,
 		environment: {
 			return CalendarEnvironment(
-			apiClient: $0.journeyAPI,
+			apiClient: $0.appointmentsAPI,
 			userDefaults: $0.userDefaults)
 	}),
     communicationReducer.pullback(

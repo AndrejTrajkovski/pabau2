@@ -162,7 +162,7 @@ struct LocationAndDate: View {
 extension Employee: SingleChoiceElement { }
 extension Location: SingleChoiceElement { }
 
-public typealias AddShiftEnvironment = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
+public typealias AddShiftEnvironment = (apiClient: AppointmentsAPI, userDefaults: UserDefaultsConfig)
 
 struct AddShift_Previews: PreviewProvider {
 	static var state: AddShiftState {
@@ -177,7 +177,7 @@ struct AddShift_Previews: PreviewProvider {
 
 	static var env: AddShiftEnvironment {
 		AddShiftEnvironment(
-			apiClient: JourneyMockAPI(),
+			apiClient: AppointmentsMockAPI(),
 			userDefaults: StandardUDConfig()
 		)
 	}
