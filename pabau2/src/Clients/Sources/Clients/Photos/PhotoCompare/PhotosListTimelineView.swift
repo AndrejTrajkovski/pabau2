@@ -8,20 +8,30 @@ struct PhotosListTimelineView: View {
     let store: Store<PhotoCompareState, PhotoCompareAction>
     var layout = [GridItem(.flexible())]
 
+	struct State: Equatable {
+		let photos: [PhotoViewModel]
+		let selectedPhotoId: PhotoVariantId
+		
+		init(state: PhotoCompareState) {
+			self.photos = state.photos.flatMap(\.value)
+			self.selectedPhotoId = state.getSelectedId()
+		}
+	}
+	
     var body: some View {
-        WithViewStore(self.store) { viewStore in
+		WithViewStore(store.scope(state: State.init(state:))) { viewStore in
             VStack {
                 ScrollView(.horizontal) {
                     LazyHGrid(rows: layout, spacing: 24) {
-                        ForEach(viewStore.photos) { item in
+						ForEach(viewStore.photos) { item in
                             Button(action: {
-                                viewStore.send(.didChangeSelectedPhoto(item.id))
+								viewStore.send(.didChangeSelectedPhoto(id: item.id))
                             }) {
                                 ZStack {
-                                TimelinePhotoCell(photo: item)
+									TimelinePhotoCell(photo: item)
                                     .frame(width: 90, height: 110)
                                 }
-                                .border(viewStore.selectedPhoto == item ? Color.blue : Color.clear, width: 2)
+								.border(viewStore.selectedPhotoId == item.id ? Color.blue : Color.clear, width: 2)
                             }
                         }
                     }

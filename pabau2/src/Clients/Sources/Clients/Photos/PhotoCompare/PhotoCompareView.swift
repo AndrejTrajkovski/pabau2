@@ -5,72 +5,62 @@ import Form
 import Util
 
 public enum PhotoCompareAction: Equatable {
-    case didChangeSelectedPhoto(PhotoVariantId)
+	case didChangeSelectedPhoto(id: PhotoVariantId)
     case didSelectShare
     case shareAction(PhotoShareSelectAction)
     case onBackCompare
     case sideBySideAction(PhotoSideBySideAction)
 }
 
-public enum PhotoCompareMode: Equatable {
-    case single
-    case multiple
+enum PhotoCompareMode: Equatable {
+	case single
+	case double
 }
 
 struct PhotoCompareState: Equatable {
-    public init(photos: [PhotoViewModel], selectedId: PhotoVariantId?) {
-        self.photos = photos
-        self.selectedId = selectedId
-
-        selectedPhoto = self.photos.filter { $0.basePhoto.id == selectedId }.first
-        if let selected = selectedPhoto, let latestPhoto = latestPhotoTaken {
-            photoSideBySideState = PhotoSideBySideState(leftState: PhotoDetailState(photo: selected, changes: MagnificationZoom()),
-                                                    rightState: PhotoDetailState(photo: latestPhoto, changes: MagnificationZoom()))
-        }
+    public init(photos: [Date: [PhotoViewModel]],
+				selectedDate: Date,
+				selectedId: PhotoVariantId) {
+		self.photos = photos
+		let dateKP = \PhotoViewModel.basePhoto.date
+		self.rightId = photos.values.flatMap { $0 }.sorted(by: dateKP).first!.id
+		self.leftId = selectedId
     }
-
-    var selectedId: PhotoVariantId?
-    var selectedPhoto: PhotoViewModel?
-    var latestPhotoTaken: PhotoViewModel? {
-        photos.sorted { $0.basePhoto.date > $1.basePhoto.date }.first
-    }
-
-    var photoCompareMode: PhotoCompareMode = .single
-    var photos: [PhotoViewModel] = []
-
-    var onBackCompare: Bool = false
-    var onShareSelected: Bool = false
-
-    var iconImageNavigationCompareMode: String {
-        get {
-            photoCompareMode == .single ? "ico-nav-compare" : "ico-nav-single"
-        }
-    }
-
-    var shareSelectState: PhotoShareSelectState = PhotoShareSelectState()
-    var photoSideBySideState: PhotoSideBySideState!
-
+	
+	var leftId: PhotoVariantId
+	var rightId: PhotoVariantId
+	var activeSide: ActiveSide = .left
+	var photos: [Date: [PhotoViewModel]]
+	var mode: PhotoCompareMode = .single
+	var isTappedToZoom: Bool = false
+	var dragOffset: CGSize = .zero
+	var position: CGSize = .zero
+	var currentMagnification: CGFloat = 1
+	var pinchMagnification: CGFloat = 1
+	
+    var shareSelectState: PhotoShareSelectState?
 }
 
 var photoCompareReducer = Reducer.combine(
-    photoShareSelectViewReducer.pullback(
+	photoShareSelectViewReducer.optional.pullback(
         state: \PhotoCompareState.shareSelectState,
         action: /PhotoCompareAction.shareAction,
         environment: { $0 }
     ),
     photoSideBySideReducer.pullback(
-        state: \PhotoCompareState.photoSideBySideState,
+        state: \PhotoCompareState.self,
         action: /PhotoCompareAction.sideBySideAction,
         environment: { $0 }
     ),
     Reducer<PhotoCompareState, PhotoCompareAction, ClientsEnvironment> { state, action, _ in
-        switch action {
-        case .didChangeSelectedPhoto(let photoId):
-            if let photo = state.photos.filter { $0.id == photoId}.first {
-                state.selectedPhoto = photo
-                state.photoSideBySideState.activeSide.photo = photo
-            }
-
+		switch action {
+		case .didChangeSelectedPhoto(let photoId):
+			switch state.activeSide {
+			case .left:
+				state.leftId = photoId
+			case .right:
+				state.rightId = photoId
+			}
         case .didSelectShare:
             if let selectedPhoto = state.selectedPhoto {
                 state.shareSelectState = PhotoShareSelectState(photo: state.photoSideBySideState.leftState.photo,
@@ -93,21 +83,20 @@ struct PhotoCompareView: View {
         return WithViewStore(self.store) { viewStore in
             VStack {
                 PhotoSideBySideView(store: store.scope(
-                                        state: { $0.photoSideBySideState },
+                                        state: { $0 },
                                         action: { PhotoCompareAction.sideBySideAction($0)}
                                     )
                 )
 
                 Spacer()
                 PhotosListTimelineView(store: self.store)
-
-                if let _ = viewStore.selectedPhoto {
-                    NavigationLink.emptyHidden(viewStore.onShareSelected,
-                                               PhotoShareSelectView(store: self.store.scope(state: { $0.shareSelectState },
-                                                                                      action: { PhotoCompareAction.shareAction($0) })
-                                               ))
-
-                }
+				
+				NavigationLink
+					.emptyHidden(viewStore.selectedPhoto != nil,
+								 IfLetStore(store.scope(state: { $0.shareSelectState },
+														action: { PhotoCompareAction.shareAction($0) }), then: PhotoShareSelectView(store:)
+														)
+					)
             }
             .navigationBarTitle("Progress Gallery")
             .navigationBarItems(
@@ -120,7 +109,7 @@ struct PhotoCompareView: View {
                     Button(action: {
                         viewStore.send(.sideBySideAction(.changeDisplayMode))
                     }) {
-                        Image(viewStore.iconImageNavigationCompareMode)
+                        Image(viewStore.rightId != nil ? "ico-nav-compare" : "ico-nav-single")
                             .resizable()
                             .frame(width: 24, height: 24)
                     }
@@ -130,4 +119,15 @@ struct PhotoCompareView: View {
                 })
         }
     }
+}
+
+extension PhotoCompareState {
+	func getSelectedId() -> PhotoVariantId {
+		switch activeSide {
+		case .left:
+			return leftId
+		case .right:
+			return rightId
+		}
+	}
 }

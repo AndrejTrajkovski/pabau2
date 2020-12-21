@@ -24,7 +24,6 @@ struct PhotoShareSelectState: Equatable {
     var rating: CGFloat = 4.0
     var photo: PhotoViewModel!
     var comparedPhoto: PhotoViewModel!
-    var selectedPhoto: SavedPhoto!
 
     init(photo: PhotoViewModel, comparedPhoto: PhotoViewModel) {
         self.photo = photo
@@ -80,9 +79,12 @@ var photoShareSelectViewReducer: Reducer<PhotoShareSelectState, PhotoShareSelect
 
 struct PhotoShareSelectView: View {
 
-    var store: Store<PhotoShareSelectState, PhotoShareSelectAction>
-
-    var layout = [GridItem(.flexible()), GridItem(.flexible())]
+    let store: Store<PhotoShareSelectState, PhotoShareSelectAction>
+	init(store: Store<PhotoShareSelectState, PhotoShareSelectAction>) {
+		self.store = store
+	}
+	
+    let layout = [GridItem(.flexible()), GridItem(.flexible())]
 
     var body: some View {
 
@@ -105,17 +107,17 @@ struct PhotoShareSelectView: View {
                                     }
                                 }
                             }
-                        }
-                    }.padding(20)
-                if viewStore.photoShareState != nil {
-                NavigationLink.emptyHidden(viewStore.isItemSelected,
-                                           PhotoShareView(store: self.store.scope(state: { $0.photoShareState},
-                                                                                  action: { PhotoShareSelectAction.shareAction($0) })
-                                                          ))
-                }
-            }.navigationBarItems(
-                leading: HStack {
-                    MyBackButton(text: Texts.back) {
+						}
+					}.padding(20)
+				if viewStore.photoShareState != nil {
+					NavigationLink.emptyHidden(viewStore.isItemSelected,
+											   PhotoShareView(store: self.store.scope(state: { $0.photoShareState},
+																					  action: { PhotoShareSelectAction.shareAction($0) })
+											   ))
+				}
+			}.navigationBarItems(
+				leading: HStack {
+					MyBackButton(text: Texts.back) {
                         viewStore.send(.backButton)
                     }}
             )

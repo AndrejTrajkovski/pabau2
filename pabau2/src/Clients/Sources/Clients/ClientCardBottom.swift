@@ -7,7 +7,6 @@ public enum ClientCardBottomAction: Equatable {
 	case grid(ClientCardGridAction)
 	case child(ClientCardChildAction)
 	case backBtnTap
-    case backSelectedPhotosGroup
 }
 
 public let clientCardBottomReducer: Reducer<ClientCardState, ClientCardBottomAction, ClientsEnvironment> =
@@ -23,8 +22,8 @@ public let clientCardBottomReducer: Reducer<ClientCardState, ClientCardBottomAct
 			environment: { $0 }
         ), Reducer<ClientCardState, ClientCardBottomAction, ClientsEnvironment> { state, action, _ in
             switch action {
-            case .backSelectedPhotosGroup:
-                state.list.photos.mode = .grouped
+            case .backBtnTap:
+                break
             default:
                 break
             }
@@ -42,16 +41,12 @@ struct ClientCardBottom: View {
 
 	struct State: Equatable {
 		var activeItem: ClientCardGridItem?
-		var photosViewMode: CCPhotosViewMode
 		var isEditingClient: Bool
 		var isEditPhotosBtnDisabled: Bool
-        var isSelectedPhoto: Bool
 		init(state: ClientCardState) {
 			self.activeItem = state.activeItem
-			self.photosViewMode = state.list.photos.mode
 			self.isEditingClient = state.list.details.editingClient != nil
             self.isEditPhotosBtnDisabled = false
-            self.isSelectedPhoto = !state.list.photos.selectedIds.isEmpty
 		}
 	}
 
@@ -73,7 +68,7 @@ struct ClientCardBottom: View {
 		}.navigationBarItems(
             leading: MyBackButton(text: Texts.back,
                                   action: {
-                                    viewStore.send( viewStore.photosViewMode == .expanded ? .backSelectedPhotosGroup: .backBtnTap )
+                                    viewStore.send(.backBtnTap)
                                   }),
             trailing: self.trailingButtons
 		).navigationBarBackButtonHidden(true)
@@ -87,30 +82,11 @@ struct ClientCardBottom: View {
 		} else if self.viewStore.state.activeItem == .appointments {
 			return AnyView(EmptyView())
 		} else if self.viewStore.state.activeItem == .photos {
-			return AnyView(photosTrailingBtns)
+			return AnyView(EmptyView())
 //		} else if self.viewStore.state.activeItem == .consents {
 //			return AnyView(PlusButton { viewStore.send(.child(.con))} )
 		} else {
 			return AnyView(EmptyView())
-		}
-	}
-
-	var photosTrailingBtns: some View {
-		HStack {
-            /*
-			Picker.init(selection: viewStore.binding(get: { $0.photosViewMode },
-													send: { .child(.photos(.switchMode($0)))
-			}), label: EmptyView()) {
-					ForEach(CCPhotosViewMode.allCases, id: \.self) { (mode: CCPhotosViewMode) in
-						Text(String(mode.description)).tag(mode.rawValue)
-					}
-			}.pickerStyle(SegmentedPickerStyle())
-            
-            Button(action: {
-                self.viewStore.send(.child(.photos(.switchMode(viewStore.photosViewMode == .expanded ? .grouped : .expanded))))
-			}, label: { Text(Texts.edit) })
-				.disabled(viewStore.state.isEditPhotosBtnDisabled)
-             */
 		}
 	}
 

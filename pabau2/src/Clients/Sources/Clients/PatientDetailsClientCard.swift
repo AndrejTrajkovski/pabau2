@@ -81,10 +81,10 @@ struct PatientDetailsClientCard: ClientCardChild {
 				.padding()
 				.disabled(true)
 			NavigationLink.emptyHidden(viewStore.state.editingClient != nil,
-																 IfLetStore(self.store.scope(
-																	state: { $0.editingClient }, action: { .editingClient($0)}),
-																						then: AddClient.init(store:)
-				)
+									   IfLetStore(self.store.scope(
+													state: { $0.editingClient }, action: { .editingClient($0)}),
+												  then: AddClient.init(store:)
+									   )
 			)
 		}
 	}

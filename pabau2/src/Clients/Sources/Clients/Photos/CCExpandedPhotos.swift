@@ -21,39 +21,26 @@ struct CCExpandedPhotos: View {
 										 lineSpacing: 16)
 		}
 	}
-
+	
 	var selectedDateSection: ASCollectionViewSection<Date> {
-			ExpandedPhotosSection(date: viewStore.state.selectedDate!,
-														photos: viewStore.state.childState.state[viewStore.state.selectedDate!] ?? [],
-														selectedIds: viewStore.state.selectedIds,
-														viewStore: viewStore).section
-	}
-
-	var sections: [ASCollectionViewSection<Date>] {
-		viewStore.state.childState.state.sorted(by: \.key).map {
-			ExpandedPhotosSection(date: $0.key,
-														photos: $0.value,
-														selectedIds: viewStore.state.selectedIds,
-														viewStore: viewStore)
-				.section
-		}
+		ExpandedPhotosSection(date: viewStore.state.selectedDate!,
+							  photos: viewStore.state.childState.state[viewStore.state.selectedDate!] ?? [],
+							  viewStore: viewStore).section
 	}
 }
 
 struct ExpandedPhotosSection {
 	let date: Date
 	let photos: [PhotoViewModel]
-	let selectedIds: [PhotoVariantId]
 	let viewStore: ViewStore<CCPhotosState, CCPhotosAction>
-
+	
 	var section: ASCollectionViewSection<Date> {
 		ASCollectionViewSection(
 			id: date,
 			data: self.photos) { photo, _ in
-				MultipleSelectPhotoCell(photo: photo,
-																isSelected: self.selectedIds.contains(photo.id))
-					.onTapGesture {
-						self.viewStore.send(.didTouchPhoto(photo.id))
+			PhotoCell(photo: photo)
+				.onTapGesture {
+					self.viewStore.send(.didTouchPhoto(photo.id))
 				}
 		}
 		.sectionHeader {

@@ -80,8 +80,6 @@ let clientCardGridReducer: Reducer<ClientCardState, ClientCardBottomAction, Clie
 				break
 			case .backBtnTap:
 				break//handled in clientCardReducer
-            case .backSelectedPhotosGroup:
-                break //handled in clientCardBottom
 			}
 			return .none
 		}

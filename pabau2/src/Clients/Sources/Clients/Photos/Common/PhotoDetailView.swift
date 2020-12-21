@@ -3,45 +3,12 @@ import ComposableArchitecture
 import Form
 import Util
 
-class PhotoDetailState: Equatable {
-    static func == (lhs: PhotoDetailState, rhs: PhotoDetailState) -> Bool {
-        return lhs.photo == rhs.photo
-    }
-
-    var photo: PhotoViewModel
-
-    init(photo: PhotoViewModel, changes: MagnificationZoom) {
-        self.photo = photo
-
-        self.dragOffset = changes.dragOffset
-        self.position = changes.position
-        self.currentMagnification = changes.currentMagnification
-        self.pinchMagnification = changes.pinchMagnification
-    }
-    var isSelected: Bool = false
-
-    var date: Date {
-        get {
-            photo.basePhoto.date
-        }
-    }
-    var changes: MagnificationZoom {
-        set {
-            dragOffset = newValue.dragOffset
-            position = newValue.position
-            currentMagnification = newValue.currentMagnification
-            pinchMagnification = newValue.pinchMagnification
-        }
-        get {
-            MagnificationZoom()
-        }
-
-    }
-
-    var dragOffset: CGSize = .zero
-    var position: CGSize = .zero
-    var currentMagnification: CGFloat = 1
-    var pinchMagnification: CGFloat = 1
+struct PhotoDetailState: Equatable {
+    let photo: PhotoViewModel
+	var dragOffset: CGSize
+	var position: CGSize
+	var currentMagnification: CGFloat
+	var pinchMagnification: CGFloat
 }
 
 public enum PhotoChangesAction: Equatable {
@@ -51,15 +18,6 @@ public enum PhotoChangesAction: Equatable {
     case onEndedMagnification(CGFloat)
     case onTappedToZoom
     case onSelect
-}
-
-var changesPhotoReducer = Reducer<PhotoDetailState, PhotoChangesAction, ClientsEnvironment> { _, action, _ in
-    switch action {
-    case .onTappedToZoom:
-        break
-    default: break
-    }
-    return .none
 }
 
 struct PhotoDetailViewSecond: View {
@@ -109,7 +67,7 @@ struct PhotoDetailViewSecond: View {
                 }
                 VStack {
                     Spacer()
-                    TimeIntervalSinceView(creationDate: viewStore.date)
+                    TimeIntervalSinceView(creationDate: viewStore.photo.basePhoto.date)
                         .font(.regular32)
                         .foregroundColor(.white)
 
