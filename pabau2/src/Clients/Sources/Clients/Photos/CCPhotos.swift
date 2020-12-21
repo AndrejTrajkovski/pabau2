@@ -30,7 +30,7 @@ public let ccPhotosReducer: Reducer<CCPhotosState, CCPhotosAction, ClientsEnviro
 				state.selectedIds.append(id)
             state.isSelectedGroup = true
             state.displayMode = .compare
-            state.photoCompare = PhotoCompareState(date: state.selectedDate, photos: state.photos, selectedId: state.selectedIds.first)
+            state.photoCompare = PhotoCompareState(photos: state.photos, selectedId: state.selectedIds.first)
 		case .action(_):
 			break
         case .photoCompare(.onBackCompare):
@@ -83,7 +83,7 @@ public struct CCPhotosState: ClientCardChildParentState, Equatable {
         self.childState = childState
         self.selectedIds = selectedIds
         
-        self.photoCompare = PhotoCompareState(date: selectedDate, photos: [], selectedId: selectedIds.first)
+        self.photoCompare = PhotoCompareState(photos: [], selectedId: selectedIds.first)
     }
     
     var photoCompare: PhotoCompareState

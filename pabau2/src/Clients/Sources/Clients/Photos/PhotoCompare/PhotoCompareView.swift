@@ -5,17 +5,11 @@ import Form
 import Util
 
 public enum PhotoCompareAction: Equatable {
-    case changeComparePhotoMode
     case didChangeSelectedPhoto(PhotoVariantId)
     case didSelectShare
     case shareAction(PhotoShareSelectAction)
     case onBackCompare
-    
-    case onChangeDragOffset(CGSize)
-    case onEndedDrag(CGSize)
-    case onChangePinchMagnification(CGFloat)
-    case onEndedMagnification(CGFloat)
-    case onTappedToZoom
+    case sideBySideAction(PhotoSideBySideAction)
 }
 
 public enum PhotoCompareMode: Equatable {
@@ -24,60 +18,42 @@ public enum PhotoCompareMode: Equatable {
 }
 
 struct PhotoCompareState: Equatable {
-    public init(date: Date?, photos: [PhotoViewModel], selectedId: PhotoVariantId?) {
-        self.date = date
+    public init(photos: [PhotoViewModel], selectedId: PhotoVariantId?) {
         self.photos = photos
+        self.selectedId = selectedId
         
-        if let selectedId = selectedId {
-            selectedPhoto = self.photos.filter { $0.basePhoto.id == selectedId }.first
-        } else {
-            selectedPhoto = self.photos.first
+        selectedPhoto = self.photos.filter { $0.basePhoto.id == selectedId }.first
+        if let selected = selectedPhoto {
+            photoSideBySideState = PhotoSideBySideState(leftState: PhotoDetailState(photo: selected, changes: MagnificationZoom()),
+                                                    rightState: PhotoDetailState(photo: selected, changes: MagnificationZoom()))
         }
         
-        photosCompares[0] = selectedPhoto
-        photosCompares[1] = latestPhotoTaken
-        
+        if let latestPhoto = latestPhotoTaken {
+            photoSideBySideState.rightState.photo = latestPhoto
+        }
     }
     
-    var photoCompareMode: PhotoCompareMode = .single
-    var selectedPhoto: PhotoViewModel? {
-        didSet {
-            photosCompares[0] = selectedPhoto
-        }
-    }
+    var selectedId: PhotoVariantId?
+    var selectedPhoto: PhotoViewModel?
     var latestPhotoTaken: PhotoViewModel? {
         photos.sorted{ $0.basePhoto.date > $1.basePhoto.date }.first
     }
     
-    var photosCompares: Dictionary<Int, PhotoViewModel?> = [:]
-    
-    var date: Date?
+    var photoCompareMode: PhotoCompareMode = .single
     var photos: [PhotoViewModel] = []
     
     var onBackCompare: Bool = false
     var onShareSelected: Bool = false
+    
     var iconImageNavigationCompareMode: String {
         get {
             photoCompareMode == .single ? "ico-nav-compare" : "ico-nav-single"
         }
     }
     
-    var dragOffset: CGSize = .zero
-    var position: CGSize = .zero
-    var currentMagnification: CGFloat = 1
-    var pinchMagnification: CGFloat = 1
-    var isTappedToZoom: Bool = false
-    
     var shareSelectState: PhotoShareSelectState = PhotoShareSelectState()
+    var photoSideBySideState: PhotoSideBySideState!
     
-}
-
-extension PhotoCompareState {
-    var shareState: PhotoShareState {
-        get {
-            PhotoShareState()
-        }
-    }
 }
 
 var photoCompareReducer = Reducer.combine(
@@ -86,37 +62,24 @@ var photoCompareReducer = Reducer.combine(
         action: /PhotoCompareAction.shareAction,
         environment: { $0 }
     ),
+    photoSideBySideReducer.pullback(
+        state: \PhotoCompareState.photoSideBySideState,
+        action: /PhotoCompareAction.sideBySideAction,
+        environment: { $0 }
+    ),
     Reducer<PhotoCompareState, PhotoCompareAction, ClientsEnvironment> { state, action, environment in
         switch action {
         case .didChangeSelectedPhoto(let photoId):
             if let photo = state.photos.filter { $0.id == photoId}.first {
                 state.selectedPhoto = photo
+                state.photoSideBySideState.activeSide.photo = photo
             }
+        
         case .didSelectShare:
-            if let selectedPhoto = state.selectedPhoto, let comparedPhoto = state.photosCompares[1] {
-                state.shareSelectState = PhotoShareSelectState(photo: selectedPhoto, comparedPhoto: comparedPhoto!)
+            if let selectedPhoto = state.selectedPhoto {
+                state.shareSelectState = PhotoShareSelectState(photo: state.photoSideBySideState.leftState.photo,
+                                                               comparedPhoto: state.photoSideBySideState.rightState.photo)
                 state.onShareSelected = true
-            }
-        case .changeComparePhotoMode:
-            state.photoCompareMode = state.photoCompareMode == .single ? .multiple : .single
-        case .onChangeDragOffset(let size):
-            state.dragOffset = size
-        case .onEndedMagnification(let value):
-            state.currentMagnification *= value
-            if state.currentMagnification < 1 { state.currentMagnification = 1 }
-            state.pinchMagnification = 1
-        case .onChangePinchMagnification(let value):
-            state.pinchMagnification = value
-        case .onEndedDrag(let value):
-            state.position.width += value.width
-            state.position.height += value.height
-            state.dragOffset = .zero
-        case .onTappedToZoom:
-            state.isTappedToZoom.toggle()
-            state.currentMagnification = state.isTappedToZoom ? 2 : 1
-            if !state.isTappedToZoom {
-                state.dragOffset = .zero
-                state.position = .zero
             }
         case .shareAction(.backButton):
             state.onShareSelected = false
@@ -132,15 +95,12 @@ struct PhotoCompareView: View {
     var body: some View {
         print("PhotoCompareView")
         return WithViewStore(self.store) { viewStore in
-            VStack {
-                if viewStore.photoCompareMode == .single {
-                    PhotoDetailView(store: self.store)
-                } else {
-                    HStack(spacing: 0) {
-                        PhotoDetailView(store: self.store)
-                        PhotoDetailView(store: self.store, positionCompare: 1)
-                    }
-                }
+            VStack {                
+                PhotoSideBySideView(store: store.scope(
+                                        state: { $0.photoSideBySideState },
+                                        action: { PhotoCompareAction.sideBySideAction($0)}
+                                    )
+                )
                 
                 Spacer()
                 PhotosListTimelineView(store: self.store)
@@ -162,7 +122,7 @@ struct PhotoCompareView: View {
                 },
                 trailing: HStack {
                     Button(action: {
-                        viewStore.send(.changeComparePhotoMode)
+                        viewStore.send(.sideBySideAction(.changeDisplayMode))
                     }) {
                         Image(viewStore.iconImageNavigationCompareMode)
                             .resizable()

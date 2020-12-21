@@ -4,37 +4,73 @@ import Form
 import Util
 
 
-struct ScrollListener {
-    var onScroll: ( (CGPoint) -> Void )?
+class PhotoDetailState: Equatable {
+    static func == (lhs: PhotoDetailState, rhs: PhotoDetailState) -> Bool {
+        return lhs.photo == rhs.photo
+    }
+    
+    var photo: PhotoViewModel
+    
+    init(photo: PhotoViewModel, changes: MagnificationZoom) {
+        self.photo = photo
+        
+        self.dragOffset = changes.dragOffset
+        self.position = changes.position
+        self.currentMagnification = changes.currentMagnification
+        self.pinchMagnification = changes.pinchMagnification
+    }
+    var isSelected: Bool = false
+    
+    var date: Date {
+        get {
+            photo.basePhoto.date
+        }
+    }
+    var changes: MagnificationZoom {
+        set {
+            dragOffset = newValue.dragOffset
+            position = newValue.position
+            currentMagnification = newValue.currentMagnification
+            pinchMagnification = newValue.pinchMagnification
+        }
+        get {
+            MagnificationZoom()
+        }
+        
+    }
+    
+    var dragOffset: CGSize = .zero
+    var position: CGSize = .zero
+    var currentMagnification: CGFloat = 1
+    var pinchMagnification: CGFloat = 1
 }
 
-struct PhotoDetailView: View {
+public enum PhotoChangesAction: Equatable {
+    case onChangeDragOffset(CGSize)
+    case onEndedDrag(CGSize)
+    case onChangePinchMagnification(CGFloat)
+    case onEndedMagnification(CGFloat)
+    case onTappedToZoom
+    case onSelect
+}
 
-    let store: Store<PhotoCompareState, PhotoCompareAction>
-    private var positionCompare: Int = 0
-    @ObservedObject var viewStore: ViewStore<PhotoCompareState, PhotoCompareAction>
-    init(store: Store<PhotoCompareState, PhotoCompareAction>, positionCompare: Int = 0) {
-        self.store = store
+var changesPhotoReducer = Reducer<PhotoDetailState, PhotoChangesAction, ClientsEnvironment> { state, action, environment in
+    switch action {
+    case .onTappedToZoom:
+        break
+    default: break
+    }
+    return .none
+}
+
+struct PhotoDetailViewSecond: View {
+    
+    @ObservedObject var viewStore: ViewStore<PhotoDetailState, PhotoChangesAction>
+    init(store: Store<PhotoDetailState, PhotoChangesAction>, positionCompare: Int = 0) {
         viewStore = ViewStore(store)
-        self.positionCompare = positionCompare
     }
     
     @GestureState var pinchMagnification: CGFloat = 1
-    
-    var drag: some Gesture {
-        DragGesture()
-            .onChanged { value in
-                if viewStore.currentMagnification > 1 {
-                    viewStore.send(.onChangeDragOffset(value.translation))
-                }
-            }
-            .onEnded { value in
-                if viewStore.currentMagnification > 1 {
-                    viewStore.send(.onEndedDrag(value.translation))
-                }
-            }
-    }
-    
     var magnificationGest: some Gesture {
         MagnificationGesture()
             .updating($pinchMagnification, body: { value, state, _ in
@@ -52,33 +88,26 @@ struct PhotoDetailView: View {
                 viewStore.send(.onTappedToZoom)
             })
     }
- 
+    
+    var tapGestureSelect: some Gesture {
+        TapGesture(count: 1)
+            .onEnded({
+                viewStore.send(.onSelect)
+            })
+    }
+    
+    
     var body: some View {
         GeometryReader { proxy in
             ZStack {
-                if let photo = viewStore.photosCompares[self.positionCompare] {
-                    
-                        // Implementaton using drag gestura and magnification gesture
-                        // this it's not completed because it has some issues with dragging 
-                        /*
-                        PhotoDetailCell(photo: photo!)
-                            .offset(x: viewStore.dragOffset.width + viewStore.position.width,
-                                    y: viewStore.dragOffset.height + viewStore.position.height)
-                            .scaleEffect(viewStore.pinchMagnification * viewStore.currentMagnification)
-                            .frame(width: proxy.size.width, height: proxy.size.height)
-                            .gesture(drag)
-                            .gesture(magnificationGest)
-                            .gesture(tapGesture)
-                    */
+                UIScrollViewWrapper {
+                    PhotoDetailCell(photo: viewStore.photo)
+                                .frame(width: proxy.size.width * (viewStore.pinchMagnification * viewStore.currentMagnification),
+                                       height: proxy.size.height * (viewStore.pinchMagnification * viewStore.currentMagnification))
+                                .gesture(magnificationGest)
+                                .gesture(tapGesture)
+                                .gesture(tapGestureSelect)
                         
-                    UIScrollViewWrapper {
-                        PhotoDetailCell(photo: photo!)
-                                    .frame(width: proxy.size.width * (viewStore.pinchMagnification * viewStore.currentMagnification),
-                                           height: proxy.size.height * (viewStore.pinchMagnification * viewStore.currentMagnification))
-                                    .gesture(magnificationGest)
-                                    .gesture(tapGesture)
-                    }
-                    
                 }
                 VStack {
 
@@ -102,24 +131,6 @@ struct PhotoDetailView: View {
                         .frame(height: 20)
                 }
             }.clipped()
-        }
-    }
-}
-
-public struct PhotoDetailCell: View {
-    let photo: PhotoViewModel
-    
-    public init(photo: PhotoViewModel) {
-        self.photo = photo
-    }
-    
-    public var body: some View {
-        Group {
-            if extract(case: Photo.saved, from: photo.basePhoto) != nil {
-                SavedTimelinePhotoCell(savedPhoto: extract(case: Photo.saved, from: photo.basePhoto)!)
-            } else if extract(case: Photo.new, from: photo.basePhoto) != nil {
-                NewTimelinePhotoCell(newPhoto: extract(case: Photo.new, from: photo.basePhoto)!)
-            }
         }
     }
 }
