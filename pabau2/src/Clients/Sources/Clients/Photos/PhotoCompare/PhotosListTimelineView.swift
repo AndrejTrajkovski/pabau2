@@ -21,6 +21,7 @@ struct PhotosListTimelineView: View {
                                 TimelinePhotoCell(photo: item)
                                     .frame(width: 90, height: 110)
                                 }
+                                .border(viewStore.selectedPhoto == item ? Color.blue : Color.clear , width: 2)
                             }
                         }
                     }
