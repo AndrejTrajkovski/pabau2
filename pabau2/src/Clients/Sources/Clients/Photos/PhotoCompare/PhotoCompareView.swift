@@ -23,13 +23,9 @@ struct PhotoCompareState: Equatable {
         self.selectedId = selectedId
         
         selectedPhoto = self.photos.filter { $0.basePhoto.id == selectedId }.first
-        if let selected = selectedPhoto {
+        if let selected = selectedPhoto, let latestPhoto = latestPhotoTaken {
             photoSideBySideState = PhotoSideBySideState(leftState: PhotoDetailState(photo: selected, changes: MagnificationZoom()),
-                                                    rightState: PhotoDetailState(photo: selected, changes: MagnificationZoom()))
-        }
-        
-        if let latestPhoto = latestPhotoTaken {
-            photoSideBySideState.rightState.photo = latestPhoto
+                                                    rightState: PhotoDetailState(photo: latestPhoto, changes: MagnificationZoom()))
         }
     }
     

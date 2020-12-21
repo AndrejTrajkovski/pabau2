@@ -49,3 +49,29 @@ struct HourMinutes: View {
 		}
 	}
 }
+
+struct TimeIntervalSinceView: View {
+    
+    let creationDate: Date
+    private let currentDate = Date()
+    
+    var body: some View {
+        calculateTimeDifference()
+    }
+    
+    func calculateTimeDifference() -> some View {
+        let dateComponentsFormatter = DateComponentsFormatter()
+        dateComponentsFormatter.allowedUnits = [.year, .month, .weekOfMonth, .day, .hour]
+        dateComponentsFormatter.unitsStyle = .full
+        let timeDifference = dateComponentsFormatter.string(from: creationDate,
+                                                            to: currentDate)?.components(separatedBy: ",").first
+        if let timeLeft = timeDifference {
+            if timeLeft.contains("hour") {
+                return Text("Today")
+            }
+            return Text(timeLeft + " ago")
+        }
+        return Text("Unknown time ago")
+    }
+    
+}

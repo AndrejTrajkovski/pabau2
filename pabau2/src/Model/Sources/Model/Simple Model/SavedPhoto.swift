@@ -79,17 +79,17 @@ extension SavedPhoto {
 										employeeId: 1)
 		,
 		SavedPhoto.init(id: 6, url: "dummy6",
-										dateTaken: (Date() + 3.days),
+										dateTaken: (Date() - 7.days),
 										clientId: 1,
 										employeeId: 1)
 		,
 		SavedPhoto.init(id: 7, url: "dummy7",
-										dateTaken: (Date() + 3.days),
+										dateTaken: (Date() - 7.days),
 										clientId: 1,
 										employeeId: 1)
 		,
 		SavedPhoto.init(id: 8, url: "dummy8",
-										dateTaken: Date() + 3.days,
+										dateTaken: Date() - 7.days,
 										clientId: 1,
 										employeeId: 1)
 		,

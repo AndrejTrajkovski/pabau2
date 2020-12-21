@@ -110,9 +110,8 @@ struct PhotoDetailViewSecond: View {
                         
                 }
                 VStack {
-
                     Spacer()
-                    Text("Today")
+                    TimeIntervalSinceView(creationDate: viewStore.date)
                         .font(.regular32)
                         .foregroundColor(.white)
                     
