@@ -18,7 +18,7 @@ let package = Package(
 		.package(url: "../Filters",
 				 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../AddAppointment",
-				 from: Version.init(stringLiteral: "1.0.0")),
+				 from: Version.init(stringLiteral: "1.0.0"))
 	],
 	targets: [
 		.target(

@@ -15,7 +15,7 @@ struct DateLabel: View {
 struct DayMonthYear: View {
     let date: Date
     var foregroundColorImage: Color = .accentColor
-	
+
 	static let dateFormat: DateFormatter = {
 		let formatter = DateFormatter()
 		formatter.dateFormat = "dd/MM/yyyy"
@@ -51,14 +51,14 @@ struct HourMinutes: View {
 }
 
 struct TimeIntervalSinceView: View {
-    
+
     let creationDate: Date
     private let currentDate = Date()
-    
+
     var body: some View {
         calculateTimeDifference()
     }
-    
+
     func calculateTimeDifference() -> some View {
         let dateComponentsFormatter = DateComponentsFormatter()
         dateComponentsFormatter.allowedUnits = [.year, .month, .weekOfMonth, .day, .hour]
@@ -73,5 +73,5 @@ struct TimeIntervalSinceView: View {
         }
         return Text("Unknown time ago")
     }
-    
+
 }

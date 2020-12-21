@@ -47,12 +47,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       window.makeKeyAndVisible()
     }
 	}
-    
+
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let url = URLContexts.first?.url else {
             return
         }
-        
+
         ApplicationDelegate.shared.application(
             UIApplication.shared,
             open: url,
@@ -60,5 +60,5 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             annotation: [UIApplication.OpenURLOptionsKey.annotation]
         )
     }
-    
+
 }

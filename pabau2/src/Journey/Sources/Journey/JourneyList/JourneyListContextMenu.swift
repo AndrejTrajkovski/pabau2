@@ -9,7 +9,7 @@ struct JourneyListContextMenu: View {
 					ContextMenuItem(imageName: self.dataSource[idx].0,
 													title: self.dataSource[idx].1,
 													action: {
-														
+
 					})
 				}
 			}

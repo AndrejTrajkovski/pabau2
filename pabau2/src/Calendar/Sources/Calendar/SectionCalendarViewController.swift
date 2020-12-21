@@ -9,7 +9,7 @@ public class SectionCalendarViewController<Subsection: Identifiable & Equatable>
 
 	var sectionDataSource: SectionWeekViewDataSource<JZAppointmentEvent, Location, Subsection, JZShift>!
 	let viewStore: ViewStore<CalendarSectionViewState<Subsection>, SubsectionCalendarAction<Subsection>>
-	
+
 	init(_ viewStore: ViewStore<CalendarSectionViewState<Subsection>, SubsectionCalendarAction<Subsection>>) {
 		let dataSource = SectionWeekViewDataSource<JZAppointmentEvent, Location, Subsection, JZShift>.init()
 		self.sectionDataSource = dataSource
@@ -85,7 +85,7 @@ public class SectionCalendarViewController<Subsection: Identifiable & Equatable>
 
 // MARK: - SectionLongPressDelegate
 extension SectionCalendarViewController: SectionLongPressDelegate {
-	public func weekView<Event, SectionId, SubsectionId>(_ weekView: JZLongPressWeekView, editingEvent: Event, didEndChangeDurationAt endDate: Date, startPageAndSectionIdx: (Date?, SectionId?, SubsectionId?)) where Event : JZBaseEvent, SectionId : Hashable, SubsectionId : Hashable {
+	public func weekView<Event, SectionId, SubsectionId>(_ weekView: JZLongPressWeekView, editingEvent: Event, didEndChangeDurationAt endDate: Date, startPageAndSectionIdx: (Date?, SectionId?, SubsectionId?)) where Event: JZBaseEvent, SectionId: Hashable, SubsectionId: Hashable {
 		guard let date = startPageAndSectionIdx.0,
 			  let section = startPageAndSectionIdx.1,
 			  let subsection = startPageAndSectionIdx.2 else { return }
@@ -93,7 +93,7 @@ extension SectionCalendarViewController: SectionLongPressDelegate {
 		viewStore.send(.editDuration(endDate: endDate, startKeys: keys, eventId: editingEvent.id))
 	}
 
-	public func weekView<SectionId, SubsectionId>(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date, pageAndSectionIdx: (Date?, SectionId?, SubsectionId?)) where SectionId : Hashable, SubsectionId : Hashable {
+	public func weekView<SectionId, SubsectionId>(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date, pageAndSectionIdx: (Date?, SectionId?, SubsectionId?)) where SectionId: Hashable, SubsectionId: Hashable {
 		guard let date = pageAndSectionIdx.0,
 			  let section = pageAndSectionIdx.1,
 			  let subsection = pageAndSectionIdx.2 else { return }
@@ -101,7 +101,7 @@ extension SectionCalendarViewController: SectionLongPressDelegate {
 		viewStore.send(.addAppointment(startDate: startDate, durationMins: weekView.addNewDurationMins, dropKeys: keys))
 	}
 
-	public func weekView<Event, SectionId, SubsectionId>(_ weekView: JZLongPressWeekView, editingEvent: Event, didEndMoveLongPressAt startDate: Date, endPageAndSectionIdx: (Date?, SectionId?, SubsectionId?), startPageAndSectionIdx: (Date?, SectionId?, SubsectionId?)) where Event : JZBaseEvent, SectionId : Hashable, SubsectionId : Hashable {
+	public func weekView<Event, SectionId, SubsectionId>(_ weekView: JZLongPressWeekView, editingEvent: Event, didEndMoveLongPressAt startDate: Date, endPageAndSectionIdx: (Date?, SectionId?, SubsectionId?), startPageAndSectionIdx: (Date?, SectionId?, SubsectionId?)) where Event: JZBaseEvent, SectionId: Hashable, SubsectionId: Hashable {
 		print(startPageAndSectionIdx)
 		print(endPageAndSectionIdx)
 		guard let date = startPageAndSectionIdx.0,
@@ -114,7 +114,7 @@ extension SectionCalendarViewController: SectionLongPressDelegate {
 		let dropKeys = (date2, section2 as! Location.ID, subsection2 as! Subsection.ID)
 		viewStore.send(.editSections(startDate: startDate, startKeys: startKeys, dropKeys: dropKeys, eventId: editingEvent.id))
 	}
-	
+
 	public func weekView<Event: JZBaseEvent, SectionId: Hashable, SubsectionId: Hashable>
 	(_ weekView: JZLongPressWeekView,
 	 didSelect editingEvent: Event,
@@ -130,8 +130,7 @@ extension SectionCalendarViewController: SectionLongPressDelegate {
 	(_ weekView: JZLongPressWeekView,
 	 didTap onDate: Date,
 	 startPageAndSectionIdx: (Date?, SectionId?, SubsectionId?),
-	 anchorView: UIView)
-	{
+	 anchorView: UIView) {
 		guard let date = startPageAndSectionIdx.0,
 			  let section = startPageAndSectionIdx.1,
 			  let subsection = startPageAndSectionIdx.2 else { return }

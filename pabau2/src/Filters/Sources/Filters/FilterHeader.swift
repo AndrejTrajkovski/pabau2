@@ -7,7 +7,7 @@ public struct CalendarHeader<S: Identifiable & Equatable & Named>: View {
 	init(onTap: @escaping () -> Void) {
 		self.onTap = onTap
 	}
-	
+
 	public var body: some View {
 		Group {
 			if S.self is Employee.Type {

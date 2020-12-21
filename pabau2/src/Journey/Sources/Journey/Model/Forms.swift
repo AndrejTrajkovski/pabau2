@@ -5,7 +5,7 @@ import Form
 struct Forms: Equatable {
 	var forms: IdentifiedArrayOf<StepForms>
 	var selectedStep: StepType
-	
+
 	var flat: [MetaFormAndStatus] {
 		forms.flatMap(\.forms)
 	}

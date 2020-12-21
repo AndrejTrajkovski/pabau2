@@ -3,31 +3,30 @@ import SwiftUI
 struct UIScrollViewWrapper<Content: View>: UIViewControllerRepresentable {
 
     var content: () -> Content
-    
+
     init(@ViewBuilder content: @escaping () -> Content) {
         self.content = content
     }
 
     func makeUIViewController(context: Context) -> UIScrollViewViewController {
-        let vc = UIScrollViewViewController()
-        vc.hostingController.rootView = AnyView(self.content())
-        return vc
+        let svc = UIScrollViewViewController()
+		svc.hostingController.rootView = AnyView(self.content())
+        return svc
     }
 
     func updateUIViewController(_ viewController: UIScrollViewViewController, context: Context) {
         viewController.hostingController.rootView = AnyView(self.content())
     }
-    
-}
 
+}
 
 class UIScrollViewViewController: UIViewController {
 
     lazy var scrollView: SharedOffsetCollectionView = {
-        let v = SharedOffsetCollectionView()
-        v.isPagingEnabled = false
-        v.bounces = false
-        return v
+        let svc = SharedOffsetCollectionView()
+		svc.isPagingEnabled = false
+		svc.bounces = false
+        return svc
     }()
 
     var hostingController: UIHostingController<AnyView> = UIHostingController(rootView: AnyView(EmptyView()))
@@ -41,7 +40,7 @@ class UIScrollViewViewController: UIViewController {
         self.scrollView.addSubview(self.hostingController.view)
         self.pinEdges(of: self.hostingController.view, to: self.scrollView)
         self.hostingController.didMove(toParent: self)
-        
+
     }
 
     func pinEdges(of viewA: UIView, to viewB: UIView) {
@@ -50,8 +49,8 @@ class UIScrollViewViewController: UIViewController {
             viewA.leadingAnchor.constraint(equalTo: viewB.leadingAnchor),
             viewA.trailingAnchor.constraint(equalTo: viewB.trailingAnchor),
             viewA.topAnchor.constraint(equalTo: viewB.topAnchor),
-            viewA.bottomAnchor.constraint(equalTo: viewB.bottomAnchor),
+            viewA.bottomAnchor.constraint(equalTo: viewB.bottomAnchor)
         ])
     }
-    
+
 }

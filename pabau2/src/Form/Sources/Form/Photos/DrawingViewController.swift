@@ -74,7 +74,7 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
 	func canvasViewDrawingDidChange(_ canvasView: PKCanvasView) {
 		viewStore.send(.onDrawingChange(canvasView.drawing))
 	}
-	
+
 	func who(_ any: Any) -> String {
 			if Mirror(reflecting: any).displayStyle == .class {
 					return "Class"

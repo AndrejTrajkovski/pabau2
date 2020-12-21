@@ -4,22 +4,20 @@ import Model
 import Util
 import Form
 
-
 public struct PhotoShareSelectItem: Equatable, Identifiable {
     enum PhotoShareSelectItemType: Equatable {
         case title(String)
         case subtitle
         case review
         case rating(CGFloat)
-        
+
     }
     public let id = UUID()
     var type: PhotoShareSelectItemType = .title("")
-    
+
     var photo: PhotoViewModel!
     var comparedPhoto: PhotoViewModel!
 }
-
 
 struct PhotoShareSelectState: Equatable {
 
@@ -27,24 +25,24 @@ struct PhotoShareSelectState: Equatable {
     var photo: PhotoViewModel!
     var comparedPhoto: PhotoViewModel!
     var selectedPhoto: SavedPhoto!
-    
+
     init(photo: PhotoViewModel, comparedPhoto: PhotoViewModel) {
         self.photo = photo
         self.comparedPhoto = comparedPhoto
-        
+
         items.append(PhotoShareSelectItem(type: .title("20 Day Difference"), photo: photo, comparedPhoto: comparedPhoto))
         items.append(PhotoShareSelectItem(type: .review, photo: photo, comparedPhoto: comparedPhoto))
         items.append(PhotoShareSelectItem(type: .rating(rating), photo: photo, comparedPhoto: comparedPhoto))
         items.append(PhotoShareSelectItem(type: .title("Botox Treatment"), photo: photo, comparedPhoto: comparedPhoto))
         items.append(PhotoShareSelectItem(type: .subtitle, photo: photo, comparedPhoto: comparedPhoto))
         items.append(PhotoShareSelectItem(type: .subtitle, photo: photo, comparedPhoto: comparedPhoto))
-        
+
     }
-    
+
     init() {
-        
+
     }
-    
+
     var items: [PhotoShareSelectItem] = []
     var selectedItem: PhotoShareSelectItem?
     var photoShareState: PhotoShareState = PhotoShareState()
@@ -63,8 +61,8 @@ var photoShareSelectViewReducer: Reducer<PhotoShareSelectState, PhotoShareSelect
             action: /PhotoShareSelectAction.shareAction,
             environment: { $0 }
         ),
-    
-    Reducer { state, action, env in
+
+    Reducer { state, action, _ in
         switch action {
         case .selectedItem(let item, let imageData):
             state.selectedItem = item
@@ -76,18 +74,18 @@ var photoShareSelectViewReducer: Reducer<PhotoShareSelectState, PhotoShareSelect
         default:
             break
         }
-        
+
         return .none
 })
 
 struct PhotoShareSelectView: View {
-    
+
     var store: Store<PhotoShareSelectState, PhotoShareSelectAction>
-    
+
     var layout = [GridItem(.flexible()), GridItem(.flexible())]
-    
+
     var body: some View {
-        
+
         WithViewStore(self.store) { viewStore  in
             GeometryReader { geo in
                     ScrollView {
@@ -96,7 +94,7 @@ struct PhotoShareSelectView: View {
                                 let cellItemView = PhotoShareCellItemView(item: item)
                                     .frame(width: geo.size.width / 2 - 30,
                                            height: geo.size.height / 3 - 30)
-                                
+
                                 cellItemView.onTapGesture {
                                     convertViewToData(view: cellItemView,
                                                       size: CGSize(width: geo.size.width / 2 - 30,
@@ -125,7 +123,7 @@ struct PhotoShareSelectView: View {
             .navigationBarTitle("Select Photo")
         }
     }
-    
+
     func convertViewToData<V>(view: V, size: CGSize, completion: @escaping (Data?) -> Void) where V: View {
         guard let rootVC = UIApplication.shared.windows.first?.rootViewController else {
             completion(nil)
@@ -140,5 +138,5 @@ struct PhotoShareSelectView: View {
             completion(uiImage.pngData())
         }
     }
-    
+
 }

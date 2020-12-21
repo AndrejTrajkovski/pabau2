@@ -83,9 +83,9 @@ public extension Color {
 	static let checkBoxGray = Color(hex: "C0C0C0")
 
 	static let arrowGray = Color(hex: "D1D1D6")
-	
+
 	static let cameraImages = Color(hex: "B8B8B8")
-	
+
 	static let clientCardNeutral = Color(hex: "8C8C8C")
 }
 #endif

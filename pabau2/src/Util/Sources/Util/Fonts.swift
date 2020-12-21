@@ -13,7 +13,7 @@ public extension Font {
 	static let semibold17 = Font.system(size: 17, weight: .semibold)
     static let semibold18 = Font.system(size: 18, weight: .semibold)
 	static let semibold22 = Font.system(size: 22, weight: .semibold)
-	
+
 	static let medium10 = Font.system(size: 10, weight: .medium)
 	static let medium9 = Font.system(size: 9, weight: .medium)
     static let medium12 = Font.system(size: 12.0, weight: .medium)
@@ -26,7 +26,7 @@ public extension Font {
 	static let medium24 = Font.system(size: 24.0, weight: .medium)
 	static let medium38 = Font.system(size: 38.0, weight: .medium)
 	static let medium25 = Font.system(size: 25.0, weight: .medium)
-	
+
 	static let bold34 = Font.system(size: 34, weight: .bold)
 	static let bold14 = Font.system(size: 14, weight: .bold)
 	static let bold12 = Font.system(size: 12, weight: .bold)
@@ -62,15 +62,15 @@ public extension Font {
     static func proSemibold(size: CGFloat) -> Font {
         return Font.custom("SFProText-Semibold", size: size)
     }
-    
+
     static func proMediumItalic(size: CGFloat) -> Font {
         return Font.custom("SFProText-MediumItalic", size: size)
     }
-    
+
     static func proMedium(size: CGFloat) -> Font {
         return Font.custom("SFProText-Medium", size: size)
     }
-    
+
     static func proRegular(size: CGFloat) -> Font {
         return Font.custom("SFProText-Regular", size: size)
     }

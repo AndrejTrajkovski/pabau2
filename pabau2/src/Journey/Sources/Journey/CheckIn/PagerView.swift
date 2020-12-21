@@ -5,15 +5,15 @@ struct PagerView<Content: View>: View {
 	let pageCount: Int
 	@Binding var currentIndex: Int
 	let content: Content
-	
+
 	@GestureState private var translation: CGFloat = 0
-	
+
 	init(pageCount: Int, currentIndex: Binding<Int>, @ViewBuilder content: () -> Content) {
 		self.pageCount = pageCount
 		self._currentIndex = currentIndex
 		self.content = content()
 	}
-	
+
 	var body: some View {
 		GeometryReaderPatch { geometry in
 			HStack(spacing: 0) {

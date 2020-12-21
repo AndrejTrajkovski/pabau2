@@ -3,15 +3,15 @@ import Form
 import ComposableArchitecture
 
 struct PhotoSideBySideState: Equatable {
-    
+
     init(leftState: PhotoDetailState, rightState: PhotoDetailState) {
         self.leftState = leftState
         self.rightState = rightState
         self.activeSide = self.leftState
     }
- 
+
     var displayMode: PhotoCompareMode = .single
-    
+
     private var _activeSide: PhotoDetailState!
     var activeSide: PhotoDetailState {
         set {
@@ -23,9 +23,9 @@ struct PhotoSideBySideState: Equatable {
     }
     var leftState: PhotoDetailState!
     var rightState: PhotoDetailState!
-    
+
     var isTappedToZoom: Bool = false
-    
+
     var changesPhoto: MagnificationZoom = MagnificationZoom()
 
 }
@@ -55,7 +55,7 @@ var photoSideBySideReducer = Reducer.combine(
         action: /PhotoSideBySideAction.changesAction,
         environment: { $0 }
     ),
-    Reducer<PhotoSideBySideState, PhotoSideBySideAction, ClientsEnvironment> { state, action, env in
+    Reducer<PhotoSideBySideState, PhotoSideBySideAction, ClientsEnvironment> { state, action, _ in
         switch action {
         case .changeDisplayMode:
             state.displayMode = state.displayMode == .single ? .multiple : .single
@@ -84,7 +84,7 @@ var photoSideBySideReducer = Reducer.combine(
                 state.changesPhoto.dragOffset = .zero
                 state.changesPhoto.position = .zero
             }
-            
+
             state.leftState = PhotoDetailState(photo: state.leftState.photo, changes: state.changesPhoto)
             state.leftState.changes = state.changesPhoto
             state.rightState.changes = state.changesPhoto
@@ -96,12 +96,12 @@ var photoSideBySideReducer = Reducer.combine(
 )
 
 struct PhotoSideBySideView: View {
-    
+
     var store: Store<PhotoSideBySideState, PhotoSideBySideAction>
-    
+
     var body: some View {
         WithViewStore(self.store) { viewStore in
-            
+
             if viewStore.displayMode == .single {
                 PhotoDetailViewSecond(store: self.store.scope(state: { $0.leftState },
                                                               action: { PhotoSideBySideAction.changesAction($0)}
@@ -119,7 +119,7 @@ struct PhotoSideBySideView: View {
                     )
                 }
             }
-            
+
         }
     }
 }

@@ -3,10 +3,10 @@ import ComposableArchitecture
 
 struct PhotoShareCellItemView: View {
     let item: PhotoShareSelectItem
-    
+
     var body: some View {
-        GeometryReader { geo in
-            
+        GeometryReader { _ in
+
             if item.type == .review {
                 VStack {
                     ShareThumbnailImageSideBySideView(item: item)
@@ -30,7 +30,7 @@ struct PhotoShareCellItemView: View {
 
 struct ShareThumbnailImageSideBySideView: View {
     let item: PhotoShareSelectItem
-    
+
     var body: some View {
         GeometryReader { geo in
             VStack(spacing: 0) {
@@ -49,12 +49,12 @@ struct ShareThumbnailImageSideBySideView: View {
                                             .background(Color.turquoiseBlue)
                                         Spacer()
                                     }
-                                    
+
                                     Spacer()
                                 }
                             }
                         })
-                    
+
                     TimelinePhotoCell(photo: item.comparedPhoto)
                         //.resizable()
                         //.aspectRatio(contentMode: .fill)
@@ -85,7 +85,7 @@ struct ShareThumbnailImageSideBySideView: View {
 struct ShareThumbnailBottom: View {
     let item: PhotoShareSelectItem
     var body: some View {
-        
+
         if item.type == .review {
             GeometryReader { geo in
                 VStack {
@@ -109,7 +109,7 @@ struct ShareThumbnailBottom: View {
                     }
                 Spacer()
                     .frame(width: 10)
-                    
+
             }
             .frame(height: 60)
             .background(Color.gray249)
@@ -118,9 +118,9 @@ struct ShareThumbnailBottom: View {
 }
 
 struct ShareTitleBottom: View {
-    
+
     let title: String
-    
+
     var body: some View {
         Text(title)
             .font(.proSemibold(size: 16))
@@ -129,9 +129,9 @@ struct ShareTitleBottom: View {
 }
 
 struct ShareRatingBottom: View {
-    
+
     @State var rating: Int
-    
+
     var body: some View {
         ShareStarRating(rating: $rating)
     }
@@ -151,7 +151,7 @@ struct ShareSubtitleBottom: View {
 }
 
 struct ShareReviewBottom: View {
-    
+
     var body: some View {
         HStack(spacing: 0) {
             VStack {
@@ -163,9 +163,9 @@ struct ShareReviewBottom: View {
                         .background(Color.gray249)
                 }.frame(height: 68)
                 .background(Color.gray249)
-                
+
             }
-            
+
             VStack(alignment: .leading) {
                 Group {
                     Image("ico-quote")
@@ -176,31 +176,31 @@ struct ShareReviewBottom: View {
                         .lineSpacing(3)
                         .offset(x: 0, y: -28)
                 }.padding()
-                
+
             }.background(Color.gray249)
         }
     }
 }
 
 struct ShareStarRating: View {
-    
+
     @Binding var rating: Int
-    
+
     var label = ""
     var maximumRating = 5
-    
+
     var offImage: Image?
     var onImage = Image(systemName: "star.fill")
-    
+
     var offColor = Color.gray
     var onColor = Color.yellow
-    
+
     var body: some View {
         HStack {
             if !label.isEmpty {
                 Text(label)
             }
-            
+
             ForEach(1..<maximumRating + 1) { number in
                 self.image(for: number)
                     .foregroundColor(number > rating ? offColor : onColor)
@@ -210,7 +210,7 @@ struct ShareStarRating: View {
             }
         }
     }
-    
+
     func image(for number: Int) -> Image {
         if number > rating {
             return offImage ?? onImage

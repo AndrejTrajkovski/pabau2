@@ -8,7 +8,7 @@ extension UIView {
             layer.render(in: context.cgContext)
         }
     }
-    
+
     func renderedImage(size: CGSize) -> UIImage {
         // rect of capture
         let rect = self.bounds

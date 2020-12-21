@@ -9,17 +9,17 @@ struct ColumnHeaderViewModel {
 }
 
 open class ColumnHeader: UICollectionReusableView {
-	
+
 	open override func prepareForReuse() {
 		update(title: "", subtitle: "", color: UIColor.clear)
 	}
-	
+
 	func update(viewModel: ColumnHeaderViewModel) {
 		self.title.text = viewModel.title
 		self.subtitle.text = viewModel.subtitle
 		self.colorCircle.backgroundColor = viewModel.color
 	}
-	
+
 	func update(title: String,
 				subtitle: String,
 				color: UIColor) {
@@ -27,7 +27,7 @@ open class ColumnHeader: UICollectionReusableView {
 		self.subtitle.text = subtitle
 		self.colorCircle.backgroundColor = color
 	}
-	
+
 	override init(frame: CGRect) {
 		super.init(frame: frame)
 		addSubview(title)
@@ -38,7 +38,7 @@ open class ColumnHeader: UICollectionReusableView {
 		addSubtitleLabelConstraints()
 //		title.setContentHuggingPriority(UILayoutPriority(rawValue: 300), for: .vertical)
 	}
-	
+
 	open override class var requiresConstraintBasedLayout: Bool {
 		true
 	}
@@ -52,7 +52,7 @@ open class ColumnHeader: UICollectionReusableView {
 		label.textAlignment = .center
 		return label
 	}()
-	
+
 	let subtitle: UILabel = {
 		let label = UILabel()
 		label.font = UIFont.systemFont(ofSize: 10)
@@ -63,7 +63,7 @@ open class ColumnHeader: UICollectionReusableView {
 		label.textAlignment = .center
 		return label
 	}()
-	
+
 	let colorCircle: UIView = {
 		let circle = UIView()
 		circle.layer.cornerRadius = circle.frame.size.width/2
@@ -71,7 +71,7 @@ open class ColumnHeader: UICollectionReusableView {
 		circle.translatesAutoresizingMaskIntoConstraints = false
 		return circle
 	}()
-	
+
 	func addcolorCircleConstraints() {
 		NSLayoutConstraint(item: colorCircle,
 						   attribute: .centerY,
@@ -110,7 +110,7 @@ open class ColumnHeader: UICollectionReusableView {
 						   multiplier: 1.0,
 						   constant: 5.0).isActive = true
 	}
-	
+
 	func addTitleLabelConstraints() {
 		NSLayoutConstraint(item: title,
 						   attribute: .top,

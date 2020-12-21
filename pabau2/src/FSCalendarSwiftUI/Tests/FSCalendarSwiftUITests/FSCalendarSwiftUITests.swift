@@ -10,6 +10,6 @@ final class FSCalendarSwiftUITests: XCTestCase {
     }
 
     static var allTests = [
-        ("testExample", testExample),
+        ("testExample", testExample)
     ]
 }

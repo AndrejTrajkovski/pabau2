@@ -59,8 +59,7 @@ public struct FormWrapper: View {
 		self.store = store
 		self.viewStore = ViewStore(store.scope(
 			state: State.init(state:),
-			action: { $0 })
-		, removeDuplicates: { lhs, rhs in
+			action: { $0 }), removeDuplicates: { lhs, rhs in
 				if let lhs = lhs.patientDetails, let rhs = rhs.patientDetails {
 					return lhs == rhs
 				} else if let lhs = lhs.template, let rhs = rhs.template {

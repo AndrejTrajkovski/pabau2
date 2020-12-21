@@ -13,7 +13,7 @@ public struct Aftercare: Equatable, Identifiable {
 		self.aftercares = aftercares
 		self.recalls = recalls
 	}
-	
+
 	var profile: SingleSelectImages
 	var share: SingleSelectImages
 	var aftercares: [AftercareOption]

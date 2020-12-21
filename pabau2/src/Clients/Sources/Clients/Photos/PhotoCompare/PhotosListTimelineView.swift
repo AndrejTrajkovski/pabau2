@@ -4,10 +4,10 @@ import Form
 import Model
 
 struct PhotosListTimelineView: View {
-    
+
     let store: Store<PhotoCompareState, PhotoCompareAction>
     var layout = [GridItem(.flexible())]
-    
+
     var body: some View {
         WithViewStore(self.store) { viewStore in
             VStack {
@@ -21,13 +21,13 @@ struct PhotosListTimelineView: View {
                                 TimelinePhotoCell(photo: item)
                                     .frame(width: 90, height: 110)
                                 }
-                                .border(viewStore.selectedPhoto == item ? Color.blue : Color.clear , width: 2)
+                                .border(viewStore.selectedPhoto == item ? Color.blue : Color.clear, width: 2)
                             }
                         }
                     }
                 }
                 .frame(width: UIScreen.main.bounds.width - 40, height: 110)
-            
+
             }.frame(height: 150)
         }
     }
@@ -35,11 +35,11 @@ struct PhotosListTimelineView: View {
 
 public struct TimelinePhotoCell: View {
     let photo: PhotoViewModel
-    
+
     public init(photo: PhotoViewModel) {
         self.photo = photo
     }
-    
+
     public var body: some View {
         Group {
             if extract(case: Photo.saved, from: photo.basePhoto) != nil {
@@ -50,7 +50,6 @@ public struct TimelinePhotoCell: View {
         }
     }
 }
-
 
 struct SavedTimelinePhotoCell: View {
     let savedPhoto: SavedPhoto

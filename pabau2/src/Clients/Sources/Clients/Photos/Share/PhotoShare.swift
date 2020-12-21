@@ -6,15 +6,15 @@ import UIKit
 
 public struct PhotoShareState: Equatable {
     var message: String = ""
-    
+
     var isMessagePosted: Bool = false
     var shouldDisplayActivity: Bool = false
     var shouldDisplayFacebookDialog: Bool = false
     var shouldDisplaySuccessMessage: Bool = false
     var shouldDisplayInstagramDialog: Bool = false
-    
+
     var messageSuccess: MessageSuccessInfo = MessageSuccessInfo()
-    
+
     var imageData: Data!
 }
 
@@ -31,14 +31,14 @@ public enum PhotoShareAction: Equatable {
     case instagram(ShareSocialAction)
     case saveToCamera(SaveAlbumAction)
     case hideMessageView
-    
+
     public enum ShareSocialAction {
         case display
         case didCancel
         case didComplete
         case didFailed
     }
-    
+
     public enum SaveAlbumAction {
         case save
         case success
@@ -47,7 +47,7 @@ public enum PhotoShareAction: Equatable {
 
 }
 
-var photoShareViewReducer = Reducer<PhotoShareState, PhotoShareAction, ClientsEnvironment> { state, action, env in
+var photoShareViewReducer = Reducer<PhotoShareState, PhotoShareAction, ClientsEnvironment> { state, action, _ in
     switch action {
     case .messagePosted:
         state.isMessagePosted = !state.isMessagePosted
@@ -87,14 +87,14 @@ var photoShareViewReducer = Reducer<PhotoShareState, PhotoShareAction, ClientsEn
 struct PhotoShareView: View {
     let store: Store<PhotoShareState, PhotoShareAction>
     @ObservedObject var viewStore: ViewStore<PhotoShareState, PhotoShareAction>
-    
+
     init(store: Store<PhotoShareState, PhotoShareAction>) {
         self.store = store
         self.viewStore = ViewStore(store)
     }
-    
+
     @State var isShownActivity: Bool = false
-    
+
     var body: some View {
             ZStack {
                 VStack(spacing: 0) {
@@ -114,15 +114,15 @@ struct PhotoShareView: View {
                     }
                     .frame(width: UIScreen.main.bounds.width, height: 120, alignment: .leading).padding()
                     .background(Color.white)
-                    
+
                     Divider()
-                    
+
                     HStack {
                         Text("Share with:")
                             .font(Font.regular14)
                             .fontWeight(.regular)
                         Spacer()
-                        
+
                         Button(action: {
                         }) {
                             Text("MyFitnessPal Community")
@@ -135,7 +135,7 @@ struct PhotoShareView: View {
                     .background(Color.white)
                     Divider()
                     Spacer().frame(height: 30)
-                    
+
                     VStack(spacing: 1) {
                         Divider()
                         HStack(alignment: .center, spacing: 2) {
@@ -171,29 +171,29 @@ struct PhotoShareView: View {
                     }
                     .frame(height: 120)
                     .padding(2)
-                    
+
                     Spacer()
-                    
+
                 }.sheet(isPresented: $isShownActivity) {
                     if let image = UIImage(data: viewStore.imageData) {
                         ActivityViewController(activityItems: [image])
                     }
                 }
-                
+
                 if viewStore.shouldDisplaySuccessMessage {
                     MessagePostView(param: viewStore.messageSuccess)
                         .onTapGesture {
                             viewStore.send(.hideMessageView)
                         }
                 }
-                
+
                 if viewStore.shouldDisplayFacebookDialog {
                     ShareFacebookViewController(viewStore: viewStore)
                 }
                 if viewStore.shouldDisplayInstagramDialog {
                     ShareInstagramView(viewStore: viewStore)
                 }
-                
+
             }.background(Color.paleGrey)
             .navigationBarTitle("Status Update")
             .font(Font.semibold17)
@@ -208,11 +208,11 @@ struct PhotoShareView: View {
 }
 
 struct SocialTitleImage: View {
-    
+
     let imageName: String
     let socialMediaTitle: String
     let isSystemIcon: Bool
-    
+
     var body: some View {
         GeometryReader { geo in
             HStack(alignment: .center, spacing: 12) {
@@ -221,17 +221,17 @@ struct SocialTitleImage: View {
                 } else {
                     Image(imageName).resizable().frame(width: 26, height: 26).aspectRatio(contentMode: .fit)
                 }
-                
+
                 Text(socialMediaTitle)
                     .font(Font.regular14)
                     .fontWeight(.regular)
                 Spacer()
-            
+
             }.padding(.leading, 10)
             .frame(width: geo.size.width, height: 60)
             .background(Color.white)
         }
-        
+
     }
-    
+
 }

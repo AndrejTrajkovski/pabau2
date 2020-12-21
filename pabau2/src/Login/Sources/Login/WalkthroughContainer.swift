@@ -4,13 +4,13 @@ import Util
 import Model
 
 public struct WalkthroughContainerState: Equatable {
-	
+
 	public init(hasSeenWalkthrough: Bool) {
 		let screens: [LoginNavScreen] = hasSeenWalkthrough ? [.signInScreen] : [.walkthroughScreen]
 		self.navigation = screens
 		self.loginViewState = LoginViewState()
 	}
-	
+
 	public init (navigation: [LoginNavScreen],
 				 loginViewState: LoginViewState) {
 		self.navigation = navigation

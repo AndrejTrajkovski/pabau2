@@ -4,20 +4,20 @@ import ComposableArchitecture
 import Model
 
 struct AppDetailsHeader: View {
-	
+
 	@ObservedObject var viewStore: ViewStore<ViewState, Never>
-	
+
 	init (store: Store<AppDetailsState, AppDetailsAction>) {
 		self.viewStore = ViewStore(store.scope(state: ViewState.init(state:)).actionless)
 	}
-	
+
 	struct ViewState: Equatable {
 		let imageUrl: String?
 		let name: String
 		let statusColor: String
 		let statusDesc: String
 	}
-	
+
 	var body: some View {
 		VStack {
 			Group {
@@ -42,7 +42,7 @@ struct AppDetailsHeader: View {
 }
 
 extension AppDetailsHeader.ViewState {
-	
+
 	init(state: AppDetailsState) {
 		self.imageUrl = state.app.customerPhoto
 		self.name = state.app.customerName ?? ""

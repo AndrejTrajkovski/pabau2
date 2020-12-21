@@ -132,8 +132,7 @@ struct EditPhotos: View {
 					if viewStore.state.isDrawingDisabled {
 						IfLetStore(self.store.scope(
 							state: { $0.singlePhotoEdit?.injectables.injectablesTool },
-							action: { .singlePhotoEdit(SinglePhotoEditAction.injectables(InjectablesAction.injectablesTool($0)))})
-							, then: {
+							action: { .singlePhotoEdit(SinglePhotoEditAction.injectables(InjectablesAction.injectablesTool($0)))}), then: {
 								InjectablesTool(store: $0)
 							}, else: Color.clear
 						)

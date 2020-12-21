@@ -123,7 +123,7 @@ struct SwiftUICalendar: UIViewRepresentable {
 		init(_ parent: SwiftUICalendar) {
 			self.parent = parent
 		}
-		
+
 		public func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
 			self.parent.onDateChanged(date)
 		}
@@ -131,7 +131,7 @@ struct SwiftUICalendar: UIViewRepresentable {
 		public func calendar(_ calendar: FSCalendar, boundingRectWillChange bounds: CGRect, animated: Bool) {
 			self.parent.onHeightChange(bounds.size.height)
 		}
-		
+
 		public func calendar(_ calendar: FSCalendar, shouldDeselect date: Date, at monthPosition: FSCalendarMonthPosition) -> Bool {
 			return false
 		}

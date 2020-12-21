@@ -16,7 +16,7 @@ public let ccPhotosReducer: Reducer<CCPhotosState, CCPhotosAction, ClientsEnviro
         action: /CCPhotosAction.photoCompare,
         environment: { $0 }),
 
-	Reducer<CCPhotosState, CCPhotosAction, ClientsEnvironment>.init { state, action, env in
+	Reducer<CCPhotosState, CCPhotosAction, ClientsEnvironment>.init { state, action, _ in
 		switch action {
 		case .onSelectGroup(let date):
 			state.selectedDate = date
@@ -31,7 +31,7 @@ public let ccPhotosReducer: Reducer<CCPhotosState, CCPhotosAction, ClientsEnviro
             state.isSelectedGroup = true
             state.displayMode = .compare
             state.photoCompare = PhotoCompareState(photos: state.photos, selectedId: state.selectedIds.first)
-		case .action(_):
+		case .action:
 			break
         case .photoCompare(.onBackCompare):
             state.isSelectedGroup = false
@@ -49,7 +49,7 @@ public let ccPhotosReducer: Reducer<CCPhotosState, CCPhotosAction, ClientsEnviro
 public enum CCPhotosViewMode: Int, Equatable, CaseIterable, CustomStringConvertible {
 	case grouped
 	case expanded
-	
+
 	public var description: String {
 		switch self {
 		case .grouped:
@@ -71,21 +71,21 @@ public struct CCPhotosState: ClientCardChildParentState, Equatable {
 	var selectedDate: Date?
 	var mode: CCPhotosViewMode = .grouped
     var displayMode: CCPhotosViewDisplayMode = .photos
-    
+
     var isSelectedGroup: Bool = false
     var photos: [PhotoViewModel] {
         guard let date = self.selectedDate else { return [] }
-        
+
         return childState.state.values.reduce([], { $0 + $1 })
     }
-    
+
     init(childState: ClientCardChildState<[Date: [PhotoViewModel]]>, selectedIds: [PhotoVariantId]) {
         self.childState = childState
         self.selectedIds = selectedIds
-        
+
         self.photoCompare = PhotoCompareState(photos: [], selectedId: selectedIds.first)
     }
-    
+
     var photoCompare: PhotoCompareState
 }
 
@@ -94,13 +94,13 @@ public enum CCPhotosAction: Equatable {
 	case onSelectGroup(Date)
 	case didTouchPhoto(PhotoVariantId)
 	case action(GotClientListAction<[Date: [PhotoViewModel]]>)
-    
+
     case photoCompare(PhotoCompareAction)
 }
 
 struct CCPhotos: ClientCardChild {
 	let store: Store<CCPhotosState, CCPhotosAction>
-        
+
 	var body: some View {
         WithViewStore(self.store) { viewStore in
             Group {
@@ -112,18 +112,18 @@ struct CCPhotos: ClientCardChild {
                                     .navigationBarBackButtonHidden(true)
                     )
                 }
-    
+
                 if viewStore.mode == .grouped {
                     CCGroupedPhotos(store: self.store.scope(state: { $0.childState.state },
                                                             action: { $0 }))
-                    
+
                 } else if viewStore.mode == .expanded {
-                    
+
                     CCExpandedPhotos(store:
                         self.store.scope(state: { $0 },
                         action: { $0 })
                     )
-                    
+
                 } else {
                     EmptyView()
                 }

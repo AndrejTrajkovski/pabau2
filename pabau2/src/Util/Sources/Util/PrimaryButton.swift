@@ -1,7 +1,7 @@
 import SwiftUI
 #if !os(macOS)
 public struct PrimaryButton: View {
-	
+
 	public init (_ text: String,
 				 isDisabled: Bool = false,
 				 _ btnTapAction: @escaping () -> Void) {

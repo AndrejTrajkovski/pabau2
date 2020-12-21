@@ -2,9 +2,9 @@ import SwiftUI
 import Util
 
 struct MessagePostView: View {
-    
+
     var param: MessageSuccessInfo = MessageSuccessInfo()
-    
+
     var body: some View {
         GeometryReader { geo in
             ZStack {
@@ -26,7 +26,7 @@ struct MessagePostView: View {
                 .background(Color.white)
                 .mask(RoundedRectangle(cornerRadius: 8,
                                        style: .continuous))
-                
+
             }
             .frame(width: geo.size.width,
                    height: geo.size.height,
@@ -34,8 +34,7 @@ struct MessagePostView: View {
             .offset(x: 0, y: 60)
             .edgesIgnoringSafeArea(.all)
             .background(Color.black.opacity(0.5))
-            
+
         }
     }
 }
-

@@ -16,8 +16,8 @@ let clientCardReducer: Reducer<ClientCardState?, ClientCardAction, ClientsEnviro
 			} else {
 				state = nil
 			}
-		case .bottom(_):break
-		case .top(_): break
+		case .bottom:break
+		case .top: break
 		}
 		return .none
 	}

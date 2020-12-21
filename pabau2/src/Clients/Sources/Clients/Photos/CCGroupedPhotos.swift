@@ -39,7 +39,7 @@ struct CCGroupedSection {
 		ASCollectionViewSection(
 			id: 0,
 			data: self.viewStore.state.sorted(by: \.key),
-			dataID: \.self.key) { photosByDate, context in
+			dataID: \.self.key) { photosByDate, _ in
 				GroupedPhotosCell(photos: Array(photosByDate.value), date: photosByDate.key)
 					.onTapGesture {
 						self.viewStore.send(.onSelectGroup(photosByDate.key))
