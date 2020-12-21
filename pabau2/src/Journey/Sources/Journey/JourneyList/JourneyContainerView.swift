@@ -9,6 +9,7 @@ import CasePaths
 import Form
 import Overture
 import Filters
+import SharedComponents
 
 public typealias JourneyEnvironment = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
 
@@ -82,6 +83,10 @@ public let journeyContainerReducer2: Reducer<JourneyState, JourneyContainerActio
 					 state: \JourneyState.self,
 					 action: /JourneyContainerAction.journey,
 					 environment: { $0 }),
+        journeyReducer.pullback(
+                     state: \JourneyState.self,
+                     action: /JourneyContainerAction.searchQueryChanged,
+                     environment: { $0 }),
 		choosePathwayContainerReducer.pullback(
 					 state: \JourneyState.choosePathway,
 					 action: /JourneyContainerAction.choosePathway,
@@ -108,19 +113,32 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 				state.selectedFilter = filter
 			case .datePicker(.selectedDate(let date)):
 				state.loadingState = .loading
-				return environment.apiClient.getJourneys(date: date)
+				return environment.apiClient.getJourneys(date: date, searchTerm: nil)
 					.map(JourneyAction.gotResponse)
+					.receive(on: DispatchQueue.main)
 					.eraseToEffect()
 			case .gotResponse(let result):
+				print(result)
 				switch result {
 				case .success(let journeys):
 					state.journeys.formUnion(journeys)
 					state.loadingState = .gotSuccess
-				case .failure:
+				case .failure(let error):
+					print(error)
 					state.loadingState = .gotError
 				}
 			case .searchedText(let searchText):
+				struct SearchJourneyId: Hashable {}
+				
 				state.searchText = searchText
+                return environment.apiClient
+                    .getJourneys(date: Date(), searchTerm: searchText)
+                    .receive(on: DispatchQueue.main)
+                    .eraseToEffect()
+                    .debounce(id: SearchJourneyId(), for: 0.3, scheduler: DispatchQueue.main)
+                    .map(JourneyAction.gotResponse)
+                    .cancellable(id: SearchJourneyId(), cancelInFlight: true)
+
 			case .selectedJourney(let journey):
 				state.selectedJourney = journey
 			case .choosePathwayBackTap:
@@ -128,8 +146,9 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 			case .loadJourneys:
 				state.loadingState = .loading
 				return environment.apiClient
-					.getJourneys(date: Date())
-					.map(JourneyAction.gotResponse)
+					.getJourneys(date: Date(), searchTerm: nil)
+                    .map(JourneyAction.gotResponse)
+                    .receive(on: DispatchQueue.main)
 					.eraseToEffect()
 			}
 			return .none
@@ -139,15 +158,20 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 public struct JourneyContainerView: View {
 	let store: Store<JourneyContainerState, JourneyContainerAction>
 	@ObservedObject var viewStore: ViewStore<ViewState, JourneyContainerAction>
+
+    @State var showSearchBar: Bool = false
+
 	struct ViewState: Equatable {
 		let isChoosePathwayShown: Bool
 		let selectedDate: Date
 		let listedJourneys: [Journey]
 		let isLoadingJourneys: Bool
+        let searchQuery: String
 		init(state: JourneyContainerState) {
 			self.isChoosePathwayShown = state.journey.selectedJourney != nil
 			self.selectedDate = state.journey.selectedDate
-			self.listedJourneys = state.filteredJourneys
+			self.listedJourneys = state.filteredJourneys()
+            self.searchQuery = state.journey.searchText
 			self.isLoadingJourneys = state.journey.loadingState.isLoading
 			UITableView.appearance().separatorStyle = .none
 		}
@@ -159,57 +183,73 @@ public struct JourneyContainerView: View {
 						 action: { $0 }))
 	}
 	public var body: some View {
-		VStack {
-			CalendarDatePicker.init(
-				store: self.store.scope(
-					state: { $0.journey.selectedDate },
-					action: { .journey(.datePicker($0))}),
-				isWeekView: false,
-				scope: .week
-			)
-			.padding(0)
-			FilterPicker()
-			JourneyList(self.viewStore.state.listedJourneys) {
-				self.viewStore.send(.journey(.selectedJourney($0)))
-			}.loadingView(.constant(self.viewStore.state.isLoadingJourneys),
-						  Texts.fetchingJourneys)
-			NavigationLink.emptyHidden(self.viewStore.state.isChoosePathwayShown,
-									   ChoosePathway(store: self.store.scope(state: { $0.journey.choosePathway
-									   }, action: { .choosePathway($0)}))
-									   .navigationBarTitle("Choose Pathway")
-									   .customBackButton {
-										self.viewStore.send(.journey(.choosePathwayBackTap))
-									}
-			)
-			Spacer()
-		}
-		.navigationBarTitle("Manchester", displayMode: .inline)
-		.navigationBarItems(leading:
-			HStack(spacing: 8.0) {
-				PlusButton {
-					withAnimation(Animation.easeIn(duration: 0.5)) {
-						self.viewStore.send(.addAppointmentTap)
-					}
-				}
-				Button(action: {
+        VStack {
+            CalendarDatePicker.init(
+                store: self.store.scope(
+                    state: { $0.journey.selectedDate },
+                    action: { .journey(.datePicker($0))}),
+                isWeekView: false,
+                scope: .week
+            )
+            .padding(0)
 
-				}, label: {
-					Image(systemName: "magnifyingglass")
-						.font(.system(size: 20))
-						.frame(width: 44, height: 44)
-				})
-			}, trailing:
-			Button (action: {
-				withAnimation {
-					self.viewStore.send(.toggleEmployees)
-				}
-			}, label: {
-				Image(systemName: "person")
-					.font(.system(size: 20))
-					.frame(width: 44, height: 44)
-			})
-		)
-	}
+            FilterPicker()
+
+            if self.showSearchBar {
+                SearchView(placeholder: "Search", text: viewStore.binding(
+                    get: \.searchQuery,
+                    send: { JourneyContainerAction.searchQueryChanged(JourneyAction.searchedText($0)) }
+                ))
+                .isHidden(!self.showSearchBar)
+                .padding([.leading, .trailing], 16)
+            }
+
+            JourneyList(self.viewStore.state.listedJourneys) {
+                self.viewStore.send(.journey(.selectedJourney($0)))
+            }.loadingView(.constant(self.viewStore.state.isLoadingJourneys), Texts.fetchingJourneys)
+
+            NavigationLink.emptyHidden(
+                self.viewStore.state.isChoosePathwayShown,
+                ChoosePathway(store: self.store.scope(state: { $0.journey.choosePathway
+                }, action: { .choosePathway($0)}))
+                .navigationBarTitle("Choose Pathway")
+                .customBackButton {
+                    self.viewStore.send(.journey(.choosePathwayBackTap))
+                }
+            )
+            Spacer()
+        }
+        .navigationBarTitle("Manchester", displayMode: .inline)
+        .navigationBarItems(
+            leading:
+                HStack(spacing: 8.0) {
+                    PlusButton {
+                        withAnimation(Animation.easeIn(duration: 0.5)) {
+                            self.viewStore.send(.addAppointmentTap)
+                        }
+                    }
+                    Button(action: {
+                        withAnimation {
+                            self.showSearchBar.toggle()
+                        }
+                    }, label: {
+                        Image(systemName: "magnifyingglass")
+                            .font(.system(size: 20))
+                            .frame(width: 44, height: 44)
+                    })
+                },
+            trailing:
+                Button(action: {
+                    withAnimation {
+                        self.viewStore.send(.toggleEmployees)
+                    }
+                }, label: {
+                    Image(systemName: "person")
+                        .font(.system(size: 20))
+                        .frame(width: 44, height: 44)
+                })
+        )
+    }
 
 	struct ChoosePathwayEither: View {
 		let store: Store<JourneyState, JourneyContainerAction>
@@ -233,14 +273,14 @@ public struct JourneyContainerView: View {
 func journeyCellAdapter(journey: Journey) -> JourneyCell {
 	return JourneyCell(
 		journey: journey,
-		color: Color.init(hex: journey.appointments.head.service.color),
+        color: Color.init(hex: journey.appointments.head.service?.color ?? "#000000"),
 		time: "12:30",
 		imageUrl: journey.patient.avatar,
 		name: journey.patient.firstName + " " + journey.patient.lastName,
 		services: journey.servicesString,
 		status: journey.appointments.head.status?.name,
 		employee: journey.employee.name,
-		paidStatus: journey.paid,
+		paidStatus: journey.paid ?? "",
 		stepsComplete: 0,
 		stepsTotal: 3)
 }

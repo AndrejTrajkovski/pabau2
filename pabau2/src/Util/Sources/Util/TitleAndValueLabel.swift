@@ -31,7 +31,7 @@ public struct TitleAndLowerContent<Content: View>: View {
 				.foregroundColor(Color.textFieldAndTextLabel.opacity(0.5))
 				.font(.semibold12)
 			lowerContent()
-			Divider().foregroundColor(.textFieldBottomLine)
+			Divider()
 		}
 	}
 }

@@ -19,28 +19,6 @@ typealias AppEnvironment = (
 enum AppState: Equatable {
 	case walkthrough(WalkthroughContainerState)
 	case tabBar(TabBarState)
-	public init (user: User?,
-							 hasSeenWalkthrough: Bool) {
-		if let user = user {
-			self = .tabBar(
-				TabBarState(
-					journeyState: JourneyState(),
-					clients: ClientsState(),
-					calendar: CalendarState(),
-					settings: SettingsState(),
-                    communication: CommunicationState()
-				)
-			)
-		} else {
-			let screens: [LoginNavScreen] = hasSeenWalkthrough ? [.signInScreen] : [.walkthroughScreen]
-			self = .walkthrough(
-				WalkthroughContainerState(
-					navigation: screens,
-					loginViewState: LoginViewState()
-				)
-			)
-		}
-	}
 }
 
 enum AppAction {
@@ -59,7 +37,21 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = Reducer.combine(
 		action: /AppAction.tabBar,
 		environment: { TabBarEnvironment($0) }
 	),
-	globalReducer
+	.init { state, action, env in
+		switch action {
+		case .tabBar(.settings(.logoutTapped)):
+			state = .walkthrough(
+				WalkthroughContainerState(hasSeenWalkthrough: env.userDefaults.hasSeenAppIntroduction)
+			)
+		case .walkthrough(.login(.login(.gotResponse(.success(let user))))):
+			var journeyState = JourneyState()
+			journeyState.loadingState = .loading
+			state = .tabBar(TabBarState())
+		default:
+			break
+		}
+		return .none
+	}
 )
 
 struct ContentView: View {
@@ -150,22 +142,12 @@ struct LoginContainer: View {
 	}
 }
 
-let globalReducer = Reducer<AppState, AppAction, AppEnvironment> { state, action, environment in
-	if case let AppAction.tabBar(tabBar) = action,
-		case let TabBarAction.settings(settings) = tabBar,
-		case SettingsAction.logoutTapped = settings {
-		state = AppState(user: nil, hasSeenWalkthrough: environment.userDefaults.hasSeenAppIntroduction)
-		return .none
-	} else {
-		let user = extract(case: { (value: User) -> (AppAction) in
-			AppAction.walkthrough(WalkthroughContainerAction.login(LoginViewAction.login(LoginAction.gotResponse(Result.success(value)))))
-		}, from: action)
-		if let user = user {
-			var journeyState = JourneyState()
-			journeyState.loadingState = .loading
-			state = AppState(user: user, hasSeenWalkthrough: environment.userDefaults.hasSeenAppIntroduction)
-			return .none
+extension AppState {
+	init(loggedInUser: User?, hasSeenWalkthrough: Bool) {
+		if loggedInUser != nil {
+			self = .walkthrough(WalkthroughContainerState(hasSeenWalkthrough: hasSeenWalkthrough))
+		} else {
+			self = .tabBar(TabBarState())
 		}
 	}
-	return .none
 }
