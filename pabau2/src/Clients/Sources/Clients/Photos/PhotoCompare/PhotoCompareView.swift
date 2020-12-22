@@ -41,7 +41,7 @@ struct PhotoCompareState: Equatable {
     var shareSelectState: PhotoShareSelectState?
 }
 
-var photoCompareReducer = Reducer.combine(
+let photoCompareReducer = Reducer.combine(
 	photoShareSelectViewReducer.optional.pullback(
         state: \PhotoCompareState.shareSelectState,
         action: /PhotoCompareAction.shareAction,
@@ -62,18 +62,15 @@ var photoCompareReducer = Reducer.combine(
 				state.rightId = photoId
 			}
         case .didSelectShare:
-            if let selectedPhoto = state.selectedPhoto {
-                state.shareSelectState = PhotoShareSelectState(photo: state.photoSideBySideState.leftState.photo,
-                                                               comparedPhoto: state.photoSideBySideState.rightState.photo)
-                state.onShareSelected = true
-            }
+            state.shareSelectState = PhotoShareSelectState(photo: state.leftState.photo,
+                                                           comparedPhoto: state.rightState.photo)
         case .shareAction(.backButton):
-            state.onShareSelected = false
+            state.shareSelectState = nil
         default:
             break
         }
         return .none
-})
+    })
 
 struct PhotoCompareView: View {
     let store: Store<PhotoCompareState, PhotoCompareAction>
@@ -91,12 +88,17 @@ struct PhotoCompareView: View {
                 Spacer()
                 PhotosListTimelineView(store: self.store)
 				
-				NavigationLink
-					.emptyHidden(viewStore.selectedPhoto != nil,
-								 IfLetStore(store.scope(state: { $0.shareSelectState },
-														action: { PhotoCompareAction.shareAction($0) }), then: PhotoShareSelectView(store:)
-														)
-					)
+                
+                NavigationLink
+                    .emptyHidden(viewStore.shareSelectState != nil,
+                                 IfLetStore(store.scope(state: { $0.shareSelectState },
+                                                        action: { PhotoCompareAction.shareAction($0)}),
+                                            then: { PhotoShareSelectView(store: $0) }
+                                 )
+                    )
+                
+                
+                
             }
             .navigationBarTitle("Progress Gallery")
             .navigationBarItems(

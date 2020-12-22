@@ -5,6 +5,7 @@ import Util
 
 struct PhotoDetailState: Equatable {
     let photo: PhotoViewModel
+    let side: ActiveSide
 	var dragOffset: CGSize
 	var position: CGSize
 	var currentMagnification: CGFloat
@@ -17,7 +18,7 @@ public enum PhotoChangesAction: Equatable {
     case onChangePinchMagnification(CGFloat)
     case onEndedMagnification(CGFloat)
     case onTappedToZoom
-    case onSelect
+    case onSelect(ActiveSide)
 }
 
 struct PhotoDetailViewSecond: View {
@@ -49,7 +50,7 @@ struct PhotoDetailViewSecond: View {
     var tapGestureSelect: some Gesture {
         TapGesture(count: 1)
             .onEnded({
-                viewStore.send(.onSelect)
+                viewStore.send(.onSelect(viewStore.side))
             })
     }
 
@@ -71,7 +72,7 @@ struct PhotoDetailViewSecond: View {
                         .font(.regular32)
                         .foregroundColor(.white)
 
-                    if let date = viewStore.date {
+                    if let date = viewStore.photo.basePhoto.date {
                         Spacer()
                             .frame(height: 10)
                         ZStack {

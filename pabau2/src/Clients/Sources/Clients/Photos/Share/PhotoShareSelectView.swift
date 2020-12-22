@@ -54,7 +54,7 @@ public enum PhotoShareSelectAction: Equatable {
     case backButton
 }
 
-var photoShareSelectViewReducer: Reducer<PhotoShareSelectState, PhotoShareSelectAction, ClientsEnvironment> = Reducer.combine(
+let photoShareSelectViewReducer: Reducer<PhotoShareSelectState, PhotoShareSelectAction, ClientsEnvironment> = Reducer.combine(
     photoShareViewReducer.pullback(
             state: \PhotoShareSelectState.photoShareState,
             action: /PhotoShareSelectAction.shareAction,

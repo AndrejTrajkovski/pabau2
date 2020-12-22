@@ -21,7 +21,7 @@ public let ccPhotosReducer: Reducer<CCPhotosState, CCPhotosAction, ClientsEnviro
 		case .onSelectDate(let date):
 			state.selectedDate = date
 		case .didTouchPhoto(let id):
-			state.photoCompare = PhotoCompareState(photos: childState.state, selectedId: id)
+            state.photoCompare = PhotoCompareState(photos: state.childState.state, selectedDate: state.selectedDate!, selectedId: id)
 		case .action:
 			break
         case .photoCompare(.onBackCompare):
@@ -38,6 +38,18 @@ public struct CCPhotosState: ClientCardChildParentState, Equatable {
 	var childState: ClientCardChildState<[Date: [PhotoViewModel]]>
 	var selectedDate: Date?
     var photoCompare: PhotoCompareState?
+}
+
+extension CCPhotosState {
+    var expandedSection: CCExpandedPhotosState {
+        get {
+            if selectedDate == nil {
+                return CCExpandedPhotosState(selectedDate: Date(), photos: [])
+            }
+            return CCExpandedPhotosState(selectedDate: selectedDate!, photos: childState.state[selectedDate!] ?? [])
+        }
+        set { }
+    }
 }
 
 public enum CCPhotosAction: Equatable {
@@ -63,10 +75,13 @@ struct CCPhotos: ClientCardChild {
 														})
 					)
 				if viewStore.selectedDate != nil {
-					CCExpandedPhotos(store:
-										self.store.scope(state: { $0 },
-														 action: { $0 })
-					)
+                    
+                    
+                        CCExpandedPhotos(store:
+                                            self.store.scope(state: { $0.expandedSection },
+                                                             action: { $0 })
+                        )
+                    
 				} else {
 					CCGroupedPhotos(store: self.store.scope(state: { $0.childState.state },
 															action: { $0 }))

@@ -3,18 +3,24 @@ import ComposableArchitecture
 import ASCollectionView
 import Form
 
-struct CCExpandedPhotos: View {
-	let store: Store<CCPhotosState, CCPhotosAction>
-	@ObservedObject var viewStore: ViewStore<CCPhotosState, CCPhotosAction>
+struct CCExpandedPhotosState: Equatable {
+    let selectedDate: Date
+    let photos: [PhotoViewModel]
+}
 
-	init(store: Store<CCPhotosState, CCPhotosAction>) {
+struct CCExpandedPhotos: View {
+	let store: Store<CCExpandedPhotosState, CCPhotosAction>
+	@ObservedObject var viewStore: ViewStore<CCExpandedPhotosState, CCPhotosAction>
+
+	init(store: Store<CCExpandedPhotosState, CCPhotosAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
 
 	var body: some View {
 		print("CCExpandedPhotos")
-		return ASCollectionView(sections: viewStore.state.selectedDate == nil ? sections : [selectedDateSection])
+        
+		return ASCollectionView(sections: [selectedDateSection])
 			.layout { _ in
 				return .grid(layoutMode: .fixedNumberOfColumns(4),
 										 itemSpacing: 16,
@@ -23,25 +29,24 @@ struct CCExpandedPhotos: View {
 	}
 	
 	var selectedDateSection: ASCollectionViewSection<Date> {
-		ExpandedPhotosSection(date: viewStore.state.selectedDate!,
-							  photos: viewStore.state.childState.state[viewStore.state.selectedDate!] ?? [],
-							  viewStore: viewStore).section
+		ExpandedPhotosSection(date: viewStore.selectedDate,
+                              photos: viewStore.photos,
+                              action: { viewStore.send(.didTouchPhoto($0)) }).section
 	}
 }
 
 struct ExpandedPhotosSection {
 	let date: Date
 	let photos: [PhotoViewModel]
-	let viewStore: ViewStore<CCPhotosState, CCPhotosAction>
-	
+    let action: (PhotoVariantId) -> Void
+    
 	var section: ASCollectionViewSection<Date> {
 		ASCollectionViewSection(
 			id: date,
 			data: self.photos) { photo, _ in
-			PhotoCell(photo: photo)
-				.onTapGesture {
-					self.viewStore.send(.didTouchPhoto(photo.id))
-				}
+            PhotoCell(photo: photo)
+                .padding()
+                .onTapGesture { action(photo.basePhoto.id) }
 		}
 		.sectionHeader {
 			HStack {

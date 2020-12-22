@@ -2,7 +2,7 @@ import SwiftUI
 import Form
 import ComposableArchitecture
 
-enum ActiveSide: Equatable {
+public enum ActiveSide: Equatable {
 	case left
 	case right
 }
@@ -18,13 +18,11 @@ let photoSideBySideReducer = Reducer.combine(
     Reducer<PhotoCompareState, PhotoSideBySideAction, ClientsEnvironment> { state, action, _ in
         switch action {
         case .changeDisplayMode:
-            state.displayMode = state.displayMode == .single ? .double : .single
+            state.mode = state.mode == .single ? .double : .single
         case .changesAction(.onChangeDragOffset(let size)):
             break
-        case .changesAction(.onSelect):
-            state.activeSide.isSelected = false
-            state.activeSide = state.activeSide == state.leftState ? state.rightState : state.leftState
-            state.activeSide.isSelected = true
+        case .changesAction(.onSelect(let side)):
+            state.activeSide = side
         case .changesAction(.onChangePinchMagnification(let value)):
             state.pinchMagnification = value
         case .changesAction(.onEndedMagnification(let value)):
@@ -56,7 +54,7 @@ struct PhotoSideBySideView: View {
 															  action: { PhotoSideBySideAction.changesAction($0)}
 				)
 				)
-				if viewStore.displayMode == .double {
+				if viewStore.mode == .double {
 					PhotoDetailViewSecond(store: self.store.scope(state: { $0.rightState },
 																  action: { PhotoSideBySideAction.changesAction($0)}
 					)
@@ -72,6 +70,7 @@ extension PhotoCompareState {
 	var leftState: PhotoDetailState {
 		get {
 			PhotoDetailState(photo: photos.flatMap(\.value).first(where: { $0.id == leftId })!,
+                             side: .left,
 							 dragOffset: self.dragOffset,
 							 position: self.position,
 							 currentMagnification: self.currentMagnification,
@@ -89,6 +88,7 @@ extension PhotoCompareState {
 	var rightState: PhotoDetailState {
 		get {
 			PhotoDetailState(photo: photos.flatMap(\.value).first(where: { $0.id == rightId })!,
+                             side: .right,
 							 dragOffset: self.dragOffset,
 							 position: self.position,
 							 currentMagnification: self.currentMagnification,
