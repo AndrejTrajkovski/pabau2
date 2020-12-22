@@ -3,15 +3,21 @@ import SwiftUI
 public struct TitleAndValueLabel: View {
 	let labelTxt: String
 	let valueText: String
-	public init(_ labelTxt: String,
-				_ valueText: String) {
+    var textColor: Color?
+    
+	public init(
+        _ labelTxt: String,
+		_ valueText: String,
+        _ textColor: Color? = nil
+    ) {
 		self.labelTxt = labelTxt
 		self.valueText = valueText
+        self.textColor = textColor
 	}
 	public var body: some View {
 		TitleAndLowerContent(labelTxt) {
 			Text(self.valueText)
-				.foregroundColor(Color.textFieldAndTextLabel)
+				.foregroundColor(textColor ?? Color.textFieldAndTextLabel)
 				.font(.semibold15)
 		}
 	}
@@ -31,7 +37,7 @@ public struct TitleAndLowerContent<Content: View>: View {
 				.foregroundColor(Color.textFieldAndTextLabel.opacity(0.5))
 				.font(.semibold12)
 			lowerContent()
-			Divider()
+			Divider().foregroundColor(.textFieldBottomLine)
 		}
 	}
 }

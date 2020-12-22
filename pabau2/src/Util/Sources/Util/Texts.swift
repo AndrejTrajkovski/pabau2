@@ -174,4 +174,8 @@ extension String {
     var localized: String {
         return NSLocalizedString(self, tableName: nil, bundle: Bundle.main, value: "", comment: "")
     }
+
+    public func equalsIgnoreCase(_ string: String) -> Bool {
+        self.caseInsensitiveCompare(string) == .orderedSame
+    }
 }

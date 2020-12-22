@@ -2,20 +2,45 @@ import SwiftUI
 import Model
 import ComposableArchitecture
 import Util
+import SharedComponents
 
 let chooseServiceReducer =
-	Reducer<ChooseServiceState, ChooseServiceAction, AddAppointmentEnv> { state, action, _ in
+    Reducer<ChooseServiceState, ChooseServiceAction, AddAppointmentEnv> { state, action, env in
 	switch action {
+        case .onAppear:
+            state.searchText = ""
+            return env.apiClient.getServices()
+                .map(ChooseServiceAction.gotServiceResponse)
+                .receive(on: DispatchQueue.main)
+                .eraseToEffect()
+        case .gotServiceResponse(let result):
+            switch result {
+            case .success(let services):
+                state.services = .init(services)
+                state.groupedServices = [Int: [Service]].init(grouping: state.services, by: { $0.categoryId })
+            case .failure:
+                break
+            }
 	case .didSelectFilter(let filter):
 		state.filterChosen = filter
-	case .didSelectServiceId(let serviceID):
-		state.chosenServiceId = serviceID
+        case .didSelectService(let service):
+            state.chosenService = service
 		state.isChooseServiceActive = false
 	case .didTapBackBtn:
 		state.isChooseServiceActive = false
+        case .onSearch(let text):
+            state.searchText = text
+            if state.searchText.isEmpty {
+                state.groupedServices = [Int: [Service]].init(grouping: state.services, by: { $0.categoryId })
+                break
+            }
+            state.groupedServices = [Int: [Service]].init(
+                grouping: state.services
+                    .filter { $0.name.lowercased().contains(state.searchText.lowercased())}, by: { $0.categoryId }
+            )
 	}
 	return .none
-}
+    }
 
 public enum ChooseServiceFilter: Int, CaseIterable, CustomStringConvertible {
 	case allStaff
@@ -32,60 +57,51 @@ public enum ChooseServiceFilter: Int, CaseIterable, CustomStringConvertible {
 }
 
 public struct ChooseServiceState: Equatable {
+    var services: IdentifiedArrayOf<Service> = []
+    var groupedServices: [Int: [Service]] = [:] {
+        didSet {
+            listServices = groupedServices.map({ $0.value })
+                .sorted(by: { $0.first!.categoryId > $1.first!.categoryId})
+        }
+    }
+    var listServices : [[Service]] = []
 	var isChooseServiceActive: Bool
-	var chosenServiceId: Int
+    var chosenService: Service?
 	var filterChosen: ChooseServiceFilter
-
-	var chosenServiceName: String {
-		self.services.first(where: { $0.id == chosenServiceId })?.name ?? ""
-	}
-
-	let services: [Service] = [
-		Service.init(id: 0, name: "Service 1", color: "#eb4034", categoryId: 1, categoryName: "Injectables", duration: "00:45"),
-		Service.init(id: 1, name: "Service 2", color: "#34eba5", categoryId: 2, categoryName: "Mosaic"),
-		Service.init(id: 2, name: "Service 3", color: "#34eba5", categoryId: 2, categoryName: "Mosaic", duration: "00:30"),
-		Service.init(id: 3, name: "Service 4", color: "#34eba5", categoryId: 2, categoryName: "Mosaic", duration: "00:45"),
-		Service.init(id: 4, name: "Service 5", color: "#eb34b1", categoryId: 3, categoryName: "Urethra"),
-		Service.init(id: 5, name: "Service 6", color: "#eb34b1", categoryId: 3, categoryName: "Urethra", duration: "00:30"),
-		Service.init(id: 6, name: "MOS- Scar", color: "#FEC87C", categoryId: 4, categoryName: "MOS", duration: "00:30"),
-		Service.init(id: 7, name: "MOS- Acne Scar", color: "#FEC87C", categoryId: 4, categoryName: "MOS", duration: "00:30"),
-		Service.init(id: 8, name: "MOS- Skin Tightening", color: "#FEC87C", categoryId: 4, categoryName: "MOS", duration: "00:30"),
-		Service.init(id: 9, name: "MOS- Stretch Marks", color: "#FEC87C", categoryId: 4, categoryName: "MOS", duration: "00:30")
-	]
-
-	var groupedServices: [Int: [Service]] {
-		 return [Int: [Service]].init(grouping: services, by: { $0.categoryId })
-	}
-
-	var listServices: [[Service]] {
-		let res = self.groupedServices.map({ $0.value })
-			.sorted(by: { $0.first!.categoryId > $1.first!.categoryId})
-		print(res)
-		return res
-	}
+    var searchText: String = ""
 }
 
 public enum ChooseServiceAction: Equatable {
-	case didSelectServiceId(Int)
+    case onAppear
+    case gotServiceResponse(Result<[Service], RequestError>)
+	case didSelectService(Service)
 	case didSelectFilter(ChooseServiceFilter)
 	case didTapBackBtn
+    case onSearch(String)
 }
 
 struct ChooseService: View {
 	let store: Store<ChooseServiceState, ChooseServiceAction>
 	@ObservedObject var viewStore: ViewStore<ChooseServiceState, ChooseServiceAction>
+
 	init (store: Store<ChooseServiceState, ChooseServiceAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store)
 		UITableViewHeaderFooterView.appearance().tintColor = UIColor.clear
 	}
 
-	@State var searchText: String = ""
 	var body: some View {
 		VStack {
 			HStack {
-				TextField("TODO: search: ", text: self.$searchText)
+                SearchView(
+                    placeholder: "Search",
+                    text: viewStore.binding(
+                        get: \.searchText,
+                        send: ChooseServiceAction.onSearch)
+                )
+                .padding(.leading, 60)
 				StaffFilterPicker()
+                    .padding(.trailing, 60)
 			}
 			List {
 				ForEach(self.viewStore.state.listServices, id: \.self.first?.categoryId) { (group: [Service]) in
@@ -94,15 +110,19 @@ struct ChooseService: View {
 					) {
 						ForEach(group, id: \.self) { (service: Service) in
 							ServiceRow(service: service).onTapGesture {
-								self.viewStore.send(.didSelectServiceId(service.id))
+								self.viewStore.send(.didSelectService(service))
 							}
+                        }.listRowInsets(EdgeInsets(top: 0, leading: 60, bottom: 0, trailing: 60))
 						}
-					}.background(Color.white)
+                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                    .background(Color.white)
 				}
 			}
 			Spacer()
+        }.onAppear {
+            self.viewStore.send(.onAppear)
 		}
-		.padding()
+		.padding(0)
 		.navigationBarTitle("Services")
 		.customBackButton(action: { self.viewStore.send(.didTapBackBtn)})
 	}
@@ -123,8 +143,10 @@ struct TextHeader: View {
 	var body: some View {
 		VStack(alignment: .leading, spacing: 16) {
 			Spacer()
-			Text(name).frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+            Text(name)
+                .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+                .padding(.leading, 60)
 			Divider()
-		}
+		}.padding(0)
 	}
 }

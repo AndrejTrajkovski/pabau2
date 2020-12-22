@@ -3,6 +3,7 @@ import NonEmpty
 import SwiftDate
 
 public struct JourneyMockAPI: MockAPI, JourneyAPI {
+    
 	public init () {}
     public func getJourneys(date: Date, searchTerm: String?) -> EffectWithResult<[Journey], RequestError> {
 		mockSuccess(Self.mockJourneys, delay: 0.2)
@@ -22,6 +23,14 @@ public struct JourneyMockAPI: MockAPI, JourneyAPI {
 		fatalError("TODO")
 		}
 	}
+    
+    public func getClients(search: String? = nil, offset: Int = 0) -> Effect<Result<[Client], RequestError>, Never> {
+        mockSuccess(Client.mockClients, delay: 0.2)
+    }
+    
+    public func getServices() -> Effect<Result<[Service], RequestError>, Never> {
+        fatalError("TODO")
+    }
 }
 
 extension JourneyMockAPI {

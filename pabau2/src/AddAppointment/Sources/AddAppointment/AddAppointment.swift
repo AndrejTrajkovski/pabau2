@@ -13,11 +13,11 @@ public struct AddAppointmentState: Equatable {
 	var sms: Bool
 	var feedback: Bool
 	var isAllDay: Bool
-	var clients: SingleChoiceLinkState<Client>
+	var clients: ChooseClientsState
 	var startDate: Date
 	var services: ChooseServiceState
 	var durations: SingleChoiceLinkState<Duration>
-	var with: SingleChoiceLinkState<Employee>
+	var with: ChooseEmployeesState
 	var participants: SingleChoiceLinkState<Employee>
 	var note: String = ""
 }
@@ -26,13 +26,15 @@ public enum AddAppointmentAction: Equatable {
 	case saveAppointmentTap
 	case addAppointmentDismissed
 	case chooseStartDate
-	case clients(SingleChoiceLinkAction<Client>)
+	case clients(ChooseClientsAction)
 	case services(ChooseServiceAction)
 	case durations(SingleChoiceLinkAction<Duration>)
-	case with(SingleChoiceLinkAction<Employee>)
+	case with(ChooseEmployeesAction)
 	case participants(SingleChoiceLinkAction<Employee>)
 	case closeBtnTap
 	case didTapServices
+    case didTapWith
+    case didTabClients
 	case isAllDay(ToggleAction)
 	case sms(ToggleAction)
 	case reminder(ToggleAction)
@@ -48,11 +50,17 @@ let addAppTapBtnReducer = Reducer<AddAppointmentState?,
 	AddAppointmentAction, AddAppointmentEnv> { state, action, _ in
 		switch action {
 		case .saveAppointmentTap:
+        print(state)
+        
 			state = nil
 		case .closeBtnTap:
 			state = nil
 		case .didTapServices:
 			state?.services.isChooseServiceActive = true
+    case .didTabClients:
+        state?.clients.isChooseClientsActive = true
+    case .didTapWith:
+        state?.with.isChooseEmployeesActive = true
 		default:
 			break
 		}
@@ -61,7 +69,7 @@ let addAppTapBtnReducer = Reducer<AddAppointmentState?,
 
 public let addAppointmentValueReducer: Reducer<AddAppointmentState,
 	AddAppointmentAction, AddAppointmentEnv> = .combine(
-		SingleChoiceLinkReducer<Client>().reducer.pullback(
+        chooseClientsReducer.pullback(
 			state: \AddAppointmentState.clients,
 			action: /AddAppointmentAction.clients,
 			environment: { $0 }),
@@ -73,7 +81,7 @@ public let addAppointmentValueReducer: Reducer<AddAppointmentState,
 			state: \AddAppointmentState.durations,
 			action: /AddAppointmentAction.durations,
 			environment: { $0 }),
-		SingleChoiceLinkReducer<Employee>().reducer.pullback(
+        chooseEmployeesReducer.pullback(
 			state: \AddAppointmentState.with,
 			action: /AddAppointmentAction.with,
 			environment: { $0 }),
@@ -151,11 +159,21 @@ struct ClientDaySection: View {
 	}
 	var body: some View {
 		HStack(spacing: 24.0) {
-			SingleChoiceLink.init(content: {
-				TitleAndValueLabel.init("CLIENT", self.viewStore.state.clients.chosenItemName ?? "")
-			}, store: self.store.scope(state: { $0.clients },
-									   action: { .clients($0) }),
-			cell: TextAndCheckMarkContainer.init(state:)
+            TitleAndValueLabel(
+                "CLIENT",
+                self.viewStore.state.clients.chosenClient?.fullname ??  "Choose client",
+                self.viewStore.state.clients.chosenClient?.fullname == nil ? Color.grayPlaceholder : nil
+            ).onTapGesture {
+                self.viewStore.send(.didTabClients)
+            }
+            NavigationLink.emptyHidden(
+                self.viewStore.state.clients.isChooseClientsActive,
+                 ChooseClients(
+                    store: self.store.scope(
+                        state: { $0.clients },
+                        action: {.clients($0) }
+                    )
+                 )
 			)
 			TitleAndValueLabel.init("DAY", self.viewStore.state.startDate.toString())
 		}
@@ -172,30 +190,48 @@ struct ServicesDurationSection: View {
 	var body: some View {
 		VStack {
 			HStack(spacing: 24.0) {
-				TitleAndValueLabel("SERVICE", self.viewStore.state.services.chosenServiceName).onTapGesture {
+				TitleAndValueLabel(
+                    "SERVICE",
+                    self.viewStore.state.services.chosenService?.name ?? "Choose Service",
+                    self.viewStore.state.services.chosenService?.name == nil ? Color.grayPlaceholder : nil
+                ).onTapGesture {
 					self.viewStore.send(.didTapServices)
 				}
-				NavigationLink.emptyHidden(self.viewStore.state.services.isChooseServiceActive,
+                NavigationLink.emptyHidden(
+                    self.viewStore.state.services.isChooseServiceActive,
 										   ChooseService(store: self.store.scope(state: { $0.services }, action: {
 											.services($0)
 										   }))
 				)
-				SingleChoiceLink.init(content: {
-					TitleAndValueLabel.init("DURATION", self.viewStore.state.durations.chosenItemName ?? "")
-				}, store: self.store.scope(state: { $0.durations },
-										   action: { .durations($0) }),
-				cell: TextAndCheckMarkContainer.init(state:)
+                SingleChoiceLink.init(
+                    content: {
+                        TitleAndValueLabel.init(
+                            "DURATION", self.viewStore.state.durations.chosenItemName ?? "")
+                    },
+                    store: self.store.scope(
+                        state: { $0.durations },
+                        action: { .durations($0) }
+                    ),
+                    cell: TextAndCheckMarkContainer.init(state:),
+                    title: "Duration"
 				)
 			}
 			HStack(spacing: 24.0) {
-				SingleChoiceLink.init(content: {
-					LabelHeartAndTextField.init("WITH", self.viewStore.state.with.chosenItemName ?? "",
-												true)
-				}, store: self.store.scope(state: { $0.with },
-										   action: { .with($0) }),
-				cell: TextAndCheckMarkContainer.init(state:)
+                TitleAndValueLabel(
+                    "WITH",
+                    self.viewStore.state.with.chosenEmployee?.name ?? "Choose Employee",
+                    self.viewStore.state.with.chosenEmployee?.name == nil ? Color.grayPlaceholder : nil
+                ).onTapGesture {
+                    self.viewStore.send(.didTapWith)
+                }
+                NavigationLink.emptyHidden(
+                    self.viewStore.state.with.isChooseEmployeesActive,
+                    ChooseEmployeesView(store: self.store.scope(state: { $0.with }, action: {
+                        .with($0)
+                    }))
 				)
-				SingleChoiceLink.init(content: {
+                SingleChoiceLink.init(
+                    content: {
 					HStack {
 						Image(systemName: "plus.circle")
 							.foregroundColor(.deepSkyBlue)
@@ -205,9 +241,14 @@ struct ServicesDurationSection: View {
 							.font(.semibold15)
 						Spacer()
 					}
-				}, store: self.store.scope(state: { $0.participants },
-										   action: { .participants($0) }),
-				cell: TextAndCheckMarkContainer.init(state:)
+                    },
+                    store: self.store.scope(
+                        state: { $0.participants },
+                        action: { .participants($0) }
+                    ),
+                    cell: TextAndCheckMarkContainer.init(state:),
+                    title: "Add Participant"
+
 				)
 			}
 		}.wrapAsSection(title: "Services")
@@ -227,8 +268,12 @@ struct AddAppSections: View {
 		Group {
 			ClientDaySection(store: self.store)
 			ServicesDurationSection(store: self.store)
-			NotesSection(store: store.scope(state: { $0.note },
-											action: { .note($0) }))
+            NotesSection(
+                store: store.scope(
+                    state: { $0.note },
+                    action: { .note($0) }
+                )
+            )
 			Group {
 				SwitchCell(text: Texts.sendReminder,
 						   store: store.scope(
@@ -263,26 +308,36 @@ extension Client: SingleChoiceElement {
 
 extension AddAppointmentState {
 
-	public init(startDate: Date,
-				endDate: Date) {
+	public init(
+        startDate: Date,
+        endDate: Date
+    ) {
 		self.init(
 			reminder: false,
 			email: false,
 			sms: false,
 			feedback: false,
 			isAllDay: false,
-			clients: AddAppMocks.clientState,
+            clients: ChooseClientsState(
+                isChooseClientsActive: false,
+                chosenClient: nil
+            ),
 			startDate: startDate,
-			services: ChooseServiceState(isChooseServiceActive: false, chosenServiceId: 1, filterChosen: .allStaff),
+            services: ChooseServiceState(
+                isChooseServiceActive: false,
+                filterChosen: .allStaff
+            ),
 			durations: AddAppMocks.durationState,
-			with: AddAppMocks.withState,
+			with: ChooseEmployeesState(isChooseEmployeesActive: false),
 			participants: AddAppMocks.participantsState
 		)
 	}
 
-	public init(startDate: Date,
+	public init(
+        startDate: Date,
 				endDate: Date,
-				employee: Employee) {
+        employee: Employee
+    ) {
 		var employees = AddAppMocks.withState
 		employees.dataSource.append(employee)
 		employees.chosenItemId = employee.id
@@ -292,11 +347,17 @@ extension AddAppointmentState {
 			sms: false,
 			feedback: false,
 			isAllDay: false,
-			clients: AddAppMocks.clientState,
+            clients: ChooseClientsState(
+                isChooseClientsActive: false,
+                chosenClient: nil
+            ),
 			startDate: startDate,
-			services: ChooseServiceState(isChooseServiceActive: false, chosenServiceId: 1, filterChosen: .allStaff),
+            services: ChooseServiceState(
+                isChooseServiceActive: false,
+                filterChosen: .allStaff
+            ),
 			durations: AddAppMocks.durationState,
-			with: employees,
+			with: ChooseEmployeesState(isChooseEmployeesActive: false),
 			participants: AddAppMocks.participantsState
 		)
 	}
@@ -307,11 +368,17 @@ extension AddAppointmentState {
 		sms: false,
 		feedback: false,
 		isAllDay: false,
-		clients: AddAppMocks.clientState,
+        clients: ChooseClientsState(
+            isChooseClientsActive: false,
+            chosenClient: nil
+        ),
 		startDate: Date(),
-		services: ChooseServiceState(isChooseServiceActive: false, chosenServiceId: 1, filterChosen: .allStaff),
+        services: ChooseServiceState(
+            isChooseServiceActive: false,
+            filterChosen: .allStaff
+        ),
 		durations: AddAppMocks.durationState,
-		with: AddAppMocks.withState,
+		with: ChooseEmployeesState(isChooseEmployeesActive: false),
 		participants: AddAppMocks.participantsState
 	)
 }

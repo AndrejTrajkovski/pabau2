@@ -186,3 +186,14 @@ extension Client {
 							dOB: Date())
 	}
 }
+
+extension Client {
+    
+    public var fullname: String {
+        return "\(self.firstName) \(self.lastName)"
+    }
+    
+    public var initials: String {
+        return String(self.firstName.first ?? Character.init("")) + String(self.lastName.first ?? Character.init(""))
+    }
+}
