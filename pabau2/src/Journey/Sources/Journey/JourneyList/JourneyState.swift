@@ -18,7 +18,7 @@ public struct JourneyState: Equatable {
 												   color: "#FF0000")
 	var searchText: String = ""
 	var selectedJourney: Journey?
-	var selectedPathway: Pathway?
+	var selectedPathway: PathwayTemplate?
 	var selectedConsentsIds: [HTMLForm.ID] = []
 	var allConsents: IdentifiedArrayOf<HTMLForm> = []
 	public var checkIn: CheckInContainerState?

@@ -7,7 +7,7 @@ import Form
 public struct CheckInContainerState: Equatable {
 
 	let journey: Journey
-	let pathway: Pathway
+	let pathway: PathwayTemplate
 
 	var patientDetails: PatientDetails
 	var patientDetailsStatus: Bool
@@ -136,7 +136,7 @@ extension CheckInContainerState {
 extension CheckInContainerState {
 
 	init(journey: Journey,
-		 pathway: Pathway,
+		 pathway: PathwayTemplate,
 		 patientDetails: PatientDetails,
 		 medicalHistoryId: HTMLForm.ID,
 		 medHistory: HTMLForm,

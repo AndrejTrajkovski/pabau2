@@ -33,13 +33,13 @@ let choosePathwayReducer = Reducer<ChoosePathwayState, ChoosePathwayAction, Jour
 }
 
 public enum ChoosePathwayAction {
-	case didChoosePathway(Pathway)
+	case didChoosePathway(PathwayTemplate)
 	case didTouchSelectConsentBackBtn
 }
 
 public struct ChoosePathwayState: Equatable {
 	var selectedJourney: Journey?
-	var selectedPathway: Pathway?
+	var selectedPathway: PathwayTemplate?
 	var selectedConsentsIds: [HTMLForm.ID]
 	var allConsents: IdentifiedArrayOf<HTMLForm>
 	var chooseConsentState: ChooseFormState {
@@ -62,7 +62,7 @@ public struct ChoosePathway: View {
 		let journey: Journey?
 
 		let standardPathway =
-			Pathway.init(id: 1,
+			PathwayTemplate.init(id: 1,
 									 title: "Standard",
 									 steps: [Step(id: 1, stepType: .patientdetails),
 													 Step(id: 2, stepType: .medicalhistory),
@@ -74,7 +74,7 @@ public struct ChoosePathway: View {
 													 Step(id: 8, stepType: .photos)
 			])
 		let consultationPathway =
-			Pathway.init(id: 1,
+			PathwayTemplate.init(id: 1,
 									 title: "Consultation",
 									 steps: [Step(id: 1, stepType: .patientdetails),
 													 Step(id: 2, stepType: .medicalhistory),

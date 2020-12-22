@@ -6,7 +6,7 @@ import Model
 
 public struct CheckInDoctorState: Equatable {
 	public let journey: Journey
-	let pathway: Pathway
+	let pathway: PathwayTemplate
 	var treatmentNotes: IdentifiedArrayOf<HTMLForm>
 	var treatmentNotesStatuses: [HTMLForm.ID: Bool]
 	var prescriptions: IdentifiedArrayOf<HTMLForm>
