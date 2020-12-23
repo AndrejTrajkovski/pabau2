@@ -13,8 +13,8 @@ let clientCardReducer: Reducer<ClientCardState?, ClientCardAction, ClientsEnviro
 		case .bottom(.backBtnTap):
 			if state?.activeItem != nil {
 				if case ClientCardGridItem.photos = state!.activeItem! {
-					if state!.list.photos.selectedDate != nil {
-						state!.list.photos.selectedDate = nil
+					if state!.list.photos.expandedSection != nil {
+						state!.list.photos.expandedSection = nil
 					} else {
 						state!.activeItem = nil
 					}

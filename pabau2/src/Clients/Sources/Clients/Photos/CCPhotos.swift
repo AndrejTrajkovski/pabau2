@@ -10,24 +10,14 @@ public let ccPhotosReducer: Reducer<CCPhotosState, CCPhotosAction, ClientsEnviro
 		action: /CCPhotosAction.action,
 		environment: { $0 }
 	),
-
-	photoCompareReducer.optional.pullback(
-        state: \CCPhotosState.photoCompare,
-        action: /CCPhotosAction.photoCompare,
-        environment: { $0 }),
-
+	
 	Reducer<CCPhotosState, CCPhotosAction, ClientsEnvironment>.init { state, action, _ in
 		switch action {
 		case .onSelectDate(let date):
-			state.selectedDate = date
-		case .didTouchPhoto(let id):
-            state.photoCompare = PhotoCompareState(photos: state.childState.state, selectedDate: state.selectedDate!, selectedId: id)
+			state.expandedSection = CCExpandedPhotosState(selectedDate: date, photos: state.childState.state)
 		case .action:
 			break
-        case .photoCompare(.onBackCompare):
-            state.photoCompare = nil
-            break
-        default :
+		case .expanded:
             break
 		}
 		return .none
@@ -36,58 +26,27 @@ public let ccPhotosReducer: Reducer<CCPhotosState, CCPhotosAction, ClientsEnviro
 
 public struct CCPhotosState: ClientCardChildParentState, Equatable {
 	var childState: ClientCardChildState<[Date: [PhotoViewModel]]>
-	var selectedDate: Date?
-    var photoCompare: PhotoCompareState?
-}
-
-extension CCPhotosState {
-    var expandedSection: CCExpandedPhotosState {
-        get {
-            if selectedDate == nil {
-                return CCExpandedPhotosState(selectedDate: Date(), photos: [])
-            }
-            return CCExpandedPhotosState(selectedDate: selectedDate!, photos: childState.state[selectedDate!] ?? [])
-        }
-        set { }
-    }
+	var expandedSection: CCExpandedPhotosState?
 }
 
 public enum CCPhotosAction: Equatable {
 	case onSelectDate(Date)
-	case didTouchPhoto(PhotoVariantId)
 	case action(GotClientListAction<[Date: [PhotoViewModel]]>)
-
-    case photoCompare(PhotoCompareAction)
+	case expanded(CCExpandedPhotosAction)
 }
 
 struct CCPhotos: ClientCardChild {
 	let store: Store<CCPhotosState, CCPhotosAction>
-	
 	var body: some View {
-		WithViewStore(self.store) { viewStore in
-			Group {
-				NavigationLink
-					.emptyHidden(viewStore.photoCompare != nil,
-								 IfLetStore(store.scope(state: { $0.photoCompare },
-														action: { .photoCompare($0) }), then: {
-															PhotoCompareView(store: $0)
-																.navigationBarBackButtonHidden(true)
-														})
-					)
-				if viewStore.selectedDate != nil {
-                    
-                    
-                        CCExpandedPhotos(store:
-                                            self.store.scope(state: { $0.expandedSection },
-                                                             action: { $0 })
-                        )
-                    
-				} else {
-					CCGroupedPhotos(store: self.store.scope(state: { $0.childState.state },
-															action: { $0 }))
-				}
-			}
-		}.debug("CCPhotos")
+		IfLetStore(store.scope(state: { $0.expandedSection },
+							   action: { .expanded($0) }),
+				   then: CCExpandedPhotos.init(store:),
+				   else: groupedPhotos)
+	}
+	
+	var groupedPhotos: some View {
+		CCGroupedPhotos(store: store.scope(state: { $0.childState.state },
+											action: { $0 }))
 	}
 }
 
