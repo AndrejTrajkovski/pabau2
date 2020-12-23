@@ -112,7 +112,7 @@ struct PhotoShareView: View {
                             .font(.proRegular(size: 14))
                         Spacer()
                     }
-                    .frame(width: UIScreen.main.bounds.width, height: 120, alignment: .leading).padding()
+                    .frame(height: 120, alignment: .leading).padding()
                     .background(Color.white)
 
                     Divider()
@@ -131,7 +131,7 @@ struct PhotoShareView: View {
                                 .foregroundColor(.blue)
                         }
                     }.padding()
-                    .frame(width: UIScreen.main.bounds.width, height: 50, alignment: .leading)
+                    .frame(height: 50, alignment: .leading)
                     .background(Color.white)
                     Divider()
                     Spacer().frame(height: 30)

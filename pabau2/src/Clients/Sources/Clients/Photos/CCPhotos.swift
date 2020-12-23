@@ -10,7 +10,10 @@ public let ccPhotosReducer: Reducer<CCPhotosState, CCPhotosAction, ClientsEnviro
 		action: /CCPhotosAction.action,
 		environment: { $0 }
 	),
-	
+	expandedPhotoReducer.optional.pullback(
+		state: \CCPhotosState.expandedSection,
+		action: /CCPhotosAction.expanded,
+		environment: { $0 }),
 	Reducer<CCPhotosState, CCPhotosAction, ClientsEnvironment>.init { state, action, _ in
 		switch action {
 		case .onSelectDate(let date):
