@@ -6,7 +6,7 @@ import Foundation
 /** Object representing a form, without the field values. Meant to be returned when the form patient_status is needed but not the form field values. Is a superclass of Form, which contains the field values. */
 public struct FormData: Codable, Identifiable, Equatable {
 	
-	public let template: HTMLForm
+	public let template: HTMLFormTemplate
 	
 	public let patientStatus: PatientStatus
 	
@@ -22,7 +22,7 @@ public struct FormData: Codable, Identifiable, Equatable {
 	
 	public let journeyId: Int?
 	
-	public init(template: HTMLForm, patientStatus: PatientStatus, fieldValues: [FormFieldValue]? = nil, id: Int, clientId: Int, employeeId: Int, date: Date, journeyId: Int? = nil) {
+	public init(template: HTMLFormTemplate, patientStatus: PatientStatus, fieldValues: [FormFieldValue]? = nil, id: Int, clientId: Int, employeeId: Int, date: Date, journeyId: Int? = nil) {
 		self.template = template
 		self.patientStatus = patientStatus
 		self.fieldValues = fieldValues
@@ -50,7 +50,7 @@ extension FormData {
 	
 	static let mockFilledConsents =
 		[
-			FormData(template: HTMLForm.mockConsents.first!,
+			FormData(template: HTMLFormTemplate.mockConsents.first!,
 							 patientStatus: .complete,
 							 fieldValues: nil,
 							 id: 1,
@@ -58,7 +58,7 @@ extension FormData {
 							 employeeId: 1,
 							 date: Date(),
 							 journeyId: 1),
-			FormData(template: HTMLForm.mockConsents[1],
+			FormData(template: HTMLFormTemplate.mockConsents[1],
 							 patientStatus: .complete,
 							 fieldValues: nil,
 							 id: 1,
@@ -66,7 +66,7 @@ extension FormData {
 							 employeeId: 1,
 							 date: Date(),
 							 journeyId: 1),
-			FormData(template: HTMLForm.mockConsents.first!,
+			FormData(template: HTMLFormTemplate.mockConsents.first!,
 							 patientStatus: .complete,
 							 fieldValues: nil,
 							 id: 1,
@@ -74,7 +74,7 @@ extension FormData {
 							 employeeId: 1,
 							 date: Date(),
 							 journeyId: 1),
-			FormData(template: HTMLForm.mockConsents[2],
+			FormData(template: HTMLFormTemplate.mockConsents[2],
 							 patientStatus: .complete,
 							 fieldValues: nil,
 							 id: 1,
@@ -82,7 +82,7 @@ extension FormData {
 							 employeeId: 1,
 							 date: Date(),
 							 journeyId: 1),
-			FormData(template: HTMLForm.mockConsents.first!,
+			FormData(template: HTMLFormTemplate.mockConsents.first!,
 							 patientStatus: .complete,
 							 fieldValues: nil,
 							 id: 1,
@@ -91,7 +91,7 @@ extension FormData {
 							 date: Date(),
 							 journeyId: 1)
 			,
-			FormData(template: HTMLForm.mockConsents[3],
+			FormData(template: HTMLFormTemplate.mockConsents[3],
 							 patientStatus: .complete,
 							 fieldValues: nil,
 							 id: 1,
@@ -100,7 +100,7 @@ extension FormData {
 							 date: Date(),
 							 journeyId: 1)
 			,
-			FormData(template: HTMLForm.mockConsents.first!,
+			FormData(template: HTMLFormTemplate.mockConsents.first!,
 							 patientStatus: .complete,
 							 fieldValues: nil,
 							 id: 1,
@@ -109,7 +109,7 @@ extension FormData {
 							 date: Date(),
 							 journeyId: 1)
 			,
-			FormData(template: HTMLForm.mockConsents.first!,
+			FormData(template: HTMLFormTemplate.mockConsents.first!,
 							 patientStatus: .complete,
 							 fieldValues: nil,
 							 id: 1,
@@ -118,7 +118,7 @@ extension FormData {
 							 date: Date(),
 							 journeyId: 1)
 			,
-			FormData(template: HTMLForm.mockConsents[2],
+			FormData(template: HTMLFormTemplate.mockConsents[2],
 							 patientStatus: .complete,
 							 fieldValues: nil,
 							 id: 1,
@@ -127,7 +127,7 @@ extension FormData {
 							 date: Date(),
 							 journeyId: 1)
 			,
-			FormData(template: HTMLForm.mockConsents[1],
+			FormData(template: HTMLFormTemplate.mockConsents[1],
 							 patientStatus: .complete,
 							 fieldValues: nil,
 							 id: 1,
@@ -136,7 +136,7 @@ extension FormData {
 							 date: Date(),
 							 journeyId: 1)
 			,
-			FormData(template: HTMLForm.mockConsents.first!,
+			FormData(template: HTMLFormTemplate.mockConsents.first!,
 							 patientStatus: .complete,
 							 fieldValues: nil,
 							 id: 1,
@@ -148,7 +148,7 @@ extension FormData {
 	
 	static let mockFilledTreatments =
 		[
-			FormData(template: HTMLForm.mockTreatmentN.first!,
+			FormData(template: HTMLFormTemplate.mockTreatmentN.first!,
 							 patientStatus: .complete,
 							 fieldValues: nil,
 							 id: 1,
@@ -156,7 +156,7 @@ extension FormData {
 							 employeeId: 1,
 							 date: Date(),
 							 journeyId: 1),
-			FormData(template: HTMLForm.mockTreatmentN[1],
+			FormData(template: HTMLFormTemplate.mockTreatmentN[1],
 							 patientStatus: .complete,
 							 fieldValues: nil,
 							 id: 1,
@@ -164,7 +164,7 @@ extension FormData {
 							 employeeId: 1,
 							 date: Date(),
 							 journeyId: 1),
-			FormData(template: HTMLForm.mockTreatmentN.first!,
+			FormData(template: HTMLFormTemplate.mockTreatmentN.first!,
 							 patientStatus: .complete,
 							 fieldValues: nil,
 							 id: 1,
@@ -172,7 +172,7 @@ extension FormData {
 							 employeeId: 1,
 							 date: Date(),
 							 journeyId: 1),
-			FormData(template: HTMLForm.mockTreatmentN[2],
+			FormData(template: HTMLFormTemplate.mockTreatmentN[2],
 							 patientStatus: .complete,
 							 fieldValues: nil,
 							 id: 1,
@@ -180,7 +180,7 @@ extension FormData {
 							 employeeId: 1,
 							 date: Date(),
 							 journeyId: 1),
-			FormData(template: HTMLForm.mockTreatmentN.first!,
+			FormData(template: HTMLFormTemplate.mockTreatmentN.first!,
 							 patientStatus: .complete,
 							 fieldValues: nil,
 							 id: 1,
@@ -189,7 +189,7 @@ extension FormData {
 							 date: Date(),
 							 journeyId: 1)
 			,
-			FormData(template: HTMLForm.mockTreatmentN[3],
+			FormData(template: HTMLFormTemplate.mockTreatmentN[3],
 							 patientStatus: .complete,
 							 fieldValues: nil,
 							 id: 1,
@@ -198,7 +198,7 @@ extension FormData {
 							 date: Date(),
 							 journeyId: 1)
 			,
-			FormData(template: HTMLForm.mockTreatmentN.first!,
+			FormData(template: HTMLFormTemplate.mockTreatmentN.first!,
 							 patientStatus: .complete,
 							 fieldValues: nil,
 							 id: 1,
@@ -207,7 +207,7 @@ extension FormData {
 							 date: Date(),
 							 journeyId: 1)
 			,
-			FormData(template: HTMLForm.mockTreatmentN.first!,
+			FormData(template: HTMLFormTemplate.mockTreatmentN.first!,
 							 patientStatus: .complete,
 							 fieldValues: nil,
 							 id: 1,
@@ -216,7 +216,7 @@ extension FormData {
 							 date: Date(),
 							 journeyId: 1)
 			,
-			FormData(template: HTMLForm.mockTreatmentN[2],
+			FormData(template: HTMLFormTemplate.mockTreatmentN[2],
 							 patientStatus: .complete,
 							 fieldValues: nil,
 							 id: 1,
@@ -225,7 +225,7 @@ extension FormData {
 							 date: Date(),
 							 journeyId: 1)
 			,
-			FormData(template: HTMLForm.mockTreatmentN[1],
+			FormData(template: HTMLFormTemplate.mockTreatmentN[1],
 							 patientStatus: .complete,
 							 fieldValues: nil,
 							 id: 1,
@@ -234,7 +234,7 @@ extension FormData {
 							 date: Date(),
 							 journeyId: 1)
 			,
-			FormData(template: HTMLForm.mockTreatmentN.first!,
+			FormData(template: HTMLFormTemplate.mockTreatmentN.first!,
 							 patientStatus: .complete,
 							 fieldValues: nil,
 							 id: 1,
@@ -246,7 +246,7 @@ extension FormData {
 	
 	static let mockFIlledPrescriptions =
 		[
-			FormData(template: HTMLForm.getPrescription(),
+			FormData(template: HTMLFormTemplate.getPrescription(),
 							 patientStatus: .complete,
 							 fieldValues: nil,
 							 id: 1,
@@ -254,7 +254,7 @@ extension FormData {
 							 employeeId: 1,
 							 date: Date(),
 							 journeyId: 1),
-			FormData(template: HTMLForm.getPrescription(),
+			FormData(template: HTMLFormTemplate.getPrescription(),
 							 patientStatus: .complete,
 							 fieldValues: nil,
 							 id: 1,
@@ -262,7 +262,7 @@ extension FormData {
 							 employeeId: 1,
 							 date: Date(),
 							 journeyId: 1),
-			FormData(template: HTMLForm.getPrescription(),
+			FormData(template: HTMLFormTemplate.getPrescription(),
 							 patientStatus: .complete,
 							 fieldValues: nil,
 							 id: 1,
@@ -270,7 +270,7 @@ extension FormData {
 							 employeeId: 1,
 							 date: Date(),
 							 journeyId: 1),
-			FormData(template: HTMLForm.getPrescription(),
+			FormData(template: HTMLFormTemplate.getPrescription(),
 							 patientStatus: .complete,
 							 fieldValues: nil,
 							 id: 1,

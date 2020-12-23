@@ -1,3 +1,8 @@
-//
+public struct Pathway {
 
-import Foundation
+	public let id: Int
+
+	public let consentsIds: String
+
+	public let steps: [Step]	
+}

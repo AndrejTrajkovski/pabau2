@@ -9,7 +9,7 @@ public protocol JourneyForm {
 	var apiPath: String { get }
 }
 
-extension HTMLForm: JourneyForm {
+extension HTMLFormTemplate: JourneyForm {
 	public var apiPath: String { "forms/\(self.id)" }
 }
 
@@ -17,7 +17,7 @@ extension PatientDetails: JourneyForm {
 	public var apiPath: String { "patientDetails/\(self.id)" }
 }
 
-public struct JourneyFormState<Form: JourneyForm>: Equatable, Identifiable where Form: Equatable & Identifiable {
+public struct JourneyFormInfo<Form: JourneyForm>: Equatable, Identifiable where Form: Equatable & Identifiable {
 	
 	public init(id: Form.ID, form: Form, status: Bool, loadingState: LoadingState) {
 		self.id = id
@@ -39,7 +39,7 @@ public enum JourneyFormRequestsAction<Form> where Form: JourneyForm & Identifiab
 }
 
 struct JourneyFormReducer<Form: JourneyForm> where Form: Equatable & Identifiable {
-	let reducer: Reducer<JourneyFormState<Form>, JourneyFormRequestsAction<Form>, Any> = .init { state, action, env in
+	let reducer: Reducer<JourneyFormInfo<Form>, JourneyFormRequestsAction<Form>, Any> = .init { state, action, env in
 		switch action {
 		
 		case .getForm:
@@ -62,7 +62,7 @@ struct JourneyFormReducer<Form: JourneyForm> where Form: Equatable & Identifiabl
 
 struct JourneyFormRequests<Form, Content>: View where Form: Equatable & JourneyForm & Identifiable, Content: View {
 	
-	let store: Store<JourneyFormState<Form>, JourneyFormRequestsAction<Form>>
+	let store: Store<JourneyFormInfo<Form>, JourneyFormRequestsAction<Form>>
 	let content: () -> Content
 	
 	var body: some View {

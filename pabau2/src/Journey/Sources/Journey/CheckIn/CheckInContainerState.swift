@@ -12,21 +12,21 @@ public struct CheckInContainerState: Equatable {
 	var patientDetails: PatientDetails
 	var patientDetailsStatus: Bool
 	
-	var medicalHistoryId: HTMLForm.ID
-	var medicalHistory: HTMLForm
+	var medicalHistoryId: HTMLFormTemplate.ID
+	var medicalHistory: HTMLFormTemplate
 	var medicalHistoryStatus: Bool
 
-	var consents: IdentifiedArrayOf<HTMLForm>
-	var consentsStatuses: [HTMLForm.ID: Bool]
+	var consents: IdentifiedArrayOf<HTMLFormTemplate>
+	var consentsStatuses: [HTMLFormTemplate.ID: Bool]
 
-	var treatmentNotes: IdentifiedArrayOf<HTMLForm>
-	var treatmentNotesStatuses: [HTMLForm.ID: Bool]
+	var treatmentNotes: IdentifiedArrayOf<HTMLFormTemplate>
+	var treatmentNotesStatuses: [HTMLFormTemplate.ID: Bool]
 
-	var prescriptions: IdentifiedArrayOf<HTMLForm>
-	var prescriptionsStatuses: [HTMLForm.ID: Bool]
+	var prescriptions: IdentifiedArrayOf<HTMLFormTemplate>
+	var prescriptionsStatuses: [HTMLFormTemplate.ID: Bool]
 
-	var allTreatmentForms: IdentifiedArrayOf<HTMLForm>
-	var allConsents: IdentifiedArrayOf<HTMLForm>
+	var allTreatmentForms: IdentifiedArrayOf<HTMLFormTemplate>
+	var allConsents: IdentifiedArrayOf<HTMLFormTemplate>
 
 	var aftercare: Aftercare?
 	var aftercareStatus: Bool
@@ -35,15 +35,15 @@ public struct CheckInContainerState: Equatable {
 
 	var photos: PhotosState
 
-	var selectedConsentsIds: [HTMLForm.ID]
-	var selectedTreatmentFormsIds: [HTMLForm.ID]
+	var selectedConsentsIds: [HTMLFormTemplate.ID]
+	var selectedTreatmentFormsIds: [HTMLFormTemplate.ID]
 
 	var patientSelectedIndex: Int
 	var doctorSelectedIndex: Int
 	
 	var patientDetailsLS: LoadingState
 	var medHistoryLS: LoadingState
-	var consentsLS: [HTMLForm.ID: LoadingState]
+	var consentsLS: [HTMLFormTemplate.ID: LoadingState]
 
 	var passcodeState = PasscodeState()
 	var isEnterPasscodeActive: Bool = false
@@ -138,10 +138,10 @@ extension CheckInContainerState {
 	init(journey: Journey,
 		 pathway: PathwayTemplate,
 		 patientDetails: PatientDetails,
-		 medicalHistoryId: HTMLForm.ID,
-		 medHistory: HTMLForm,
-		 consents: IdentifiedArrayOf<HTMLForm>,
-		 allConsents: IdentifiedArrayOf<HTMLForm>,
+		 medicalHistoryId: HTMLFormTemplate.ID,
+		 medHistory: HTMLFormTemplate,
+		 consents: IdentifiedArrayOf<HTMLFormTemplate>,
+		 allConsents: IdentifiedArrayOf<HTMLFormTemplate>,
 		 photosState: PhotosState) {
 		self.journey = journey
 		self.pathway = pathway
@@ -149,7 +149,7 @@ extension CheckInContainerState {
 		self.medicalHistory = medHistory
 		self.consents = consents
 		self.allConsents = allConsents
-		self.allTreatmentForms = IdentifiedArray(HTMLForm.mockTreatmentN)
+		self.allTreatmentForms = IdentifiedArray(HTMLFormTemplate.mockTreatmentN)
 		self.selectedConsentsIds = []
 		self.selectedTreatmentFormsIds = []
 		self.patientDetailsStatus = false

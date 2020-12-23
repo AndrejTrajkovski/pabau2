@@ -5,20 +5,20 @@ public struct FormMockAPI: FormAPI, MockAPI {
 	
 	public init () {}
 	
-	public func get(form: HTMLForm.ID) -> Effect<Result<HTMLForm, RequestError>, Never> {
-		mockSuccess(HTMLForm.mockConsents.first!)
+	public func get(form: HTMLFormTemplate.ID) -> Effect<Result<HTMLFormTemplate, RequestError>, Never> {
+		mockSuccess(HTMLFormTemplate.mockConsents.first!)
 	}
 	
-	public func post(form: HTMLForm, appointments: [CalendarEvent.Id]) -> Effect<Result<HTMLForm, RequestError>, Never> {
-		mockSuccess(HTMLForm.mockTreatmentN.first!)
+	public func post(form: HTMLFormTemplate, appointments: [CalendarEvent.Id]) -> Effect<Result<HTMLFormTemplate, RequestError>, Never> {
+		mockSuccess(HTMLFormTemplate.mockTreatmentN.first!)
 	}
 	
-	public func getTemplates(_ type: FormType) -> EffectWithResult<[HTMLForm], RequestError> {
+	public func getTemplates(_ type: FormType) -> EffectWithResult<[HTMLFormTemplate], RequestError> {
 		switch type {
 		case .consent:
-		  return mockSuccess(HTMLForm.mockConsents, delay: 0.1)
+		  return mockSuccess(HTMLFormTemplate.mockConsents, delay: 0.1)
 		case .treatment:
-			return mockSuccess(HTMLForm.mockTreatmentN, delay: 0.1)
+			return mockSuccess(HTMLFormTemplate.mockTreatmentN, delay: 0.1)
 		default:
 			fatalError("TODO")
 		}

@@ -79,16 +79,16 @@ struct CheckInPatientState: Equatable, CheckInState {
 	let pathway: PathwayTemplate
 	var patientDetails: PatientDetails
 	var patientDetailsStatus: Bool
-	var medicalHistoryId: HTMLForm.ID
-	var medicalHistory: HTMLForm
+	var medicalHistoryId: HTMLFormTemplate.ID
+	var medicalHistory: HTMLFormTemplate
 	var medicalHistoryStatus: Bool
-	var consents: IdentifiedArray<HTMLForm.ID, HTMLForm>
-	var consentsStatuses: [HTMLForm.ID: Bool]
+	var consents: IdentifiedArray<HTMLFormTemplate.ID, HTMLFormTemplate>
+	var consentsStatuses: [HTMLFormTemplate.ID: Bool]
 	var isPatientComplete: Bool
 	var selectedIdx: Int
 	var patientDetailsLS: LoadingState
 	var medHistoryLS: LoadingState
-	var consentsLS: [HTMLForm.ID: LoadingState]
+	var consentsLS: [HTMLFormTemplate.ID: LoadingState]
 }
 
 //MARK: - CheckInState
@@ -124,10 +124,10 @@ extension CheckInPatientState {
 		}
 	}
 	
-	var consentsStates: [JourneyFormState<HTMLForm>] {
+	var consentsStates: [JourneyFormInfo<HTMLFormTemplate>] {
 		get {
 			return self.consents.map {
-				JourneyFormState(id: $0.id,
+				JourneyFormInfo(id: $0.id,
 								 form: $0,
 								 status: consentsStatuses[$0.id]!,
 								 loadingState: consentsLS[$0.id]!)
@@ -142,9 +142,9 @@ extension CheckInPatientState {
 		}
 	}
 	
-	var medHistoryState: JourneyFormState<HTMLForm> {
+	var medHistoryState: JourneyFormInfo<HTMLFormTemplate> {
 		get {
-			JourneyFormState(id: medicalHistoryId,
+			JourneyFormInfo(id: medicalHistoryId,
 							 form: medicalHistory,
 							 status: medicalHistoryStatus,
 							 loadingState: medHistoryLS)
@@ -155,10 +155,10 @@ extension CheckInPatientState {
 			self.medHistoryLS = newValue.loadingState
 		}
 	}
-	
-	var patientDetailsState: JourneyFormState<PatientDetails> {
+
+	var patientDetailsState: JourneyFormInfo<PatientDetails> {
 		get {
-			JourneyFormState(id: journey.clientId,
+			JourneyFormInfo(id: journey.clientId,
 							 form: patientDetails,
 							 status: patientDetailsStatus,
 							 loadingState: patientDetailsLS)
@@ -174,10 +174,10 @@ extension CheckInPatientState {
 public enum CheckInPatientAction {
 	case patientDetailsRequests(JourneyFormRequestsAction<PatientDetails>)
 	case patientDetails(PatientDetailsAction)
-	case medicalHistoryRequests(JourneyFormRequestsAction<HTMLForm>)
+	case medicalHistoryRequests(JourneyFormRequestsAction<HTMLFormTemplate>)
 	case medicalHistory(HTMLFormAction)
-	case consents(id: HTMLForm.ID, action: HTMLFormAction)
-	case consentsRequests(id: HTMLForm.ID, action: JourneyFormRequestsAction<HTMLForm>)
+	case consents(id: HTMLFormTemplate.ID, action: HTMLFormAction)
+	case consentsRequests(id: HTMLFormTemplate.ID, action: JourneyFormRequestsAction<HTMLFormTemplate>)
 	case patientComplete(PatientCompleteAction)
 	case stepsView(CheckInAction)
 	//	case footer(FooterButtonsAction)
