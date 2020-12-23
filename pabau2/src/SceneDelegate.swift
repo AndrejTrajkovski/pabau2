@@ -41,7 +41,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 				environment: env
 			)
 		)
-//		.environmentObject(KeyboardFollower())
+		.environmentObject(KeyboardFollower())
 	)
       self.window = window
       window.makeKeyAndVisible()

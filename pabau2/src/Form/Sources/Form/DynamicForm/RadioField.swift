@@ -3,7 +3,11 @@ import ComposableArchitecture
 import Model
 
 public enum RadioFieldAction {
-	case select(id: Int)
+	case select(id: RadioChoice.ID?)
+}
+
+extension RadioChoice.ID {
+	static let notSelected = "notSelected"
 }
 
 let radioFieldReducer = Reducer<RadioState, RadioFieldAction, FormEnvironment> { state, action, _ in
@@ -27,7 +31,7 @@ struct RadioField: View {
 				),
 					   label: EmptyView()) {
 					ForEach(viewStore.choices, id: \.id) { (choice: RadioChoice) in
-						Text(String(choice.title)).tag(choice.id)
+						Text(String(choice.title)).tag(choice.id as RadioChoice.ID?)
 					}
 				}.pickerStyle(SegmentedPickerStyle())
 			}

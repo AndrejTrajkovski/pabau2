@@ -17,7 +17,7 @@ public enum CSSClass: Codable, Equatable {
 		case .signature(let signature):
 			return !signature.drawings.isEmpty//TODO: add image url in check
 		case .checkboxes(let checkboxes):
-			return checkboxes.first(where: { $0.isSelected }) != nil
+			return checkboxes.first(where: { ($0.isSelected ?? false) }) != nil
 		case .select(let select):
 			return select.selectedChoiceId != nil
 		case .heading(_):

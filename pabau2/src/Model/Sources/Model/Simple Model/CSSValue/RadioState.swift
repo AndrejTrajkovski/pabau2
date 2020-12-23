@@ -1,19 +1,18 @@
-public struct RadioState: Codable, Equatable, Hashable {
-	public var choices: [RadioChoice]
-	public var selectedChoiceId: Int
+public struct RadioState: Codable, Equatable {
+	public let choices: [RadioChoice]
+	public var selectedChoiceId: RadioChoice.ID?
 
-	public init (_ id: Int, _ choices: [RadioChoice], _ selectedChoiceId: Int) {
+	public init (_ choices: [RadioChoice], _ selectedChoiceId: RadioChoice.ID? = nil) {
 		self.choices = choices
 		self.selectedChoiceId = selectedChoiceId
 	}
 }
 
-public struct RadioChoice: Codable, Equatable, Hashable {
-	public let id: Int
+public struct RadioChoice: Codable, Equatable, Identifiable {
 	public let title: String
-
-	public init (_ id: Int, _ title: String) {
-		self.id = id
+	public var id: String { title }
+	
+	public init (_ title: String) {
 		self.title = title
 	}
 }
