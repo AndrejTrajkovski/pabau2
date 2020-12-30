@@ -4,7 +4,7 @@ import SwiftUI
 import JZCalendarWeekView
 
 struct CellConfigurator {
-	
+
 	func configure(
 		cell: inout BaseCalendarCell,
 		appointment: JZAppointmentEvent
@@ -27,7 +27,7 @@ struct CellConfigurator {
 			break
 		}
 	}
-	
+
 	func configure(
 		cell: inout BaseCalendarCell,
 		patientName: String?,

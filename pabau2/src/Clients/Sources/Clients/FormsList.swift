@@ -21,7 +21,7 @@ public enum FormsListAction: ClientCardChildParentAction, Equatable {
 
 struct FormsList: ClientCardChild {
 	let store: Store<FormsListState, FormsListAction>
-	
+
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			FormsListRaw(state: viewStore.state.childState.state)

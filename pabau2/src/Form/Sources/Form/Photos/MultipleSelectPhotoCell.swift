@@ -1,10 +1,10 @@
 import SwiftUI
 
 public struct MultipleSelectPhotoCell: View {
-	
+
 	let photo: PhotoViewModel
 	let isSelected: Bool
-	
+
 	public init(
 		photo: PhotoViewModel,
 		isSelected: Bool

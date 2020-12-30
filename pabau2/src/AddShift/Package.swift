@@ -9,13 +9,13 @@ let package = Package(
     products: [
         .library(
             name: "AddShift",
-            targets: ["AddShift"]),
+            targets: ["AddShift"])
     ],
     dependencies: [
 		.package(url: "../SharedComponents",
 						 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../Model",
-				 from: Version.init(stringLiteral: "1.0.0")),
+				 from: Version.init(stringLiteral: "1.0.0"))
     ],
     targets: [
         .target(
@@ -23,6 +23,6 @@ let package = Package(
             dependencies: ["SharedComponents", "Model"]),
         .testTarget(
             name: "AddShiftTests",
-            dependencies: ["AddShift"]),
+            dependencies: ["AddShift"])
     ]
 )

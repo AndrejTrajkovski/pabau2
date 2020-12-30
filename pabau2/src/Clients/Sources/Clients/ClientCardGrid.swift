@@ -76,7 +76,7 @@ let clientCardGridReducer: Reducer<ClientCardState, ClientCardBottomAction, Clie
 						}
 						.eraseToEffect()
 				}
-			case .child(_):
+			case .child:
 				break
 			case .backBtnTap:
 				break//handled in clientCardReducer

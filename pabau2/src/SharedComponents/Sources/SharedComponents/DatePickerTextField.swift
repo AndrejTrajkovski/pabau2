@@ -20,7 +20,7 @@ public struct DatePickerTextField: UIViewRepresentable {
     private var textContentType: UITextContentType?
     private var keyboardType: UIKeyboardType = .default
     private var isUserInteractionEnabled: Bool = true
-	
+
 	public init(date: Binding<Date?>,
 				mode: UIDatePicker.Mode,
 				font: UIFont = UIFont.systemFont(ofSize: 15, weight: .semibold),
@@ -48,7 +48,7 @@ public struct DatePickerTextField: UIViewRepresentable {
         textField.font = font
         textField.textColor = textColor
 		textField.borderStyle = .none
-		
+
         if let contentType = textContentType {
             textField.textContentType = contentType
         }

@@ -6,7 +6,7 @@ public struct AddEventPrimaryBtn: View {
 		self.title = title
 		self.action = action
 	}
-	
+
 	let title: String
 	let action: () -> Void
 	public var body: some View {

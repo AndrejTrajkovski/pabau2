@@ -20,7 +20,7 @@ struct CommunicationsList: ClientCardChild {
 struct CommunicationRow: View {
 	let comm: Communication
 	var body: some View {
-		VStack(spacing: 0){
+		VStack(spacing: 0) {
 			HStack {
 				AvatarView(avatarUrl: nil,
 									 initials: comm.initials,

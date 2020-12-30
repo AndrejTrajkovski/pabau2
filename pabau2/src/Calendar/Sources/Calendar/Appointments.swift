@@ -6,7 +6,7 @@ import Tagged
 import ComposableArchitecture
 
 public enum Appointments: Equatable {
-	
+
 	case employee(EventsBy<Employee>)
 	case room(EventsBy<Room>)
 	case week([Date: IdentifiedArrayOf<CalendarEvent>])
@@ -26,7 +26,7 @@ public enum Appointments: Equatable {
 		case employee
 		case room
 		case week
-		
+
 		func title() -> String {
 			switch self {
 			case .employee:
@@ -52,8 +52,8 @@ public enum Appointments: Equatable {
 }
 
 extension Appointments {
-	
-	static func initEmployee(events: [CalendarEvent], locationsIds: [Location.ID] ,sections: [Employee]) -> Appointments {
+
+	static func initEmployee(events: [CalendarEvent], locationsIds: [Location.ID], sections: [Employee]) -> Appointments {
 		let appointments = EventsBy<Employee>.init(events: events,
 												   locationsIds: locationsIds,
 												   subsections: sections,

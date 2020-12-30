@@ -15,7 +15,7 @@ class BaseCalendarCell: JZLongPressEventCell {
 		subtitle.text = ""
 		colorBlock.backgroundColor = UIColor.clear
 	}
-	
+
 	override init(frame: CGRect) {
 		super.init(frame: frame)
 		contentView.addSubview(title)
@@ -25,7 +25,7 @@ class BaseCalendarCell: JZLongPressEventCell {
 		addTitleLabelConstraints()
 		addSubtitleLabelConstraints()
 	}
-	
+
 	override class var requiresConstraintBasedLayout: Bool {
 		true
 	}

@@ -3,7 +3,7 @@
 import SwiftUI
 import Util
 
-public struct AnglePicker : View {
+public struct AnglePicker: View {
 	public var angle: Binding<Angle>
 	public var circleColor: Color
 	public var selectionColor: Color
@@ -44,7 +44,7 @@ public struct CircleSlider: View {
 	public var strokeWidth: CGFloat
 
 	@State private var position: CGPoint = CGPoint.zero
-	
+
 	public var body: some View {
 		let indicatorOffset = CGSize(width: sin(angle.wrappedValue.radians) * Double(frame.midX - strokeWidth / 2), height: -cos(angle.wrappedValue.radians) * Double(frame.midY - strokeWidth / 2))
 		return ZStack(alignment: .center) {
@@ -66,7 +66,7 @@ public struct CircleSlider: View {
 			)
 		}
 	}
-	
+
 	internal func update(value: DragGesture.Value) {
 		self.position = value.location
 		self.angle.wrappedValue = Angle(radians: radCenterPoint(value.location, frame: self.frame))

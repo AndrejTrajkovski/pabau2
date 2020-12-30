@@ -150,7 +150,7 @@ extension SectionViewModel {
 struct ChooseInjectableSection: View {
 	let viewModel: SectionViewModel
 	let onSelectId: (Int) -> Void
-	
+
 	var body: some View {
 		Section(header:
 			InjectableHeader(viewModel: self.viewModel.header)

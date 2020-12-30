@@ -30,7 +30,7 @@ public class BaseCalendarViewController: UIViewController {
 	@objc public func userDidFlipPage(_ weekView: JZBaseWeekView, isNextPage: Bool) {
 		fatalError("override me")
 	}
-	
+
 	public func presentAlert(_ date: Date,
 							 _ anchorView: UIView,
 							 _ weekView: JZLongPressWeekView,
@@ -57,7 +57,7 @@ public class BaseCalendarViewController: UIViewController {
 }
 
 extension BaseCalendarViewController: JZBaseViewDelegate {
-	
+
 	public func initDateDidChange(_ weekView: JZBaseWeekView, initDate: Date) {
 		print("initDateDidChange: ", initDate)
 	}

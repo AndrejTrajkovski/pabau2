@@ -15,7 +15,7 @@ public struct ChooseFormState: Equatable {
 		self.templates = templates
 		self.selectedTemplatesIds = selectedTemplatesIds
 	}
-	
+
 	public init(
 		templates: IdentifiedArrayOf<FormTemplate>,
 		templatesLoadingState: LoadingState,
@@ -97,7 +97,7 @@ public struct ChooseFormList: View {
 				.map { $0 }
 				.sorted(by: \.name)
 		}
-		
+
 		var selectedTemplates: [FormTemplate] {
 			selectedTemplatesIds.compactMap {
 				templates[id: $0]

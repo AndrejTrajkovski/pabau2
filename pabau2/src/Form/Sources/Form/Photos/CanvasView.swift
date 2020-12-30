@@ -17,8 +17,7 @@ struct CanvasView: UIViewRepresentable {
 			.scope(
 				state: { $0 },
 				action: { $0 }
-			)
-			, removeDuplicates: { lhs, rhs in
+			), removeDuplicates: { lhs, rhs in
 				lhs.photo.id == rhs.photo.id &&
 				lhs.isDisabled == rhs.isDisabled
 		})

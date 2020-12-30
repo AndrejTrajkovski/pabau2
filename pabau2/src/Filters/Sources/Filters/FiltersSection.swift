@@ -25,7 +25,7 @@ struct FilterSectionState<S: Identifiable & Equatable & Named>: Equatable, Ident
 	var isLocationChosen: Bool
 	var chosenValues: [S.ID]
 	var isExpanded: Bool
-	
+
 	var header: FilterSectionHeaderState {
 		get {
 			FilterSectionHeaderState(location: location,

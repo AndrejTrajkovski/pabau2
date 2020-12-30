@@ -4,7 +4,7 @@ import Photos
 import ComposableArchitecture
 
 struct PhotoLibraryPicker: UIViewControllerRepresentable {
-	
+
 	let store: Store<CameraOverlayState, CameraOverlayAction>
 	let viewStore: ViewStore<CameraOverlayState, CameraOverlayAction>
 
@@ -12,7 +12,7 @@ struct PhotoLibraryPicker: UIViewControllerRepresentable {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
-	
+
 	typealias UIViewControllerType = BSImagePicker.ImagePickerController
 
 	func makeUIViewController(context: Context) -> ImagePickerController {
@@ -22,15 +22,15 @@ struct PhotoLibraryPicker: UIViewControllerRepresentable {
 		imagePicker.imagePickerDelegate = context.coordinator
 		return imagePicker
 	}
-	
+
 	func updateUIViewController(_ uiViewController: ImagePickerController, context: Context) {
-		
+
 	}
 
 	func makeCoordinator() -> Coordinator {
 		Coordinator(self)
 	}
-	
+
 	class Coordinator: NSObject {
 		var parent: PhotoLibraryPicker
 		init(_ parent: PhotoLibraryPicker) {
@@ -40,7 +40,7 @@ struct PhotoLibraryPicker: UIViewControllerRepresentable {
 }
 
 extension PhotoLibraryPicker.Coordinator: ImagePickerControllerDelegate, UINavigationControllerDelegate {
-	
+
 	func getAssetImage(asset: PHAsset) -> UIImage {
 		let manager = PHImageManager.default()
 		let option = PHImageRequestOptions()
@@ -50,7 +50,7 @@ extension PhotoLibraryPicker.Coordinator: ImagePickerControllerDelegate, UINavig
 												 targetSize: PHImageManagerMaximumSize,
 												 contentMode: .aspectFit,
 												 options: option,
-												 resultHandler: {(result, info) -> Void in
+												 resultHandler: {(result, _) -> Void in
 													thumbnail = result!
 		})
 		return thumbnail
@@ -67,11 +67,11 @@ extension PhotoLibraryPicker.Coordinator: ImagePickerControllerDelegate, UINavig
 	func imagePicker(_ imagePicker: ImagePickerController, didDeselectAsset asset: PHAsset) {
 		//do nothing
 	}
-	
+
 	func imagePicker(_ imagePicker: ImagePickerController, didReachSelectionLimit count: Int) {
 		//do nothing
 	}
-	
+
 	func imagePicker(_ imagePicker: ImagePickerController, didCancelWithAssets assets: [PHAsset]) {
 		//do nothing
 		parent.viewStore.send(.onClosePhotosLibrary)

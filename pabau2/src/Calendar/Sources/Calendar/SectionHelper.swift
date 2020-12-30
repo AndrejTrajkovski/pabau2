@@ -1,13 +1,13 @@
-import Foundation 
+import Foundation
 import ComposableArchitecture
 import JZCalendarWeekView
 import Model
 
 open class SectionHelper {
-	
+
 	@available(iOS 13, *)
 	public class func group<SectionId: Hashable, Subsection: Identifiable>(_ events: [CalendarEvent],
-																		   _ sectionIds: [SectionId],																	 _ subsections: [Subsection],
+																		   _ sectionIds: [SectionId], _ subsections: [Subsection],
 																							 _ sectionKeyPath: KeyPath<CalendarEvent, SectionId>,
 																							 _ subsectionKeyPath: KeyPath<CalendarEvent, Subsection.ID>)
 	-> [Date: [SectionId: [Subsection.ID: IdentifiedArrayOf<CalendarEvent>]]] {
@@ -25,7 +25,7 @@ open class SectionHelper {
 			return final
 		}
 	}
-	
+
 	@available(iOS 13, *)
 	public class func group<T: Identifiable, CalendarEvent>(_ subsections: [T],
 															 _ events: [CalendarEvent],
@@ -36,7 +36,7 @@ open class SectionHelper {
 			res[sectionId] = IdentifiedArrayOf.init(array)
 		})
 	}
-	
+
 	open class func groupByStartOfDay(originalEvents: [CalendarEvent]) -> [Date: [CalendarEvent]] {
 		return Dictionary.init(grouping: originalEvents, by: { $0.start_date.startOfDay })
 	}

@@ -9,7 +9,7 @@ let package = Package(
     products: [
         .library(
             name: "AddBookout",
-            targets: ["AddBookout"]),
+            targets: ["AddBookout"])
     ],
     dependencies: [
 		.package(url: "../Form",
@@ -26,6 +26,6 @@ let package = Package(
 			]),
         .testTarget(
             name: "AddBookoutTests",
-            dependencies: ["AddBookout"]),
+            dependencies: ["AddBookout"])
     ]
 )

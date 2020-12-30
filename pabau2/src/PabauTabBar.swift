@@ -37,7 +37,7 @@ public struct TabBarState: Equatable {
 			self.calendar = newValue.calendar
 		}
 	}
-	
+
 	public var journeyContainer: JourneyContainerState {
 		get {
 			JourneyContainerState(journey: journeyState,
@@ -166,7 +166,7 @@ struct PabauTabBar: View {
 }
 
 public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> = Reducer.combine(
-	.init { state, action, env in
+	.init { state, action, _ in
 		switch action {
 		case .journey(.addAppointmentTap):
 			state.addAppointment = AddAppointmentState.dummy

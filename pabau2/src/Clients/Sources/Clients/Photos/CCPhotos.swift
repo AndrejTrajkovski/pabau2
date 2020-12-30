@@ -10,7 +10,7 @@ public let ccPhotosReducer: Reducer<CCPhotosState, CCPhotosAction, ClientsEnviro
 		environment: { $0 }
 	)
 	,
-	.init { state, action, env in
+	.init { state, action, _ in
 		switch action {
 		case .onSelectGroup(let date):
 			state.selectedDate = date
@@ -22,7 +22,7 @@ public let ccPhotosReducer: Reducer<CCPhotosState, CCPhotosAction, ClientsEnviro
 			print(id)
 			state.selectedIds.contains(id) ? state.selectedIds.removeAll(where: { $0 == id}) :
 				state.selectedIds.append(id)
-		case .action(_):
+		case .action:
 			break
 		}
 		return .none
@@ -32,7 +32,7 @@ public let ccPhotosReducer: Reducer<CCPhotosState, CCPhotosAction, ClientsEnviro
 public enum CCPhotosViewMode: Int, Equatable, CaseIterable, CustomStringConvertible {
 	case grouped
 	case expanded
-	
+
 	public var description: String {
 		switch self {
 		case .grouped:

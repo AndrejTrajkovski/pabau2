@@ -129,7 +129,7 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 				}
 			case .searchedText(let searchText):
 				struct SearchJourneyId: Hashable {}
-				
+
 				state.searchText = searchText
                 return environment.apiClient
                     .getJourneys(date: Date(), searchTerm: searchText)

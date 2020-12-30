@@ -23,13 +23,13 @@ public struct SingleChoicePicker<T: SingleChoiceElement, Cell: View>: View {
 
 	let store: Store<SingleChoiceState<T>, SingleChoiceActions<T>>
 	let cell: (SingleChoiceItemState<T>) -> Cell
-	
+
 	public init(store: Store<SingleChoiceState<T>, SingleChoiceActions<T>>,
 				cell: @escaping (SingleChoiceItemState<T>) -> Cell) {
 		self.store = store
 		self.cell = cell
 	}
-	
+
 	public var body: some View {
 		ForEachStore(store.scope(state: { state in
 			let array = state.dataSource.map {

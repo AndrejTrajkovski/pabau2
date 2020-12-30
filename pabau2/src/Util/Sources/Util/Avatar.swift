@@ -12,7 +12,7 @@ public struct AvatarView: View {
 		self.font = font
 		self.bgColor = bgColor
 	}
-	
+
 	let avatarUrl: String?
 	let initials: String
 	let font: Font

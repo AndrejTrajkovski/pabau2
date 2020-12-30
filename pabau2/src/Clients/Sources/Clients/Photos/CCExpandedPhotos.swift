@@ -15,7 +15,7 @@ struct CCExpandedPhotos: View {
 	var body: some View {
 		print("CCExpandedPhotos")
 		return ASCollectionView(sections: viewStore.state.selectedDate == nil ? sections : [selectedDateSection])
-			.layout { sectionID in
+			.layout { _ in
 				return .grid(layoutMode: .fixedNumberOfColumns(4),
 										 itemSpacing: 16,
 										 lineSpacing: 16)
@@ -49,7 +49,7 @@ struct ExpandedPhotosSection {
 	var section: ASCollectionViewSection<Date> {
 		ASCollectionViewSection(
 			id: date,
-			data: self.photos) { photo, context in
+			data: self.photos) { photo, _ in
 				MultipleSelectPhotoCell(photo: photo,
 																isSelected: self.selectedIds.contains(photo.id))
 					.onTapGesture {

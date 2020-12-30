@@ -30,7 +30,7 @@ struct ClientCardBottom: View {
 		self.store = store
 		self.viewStore = ViewStore(store.scope(state: State.init(state:)))
 	}
-	
+
 	struct State: Equatable {
 		var activeItem: ClientCardGridItem?
 		var photosViewMode: CCPhotosViewMode

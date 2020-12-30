@@ -67,7 +67,7 @@ func makePatientForms(stepTypes: [StepType],
 	}
 }
 
-func makeDoctorForms(stepTypes:[StepType],
+func makeDoctorForms(stepTypes: [StepType],
 										 patientDetails: PatientDetails,
 										 medHistory: FormTemplate,
 										 consents: IdentifiedArrayOf<FormTemplate>,
