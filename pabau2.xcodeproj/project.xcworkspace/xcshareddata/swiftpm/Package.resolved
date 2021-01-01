@@ -56,15 +56,6 @@
         }
       },
       {
-        "package": "JZCalendarWeekView",
-        "repositoryURL": "https://github.com/AndrejTrajkovski/JZCalendarWeekView.git",
-        "state": {
-          "branch": "shifts",
-          "revision": "5398804e8881bff7cf7ad12a65dc512104701a66",
-          "version": null
-        }
-      },
-      {
         "package": "SDWebImage",
         "repositoryURL": "https://github.com/SDWebImage/SDWebImage.git",
         "state": {
