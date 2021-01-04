@@ -3,14 +3,43 @@ import Model
 import Util
 import ComposableArchitecture
 import Form
+import Overture
 
 public enum ChoosePathwayContainerAction {
 	case choosePathway(ChoosePathwayAction)
 	case chooseConsent(ChooseFormAction)
+	case checkIn(CheckInContainerAction)
 }
 
 let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayContainerAction, JourneyEnvironment> =
 	.combine(
+		Reducer.init { state, action, env in
+			switch action {
+			case .chooseConsent(.proceed):
+				state.checkIn = CheckInContainerState(journey: state.selectedJourney,
+													  pathway: state.selectedPathway!,
+													  patientDetails: PatientDetails.mock,
+													  medicalHistoryId: HTMLFormTemplate.getMedHistory().id,
+													  medHistory: HTMLFormTemplate.getMedHistory(),
+													  consents: state.allConsents.filter(
+														pipe(get(\.id), state.selectedConsentsIds.contains)
+													  ),
+													  allConsents: state.allConsents,
+													  photosState: PhotosState.init(SavedPhoto.mock())
+				)
+			default:
+				break
+			}
+			return .none
+		},
+		checkInMiddleware.pullback(
+			state: \ChoosePathwayState.self,
+			action: /ChoosePathwayContainerAction.checkIn,
+			environment: { $0 }),
+		checkInReducer.optional.pullback(
+			state: \ChoosePathwayState.checkIn,
+			action: /ChoosePathwayContainerAction.checkIn,
+			environment: { $0 }),
 		chooseFormListReducer.pullback(
 			state: \ChoosePathwayState.chooseConsentState,
 			action: /ChoosePathwayContainerAction.chooseConsent,
@@ -38,10 +67,10 @@ public enum ChoosePathwayAction {
 }
 
 public struct ChoosePathwayState: Equatable {
-	var selectedJourney: Journey?
+	var selectedJourney: Journey
 	var selectedPathway: PathwayTemplate?
-	var selectedConsentsIds: [HTMLFormTemplate.ID]
-	var allConsents: IdentifiedArrayOf<HTMLFormTemplate>
+	var selectedConsentsIds: [HTMLFormTemplate.ID] = []
+	var allConsents: IdentifiedArrayOf<HTMLFormTemplate> = []
 	var chooseConsentState: ChooseFormState {
 		get {
 			ChooseFormState(templates: allConsents,
@@ -52,6 +81,8 @@ public struct ChoosePathwayState: Equatable {
 			self.allConsents = newValue.templates
 		}
 	}
+	public var checkIn: CheckInContainerState?
+	//		= JourneyMocks.checkIn
 }
 
 public struct ChoosePathway: View {

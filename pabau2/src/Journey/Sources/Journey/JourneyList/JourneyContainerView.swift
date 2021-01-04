@@ -21,30 +21,7 @@ func makeFormEnv(_ journeyEnv: JourneyEnvironment) -> FormEnvironment {
 						   userDefaults: journeyEnv.userDefaults)
 }
 
-let checkInMiddleware2 = Reducer<JourneyState, ChooseFormAction, JourneyEnvironment> { state, action, _ in
-	switch action {
-	case .proceed:
-		guard let selJ = state.selectedJourney,
-			let selP = state.selectedPathway else { return .none }
-		state.checkIn = CheckInContainerState(
-			journey: selJ,
-			pathway: selP,
-			patientDetails: PatientDetails.mock,
-			medicalHistoryId: HTMLFormTemplate.getMedHistory().id,
-			medHistory: HTMLFormTemplate.getMedHistory(),
-			consents: state.allConsents.filter(
-				pipe(get(\.id), state.selectedConsentsIds.contains)
-			),
-			allConsents: state.allConsents,
-			photosState: PhotosState.init(SavedPhoto.mock())
-		)
-	default:
-		return .none
-	}
-	return .none
-}
-
-let checkInMiddleware = Reducer<JourneyState, CheckInContainerAction, JourneyEnvironment> { _, action, _ in
+let checkInMiddleware = Reducer<ChoosePathwayState, CheckInContainerAction, JourneyEnvironment> { _, action, _ in
 	switch action {
 //	case .patient(.topView(.onXButtonTap)),
 //			 .doctorSummary(.xOnDoctorCheckIn):
@@ -84,26 +61,14 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 //JourneyState, ChooseFormAction
 public let journeyContainerReducer2: Reducer<JourneyState, JourneyContainerAction, JourneyEnvironment> =
 	.combine(
-		checkInMiddleware2.pullback(
-			state: \JourneyState.self,
-			action: /JourneyContainerAction.choosePathway..ChoosePathwayContainerAction.chooseConsent,
-			environment: { $0 }),
 		journeyReducer.pullback(
 					 state: \JourneyState.self,
 					 action: /JourneyContainerAction.journey,
 					 environment: { $0 }),
-		choosePathwayContainerReducer.pullback(
+		choosePathwayContainerReducer.optional.pullback(
 					 state: \JourneyState.choosePathway,
 					 action: /JourneyContainerAction.choosePathway,
-					 environment: { $0 }),
-		checkInReducer.optional.pullback(
-			state: \JourneyState.checkIn,
-			action: /JourneyContainerAction.checkIn,
-			environment: { $0 }),
-		checkInMiddleware.pullback(
-			state: \JourneyState.self,
-			action: /JourneyContainerAction.checkIn,
-			environment: { $0 })
+					 environment: { $0 })
 )
 
 let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
@@ -135,9 +100,9 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 			case .searchedText(let searchText):
 				state.searchText = searchText
 			case .selectedJourney(let journey):
-				state.selectedJourney = journey
+				state.choosePathway = ChoosePathwayState(selectedJourney: journey)
 			case .choosePathwayBackTap:
-				state.selectedJourney = nil
+				state.choosePathway = nil
 			case .loadJourneys:
 				state.loadingState = .loading
 				return environment.appointmentsAPI
@@ -161,7 +126,7 @@ public struct JourneyContainerView: View {
 		let listedJourneys: [Journey]
 		let isLoadingJourneys: Bool
 		init(state: JourneyContainerState) {
-			self.isChoosePathwayShown = state.journey.selectedJourney != nil
+			self.isChoosePathwayShown = state.journey.choosePathway != nil
 			self.selectedDate = state.journey.selectedDate
 			self.listedJourneys = state.filteredJourneys
 			self.isLoadingJourneys = state.journey.loadingState.isLoading
@@ -190,12 +155,16 @@ public struct JourneyContainerView: View {
 			}.loadingView(.constant(self.viewStore.state.isLoadingJourneys),
 						  Texts.fetchingJourneys)
 			NavigationLink.emptyHidden(self.viewStore.state.isChoosePathwayShown,
-									   ChoosePathway(store: self.store.scope(state: { $0.journey.choosePathway
-									   }, action: { .choosePathway($0)}))
-									   .navigationBarTitle("Choose Pathway")
-									   .customBackButton {
-										self.viewStore.send(.journey(.choosePathwayBackTap))
-									}
+									   IfLetStore(store.scope(state: { $0.journey.choosePathway },
+															  action: { .choosePathway($0) }),
+												  then: { choosePathwayStore in
+													return ChoosePathway(store: choosePathwayStore)
+														.navigationBarTitle("Choose Pathway")
+														.customBackButton {
+															self.viewStore.send(.journey(.choosePathwayBackTap))
+														}
+												  }
+									   )
 			)
 			Spacer()
 		}
@@ -225,24 +194,6 @@ public struct JourneyContainerView: View {
 					.frame(width: 44, height: 44)
 			})
 		)
-	}
-
-	struct ChoosePathwayEither: View {
-		let store: Store<JourneyState, JourneyContainerAction>
-		let isSelectedJourney: Bool
-		var body: some View {
-			ViewBuilder.buildBlock(
-				(isSelectedJourney) ?
-					ViewBuilder.buildEither(second:
-						ChoosePathway(store: self.store.scope(state: { $0.choosePathway
-						}, action: { .choosePathway($0)}))
-					)
-					:
-					ViewBuilder.buildEither(first:
-						EmptyView()
-				)
-			)
-		}
 	}
 }
 

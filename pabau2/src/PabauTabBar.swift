@@ -62,7 +62,7 @@ struct PabauTabBar: View {
 		let isShowingAppointments: Bool
 		init(state: TabBarState) {
 			self.isShowingEmployees = state.employeesFilter.isShowingEmployees
-			self.isShowingCheckin = state.journeyContainer.journey.checkIn != nil
+			self.isShowingCheckin = state.journeyContainer.journey.choosePathway?.checkIn != nil
 			self.isShowingAppointments = state.addAppointment != nil
 		}
 	}
@@ -84,9 +84,6 @@ struct PabauTabBar: View {
 				settings()
 				communication()
 			}
-//			.fullScreenCover(isPresented: .constant(self.viewStore.state.isShowingCheckin)) {
-//				checkIn()
-//			}
 			.modalLink(isPresented: .constant(self.viewStore.state.isShowingCheckin),
 					   linkType: ModalTransition.circleReveal,
 					   destination: {
@@ -165,8 +162,8 @@ struct PabauTabBar: View {
 
 	fileprivate func checkIn() -> IfLetStore<CheckInContainerState, CheckInContainerAction, CheckInNavigationView?> {
 		return IfLetStore(self.store.scope(
-			state: { $0.journeyContainer.journey.checkIn },
-			action: { .journey(.checkIn($0))}
+			state: { $0.journeyContainer.journey.choosePathway?.checkIn },
+			action: { .journey(.choosePathway(.checkIn($0)))}
 		),
 		then: CheckInNavigationView.init(store:))
 	}
