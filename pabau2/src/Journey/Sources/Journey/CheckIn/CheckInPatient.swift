@@ -79,16 +79,16 @@ struct CheckInPatientState: Equatable, CheckInState {
 	let pathway: PathwayTemplate
 	var patientDetails: PatientDetails
 	var patientDetailsStatus: Bool
-	var medicalHistoryId: HTMLFormTemplate.ID
-	var medicalHistory: HTMLFormTemplate
+	var medicalHistoryId: HTMLForm.ID
+	var medicalHistory: HTMLForm
 	var medicalHistoryStatus: Bool
-	var consents: IdentifiedArray<HTMLFormTemplate.ID, HTMLFormTemplate>
-	var consentsStatuses: [HTMLFormTemplate.ID: Bool]
+	var consents: IdentifiedArray<HTMLForm.ID, HTMLForm>
+	var consentsStatuses: [HTMLForm.ID: Bool]
 	var isPatientComplete: Bool
 	var selectedIdx: Int
 	var patientDetailsLS: LoadingState
 	var medHistoryLS: LoadingState
-	var consentsLS: [HTMLFormTemplate.ID: LoadingState]
+	var consentsLS: [HTMLForm.ID: LoadingState]
 }
 
 //MARK: - CheckInState
@@ -124,7 +124,7 @@ extension CheckInPatientState {
 		}
 	}
 	
-	var consentsStates: [JourneyFormInfo<HTMLFormTemplate>] {
+	var consentsStates: [JourneyFormInfo<HTMLForm>] {
 		get {
 			return self.consents.map {
 				JourneyFormInfo(id: $0.id,
@@ -142,7 +142,7 @@ extension CheckInPatientState {
 		}
 	}
 	
-	var medHistoryState: JourneyFormInfo<HTMLFormTemplate> {
+	var medHistoryState: JourneyFormInfo<HTMLForm> {
 		get {
 			JourneyFormInfo(id: medicalHistoryId,
 							 form: medicalHistory,
@@ -174,10 +174,10 @@ extension CheckInPatientState {
 public enum CheckInPatientAction {
 	case patientDetailsRequests(JourneyFormRequestsAction<PatientDetails>)
 	case patientDetails(PatientDetailsAction)
-	case medicalHistoryRequests(JourneyFormRequestsAction<HTMLFormTemplate>)
+	case medicalHistoryRequests(JourneyFormRequestsAction<HTMLForm>)
 	case medicalHistory(HTMLFormAction)
-	case consents(id: HTMLFormTemplate.ID, action: HTMLFormAction)
-	case consentsRequests(id: HTMLFormTemplate.ID, action: JourneyFormRequestsAction<HTMLFormTemplate>)
+	case consents(id: HTMLForm.ID, action: HTMLFormAction)
+	case consentsRequests(id: HTMLForm.ID, action: JourneyFormRequestsAction<HTMLForm>)
 	case patientComplete(PatientCompleteAction)
 	case stepsView(CheckInAction)
 	//	case footer(FooterButtonsAction)

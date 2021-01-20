@@ -20,7 +20,8 @@ let package = Package(
 		.package(name: "NonEmpty",
 				 url: "https://github.com/pointfreeco/swift-nonempty.git", from: "0.2.2"),
 		.package(name: "SwiftDate",
-				 url: "https://github.com/malcommac/SwiftDate.git", from: "6.1.0")
+				 url: "https://github.com/malcommac/SwiftDate.git", from: "6.1.0"),
+		.package(url: "../Util", from: Version.init(stringLiteral: "1.0.0"))
 	],
 	targets: [
 		.target(
@@ -33,7 +34,9 @@ let package = Package(
 				.product(name: "NonEmpty",
 						 package: "NonEmpty"),
 				.product(name: "Tagged",
-						 package: "Tagged")
+						 package: "Tagged"),
+				.product(name: "Util",
+						 package: "Util")
 			]
 		),
 		.testTarget(

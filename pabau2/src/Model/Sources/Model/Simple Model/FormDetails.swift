@@ -5,7 +5,7 @@ import Foundation
 
 public struct FormDetails: Codable {
 
-    public let template: HTMLFormTemplate
+    public let template: HTMLForm
 
     public let patientStatus: PatientStatus
 

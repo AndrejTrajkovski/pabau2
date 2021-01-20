@@ -92,7 +92,7 @@ struct CompleteButton<State>: View where State: Equatable & CompleteBtnState {
 	}
 }
 
-extension HTMLFormTemplate: CompleteBtnState {
+extension HTMLForm: CompleteBtnState {
 	public var canProceed: Bool {
 		self.formStructure.canProceed
 	}

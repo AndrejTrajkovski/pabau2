@@ -29,6 +29,6 @@ func stepToModeMap(_ stepType: StepType) -> JourneyMode {
 
 let filterStepType = filterBy
 
-func selected(_ templates: IdentifiedArrayOf<HTMLFormTemplate>, _ selectedIds: [HTMLFormTemplate.ID]) -> IdentifiedArrayOf<HTMLFormTemplate> {
+func selected(_ templates: IdentifiedArrayOf<HTMLForm>, _ selectedIds: [HTMLForm.ID]) -> IdentifiedArrayOf<HTMLForm> {
 	templates.filter { selectedIds.contains($0.id) }
 }

@@ -9,7 +9,7 @@ public protocol JourneyForm {
 	var apiPath: String { get }
 }
 
-extension HTMLFormTemplate: JourneyForm {
+extension HTMLForm: JourneyForm {
 	public var apiPath: String { "forms/\(self.id)" }
 }
 

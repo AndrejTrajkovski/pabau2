@@ -3,7 +3,7 @@ import SwiftUI
 import ComposableArchitecture
 import Util
 
-public let htmlFormReducer: Reducer<HTMLFormTemplate, HTMLFormAction, FormEnvironment> = .combine(
+public let htmlFormReducer: Reducer<HTMLForm, HTMLFormAction, FormEnvironment> = .combine(
 	.init { state, action, env in
 		switch action {
 		case .complete:
@@ -14,7 +14,7 @@ public let htmlFormReducer: Reducer<HTMLFormTemplate, HTMLFormAction, FormEnviro
 		return .none
 	},
 	cssFieldReducer.forEach(
-		state: \HTMLFormTemplate.formStructure.formStructure,
+		state: \HTMLForm.formStructure.formStructure,
 		action: /HTMLFormAction.fields(idx:action:),
 		environment: { $0 }
 	)
@@ -29,9 +29,9 @@ public enum HTMLFormAction {
 
 public struct ListHTMLForm: View {
 	
-	let store: Store<HTMLFormTemplate, HTMLFormAction>
+	let store: Store<HTMLForm, HTMLFormAction>
 	
-	public init(store: Store<HTMLFormTemplate, HTMLFormAction>) {
+	public init(store: Store<HTMLForm, HTMLFormAction>) {
 		self.store = store
 		UITableViewHeaderFooterView.appearance().tintColor = UIColor.white
 		UITableView.appearance().separatorStyle = .none
@@ -53,9 +53,9 @@ public struct ListHTMLForm: View {
 struct HTMLFormView: View {
 	
 	let isCheckingDetails: Bool
-	let store: Store<HTMLFormTemplate, HTMLFormAction>
+	let store: Store<HTMLForm, HTMLFormAction>
 	@ObservedObject var viewStore: ViewStore<String, Never>
-	init(store: Store<HTMLFormTemplate, HTMLFormAction>,
+	init(store: Store<HTMLForm, HTMLFormAction>,
 		 isCheckingDetails: Bool) {
 		self.store = store
 		self.isCheckingDetails = isCheckingDetails
