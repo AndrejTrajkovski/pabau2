@@ -5,7 +5,7 @@ public struct MetaFormAndStatus: Equatable, Identifiable {
 //	static let defaultEmpty = MetaFormAndStatus.init(MetaForm.template(FormTemplate.defaultEmpty), false, index: <#Int#>)
 
 	public var id: Int { index }
-	
+
 	public var index: Int
 	public var form: MetaForm
 	public var isComplete: Bool

@@ -5,7 +5,7 @@ import Filters
 
 struct FiltersWrapper: View {
 	let store: Store<CalendarState, CalendarAction>
-	
+
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			switch viewStore.appointments.calendarType {

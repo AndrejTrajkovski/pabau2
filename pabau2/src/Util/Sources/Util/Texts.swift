@@ -166,7 +166,7 @@ Tap the aftercare bellow that you wish to send to the client. The aftercare will
 
 	public static let room = "Room"
 	public static let week = "Week"
-	
+
 	public static let allDay = "All Day"
 }
 

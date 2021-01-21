@@ -35,7 +35,7 @@ public struct CalendarWrapper: View {
 									then: CalendarSwiftUI<Employee>.init(store:), else: EmptyView())
 		return ifLetStore
 	}
-	
+
 	var roomCalendarView: RoomCalView {
 		let ifLetStore = IfLetStore(store.scope(
 										state: { $0.roomSectionState },

@@ -4,7 +4,7 @@ public struct ColorCircleRow: View {
 	let title: String
 	let subtitle: String
 	let color: Color
-	
+
 	public init(
 		title: String,
 		subtitle: String,
@@ -14,7 +14,7 @@ public struct ColorCircleRow: View {
 		self.subtitle = subtitle
 		self.color = color
 	}
-	
+
 	public var body: some View {
 		HStack {
 			Circle()

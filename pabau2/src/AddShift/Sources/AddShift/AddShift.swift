@@ -81,7 +81,7 @@ public enum AddShiftAction {
 }
 
 public struct AddShift: View {
-	
+
 	let store: Store<AddShiftState, AddShiftAction>
 	@ObservedObject var viewStore: ViewStore<AddShiftState, AddShiftAction>
 
@@ -124,7 +124,7 @@ struct LocationAndDate: View {
 
 	let store: Store<AddShiftState, AddShiftAction>
 	@ObservedObject var viewStore: ViewStore<AddShiftState, AddShiftAction>
-	
+
 	var body: some View {
 		VStack(spacing: 16) {
 			HStack(spacing: 16) {
@@ -136,12 +136,10 @@ struct LocationAndDate: View {
 			HStack(spacing: 16) {
 				DatePickerControl("START TIME",
 								  viewStore.binding(get: { $0.startTime },
-													send: { .startTime($0) })
-								  , mode: .time)
+													send: { .startTime($0) }), mode: .time)
 				DatePickerControl("END TIME",
 								  viewStore.binding(get: { $0.endTime },
-													send: { .endTime($0) })
-								  , mode: .time)
+													send: { .endTime($0) }), mode: .time)
 			}
 		}
 	}
@@ -176,14 +174,14 @@ struct AddShift_Previews: PreviewProvider {
 					  endTime: Date(),
 					  note: "Note")
 	}
-	
+
 	static var env: AddShiftEnvironment {
 		AddShiftEnvironment(
-			apiClient:JourneyMockAPI(),
+			apiClient: JourneyMockAPI(),
 			userDefaults: StandardUDConfig()
 		)
 	}
-	
+
 	static var previews: some View {
 		AddShift(store: Store.init(initialState: state, reducer: addShiftReducer, environment: env)
 		)

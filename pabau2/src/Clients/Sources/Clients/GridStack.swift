@@ -12,7 +12,7 @@ struct GridStack<Content: View>: View {
 		self.content = content
 	}
 	var body: some View {
-		GeometryReaderPatch { geo in
+		GeometryReaderPatch { _ in
 			VStack {
 				ForEach(0..<self.rows, id: \.self) { row in
 					HStack {

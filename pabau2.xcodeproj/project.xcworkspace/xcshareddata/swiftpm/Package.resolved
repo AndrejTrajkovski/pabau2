@@ -38,20 +38,20 @@
         }
       },
       {
+        "package": "Facebook",
+        "repositoryURL": "https://github.com/facebook/facebook-ios-sdk.git",
+        "state": {
+          "branch": null,
+          "revision": "9398d30089c2c14e0f0026e24388ca0829f8f1c5",
+          "version": "5.15.1"
+        }
+      },
+      {
         "package": "FSCalendar",
         "repositoryURL": "https://github.com/AndrejTrajkovski/FSCalendar",
         "state": {
           "branch": "master",
           "revision": "4ea283ae0c13d6d901d812a357f024597f7cf0ec",
-          "version": null
-        }
-      },
-      {
-        "package": "JZCalendarWeekView",
-        "repositoryURL": "https://github.com/AndrejTrajkovski/JZCalendarWeekView.git",
-        "state": {
-          "branch": "shifts",
-          "revision": "5398804e8881bff7cf7ad12a65dc512104701a66",
           "version": null
         }
       },

@@ -2,11 +2,11 @@ import SwiftUI
 
 public struct PlusButton: View {
 	let action: () -> Void
-	
+
 	public init (_ action: @escaping () -> Void) {
 		self.action = action
 	}
-	
+
 	public var body: some View {
 		Button(action: action, label: {
 			Image(systemName: "plus")

@@ -10,7 +10,7 @@ public struct ImagePickerView: UIViewControllerRepresentable {
 		self.sourceType = sourceType
 		self.onImagePicked = onImagePicked
 	}
-	
+
 	public func makeUIViewController(context: Context) -> UIImagePickerController {
 		let picker = UIImagePickerController()
 		picker.sourceType = self.sourceType
@@ -28,7 +28,7 @@ public struct ImagePickerView: UIViewControllerRepresentable {
 	}
 
 	final public class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
-		
+
 		private let onDismiss: () -> Void
 		private let onImagePicked: (UIImage) -> Void
 
@@ -36,7 +36,7 @@ public struct ImagePickerView: UIViewControllerRepresentable {
 			self.onDismiss = onDismiss
 			self.onImagePicked = onImagePicked
 		}
-		
+
 		public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
 			if let image = info[.originalImage] as? UIImage {
 				self.onImagePicked(image)

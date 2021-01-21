@@ -33,6 +33,7 @@ public struct SingleChoiceLink<Content: View, T: SingleChoiceElement, Cell: View
 	@ObservedObject public var viewStore: ViewStore<SingleChoiceLinkState<T>, SingleChoiceLinkAction<T>>
 	let content: () -> Content
 	let cell: (SingleChoiceItemState<T>) -> Cell
+
     var title: String? = nil
 
 	public init (
@@ -98,7 +99,7 @@ public struct SingleChoiceLinkReducer<T: SingleChoiceElement> {
 }
 
 extension SingleChoiceLinkState {
-	
+
 	public init(_ dataSource: [Model]) {
 		isActive = false
 		singleChoice = SingleChoiceState(dataSource: IdentifiedArrayOf(dataSource), chosenItemId: nil)

@@ -6,7 +6,7 @@ import ComposableArchitecture
 class CalendarWeekView: JZLongPressWeekView {
 	static let cellId = "CalendarCell"
 	static let columnHeaderId = "ColumnHeader"
-	
+
 	var viewStore: ViewStore<CalendarState, CalendarAction>!
 	public override func registerViewClasses() {
 		// Register CollectionViewCell
@@ -25,7 +25,7 @@ class CalendarWeekView: JZLongPressWeekView {
 		}
 		preconditionFailure("LongPressEventCell and AllDayEvent should be casted")
 	}
-	
+
 //	override open func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
 //		var view = UICollectionReusableView()
 //		switch kind {

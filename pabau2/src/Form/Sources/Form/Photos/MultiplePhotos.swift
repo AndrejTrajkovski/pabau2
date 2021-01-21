@@ -15,7 +15,7 @@ public let selectPhotosReducer: Reducer<SelectPhotosState, SelectPhotosAction, A
 public struct SelectPhotosState: Equatable {
 	public let photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>
 	public var selectedIds: [PhotoVariantId]
-	
+
 	public init(
 		photos: IdentifiedArrayOf<PhotoViewModel>,
 		selectedIds: [PhotoVariantId]
@@ -23,7 +23,7 @@ public struct SelectPhotosState: Equatable {
 		self.photos = IdentifiedArrayOf<PhotoViewModel>.init(photos)
 		self.selectedIds = selectedIds
 	}
-	
+
 	public init(
 		photosArray: [PhotoViewModel],
 		selectedIds: [PhotoVariantId]
@@ -31,7 +31,7 @@ public struct SelectPhotosState: Equatable {
 		self.photos = IdentifiedArrayOf<PhotoViewModel>.init(photosArray)
 		self.selectedIds = selectedIds
 	}
-	
+
 	func isSelected(_ photo: PhotoViewModel) -> Bool {
 		return self.selectedIds.contains(photo.id)
 	}
@@ -49,7 +49,7 @@ struct SelectPhotos: View {
 			ASCollectionView.init(
 			data: viewStore.photos) { photo, _ in
 				MultipleSelectPhotoCell(photo: photo,
-																isSelected: viewStore.state.isSelected(photo))
+                                        isSelected: viewStore.state.isSelected(photo))
 					.onTapGesture {
 						viewStore.send(.didTouchPhotoId(photo.id))
 				}

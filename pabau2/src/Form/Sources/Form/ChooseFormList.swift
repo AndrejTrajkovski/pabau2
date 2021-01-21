@@ -19,7 +19,7 @@ public struct ChooseFormState: Equatable {
 		self.selectedTemplatesIds = selectedTemplatesIds
         self.searchText = searchText
 	}
-	
+
 	public init(
 		templates: IdentifiedArrayOf<FormTemplate>,
 		templatesLoadingState: LoadingState,
@@ -117,10 +117,10 @@ public struct ChooseFormList: View {
         func filterNotSelectedTemplates() -> [FormTemplate] {
             if searchText.isEmpty {
                 return templates.elements
-				.filter { !selectedTemplatesIds.contains($0.id) }
-				.map { $0 }
-				.sorted(by: \.name)
-		}
+                    .filter { !selectedTemplatesIds.contains($0.id) }
+                    .map { $0 }
+                    .sorted(by: \.name)
+            }
 
             return templates.elements
                 .filter {

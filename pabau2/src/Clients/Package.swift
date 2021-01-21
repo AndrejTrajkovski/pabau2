@@ -9,7 +9,7 @@ let package = Package(
 	products: [
 		.library(
 			name: "Clients",
-			targets: ["Clients"]),
+			targets: ["Clients"])
 	],
 	dependencies: [
 		.package(name: "Form",
@@ -17,14 +17,18 @@ let package = Package(
 						 from: Version.init(stringLiteral: "1.0.0")),
 		.package(name: "SDWebImageSwiftUI",
 						 url: "https://github.com/SDWebImage/SDWebImageSwiftUI.git",
-						 from: Version.init(stringLiteral: "1.0.0"))
+						 from: Version.init(stringLiteral: "1.0.0")),
+        .package(name: "Facebook",
+                         url: "https://github.com/facebook/facebook-ios-sdk.git",
+                         .upToNextMajor(from: Version.init(stringLiteral: "5.10.0")))
 	],
 	targets: [
 		.target(
 			name: "Clients",
 			dependencies: [
 				"Form",
-				"SDWebImageSwiftUI"
+				"SDWebImageSwiftUI",
+                .product(name: "FacebookShare", package: "Facebook")
 		])
 	]
 )

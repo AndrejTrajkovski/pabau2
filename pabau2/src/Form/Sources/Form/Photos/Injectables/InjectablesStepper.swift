@@ -30,14 +30,14 @@ public enum InjectablesStepperAction: Equatable {
 }
 
 struct InjectablesStepper: View {
-	
+
 	let store: Store<InjectablesToolState, InjectablesStepperAction>
 	struct State: Equatable {
 		let color: Color
 		let number: Double
 		let hasActiveInjection: Bool
 	}
-	
+
 	var body: some View {
 		WithViewStore(store.scope(state: State.init(state:))) { viewStore in
 			VStack {

@@ -25,11 +25,11 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, Calenda
 )
 
 public struct AppDetailsState: Equatable {
-	
+
 	public init(app: CalAppointment) {
 		self.app = app
 	}
-	
+
 	public var app: CalAppointment
 	var isPaymentActive: Bool = false
 	var isDocumentsActive: Bool = false
@@ -89,7 +89,7 @@ extension AppDetailsState {
 			self.isCancelActive = newValue.isActive
 		}
 	}
-	
+
 	var chooseStatus: SingleChoiceLinkState<AppointmentStatus> {
 		get {
 			SingleChoiceLinkState<AppointmentStatus>(
@@ -103,7 +103,7 @@ extension AppDetailsState {
 			self.isStatusActive = newValue.isActive
 		}
 	}
-	
+
 	var itemsState: AppDetailsButtonsState {
 		get {
 			AppDetailsButtonsState(

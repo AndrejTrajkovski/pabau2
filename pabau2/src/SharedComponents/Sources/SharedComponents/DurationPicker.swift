@@ -4,14 +4,14 @@ import Util
 import ComposableArchitecture
 
 public struct Duration: SingleChoiceElement {
-	
+
 	public init(name: String, id: Int, duration: TimeInterval, nameInCircle: String) {
 		self.name = name
 		self.id = id
 		self.duration = duration
 		self.nameInCircle = nameInCircle
 	}
-	
+
 	public var name: String
 	public var id: Int
 	public var duration: TimeInterval
@@ -20,11 +20,11 @@ public struct Duration: SingleChoiceElement {
 
 public struct DurationPicker: View {
 	let store: Store<SingleChoiceState<Duration>, SingleChoiceActions<Duration>>
-	
+
 	public init (store: Store<SingleChoiceState<Duration>, SingleChoiceActions<Duration>>) {
 		self.store = store
 	}
-	
+
 	public var body: some View {
 		SingleChoicePicker(store: store,
 						   cell: {

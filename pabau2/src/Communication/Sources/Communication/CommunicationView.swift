@@ -10,7 +10,7 @@ public typealias CommunicationEnvironment = (
     userDefaults: UserDefaultsConfig
 )
 
-public let communicationReducer = Reducer<CommunicationState, CommunicationAction, CommunicationEnvironment> { _, action, env in
+public let communicationReducer = Reducer<CommunicationState, CommunicationAction, CommunicationEnvironment> { _, action, _ in
     switch action {
     case .liveChat:
         return .none
@@ -39,7 +39,7 @@ public struct CommunicationView: View {
         self.store = store
         self.viewStore = ViewStore(store)
     }
-    
+
     public var body: some View {
         VStack {
             PrimaryButton(Texts.liveChat) {

@@ -10,7 +10,7 @@ enum ButtonsActions {
 }
 
 struct Buttons: View {
-	
+
 	var body: some View {
 		HStack(spacing: 0) {
 			TimeSlotButton(image: "minus.circle", title: Texts.delete, onTap: {

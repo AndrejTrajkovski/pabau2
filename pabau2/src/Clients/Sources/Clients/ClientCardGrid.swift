@@ -76,7 +76,7 @@ let clientCardGridReducer: Reducer<ClientCardState, ClientCardBottomAction, Clie
 						}
 						.eraseToEffect()
 				}
-			case .child(_):
+			case .child:
 				break
 			case .backBtnTap:
 				break//handled in clientCardReducer
@@ -99,8 +99,8 @@ struct ClientCardGrid: View {
 			ASCollectionView(data: ClientCardGridItem.allCases,
 											 dataID: \.self) { item, _ in
 												ClientCardGridItemView(title: item.title,
-																							 iconName: item.iconName,
-																							 number: item.count(model: viewStore.state)
+                                                                       iconName: item.iconName,
+                                                                       number: item.count(model: viewStore.state)
 												).onTapGesture {
 													viewStore.send(.onSelect(item))
 												}
@@ -116,8 +116,8 @@ struct ClientCardGrid: View {
 
 func groupByDay(photoViewModel: [PhotoViewModel]) -> [Date: [PhotoViewModel]] {
 	return Dictionary.init(grouping: photoViewModel,
-												 by: {
-													let date = Calendar.gregorian.dateComponents([.day, .year, .month], from: $0.basePhoto.date)
-													return Calendar.gregorian.date(from: date)!
-	})
+                           by: {
+                                let date = Calendar.gregorian.dateComponents([.day, .year, .month], from: $0.basePhoto.date)
+                                return Calendar.gregorian.date(from: date)!
+                           })
 }

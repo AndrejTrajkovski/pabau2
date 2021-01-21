@@ -1,11 +1,11 @@
 import SwiftUI
 
 struct InjectablesToolNumber: View {
-	
+
 	let number: Double
 	let color: Color
 	let hasActiveInjection: Bool
-	
+
 	var body: some View {
 		Group {
 			if hasActiveInjection {

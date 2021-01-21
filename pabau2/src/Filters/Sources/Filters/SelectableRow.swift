@@ -26,7 +26,7 @@ struct SelectableRow<T: Equatable & Identifiable & Named>: View {
 
 	let store: Store<SelectableState<T>, SelectableAction>
 	let textFont: Font
-	
+
 	public var body: some View {
 		WithViewStore(store) { viewStore in
 			HStack {
