@@ -1,10 +1,9 @@
 public struct RadioState: Codable, Equatable {
 	public let choices: [RadioChoice]
-	public var selectedChoiceId: RadioChoice.ID?
+	public var selectedChoice: RadioChoice? = nil
 
-	public init (_ choices: [RadioChoice], _ selectedChoiceId: RadioChoice.ID? = nil) {
+	public init (_ choices: [RadioChoice]) {
 		self.choices = choices
-		self.selectedChoiceId = selectedChoiceId
 	}
 }
 

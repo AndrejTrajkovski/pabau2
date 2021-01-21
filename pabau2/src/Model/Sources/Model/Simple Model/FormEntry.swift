@@ -1,5 +1,6 @@
 import Foundation
 import Tagged
+import CasePaths
 
 public struct FormEntry: Codable {
 	public typealias ID = Tagged<FormEntry, Int>
@@ -34,7 +35,8 @@ struct _FormTemplate: Codable {
 
 // MARK: - MedicalResult
 struct MedicalResult: Codable {
-	let id, attrID, labelName, contactID: String
+	let labelName: CSSField.ID
+	let id, attrID, contactID: String
 	let value: String
 	let epaperImages: [JSONAny]
 
@@ -59,18 +61,48 @@ struct _FormData: Codable {
 
 // MARK: - FormStructure
 struct _FormStructure: Codable {
-	let cssClass, formStructureRequired: String
+	let cssClass: CSSClassType
+	let formStructureRequired: String
 	let values: Values?
 	let defaults: String
 	let linked, fldtype, fldwidth, trigger: String?
 	let title, multiple, dispScoreTotal: String?
-
+	
+	func keyString() -> String {
+		switch self.cssClass {
+		case .input_text, .textarea:
+			return extract(case: Values.string, from: self.values)!
+		case .radio, .checkbox, .select, .signature, .diagram_mini:
+			return self.title!
+		case .staticText, .heading:
+			fatalError("no values, should be filtered earlier")
+		case .cl_drugs:
+			return "" // TODO
+		case .image:
+			return ""
+		}
+	}
+	
 	enum CodingKeys: String, CodingKey {
 		case cssClass
 		case formStructureRequired = "required"
 		case values, defaults, linked, fldtype, fldwidth, trigger, title, multiple
 		case dispScoreTotal = "disp_score_total"
 	}
+}
+
+public enum CSSClassType: String, Equatable, Codable {
+	case staticText
+	case input_text
+	case textarea
+	case radio
+	case signature
+	case checkbox
+	case select
+	case heading
+	case image
+	case cl_drugs
+	case diagram_mini
 }
 
 enum Values: Codable {
@@ -105,4 +137,9 @@ enum Values: Codable {
 struct Value: Codable {
 	let value, baseline, critical, trigger: String
 	let desc, score: String?
+}
+
+func makeIdxsById(_ idsByIdx: [Int: CSSField.ID]) -> [CSSField.ID: Int] {
+	return Dictionary(grouping: idsByIdx.keys, by: { idsByIdx[$0]! })
+		.mapValues { Int($0.first!) }
 }
