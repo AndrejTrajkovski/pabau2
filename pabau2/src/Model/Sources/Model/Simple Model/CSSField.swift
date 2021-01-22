@@ -28,7 +28,10 @@ public struct CSSField: Equatable, Identifiable {
 	}
 }
 
-
+struct CSSFieldID: Identifiable {
+	let index: Int
+	let fakeId: String
+}
 
 extension CSSField.ID {
 	

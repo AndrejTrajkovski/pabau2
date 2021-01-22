@@ -2,8 +2,8 @@ import Foundation
 import Tagged
 import CasePaths
 
-public struct FormEntry: Codable {
-	public typealias ID = Tagged<FormEntry, Int>
+public struct FilledForm: Codable {
+	public typealias ID = Tagged<FilledForm, Int>
 	let id: ID?
 	let medicalResults: [MedicalResult]?
 	let success: Bool
@@ -109,11 +109,11 @@ public enum CSSClassType: String, Equatable, Codable {
 
 enum Values: Codable {
 	case string(String)
-	case valueMap([String: Value])
+	case valueMap([Int: Value])
 
 	init(from decoder: Decoder) throws {
 		let container = try decoder.singleValueContainer()
-		if let x = try? container.decode([String: Value].self) {
+		if let x = try? container.decode([Int: Value].self) {
 			self = .valueMap(x)
 			return
 		}

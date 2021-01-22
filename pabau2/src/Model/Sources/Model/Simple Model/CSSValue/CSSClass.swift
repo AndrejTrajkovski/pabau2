@@ -128,7 +128,7 @@ enum CSSClassTypeMismatch: Error {
 fileprivate let extractAndSortValues: (Values?) throws -> [Value] =
 	pipe(extractValueMap(values:), sort(valueMap:))
 
-fileprivate func extractValueMap(values: Values?) throws -> [String: Value] {
+fileprivate func extractValueMap(values: Values?) throws -> [Int: Value] {
 	if let valueMap = extract(case: Values.valueMap, from:values) {
 		return valueMap
 	} else {
@@ -136,6 +136,6 @@ fileprivate func extractValueMap(values: Values?) throws -> [String: Value] {
 	}
 }
 
-fileprivate func sort(valueMap: [String: Value]) -> [Value] {
+fileprivate func sort(valueMap: [Int: Value]) -> [Value] {
 	valueMap.sorted(by: \.key).map(\.value)
 }

@@ -9,7 +9,7 @@ public struct HTMLForm: Identifiable, Equatable, CustomDebugStringConvertible {
 	
 	public typealias ID = Tagged<HTMLForm, Int>
 	
-	public let entryId: FormEntry.ID?
+	public let entryId: FilledForm.ID?
 	
 	public let id: HTMLForm.ID
 	
@@ -62,14 +62,14 @@ enum HTMLFormBuilderError: Error {
 
 struct HTMLFormBuilder {
 	
-	public var entryId: FormEntry.ID?
+	public var entryId: FilledForm.ID?
 	public var id: HTMLForm.ID
 	public var name: String
 	public var formType: FormType
 	public var ePaper: Bool?
 	public var formStructure: [CSSField]
 	
-	init(formEntry: FormEntry) throws {
+	init(formEntry: FilledForm) throws {
 		guard let template = formEntry.formTemplate.first else {
 			throw HTMLFormBuilderError.noTemplate
 		}
@@ -117,6 +117,7 @@ struct HTMLFormBuilder {
 	
 	static func makeCSSFieldsIdsByIdx(formStructure: [_FormStructure]) -> [CSSField] {
 		var result: [CSSField] = []
+		var valueCounter = 0
 		formStructure.enumerated().forEach { idx, field in
 			let id = CSSField.ID.init(idx: idx, cssField: field)
 			guard let cssField = CSSField.init(id: id, formStructure: field) else { return }
