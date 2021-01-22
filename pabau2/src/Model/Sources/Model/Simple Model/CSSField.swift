@@ -3,11 +3,11 @@
 
 import Foundation
 import Tagged
-public struct CSSField: Equatable {
+public struct CSSField: Equatable, Identifiable {
 	
 	public typealias ID = Tagged<CSSField, String>
 
-	public let id: ID?
+	public let id: ID
 
 	public var cssClass: CSSClass
 
@@ -15,7 +15,7 @@ public struct CSSField: Equatable {
 
 	public let title: String?
 	
-	init?(id: Self.ID?, formStructure: _FormStructure) {
+	init?(id: Self.ID, formStructure: _FormStructure) {
 		do{
 			let cssClass = try CSSClass.init(_formStructure: formStructure)
 			self.id = id

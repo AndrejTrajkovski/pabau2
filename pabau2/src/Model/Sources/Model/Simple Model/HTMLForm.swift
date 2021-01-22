@@ -77,13 +77,14 @@ struct HTMLFormBuilder {
 		
 		self.entryId = formEntry.id
 		
-		let medicalResultsById = Dictionary.init(grouping: formEntry.medicalResults, by: { $0.labelName })
+		guard let medResults = formEntry.medicalResults else { return }
+		
+		let medicalResultsById = Dictionary.init(grouping: medResults, by: { $0.labelName })
 			.compactMapValues(\.first)
 		
 		var updated = [CSSField]()
 		self.formStructure.forEach {
-			if let id = $0.id,
-			   let medResult = medicalResultsById[id] {
+			if let medResult = medicalResultsById[$0.id] {
 				var new = $0
 				new.cssClass.updateWith(medicalResult: medResult)
 				updated.append(new)
@@ -115,17 +116,9 @@ struct HTMLFormBuilder {
 	}
 	
 	static func makeCSSFieldsIdsByIdx(formStructure: [_FormStructure]) -> [CSSField] {
-		var valueCounter = 0
 		var result: [CSSField] = []
 		formStructure.enumerated().forEach { idx, field in
-			let id: CSSField.ID?
-			if case CSSClassType.staticText = field.cssClass,
-			   case CSSClassType.heading = field.cssClass {
-				id = nil
-			} else {
-				id = CSSField.ID.init(idx: valueCounter, cssField: field)
-			}
-			valueCounter += 1
+			let id = CSSField.ID.init(idx: idx, cssField: field)
 			guard let cssField = CSSField.init(id: id, formStructure: field) else { return }
 			result.append(cssField)
 		}
@@ -212,7 +205,7 @@ extension HTMLForm {
 	
 	
 	public static func getMedHistory() -> HTMLForm {
-		HTMLForm(id: 1, name: "Medical History Form", formType: .history,
+		HTMLForm(id: 1, name: "Medical History Form", formType: .questionnaire,
 				 ePaper: false,
 				 formStructure:
 					[

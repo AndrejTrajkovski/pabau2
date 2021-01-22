@@ -4,7 +4,7 @@ public struct SignatureState: Codable, Equatable {
 	public mutating func resetDrawings() {
 		self.drawings = [SignatureDrawing]()
 	}
-	public init (signatureUrl: String) {
+	public init(signatureUrl: String = "") {
 		self.signatureUrl = signatureUrl
 	}
 }

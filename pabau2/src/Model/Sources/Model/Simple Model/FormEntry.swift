@@ -4,8 +4,8 @@ import CasePaths
 
 public struct FormEntry: Codable {
 	public typealias ID = Tagged<FormEntry, Int>
-	let id: ID
-	let medicalResults: [MedicalResult]
+	let id: ID?
+	let medicalResults: [MedicalResult]?
 	let success: Bool
 	let formTemplate: [_FormTemplate]
 //	let companyDateFormat: String
@@ -74,8 +74,10 @@ struct _FormStructure: Codable {
 			return extract(case: Values.string, from: self.values)!
 		case .radio, .checkbox, .select, .signature, .diagram_mini:
 			return self.title!
-		case .staticText, .heading:
-			fatalError("no values, should be filtered earlier")
+		case .staticText:
+			return "staticText"
+		case .heading:
+			return "heading"
 		case .cl_drugs:
 			return "" // TODO
 		case .image:

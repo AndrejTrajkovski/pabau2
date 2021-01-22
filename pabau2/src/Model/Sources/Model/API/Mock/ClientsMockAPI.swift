@@ -32,7 +32,7 @@ public struct ClientsMockAPI: MockAPI, ClientsAPI {
 			return mockSuccess(FormData.mockFIlledPrescriptions)
 		case .treatment:
 			return mockSuccess(FormData.mockFilledTreatments)
-		case .history:
+		case .questionnaire:
 			fatalError()
 		}
 	}

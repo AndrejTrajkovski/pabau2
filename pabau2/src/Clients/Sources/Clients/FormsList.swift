@@ -73,7 +73,7 @@ extension FormType {
 		case .treatment: return "doc.text"
 		case .prescription: return "doc.append"
 		case .consent: return "signature"
-		case .history: return ""
+		case .questionnaire: return ""
 		}
 	}
 }
