@@ -3,13 +3,13 @@ import Model
 import ComposableArchitecture
 
 public enum SelectFieldAction {
-	case select(id: Int)
+	case select(SelectChoice)
 }
 
 let selectFieldReducer: Reducer<SelectState, SelectFieldAction, FormEnvironment> = .init { state, action, env in
 	switch action {
-	case .select(let id):
-		state.selectedChoiceId = id
+	case .select(let choice):
+		state.selectedChoice = choice
 	}
 	return .none
 }
@@ -21,10 +21,10 @@ struct SelectField: View {
 		WithViewStore(store) { viewStore in
 			ForEach(viewStore.choices, id: \.self) { (choice: SelectChoice) in
 				SelectRow(choice: choice,
-						  isSelected: viewStore.selectedChoiceId == choice.id)
+						  isSelected: viewStore.selectedChoice == choice)
 					.padding(4)
 					.onTapGesture {
-						viewStore.send(.select(id: choice.id))
+						viewStore.send(.select(choice))
 					}
 			}
 		}

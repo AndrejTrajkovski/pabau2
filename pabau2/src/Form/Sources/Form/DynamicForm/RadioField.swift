@@ -3,7 +3,7 @@ import ComposableArchitecture
 import Model
 
 public enum RadioFieldAction {
-	case select(id: RadioChoice.ID?)
+	case select(choice: RadioChoice?)
 }
 
 extension RadioChoice.ID {
@@ -12,8 +12,8 @@ extension RadioChoice.ID {
 
 let radioFieldReducer = Reducer<RadioState, RadioFieldAction, FormEnvironment> { state, action, _ in
 	switch action {
-	case .select(let id):
-		state.selectedChoiceId = id
+	case .select(let choice):
+		state.selectedChoice = choice
 	}
 	return .none
 }
@@ -26,12 +26,13 @@ struct RadioField: View {
 		WithViewStore(store) { viewStore in
 			VStack {
 				Picker(selection:
-						viewStore.binding(get: { $0.selectedChoiceId },
-										  send: { .select(id: $0) }
+						viewStore.binding(get: { $0.selectedChoice },
+										  send: { .select(choice: $0) }
 				),
 					   label: EmptyView()) {
-					ForEach(viewStore.choices, id: \.id) { (choice: RadioChoice) in
-						Text(String(choice.title)).tag(choice.id as RadioChoice.ID?)
+					ForEach(viewStore.choices, id: \.self) { (choice: RadioChoice) in
+						Text(String(choice.title))
+							.tag(choice as RadioChoice?)
 					}
 				}.pickerStyle(SegmentedPickerStyle())
 			}

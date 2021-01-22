@@ -8,20 +8,20 @@ public let htmlFormReducer: Reducer<HTMLForm, HTMLFormAction, FormEnvironment> =
 		switch action {
 		case .complete:
 			break
-		case .fields:
+		case .rows:
 			break
 		}
 		return .none
 	},
 	cssFieldReducer.forEach(
-		state: \HTMLForm.formStructure.formStructure,
-		action: /HTMLFormAction.fields(idx:action:),
+		state: \HTMLForm.formStructure,
+		action: /HTMLFormAction.rows(idx:action:),
 		environment: { $0 }
 	)
 )
 
 public enum HTMLFormAction {
-	case fields(idx: Int, action: CSSClassAction)
+	case rows(idx: Int, action: CSSClassAction)
 	case complete(CompleteBtnAction)
 	//idea:
 //	case requests(JourneyFormRequestsAction<HTMLForm>)
@@ -64,11 +64,11 @@ struct HTMLFormView: View {
 	
 	public var body: some View {
 		VStack {
-			Text(self.viewStore.state).font(.title)
-			ForEachStore(store.scope(state: { $0.formStructure.formStructure },
-									 action: HTMLFormAction.fields(idx:action:)),
-						 content: { store in
-							FormSectionField(store: store,
+			Text(viewStore.state).font(.title)
+			ForEachStore(store.scope(state: { $0.formStructure },
+									 action: { HTMLFormAction.rows(idx:$0, action:$1) }),
+						 content: { localStore in
+							FormSectionField(store: localStore,
 											 isCheckingDetails: isCheckingDetails)
 						 }
 			)

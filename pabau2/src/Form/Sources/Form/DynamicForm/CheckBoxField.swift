@@ -3,8 +3,8 @@ import ComposableArchitecture
 import Model
 import Util
 
-public let checkBoxFieldReducer: Reducer<[CheckBoxChoice], CheckboxFieldAction, FormEnvironment> = checkBoxRowReducer.forEach(
-	state: \.self,
+public let checkBoxFieldReducer: Reducer<CheckBoxState, CheckboxFieldAction, FormEnvironment> = checkBoxRowReducer.forEach(
+	state: \CheckBoxState.rows,
 	action: /CheckboxFieldAction.rows(idx:action:),
 	environment: { $0 }
 )
@@ -27,11 +27,12 @@ public enum CheckBoxRowAction {
 
 struct CheckBoxField: View {
 
-	let store: Store<[CheckBoxChoice], CheckboxFieldAction>
+	let store: Store<CheckBoxState, CheckboxFieldAction>
 
 	var body: some View {
-		ForEachStore(store.scope(state: { $0 },
-								 action: CheckboxFieldAction.rows(idx:action:)), content: ChoiceRow.init(store:))
+		ForEachStore(store.scope(state: { $0.rows },
+								 action: CheckboxFieldAction.rows(idx:action:)),
+					 content: ChoiceRow.init(store:))
 	}
 }
 

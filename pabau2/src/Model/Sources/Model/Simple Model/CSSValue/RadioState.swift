@@ -1,13 +1,13 @@
 public struct RadioState: Codable, Equatable {
 	public let choices: [RadioChoice]
 	public var selectedChoice: RadioChoice? = nil
-
+	
 	public init (_ choices: [RadioChoice]) {
 		self.choices = choices
 	}
 }
 
-public struct RadioChoice: Codable, Equatable, Identifiable {
+public struct RadioChoice: Codable, Identifiable, Hashable {
 	public let title: String
 	public var id: String { title }
 	

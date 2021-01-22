@@ -63,7 +63,7 @@ public enum CSSClass: Equatable {
 			self = .signature(SignatureState(signatureUrl: stringValue))
 		case .checkbox:
 			let choices = try extractAndSortValues(_formStructure.values)
-				.map(\.value).map(CheckBoxChoice.init)
+				.map(\.value)
 			self = .checkboxes(CheckBoxState(choices))
 		case .select:
 			let choices = try extractAndSortValues(_formStructure.values)
@@ -97,10 +97,11 @@ public enum CSSClass: Equatable {
 			signature.signatureUrl = medicalResult.value
 			self = .signature(signature)
 		case .checkboxes(var checkboxes):
-			checkboxes.selected = medicalResult.value.components(separatedBy: ",")
+			checkboxes.selected = Set.init(
+				medicalResult.value.components(separatedBy: ",")
 				.compactMap { Data.init(base64Encoded: $0) }
 				.compactMap { String.init(data: $0, encoding: .utf8) }
-				.map(CheckBoxChoice.init(title:))
+			)
 			self = .checkboxes(checkboxes)
 		case .select(var selectState):
 			selectState.selectedChoice = SelectChoice.init(medicalResult.value)
