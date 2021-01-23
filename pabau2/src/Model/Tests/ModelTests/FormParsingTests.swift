@@ -11,27 +11,30 @@ final class FormParsingTests: XCTestCase {
 			let form = HTMLForm.init(builder: builder)
 			XCTAssertNotNil(form)
 			
-			let radio = extract(case: CSSClass.radio, from: form!.formStructure.first!.cssClass)
-			let radioExpected = RadioState(["No", "Yes"].map(RadioChoice.init))
-			XCTAssertEqual(radio, radioExpected)
-			
-			let staticText = extract(case: CSSClass.staticText, from: form!.formStructure[1].cssClass)
-			XCTAssertNotNil(staticText)
-			
-			let inputText = extract(case: CSSClass.input_text, from: form!.formStructure[2].cssClass)
-			let inputTextExpected = InputText(text: "Work Phone (opt)")
-			XCTAssertEqual(inputText, inputTextExpected)
-			
-			let checkbox = extract(case: CSSClass.checkboxes, from: form!.formStructure[12].cssClass)
+			let checkbox = extract(case: CSSClass.checkboxes, from: form!.formStructure[3].cssClass)
 			XCTAssertNotNil(checkbox)
-			XCTAssertEqual(checkbox!.checkboxes.count, 20)
-			XCTAssertEqual(checkbox!.checkboxes[2], "Collagen Therapy")
-			XCTAssertEqual(checkbox!.checkboxes.last!, "Removing Facial Veins")
+			let expectedSelected = Set.init(["ACP Treatment", "A.I.D.S. / H.I.V", "Circulatory"])
+			XCTAssertEqual(checkbox!.selected, expectedSelected)
 			
-			let textArea = extract(case: CSSClass.textarea, from: form!.formStructure[32].cssClass)
+			let radio = extract(case: CSSClass.radio, from: form!.formStructure[8].cssClass)
+			XCTAssertNotNil(radio)
+			let expectedSelectedRadioChoice = RadioChoice.init("No")
+			XCTAssertEqual(radio?.selectedChoice, expectedSelectedRadioChoice)
+			
+			let inputText = extract(case: CSSClass.input_text, from: form!.formStructure[6].cssClass)
+			XCTAssertNotNil(inputText)
+			let expectedInputTextValue = "qweqwe"
+			XCTAssertEqual(inputText!.text, expectedInputTextValue)
+			
+			let textArea = extract(case: CSSClass.textarea, from: form!.formStructure[24].cssClass)
 			XCTAssertNotNil(textArea)
-			XCTAssertEqual(textArea!.text, "Do you have any other health problems or medical conditions (not listed) that may help us in your treatment plan? PLEASE LIST:")
+			let expectedTextAreaValue = "Text area test test"
+			XCTAssertEqual(textArea!.text, expectedTextAreaValue)
 			
+			let signature = extract(case: CSSClass.signature, from: form!.formStructure[30].cssClass)
+			XCTAssertNotNil(signature)
+			let expectedSignatureUrl = "/cdn/medical_images/3470/medical_contact_photos/202008121059165f33bd74b70f5.png"
+			XCTAssertEqual(signature!.signatureUrl, expectedSignatureUrl)
 			
 		} catch {
 			print(error)
@@ -41,7 +44,7 @@ final class FormParsingTests: XCTestCase {
 	
 	func testHTMLFormTemplateParsing() {
 		do {
-			let formEntry = try decodeJSONFile(path: "MedicalHistoryForm", type: FilledForm.self)
+			let formEntry = try decodeJSONFile(path: "Client Medical History and Physical Assessment - Questionnaire", type: FilledForm.self)
 			let builder = try HTMLFormBuilder(formEntry: formEntry)
 			let form = HTMLForm.init(builder: builder)
 			XCTAssertNotNil(form)

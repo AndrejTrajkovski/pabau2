@@ -35,7 +35,7 @@ struct _FormTemplate: Codable {
 
 // MARK: - MedicalResult
 struct MedicalResult: Codable {
-	let labelName: CSSField.ID
+	let labelName: CSSFieldID.FakeID
 	let id, attrID, contactID: String
 	let value: String
 	let epaperImages: [JSONAny]
@@ -64,7 +64,7 @@ struct _FormStructure: Codable {
 	let cssClass: CSSClassType
 	let formStructureRequired: String
 	let values: Values?
-	let defaults: String
+	let defaults: String?
 	let linked, fldtype, fldwidth, trigger: String?
 	let title, multiple, dispScoreTotal: String?
 	

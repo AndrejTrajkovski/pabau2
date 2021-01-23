@@ -84,7 +84,8 @@ struct HTMLFormBuilder {
 		
 		var updated = [CSSField]()
 		self.formStructure.forEach {
-			if let medResult = medicalResultsById[$0.id] {
+			print($0.id.fakeId)
+			if let medResult = medicalResultsById[$0.id.fakeId] {
 				var new = $0
 				new.cssClass.updateWith(medicalResult: medResult)
 				updated.append(new)
@@ -119,7 +120,14 @@ struct HTMLFormBuilder {
 		var result: [CSSField] = []
 		var valueCounter = 0
 		formStructure.enumerated().forEach { idx, field in
-			let id = CSSField.ID.init(idx: idx, cssField: field)
+			print(valueCounter)
+			print(field.cssClass)
+			let fakeId = String(valueCounter) + field.keyString().lowercased()
+			let id = CSSField.ID.init(idx: idx, fakeId: fakeId)
+			if field.cssClass != .staticText &&
+				field.cssClass != .heading {
+				valueCounter += 1
+			}
 			guard let cssField = CSSField.init(id: id, formStructure: field) else { return }
 			result.append(cssField)
 		}

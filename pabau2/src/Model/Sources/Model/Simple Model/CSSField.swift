@@ -4,10 +4,8 @@
 import Foundation
 import Tagged
 public struct CSSField: Equatable, Identifiable {
-	
-	public typealias ID = Tagged<CSSField, String>
 
-	public let id: ID
+	public let id: CSSFieldID
 
 	public var cssClass: CSSClass
 
@@ -15,7 +13,7 @@ public struct CSSField: Equatable, Identifiable {
 
 	public let title: String?
 	
-	init?(id: Self.ID, formStructure: _FormStructure) {
+	init?(id: CSSFieldID, formStructure: _FormStructure) {
 		do{
 			let cssClass = try CSSClass.init(_formStructure: formStructure)
 			self.id = id
@@ -28,19 +26,20 @@ public struct CSSField: Equatable, Identifiable {
 	}
 }
 
-struct CSSFieldID: Identifiable {
-	let index: Int
-	let fakeId: String
-}
-
-extension CSSField.ID {
+public struct CSSFieldID: Hashable, Equatable {
 	
-	init(idx: Int, cssField: _FormStructure) {
-		let key = cssField.keyString()
-		self.init(idx: idx, string: key)
+	public typealias FakeID = Tagged<CSSFieldID, String>
+	
+	let index: Int
+	let fakeId: FakeID
+	
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(index)
+		hasher.combine(fakeId)
 	}
 	
-	init(idx: Int, string: String) {
-		self = Tagged(rawValue: String(idx) + string.lowercased())
+	init(idx: Int, fakeId: String) {
+		self.index = idx
+		self.fakeId = CSSFieldID.FakeID(rawValue: fakeId)
 	}
 }
