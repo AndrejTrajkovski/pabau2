@@ -1,10 +1,10 @@
 import Foundation
 
-struct LoginResponse: Codable {
+public struct LoginResponse: Codable, Equatable {
 	let success: Bool
 	let total: Int
 	let url: String
-	let users: [User]
+	public let users: [User]
 
 	enum CodingKeys: String, CodingKey {
 		case success, total

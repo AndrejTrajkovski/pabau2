@@ -25,7 +25,7 @@ public enum LoginViewAction: Equatable {
 public enum LoginAction: Equatable {
 	case login (email: String, password: String)
 	case forgotPass
-	case gotResponse(Result<User, LoginError>)
+	case gotResponse(Result<LoginResponse, LoginError>)
 }
 
 func handleLoginTapped(_ email: String, _ password: String, state: inout WalkthroughContainerState, apiClient: LoginAPI) -> Effect<LoginAction, Never> {
@@ -35,8 +35,8 @@ func handleLoginTapped(_ email: String, _ password: String, state: inout Walkthr
 	state.loginViewState.passValidationText = passValidationText(emptyPass)
 	if validEmail && !emptyPass {
 		state.loginViewState.loginLS = .loading
-		return
-			apiClient.login(email, password: password)
+		return apiClient.login(email, password: password)
+				.catchToEffect()
 				.map(LoginAction.gotResponse)
 				.receive(on: DispatchQueue.main)
 				.eraseToEffect()
@@ -68,12 +68,13 @@ public let loginReducer = Reducer<WalkthroughContainerState, LoginAction, LoginE
 		return .none
 	case .gotResponse(let result):
 		switch result {
-		case .success(let user):
+		case .success(let loginResponse):
 			state.loginViewState.loginLS = .gotSuccess
 			var userDefaults = environment.userDefaults
-			userDefaults.loggedInUser = user
-		case .failure:
-			state.loginViewState.loginLS = .gotError
+			userDefaults.loggedInUser = loginResponse.users.first!
+		case .failure(let error):
+			print(error)
+			state.loginViewState.loginLS = .gotError(error)
 		}
 		return .none
 	}
@@ -157,16 +158,16 @@ public struct LoginView: View {
 		print("LoginView body")
 		return VStack {
 			NavigationLink.emptyHidden(self.viewStore.state.isForgotPassActive,
-				ForgotPasswordView(self.store.scope(
-					state: { $0.forgotPass },
-					action: { .forgotPass($0)}), self.$email))
+									   ForgotPasswordView(self.store.scope(
+															state: { $0.forgotPass },
+															action: { .forgotPass($0)}), self.$email))
 			Login(store:
-				self.store.scope(state: { $0 },
-												action: { .login($0)}),
-						email: self.$email)
+					self.store.scope(state: { $0 },
+									 action: { .login($0)}),
+				  email: self.$email)
 			Spacer()
 		}.loadingView(.constant(self.viewStore.state.showsLoadingSpinner),
-									Texts.signingIn)
+					  Texts.signingIn)
 	}
 }
 

@@ -12,8 +12,8 @@ public let journeyFilterReducer = Reducer<JourneyFilterState, JourneyFilterActio
 			state.employees = employees
 			state.loadingState = .gotSuccess
 			state.selectedEmployeesIds = Set.init(employees.map { $0.id })
-		case .failure:
-			state.loadingState = .gotError
+		case .failure(let error):
+			state.loadingState = .gotError(error)
 		}
 		return .none
 	}

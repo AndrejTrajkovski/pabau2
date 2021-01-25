@@ -12,7 +12,7 @@ public enum LoadingState: Equatable {
 	case initial
 	case loading
 	case gotSuccess
-	case gotError
+	case gotError(Error)
 	public var isLoading: Bool {
 		guard case LoadingState.loading = self else { return false }
 		return true

@@ -53,8 +53,8 @@ public let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, Fo
 		case .success(let templates):
 			state.templates = IdentifiedArray(templates)
 			state.templatesLoadingState = .gotSuccess
-		case .failure:
-			state.templatesLoadingState = .gotError
+		case .failure(let error):
+			state.templatesLoadingState = .gotError(error)
 		}
 	case .onAppear(let formType):
 		state.templatesLoadingState = .loading

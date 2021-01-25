@@ -1,42 +1,51 @@
 import Foundation
 import ComposableArchitecture
 
-struct APIClient: LoginAPI {
+public struct APIClient: LoginAPI {
+	public init () {}
 	
 	var baseUrl: String = "https://crm.pabau.com"
 	var loggedInUser: User?
 	public var requestBuilderFactory: RequestBuilderFactory = RequestBuilderFactoryImpl()
 	
-	
-	func sendConfirmation(_ code: String, _ pass: String) -> Effect<ResetPassSuccess, RequestError> {
+	public func sendConfirmation(_ code: String, _ pass: String) -> Effect<ResetPassSuccess, RequestError> {
 		let requestBuilder: RequestBuilder<ResetPassSuccess>.Type = requestBuilderFactory.getBuilder()
 		let res = requestBuilder.init(method: "GET", URLString: "", parameters: [:], isBody: false)
-		return res.effect()
+		return res.publisher().eraseToEffect()
 	}
 	
-	func login(_ username: String, password: String) -> EffectWithResult<User, LoginError> {
-		return loginResponse(username, password: password).map { $0.map {
-			$0.users.first!
-		}}
-	}
-	
-	func login(_ username: String, password: String) -> Effect<LoginResponse, LoginError> {
-		let path = "OAuth2/staff/login-check.php"
+	public func login(_ username: String, password: String) -> Effect<LoginResponse, LoginError> {
+		let path = "/OAuth2/staff/login-check.php"
 		let URLString = baseUrl + path
 		var url = URLComponents(string: URLString)
 		let queryItems: [String: Any] = ["username": username, "password": password]
 		url?.queryItems = APIHelper.mapValuesToQueryItems(queryItems)
-		
+		print(URLString + (url?.string ?? ""))
 		let requestBuilder: RequestBuilder<LoginResponse>.Type = requestBuilderFactory.getBuilder()
+		let res = requestBuilder.init(method: "GET",
+									  URLString: (url?.string ?? ""),
+									  parameters: [:],
+									  isBody: false)
+		return res.publisher()
+			.mapError { LoginError.requestError($0) }
+			.eraseToEffect()
+	}
+	
+	public func resetPass(_ email: String) -> Effect<ForgotPassSuccess, ForgotPassError> {
+		let path = ""
+		let URLString = baseUrl + path
+		var url = URLComponents(string: URLString)
+//		let queryItems: [String: Any] = ["username": username, "password": password]
+//		url?.queryItems = APIHelper.mapValuesToQueryItems(queryItems)
+		
+		let requestBuilder: RequestBuilder<ForgotPassSuccess>.Type = requestBuilderFactory.getBuilder()
 		let res = requestBuilder.init(method: "GET",
 									  URLString: URLString + (url?.string ?? ""),
 									  parameters: [:],
 									  isBody: false)
-		return res.effect(/LoginError.requestError)
-	}
-	
-	func resetPass(_ email: String) -> Effect<ForgotPassSuccess, ForgotPassError> {
-		
+		return res.publisher()
+			.mapError { ForgotPassError.requestError($0) }
+			.eraseToEffect()
 	}
 }
 

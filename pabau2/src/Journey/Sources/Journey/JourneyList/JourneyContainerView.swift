@@ -125,7 +125,7 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 					state.loadingState = .gotSuccess
 				case .failure(let error):
 					print(error)
-					state.loadingState = .gotError
+					state.loadingState = .gotError(error)
 				}
 			case .searchedText(let searchText):
 				struct SearchJourneyId: Hashable {}
