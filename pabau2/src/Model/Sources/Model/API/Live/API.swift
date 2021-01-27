@@ -16,11 +16,11 @@ public class APIClient: LoginAPI, JourneyAPI {
 
 public enum APIPath: String {
 	//Login
-	case sendConfirmation = ""
+	case sendConfirmation
 	case login = "/OAuth2/staff/login-check.php"
 	case resetPass = "reset"
 	//Journey
-	
+	case getJourneys
 	//Calendar
 	
 	//Contacts/ Clients
@@ -104,10 +104,10 @@ extension APIClient {
 	}
 	
 	public func getEmployees(companyId: Company.ID) -> Effect<[Employee], RequestError> {
-		
+		fatalError()
 	}
 	
 	public func getTemplates(_ type: FormType) -> Effect<[FormTemplate], RequestError> {
-		
+		fatalError()
 	}
 }

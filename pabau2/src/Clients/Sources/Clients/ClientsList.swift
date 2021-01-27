@@ -15,6 +15,7 @@ let clientsListReducer: Reducer<ClientsState, ClientsListAction, ClientsEnvironm
 				state.selectedClient = ClientCardState(client: state.clients[id: id]!,
 																							 list: ClientCardListState())
 				return env.apiClient.getItemsCount(clientId: id)
+					.catchToEffect()
 					.map(ClientsListAction.gotItemsResponse)
 					.eraseToEffect()
 			case .onSearchText(let text):

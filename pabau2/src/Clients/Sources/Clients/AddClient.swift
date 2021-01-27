@@ -38,6 +38,7 @@ public let addClientReducer: Reducer<AddClientState, AddClientAction, ClientsEnv
 		switch action {
 		case .saveClient:
 			return env.apiClient.post(patDetails: state.patDetails)
+				.catchToEffect()
 				.map(AddClientAction.onResponseSave)
 				.eraseToEffect()
 		case .patDetails, .addPhoto, .onBackFromAddClient, .onResponseSave:

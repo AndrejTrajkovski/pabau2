@@ -99,7 +99,7 @@ let forgotPasswordReducer = Reducer<ForgotPassState, ForgotPasswordAction, Login
 public enum ForgotPasswordAction: Equatable {
 	case backBtnTapped
 	case sendRequest(email: String)
-	case gotResponse(Result<ForgotPassSuccess, ForgotPassError>)
+	case gotResponse(Result<ForgotPassSuccess, RequestError>)
 }
 
 struct ForgotPassword: View {

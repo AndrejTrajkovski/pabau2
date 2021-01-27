@@ -21,6 +21,7 @@ public let clientsContainerReducer: Reducer<ClientsState, ClientsAction, Clients
 			state.contactListLS = .loading
 			return env.apiClient
 				.getClients()
+				.catchToEffect()
 				.map(ClientsAction.gotClientsResponse)
 				.eraseToEffect()
 		case .gotClientsResponse(let result):

@@ -3,7 +3,7 @@ import Combine
 
 public struct LoginMockAPI: MockAPI, LoginAPI {
 	
-	public mutating func updateLoggedIn(user: User) {
+	public func updateLoggedIn(user: User) {
 		
 	}
 	
@@ -15,8 +15,8 @@ public struct LoginMockAPI: MockAPI, LoginAPI {
 	}
 	
 	public func login(_ username: String, password: String) -> Effect<LoginResponse, LoginError> {
-		let user = User(userID: "1", companyID: "", fullName: "", avatar: "", logo: "", expired: false, headerTheme: "", backgroundImage: "", videoURL: "", buttonCol: "", podURL: "", companyName: "", companyCity: "", company2Fa: 123, authorizedDevices: 123, googleAuth: 123, apiKey: "")
-		let response = LoginResponse(success: true, message: nil, total: 20, url: "", users: [user])
+		let user = User(userID: "1", companyID: "", fullName: "", avatar: "", logo: "", expired: false, companyName: "", apiKey: "")
+		let response = LoginResponse(success: true, message: nil, url: "", users: [user])
 		return Just(response)
 			.delay(for: .seconds(delay), scheduler: DispatchQueue.main)
 			.mapError { _ in LoginError.wrongCredentials }

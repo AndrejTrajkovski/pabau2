@@ -31,7 +31,8 @@ public let journeyFilterReducer = Reducer<JourneyFilterState, JourneyFilterActio
 		state.isShowingEmployees.toggle()
 	case .loadEmployees:
 		state.loadingState = .loading
-		return env.apiClient.getEmployees()
+		return env.apiClient.getEmployees(companyId: Company.ID.init(rawValue: 1))
+			.catchToEffect()
 			.map {.gotResponse($0)}
 			.eraseToEffect()
 	}

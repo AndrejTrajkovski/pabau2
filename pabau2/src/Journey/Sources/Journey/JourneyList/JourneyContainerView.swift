@@ -114,6 +114,7 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 			case .datePicker(.selectedDate(let date)):
 				state.loadingState = .loading
 				return environment.apiClient.getJourneys(date: date, searchTerm: nil)
+					.catchToEffect()
 					.map(JourneyAction.gotResponse)
 					.receive(on: DispatchQueue.main)
 					.eraseToEffect()
@@ -136,6 +137,7 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
                     .receive(on: DispatchQueue.main)
                     .eraseToEffect()
                     .debounce(id: SearchJourneyId(), for: 0.3, scheduler: DispatchQueue.main)
+					.catchToEffect()
                     .map(JourneyAction.gotResponse)
                     .cancellable(id: SearchJourneyId(), cancelInFlight: true)
 
@@ -147,6 +149,7 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 				state.loadingState = .loading
 				return environment.apiClient
 					.getJourneys(date: Date(), searchTerm: nil)
+					.catchToEffect()
                     .map(JourneyAction.gotResponse)
                     .receive(on: DispatchQueue.main)
 					.eraseToEffect()

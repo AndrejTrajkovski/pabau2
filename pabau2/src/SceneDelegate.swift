@@ -27,8 +27,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 			let user = userDefaults.loggedInUser
 			let hasSeenWalkthrough = userDefaults.hasSeenAppIntroduction
 			let env = AppEnvironment(
-				loginAPI: APIClient(),
-				journeyAPI: JourneyLiveAPI(),
+				loginAPI: APIClient(baseUrl: "https://crm.pabau.com", loggedInUser: nil),
+				journeyAPI: JourneyMockAPI(),
 				clientsAPI: ClientsMockAPI(),
 				userDefaults: userDefaults
 			)

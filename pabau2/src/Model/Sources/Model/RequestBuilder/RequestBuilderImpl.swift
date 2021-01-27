@@ -39,6 +39,7 @@ open class RequestBuilderImpl<T: Decodable>: RequestBuilder<T> {
 	override open func publisher() -> AnyPublisher<T, RequestError> {
 		do {
 			let request = try buildRequest()
+			print(request)
 			return URLSession.shared.dataTaskPublisher(for: request)
 				.mapError { error in
 					RequestError.networking(error)
