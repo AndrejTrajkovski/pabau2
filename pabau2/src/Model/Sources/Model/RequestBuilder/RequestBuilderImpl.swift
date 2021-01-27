@@ -30,6 +30,7 @@ open class RequestBuilderImpl<T: Decodable>: RequestBuilder<T> {
 		.flatMap(maxPublishers: .max(1)) { data in
 			return self.decode(data)
 		}
+		.mapError { $0 as? RequestError ?? .unknown }
 		.eraseToAnyPublisher()
 	}
 

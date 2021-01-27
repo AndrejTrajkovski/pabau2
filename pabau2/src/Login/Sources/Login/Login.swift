@@ -71,7 +71,9 @@ public let loginReducer = Reducer<WalkthroughContainerState, LoginAction, LoginE
 		case .success(let loginResponse):
 			state.loginViewState.loginLS = .gotSuccess
 			var userDefaults = environment.userDefaults
-			userDefaults.loggedInUser = loginResponse.users.first!
+			let loggedInUser = loginResponse.users.first!
+			userDefaults.loggedInUser = loggedInUser
+			environment.apiClient.updateLoggedIn(user: loggedInUser)
 		case .failure(let error):
 			print(error)
 			state.loginViewState.loginLS = .gotError(error)

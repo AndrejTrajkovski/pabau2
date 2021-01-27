@@ -2,8 +2,12 @@ import ComposableArchitecture
 import Combine
 
 public struct LoginMockAPI: MockAPI, LoginAPI {
+	public mutating func updateLoggedIn(user: User) {
+		
+	}
+	
 	public func sendConfirmation(_ code: String, _ pass: String) -> Effect<ResetPassSuccess, RequestError> {
-		Just(ResetPassSuccess())
+		Just(ResetPassSuccess(success: true, message: nil))
 			.delay(for: .seconds(delay), scheduler: DispatchQueue.main)
 			.mapError { _ in RequestError.unknown }
 			.eraseToEffect()
@@ -11,7 +15,7 @@ public struct LoginMockAPI: MockAPI, LoginAPI {
 	
 	public func login(_ username: String, password: String) -> Effect<LoginResponse, LoginError> {
 		let user = User(userID: "1", companyID: "", fullName: "", avatar: "", logo: "", expired: false, headerTheme: "", backgroundImage: "", videoURL: "", buttonCol: "", podURL: "", companyName: "", companyCity: "", company2Fa: 123, authorizedDevices: 123, googleAuth: 123, apiKey: "")
-		let response = LoginResponse(success: true, total: 20, url: "", users: [user])
+		let response = LoginResponse(success: true, message: nil, total: 20, url: "", users: [user])
 		return Just(response)
 			.delay(for: .seconds(delay), scheduler: DispatchQueue.main)
 			.mapError { _ in LoginError.wrongCredentials }
@@ -19,14 +23,14 @@ public struct LoginMockAPI: MockAPI, LoginAPI {
 	}
 	
 	public func resetPass(_ email: String) -> Effect<ForgotPassSuccess, ForgotPassError> {
-		Just(ForgotPassSuccess())
+		Just(ForgotPassSuccess(success: true, message: nil))
 			.delay(for: .seconds(delay), scheduler: DispatchQueue.main)
 			.mapError { _ in ForgotPassError.serviceNotAvailable }
 			.eraseToEffect()
 	}
 	
 	public func resetPass(_ email: String) -> EffectWithResult<ForgotPassSuccess, ForgotPassError> {
-		mockSuccess(ForgotPassSuccess())
+		mockSuccess(ForgotPassSuccess(success: true, message: nil))
 	}
 
 	let delay: Int
@@ -35,6 +39,6 @@ public struct LoginMockAPI: MockAPI, LoginAPI {
 	}
 
 	public func sendConfirmation(_ code: String, _ pass: String) -> EffectWithResult<ResetPassSuccess, Error> {
-		mockSuccess(ResetPassSuccess())
+		mockSuccess(ResetPassSuccess(success: true, message: nil))
 	}
 }

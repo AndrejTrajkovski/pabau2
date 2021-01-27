@@ -70,7 +70,8 @@ public enum RequestError: Error, Equatable {
 				 (.generalError, .generalError),
 				 (.serverError, .serverError),
 				 (.responseNotHTTP, .responseNotHTTP),
-				 (.unknown, .unknown):
+				 (.unknown, .unknown),
+				 (.apiError, .apiError):
 			return true
 		default:
 			return false
@@ -85,5 +86,6 @@ public enum RequestError: Error, Equatable {
 	case generalError(Error)
 	case serverError(String)
 	case responseNotHTTP
+	case apiError(String)
 	case unknown
 }

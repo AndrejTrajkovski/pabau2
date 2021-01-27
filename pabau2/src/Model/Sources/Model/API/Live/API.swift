@@ -1,11 +1,28 @@
 import Foundation
 import ComposableArchitecture
+import Combine
+
+
+//extension APIClient {
+//	static func live () -> Self {
+//		var loggedInUser: User?
+//		return Self(
+//			login: {
+//				Effect.future {
+//
+//				}
+//			}
+//		)
+//	}
+//}
 
 public struct APIClient: LoginAPI {
-	public init () {}
 	
+	public init() { }
+	
+	var cancellables = [AnyCancellable]()
 	var baseUrl: String = "https://crm.pabau.com"
-	var loggedInUser: User?
+	var loggedInUser: User? = nil
 	public var requestBuilderFactory: RequestBuilderFactory = RequestBuilderFactoryImpl()
 	
 	public func sendConfirmation(_ code: String, _ pass: String) -> Effect<ResetPassSuccess, RequestError> {
@@ -14,19 +31,26 @@ public struct APIClient: LoginAPI {
 		return res.publisher().eraseToEffect()
 	}
 	
+//	var login: (String,String) -> Effect<LoginResponse, LoginError>
+	
+	public mutating func updateLoggedIn(user: User) {
+		self.loggedInUser = user
+	}
+	
 	public func login(_ username: String, password: String) -> Effect<LoginResponse, LoginError> {
 		let path = "/OAuth2/staff/login-check.php"
 		let URLString = baseUrl + path
 		var url = URLComponents(string: URLString)
 		let queryItems: [String: Any] = ["username": username, "password": password]
 		url?.queryItems = APIHelper.mapValuesToQueryItems(queryItems)
-		print(URLString + (url?.string ?? ""))
 		let requestBuilder: RequestBuilder<LoginResponse>.Type = requestBuilderFactory.getBuilder()
-		let res = requestBuilder.init(method: "GET",
-									  URLString: (url?.string ?? ""),
+		
+		return requestBuilder.init(method: "GET",
+								   URLString: (url?.string ?? ""),
 									  parameters: [:],
 									  isBody: false)
-		return res.publisher()
+			.publisher()
+			.validate()
 			.mapError { LoginError.requestError($0) }
 			.eraseToEffect()
 	}
