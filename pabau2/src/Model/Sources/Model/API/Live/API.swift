@@ -67,6 +67,27 @@ extension APIClient {
 								   isBody: false)
 			.effect()
 	}
+	
+	func commonAnd(other: [String: String]) -> [String: String] {
+		commonParams().merging(other, uniquingKeysWith: { old, new in return new })
+	}
+	
+	func getUserParams() -> [String: String]? {
+		loggedInUser.map {
+			[
+				"company": $0.apiKey,
+				"user_id": $0.userID.rawValue,
+				"api_key": $0.apiKey,
+			]
+		}
+	}
+	
+	func commonParams() -> [String: String] {
+		let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+		let userParams = getUserParams() ?? [:]
+		let versionParams = ["app_version" : version ?? ""]
+		return versionParams.merging(userParams, uniquingKeysWith: { old, new in return old })
+	}
 }
 
 //MARK: - JourneyAPI
@@ -77,7 +98,7 @@ extension APIClient {
 		return requestBuilder.init(method: .GET,
 								   baseUrl: baseUrl,
 								   path: .getJourneys,
-								   queryParams: ["email": email],
+								   queryParams: commonAnd(other: [:]),
 								   isBody: false)
 			.effect()
 	}
