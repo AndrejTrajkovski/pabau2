@@ -2,6 +2,7 @@ import ComposableArchitecture
 import Combine
 
 public struct LoginMockAPI: MockAPI, LoginAPI {
+	
 	public mutating func updateLoggedIn(user: User) {
 		
 	}
@@ -22,14 +23,7 @@ public struct LoginMockAPI: MockAPI, LoginAPI {
 			.eraseToEffect()
 	}
 	
-	public func resetPass(_ email: String) -> Effect<ForgotPassSuccess, ForgotPassError> {
-		Just(ForgotPassSuccess(success: true, message: nil))
-			.delay(for: .seconds(delay), scheduler: DispatchQueue.main)
-			.mapError { _ in ForgotPassError.serviceNotAvailable }
-			.eraseToEffect()
-	}
-	
-	public func resetPass(_ email: String) -> EffectWithResult<ForgotPassSuccess, ForgotPassError> {
+	public func resetPass(_ email: String) -> Effect<ForgotPassSuccess, RequestError> {
 		mockSuccess(ForgotPassSuccess(success: true, message: nil))
 	}
 
@@ -38,7 +32,7 @@ public struct LoginMockAPI: MockAPI, LoginAPI {
 		self.delay = delay
 	}
 
-	public func sendConfirmation(_ code: String, _ pass: String) -> EffectWithResult<ResetPassSuccess, Error> {
+	public func sendConfirmation(_ code: String, _ pass: String) -> Effect<ResetPassSuccess, Error> {
 		mockSuccess(ResetPassSuccess(success: true, message: nil))
 	}
 }

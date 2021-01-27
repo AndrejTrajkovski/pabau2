@@ -2,39 +2,44 @@ import Foundation
 import Combine
 import ComposableArchitecture
 
+public enum HTTPMethod: String {
+	case GET
+	case POST
+}
 
 open class RequestBuilder<T> {
 	var credential: URLCredential?
 	var headers: [String: String]
-	public let parameters: [String: Any]?
+	public let queryParams: [String: Any?]?
 	public let isBody: Bool
-	public let method: String
-	public let URLString: String
+	public let method: HTTPMethod
+	public let baseUrl: String
+	public let path: APIPath
 
-	required public init(method: String, URLString: String, parameters: [String: Any]?, isBody: Bool, headers: [String: String] = [:]) {
+	required public init(method: HTTPMethod,
+						 baseUrl: String,
+						 path: APIPath,
+						 queryParams: [String: Any?]?,
+						 isBody: Bool,
+						 headers: [String: String] = [:]) {
+		self.baseUrl = baseUrl
+		self.path = path
 		self.method = method
-		self.URLString = URLString
-		self.parameters = parameters
+		self.queryParams = queryParams
 		self.isBody = isBody
 		self.headers = headers
 	}
 
-	func effect<DomainError: Error>(_ toDomainError: CasePath<DomainError, RequestError>) -> EffectWithResult<T, DomainError> {
-		return self.publisher()
-			.map { Result<T, DomainError>.success($0)}
-			.catch { Just(Result<T, DomainError>.failure(toDomainError.embed($0)))}
-			.eraseToEffect()
+	func effect<DomainError: Error>(toDomainError: @escaping (RequestError) -> DomainError) -> Effect<T, DomainError> {
+		fatalError("override in superclass")
+	}
+	
+	func effect() -> Effect<T, RequestError> {
+		fatalError("override in superclass")
 	}
 
-	func effect() -> EffectWithResult<T, RequestError> {
-		return self.publisher()
-			.map { Result<T, RequestError>.success($0)}
-			.catch { Just(Result<T, RequestError>.failure($0))}
-			.eraseToEffect()
-	}
-
-	open func publisher() -> AnyPublisher<T, RequestError> {
-		fatalError()
+	func publisher() -> AnyPublisher<T, RequestError> {
+		fatalError("override in superclass")
 	}
 
 	open func addHeaders(_ aHeaders: [String: String]) {
@@ -78,7 +83,7 @@ public enum RequestError: Error, Equatable {
 		}
 	}
 
-	case urlBuilderError
+	case urlBuilderError(String)
 	case emptyDataResponse
 	case nilHTTPResponse
 	case jsonDecoding(String)

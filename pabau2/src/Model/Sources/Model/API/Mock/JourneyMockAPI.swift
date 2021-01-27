@@ -4,15 +4,16 @@ import SwiftDate
 
 public struct JourneyMockAPI: MockAPI, JourneyAPI {
 	public init () {}
-    public func getJourneys(date: Date, searchTerm: String?) -> EffectWithResult<[Journey], RequestError> {
+	
+	public func getJourneys(date: Date, searchTerm: String?) -> Effect<[Journey], RequestError> {
 		mockSuccess(Self.mockJourneys, delay: 0.2)
 	}
-
-	public func getEmployees() -> EffectWithResult<[Employee], RequestError> {
+	
+	public func getEmployees(companyId: Company.ID) -> Effect<[Employee], RequestError> {
 		mockSuccess(Employee.mockEmployees, delay: 0.0)
 	}
-
-	public func getTemplates(_ type: FormType) -> EffectWithResult<[FormTemplate], RequestError> {
+	
+	public func getTemplates(_ type: FormType) -> Effect<[FormTemplate], RequestError> {
 		switch type {
 		case .consent:
 		  return mockSuccess(FormTemplate.mockConsents, delay: 0.1)

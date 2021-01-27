@@ -1,16 +1,17 @@
 import Combine
+import ComposableArchitecture
 
 public protocol ResponseStatus {
 	var success: Bool { get }
 	var message: String? { get }
 }
 
-extension Publisher where Output: ResponseStatus, Failure == RequestError {
+public extension Effect where Output: ResponseStatus {
 	
-	public func validate() -> AnyPublisher<Output, Failure> {
+	func validate() -> Effect<Output, RequestError> {
 		self.tryMap(validate(response:))
 			.mapError { $0 as? RequestError ?? .unknown}
-			.eraseToAnyPublisher()
+			.eraseToEffect()
 	}
 	
 	private func validate(response: Output) throws -> Output {
