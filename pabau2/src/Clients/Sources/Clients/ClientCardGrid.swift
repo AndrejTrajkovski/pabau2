@@ -17,12 +17,14 @@ let clientCardGridReducer: Reducer<ClientCardState, ClientCardBottomAction, Clie
 					return env.apiClient.getAppointments(clientId: state.client.id)
 						.catchToEffect()
 						.map { .child(.appointments(.action(.gotResult($0)))) }
+						.receive(on: DispatchQueue.main)
 						.eraseToEffect()
 				case .documents:
 					state.list.documents.childState.loadingState = .loading
 					return env.apiClient.getDocuments(clientId: state.client.id)
 						.catchToEffect()
 						.map { .child(.documents(.action( .gotResult($0)))) }
+						.receive(on: DispatchQueue.main)
 						.eraseToEffect()
 				case .prescriptions:
 					state.list.prescriptions.childState.loadingState = .loading
@@ -30,6 +32,7 @@ let clientCardGridReducer: Reducer<ClientCardState, ClientCardBottomAction, Clie
 																				clientId: state.client.id)
 						.catchToEffect()
 						.map { .child(.prescriptions(.action(.gotResult($0)))) }
+						.receive(on: DispatchQueue.main)
 						.eraseToEffect()
 				case .consents:
 					state.list.consents.childState.loadingState = .loading
@@ -37,6 +40,7 @@ let clientCardGridReducer: Reducer<ClientCardState, ClientCardBottomAction, Clie
 																				clientId: state.client.id)
 						.catchToEffect()
 						.map { .child(.consents(.action(.gotResult($0)))) }
+						.receive(on: DispatchQueue.main)
 						.eraseToEffect()
 				case .treatmentNotes:
 					state.list.treatmentNotes.childState.loadingState = .loading
@@ -44,36 +48,42 @@ let clientCardGridReducer: Reducer<ClientCardState, ClientCardBottomAction, Clie
 																				clientId: state.client.id)
 						.catchToEffect()
 						.map { .child(.treatmentNotes(.action(.gotResult($0)))) }
+						.receive(on: DispatchQueue.main)
 						.eraseToEffect()
 				case .communications:
 					state.list.communications.loadingState = .loading
 					return env.apiClient.getCommunications(clientId: state.client.id)
 						.catchToEffect()
 					.map { .child(.communications(.gotResult($0))) }
+						.receive(on: DispatchQueue.main)
 					.eraseToEffect()
 				case .alerts:
 					state.list.alerts.loadingState = .loading
 					return env.apiClient.getAlerts(clientId: state.client.id)
 						.catchToEffect()
 					.map { .child(.alerts(.gotResult($0))) }
+						.receive(on: DispatchQueue.main)
 					.eraseToEffect()
 				case .notes:
 					state.list.notes.loadingState = .loading
 					return env.apiClient.getNotes(clientId: state.client.id)
 						.catchToEffect()
 						.map { .child(.notes(.gotResult($0))) }
+						.receive(on: DispatchQueue.main)
 						.eraseToEffect()
 				case .financials:
 					state.list.financials.loadingState = .loading
 					return env.apiClient.getFinancials(clientId: state.client.id)
 						.catchToEffect()
 						.map { .child(.financials(.gotResult($0))) }
+						.receive(on: DispatchQueue.main)
 						.eraseToEffect()
 				case .details:
 					state.list.details.childState.loadingState = .loading
 					return env.apiClient.getPatientDetails(clientId: state.client.id)
 						.catchToEffect()
 						.map { .child(.details(.action(.gotResult($0)))) }
+						.receive(on: DispatchQueue.main)
 						.eraseToEffect()
 				case .photos:
 					state.list.photos.childState.loadingState = .loading
@@ -85,6 +95,7 @@ let clientCardGridReducer: Reducer<ClientCardState, ClientCardBottomAction, Clie
 							}.map(groupByDay(photoViewModel:))
 							return .child(.photos(.action(.gotResult(vms))))
 						}
+						.receive(on: DispatchQueue.main)
 						.eraseToEffect()
 				}
 			case .child:

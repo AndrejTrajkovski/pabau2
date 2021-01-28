@@ -26,26 +26,29 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 			let userDefaults = StandardUDConfig()
 			let user = userDefaults.loggedInUser
 			let hasSeenWalkthrough = userDefaults.hasSeenAppIntroduction
+			
+			let apiClient = APIClient(baseUrl: "https://crm.pabau.com", loggedInUser: nil)
+			
 			let env = AppEnvironment(
-				loginAPI: APIClient(baseUrl: "https://crm.pabau.com", loggedInUser: nil),
-				journeyAPI: JourneyMockAPI(),
-				clientsAPI: ClientsMockAPI(),
+				loginAPI: apiClient,
+				journeyAPI: apiClient,
+				clientsAPI: apiClient,
 				userDefaults: userDefaults
 			)
-      window.rootViewController = UIHostingController(
-		rootView: ContentView(
-			store: Store(
-				initialState: AppState(loggedInUser: user,
-									   hasSeenWalkthrough: hasSeenWalkthrough!
-				),
-				reducer: reducer,
-				environment: env
+			window.rootViewController = UIHostingController(
+				rootView: ContentView(
+					store: Store(
+						initialState: AppState(loggedInUser: user,
+											   hasSeenWalkthrough: hasSeenWalkthrough!
+						),
+						reducer: reducer,
+						environment: env
+					)
+				).environmentObject(KeyboardFollower())
 			)
-		).environmentObject(KeyboardFollower())
-	)
-      self.window = window
-      window.makeKeyAndVisible()
-    }
+			self.window = window
+			window.makeKeyAndVisible()
+		}
 	}
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {

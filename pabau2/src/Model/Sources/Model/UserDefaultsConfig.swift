@@ -3,7 +3,7 @@ public protocol UserDefaultsConfig {
 	var loggedInUser: User? { get set }
 }
 
-public struct StandardUDConfig: UserDefaultsConfig {
+public class StandardUDConfig: UserDefaultsConfig {
 	public init () {}
 
 	@UserDefault("has_seen_app_introduction", defaultValue: false)
