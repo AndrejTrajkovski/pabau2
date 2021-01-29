@@ -113,7 +113,8 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 				state.selectedFilter = filter
 			case .datePicker(.selectedDate(let date)):
 				state.loadingState = .loading
-				return environment.apiClient.getJourneys(date: date, searchTerm: nil)
+				return environment.apiClient.getAppointments(dates: [date], locationIds: [], employeesIds: [])
+					.map(with(date, curry(calendarResponseToJourneys(date:events:))))
 					.catchToEffect()
 					.map(JourneyAction.gotResponse)
 					.receive(on: DispatchQueue.main)
@@ -132,23 +133,25 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 				struct SearchJourneyId: Hashable {}
 
 				state.searchText = searchText
-                return environment.apiClient
-                    .getJourneys(date: Date(), searchTerm: searchText)
-                    .receive(on: DispatchQueue.main)
-                    .eraseToEffect()
-                    .debounce(id: SearchJourneyId(), for: 0.3, scheduler: DispatchQueue.main)
-					.catchToEffect()
-                    .map(JourneyAction.gotResponse)
-                    .cancellable(id: SearchJourneyId(), cancelInFlight: true)
+				fatalError()
+//                return environment.apiClient
+//					.getAppointments(dates: [Date()], locationIds: [], employeesIds: [])
+//                    .receive(on: DispatchQueue.main)
+//                    .eraseToEffect()
+//                    .debounce(id: SearchJourneyId(), for: 0.3, scheduler: DispatchQueue.main)
+//					.catchToEffect()
+//                    .map(JourneyAction.gotResponse)
+//                    .cancellable(id: SearchJourneyId(), cancelInFlight: true)
 
 			case .selectedJourney(let journey):
 				state.selectedJourney = journey
 			case .choosePathwayBackTap:
 				state.selectedJourney = nil
-			case .loadJourneys:
+			case .loadJourneys(let date):
 				state.loadingState = .loading
 				return environment.apiClient
-					.getJourneys(date: Date(), searchTerm: nil)
+					.getAppointments(dates: [Date()], locationIds: [], employeesIds: [])
+					.map(with(date, curry(calendarResponseToJourneys(date:events:))))
 					.catchToEffect()
                     .map(JourneyAction.gotResponse)
                     .receive(on: DispatchQueue.main)
@@ -276,14 +279,14 @@ public struct JourneyContainerView: View {
 func journeyCellAdapter(journey: Journey) -> JourneyCell {
 	return JourneyCell(
 		journey: journey,
-        color: Color.init(hex: journey.appointments.head.service?.color ?? "#000000"),
+        color: Color.init(hex: journey.first!.serviceColor ?? "#000000"),
 		time: "12:30",
-		imageUrl: journey.patient.avatar,
-		name: journey.patient.firstName + " " + journey.patient.lastName,
+		imageUrl: journey.first!.customerPhoto,
+		name: journey.first!.customerName ?? "",
 		services: journey.servicesString,
-		status: journey.appointments.head.status?.name,
-		employee: journey.employee.name,
-		paidStatus: journey.paid ?? "",
+		status: journey.first!.status?.name,
+		employee: journey.first!.employeeName,
+		paidStatus: "",
 		stepsComplete: 0,
 		stepsTotal: 3)
 }
@@ -298,7 +301,7 @@ struct JourneyList: View {
 	}
 	var body: some View {
 		List {
-			ForEach(journeys) { journey in
+			ForEach(journeys, id: \.hashValue) { journey in
 				journeyCellAdapter(journey: journey)
 					.contextMenu {
 						JourneyListContextMenu()

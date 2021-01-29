@@ -47,6 +47,7 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = Reducer.combine(
 			var journeyState = JourneyState()
 			journeyState.loadingState = .loading
 			state = .tabBar(TabBarState())
+			return env.journeyAPI
 		default:
 			break
 		}
@@ -144,7 +145,7 @@ struct LoginContainer: View {
 
 extension AppState {
 	init(loggedInUser: User?, hasSeenWalkthrough: Bool) {
-		if loggedInUser != nil {
+		if loggedInUser == nil {
 			self = .walkthrough(WalkthroughContainerState(hasSeenWalkthrough: hasSeenWalkthrough))
 		} else {
 			self = .tabBar(TabBarState())

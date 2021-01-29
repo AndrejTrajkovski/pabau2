@@ -80,8 +80,7 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 	calTypePickerReducer.pullback(
 		state: \.calTypePicker,
 		action: /CalendarAction.calTypePicker,
-		environment: { $0 })
-	,
+		environment: { $0 }),
 	calendarWeekViewReducer.optional.pullback(
 		state: \CalendarState.week,
 		action: /CalendarAction.week,

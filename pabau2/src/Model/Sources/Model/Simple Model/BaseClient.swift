@@ -1,6 +1,6 @@
 import Foundation
 
-public struct BaseClient: Codable, Identifiable, Equatable {
+public struct BaseClient: Codable, Identifiable, Equatable, Hashable {
 	public init(id: Int,
 								firstName: String,
 								lastName: String,

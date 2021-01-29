@@ -263,7 +263,8 @@ extension CalendarEvent {
 									 customerPhoto: client.avatar,
 									 roomId: room.id,
 									 employeeName: employee.name,
-									 roomName: room.name
+									 roomName: room.name,
+									 customerId: client.id
 			)
 			res.append(CalendarEvent.appointment(app))
 		}

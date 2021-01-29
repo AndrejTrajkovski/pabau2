@@ -13,7 +13,7 @@ public enum JourneyContainerAction {
 }
 
 public enum JourneyAction {
-	case loadJourneys
+	case loadJourneys(Date)
 	case selectedFilter(CompleteFilter)
 	case searchedText(String)
 	case gotResponse(Result<[Journey], RequestError>)
