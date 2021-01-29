@@ -27,7 +27,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 			let user = userDefaults.loggedInUser
 			let hasSeenWalkthrough = userDefaults.hasSeenAppIntroduction
 			
-			let apiClient = APIClient(baseUrl: "https://crm.pabau.com", loggedInUser: nil)
+			let apiClient = APIClient(baseUrl: "https://crm.pabau.com/", loggedInUser: nil)
 			
 			let env = AppEnvironment(
 				loginAPI: apiClient,

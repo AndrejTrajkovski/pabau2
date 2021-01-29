@@ -8,7 +8,7 @@ public class APIClient: LoginAPI {
 		self.loggedInUser = loggedInUser
 	}
 	
-	private(set) var baseUrl: String = "https://crm.pabau.com"
+	private(set) var baseUrl: String = "https://crm.pabau.com/"
 	private var loggedInUser: User? = nil
     let requestBuilderFactory: RequestBuilderFactory = RequestBuilderFactoryImpl()
 }
