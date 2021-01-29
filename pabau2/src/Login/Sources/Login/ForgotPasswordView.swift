@@ -77,6 +77,7 @@ let forgotPasswordReducer = Reducer<ForgotPassState, ForgotPasswordAction, Login
 			if isValid {
 				state.loadingState = .loading
 				return environment.apiClient.resetPass(email)
+						.catchToEffect()
 						.map(ForgotPasswordAction.gotResponse)
 						.receive(on: DispatchQueue.main)
 						.eraseToEffect()
@@ -88,8 +89,8 @@ let forgotPasswordReducer = Reducer<ForgotPassState, ForgotPasswordAction, Login
 			case .success:
 				state.loadingState = .gotSuccess
 				state.navigation.append(.checkEmailScreen)
-			case .failure:
-				state.loadingState = .gotError
+			case .failure(let error):
+				state.loadingState = .gotError(error)
 			}
 			return .none
 		}
@@ -98,7 +99,7 @@ let forgotPasswordReducer = Reducer<ForgotPassState, ForgotPasswordAction, Login
 public enum ForgotPasswordAction: Equatable {
 	case backBtnTapped
 	case sendRequest(email: String)
-	case gotResponse(Result<ForgotPassSuccess, ForgotPassError>)
+	case gotResponse(Result<ForgotPassSuccess, RequestError>)
 }
 
 struct ForgotPassword: View {

@@ -22,6 +22,7 @@ public let clientsContainerReducer: Reducer<ClientsState, ClientsAction, Clients
 			state.contactListLS = .loading
 			return env.apiClient
                 .getClients(search: nil, offset: state.clients.count)
+                .catchToEffect()
 				.map(ClientsAction.gotClientsResponse)
                 .receive(on: DispatchQueue.main)
 				.eraseToEffect()
@@ -30,8 +31,8 @@ public let clientsContainerReducer: Reducer<ClientsState, ClientsAction, Clients
 			case .success(let contacts):
 				state.clients = .init(contacts)
 				state.contactListLS = .gotSuccess
-			case .failure:
-				state.contactListLS = .gotError
+			case .failure(let error):
+				state.contactListLS = .gotError(error)
 			}
 		case .list:
 			break

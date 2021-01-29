@@ -38,6 +38,7 @@ let chooseClientsReducer =
                     search: nil,
                     offset: state.clients.count
                 )
+                .catchToEffect()
                 .map(ChooseClientsAction.gotClientsResponse)
                 .receive(on: DispatchQueue.main)
                 .eraseToEffect()
@@ -61,6 +62,7 @@ let chooseClientsReducer =
                     search: state.isSearching ? state.searchText : nil,
                     offset: state.clients.count
                 )
+                .catchToEffect()
                 .map(ChooseClientsAction.gotClientsResponse)
                 .receive(on: DispatchQueue.main)
                 .eraseToEffect()
@@ -72,6 +74,7 @@ let chooseClientsReducer =
         case .loadMoreClients:
             return env.apiClient
                 .getClients(search: nil, offset: state.clients.count)
+                .catchToEffect()
                 .map(ChooseClientsAction.gotClientsResponse)
                 .receive(on: DispatchQueue.main)
                 .eraseToEffect()

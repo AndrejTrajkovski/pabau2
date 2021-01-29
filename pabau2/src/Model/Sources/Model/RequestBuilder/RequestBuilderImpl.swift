@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import ComposableArchitecture
 
 public protocol RequestBuilderFactory {
     func getBuilder<T: Decodable>() -> RequestBuilder<T>.Type
@@ -13,24 +14,47 @@ class RequestBuilderFactoryImpl: RequestBuilderFactory {
 }
 
 open class RequestBuilderImpl<T: Decodable>: RequestBuilder<T> {
-
-	override open func publisher() -> AnyPublisher<T, RequestError> {
-		guard let url = URL(string: self.URLString) else {
-			return Fail(error: RequestError.urlBuilderError).eraseToAnyPublisher()
+	
+	func buildRequest() throws -> URLRequest {
+		guard var urlComponents = URLComponents(string: baseUrl + path.rawValue) else {
+			throw RequestError.urlBuilderError("Invalid path: \(baseUrl + path.rawValue)")
 		}
+		if let queryParams = queryParams {
+			urlComponents.queryItems = APIHelper.mapValuesToQueryItems(queryParams)
+		}
+		guard let url = urlComponents.url else {
+			throw RequestError.urlBuilderError("Invalid url components: \(urlComponents.description)")
+		}
+		
 		var request = URLRequest.init(url: url)
 		request.allHTTPHeaderFields = ["Content-Type": "application/json"]
+		request.httpMethod = method.rawValue
+		return request
+	}
 
-		return URLSession.shared.dataTaskPublisher(for: request)
-			.mapError { error in
-				RequestError.networking(error)
+	override func effect() -> Effect<T, RequestError> {
+		publisher().eraseToEffect()
+	}
+	
+	override open func publisher() -> AnyPublisher<T, RequestError> {
+		do {
+			let request = try buildRequest()
+			print(request)
+			return URLSession.shared.dataTaskPublisher(for: request)
+				.mapError { error in
+					RequestError.networking(error)
+			}
+			.tryMap (self.validate)
+			.mapError { $0 as? RequestError ?? .unknown }
+			.flatMap(maxPublishers: .max(1)) { data in
+				return self.decode(data)
+			}
+			.eraseToAnyPublisher()
+		} catch {
+			return Fail(error: error)
+				.mapError { $0 as? RequestError ?? .unknown}
+				.eraseToAnyPublisher()
 		}
-		.tryMap (self.validate)
-		.mapError { $0 as? RequestError ?? .unknown }
-		.flatMap(maxPublishers: .max(1)) { data in
-			return self.decode(data)
-		}
-		.eraseToAnyPublisher()
 	}
 
 	func validate(data: Data, response: URLResponse) throws -> Data {

@@ -1,7 +1,8 @@
 import ComposableArchitecture
 
 public protocol LoginAPI {
-	func sendConfirmation(_ code: String, _ pass: String) -> EffectWithResult<ResetPassSuccess, RequestError>
-	func login(_ username: String, password: String) -> EffectWithResult<User, LoginError>
-	func resetPass(_ email: String) -> EffectWithResult<ForgotPassSuccess, ForgotPassError>
+	func sendConfirmation(_ code: String, _ pass: String) -> Effect<ResetPassSuccess, RequestError>
+	func login(_ username: String, password: String) -> Effect<LoginResponse, LoginError>
+	func resetPass(_ email: String) -> Effect<ForgotPassSuccess, RequestError>
+	func updateLoggedIn(user: User)
 }

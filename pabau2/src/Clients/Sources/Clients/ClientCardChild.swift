@@ -98,7 +98,7 @@ struct ClientCardChildReducer<T: Equatable> {
 		case .gotResult(let result):
 			switch result {
 			case .failure(let error):
-				state.loadingState = .gotError
+				state.loadingState = .gotError(error)
 			case .success(let success):
 				state.loadingState = .gotSuccess
 				state.state = success

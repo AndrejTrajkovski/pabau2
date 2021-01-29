@@ -112,6 +112,7 @@ func handle (_ code: String, _ newPass: String, _ confirmPass: String, _ state: 
 	case .success(let resetPassReq):
 		state.loadingState = .loading
 		return apiClient.sendConfirmation(resetPassReq.code, resetPassReq.newPass)
+			.catchToEffect()
 			.map(ResetPasswordAction.gotResponse)
 			.eraseToEffect()
 	case .failure:
@@ -125,8 +126,8 @@ func handle(_ result: Result<ResetPassSuccess, RequestError>, _ state: inout Res
 		state.loadingState = .gotSuccess
 		state.navigation.append(.passChangedScreen)
 		return .none
-	case .failure:
-		state.loadingState = .gotError
+	case .failure(let error):
+		state.loadingState = .gotError(error)
 		return .none
 	}
 }

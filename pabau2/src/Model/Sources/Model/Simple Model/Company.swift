@@ -1,11 +1,11 @@
-//
-// Company.swift
-
+import Tagged
 import Foundation
 
 public struct Company: Codable, Identifiable, Equatable {
 
-    public let id: Int
+	public typealias ID = Tagged<Company, Int>
+	
+    public let id: ID
 
     public let name: String
 
@@ -26,7 +26,7 @@ public struct Company: Codable, Identifiable, Equatable {
     /** Paired with user. */
     public let expired: Bool?
     public init(id: Int, name: String, logo: String, pins: [Int]? = nil, backgroundImage: String? = nil, userId: Int? = nil, buttonCol: String? = nil, apiKey: String? = nil, expired: Bool? = nil) {
-        self.id = id
+		self.id = ID.init(rawValue: id)
         self.name = name
         self.logo = logo
         self.pins = pins

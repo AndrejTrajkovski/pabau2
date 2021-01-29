@@ -10,6 +10,7 @@ let chooseServiceReducer =
         case .onAppear:
             state.searchText = ""
             return env.apiClient.getServices()
+                .catchToEffect()
                 .map(ChooseServiceAction.gotServiceResponse)
                 .receive(on: DispatchQueue.main)
                 .eraseToEffect()

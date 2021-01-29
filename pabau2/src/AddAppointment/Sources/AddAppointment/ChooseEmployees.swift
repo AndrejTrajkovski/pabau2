@@ -32,6 +32,7 @@ let chooseEmployeesReducer =
         case .onAppear:
             state.searchText = ""
             return env.apiClient.getEmployees()
+                .catchToEffect()
                 .map(ChooseEmployeesAction.gotEmployeeResponse)
                 .receive(on: DispatchQueue.main)
                 .eraseToEffect()

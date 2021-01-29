@@ -20,6 +20,7 @@ let clientsListReducer: Reducer<ClientsState, ClientsListAction, ClientsEnvironm
 					list: ClientCardListState()
                 )
 				return env.apiClient.getItemsCount(clientId: id)
+					.catchToEffect()
 					.map(ClientsListAction.gotItemsResponse)
 					.eraseToEffect()
             case .identified(id: let id, action: .onAppear):
@@ -29,6 +30,7 @@ let clientsListReducer: Reducer<ClientsState, ClientsListAction, ClientsEnvironm
                         search: nil,
                         offset: state.clients.count
                     )
+                    .catchToEffect()
                     .receive(on: DispatchQueue.main)
                     .eraseToEffect()
                     .debounce(id: ClientsId(), for: 0.3, scheduler: DispatchQueue.main)
@@ -42,6 +44,7 @@ let clientsListReducer: Reducer<ClientsState, ClientsListAction, ClientsEnvironm
                         search: text,
                         offset: 0
                     )
+                    .catchToEffect()
                     .receive(on: DispatchQueue.main)
                     .eraseToEffect()
                     .debounce(id: ClientsId(), for: 0.3, scheduler: DispatchQueue.main)
@@ -54,8 +57,8 @@ let clientsListReducer: Reducer<ClientsState, ClientsListAction, ClientsEnvironm
                     state.clients = .init(state.searchText.isEmpty ? state.clients + contacts : [])
                     state.notFoundClients = state.clients.isEmpty
                     state.contactListLS = .gotSuccess
-                case .failure:
-                    state.contactListLS = .gotError
+                case .failure(let error):
+                    state.contactListLS = .gotError(error)
                 }
 			case .gotItemsResponse(let result):
 				guard case .success(let count) = result else { break }
