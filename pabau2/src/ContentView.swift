@@ -47,7 +47,7 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = Reducer.combine(
 			var journeyState = JourneyState()
 			journeyState.loadingState = .loading
 			state = .tabBar(TabBarState())
-			return env.journeyAPI
+			return .none
 		default:
 			break
 		}

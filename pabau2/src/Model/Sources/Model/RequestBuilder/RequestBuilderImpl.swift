@@ -69,7 +69,7 @@ open class RequestBuilderImpl<T: Decodable>: RequestBuilder<T> {
 
 	func decode<T: Decodable>(_ data: Data) -> AnyPublisher<T,
 		RequestError> {
-			let decoder = JSONDecoder()
+		let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(.rfc3339)
 
 			return Just(data)

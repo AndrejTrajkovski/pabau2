@@ -3,7 +3,7 @@ import Tagged
 
 public struct Shift: Codable {
 	let rotaID: Rota.ID
-	let date, startTime, endTime: String
+	public let date, startTime, endTime: Date
 	let userID: Int
 	let userName, locationName, locColor: String
 	let locationID, roomID: Int

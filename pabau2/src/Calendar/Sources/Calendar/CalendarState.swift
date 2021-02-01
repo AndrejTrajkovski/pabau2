@@ -209,14 +209,15 @@ extension CalendarState {
 		self.chosenLocationsIds = Location.mock().map(\.id)
 		self.chosenRoomsIds = self.rooms.mapValues { $0.map(\.id) }
 		self.chosenEmployeesIds = self.employees.mapValues { $0.map(\.id) }
-		shifts = Shift.mock().mapValues {
-			$0.mapValues {
-				$0.mapValues {
-					let jzshifts = $0.map { JZShift.init(shift: $0)}
-					return [JZShift].init(jzshifts)
-				}
-			}
-		}
+		shifts = [:]
+//		shifts = Shift.mock().mapValues {
+//			$0.mapValues {
+//				$0.mapValues {
+//					let jzshifts = $0.map { JZShift.init(shift: $0)}
+//					return [JZShift].init(jzshifts)
+//				}
+//			}
+//		}
 		self.expandedLocationsIds = locations.map(\.id)
 		self.isShowingFilters = false
 	}
