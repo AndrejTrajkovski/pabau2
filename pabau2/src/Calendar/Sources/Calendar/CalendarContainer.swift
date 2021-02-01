@@ -9,6 +9,7 @@ import AddBookout
 import Combine
 import AddShift
 import Filters
+import Appointments
 
 public typealias CalendarEnvironment = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
 

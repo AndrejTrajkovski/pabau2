@@ -10,6 +10,7 @@ import AddBookout
 import AddShift
 import Filters
 import FSCalendar
+import Appointments
 
 public struct CalendarContainerState: Equatable {
 	public init(addAppointment: AddAppointmentState?, calendar: CalendarState) {

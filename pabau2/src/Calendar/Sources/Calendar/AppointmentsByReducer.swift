@@ -1,31 +1,7 @@
 import Model
 import Foundation
-import JZCalendarWeekView
 import ComposableArchitecture
 import SwiftDate
-import AddBookout
-
-public struct EventsBy<SubsectionHeader: Identifiable & Equatable> {
-
-	var appointments: [Date: [Location.ID: [SubsectionHeader.ID: IdentifiedArrayOf<CalendarEvent>]]]
-	init(events: [CalendarEvent],
-		 locationsIds: [Location.ID],
-		 subsections: [SubsectionHeader],
-		 sectionKeypath: KeyPath<CalendarEvent, Location.ID>,
-		 subsKeypath: KeyPath<CalendarEvent, SubsectionHeader.ID>) {
-		self.appointments = SectionHelper.group(events,
-												locationsIds,
-												subsections,
-												sectionKeypath,
-												subsKeypath)
-	}
-
-	func flatten() -> [CalendarEvent] {
-		return appointments.flatMap { $0.value }.flatMap { $0.value }.flatMap { $0.value }
-	}
-}
-
-extension EventsBy: Equatable { }
 
 public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
 	let reducer = Reducer<CalendarSectionViewState<Subsection>, SubsectionCalendarAction<Subsection>, Any> { state, action, _ in

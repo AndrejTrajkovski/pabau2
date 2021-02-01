@@ -67,6 +67,7 @@
 		8297A2B423D9BA0200D091FF /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8298A11324D486960079BFE9 /* Clients */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Clients; sourceTree = "<group>"; };
 		829D61FF24D18CF90049D5D0 /* FSCalendarSwiftUI */ = {isa = PBXFileReference; lastKnownFileType = folder; path = FSCalendarSwiftUI; sourceTree = "<group>"; };
+		82AEA3AF25C8C02A0016E7BE /* Appointments */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Appointments; sourceTree = "<group>"; };
 		82BE2F4423D97D9C00B3678A /* pabau2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pabau2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		82BE2F4723D97D9C00B3678A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		82BE2F4923D97D9C00B3678A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -171,6 +172,7 @@
 		82CACDF7241027320021E1DE /* src */ = {
 			isa = PBXGroup;
 			children = (
+				82AEA3AF25C8C02A0016E7BE /* Appointments */,
 				08C726E52587644200F622CB /* Fonts */,
 				74DD9D31256EAB0E00CC3920 /* Communication */,
 				8246DB37256FCE2300F5D87E /* Filters */,
