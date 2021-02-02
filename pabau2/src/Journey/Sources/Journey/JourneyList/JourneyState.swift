@@ -8,8 +8,6 @@ import Filters
 
 public struct JourneyState: Equatable {
 	public init() {}
-
-	var selectedDate: Date = Date()
 	public var loadingState: LoadingState = .initial
 	var journeys: Set<Journey> = Set()
 	var selectedFilter: CompleteFilter = .all

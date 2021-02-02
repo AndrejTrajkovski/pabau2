@@ -98,7 +98,7 @@ struct ContentView: View {
 		return self.store.scope(
 			state: {
                 extract(case: AppState.tabBar, from: $0) ??
-                    TabBarState(journeyState: JourneyState(),
+                    TabBarState(journey: JourneyState(),
                                 clients: ClientsState(),
                                 calendar: CalendarState(),
                                 settings: SettingsState(),

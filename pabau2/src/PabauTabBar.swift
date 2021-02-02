@@ -20,7 +20,8 @@ public typealias TabBarEnvironment = (
 
 public struct TabBarState: Equatable {
 	public var addAppointment: AddAppointmentState?
-	public var journeyState: JourneyState
+	var selectedDate: Date = Date()
+	public var journey: JourneyState
 	public var clients: ClientsState
 	public var calendar: CalendarState
 	public var settings: SettingsState
@@ -40,12 +41,14 @@ public struct TabBarState: Equatable {
 
 	public var journeyContainer: JourneyContainerState {
 		get {
-			JourneyContainerState(journey: journeyState,
-								  employeesFilter: employeesFilter)
+			JourneyContainerState(journey: journey,
+								  employeesFilter: employeesFilter,
+								  selectedDate: self.selectedDate)
 		}
 		set {
-			self.journeyState = newValue.journey
+			self.journey = newValue.journey
 			self.employeesFilter = newValue.employeesFilter
+			self.selectedDate = newValue.selectedDate
 		}
 	}
 }
@@ -250,7 +253,7 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
 
 extension TabBarState {
 	public init() {
-		self.journeyState = JourneyState()
+		self.journey = JourneyState()
 		self.clients = ClientsState()
 		self.calendar = CalendarState()
 		self.settings = SettingsState()

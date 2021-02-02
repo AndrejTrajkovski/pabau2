@@ -10,6 +10,7 @@ public enum JourneyContainerAction {
 	case checkIn(CheckInContainerAction)
 	case toggleEmployees
     case searchQueryChanged(JourneyAction)
+	case datePicker(CalendarDatePickerAction)
 }
 
 public enum JourneyAction {
@@ -19,5 +20,4 @@ public enum JourneyAction {
 	case gotResponse(Result<[Journey], RequestError>)
 	case selectedJourney(Journey)
 	case choosePathwayBackTap
-	case datePicker(CalendarDatePickerAction)
 }
