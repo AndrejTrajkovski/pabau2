@@ -15,4 +15,7 @@ public enum APIPath: String {
 
     //Employee
     case getEmployees
+
+    //Appointments
+    case getBookoutReasons = "OAuth2/appointments/get_bookout_reasons.php"
 }
