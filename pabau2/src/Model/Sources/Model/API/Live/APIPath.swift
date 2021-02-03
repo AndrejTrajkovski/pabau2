@@ -8,5 +8,5 @@ public enum APIPath: String {
 	//Calendar
 	
 	//Contacts/ Clients
-	
+	case getClients = "/OAuth2/clients/get_clients.php"
 }

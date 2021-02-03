@@ -22,14 +22,17 @@ public let clientsContainerReducer: Reducer<ClientsState, ClientsAction, Clients
 			return env.apiClient
 				.getClients()
 				.catchToEffect()
+                .receive(on: DispatchQueue.main)
 				.map(ClientsAction.gotClientsResponse)
 				.eraseToEffect()
 		case .gotClientsResponse(let result):
+            
 			switch result {
 			case .success(let contacts):
 				state.clients = .init(contacts)
 				state.contactListLS = .gotSuccess
 			case .failure(let error):
+                print(error)
 				state.contactListLS = .gotError(error)
 			}
 		case .list:
@@ -42,12 +45,12 @@ public let clientsContainerReducer: Reducer<ClientsState, ClientsAction, Clients
 public struct ClientsState: Equatable {
 	public init () { }
 	var contactListLS: LoadingState = .initial
-	var clients: IdentifiedArrayOf<Client> = []
+    var clients: [Client] = []
 	var addClient: AddClientState?
 	var selectedClient: ClientCardState?
 	var searchText: String = ""
 
-	var filteredClients: IdentifiedArrayOf<Client> {
+    var filteredClients: [Client] {
 		return clients.filter {
 			guard !searchText.isEmpty else { return true }
 			return

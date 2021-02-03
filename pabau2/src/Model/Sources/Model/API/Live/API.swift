@@ -61,8 +61,8 @@ extension APIClient {
 	func getUserParams() -> [String: String]? {
 		loggedInUser.map {
 			[
-				"company": $0.apiKey,
 				"user_id": "\($0.userID)",
+				"company": $0.companyID,
 				"api_key": $0.apiKey,
 			]
 		}
@@ -101,11 +101,23 @@ extension APIClient {
 //MARK: - LoginAPI: ClientApi
 extension APIClient {
 	public func getClients() -> Effect<[Client], RequestError> {
-		fatalError("TODO Cristian")
+        let requestBuilder: RequestBuilder<ClientResponse>.Type = requestBuilderFactory.getBuilder()
+        return requestBuilder.init(method: .GET,
+                                   baseUrl: baseUrl,
+                                   path: .getClients,
+                                   queryParams: commonAnd(other: [:]),
+                                   isBody: false)
+            .effect()
+            .validate()
+            .mapError { $0 }
+            .map { $0.clients }
+            .eraseToEffect()
 	}
 	
 	public func getItemsCount(clientId: Int) -> Effect<ClientItemsCount, RequestError> {
-		fatalError("TODO Cristian")
+        Just(ClientItemsCount.init(id: 1, appointments: 2, photos: 4, financials: 6, treatmentNotes: 3, presriptions: 10, documents: 15, communications: 123, consents: 4381, alerts: 123, notes: 0))
+            .mapError { _ in RequestError.emptyDataResponse }
+            .eraseToEffect()
 	}
 	
 	public func getAppointments(clientId: Int) -> Effect<[Appointment], RequestError> {
