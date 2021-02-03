@@ -10,6 +10,7 @@ import Form
 import Overture
 import Filters
 import SharedComponents
+import Appointments
 
 public typealias JourneyEnvironment = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
 
@@ -78,26 +79,23 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 				.receive(on: DispatchQueue.main)
 				.eraseToEffect()
 		case .gotResponse(let result):
-			fatalError()
-//			print(result)
-//			switch result {
-//			case .success(let journeys):
-//				state.journeys = journeys
-//				state.loadingState = .gotSuccess
-//			case .failure(let error):
-//				print(error)
-//				state.loadingState = .gotError(error)
-//			}
+			print(result)
+			switch result {
+			case .success(let appointments):
+				state.appointments.refresh()
+				state.loadingState = .gotSuccess
+			case .failure(let error):
+				print(error)
+				state.loadingState = .gotError(error)
+			}
 		case .loadJourneys(let date):
-			fatalError()
-//			state.loadingState = .loading
-//			return env.apiClient
-//				.getAppointments(dates: [Date()], locationIds: [], employeesIds: [])
-//				.map(with(date, curry(calendarResponseToJourneys(date:events:))))
-//				.catchToEffect()
-//				.map(JourneyContainerAction.gotResponse)
-//				.receive(on: DispatchQueue.main)
-//				.eraseToEffect()
+			state.loadingState = .loading
+			return env.apiClient
+				.getAppointments(dates: [Date()], locationIds: [], employeesIds: [])
+				.catchToEffect()
+				.map(JourneyContainerAction.gotResponse)
+				.receive(on: DispatchQueue.main)
+				.eraseToEffect()
 		default:
 			break
 		}

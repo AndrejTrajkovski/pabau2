@@ -117,8 +117,8 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 	.init { state, action, _ in
 		switch action {
 		case .datePicker: break
-		case .calTypePicker(.onSelect(let calTypeId)):
-			state.switchTo(id: calTypeId)
+		case .calTypePicker(.onSelect(let calType)):
+			state.switchTo(calType: calType)
 		case .onAppDetailsDismiss:
 			state.appDetails = nil
 		case .onBookoutDismiss:
