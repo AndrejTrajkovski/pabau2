@@ -1,14 +1,16 @@
 import Foundation
 
 public struct LoginResponse: Codable, Equatable, ResponseStatus {
-	public let success: Bool
+	public var success: Bool
 	public let message: String?
-	let url: String
-	public let users: [User]
-
-	enum CodingKeys: String, CodingKey {
-		case success, message
-		case url = "URL"
-		case users = "appointments"
-	}
+	public var url: String?
+	public var users: [User]
+    
+    public enum CodingKeys: String, CodingKey {
+        case success
+        case message
+        case url = "URL"
+        case users = "appointments"
+    }
+ 
 }

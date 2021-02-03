@@ -53,8 +53,8 @@ extension PatientDetails {
 extension PatientDetails {
 	
 	public static func mock(clientId: Int) -> PatientDetails {
-		let client = Client.mockClients.first(where: { clientId == $0.id })!
-		return PatientDetails(id: client.id, salutation: client.salutation ?? "Mr.", firstName: client.firstName,
+        let client = Client.mockClients.first(where: { clientId == $0.id })!
+        return PatientDetails(id: client.id, salutation: client.salutation ?? "Mr.", firstName: client.firstName,
 													lastName: client.lastName, dob: "", phone: "", cellPhone: "", email: "", addressLine1: "", addressLine2: "", postCode: "", city: "", county: "", country: "", howDidYouHear: "", emailComm: false, smsComm: true, phoneComm: true, postComm: false, imageUrl: nil)
 	}
 	

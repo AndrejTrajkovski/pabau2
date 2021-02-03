@@ -62,7 +62,7 @@ extension APIClient {
 		loggedInUser.map {
 			[
 				"company": $0.apiKey,
-				"user_id": $0.userID.rawValue,
+				"user_id": "\($0.userID)",
 				"api_key": $0.apiKey,
 			]
 		}

@@ -15,7 +15,7 @@ public struct LoginMockAPI: MockAPI, LoginAPI {
 	}
 	
 	public func login(_ username: String, password: String) -> Effect<LoginResponse, LoginError> {
-		let user = User(userID: "1", companyID: "", fullName: "", avatar: "", logo: "", expired: false, companyName: "", apiKey: "")
+		let user = User(userID: 1, companyID: "", fullName: "", avatar: "", logo: "", companyName: "", apiKey: "")
 		let response = LoginResponse(success: true, message: nil, url: "", users: [user])
 		return Just(response)
 			.delay(for: .seconds(delay), scheduler: DispatchQueue.main)
