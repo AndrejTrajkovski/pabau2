@@ -1,7 +1,7 @@
 import Foundation
 import Tagged
 
-public struct Bookout: Codable, Identifiable, Equatable {
+public struct Bookout: Identifiable, Equatable, CalendarEventVariant {
 	
 	public let id: CalendarEvent.Id
 	public var start_date: Date
@@ -36,21 +36,6 @@ public struct Bookout: Codable, Identifiable, Equatable {
 		self._description = _description
 		self.employeeName = employeeName
 	}
-	public enum CodingKeys: String, CodingKey {
-		case id = "id"
-		case start_date
-		case end_date
-		case employeeId = "employeeid"
-		case locationId = "locationid"
-		case _private = "private"
-		case _description = "description"
-//		case externalGuests = "external_guests"
-		case employeeName = "employee_name"
-		case employeeInitials = "employee_initials"
-	}
-}
-
-extension Bookout: CalendarEventVariant {
 }
 
 extension Bookout {
@@ -61,7 +46,6 @@ extension Bookout {
 		_ employeeId: Employee.Id,
 		_ employeeInitials: String?,
 		_ locationId: Location.Id,
-		_ locationName: String?,
 		_ _private: Bool?,
 		_ employeeName: String,
 		_ decoder: Decoder
@@ -72,7 +56,6 @@ extension Bookout {
 		self.employeeId = employeeId
 		self.employeeInitials = employeeInitials
 		self.locationId = locationId
-		self.locationName = locationName
 		self._private = _private
 		self.employeeName = employeeName
 		let container = try decoder.container(keyedBy: CodingKeys.self)

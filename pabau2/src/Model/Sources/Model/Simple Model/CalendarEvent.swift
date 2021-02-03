@@ -1,5 +1,6 @@
 import Foundation
 import Tagged
+import SwiftDate
 
 @dynamicMemberLookup
 public enum CalendarEvent: CalendarEventVariant, Identifiable, Equatable {
@@ -101,9 +102,6 @@ extension CalendarEvent {
 		}
 	}
 	
-	public var locationName: String? {
-		get { return self[dynamicMember: \.locationName] } }
-	
 	public var _private: Bool? {
 		get { return self[dynamicMember: \._private] } }
 	
@@ -125,71 +123,86 @@ extension CalendarEvent {
 	}
 }
 
-struct InvalidTypeError: Error {
-	var type: String
-}
 extension CalendarEvent: Decodable {
 	
 	public enum CodingKeys: String, CodingKey {
-		case id
-		case start_date
-		case end_date
+		case customerName = "customer_name"
+		case salutation, id, service
 		case employeeId = "user_id"
-		case employeeInitials = "employee_initials"
-		case locationId = "location_id"
-		case locationName = "location_name"
-		case _private = "private"
-		case type
-		case status
+		case startDate = "start_date"
+		case startTime = "start_time"
+		case endTime = "end_time"
+		case appointmentStatus = "appointment_status"
+		case color
+		case serviceID = "service_id"
+		case notes
+		case customerID = "customer_id"
+		case backgroudcolor
+		case createDate = "create_date"
 		case employeeName = "employee_name"
+		case fname, lname
+		case clientEmail = "client_email"
+		case mobile
+		case customerAddress = "customer_address"
+		case clientPhoto = "client_photo"
+		case serviceColor = "service_color"
+		case locationID = "location_id"
+		case roomID = "room_id"
 		case roomName = "room_name"
+		case participantUserIDS = "participant_user_ids"
+		case allDay = "all_day"
+		case contactID = "contact_id"
+		case appointmentPrivate = "private"
+		case appointmentDescription = "description"
+		case fontColor = "font_color"
 	}
 	
 	public init(from decoder: Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
 		let id = try container.decode(CalendarEvent.Id.self, forKey: .id)
 		let employeeId = try container.decode(Employee.Id.self, forKey: .employeeId)
-		let employeeInitials = try? container.decode(String.self, forKey: .employeeInitials)
-		let locationId = try container.decode(Location.ID.self, forKey: .locationId)
-		let locationName = try? container.decode(String.self, forKey: .locationName)
-		let _private = try container.decode(Bool.self, forKey: ._private)
-		let status = try? container.decode(AppointmentStatus?.self, forKey: .status)
+		let locationId = try container.decode(Location.ID.self, forKey: .locationID)
+		let _private = try container.decode(Bool.self, forKey: .appointmentPrivate)
+		let status = try? container.decode(AppointmentStatus?.self, forKey: .appointmentStatus)
 		let start_date = try Date(container: container,
-							  codingKey: .start_date,
-							  formatter: DateFormatter.yearMonthDay)
-		let end_date = try Date(container: container,
-							codingKey: .end_date,
-							formatter: DateFormatter.HHmmss)
+								  codingKey: .startDate,
+								  formatter: DateFormatter.yearMonthDay)
+		let start_time = try Date(container: container,
+								  codingKey: .startTime,
+								  formatter: DateFormatter.HHmmss)
+		let end_time = try Date(container: container,
+								codingKey: .endTime,
+								formatter: DateFormatter.HHmmss)
+		let start = Date.concat(start_date, start_time)
+		let end = Date.concat(start_date, end_time)
+		
 		let employeeName = try container.decode(String.self, forKey: .employeeName)
-		let type = try? container.decode(Termin.ModelType.self, forKey: .type)
-		switch type {
-		case .appointment:
+		let employeeInitials = employeeName.split(separator: " ").joined().uppercased()
+		let serviceId = try? container.decode(Service.Id.self, forKey: .serviceID)
+		if let serviceId = serviceId {
 			let app = try CalAppointment(id,
-										 start_date,
-										 end_date,
+										 start,
+										 end,
 										 employeeId,
 										 employeeInitials,
 										 locationId,
-										 locationName,
 										 _private,
 										 status,
 										 employeeName,
+										 serviceId,
 										 decoder)
 			self = .appointment(app)
-		case .bookout:
+		} else {
 			let bookout = try Bookout(id,
-									  start_date,
-									  end_date,
+									  start,
+									  end,
 									  employeeId,
 									  employeeInitials,
 									  locationId,
-									  locationName,
 									  _private,
 									  employeeName,
 									  decoder)
 			self = .bookout(bookout)
-		case .none:
-			throw InvalidTypeError(type: try container.decode(String.self, forKey: .type))
 		}
 	}
 }
@@ -231,14 +244,14 @@ extension DateFormatter {
 
 extension CalendarEvent {
 	public static func makeDummy() -> [CalendarEvent] {
-		let services: [(String, String)] =
+		let services: [(String, String, Int)] =
 			[
-				("Brow Lift","#EC75FF"),
-				("Chin Surgery","#46F049"),
-				("Body Wrap","#9268FD"),
-				("Botox","#FFFF5B"),
-				("Manicure","#007AFF"),
-				("Hydrafacial","#108A44"),
+				("Brow Lift","#EC75FF", 1),
+				("Chin Surgery","#46F049", 2),
+				("Body Wrap","#9268FD", 3),
+				("Botox","#FFFF5B", 4),
+				("Manicure","#007AFF", 5),
+				("Hydrafacial","#108A44", 6),
 			]
 		var res = [CalendarEvent]()
 		for idx in 0...100 {
@@ -253,7 +266,6 @@ extension CalendarEvent {
 									 employeeId: employee.id,
 									 employeeInitials: nil,
 									 locationId: employee.locationId ?? -1,
-									 locationName: "",
 									 _private: false,
 									 extraEmployees: [],
 									 status: AppointmentStatus.mock.randomElement()!,
@@ -264,7 +276,8 @@ extension CalendarEvent {
 									 roomId: room.id,
 									 employeeName: employee.name,
 									 roomName: room.name,
-									 customerId: client.id
+									 customerId: client.id,
+									 serviceId: Service.Id.init(rawValue: service!.2)
 			)
 			res.append(CalendarEvent.appointment(app))
 		}

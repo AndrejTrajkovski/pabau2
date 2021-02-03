@@ -3,6 +3,7 @@ import Foundation
 import NonEmpty
 import CasePaths
 import Overture
+import Appointments
 
 public typealias Journey = [CalAppointment]
 
@@ -21,18 +22,17 @@ func calendarResponseToJourneys(date: Date, events: [CalendarEvent]) -> [Journey
 }
 
 func groupAndFilter(date: Date, appointments: [CalAppointment]) -> [Journey] {
-	group(appointments: appointments)
+	journeyGroup(appointments: appointments)
 		.first { $0.key.isInside(date: date, granularity: .day) }
 		.map(\.value) ?? []
 }
 
-func group(appointments: [CalAppointment]) -> [Date: [Journey]] {
-	
-	struct JourneyKey: Hashable {
-		let customerId: Client.ID
-		let employeeId: Employee.ID
-	}
-	
+struct JourneyKey: Hashable {
+	let customerId: Client.ID
+	let employeeId: Employee.ID
+}
+
+func journeyGroup(appointments: [CalAppointment]) -> [Date: [Journey]] {
 	return Dictionary(grouping: appointments, by: { $0.start_date })
 		.mapValues {
 			Dictionary(grouping: $0, by: {

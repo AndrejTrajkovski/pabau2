@@ -11,13 +11,13 @@ public enum JourneyContainerAction {
 	case toggleEmployees
     case searchQueryChanged(JourneyAction)
 	case datePicker(CalendarDatePickerAction)
+	case loadJourneys(Date)
+	case gotResponse(Result<[CalendarEvent], RequestError>)
 }
 
 public enum JourneyAction {
-	case loadJourneys(Date)
 	case selectedFilter(CompleteFilter)
 	case searchedText(String)
-	case gotResponse(Result<[Journey], RequestError>)
 	case selectedJourney(Journey)
 	case choosePathwayBackTap
 }

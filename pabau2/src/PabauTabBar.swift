@@ -10,6 +10,7 @@ import JZCalendarWeekView
 import AddAppointment
 import Communication
 import Intercom
+import Appointments
 
 public typealias TabBarEnvironment = (
 	loginAPI: LoginAPI,
@@ -19,14 +20,16 @@ public typealias TabBarEnvironment = (
 )
 
 public struct TabBarState: Equatable {
-	public var addAppointment: AddAppointmentState?
+	var appsLoadingState: LoadingState
+	var appointments: Appointments
+	var addAppointment: AddAppointmentState?
 	var selectedDate: Date = Date()
-	public var journey: JourneyState
-	public var clients: ClientsState
-	public var calendar: CalendarState
-	public var settings: SettingsState
-    public var communication: CommunicationState
-	public var employeesFilter: JourneyFilterState = JourneyFilterState()
+	var journey: JourneyState
+	var clients: ClientsState
+	var calendar: CalendarState
+	var settings: SettingsState
+    var communication: CommunicationState
+	var employeesFilter: JourneyFilterState = JourneyFilterState()
 
 	public var calendarContainer: CalendarContainerState {
 		get {
@@ -41,14 +44,17 @@ public struct TabBarState: Equatable {
 
 	public var journeyContainer: JourneyContainerState {
 		get {
-			JourneyContainerState(journey: journey,
-								  employeesFilter: employeesFilter,
-								  selectedDate: self.selectedDate)
+			JourneyContainerState(journey: self.journey,
+								  employeesFilter: self.employeesFilter,
+								  selectedDate: self.selectedDate,
+								  appointments: self.appointments,
+								  loadingState: self.appsLoadingState)
 		}
 		set {
 			self.journey = newValue.journey
 			self.employeesFilter = newValue.employeesFilter
 			self.selectedDate = newValue.selectedDate
+			self.appointments = newValue.appointments
 		}
 	}
 }
@@ -106,7 +112,7 @@ struct PabauTabBar: View {
 						Text("Journey")
 				}
 				.onAppear {
-					self.viewStore.send(.journey(JourneyContainerAction.journey(JourneyAction.loadJourneys(Date()))))
+					self.viewStore.send(.journey(JourneyContainerAction.loadJourneys(Date())))
 					self.viewStore.send(.employeesFilter(JourneyFilterAction.loadEmployees))
 				}
 				ClientsNavigationView(
@@ -258,5 +264,7 @@ extension TabBarState {
 		self.calendar = CalendarState()
 		self.settings = SettingsState()
 		self.communication = CommunicationState()
+		self.appointments = .week([:])
+		self.appsLoadingState = .initial
 	}
 }

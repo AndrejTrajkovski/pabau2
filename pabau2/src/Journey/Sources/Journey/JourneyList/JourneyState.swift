@@ -8,8 +8,6 @@ import Filters
 
 public struct JourneyState: Equatable {
 	public init() {}
-	public var loadingState: LoadingState = .initial
-	var journeys: Set<Journey> = Set()
 	var selectedFilter: CompleteFilter = .all
 	var selectedLocation: Location = Location.init(id: 2,
 												   name: "Manchester",
@@ -28,9 +26,9 @@ extension JourneyState {
 	var choosePathway: ChoosePathwayState {
 		get {
 			ChoosePathwayState(selectedJourney: selectedJourney,
-												 selectedPathway: selectedPathway,
-												 selectedConsentsIds: selectedConsentsIds,
-												 allConsents: allConsents)
+							   selectedPathway: selectedPathway,
+							   selectedConsentsIds: selectedConsentsIds,
+							   allConsents: allConsents)
 		}
 		set {
 			self.selectedJourney = newValue.selectedJourney

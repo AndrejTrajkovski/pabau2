@@ -3,7 +3,7 @@ import Foundation
 import SwiftDate
 import Util
 
-public struct CalAppointment: Codable, Equatable, Identifiable, Hashable {
+public struct CalAppointment: Equatable, Identifiable, Hashable {
 	
 	public func hash(into hasher: inout Hasher) {
 		hasher.combine(id)
@@ -15,7 +15,6 @@ public struct CalAppointment: Codable, Equatable, Identifiable, Hashable {
 	public var employeeId: Employee.Id
 	public let employeeInitials: String?
 	public var locationId: Location.Id
-	public let locationName: String?
 	public let _private: Bool?
 	public let extraEmployees: [Employee]?
 	public var status: AppointmentStatus?
@@ -27,27 +26,7 @@ public struct CalAppointment: Codable, Equatable, Identifiable, Hashable {
 	public let employeeName: String
 	public let roomName: String
 	public let customerId: Client.ID
-	
-	public enum CodingKeys: String, CodingKey {
-		case id
-		case start_date
-		case end_date
-		case employeeId = "user_id"
-		case customerId = "customer_id"
-		case employeeInitials = "employee_initials"
-		case locationId = "location_id"
-		case locationName = "location_name"
-		case _private = "private"
-		case extraEmployees = "extra_employees"
-		case status
-		case service
-		case serviceColor = "service_color"
-		case customerName = "customer_name"
-		case customerPhoto = "customer_photo"
-		case roomId = "room_id"
-		case employeeName = "employee_name"
-		case roomName = "room_name"
-	}
+	public let serviceId: Service.Id
 }
 
 extension CalAppointment {
@@ -59,10 +38,10 @@ extension CalAppointment {
 		_ employeeId: Employee.Id,
 		_ employeeInitials: String?,
 		_ locationId: Location.Id,
-		_ locationName: String?,
 		_ _private: Bool?,
 		_ status: AppointmentStatus?,
 		_ employeeName: String,
+		_ serviceId: Service.Id,
 		_ decoder: Decoder
 	) throws {
 		self.id = id
@@ -71,10 +50,10 @@ extension CalAppointment {
 		self.employeeId = employeeId
 		self.employeeInitials = employeeInitials
 		self.locationId = locationId
-		self.locationName = locationName
 		self._private = _private
 		self.status = status
 		self.employeeName = employeeName
+		self.serviceId = serviceId
 		let container = try decoder.container(keyedBy: CodingKeys.self)
 		self.extraEmployees = try? container.decode([Employee].self, forKey: .extraEmployees)
 		self.service = try container.decode(String.self, forKey: .service)

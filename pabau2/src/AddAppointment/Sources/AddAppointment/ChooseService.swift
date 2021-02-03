@@ -33,7 +33,7 @@ public enum ChooseServiceFilter: Int, CaseIterable, CustomStringConvertible {
 
 public struct ChooseServiceState: Equatable {
 	var isChooseServiceActive: Bool
-	var chosenServiceId: Int
+	var chosenServiceId: Service.Id
 	var filterChosen: ChooseServiceFilter
 
 	var chosenServiceName: String {
@@ -66,7 +66,7 @@ public struct ChooseServiceState: Equatable {
 }
 
 public enum ChooseServiceAction: Equatable {
-	case didSelectServiceId(Int)
+	case didSelectServiceId(Service.Id)
 	case didSelectFilter(ChooseServiceFilter)
 	case didTapBackBtn
 }

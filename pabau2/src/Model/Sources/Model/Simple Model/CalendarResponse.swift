@@ -1,11 +1,11 @@
 import Foundation
 import Tagged
 
-struct CalendarResponse: Codable {
+struct CalendarResponse: Decodable {
 	let success: Bool
 	let total: Int
 	let rota: [Location.ID: Rota]
-	let appointments: [_Appointment]
+	let appointments: [CalendarEvent]
 	let intervalSetting: Int
 	let startTime, endTime, completeStatusColor, checkinStatusColor: String
 
@@ -16,70 +16,6 @@ struct CalendarResponse: Codable {
 		case endTime = "end_time"
 		case completeStatusColor = "complete_status_color"
 		case checkinStatusColor = "checkin_status_color"
-	}
-}
-
-// MARK: - Appointment
-struct _Appointment: Codable {
-	let customerName, salutation: String?
-	let id, service, userID, startDate: String
-	let startTime, endTime, appointmentStatus, color: String
-	let serviceID, notes: String
-	let customerID: String?
-	let backgroudcolor, createDate, employeeName: String
-	let fname, lname, clientEmail, mobile: String?
-	let customerAddress: String?
-	let clientPhoto: String?
-	let serviceColor: String?
-	let locationID, roomID, roomName: String
-	let participantUserIDS: [String]
-	let allDay, contractID, issuedTo: String
-	let contactID: String?
-	let externalLocation, appointmentPrivate, appointmentDescription: String
-	let insurerName: JSONNull?
-	let fontColor: String
-	let chargedTo: String?
-	let totalYes, totalNo, totalMaybe, customFields: [JSONAny]
-
-	enum CodingKeys: String, CodingKey {
-		case customerName = "customer_name"
-		case salutation, id, service
-		case userID = "user_id"
-		case startDate = "start_date"
-		case startTime = "start_time"
-		case endTime = "end_time"
-		case appointmentStatus = "appointment_status"
-		case color
-		case serviceID = "service_id"
-		case notes
-		case customerID = "customer_id"
-		case backgroudcolor
-		case createDate = "create_date"
-		case employeeName = "employee_name"
-		case fname, lname
-		case clientEmail = "client_email"
-		case mobile
-		case customerAddress = "customer_address"
-		case clientPhoto = "client_photo"
-		case serviceColor = "service_color"
-		case locationID = "location_id"
-		case roomID = "room_id"
-		case roomName = "room_name"
-		case participantUserIDS = "participant_user_ids"
-		case allDay = "all_day"
-		case contractID = "contract_id"
-		case issuedTo = "issued_to"
-		case contactID = "contact_id"
-		case externalLocation = "external_location"
-		case appointmentPrivate = "private"
-		case appointmentDescription = "description"
-		case insurerName = "insurer_name"
-		case fontColor = "font_color"
-		case chargedTo = "charged_to"
-		case totalYes = "total_yes"
-		case totalNo = "total_no"
-		case totalMaybe = "total_maybe"
-		case customFields = "custom_fields"
 	}
 }
 

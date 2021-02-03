@@ -72,11 +72,32 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 		case .datePicker(.selectedDate(let date)):
 //			state.loadingState = .loading
 			return env.apiClient.getAppointments(dates: [date], locationIds: [], employeesIds: [])
-				.map(with(date, curry(calendarResponseToJourneys(date:events:))))
+//				.map(with(date, curry(calendarResponseToJourneys(date:events:))))
 				.catchToEffect()
-				.map { JourneyContainerAction.journey(JourneyAction.gotResponse($0))}
+				.map { JourneyContainerAction.gotResponse($0) }
 				.receive(on: DispatchQueue.main)
 				.eraseToEffect()
+		case .gotResponse(let result):
+			fatalError()
+//			print(result)
+//			switch result {
+//			case .success(let journeys):
+//				state.journeys = journeys
+//				state.loadingState = .gotSuccess
+//			case .failure(let error):
+//				print(error)
+//				state.loadingState = .gotError(error)
+//			}
+		case .loadJourneys(let date):
+			fatalError()
+//			state.loadingState = .loading
+//			return env.apiClient
+//				.getAppointments(dates: [Date()], locationIds: [], employeesIds: [])
+//				.map(with(date, curry(calendarResponseToJourneys(date:events:))))
+//				.catchToEffect()
+//				.map(JourneyContainerAction.gotResponse)
+//				.receive(on: DispatchQueue.main)
+//				.eraseToEffect()
 		default:
 			break
 		}
@@ -119,16 +140,7 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 			switch action {
 			case .selectedFilter(let filter):
 				state.selectedFilter = filter
-			case .gotResponse(let result):
-				print(result)
-				switch result {
-				case .success(let journeys):
-					state.journeys.formUnion(journeys)
-					state.loadingState = .gotSuccess
-				case .failure(let error):
-					print(error)
-					state.loadingState = .gotError(error)
-				}
+			
 			case .searchedText(let searchText):
 				struct SearchJourneyId: Hashable {}
 
@@ -147,15 +159,6 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 				state.selectedJourney = journey
 			case .choosePathwayBackTap:
 				state.selectedJourney = nil
-			case .loadJourneys(let date):
-				state.loadingState = .loading
-				return environment.apiClient
-					.getAppointments(dates: [Date()], locationIds: [], employeesIds: [])
-					.map(with(date, curry(calendarResponseToJourneys(date:events:))))
-					.catchToEffect()
-                    .map(JourneyAction.gotResponse)
-                    .receive(on: DispatchQueue.main)
-					.eraseToEffect()
 			}
 			return .none
 	}
@@ -178,7 +181,7 @@ public struct JourneyContainerView: View {
 			self.selectedDate = state.selectedDate
 			self.listedJourneys = state.filteredJourneys()
             self.searchQuery = state.journey.searchText
-			self.isLoadingJourneys = state.journey.loadingState.isLoading
+			self.isLoadingJourneys = state.loadingState.isLoading
 			UITableView.appearance().separatorStyle = .none
 		}
 	}

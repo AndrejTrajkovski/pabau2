@@ -21,6 +21,12 @@ public struct EventsBy<SubsectionHeader: Identifiable & Equatable> {
 	public func flatten() -> [CalendarEvent] {
 		return appointments.flatMap { $0.value }.flatMap { $0.value }.flatMap { $0.value }
 	}
+	
+	public func filterBy(date: Date) -> [Location.ID: [CalendarEvent]] {
+		return appointments[date]?.mapValues {
+			$0.flatMap(\.value)
+		} ?? [:]
+	}
 }
 
 extension EventsBy: Equatable { }

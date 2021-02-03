@@ -8,6 +8,7 @@ import Util
 import Clients
 import Calendar
 import Communication
+import Overture
 
 typealias AppEnvironment = (
 	loginAPI: LoginAPI,
@@ -44,8 +45,6 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = Reducer.combine(
 				WalkthroughContainerState(hasSeenWalkthrough: env.userDefaults.hasSeenAppIntroduction)
 			)
 		case .walkthrough(.login(.login(.gotResponse(.success(let user))))):
-			var journeyState = JourneyState()
-			journeyState.loadingState = .loading
 			state = .tabBar(TabBarState())
 			return .none
 		default:
@@ -57,54 +56,19 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = Reducer.combine(
 
 struct ContentView: View {
 	let store: Store<AppState, AppAction>
-	@ObservedObject var viewStore: ViewStore<State, AppAction>
-	struct State: Equatable {
-		var shouldShowLogin: Bool
-		init (_ appState: AppState) {
-			switch appState {
-			case .walkthrough:
-				self.shouldShowLogin = true
-			default:
-				self.shouldShowLogin = false
-			}
-		}
-	}
-	init(store: Store<AppState, AppAction>) {
-		self.store = store
-		self.viewStore = ViewStore(self.store
-			.scope(state: State.init,
-						 action: { $0 }))
-		print("ContentView init")
-	}
+	
 	var body: some View {
-		print("ContentView body")
-		return ViewBuilder.buildBlock(
-			(self.viewStore.state.shouldShowLogin) ?
-				ViewBuilder.buildEither(second: LoginContainer(store: loginContainerStore))
-				:
-				ViewBuilder.buildEither(first: PabauTabBar(store: tabBarStore))
+		IfLetStore(self.store.scope(
+					state: with(AppState.tabBar, curry(extract(case:from:))),
+					action: { .tabBar($0)}),
+				   then: PabauTabBar.init(store:)
 		)
-	}
-
-	var loginContainerStore: Store<WalkthroughContainerState, WalkthroughContainerAction> {
-		return self.store.scope(
-			state: { extract(case: AppState.walkthrough, from: $0) ?? WalkthroughContainerState(navigation: [.signInScreen],
-																																													loginViewState: LoginViewState()) },
-			action: { .walkthrough($0)}
-		)
-	}
-
-	var tabBarStore: Store<TabBarState, TabBarAction> {
-		return self.store.scope(
-			state: {
-                extract(case: AppState.tabBar, from: $0) ??
-                    TabBarState(journey: JourneyState(),
-                                clients: ClientsState(),
-                                calendar: CalendarState(),
-                                settings: SettingsState(),
-                                communication: CommunicationState())
-            },
-			action: { .tabBar($0)}
+		IfLetStore(
+			self.store.scope(
+				state: with(AppState.walkthrough, curry(extract(case:from:))),
+				action: { .walkthrough($0) }
+			),
+			then: LoginContainer.init(store:)
 		)
 	}
 }
