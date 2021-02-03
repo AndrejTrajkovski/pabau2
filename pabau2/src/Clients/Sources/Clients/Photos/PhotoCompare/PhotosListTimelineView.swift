@@ -2,6 +2,7 @@ import SwiftUI
 import ComposableArchitecture
 import Form
 import Model
+import SDWebImageSwiftUI
 
 struct PhotosListTimelineView: View {
 
@@ -10,14 +11,14 @@ struct PhotosListTimelineView: View {
 
 	struct State: Equatable {
 		let photos: [PhotoViewModel]
-		let selectedPhotoId: PhotoVariantId
+        let selectedPhotoId: PhotoVariantId
 		
 		init(state: PhotoCompareState) {
 			self.photos = state.photos.flatMap(\.value)
 			self.selectedPhotoId = state.getSelectedId()
 		}
-	}
-	
+    }
+
     var body: some View {
 		WithViewStore(store.scope(state: State.init(state:))) { viewStore in
             VStack {
@@ -49,7 +50,7 @@ public struct TimelinePhotoCell: View {
     public init(photo: PhotoViewModel) {
         self.photo = photo
     }
-
+    
     public var body: some View {
         Group {
             if extract(case: Photo.saved, from: photo.basePhoto) != nil {
@@ -65,9 +66,9 @@ struct SavedTimelinePhotoCell: View {
     let savedPhoto: SavedPhoto
     var body: some View {
         GeometryReader { proxy in
-            Image(savedPhoto.url)
+            WebImage(url: URL(string: savedPhoto.normalSizePhoto ?? ""))
                 .resizable()
-                .aspectRatio(contentMode: .fill)
+                .placeholder(Image(systemName: "photo"))
                 .frame(width: proxy.size.width, height: proxy.size.height)
                 .clipped()
         }
