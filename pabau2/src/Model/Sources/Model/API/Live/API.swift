@@ -121,7 +121,17 @@ extension APIClient {
 	}
 	
 	public func getAppointments(clientId: Int) -> Effect<[Appointment], RequestError> {
-		fatalError("TODO Cristian")
+        let requestBuilder: RequestBuilder<AppointmentResponse>.Type = requestBuilderFactory.getBuilder()
+        return requestBuilder.init(method: .GET,
+                                   baseUrl: baseUrl,
+                                   path: .getClientsAppointmens,
+                                   queryParams: commonAnd(other: ["id": "\(clientId)"]),
+                                   isBody: false)
+            .effect()
+            .validate()
+            .mapError { $0 }
+            .map { $0.appointments }
+            .eraseToEffect()
 	}
 	
 	public func getPhotos(clientId: Int) -> Effect<[SavedPhoto], RequestError> {
