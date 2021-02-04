@@ -1,6 +1,6 @@
 import Foundation
 
-public struct LoginResponse: Codable, Equatable, ResponseStatus {
+public struct LoginResponse: Codable, Equatable {
 	public let success: Bool
 	public let message: String?
 	let url: String

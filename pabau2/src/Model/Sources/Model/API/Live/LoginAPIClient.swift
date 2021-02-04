@@ -26,7 +26,6 @@ extension APIClient {
 												 "password": password],
 								   isBody: false)
 			.effect()
-			.validate()
 			.mapError { LoginError.requestError($0) }
 			.eraseToEffect()
 	}
