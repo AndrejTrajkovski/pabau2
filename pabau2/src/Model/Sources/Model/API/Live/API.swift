@@ -141,7 +141,17 @@ extension APIClient {
 	}
 	
 	public func getCommunications(clientId: Int) -> Effect<[Communication], RequestError> {
-		fatalError("TODO Cristian")
+        let requestBuilder: RequestBuilder<CommunicationResponse>.Type = requestBuilderFactory.getBuilder()
+        return requestBuilder.init(method: .GET,
+                                   baseUrl: baseUrl,
+                                   path: .getCommunications,
+                                   queryParams: commonAnd(other: ["contact_id": "\(clientId)"]),
+                                   isBody: false)
+            .effect()
+            .validate()
+            .mapError { $0 }
+            .map { $0.communications }
+            .eraseToEffect()
 	}
 	
 	public func getAlerts(clientId: Int) -> Effect<[Alert], RequestError> {
