@@ -3,7 +3,7 @@
 import Tagged
 
 public struct Employee: Codable, Identifiable, Equatable, Hashable {
-	public typealias Id = Tagged<Employee, Int>
+	public typealias Id = Tagged<Employee, String>
 		
 	public let id: Employee.Id
 	
@@ -15,13 +15,13 @@ public struct Employee: Codable, Identifiable, Equatable, Hashable {
 	
 	public let locationId: Location.Id?
 	
-	public let pin: Int
+	public let passcode: String
 	
 	enum CodingKeys: String, CodingKey {
 		case id
 		case name = "full_name"
 		case email, avatar
-		case pin = "passcode"
+		case passcode
 		case locationId
 	}
 }

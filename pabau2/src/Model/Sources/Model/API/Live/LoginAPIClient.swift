@@ -48,7 +48,7 @@ extension APIClient {
 	func getUserParams() -> [String: String]? {
 		loggedInUser.map {
 			[
-				"company": $0.apiKey,
+				"company": $0.companyID,
 				"user_id": $0.userID.rawValue,
 				"api_key": $0.apiKey,
 			]

@@ -108,13 +108,3 @@ struct DateLocation: View {
 		}
 	}
 }
-
-struct AppointmentRow_Previews: PreviewProvider {
-	static var previews: some View {
-		AppointmentRow(app: Appointment(id: 1,
-										from: Date(),
-										to: Date(),
-										employeeId: 1,
-										employeeInitials: "AT", locationId: 1, locationName: "London", service: BaseService.init(id: 1, name: "Botox", color: "#eb4034")))
-	}
-}

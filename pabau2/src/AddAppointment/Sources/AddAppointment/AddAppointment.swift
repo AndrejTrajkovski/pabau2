@@ -345,15 +345,15 @@ struct AddAppMocks {
 	static let withState: SingleChoiceLinkState<Employee> =
 		SingleChoiceLinkState.init(
 			dataSource: [
-				
+
 			],
-			chosenItemId: 456,
+			chosenItemId: "456",
 			isActive: false)
 
 	static let participantsState: SingleChoiceLinkState<Employee> =
 		SingleChoiceLinkState.init(
 			dataSource: [
 			],
-			chosenItemId: 1,
+			chosenItemId: "1",
 			isActive: false)
 }
