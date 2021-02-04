@@ -1,10 +1,69 @@
 import Foundation
 
+public struct DocumentResponse: Codable, ResponseStatus {
+    public let success: Bool
+    public let message: String?
+    let total: Int
+    let documents: [Document]
+    
+    enum CodingKeys: String, CodingKey {
+        case total
+        case documents = "employees"
+        case success
+        case message
+    }
+}
+
 public struct Document: Codable, Identifiable, Equatable {
 	public let id: Int
 	public let title: String
-	public let format: DocumentExtension
+    public var format: DocumentExtension = .none
 	public let date: Date
+    public let documentURL: String
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case title = "document_title"
+        case date = "document_date"
+        case documentURL = "normal_size"
+        case format
+    }
+    
+    public init(id: Int, title: String, format: DocumentExtension, date: Date, documentURL: String = "" ) {
+        self.id = id
+        self.title = title
+        self.format = format
+        self.date = date
+        self.documentURL = documentURL
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        if let strId = try? container.decode(String.self, forKey: .id), let id = Int(strId) {
+            self.id = id
+        } else {
+            self.id = 0
+        }
+        
+        if let sDate = try? container.decode(String.self, forKey: .date) {
+            self.date = sDate.toDate("dd/MM/yyyy", region: .local)?.date ?? Date()
+        } else {
+            self.date = Date()
+        }
+        
+        if let location = try? container.decode(String.self, forKey: .documentURL) {
+            let fileType = location.components(separatedBy: ".").last
+            if let type = fileType {
+                self.format = DocumentExtension(rawValue: type) ?? .none
+            }
+            self.documentURL = location
+        } else {
+            self.documentURL = ""
+        }
+        
+        self.title = try container.decode(String.self, forKey: .title)  
+    }
 }
 
 public enum DocumentExtension: String, Equatable, Codable {
@@ -21,6 +80,8 @@ public enum DocumentExtension: String, Equatable, Codable {
 	case txt
 	case xls
 	case xlsx
+    case none
+    case mp4
 }
 
 extension Document {
@@ -39,6 +100,7 @@ extension Document {
 			Document(id: 12, title: "Tif file", format: .tif, date: Date()),
 			Document(id: 13, title: "Notes", format: .txt, date: Date()),
 			Document(id: 14, title: "XLS", format: .xls, date: Date()),
-			Document(id: 15, title: "XLSX", format: .xlsx, date: Date())
+			Document(id: 15, title: "XLSX", format: .xlsx, date: Date()),
+            Document(id: 16, title: "Video", format: .mp4, date: Date())
 	]
 }
