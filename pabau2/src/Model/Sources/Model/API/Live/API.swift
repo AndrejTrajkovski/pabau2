@@ -149,7 +149,19 @@ extension APIClient {
 	}
 	
 	public func getNotes(clientId: Int) -> Effect<[Note], RequestError> {
-		fatalError("TODO Cristian")
+        let requestBuilder: RequestBuilder<NoteResponse>.Type = requestBuilderFactory.getBuilder()
+        return requestBuilder.init(method: .GET,
+                                   baseUrl: baseUrl,
+                                   path: .getClientsNotes,
+                                   queryParams: commonAnd(other: [
+                                                            "contact_id": "\(clientId)"
+                                   ]),
+                                   isBody: false)
+            .effect()
+            .validate()
+            .mapError { $0 }
+            .map { $0.notes }
+            .eraseToEffect()
 	}
 	
 	public func getPatientDetails(clientId: Int) -> Effect<PatientDetails, RequestError> {

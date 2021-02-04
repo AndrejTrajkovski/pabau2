@@ -9,4 +9,5 @@ public enum APIPath: String {
 	
 	//Contacts/ Clients
 	case getClients = "/OAuth2/clients/get_clients.php"
+    case getClientsNotes = "/OAuth2/clients/get_notes.php"
 }
