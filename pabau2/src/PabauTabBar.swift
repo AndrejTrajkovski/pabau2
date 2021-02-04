@@ -23,13 +23,29 @@ public struct TabBarState: Equatable {
 	var appsLoadingState: LoadingState
 	var appointments: Appointments
 	var addAppointment: AddAppointmentState?
-	var selectedDate: Date = Date()
 	var journey: JourneyState
 	var clients: ClientsState
 	var calendar: CalendarState
 	var settings: SettingsState
     var communication: CommunicationState
-	var employeesFilter: JourneyFilterState = JourneyFilterState()
+	
+	var journeyEmployeesFilter: JourneyFilterState {
+		get {
+			JourneyFilterState(
+				locationId: journey.selectedLocation.id,
+				employeesLoadingState: journey.employeesLoadingState,
+				employees: calendar.employees[journey.selectedLocation.id] ?? [],
+				selectedEmployeesIds: journey.selectedEmployeesIds,
+				isShowingEmployees: journey.isShowingEmployeesFilter
+			)
+		}
+		set {
+			self.journey.employeesLoadingState = newValue.employeesLoadingState
+			self.calendar.employees[journey.selectedLocation.id] = newValue.employees
+			self.journey.selectedEmployeesIds = newValue.selectedEmployeesIds
+			self.journey.isShowingEmployeesFilter = newValue.isShowingEmployees
+		}
+	}
 
 	public var calendarContainer: CalendarContainerState {
 		get {
@@ -45,15 +61,13 @@ public struct TabBarState: Equatable {
 	public var journeyContainer: JourneyContainerState {
 		get {
 			JourneyContainerState(journey: self.journey,
-								  employeesFilter: self.employeesFilter,
-								  selectedDate: self.selectedDate,
+								  employeesFilter: self.journeyEmployeesFilter,
 								  appointments: self.appointments,
 								  loadingState: self.appsLoadingState)
 		}
 		set {
 			self.journey = newValue.journey
-			self.employeesFilter = newValue.employeesFilter
-			self.selectedDate = newValue.selectedDate
+			self.journeyEmployeesFilter = newValue.employeesFilter
 			self.appointments = newValue.appointments
 		}
 	}
@@ -77,7 +91,7 @@ struct PabauTabBar: View {
 		let isShowingCheckin: Bool
 		let isShowingAppointments: Bool
 		init(state: TabBarState) {
-			self.isShowingEmployees = state.employeesFilter.isShowingEmployees
+			self.isShowingEmployees = state.journeyEmployeesFilter.isShowingEmployees
 			self.isShowingCheckin = state.journeyContainer.journey.checkIn != nil
 			self.isShowingAppointments = state.addAppointment != nil
 		}
@@ -112,7 +126,6 @@ struct PabauTabBar: View {
 						Text("Journey")
 				}
 				.onAppear {
-					self.viewStore.send(.journey(JourneyContainerAction.loadJourneys(Date())))
 					self.viewStore.send(.employeesFilter(JourneyFilterAction.loadEmployees))
 				}
 				ClientsNavigationView(
@@ -166,7 +179,7 @@ struct PabauTabBar: View {
 			}
 			if self.viewStore.state.isShowingEmployees {
 				JourneyFilter(
-					self.store.scope(state: { $0.employeesFilter },
+					self.store.scope(state: { $0.journeyEmployeesFilter },
 					action: { .employeesFilter($0)})
 				).transition(.moveAndFade)
 			}
@@ -185,7 +198,7 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
 		return .none
 	},
 	journeyFilterReducer.pullback(
-		state: \TabBarState.employeesFilter,
+		state: \TabBarState.journeyEmployeesFilter,
 		action: /TabBarAction.employeesFilter,
 		environment: {
 			return EmployeesFilterEnvironment(

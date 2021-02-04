@@ -345,8 +345,7 @@ struct AddAppMocks {
 	static let withState: SingleChoiceLinkState<Employee> =
 		SingleChoiceLinkState.init(
 			dataSource: [
-				Employee.init(id: 123, name: "Andrej Trajkovski", locationId: Location.randomId()),
-				Employee.init(id: 456, name: "Mark Ronson", locationId: Location.randomId())
+				
 			],
 			chosenItemId: 456,
 			isActive: false)
@@ -354,8 +353,6 @@ struct AddAppMocks {
 	static let participantsState: SingleChoiceLinkState<Employee> =
 		SingleChoiceLinkState.init(
 			dataSource: [
-				Employee.init(id: 1, name: "Participant 1", locationId: Location.randomId()),
-				Employee.init(id: 2, name: "Participant 2", locationId: Location.randomId())
 			],
 			chosenItemId: 1,
 			isActive: false)

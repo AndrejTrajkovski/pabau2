@@ -42,7 +42,7 @@ public struct ClientsMockAPI: MockAPI, ClientsAPI {
 	}
 	
 	public func getCommunications(clientId: Int) -> Effect<[Communication], RequestError> {
-		mockSuccess(Communication.mockComm)
+		mockSuccess([])
 	}
 	
 	public func getAlerts(clientId: Int) -> Effect<[Alert], RequestError> {

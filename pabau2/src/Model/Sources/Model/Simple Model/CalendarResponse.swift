@@ -1,13 +1,13 @@
 import Foundation
 import Tagged
 
-struct CalendarResponse: Decodable {
-	let success: Bool
-	let total: Int
-	let rota: [Location.ID: Rota]
-	let appointments: [CalendarEvent]
-	let intervalSetting: Int
-	let startTime, endTime, completeStatusColor, checkinStatusColor: String
+public struct CalendarResponse: Decodable {
+	public let success: Bool
+	public let total: Int
+	public let rota: [Location.ID: Rota]
+	public let appointments: [CalendarEvent]
+	public let intervalSetting: Int
+	public let startTime, endTime, completeStatusColor, checkinStatusColor: String
 
 	enum CodingKeys: String, CodingKey {
 		case success, total, rota, appointments
@@ -20,7 +20,7 @@ struct CalendarResponse: Decodable {
 }
 
 // MARK: - Rota
-struct Rota: Codable, Identifiable {
+public struct Rota: Codable, Identifiable {
 	
 	public typealias ID = Tagged<Rota, Int>
 	public let id: ID

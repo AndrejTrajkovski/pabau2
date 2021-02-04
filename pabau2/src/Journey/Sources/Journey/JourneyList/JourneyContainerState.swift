@@ -3,24 +3,22 @@ import Foundation
 import Model
 import Util
 import Appointments
+import ComposableArchitecture
 
 public struct JourneyContainerState: Equatable {
 	public var journey: JourneyState
 	public var employeesFilter: JourneyFilterState
-	public var selectedDate: Date
 	public var appointments: Appointments
 	public var loadingState: LoadingState = .initial
-
+	
 	public init(
 		journey: JourneyState,
 		employeesFilter: JourneyFilterState,
-		selectedDate: Date,
 		appointments: Appointments,
 		loadingState: LoadingState
 	) {
 		self.journey = journey
 		self.employeesFilter = employeesFilter
-		self.selectedDate = selectedDate
 		self.appointments = appointments
 		self.loadingState = loadingState
 	}
@@ -28,7 +26,7 @@ public struct JourneyContainerState: Equatable {
 
 extension JourneyContainerState {
 	func filteredJourneys() -> [Journey] {
-		calendarResponseToJourneys(date: selectedDate, events: appointments.flatten())
+		calendarResponseToJourneys(date: journey.selectedDate, events: appointments.flatten())
 //		return self.journeys
 //			.filter { $0.first!.start_date.isInside(date: selectedDate, granularity: .day) }
 //			.filter { employeesFilter.selectedEmployeesIds.contains($0.first!.employeeId) }

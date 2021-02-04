@@ -11,8 +11,7 @@ public enum JourneyContainerAction {
 	case toggleEmployees
     case searchQueryChanged(JourneyAction)
 	case datePicker(CalendarDatePickerAction)
-	case loadJourneys(Date)
-	case gotResponse(Result<[CalendarEvent], RequestError>)
+	case gotResponse(Result<CalendarResponse, RequestError>)
 }
 
 public enum JourneyAction {

@@ -6,34 +6,39 @@ public typealias EmployeesFilterEnvironment = (apiClient: JourneyAPI, userDefaul
 
 public let journeyFilterReducer = Reducer<JourneyFilterState, JourneyFilterAction, EmployeesFilterEnvironment> { state, action, env in
 	func handle(result: Result<[Employee], RequestError>,
-							state: inout JourneyFilterState) -> Effect<JourneyFilterAction, Never> {
+				state: inout JourneyFilterState) -> Effect<JourneyFilterAction, Never> {
 		switch result {
 		case .success(let employees):
-			state.employees = employees
-			state.loadingState = .gotSuccess
+			state.employees = IdentifiedArrayOf.init(employees)
+			state.employeesLoadingState = .gotSuccess
 			state.selectedEmployeesIds = Set.init(employees.map { $0.id })
 		case .failure(let error):
-			state.loadingState = .gotError(error)
+			state.employeesLoadingState = .gotError(error)
 		}
 		return .none
 	}
-
+	
 	switch action {
+
 	case .gotResponse(let response):
 		return handle(result: response, state: &state)
+	
 	case .onTapGestureEmployee(let employee):
 		if state.selectedEmployeesIds.contains(employee.id) {
 			state.selectedEmployeesIds.remove(employee.id)
 		} else {
 			state.selectedEmployeesIds.insert(employee.id)
 		}
+		
 	case .toggleEmployees:
 		state.isShowingEmployees.toggle()
+		
 	case .loadEmployees:
-		state.loadingState = .loading
-		return env.apiClient.getEmployees(companyId: Company.ID.init(rawValue: 1))
+		state.employeesLoadingState = .loading
+		return env.apiClient.getEmployees(locationId: state.locationId)
+			.map { $0.employees }
 			.catchToEffect()
-			.map {.gotResponse($0)}
+			.map { .gotResponse($0) }
 			.eraseToEffect()
 	}
 	return .none

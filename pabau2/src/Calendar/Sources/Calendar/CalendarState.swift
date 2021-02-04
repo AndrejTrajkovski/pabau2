@@ -191,11 +191,10 @@ extension CalendarState {
 	public init() {
 		self.isDropdownShown = false
 		self.selectedDate = Calendar.gregorian.startOfDay(for: Date())
-	    let apps = CalendarEvent.makeDummy()
-		let employees = Employee.mockEmployees
+		let employees = [Employee]()
 		let rooms = Room.mock().map { $0.value }
 		let locations = Location.mock()
-		self.appointments = Appointments.initEmployee(events: apps, locationsIds: locations.map(\.id), sections: employees)
+		self.appointments = .week([:])
 		let groupedEmployees = Dictionary.init(grouping: employees, by: { $0.locationId })
 			.mapValues { IdentifiedArrayOf.init($0) }
 		self.employees = locations.map(\.id).reduce(into: [Location.ID: IdentifiedArrayOf<Employee>](), {

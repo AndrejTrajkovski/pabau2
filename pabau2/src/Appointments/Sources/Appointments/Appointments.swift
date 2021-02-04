@@ -5,11 +5,11 @@ import Tagged
 import ComposableArchitecture
 
 public enum Appointments: Equatable {
-	
+
 	case employee(EventsBy<Employee>)
 	case room(EventsBy<Room>)
 	case week([Date: IdentifiedArrayOf<CalendarEvent>])
-	
+
 	public init(_ calendarType: CalendarType,
 				_ events: [CalendarEvent],
 				_ locationsIds: [Location.ID],
@@ -75,7 +75,7 @@ public enum Appointments: Equatable {
 		}
 	}
 	
-	mutating func refresh(events: [CalendarEvent], locationIds: [Location.ID], employees: [Employee] = [], rooms: [Room] = []) {
+	public mutating func refresh(events: [CalendarEvent], locationIds: [Location.ID], employees: [Employee] = [], rooms: [Room] = []) {
 		self = .init(calendarType, events, locationIds, employees, rooms)
 	}
 }

@@ -58,7 +58,7 @@ let checkInMiddleware = Reducer<JourneyState, CheckInContainerAction, JourneyEnv
 
 public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContainerAction, JourneyEnvironment> = .combine(
 	calendarDatePickerReducer.pullback(
-		state: \JourneyContainerState.selectedDate,
+		state: \JourneyContainerState.journey.selectedDate,
 		action: /JourneyContainerAction.datePicker,
 		environment: { $0 }),
 	journeyContainerReducer2.pullback(
@@ -72,7 +72,7 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 			state.employeesFilter.isShowingEmployees.toggle()
 		case .datePicker(.selectedDate(let date)):
 //			state.loadingState = .loading
-			return env.apiClient.getAppointments(dates: [date], locationIds: [], employeesIds: [])
+			return env.apiClient.getAppointments(dates: [date], locationIds: [state.journey.selectedLocation.id], employeesIds: Array(state.employeesFilter.selectedEmployeesIds), roomIds: [])
 //				.map(with(date, curry(calendarResponseToJourneys(date:events:))))
 				.catchToEffect()
 				.map { JourneyContainerAction.gotResponse($0) }
@@ -82,20 +82,14 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 			print(result)
 			switch result {
 			case .success(let appointments):
-				state.appointments.refresh()
+				state.appointments.refresh(events: appointments.appointments,
+										   locationIds: [state.journey.selectedLocation.id],
+										   employees: state.employeesFilter.selectedEmployees().elements)
 				state.loadingState = .gotSuccess
 			case .failure(let error):
 				print(error)
 				state.loadingState = .gotError(error)
 			}
-		case .loadJourneys(let date):
-			state.loadingState = .loading
-			return env.apiClient
-				.getAppointments(dates: [Date()], locationIds: [], employeesIds: [])
-				.catchToEffect()
-				.map(JourneyContainerAction.gotResponse)
-				.receive(on: DispatchQueue.main)
-				.eraseToEffect()
 		default:
 			break
 		}
@@ -176,7 +170,7 @@ public struct JourneyContainerView: View {
         let searchQuery: String
 		init(state: JourneyContainerState) {
 			self.isChoosePathwayShown = state.journey.selectedJourney != nil
-			self.selectedDate = state.selectedDate
+			self.selectedDate = state.journey.selectedDate
 			self.listedJourneys = state.filteredJourneys()
             self.searchQuery = state.journey.searchText
 			self.isLoadingJourneys = state.loadingState.isLoading
@@ -193,7 +187,7 @@ public struct JourneyContainerView: View {
         VStack {
             CalendarDatePicker.init(
                 store: self.store.scope(
-                    state: { $0.selectedDate },
+					state: { $0.journey.selectedDate },
                     action: { .datePicker($0)}),
                 isWeekView: false,
                 scope: .week

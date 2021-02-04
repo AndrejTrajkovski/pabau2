@@ -18,6 +18,8 @@ let package = Package(
 		.package(url: "../Filters",
 				 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../AddAppointment",
+				 from: Version.init(stringLiteral: "1.0.0")),
+		.package(url: "../Appointments",
 				 from: Version.init(stringLiteral: "1.0.0"))
 	],
 	targets: [
@@ -26,7 +28,8 @@ let package = Package(
 			dependencies: ["Form",
 						   "FSCalendarSwiftUI",
 						   "Filters",
-						   "AddAppointment"
+						   "AddAppointment",
+						   "Appointments"
 			]
 		)
 	]

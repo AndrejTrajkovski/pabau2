@@ -164,35 +164,10 @@ extension Location: SingleChoiceElement { }
 
 public typealias AddShiftEnvironment = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
 
-struct AddShift_Previews: PreviewProvider {
-	static var state: AddShiftState {
-		AddShiftState(isPublished: false,
-					  chooseEmployee: SingleChoiceLinkState(dataSource: IdentifiedArray(Employee.mockEmployees), chosenItemId: nil, isActive: false),
-					  chooseLocation: SingleChoiceLinkState(dataSource: IdentifiedArray(Location.mock()), chosenItemId: nil, isActive: false),
-					  startDate: Date(),
-					  startTime: Date(),
-					  endTime: Date(),
-					  note: "Note")
-	}
-
-	static var env: AddShiftEnvironment {
-		AddShiftEnvironment(
-			apiClient: JourneyMockAPI(),
-			userDefaults: StandardUDConfig()
-		)
-	}
-
-	static var previews: some View {
-		AddShift(store: Store.init(initialState: state, reducer: addShiftReducer, environment: env)
-		)
-		.previewDevice("iPad (8th generation)")
-	}
-}
-
 extension AddShiftState {
 	public static func makeEmpty() -> AddShiftState {
 		AddShiftState(isPublished: false,
-					  chooseEmployee: SingleChoiceLinkState(Employee.mockEmployees),
+					  chooseEmployee: SingleChoiceLinkState([]),
 					  chooseLocation: SingleChoiceLinkState(Location.mock()),
 					  startDate: nil,
 					  startTime: nil,
