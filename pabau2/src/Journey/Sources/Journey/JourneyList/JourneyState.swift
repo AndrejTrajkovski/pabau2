@@ -10,7 +10,7 @@ public struct JourneyState: Equatable {
 	public init() {}
 	public var selectedDate: Date = Date()
 	public var selectedFilter: CompleteFilter = .all
-	public var selectedLocation: Location = Location.init(id: 2,
+	public var selectedLocation: Location = Location.init(id: 2503,
 														  name: "Manchester",
 														  color: "#FF0000")
 	public var employeesLoadingState: LoadingState = .initial

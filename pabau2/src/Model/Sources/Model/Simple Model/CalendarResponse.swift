@@ -4,7 +4,7 @@ import Tagged
 public struct CalendarResponse: Decodable {
 	public let success: Bool
 	public let total: Int
-	public let rota: [Location.ID: Rota]
+	public let rota: [String: Rota]
 	public let appointments: [CalendarEvent]
 	public let intervalSetting: Int
 	public let startTime, endTime, completeStatusColor, checkinStatusColor: String
@@ -20,10 +20,8 @@ public struct CalendarResponse: Decodable {
 }
 
 // MARK: - Rota
-public struct Rota: Codable, Identifiable {
+public struct Rota: Codable {
 	
-	public typealias ID = Tagged<Rota, Int>
-	public let id: ID
 	let shift: [Shift]
 }
 

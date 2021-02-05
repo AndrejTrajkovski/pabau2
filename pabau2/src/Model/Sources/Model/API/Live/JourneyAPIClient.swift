@@ -24,6 +24,7 @@ extension APIClient {
 			"start_date": dateFormatter.string(from: startDate),
 			"end_date": dateFormatter.string(from: endDate),
 			"location_id": locationIds.map(String.init).joined(separator: ","),
+			"user_ids": employeesIds.map(String.init).joined(separator: ","),
 			"room_id": roomIds.map(String.init).joined(separator: ",")
 		]
 		return requestBuilder.init(method: .GET,
