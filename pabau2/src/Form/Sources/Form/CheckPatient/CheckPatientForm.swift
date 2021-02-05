@@ -54,7 +54,7 @@ func viewModels(_ patientDetails: PatientDetails) -> [[TextAndTextViewVM]] {
 		],
 		[
 			TextAndTextViewVM(
-				.constant(patientDetails.dob),
+                .constant(patientDetails.dateOfBirth),
 				Texts.dob),
 			TextAndTextViewVM(
 				.constant(patientDetails.phone),
