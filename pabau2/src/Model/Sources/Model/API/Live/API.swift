@@ -129,7 +129,18 @@ extension APIClient {
 	}
 	
 	public func getFinancials(clientId: Int) -> Effect<[Financial], RequestError> {
-		fatalError("TODO Cristian")
+        let requestBuilder: RequestBuilder<FinancialResponse>.Type = requestBuilderFactory.getBuilder()
+        return requestBuilder.init(method: .GET,
+                                   baseUrl: baseUrl,
+                                   path: .getFinancials,
+                                   queryParams: commonAnd(other: ["contact_id": "\(clientId)"]),
+                                   isBody: false)
+            .effect()
+            .validate()
+            .mapError { $0 }
+            .map { $0.sales }
+            .eraseToEffect()
+
 	}
 	
 	public func getForms(type: FormType, clientId: Int) -> Effect<[FormData], RequestError> {
@@ -145,7 +156,7 @@ extension APIClient {
 	}
 	
 	public func getAlerts(clientId: Int) -> Effect<[Alert], RequestError> {
-		fatalError("TODO Cristian")
+        fatalError("TODO Cristian")
 	}
 	
 	public func getNotes(clientId: Int) -> Effect<[Note], RequestError> {
