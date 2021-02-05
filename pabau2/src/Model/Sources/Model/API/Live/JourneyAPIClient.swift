@@ -2,14 +2,21 @@ import ComposableArchitecture
 //MARK: - JourneyAPI
 extension APIClient {
 	
-	public func getEmployees(locationId: Location.ID) -> Effect<EmployeesList, RequestError> {
-		let requestBuilder: RequestBuilder<EmployeesList>.Type = requestBuilderFactory.getBuilder()
+	public func getEmployees(locationId: Location.ID) -> Effect<[Employee], RequestError> {
+		struct GetEmployees: Codable {
+			public let employees: [Employee]
+			enum CodingKeys: String, CodingKey {
+				case employees
+			}
+		}
+		let requestBuilder: RequestBuilder<GetEmployees>.Type = requestBuilderFactory.getBuilder()
 		return requestBuilder.init(method: .GET,
 								   baseUrl: baseUrl,
 								   path: .getEmployees,
 								   queryParams: commonAnd(other: [:]),
 								   isBody: false)
 			.effect()
+			.map(\.employees)
 			.eraseToEffect()
 	}
 	
@@ -33,8 +40,23 @@ extension APIClient {
 								   queryParams: commonAnd(other: params),
 								   isBody: false)
 			.effect()
-			//			.validate()
-			//			.mapError { LoginError.requestError($0) }
+	}
+	
+	public func getLocations() -> Effect<[Location], RequestError> {
+		struct GetLocations: Codable {
+			let locations: [Location]
+			enum CodingKeys: String, CodingKey {
+				case locations = "employees"
+			}
+		}
+		let requestBuilder: RequestBuilder<GetLocations>.Type = requestBuilderFactory.getBuilder()
+		return requestBuilder.init(method: .GET,
+								   baseUrl: baseUrl,
+								   path: .getLocations,
+								   queryParams: commonParams(),
+								   isBody: false)
+			.effect()
+			.map(\.locations)
 			.eraseToEffect()
 	}
 }

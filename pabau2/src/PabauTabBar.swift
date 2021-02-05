@@ -28,7 +28,7 @@ public struct TabBarState: Equatable {
 	var calendar: CalendarState
 	var settings: SettingsState
     var communication: CommunicationState
-	
+
 	var journeyEmployeesFilter: JourneyFilterState {
 		get {
 			JourneyFilterState(

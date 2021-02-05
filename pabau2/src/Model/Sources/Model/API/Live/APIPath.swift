@@ -6,6 +6,7 @@ public enum APIPath: String {
 	//Journey
 	case getEmployees = "/OAuth2/employees/get_employees.php"
 	case getAppointments = "/OAuth2/appointments/get_appointments_v1.php"
+	case getLocations = "/OAuth2/locations/get_locations_v1.php"
 	//Calendar
 	
 	//Contacts/ Clients

@@ -37,7 +37,6 @@ public let journeyFilterReducer = Reducer<JourneyFilterState, JourneyFilterActio
 	case .loadEmployees:
 		state.employeesLoadingState = .loading
 		return env.apiClient.getEmployees(locationId: state.locationId)
-			.map(\.employees)
 			.catchToEffect()
 			.receive(on: DispatchQueue.main)
 			.map { .gotResponse($0) }
