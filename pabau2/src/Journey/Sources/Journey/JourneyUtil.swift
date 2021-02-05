@@ -64,6 +64,8 @@ func stepType(type: FormType) -> StepType {
 		return .prescriptions
 	case .treatment:
 		return .treatmentnotes
+    case .unknown:
+        return .consents
 	}
 }
 

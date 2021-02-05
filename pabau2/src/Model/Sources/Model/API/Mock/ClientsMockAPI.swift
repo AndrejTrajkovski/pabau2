@@ -34,6 +34,8 @@ public struct ClientsMockAPI: MockAPI, ClientsAPI {
 			return mockSuccess(FormData.mockFilledTreatments)
 		case .history:
 			fatalError()
+        default:
+            fatalError()
 		}
 	}
 	

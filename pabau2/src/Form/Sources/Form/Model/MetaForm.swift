@@ -67,6 +67,9 @@ public enum MetaForm: Equatable {
 			return "HISTORY"
 		case .prescription:
 			return "PRESCRIPTION"
+        default:
+            return ""
 		}
+
 	}
 }
