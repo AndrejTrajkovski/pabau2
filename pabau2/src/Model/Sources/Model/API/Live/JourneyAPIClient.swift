@@ -2,7 +2,7 @@ import ComposableArchitecture
 //MARK: - JourneyAPI
 extension APIClient {
 	
-	public func getEmployees(locationId: Location.ID) -> Effect<[Employee], RequestError> {
+	public func getEmployees() -> Effect<[Employee], RequestError> {
 		struct GetEmployees: Codable {
 			public let employees: [Employee]
 			enum CodingKeys: String, CodingKey {

@@ -46,6 +46,9 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = Reducer.combine(
 			)
 		case .walkthrough(.login(.login(.gotResponse(.success(let user))))):
 			state = .tabBar(TabBarState())
+			let zipped = env.journeyAPI.getEmployees().upstream.zip(env.journeyAPI.getLocations().upstream)
+				.eraseToAnyPublisher()
+				.eraseToEffect()
 			return .none
 		default:
 			break
@@ -56,7 +59,6 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = Reducer.combine(
 
 struct ContentView: View {
 	let store: Store<AppState, AppAction>
-	
 	var body: some View {
 		IfLetStore(self.store.scope(
 					state: with(AppState.tabBar, curry(extract(case:from:))),
