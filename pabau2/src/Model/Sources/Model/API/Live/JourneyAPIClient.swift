@@ -17,16 +17,23 @@ extension APIClient {
 		fatalError()
 	}
 	
-	public func getAppointments(dates: [Date], locationIds: [Location.ID], employeesIds: [Employee.ID], roomIds: [Room.ID]) -> Effect<CalendarResponse, RequestError> {
+	public func getAppointments(startDate: Date, endDate: Date, locationIds: [Location.ID], employeesIds: [Employee.ID], roomIds: [Room.ID]) -> Effect<CalendarResponse, RequestError> {
 		let requestBuilder: RequestBuilder<CalendarResponse>.Type = requestBuilderFactory.getBuilder()
+		let dateFormatter = DateFormatter.yearMonthDay
+		let params = [
+			"start_date": dateFormatter.string(from: startDate),
+			"end_date": dateFormatter.string(from: endDate),
+			"location_id": locationIds.map(String.init).joined(separator: ","),
+			"room_id": roomIds.map(String.init).joined(separator: ",")
+		]
 		return requestBuilder.init(method: .GET,
 								   baseUrl: baseUrl,
 								   path: .getAppointments,
-								   queryParams: commonAnd(other: [:]),
+								   queryParams: commonAnd(other: params),
 								   isBody: false)
 			.effect()
-//			.validate()
-//			.mapError { LoginError.requestError($0) }
+			//			.validate()
+			//			.mapError { LoginError.requestError($0) }
 			.eraseToEffect()
 	}
 }

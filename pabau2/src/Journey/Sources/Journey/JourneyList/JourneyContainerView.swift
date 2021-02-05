@@ -72,7 +72,7 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 			state.employeesFilter.isShowingEmployees.toggle()
 		case .datePicker(.selectedDate(let date)):
 //			state.loadingState = .loading
-			return env.apiClient.getAppointments(dates: [date], locationIds: [state.journey.selectedLocation.id], employeesIds: Array(state.employeesFilter.selectedEmployeesIds), roomIds: [])
+			return env.apiClient.getAppointments(startDate: date, endDate: date, locationIds: [state.journey.selectedLocation.id], employeesIds: Array(state.employeesFilter.employees.map(\.id)), roomIds: [])
 //				.map(with(date, curry(calendarResponseToJourneys(date:events:))))
 				.catchToEffect()
 				.map { JourneyContainerAction.gotResponse($0) }
@@ -84,7 +84,7 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 			case .success(let appointments):
 				state.appointments.refresh(events: appointments.appointments,
 										   locationIds: [state.journey.selectedLocation.id],
-										   employees: state.employeesFilter.selectedEmployees().elements)
+										   employees: state.employeesFilter.employees.elements)
 				state.loadingState = .gotSuccess
 			case .failure(let error):
 				print(error)

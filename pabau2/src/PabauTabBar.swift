@@ -69,6 +69,7 @@ public struct TabBarState: Equatable {
 			self.journey = newValue.journey
 			self.journeyEmployeesFilter = newValue.employeesFilter
 			self.appointments = newValue.appointments
+			self.appsLoadingState = newValue.loadingState
 		}
 	}
 }
