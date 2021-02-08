@@ -1,6 +1,6 @@
 struct FailableCodableArray<Element : Codable> : Codable {
 
-	var elements: [Element]
+	let elements: [Element]
 
 	init(from decoder: Decoder) throws {
 
