@@ -82,6 +82,7 @@ public enum TabBarAction {
 	case employeesFilter(JourneyFilterAction)
 	case addAppointment(AddAppointmentAction)
     case communication(CommunicationAction)
+	case gotLocationsResponse(Result<[Location], RequestError>)
 }
 
 struct PabauTabBar: View {
@@ -125,9 +126,6 @@ struct PabauTabBar: View {
 				).tabItem {
 						Image(systemName: "staroflife")
 						Text("Journey")
-				}
-				.onAppear {
-					self.viewStore.send(.employeesFilter(JourneyFilterAction.loadEmployees))
 				}
 				ClientsNavigationView(
 					self.store.scope(
