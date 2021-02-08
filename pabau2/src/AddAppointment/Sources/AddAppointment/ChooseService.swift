@@ -68,6 +68,7 @@ public struct ChooseServiceState: Equatable {
     var listServices : [[Service]] = []
 	var isChooseServiceActive: Bool
     var chosenService: Service?
+	var chosenServiceId: Service.Id
 	var filterChosen: ChooseServiceFilter
     var searchText: String = ""
 }
@@ -76,6 +77,7 @@ public enum ChooseServiceAction: Equatable {
     case onAppear
     case gotServiceResponse(Result<[Service], RequestError>)
 	case didSelectService(Service)
+	case didSelectServiceId(Service.Id)
 	case didSelectFilter(ChooseServiceFilter)
 	case didTapBackBtn
     case onSearch(String)

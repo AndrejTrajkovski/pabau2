@@ -80,6 +80,7 @@ public let walkthroughContainerReducer: Reducer<WalkthroughContainerState, Walkt
 	walkthroughReducer.pullback(state: \WalkthroughContainerState.navigation,
 					 action: /WalkthroughContainerAction.walkthrough,
 					 environment: { $0 }),
+	
 	loginViewReducer.pullback(state: \WalkthroughContainerState.self,
 					 action: /WalkthroughContainerAction.login,
 					 environment: { $0 })

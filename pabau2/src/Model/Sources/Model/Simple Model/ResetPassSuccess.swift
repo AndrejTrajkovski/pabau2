@@ -1,4 +1,4 @@
-public struct ResetPassSuccess: Equatable, Codable, ResponseStatus {
+public struct ResetPassSuccess: Equatable, Codable {
 	public let success: Bool
 	public let message: String?
 	

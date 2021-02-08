@@ -7,7 +7,6 @@ import Journey
 import Clients
 import SwiftDate
 import Intercom
-import Util
 import FacebookShare
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -26,9 +25,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 			let userDefaults = StandardUDConfig()
 			let user = userDefaults.loggedInUser
 			let hasSeenWalkthrough = userDefaults.hasSeenAppIntroduction
-			
-			let apiClient = APIClient(baseUrl: "https://prelive-crm.pabau.com/", loggedInUser: nil)
-			
+			print("user: \(user)")
+			let apiClient = APIClient(baseUrl: "https://crm.pabau.com", loggedInUser: user)
 			let env = AppEnvironment(
 				loginAPI: apiClient,
 				journeyAPI: apiClient,

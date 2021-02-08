@@ -168,6 +168,9 @@ Tap the aftercare bellow that you wish to send to the client. The aftercare will
 	public static let week = "Week"
 
 	public static let allDay = "All Day"
+    public static let gender = "Gender"
+    public static let items = "Items"
+    public static let date = "Date"
 }
 
 extension String {

@@ -13,10 +13,15 @@ let package = Package(
             targets: ["Util"])
     ],
     dependencies: [
+		.package(name: "SwiftDate",
+						 url: "https://github.com/malcommac/SwiftDate.git", from: "6.1.0")
     ],
     targets: [
         .target(
             name: "Util",
-            dependencies: [])
+            dependencies: [
+				.product(name: "SwiftDate",
+						 package: "SwiftDate")
+			])
     ]
 )

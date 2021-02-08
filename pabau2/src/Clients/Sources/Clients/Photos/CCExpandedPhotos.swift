@@ -4,6 +4,11 @@ import ASCollectionView
 import Form
 
 let expandedPhotoReducer: Reducer<CCExpandedPhotosState, CCExpandedPhotosAction, ClientsEnvironment> = .combine(
+    photoCompareReducer.optional.pullback(
+        state: \CCExpandedPhotosState.photoCompare,
+        action: /CCExpandedPhotosAction.photoCompare,
+        environment: { $0 }
+    ),
 	.init { state, action, env in
 		switch action {
 		case .didTouchPhoto(let id):
@@ -14,11 +19,7 @@ let expandedPhotoReducer: Reducer<CCExpandedPhotosState, CCExpandedPhotosAction,
 			break
 		}
 		return .none
-	},
-	photoCompareReducer.optional.pullback(
-		state: \CCExpandedPhotosState.photoCompare,
-		action: /CCExpandedPhotosAction.photoCompare,
-		environment: { $0 })
+	}
 )
 
 struct CCExpandedPhotosState: Equatable {

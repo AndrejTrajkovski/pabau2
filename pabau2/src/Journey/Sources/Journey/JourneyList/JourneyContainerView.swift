@@ -10,6 +10,7 @@ import Form
 import Overture
 import Filters
 import SharedComponents
+import Appointments
 
 public typealias JourneyEnvironment = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
 
@@ -56,15 +57,39 @@ let checkInMiddleware = Reducer<JourneyState, CheckInContainerAction, JourneyEnv
 }
 
 public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContainerAction, JourneyEnvironment> = .combine(
+	calendarDatePickerReducer.pullback(
+		state: \JourneyContainerState.journey.selectedDate,
+		action: /JourneyContainerAction.datePicker,
+		environment: { $0 }),
 	journeyContainerReducer2.pullback(
 		state: \JourneyContainerState.journey,
 		action: /JourneyContainerAction.self,
 		environment: { $0 }
 	),
-	.init { state, action, _ in
+	.init { state, action, env in
 		switch action {
 		case .toggleEmployees:
 			state.employeesFilter.isShowingEmployees.toggle()
+		case .datePicker(.selectedDate(let date)):
+//			state.loadingState = .loading
+			return env.apiClient.getAppointments(startDate: date, endDate: date, locationIds: [state.journey.selectedLocation.id], employeesIds: Array(state.employeesFilter.employees.map(\.id)), roomIds: [])
+//				.map(with(date, curry(calendarResponseToJourneys(date:events:))))
+				.catchToEffect()
+				.map { JourneyContainerAction.gotResponse($0) }
+				.receive(on: DispatchQueue.main)
+				.eraseToEffect()
+		case .gotResponse(let result):
+			print(result)
+			switch result {
+			case .success(let appointments):
+//				state.appointments.refresh(events: appointments.appointments,
+//										   locationIds: [state.journey.selectedLocation.id],
+//										   employees: state.employeesFilter.employees.elements)
+				state.loadingState = .gotSuccess
+			case .failure(let error):
+				print(error)
+				state.loadingState = .gotError(error)
+			}
 		default:
 			break
 		}
@@ -103,16 +128,13 @@ public let journeyContainerReducer2: Reducer<JourneyState, JourneyContainerActio
 
 let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 	.combine (
-		calendarDatePickerReducer.pullback(
-			state: \JourneyState.selectedDate,
-			action: /JourneyAction.datePicker,
-			environment: { $0 }),
 		.init { state, action, environment in
             struct SearchJourneyId: Hashable {}
 
 			switch action {
 			case .selectedFilter(let filter):
 				state.selectedFilter = filter
+
 			case .datePicker(.selectedDate(let date)):
 				state.loadingState = .loading
 				return environment.apiClient.getJourneys(date: date, searchTerm: nil)
@@ -129,6 +151,7 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 				case .failure(let error):
 					state.loadingState = .gotError(error)
 				}
+
 			case .searchedText(let searchText):
 				state.searchText = searchText
 
@@ -141,18 +164,11 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
                     .map(JourneyAction.gotResponse)
                     .cancellable(id: SearchJourneyId(), cancelInFlight: true)
 
+
 			case .selectedJourney(let journey):
 				state.selectedJourney = journey
 			case .choosePathwayBackTap:
 				state.selectedJourney = nil
-			case .loadJourneys:
-				state.loadingState = .loading
-				return environment.apiClient
-					.getJourneys(date: Date(), searchTerm: nil)
-					.catchToEffect()
-                    .map(JourneyAction.gotResponse)
-                    .receive(on: DispatchQueue.main)
-					.eraseToEffect()
 			}
 			return .none
 	}
@@ -175,7 +191,7 @@ public struct JourneyContainerView: View {
 			self.selectedDate = state.journey.selectedDate
 			self.listedJourneys = state.filteredJourneys
             self.searchQuery = state.journey.searchText
-			self.isLoadingJourneys = state.journey.loadingState.isLoading
+			self.isLoadingJourneys = state.loadingState.isLoading
 			UITableView.appearance().separatorStyle = .none
 		}
 	}
@@ -189,8 +205,8 @@ public struct JourneyContainerView: View {
         VStack {
             CalendarDatePicker.init(
                 store: self.store.scope(
-                    state: { $0.journey.selectedDate },
-                    action: { .journey(.datePicker($0))}),
+					state: { $0.journey.selectedDate },
+                    action: { .datePicker($0)}),
                 isWeekView: false,
                 scope: .week
             )
@@ -279,14 +295,14 @@ public struct JourneyContainerView: View {
 func journeyCellAdapter(journey: Journey) -> JourneyCell {
 	return JourneyCell(
 		journey: journey,
-        color: Color.init(hex: journey.appointments.head.service?.color ?? "#000000"),
+        color: Color.init(hex: journey.first!.serviceColor ?? "#000000"),
 		time: "12:30",
-		imageUrl: journey.patient.avatar,
-		name: journey.patient.firstName + " " + journey.patient.lastName,
+		imageUrl: journey.first!.customerPhoto,
+		name: journey.first!.customerName ?? "",
 		services: journey.servicesString,
-		status: journey.appointments.head.status?.name,
-		employee: journey.employee.name,
-		paidStatus: journey.paid ?? "",
+		status: journey.first!.status?.name,
+		employee: journey.first!.employeeName,
+		paidStatus: "",
 		stepsComplete: 0,
 		stepsTotal: 3)
 }
@@ -301,7 +317,7 @@ struct JourneyList: View {
 	}
 	var body: some View {
 		List {
-			ForEach(journeys) { journey in
+			ForEach(journeys, id: \.hashValue) { journey in
 				journeyCellAdapter(journey: journey)
 					.contextMenu {
 						JourneyListContextMenu()

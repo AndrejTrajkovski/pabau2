@@ -1,11 +1,11 @@
-//
-// Service.swift
-
+import Tagged
 import Foundation
 
 public struct Service: Codable, Identifiable, Equatable, Hashable {
 
-    public let id: Int
+	public typealias Id = Tagged<Service, Int>
+	
+    public let id: Id
 
     public let name: String
 
@@ -18,7 +18,7 @@ public struct Service: Codable, Identifiable, Equatable, Hashable {
     public let disabledUsers: [Int]?
 
     public let duration: String?
-    
+
     public init(
         id: Int,
         name: String,
@@ -28,7 +28,6 @@ public struct Service: Codable, Identifiable, Equatable, Hashable {
         disabledUsers: [Int]? = nil,
         duration: String? = nil
     ) {
-        self.id = id
         self.name = name
         self.color = color
         self.categoryId = categoryId
@@ -36,6 +35,7 @@ public struct Service: Codable, Identifiable, Equatable, Hashable {
         self.disabledUsers = disabledUsers
         self.duration = duration
     }
+	
     public enum CodingKeys: String, CodingKey {
         case id = "id"
         case name

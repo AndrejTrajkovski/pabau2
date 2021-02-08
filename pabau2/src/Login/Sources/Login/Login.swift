@@ -25,7 +25,7 @@ public enum LoginViewAction: Equatable {
 public enum LoginAction: Equatable {
 	case login (email: String, password: String)
 	case forgotPass
-	case gotResponse(Result<LoginResponse, LoginError>)
+	case gotResponse(Result<[User], LoginError>)
 }
 
 func handleLoginTapped(_ email: String, _ password: String, state: inout WalkthroughContainerState, apiClient: LoginAPI) -> Effect<LoginAction, Never> {
@@ -68,10 +68,10 @@ public let loginReducer = Reducer<WalkthroughContainerState, LoginAction, LoginE
 		return .none
 	case .gotResponse(let result):
 		switch result {
-		case .success(let loginResponse):
+		case .success(let users):
 			state.loginViewState.loginLS = .gotSuccess
 			var userDefaults = environment.userDefaults
-			let loggedInUser = loginResponse.users.first!
+			let loggedInUser = users.first!
 			userDefaults.loggedInUser = loggedInUser
 			environment.apiClient.updateLoggedIn(user: loggedInUser)
 		case .failure(let error):
@@ -83,7 +83,12 @@ public let loginReducer = Reducer<WalkthroughContainerState, LoginAction, LoginE
 }
 
 let loginViewReducer: Reducer<WalkthroughContainerState, LoginViewAction, LoginEnvironment> = .combine(
-	loginReducer.pullback(state: \WalkthroughContainerState.self, action: /LoginViewAction.login, environment: { $0 }),
+
+	loginReducer.pullback(
+		state: \WalkthroughContainerState.self,
+		action: /LoginViewAction.login,
+		environment: { $0 }),
+	
 	forgotPassViewReducer.pullback(
 		state: \WalkthroughContainerState.forgotPass,
 		action: /LoginViewAction.forgotPass,
@@ -94,7 +99,7 @@ struct Login: View {
 	let store: Store<WalkthroughContainerState, LoginAction>
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
 	@Binding private var email: String
-	@State private var password: String = ""
+	@State private var password: String = "cristian123"
 	struct ViewState: Equatable {
 		let emailValidationText: String
 		let passValidationText: String
@@ -148,7 +153,7 @@ public struct LoginView: View {
 			self.isForgotPassActive = state.navigation.contains(.forgotPassScreen)
 		}
 	}
-	@State var email: String = ""
+	@State var email: String = "petra.cristian@gmail.com"
 	public init(store: Store<WalkthroughContainerState, LoginViewAction>) {
 		self.store = store
 		self.viewStore = ViewStore.init(self.store

@@ -27,6 +27,7 @@ public let clientsContainerReducer: Reducer<ClientsState, ClientsAction, Clients
                 .receive(on: DispatchQueue.main)
 				.eraseToEffect()
 		case .gotClientsResponse(let result):
+            
 			switch result {
 			case .success(let contacts):
                 state.clients = .init(contacts.clients)
@@ -44,7 +45,7 @@ public let clientsContainerReducer: Reducer<ClientsState, ClientsAction, Clients
 public struct ClientsState: Equatable {
 	public init () { }
 	var contactListLS: LoadingState = .initial
-	var clients: IdentifiedArrayOf<Client> = []
+    var clients: [Client] = []
 	var addClient: AddClientState?
 	var selectedClient: ClientCardState?
     var searchText: String = "" {

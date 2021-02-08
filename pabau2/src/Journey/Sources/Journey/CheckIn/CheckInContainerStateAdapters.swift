@@ -12,7 +12,7 @@ func doctorStepForms(stepType: StepType,
 										 photos: PhotosState) -> [MetaFormAndStatus] {
 	switch stepType {
 	case .aftercares:
-		return [MetaFormAndStatus(MetaForm.aftercare(JourneyMocks.aftercare), index: 0)]
+		return [MetaFormAndStatus(MetaForm.aftercare(Aftercare.mock), index: 0)]
 	case .checkpatient:
 		let patientForms = [medHistory] + consents
 		let checkPatient = CheckPatient(patDetails: patientDetails, patForms: patientForms)

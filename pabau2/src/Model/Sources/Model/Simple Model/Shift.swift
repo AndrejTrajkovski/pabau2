@@ -1,113 +1,73 @@
-//
-// Shift.swift
 import Foundation
 import Tagged
 
-public struct Shift: Codable, Identifiable, Equatable {
+public struct Shift: Codable {
+	public let rotaID: Int
+	public let date: Date
+	public let startTime: Date
+	public let endTime: Date
+	public let userID: Employee.ID
+	public let userName: String
+	public let locationName: String
+	public let locColor: String
+	public let locationID: Location.ID
+	public let roomID: Room.Id
+	public let notes: String
 
-	public typealias Id = Tagged<Shift, Int>
-    
-	public let id: Id
-
-	public let employeeId: Employee.ID
-
-//    public let userId: Int?
-
-    public let locationId: Location.ID
-
-    public let date: Date
-
-    public let startTime: Date
-
-    public let endTime: Date
-
-    public let published: Bool?
-    public init(id: Int,
-				employeeId: Employee.Id,
-//				userId: Int? = nil,
-				locationId: Location.Id,
-				date: Date,
-				startTime: Date,
-				endTime: Date,
-				published: Bool? = nil) {
-		self.id = Shift.ID.init(rawValue: id)
-        self.employeeId = employeeId
-//        self.userId = userId
-        self.locationId = locationId
-        self.date = date
-        self.startTime = startTime
-        self.endTime = endTime
-        self.published = published
-    }
+	enum CodingKeys: String, CodingKey {
+		case rotaID = "rota_id"
+		case date
+		case startTime = "start_time"
+		case endTime = "end_time"
+		case userID = "user_id"
+		case userName = "user_name"
+		case locationName = "location_name"
+		case locColor = "loc_color"
+		case locationID = "location_id"
+		case roomID = "room_id"
+		case notes
+	}
 	
-    public enum CodingKeys: String, CodingKey {
-        case id = "id"
-        case employeeId = "employeeid"
-//        case userId = "userid"
-        case locationId = "locationid"
-        case date
-        case startTime = "start_time"
-        case endTime = "end_time"
-        case published
-    }
-
 	public init(from decoder: Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
-		id = try container.decode(Shift.Id.self, forKey: .id)
-		employeeId = try container.decode(Employee.Id.self, forKey: .employeeId)
-		locationId = try container.decode(Location.ID.self, forKey: .locationId)
-		date = try Date.init(container: container,
-								 codingKey: Shift.CodingKeys.date,
-								 formatter: DateFormatter.yearMonthDay)
-		startTime = try Date(container: container,
-							 codingKey: Shift.CodingKeys.startTime,
-							 formatter: DateFormatter.HHmmss)
-		endTime = try Date(container: container,
-						   codingKey: Shift.CodingKeys.endTime,
-						   formatter: DateFormatter.HHmmss)
-		published = nil
-	}
-
-}
-
-extension Shift {
-	public static func mock () -> [Date: [Location.ID: [Employee.Id: [Shift]]]] {
-		var shifts = [Shift]()
-		for (idx, emp) in Employee.mockEmployees.enumerated() {
-			let startOfToday = Calendar.init(identifier: .gregorian).startOfDay(for: Date())
-			Array(-5...5).forEach {
-				let startOfDay = Calendar.gregorian.date(byAdding: .day,
-														 value: $0,
-														 to: startOfToday)!
-				let shiftStart = Calendar.gregorian.date(byAdding: .hour,
-														value: Int.random(in: 7...9),
-														to: startOfDay)!
-				let shiftEnd = Calendar.gregorian.date(byAdding: .hour,
-													   value: Int.random(in: 7...12),
-														to: shiftStart)!
-				shifts.append(Shift.init(id: idx, employeeId: emp.id, locationId: emp.locationId ?? -1, date: startOfDay, startTime: shiftStart, endTime: shiftEnd))
-			}
+		self.rotaID = try container.decode(Int.self, forKey: .rotaID)
+		let intUserId = try container.decode(Int.self, forKey: .userID)
+		self.userID = Employee.ID(rawValue: String(intUserId))
+		self.userName = try container.decode(String.self, forKey: .userName)
+		self.locationName = try container.decode(String.self, forKey: .locationName)
+		self.locColor = try container.decode(String.self, forKey: .locColor)
+		let stringLocationID = try container.decode(String.self, forKey: .locationID)
+		guard let intLocationId = Int(stringLocationID) else {
+			throw DecodingError.dataCorruptedError(forKey: .locationID, in: container, debugDescription: "Location ID expected to be Integer")
 		}
-		let byDate = Dictionary.init(grouping: shifts, by: { $0.date })
-		return byDate.mapValues { events in
-			return Dictionary.init(grouping: events, by: { $0.locationId }).mapValues { events2 in
-				Dictionary.init(grouping: events2, by: { $0.employeeId })
-			}
-		}
-	}
-}
-
-extension Date {
-	public init(container: KeyedDecodingContainer<Shift.CodingKeys>,
-				codingKey: Shift.CodingKeys,
-				formatter: DateFormatter) throws {
-		let dateString = try container.decode(String.self, forKey: codingKey)
-		if let date = formatter.date(from: dateString) {
-			self = date
+		self.locationID = Location.Id.init(rawValue: intLocationId)
+		self.roomID = try container.decode(Room.Id.self, forKey: .roomID)
+		self.notes = try container.decode(String.self, forKey: .notes)
+		
+		let dateString = try container.decode(String.self, forKey: .date)
+		if let date = DateFormatter.yearMonthDay.date(from: dateString) {
+			self.date = date
 		} else {
-			throw DecodingError.dataCorruptedError(forKey: codingKey,
-												   in: container,
-												   debugDescription: "Date string does not match format expected by formatter.")
+			throw DecodingError.dataCorruptedError(forKey: .date,
+				  in: container,
+				  debugDescription: "Date string does not match format expected by formatter.")
+		}
+
+		let startTimeString = try container.decode(String.self, forKey: .startTime)
+		if let startTime = DateFormatter.HHmmss.date(from: startTimeString) {
+			self.startTime = startTime
+		} else {
+			throw DecodingError.dataCorruptedError(forKey: .startTime,
+				  in: container,
+				  debugDescription: "Date string does not match format expected by formatter.")
+		}
+		let endTimeString = try container.decode(String.self, forKey: .endTime)
+		if let endTime = DateFormatter.HHmmss.date(from: endTimeString) {
+			self.endTime = endTime
+		} else {
+			throw DecodingError.dataCorruptedError(forKey: .endTime,
+				  in: container,
+				  debugDescription: "Date string does not match format expected by formatter.")
 		}
 	}
 }

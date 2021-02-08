@@ -36,7 +36,7 @@ struct HourMinutes: View {
 	let date: Date
 	static let dateFormat: DateFormatter = {
 		let formatter = DateFormatter()
-		formatter.dateFormat = "hh:mm"
+		formatter.dateFormat = "HH:mm"
 		return formatter
 	}()
 	var body: some View {

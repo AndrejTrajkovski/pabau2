@@ -43,9 +43,9 @@ struct FormsListRaw: View {
 struct FormsListRow: View {
 	let form: FormData
 	var body: some View {
-		ClientCardItemBaseRow(title: form.template.name,
-													date: form.date,
-													image: Image(systemName: form.template.formType.imageName)
+		ClientCardItemBaseRow(title: form.name,
+													date: form.createdAt,
+													image: Image(systemName: form.type.imageName)
 		)
 	}
 }
@@ -74,6 +74,7 @@ extension FormType {
 		case .prescription: return "doc.append"
 		case .consent: return "signature"
 		case .history: return ""
+        case .unknown: return ""
 		}
 	}
 }
