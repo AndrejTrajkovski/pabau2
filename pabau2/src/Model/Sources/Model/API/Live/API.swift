@@ -135,7 +135,19 @@ extension APIClient {
 	}
 	
 	public func getPhotos(clientId: Int) -> Effect<[SavedPhoto], RequestError> {
-		fatalError("TODO Cristian")
+        let requestBuilder: RequestBuilder<PhotoResponse>.Type = requestBuilderFactory.getBuilder()
+        return requestBuilder.init(method: .GET,
+                                   baseUrl: baseUrl,
+                                   path: .getClientsPhotos,
+                                   queryParams: commonAnd(other: [
+                                                            "contact_id": "\(clientId)"
+                                   ]),
+                                   isBody: false)
+            .effect()
+            .validate()
+            .mapError { $0 }
+            .map { $0.photos ?? [] }
+            .eraseToEffect()
 	}
 	
 	public func getFinancials(clientId: Int) -> Effect<[Financial], RequestError> {
