@@ -10,6 +10,7 @@ import JZCalendarWeekView
 import AddAppointment
 import Communication
 import Intercom
+import Appointments
 
 public typealias TabBarEnvironment = (
 	loginAPI: LoginAPI,
@@ -19,13 +20,32 @@ public typealias TabBarEnvironment = (
 )
 
 public struct TabBarState: Equatable {
-	public var addAppointment: AddAppointmentState?
-	public var journeyState: JourneyState
-	public var clients: ClientsState
-	public var calendar: CalendarState
-	public var settings: SettingsState
-    public var communication: CommunicationState
-	public var employeesFilter: JourneyFilterState = JourneyFilterState()
+	var appsLoadingState: LoadingState
+	var appointments: Appointments
+	var addAppointment: AddAppointmentState?
+	var journey: JourneyState
+	var clients: ClientsState
+	var calendar: CalendarState
+	var settings: SettingsState
+    var communication: CommunicationState
+
+	var journeyEmployeesFilter: JourneyFilterState {
+		get {
+			JourneyFilterState(
+				locationId: journey.selectedLocation.id,
+				employeesLoadingState: journey.employeesLoadingState,
+				employees: calendar.employees[journey.selectedLocation.id] ?? [],
+				selectedEmployeesIds: journey.selectedEmployeesIds,
+				isShowingEmployees: journey.isShowingEmployeesFilter
+			)
+		}
+		set {
+			self.journey.employeesLoadingState = newValue.employeesLoadingState
+			self.calendar.employees[journey.selectedLocation.id] = newValue.employees
+			self.journey.selectedEmployeesIds = newValue.selectedEmployeesIds
+			self.journey.isShowingEmployeesFilter = newValue.isShowingEmployees
+		}
+	}
 
 	public var calendarContainer: CalendarContainerState {
 		get {
@@ -40,12 +60,16 @@ public struct TabBarState: Equatable {
 
 	public var journeyContainer: JourneyContainerState {
 		get {
-			JourneyContainerState(journey: journeyState,
-								  employeesFilter: employeesFilter)
+			JourneyContainerState(journey: self.journey,
+								  employeesFilter: self.journeyEmployeesFilter,
+								  appointments: self.appointments,
+								  loadingState: self.appsLoadingState)
 		}
 		set {
-			self.journeyState = newValue.journey
-			self.employeesFilter = newValue.employeesFilter
+			self.journey = newValue.journey
+			self.journeyEmployeesFilter = newValue.employeesFilter
+			self.appointments = newValue.appointments
+			self.appsLoadingState = newValue.loadingState
 		}
 	}
 }
@@ -58,6 +82,7 @@ public enum TabBarAction {
 	case employeesFilter(JourneyFilterAction)
 	case addAppointment(AddAppointmentAction)
     case communication(CommunicationAction)
+	case gotLocationsResponse(Result<[Location], RequestError>)
 }
 
 struct PabauTabBar: View {
@@ -68,7 +93,7 @@ struct PabauTabBar: View {
 		let isShowingCheckin: Bool
 		let isShowingAppointments: Bool
 		init(state: TabBarState) {
-			self.isShowingEmployees = state.employeesFilter.isShowingEmployees
+			self.isShowingEmployees = state.journeyEmployeesFilter.isShowingEmployees
 			self.isShowingCheckin = state.journeyContainer.journey.checkIn != nil
 			self.isShowingAppointments = state.addAppointment != nil
 		}
@@ -101,10 +126,6 @@ struct PabauTabBar: View {
 				).tabItem {
 						Image(systemName: "staroflife")
 						Text("Journey")
-				}
-				.onAppear {
-					self.viewStore.send(.journey(JourneyContainerAction.journey(JourneyAction.loadJourneys)))
-					self.viewStore.send(.employeesFilter(JourneyFilterAction.loadEmployees))
 				}
 				ClientsNavigationView(
 					self.store.scope(
@@ -157,7 +178,7 @@ struct PabauTabBar: View {
 			}
 			if self.viewStore.state.isShowingEmployees {
 				JourneyFilter(
-					self.store.scope(state: { $0.employeesFilter },
+					self.store.scope(state: { $0.journeyEmployeesFilter },
 					action: { .employeesFilter($0)})
 				).transition(.moveAndFade)
 			}
@@ -176,7 +197,7 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
 		return .none
 	},
 	journeyFilterReducer.pullback(
-		state: \TabBarState.employeesFilter,
+		state: \TabBarState.journeyEmployeesFilter,
 		action: /TabBarAction.employeesFilter,
 		environment: {
 			return EmployeesFilterEnvironment(
@@ -250,10 +271,12 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
 
 extension TabBarState {
 	public init() {
-		self.journeyState = JourneyState()
+		self.journey = JourneyState()
 		self.clients = ClientsState()
 		self.calendar = CalendarState()
 		self.settings = SettingsState()
 		self.communication = CommunicationState()
+		self.appointments = .week([:])
+		self.appsLoadingState = .initial
 	}
 }

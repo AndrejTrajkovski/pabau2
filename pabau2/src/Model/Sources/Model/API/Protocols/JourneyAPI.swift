@@ -1,7 +1,8 @@
 import ComposableArchitecture
 
 public protocol JourneyAPI {
-	func getJourneys(date: Date, searchTerm: String?) -> Effect<[Journey], RequestError>
-	func getEmployees(companyId: Company.ID) -> Effect<[Employee], RequestError>
+	func getEmployees() -> Effect<[Employee], RequestError>
 	func getTemplates(_ type: FormType) -> Effect<[FormTemplate], RequestError>
+	func getAppointments(startDate: Date, endDate: Date, locationIds: [Location.ID], employeesIds: [Employee.ID], roomIds: [Room.ID]) -> Effect<CalendarResponse, RequestError>
+	func getLocations() -> Effect<[Location], RequestError>
 }

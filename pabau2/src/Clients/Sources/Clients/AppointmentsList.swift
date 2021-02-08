@@ -55,9 +55,9 @@ struct AppointmentRow: View {
 		VStack(spacing: 0) {
 			HStack {
 				AvatarView(avatarUrl: nil,
-									 initials: app.employeeInitials ?? "",
-									 font: .regular18,
-									 bgColor: .accentColor)
+						   initials: app.employeeInitials ?? "",
+						   font: .regular18,
+						   bgColor: .accentColor)
 					.frame(width: 55, height: 55)
 					.padding()
 				VStack(alignment: .leading) {
@@ -106,15 +106,5 @@ struct DateLocation: View {
 			DateLabel(date: app.start_time)
 			LocationLabel(location: app.locationName ?? "")
 		}
-	}
-}
-
-struct AppointmentRow_Previews: PreviewProvider {
-	static var previews: some View {
-		AppointmentRow(app: Appointment(id: 1,
-																		from: Date(),
-																		to: Date(),
-																		employeeId: 1,
-																		employeeInitials: "AT", locationId: 1, locationName: "London", service: BaseService.init(id: 1, name: "Botox", color: "#eb4034")))
 	}
 }

@@ -67,17 +67,20 @@ open class RequestBuilderImpl<T: Decodable>: RequestBuilder<T> {
 		return data
 	}
 
-	func decode<T: Decodable>(_ data: Data) -> AnyPublisher<T,
-		RequestError> {
-			let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .formatted(.rfc3339)
-
+	func decode<T: Decodable>(_ data: Data) -> AnyPublisher<T, RequestError> {
+		let decoder = JSONDecoder()
+		decoder.dateDecodingStrategy = self.dateDecoding
 			return Just(data)
-				.decode(type: T.self, decoder: decoder)
+				.decode(type: APIResponse<T>.self, decoder: decoder)
+				.tryMap { try $0.result.get() }
 				.mapError { error in
-					var errorMessage = error.localizedDescription + "\n" + (String.init(data: data, encoding: .utf8) ?? ". String not utf8")
-					errorMessage += self.stringIfDecodingError(error) ?? ""
-					return RequestError.jsonDecoding(errorMessage)
+					if error is DecodingError {
+						var errorMessage = error.localizedDescription + "\n" + (String.init(data: data, encoding: .utf8) ?? ". String not utf8")
+						errorMessage += self.stringIfDecodingError(error) ?? ""
+						return RequestError.jsonDecoding(errorMessage)
+					} else {
+						return error as? RequestError ?? .unknown
+					}
 			}
 			.eraseToAnyPublisher()
 	}

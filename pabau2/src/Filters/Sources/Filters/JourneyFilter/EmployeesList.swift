@@ -29,7 +29,7 @@ public struct JourneyFilter: View {
 
 private struct EmployeeList: View {
 	public let selectedEmployeesIds: Set<Employee.Id>
-	public let employees: [Employee]
+	public let employees: IdentifiedArrayOf<Employee>
 	public let header: EmployeeHeader
 	public let didSelectEmployee: (Employee) -> Void
 	public var body: some View {

@@ -3,6 +3,7 @@ import JZCalendarWeekView
 import ComposableArchitecture
 import Model
 import AddBookout
+import Appointments
 
 struct CalendarSectionViewState<Subsection: Identifiable & Equatable>: Equatable {
 	var selectedDate: Date
