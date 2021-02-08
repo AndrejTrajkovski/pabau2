@@ -214,7 +214,20 @@ extension APIClient {
 	}
 	
 	public func getAlerts(clientId: Int) -> Effect<[Alert], RequestError> {
-        fatalError("TODO Cristian")
+        let requestBuilder: RequestBuilder<AlertResponse>.Type = requestBuilderFactory.getBuilder()
+        return requestBuilder.init(method: .GET,
+                                   baseUrl: baseUrl,
+                                   path: .getClientAlerts,
+                                   queryParams: commonAnd(other: [
+                                    "contact_id": "\(clientId)",
+                                    "mode": "get"
+                                   ]),
+                                   isBody: false)
+            .effect()
+            .validate()
+            .mapError { $0 }
+            .map { $0.medicalAlerts }
+            .eraseToEffect()
 	}
 	
 	public func getNotes(clientId: Int) -> Effect<[Note], RequestError> {
