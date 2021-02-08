@@ -2,7 +2,7 @@ import ComposableArchitecture
 
 public protocol ClientsAPI {
 
-    func getClients(search: String?, offset: Int) -> Effect<[Client], RequestError>
+    func getClients(search: String?, offset: Int) -> Effect<ClientsResponse, RequestError>
 	func getItemsCount(clientId: Int) -> Effect<ClientItemsCount, RequestError>
 
 	

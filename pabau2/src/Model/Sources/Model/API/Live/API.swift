@@ -8,7 +8,7 @@ public class APIClient: LoginAPI {
 		self.loggedInUser = loggedInUser
 	}
 	
-	private(set) var baseUrl: String = "https://crm.pabau.com/"
+	private(set) var baseUrl: String = "https://prelive-crm.pabau.com/"
 	private var loggedInUser: User? = nil
     let requestBuilderFactory: RequestBuilderFactory = RequestBuilderFactoryImpl()
 }
@@ -61,7 +61,7 @@ extension APIClient {
 	func getUserParams() -> [String: Any]? {
 		loggedInUser.map {
 			[
-				"company": $0.apiKey,
+				"company": $0.companyID,
 				"user_id": $0.userID.rawValue,
 				"api_key": $0.apiKey,
 			]

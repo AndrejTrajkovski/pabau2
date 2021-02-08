@@ -11,14 +11,14 @@ import Combine
 
 //MARK: - LoginAPI: ClientApi
 extension APIClient: ClientsAPI {
-    public func getClients(search: String? = nil, offset: Int) -> Effect<[Client], RequestError> {
+    public func getClients(search: String? = nil, offset: Int) -> Effect<ClientsResponse, RequestError> {
         var queryItems: [String: Any] = ["limit": 20, "offset": offset]
 
         if let search = search {
             queryItems["search"] = search
         }
 
-        let requestBuilder: RequestBuilder<[Client]>.Type = requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<ClientsResponse>.Type = requestBuilderFactory.getBuilder()
         return requestBuilder.init(method: .GET,
                                    baseUrl: baseUrl,
                                    path: .getClients,

@@ -3,6 +3,14 @@
 
 import Foundation
 
+public struct ClientsResponse: Codable, Equatable {
+    public let clients: [Client]
+
+    public enum CodingKeys: String, CodingKey {
+        case clients = "appointments"
+    }
+}
+
 public struct Client: Codable, Identifiable, Equatable {
 
     public let mobile: String?
@@ -25,27 +33,39 @@ public struct Client: Codable, Identifiable, Equatable {
 
     public let gender: String?
 
-    public let optInEmail: Bool?
+    public var optInEmail: Bool? {
+        return Bool(_optInEmail ?? "false")
+    }
 
-    public let optInPhone: Bool?
+    public var optInPhone: Bool? {
+        return Bool(_optInEmail ?? "false")
+    }
 
-    public let optInPost: Bool?
+    public var optInPost: Bool? {
+        return Bool(_optInPost ?? "false")
+    }
 
-    public let optInSms: Bool?
+    public var optInSms: Bool? {
+        return Bool(_optInSms ?? "false")
+    }
 
-    public let optInNewsletter: Bool?
+    public var optInNewsletter: Bool? {
+        return Bool(_optInNewsletter ?? "false")
+    }
 
     public let marketingSource: String?
 
-    public let customId: Int?
+    private let contactID: String?
 
-    public let medicalAlerts: [String]?
+    public let customId: String?
 
-    public let insuranceCompanyId: Int?
+    public let medicalAlerts: String?
 
-    public let insuranceContractId: Int?
+    public let insuranceCompanyId: String?
 
-    public let membershipNumber: Int?
+    public let insuranceContractId: String?
+
+    public let membershipNumber: String?
 
     public let insuranceCompany: String?
 
@@ -55,7 +75,9 @@ public struct Client: Codable, Identifiable, Equatable {
 
     public let customFields: [CustomField]?
 
-    public let id: Int
+    public var id: Int {
+        return Int(contactID ?? "") ?? 0
+    }
 
     public let firstName: String
 
@@ -74,7 +96,15 @@ public struct Client: Codable, Identifiable, Equatable {
     public let phone: String?
 
     public var count: ClientItemsCount?
-    public init(mobile: String? = nil, salutation: String? = nil, leadSource: String? = nil, mailingStreet: String? = nil, otherStreet: String? = nil, mailingCity: String? = nil, mailingCounty: String? = nil, mailingCountry: String? = nil, mailingPostal: String? = nil, gender: String? = nil, optInEmail: Bool? = nil, optInPhone: Bool? = nil, optInPost: Bool? = nil, optInSms: Bool? = nil, optInNewsletter: Bool? = nil, marketingSource: String? = nil, customId: Int? = nil, medicalAlerts: [String]? = nil, insuranceCompanyId: Int? = nil, insuranceContractId: Int? = nil, membershipNumber: Int? = nil, insuranceCompany: String? = nil, insuranceContract: String? = nil, owner: Int? = nil, customFields: [CustomField]? = nil, id: Int, firstName: String, lastName: String, dOB: Date, email: String? = nil, avatar: String? = nil, phone: String? = nil, count: ClientItemsCount? = nil) {
+
+
+    public let _optInEmail: String?
+    public let _optInPhone: String?
+    public let _optInPost: String?
+    public let _optInSms: String?
+    public let _optInNewsletter: String?
+
+    public init(mobile: String? = nil, salutation: String? = nil, leadSource: String? = nil, mailingStreet: String? = nil, otherStreet: String? = nil, mailingCity: String? = nil, mailingCounty: String? = nil, mailingCountry: String? = nil, mailingPostal: String? = nil, gender: String? = nil, optInEmail: Bool? = nil, optInPhone: Bool? = nil, optInPost: Bool? = nil, optInSms: Bool? = nil, optInNewsletter: Bool? = nil, marketingSource: String? = nil, customId: Int? = nil, medicalAlerts: String? = nil, insuranceCompanyId: Int? = nil, insuranceContractId: Int? = nil, membershipNumber: Int? = nil, insuranceCompany: String? = nil, insuranceContract: String? = nil, owner: Int? = nil, customFields: [CustomField]? = nil, id: Int, firstName: String, lastName: String, dOB: Date, email: String? = nil, avatar: String? = nil, phone: String? = nil, count: ClientItemsCount? = nil) {
         self.mobile = mobile
         self.salutation = salutation
         self.leadSource = leadSource
@@ -85,22 +115,22 @@ public struct Client: Codable, Identifiable, Equatable {
         self.mailingCountry = mailingCountry
         self.mailingPostal = mailingPostal
         self.gender = gender
-        self.optInEmail = optInEmail
-        self.optInPhone = optInPhone
-        self.optInPost = optInPost
-        self.optInSms = optInSms
-        self.optInNewsletter = optInNewsletter
+        self._optInEmail = String(optInEmail ?? false)
+        self._optInPhone = String(optInPhone ?? false)
+        self._optInPost = String(optInPost ?? false)
+        self._optInSms = String(optInSms ?? false)
+        self._optInNewsletter = String(optInNewsletter ?? false)
         self.marketingSource = marketingSource
-        self.customId = customId
+        self.customId = String(customId ?? 0)
         self.medicalAlerts = medicalAlerts
-        self.insuranceCompanyId = insuranceCompanyId
-        self.insuranceContractId = insuranceContractId
-        self.membershipNumber = membershipNumber
+        self.insuranceCompanyId = String(insuranceCompanyId ?? 0)
+        self.insuranceContractId = String(insuranceContractId ?? 0)
+        self.membershipNumber = String(membershipNumber ?? 0)
         self.insuranceCompany = insuranceCompany
         self.insuranceContract = insuranceContract
         self.owner = owner
         self.customFields = customFields
-        self.id = id
+        self.contactID = String(id)
         self.firstName = firstName
         self.lastName = lastName
         self.email = email
@@ -111,7 +141,7 @@ public struct Client: Codable, Identifiable, Equatable {
     }
     public enum CodingKeys: String, CodingKey {
         case mobile
-        case salutation
+        case salutation = "Salutation"
         case leadSource = "lead_source"
         case mailingStreet = "mailing_street"
         case otherStreet = "other_street"
@@ -120,11 +150,11 @@ public struct Client: Codable, Identifiable, Equatable {
         case mailingCountry = "mailing_country"
         case mailingPostal = "mailing_postal"
         case gender
-        case optInEmail = "opt_in_email"
-        case optInPhone = "opt_in_phone"
-        case optInPost = "opt_in_post"
-        case optInSms = "opt_in_sms"
-        case optInNewsletter = "opt_in_newsletter"
+        case _optInEmail = "opt_in_email"
+        case _optInPhone = "opt_in_phone"
+        case _optInPost = "opt_in_post"
+        case _optInSms = "opt_in_sms"
+        case _optInNewsletter = "opt_in_newsletter"
         case marketingSource = "marketing_source"
         case customId = "customid"
         case medicalAlerts = "medical_alerts"
@@ -135,7 +165,7 @@ public struct Client: Codable, Identifiable, Equatable {
         case insuranceContract = "insurance_contract"
         case owner
         case customFields = "custom_fields"
-        case id = "id"
+        case contactID = "contact_id"
         case firstName = "first_name"
         case lastName = "last_name"
         case originalDOB = "d_o_b"
@@ -148,7 +178,7 @@ public struct Client: Codable, Identifiable, Equatable {
 }
 
 extension Client {
-	static let mockClients =
+	static let mockClients = ClientsResponse(clients:
 		[
 			Client(id:1, firstName: "Jessica", lastName:"Avery", dOB: Date(), email: "ninenine@me.com", avatar: "dummy1"),
 			Client(id:2, firstName: "Joan", lastName:"Bailey", dOB: Date(), email: "bmcmahon@outlook.com", avatar: nil),
@@ -175,7 +205,7 @@ extension Client {
 			Client(id:23, firstName: "Olivia", lastName:"Bailey", dOB: Date(), avatar: nil),
 			Client(id:24, firstName: "Penelope", lastName:"Baker", dOB: Date(), avatar: "dummy10"),
 			Client(id:25, firstName: "Pippa", lastName:"Ball", dOB: Date(), avatar: nil),
-	]
+	])
 }
 
 extension Client {

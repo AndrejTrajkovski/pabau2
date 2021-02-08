@@ -20,7 +20,7 @@ public struct ChooseClientsState: Equatable {
 
 public enum ChooseClientsAction: Equatable {
     case onAppear
-    case gotClientsResponse(Result<[Client], RequestError>)
+    case gotClientsResponse(Result<ClientsResponse, RequestError>)
     case onSearch(String)
     case didSelectClient(Client)
     case didTapBackBtn
@@ -51,7 +51,7 @@ let chooseClientsReducer =
                     break
                 }
                 state.notFoundClients = false
-                state.clients = .init(clients)
+                state.clients = .init(clients.clients)
             case .failure:
                 break
             }

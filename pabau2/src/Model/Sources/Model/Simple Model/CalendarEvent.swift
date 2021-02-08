@@ -245,7 +245,7 @@ extension CalendarEvent {
 			let mockStartEnd = Date.mockStartAndEndDate(endRangeMax: 90)
 			let service = services.randomElement()
 			let employee = Employee.mockEmployees.randomElement()!
-			let client = Client.mockClients.randomElement()!
+            let client = Client.mockClients.clients.randomElement()!
 			let room = Room.mock().randomElement()!.value
 			let app = CalAppointment(id: CalendarEvent.Id(rawValue: idx),
 									 start_date: mockStartEnd.0,
