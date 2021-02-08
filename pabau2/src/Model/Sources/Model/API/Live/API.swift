@@ -144,7 +144,22 @@ extension APIClient {
 	}
 	
 	public func getForms(type: FormType, clientId: Int) -> Effect<[FormData], RequestError> {
-		fatalError("TODO Cristian")
+		struct FormDataResponse: Codable {
+			let forms: [FormData]
+			
+			enum CodingKeys: String, CodingKey {
+				case forms = "employees"
+			}
+		}
+        let requestBuilder: RequestBuilder<FormDataResponse>.Type = requestBuilderFactory.getBuilder()
+        return requestBuilder.init(method: .GET,
+                                   baseUrl: baseUrl,
+                                   path: .getForms,
+                                   queryParams: commonAnd(other: ["contact_id": "\(clientId)"]),
+                                   isBody: false)
+            .effect()
+            .map { $0.forms.filter { $0.type == type} }
+            .eraseToEffect()
 	}
 	
 	public func getDocuments(clientId: Int) -> Effect<[Document], RequestError> {
