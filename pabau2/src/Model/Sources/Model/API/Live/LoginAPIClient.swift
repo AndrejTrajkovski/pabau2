@@ -17,7 +17,16 @@ extension APIClient {
 		self.loggedInUser = user
 	}
 	
-	public func login(_ username: String, password: String) -> Effect<LoginResponse, LoginError> {
+	public func login(_ username: String, password: String) -> Effect<[User], LoginError> {
+		struct LoginResponse: Codable {
+			let url: String
+			public let users: FailableCodableArray<User>
+
+			enum CodingKeys: String, CodingKey {
+				case url = "URL"
+				case users = "appointments"
+			}
+		}
 		let requestBuilder: RequestBuilder<LoginResponse>.Type = requestBuilderFactory.getBuilder()
 		return requestBuilder.init(method: .GET,
 								   baseUrl: baseUrl,
@@ -26,6 +35,7 @@ extension APIClient {
 												 "password": password],
 								   isBody: false)
 			.effect()
+			.map(\.users.elements)
 			.mapError { LoginError.requestError($0) }
 			.eraseToEffect()
 	}
