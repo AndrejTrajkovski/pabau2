@@ -164,7 +164,17 @@ extension APIClient {
 	}
 	
 	public func getPatientDetails(clientId: Int) -> Effect<PatientDetails, RequestError> {
-		fatalError("TODO Cristian")
+        let requestBuilder: RequestBuilder<PatientDetailsResponse>.Type = requestBuilderFactory.getBuilder()
+        return requestBuilder.init(method: .GET,
+                                   baseUrl: baseUrl,
+                                   path: .getPatientDetails,
+                                   queryParams: commonAnd(other: ["contact_id": "\(clientId)"]),
+                                   isBody: false)
+            .effect()
+            .validate()
+            .mapError { $0 }
+            .map { $0.details?.first ?? PatientDetails.emptyMock }
+            .eraseToEffect()
 	}
 	
 	public func post(patDetails: PatientDetails) -> Effect<PatientDetails, RequestError> {
