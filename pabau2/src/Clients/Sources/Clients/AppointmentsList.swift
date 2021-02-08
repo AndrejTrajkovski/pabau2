@@ -61,7 +61,7 @@ struct AppointmentRow: View {
 					.frame(width: 55, height: 55)
 					.padding()
 				VStack(alignment: .leading) {
-					Text(app.service?.name ?? "").font(.medium17)
+					Text(app.appointmentService).font(.medium17)
 					DateLocation(app: app)
 				}
 				Spacer()
@@ -103,8 +103,8 @@ struct DateLocation: View {
 	let app: Appointment
 	var body: some View {
 		HStack {
-			DateLabel(date: app.start_time)
-			LocationLabel(location: app.locationName ?? "")
+			DateLabel(date: app.startTime)
+			//LocationLabel(location: app.locationName ?? "")
 		}
 	}
 }
@@ -114,7 +114,6 @@ struct AppointmentRow_Previews: PreviewProvider {
 		AppointmentRow(app: Appointment(id: 1,
 																		from: Date(),
 																		to: Date(),
-																		employeeId: 1,
 																		employeeInitials: "AT", locationId: 1, locationName: "London", service: BaseService.init(id: 1, name: "Botox", color: "#eb4034")))
 	}
 }
