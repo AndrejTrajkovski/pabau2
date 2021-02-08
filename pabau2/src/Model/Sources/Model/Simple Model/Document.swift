@@ -1,19 +1,5 @@
 import Foundation
 
-public struct DocumentResponse: Codable, ResponseStatus {
-    public let success: Bool
-    public let message: String?
-    let total: Int
-    let documents: [Document]
-    
-    enum CodingKeys: String, CodingKey {
-        case total
-        case documents = "employees"
-        case success
-        case message
-    }
-}
-
 public struct Document: Codable, Identifiable, Equatable {
 	public let id: Int
 	public let title: String

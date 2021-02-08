@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "Util"
-               BuildableName = "Util"
-               BlueprintName = "Util"
+               BlueprintIdentifier = "Communication"
+               BuildableName = "Communication"
+               BlueprintName = "Communication"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -47,15 +47,6 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "Util"
-            BuildableName = "Util"
-            BlueprintName = "Util"
-            ReferencedContainer = "container:">
-         </BuildableReference>
-      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

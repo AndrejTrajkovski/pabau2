@@ -8,19 +8,19 @@ import Filters
 
 public struct JourneyState: Equatable {
 	public init() {}
-
-	var selectedDate: Date = Date()
-	public var loadingState: LoadingState = .initial
-	var journeys: Set<Journey> = Set()
-	var selectedFilter: CompleteFilter = .all
-	var selectedLocation: Location = Location.init(id: 2,
-												   name: "Manchester",
-												   color: "#FF0000")
-	var searchText: String = ""
-	var selectedJourney: Journey?
-	var selectedPathway: Pathway?
-	var selectedConsentsIds: [Int] = []
-	var allConsents: IdentifiedArrayOf<FormTemplate> = []
+	public var selectedDate: Date = Date()
+	public var selectedFilter: CompleteFilter = .all
+	public var selectedLocation: Location = Location.init(id: 2503,
+														  name: "Manchester",
+														  color: "#FF0000")
+	public var employeesLoadingState: LoadingState = .initial
+	public var selectedEmployeesIds: Set<Employee.Id> = Set()
+	public var isShowingEmployeesFilter: Bool = false
+	public var searchText: String = ""
+	public var selectedJourney: Journey?
+	public var selectedPathway: Pathway?
+	public var selectedConsentsIds: [Int] = []
+	public var allConsents: IdentifiedArrayOf<FormTemplate> = []
 	public var checkIn: CheckInContainerState?
 //		= JourneyMocks.checkIn
 }
@@ -30,9 +30,9 @@ extension JourneyState {
 	var choosePathway: ChoosePathwayState {
 		get {
 			ChoosePathwayState(selectedJourney: selectedJourney,
-												 selectedPathway: selectedPathway,
-												 selectedConsentsIds: selectedConsentsIds,
-												 allConsents: allConsents)
+							   selectedPathway: selectedPathway,
+							   selectedConsentsIds: selectedConsentsIds,
+							   allConsents: allConsents)
 		}
 		set {
 			self.selectedJourney = newValue.selectedJourney

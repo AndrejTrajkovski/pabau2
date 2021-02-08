@@ -14,7 +14,7 @@ public struct Communication: Codable, Identifiable, Equatable {
     public var initials: String {
         get {
             if let name = employee {
-                return  name.components(separatedBy: " ").getInitials.joined()
+				return  name.components(separatedBy: " ").compactMap(\.first).map(String.init(_:)).joined()
             }
             return ""
         }
@@ -76,54 +76,4 @@ public enum CommunicationChannel: String, Codable, Equatable {
 	case sms = "sms"
 	case email = "email"
     case unknown
-}
-
-extension Communication {
-    static let mockComm =
-    [
-        Communication(id: 1,
-                                    title: "Dear doctor",
-                                    subtitle: """
-            versions have evolved over the years, sometimes by accident, sometimes on
-            purpose (injected humour and the like).
-            """,
-                                    employee: "Paul Alan",
-                                    date: Date(),
-                                    channel: CommunicationChannel.sms)
-        ,
-        Communication(id: 1,
-                      title: "Hello Houston",
-                      subtitle: "desktop publishing packages and web page editors",
-                      employee: "John Doe",
-                      date: Date(),
-                      channel: .sms)
-        ,
-        Communication(id: 1,
-                      title: "Test communication",
-                      subtitle: "as opposed to using, making it look like readable English. Many",
-                      employee: "",
-                      date: Date(),
-                      channel: .sms)
-        ,
-        Communication(id: 1,
-                      title: "Comm title",
-                      subtitle: "Lorem Ipsum is that it has a more-or-less normal distribution of letters",
-                      employee: "",
-                      date: Date(),
-                      channel: .sms)
-        ,
-        Communication(id: 3,
-                      title: "Comm title 2",
-                      subtitle: "readable content of a page when looking at its layout. The point of using",
-                      employee: "",
-                      date: Date(),
-                      channel: .email)
-    ]
-
- }
-
-extension Collection where Element: StringProtocol {
-    var getInitials: [Element.SubSequence] {
-        return map { $0.prefix(1) }
-    }
 }

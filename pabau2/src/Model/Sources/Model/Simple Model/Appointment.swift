@@ -2,16 +2,7 @@ import SwiftDate
 import Tagged
 import Foundation
 
-public struct Appointment: Codable, Equatable, Hashable {
-
-	public func hash(into hasher: inout Hasher) {
-		hasher.combine(id)
-	}
-	
-	public static var defaultEmpty: Appointment {
-		Appointment.init(id: 1, from: Date() - 1.days, to: Date() - 1.days, employeeInitials: "", locationId: 1, locationName: "London", status: AppointmentStatus.mock.randomElement()!, service: BaseService.defaultEmpty)
-	}
-
+public struct Appointment: Codable, Equatable {
 	public typealias Id = Tagged<Appointment, Int>
 	
 	public let id: Appointment.Id
@@ -112,31 +103,4 @@ public struct Appointment: Codable, Equatable, Hashable {
         self.service = service
         self.appointmentService = serviceName
     }
-
-}
-
-extension Appointment {
-	static let mockAppointments =
-		[
-			Appointment(id: 1,
-									from: Date(),
-									to: Date(),
-									employeeInitials: "AT", locationId: 1, locationName: "London", service: BaseService.init(id: 1, name: "Botox", color: "#eb4034")),
-			Appointment(id: 1,
-									from: Date(),
-									to: Date(),
-									employeeInitials: "RU", locationId: 1, locationName: "Skopje", service: BaseService.init(id: 1, name: "Fillers", color: "#eb4034")),
-			Appointment(id: 1,
-									from: Date(),
-									to: Date(),
-									employeeInitials: "AT", locationId: 1, locationName: "London", service: BaseService.init(id: 1, name: "Wax Job", color: "#eb4034")),
-			Appointment(id: 1,
-									from: Date(),
-									to: Date(),
-									employeeInitials: "AT", locationId: 1, locationName: "Thailand", service: BaseService.init(id: 1, name: "Haircut", color: "#eb4034")),
-			Appointment(id: 1,
-									from: Date(),
-									to: Date(),
-									employeeInitials: "AT", locationId: 1, locationName: "Manchester", service: BaseService.init(id: 1, name: "Thai Massage", color: "#eb4034"))
-	]
 }

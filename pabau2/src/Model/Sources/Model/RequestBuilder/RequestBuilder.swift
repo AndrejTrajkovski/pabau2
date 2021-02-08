@@ -15,19 +15,22 @@ open class RequestBuilder<T> {
 	public let method: HTTPMethod
 	public let baseUrl: String
 	public let path: APIPath
+	public let dateDecoding: JSONDecoder.DateDecodingStrategy
 
 	required public init(method: HTTPMethod,
 						 baseUrl: String,
 						 path: APIPath,
 						 queryParams: [String: Any?]?,
 						 isBody: Bool,
-						 headers: [String: String] = [:]) {
+						 headers: [String: String] = [:],
+						 dateDecoding: JSONDecoder.DateDecodingStrategy? = nil) {
 		self.baseUrl = baseUrl
 		self.path = path
 		self.method = method
 		self.queryParams = queryParams
 		self.isBody = isBody
 		self.headers = headers
+		self.dateDecoding = dateDecoding ?? .formatted(.rfc3339)
 	}
 
 	func effect<DomainError: Error>(toDomainError: @escaping (RequestError) -> DomainError) -> Effect<T, DomainError> {
