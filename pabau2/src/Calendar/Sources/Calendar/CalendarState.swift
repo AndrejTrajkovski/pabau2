@@ -225,6 +225,6 @@ extension CalendarState {
 
 extension CalendarState {
 	mutating func switchTo(calType: Appointments.CalendarType) {
-		self.appointments = Appointments(calType, appointments.flatten(), locations.map(\.id), employees.flatMap(\.value), rooms.flatMap(\.value))
+		self.appointments = Appointments(calType: calType, events: appointments.flatten(), locationsIds: locations.map(\.id), employees: employees.flatMap(\.value), rooms: rooms.flatMap(\.value))
 	}
 }

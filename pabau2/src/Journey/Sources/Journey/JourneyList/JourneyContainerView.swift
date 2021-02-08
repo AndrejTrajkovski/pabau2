@@ -82,9 +82,9 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 			print(result)
 			switch result {
 			case .success(let appointments):
-				state.appointments.refresh(events: appointments.appointments,
-										   locationIds: [state.journey.selectedLocation.id],
-										   employees: state.employeesFilter.employees.elements)
+//				state.appointments.refresh(events: appointments.appointments,
+//										   locationIds: [state.journey.selectedLocation.id],
+//										   employees: state.employeesFilter.employees.elements)
 				state.loadingState = .gotSuccess
 			case .failure(let error):
 				print(error)
