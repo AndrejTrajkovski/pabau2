@@ -163,7 +163,17 @@ extension APIClient {
 	}
 	
 	public func getDocuments(clientId: Int) -> Effect<[Document], RequestError> {
-		fatalError("TODO Cristian")
+        let requestBuilder: RequestBuilder<DocumentResponse>.Type = requestBuilderFactory.getBuilder()
+        return requestBuilder.init(method: .GET,
+                                   baseUrl: baseUrl,
+                                   path: .getDocuments,
+                                   queryParams: commonAnd(other: ["contact_id": "\(clientId)"]),
+                                   isBody: false)
+            .effect()
+            .validate()
+            .mapError { $0 }
+            .map { $0.documents }
+            .eraseToEffect()
 	}
 	
 	public func getCommunications(clientId: Int) -> Effect<[Communication], RequestError> {
