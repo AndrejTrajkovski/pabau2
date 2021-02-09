@@ -45,7 +45,7 @@ public let clientsContainerReducer: Reducer<ClientsState, ClientsAction, Clients
 public struct ClientsState: Equatable {
 	public init () { }
 	var contactListLS: LoadingState = .initial
-    var clients: [Client] = []
+    var clients: IdentifiedArrayOf<Client> = []
 	var addClient: AddClientState?
 	var selectedClient: ClientCardState?
     var searchText: String = "" {

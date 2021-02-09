@@ -26,7 +26,7 @@ extension APIClient {
             .eraseToEffect()
     }
 
-    public func getItemsCount(clientId: Int) -> Effect<ClientItemsCount, RequestError> {
+    public func getItemsCount(clientId: Client.ID) -> Effect<ClientItemsCount, RequestError> {
         Effect(value: ClientItemsCount.init(id: 1, appointments: 2, photos: 4, financials: 6, treatmentNotes: 3, presriptions: 10, documents: 15, communications: 123, consents: 4381, alerts: 123, notes: 0))
             .eraseToEffect()
     }
