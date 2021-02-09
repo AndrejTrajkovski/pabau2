@@ -33,21 +33,14 @@ public let journeyFilterReducer = Reducer<JourneyFilterState, JourneyFilterActio
 
     case .toggleEmployees:
         state.isShowingEmployees.toggle()
-
-    case .loadEmployees:
-        state.loadingState = .loading
-        return env.apiClient.getEmployees()
-            .catchToEffect()
-            .map { .gotResponse($0) }
-            .receive(on: DispatchQueue.main)
-            .eraseToEffect()
-
+        
     case .reloadEmployees:
         state.employeesLoadingState = .loading
         return env.apiClient.getEmployees()
             .receive(on: DispatchQueue.main)
-
-
+            .catchToEffect()
+            .map { .gotResponse($0) }
+            .eraseToEffect()
     }
     return .none
 }

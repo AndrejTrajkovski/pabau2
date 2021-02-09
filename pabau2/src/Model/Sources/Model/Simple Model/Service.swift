@@ -28,6 +28,7 @@ public struct Service: Codable, Identifiable, Equatable, Hashable {
         disabledUsers: [Int]? = nil,
         duration: String? = nil
     ) {
+        self.id = Service.Id.init(rawValue: id)
         self.name = name
         self.color = color
         self.categoryId = categoryId
@@ -40,7 +41,7 @@ public struct Service: Codable, Identifiable, Equatable, Hashable {
         case id = "id"
         case name
         case color
-        case categoryId = "category_id"
+        case categoryId = "categoryid"
         case categoryName = "category_name"
         case disabledUsers = "disabled_users"
         case duration

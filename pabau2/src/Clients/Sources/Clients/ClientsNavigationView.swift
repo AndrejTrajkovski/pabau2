@@ -30,7 +30,7 @@ public let clientsContainerReducer: Reducer<ClientsState, ClientsAction, Clients
             
 			switch result {
 			case .success(let contacts):
-                state.clients = .init(contacts.clients)
+                state.clients = .init(contacts)
 				state.contactListLS = .gotSuccess
 			case .failure(let error):
 				state.contactListLS = .gotError(error)
@@ -61,7 +61,7 @@ public struct ClientsState: Equatable {
 public enum ClientsAction: Equatable {
 	case list(ClientsListAction)
 	case onAppearNavigationView
-	case gotClientsResponse(Result<ClientsResponse, RequestError>)
+	case gotClientsResponse(Result<[Client], RequestError>)
 }
 
 public struct ClientsNavigationView: View {

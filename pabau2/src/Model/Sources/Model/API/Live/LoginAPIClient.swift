@@ -50,7 +50,7 @@ extension APIClient {
 			.effect()
 	}
 	
-	func commonAnd(other: [String: String]) -> [String: String] {
+	func commonAnd(other: [String: Any]) -> [String: Any] {
 		commonParams().merging(other, uniquingKeysWith: { old, new in return new })
 	}
 	
@@ -64,7 +64,7 @@ extension APIClient {
 		}
 	}
 	
-	func commonParams() -> [String: String] {
+	func commonParams() -> [String: Any] {
 		var version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
 		#if DEBUG
 			version = "4.6.3"

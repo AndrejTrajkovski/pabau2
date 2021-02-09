@@ -2,6 +2,7 @@ import SwiftUI
 import ComposableArchitecture
 import Model
 import Util
+import SharedComponents
 
 let clientsListReducer: Reducer<ClientsState, ClientsListAction, ClientsEnvironment> =
 	.combine (
@@ -41,7 +42,9 @@ let clientsListReducer: Reducer<ClientsState, ClientsListAction, ClientsEnvironm
 			case .selectedClient(.bottom(.backBtnTap)):
 				break
 			case .selectedClient: break
-			}
+            case .identified(id: let id, action: .onAppear):
+                break
+            }
 			return .none
 		}
 )
@@ -73,19 +76,19 @@ struct ClientsList: View {
 		print("ClientsList")
 		return WithViewStore(store.scope(state: State.init(state:))) { viewStore in
 			VStack {
-				SearchBar(placeholder: Texts.clientSearchPlaceholder,
-									text:
-					viewStore.binding(
-						get: { $0.searchText }, send: { .onSearchText($0) }
-					)
-				)
-				List {
-					ForEachStore(
-						self.store.scope(state: { $0.filteredClients },
-														 action: ClientsListAction.identified(id:action:)), content: {
-															ClientListRow(store: $0)
-					})
-				}
+//                SearchView(placeholder: Texts.clientSearchPlaceholder,
+//									text:
+//					viewStore.binding(
+//						get: { $0.searchText }, send: { .onSearchText($0) }
+//					)
+//				)
+//				List {
+//					ForEachStore(
+//						self.store.scope(state: { $0.filteredClients },
+//														 action: ClientsListAction.identified(id:action:)), content: {
+//															ClientListRow(store: $0)
+//					})
+//				}
 				NavigationLink.emptyHidden(
 					viewStore.state.isSelectedClient,
 					IfLetStore(self.store.scope(state: { $0.selectedClient },

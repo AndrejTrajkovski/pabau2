@@ -135,35 +135,35 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 			case .selectedFilter(let filter):
 				state.selectedFilter = filter
 
-			case .datePicker(.selectedDate(let date)):
-				state.loadingState = .loading
-				return environment.apiClient.getJourneys(date: date, searchTerm: nil)
-					.catchToEffect()
-					.map(JourneyAction.gotResponse)
-					.receive(on: DispatchQueue.main)
-					.eraseToEffect()
-			case .gotResponse(let result):
-				switch result {
-				case .success(let journeys):
-					state.journeys.formUnion(journeys)
-					state.loadingState = .gotSuccess
-
-				case .failure(let error):
-					state.loadingState = .gotError(error)
-				}
+//			case .datePicker(.selectedDate(let date)):
+//				state.loadingState = .loading
+//				return environment.apiClient.getJourneys(date: date, searchTerm: nil)
+//					.catchToEffect()
+//					.map(JourneyAction.gotResponse)
+//					.receive(on: DispatchQueue.main)
+//					.eraseToEffect()
+//			case .gotResponse(let result):
+//				switch result {
+//				case .success(let journeys):
+//					state.journeys.formUnion(journeys)
+//					state.loadingState = .gotSuccess
+//
+//				case .failure(let error):
+//					state.loadingState = .gotError(error)
+//				}
 
 			case .searchedText(let searchText):
 				state.searchText = searchText
 
-                return environment.apiClient
-                    .getJourneys(date: Date(), searchTerm: searchText)
-                    .receive(on: DispatchQueue.main)
-                    .eraseToEffect()
-                    .debounce(id: SearchJourneyId(), for: 0.3, scheduler: DispatchQueue.main)
-					.catchToEffect()
-                    .map(JourneyAction.gotResponse)
-                    .cancellable(id: SearchJourneyId(), cancelInFlight: true)
-
+//                return environment.apiClient
+//                    .getJourneys(date: Date(), searchTerm: searchText)
+//                    .receive(on: DispatchQueue.main)
+//                    .eraseToEffect()
+//                    .debounce(id: SearchJourneyId(), for: 0.3, scheduler: DispatchQueue.main)
+//					.catchToEffect()
+//                    .map(JourneyAction.gotResponse)
+//                    .cancellable(id: SearchJourneyId(), cancelInFlight: true)
+//
 
 			case .selectedJourney(let journey):
 				state.selectedJourney = journey
@@ -189,7 +189,7 @@ public struct JourneyContainerView: View {
 		init(state: JourneyContainerState) {
 			self.isChoosePathwayShown = state.journey.selectedJourney != nil
 			self.selectedDate = state.journey.selectedDate
-			self.listedJourneys = state.filteredJourneys
+			self.listedJourneys = state.filteredJourneys()
             self.searchQuery = state.journey.searchText
 			self.isLoadingJourneys = state.loadingState.isLoading
 			UITableView.appearance().separatorStyle = .none
