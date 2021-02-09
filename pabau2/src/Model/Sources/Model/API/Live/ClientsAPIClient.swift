@@ -13,7 +13,7 @@ extension APIClient {
         var queryItems: [String: Any] = ["limit": 20, "offset": offset]
 
         if let search = search {
-            queryItems["search"] = search
+            queryItems["searchText"] = search
         }
 
         return requestBuilder.init(method: .GET,
