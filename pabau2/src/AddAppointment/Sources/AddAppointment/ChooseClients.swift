@@ -33,6 +33,7 @@ let chooseClientsReducer =
         switch action {
         case .onAppear:
             state.searchText = ""
+            #warning("FIX ")
 //            return env.apiClient
 //                .getClients(
 //                    search: nil,
@@ -57,6 +58,7 @@ let chooseClientsReducer =
             }
         case .onSearch(let text):
             state.searchText = text
+            #warning("FIX ")
 //            return env.apiClient
 //                .getClients(
 //                    search: state.isSearching ? state.searchText : nil,
@@ -108,7 +110,7 @@ struct ChooseClients: View {
                             self.viewStore.send(.didSelectClient(client))
                         }.onAppear {
                             if client.id == self.viewStore.state.clients.last?.id {
-                                //self.viewStore.send(.loadMoreClients)
+                                self.viewStore.send(.loadMoreClients)
                             }
                         }
                     }

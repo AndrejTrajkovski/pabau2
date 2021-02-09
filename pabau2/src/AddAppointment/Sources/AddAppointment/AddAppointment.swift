@@ -13,11 +13,11 @@ public struct AddAppointmentState: Equatable {
     var sms: Bool
     var feedback: Bool
     var isAllDay: Bool
-    var clients: SingleChoiceLinkState<Client>
+    var clients: ChooseClientsState
     var startDate: Date
     var services: ChooseServiceState
     var durations: SingleChoiceLinkState<Duration>
-    var with: SingleChoiceLinkState<Employee>
+    var with: ChooseEmployeesState
     var participants: SingleChoiceLinkState<Employee>
     var note: String = ""
 }
@@ -26,13 +26,15 @@ public enum AddAppointmentAction: Equatable {
     case saveAppointmentTap
     case addAppointmentDismissed
     case chooseStartDate
-    case clients(SingleChoiceLinkAction<Client>)
+    case clients(ChooseClientsAction)
     case services(ChooseServiceAction)
     case durations(SingleChoiceLinkAction<Duration>)
-    case with(SingleChoiceLinkAction<Employee>)
+    case with(ChooseEmployeesAction)
     case participants(SingleChoiceLinkAction<Employee>)
     case closeBtnTap
     case didTapServices
+    case didTapWith
+    case didTabClients
     case isAllDay(ToggleAction)
     case sms(ToggleAction)
     case reminder(ToggleAction)
@@ -45,79 +47,85 @@ extension Employee: SingleChoiceElement { }
 extension Service: SingleChoiceElement { }
 
 let addAppTapBtnReducer = Reducer<AddAppointmentState?,
-    AddAppointmentAction, AddAppointmentEnv> { state, action, _ in
-        switch action {
-        case .saveAppointmentTap:
-            state = nil
-        case .closeBtnTap:
-            state = nil
-        case .didTapServices:
-            state?.services.isChooseServiceActive = true
-        default:
-            break
-        }
-        return .none
+                                  AddAppointmentAction, AddAppointmentEnv> { state, action, _ in
+    switch action {
+    case .saveAppointmentTap:
+        print(state)
+        
+        state = nil
+    case .closeBtnTap:
+        state = nil
+    case .didTapServices:
+        state?.services.isChooseServiceActive = true
+    case .didTabClients:
+        state?.clients.isChooseClientsActive = true
+    case .didTapWith:
+        state?.with.isChooseEmployeesActive = true
+    default:
+        break
+    }
+    return .none
 }
 
 public let addAppointmentValueReducer: Reducer<AddAppointmentState,
-    AddAppointmentAction, AddAppointmentEnv> = .combine(
-        SingleChoiceLinkReducer<Client>().reducer.pullback(
-            state: \AddAppointmentState.clients,
-            action: /AddAppointmentAction.clients,
-            environment: { $0 }),
-        chooseServiceReducer.pullback(
-             state: \AddAppointmentState.services,
-             action: /AddAppointmentAction.services,
-             environment: { $0 }),
-        SingleChoiceLinkReducer<Duration>().reducer.pullback(
-            state: \AddAppointmentState.durations,
-            action: /AddAppointmentAction.durations,
-            environment: { $0 }),
-        SingleChoiceLinkReducer<Employee>().reducer.pullback(
-            state: \AddAppointmentState.with,
-            action: /AddAppointmentAction.with,
-            environment: { $0 }),
-        SingleChoiceLinkReducer<Employee>().reducer.pullback(
-            state: \AddAppointmentState.participants,
-            action: /AddAppointmentAction.participants,
-            environment: { $0 }),
-        switchCellReducer.pullback(
-            state: \AddAppointmentState.isAllDay,
-            action: /AddAppointmentAction.isAllDay,
-            environment: { $0 }),
-        switchCellReducer.pullback(
-            state: \AddAppointmentState.sms,
-            action: /AddAppointmentAction.sms,
-            environment: { $0 }),
-        switchCellReducer.pullback(
-            state: \AddAppointmentState.reminder,
-            action: /AddAppointmentAction.reminder,
-            environment: { $0 }),
-        switchCellReducer.pullback(
-            state: \AddAppointmentState.feedback,
-            action: /AddAppointmentAction.feedback,
-            environment: { $0 }),
-        switchCellReducer.pullback(
-            state: \AddAppointmentState.email,
-            action: /AddAppointmentAction.email,
-            environment: { $0 }),
-        textFieldReducer.pullback(
-            state: \AddAppointmentState.note,
-            action: /AddAppointmentAction.note,
-            environment: { $0 })
-    )
+                                               AddAppointmentAction, AddAppointmentEnv> = .combine(
+                                                chooseClientsReducer.pullback(
+                                                    state: \AddAppointmentState.clients,
+                                                    action: /AddAppointmentAction.clients,
+                                                    environment: { $0 }),
+                                                chooseServiceReducer.pullback(
+                                                    state: \AddAppointmentState.services,
+                                                    action: /AddAppointmentAction.services,
+                                                    environment: { $0 }),
+                                                SingleChoiceLinkReducer<Duration>().reducer.pullback(
+                                                    state: \AddAppointmentState.durations,
+                                                    action: /AddAppointmentAction.durations,
+                                                    environment: { $0 }),
+                                                chooseEmployeesReducer.pullback(
+                                                    state: \AddAppointmentState.with,
+                                                    action: /AddAppointmentAction.with,
+                                                    environment: { $0 }),
+                                                SingleChoiceLinkReducer<Employee>().reducer.pullback(
+                                                    state: \AddAppointmentState.participants,
+                                                    action: /AddAppointmentAction.participants,
+                                                    environment: { $0 }),
+                                                switchCellReducer.pullback(
+                                                    state: \AddAppointmentState.isAllDay,
+                                                    action: /AddAppointmentAction.isAllDay,
+                                                    environment: { $0 }),
+                                                switchCellReducer.pullback(
+                                                    state: \AddAppointmentState.sms,
+                                                    action: /AddAppointmentAction.sms,
+                                                    environment: { $0 }),
+                                                switchCellReducer.pullback(
+                                                    state: \AddAppointmentState.reminder,
+                                                    action: /AddAppointmentAction.reminder,
+                                                    environment: { $0 }),
+                                                switchCellReducer.pullback(
+                                                    state: \AddAppointmentState.feedback,
+                                                    action: /AddAppointmentAction.feedback,
+                                                    environment: { $0 }),
+                                                switchCellReducer.pullback(
+                                                    state: \AddAppointmentState.email,
+                                                    action: /AddAppointmentAction.email,
+                                                    environment: { $0 }),
+                                                textFieldReducer.pullback(
+                                                    state: \AddAppointmentState.note,
+                                                    action: /AddAppointmentAction.note,
+                                                    environment: { $0 })
+                                               )
 
 public let addAppointmentReducer: Reducer<AddAppointmentState?,
-    AddAppointmentAction, AddAppointmentEnv> = .combine(
-        addAppointmentValueReducer.optional.pullback(
-            state: \AddAppointmentState.self,
-            action: /AddAppointmentAction.self,
-            environment: { $0 }),
-        addAppTapBtnReducer.pullback(
-            state: \AddAppointmentState.self,
-            action: /AddAppointmentAction.self,
-            environment: { $0 })
-        )
+                                          AddAppointmentAction, AddAppointmentEnv> = .combine(
+                                            addAppointmentValueReducer.optional.pullback(
+                                                state: \AddAppointmentState.self,
+                                                action: /AddAppointmentAction.self,
+                                                environment: { $0 }),
+                                            addAppTapBtnReducer.pullback(
+                                                state: \AddAppointmentState.self,
+                                                action: /AddAppointmentAction.self,
+                                                environment: { $0 })
+                                          )
 
 public struct AddAppointment: View {
     @State var isAllDay: Bool = true
@@ -127,7 +135,7 @@ public struct AddAppointment: View {
         self.store = store
         self.viewStore = ViewStore(store)
     }
-
+    
     public var body: some View {
         VStack {
             SwitchCell(text: "All Day", store: store.scope(state: { $0.isAllDay },
@@ -151,11 +159,21 @@ struct ClientDaySection: View {
     }
     var body: some View {
         HStack(spacing: 24.0) {
-            SingleChoiceLink.init(content: {
-                TitleAndValueLabel.init("CLIENT", self.viewStore.state.clients.chosenItemName ?? "")
-            }, store: self.store.scope(state: { $0.clients },
-                                       action: { .clients($0) }),
-            cell: TextAndCheckMarkContainer.init(state:)
+            TitleAndValueLabel(
+                "CLIENT",
+                self.viewStore.state.clients.chosenClient?.fullname ??  "Choose client",
+                self.viewStore.state.clients.chosenClient?.fullname == nil ? Color.grayPlaceholder : nil
+            ).onTapGesture {
+                self.viewStore.send(.didTabClients)
+            }
+            NavigationLink.emptyHidden(
+                self.viewStore.state.clients.isChooseClientsActive,
+                ChooseClients(
+                    store: self.store.scope(
+                        state: { $0.clients },
+                        action: {.clients($0) }
+                    )
+                )
             )
             TitleAndValueLabel.init("DAY", self.viewStore.state.startDate.toString())
         }
@@ -172,42 +190,65 @@ struct ServicesDurationSection: View {
     var body: some View {
         VStack {
             HStack(spacing: 24.0) {
-                TitleAndValueLabel("SERVICE", self.viewStore.state.services.chosenServiceName).onTapGesture {
+                TitleAndValueLabel(
+                    "SERVICE",
+                    self.viewStore.state.services.chosenService?.name ?? "Choose Service",
+                    self.viewStore.state.services.chosenService?.name == nil ? Color.grayPlaceholder : nil
+                ).onTapGesture {
                     self.viewStore.send(.didTapServices)
                 }
-                NavigationLink.emptyHidden(self.viewStore.state.services.isChooseServiceActive,
-                                           ChooseService(store: self.store.scope(state: { $0.services }, action: {
-                                            .services($0)
-                                           }))
+                NavigationLink.emptyHidden(
+                    self.viewStore.state.services.isChooseServiceActive,
+                    ChooseService(store: self.store.scope(state: { $0.services }, action: {
+                        .services($0)
+                    }))
                 )
-                SingleChoiceLink.init(content: {
-                    TitleAndValueLabel.init("DURATION", self.viewStore.state.durations.chosenItemName ?? "")
-                }, store: self.store.scope(state: { $0.durations },
-                                           action: { .durations($0) }),
-                cell: TextAndCheckMarkContainer.init(state:)
+                SingleChoiceLink.init(
+                    content: {
+                        TitleAndValueLabel.init(
+                            "DURATION", self.viewStore.state.durations.chosenItemName ?? "")
+                    },
+                    store: self.store.scope(
+                        state: { $0.durations },
+                        action: { .durations($0) }
+                    ),
+                    cell: TextAndCheckMarkContainer.init(state:),
+                    title: "Duration"
                 )
             }
             HStack(spacing: 24.0) {
-                SingleChoiceLink.init(content: {
-                    LabelHeartAndTextField.init("WITH", self.viewStore.state.with.chosenItemName ?? "",
-                                                true)
-                }, store: self.store.scope(state: { $0.with },
-                                           action: { .with($0) }),
-                cell: TextAndCheckMarkContainer.init(state:)
+                TitleAndValueLabel(
+                    "WITH",
+                    self.viewStore.state.with.chosenEmployee?.name ?? "Choose Employee",
+                    self.viewStore.state.with.chosenEmployee?.name == nil ? Color.grayPlaceholder : nil
+                ).onTapGesture {
+                    self.viewStore.send(.didTapWith)
+                }
+                NavigationLink.emptyHidden(
+                    self.viewStore.state.with.isChooseEmployeesActive,
+                    ChooseEmployeesView(store: self.store.scope(state: { $0.with }, action: {
+                        .with($0)
+                    }))
                 )
-                SingleChoiceLink.init(content: {
-                    HStack {
-                        Image(systemName: "plus.circle")
-                            .foregroundColor(.deepSkyBlue)
-                            .font(.regular15)
-                        Text("Add Participant")
-                            .foregroundColor(Color.textFieldAndTextLabel)
-                            .font(.semibold15)
-                        Spacer()
-                    }
-                }, store: self.store.scope(state: { $0.participants },
-                                           action: { .participants($0) }),
-                cell: TextAndCheckMarkContainer.init(state:)
+                SingleChoiceLink.init(
+                    content: {
+                        HStack {
+                            Image(systemName: "plus.circle")
+                                .foregroundColor(.deepSkyBlue)
+                                .font(.regular15)
+                            Text("Add Participant")
+                                .foregroundColor(Color.textFieldAndTextLabel)
+                                .font(.semibold15)
+                            Spacer()
+                        }
+                    },
+                    store: self.store.scope(
+                        state: { $0.participants },
+                        action: { .participants($0) }
+                    ),
+                    cell: TextAndCheckMarkContainer.init(state:),
+                    title: "Add Participant"
+                    
                 )
             }
         }.wrapAsSection(title: "Services")
@@ -222,33 +263,37 @@ struct AddAppSections: View {
         self.store = store
         self.viewStore = ViewStore(store)
     }
-
+    
     var body: some View {
         Group {
             ClientDaySection(store: self.store)
             ServicesDurationSection(store: self.store)
-            NotesSection(store: store.scope(state: { $0.note },
-                                            action: { .note($0) }))
+            NotesSection(
+                store: store.scope(
+                    state: { $0.note },
+                    action: { .note($0) }
+                )
+            )
             Group {
                 SwitchCell(text: Texts.sendReminder,
                            store: store.scope(
-                                state: { $0.reminder },
-                                action: { .reminder($0) })
+                            state: { $0.reminder },
+                            action: { .reminder($0) })
                 )
                 SwitchCell(text: Texts.sendConfirmationEmail,
                            store: store.scope(
-                                state: { $0.email },
-                                action: { .email($0) })
+                            state: { $0.email },
+                            action: { .email($0) })
                 )
                 SwitchCell(text: Texts.sendConfirmationSMS,
                            store: store.scope(
-                                state: { $0.sms },
-                                action: { .sms($0) })
+                            state: { $0.sms },
+                            action: { .sms($0) })
                 )
                 SwitchCell(text: Texts.sendFeedbackSurvey,
                            store: store.scope(
-                                state: { $0.feedback },
-                                action: { .feedback($0) })
+                            state: { $0.feedback },
+                            action: { .feedback($0) })
                 )
             }.switchesSection(title: Texts.communications)
         }.padding(.bottom, keyboardHandler.keyboardHeight)
@@ -262,27 +307,37 @@ extension Client: SingleChoiceElement {
 }
 
 extension AddAppointmentState {
-
-    public init(startDate: Date,
-                endDate: Date) {
+    
+    public init(
+        startDate: Date,
+        endDate: Date
+    ) {
         self.init(
             reminder: false,
             email: false,
             sms: false,
             feedback: false,
             isAllDay: false,
-            clients: AddAppMocks.clientState,
+            clients: ChooseClientsState(
+                isChooseClientsActive: false,
+                chosenClient: nil
+            ),
             startDate: startDate,
-            services: ChooseServiceState(isChooseServiceActive: false, chosenServiceId: 1, filterChosen: .allStaff),
+            services: ChooseServiceState(
+                isChooseServiceActive: false,
+                filterChosen: .allStaff
+            ),
             durations: AddAppMocks.durationState,
-            with: AddAppMocks.withState,
+            with: ChooseEmployeesState(isChooseEmployeesActive: false),
             participants: AddAppMocks.participantsState
         )
     }
-
-    public init(startDate: Date,
-                endDate: Date,
-                employee: Employee) {
+    
+    public init(
+        startDate: Date,
+        endDate: Date,
+        employee: Employee
+    ) {
         var employees = AddAppMocks.withState
         employees.dataSource.append(employee)
         employees.chosenItemId = employee.id
@@ -292,26 +347,38 @@ extension AddAppointmentState {
             sms: false,
             feedback: false,
             isAllDay: false,
-            clients: AddAppMocks.clientState,
+            clients: ChooseClientsState(
+                isChooseClientsActive: false,
+                chosenClient: nil
+            ),
             startDate: startDate,
-            services: ChooseServiceState(isChooseServiceActive: false, chosenServiceId: 1, filterChosen: .allStaff),
+            services: ChooseServiceState(
+                isChooseServiceActive: false,
+                filterChosen: .allStaff
+            ),
             durations: AddAppMocks.durationState,
-            with: employees,
+            with: ChooseEmployeesState(isChooseEmployeesActive: false),
             participants: AddAppMocks.participantsState
         )
     }
-
+    
     public static let dummy = AddAppointmentState.init(
         reminder: false,
         email: false,
         sms: false,
         feedback: false,
         isAllDay: false,
-        clients: AddAppMocks.clientState,
+        clients: ChooseClientsState(
+            isChooseClientsActive: false,
+            chosenClient: nil
+        ),
         startDate: Date(),
-        services: ChooseServiceState(isChooseServiceActive: false, chosenServiceId: 1, filterChosen: .allStaff),
+        services: ChooseServiceState(
+            isChooseServiceActive: false,
+            filterChosen: .allStaff
+        ),
         durations: AddAppMocks.durationState,
-        with: AddAppMocks.withState,
+        with: ChooseEmployeesState(isChooseEmployeesActive: false),
         participants: AddAppMocks.participantsState
     )
 }
@@ -325,7 +392,7 @@ struct AddAppMocks {
             ],
             chosenItemId: 1,
             isActive: false)
-
+    
     static let serviceState: SingleChoiceLinkState<Service> =
         SingleChoiceLinkState.init(
             dataSource: [
@@ -335,24 +402,25 @@ struct AddAppMocks {
             ],
             chosenItemId: 1,
             isActive: false)
-
+    
     static let durationState: SingleChoiceLinkState<Duration> =
         SingleChoiceLinkState.init(
             dataSource: IdentifiedArray(Duration.all),
             chosenItemId: 1,
             isActive: false)
-
+    
     static let withState: SingleChoiceLinkState<Employee> =
         SingleChoiceLinkState.init(
             dataSource: [
-
+                
             ],
             chosenItemId: "456",
             isActive: false)
-
+    
     static let participantsState: SingleChoiceLinkState<Employee> =
         SingleChoiceLinkState.init(
             dataSource: [
+                
             ],
             chosenItemId: "1",
             isActive: false)
