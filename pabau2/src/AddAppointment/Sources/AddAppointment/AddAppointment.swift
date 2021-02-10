@@ -396,11 +396,11 @@ struct AddAppMocks {
     static let serviceState: SingleChoiceLinkState<Service> =
         SingleChoiceLinkState.init(
             dataSource: [
-                Service.init(id: 1, name: "Botox", color: "", categoryId: 1, categoryName: "Injectables"),
-                Service.init(id: 2, name: "Fillers", color: "", categoryId: 2, categoryName: "Urethra"),
-                Service.init(id: 3, name: "Facial", color: "", categoryId: 3, categoryName: "Mosaic")
+                Service.init(id: "1", name: "Botox", color: "", categoryName: "Injectables"),
+                Service.init(id: "2", name: "Fillers", color: "", categoryName: "Urethra"),
+                Service.init(id: "3", name: "Facial", color: "", categoryName: "Mosaic")
             ],
-            chosenItemId: 1,
+            chosenItemId: "1",
             isActive: false)
 
     static let durationState: SingleChoiceLinkState<Duration> =

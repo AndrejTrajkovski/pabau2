@@ -5,6 +5,8 @@ public protocol ClientsAPI {
     func getClients(search: String?, offset: Int) -> Effect<[Client], RequestError>
     func getItemsCount(clientId: Client.ID) -> Effect<ClientItemsCount, RequestError>
 
+    func getServices() -> Effect<[Service], RequestError>
+
 	
 	func getAppointments(clientId: Int) -> Effect<[Appointment], RequestError>
 	func getPhotos(clientId: Int) -> Effect<[SavedPhoto], RequestError>
