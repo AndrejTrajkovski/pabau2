@@ -16,7 +16,7 @@ let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayCont
 		Reducer.init { state, action, env in
 			switch action {
 			case .chooseConsent(.proceed):
-				state.checkIn = CheckInContainerState(journey: state.selectedJourney,
+				state.checkIn = CheckInContainerState(journey: state.selectedJourney!,
 													  pathway: state.selectedPathway!,
 													  patientDetails: PatientDetails.mock,
 													  medicalHistoryId: HTMLForm.getMedHistory().id,
@@ -67,10 +67,11 @@ public enum ChoosePathwayAction {
 }
 
 public struct ChoosePathwayState: Equatable {
-	var selectedJourney: Journey
+	let selectedJourney: Journey?
 	var selectedPathway: PathwayTemplate?
 	var selectedConsentsIds: [HTMLForm.ID] = []
 	var allConsents: IdentifiedArrayOf<HTMLForm> = []
+	var searchText: String = ""
 	var chooseConsentState: ChooseFormState {
 		get {
 			ChooseFormState(templates: allConsents,

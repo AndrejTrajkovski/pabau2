@@ -18,31 +18,31 @@ public struct JourneyState: Equatable {
 	public var isShowingEmployeesFilter: Bool = false
 	public var searchText: String = ""
 	public var selectedJourney: Journey?
-	public var selectedPathway: Pathway?
-	public var selectedConsentsIds: [Int] = []
+	public var selectedPathway: PathwayTemplate?
+	public var selectedConsentsIds: [HTMLForm.ID] = []
 	public var allConsents: IdentifiedArrayOf<HTMLForm> = []
 	public var checkIn: CheckInContainerState?
 //		= JourneyMocks.checkIn
 }
 
 extension JourneyState {
-
-	var choosePathway: ChoosePathwayState {
+	
+	public var choosePathway: ChoosePathwayState {
 		get {
 			ChoosePathwayState(
-                selectedJourney: selectedJourney,
-												 selectedPathway: selectedPathway,
-												 selectedConsentsIds: selectedConsentsIds,
-                allConsents: allConsents,
-                searchText: searchText
-            )
+				selectedJourney: selectedJourney,
+				selectedPathway: selectedPathway,
+				selectedConsentsIds: selectedConsentsIds,
+				allConsents: allConsents,
+				searchText: searchText
+			)
 		}
 		set {
 			self.selectedJourney = newValue.selectedJourney
 			self.selectedPathway = newValue.selectedPathway
 			self.selectedConsentsIds = newValue.selectedConsentsIds
 			self.allConsents = newValue.allConsents
-            self.searchText = newValue.searchText
+			self.searchText = newValue.searchText
 		}
 	}
 }

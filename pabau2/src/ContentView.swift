@@ -12,6 +12,7 @@ import Overture
 
 typealias AppEnvironment = (
 	loginAPI: LoginAPI,
+	journeyAPI: JourneyAPI,
 	appointmentsAPI: AppointmentsAPI,
 	clientsAPI: ClientsAPI,
 	formAPI: FormAPI,

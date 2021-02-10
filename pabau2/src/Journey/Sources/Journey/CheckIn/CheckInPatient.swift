@@ -68,10 +68,6 @@ let checkInPatientReducer: Reducer<CheckInPatientState, CheckInPatientAction, Jo
 		action: /CheckInPatientAction.stepsView,
 		environment: { $0 }
 	)
-	//	topViewReducer.pullback(
-	//		state: \CheckInViewState.self,
-	//		action: /CheckInMainAction.topView,
-	//		environment: { $0 })
 )
 
 struct CheckInPatientState: Equatable, CheckInState {
@@ -158,7 +154,7 @@ extension CheckInPatientState {
 
 	var patientDetailsState: JourneyFormInfo<PatientDetails> {
 		get {
-			JourneyFormInfo(id: journey.clientId,
+			JourneyFormInfo(id: journey.first!.customerId,
 							 form: patientDetails,
 							 status: patientDetailsStatus,
 							 loadingState: patientDetailsLS)

@@ -49,8 +49,8 @@ struct JourneyFormReducer<Form: JourneyForm> where Form: Equatable & Identifiabl
 			case .success(let form):
 				state.form = form
 				state.loadingState = .gotSuccess
-			case .failure:
-				state.loadingState = .gotError
+			case .failure(let error):
+				state.loadingState = .gotError(error)
 			}
 		default:
 			break

@@ -134,8 +134,7 @@ struct PabauTabBar: View {
 			Text("Journey")
 		}
 		.onAppear {
-			self.viewStore.send(.journey(JourneyContainerAction.journey(JourneyAction.loadJourneys)))
-			self.viewStore.send(.employeesFilter(JourneyFilterAction.loadEmployees))
+			self.viewStore.send(.employeesFilter(JourneyFilterAction.reloadEmployees))
 		}
 	}
 
@@ -187,7 +186,7 @@ struct PabauTabBar: View {
 
 	fileprivate func checkIn() -> IfLetStore<CheckInContainerState, CheckInContainerAction, CheckInNavigationView?> {
 		return IfLetStore(self.store.scope(
-			state: { $0.journeyContainer.journey.choosePathway?.checkIn },
+			state: { $0.journeyContainer.journey.choosePathway.checkIn },
 			action: { .journey(.choosePathway(.checkIn($0)))}
 		),
 		then: CheckInNavigationView.init(store:))
@@ -203,7 +202,7 @@ struct PabauTabBar: View {
 
 	fileprivate func journeyFilter() -> some View {
 		return JourneyFilter(
-			self.store.scope(state: { $0.employeesFilter },
+			self.store.scope(state: { $0.journeyEmployeesFilter },
 							 action: { .employeesFilter($0)})
 		).transition(.moveAndFade)
 	}

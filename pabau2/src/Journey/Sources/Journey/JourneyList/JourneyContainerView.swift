@@ -15,6 +15,8 @@ import Appointments
 public typealias JourneyEnvironment = (
 	appointmentsAPI: AppointmentsAPI,
 	formAPI: FormAPI,
+	journeyAPI: JourneyAPI,
+	clientsAPI: ClientsAPI,
 	userDefaults: UserDefaultsConfig
 )
 
@@ -59,7 +61,7 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 			state.employeesFilter.isShowingEmployees.toggle()
 		case .datePicker(.selectedDate(let date)):
 //			state.loadingState = .loading
-			return env.apiClient.getAppointments(startDate: date, endDate: date, locationIds: [state.journey.selectedLocation.id], employeesIds: Array(state.employeesFilter.employees.map(\.id)), roomIds: [])
+			return env.journeyAPI.getAppointments(startDate: date, endDate: date, locationIds: [state.journey.selectedLocation.id], employeesIds: Array(state.employeesFilter.employees.map(\.id)), roomIds: [])
 //				.map(with(date, curry(calendarResponseToJourneys(date:events:))))
 				.catchToEffect()
 				.map { JourneyContainerAction.gotResponse($0) }
@@ -207,8 +209,9 @@ public struct JourneyContainerView: View {
 
             NavigationLink.emptyHidden(
                 self.viewStore.state.isChoosePathwayShown,
-                ChoosePathway(store: self.store.scope(state: { $0.journey.choosePathway
-                }, action: { .choosePathway($0)}))
+                ChoosePathway(store:
+								self.store.scope(state: { $0.journey.choosePathway},
+												 action: { .choosePathway($0)}))
                 .navigationBarTitle("Choose Pathway")
                 .customBackButton {
                     self.viewStore.send(.journey(.choosePathwayBackTap))
