@@ -225,14 +225,15 @@ let tabBarReducer: Reducer<TabBarState, TabBarAction, AppEnvironment> = Reducer.
 		action: /TabBarAction.employeesFilter,
 		environment: {
 			return EmployeesFilterEnvironment(
-				appointmentsAPI: $0.appointmentsAPI,
+				journeyAPI: $0.journeyAPI,
 				userDefaults: $0.userDefaults)
 	}),
 	addAppointmentReducer.pullback(
 		state: \TabBarState.addAppointment,
 		action: /TabBarAction.addAppointment,
 		environment: {
-			AddAppointmentEnv(appointmentsAPI: $0.appointmentsAPI,
+			AddAppointmentEnv(journeyAPI: $0.appointmentsAPI,
+							  clientsAPI: $0.clientsAPI,
 							  userDefaults: $0.userDefaults)
 		}
 	),

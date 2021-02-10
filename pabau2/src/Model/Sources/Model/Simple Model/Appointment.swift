@@ -26,6 +26,7 @@ public struct Appointment: Equatable, Identifiable, Hashable, Codable {
 	public let roomName: String
 	public let customerId: Client.ID
 	public let serviceId: Service.Id
+	public let locationName: String?
 }
 
 extension Appointment: CalendarEventVariant { }
@@ -64,5 +65,6 @@ extension Appointment {
 		self.roomId = try container.decode(Room.Id.self, forKey: .roomId)
 		self.roomName = try container.decode(String.self, forKey: .roomName)
 		self.customerId = try container.decode(Client.ID.self, forKey: .customerId)
+		self.locationName = "TO ADD IN BACKEND"
 	}
 }
