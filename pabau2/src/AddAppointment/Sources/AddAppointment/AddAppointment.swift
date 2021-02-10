@@ -20,6 +20,22 @@ public struct AddAppointmentState: Equatable {
     var with: ChooseEmployeesState
     var participants: SingleChoiceLinkState<Employee>
     var note: String = ""
+
+    var showsLoadingSpinner: Bool
+
+    var appointmentsBody: AppointmentBody {
+        return AppointmentBody(isAllDay: self.isAllDay,
+                               clientID: self.clients.chosenClient?.id.rawValue,
+                               employeeID: self.with.chosenEmployee?.id.rawValue,
+                               serviceID: self.services.chosenService?.id.rawValue,
+                               startTime: self.startDate,
+                               duration: self.durations.dataSource.first(where: {$0.id == self.durations.chosenItemId})?.duration,
+                               smsNotification: self.sms,
+                               emailNotification: self.email,
+                               surveyNotification: self.feedback,
+                               reminderNotification: self.reminder,
+                               note: self.note)
+    }
 }
 
 public enum AddAppointmentAction: Equatable {
@@ -41,18 +57,26 @@ public enum AddAppointmentAction: Equatable {
     case email(ToggleAction)
     case feedback(ToggleAction)
     case note(TextChangeAction)
+    case appointmentCreated(Result<ResetPassSuccess, RequestError>)
 }
 
 extension Employee: SingleChoiceElement { }
 extension Service: SingleChoiceElement { }
 
 let addAppTapBtnReducer = Reducer<AddAppointmentState?,
-                                  AddAppointmentAction, AddAppointmentEnv> { state, action, _ in
+                                  AddAppointmentAction, AddAppointmentEnv> { state, action, env in
     switch action {
     case .saveAppointmentTap:
-        print(state)
+        if let appointmentsBody = state?.appointmentsBody {
+            state?.showsLoadingSpinner = true
 
-        state = nil
+            return env.clientAPI.createAppointment(appointment: appointmentsBody)
+                .catchToEffect()
+                .map(AddAppointmentAction.appointmentCreated)
+                .receive(on: DispatchQueue.main)
+                .eraseToEffect()
+        }
+
     case .closeBtnTap:
         state = nil
     case .didTapServices:
@@ -61,6 +85,15 @@ let addAppTapBtnReducer = Reducer<AddAppointmentState?,
         state?.clients.isChooseClientsActive = true
     case .didTapWith:
         state?.with.isChooseEmployeesActive = true
+    case .appointmentCreated(let result):
+        state?.showsLoadingSpinner = false
+
+        switch result {
+        case .success(let services):
+            state = nil
+        case .failure:
+            break
+        }
     default:
         break
     }
@@ -146,7 +179,9 @@ public struct AddAppointment: View {
             AddEventPrimaryBtn(title: Texts.saveAppointment) {
                 self.viewStore.send(.saveAppointmentTap)
             }
-        }.addEventWrapper(onXBtnTap: { self.viewStore.send(.closeBtnTap) })
+        }
+        .addEventWrapper(onXBtnTap: { self.viewStore.send(.closeBtnTap) })
+        .loadingView(.constant(self.viewStore.state.showsLoadingSpinner))
     }
 }
 
@@ -329,7 +364,8 @@ extension AddAppointmentState {
             ),
             durations: AddAppMocks.durationState,
             with: ChooseEmployeesState(isChooseEmployeesActive: false),
-            participants: AddAppMocks.participantsState
+            participants: AddAppMocks.participantsState,
+            showsLoadingSpinner: false
         )
     }
 
@@ -358,7 +394,8 @@ extension AddAppointmentState {
             ),
             durations: AddAppMocks.durationState,
             with: ChooseEmployeesState(isChooseEmployeesActive: false),
-            participants: AddAppMocks.participantsState
+            participants: AddAppMocks.participantsState,
+            showsLoadingSpinner: false
         )
     }
 
@@ -379,7 +416,8 @@ extension AddAppointmentState {
         ),
         durations: AddAppMocks.durationState,
         with: ChooseEmployeesState(isChooseEmployeesActive: false),
-        participants: AddAppMocks.participantsState
+        participants: AddAppMocks.participantsState,
+        showsLoadingSpinner: false
     )
 }
 
