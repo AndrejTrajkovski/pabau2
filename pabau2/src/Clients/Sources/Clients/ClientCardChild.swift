@@ -119,7 +119,7 @@ public struct ClientCardListState: Equatable {
 	var communications: ClientCardChildState<[Communication]>
 	var consents: FormsListState
 	var alerts: ClientCardChildState<[Model.Alert]>
-	var notes: ClientCardChildState<[Note]>
+    var notes: NotesListState
 
 	init() {
 		self.appointments = AppointmentsListState(
@@ -135,7 +135,7 @@ public struct ClientCardListState: Equatable {
 		self.communications = ClientCardChildState.init(state: [])
 		self.consents = FormsListState(childState: ClientCardChildState(state: []), formType: .consent)
 		self.alerts = ClientCardChildState.init(state: [])
-		self.notes = ClientCardChildState.init(state: [])
+        self.notes = NotesListState.init(childState: ClientCardChildState(state: []))
 	}
 }
 
@@ -159,7 +159,7 @@ public enum ClientCardChildAction: Equatable {
 	case communications(GotClientListAction<[Communication]>)
 	case consents(FormsListAction)
 	case alerts(GotClientListAction<[Model.Alert]>)
-	case notes(GotClientListAction<[Note]>)
+    case notes(NotesListAction)
 }
 
 let clientCardListReducer: Reducer<ClientCardListState, ClientCardChildAction, ClientsEnvironment> = Reducer.combine(
@@ -212,11 +212,11 @@ let clientCardListReducer: Reducer<ClientCardListState, ClientCardChildAction, C
 		action: /ClientCardChildAction.alerts,
 		environment: { $0 }
 	),
-	ClientCardChildReducer<[Note]>().reducer.pullback(
-		state: \ClientCardListState.notes,
-		action: /ClientCardChildAction.notes,
-		environment: { $0 }
-	)
+    clientNotesListReducer.pullback(
+        state: \ClientCardListState.notes,
+        action: /ClientCardChildAction.notes,
+        environment: { $0 }
+    )
 )
 
 protocol ClientCardChildParentAction: Equatable {

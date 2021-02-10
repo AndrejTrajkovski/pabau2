@@ -65,10 +65,10 @@ let clientCardGridReducer: Reducer<ClientCardState, ClientCardBottomAction, Clie
 						.receive(on: DispatchQueue.main)
 					.eraseToEffect()
 				case .notes:
-					state.list.notes.loadingState = .loading
+                    state.list.notes.childState.loadingState = .loading
                     return env.apiClient.getNotes(clientId: state.client.id.rawValue)
 						.catchToEffect()
-						.map { .child(.notes(.gotResult($0))) }
+                        .map { .child(.notes(.action(.gotResult($0)))) }
 						.receive(on: DispatchQueue.main)
 						.eraseToEffect()
 				case .financials:
