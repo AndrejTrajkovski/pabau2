@@ -57,7 +57,7 @@ public enum AddAppointmentAction: Equatable {
     case email(ToggleAction)
     case feedback(ToggleAction)
     case note(TextChangeAction)
-    case appointmentCreated(Result<ResetPassSuccess, RequestError>)
+    case appointmentCreated(Result<PlaceholdeResponse, RequestError>)
 }
 
 extension Employee: SingleChoiceElement { }
