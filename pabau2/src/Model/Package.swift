@@ -19,8 +19,6 @@ let package = Package(
 				 from: Version.init(stringLiteral: "0.5.0")),
 		.package(name: "NonEmpty",
 				 url: "https://github.com/pointfreeco/swift-nonempty.git", from: "0.2.2"),
-		.package(name: "SwiftDate",
-				 url: "https://github.com/malcommac/SwiftDate.git", from: "6.1.0"),
 		.package(url: "../Util", from: Version.init(stringLiteral: "1.0.0")),
 		.package(name: "Overture",
 				 url: "https://github.com/pointfreeco/swift-overture.git",
@@ -32,8 +30,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "ComposableArchitecture",
 						 package: "swift-composable-architecture"),
-				.product(name: "SwiftDate",
-						 package: "SwiftDate"),
 				.product(name: "NonEmpty",
 						 package: "NonEmpty"),
 				.product(name: "Tagged",

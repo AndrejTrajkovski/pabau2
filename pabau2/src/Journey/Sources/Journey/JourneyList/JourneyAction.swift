@@ -8,14 +8,14 @@ public enum JourneyContainerAction {
 	case journey(JourneyAction)
 	case choosePathway(ChoosePathwayContainerAction)
 	case toggleEmployees
+    case searchQueryChanged(JourneyAction)
+	case datePicker(CalendarDatePickerAction)
+	case gotResponse(Result<CalendarResponse, RequestError>)
 }
 
 public enum JourneyAction {
-	case loadJourneys
 	case selectedFilter(CompleteFilter)
 	case searchedText(String)
-	case gotResponse(Result<[Journey], RequestError>)
 	case selectedJourney(Journey)
 	case choosePathwayBackTap
-	case datePicker(CalendarDatePickerAction)
 }

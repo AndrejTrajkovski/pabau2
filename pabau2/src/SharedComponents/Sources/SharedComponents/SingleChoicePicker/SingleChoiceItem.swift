@@ -18,9 +18,12 @@ public struct SingleChoiceItem<T: SingleChoiceElement, Cell: View>: View {
 
 	let store: Store<SingleChoiceItemState<T>, SingleChoiceAction<T>>
 	let cell: (SingleChoiceItemState<T>) -> Cell
-
-	init(store: Store<SingleChoiceItemState<T>, SingleChoiceAction<T>>,
-		 cell: @escaping (SingleChoiceItemState<T>) -> Cell) {
+	
+    init(
+        store: Store<SingleChoiceItemState<T>, SingleChoiceAction<T>>,
+        cell: @escaping (SingleChoiceItemState<T>) -> Cell,
+        title: String? = nil
+    ) {
 		self.store = store
 		self.cell = cell
 	}

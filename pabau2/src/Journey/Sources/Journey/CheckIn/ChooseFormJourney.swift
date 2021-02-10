@@ -16,9 +16,11 @@ public let chooseFormJourneyReducer: Reducer<ChooseFormJourneyState,
 			switch action {
 			case .proceed:
 				//TODO:
-				updateWithKeepingOld(forms: &state.forms,
+				updateWithKeepingOld(
+                    forms: &state.forms,
 														 finalSelectedTemplatesIds: state.selectedTemplatesIds,
-														 allTemplates: state.templates)
+                    allTemplates: state.templates
+                )
 				return .none
 			default: break
 			}

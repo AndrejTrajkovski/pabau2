@@ -44,9 +44,9 @@ private struct FinancialRow: View {
 	var body: some View {
 		VStack {
 			InvoiceRow(text1: Texts.invoice,
-								 invoice: financial.number,
-								 date: financial.date)
-			FinancialsTextRow(text1: Texts.location, text2: financial.locationName)
+                       invoice: "\(financial.id.rawValue)",
+                       date: financial.date)
+			FinancialsTextRow(text1: Texts.location, text2: financial.locationName ?? "")
 			FinancialsTextRow(text1: Texts.employee, text2: financial.employeeName)
 			FinancialsTextRow(text1: Texts.issuedTo, text2: financial.issuedTo)
 			FinancialsTextRow(text1: Texts.method, text2: financial.method)

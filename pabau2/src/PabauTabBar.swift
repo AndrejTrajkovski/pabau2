@@ -10,15 +10,35 @@ import JZCalendarWeekView
 import AddAppointment
 import Communication
 import Intercom
+import Appointments
 
 public struct TabBarState: Equatable {
-	public var addAppointment: AddAppointmentState?
-	public var journeyState: JourneyState
-	public var clients: ClientsState
-	public var calendar: CalendarState
-	public var settings: SettingsState
-    public var communication: CommunicationState
-	public var employeesFilter: JourneyFilterState = JourneyFilterState()
+	var appsLoadingState: LoadingState
+	var appointments: Appointments
+	var addAppointment: AddAppointmentState?
+	var journey: JourneyState
+	var clients: ClientsState
+	var calendar: CalendarState
+	var settings: SettingsState
+    var communication: CommunicationState
+
+	var journeyEmployeesFilter: JourneyFilterState {
+		get {
+			JourneyFilterState(
+				locationId: journey.selectedLocation.id,
+				employeesLoadingState: journey.employeesLoadingState,
+				employees: calendar.employees[journey.selectedLocation.id] ?? [],
+				selectedEmployeesIds: journey.selectedEmployeesIds,
+				isShowingEmployees: journey.isShowingEmployeesFilter
+			)
+		}
+		set {
+			self.journey.employeesLoadingState = newValue.employeesLoadingState
+			self.calendar.employees[journey.selectedLocation.id] = newValue.employees
+			self.journey.selectedEmployeesIds = newValue.selectedEmployeesIds
+			self.journey.isShowingEmployeesFilter = newValue.isShowingEmployees
+		}
+	}
 
 	public var calendarContainer: CalendarContainerState {
 		get {
@@ -33,12 +53,16 @@ public struct TabBarState: Equatable {
 
 	public var journeyContainer: JourneyContainerState {
 		get {
-			JourneyContainerState(journey: journeyState,
-								  employeesFilter: employeesFilter)
+			JourneyContainerState(journey: self.journey,
+								  employeesFilter: self.journeyEmployeesFilter,
+								  appointments: self.appointments,
+								  loadingState: self.appsLoadingState)
 		}
 		set {
-			self.journeyState = newValue.journey
-			self.employeesFilter = newValue.employeesFilter
+			self.journey = newValue.journey
+			self.journeyEmployeesFilter = newValue.employeesFilter
+			self.appointments = newValue.appointments
+			self.appsLoadingState = newValue.loadingState
 		}
 	}
 }
@@ -51,6 +75,7 @@ public enum TabBarAction {
 	case employeesFilter(JourneyFilterAction)
 	case addAppointment(AddAppointmentAction)
     case communication(CommunicationAction)
+	case gotLocationsResponse(Result<[Location], RequestError>)
 }
 
 struct PabauTabBar: View {
@@ -61,8 +86,8 @@ struct PabauTabBar: View {
 		let isShowingCheckin: Bool
 		let isShowingAppointments: Bool
 		init(state: TabBarState) {
-			self.isShowingEmployees = state.employeesFilter.isShowingEmployees
-			self.isShowingCheckin = state.journeyContainer.journey.choosePathway?.checkIn != nil
+			self.isShowingEmployees = state.journeyEmployeesFilter.isShowingEmployees
+			self.isShowingCheckin = state.journeyContainer.journey.checkIn != nil
 			self.isShowingAppointments = state.addAppointment != nil
 		}
 	}
@@ -196,7 +221,7 @@ let tabBarReducer: Reducer<TabBarState, TabBarAction, AppEnvironment> = Reducer.
 		return .none
 	},
 	journeyFilterReducer.pullback(
-		state: \TabBarState.employeesFilter,
+		state: \TabBarState.journeyEmployeesFilter,
 		action: /TabBarAction.employeesFilter,
 		environment: {
 			return EmployeesFilterEnvironment(
@@ -264,10 +289,12 @@ let tabBarReducer: Reducer<TabBarState, TabBarAction, AppEnvironment> = Reducer.
 
 extension TabBarState {
 	public init() {
-		self.journeyState = JourneyState()
+		self.journey = JourneyState()
 		self.clients = ClientsState()
 		self.calendar = CalendarState()
 		self.settings = SettingsState()
 		self.communication = CommunicationState()
+		self.appointments = .week([:])
+		self.appsLoadingState = .initial
 	}
 }

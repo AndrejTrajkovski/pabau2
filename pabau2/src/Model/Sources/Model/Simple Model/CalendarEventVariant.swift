@@ -7,7 +7,6 @@ public protocol CalendarEventVariant: Decodable {
 	var employeeId: Employee.Id { get set }
 	var employeeInitials: String { get }
 	var locationId: Location.Id { get set }
-	var locationName: String? { get }
 	var _private: Bool? { get }
 	var employeeName: String { get }
 	var roomId: Room.Id { get set }

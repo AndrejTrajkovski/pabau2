@@ -79,6 +79,7 @@ public struct ChoosePathwayState: Equatable {
 		set {
 			self.selectedConsentsIds = newValue.selectedTemplatesIds
 			self.allConsents = newValue.templates
+            self.searchText = newValue.searchText
 		}
 	}
 	public var checkIn: CheckInContainerState?

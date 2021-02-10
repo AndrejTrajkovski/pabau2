@@ -9,6 +9,7 @@ import AddBookout
 import Combine
 import AddShift
 import Filters
+import Appointments
 
 public typealias CalendarEnvironment = (apiClient: AppointmentsAPI, userDefaults: UserDefaultsConfig)
 
@@ -80,8 +81,7 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 	calTypePickerReducer.pullback(
 		state: \.calTypePicker,
 		action: /CalendarAction.calTypePicker,
-		environment: { $0 })
-	,
+		environment: { $0 }),
 	calendarWeekViewReducer.optional.pullback(
 		state: \CalendarState.week,
 		action: /CalendarAction.week,
@@ -98,10 +98,10 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 		state: \CalendarState.appDetails,
 		action: /CalendarAction.appDetails,
 		environment: { $0 }),
-	addBookoutReducer.optional.pullback(
-		state: \CalendarState.addBookout,
-		action: /CalendarAction.addBookout,
-		environment: { $0 }),
+//	addBookoutReducer.optional.pullback(
+//		state: \CalendarState.addBookout,
+//		action: /CalendarAction.addBookout,
+//		environment: { $0 }),
 	addShiftOptReducer.pullback(
 		state: \CalendarState.addShift,
 		action: /CalendarAction.addShift,
@@ -117,8 +117,8 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 	.init { state, action, _ in
 		switch action {
 		case .datePicker: break
-		case .calTypePicker(.onSelect(let calTypeId)):
-			state.switchTo(id: calTypeId)
+		case .calTypePicker(.onSelect(let calType)):
+			state.switchTo(calType: calType)
 		case .onAppDetailsDismiss:
 			state.appDetails = nil
 		case .onBookoutDismiss:

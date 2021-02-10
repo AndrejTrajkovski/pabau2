@@ -214,7 +214,7 @@ extension HTMLForm {
 	
 	
 	public static func getMedHistory() -> HTMLForm {
-		HTMLForm(id: 1, name: "Medical History Form", formType: .questionnaire,
+		HTMLForm(id: 1, name: "Medical History Form", formType: .history,
 				 ePaper: false,
 				 formStructure:
 					[

@@ -14,66 +14,88 @@ let clientCardGridReducer: Reducer<ClientCardState, ClientCardBottomAction, Clie
 				switch item {
 				case .appointments:
 					state.list.appointments.childState.loadingState = .loading
-					return env.apiClient.getAppointments(clientId: state.client.id)
+                    return env.apiClient.getAppointments(clientId: state.client.id.rawValue)
+						.catchToEffect()
 						.map { .child(.appointments(.action(.gotResult($0)))) }
+						.receive(on: DispatchQueue.main)
 						.eraseToEffect()
 				case .documents:
 					state.list.documents.childState.loadingState = .loading
-					return env.apiClient.getDocuments(clientId: state.client.id)
+                    return env.apiClient.getDocuments(clientId: state.client.id.rawValue)
+						.catchToEffect()
 						.map { .child(.documents(.action( .gotResult($0)))) }
+						.receive(on: DispatchQueue.main)
 						.eraseToEffect()
 				case .prescriptions:
 					state.list.prescriptions.childState.loadingState = .loading
 					return env.apiClient.getForms(type: .prescription,
-																				clientId: state.client.id)
+                                                  clientId: state.client.id.rawValue)
+						.catchToEffect()
 						.map { .child(.prescriptions(.action(.gotResult($0)))) }
+						.receive(on: DispatchQueue.main)
 						.eraseToEffect()
 				case .consents:
 					state.list.consents.childState.loadingState = .loading
 					return env.apiClient.getForms(type: .consent,
-																				clientId: state.client.id)
+                                                  clientId: state.client.id.rawValue)
+						.catchToEffect()
 						.map { .child(.consents(.action(.gotResult($0)))) }
+						.receive(on: DispatchQueue.main)
 						.eraseToEffect()
 				case .treatmentNotes:
 					state.list.treatmentNotes.childState.loadingState = .loading
 					return env.apiClient.getForms(type: .treatment,
-																				clientId: state.client.id)
+                                                  clientId: state.client.id.rawValue)
+						.catchToEffect()
 						.map { .child(.treatmentNotes(.action(.gotResult($0)))) }
+						.receive(on: DispatchQueue.main)
 						.eraseToEffect()
 				case .communications:
 					state.list.communications.loadingState = .loading
-					return env.apiClient.getCommunications(clientId: state.client.id)
+                    return env.apiClient.getCommunications(clientId: state.client.id.rawValue)
+						.catchToEffect()
 					.map { .child(.communications(.gotResult($0))) }
+						.receive(on: DispatchQueue.main)
 					.eraseToEffect()
 				case .alerts:
 					state.list.alerts.loadingState = .loading
-					return env.apiClient.getAlerts(clientId: state.client.id)
+                    return env.apiClient.getAlerts(clientId: state.client.id.rawValue)
+						.catchToEffect()
 					.map { .child(.alerts(.gotResult($0))) }
+						.receive(on: DispatchQueue.main)
 					.eraseToEffect()
 				case .notes:
 					state.list.notes.loadingState = .loading
-					return env.apiClient.getNotes(clientId: state.client.id)
+                    return env.apiClient.getNotes(clientId: state.client.id.rawValue)
+						.catchToEffect()
 						.map { .child(.notes(.gotResult($0))) }
+						.receive(on: DispatchQueue.main)
 						.eraseToEffect()
 				case .financials:
 					state.list.financials.loadingState = .loading
-					return env.apiClient.getFinancials(clientId: state.client.id)
+                    return env.apiClient.getFinancials(clientId: state.client.id.rawValue)
+						.catchToEffect()
 						.map { .child(.financials(.gotResult($0))) }
+						.receive(on: DispatchQueue.main)
 						.eraseToEffect()
 				case .details:
 					state.list.details.childState.loadingState = .loading
-					return env.apiClient.getPatientDetails(clientId: state.client.id)
+                    return env.apiClient.getPatientDetails(clientId: state.client.id.rawValue)
+						.catchToEffect()
 						.map { .child(.details(.action(.gotResult($0)))) }
+						.receive(on: DispatchQueue.main)
 						.eraseToEffect()
 				case .photos:
 					state.list.photos.childState.loadingState = .loading
-					return env.apiClient.getPhotos(clientId: state.client.id)
+                    return env.apiClient.getPhotos(clientId: state.client.id.rawValue)
+						.catchToEffect()
 						.map {
 							let vms = $0.map { sphotos in
 								sphotos.map(PhotoViewModel.init)
 							}.map(groupByDay(photoViewModel:))
 							return .child(.photos(.action(.gotResult(vms))))
 						}
+						.receive(on: DispatchQueue.main)
 						.eraseToEffect()
 				}
 			case .child:
@@ -99,8 +121,8 @@ struct ClientCardGrid: View {
 			ASCollectionView(data: ClientCardGridItem.allCases,
 											 dataID: \.self) { item, _ in
 												ClientCardGridItemView(title: item.title,
-																							 iconName: item.iconName,
-																							 number: item.count(model: viewStore.state)
+                                                                       iconName: item.iconName,
+                                                                       number: item.count(model: viewStore.state)
 												).onTapGesture {
 													viewStore.send(.onSelect(item))
 												}
@@ -116,8 +138,8 @@ struct ClientCardGrid: View {
 
 func groupByDay(photoViewModel: [PhotoViewModel]) -> [Date: [PhotoViewModel]] {
 	return Dictionary.init(grouping: photoViewModel,
-												 by: {
-													let date = Calendar.gregorian.dateComponents([.day, .year, .month], from: $0.basePhoto.date)
-													return Calendar.gregorian.date(from: date)!
-	})
+                           by: {
+                                let date = Calendar.gregorian.dateComponents([.day, .year, .month], from: $0.basePhoto.date)
+                                return Calendar.gregorian.date(from: date)!
+                           })
 }

@@ -40,6 +40,7 @@ public extension Color {
 	static let gray249 = Color.init(red: 249/255, green: 249/255, blue: 249/255)
 	static let gray142 = Color.init(red: 142/255, green: 142/255, blue: 142/255)
 	static let gray184 = Color.init(red: 184/255, green: 184/255, blue: 184/255)
+    static let turquoiseBlue = Color.init(red: 87/255, green: 203/255, blue: 229/255)
 
 	static let black42 = Color.init(red: 42/255, green: 42/255, blue: 42/255)
 
@@ -86,5 +87,7 @@ public extension Color {
 	static let cameraImages = Color(hex: "B8B8B8")
 
 	static let clientCardNeutral = Color(hex: "8C8C8C")
+    
+    static let grayPlaceholder = Color.init(hex: "#9B9B9B")
 }
 #endif

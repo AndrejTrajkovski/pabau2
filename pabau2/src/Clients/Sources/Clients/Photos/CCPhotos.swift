@@ -2,81 +2,54 @@ import SwiftUI
 import ComposableArchitecture
 import Form
 import Util
+import Model
 
 public let ccPhotosReducer: Reducer<CCPhotosState, CCPhotosAction, ClientsEnvironment> = Reducer.combine(
 	ClientCardChildReducer<[Date: [PhotoViewModel]]>().reducer.pullback(
 		state: \CCPhotosState.childState,
 		action: /CCPhotosAction.action,
 		environment: { $0 }
-	)
-	,
-	.init { state, action, _ in
+	),
+	expandedPhotoReducer.optional.pullback(
+		state: \CCPhotosState.expandedSection,
+		action: /CCPhotosAction.expanded,
+		environment: { $0 }),
+	Reducer<CCPhotosState, CCPhotosAction, ClientsEnvironment>.init { state, action, _ in
 		switch action {
-		case .onSelectGroup(let date):
-			state.selectedDate = date
-			state.mode = .expanded
-		case .switchMode(let mode):
-			state.mode = mode
-			state.selectedDate = nil
-		case .didTouchPhoto(let id):
-			print(id)
-			state.selectedIds.contains(id) ? state.selectedIds.removeAll(where: { $0 == id}) :
-				state.selectedIds.append(id)
+		case .onSelectDate(let date):
+			state.expandedSection = CCExpandedPhotosState(selectedDate: date, photos: state.childState.state)
 		case .action:
 			break
+		case .expanded:
+            break
 		}
 		return .none
 	}
 )
 
-public enum CCPhotosViewMode: Int, Equatable, CaseIterable, CustomStringConvertible {
-	case grouped
-	case expanded
-
-	public var description: String {
-		switch self {
-		case .grouped:
-			return "Grouped"
-		case .expanded:
-			return "Expanded"
-		}
-	}
-}
-
 public struct CCPhotosState: ClientCardChildParentState, Equatable {
 	var childState: ClientCardChildState<[Date: [PhotoViewModel]]>
-	var selectedIds: [PhotoVariantId]
-	var selectedDate: Date?
-	var mode: CCPhotosViewMode = .grouped
+	var expandedSection: CCExpandedPhotosState?
 }
 
 public enum CCPhotosAction: Equatable {
-	case switchMode(CCPhotosViewMode)
-	case onSelectGroup(Date)
-	case didTouchPhoto(PhotoVariantId)
+	case onSelectDate(Date)
 	case action(GotClientListAction<[Date: [PhotoViewModel]]>)
+	case expanded(CCExpandedPhotosAction)
 }
 
 struct CCPhotos: ClientCardChild {
 	let store: Store<CCPhotosState, CCPhotosAction>
 	var body: some View {
-		WithViewStore(self.store.scope(state: { $0.mode }).actionless) { viewStore in
-			Group {
-				if viewStore.state == .grouped {
-					CCGroupedPhotos(store:
-						self.store.scope(state: { $0.childState.state },
-														 action: { $0 })
-					)
-				} else if viewStore.state == .expanded {
-					CCExpandedPhotos(store:
-						self.store.scope(state: { $0 },
-						action: { $0 })
-					)
-				} else {
-					EmptyView()
-				}
-			}
-		}.debug("CCPhotos")
+		IfLetStore(store.scope(state: { $0.expandedSection },
+							   action: { .expanded($0) }),
+				   then: CCExpandedPhotos.init(store:),
+				   else: groupedPhotos)
+	}
+	
+	var groupedPhotos: some View {
+		CCGroupedPhotos(store: store.scope(state: { $0.childState.state },
+											action: { $0 }))
 	}
 }
 

@@ -6,7 +6,7 @@ import CasePaths
 
 public typealias ClientsEnvironment = (apiClient: ClientsAPI, userDefaults: UserDefaultsConfig)
 
-public let clientsContainerReducer: Reducer<ClientsState, ClientsAction, ClientsEnvironment> = .combine (
+public let clientsContainerReducer: Reducer<ClientsState, ClientsAction, ClientsEnvironment> = .combine(
 	addClientOptionalReducer.pullback(
 		state: \.addClient,
 		action: /ClientsAction.list..ClientsListAction.addClient,
@@ -16,20 +16,24 @@ public let clientsContainerReducer: Reducer<ClientsState, ClientsAction, Clients
 		action: /ClientsAction.list,
 		environment: { $0 }),
 	.init { state, action, env in
+        
 		switch action {
 		case .onAppearNavigationView:
 			state.contactListLS = .loading
 			return env.apiClient
-				.getClients()
+                .getClients(search: nil, offset: state.clients.count)
+                .catchToEffect()
 				.map(ClientsAction.gotClientsResponse)
+                .receive(on: DispatchQueue.main)
 				.eraseToEffect()
 		case .gotClientsResponse(let result):
+            
 			switch result {
 			case .success(let contacts):
-				state.clients = .init(contacts)
+                state.clients = .init(contacts)
 				state.contactListLS = .gotSuccess
-			case .failure:
-				state.contactListLS = .gotError
+			case .failure(let error):
+				state.contactListLS = .gotError(error)
 			}
 		case .list:
 			break
@@ -41,20 +45,17 @@ public let clientsContainerReducer: Reducer<ClientsState, ClientsAction, Clients
 public struct ClientsState: Equatable {
 	public init () { }
 	var contactListLS: LoadingState = .initial
-	var clients: IdentifiedArrayOf<Client> = []
+    var clients: IdentifiedArrayOf<Client> = []
 	var addClient: AddClientState?
 	var selectedClient: ClientCardState?
-	var searchText: String = ""
-
-	var filteredClients: IdentifiedArrayOf<Client> {
-		return clients.filter {
-			guard !searchText.isEmpty else { return true }
-			return
-				($0.firstName.range(of: searchText, options: .caseInsensitive) != nil) ||
-					($0.lastName.range(of: searchText, options: .caseInsensitive) != nil) ||
-			($0.email?.range(of: searchText, options: .caseInsensitive) != nil)
-		}
-	}
+    var searchText: String = "" {
+        didSet {
+            isSearching = !searchText.isEmpty
+        }
+    }
+    var isSearching = false
+    var notFoundClients = false
+    var isClientsLoading = false
 }
 
 public enum ClientsAction: Equatable {

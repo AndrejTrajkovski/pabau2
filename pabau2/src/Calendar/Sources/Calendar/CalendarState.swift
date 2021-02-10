@@ -10,6 +10,7 @@ import AddBookout
 import AddShift
 import Filters
 import FSCalendar
+import Appointments
 
 public struct CalendarContainerState: Equatable {
 	public init(addAppointment: AddAppointmentState?, calendar: CalendarState) {
@@ -190,11 +191,10 @@ extension CalendarState {
 	public init() {
 		self.isDropdownShown = false
 		self.selectedDate = Calendar.gregorian.startOfDay(for: Date())
-	    let apps = CalendarEvent.makeDummy()
-		let employees = Employee.mockEmployees
+		let employees = [Employee]()
 		let rooms = Room.mock().map { $0.value }
 		let locations = Location.mock()
-		self.appointments = Appointments.initEmployee(events: apps, locationsIds: locations.map(\.id), sections: employees)
+		self.appointments = .week([:])
 		let groupedEmployees = Dictionary.init(grouping: employees, by: { $0.locationId })
 			.mapValues { IdentifiedArrayOf.init($0) }
 		self.employees = locations.map(\.id).reduce(into: [Location.ID: IdentifiedArrayOf<Employee>](), {
@@ -209,43 +209,22 @@ extension CalendarState {
 		self.chosenLocationsIds = Location.mock().map(\.id)
 		self.chosenRoomsIds = self.rooms.mapValues { $0.map(\.id) }
 		self.chosenEmployeesIds = self.employees.mapValues { $0.map(\.id) }
-		shifts = Shift.mock().mapValues {
-			$0.mapValues {
-				$0.mapValues {
-					let jzshifts = $0.map { JZShift.init(shift: $0)}
-					return [JZShift].init(jzshifts)
-				}
-			}
-		}
+		shifts = [:]
+//		shifts = Shift.mock().mapValues {
+//			$0.mapValues {
+//				$0.mapValues {
+//					let jzshifts = $0.map { JZShift.init(shift: $0)}
+//					return [JZShift].init(jzshifts)
+//				}
+//			}
+//		}
 		self.expandedLocationsIds = locations.map(\.id)
 		self.isShowingFilters = false
 	}
 }
 
 extension CalendarState {
-	mutating func switchTo(id: Appointments.CalendarType) {
-		let locationKeyPath = \CalendarEvent.locationId
-		switch id {
-		case .employee:
-			let flatAppts = self.appointments.flatten()
-			let appointments = EventsBy<Employee>.init(events: flatAppts,
-													   locationsIds: locations.map(\.id),
-													   subsections: employees.flatMap({ $0.value }),
-													   sectionKeypath: locationKeyPath,
-													   subsKeypath: \CalendarEvent.employeeId)
-			self.appointments = Appointments.employee(appointments)
-		case .room:
-			let flatAppts = self.appointments.flatten()
-			let appointments = EventsBy<Room>.init(events: flatAppts,
-												   locationsIds: locations.map(\.id),
-												   subsections: rooms.flatMap({ $0.value }),
-												   sectionKeypath: locationKeyPath,
-												   subsKeypath: \CalendarEvent.roomId)
-			self.appointments = Appointments.room(appointments)
-		case .week:
-			let flatAppts = self.appointments.flatten()
-			let weekApps = SectionHelper.groupByStartOfDay(originalEvents: flatAppts).mapValues { IdentifiedArrayOf.init($0)}
-			self.appointments = .week(weekApps)
-		}
+	mutating func switchTo(calType: Appointments.CalendarType) {
+		self.appointments = Appointments(calType: calType, events: appointments.flatten(), locationsIds: locations.map(\.id), employees: employees.flatMap(\.value), rooms: rooms.flatMap(\.value))
 	}
 }

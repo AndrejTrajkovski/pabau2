@@ -1,4 +1,5 @@
 import Model
+import Foundation
 
 @dynamicMemberLookup
 public enum Photo: Equatable {
@@ -12,18 +13,24 @@ extension Photo: Identifiable {
 		case .new(let newPhoto):
 			return PhotoVariantId.new(newPhoto.id)
 		case .saved(let savedPhoto):
-			return PhotoVariantId.saved(savedPhoto.id)
+            return PhotoVariantId.saved(savedPhoto.id)
 		}
 	}
 }
 
 extension Photo {
 	public subscript<T>(dynamicMember keyPath: KeyPath<PhotoVariant, T>) -> T {
-		switch self {
-		case .saved(let saved):
-			return saved[keyPath: keyPath]
-		case .new(let new):
-			return new[keyPath: keyPath]
-		}
+			switch self {
+			case .saved(let saved):
+                return saved[keyPath: keyPath]
+			case .new(let new):
+					return new[keyPath: keyPath]
+			}
 	}
+}
+
+extension SavedPhoto: PhotoVariant {
+    public var date: Date {
+        return photoDate
+    }
 }

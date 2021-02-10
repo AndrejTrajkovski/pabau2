@@ -12,7 +12,15 @@ let clientCardReducer: Reducer<ClientCardState?, ClientCardAction, ClientsEnviro
 		switch action {
 		case .bottom(.backBtnTap):
 			if state?.activeItem != nil {
-				state!.activeItem = nil
+				if case ClientCardGridItem.photos = state!.activeItem! {
+					if state!.list.photos.expandedSection != nil {
+						state!.list.photos.expandedSection = nil
+					} else {
+						state!.activeItem = nil
+					}
+				} else {
+					state!.activeItem = nil
+				}
 			} else {
 				state = nil
 			}

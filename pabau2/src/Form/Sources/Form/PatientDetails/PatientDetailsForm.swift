@@ -3,6 +3,7 @@ import Util
 import ComposableArchitecture
 import Model
 import SharedComponents
+import SwiftDate
 
 public struct PatientDetailsForm: View {
 	let store: Store<PatientDetails, PatientDetailsAction>
@@ -17,33 +18,34 @@ public struct PatientDetailsForm: View {
 	}
 
 	public var body: some View {
-		print("PatientDetailsForm")
-		return ScrollView {
-			VStack {
-				PatientDetailsTextFields(vms: self.vms)
-				Group {
-					SwitchCell(text: Texts.emailConfirmations,
-							   store: store.scope(
-								state: { $0.emailComm },
-								action: { .emailComm($0) })
-					)
-					SwitchCell(text: Texts.smsReminders,
-							   store: store.scope(
-								state: { $0.smsComm },
-								action: { .smsComm($0) })
-					)
-					SwitchCell(text: Texts.phone,
-							   store: store.scope(
-								state: { $0.phoneComm },
-								action: { .phoneComm($0) })
-					)
-					SwitchCell(text: Texts.post,
-							   store: store.scope(
-								state: { $0.postComm },
-								action: { .postComm($0) })
-					)
-				}.switchesSection(title: Texts.communications)
-			}
+		print("Patient details body")
+		return
+			ScrollView {
+				VStack {
+					PatientDetailsTextFields(vms: self.vms)
+					Group {
+						SwitchCell(text: Texts.emailConfirmations,
+								   store: store.scope(
+                                    state: { $0.emailComm },
+										action: { .emailComm($0) })
+						)
+						SwitchCell(text: Texts.smsReminders,
+								   store: store.scope(
+										state: { $0.smsComm },
+										action: { .smsComm($0) })
+						)
+						SwitchCell(text: Texts.phone,
+								   store: store.scope(
+										state: { $0.phoneComm },
+										action: { .phoneComm($0) })
+						)
+						SwitchCell(text: Texts.post,
+								   store: store.scope(
+										state: { $0.postComm },
+										action: { .postComm($0) })
+						)
+					}.switchesSection(title: Texts.communications)
+				}
 		}
 	}
 }
@@ -52,7 +54,7 @@ struct PatientDetailsTextFields: View {
 	let vms: [[TextAndTextViewVM]]
 	var body: some View {
 		VStack {
-			ThreeTextColumns(self.vms[0], isFirstFixSized: true)
+			ThreeTextColumns(self.vms[0], isFirstFixSized: false)
 			ThreeTextColumns(self.vms[1])
 			ThreeTextColumns(self.vms[2])
 			ThreeTextColumns(self.vms[3])
@@ -139,7 +141,7 @@ public let patientDetailsReducer: Reducer<PatientDetails, PatientDetailsAction, 
 			environment: { $0 }
 		),
 		textFieldReducer.pullback(
-			state: \PatientDetails.dob,
+            state: \PatientDetails.dateOfBirth,
 			action: /PatientDetailsAction.dob,
 			environment: { $0 }
 		),
@@ -234,7 +236,7 @@ func viewModels(_ viewStore: ViewStore<PatientDetails, PatientDetailsAction>) ->
 		[
 			TextAndTextViewVM(
 				viewStore.binding(
-					get: { $0.dob },
+                    get: { $0.dateOfBirth },
 					send: { .dob(.textFieldChanged($0)) }),
 				Texts.dob),
 			TextAndTextViewVM(
@@ -292,7 +294,13 @@ func viewModels(_ viewStore: ViewStore<PatientDetails, PatientDetailsAction>) ->
 				viewStore.binding(
 					get: { $0.howDidYouHear },
 					send: { .howDidYouHear(.textFieldChanged($0)) }),
-				Texts.howDidUHear)
+				Texts.howDidUHear),
+            TextAndTextViewVM(
+                viewStore.binding(
+                    get: { $0.gender },
+                    send: { .howDidYouHear(.textFieldChanged($0)) }),
+                Texts.gender)
+            
 		]
 	]
 }

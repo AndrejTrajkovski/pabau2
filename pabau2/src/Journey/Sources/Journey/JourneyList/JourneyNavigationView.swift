@@ -9,13 +9,13 @@ public struct JourneyNavigationView: View {
 	public init(_ store: Store<JourneyContainerState, JourneyContainerAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store
-			.scope(state: {_ in ViewState()},
-						 action: { $0 }))
+									.scope(state: {_ in ViewState()},
+										   action: { $0 }))
 	}
 	public var body: some View {
 		NavigationView {
-			JourneyContainerView(self.store.scope(state: { $0 },
-																					action: { $0 }))
+			JourneyContainerView(store.scope(state: { $0 },
+											 action: { $0 }))
 		}
 		.navigationViewStyle(StackNavigationViewStyle())
 	}

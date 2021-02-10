@@ -34,7 +34,7 @@ public let calendarWeekViewReducer: Reducer<CalendarWeekViewState, CalendarWeekV
 	case .addBookout(let startOfDayDate,
 					 let startDate,
 					 let durationMins):
-		state.addBookout = AddBookoutState(employees: IdentifiedArray(Employee.mockEmployees),
+		state.addBookout = AddBookoutState(employees: IdentifiedArrayOf([]),
 										   chosenEmployee: nil,
 										   start: startDate)
 	case .onSelect(startOfDayDate: let startOfDayDate, eventId: let eventId):

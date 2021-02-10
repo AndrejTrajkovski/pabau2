@@ -4,10 +4,10 @@
 import Foundation
 
 public enum FormType: String, Codable, Equatable {
-	case questionnaire = "questionnaire"
-	//    case questionnaire = "questionnaire"
+	case history = "history"
 	case treatment = "treatment"
 	case consent = "consent"
 	case prescription = "prescription"
+    case unknown
 //	case photos = "photos"
 }

@@ -98,7 +98,7 @@ struct ClientCardChildReducer<T: Equatable> {
 		case .gotResult(let result):
 			switch result {
 			case .failure(let error):
-				state.loadingState = .gotError
+				state.loadingState = .gotError(error)
 			case .success(let success):
 				state.loadingState = .gotSuccess
 				state.state = success
@@ -126,8 +126,7 @@ public struct ClientCardListState: Equatable {
 			childState: ClientCardChildState.init(state: [])
 		)
 		self.details = PatientDetailsClientCardState(childState: ClientCardChildState.init(state: PatientDetails.mock))
-		self.photos = CCPhotosState.init(childState: ClientCardChildState.init(state: [:]),
-																		 selectedIds: [])
+		self.photos = CCPhotosState.init(childState: ClientCardChildState.init(state: [:]))
 		self.financials = ClientCardChildState.init(state: [])
 		self.treatmentNotes = FormsListState(childState: ClientCardChildState(state: []), formType: .treatment)
 		self.prescriptions = FormsListState(childState: ClientCardChildState(state: []), formType: .prescription)

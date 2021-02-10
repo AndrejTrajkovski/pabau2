@@ -9,8 +9,8 @@ public enum PhotoVariantId: Equatable, Hashable {
 extension PhotoVariantId: CustomStringConvertible {
 	public var description: String {
 		switch self {
-		case .saved(let int):
-			return String(int)
+		case .saved(let id):
+			return "\(id)"
 		case .new(let uuid):
 			return uuid.description
 		}

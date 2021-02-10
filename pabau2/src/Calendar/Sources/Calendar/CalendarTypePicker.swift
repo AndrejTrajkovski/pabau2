@@ -1,5 +1,6 @@
 import SwiftUI
 import ComposableArchitecture
+import Appointments
 
 public struct CalendarTypePickerState: Equatable {
 	var isDropdownShown: Bool

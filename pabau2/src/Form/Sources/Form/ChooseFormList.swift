@@ -2,12 +2,14 @@ import SwiftUI
 import Model
 import Util
 import ComposableArchitecture
+import SharedComponents
 
 public struct ChooseFormState: Equatable {
 	public var templates: IdentifiedArrayOf<HTMLForm>
 	public var templatesLoadingState: LoadingState = .initial
 	public var selectedTemplatesIds: [HTMLForm.ID]
-
+	public var searchText: String = ""
+	
 	public init(
 		templates: IdentifiedArrayOf<HTMLForm>,
 		templatesLoadingState: LoadingState = .initial,
@@ -25,6 +27,7 @@ public enum ChooseFormAction {
 	case proceed//Check-In or Proceed
 	case gotResponse(Result<[HTMLForm], RequestError>)
 	case onAppear(FormType)
+	case onSearch(String)
 }
 
 public let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, FormEnvironment> { state, action, environment in
@@ -36,26 +39,28 @@ public let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, Fo
 	case .removeTemplateId(let templateId):
 		state.selectedTemplatesIds.removeAll(where: { $0 == templateId })
 	case .proceed:
-//		updateWithKeepingOld(forms: &state.forms,
-//												 finalSelectedTemplatesIds: state.selectedTemplatesIds,
-//												 allTemplates: state.templates)
+		//		updateWithKeepingOld(forms: &state.forms,
+		//												 finalSelectedTemplatesIds: state.selectedTemplatesIds,
+		//												 allTemplates: state.templates)
 		return .none
 	case .gotResponse(let result):
 		switch result {
 		case .success(let templates):
 			state.templates = IdentifiedArray(templates)
 			state.templatesLoadingState = .gotSuccess
-		case .failure:
-			state.templatesLoadingState = .gotError
+		case .failure(let error):
+			state.templatesLoadingState = .gotError(error)
 		}
 	case .onAppear(let formType):
 		state.templatesLoadingState = .loading
 		return
 			state.templates.isEmpty ?
-				environment.formAPI.getTemplates(formType)
-				.map(ChooseFormAction.gotResponse)
-					.eraseToEffect()
-				: .none
+			environment.formAPI.getTemplates(formType)
+			.map(ChooseFormAction.gotResponse)
+			.eraseToEffect()
+			: .none
+	case .onSearch(let text):
+		state.searchText = text
 	}
 	return .none
 }
@@ -64,61 +69,73 @@ public struct ChooseFormList: View {
 	let mode: ChooseFormMode
 	let store: Store<ChooseFormState, ChooseFormAction>
 	@ObservedObject var viewStore: ViewStore<ViewState, ChooseFormAction>
-	@State var searchText: String = ""
-	public init (store: Store<ChooseFormState, ChooseFormAction>,
-				mode: ChooseFormMode) {
+	
+	public init (
+		store: Store<ChooseFormState, ChooseFormAction>,
+		mode: ChooseFormMode
+	) {
 		self.mode = mode
 		self.store = store
-		self.viewStore = ViewStore(self.store
-			.scope(state: { ChooseFormList.ViewState.init($0) } ,
-						 action: { $0 }))
+		self.viewStore = ViewStore(
+			self.store
+				.scope(
+					state: {
+						ChooseFormList.ViewState.init($0)
+					},
+					action: { $0 }
+				)
+		)
 		UITableView.appearance().separatorStyle = .none
 	}
-
+	
 	struct ViewState: Equatable {
 		let templates: IdentifiedArrayOf<HTMLForm>
-		var selectedTemplatesIds: [HTMLForm.ID]
+		let selectedTemplatesIds: [HTMLForm.ID]
+		let searchText: String
+		let isSearching: Bool
+		let notSelectedTemplates: [HTMLForm]
 		init(_ state: ChooseFormState) {
 			self.templates = state.templates
 			self.selectedTemplatesIds = state.selectedTemplatesIds
-		}
-
-		var notSelectedTemplates: [HTMLForm] {
-			templates.elements
-				.filter { !selectedTemplatesIds.contains($0.id) }
+			self.searchText = state.searchText
+			
+			self.isSearching = !state.searchText.isEmpty
+			self.notSelectedTemplates = state.templates.elements
+				.filter { !state.selectedTemplatesIds.contains($0.id) }
 				.map { $0 }
 				.sorted(by: \.name)
 		}
-
+		
 		var selectedTemplates: [HTMLForm] {
 			selectedTemplatesIds.compactMap {
 				templates[id: $0]
 			}
 		}
 	}
-
+	
 	public var body: some View {
 		chooseFormCells
 			.onAppear {
 				print("on Appear \(self.mode)")
 				self.viewStore.send(.onAppear(self.mode.formType))
-		}
-		.navigationBarTitle(self.mode.navigationTitle)
+			}
+			.navigationBarTitle(self.mode.navigationTitle)
 	}
-
+	
 	var chooseFormCells: some View {
 		HStack {
 			ListFrame(style: .blue) {
 				VStack(alignment: .leading) {
 					Text(Texts.selected + " " + (self.mode == .treatmentNotes ? Texts.treatmentNotes : Texts.consents ))
 						.font(.bold17)
-					FormTemplateList(templates: self.viewStore.state.selectedTemplates,
-													 bgColor: ListFrameStyle.blue.bgColor,
-													 templateRow: { template in
-														SelectedTemplateRow(template: template)
-					}, onSelect: {
-						self.viewStore.send(.removeTemplateId($0.id))
-					})
+					FormTemplateList(
+						templates: self.viewStore.state.selectedTemplates,
+						bgColor: ListFrameStyle.blue.bgColor,
+						templateRow: { template in
+							SelectedTemplateRow(template: template)
+						}, onSelect: {
+							self.viewStore.send(.removeTemplateId($0.id))
+						})
 					PrimaryButton(self.mode.btnTitle) {
 						withAnimation(Animation.linear(duration: 1)) {
 							self.viewStore.send(.proceed)
@@ -128,14 +145,21 @@ public struct ChooseFormList: View {
 			}
 			ListFrame(style: .white) {
 				VStack {
-					TextField("TODO: search: ", text: self.$searchText)
-					FormTemplateList(templates: self.viewStore.state.notSelectedTemplates,
-													 bgColor: ListFrameStyle.white.bgColor,
-													 templateRow: { template in
-														NotSelectedTemplateRow(template: template)
-					}, onSelect: {
-						self.viewStore.send(.addTemplateId($0.id))
-					})
+					SearchView(
+						placeholder: "Search",
+						text: viewStore.binding(
+							get: \.searchText,
+							send: ChooseFormAction.onSearch
+						)
+					)
+					FormTemplateList(
+						templates: self.viewStore.state.notSelectedTemplates,
+						bgColor: ListFrameStyle.white.bgColor,
+						templateRow: { template in
+							NotSelectedTemplateRow(template: template)
+						}, onSelect: {
+							self.viewStore.send(.addTemplateId($0.id))
+						})
 				}
 			}
 		}
@@ -147,11 +171,11 @@ struct FormTemplateList<Row: View>: View {
 	let templateRow: (HTMLForm) -> Row
 	let onSelect: (HTMLForm) -> Void
 	let bgColor: Color
-
+	
 	init (templates: [HTMLForm],
-				bgColor: Color,
-				@ViewBuilder templateRow: @escaping (HTMLForm) -> Row,
-				onSelect: @escaping (HTMLForm) -> Void
+		  bgColor: Color,
+		  @ViewBuilder templateRow: @escaping (HTMLForm) -> Row,
+		  onSelect: @escaping (HTMLForm) -> Void
 	) {
 		self.templates = templates
 		self.templateRow = templateRow
@@ -174,7 +198,7 @@ struct NotSelectedTemplateRow: View {
 	let template: HTMLForm
 	var body: some View {
 		TemplateRow.init(templateName: template.name,
-										 image: Image(systemName: "plus")
+						 image: Image(systemName: "plus")
 		)
 	}
 }
@@ -183,7 +207,7 @@ struct SelectedTemplateRow: View {
 	let template: HTMLForm
 	var body: some View {
 		TemplateRow.init(templateName: template.name,
-										 image: Image(systemName: "checkmark.circle.fill")
+						 image: Image(systemName: "checkmark.circle.fill")
 		)
 	}
 }
@@ -209,7 +233,7 @@ public enum ChooseFormMode {
 	case consentsCheckIn
 	case consentsPreCheckIn
 	case treatmentNotes
-
+	
 	var navigationTitle: String {
 		switch self {
 		case .consentsCheckIn, .consentsPreCheckIn:
@@ -218,7 +242,7 @@ public enum ChooseFormMode {
 			return Texts.chooseTreatmentNote
 		}
 	}
-
+	
 	var btnTitle: String {
 		switch self {
 		case .consentsCheckIn:
@@ -229,7 +253,7 @@ public enum ChooseFormMode {
 			return Texts.proceed
 		}
 	}
-
+	
 	var formType: FormType {
 		switch self {
 		case .consentsPreCheckIn, .consentsCheckIn:
