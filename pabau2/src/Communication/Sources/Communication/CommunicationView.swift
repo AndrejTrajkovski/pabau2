@@ -3,15 +3,7 @@ import ComposableArchitecture
 import Util
 import Model
 
-public typealias CommunicationEnvironment = (
-    loginAPI: LoginAPI,
-    appointmentsAPI: AppointmentsAPI,
-    clientsAPI: ClientsAPI,
-	formAPI: FormAPI,
-    userDefaults: UserDefaultsConfig
-)
-
-public let communicationReducer = Reducer<CommunicationState, CommunicationAction, CommunicationEnvironment> { _, action, _ in
+public let communicationReducer = Reducer<CommunicationState, CommunicationAction, Any> { _, action, _ in
     switch action {
     case .liveChat:
         return .none

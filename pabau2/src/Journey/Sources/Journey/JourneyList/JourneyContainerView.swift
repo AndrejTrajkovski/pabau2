@@ -13,7 +13,6 @@ import SharedComponents
 import Appointments
 
 public typealias JourneyEnvironment = (
-	appointmentsAPI: AppointmentsAPI,
 	formAPI: FormAPI,
 	journeyAPI: JourneyAPI,
 	clientsAPI: ClientsAPI,

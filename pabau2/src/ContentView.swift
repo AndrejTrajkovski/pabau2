@@ -13,7 +13,6 @@ import Overture
 typealias AppEnvironment = (
 	loginAPI: LoginAPI,
 	journeyAPI: JourneyAPI,
-	appointmentsAPI: AppointmentsAPI,
 	clientsAPI: ClientsAPI,
 	formAPI: FormAPI,
 	userDefaults: UserDefaultsConfig
@@ -21,8 +20,9 @@ typealias AppEnvironment = (
 
 func makeJourneyEnv(_ appEnv: AppEnvironment) -> JourneyEnvironment {
 	return JourneyEnvironment(
-		appointmentsAPI: appEnv.appointmentsAPI,
 		formAPI: appEnv.formAPI,
+		journeyAPI: appEnv.journeyAPI,
+		clientsAPI: appEnv.clientsAPI,
 		userDefaults: appEnv.userDefaults
 	)
 }

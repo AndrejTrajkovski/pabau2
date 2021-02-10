@@ -231,7 +231,7 @@ let tabBarReducer: Reducer<TabBarState, TabBarAction, AppEnvironment> = Reducer.
 		state: \TabBarState.addAppointment,
 		action: /TabBarAction.addAppointment,
 		environment: {
-			AddAppointmentEnv(journeyAPI: $0.appointmentsAPI,
+			AddAppointmentEnv(journeyAPI: $0.journeyAPI,
 							  clientsAPI: $0.clientsAPI,
 							  userDefaults: $0.userDefaults)
 		}
@@ -239,7 +239,13 @@ let tabBarReducer: Reducer<TabBarState, TabBarAction, AppEnvironment> = Reducer.
 	settingsReducer.pullback(
 		state: \TabBarState.settings,
 		action: /TabBarAction.settings,
-		environment: { SettingsEnvironment($0) }
+		environment: {
+			SettingsEnvironment(
+				loginAPI: $0.loginAPI,
+				clientsAPI: $0.clientsAPI,
+				formAPI: $0.formAPI,
+				userDefaults: $0.userDefaults)
+		}
 	),
 	journeyContainerReducer.pullback(
 		state: \TabBarState.journeyContainer,
@@ -256,28 +262,28 @@ let tabBarReducer: Reducer<TabBarState, TabBarAction, AppEnvironment> = Reducer.
 		action: /TabBarAction.calendar,
 		environment: {
 			return CalendarEnvironment(
-			apiClient: $0.appointmentsAPI,
-			userDefaults: $0.userDefaults)
-	}),
-    communicationReducer.pullback(
-        state: \TabBarState.communication,
-        action: /TabBarAction.communication,
-        environment: { CommunicationEnvironment($0) }
-    ),
-    .init { _, action, _ in
-        switch action {
-        case .communication(.liveChat):
-            Intercom.registerUser(withEmail: "a@a.com")
-            Intercom.presentMessenger()
-            return .none
-
-        case .communication(.helpGuides):
-            Intercom.presentHelpCenter()
-            return .none
-
-        case .communication(.carousel):
-            Intercom.presentCarousel("13796318")
-            return .none
+				journeyAPI: $0.journeyAPI,
+				userDefaults: $0.userDefaults)
+		}),
+	communicationReducer.pullback(
+		state: \TabBarState.communication,
+		action: /TabBarAction.communication,
+		environment: { $0 }
+	),
+	.init { _, action, _ in
+		switch action {
+		case .communication(.liveChat):
+			Intercom.registerUser(withEmail: "a@a.com")
+			Intercom.presentMessenger()
+			return .none
+			
+		case .communication(.helpGuides):
+			Intercom.presentHelpCenter()
+			return .none
+			
+		case .communication(.carousel):
+			Intercom.presentCarousel("13796318")
+			return .none
 
         default:
             break

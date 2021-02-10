@@ -31,6 +31,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 				loginAPI: apiClient,
 				journeyAPI: apiClient,
 				clientsAPI: apiClient,
+				formAPI: apiClient,
 				userDefaults: userDefaults
 			)
 			window.rootViewController = UIHostingController(

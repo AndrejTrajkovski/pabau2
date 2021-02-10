@@ -55,4 +55,14 @@ extension APIClient {
 			.map(\.locations)
 			.eraseToEffect()
 	}
+	
+	public func getBookoutReasons() -> Effect<[BookoutReason], RequestError> {
+		let requestBuilder: RequestBuilder<[BookoutReason]>.Type = requestBuilderFactory.getBuilder()
+		return requestBuilder.init(method: .GET,
+								   baseUrl: baseUrl,
+								   path: .getBookoutReasons,
+								   queryParams: commonParams(),
+								   isBody: false)
+			.effect()
+	}
 }

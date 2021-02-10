@@ -5,7 +5,6 @@ import Model
 
 public typealias SettingsEnvironment = (
 	loginAPI: LoginAPI,
-	appointmentsAPI: AppointmentsAPI,
 	clientsAPI: ClientsAPI,
 	formAPI: FormAPI,
 	userDefaults: UserDefaultsConfig
