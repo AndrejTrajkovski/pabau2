@@ -6,7 +6,7 @@ import SharedComponents
 
 public struct ChooseClientsState: Equatable {
     var isChooseClientsActive: Bool
-    
+
     var clients: IdentifiedArrayOf<Client> = []
     var chosenClient: Client?
     var searchText: String = "" {
@@ -25,7 +25,6 @@ public enum ChooseClientsAction: Equatable {
     case didSelectClient(Client)
     case didTapBackBtn
     case loadMoreClients
-    
 }
 
 let chooseClientsReducer =
@@ -33,16 +32,15 @@ let chooseClientsReducer =
         switch action {
         case .onAppear:
             state.searchText = ""
-            #warning("FIX ")
-//            return env.apiClient
-//                .getClients(
-//                    search: nil,
-//                    offset: state.clients.count
-//                )
-//                .catchToEffect()
-//                .map(ChooseClientsAction.gotClientsResponse)
-//                .receive(on: DispatchQueue.main)
-//                .eraseToEffect()
+            return env.clientAPI
+                .getClients(
+                    search: nil,
+                    offset: state.clients.count
+                )
+                .catchToEffect()
+                .map(ChooseClientsAction.gotClientsResponse)
+                .receive(on: DispatchQueue.main)
+                .eraseToEffect()
         case .gotClientsResponse(let result):
             switch result {
             case .success(let clients):
@@ -58,29 +56,28 @@ let chooseClientsReducer =
             }
         case .onSearch(let text):
             state.searchText = text
-            #warning("FIX ")
-//            return env.apiClient
-//                .getClients(
-//                    search: state.isSearching ? state.searchText : nil,
-//                    offset: state.clients.count
-//                )
-//                .catchToEffect()
-//                .map(ChooseClientsAction.gotClientsResponse)
-//                .receive(on: DispatchQueue.main)
-//                .eraseToEffect()
+
+            return env.clientAPI
+                .getClients(
+                    search: state.isSearching ? state.searchText : nil,
+                    offset: state.clients.count
+                )
+                .catchToEffect()
+                .map(ChooseClientsAction.gotClientsResponse)
+                .receive(on: DispatchQueue.main)
+                .eraseToEffect()
         case .didSelectClient(let client):
             state.chosenClient = client
             state.isChooseClientsActive = false
         case .didTapBackBtn:
             state.isChooseClientsActive = false
         case .loadMoreClients:
-            break
-//            return env.apiClient
-//                .getClients(search: nil, offset: state.clients.count)
-//                .catchToEffect()
-//                .map(ChooseClientsAction.gotClientsResponse)
-//                .receive(on: DispatchQueue.main)
-//                .eraseToEffect()
+            return env.clientAPI
+                .getClients(search: nil, offset: state.clients.count)
+                .catchToEffect()
+                .map(ChooseClientsAction.gotClientsResponse)
+                .receive(on: DispatchQueue.main)
+                .eraseToEffect()
         }
         return .none
     }

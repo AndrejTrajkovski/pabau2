@@ -5,7 +5,7 @@ import Util
 import Form
 import SharedComponents
 
-public typealias AddAppointmentEnv = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
+public typealias AddAppointmentEnv = (journeyAPI: JourneyAPI, clientAPI: ClientsAPI, userDefaults: UserDefaultsConfig)
 
 public struct AddAppointmentState: Equatable {
     var reminder: Bool
@@ -51,7 +51,7 @@ let addAppTapBtnReducer = Reducer<AddAppointmentState?,
     switch action {
     case .saveAppointmentTap:
         print(state)
-        
+
         state = nil
     case .closeBtnTap:
         state = nil
@@ -135,7 +135,7 @@ public struct AddAppointment: View {
         self.store = store
         self.viewStore = ViewStore(store)
     }
-    
+
     public var body: some View {
         VStack {
             SwitchCell(text: "All Day", store: store.scope(state: { $0.isAllDay },
@@ -248,7 +248,7 @@ struct ServicesDurationSection: View {
                     ),
                     cell: TextAndCheckMarkContainer.init(state:),
                     title: "Add Participant"
-                    
+
                 )
             }
         }.wrapAsSection(title: "Services")
@@ -263,7 +263,7 @@ struct AddAppSections: View {
         self.store = store
         self.viewStore = ViewStore(store)
     }
-    
+
     var body: some View {
         Group {
             ClientDaySection(store: self.store)
@@ -307,7 +307,7 @@ extension Client: SingleChoiceElement {
 }
 
 extension AddAppointmentState {
-    
+
     public init(
         startDate: Date,
         endDate: Date
@@ -332,7 +332,7 @@ extension AddAppointmentState {
             participants: AddAppMocks.participantsState
         )
     }
-    
+
     public init(
         startDate: Date,
         endDate: Date,
@@ -361,7 +361,7 @@ extension AddAppointmentState {
             participants: AddAppMocks.participantsState
         )
     }
-    
+
     public static let dummy = AddAppointmentState.init(
         reminder: false,
         email: false,
@@ -392,7 +392,7 @@ struct AddAppMocks {
             ],
             chosenItemId: 1,
             isActive: false)
-    
+
     static let serviceState: SingleChoiceLinkState<Service> =
         SingleChoiceLinkState.init(
             dataSource: [
@@ -402,25 +402,25 @@ struct AddAppMocks {
             ],
             chosenItemId: 1,
             isActive: false)
-    
+
     static let durationState: SingleChoiceLinkState<Duration> =
         SingleChoiceLinkState.init(
             dataSource: IdentifiedArray(Duration.all),
             chosenItemId: 1,
             isActive: false)
-    
+
     static let withState: SingleChoiceLinkState<Employee> =
         SingleChoiceLinkState.init(
             dataSource: [
-                
+
             ],
             chosenItemId: "456",
             isActive: false)
-    
+
     static let participantsState: SingleChoiceLinkState<Employee> =
         SingleChoiceLinkState.init(
             dataSource: [
-                
+
             ],
             chosenItemId: "1",
             isActive: false)

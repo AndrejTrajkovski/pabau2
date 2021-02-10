@@ -209,7 +209,8 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
 		action: /TabBarAction.addAppointment,
 		environment: {
 			return JourneyEnvironment(
-				apiClient: $0.journeyAPI,
+				journeyAPI: $0.journeyAPI,
+                clientsAPI: $0.clientsAPI,
 				userDefaults: $0.userDefaults)
 		}),
 	settingsReducer.pullback(
@@ -222,7 +223,8 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
 		action: /TabBarAction.journey,
 		environment: {
 			return JourneyEnvironment(
-				apiClient: $0.journeyAPI,
+                journeyAPI: $0.journeyAPI,
+                clientsAPI: $0.clientsAPI,
 				userDefaults: $0.userDefaults)
 	}),
 	clientsContainerReducer.pullback(
