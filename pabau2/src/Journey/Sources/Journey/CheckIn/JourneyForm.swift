@@ -18,14 +18,14 @@ extension PatientDetails: JourneyForm {
 }
 
 public struct JourneyFormInfo<Form: JourneyForm>: Equatable, Identifiable where Form: Equatable & Identifiable {
-	
+
 	public init(id: Form.ID, form: Form, status: Bool, loadingState: LoadingState) {
 		self.id = id
 		self.form = form
 		self.status = status
 		self.loadingState = loadingState
 	}
-	
+
 	public let id: Form.ID
 	public var form: Form
 	public var status: Bool

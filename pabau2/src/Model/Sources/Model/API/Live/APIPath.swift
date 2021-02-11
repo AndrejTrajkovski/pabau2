@@ -11,7 +11,10 @@ public enum APIPath: String {
 
     //Services
     case getServices
-
+	
+	//Form
+	case getFormTemplates = "/OAuth2/medical_forms/medical_forms_templates_list.php"
+	
     //Appointments
     case getBookoutReasons = "OAuth2/appointments/get_bookout_reasons.php"
     

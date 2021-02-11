@@ -9,7 +9,7 @@ public struct ChooseFormState: Equatable {
 	public var templatesLoadingState: LoadingState = .initial
 	public var selectedTemplatesIds: [HTMLForm.ID]
 	public var searchText: String = ""
-	
+
 	public init(
 		templates: IdentifiedArrayOf<HTMLForm>,
 		templatesLoadingState: LoadingState = .initial,
@@ -21,7 +21,7 @@ public struct ChooseFormState: Equatable {
 	}
 }
 
-public enum ChooseFormAction {
+public enum ChooseFormAction: Equatable {
 	case addTemplateId(HTMLForm.ID)
 	case removeTemplateId(HTMLForm.ID)
 	case proceed//Check-In or Proceed
@@ -242,7 +242,7 @@ public enum ChooseFormMode {
 			return Texts.chooseTreatmentNote
 		}
 	}
-	
+
 	var btnTitle: String {
 		switch self {
 		case .consentsCheckIn:

@@ -1,30 +1,55 @@
 import SwiftUI
 import Model
 import ComposableArchitecture
+import Form
 
 public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnvironment> = .combine (
 	ClientCardChildReducer<[FormData]>().reducer.pullback(
 		state: \FormsListState.childState,
 		action: /FormsListAction.action,
 		environment: { $0 }
-	)
+	),
+	chooseFormListReducer.optional.pullback(
+		state: \FormsListState.chooseForms,
+		action: /FormsListAction.chooseForms,
+		environment: { FormEnvironment($0.formAPI, $0.userDefaults) }
+	),
+	.init { state, action, env in
+		switch action {
+		case .add:
+			state.chooseForms = ChooseFormState(templates: [],
+												selectedTemplatesIds: [])
+		case .action, .chooseForms:
+			break
+		}
+		return .none
+	}
 )
 
 public struct FormsListState: ClientCardChildParentState, Equatable {
 	var childState: ClientCardChildState<[FormData]>
 	var formType: FormType
+	var chooseForms: ChooseFormState?
 }
 
 public enum FormsListAction: ClientCardChildParentAction, Equatable {
 	case action(GotClientListAction<[FormData]>)
+	case add
+	case chooseForms(ChooseFormAction)
 }
 
 struct FormsList: ClientCardChild {
 	let store: Store<FormsListState, FormsListAction>
-
+	
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			FormsListRaw(state: viewStore.state.childState.state)
+			NavigationLink.emptyHidden(viewStore.state.chooseForms != nil,
+									   IfLetStore(store.scope(state: { $0.chooseForms },
+															  action: { .chooseForms($0)} ),
+												  then: { ChooseFormList.init(store: $0, mode: .consentsCheckIn) }
+									   )
+			)
 		}
 	}
 }

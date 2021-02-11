@@ -30,6 +30,7 @@ func makeJourneyEnv(_ appEnv: AppEnvironment) -> JourneyEnvironment {
 func makeClientsEnv(_ appEnv: AppEnvironment) -> ClientsEnvironment {
 	return ClientsEnvironment(
 		apiClient: appEnv.clientsAPI,
+		formAPI: appEnv.formAPI,
 		userDefaults: appEnv.userDefaults
 	)
 }
