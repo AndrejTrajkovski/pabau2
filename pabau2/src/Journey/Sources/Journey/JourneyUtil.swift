@@ -60,7 +60,3 @@ func stepType(type: FormType) -> StepType {
 }
 
 let filterStepType = filterBy
-
-func selected(_ templates: IdentifiedArrayOf<HTMLForm>, _ selectedIds: [HTMLForm.ID]) -> IdentifiedArrayOf<HTMLForm> {
-	templates.filter { selectedIds.contains($0.id) }
-}

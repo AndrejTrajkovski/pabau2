@@ -16,11 +16,11 @@ public let chooseFormJourneyReducer: Reducer<ChooseFormJourneyState,
 			switch action {
 			case .proceed:
 				//TODO:
-				updateWithKeepingOld(
-                    forms: &state.forms,
-														 finalSelectedTemplatesIds: state.selectedTemplatesIds,
-                    allTemplates: state.templates
-                )
+				let toGetIds = updateWithKeepingOld(
+					forms: &state.forms,
+					finalSelectedTemplatesIds: state.selectedTemplatesIds,
+					allTemplates: state.templates
+				)
 				return .none
 			default: break
 			}
@@ -30,7 +30,7 @@ public let chooseFormJourneyReducer: Reducer<ChooseFormJourneyState,
 
 public struct ChooseFormJourneyState: Equatable {
 	var forms: IdentifiedArrayOf<HTMLForm>
-	var templates: IdentifiedArrayOf<HTMLForm>
+	var templates: IdentifiedArrayOf<HTMLFormInfo>
 	var templatesLoadingState: LoadingState = .initial
 	var selectedTemplatesIds: [HTMLForm.ID]
 }
@@ -68,18 +68,16 @@ extension ChooseFormJourneyState {
 
 private func updateWithKeepingOld(forms: inout IdentifiedArray<HTMLForm.ID, HTMLForm>,
 								  finalSelectedTemplatesIds: [HTMLForm.ID],
-								  allTemplates: IdentifiedArrayOf<HTMLForm>) {
+								  allTemplates: IdentifiedArrayOf<HTMLFormInfo>) -> HTMLForm.ID {
 	let oldWithData = forms.filter { old in
 		finalSelectedTemplatesIds.contains(old.id)
 	}
-	let allNew = selected(allTemplates, finalSelectedTemplatesIds)
-	let oldWithDataDict = Dictionary.init(grouping: oldWithData,
-										  by: \.id)
-	let allNewDict = Dictionary.init(grouping: allNew,
-									 by: \.id)
-	let result = oldWithDataDict.merging(allNewDict,
-										 uniquingKeysWith: { (old, _) in
-											return old
-										 }).flatMap(\.value)
-	forms = IdentifiedArrayOf(result)
+	let allNewSelected = allTemplates.filter { finalSelectedTemplatesIds.contains($0.id) }
+	let oldToKeepIds = allNewSelected.map(\.id).filter { oldWithData.map(\.id).contains($0)}
+	let newToGetIds = allNewSelected.map(\.id).filter { oldToKeepIds.contains($0)}
+	
+	let oldToKeep = oldToKeepIds.compactMap { oldWithData[id: $0 ]}
+	forms = IdentifiedArrayOf.init(oldToKeep)
+	
+	return newToGetIds
 }

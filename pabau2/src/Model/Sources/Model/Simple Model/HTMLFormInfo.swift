@@ -1,8 +1,7 @@
 import Foundation
 
-struct HTMLFormInfo: Codable {
-//	let formId:
-	let templateId: HTMLForm.ID
-	let name: String
-	let status: Bool
+public struct HTMLFormInfo: Codable, Identifiable, Equatable {
+	public let id: HTMLForm.ID
+	public let name: String
+	public let type: FormType
 }

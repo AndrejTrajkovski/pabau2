@@ -70,7 +70,7 @@ public struct ChoosePathwayState: Equatable {
 	let selectedJourney: Journey?
 	var selectedPathway: PathwayTemplate?
 	var selectedConsentsIds: [HTMLForm.ID] = []
-	var allConsents: IdentifiedArrayOf<HTMLForm> = []
+	var allConsents: IdentifiedArrayOf<HTMLFormInfo> = []
 	var searchText: String = ""
 	var chooseConsentState: ChooseFormState {
 		get {

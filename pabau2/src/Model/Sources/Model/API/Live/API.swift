@@ -19,19 +19,20 @@ public class APIClient: LoginAPI, JourneyAPI, ClientsAPI, FormAPI {
 		fatalError("TODO ANDREJ")
 	}
 	
-	public func getTemplates(_ type: FormType) -> Effect<Result<[HTMLForm], RequestError>, Never> {
+	public func getTemplates(_ type: FormType) -> Effect<Result<[HTMLFormInfo], RequestError>, Never> {
 		struct GetTemplates: Codable {
-			let templateList: 
+			let templateList: [HTMLFormInfo]
 		}
-		let requestBuilder: RequestBuilder<GetEmployees>.Type = requestBuilderFactory.getBuilder()
+		let requestBuilder: RequestBuilder<GetTemplates>.Type = requestBuilderFactory.getBuilder()
 		return requestBuilder.init(method: .GET,
 								   baseUrl: baseUrl,
 								   path: .getFormTemplates,
 								   queryParams: commonAnd(other: [:]),
 								   isBody: false)
 			.effect()
-			.map(\.employees)
-			.eraseToEffect()
+			.map(\.templateList)
+			.catchToEffect()
+
 	}
 
 }
