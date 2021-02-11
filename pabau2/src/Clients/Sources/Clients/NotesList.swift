@@ -1,21 +1,39 @@
 import SwiftUI
 import Model
 import ComposableArchitecture
+import Util
 
 let clientNotesListReducer: Reducer<NotesListState, NotesListAction, ClientsEnvironment> = Reducer.combine(
     ClientCardChildReducer<[Note]>().reducer.pullback(
         state: \NotesListState.childState,
         action: /NotesListAction.action,
         environment: { $0 }
-    )
+    ),
+    .init { state, action, env in
+        switch action {
+        case .saveNote(let content):
+            state.showAlert = false
+            // TODO: - implement api call for saving note
+        case .didTouchAdd:
+            state.showAlert = true
+        case .dismissNote:
+            state.showAlert = false
+        default: break
+        }
+        return .none
+    }
 )
 
 public struct NotesListState: ClientCardChildParentState {
     var childState: ClientCardChildState<[Note]>
+    var showAlert: Bool = false
 }
 
 public enum NotesListAction: ClientCardChildParentAction {
     case action(GotClientListAction<[Note]>)
+    case saveNote(String)
+    case didTouchAdd
+    case dismissNote
     var action: GotClientListAction<[Note]>? {
         get {
             if case .action(let notes) = self {
@@ -34,7 +52,6 @@ public enum NotesListAction: ClientCardChildParentAction {
 
 struct NotesList: ClientCardChild {
     let store: Store<NotesListState, NotesListAction>
-
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			List {
@@ -42,6 +59,19 @@ struct NotesList: ClientCardChild {
                     NoteRow(note: viewStore.state.childState.state[idx])
 				}
 			}
+            .navigationTitle("Notes")
+            .alert(isPresented: viewStore.binding(get: { $0.showAlert }, send: NotesListAction.didTouchAdd),
+                   TextAlertView(title: "Add Note", placeholder: "Enter Note",
+                             action: { action in
+                                switch action {
+                                case .add(let text):
+                                    viewStore.send(.saveNote(text))
+                                case .dismiss:
+                                    viewStore.send(.dismissNote)
+                                }
+                             }
+                   )
+            )
 		}
 	}
 }

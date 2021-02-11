@@ -83,8 +83,8 @@ struct ClientCardBottom: View {
 			return AnyView(EmptyView())
 		} else if self.viewStore.state.activeItem == .photos {
 			return AnyView(EmptyView())
-//		} else if self.viewStore.state.activeItem == .consents {
-//			return AnyView(PlusButton { viewStore.send(.child(.con))} )
+        } else if self.viewStore.state.activeItem == .notes {
+            return AnyView(PlusButton {viewStore.send(.child(.notes(.didTouchAdd)))})
 		} else {
 			return AnyView(EmptyView())
 		}
