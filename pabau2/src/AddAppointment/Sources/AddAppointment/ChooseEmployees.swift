@@ -23,7 +23,6 @@ public enum ChooseEmployeesAction: Equatable {
     case didSelectEmployee(Employee)
     case onSearch(String)
     case didTapBackBtn
-    
 }
 
 let chooseEmployeesReducer =

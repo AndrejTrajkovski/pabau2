@@ -1,20 +1,22 @@
 import Foundation
 
-public struct AppointmentBody {
-    public let isAllDay: Bool?
-    public let clientID: Int?
-    public let employeeID: String?
-    public let serviceID: String?
+public struct AppointmentBuilder {
+    public var appointmentID: Appointment.Id?
 
-    public let startTime: Date?
-    public let duration: TimeInterval?
+    public var isAllDay: Bool?
+    public var clientID: Int?
+    public var employeeID: String?
+    public var serviceID: String?
 
-    public let smsNotification: Bool?
-    public let emailNotification: Bool?
-    public let surveyNotification: Bool?
-    public let reminderNotification: Bool?
+    public var startTime: Date?
+    public var duration: TimeInterval? //in minutes
 
-    public let note: String?
+    public var smsNotification: Bool?
+    public var emailNotification: Bool?
+    public var surveyNotification: Bool?
+    public var reminderNotification: Bool?
+
+    public var note: String?
 
     public init(isAllDay: Bool? = nil,
                 clientID: Int? = nil,
@@ -39,6 +41,22 @@ public struct AppointmentBody {
         self.surveyNotification = surveyNotification
         self.reminderNotification = reminderNotification
         self.note = note
+    }
+
+    public init(appointment: Appointment) {
+
+        self.appointmentID = appointment.id
+        #warning("Fix all day value")
+        self.isAllDay = false
+
+        self.employeeID = appointment.employeeId.rawValue
+
+        if let id = appointment.service?.id {
+            self.serviceID = String(id)
+        }
+
+        self.startTime = appointment.start_time
+        self.duration = appointment.end_time.timeIntervalSince(appointment.start_time) / 60
     }
 }
 

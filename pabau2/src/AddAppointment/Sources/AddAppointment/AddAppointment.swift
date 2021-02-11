@@ -8,6 +8,8 @@ import SharedComponents
 public typealias AddAppointmentEnv = (journeyAPI: JourneyAPI, clientAPI: ClientsAPI, userDefaults: UserDefaultsConfig)
 
 public struct AddAppointmentState: Equatable {
+    let editingAppointment: Appointment?
+
     var reminder: Bool
     var email: Bool
     var sms: Bool
@@ -23,18 +25,18 @@ public struct AddAppointmentState: Equatable {
 
     var showsLoadingSpinner: Bool
 
-    var appointmentsBody: AppointmentBody {
-        return AppointmentBody(isAllDay: self.isAllDay,
-                               clientID: self.clients.chosenClient?.id.rawValue,
-                               employeeID: self.with.chosenEmployee?.id.rawValue,
-                               serviceID: self.services.chosenService?.id.rawValue,
-                               startTime: self.startDate,
-                               duration: self.durations.dataSource.first(where: {$0.id == self.durations.chosenItemId})?.duration,
-                               smsNotification: self.sms,
-                               emailNotification: self.email,
-                               surveyNotification: self.feedback,
-                               reminderNotification: self.reminder,
-                               note: self.note)
+    var appointmentsBody: AppointmentBuilder {
+        return AppointmentBuilder(isAllDay: self.isAllDay,
+                                  clientID: self.clients.chosenClient?.id.rawValue,
+                                  employeeID: self.with.chosenEmployee?.id.rawValue,
+                                  serviceID: self.services.chosenService?.id.rawValue,
+                                  startTime: self.startDate,
+                                  duration: self.durations.dataSource.first(where: {$0.id == self.durations.chosenItemId})?.duration,
+                                  smsNotification: self.sms,
+                                  emailNotification: self.email,
+                                  surveyNotification: self.feedback,
+                                  reminderNotification: self.reminder,
+                                  note: self.note)
     }
 }
 
@@ -261,9 +263,10 @@ struct ServicesDurationSection: View {
                 }
                 NavigationLink.emptyHidden(
                     self.viewStore.state.with.isChooseEmployeesActive,
-                    ChooseEmployeesView(store: self.store.scope(state: { $0.with }, action: {
-                        .with($0)
-                    }))
+                    ChooseEmployeesView(
+                        store: self.store.scope(state: { $0.with },
+                                                action: { .with($0) })
+                    )
                 )
                 SingleChoiceLink.init(
                     content: {
@@ -348,6 +351,7 @@ extension AddAppointmentState {
         endDate: Date
     ) {
         self.init(
+            editingAppointment: nil,
             reminder: false,
             email: false,
             sms: false,
@@ -378,6 +382,7 @@ extension AddAppointmentState {
         employees.dataSource.append(employee)
         employees.chosenItemId = employee.id
         self.init(
+            editingAppointment: nil,
             reminder: false,
             email: false,
             sms: false,
@@ -400,6 +405,7 @@ extension AddAppointmentState {
     }
 
     public static let dummy = AddAppointmentState.init(
+        editingAppointment: nil,
         reminder: false,
         email: false,
         sms: false,

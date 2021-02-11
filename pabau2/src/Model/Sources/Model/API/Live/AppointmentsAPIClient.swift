@@ -9,7 +9,7 @@ import Foundation
 import ComposableArchitecture
 
 extension APIClient {
-    public func createAppointment(appointment: AppointmentBody) -> Effect<PlaceholdeResponse, RequestError> {
+    public func createAppointment(appointment: AppointmentBuilder) -> Effect<PlaceholdeResponse, RequestError> {
         let requestBuilder: RequestBuilder<PlaceholdeResponse>.Type = requestBuilderFactory.getBuilder()
         let dateFormatter = DateFormatter.shortDateTime
 
