@@ -54,6 +54,27 @@ public class BaseCalendarViewController: UIViewController {
 		alert.popoverPresentationController?.sourceRect = anchorView.bounds
 		present(alert, animated: true)
 	}
+    
+    public func presentAlert(
+        _ date: Date,
+        _ anchorView: UIView,
+        _ weekView: JZLongPressWeekView,
+        onEditAppointment: @escaping () -> Void
+    ) {
+        let alert = UIAlertController(title: date.toString(.dateTime(.short)),
+                                      message: nil,
+                                      preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction.init(title: "Edit Appointment", style: .default, handler: { _ in
+            anchorView.removeFromSuperview()
+            onEditAppointment()
+        }))
+        alert.addAction(UIAlertAction.init(title: "Cancel", style: .cancel, handler: {_ in
+            anchorView.removeFromSuperview()
+        }))
+        alert.popoverPresentationController?.sourceView = anchorView
+        alert.popoverPresentationController?.sourceRect = anchorView.bounds
+        present(alert, animated: true)
+    }
 }
 
 extension BaseCalendarViewController: JZBaseViewDelegate {

@@ -45,6 +45,10 @@ extension APIClient {
         if let employeeID = appointment.employeeID {
             params["uid"] = employeeID
         }
+        
+        if let appointmentID = appointment.appointmentID {
+            params["appointment_id"] = appointmentID
+        }
 
         return requestBuilder.init(method: .POST,
                                    baseUrl: baseUrl,

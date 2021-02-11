@@ -26,17 +26,23 @@ public struct AddAppointmentState: Equatable {
     var showsLoadingSpinner: Bool
 
     var appointmentsBody: AppointmentBuilder {
-        return AppointmentBuilder(isAllDay: self.isAllDay,
-                                  clientID: self.clients.chosenClient?.id.rawValue,
-                                  employeeID: self.with.chosenEmployee?.id.rawValue,
-                                  serviceID: self.services.chosenService?.id.rawValue,
-                                  startTime: self.startDate,
-                                  duration: self.durations.dataSource.first(where: {$0.id == self.durations.chosenItemId})?.duration,
-                                  smsNotification: self.sms,
-                                  emailNotification: self.email,
-                                  surveyNotification: self.feedback,
-                                  reminderNotification: self.reminder,
-                                  note: self.note)
+        if let editingAppointment = editingAppointment {
+            return AppointmentBuilder(appointment: editingAppointment)
+        }
+        
+        return AppointmentBuilder(
+            isAllDay: self.isAllDay,
+            clientID: self.clients.chosenClient?.id.rawValue,
+            employeeID: self.with.chosenEmployee?.id.rawValue,
+            serviceID: self.services.chosenService?.id.rawValue,
+            startTime: self.startDate,
+            duration: self.durations.dataSource.first(where: {$0.id == self.durations.chosenItemId})?.duration,
+            smsNotification: self.sms,
+            emailNotification: self.email,
+            surveyNotification: self.feedback,
+            reminderNotification: self.reminder,
+            note: self.note
+        )
     }
 }
 
@@ -347,11 +353,12 @@ extension Client: SingleChoiceElement {
 extension AddAppointmentState {
 
     public init(
+        editingAppointment: Appointment? = nil,
         startDate: Date,
         endDate: Date
     ) {
         self.init(
-            editingAppointment: nil,
+            editingAppointment: editingAppointment,
             reminder: false,
             email: false,
             sms: false,

@@ -18,17 +18,18 @@ public struct AppointmentBuilder {
 
     public var note: String?
 
-    public init(isAllDay: Bool? = nil,
-                clientID: Int? = nil,
-                employeeID: String? = nil,
-                serviceID: String? = nil,
-                startTime: Date? = nil,
-                duration: TimeInterval? = nil,
-                smsNotification: Bool? = nil,
-                emailNotification: Bool? = nil,
-                surveyNotification: Bool? = nil,
-                reminderNotification: Bool? = nil,
-                note: String? = nil
+    public init(
+        isAllDay: Bool? = nil,
+        clientID: Int? = nil,
+        employeeID: String? = nil,
+        serviceID: String? = nil,
+        startTime: Date? = nil,
+        duration: TimeInterval? = nil,
+        smsNotification: Bool? = nil,
+        emailNotification: Bool? = nil,
+        surveyNotification: Bool? = nil,
+        reminderNotification: Bool? = nil,
+        note: String? = nil
     ) {
         self.isAllDay = isAllDay
         self.clientID = clientID
