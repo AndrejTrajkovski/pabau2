@@ -109,6 +109,7 @@ struct ClientCardChildReducer<T: Equatable> {
 }
 
 public struct ClientCardListState: Equatable {
+    var client: Client
 	var appointments: AppointmentsListState
 	var details: PatientDetailsClientCardState
 	var photos: CCPhotosState
@@ -121,7 +122,8 @@ public struct ClientCardListState: Equatable {
 	var alerts: ClientCardChildState<[Model.Alert]>
     var notes: NotesListState
 
-	init() {
+    init(client: Client) {
+        self.client = client
 		self.appointments = AppointmentsListState(
 			childState: ClientCardChildState.init(state: [])
 		)
@@ -135,7 +137,7 @@ public struct ClientCardListState: Equatable {
 		self.communications = ClientCardChildState.init(state: [])
 		self.consents = FormsListState(childState: ClientCardChildState(state: []), formType: .consent)
 		self.alerts = ClientCardChildState.init(state: [])
-        self.notes = NotesListState.init(childState: ClientCardChildState(state: []))
+        self.notes = NotesListState.init(client: client, childState: ClientCardChildState(state: []))
 	}
 }
 

@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import Combine
 //MARK: - LoginAPI: ClientApi
 extension APIClient {
 	public func getClients() -> Effect<[Client], RequestError> {
@@ -193,4 +194,10 @@ extension APIClient {
 	public func post(patDetails: PatientDetails) -> Effect<PatientDetails, RequestError> {
 		fatalError("TODO Cristian")
 	}
+    
+    public func addNote(clientId: Int, note: String) -> Effect<Note, RequestError> {
+        Just(Note(id: 24214, content: note, date: Date()))
+            .mapError { _ in RequestError.unknown }
+            .eraseToEffect()
+    }
 }

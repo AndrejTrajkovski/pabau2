@@ -13,11 +13,23 @@ let clientNotesListReducer: Reducer<NotesListState, NotesListAction, ClientsEnvi
         switch action {
         case .saveNote(let content):
             state.showAlert = false
-            // TODO: - implement api call for saving note
+            return env.apiClient
+                .addNote(clientId: state.client.id.rawValue, note: content)
+                .catchToEffect()
+                .receive(on: DispatchQueue.main)
+                .map { .onResponseSave(.gotResult($0)) }
+                .eraseToEffect()
         case .didTouchAdd:
             state.showAlert = true
         case .dismissNote:
             state.showAlert = false
+        case .onResponseSave(let result):
+            switch result {
+            case .gotResult(.success(let note)):
+                state.childState.state.append(note)
+            default:
+                break
+            }
         default: break
         }
         return .none
@@ -25,12 +37,14 @@ let clientNotesListReducer: Reducer<NotesListState, NotesListAction, ClientsEnvi
 )
 
 public struct NotesListState: ClientCardChildParentState {
+    var client: Client
     var childState: ClientCardChildState<[Note]>
     var showAlert: Bool = false
 }
 
 public enum NotesListAction: ClientCardChildParentAction {
     case action(GotClientListAction<[Note]>)
+    case onResponseSave(GotClientListAction<Note>)
     case saveNote(String)
     case didTouchAdd
     case dismissNote
