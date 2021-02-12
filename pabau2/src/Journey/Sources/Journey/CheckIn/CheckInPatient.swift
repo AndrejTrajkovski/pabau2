@@ -7,11 +7,15 @@ import Util
 struct CheckInPatientContainer: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>
 	var body: some View {
-		WithViewStore(store.scope(state: { $0.isHandBackDeviceActive }).actionless) { viewStore in
+		WithViewStore(store) { viewStore in
 			Group {
 				CheckIn(store: store.scope(
 							state: { $0.patientCheckIn },
 							action: { .patient(.stepsView($0)) }),
+						avatarView: {
+							JourneyProfileView(style: .short,
+											   viewState: .init(journey: viewStore.state.journey))
+						},
 						content: {
 							patientForms(store:
 											store.scope(state: { $0.patientCheckIn },
@@ -20,7 +24,7 @@ struct CheckInPatientContainer: View {
 							)
 						}
 				)
-				handBackDeviceLink(viewStore.state)
+				handBackDeviceLink(viewStore.state.isHandBackDeviceActive)
 			}
 		}.debug("CheckInPatientContainer")
 	}

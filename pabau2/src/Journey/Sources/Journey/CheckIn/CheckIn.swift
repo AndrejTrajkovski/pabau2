@@ -4,14 +4,15 @@ import ComposableArchitecture
 import Util
 import Form
 
-struct CheckIn<FormsContent: View, S: CheckInState>: View where S: Equatable {
+struct CheckIn<FormsContent: View, S: CheckInState, AvatarView: View>: View where S: Equatable {
 	let store: Store<S, CheckInAction>
+	let avatarView: () -> AvatarView
 	let content: () -> FormsContent
 
 	var body: some View {
 		print("CheckIn")
 		return VStack (spacing: 0) {
-			TopView(store: store)
+			TopView(store: store, avatarView: avatarView)
 			VStack {
 				StepSelector(store: store).frame(height: 80)
 				Divider()

@@ -54,7 +54,7 @@ let passcodeContainerReducer: Reducer<PasscodeContainerState, PasscodeAction, An
 			state: \PasscodeContainerState.passcode,
 			action: /PasscodeAction.self,
 			environment: { $0 })
-)
+	)
 
 struct Passcode: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>

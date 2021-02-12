@@ -7,17 +7,15 @@ import Util
 // TODO
 //state.isDoctorCheckInMainActive = false
 
-struct TopView<S: CheckInState>: View where S: Equatable {
+struct TopView<S: CheckInState, AvatarView: View>: View where S: Equatable {
 	let store: Store<S, CheckInAction>
-
+	let avatarView: () -> AvatarView
 	struct State: Equatable {
 		let totalSteps: Int
 		let currentStepIdx: Int
-		let journey: Journey
 		init(state: S) {
 			self.totalSteps = state.stepForms().count
 			self.currentStepIdx = state.selectedIdx + 1
-			self.journey = state.journey
 		}
 	}
 
@@ -25,17 +23,17 @@ struct TopView<S: CheckInState>: View where S: Equatable {
 		WithViewStore(store.scope(state: State.init(state:))) { viewStore in
 			TopViewPlain(totalSteps: viewStore.state.totalSteps,
 						 currentStepIdx: viewStore.state.currentStepIdx,
-						 journey: viewStore.state.journey,
+						 avatarView: avatarView,
 						 onClose: { viewStore.send(.onXTap) }
 			)
 		}
 	}
 }
 
-struct TopViewPlain: View {
+struct TopViewPlain<AvatarView: View>: View {
 	let totalSteps: Int
 	let currentStepIdx: Int
-	let journey: Journey
+	let avatarView: () -> AvatarView
 	let onClose: () -> Void
 	var body: some View {
 		ZStack {
@@ -43,8 +41,7 @@ struct TopViewPlain: View {
 				.padding()
 				.exploding(.topLeading)
 			Spacer()
-			JourneyProfileView(style: .short,
-							   viewState: .init(journey: self.journey))
+			avatarView()
 				.padding()
 				.exploding(.top)
 			Spacer()

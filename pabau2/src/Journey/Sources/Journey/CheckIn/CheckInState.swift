@@ -2,7 +2,6 @@ import ComposableArchitecture
 import Model
 
 protocol CheckInState {
-	var journey: Journey { get }
 	var selectedIdx: Int { get set }
 	func stepForms() -> [StepFormInfo]
 	func stepTypes() -> [StepType]
