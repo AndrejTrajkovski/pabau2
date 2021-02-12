@@ -8,11 +8,13 @@ public struct Location: Codable, Identifiable, Equatable {
     public let id: Id
 
     public let name: String
-	public let color: String
+	public let color: String?
 	
-	public init(id: Int,
-				name: String,
-				color: String) {
+	public init(
+        id: Int,
+        name: String,
+        color: String?
+    ) {
 		self.id = Id(rawValue: id)
 		self.name = name
 		self.color = color
@@ -20,8 +22,23 @@ public struct Location: Codable, Identifiable, Equatable {
 	
     public enum CodingKeys: String, CodingKey {
         case id = "id"
-        case name
+        case name = "location_name"
 		case color
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let stringID = try container.decode(String.self, forKey: .id)
+        
+        guard let id = Int(stringID) else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .id, in: container, debugDescription: "Location ID expected to be Integer"
+            )
+        }
+        
+        self.id = Id(rawValue: id)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.color = try container.decodeIfPresent(String.self, forKey: .color)
     }
 
 }
