@@ -71,3 +71,42 @@ public struct Shift: Codable {
 		}
 	}
 }
+
+public struct ShiftSchema: Codable {
+    let date: String?
+    let startTime: String?
+    let endTime: String?
+    let locationID: String
+    let notes: String
+    let published: Bool
+    let rotaUID: String
+    
+    public init(
+        date: String?,
+        startTime: String?,
+        endTime: String?,
+        locationID: String,
+        notes: String,
+        published: Bool,
+        rotaUID: String
+    ) {
+        self.date = date
+        self.startTime = startTime
+        self.endTime = endTime
+        self.locationID = locationID
+        self.notes = notes
+        self.published = published
+        self.rotaUID = rotaUID
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case date = "date"
+        case startTime = "start_time"
+        case endTime = "end_time"
+        case locationID = "location_id"
+        case notes
+        case published
+        case rotaUID = "rota_uid"
+    }
+}
+
