@@ -173,22 +173,33 @@ public struct CalendarContainer: View {
 						.transition(.moveAndFade)
 				}
 			}
-			.fullScreenCover(isPresented:
-								Binding(get: { activeSheet(state: viewStore.state) != nil },
-										set: { _ in dismissAction(state: viewStore.state).map(viewStore.send) }
-								), content: {
-									Group {
-										IfLetStore(store.scope(state: { $0.appDetails },
-															   action: { .appDetails($0) }),
-												   then: AppointmentDetails.init(store:))
-										IfLetStore(store.scope(state: { $0.addBookout },
-															   action: { .addBookout($0) }),
-												   then: AddBookout.init(store:))
-										IfLetStore(store.scope(state: { $0.addShift },
-															   action: { .addShift($0) }),
-												   then: AddShift.init(store:))
-									}
-								}
+			.fullScreenCover(
+                isPresented:
+                    Binding(get: { activeSheet(state: viewStore.state) != nil },
+                            set: { _ in dismissAction(state: viewStore.state).map(viewStore.send) }
+                    ),
+                content: {
+                    Group {
+                        IfLetStore(
+                            store.scope(
+                                state: { $0.appDetails },
+                                action: { .appDetails($0) }),
+                                then: AppointmentDetails.init(store:)
+                        )
+                        IfLetStore(
+                            store.scope(
+                                state: { $0.addBookout },
+                                action: { .addBookout($0) }),
+                                then: AddBookout.init(store:)
+                        )
+                        IfLetStore(
+                            store.scope(
+                                state: { $0.addShift },
+                                action: { .addShift($0) }),
+                                then: AddShift.init(store:)
+                        )
+                    }
+                }
 			)
 		}
 	}

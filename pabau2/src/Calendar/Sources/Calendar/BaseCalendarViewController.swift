@@ -39,7 +39,7 @@ public class BaseCalendarViewController: UIViewController {
 		let alert = UIAlertController(title: date.toString(.dateTime(.short)),
 									  message: nil,
 									  preferredStyle: .actionSheet)
-		alert.addAction(UIAlertAction.init(title: "Add Appointment", style: .default, handler: { _ in
+		alert.addAction(UIAlertAction.init(title: "Add  Appointment", style: .default, handler: { _ in
 			anchorView.removeFromSuperview()
 			onAddAppointment()
 		}))
