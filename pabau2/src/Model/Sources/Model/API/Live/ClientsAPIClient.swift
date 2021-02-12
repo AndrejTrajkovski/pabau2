@@ -200,4 +200,22 @@ extension APIClient {
             .mapError { _ in RequestError.unknown }
             .eraseToEffect()
     }
+    
+    public func addAlert(clientId: Int, alert: String) -> Effect<Bool, RequestError> {
+        struct AlertAddResponse: Codable {
+            public let success: Bool
+        }
+        let requestBuilder: RequestBuilder<AlertAddResponse>.Type = requestBuilderFactory.getBuilder()
+        return requestBuilder.init(method: .POST,
+                                   baseUrl: baseUrl,
+                                   path: .getClientAlerts,
+                                   queryParams: commonAnd(other: ["contact_id": "\(clientId)",
+                                                                  "note": "\(alert)",
+                                                                  "mode": "add"]),
+                                   isBody: false)
+            .effect()
+            .map(\.success)
+            .mapError { $0 as? RequestError ?? RequestError.unknown }
+            .eraseToEffect()
+    }
 }

@@ -74,15 +74,13 @@ struct ClientCardChildWrapper: View {
 			))
 		} else if viewStore.state == .alerts {
 			return AnyView(ChildViewHolder(child: AlertsList.self,
-																		 store:
-				self.store.scope(state: { $0.list.alerts },
-												 action: { .child(.alerts($0) )})
+                                           store: self.store.scope(state: { $0.list.alerts },
+                                                                   action: { .child(.alerts($0)) })
 			))
 		} else if viewStore.state == .notes {
 			return AnyView(ChildViewHolder(child: NotesList.self,
-																		 store:
-				self.store.scope(state: { $0.list.notes },
-												 action: { .child(.notes($0) )})
+                                           store: self.store.scope(state: { $0.list.notes },
+                                                                   action: { .child(.notes($0) )})
 			))
 		} else {
 			return AnyView(EmptyView())
@@ -119,7 +117,7 @@ public struct ClientCardListState: Equatable {
 	var documents: DocumentsListState
 	var communications: ClientCardChildState<[Communication]>
 	var consents: FormsListState
-	var alerts: ClientCardChildState<[Model.Alert]>
+    var alerts: ClientAlertsState
     var notes: NotesListState
 
     init(client: Client) {
@@ -136,7 +134,7 @@ public struct ClientCardListState: Equatable {
 		ClientCardChildState.init(state: []))
 		self.communications = ClientCardChildState.init(state: [])
 		self.consents = FormsListState(childState: ClientCardChildState(state: []), formType: .consent)
-		self.alerts = ClientCardChildState.init(state: [])
+        self.alerts = ClientAlertsState(client: client, childState: ClientCardChildState(state: []))
         self.notes = NotesListState.init(client: client, childState: ClientCardChildState(state: []))
 	}
 }
@@ -160,7 +158,7 @@ public enum ClientCardChildAction: Equatable {
 	case documents(DocumentsListAction)
 	case communications(GotClientListAction<[Communication]>)
 	case consents(FormsListAction)
-	case alerts(GotClientListAction<[Model.Alert]>)
+    case alerts(ClientAlertsAction)
     case notes(NotesListAction)
 }
 
@@ -209,11 +207,11 @@ let clientCardListReducer: Reducer<ClientCardListState, ClientCardChildAction, C
 		action: /ClientCardChildAction.consents,
 		environment: { $0 }
 	),
-	ClientCardChildReducer<[Model.Alert]>().reducer.pullback(
-		state: \ClientCardListState.alerts,
-		action: /ClientCardChildAction.alerts,
-		environment: { $0 }
-	),
+    clientAlertsReducer.pullback(
+        state: \ClientCardListState.alerts,
+        action: /ClientCardChildAction.alerts,
+        environment: { $0 }
+    ),
     clientNotesListReducer.pullback(
         state: \ClientCardListState.notes,
         action: /ClientCardChildAction.notes,

@@ -17,4 +17,5 @@ public protocol ClientsAPI {
 	func post(patDetails: PatientDetails) -> Effect<PatientDetails, RequestError>
     
     func addNote(clientId: Int, note: String) -> Effect<Note, RequestError>
+    func addAlert(clientId: Int, alert: String) -> Effect<Bool, RequestError>
 }

@@ -58,10 +58,10 @@ let clientCardGridReducer: Reducer<ClientCardState, ClientCardBottomAction, Clie
 						.receive(on: DispatchQueue.main)
 					.eraseToEffect()
 				case .alerts:
-					state.list.alerts.loadingState = .loading
+                    state.list.alerts.childState.loadingState = .loading
                     return env.apiClient.getAlerts(clientId: state.client.id.rawValue)
 						.catchToEffect()
-					.map { .child(.alerts(.gotResult($0))) }
+                        .map { .child(.alerts(.action(.gotResult($0)))) }
 						.receive(on: DispatchQueue.main)
 					.eraseToEffect()
 				case .notes:
