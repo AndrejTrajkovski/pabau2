@@ -16,7 +16,28 @@ public let addShiftOptReducer: Reducer<AddShiftState?, AddShiftAction, AddShiftE
 			case .close:
 				state = nil
 			case .saveShift:
-				state = nil
+                guard let shiftSheme = state?.shiftSchema else {
+                    break
+                }
+                
+                state?.showsLoadingSpinner = true
+             
+                return env.apiClient.createShift(
+                    shiftSheme: shiftSheme
+                )
+                .catchToEffect()
+                .map(AddShiftAction.shiftCreated)
+                .receive(on: DispatchQueue.main)
+                .eraseToEffect()
+            case .shiftCreated(let result):
+                state?.showsLoadingSpinner = false
+                
+                switch result {
+                case .success:
+                    state = nil
+                case .failure(let error):
+                    print(error)
+                }
 			default: break
 			}
 			return .none
@@ -30,28 +51,34 @@ public let addShiftReducer: Reducer<AddShiftState, AddShiftAction, AddShiftEnvir
 			action: /AddShiftAction.isPublished,
 			environment: { $0 }
 		),
-		SingleChoiceLinkReducer<Employee>().reducer.pullback(
-			state: \.chooseEmployee,
-			action: /AddShiftAction.chooseEmployee,
-			environment: { $0 }
-		),
-		SingleChoiceLinkReducer<Location>().reducer.pullback(
-			state: \.chooseLocation,
-			action: /AddShiftAction.chooseLocation,
-			environment: { $0 }
-		),
+        chooseEmployeesReducer.pullback(
+            state: \AddShiftState.chooseEmployeesState,
+            action: /AddShiftAction.chooseEmployee,
+            environment: { $0 }),
+        chooseLocationsReducer.pullback(
+            state: \AddShiftState.chooseLocationState,
+            action: /AddShiftAction.chooseLocation,
+            environment: { $0 }),
 		textFieldReducer.pullback(
 			state: \.note,
 			action: /AddShiftAction.note,
 			environment: { $0 }),
 		.init { state, action, env in
 			switch action {
+            case .isPublished(.setTo(let isOn)):
+                state.isPublished = isOn
 			case .startDate(let date):
 				state.startDate = date
 			case .startTime(let date):
 				state.startTime = date
 			case .endTime(let date):
 				state.endTime = date
+            case .note(.textChange(let text)):
+                state.note = text
+            case .onChooseEmployee:
+                state.chooseEmployeesState.isChooseEmployeesActive = true
+            case .onChooseLocation:
+                state.chooseLocationState.isChooseLocationActive = true
 			default: break
 			}
 			return .none
@@ -60,18 +87,43 @@ public let addShiftReducer: Reducer<AddShiftState, AddShiftAction, AddShiftEnvir
 
 public struct AddShiftState: Equatable {
 	var isPublished: Bool = false
-	var chooseEmployee: SingleChoiceLinkState<Employee>
-	var chooseLocation: SingleChoiceLinkState<Location>
+    var chooseEmployeesState: ChooseEmployeesState
+	var chooseLocationState: ChooseLocationState
 	var startDate: Date?
 	var startTime: Date?
 	var endTime: Date?
 	var note: String
+
+    var showsLoadingSpinner: Bool = false
+
+    var shiftSchema: ShiftSchema? {
+        guard let rotaUID = chooseEmployeesState.chosenEmployee?.id.rawValue else {
+            return nil
+        }
+
+        guard let locationID = chooseLocationState.chosenLocation?.id.rawValue else {
+            return nil
+        }
+      
+        return ShiftSchema(
+            date: startDate?.toFormat("yyyy-dd-MM"),
+            startTime: endTime?.toFormat("HH:mm"),
+            endTime: startTime?.toFormat("HH:mm"),
+            locationID: "\(locationID)",
+            notes: note,
+            published: isPublished,
+            rotaUID: rotaUID
+        )
+    }
 }
 
 public enum AddShiftAction {
 	case isPublished(ToggleAction)
-	case chooseEmployee(SingleChoiceLinkAction<Employee>)
-	case chooseLocation(SingleChoiceLinkAction<Location>)
+    case chooseEmployee(ChooseEmployeesAction)
+	case chooseLocation(ChooseLocationAction)
+    case onChooseEmployee
+    case onChooseLocation
+    case shiftCreated(Result<PlaceholdeResponse, RequestError>)
 	case startDate(Date?)
 	case startTime(Date?)
 	case endTime(Date?)
@@ -81,37 +133,50 @@ public enum AddShiftAction {
 }
 
 public struct AddShift: View {
-
+  
 	let store: Store<AddShiftState, AddShiftAction>
 	@ObservedObject var viewStore: ViewStore<AddShiftState, AddShiftAction>
 
 	public var body: some View {
-		VStack {
-			VStack(spacing: 24) {
-				SwitchCell(text: "Published",
-						   store: store.scope(state: { $0.isPublished },
-											  action: { .isPublished($0)})
-				)
-				chooseEmployee
-			}.wrapAsSection(title: "Add Shift")
-			LocationAndDate(store: store).wrapAsSection(title: "Date & Time")
-			NotesSection(store: store.scope(state: { $0.note },
-											action: { .note($0)})
-			)
-			AddEventPrimaryBtn(title: "Save Shift") {
-				self.viewStore.send(.saveShift)
-
-			}
-		}.addEventWrapper(onXBtnTap: { viewStore.send(.close) })
-	}
-
-	fileprivate var chooseEmployee: SingleChoiceLink<TitleAndValueLabel, Employee, TextAndCheckMarkContainer<Employee>> {
-		SingleChoiceLink(content: {
-							TitleAndValueLabel("EMPLOYEE", viewStore.state.chooseEmployee.chosenItemName ?? "")},
-								store: store.scope(state: { $0.chooseEmployee },
-														action: { .chooseEmployee($0) }),
-								cell: TextAndCheckMarkContainer.init(state:)
-		)
+        VStack {
+            VStack(spacing: 24) {
+                SwitchCell(
+                    text: "Published",
+                    store: store.scope(
+                        state: { $0.isPublished },
+                        action: { .isPublished($0)}
+                    )
+                )
+                TitleAndValueLabel(
+                    "EMPLOYEE",
+                    self.viewStore.state.chooseEmployeesState.chosenEmployee?.name ?? "Choose Employee",
+                    self.viewStore.state.chooseEmployeesState.chosenEmployee?.name == nil ? Color.grayPlaceholder : nil
+                ).onTapGesture {
+                    self.viewStore.send(.onChooseEmployee)
+                }
+                NavigationLink.emptyHidden(
+                    self.viewStore.state.chooseEmployeesState.isChooseEmployeesActive,
+                    ChooseEmployeesView(
+                        store: self.store.scope(
+                            state: { $0.chooseEmployeesState },
+                            action: { .chooseEmployee($0) }
+                        )
+                    )
+                )
+            }.wrapAsSection(title: "Add Shift")
+            LocationAndDate(store: store).wrapAsSection(title: "Date & Time")
+            NotesSection(
+                store: store.scope(
+                    state: { $0.note },
+                    action: { .note($0)}
+                )
+            )
+            AddEventPrimaryBtn(title: "Save Shift") {
+                self.viewStore.send(.saveShift)
+            }
+        }
+        .addEventWrapper(onXBtnTap: { viewStore.send(.close) })
+        .loadingView(.constant(self.viewStore.state.showsLoadingSpinner))
 	}
 
 	public init(store: Store<AddShiftState, AddShiftAction>) {
@@ -128,7 +193,22 @@ struct LocationAndDate: View {
 	var body: some View {
 		VStack(spacing: 16) {
 			HStack(spacing: 16) {
-				chooseLocation
+                TitleAndValueLabel(
+                    "LOCATION",
+                    self.viewStore.state.chooseLocationState.chosenLocation?.name ?? "Choose Location",
+                    self.viewStore.state.chooseLocationState.chosenLocation?.name == nil ? Color.grayPlaceholder : nil
+                ).onTapGesture {
+                    self.viewStore.send(.onChooseLocation)
+                }
+                NavigationLink.emptyHidden(
+                    self.viewStore.state.chooseLocationState.isChooseLocationActive,
+                    ChooseLocationView(
+                        store: self.store.scope(
+                            state: { $0.chooseLocationState },
+                            action: { .chooseLocation($0) }
+                        )
+                    )
+                )
 				DatePickerControl("Day", viewStore.binding(get: { $0.startDate },
 														   send: { .startDate($0) })
 				)
@@ -144,15 +224,6 @@ struct LocationAndDate: View {
 		}
 	}
 
-	fileprivate var chooseLocation: SingleChoiceLink<TitleAndValueLabel, Location, TextAndCheckMarkContainer<Location>> {
-		SingleChoiceLink(content: {
-							TitleAndValueLabel("LOCATION", self.viewStore.state.chooseLocation.chosenItemName ?? "")},
-						 store: self.store.scope(state: { $0.chooseLocation },
-												 action: { .chooseLocation($0) }),
-						 cell: TextAndCheckMarkContainer.init(state:)
-		)
-	}
-
 	init(store: Store<AddShiftState, AddShiftAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store)
@@ -166,12 +237,14 @@ public typealias AddShiftEnvironment = (apiClient: JourneyAPI, userDefaults: Use
 
 extension AddShiftState {
 	public static func makeEmpty() -> AddShiftState {
-		AddShiftState(isPublished: false,
-					  chooseEmployee: SingleChoiceLinkState([]),
-					  chooseLocation: SingleChoiceLinkState(Location.mock()),
-					  startDate: nil,
-					  startTime: nil,
-					  endTime: nil,
-					  note: "")
+		AddShiftState(
+            isPublished: true,
+            chooseEmployeesState: ChooseEmployeesState(isChooseEmployeesActive: false),
+            chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
+            startDate: nil,
+            startTime: nil,
+            endTime: nil,
+            note: ""
+        )
 	}
 }
