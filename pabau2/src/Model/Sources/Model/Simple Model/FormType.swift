@@ -8,6 +8,7 @@ public enum FormType: String, Codable, Equatable {
 	case treatment = "treatment"
 	case consent = "consent"
 	case prescription = "prescription"
+	case epaper
     case unknown
 //	case photos = "photos"
 }

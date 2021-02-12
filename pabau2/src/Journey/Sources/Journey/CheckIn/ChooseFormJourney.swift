@@ -68,7 +68,7 @@ extension ChooseFormJourneyState {
 
 private func updateWithKeepingOld(forms: inout IdentifiedArray<HTMLForm.ID, HTMLForm>,
 								  finalSelectedTemplatesIds: [HTMLForm.ID],
-								  allTemplates: IdentifiedArrayOf<HTMLFormInfo>) -> HTMLForm.ID {
+								  allTemplates: IdentifiedArrayOf<HTMLFormInfo>) -> [HTMLForm.ID] {
 	let oldWithData = forms.filter { old in
 		finalSelectedTemplatesIds.contains(old.id)
 	}

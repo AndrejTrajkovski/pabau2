@@ -27,12 +27,11 @@ public class APIClient: LoginAPI, JourneyAPI, ClientsAPI, FormAPI {
 		return requestBuilder.init(method: .GET,
 								   baseUrl: baseUrl,
 								   path: .getFormTemplates,
-								   queryParams: commonAnd(other: [:]),
+								   queryParams: commonAnd(other: ["form_template_type": type.rawValue]),
 								   isBody: false)
 			.effect()
 			.map(\.templateList)
 			.catchToEffect()
-
 	}
 
 }

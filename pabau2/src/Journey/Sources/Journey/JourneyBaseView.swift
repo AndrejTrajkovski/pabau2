@@ -11,19 +11,19 @@ public struct JourneyBaseView<Content: View>: View {
 	let content: Content
 	let journey: Journey?
 	let style: JourneyProfileViewStyle
-
+	
 	init(journey: Journey?,
-			 style: JourneyProfileViewStyle,
-			 @ViewBuilder content: () -> Content) {
+		 style: JourneyProfileViewStyle,
+		 @ViewBuilder content: () -> Content) {
 		self.journey = journey
 		self.content = content()
 		self.style = style
 	}
-
+	
 	public var body: some View {
 		VStack(spacing: 64) {
 			JourneyProfileView(style: style,
-													viewState: JourneyProfileView.ViewState.init(journey: journey))
+							   viewState: JourneyProfileView.ViewState.init(journey: journey))
 				.padding(.top, 32)
 				.padding(.bottom, 32)
 			content
@@ -40,9 +40,9 @@ struct JourneyBaseModifier: ViewModifier {
 }
 
 public extension View {
-
+	
 	func journeyBase(_ journey: Journey?,
-									 _ style: JourneyProfileViewStyle) -> some View {
+					 _ style: JourneyProfileViewStyle) -> some View {
 		self.modifier(JourneyBaseModifier(journey: journey, style: style))
 	}
 }

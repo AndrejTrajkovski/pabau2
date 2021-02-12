@@ -19,8 +19,12 @@ public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnv
 		case .add:
 			state.chooseForms = ChooseFormState(templates: [],
 												selectedTemplatesIds: [])
+		case .chooseForms(.proceed):
+			break
 		case .action, .chooseForms:
 			break
+		case .backFromChooseForms:
+			state.chooseForms = nil
 		}
 		return .none
 	}
@@ -36,21 +40,32 @@ public enum FormsListAction: ClientCardChildParentAction, Equatable {
 	case action(GotClientListAction<[FormData]>)
 	case add
 	case chooseForms(ChooseFormAction)
+	case backFromChooseForms
 }
 
 struct FormsList: ClientCardChild {
 	let store: Store<FormsListState, FormsListAction>
-	
+
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			FormsListRaw(state: viewStore.state.childState.state)
 			NavigationLink.emptyHidden(viewStore.state.chooseForms != nil,
 									   IfLetStore(store.scope(state: { $0.chooseForms },
 															  action: { .chooseForms($0)} ),
-												  then: { ChooseFormList.init(store: $0, mode: .consentsCheckIn) }
+												  then: {
+													chooseFormList(store: $0)
+														.customBackButton {
+															viewStore.send(.backFromChooseForms)
+														}
+												  }
 									   )
 			)
 		}
+	}
+
+	@ViewBuilder
+	func chooseFormList(store: Store<ChooseFormState, ChooseFormAction>) -> some View {
+		ChooseFormList.init(store: store, mode: .consentsCheckIn)
 	}
 }
 
@@ -99,6 +114,7 @@ extension FormType {
 		case .prescription: return "doc.append"
 		case .consent: return "signature"
 		case .history: return ""
+		case .epaper: return ""
         case .unknown: return ""
 		}
 	}

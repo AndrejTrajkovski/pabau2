@@ -7,7 +7,7 @@ public struct HTMLForm: Identifiable, Equatable, CustomDebugStringConvertible {
 		return name
 	}
 	
-	public typealias ID = Tagged<HTMLForm, Int>
+	public typealias ID = Tagged<HTMLForm, String>
 	
 	public let entryId: FilledForm.ID?
 	
@@ -32,7 +32,7 @@ public struct HTMLForm: Identifiable, Equatable, CustomDebugStringConvertible {
 				formType: FormType,
 				ePaper: Bool? = nil,
 				formStructure: [CSSField]) {
-		self.id = HTMLForm.ID(rawValue: id)
+		self.id = HTMLForm.ID(rawValue: String(id))
 		self.name = name
 		self.formType = formType
 		self.ePaper = ePaper
@@ -97,11 +97,11 @@ struct HTMLFormBuilder {
 	}
 	
 	init(template: _FormTemplate) throws {
-		guard let id = Int(template.id) else { throw HTMLFormBuilderError.idNotInteger }
+//		guard let id = String(template.id) else { throw HTMLFormBuilderError.idNotInteger }
 		guard let formType = FormType(rawValue: template.formType) else { throw HTMLFormBuilderError.unhandledFormType }
 		
 		self.entryId = nil
-		self.id = .init(rawValue: id)
+		self.id = .init(rawValue: template.id)
 		self.name = template.name
 		self.formType = formType
 		self.ePaper = nil

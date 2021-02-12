@@ -44,6 +44,7 @@ public let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, Fo
 		//												 allTemplates: state.templates)
 		return .none
 	case .gotResponse(let result):
+		print(result)
 		switch result {
 		case .success(let templates):
 			state.templates = IdentifiedArray(templates)
@@ -56,6 +57,7 @@ public let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, Fo
 		return
 			state.templates.isEmpty ?
 			environment.formAPI.getTemplates(formType)
+			.receive(on: DispatchQueue.main)
 			.map(ChooseFormAction.gotResponse)
 			.eraseToEffect()
 			: .none
@@ -69,22 +71,14 @@ public struct ChooseFormList: View {
 	let mode: ChooseFormMode
 	let store: Store<ChooseFormState, ChooseFormAction>
 	@ObservedObject var viewStore: ViewStore<ViewState, ChooseFormAction>
-	
+
 	public init (
 		store: Store<ChooseFormState, ChooseFormAction>,
 		mode: ChooseFormMode
 	) {
 		self.mode = mode
 		self.store = store
-		self.viewStore = ViewStore(
-			self.store
-				.scope(
-					state: {
-						ChooseFormList.ViewState.init($0)
-					},
-					action: { $0 }
-				)
-		)
+		self.viewStore = ViewStore(store.scope(state: ViewState.init))
 		UITableView.appearance().separatorStyle = .none
 	}
 	
@@ -253,7 +247,7 @@ public enum ChooseFormMode {
 			return Texts.proceed
 		}
 	}
-	
+
 	var formType: FormType {
 		switch self {
 		case .consentsPreCheckIn, .consentsCheckIn:

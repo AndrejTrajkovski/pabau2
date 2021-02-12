@@ -138,18 +138,18 @@ public struct ChoosePathway: View {
 		}
 		.journeyBase(self.viewStore.state.journey, .long)
 	}
-
+	
 	var chooseFormNavLink: some View {
 		NavigationLink.emptyHidden(self.viewStore.state.isChooseConsentShown,
-															 ChooseFormList(store:
-																self.store.scope(
-																	state: { $0.chooseConsentState },
-																	action: { .chooseConsent($0)}),
-																	mode: .consentsPreCheckIn)
-																.journeyBase(self.viewStore.state.journey, .long)
-																.customBackButton {
-																	self.viewStore.send(.choosePathway(.didTouchSelectConsentBackBtn))
-			}
+								   ChooseFormList(store:
+													self.store.scope(
+														state: { $0.chooseConsentState },
+														action: { .chooseConsent($0)}),
+												  mode: .consentsPreCheckIn)
+									.journeyBase(self.viewStore.state.journey, .long)
+									.customBackButton {
+										self.viewStore.send(.choosePathway(.didTouchSelectConsentBackBtn))
+									}
 		)
 	}
 
