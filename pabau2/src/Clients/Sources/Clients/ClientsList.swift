@@ -17,9 +17,9 @@ let clientsListReducer: Reducer<ClientsState, ClientsListAction, ClientsEnvironm
             case .identified(let id, ClientRowAction.onSelectClient):
                 state.selectedClient = ClientCardState(
                     client: state.clients[id: id]!,
-                    list: ClientCardListState()
+                    list: ClientCardListState(client: state.clients[id: id]!)
                 )
-                return env.apiClient.getItemsCount(clientId: id)
+                return env.apiClient.getItemsCount(clientId: id.rawValue)
                     .catchToEffect()
                     .map(ClientsListAction.gotItemsResponse)
                     .eraseToEffect()
