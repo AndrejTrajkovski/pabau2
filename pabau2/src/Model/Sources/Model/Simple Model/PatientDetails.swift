@@ -195,7 +195,26 @@ extension PatientDetails {
 
 	public static func mock(clientId: Int) -> PatientDetails {
         let client = Client.mockClients.first(where: { clientId == $0.id.rawValue })!
-        return PatientDetails(id: client.id.rawValue, salutation: client.salutation ?? "Mr.", firstName: client.firstName, lastName: client.lastName, email: "mail@mail.com", phone: "123", cellPhone: "321", dob: Date(), country: "Egypt", county: "", city: "Cairo", postCode: "222333")
+        return PatientDetails(id: client.id.rawValue,
+                              salutation: client.salutation ?? "Mr.",
+                              firstName: client.firstName,
+                              lastName: client.lastName,
+                              email: "",
+                              phone: "",
+                              cellPhone: "",
+                              imageUrl: "",
+                              dob: Date(),
+                              postComm: false,
+                              phoneComm: false,
+                              smsComm: false,
+                              emailComm: false,
+                              howDidYouHear: "",
+                              country: "",
+                              county: "",
+                              city: "",
+                              postCode: "",
+                              addressLine1: "",
+                              addressLine2: "")
 	}
 }
 

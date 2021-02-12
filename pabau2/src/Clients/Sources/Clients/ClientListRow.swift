@@ -6,6 +6,7 @@ import SDWebImageSwiftUI
 
 public enum ClientRowAction: Equatable {
 	case onSelectClient
+    case onAppear
 }
 
 struct ClientListRow: View {
@@ -38,6 +39,8 @@ struct ClientListRow: View {
 				Spacer()
 			}.onTapGesture {
 				viewStore.send(.onSelectClient)
+            }.onAppear {
+                viewStore.send(.onAppear)
 			}
 		}
 	}

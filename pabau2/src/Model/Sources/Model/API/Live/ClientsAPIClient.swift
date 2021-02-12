@@ -19,6 +19,31 @@ extension APIClient {
 			.map(\.clients)
 			.eraseToEffect()
 	}
+    
+    public func getClients(search: String?, offset: Int) -> Effect<[Client], RequestError> {
+        let requestBuilder: RequestBuilder<ClientResponse>.Type = requestBuilderFactory.getBuilder()
+        struct ClientResponse: Codable, Equatable {
+            public let clients: [Client]
+            public enum CodingKeys: String, CodingKey {
+                case clients = "appointments"
+            }
+        }
+
+        var queryItems: [String: Any] = ["limit": 20, "offset": offset]
+
+        if let search = search {
+            queryItems["searchText"] = search
+        }
+
+        return requestBuilder.init(method: .GET,
+                                   baseUrl: baseUrl,
+                                   path: .getClients,
+                                   queryParams: commonAnd(other: queryItems),
+                                   isBody: false)
+            .effect()
+            .map(\.clients)
+            .eraseToEffect()
+    }
 	
 	public func getItemsCount(clientId: Int) -> Effect<ClientItemsCount, RequestError> {
 		Effect(value: ClientItemsCount.init(id: 1, appointments: 2, photos: 4, financials: 6, treatmentNotes: 3, presriptions: 10, documents: 15, communications: 123, consents: 4381, alerts: 123, notes: 0))

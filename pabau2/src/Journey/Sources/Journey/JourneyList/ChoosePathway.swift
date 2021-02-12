@@ -42,14 +42,19 @@ public struct ChoosePathwayState: Equatable {
 	var selectedPathway: Pathway?
 	var selectedConsentsIds: [Int]
 	var allConsents: IdentifiedArrayOf<FormTemplate>
+    var searchText: String
 	var chooseConsentState: ChooseFormState {
 		get {
-			ChooseFormState(templates: allConsents,
-											selectedTemplatesIds: selectedConsentsIds)
+			ChooseFormState(
+                templates: allConsents,
+                selectedTemplatesIds: selectedConsentsIds,
+                searchText: searchText
+            )
 		}
 		set {
 			self.selectedConsentsIds = newValue.selectedTemplatesIds
 			self.allConsents = newValue.templates
+            self.searchText = newValue.searchText
 		}
 	}
 }

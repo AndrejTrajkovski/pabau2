@@ -129,23 +129,41 @@ public let journeyContainerReducer2: Reducer<JourneyState, JourneyContainerActio
 let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 	.combine (
 		.init { state, action, environment in
+            struct SearchJourneyId: Hashable {}
+
 			switch action {
 			case .selectedFilter(let filter):
 				state.selectedFilter = filter
-			
-			case .searchedText(let searchText):
-				struct SearchJourneyId: Hashable {}
 
+//			case .datePicker(.selectedDate(let date)):
+//				state.loadingState = .loading
+//				return environment.apiClient.getJourneys(date: date, searchTerm: nil)
+//					.catchToEffect()
+//					.map(JourneyAction.gotResponse)
+//					.receive(on: DispatchQueue.main)
+//					.eraseToEffect()
+//			case .gotResponse(let result):
+//				switch result {
+//				case .success(let journeys):
+//					state.journeys.formUnion(journeys)
+//					state.loadingState = .gotSuccess
+//
+//				case .failure(let error):
+//					state.loadingState = .gotError(error)
+//				}
+
+			case .searchedText(let searchText):
 				state.searchText = searchText
-				fatalError()
+
 //                return environment.apiClient
-//					.getAppointments(dates: [Date()], locationIds: [], employeesIds: [])
+//                    .getJourneys(date: Date(), searchTerm: searchText)
 //                    .receive(on: DispatchQueue.main)
 //                    .eraseToEffect()
 //                    .debounce(id: SearchJourneyId(), for: 0.3, scheduler: DispatchQueue.main)
 //					.catchToEffect()
 //                    .map(JourneyAction.gotResponse)
 //                    .cancellable(id: SearchJourneyId(), cancelInFlight: true)
+//
 
 			case .selectedJourney(let journey):
 				state.selectedJourney = journey
@@ -197,10 +215,13 @@ public struct JourneyContainerView: View {
             FilterPicker()
 
             if self.showSearchBar {
-                SearchView(placeholder: "Search", text: viewStore.binding(
+                SearchView(
+                    placeholder: "Search",
+                    text: viewStore.binding(
                     get: \.searchQuery,
                     send: { JourneyContainerAction.searchQueryChanged(JourneyAction.searchedText($0)) }
-                ))
+                    )
+                )
                 .isHidden(!self.showSearchBar)
                 .padding([.leading, .trailing], 16)
             }

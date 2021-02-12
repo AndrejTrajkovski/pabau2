@@ -34,32 +34,43 @@ public struct SingleChoiceLink<Content: View, T: SingleChoiceElement, Cell: View
 	let content: () -> Content
 	let cell: (SingleChoiceItemState<T>) -> Cell
 
-	public init (@ViewBuilder content: @escaping () -> Content,
+    var title: String? = nil
+
+	public init (
+        @ViewBuilder content: @escaping () -> Content,
 							  store: Store<SingleChoiceLinkState<T>, SingleChoiceLinkAction<T>>,
-							  cell: @escaping (SingleChoiceItemState<T>) -> Cell) {
+		cell: @escaping (SingleChoiceItemState<T>) -> Cell,
+        title: String? = nil
+    ) {
 		self.content = content
 		self.store = store
 		self.cell = cell
 		self.viewStore = ViewStore(store)
+        self.title = title
 	}
 
 	var listSingleChoicePicker: List<Never, SingleChoicePicker<T, Cell>> {
 		List {
-			SingleChoicePicker.init(store: store.scope(state: { $0.singleChoice },
+			SingleChoicePicker.init(
+                store: store.scope(state: { $0.singleChoice },
 													   action: { .singleChoice($0) }),
-									cell: cell)
+				cell: cell
+            )
 		}
 	}
 
 	public var body: some View {
-		return HStack {
+		 HStack {
 			content()
-				.onTapGesture { self.viewStore.send(.didSelectPicker) }
-			NavigationLink.emptyHidden(viewStore.isActive,
+				.onTapGesture {
+                    self.viewStore.send(.didSelectPicker)
+                }
+            NavigationLink.emptyHidden(
+                viewStore.isActive,
 									   listSingleChoicePicker
 										.customBackButton {
 											self.viewStore.send(.backBtnTap)
-										}
+                    }.navigationBarTitle(title ?? "")
 			)
 		}
 	}

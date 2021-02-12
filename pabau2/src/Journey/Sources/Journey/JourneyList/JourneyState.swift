@@ -29,16 +29,20 @@ extension JourneyState {
 
 	var choosePathway: ChoosePathwayState {
 		get {
-			ChoosePathwayState(selectedJourney: selectedJourney,
-							   selectedPathway: selectedPathway,
-							   selectedConsentsIds: selectedConsentsIds,
-							   allConsents: allConsents)
+			ChoosePathwayState(
+                selectedJourney: selectedJourney,
+												 selectedPathway: selectedPathway,
+												 selectedConsentsIds: selectedConsentsIds,
+                allConsents: allConsents,
+                searchText: searchText
+            )
 		}
 		set {
 			self.selectedJourney = newValue.selectedJourney
 			self.selectedPathway = newValue.selectedPathway
 			self.selectedConsentsIds = newValue.selectedConsentsIds
 			self.allConsents = newValue.allConsents
+            self.searchText = newValue.searchText
 		}
 	}
 }

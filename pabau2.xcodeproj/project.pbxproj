@@ -10,6 +10,7 @@
 		08C726E925876D9100F622CB /* SFProText-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 08C726E6258764C100F622CB /* SFProText-Medium.ttf */; };
 		08C726EA25876D9400F622CB /* SFProText-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 08C726E82587684300F622CB /* SFProText-MediumItalic.ttf */; };
 		08C726EB25876D9700F622CB /* SFProText-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 08C726E7258764C100F622CB /* SFProText-Semibold.ttf */; };
+		745E58A225D28B3A00EDD10D /* Appointments in Resources */ = {isa = PBXBuildFile; fileRef = 745E58A125D28B3A00EDD10D /* Appointments */; };
 		74DD9D34256EAB1A00CC3920 /* Communication in Frameworks */ = {isa = PBXBuildFile; productRef = 74DD9D33256EAB1A00CC3920 /* Communication */; };
 		82182C4725265C5D00E5479F /* Calendar in Frameworks */ = {isa = PBXBuildFile; productRef = 82182C4625265C5D00E5479F /* Calendar */; };
 		82182C4925265C5D00E5479F /* Clients in Frameworks */ = {isa = PBXBuildFile; productRef = 82182C4825265C5D00E5479F /* Clients */; };
@@ -50,6 +51,7 @@
 		08C726E7258764C100F622CB /* SFProText-Semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-Semibold.ttf"; sourceTree = "<group>"; };
 		08C726E82587684300F622CB /* SFProText-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-MediumItalic.ttf"; sourceTree = "<group>"; };
 		08EF32862588FC5F00E862B3 /* SFProText-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-Regular.ttf"; sourceTree = "<group>"; };
+		745E58A125D28B3A00EDD10D /* Appointments */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Appointments; sourceTree = "<group>"; };
 		74DD9D31256EAB0E00CC3920 /* Communication */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Communication; sourceTree = "<group>"; };
 		74DD9D37256EB28C00CC3920 /* Intercom.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intercom.framework; path = pabau2/Intercom.framework; sourceTree = "<group>"; };
 		82018FE62567D59300E740A9 /* AddAppointment */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AddAppointment; sourceTree = "<group>"; };
@@ -67,7 +69,6 @@
 		8297A2B423D9BA0200D091FF /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8298A11324D486960079BFE9 /* Clients */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Clients; sourceTree = "<group>"; };
 		829D61FF24D18CF90049D5D0 /* FSCalendarSwiftUI */ = {isa = PBXFileReference; lastKnownFileType = folder; path = FSCalendarSwiftUI; sourceTree = "<group>"; };
-		82AEA3AF25C8C02A0016E7BE /* Appointments */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Appointments; sourceTree = "<group>"; };
 		82BE2F4423D97D9C00B3678A /* pabau2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pabau2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		82BE2F4723D97D9C00B3678A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		82BE2F4923D97D9C00B3678A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -172,7 +173,7 @@
 		82CACDF7241027320021E1DE /* src */ = {
 			isa = PBXGroup;
 			children = (
-				82AEA3AF25C8C02A0016E7BE /* Appointments */,
+				745E58A125D28B3A00EDD10D /* Appointments */,
 				08C726E52587644200F622CB /* Fonts */,
 				74DD9D31256EAB0E00CC3920 /* Communication */,
 				8246DB37256FCE2300F5D87E /* Filters */,
@@ -289,6 +290,7 @@
 				82BE2F4E23D97D9F00B3678A /* Assets.xcassets in Resources */,
 				08C726EB25876D9700F622CB /* SFProText-Semibold.ttf in Resources */,
 				08C726E925876D9100F622CB /* SFProText-Medium.ttf in Resources */,
+				745E58A225D28B3A00EDD10D /* Appointments in Resources */,
 				08C726EA25876D9400F622CB /* SFProText-MediumItalic.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

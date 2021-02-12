@@ -18,9 +18,17 @@ public struct Service: Codable, Identifiable, Equatable, Hashable {
     public let disabledUsers: [Int]?
 
     public let duration: String?
-	
-    public init(id: Int, name: String, color: String, categoryId: Int, categoryName: String, disabledUsers: [Int]? = nil, duration: String? = nil) {
-		self.id = Service.Id.init(rawValue: id)
+
+    public init(
+        id: Int,
+        name: String,
+        color: String,
+        categoryId: Int,
+        categoryName: String,
+        disabledUsers: [Int]? = nil,
+        duration: String? = nil
+    ) {
+        self.id = Service.Id.init(rawValue: id)
         self.name = name
         self.color = color
         self.categoryId = categoryId

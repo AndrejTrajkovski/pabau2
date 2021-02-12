@@ -98,10 +98,10 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 		state: \CalendarState.appDetails,
 		action: /CalendarAction.appDetails,
 		environment: { $0 }),
-	addBookoutReducer.optional.pullback(
-		state: \CalendarState.addBookout,
-		action: /CalendarAction.addBookout,
-		environment: { $0 }),
+//	addBookoutReducer.optional.pullback(
+//		state: \CalendarState.addBookout,
+//		action: /CalendarAction.addBookout,
+//		environment: { $0 }),
 	addShiftOptReducer.pullback(
 		state: \CalendarState.addShift,
 		action: /CalendarAction.addShift,

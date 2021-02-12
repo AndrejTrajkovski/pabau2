@@ -29,18 +29,18 @@ public let journeyFilterReducer = Reducer<JourneyFilterState, JourneyFilterActio
 			state.selectedEmployeesIds.remove(employee.id)
 		} else {
 			state.selectedEmployeesIds.insert(employee.id)
-		}
+        }
 
-	case .toggleEmployees:
-		state.isShowingEmployees.toggle()
-
-	case .reloadEmployees:
-		state.employeesLoadingState = .loading
-		return env.apiClient.getEmployees()
-			.receive(on: DispatchQueue.main)
-			.catchToEffect()
-			.map { .gotResponse($0) }
-			.eraseToEffect()
-	}
-	return .none
+    case .toggleEmployees:
+        state.isShowingEmployees.toggle()
+        
+    case .reloadEmployees:
+        state.employeesLoadingState = .loading
+        return env.apiClient.getEmployees()
+            .receive(on: DispatchQueue.main)
+            .catchToEffect()
+            .map { .gotResponse($0) }
+            .eraseToEffect()
+    }
+    return .none
 }

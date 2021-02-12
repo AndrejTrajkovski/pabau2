@@ -17,9 +17,9 @@ public struct CustomField: Codable, Identifiable, Equatable {
 
     public let locationId: Int?
 
-    public let createdDate: Date?
+    public var createdDate: Date?
 
-    public let modifiedDate: Date?
+    public var modifiedDate: Date?
 
     public let treatmentInterest: Bool?
 
@@ -75,6 +75,7 @@ public struct CustomField: Codable, Identifiable, Equatable {
         self.showInCal = showInCal
         self.items = items
     }
+    
     public enum CodingKeys: String, CodingKey {
         case id = "id"
         case fieldType = "field_type"
@@ -82,8 +83,8 @@ public struct CustomField: Codable, Identifiable, Equatable {
         case occupier
         case uid
         case locationId = "locationid"
-        case createdDate = "created_date"
-        case modifiedDate = "modified_date"
+        //case createdDate = "created_date"
+        //case modifiedDate = "modified_date"
         case treatmentInterest = "treatment_interest"
         case showInLeads = "show_in_leads"
         case fieldFor = "field_for"
