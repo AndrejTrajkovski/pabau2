@@ -2,14 +2,19 @@ import SwiftUI
 import Model
 import ComposableArchitecture
 import Util
-import Form
 
-struct CheckIn<FormsContent: View, S: CheckInState, AvatarView: View>: View where S: Equatable {
+public struct CheckIn<FormsContent: View, S: CheckInState, AvatarView: View>: View where S: Equatable {
+	public init(store: Store<S, CheckInAction>, avatarView: @escaping () -> AvatarView, content: @escaping () -> FormsContent) {
+		self.store = store
+		self.avatarView = avatarView
+		self.content = content
+	}
+	
 	let store: Store<S, CheckInAction>
 	let avatarView: () -> AvatarView
 	let content: () -> FormsContent
 
-	var body: some View {
+	public var body: some View {
 		print("CheckIn")
 		return VStack (spacing: 0) {
 			TopView(store: store, avatarView: avatarView)
@@ -60,8 +65,9 @@ struct Forms<FormsContent: View, S: CheckInState>: View where S: Equatable {
 	}
 }
 
-struct FormFrame: ViewModifier {
-	func body(content: Content) -> some View {
+public struct FormFrame: ViewModifier {
+	public init () {}
+	public func body(content: Content) -> some View {
 		content
 			.padding([.leading, .trailing], 40)
 	}

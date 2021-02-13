@@ -11,7 +11,7 @@ let textAreaFieldReducer = Reducer<TextArea, TextAreaFieldAction, FormEnvironmen
 	return .none
 }
 
-public enum TextAreaFieldAction {
+public enum TextAreaFieldAction: Equatable {
 	case didUpdateText(String)
 }
 

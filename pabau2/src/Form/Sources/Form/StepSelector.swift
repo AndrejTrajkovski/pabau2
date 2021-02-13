@@ -2,7 +2,6 @@ import Util
 import SwiftUI
 import Model
 import ComposableArchitecture
-import Form
 
 struct StepSelector<S: CheckInState>: View where S: Equatable {
 	let cellWidth: CGFloat = 100
@@ -46,12 +45,13 @@ struct StepSelector<S: CheckInState>: View where S: Equatable {
 								self.viewStore.send(.didSelectFlatFormIndex(idx))
 							}
 					}
-				}.onReceive(viewStore.publisher.selectedIndex,
-							perform: { idx in
-								withAnimation {
-									scrollProxy.scrollTo(idx, anchor: .center)
-								}
-							})
+				}
+//				.onReceive(viewStore.publisher.selectedIndex,
+//							perform: { idx in
+//								withAnimation {
+//									scrollProxy.scrollTo(idx, anchor: .center)
+//								}
+//							})
 			}.frame(width: ((cellWidth + spacing) * CGFloat(viewStore.state.numberOfVisibleSteps)),
 					height: cellHeight)
 		}

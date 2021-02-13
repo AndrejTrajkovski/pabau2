@@ -40,10 +40,7 @@ public struct HTMLForm: Identifiable, Equatable, CustomDebugStringConvertible {
 		self.entryId = nil
 	}
 	
-	init?(builder: HTMLFormBuilder?) {
-		guard let builder = builder else {
-			return nil
-		}
+	init(builder: HTMLFormBuilder) {
 		self.entryId = builder.entryId
 		self.id = builder.id
 		self.name = builder.name
@@ -53,7 +50,20 @@ public struct HTMLForm: Identifiable, Equatable, CustomDebugStringConvertible {
 	}
 }
 
-enum HTMLFormBuilderError: Error {
+enum HTMLFormBuilderError: Error, CustomStringConvertible {
+	var description: String {
+		switch self {
+		case .noTemplate:
+			return "no template found"
+		case .idNotInteger:
+			return "id not integer"
+		case .unhandledFormType:
+			return "unhandledFormType"
+		case .formStructureNotBase64:
+			return "formStructureNotBase64"
+		}
+	}
+	
 	case noTemplate
 	case idNotInteger
 	case unhandledFormType

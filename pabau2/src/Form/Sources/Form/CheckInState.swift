@@ -1,10 +1,9 @@
 import ComposableArchitecture
 import Model
 
-protocol CheckInState {
+public protocol CheckInState {
 	var selectedIdx: Int { get set }
 	func stepForms() -> [StepFormInfo]
-	func stepTypes() -> [StepType]
 }
 
 extension CheckInState {
@@ -32,8 +31,9 @@ extension CheckInState {
 	}
 }
 
-struct CheckInReducer<T: CheckInState> {
-	let reducer = Reducer<T, CheckInAction, JourneyEnvironment> { state, action, _ in
+public struct CheckInReducer<T: CheckInState> {
+	public init () { }
+	public let reducer = Reducer<T, CheckInAction, FormEnvironment> { state, action, _ in
 		switch action {
 		case .didSelectFlatFormIndex(let idx):
 			state.selectedIdx = idx
@@ -48,7 +48,7 @@ struct CheckInReducer<T: CheckInState> {
 	}
 }
 
-public enum CheckInAction {
+public enum CheckInAction: Equatable {
 	case didSelectFlatFormIndex(Int)
 	case didSelectNextStep
 	case didSelectPrevStep

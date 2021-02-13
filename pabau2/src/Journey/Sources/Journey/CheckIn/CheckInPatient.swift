@@ -70,7 +70,7 @@ let checkInPatientReducer: Reducer<CheckInPatientState, CheckInPatientAction, Jo
 	CheckInReducer<CheckInPatientState>().reducer.pullback(
 		state: \CheckInPatientState.self,
 		action: /CheckInPatientAction.stepsView,
-		environment: { $0 }
+		environment: { FormEnvironment($0.formAPI, $0.userDefaults) }
 	)
 )
 
@@ -123,61 +123,12 @@ extension CheckInPatientState {
 			return []
 		}
 	}
-	
-	var consentsStates: [JourneyFormInfo<HTMLForm>] {
-		get {
-			return self.consents.map {
-				JourneyFormInfo(id: $0.id,
-								 form: $0,
-								 status: consentsStatuses[$0.id]!,
-								 loadingState: consentsLS[$0.id]!)
-			}
-		}
-		set {
-			newValue.forEach {
-				self.consents[id: $0.id] = $0.form
-				self.consentsStatuses[$0.id] = $0.status
-				self.consentsLS[$0.id] = $0.loadingState
-			}
-		}
-	}
-	
-	var medHistoryState: JourneyFormInfo<HTMLForm> {
-		get {
-			JourneyFormInfo(id: medicalHistoryId,
-							 form: medicalHistory,
-							 status: medicalHistoryStatus,
-							 loadingState: medHistoryLS)
-		}
-		set {
-			self.medicalHistory = newValue.form
-			self.medicalHistoryStatus = newValue.status
-			self.medHistoryLS = newValue.loadingState
-		}
-	}
-
-	var patientDetailsState: JourneyFormInfo<PatientDetails> {
-		get {
-			JourneyFormInfo(id: journey.first!.customerId,
-							 form: patientDetails,
-							 status: patientDetailsStatus,
-							 loadingState: patientDetailsLS)
-		}
-		set {
-			self.patientDetails = newValue.form
-			self.patientDetailsStatus = newValue.status
-			self.patientDetailsLS = newValue.loadingState
-		}
-	}
 }
 
 public enum CheckInPatientAction {
-	case patientDetailsRequests(JourneyFormRequestsAction<PatientDetails>)
 	case patientDetails(PatientDetailsAction)
-	case medicalHistoryRequests(JourneyFormRequestsAction<HTMLForm>)
 	case medicalHistory(HTMLFormAction)
 	case consents(id: HTMLForm.ID, action: HTMLFormAction)
-	case consentsRequests(id: HTMLForm.ID, action: JourneyFormRequestsAction<HTMLForm>)
 	case patientComplete(PatientCompleteAction)
 	case stepsView(CheckInAction)
 	//	case footer(FooterButtonsAction)
@@ -194,19 +145,14 @@ func patientForm(stepType: StepType,
 				 store: Store<CheckInPatientState, CheckInPatientAction>) -> some View {
 	switch stepType {
 	case .patientdetails:
-		JourneyFormRequests(store: store.scope(state: { $0.patientDetailsState },
-											   action: { .patientDetailsRequests($0) }),
-							content: { PatientDetailsForm(store:
-															store.scope(state: { $0.patientDetails},
-																		action: { .patientDetails($0) })
-							) })
+		PatientDetailsForm(store:
+							store.scope(state: { $0.patientDetails},
+										action: { .patientDetails($0) })
+		)
 	case .medicalhistory:
-		JourneyFormRequests(store: store.scope(state: { $0.medHistoryState },
-											   action: { .medicalHistoryRequests($0) }),
-							content: {
-								ListHTMLForm(store: store.scope(state: { $0.medicalHistory },
-																action: { .medicalHistory($0) })
-								) })
+		ListHTMLForm(store: store.scope(state: { $0.medicalHistory },
+										action: { .medicalHistory($0) })
+		)
 	case .consents:
 		ForEachStore(store.scope(state: { $0.consents },
 								 action: CheckInPatientAction.consents(id: action:)),

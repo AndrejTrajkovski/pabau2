@@ -4,15 +4,6 @@ import ComposableArchitecture
 import Util
 
 public let htmlFormReducer: Reducer<HTMLForm, HTMLFormAction, FormEnvironment> = .combine(
-	.init { state, action, env in
-		switch action {
-		case .complete:
-			break
-		case .rows:
-			break
-		}
-		return .none
-	},
 	cssFieldReducer.forEach(
 		state: \HTMLForm.formStructure,
 		action: /HTMLFormAction.rows(idx:action:),
@@ -20,7 +11,7 @@ public let htmlFormReducer: Reducer<HTMLForm, HTMLFormAction, FormEnvironment> =
 	)
 )
 
-public enum HTMLFormAction {
+public enum HTMLFormAction: Equatable {
 	case rows(idx: Int, action: CSSClassAction)
 	case complete(CompleteBtnAction)
 	//idea:
@@ -38,8 +29,7 @@ public struct ListHTMLForm: View {
 	}
 
 	public var body: some View {
-		print("ListHTMLForm body")
-		return VStack {
+		VStack {
 			List {
 				HTMLFormView(store: store, isCheckingDetails: false)
 			}

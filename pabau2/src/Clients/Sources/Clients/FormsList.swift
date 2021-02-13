@@ -9,22 +9,22 @@ public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnv
 		action: /FormsListAction.action,
 		environment: { $0 }
 	),
-	chooseFormListReducer.optional.pullback(
-		state: \FormsListState.chooseForms,
-		action: /FormsListAction.chooseForms,
+	formsContainerReducer.optional.pullback(
+		state: \FormsListState.formsContainer,
+		action: /FormsListAction.formsContainer,
 		environment: { FormEnvironment($0.formAPI, $0.userDefaults) }
 	),
 	.init { state, action, env in
 		switch action {
 		case .add:
-			state.chooseForms = ChooseFormState(templates: [],
-												selectedTemplatesIds: [])
-		case .chooseForms(.proceed):
-			break
-		case .action, .chooseForms:
+			state.formsContainer = FormsContainerState(formType: state.formType,
+													   selectedIdx: 0)
+		case .action:
 			break
 		case .backFromChooseForms:
-			state.chooseForms = nil
+			state.formsContainer = nil
+		case .formsContainer(_):
+			break
 		}
 		return .none
 	}
@@ -33,13 +33,13 @@ public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnv
 public struct FormsListState: ClientCardChildParentState, Equatable {
 	var childState: ClientCardChildState<[FormData]>
 	var formType: FormType
-	var chooseForms: ChooseFormState?
+	var formsContainer: FormsContainerState?
 }
 
 public enum FormsListAction: ClientCardChildParentAction, Equatable {
 	case action(GotClientListAction<[FormData]>)
 	case add
-	case chooseForms(ChooseFormAction)
+	case formsContainer(FormsContainerAction)
 	case backFromChooseForms
 }
 
@@ -49,11 +49,11 @@ struct FormsList: ClientCardChild {
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			FormsListRaw(state: viewStore.state.childState.state)
-			NavigationLink.emptyHidden(viewStore.state.chooseForms != nil,
-									   IfLetStore(store.scope(state: { $0.chooseForms },
-															  action: { .chooseForms($0)} ),
+			NavigationLink.emptyHidden(viewStore.state.formsContainer != nil,
+									   IfLetStore(store.scope(state: { $0.formsContainer },
+															  action: { .formsContainer($0)} ),
 												  then: {
-													chooseFormList(store: $0)
+													FormsContainer(store: $0)
 														.customBackButton {
 															viewStore.send(.backFromChooseForms)
 														}
@@ -61,11 +61,6 @@ struct FormsList: ClientCardChild {
 									   )
 			)
 		}
-	}
-
-	@ViewBuilder
-	func chooseFormList(store: Store<ChooseFormState, ChooseFormAction>) -> some View {
-		ChooseFormList.init(store: store, mode: .consentsCheckIn)
 	}
 }
 

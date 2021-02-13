@@ -21,8 +21,8 @@ let doctorSummaryReducer = Reducer <DoctorSummaryState, DoctorSummaryAction, Jou
 			state.isChooseConsentActive = false
 		case .treatmentNotes:
 			state.isChooseTreatmentActive = false
-		case .consentsPreCheckIn:
-			fatalError("should be handled pre checkin")
+		case .consentsPreCheckIn, .clientCard:
+			fatalError("should be handled pre checkin or client card")
 		}
 	case .didTouchAdd(let mode):
 		switch mode {
@@ -30,8 +30,8 @@ let doctorSummaryReducer = Reducer <DoctorSummaryState, DoctorSummaryAction, Jou
 			state.isChooseConsentActive = true
 		case .treatmentNotes:
 			state.isChooseTreatmentActive = true
-		case .consentsPreCheckIn:
-			fatalError("should be handled pre checkin")
+		case .consentsPreCheckIn, .clientCard:
+			fatalError("should be handled pre checkin or client card")
 		}
 	case .didTouchStep(let stepType):
 		//TODO

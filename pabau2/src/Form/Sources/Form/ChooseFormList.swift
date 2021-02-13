@@ -19,6 +19,10 @@ public struct ChooseFormState: Equatable {
 		self.templatesLoadingState = templatesLoadingState
 		self.selectedTemplatesIds = selectedTemplatesIds
 	}
+	
+	public func selectedTemplates() -> [HTMLFormInfo] {
+		selectedTemplatesIds.compactMap { templates[id: $0] }
+	}
 }
 
 public enum ChooseFormAction: Equatable {
@@ -58,6 +62,7 @@ public let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, Fo
 			state.templates.isEmpty ?
 			environment.formAPI.getTemplates(formType)
 			.receive(on: DispatchQueue.main)
+			.catchToEffect()
 			.map(ChooseFormAction.gotResponse)
 			.eraseToEffect()
 			: .none
@@ -81,7 +86,7 @@ public struct ChooseFormList: View {
 		self.viewStore = ViewStore(store.scope(state: ViewState.init))
 		UITableView.appearance().separatorStyle = .none
 	}
-	
+
 	struct ViewState: Equatable {
 		let templates: IdentifiedArrayOf<HTMLFormInfo>
 		let selectedTemplatesIds: [HTMLForm.ID]
@@ -92,14 +97,14 @@ public struct ChooseFormList: View {
 			self.templates = state.templates
 			self.selectedTemplatesIds = state.selectedTemplatesIds
 			self.searchText = state.searchText
-			
+
 			self.isSearching = !state.searchText.isEmpty
 			self.notSelectedTemplates = state.templates.elements
 				.filter { !state.selectedTemplatesIds.contains($0.id) }
 				.map { $0 }
 				.sorted(by: \.name)
 		}
-		
+	
 		var selectedTemplates: [HTMLFormInfo] {
 			selectedTemplatesIds.compactMap {
 				templates[id: $0]
@@ -223,10 +228,11 @@ struct TemplateRow: View {
 	}
 }
 
-public enum ChooseFormMode {
+public enum ChooseFormMode: Equatable {
 	case consentsCheckIn
 	case consentsPreCheckIn
 	case treatmentNotes
+	case clientCard(FormType)
 	
 	var navigationTitle: String {
 		switch self {
@@ -234,6 +240,8 @@ public enum ChooseFormMode {
 			return Texts.chooseConsent
 		case .treatmentNotes:
 			return Texts.chooseTreatmentNote
+		case .clientCard(let formType):
+			return "Choose" + formType.rawValue
 		}
 	}
 
@@ -245,6 +253,8 @@ public enum ChooseFormMode {
 			return Texts.checkIn
 		case .treatmentNotes:
 			return Texts.proceed
+		case .clientCard(_):
+			return Texts.proceed
 		}
 	}
 
@@ -254,6 +264,8 @@ public enum ChooseFormMode {
 			return .consent
 		case .treatmentNotes:
 			return .treatment
+		case .clientCard(let formType):
+			return formType
 		}
 	}
 }

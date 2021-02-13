@@ -1,7 +1,7 @@
 import ComposableArchitecture
 
 public protocol FormAPI {
-	func get(form: HTMLForm.ID) -> Effect<Result<HTMLForm, RequestError>, Never>
-	func post(form: HTMLForm, appointments: [CalendarEvent.Id]) -> Effect<Result<HTMLForm, RequestError>, Never>	
-	func getTemplates(_ type: FormType) -> Effect<Result<[HTMLFormInfo], RequestError>, Never>
+	func getTemplate(id: HTMLForm.ID) -> Effect<HTMLForm, RequestError>
+	func post(form: HTMLForm, appointments: [CalendarEvent.Id]) -> Effect<HTMLForm, RequestError>
+	func getTemplates(_ type: FormType) -> Effect<[HTMLFormInfo], RequestError>
 }

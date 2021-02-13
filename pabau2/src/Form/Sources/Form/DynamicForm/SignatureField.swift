@@ -5,7 +5,7 @@ import Model
 import Util
 //for creating Image: https://www.hackingwithswift.com/read/27/3/drawing-into-a-core-graphics-context-with-uigraphicsimagerenderer
 
-public enum SignatureAction {}
+public enum SignatureAction: Equatable {}
 
 struct SignatureField: View {
 	@State private var isSigning: Bool

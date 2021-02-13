@@ -2,7 +2,7 @@ import SwiftUI
 import Model
 import ComposableArchitecture
 
-public enum SelectFieldAction {
+public enum SelectFieldAction: Equatable {
 	case select(SelectChoice)
 }
 

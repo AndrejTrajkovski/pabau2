@@ -9,7 +9,7 @@ public let checkBoxFieldReducer: Reducer<CheckBoxState, CheckboxFieldAction, For
 	environment: { $0 }
 )
 
-public enum CheckboxFieldAction {
+public enum CheckboxFieldAction: Equatable {
 	case rows(idx: Int, action: CheckBoxRowAction)
 }
 

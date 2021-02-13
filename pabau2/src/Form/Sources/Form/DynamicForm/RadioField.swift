@@ -2,7 +2,7 @@ import SwiftUI
 import ComposableArchitecture
 import Model
 
-public enum RadioFieldAction {
+public enum RadioFieldAction: Equatable {
 	case select(choice: RadioChoice?)
 }
 

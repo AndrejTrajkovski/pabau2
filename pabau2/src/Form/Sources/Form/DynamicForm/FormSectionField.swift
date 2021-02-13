@@ -223,7 +223,7 @@ let cssClassReducer: Reducer<CSSClass, CSSClassAction, FormEnvironment> =
 			environment: { $0 })
 	)
 
-public enum CSSClassAction {
+public enum CSSClassAction: Equatable {
 	case inputText(TextFieldAction)
 	case textArea(TextAreaFieldAction)
 	case radio(RadioFieldAction)
