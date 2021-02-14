@@ -94,7 +94,7 @@ struct CompleteButton<State>: View where State: Equatable & CompleteBtnState {
 
 extension HTMLForm: CompleteBtnState {
 	public var title: String {
-		self.name
+		Texts.complete
 	}
 }
 

@@ -27,16 +27,9 @@ public struct ListHTMLForm: View {
 		UITableViewHeaderFooterView.appearance().tintColor = UIColor.white
 		UITableView.appearance().separatorStyle = .none
 	}
-
+	
 	public var body: some View {
-		VStack {
-			List {
-				HTMLFormView(store: store, isCheckingDetails: false)
-			}
-			CompleteButton(store: store.scope(state: { $0 },
-											  action: { .complete($0) })
-			)
-		}
+		HTMLFormView(store: store, isCheckingDetails: false)
 	}
 }
 
@@ -53,15 +46,19 @@ struct HTMLFormView: View {
 	}
 
 	public var body: some View {
-		VStack {
-			Text(viewStore.state).font(.title)
-			ForEachStore(store.scope(state: { $0.formStructure },
-									 action: { HTMLFormAction.rows(idx: $0, action:$1) }),
-						 content: { localStore in
-							FormSectionField(store: localStore,
-											 isCheckingDetails: isCheckingDetails)
-						 }
-			)
+		ScrollView {
+			LazyVStack {
+				ForEachStore(store.scope(state: { $0.formStructure },
+										 action: { HTMLFormAction.rows(idx: $0, action: $1) }),
+							 content: { localStore in
+								FormSectionField(store: localStore,
+												 isCheckingDetails: isCheckingDetails)
+							 }
+				)
+				CompleteButton(store: store.scope(state: { $0 },
+												  action: { .complete($0) })
+				)
+			}
 		}
 	}
 }

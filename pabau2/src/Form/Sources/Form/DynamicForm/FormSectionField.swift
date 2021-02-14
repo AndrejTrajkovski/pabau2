@@ -43,7 +43,8 @@ struct FormSectionField: View {
 			FormFieldStore(store: store.scope(
 							state: { $0.cssClass })
 			)
-		}.background(Color.white)
+		}
+		.background(Color.white)
 		.border(borderColor, width: 2.0)
 	}
 
