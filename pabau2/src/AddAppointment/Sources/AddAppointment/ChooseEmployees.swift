@@ -23,7 +23,6 @@ public enum ChooseEmployeesAction: Equatable {
     case didSelectEmployee(Employee)
     case onSearch(String)
     case didTapBackBtn
-    
 }
 
 let chooseEmployeesReducer =
@@ -31,7 +30,7 @@ let chooseEmployeesReducer =
         switch action {
         case .onAppear:
             state.searchText = ""
-            return env.apiClient.getEmployees()
+            return env.journeyAPI.getEmployees()
                 .catchToEffect()
                 .map(ChooseEmployeesAction.gotEmployeeResponse)
                 .receive(on: DispatchQueue.main)

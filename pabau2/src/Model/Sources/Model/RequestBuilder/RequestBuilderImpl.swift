@@ -77,6 +77,7 @@ open class RequestBuilderImpl<T: Decodable>: RequestBuilder<T> {
 					if error is DecodingError {
 						var errorMessage = error.localizedDescription + "\n" + (String.init(data: data, encoding: .utf8) ?? ". String not utf8")
 						errorMessage += self.stringIfDecodingError(error) ?? ""
+                        print("errorMessage - \(errorMessage)")
 						return RequestError.jsonDecoding(errorMessage)
 					} else {
 						return error as? RequestError ?? .unknown

@@ -46,6 +46,24 @@ extension APIClient {
             .eraseToEffect()
     }
 
+    public func getServices() -> Effect<[Service], RequestError> {
+        struct ServiceResponse: Codable {
+            public let services: [Service]
+            enum CodingKeys: String, CodingKey {
+                case services = "employees"
+            }
+        }
+        let requestBuilder: RequestBuilder<ServiceResponse>.Type = requestBuilderFactory.getBuilder()
+        return requestBuilder.init(method: .GET,
+                                   baseUrl: baseUrl,
+                                   path: .getServices,
+                                   queryParams: commonParams(),
+                                   isBody: false)
+            .effect()
+            .map(\.services)
+            .eraseToEffect()
+    }
+
     public func getPhotos(clientId: Int) -> Effect<[SavedPhoto], RequestError> {
         struct PhotoResponse: Codable {
             public let photos: [SavedPhoto]
