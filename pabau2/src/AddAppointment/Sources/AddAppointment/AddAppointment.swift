@@ -49,7 +49,7 @@ public struct AddAppointmentState: Equatable {
 public enum AddAppointmentAction: Equatable {
     case saveAppointmentTap
     case addAppointmentDismissed
-    case chooseStartDate
+    case chooseStartDate(Date)
     case clients(ChooseClientsAction)
     case services(ChooseServiceAction)
     case durations(SingleChoiceLinkAction<Duration>)
@@ -153,7 +153,13 @@ public let addAppointmentValueReducer: Reducer<AddAppointmentState,
                                                 textFieldReducer.pullback(
                                                     state: \AddAppointmentState.note,
                                                     action: /AddAppointmentAction.note,
-                                                    environment: { $0 })
+                                                    environment: { $0 }),
+												.init { state, action, _ in
+													if case let AddAppointmentAction.chooseStartDate(startDate) = action {
+														state.startDate = startDate
+													}
+													return .none
+												}
                                                )
 
 public let addAppointmentReducer: Reducer<AddAppointmentState?,
@@ -218,7 +224,9 @@ struct ClientDaySection: View {
                     )
                 )
             )
-            TitleAndValueLabel.init("DAY", self.viewStore.state.startDate.toString())
+			DatePickerControl.init("DAY", viewStore.binding(get: { $0.startDate },
+															send: { .chooseStartDate($0!) })
+			)
         }
     }
 }
