@@ -150,13 +150,13 @@ func patientForm(stepType: StepType,
 										action: { .patientDetails($0) })
 		)
 	case .medicalhistory:
-		ListHTMLForm(store: store.scope(state: { $0.medicalHistory },
+		HTMLFormViewCompleteBtn(store: store.scope(state: { $0.medicalHistory },
 										action: { .medicalHistory($0) })
 		)
 	case .consents:
 		ForEachStore(store.scope(state: { $0.consents },
 								 action: CheckInPatientAction.consents(id: action:)),
-					 content: ListHTMLForm.init(store:)
+					 content: HTMLFormViewCompleteBtn.init(store:)
 		)
 	case .patientComplete:
 		PatientCompleteForm(store: store.scope(state: { $0.isPatientComplete }, action: { .patientComplete($0)})

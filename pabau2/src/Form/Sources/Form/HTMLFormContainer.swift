@@ -55,15 +55,12 @@ public struct HTMLFormParent: View {
 	}
 
 	let store: Store<HTMLFormParentState, HTMLFormParentAction>
-
+	
 	public var body: some View {
 		IfLetStore(store.scope(state: { $0.form },
 							   action: { .form($0) }),
-				   then: { HTMLFormView.init(store: $0, isCheckingDetails: false) },
-				   else: VStack {
-					Text("Loading")
-					ActivityIndicator(isAnimating: .constant(true), style: .large)
-				}
+				   then: { HTMLFormViewCompleteBtn(store: $0) },
+				   else: LoadingView.init(title: "Loading", bindingIsShowing: .constant(true), content: { Spacer()})
 		)
 	}
 }

@@ -18,7 +18,7 @@ public enum HTMLFormAction: Equatable {
 //	case requests(JourneyFormRequestsAction<HTMLForm>)
 }
 
-public struct ListHTMLForm: View {
+public struct HTMLFormViewCompleteBtn: View {
 
 	let store: Store<HTMLForm, HTMLFormAction>
 	
@@ -29,7 +29,12 @@ public struct ListHTMLForm: View {
 	}
 	
 	public var body: some View {
-		HTMLFormView(store: store, isCheckingDetails: false)
+		VStack {
+			HTMLFormView(store: store, isCheckingDetails: false)
+			CompleteButton(store: store.scope(state: { $0 },
+											  action: { .complete($0) })
+			)
+		}
 	}
 }
 
@@ -54,9 +59,6 @@ struct HTMLFormView: View {
 								FormSectionField(store: localStore,
 												 isCheckingDetails: isCheckingDetails)
 							 }
-				)
-				CompleteButton(store: store.scope(state: { $0 },
-												  action: { .complete($0) })
 				)
 			}
 		}
