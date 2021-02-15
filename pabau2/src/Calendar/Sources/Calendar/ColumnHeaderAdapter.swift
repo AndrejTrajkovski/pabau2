@@ -25,7 +25,7 @@ enum ColumnHeaderAdapter {
 
 	static func viewModel(room: Room?,
 						  location: Location?) -> ColumnHeaderViewModel {
-		let color = location?.color != nil ? UIColor.fromHex(location!.color) : UIColor.clear
+		let color = location?.color != nil ? UIColor.fromHex(location?.color ?? "") : UIColor.clear
 		return ColumnHeaderViewModel(title: room?.name ?? "unknown",
 									 subtitle: location?.name ?? "unknown",
 									 color: color)
@@ -33,7 +33,7 @@ enum ColumnHeaderAdapter {
 
 	static func viewModel(employee: Employee?,
 						  location: Location?) -> ColumnHeaderViewModel {
-		let color = location?.color != nil ? UIColor.fromHex(location!.color) : UIColor.clear
+		let color = location?.color != nil ? UIColor.fromHex(location?.color ?? "") : UIColor.clear
 		return ColumnHeaderViewModel(title: employee?.name ?? "unknown",
 									 subtitle: location?.name ?? "unknown",
 									 color: color)

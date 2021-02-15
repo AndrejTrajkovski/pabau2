@@ -50,41 +50,6 @@ extension APIClient {
 			.eraseToEffect()
 	}
 	
-	public func getAppointments(clientId: Int) -> Effect<[Appointment], RequestError> {
-		struct AppointmentResponse: Codable {
-			let appointments: [Appointment]
-		}
-		let requestBuilder: RequestBuilder<AppointmentResponse>.Type = requestBuilderFactory.getBuilder()
-		return requestBuilder.init(method: .GET,
-								   baseUrl: baseUrl,
-								   path: .getClientsAppointmens,
-								   queryParams: commonAnd(other: ["id": "\(clientId)"]),
-								   isBody: false)
-			.effect()
-			.map(\.appointments)
-			.eraseToEffect()
-	}
-	
-	public func getPhotos(clientId: Int) -> Effect<[SavedPhoto], RequestError> {
-		struct PhotoResponse: Codable {
-			public let photos: [SavedPhoto]
-			enum CodingKeys: String, CodingKey {
-				case photos = "employees"
-			}
-		}
-		let requestBuilder: RequestBuilder<PhotoResponse>.Type = requestBuilderFactory.getBuilder()
-		return requestBuilder.init(method: .GET,
-								   baseUrl: baseUrl,
-								   path: .getClientsPhotos,
-								   queryParams: commonAnd(other: [
-															"contact_id": "\(clientId)"
-								   ]),
-								   isBody: false)
-			.effect()
-			.map(\.photos)
-			.eraseToEffect()
-	}
-	
 	public func getFinancials(clientId: Int) -> Effect<[Financial], RequestError> {
 		struct FinancialResponse: Codable {
 			let sales: [Financial]
@@ -223,6 +188,64 @@ extension APIClient {
     public func addNote(clientId: Int, note: String) -> Effect<Note, RequestError> {
         Just(Note(id: 24214, content: note, date: Date()))
             .mapError { _ in RequestError.unknown }
+			.eraseToEffect()
+	}
+
+    public func getItemsCount(clientId: Client.ID) -> Effect<ClientItemsCount, RequestError> {
+        Effect(value: ClientItemsCount.init(id: 1, appointments: 2, photos: 4, financials: 6, treatmentNotes: 3, presriptions: 10, documents: 15, communications: 123, consents: 4381, alerts: 123, notes: 0))
+            .eraseToEffect()
+    }
+
+    public func getAppointments(clientId: Int) -> Effect<[Appointment], RequestError> {
+        struct AppointmentResponse: Codable {
+            let appointments: [Appointment]
+        }
+        let requestBuilder: RequestBuilder<AppointmentResponse>.Type = requestBuilderFactory.getBuilder()
+        return requestBuilder.init(method: .GET,
+                                   baseUrl: baseUrl,
+                                   path: .getClientsAppointmens,
+                                   queryParams: commonAnd(other: ["id": "\(clientId)"]),
+                                   isBody: false)
+            .effect()
+            .map(\.appointments)
+            .eraseToEffect()
+    }
+
+    public func getServices() -> Effect<[Service], RequestError> {
+        struct ServiceResponse: Codable {
+            public let services: [Service]
+            enum CodingKeys: String, CodingKey {
+                case services = "employees"
+            }
+        }
+        let requestBuilder: RequestBuilder<ServiceResponse>.Type = requestBuilderFactory.getBuilder()
+        return requestBuilder.init(method: .GET,
+                                   baseUrl: baseUrl,
+                                   path: .getServices,
+                                   queryParams: commonParams(),
+                                   isBody: false)
+            .effect()
+            .map(\.services)
+            .eraseToEffect()
+    }
+
+    public func getPhotos(clientId: Int) -> Effect<[SavedPhoto], RequestError> {
+        struct PhotoResponse: Codable {
+            public let photos: [SavedPhoto]
+            enum CodingKeys: String, CodingKey {
+                case photos = "employees"
+            }
+        }
+        let requestBuilder: RequestBuilder<PhotoResponse>.Type = requestBuilderFactory.getBuilder()
+        return requestBuilder.init(method: .GET,
+                                   baseUrl: baseUrl,
+                                   path: .getClientsPhotos,
+                                   queryParams: commonAnd(other: [
+                                    "contact_id": "\(clientId)"
+                                   ]),
+                                   isBody: false)
+            .effect()
+            .map(\.photos)
             .eraseToEffect()
     }
     
@@ -240,7 +263,6 @@ extension APIClient {
                                    isBody: false)
             .effect()
             .map(\.success)
-            .mapError { $0 as? RequestError ?? RequestError.unknown }
             .eraseToEffect()
     }
 }

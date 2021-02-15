@@ -5,11 +5,11 @@ import Util
 import SharedComponents
 
 let chooseEmployeesReducer =
-    Reducer<ChooseEmployeesState, ChooseEmployeesAction, AddAppointmentEnv> { state, action, env in
+    Reducer<ChooseEmployeesState, ChooseEmployeesAction, AddShiftEnvironment> { state, action, env in
         switch action {
         case .onAppear:
             state.searchText = ""
-            return env.journeyAPI.getEmployees()
+            return env.apiClient.getEmployees()
                 .catchToEffect()
                 .map(ChooseEmployeesAction.gotEmployeeResponse)
                 .receive(on: DispatchQueue.main)

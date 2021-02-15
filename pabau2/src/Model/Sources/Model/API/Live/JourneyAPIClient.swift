@@ -1,4 +1,6 @@
 import ComposableArchitecture
+import Util
+
 //MARK: - JourneyAPI
 extension APIClient {
 	
@@ -59,4 +61,21 @@ extension APIClient {
 			.map(\.locations)
 			.eraseToEffect()
 	}
+    
+    public func createShift(shiftSheme: ShiftSchema) -> Effect<PlaceholdeResponse, RequestError> {
+        let requestBuilder: RequestBuilder<PlaceholdeResponse>.Type = requestBuilderFactory.getBuilder()
+        
+      
+        let shiftShemeData = try? JSONEncoder().encode(shiftSheme)
+        let params = shiftShemeData?.dictionary() ?? [:]
+        
+        return requestBuilder.init(
+            method: .POST,
+            baseUrl: baseUrl,
+            path: .createShift,
+            queryParams: commonAnd(other: params),
+            isBody: true
+        )
+        .effect()
+    }
 }

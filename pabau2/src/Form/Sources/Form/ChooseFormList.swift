@@ -65,7 +65,7 @@ public let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, Fo
 		state.templatesLoadingState = .loading
 		return
 			state.templates.isEmpty ?
-				environment.apiClient.getTemplates(formType)
+				environment.journeyAPI.getTemplates(formType)
 				.catchToEffect()
 				.map(ChooseFormAction.gotResponse)
 					.eraseToEffect()

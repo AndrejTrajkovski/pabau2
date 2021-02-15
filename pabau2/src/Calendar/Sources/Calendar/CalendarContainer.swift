@@ -52,6 +52,8 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 		case .week(.addAppointment(let startOfDayDate, let startDate, let durationMins)):
 			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
 			state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate)
+        case .week(.editAppointment(let appointment)):
+            state.addAppointment = AddAppointmentState.init(editingAppointment: appointment, startDate: appointment.start_time, endDate: appointment.end_time)
 		case .appDetails(.addService):
 			let start = state.calendar.appDetails!.app.start_date
 			let end = state.calendar.appDetails!.app.end_date
@@ -171,22 +173,33 @@ public struct CalendarContainer: View {
 						.transition(.moveAndFade)
 				}
 			}
-			.fullScreenCover(isPresented:
-								Binding(get: { activeSheet(state: viewStore.state) != nil },
-										set: { _ in dismissAction(state: viewStore.state).map(viewStore.send) }
-								), content: {
-									Group {
-										IfLetStore(store.scope(state: { $0.appDetails },
-															   action: { .appDetails($0) }),
-												   then: AppointmentDetails.init(store:))
-										IfLetStore(store.scope(state: { $0.addBookout },
-															   action: { .addBookout($0) }),
-												   then: AddBookout.init(store:))
-										IfLetStore(store.scope(state: { $0.addShift },
-															   action: { .addShift($0) }),
-												   then: AddShift.init(store:))
-									}
-								}
+			.fullScreenCover(
+                isPresented:
+                    Binding(get: { activeSheet(state: viewStore.state) != nil },
+                            set: { _ in dismissAction(state: viewStore.state).map(viewStore.send) }
+                    ),
+                content: {
+                    Group {
+                        IfLetStore(
+                            store.scope(
+                                state: { $0.appDetails },
+                                action: { .appDetails($0) }),
+                                then: AppointmentDetails.init(store:)
+                        )
+                        IfLetStore(
+                            store.scope(
+                                state: { $0.addBookout },
+                                action: { .addBookout($0) }),
+                                then: AddBookout.init(store:)
+                        )
+                        IfLetStore(
+                            store.scope(
+                                state: { $0.addShift },
+                                action: { .addShift($0) }),
+                                then: AddShift.init(store:)
+                        )
+                    }
+                }
 			)
 		}
 	}

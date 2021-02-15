@@ -12,7 +12,7 @@ import Filters
 import SharedComponents
 import Appointments
 
-public typealias JourneyEnvironment = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
+public typealias JourneyEnvironment = (journeyAPI: JourneyAPI, clientsAPI: ClientsAPI, userDefaults: UserDefaultsConfig)
 
 let checkInMiddleware2 = Reducer<JourneyState, ChooseFormAction, JourneyEnvironment> { state, action, _ in
 	switch action {
@@ -72,7 +72,11 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 			state.employeesFilter.isShowingEmployees.toggle()
 		case .datePicker(.selectedDate(let date)):
 //			state.loadingState = .loading
-			return env.apiClient.getAppointments(startDate: date, endDate: date, locationIds: [state.journey.selectedLocation.id], employeesIds: Array(state.employeesFilter.employees.map(\.id)), roomIds: [])
+			return env.journeyAPI.getAppointments(startDate: date,
+                                                  endDate: date,
+                                                  locationIds: [state.journey.selectedLocation.id],
+                                                  employeesIds: Array(state.employeesFilter.employees.map(\.id)),
+                                                  roomIds: [])
 //				.map(with(date, curry(calendarResponseToJourneys(date:events:))))
 				.catchToEffect()
 				.map { JourneyContainerAction.gotResponse($0) }
