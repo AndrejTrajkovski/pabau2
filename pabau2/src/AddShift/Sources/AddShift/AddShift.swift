@@ -19,9 +19,28 @@ public let addShiftOptReducer: Reducer<AddShiftState?, AddShiftAction, AddShiftE
                 guard let shiftSheme = state?.shiftSchema else {
                     break
                 }
+
+                var isValid = true
+
+                if state?.startTime == nil {
+                    isValid = false
+                    state?.startTimeConfigurator.state = .error
+                }
+
+                if state?.endTime == nil {
+                    isValid = false
+                    state?.endTimeConfigurator.state = .error
+                }
                 
+                if state?.chooseEmployeesState.chosenEmployee?.name == nil {
+                    isValid = false
+                    state?.employeeConfigurator.state = .error
+                }
+
+                if !isValid { break }
+
                 state?.showsLoadingSpinner = true
-             
+
                 return env.apiClient.createShift(
                     shiftSheme: shiftSheme
                 )
@@ -31,7 +50,7 @@ public let addShiftOptReducer: Reducer<AddShiftState?, AddShiftAction, AddShiftE
                 .eraseToEffect()
             case .shiftCreated(let result):
                 state?.showsLoadingSpinner = false
-                
+
                 switch result {
                 case .success:
                     state = nil
@@ -71,12 +90,15 @@ public let addShiftReducer: Reducer<AddShiftState, AddShiftAction, AddShiftEnvir
 				state.startDate = date
 			case .startTime(let date):
 				state.startTime = date
+                state.startTimeConfigurator.state = .normal
 			case .endTime(let date):
 				state.endTime = date
+                state.endTimeConfigurator.state = .normal
             case .note(.textChange(let text)):
                 state.note = text
             case .onChooseEmployee:
                 state.chooseEmployeesState.isChooseEmployeesActive = true
+                state.employeeConfigurator.state = .normal
             case .onChooseLocation:
                 state.chooseLocationState.isChooseLocationActive = true
 			default: break
@@ -95,16 +117,13 @@ public struct AddShiftState: Equatable {
 	var note: String
 
     var showsLoadingSpinner: Bool = false
+    var employeeConfigurator = ViewConfigurator(errorString: "Employee is required")
+    var startTimeConfigurator = ViewConfigurator(errorString: "Start Time is required")
+    var endTimeConfigurator = ViewConfigurator(errorString: "End Time is required")
 
-    var shiftSchema: ShiftSchema? {
-        guard let rotaUID = chooseEmployeesState.chosenEmployee?.id.rawValue else {
-            return nil
-        }
-
-        guard let locationID = chooseLocationState.chosenLocation?.id.rawValue else {
-            return nil
-        }
-      
+    var shiftSchema: ShiftSchema {
+        let rotaUID = chooseEmployeesState.chosenEmployee?.id.rawValue
+        let locationID = chooseLocationState.chosenLocation?.id.rawValue
         return ShiftSchema(
             date: startDate?.toFormat("yyyy-dd-MM"),
             startTime: endTime?.toFormat("HH:mm"),
@@ -130,10 +149,11 @@ public enum AddShiftAction {
 	case note(TextChangeAction)
 	case saveShift
 	case close
+    case ignore
 }
 
 public struct AddShift: View {
-  
+
 	let store: Store<AddShiftState, AddShiftAction>
 	@ObservedObject var viewStore: ViewStore<AddShiftState, AddShiftAction>
 
@@ -150,7 +170,11 @@ public struct AddShift: View {
                 TitleAndValueLabel(
                     "EMPLOYEE",
                     self.viewStore.state.chooseEmployeesState.chosenEmployee?.name ?? "Choose Employee",
-                    self.viewStore.state.chooseEmployeesState.chosenEmployee?.name == nil ? Color.grayPlaceholder : nil
+                    self.viewStore.state.chooseEmployeesState.chosenEmployee?.name == nil ? Color.grayPlaceholder : nil,
+                    viewStore.binding(
+                        get: { $0.employeeConfigurator },
+                        send: .ignore
+                    )
                 ).onTapGesture {
                     self.viewStore.send(.onChooseEmployee)
                 }
@@ -166,6 +190,8 @@ public struct AddShift: View {
             }.wrapAsSection(title: "Add Shift")
             LocationAndDate(store: store).wrapAsSection(title: "Date & Time")
             NotesSection(
+                title: "SHIFT NOTE",
+                tfLabel: "Add a shift note",
                 store: store.scope(
                     state: { $0.note },
                     action: { .note($0)}
@@ -209,17 +235,40 @@ struct LocationAndDate: View {
                         )
                     )
                 )
-				DatePickerControl("Day", viewStore.binding(get: { $0.startDate },
-														   send: { .startDate($0) })
+				DatePickerControl(
+                    "Day",
+                    viewStore.binding(
+                        get: { $0.startDate },
+					    send: { .startDate($0) }
+                    )
 				)
 			}
 			HStack(spacing: 16) {
-				DatePickerControl("START TIME",
-								  viewStore.binding(get: { $0.startTime },
-													send: { .startTime($0) }), mode: .time)
-				DatePickerControl("END TIME",
-								  viewStore.binding(get: { $0.endTime },
-													send: { .endTime($0) }), mode: .time)
+				DatePickerControl(
+                    "START TIME",
+					viewStore.binding(
+                        get: { $0.startTime },
+                        send: { .startTime($0) }
+                    ),
+                    viewStore.binding(
+                        get: { $0.startTimeConfigurator },
+                        send: AddShiftAction.ignore
+                    ),
+                    mode: .time
+                )
+                
+				DatePickerControl(
+                    "END TIME",
+					viewStore.binding(
+                        get: { $0.endTime },
+                        send: { .endTime($0) }
+                    ),
+                    viewStore.binding(
+                        get: { $0.endTimeConfigurator },
+                        send: AddShiftAction.ignore
+                    ),
+                    mode: .time
+                )
 			}
 		}
 	}

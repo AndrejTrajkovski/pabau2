@@ -24,6 +24,10 @@ public struct AddAppointmentState: Equatable {
     var note: String = ""
 
     var showsLoadingSpinner: Bool
+    var employeeConfigurator = ViewConfigurator(errorString: "Employee is required")
+    var chooseClintConfigurator = ViewConfigurator(errorString: "Clint is required")
+    var chooseDateConfigurator = ViewConfigurator(errorString: "Day is required")
+    var chooseServiceConfigurator = ViewConfigurator(errorString: "Service is required")
 
     var appointmentsBody: AppointmentBuilder {
         if let editingAppointment = editingAppointment {
@@ -66,6 +70,7 @@ public enum AddAppointmentAction: Equatable {
     case feedback(ToggleAction)
     case note(TextChangeAction)
     case appointmentCreated(Result<PlaceholdeResponse, RequestError>)
+    case ignore
 }
 
 extension Employee: SingleChoiceElement { }
@@ -76,6 +81,28 @@ let addAppTapBtnReducer = Reducer<AddAppointmentState?,
     switch action {
     case .saveAppointmentTap:
         if let appointmentsBody = state?.appointmentsBody {
+            var isValid = true
+
+            if state?.clients.chosenClient?.fullname == nil {
+                state?.chooseClintConfigurator.state = .error
+
+                isValid = false
+            }
+
+            if state?.services.chosenService?.name == nil {
+                state?.chooseServiceConfigurator.state = .error
+
+                isValid = false
+            }
+
+            if state?.with.chosenEmployee?.name == nil {
+                state?.employeeConfigurator.state = .error
+              
+                isValid = false
+            }
+
+            if !isValid { break }
+
             state?.showsLoadingSpinner = true
 
             return env.clientAPI.createAppointment(appointment: appointmentsBody)
@@ -89,10 +116,13 @@ let addAppTapBtnReducer = Reducer<AddAppointmentState?,
         state = nil
     case .didTapServices:
         state?.services.isChooseServiceActive = true
+        state?.chooseServiceConfigurator.state = .normal
     case .didTabClients:
         state?.clients.isChooseClientsActive = true
+        state?.chooseClintConfigurator.state = .normal
     case .didTapWith:
         state?.with.isChooseEmployeesActive = true
+        state?.employeeConfigurator.state = .normal
     case .appointmentCreated(let result):
         state?.showsLoadingSpinner = false
 
@@ -211,7 +241,11 @@ struct ClientDaySection: View {
             TitleAndValueLabel(
                 "CLIENT",
                 self.viewStore.state.clients.chosenClient?.fullname ??  "Choose client",
-                self.viewStore.state.clients.chosenClient?.fullname == nil ? Color.grayPlaceholder : nil
+                self.viewStore.state.clients.chosenClient?.fullname == nil ? Color.grayPlaceholder : nil,
+                viewStore.binding(
+                    get: { $0.chooseClintConfigurator },
+                    send: .ignore
+                )
             ).onTapGesture {
                 self.viewStore.send(.didTabClients)
             }
@@ -224,9 +258,13 @@ struct ClientDaySection: View {
                     )
                 )
             )
-			DatePickerControl.init("DAY", viewStore.binding(get: { $0.startDate },
-															send: { .chooseStartDate($0!) })
-			)
+            DatePickerControl.init(
+                "DAY", viewStore.binding(
+                    get: { $0.startDate },
+                    send: { .chooseStartDate($0!) }
+                )
+            )
+
         }
     }
 }
@@ -244,7 +282,11 @@ struct ServicesDurationSection: View {
                 TitleAndValueLabel(
                     "SERVICE",
                     self.viewStore.state.services.chosenService?.name ?? "Choose Service",
-                    self.viewStore.state.services.chosenService?.name == nil ? Color.grayPlaceholder : nil
+                    self.viewStore.state.services.chosenService?.name == nil ? Color.grayPlaceholder : nil,
+                    viewStore.binding(
+                        get: { $0.chooseServiceConfigurator },
+                        send: .ignore
+                    )
                 ).onTapGesture {
                     self.viewStore.send(.didTapServices)
                 }
@@ -271,7 +313,11 @@ struct ServicesDurationSection: View {
                 TitleAndValueLabel(
                     "WITH",
                     self.viewStore.state.with.chosenEmployee?.name ?? "Choose Employee",
-                    self.viewStore.state.with.chosenEmployee?.name == nil ? Color.grayPlaceholder : nil
+                    self.viewStore.state.with.chosenEmployee?.name == nil ? Color.grayPlaceholder : nil,
+                    viewStore.binding(
+                        get: { $0.employeeConfigurator },
+                        send: .ignore
+                    )
                 ).onTapGesture {
                     self.viewStore.send(.didTapWith)
                 }
@@ -321,6 +367,8 @@ struct AddAppSections: View {
             ClientDaySection(store: self.store)
             ServicesDurationSection(store: self.store)
             NotesSection(
+                title: "BOOKING NOTE",
+                tfLabel: "Add a booking note",
                 store: store.scope(
                     state: { $0.note },
                     action: { .note($0) }

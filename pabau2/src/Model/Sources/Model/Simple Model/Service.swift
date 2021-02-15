@@ -36,7 +36,7 @@ public struct Service: Codable, Identifiable, Equatable, Hashable {
     public enum CodingKeys: String, CodingKey {
         case id = "id"
         case name = "service_name"
-        case color
+        case color = "service_color"
         case categoryName = "category_name"
         case disabledUsers = "disabledusers"
         case duration

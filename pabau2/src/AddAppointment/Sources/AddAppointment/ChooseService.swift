@@ -106,8 +106,8 @@ struct ChooseService: View {
             }
             List {
                 ForEach(self.viewStore.state.listServices, id: \.self.first?.categoryName) { (group: [Service]) in
-                    Section(header:
-                                TextHeader(name: group.first?.categoryName ?? "No name")
+                    Section(
+                        header:TextHeader(name: group.first?.categoryName ?? "No name")
                     ) {
                         ForEach(group, id: \.self) { (service: Service) in
                             ServiceRow(service: service).onTapGesture {

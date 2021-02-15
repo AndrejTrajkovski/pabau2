@@ -76,19 +76,19 @@ public struct ShiftSchema: Codable {
     let date: String?
     let startTime: String?
     let endTime: String?
-    let locationID: String
+    let locationID: String?
     let notes: String
     let published: Bool
-    let rotaUID: String
+    let rotaUID: String?
     
     public init(
         date: String?,
         startTime: String?,
         endTime: String?,
-        locationID: String,
+        locationID: String?,
         notes: String,
         published: Bool,
-        rotaUID: String
+        rotaUID: String?
     ) {
         self.date = date
         self.startTime = startTime

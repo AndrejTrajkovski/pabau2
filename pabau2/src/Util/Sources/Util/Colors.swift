@@ -14,7 +14,7 @@ extension UIColor {
 			hexFormatted = String(hexFormatted.dropFirst())
 		}
 
-		assert(hexFormatted.count == 6, "Invalid hex code used.")
+		//assert(hexFormatted.count == 6, "Invalid hex code used.")
 
 		var rgbValue: UInt64 = 0
 		Scanner(string: hexFormatted).scanHexInt64(&rgbValue)
