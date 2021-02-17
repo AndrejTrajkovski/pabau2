@@ -42,7 +42,7 @@ struct FormSectionField: View {
 		) {
 			FormFieldStore(store: store.scope(
 							state: { $0.cssClass })
-			)
+			).padding([.leading, .trailing], 16)
 		}
 		.background(Color.white)
 		.border(borderColor, width: 2.0)
@@ -140,7 +140,7 @@ struct FormFieldStore: View {
 		IfLetStore(store.scope(
 					state: { extract(case: CSSClass.staticText, from: $0)}).actionless,
 				   then: { store in
-					Text(ViewStore(store).text)
+					AttributedOrTextField(store: store.scope(state: { $0.value }))
 				   })
 		IfLetStore(store.scope(
 					state: { extract(case: CSSClass.input_text, from: $0)},
@@ -172,12 +172,11 @@ struct FormFieldStore: View {
 					state: { extract(case: CSSClass.select, from: $0)},
 					action: { .select($0)}),
 				   then: SelectField.init(store:))
-//		IfLetStore(store.scope(
-//					state: { extract(case: CSSClass.heading, from: $0)},
-//					action: { .heading($0)}),
-//				   then: { store in
-//					return EmptyView()
-//				   })
+		IfLetStore(store.scope(
+					state: { extract(case: CSSClass.heading, from: $0)}).actionless,
+				   then: { store in
+					AttributedOrTextField(store: store.scope(state: { $0.value }))
+				   })
 //		IfLetStore(store.scope(
 //					state: { extract(case: CSSClass.cl_drugs, from: $0)},
 //					action: { .cl_drugs($0)}),

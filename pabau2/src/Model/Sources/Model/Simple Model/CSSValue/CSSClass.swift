@@ -50,7 +50,8 @@ public enum CSSClass: Equatable {
 		let stringValue = extract(case: Values.string, from:_formStructure.values) ?? ""
 		switch _formStructure.cssClass {
 		case .staticText:
-			self = .staticText(StaticText(stringValue))
+			print("static text: \(stringValue)")
+			self = .staticText(StaticText(AttributedOrText.init(value: stringValue)))
 		case .input_text:
 			self = .input_text(InputText(text: stringValue))
 		case .textarea:
@@ -70,7 +71,7 @@ public enum CSSClass: Equatable {
 				.map(\.value).map(SelectChoice.init)
 			self = .select(SelectState.init(choices))
 		case .heading:
-			self = .heading(Heading.init())
+			self = .heading(Heading.init(value: AttributedOrText.init(value: stringValue)))
 		case .image:
 			self = .image(stringValue)
 		case .cl_drugs:
