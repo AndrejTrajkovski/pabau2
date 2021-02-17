@@ -1,5 +1,5 @@
 import SwiftUI
-
+import SharedComponents
 import ComposableArchitecture
 import Model
 import Util
@@ -53,86 +53,6 @@ struct FormSectionField: View {
 	}
 }
 
-//struct FormField: View {
-//	@Binding var cssField: CSSField
-//	let myValue: ViewState
-//
-//	init (cssField: Binding<CSSField>) {
-//		self.myValue = ViewState.init(state: cssField.wrappedValue)
-//		self._cssField = cssField
-//	}
-//
-//	struct ViewState: Equatable {
-//		let id: Int
-//		let headerTitle: String
-//		let checkBox: [CheckBoxChoice]?
-//		let radio: Radio?
-//		let staticText: StaticText?
-//		let textArea: TextArea?
-//		let signature: SignatureState?
-//		let inputText: InputText?
-//		let select: SelectState?
-//	}
-//
-//	var body: some View {
-//			Group {
-//				if self.myValue.checkBox != nil {
-//					CheckBoxField(choices:
-//						Binding.init(
-//							get: { self.myValue.checkBox! },
-//							set: { self.cssField.cssClass = CSSClass.checkboxes($0) })
-//					)
-//				}
-//				if self.myValue.radio != nil {
-//					RadioField(radio:
-//						Binding.init(
-//							get: { self.myValue.radio! },
-//							set: { self.cssField.cssClass = CSSClass.radio($0) })
-//					)
-//				}
-//				if self.myValue.staticText != nil {
-//					Text(self.myValue.staticText!.text)
-//				}
-//				if self.myValue.textArea != nil {
-//					TextAreaField(textArea:
-//						Binding.init(
-//								get: { self.myValue.textArea! },
-//								set: { self.cssField.cssClass = CSSClass.textarea($0) }
-//						)
-//					)
-//					.frame(height: 150)
-//				}
-//				if self.myValue.select != nil {
-//					SelectField(select:
-//						Binding.init(
-//								get: { self.myValue.select! },
-//								set: { self.cssField.cssClass = CSSClass.select($0) }
-//						)
-//					)
-//				}
-//				if self.myValue.signature != nil {
-//					SignatureField(signature:
-//						Binding(
-//							get: { self.myValue.signature! },
-//							set: { self.cssField.cssClass = CSSClass.signature($0) }),
-//												 title: self.cssField.title ?? ""
-//					)
-//				}
-//				if self.myValue.inputText != nil {
-//					InputTextField.init(initialValue: self.myValue.inputText!.text) {
-//						self.cssField.cssClass = CSSClass.input_text(InputText(text: $0))
-//					}
-////					TextAndTextField (
-////						self.cssField.title ?? "",
-////						Binding.init(
-////							get: { self.myValue.inputText! .text},
-////							set: { self.cssField.cssClass = CSSClass.input_text(InputText(text: $0)) })
-////					)
-//				}
-//		}
-//	}
-//}
-
 struct FormFieldStore: View {
 	let store: Store<CSSClass, CSSClassAction>
 
@@ -140,20 +60,22 @@ struct FormFieldStore: View {
 		IfLetStore(store.scope(
 					state: { extract(case: CSSClass.staticText, from: $0)}).actionless,
 				   then: { store in
-					AttributedOrTextField(store: store.scope(state: { $0.value }))
+						AttributedOrTextField(store: store.scope(state: { $0.value }))
 				   })
 		IfLetStore(store.scope(
 					state: { extract(case: CSSClass.input_text, from: $0)},
 					action: { .inputText($0)}),
-				   then: { _ in
-					return Text("Input texts")
-				   })
+				   then: {
+						InputTextField(store: $0.scope(state: { $0.text }))
+				   }
+		)
 		IfLetStore(store.scope(
 					state: { extract(case: CSSClass.textarea, from: $0)},
 					action: { .textArea($0)}),
-				   then: { _ in
-					return Text("TextArea")
-				   })
+				   then: {
+						TextAreaField(store: $0)
+				   }
+		)
 		IfLetStore(store.scope(
 					state: { extract(case: CSSClass.radio, from: $0)},
 					action: { .radio($0)}),
@@ -224,7 +146,7 @@ let cssClassReducer: Reducer<CSSClass, CSSClassAction, FormEnvironment> =
 	)
 
 public enum CSSClassAction: Equatable {
-	case inputText(TextFieldAction)
+	case inputText(TextChangeAction)
 	case textArea(TextAreaFieldAction)
 	case radio(RadioFieldAction)
 	case signature(SignatureAction)
