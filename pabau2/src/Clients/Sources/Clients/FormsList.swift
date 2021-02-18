@@ -4,7 +4,7 @@ import ComposableArchitecture
 import Form
 
 public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnvironment> = .combine (
-	ClientCardChildReducer<[FormData]>().reducer.pullback(
+	ClientCardChildReducer<IdentifiedArrayOf<FormData>>().reducer.pullback(
 		state: \FormsListState.childState,
 		action: /FormsListAction.action,
 		environment: { $0 }
@@ -18,9 +18,19 @@ public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnv
 		switch action {
 		case .add:
 			state.formsContainer = FormsContainerState(formType: state.formType,
+													   chooseForms: ChooseFormState(templates: [], selectedTemplatesIds: []),
+													   isFillingFormsActive: false,
 													   selectedIdx: 0)
 		case .action:
 			break
+		case .onSelect(let id):
+			let selected: FormData = state.childState.state[id: id]!
+			let parent = HTMLFormParentState.init(info: htmlInfo)
+			state.formsContainer = FormsContainerState(formType: state.formType,
+													   chooseForms: nil,
+													   isFillingFormsActive: true,
+													   selectedIdx: 0)
+			state.formsContainer.formsEntriesCollection.append(parent)
 		case .backFromChooseForms:
 			state.formsContainer = nil
 		case .formsContainer(_):
@@ -31,16 +41,17 @@ public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnv
 )
 
 public struct FormsListState: ClientCardChildParentState, Equatable {
-	var childState: ClientCardChildState<[FormData]>
+	var childState: ClientCardChildState<IdentifiedArrayOf<FormData>>
 	var formType: FormType
 	var formsContainer: FormsContainerState?
 }
 
 public enum FormsListAction: ClientCardChildParentAction, Equatable {
-	case action(GotClientListAction<[FormData]>)
+	case action(GotClientListAction<IdentifiedArrayOf<FormData>>)
 	case add
 	case formsContainer(FormsContainerAction)
 	case backFromChooseForms
+	case onSelect(id: FormData.ID)
 }
 
 struct FormsList: ClientCardChild {
@@ -48,7 +59,9 @@ struct FormsList: ClientCardChild {
 
 	var body: some View {
 		WithViewStore(store) { viewStore in
-			FormsListRaw(state: viewStore.state.childState.state)
+			FormsListRaw(state: viewStore.state.childState.state) {
+				viewStore.send(.onSelect(id: $0))
+			}
 			NavigationLink.emptyHidden(viewStore.state.formsContainer != nil,
 									   IfLetStore(store.scope(state: { $0.formsContainer },
 															  action: { .formsContainer($0)} ),
@@ -65,11 +78,14 @@ struct FormsList: ClientCardChild {
 }
 
 struct FormsListRaw: View {
-	var state: [FormData]
+	var state: IdentifiedArrayOf<FormData>
+	let onSelect: (FormData.ID) -> Void
 	var body: some View {
 		List {
 			ForEach(state.indices, id: \.self) { idx in
-				FormsListRow(form: self.state[idx])
+				FormsListRow(form: self.state[idx]).onTapGesture {
+					onSelect(state[idx].id)
+				}
 			}
 		}
 	}
@@ -79,14 +95,14 @@ struct FormsListRow: View {
 	let form: FormData
 	var body: some View {
 		ClientCardItemBaseRow(title: form.name,
-													date: form.createdAt,
-													image: Image(systemName: form.type.imageName)
+							  date: form.createdAt,
+							  image: Image(systemName: form.type.imageName)
 		)
 	}
 }
 
 extension FormsListAction {
-	var action: GotClientListAction<[FormData]>? {
+	var action: GotClientListAction<IdentifiedArrayOf<FormData>>? {
 		get {
 			if case .action(let app) = self {
 				return app

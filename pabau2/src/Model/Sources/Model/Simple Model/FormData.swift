@@ -1,41 +1,31 @@
 import Foundation
 
 public struct FormData: Codable, Identifiable, Equatable {
-    
-    public let id: Int
-    public let treatmentId: Int
+	public var id: FilledForm.ID { treatmentId }
+	
+	public let templateId: HTMLForm.ID
+    public let treatmentId: FilledForm.ID
     public let name: String
     public let type: FormType
     public let createdAt: Date
     public let epaperImageIds: Int?
     public let epaperFormIds: Int?
     public let uploadedPhotos: String?
-    
-    init(id: Int, treatmentId: Int, name: String, type: FormType, createdAt: Date, epaperImageIds: Int? = nil, epaperFormIds: Int? = nil, uploadedPhotos: String? = nil ) {
-        self.id = id
-        self.treatmentId = treatmentId
-        self.name = name
-        self.type = type
-        self.createdAt = createdAt
-        self.epaperFormIds = epaperFormIds
-        self.epaperImageIds = epaperImageIds
-        self.uploadedPhotos = uploadedPhotos
-    }
-    
+        
     public init(from decoder: Decoder) throws {
         
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
-        if let strID = try container.decodeIfPresent(String.self, forKey: .id), let id = Int(strID) {
-            self.id = id
+        if let strID = try container.decodeIfPresent(String.self, forKey: .templateId), let id = Int(strID) {
+			self.templateId = HTMLForm.ID.init(rawValue: strID)
         } else {
-            self.id = 0
+			throw DecodingError.dataCorruptedError(forKey: CodingKeys.templateId, in: container, debugDescription: "Can't parse id for FormData.")
         }
         
         if let strID = try container.decodeIfPresent(String.self, forKey: .treatmentId), let id = Int(strID) {
-            self.treatmentId = id
+			self.treatmentId = FilledForm.ID.init(rawValue: id)
         } else {
-            self.treatmentId = 0
+			throw DecodingError.dataCorruptedError(forKey: CodingKeys.treatmentId, in: container, debugDescription: "Can't parse treatment_id for FormData.")
         }
         
         self.name = try container.decodeIfPresent(String.self, forKey: .name) ?? ""
@@ -69,7 +59,7 @@ public struct FormData: Codable, Identifiable, Equatable {
     }
     
     enum CodingKeys: String, CodingKey {
-        case id
+        case templateId = "id"
         case treatmentId = "treatment_id"
         case name
         case type
@@ -79,21 +69,4 @@ public struct FormData: Codable, Identifiable, Equatable {
         case uploadedPhotos = "uploaded_photos"
     }
     
-}
-
-extension FormData {
-    static let mockFilledConsents = [
-        FormData(id: 1, treatmentId: 2, name: "Hello there", type: .consent, createdAt: Date()),
-        FormData(id: 2, treatmentId: 1, name: "General Kenobi", type: .treatment, createdAt: Date())
-    ]
-    
-    static let mockFilledTreatments = [
-        FormData(id: 1, treatmentId: 2, name: "Hello there", type: .consent, createdAt: Date()),
-        FormData(id: 2, treatmentId: 1, name: "General Kenobi", type: .treatment, createdAt: Date())
-    ]
-    
-    static let mockFIlledPrescriptions = [
-        FormData(id: 1, treatmentId: 2, name: "Hello there", type: .consent, createdAt: Date()),
-        FormData(id: 2, treatmentId: 1, name: "General Kenobi", type: .treatment, createdAt: Date())
-    ]
 }

@@ -25,8 +25,8 @@ public struct CheckInContainerState: Equatable {
 	var prescriptions: IdentifiedArrayOf<HTMLForm>
 	var prescriptionsStatuses: [HTMLForm.ID: Bool]
 
-	var allTreatmentForms: IdentifiedArrayOf<HTMLFormInfo>
-	var allConsents: IdentifiedArrayOf<HTMLFormInfo>
+	var allTreatmentForms: IdentifiedArrayOf<FormTemplateInfo>
+	var allConsents: IdentifiedArrayOf<FormTemplateInfo>
 
 	var aftercare: Aftercare?
 	var aftercareStatus: Bool
@@ -140,8 +140,8 @@ extension CheckInContainerState {
 		 patientDetails: PatientDetails,
 		 medicalHistoryId: HTMLForm.ID,
 		 medHistory: HTMLForm,
-		 consents: IdentifiedArrayOf<HTMLFormInfo>,
-		 allConsents: IdentifiedArrayOf<HTMLFormInfo>,
+		 consents: IdentifiedArrayOf<FormTemplateInfo>,
+		 allConsents: IdentifiedArrayOf<FormTemplateInfo>,
 		 photosState: PhotosState) {
 		self.journey = journey
 		self.pathway = pathway

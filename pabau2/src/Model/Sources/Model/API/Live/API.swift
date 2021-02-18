@@ -33,9 +33,9 @@ public class APIClient: LoginAPI, JourneyAPI, ClientsAPI, FormAPI {
 		fatalError()
 	}
 	
-	public func getTemplates(_ type: FormType) -> Effect<[HTMLFormInfo], RequestError> {
+	public func getTemplates(_ type: FormType) -> Effect<[FormTemplateInfo], RequestError> {
 		struct GetTemplates: Codable {
-			let templateList: [HTMLFormInfo]
+			let templateList: [FormTemplateInfo]
 		}
 		let requestBuilder: RequestBuilder<GetTemplates>.Type = requestBuilderFactory.getBuilder()
 		return requestBuilder.init(method: .GET,

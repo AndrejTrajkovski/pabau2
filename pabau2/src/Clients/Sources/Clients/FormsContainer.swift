@@ -5,7 +5,7 @@ import Model
 import Util
 
 public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAction, FormEnvironment> = .combine(
-	chooseFormListReducer.pullback(
+	chooseFormListReducer.optional.pullback(
 		state: \FormsContainerState.chooseForms,
 		action: /FormsContainerAction.chooseForms,
 		environment: { $0 }
@@ -14,9 +14,10 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 		switch action {
 		case .chooseForms(.proceed):
 			state.isFillingFormsActive = true
-			let array = state.chooseForms.selectedTemplates().map { HTMLFormParentState.init(info: $0) }
+			guard state.chooseForms != nil else { break }
+			let array = state.chooseForms!.selectedTemplates().map { HTMLFormParentState.init(info: $0) }
 			state.formsCollection = IdentifiedArray(array)
-			guard let first = state.chooseForms.selectedTemplates().first else { return .none }
+			guard let first = state.chooseForms!.selectedTemplates().first else { return .none }
 			return env.formAPI.getTemplate(id: first.id)
 				.catchToEffect()
 				.receive(on: DispatchQueue.main)
@@ -35,9 +36,10 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 
 public struct FormsContainerState: Equatable {
 	let formType: FormType
-	var chooseForms: ChooseFormState = .init(templates: [], selectedTemplatesIds: [])
-	var isFillingFormsActive: Bool = false
-	var formsCollection: IdentifiedArrayOf<HTMLFormParentState> = []
+	var chooseForms: ChooseFormState?
+	var isFillingFormsActive: Bool
+	var formsEntriesCollection: IdentifiedArray<FilledForm.ID, HTMLFormParentState> = []
+	var formsTemplatesCollection: IdentifiedArray<HTMLForm.ID, HTMLFormParentState> = []
 	public var selectedIdx: Int
 }
 
@@ -49,7 +51,7 @@ public enum FormsContainerAction: Equatable {
 
 extension FormsContainerState: CheckInState {
 	public func stepForms() -> [StepFormInfo] {
-		formsCollection.map { StepFormInfo.init(status: $0.isComplete, title: $0.form?.title ?? "")}
+		formsTemplatesCollection.map { StepFormInfo.init(status: $0.isComplete, title: $0.form?.title ?? "")}
 	}
 }
 
@@ -58,15 +60,17 @@ struct FormsContainer: View {
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			Group {
-				ChooseFormList.init(store: store.scope(state: { $0.chooseForms },
-													   action: { .chooseForms($0) }),
-									mode: .consentsCheckIn)
+				IfLetStore(store.scope(state: { $0.chooseForms },
+									   action: { .chooseForms($0) }),
+						   then: { chooseFormsStore in
+							ChooseFormList(store: chooseFormsStore, mode: .consentsCheckIn)
+						   })
 				NavigationLink.emptyHidden(viewStore.isFillingFormsActive,
 										   CheckIn.init(store: store.scope(state: { $0 },
 																		   action: { .checkIn($0)}),
 														avatarView: { Text("avatar") },
 														content: {
-															ForEachStore(store.scope(state: { $0.formsCollection },
+															ForEachStore(store.scope(state: { $0.formsTemplatesCollection },
 																					 action: FormsContainerAction.forms(id: action:)),
 																		 content: HTMLFormParent.init(store:)
 															)

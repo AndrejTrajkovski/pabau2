@@ -30,7 +30,7 @@ public let chooseFormJourneyReducer: Reducer<ChooseFormJourneyState,
 
 public struct ChooseFormJourneyState: Equatable {
 	var forms: IdentifiedArrayOf<HTMLForm>
-	var templates: IdentifiedArrayOf<HTMLFormInfo>
+	var templates: IdentifiedArrayOf<FormTemplateInfo>
 	var templatesLoadingState: LoadingState = .initial
 	var selectedTemplatesIds: [HTMLForm.ID]
 }
@@ -68,7 +68,7 @@ extension ChooseFormJourneyState {
 
 private func updateWithKeepingOld(forms: inout IdentifiedArray<HTMLForm.ID, HTMLForm>,
 								  finalSelectedTemplatesIds: [HTMLForm.ID],
-								  allTemplates: IdentifiedArrayOf<HTMLFormInfo>) -> [HTMLForm.ID] {
+								  allTemplates: IdentifiedArrayOf<FormTemplateInfo>) -> [HTMLForm.ID] {
 	let oldWithData = forms.filter { old in
 		finalSelectedTemplatesIds.contains(old.id)
 	}

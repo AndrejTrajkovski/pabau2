@@ -5,13 +5,13 @@ import ComposableArchitecture
 import SharedComponents
 
 public struct ChooseFormState: Equatable {
-	public var templates: IdentifiedArrayOf<HTMLFormInfo>
+	public var templates: IdentifiedArrayOf<FormTemplateInfo>
 	public var templatesLoadingState: LoadingState = .initial
 	public var selectedTemplatesIds: [HTMLForm.ID]
 	public var searchText: String = ""
 
 	public init(
-		templates: IdentifiedArrayOf<HTMLFormInfo>,
+		templates: IdentifiedArrayOf<FormTemplateInfo>,
 		templatesLoadingState: LoadingState = .initial,
 		selectedTemplatesIds: [HTMLForm.ID]
 	) {
@@ -20,7 +20,7 @@ public struct ChooseFormState: Equatable {
 		self.selectedTemplatesIds = selectedTemplatesIds
 	}
 	
-	public func selectedTemplates() -> [HTMLFormInfo] {
+	public func selectedTemplates() -> [FormTemplateInfo] {
 		selectedTemplatesIds.compactMap { templates[id: $0] }
 	}
 }
@@ -29,7 +29,7 @@ public enum ChooseFormAction: Equatable {
 	case addTemplateId(HTMLForm.ID)
 	case removeTemplateId(HTMLForm.ID)
 	case proceed//Check-In or Proceed
-	case gotResponse(Result<[HTMLFormInfo], RequestError>)
+	case gotResponse(Result<[FormTemplateInfo], RequestError>)
 	case onAppear(FormType)
 	case onSearch(String)
 }
@@ -88,11 +88,11 @@ public struct ChooseFormList: View {
 	}
 
 	struct ViewState: Equatable {
-		let templates: IdentifiedArrayOf<HTMLFormInfo>
+		let templates: IdentifiedArrayOf<FormTemplateInfo>
 		let selectedTemplatesIds: [HTMLForm.ID]
 		let searchText: String
 		let isSearching: Bool
-		let notSelectedTemplates: [HTMLFormInfo]
+		let notSelectedTemplates: [FormTemplateInfo]
 		init(_ state: ChooseFormState) {
 			self.templates = state.templates
 			self.selectedTemplatesIds = state.selectedTemplatesIds
@@ -105,7 +105,7 @@ public struct ChooseFormList: View {
 				.sorted(by: \.name)
 		}
 	
-		var selectedTemplates: [HTMLFormInfo] {
+		var selectedTemplates: [FormTemplateInfo] {
 			selectedTemplatesIds.compactMap {
 				templates[id: $0]
 			}
@@ -166,15 +166,15 @@ public struct ChooseFormList: View {
 }
 
 struct FormTemplateList<Row: View>: View {
-	let templates: [HTMLFormInfo]
-	let templateRow: (HTMLFormInfo) -> Row
-	let onSelect: (HTMLFormInfo) -> Void
+	let templates: [FormTemplateInfo]
+	let templateRow: (FormTemplateInfo) -> Row
+	let onSelect: (FormTemplateInfo) -> Void
 	let bgColor: Color
 
-	init (templates: [HTMLFormInfo],
+	init (templates: [FormTemplateInfo],
 		  bgColor: Color,
-		  @ViewBuilder templateRow: @escaping (HTMLFormInfo) -> Row,
-		  onSelect: @escaping (HTMLFormInfo) -> Void
+		  @ViewBuilder templateRow: @escaping (FormTemplateInfo) -> Row,
+		  onSelect: @escaping (FormTemplateInfo) -> Void
 	) {
 		self.templates = templates
 		self.templateRow = templateRow
@@ -194,7 +194,7 @@ struct FormTemplateList<Row: View>: View {
 }
 
 struct NotSelectedTemplateRow: View {
-	let template: HTMLFormInfo
+	let template: FormTemplateInfo
 	var body: some View {
 		TemplateRow.init(templateName: template.name,
 						 image: Image(systemName: "plus")
@@ -203,7 +203,7 @@ struct NotSelectedTemplateRow: View {
 }
 
 struct SelectedTemplateRow: View {
-	let template: HTMLFormInfo
+	let template: FormTemplateInfo
 	var body: some View {
 		TemplateRow.init(templateName: template.name,
 						 image: Image(systemName: "checkmark.circle.fill")

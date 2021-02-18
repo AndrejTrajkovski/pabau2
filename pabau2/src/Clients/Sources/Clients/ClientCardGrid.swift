@@ -30,16 +30,16 @@ let clientCardGridReducer: Reducer<ClientCardState, ClientCardBottomAction, Clie
 					state.list.prescriptions.childState.loadingState = .loading
 					return env.apiClient.getForms(type: .prescription,
                                                   clientId: state.client.id.rawValue)
-						.catchToEffect()
-						.map { .child(.prescriptions(.action(.gotResult($0)))) }
 						.receive(on: DispatchQueue.main)
+						.catchToEffect()
+						.map { .child(.prescriptions(.action(.gotResult($0.map(IdentifiedArrayOf.init(_:)))))) }
 						.eraseToEffect()
 				case .consents:
 					state.list.consents.childState.loadingState = .loading
 					return env.apiClient.getForms(type: .consent,
                                                   clientId: state.client.id.rawValue)
 						.catchToEffect()
-						.map { .child(.consents(.action(.gotResult($0)))) }
+						.map { .child(.consents(.action(.gotResult($0.map(IdentifiedArrayOf.init(_:)))))) }
 						.receive(on: DispatchQueue.main)
 						.eraseToEffect()
 				case .treatmentNotes:
@@ -47,7 +47,7 @@ let clientCardGridReducer: Reducer<ClientCardState, ClientCardBottomAction, Clie
 					return env.apiClient.getForms(type: .treatment,
                                                   clientId: state.client.id.rawValue)
 						.catchToEffect()
-						.map { .child(.treatmentNotes(.action(.gotResult($0)))) }
+						.map { .child(.treatmentNotes(.action(.gotResult($0.map(IdentifiedArrayOf.init(_:)))))) }
 						.receive(on: DispatchQueue.main)
 						.eraseToEffect()
 				case .communications:
