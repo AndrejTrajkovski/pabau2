@@ -31,7 +31,7 @@ public let addShiftOptReducer: Reducer<AddShiftState?, AddShiftAction, AddShiftE
                     isValid = false
                     state?.endTimeConfigurator.state = .error
                 }
-                
+
                 if state?.chooseEmployeesState.chosenEmployee?.name == nil {
                     isValid = false
                     state?.employeeConfigurator.state = .error
@@ -256,7 +256,6 @@ struct LocationAndDate: View {
                     ),
                     mode: .time
                 )
-                
 				DatePickerControl(
                     "END TIME",
 					viewStore.binding(

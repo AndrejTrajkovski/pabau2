@@ -27,4 +27,5 @@ public enum APIPath: String {
     case getClientsPhotos = "/OAuth2/clients/get_photos.php"
     case getClientAlerts = "/OAuth2/clients/medical_alerts.php"
     case getClientsNotes = "/OAuth2/clients/get_notes.php"
+    case getUsers = "/OAuth2/employees/get_users.php"
 }

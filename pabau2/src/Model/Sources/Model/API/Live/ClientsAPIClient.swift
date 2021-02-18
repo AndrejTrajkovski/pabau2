@@ -32,17 +32,19 @@ extension APIClient {
         var queryItems: [String: Any] = ["limit": 20, "offset": offset]
 
         if let search = search {
-            queryItems["searchText"] = search
+            queryItems["name"] = search
         }
 
-        return requestBuilder.init(method: .GET,
-                                   baseUrl: baseUrl,
-                                   path: .getClients,
-                                   queryParams: commonAnd(other: queryItems),
-                                   isBody: false)
-            .effect()
-            .map(\.clients)
-            .eraseToEffect()
+        return requestBuilder.init(
+            method: .GET,
+            baseUrl: baseUrl,
+            path: .getClients,
+            queryParams: commonAnd(other: queryItems),
+            isBody: false
+        )
+        .effect()
+        .map(\.clients)
+        .eraseToEffect()
     }
 	
 	public func getItemsCount(clientId: Int) -> Effect<ClientItemsCount, RequestError> {

@@ -20,7 +20,7 @@ let chooseEmployeesReducer =
                 state.filteredEmployees = state.employees
                 break
             }
-            
+     
             state.filteredEmployees = state.employees.filter {$0.name.lowercased().contains(text.lowercased())}
         case .gotEmployeeResponse(let result):
             switch result {

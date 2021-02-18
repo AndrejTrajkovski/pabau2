@@ -9,31 +9,34 @@ public typealias AddAppointmentEnv = (journeyAPI: JourneyAPI, clientAPI: Clients
 
 public struct AddAppointmentState: Equatable {
     let editingAppointment: Appointment?
-
     var reminder: Bool
     var email: Bool
     var sms: Bool
     var feedback: Bool
     var isAllDay: Bool
-    var clients: ChooseClientsState
     var startDate: Date
-    var services: ChooseServiceState
-    var durations: SingleChoiceLinkState<Duration>
-    var with: ChooseEmployeesState
-    var participants: SingleChoiceLinkState<Employee>
     var note: String = ""
 
-    var showsLoadingSpinner: Bool
+    var durations: SingleChoiceLinkState<Duration>
+    var participants: ChooseParticipantState
+    var chooseLocationState: ChooseLocationState
+    var with: ChooseEmployeesState
+    var services: ChooseServiceState
+    var clients: ChooseClientsState
+
     var employeeConfigurator = ViewConfigurator(errorString: "Employee is required")
-    var chooseClintConfigurator = ViewConfigurator(errorString: "Clint is required")
+    var chooseClintConfigurator = ViewConfigurator(errorString: "Client is required")
     var chooseDateConfigurator = ViewConfigurator(errorString: "Day is required")
     var chooseServiceConfigurator = ViewConfigurator(errorString: "Service is required")
+
+    var showsLoadingSpinner: Bool
+    var alertBody: AlertBody?
 
     var appointmentsBody: AppointmentBuilder {
         if let editingAppointment = editingAppointment {
             return AppointmentBuilder(appointment: editingAppointment)
         }
-        
+
         return AppointmentBuilder(
             isAllDay: self.isAllDay,
             clientID: self.clients.chosenClient?.id.rawValue,
@@ -56,13 +59,17 @@ public enum AddAppointmentAction: Equatable {
     case chooseStartDate(Date)
     case clients(ChooseClientsAction)
     case services(ChooseServiceAction)
+    case participants(ChooseParticipantAction)
     case durations(SingleChoiceLinkAction<Duration>)
     case with(ChooseEmployeesAction)
-    case participants(SingleChoiceLinkAction<Employee>)
+    case chooseLocation(ChooseLocationAction)
+    case onChooseLocation
+    case didTapParticipants
     case closeBtnTap
     case didTapServices
     case didTapWith
     case didTabClients
+    case removeChosenParticipant
     case isAllDay(ToggleAction)
     case sms(ToggleAction)
     case reminder(ToggleAction)
@@ -70,14 +77,18 @@ public enum AddAppointmentAction: Equatable {
     case feedback(ToggleAction)
     case note(TextChangeAction)
     case appointmentCreated(Result<PlaceholdeResponse, RequestError>)
+    case cancelAlert
     case ignore
 }
 
 extension Employee: SingleChoiceElement { }
 extension Service: SingleChoiceElement { }
 
-let addAppTapBtnReducer = Reducer<AddAppointmentState?,
-                                  AddAppointmentAction, AddAppointmentEnv> { state, action, env in
+let addAppTapBtnReducer = Reducer<
+    AddAppointmentState?,
+    AddAppointmentAction,
+    AddAppointmentEnv
+> { state, action, env in
     switch action {
     case .saveAppointmentTap:
         if let appointmentsBody = state?.appointmentsBody {
@@ -97,7 +108,7 @@ let addAppTapBtnReducer = Reducer<AddAppointmentState?,
 
             if state?.with.chosenEmployee?.name == nil {
                 state?.employeeConfigurator.state = .error
-              
+
                 isValid = false
             }
 
@@ -123,86 +134,126 @@ let addAppTapBtnReducer = Reducer<AddAppointmentState?,
     case .didTapWith:
         state?.with.isChooseEmployeesActive = true
         state?.employeeConfigurator.state = .normal
+    case .didTapParticipants:
+        guard let isAllDay = state?.isAllDay,
+              let location = state?.chooseLocationState.chosenLocation,
+              let service = state?.services.chosenService,
+              let employee = state?.with.chosenEmployee
+        else {
+            state?.alertBody = AlertBody(
+                title: "Info",
+                subtitle: "Please choose Service, Location and Employee",
+                primaryButtonTitle: "",
+                secondaryButtonTitle: "Ok",
+                isShow: true
+            )
+            break
+        }
+
+        state?.participants.participantSchema = ParticipantSchema(
+            id: UUID(),
+            isAllDays: isAllDay,
+            location: location,
+            service: service,
+            employee: employee
+        )
+
+        state?.participants.isChooseParticipantActive = true
+    case .onChooseLocation:
+        state?.chooseLocationState.isChooseLocationActive = true
+    case .removeChosenParticipant:
+        state?.participants.chosenParticipant = nil
     case .appointmentCreated(let result):
         state?.showsLoadingSpinner = false
-
         switch result {
         case .success(let services):
             state = nil
         case .failure:
             break
         }
+    case .cancelAlert:
+        state?.alertBody = nil
     default:
         break
     }
     return .none
 }
 
-public let addAppointmentValueReducer: Reducer<AddAppointmentState,
-                                               AddAppointmentAction, AddAppointmentEnv> = .combine(
-                                                chooseClientsReducer.pullback(
-                                                    state: \AddAppointmentState.clients,
-                                                    action: /AddAppointmentAction.clients,
-                                                    environment: { $0 }),
-                                                chooseServiceReducer.pullback(
-                                                    state: \AddAppointmentState.services,
-                                                    action: /AddAppointmentAction.services,
-                                                    environment: { $0 }),
-                                                SingleChoiceLinkReducer<Duration>().reducer.pullback(
-                                                    state: \AddAppointmentState.durations,
-                                                    action: /AddAppointmentAction.durations,
-                                                    environment: { $0 }),
-                                                chooseEmployeesReducer.pullback(
-                                                    state: \AddAppointmentState.with,
-                                                    action: /AddAppointmentAction.with,
-                                                    environment: { $0 }),
-                                                SingleChoiceLinkReducer<Employee>().reducer.pullback(
-                                                    state: \AddAppointmentState.participants,
-                                                    action: /AddAppointmentAction.participants,
-                                                    environment: { $0 }),
-                                                switchCellReducer.pullback(
-                                                    state: \AddAppointmentState.isAllDay,
-                                                    action: /AddAppointmentAction.isAllDay,
-                                                    environment: { $0 }),
-                                                switchCellReducer.pullback(
-                                                    state: \AddAppointmentState.sms,
-                                                    action: /AddAppointmentAction.sms,
-                                                    environment: { $0 }),
-                                                switchCellReducer.pullback(
-                                                    state: \AddAppointmentState.reminder,
-                                                    action: /AddAppointmentAction.reminder,
-                                                    environment: { $0 }),
-                                                switchCellReducer.pullback(
-                                                    state: \AddAppointmentState.feedback,
-                                                    action: /AddAppointmentAction.feedback,
-                                                    environment: { $0 }),
-                                                switchCellReducer.pullback(
-                                                    state: \AddAppointmentState.email,
-                                                    action: /AddAppointmentAction.email,
-                                                    environment: { $0 }),
-                                                textFieldReducer.pullback(
-                                                    state: \AddAppointmentState.note,
-                                                    action: /AddAppointmentAction.note,
-                                                    environment: { $0 }),
-												.init { state, action, _ in
-													if case let AddAppointmentAction.chooseStartDate(startDate) = action {
-														state.startDate = startDate
-													}
-													return .none
-												}
-                                               )
+public let addAppointmentValueReducer: Reducer<
+    AddAppointmentState,
+    AddAppointmentAction,
+    AddAppointmentEnv
+> = .combine(
+        chooseClientsReducer.pullback(
+            state: \AddAppointmentState.clients,
+            action: /AddAppointmentAction.clients,
+            environment: { $0 }),
+        chooseServiceReducer.pullback(
+            state: \AddAppointmentState.services,
+            action: /AddAppointmentAction.services,
+            environment: { $0 }),
+        SingleChoiceLinkReducer<Duration>().reducer.pullback(
+            state: \AddAppointmentState.durations,
+            action: /AddAppointmentAction.durations,
+            environment: { $0 }),
+        chooseEmployeesReducer.pullback(
+            state: \AddAppointmentState.with,
+            action: /AddAppointmentAction.with,
+            environment: { $0 }),
+        chooseLocationsReducer.pullback(
+            state: \AddAppointmentState.chooseLocationState,
+            action: /AddAppointmentAction.chooseLocation,
+            environment: { $0 }),
+        chooseParticipantReducer.pullback(
+            state: \AddAppointmentState.participants,
+            action: /AddAppointmentAction.participants,
+            environment: { $0 }),
+        switchCellReducer.pullback(
+            state: \AddAppointmentState.isAllDay,
+            action: /AddAppointmentAction.isAllDay,
+            environment: { $0 }),
+        switchCellReducer.pullback(
+            state: \AddAppointmentState.sms,
+            action: /AddAppointmentAction.sms,
+            environment: { $0 }),
+        switchCellReducer.pullback(
+            state: \AddAppointmentState.reminder,
+            action: /AddAppointmentAction.reminder,
+            environment: { $0 }),
+        switchCellReducer.pullback(
+            state: \AddAppointmentState.feedback,
+            action: /AddAppointmentAction.feedback,
+            environment: { $0 }),
+        switchCellReducer.pullback(
+            state: \AddAppointmentState.email,
+            action: /AddAppointmentAction.email,
+            environment: { $0 }),
+        textFieldReducer.pullback(
+            state: \AddAppointmentState.note,
+            action: /AddAppointmentAction.note,
+            environment: { $0 }),
+        .init { state, action, _ in
+            if case let AddAppointmentAction.chooseStartDate(startDate) = action {
+                state.startDate = startDate
+            }
+            return .none
+        }
+    )
 
-public let addAppointmentReducer: Reducer<AddAppointmentState?,
-                                          AddAppointmentAction, AddAppointmentEnv> = .combine(
-                                            addAppointmentValueReducer.optional.pullback(
-                                                state: \AddAppointmentState.self,
-                                                action: /AddAppointmentAction.self,
-                                                environment: { $0 }),
-                                            addAppTapBtnReducer.pullback(
-                                                state: \AddAppointmentState.self,
-                                                action: /AddAppointmentAction.self,
-                                                environment: { $0 })
-                                          )
+public let addAppointmentReducer: Reducer<
+    AddAppointmentState?,
+    AddAppointmentAction,
+    AddAppointmentEnv
+> = .combine(
+    addAppointmentValueReducer.optional.pullback(
+        state: \AddAppointmentState.self,
+        action: /AddAppointmentAction.self,
+        environment: { $0 }),
+    addAppTapBtnReducer.pullback(
+        state: \AddAppointmentState.self,
+        action: /AddAppointmentAction.self,
+        environment: { $0 })
+)
 
 public struct AddAppointment: View {
     @State var isAllDay: Bool = true
@@ -215,8 +266,12 @@ public struct AddAppointment: View {
 
     public var body: some View {
         VStack {
-            SwitchCell(text: "All Day", store: store.scope(state: { $0.isAllDay },
-                                                           action: { .isAllDay($0)})
+            SwitchCell(
+                text: "All Day",
+                store: store.scope(
+                    state: { $0.isAllDay },
+                    action: { .isAllDay($0)}
+                )
             ).wrapAsSection(title: "Add Appointment")
             AddAppSections(store: self.store)
                 .environmentObject(KeyboardFollower())
@@ -226,6 +281,23 @@ public struct AddAppointment: View {
         }
         .addEventWrapper(onXBtnTap: { self.viewStore.send(.closeBtnTap) })
         .loadingView(.constant(self.viewStore.state.showsLoadingSpinner))
+        .alert(
+            isPresented: viewStore.binding(
+                get: { $0.alertBody?.isShow == true },
+                send: .cancelAlert
+            )
+        ) {
+            Alert(
+                title: Text(self.viewStore.state.alertBody?.title ?? ""),
+                message: Text(self.viewStore.state.alertBody?.subtitle ?? ""),
+                dismissButton: .default(
+                    Text(self.viewStore.state.alertBody?.secondaryButtonTitle ?? ""),
+                    action: {
+                        self.viewStore.send(.cancelAlert)
+                    }
+                )
+            )
+        }
     }
 }
 
@@ -324,32 +396,80 @@ struct ServicesDurationSection: View {
                 NavigationLink.emptyHidden(
                     self.viewStore.state.with.isChooseEmployeesActive,
                     ChooseEmployeesView(
-                        store: self.store.scope(state: { $0.with },
-                                                action: { .with($0) })
+                        store: self.store.scope(
+                            state: { $0.with },
+                            action: { .with($0) }
+                        )
                     )
                 )
-                SingleChoiceLink.init(
-                    content: {
-                        HStack {
-                            Image(systemName: "plus.circle")
-                                .foregroundColor(.deepSkyBlue)
-                                .font(.regular15)
-                            Text("Add Participant")
-                                .foregroundColor(Color.textFieldAndTextLabel)
-                                .font(.semibold15)
-                            Spacer()
-                        }
-                    },
-                    store: self.store.scope(
-                        state: { $0.participants },
-                        action: { .participants($0) }
-                    ),
-                    cell: TextAndCheckMarkContainer.init(state:),
-                    title: "Add Participant"
-
+                TitleAndValueLabel(
+                    "LOCATION",
+                    self.viewStore.state.chooseLocationState.chosenLocation?.name ?? "Choose Location",
+                    self.viewStore.state.chooseLocationState.chosenLocation?.name == nil ? Color.grayPlaceholder : nil
+                ).onTapGesture {
+                    self.viewStore.send(.onChooseLocation)
+                }
+                NavigationLink.emptyHidden(
+                    self.viewStore.state.chooseLocationState.isChooseLocationActive,
+                    ChooseLocationView(
+                        store: self.store.scope(
+                            state: { $0.chooseLocationState },
+                            action: { .chooseLocation($0) }
+                        )
+                    )
+                )
+                HStack {
+                    PlusTitleView()
+                        .onTapGesture {
+                        self.viewStore.send(.didTapParticipants)
+                    }.isHidden(
+                        self.viewStore.state.participants.chosenParticipant?.id != nil,
+                        remove: true
+                    )
+                    TitleMinusView(
+                        title: self.viewStore.state.participants.chosenParticipant?.fullName
+                    ).onTapGesture {
+                        self.viewStore.send(.removeChosenParticipant)
+                    }.isHidden(
+                        self.viewStore.state.participants.chosenParticipant?.id == nil,
+                        remove: true
+                    )
+                    Spacer()
+                }
+                NavigationLink.emptyHidden(
+                    self.viewStore.state.participants.isChooseParticipantActive,
+                    ChooseParticipantView(
+                        store: self.store.scope(
+                            state: { $0.participants },
+                            action: { .participants($0) }
+                        )
+                    )
                 )
             }
         }.wrapAsSection(title: "Services")
+    }
+}
+
+struct PlusTitleView: View {
+    var body: some View {
+        Image(systemName: "plus.circle")
+            .foregroundColor(.deepSkyBlue)
+            .font(.regular15)
+        Text("Add Participant")
+            .foregroundColor(Color.textFieldAndTextLabel)
+            .font(.semibold15)
+    }
+}
+struct TitleMinusView: View {
+    let title: String?
+
+    var body: some View {
+        Text(title ?? "")
+            .foregroundColor(Color.textFieldAndTextLabel)
+            .font(.semibold15)
+        Image(systemName: "minus.circle")
+            .foregroundColor(.red)
+            .font(.regular15)
     }
 }
 
@@ -414,24 +534,25 @@ extension AddAppointmentState {
         endDate: Date
     ) {
         self.init(
-            editingAppointment: editingAppointment,
+            editingAppointment: nil,
             reminder: false,
             email: false,
             sms: false,
             feedback: false,
             isAllDay: false,
-            clients: ChooseClientsState(
-                isChooseClientsActive: false,
-                chosenClient: nil
-            ),
             startDate: startDate,
+            durations: AddAppMocks.durationState,
+            participants: ChooseParticipantState(isChooseParticipantActive: false),
+            chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
+            with: ChooseEmployeesState(isChooseEmployeesActive: false),
             services: ChooseServiceState(
                 isChooseServiceActive: false,
                 filterChosen: .allStaff
             ),
-            durations: AddAppMocks.durationState,
-            with: ChooseEmployeesState(isChooseEmployeesActive: false),
-            participants: AddAppMocks.participantsState,
+            clients: ChooseClientsState(
+                isChooseClientsActive: false,
+                chosenClient: nil
+            ),
             showsLoadingSpinner: false
         )
     }
@@ -451,18 +572,19 @@ extension AddAppointmentState {
             sms: false,
             feedback: false,
             isAllDay: false,
-            clients: ChooseClientsState(
-                isChooseClientsActive: false,
-                chosenClient: nil
-            ),
             startDate: startDate,
+            durations: AddAppMocks.durationState,
+            participants: ChooseParticipantState(isChooseParticipantActive: false),
+            chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
+            with: ChooseEmployeesState(isChooseEmployeesActive: false),
             services: ChooseServiceState(
                 isChooseServiceActive: false,
                 filterChosen: .allStaff
             ),
-            durations: AddAppMocks.durationState,
-            with: ChooseEmployeesState(isChooseEmployeesActive: false),
-            participants: AddAppMocks.participantsState,
+            clients: ChooseClientsState(
+                isChooseClientsActive: false,
+                chosenClient: nil
+            ),
             showsLoadingSpinner: false
         )
     }
@@ -474,18 +596,19 @@ extension AddAppointmentState {
         sms: false,
         feedback: false,
         isAllDay: false,
-        clients: ChooseClientsState(
-            isChooseClientsActive: false,
-            chosenClient: nil
-        ),
         startDate: Date(),
+        durations: AddAppMocks.durationState,
+        participants: ChooseParticipantState(isChooseParticipantActive: false),
+        chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
+        with: ChooseEmployeesState(isChooseEmployeesActive: false),
         services: ChooseServiceState(
             isChooseServiceActive: false,
             filterChosen: .allStaff
         ),
-        durations: AddAppMocks.durationState,
-        with: ChooseEmployeesState(isChooseEmployeesActive: false),
-        participants: AddAppMocks.participantsState,
+        clients: ChooseClientsState(
+            isChooseClientsActive: false,
+            chosenClient: nil
+        ),
         showsLoadingSpinner: false
     )
 }

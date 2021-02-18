@@ -12,15 +12,45 @@ extension APIClient {
 			}
 		}
 		let requestBuilder: RequestBuilder<GetEmployees>.Type = requestBuilderFactory.getBuilder()
-		return requestBuilder.init(method: .GET,
-								   baseUrl: baseUrl,
-								   path: .getEmployees,
-								   queryParams: commonAnd(other: [:]),
-								   isBody: false)
-			.effect()
-			.map(\.employees)
-			.eraseToEffect()
+		return requestBuilder.init(
+            method: .GET,
+            baseUrl: baseUrl,
+            path: .getEmployees,
+            queryParams: commonAnd(other: [:]),
+            isBody: false
+        ).effect()
+        .map(\.employees)
+        .eraseToEffect()
 	}
+    
+    public func getParticipants(participantSchema: ParticipantSchema) -> Effect<[Participant], RequestError> {
+        struct ParticipantsResponse: Codable {
+            public var participant: [Participant]
+            enum CodingKeys: String, CodingKey {
+                case participant = "users"
+            }
+        }
+        
+        let params = [
+            "all_day": participantSchema.isAllDays,
+            "location_id":participantSchema.location.id,
+            "owner_uid": participantSchema.employee.id,
+            "service_id": participantSchema.service.id
+        ] as [String : Any]
+        
+        let requestBuilder: RequestBuilder<ParticipantsResponse>.Type = requestBuilderFactory.getBuilder()
+        
+        return requestBuilder.init(
+            method: .GET,
+            baseUrl: baseUrl,
+            path: .getUsers,
+            queryParams: commonAnd(other: params),
+            isBody: false
+        )
+        .effect()
+        .map(\.participant)
+        .eraseToEffect()
+    }
 	
 	public func getTemplates(_ type: FormType) -> Effect<[FormTemplate], RequestError> {
 		fatalError()
