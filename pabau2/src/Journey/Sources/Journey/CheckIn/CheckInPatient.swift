@@ -114,7 +114,7 @@ extension CheckInPatientState {
 		case .consents:
 			return consents.map {
 				StepFormInfo(status: consentsStatuses[$0.id]!,
-							 title: $0.name)
+							 title: $0.templateInfo.name)
 			}
 		case .patientComplete:
 			return [StepFormInfo(status: isPatientComplete,

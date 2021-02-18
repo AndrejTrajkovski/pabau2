@@ -81,9 +81,9 @@ extension APIClient {
             .eraseToEffect()
     }
 
-    public func getForms(type: FormType, clientId: Int) -> Effect<[FormData], RequestError> {
-        struct FormDataResponse: Codable {
-            let forms: [FormData]
+    public func getForms(type: FormType, clientId: Int) -> Effect<[FilledFormData], RequestError> {
+        struct FormDataResponse: Decodable {
+            let forms: [FilledFormData]
 
             enum CodingKeys: String, CodingKey {
                 case forms = "employees"
@@ -96,7 +96,7 @@ extension APIClient {
                                    queryParams: commonAnd(other: ["contact_id": "\(clientId)"]),
                                    isBody: false)
             .effect()
-            .map { $0.forms.filter { $0.type == type} }
+			.map { $0.forms.filter { $0.templateInfo.type == type} }
             .eraseToEffect()
     }
 

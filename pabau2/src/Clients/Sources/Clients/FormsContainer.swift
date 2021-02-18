@@ -38,8 +38,7 @@ public struct FormsContainerState: Equatable {
 	let formType: FormType
 	var chooseForms: ChooseFormState?
 	var isFillingFormsActive: Bool
-	var formsEntriesCollection: IdentifiedArray<FilledForm.ID, HTMLFormParentState> = []
-	var formsTemplatesCollection: IdentifiedArray<HTMLForm.ID, HTMLFormParentState> = []
+	var formsCollection: IdentifiedArrayOf<HTMLFormParentState>
 	public var selectedIdx: Int
 }
 
@@ -51,7 +50,7 @@ public enum FormsContainerAction: Equatable {
 
 extension FormsContainerState: CheckInState {
 	public func stepForms() -> [StepFormInfo] {
-		formsTemplatesCollection.map { StepFormInfo.init(status: $0.isComplete, title: $0.form?.title ?? "")}
+		formsCollection.map { StepFormInfo.init(status: $0.isComplete, title: $0.form?.title ?? "")}
 	}
 }
 
@@ -70,7 +69,7 @@ struct FormsContainer: View {
 																		   action: { .checkIn($0)}),
 														avatarView: { Text("avatar") },
 														content: {
-															ForEachStore(store.scope(state: { $0.formsTemplatesCollection },
+															ForEachStore(store.scope(state: { $0.formsCollection },
 																					 action: FormsContainerAction.forms(id: action:)),
 																		 content: HTMLFormParent.init(store:)
 															)

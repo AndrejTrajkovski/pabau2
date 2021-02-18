@@ -28,18 +28,16 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormParentAct
 	}
 )
 
-public struct HTMLFormParentState: Equatable {
-//	public func hash(into hasher: inout Hasher) {
-//		if let entryId = form?.entryId {
-//			hasher.combine(entryId)
-//		}
-//		hasher.combine(info.id)
-//	}
+public struct HTMLFormParentState: Equatable, Identifiable {
 	
-	public init(formData: FormData) {
-		self.id = formData.id
-		self.name = formData.name
-		self.type = formData.type
+	public var id: HTMLForm.ID { info.id }
+	
+	public init(formData: FilledFormData) {
+		self.info = formData.templateInfo
+		self.form = nil
+		self.loadingState = .initial
+		self.isComplete = false
+		self.filledFormId = formData.treatmentId
 	}
 	
 	public init(info: FormTemplateInfo) {
@@ -47,9 +45,10 @@ public struct HTMLFormParentState: Equatable {
 		self.form = nil
 		self.loadingState = .initial
 		self.isComplete = false
+		self.filledFormId = nil
 	}
 
-	public let filledFormId: FilledForm.ID?
+	public let filledFormId: FilledFormData.ID?
 	public let info: FormTemplateInfo
 	public var form: HTMLForm?
 	public var loadingState: LoadingState

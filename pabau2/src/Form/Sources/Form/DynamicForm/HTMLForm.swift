@@ -47,7 +47,7 @@ struct HTMLFormView: View {
 		 isCheckingDetails: Bool) {
 		self.store = store
 		self.isCheckingDetails = isCheckingDetails
-		self.viewStore = ViewStore(store.scope(state: { $0.name }).actionless)
+		self.viewStore = ViewStore(store.scope(state: { $0.templateInfo.name }).actionless)
 	}
 
 	public var body: some View {

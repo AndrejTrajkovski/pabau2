@@ -2,9 +2,8 @@ import Foundation
 import Tagged
 import CasePaths
 
-public struct FilledForm: Codable {
-	public typealias ID = Tagged<FilledForm, Int>
-	let id: ID?
+struct _FilledForm: Codable {
+	let id: FilledFormData.ID?
 	let medicalResults: [MedicalResult]?
 	let success: Bool
 	let formTemplate: [_FormTemplate]

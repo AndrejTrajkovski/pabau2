@@ -47,15 +47,14 @@ public enum CSSClass: Equatable {
 	case unknown
 	
 	init(_formStructure: _FormStructure) throws {
-		let stringValue = extract(case: Values.string, from:_formStructure.values) ?? ""
+		let stringValue = extract(case: Values.string, from:_formStructure.values)
 		switch _formStructure.cssClass {
 		case .staticText:
-			print("static text: \(stringValue)")
-			self = .staticText(StaticText(AttributedOrText.init(value: stringValue)))
+			self = .staticText(StaticText(AttributedOrText.init(value: stringValue ?? "")))
 		case .input_text:
-			self = .input_text(InputText(text: stringValue))
+			self = .input_text(InputText(text: stringValue ?? ""))
 		case .textarea:
-			self = .textarea(TextArea(text: stringValue))
+			self = .textarea(TextArea(text: stringValue ?? ""))
 		case .radio:
 			let choices = try extractAndSortValues(_formStructure.values)
 				.map(\.value).map(RadioChoice.init)
@@ -71,9 +70,9 @@ public enum CSSClass: Equatable {
 				.map(\.value).map(SelectChoice.init)
 			self = .select(SelectState.init(choices))
 		case .heading:
-			self = .heading(Heading.init(value: AttributedOrText.init(value: stringValue)))
+			self = .heading(Heading.init(value: AttributedOrText.init(value: stringValue ?? "")))
 		case .image:
-			self = .image(stringValue)
+			self = .image(stringValue ?? "")
 		case .cl_drugs:
 			self = .cl_drugs(ClDrugs.init())
 		case .diagram_mini:

@@ -1,12 +1,13 @@
 import Foundation
+import Tagged
 
-public struct FormData: Codable, Identifiable, Equatable {
-	public var id: FilledForm.ID { treatmentId }
+public struct FilledFormData: Decodable, Identifiable, Equatable {
 	
-	public let templateId: HTMLForm.ID
-    public let treatmentId: FilledForm.ID
-    public let name: String
-    public let type: FormType
+	public typealias ID = Tagged<FilledFormData, Int>
+	
+	public var id: Self.ID { treatmentId }
+	public let templateInfo: FormTemplateInfo
+    public let treatmentId: Self.ID
     public let createdAt: Date
     public let epaperImageIds: Int?
     public let epaperFormIds: Int?
@@ -16,26 +17,29 @@ public struct FormData: Codable, Identifiable, Equatable {
         
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
-        if let strID = try container.decodeIfPresent(String.self, forKey: .templateId), let id = Int(strID) {
-			self.templateId = HTMLForm.ID.init(rawValue: strID)
+		let templateId: FormTemplateInfo.ID
+        if let strID = try container.decodeIfPresent(String.self, forKey: .templateId) {
+			templateId = FormTemplateInfo.ID.init(rawValue: strID)
         } else {
 			throw DecodingError.dataCorruptedError(forKey: CodingKeys.templateId, in: container, debugDescription: "Can't parse id for FormData.")
         }
         
-        if let strID = try container.decodeIfPresent(String.self, forKey: .treatmentId), let id = Int(strID) {
-			self.treatmentId = FilledForm.ID.init(rawValue: id)
-        } else {
-			throw DecodingError.dataCorruptedError(forKey: CodingKeys.treatmentId, in: container, debugDescription: "Can't parse treatment_id for FormData.")
-        }
-        
-        self.name = try container.decodeIfPresent(String.self, forKey: .name) ?? ""
-        
+        let name = try container.decodeIfPresent(String.self, forKey: .name) ?? ""
+		let formType: FormType
         if let type = try? container.decodeIfPresent(String.self, forKey: .type) {
-            self.type = FormType(rawValue: type) ?? .unknown
+			formType = FormType(rawValue: type) ?? .unknown
         } else {
-            self.type = .unknown
+			formType = .unknown
         }
         
+		self.templateInfo = FormTemplateInfo(id: templateId, name: name, type: formType)
+		
+		if let strID = try container.decodeIfPresent(String.self, forKey: .treatmentId), let id = Int(strID) {
+			self.treatmentId = FilledFormData.ID.init(rawValue: id)
+		} else {
+			throw DecodingError.dataCorruptedError(forKey: CodingKeys.treatmentId, in: container, debugDescription: "Can't parse treatment_id for FormData.")
+		}
+		
         if let date: String = try? container.decode(String.self, forKey: .createdAt) {
             self.createdAt = date.toDate("yyyy-MM-dd HH:mm:ss", region: .local)?.date ?? Date()
         } else {

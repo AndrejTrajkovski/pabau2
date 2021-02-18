@@ -1,7 +1,11 @@
 import Foundation
+import Tagged
 
 public struct FormTemplateInfo: Codable, Identifiable, Equatable {
-	public let id: HTMLForm.ID
+	
+	public typealias ID = Tagged<FormTemplateInfo, String>
+	
+	public let id: FormTemplateInfo.ID
 	public let name: String
 	public let type: FormType
 	

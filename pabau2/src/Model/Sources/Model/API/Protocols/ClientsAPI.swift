@@ -9,7 +9,7 @@ public protocol ClientsAPI {
 	func getAppointments(clientId: Int) -> Effect<[Appointment], RequestError>
 	func getPhotos(clientId: Int) -> Effect<[SavedPhoto], RequestError>
 	func getFinancials(clientId: Int) -> Effect<[Financial], RequestError>
-	func getForms(type: FormType, clientId: Int) -> Effect<[FormData], RequestError>
+	func getForms(type: FormType, clientId: Int) -> Effect<[FilledFormData], RequestError>
 	func getDocuments(clientId: Int) -> Effect<[Document], RequestError>
 	func getCommunications(clientId: Int) -> Effect<[Communication], RequestError>
 	func getAlerts(clientId: Int) -> Effect<[Alert], RequestError>

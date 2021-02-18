@@ -1,21 +1,13 @@
 import Foundation
 import Tagged
 
-public struct HTMLForm: Identifiable, Equatable, CustomDebugStringConvertible {
+public struct HTMLForm: Identifiable, Equatable {
 	
-	public var debugDescription: String {
-		return name
-	}
+	public var id: FormTemplateInfo.ID { templateInfo.id }
 	
-	public typealias ID = Tagged<HTMLForm, String>
+	public let entryId: FilledFormData.ID?
 	
-	public let entryId: FilledForm.ID?
-	
-	public let id: HTMLForm.ID
-	
-	public let name: String
-	
-	public let formType: FormType
+	public let templateInfo: FormTemplateInfo
 	
 	public let ePaper: Bool?
 
@@ -32,19 +24,19 @@ public struct HTMLForm: Identifiable, Equatable, CustomDebugStringConvertible {
 				formType: FormType,
 				ePaper: Bool? = nil,
 				formStructure: [CSSField]) {
-		self.id = HTMLForm.ID(rawValue: String(id))
-		self.name = name
-		self.formType = formType
+		self.templateInfo = FormTemplateInfo(id: HTMLForm.ID(rawValue: String(id)),
+											 name: name,
+											 type: formType)
 		self.ePaper = ePaper
 		self.formStructure = formStructure
 		self.entryId = nil
 	}
 	
 	init(builder: HTMLFormBuilder) {
+		self.templateInfo = FormTemplateInfo(id: builder.id,
+											 name: builder.name,
+											 type: builder.formType)
 		self.entryId = builder.entryId
-		self.id = builder.id
-		self.name = builder.name
-		self.formType = builder.formType
 		self.ePaper = builder.ePaper
 		self.formStructure = builder.formStructure
 	}
@@ -72,14 +64,14 @@ enum HTMLFormBuilderError: Error, CustomStringConvertible {
 
 struct HTMLFormBuilder {
 	
-	public var entryId: FilledForm.ID?
+	public var entryId: FilledFormData.ID?
 	public var id: HTMLForm.ID
 	public var name: String
 	public var formType: FormType
 	public var ePaper: Bool?
 	public var formStructure: [CSSField]
 	
-	init(formEntry: FilledForm) throws {
+	init(formEntry: _FilledForm) throws {
 		guard let template = formEntry.formTemplate.first else {
 			throw HTMLFormBuilderError.noTemplate
 		}
