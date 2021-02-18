@@ -3,37 +3,45 @@ import Foundation
 import SwiftUI
 import Model
 import Util
+import ComposableArchitecture
+
 //for creating Image: https://www.hackingwithswift.com/read/27/3/drawing-into-a-core-graphics-context-with-uigraphicsimagerenderer
 
-public enum SignatureAction: Equatable {}
+let signatureFieldReducer: Reducer<SignatureState, SignatureAction, FormEnvironment> = .init { state, action, env in
+	switch action {
+	case .update(let signature):
+		state = signature
+	}
+	return .none
+}
+
+public enum SignatureAction: Equatable {
+	case update(SignatureState)
+}
 
 struct SignatureField: View {
-	@State private var isSigning: Bool
 	@Binding var signature: SignatureState
 	let title: String
 
 	init (signature: Binding<SignatureState>, title: String) {
 		self._signature = signature
-		self._isSigning = State.init(initialValue: false)
 		self.title = title
 	}
 
 	var body: some View {
-		Group {
-			if self.isSigning {
-				DrawingPad(drawings: $signature.drawings)
-					.disabled(true)
-					.sheet(isPresented: .constant(true)) {
-						SigningComponent(title: self.title,
-										 isActive: self.$isSigning,
-										 onDone: { self.signature = $0 })
-					}
-			} else if signature.drawings.isEmpty {
-				TapToSign(isSigning: $isSigning)
-			} else {
-				SignedComponent(isSigning: $isSigning,
-								signature: $signature)
-			}
+		if signature.isSigning {
+			DrawingPad(drawings: $signature.drawings)
+				.disabled(true)
+				.sheet(isPresented: .constant(true)) {
+					SigningComponent(title: self.title,
+									 isActive: $signature.isSigning,
+									 onDone: { self.signature.drawings = $0 })
+				}
+		} else if signature.drawings.isEmpty {
+			TapToSign(isSigning: $signature.isSigning)
+		} else {
+			SignedComponent(isSigning: $signature.isSigning,
+							signature: $signature)
 		}
 	}
 }
@@ -59,23 +67,23 @@ struct SignedComponent: View {
 
 struct SigningComponent: View {
 	let title: String
-	@State private var signature: SignatureState = SignatureState()
+	@State private var drawings: [SignatureDrawing] = []
 	@Binding var isActive: Bool
-	let onDone: (SignatureState) -> Void
+	let onDone: ([SignatureDrawing]) -> Void
 	var body: some View {
 		VStack(spacing: 32.0) {
 			Text(title).font(.largeTitle)
-			DrawingPad(drawings: $signature.drawings)
+			DrawingPad(drawings: $drawings)
 			HStack {
 				SecondaryButton(Texts.cancel) {
 					self.isActive = false
 				}
 				PrimaryButton(Texts.done,
-											isDisabled: signature.drawings.isEmpty) {
+							  isDisabled: drawings.isEmpty) {
 					self.isActive = false
-					self.onDone(self.signature)
+					self.onDone(self.drawings)
 				}
-				.disabled(signature.drawings.isEmpty)
+				.disabled(drawings.isEmpty)
 			}.padding()
 		}
 	}

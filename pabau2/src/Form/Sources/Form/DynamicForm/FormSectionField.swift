@@ -40,9 +40,9 @@ struct FormSectionField: View {
 					.padding(.top)
 					.padding(.bottom)
 		) {
-			FormFieldStore(store: store.scope(
-							state: { $0.cssClass })
-			).padding([.leading, .trailing], 16)
+			FormFieldStore(store: store.scope(state: { $0.cssClass }),
+						   title: viewStore.title)
+				.padding([.leading, .trailing], 16)
 		}
 		.background(Color.white)
 		.border(borderColor, width: 2.0)
@@ -55,7 +55,8 @@ struct FormSectionField: View {
 
 struct FormFieldStore: View {
 	let store: Store<CSSClass, CSSClassAction>
-
+	let title: String
+	
 	var body: some View {
 		IfLetStore(store.scope(
 					state: { extract(case: CSSClass.staticText, from: $0)}).actionless,
@@ -83,8 +84,10 @@ struct FormFieldStore: View {
 		IfLetStore(store.scope(
 					state: { extract(case: CSSClass.signature, from: $0)},
 					action: { .signature($0)}),
-				   then: { _ in
-					return Text("Signature field")
+				   then: {
+					SignatureField(signature: ViewStore($0).binding(get: { $0 },
+																	send: SignatureAction.update),
+								   title: title)
 				   })
 		IfLetStore(store.scope(
 					state: { extract(case: CSSClass.checkboxes, from: $0)},
@@ -98,7 +101,8 @@ struct FormFieldStore: View {
 					state: { extract(case: CSSClass.heading, from: $0)}).actionless,
 				   then: { store in
 					AttributedOrTextField(store: store.scope(state: { $0.value }))
-				   })
+				   }
+		)
 //		IfLetStore(store.scope(
 //					state: { extract(case: CSSClass.cl_drugs, from: $0)},
 //					action: { .cl_drugs($0)}),
@@ -142,6 +146,10 @@ let cssClassReducer: Reducer<CSSClass, CSSClassAction, FormEnvironment> =
 		selectFieldReducer.pullbackCp(
 			state: /CSSClass.select,
 			action: /CSSClassAction.select,
+			environment: { $0 }),
+		signatureFieldReducer.pullbackCp(
+			state: /CSSClass.signature,
+			action: /CSSClassAction.signature,
 			environment: { $0 })
 	)
 
