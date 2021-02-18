@@ -1,6 +1,6 @@
 public struct SignatureState: Codable, Equatable {
 	
-	var signatureUrl: String?
+	public var signatureUrl: String?
 	
 	public var isSigning: Bool = false
 	public var drawings = [SignatureDrawing]()

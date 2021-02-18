@@ -4,7 +4,7 @@ import SwiftUI
 import Model
 import Util
 import ComposableArchitecture
-
+import SDWebImageSwiftUI
 //for creating Image: https://www.hackingwithswift.com/read/27/3/drawing-into-a-core-graphics-context-with-uigraphicsimagerenderer
 
 let signatureFieldReducer: Reducer<SignatureState, SignatureAction, FormEnvironment> = .init { state, action, env in
@@ -37,6 +37,14 @@ struct SignatureField: View {
 									 isActive: $signature.isSigning,
 									 onDone: { self.signature.drawings = $0 })
 				}
+		} else if let url = signature.signatureUrl {
+			GeometryReader { proxy in
+				WebImage(url: URL(string: url))
+					.resizable()
+					.aspectRatio(contentMode: .fit)
+					.frame(width: proxy.size.width, height: proxy.size.height)
+					.clipped()
+			}
 		} else if signature.drawings.isEmpty {
 			TapToSign(isSigning: $signature.isSigning)
 		} else {
