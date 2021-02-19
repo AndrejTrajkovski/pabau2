@@ -95,6 +95,7 @@ public enum CSSClass: Equatable {
 			self = .radio(radioState)
 		case .signature(var signature):
 			signature.signatureUrl = medicalResult.value
+			print("https://crm.pabau.com" + (medicalResult.value))
 			self = .signature(signature)
 		case .checkboxes(var checkboxes):
 			checkboxes.selected = Set.init(

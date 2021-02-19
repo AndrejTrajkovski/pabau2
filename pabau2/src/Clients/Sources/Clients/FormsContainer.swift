@@ -18,7 +18,7 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 			let array = state.chooseForms!.selectedTemplates().map { HTMLFormParentState.init(info: $0) }
 			state.formsCollection = IdentifiedArray(array)
 			guard let first = state.chooseForms!.selectedTemplates().first else { return .none }
-			return env.formAPI.getTemplate(id: first.id)
+			return env.formAPI.getForm(templateId: first.id)
 				.catchToEffect()
 				.receive(on: DispatchQueue.main)
 				.map { FormsContainerAction.forms(id: first.id, action: .gotForm($0))}
@@ -57,25 +57,35 @@ extension FormsContainerState: CheckInState {
 struct FormsContainer: View {
 	let store: Store<FormsContainerState, FormsContainerAction>
 	var body: some View {
-		WithViewStore(store) { viewStore in
-			Group {
-				IfLetStore(store.scope(state: { $0.chooseForms },
-									   action: { .chooseForms($0) }),
-						   then: { chooseFormsStore in
+		WithViewStore(store.scope(state: { $0.isFillingFormsActive })) { viewStore in
+			IfLetStore(store.scope(state: { $0.chooseForms },
+								   action: { .chooseForms($0) }),
+					   then: { chooseFormsStore in
+						Group {
 							ChooseFormList(store: chooseFormsStore, mode: .consentsCheckIn)
-						   })
-				NavigationLink.emptyHidden(viewStore.isFillingFormsActive,
-										   CheckIn.init(store: store.scope(state: { $0 },
-																		   action: { .checkIn($0)}),
-														avatarView: { Text("avatar") },
-														content: {
-															ForEachStore(store.scope(state: { $0.formsCollection },
-																					 action: FormsContainerAction.forms(id: action:)),
-																		 content: HTMLFormParent.init(store:)
-															)
-														})
-				)
-			}
-		}
+							checkInNavigationLink(isActive: viewStore.state)
+						}
+					   }, else: checkInView
+			)
+		}.debug("Forms Container")
+	}
+
+	func checkInNavigationLink(isActive: Bool) -> some View {
+		NavigationLink.emptyHidden(isActive,
+								   checkInView
+		)
+	}
+
+	var checkInView: some View {
+		CheckIn(store: store.scope(state: { $0 },
+								   action: { .checkIn($0)}),
+				avatarView: { Text("avatar") },
+				content: {
+					ForEachStore(store.scope(state: { $0.formsCollection },
+											 action: FormsContainerAction.forms(id: action:)),
+								 content: HTMLFormParent.init(store:)
+					)
+				}
+		)
 	}
 }

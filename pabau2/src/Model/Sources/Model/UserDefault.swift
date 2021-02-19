@@ -15,10 +15,10 @@ public struct UserDefault<T: Codable> {
 	public var wrappedValue: T? {
 		get {
 			if let savedValue = userDefaults.object(forKey: key) as? Data {
-					let decoder = JSONDecoder()
-					if let loadedValue = try? decoder.decode(T.self, from: savedValue) {
-							return loadedValue
-					}
+				let decoder = JSONDecoder()
+				if let loadedValue = try? decoder.decode(T.self, from: savedValue) {
+					return loadedValue
+				}
 			}
 			return defaultValue
 		}

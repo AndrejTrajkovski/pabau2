@@ -9,7 +9,7 @@ public struct CheckIn<FormsContent: View, S: CheckInState, AvatarView: View>: Vi
 		self.avatarView = avatarView
 		self.content = content
 	}
-	
+
 	let store: Store<S, CheckInAction>
 	let avatarView: () -> AvatarView
 	let content: () -> FormsContent

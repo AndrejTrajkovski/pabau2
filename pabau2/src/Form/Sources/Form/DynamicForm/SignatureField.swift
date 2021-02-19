@@ -20,6 +20,7 @@ public enum SignatureAction: Equatable {
 }
 
 struct SignatureField: View {
+	@State var isSigning: Bool = false
 	@Binding var signature: SignatureState
 	let title: String
 
@@ -29,46 +30,55 @@ struct SignatureField: View {
 	}
 
 	var body: some View {
-		if signature.isSigning {
-			DrawingPad(drawings: $signature.drawings)
-				.disabled(true)
-				.sheet(isPresented: .constant(true)) {
-					SigningComponent(title: self.title,
-									 isActive: $signature.isSigning,
-									 onDone: { self.signature.drawings = $0 })
-				}
-		} else if let url = signature.signatureUrl {
-			GeometryReader { proxy in
-				WebImage(url: URL(string: url))
-					.resizable()
-					.aspectRatio(contentMode: .fit)
-					.frame(width: proxy.size.width, height: proxy.size.height)
-					.clipped()
+		print("isSigning \(isSigning)")
+		return Group {
+			if isSigning {
+				DrawingPad(drawings: $signature.drawings)
+					.disabled(true)
+			} else if signature.drawings.isEmpty {
+				TapToSign(isSigning: $isSigning)
+			} else {
+				SignedComponent(signature: $signature, onResign: {
+					self.isSigning = true
+				})
 			}
-		} else if signature.drawings.isEmpty {
-			TapToSign(isSigning: $signature.isSigning)
-		} else {
-			SignedComponent(isSigning: $signature.isSigning,
-							signature: $signature)
+		}.fullScreenCover(isPresented: $isSigning) {
+			SigningComponent(title: title,
+							 onCancel: { isSigning = false },
+							 onDone: {
+								isSigning = false
+								signature.drawings = $0
+							 })
 		}
 	}
 }
 
 struct SignedComponent: View {
-	@Binding var isSigning: Bool
+	var baseUrl: String {
+		return "https://crm.pabau.com"
+//		guard let encoded = UserDefaults.standard.value(forKey: "logged_in_user") as? Data else { return "" }
+//		return JSONDecoder().decode(User, from: encoded).baseUrl
+	}
 	@Binding var signature: SignatureState
+	let onResign: () -> Void
+
 	var body: some View {
 		VStack {
 			HStack {
 				Spacer()
 				Text(Texts.resign)
 					.font(.regular16).foregroundColor(.blue2)
-					.onTapGesture {
-						self.isSigning = true
-				}
+					.onTapGesture(perform: onResign)
 			}
-			DrawingPad(drawings: $signature.drawings)
-				.disabled(true)
+			if let url = signature.signatureUrl {
+				WebImage(url: URL(string: baseUrl + url))
+					.resizable()
+					.placeholder(Image("ico-journey-tap-to-sign"))
+					.frame(height: 145)
+			} else {
+				DrawingPad(drawings: $signature.drawings)
+					.disabled(true)
+			}
 		}
 	}
 }
@@ -76,19 +86,16 @@ struct SignedComponent: View {
 struct SigningComponent: View {
 	let title: String
 	@State private var drawings: [SignatureDrawing] = []
-	@Binding var isActive: Bool
+	let onCancel: () -> Void
 	let onDone: ([SignatureDrawing]) -> Void
 	var body: some View {
 		VStack(spacing: 32.0) {
 			Text(title).font(.largeTitle)
 			DrawingPad(drawings: $drawings)
 			HStack {
-				SecondaryButton(Texts.cancel) {
-					self.isActive = false
-				}
+				SecondaryButton(Texts.cancel, onCancel)
 				PrimaryButton(Texts.done,
 							  isDisabled: drawings.isEmpty) {
-					self.isActive = false
 					self.onDone(self.drawings)
 				}
 				.disabled(drawings.isEmpty)

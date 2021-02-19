@@ -3,7 +3,32 @@ import Combine
 import Overture
 
 public class APIClient: LoginAPI, JourneyAPI, ClientsAPI, FormAPI {
-	public func getTemplate(id: HTMLForm.ID) -> Effect<HTMLForm, RequestError> {
+	public func getForm(templateId: FormTemplateInfo.ID, entryId: FilledFormData.ID) -> Effect<HTMLForm, RequestError> {
+		
+		let params = commonAnd(other: ["form_template_id": templateId.rawValue,
+									   "form_id": entryId.rawValue])
+		let requestBuilder: RequestBuilder<_FilledForm>.Type = requestBuilderFactory.getBuilder()
+		return requestBuilder.init(method: .GET,
+								   baseUrl: baseUrl,
+								   path: .getFormTemplateData,
+								   queryParams: params,
+								   isBody: false)
+			.effect()
+			.tryMap(HTMLFormBuilder.init(formEntry:))
+			.eraseToEffect()
+			.map(HTMLForm.init(builder:))
+			.print()
+			.mapError { error in
+				if let formError = error as? HTMLFormBuilderError {
+					return RequestError.jsonDecoding(formError.description)
+				} else {
+					return error as? RequestError ?? .unknown
+				}
+			}
+			.eraseToEffect()
+	}
+	
+	public func getForm(templateId: FormTemplateInfo.ID) -> Effect<HTMLForm, RequestError> {
 		struct GetTemplate: Codable {
 			let form_template: [_FormTemplate]
 		}
@@ -11,7 +36,7 @@ public class APIClient: LoginAPI, JourneyAPI, ClientsAPI, FormAPI {
 		return requestBuilder.init(method: .GET,
 								   baseUrl: baseUrl,
 								   path: .getFormTemplateData,
-								   queryParams: commonAnd(other: ["form_template_id": id.rawValue]),
+								   queryParams: commonAnd(other: ["form_template_id": templateId.rawValue]),
 								   isBody: false)
 			.effect()
 			.compactMap(\.form_template.first)

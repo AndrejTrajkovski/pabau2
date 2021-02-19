@@ -24,18 +24,27 @@ public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnv
 													   selectedIdx: 0)
 		case .action:
 			break
-		case .onSelect(let id):
-			let selected: FilledFormData = state.childState.state[id: id]!
-			let formState = HTMLFormParentState.init(formData: selected)
-			state.formsContainer = FormsContainerState(formType: state.formType,
-													   chooseForms: nil,
-													   isFillingFormsActive: true,
-													   formsCollection: [formState],
-													   selectedIdx: 0)
 		case .backFromChooseForms:
 			state.formsContainer = nil
 		case .formsContainer(_):
 			break
+		case .formRaw(.rows(let id, let rowAction)):
+			switch rowAction {
+			case .select:
+				let selected: FilledFormData = state.childState.state[id: id]!
+				let formState = HTMLFormParentState.init(formData: selected)
+				state.formsContainer = FormsContainerState(formType: state.formType,
+														   chooseForms: nil,
+														   isFillingFormsActive: true,
+														   formsCollection: [formState],
+														   selectedIdx: 0)
+				return env.formAPI.getForm(templateId: selected.templateInfo.id,
+										   entryId: selected.treatmentId)
+					.receive(on: DispatchQueue.main)
+					.catchToEffect()
+					.map { FormsListAction.formsContainer(FormsContainerAction.forms(id: selected.templateInfo.id, action: .gotForm($0)))}
+					.eraseToEffect()
+			}
 		}
 		return .none
 	}
@@ -52,53 +61,64 @@ public enum FormsListAction: ClientCardChildParentAction, Equatable {
 	case add
 	case formsContainer(FormsContainerAction)
 	case backFromChooseForms
-	case onSelect(id: FilledFormData.ID)
+	case formRaw(FormsListRawAction)
 }
 
 struct FormsList: ClientCardChild {
 	let store: Store<FormsListState, FormsListAction>
-
+	
 	var body: some View {
-		WithViewStore(store) { viewStore in
-			FormsListRaw(state: viewStore.state.childState.state) {
-				viewStore.send(.onSelect(id: $0))
-			}
-			NavigationLink.emptyHidden(viewStore.state.formsContainer != nil,
-									   IfLetStore(store.scope(state: { $0.formsContainer },
-															  action: { .formsContainer($0)} ),
-												  then: {
-													FormsContainer(store: $0)
-														.customBackButton {
-															viewStore.send(.backFromChooseForms)
-														}
-												  }
-									   )
-			)
-		}
+		WithViewStore(store.scope(state: { $0.formsContainer != nil }),
+					  content: { viewStore in
+						FormsListRaw(store: store.scope(state: { $0.childState.state },
+														action: FormsListAction.formRaw))
+						NavigationLink.emptyHidden(viewStore.state,
+												   IfLetStore(store.scope(state: { $0.formsContainer },
+																		  action: { .formsContainer($0) } ),
+															  then: {
+																FormsContainer(store: $0)
+																	.customBackButton {
+																		viewStore.send(.backFromChooseForms)
+																	}
+															  }
+												   )
+						)
+					  }
+		).debug("FormsList")
 	}
+}
+
+public enum FormsListRawAction: Equatable {
+	case rows(id: FilledFormData.ID, action: FormRowAction)
 }
 
 struct FormsListRaw: View {
-	var state: IdentifiedArrayOf<FilledFormData>
-	let onSelect: (FilledFormData.ID) -> Void
+
+	let store: Store<IdentifiedArrayOf<FilledFormData>, FormsListRawAction>
 	var body: some View {
 		List {
-			ForEach(state.indices, id: \.self) { idx in
-				FormsListRow(form: self.state[idx]).onTapGesture {
-					onSelect(state[idx].id)
-				}
-			}
+			ForEachStore(store.scope(state: { $0 },
+									 action: FormsListRawAction.rows(id:action:)),
+						 content: FormsListRow.init(store:))
 		}
 	}
 }
 
+public enum FormRowAction: Equatable {
+	case select
+}
+
 struct FormsListRow: View {
-	let form: FilledFormData
+	let store: Store<FilledFormData, FormRowAction>
 	var body: some View {
-		ClientCardItemBaseRow(title: form.templateInfo.name,
-							  date: form.createdAt,
-							  image: Image(systemName: form.templateInfo.type.imageName)
-		)
+		WithViewStore(store) { viewStore in
+			ClientCardItemBaseRow(title: viewStore.templateInfo.name,
+								  date: viewStore.createdAt,
+								  image: Image(systemName: viewStore.templateInfo.type.imageName)
+			).onTapGesture {
+				viewStore.send(.select)
+			}
+		}
 	}
 }
 

@@ -24,6 +24,7 @@ let clientsListReducer: Reducer<ClientsState, ClientsListAction, ClientsEnvironm
                     .map(ClientsListAction.gotItemsResponse)
                     .eraseToEffect()
             case .identified(id: let id, action: .onAppear):
+				guard state.selectedClient == nil else { break }
                 if state.clients.last?.id == id && !state.isSearching && !state.isClientsLoading {
                     return env.apiClient.getClients(
                         search: nil,
@@ -116,7 +117,7 @@ struct ClientsList: View {
     }
 
     var body: some View {
-        return WithViewStore(
+        WithViewStore(
             store.scope(state: State.init(state:))
         ) { viewStore in
             VStack {

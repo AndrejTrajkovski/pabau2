@@ -41,7 +41,6 @@ struct LabelView: View {
 			label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
 			label.attributedText = text
 			label.font = UIFont.init(name: "HelveticaNeue-Light", size: 17)
-			print(text)
 			DispatchQueue.main.async {
 				dynamicHeight = label.sizeThatFits(CGSize(width: label.bounds.width, height: CGFloat.greatestFiniteMagnitude)).height
 			}
