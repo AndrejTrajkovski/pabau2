@@ -66,9 +66,7 @@ struct FormFieldStore: View {
 		IfLetStore(store.scope(
 					state: { extract(case: CSSClass.input_text, from: $0)},
 					action: { .inputText($0)}),
-				   then: {
-						InputTextField(store: $0.scope(state: { $0.text }))
-				   }
+				   then: InputTextFieldParent.init(store:)
 		)
 		IfLetStore(store.scope(
 					state: { extract(case: CSSClass.textarea, from: $0)},
@@ -139,10 +137,11 @@ let cssClassReducer: Reducer<CSSClass, CSSClassAction, FormEnvironment> =
 			state: /CSSClass.textarea,
 			action: /CSSClassAction.textArea,
 			environment: { $0 }),
-		textFieldReducer.pullbackCp(
-			state: (/CSSClass.input_text).appending(path: CasePath<InputText, String>.init(embed: InputText.init(text:), extract: { $0.text })),
+		inputTextFieldReducer.pullbackCp(
+			state: /CSSClass.input_text,
 			action: /CSSClassAction.inputText,
-			environment: { $0 }),
+			environment: { $0 }
+		),
 		selectFieldReducer.pullbackCp(
 			state: /CSSClass.select,
 			action: /CSSClassAction.select,
@@ -154,7 +153,7 @@ let cssClassReducer: Reducer<CSSClass, CSSClassAction, FormEnvironment> =
 	)
 
 public enum CSSClassAction: Equatable {
-	case inputText(TextChangeAction)
+	case inputText(InputTextAction)
 	case textArea(TextAreaFieldAction)
 	case radio(RadioFieldAction)
 	case signature(SignatureAction)

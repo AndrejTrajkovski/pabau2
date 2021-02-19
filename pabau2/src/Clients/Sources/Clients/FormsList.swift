@@ -26,7 +26,9 @@ public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnv
 			break
 		case .backFromChooseForms:
 			state.formsContainer = nil
-		case .formsContainer(_):
+		case .formsContainer(.checkIn(.onXTap)):
+			state.formsContainer = nil
+		case .formsContainer:
 			break
 		case .formRaw(.rows(let id, let rowAction)):
 			switch rowAction {
@@ -66,7 +68,6 @@ public enum FormsListAction: ClientCardChildParentAction, Equatable {
 
 struct FormsList: ClientCardChild {
 	let store: Store<FormsListState, FormsListAction>
-	
 	var body: some View {
 		WithViewStore(store.scope(state: { $0.formsContainer != nil }),
 					  content: { viewStore in
@@ -74,7 +75,7 @@ struct FormsList: ClientCardChild {
 														action: FormsListAction.formRaw))
 						NavigationLink.emptyHidden(viewStore.state,
 												   IfLetStore(store.scope(state: { $0.formsContainer },
-																		  action: { .formsContainer($0) } ),
+																		  action: { .formsContainer($0) }),
 															  then: {
 																FormsContainer(store: $0)
 																	.customBackButton {

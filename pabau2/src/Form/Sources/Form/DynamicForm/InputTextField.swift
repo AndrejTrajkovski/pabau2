@@ -3,6 +3,34 @@ import ComposableArchitecture
 import Model
 import SharedComponents
 
+let inputTextFieldReducer: Reducer<InputText, InputTextAction, FormEnvironment> = .combine(
+	textFieldReducer.pullbackCp(
+		state: /InputText.justText,
+		action: /InputTextAction.justText,
+		environment: { $0 }),
+	datePickerReducer.pullbackCp(
+		state: /InputText.date,
+		action: /InputTextAction.date,
+		environment: { $0 })
+	)
+
+public enum InputTextAction: Equatable {
+	case justText(TextChangeAction)
+	case date(DatePickerTCAAction)
+}
+
+struct InputTextFieldParent: View {
+	let store: Store<InputText, InputTextAction>
+	var body: some View {
+		IfLetStore(store.scope(state: { extract(case: InputText.justText, from: $0)},
+							   action: InputTextAction.justText),
+				   then: InputTextField.init(store:))
+		IfLetStore(store.scope(state: { extract(case: InputText.date, from: $0)},
+							   action: InputTextAction.date),
+				   then: { return DatePickerTCA.init(mode: UIDatePicker.Mode.date, store: $0) })
+	}
+}
+
 struct InputTextField: View {
 	let store: Store<String, TextChangeAction>
 

@@ -31,7 +31,13 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 	htmlFormParentReducer.forEach(
 		state: \FormsContainerState.formsCollection,
 		action: /FormsContainerAction.forms,
-		environment: { $0 })
+		environment: { $0 }
+	),
+	CheckInReducer<FormsContainerState>().reducer.pullback(
+		state: \FormsContainerState.self,
+		action: /FormsContainerAction.checkIn,
+		environment: { $0 }
+	)
 )
 
 public struct FormsContainerState: Equatable {
