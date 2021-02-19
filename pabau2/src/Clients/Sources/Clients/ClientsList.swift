@@ -4,85 +4,98 @@ import Model
 import Util
 import SharedComponents
 
-let clientsListReducer: Reducer<ClientsState, ClientsListAction, ClientsEnvironment> =
-    .combine (
-        clientCardReducer.pullback(
-            state: \.selectedClient,
-            action: /ClientsListAction.selectedClient,
-            environment: { $0}),
-        .init { state, action, env in
-            struct ClientsId: Hashable {}
-
-            switch action {
-            case .identified(let id, ClientRowAction.onSelectClient):
-                state.selectedClient = ClientCardState(
-                    client: state.clients[id: id]!,
-                    list: ClientCardListState(client: state.clients[id: id]!)
+let clientsListReducer: Reducer<
+    ClientsState,
+    ClientsListAction,
+    ClientsEnvironment
+> = .combine (
+    clientCardReducer.pullback(
+        state: \.selectedClient,
+        action: /ClientsListAction.selectedClient,
+        environment: { $0}),
+    .init { state, action, env in
+        struct CancelDelayId: Hashable {}
+        switch action {
+        case .identified(let id, ClientRowAction.onSelectClient):
+            state.selectedClient = ClientCardState(
+                client: state.clients[id: id]!,
+                list: ClientCardListState(client: state.clients[id: id]!)
+            )
+            return env.apiClient.getItemsCount(clientId: id.rawValue)
+                .catchToEffect()
+                .map(ClientsListAction.gotItemsResponse)
+                .eraseToEffect()
+        case .identified(id: let id, action: .onAppear):
+            if state.clients.last?.id == id && !state.isSearching && !state.isClientsLoading {
+                return env.apiClient.getClients(
+                    search: nil,
+                    offset: state.clients.count
                 )
-                return env.apiClient.getItemsCount(clientId: id.rawValue)
-                    .catchToEffect()
-                    .map(ClientsListAction.gotItemsResponse)
-                    .eraseToEffect()
-            case .identified(id: let id, action: .onAppear):
-                if state.clients.last?.id == id && !state.isSearching && !state.isClientsLoading {
-                    return env.apiClient.getClients(
-                        search: nil,
-                        offset: state.clients.count
-                    )
-                    .catchToEffect()
-                    .receive(on: DispatchQueue.main)
-                    .eraseToEffect()
-                    .debounce(id: ClientsId(), for: 0.3, scheduler: DispatchQueue.main)
-                    .map(ClientsListAction.gotClientsResponse)
-                    .cancellable(id: ClientsId(), cancelInFlight: true)
-                }
-            case .onSearchText(let text):
-                state.searchText = text
-                return env.apiClient
-                    .getClients(
-                        search: text,
-                        offset: 0
-                    )
-                    .catchToEffect()
-                    .receive(on: DispatchQueue.main)
-                    .eraseToEffect()
-                    .debounce(id: ClientsId(), for: 0.3, scheduler: DispatchQueue.main)
-                    .map(ClientsListAction.gotClientsResponse)
-                    .cancellable(id: ClientsId(), cancelInFlight: true)
-            case .gotClientsResponse(let result):
-                switch result {
-                case .success(let clients):
-                    state.clients = .init(state.searchText.isEmpty ? clients : state.clients + clients)
-                    state.notFoundClients = state.clients.isEmpty
-                    state.contactListLS = .gotSuccess
-                case .failure(let error):
-                    state.contactListLS = .gotError(error)
-                }
-            case .gotItemsResponse(let result):
-                guard case .success(let count) = result else { break }
-                state.selectedClient?.client.count = count
-            case .selectedClient(.bottom(.child(.details(.editingClient(.onResponseSave(let result)))))):
-                result
-                    .map(Client.init(patDetails:))
-                    .map {
-                        state.clients[id: $0.id] = $0
-                        state.selectedClient!.client = $0
-                    }
-            case .onAddClient:
-                state.addClient = AddClientState(patDetails: PatientDetails.empty)
-            case .addClient(.onResponseSave(let result)):
-                result
-                    .map(Client.init(patDetails:))
-                    .map { state.clients.append($0) }
-                state.addClient = nil
-            case .addClient: break
-            case .selectedClient(.bottom(.backBtnTap)):
-                break
-            case .selectedClient: break
+                .catchToEffect()
+                .debounce(id: CancelDelayId(), for: 0.5, scheduler: DispatchQueue.main)
+                .receive(on: DispatchQueue.main)
+                .map(ClientsListAction.gotClientsResponse)
+                .eraseToEffect()
             }
-            return .none
+        case .onSearchText(let text):
+            state.searchText = text
+            state.isSearching = !text.isEmpty
+
+            if text.isEmpty {
+                state.clients = .init([])
+            }
+
+            return env.apiClient
+                .getClients(
+                    search: state.isSearching ? state.searchText : nil,
+                    offset: 0
+                )
+                .catchToEffect()
+                .debounce(id: CancelDelayId(), for: 0.5, scheduler: DispatchQueue.main)
+                .receive(on: DispatchQueue.main)
+                .map(ClientsListAction.gotClientsResponse)
+                .eraseToEffect()
+        case .gotClientsResponse(let result):
+            switch result {
+            case .success(let clients):
+                state.contactListLS = .gotSuccess
+
+                if state.isSearching {
+                    state.clients = .init(clients)
+                    state.notFoundClients = clients.isEmpty
+                    break
+                }
+              
+                state.clients = (state.clients + .init(clients))
+                state.notFoundClients = state.clients.isEmpty
+            case .failure(let error):
+                state.contactListLS = .gotError(error)
+            }
+        case .gotItemsResponse(let result):
+            guard case .success(let count) = result else { break }
+            state.selectedClient?.client.count = count
+        case .selectedClient(.bottom(.child(.details(.editingClient(.onResponseSave(let result)))))):
+            result
+                .map(Client.init(patDetails:))
+                .map {
+                    state.clients[id: $0.id] = $0
+                    state.selectedClient!.client = $0
+                }
+        case .onAddClient:
+            state.addClient = AddClientState(patDetails: PatientDetails.empty)
+        case .addClient(.onResponseSave(let result)):
+            result
+                .map(Client.init(patDetails:))
+                .map { state.clients.append($0) }
+            state.addClient = nil
+        case .addClient: break
+        case .selectedClient(.bottom(.backBtnTap)):
+            break
+        case .selectedClient: break
         }
-    )
+        return .none
+    }
+)
 
 public enum ClientsListAction: Equatable {
     case identified(id: Client.ID, action: ClientRowAction)

@@ -11,7 +11,7 @@ let chooseParticipantReducer =
             guard let participantSchema = state.participantSchema  else {
                 break
             }
-            
+ 
             state.searchText = ""
             return env.journeyAPI.getParticipants(
                 participantSchema: participantSchema

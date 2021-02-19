@@ -165,7 +165,14 @@ public struct Client: Codable, Identifiable, Equatable {
         self.membershipNumber = nil
         self.insuranceCompany = nil
         self.insuranceContract = nil
-        self.owner = try container.decode(Int.self, forKey: .owner)
+                
+        if let id = try? container.decode(Int.self, forKey: .owner) {
+            self.owner = id
+        } else if let sId = try? container.decode(String.self, forKey: .owner), let id = Int(sId) {
+            self.owner = id
+        } else {
+            throw RequestError.jsonDecoding("Owner Id invalid")
+        }
 
         do {
             self.id = Id(rawValue: Int(try container.decode(String.self, forKey: .id))!)

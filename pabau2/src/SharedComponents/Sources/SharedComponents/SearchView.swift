@@ -1,4 +1,5 @@
 import SwiftUI
+import  Combine
 
 public struct SearchView: View {
     var placeholder: String

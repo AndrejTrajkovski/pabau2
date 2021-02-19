@@ -27,11 +27,16 @@ public enum ChooseClientsAction: Equatable {
     case loadMoreClients
 }
 
+struct CancelDelayId: Hashable {}
+
 let chooseClientsReducer =
     Reducer<ChooseClientsState, ChooseClientsAction, AddAppointmentEnv> { state, action, env in
         switch action {
         case .onAppear:
             state.searchText = ""
+            state.isSearching = false
+            state.clients = .init([])
+            
             return env.clientAPI
                 .getClients(
                     search: nil,
@@ -45,24 +50,31 @@ let chooseClientsReducer =
             switch result {
             case .success(let clients):
                 if state.isSearching {
-                    state.notFoundClients = true
-                    state.clients = .init([])
+                    state.clients = .init(clients)
+                    state.notFoundClients = clients.isEmpty
                     break
                 }
-                state.notFoundClients = false
-                state.clients = .init(clients)
+
+                state.clients = (state.clients + .init(clients))
+                state.notFoundClients = state.clients.isEmpty
             case .failure:
                 break
             }
         case .onSearch(let text):
             state.searchText = text
+            state.isSearching = !text.isEmpty
+            
+            if text.isEmpty {
+                
+            }
 
             return env.clientAPI
                 .getClients(
                     search: state.isSearching ? state.searchText : nil,
-                    offset: state.clients.count
+                    offset: 0
                 )
                 .catchToEffect()
+                .debounce(id: CancelDelayId(), for: 0.5, scheduler: DispatchQueue.main)
                 .map(ChooseClientsAction.gotClientsResponse)
                 .receive(on: DispatchQueue.main)
                 .eraseToEffect()
@@ -98,7 +110,8 @@ struct ChooseClients: View {
                 placeholder: "Search",
                 text: viewStore.binding(
                     get: \.searchText,
-                    send: ChooseClientsAction.onSearch)
+                    send: ChooseClientsAction.onSearch
+                )
             )
             ZStack {
                 List {
