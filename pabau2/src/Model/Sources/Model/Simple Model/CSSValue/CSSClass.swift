@@ -9,7 +9,7 @@ public enum CSSClass: Equatable {
 		case .staticText(_):
 			return true
 		case .input_text(let inputText):
-			return !inputText.text.isEmpty
+			return inputText.isFulfilled
 		case .textarea(let textAreaText):
 			return !textAreaText.text.isEmpty
 		case .radio(let radio):
@@ -52,7 +52,8 @@ public enum CSSClass: Equatable {
 		case .staticText:
 			self = .staticText(StaticText(AttributedOrText.init(value: stringValue ?? "")))
 		case .input_text:
-			self = .input_text(InputText(text: stringValue ?? ""))
+			self = .input_text(InputText(fldType: _formStructure.fldtype,
+										 value: stringValue))
 		case .textarea:
 			self = .textarea(TextArea(text: stringValue ?? ""))
 		case .radio:
@@ -85,7 +86,7 @@ public enum CSSClass: Equatable {
 		case .staticText:
 			break
 		case .input_text(var inputText):
-			inputText.text = medicalResult.value
+			inputText.updateWith(medicalResult: medicalResult)
 			self = .input_text(inputText)
 		case .textarea(var textArea):
 			textArea.text = medicalResult.value
