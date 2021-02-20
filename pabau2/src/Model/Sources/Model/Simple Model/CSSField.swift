@@ -15,10 +15,11 @@ public struct CSSField: Equatable, Identifiable {
 	
 	init?(id: CSSFieldID, formStructure: _FormStructure) {
 		do{
-			let cssClass = try CSSClass.init(_formStructure: formStructure)
+			let cssClass = try CSSClass.init(_formStructure: formStructure, fieldId: id)
+			print("fieldId: \(id)")
 			self.id = id
 			self._required = Bool(formStructure.formStructureRequired) ?? false
-			self.title = formStructure.title
+			self.title = formStructure.getLabelTitle()
 			self.cssClass = cssClass
 		} catch {
 			return nil

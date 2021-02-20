@@ -46,14 +46,13 @@ public enum CSSClass: Equatable {
 	case diagram_mini(DiagramMini)
 	case unknown
 	
-	init(_formStructure: _FormStructure) throws {
+	init(_formStructure: _FormStructure, fieldId: CSSFieldID) throws {
 		let stringValue = extract(case: Values.string, from:_formStructure.values)
 		switch _formStructure.cssClass {
 		case .staticText:
 			self = .staticText(StaticText(AttributedOrText.init(value: stringValue ?? "")))
 		case .input_text:
-			self = .input_text(InputText(fldType: _formStructure.fldtype,
-										 value: stringValue))
+			self = .input_text(InputText(fldType: _formStructure.fldtype))
 		case .textarea:
 			self = .textarea(TextArea(text: stringValue ?? ""))
 		case .radio:
@@ -68,8 +67,8 @@ public enum CSSClass: Equatable {
 			self = .checkboxes(CheckBoxState(choices))
 		case .select:
 			let choices = try extractAndSortValues(_formStructure.values)
-				.map(\.value).map(SelectChoice.init)
-			self = .select(SelectState.init(choices))
+				.map(\.value)
+			self = .select(SelectState.init(choices, fieldId))
 		case .heading:
 			self = .heading(Heading.init(value: AttributedOrText.init(value: stringValue ?? "")))
 		case .image:
@@ -96,7 +95,7 @@ public enum CSSClass: Equatable {
 			self = .radio(radioState)
 		case .signature(var signature):
 			signature.signatureUrl = medicalResult.value
-			print("https://crm.pabau.com" + (medicalResult.value))
+//			print("https://crm.pabau.com" + (medicalResult.value))
 			self = .signature(signature)
 		case .checkboxes(var checkboxes):
 			checkboxes.selected = Set.init(
@@ -106,7 +105,7 @@ public enum CSSClass: Equatable {
 			)
 			self = .checkboxes(checkboxes)
 		case .select(var selectState):
-			selectState.selectedChoice = SelectChoice.init(medicalResult.value)
+			selectState.select(choice: medicalResult.value)
 			self = .select(selectState)
 		case .heading:
 			return

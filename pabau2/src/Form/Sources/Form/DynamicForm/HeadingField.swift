@@ -14,13 +14,13 @@ struct AttributedOrTextField: View {
 		IfLetStore(store.scope(
 					state: { extract(case: AttributedOrText.attributed, from: $0)}).actionless,
 				   then: { store in
-					LabelView(text: ViewStore(store).state)
+					AttributedStringLabel(text: ViewStore(store).state)
 				   }
 		)
 	}
 }
 
-struct LabelView: View {
+struct AttributedStringLabel: View {
 	let text: NSAttributedString
 
 	@State private var height: CGFloat = .zero

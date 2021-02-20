@@ -11,7 +11,6 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormParentAct
 	.init { state, action, env in
 		switch action {
 		case .gotForm(let result):
-			print("got form: \(result)")
 			switch result {
 			case .success(let value):
 				state.form = value
@@ -21,7 +20,7 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormParentAct
 			}
 		case .form(.complete):
 			state.isComplete = true
-		case .form(.rows(idx: let idx, action: let action)):
+		case .form(.rows(id: let id, action: let action)):
 			break
 		}
 		return .none
@@ -29,9 +28,9 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormParentAct
 )
 
 public struct HTMLFormParentState: Equatable, Identifiable {
-	
+
 	public var id: HTMLForm.ID { info.id }
-	
+
 	public init(formData: FilledFormData) {
 		self.info = formData.templateInfo
 		self.form = nil
@@ -39,7 +38,7 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 		self.isComplete = false
 		self.filledFormId = formData.treatmentId
 	}
-	
+
 	public init(info: FormTemplateInfo) {
 		self.info = info
 		self.form = nil
@@ -66,7 +65,6 @@ public struct HTMLFormParent: View {
 	}
 
 	let store: Store<HTMLFormParentState, HTMLFormParentAction>
-	
 	public var body: some View {
 		IfLetStore(store.scope(state: { $0.form },
 							   action: { .form($0) }),

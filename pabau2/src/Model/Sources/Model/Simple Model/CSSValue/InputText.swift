@@ -5,15 +5,15 @@ public enum InputText: Equatable, Hashable {
 	
 	static let parsingDF = DateFormatter.formDateField
 	
-	public init (fldType: String?, value: String?) {
+	public init (fldType: String?) {
 		if fldType == "date" {
-			self = .date(Self.dateFrom(value: value))
+			self = .date(nil)
 		} else {
-			self = .justText(value ?? "")
+			self = .justText(nil)
 		}
 	}
 	
-	case justText(String)
+	case justText(String?)
 	case date(Date?)
 	
 	mutating func updateWith(medicalResult: MedicalResult) {
@@ -21,6 +21,7 @@ public enum InputText: Equatable, Hashable {
 		case .justText:
 			self = .justText(medicalResult.value)
 		case .date:
+			print("date2: \(medicalResult.value)")
 			self = .date(Self.dateFrom(value: medicalResult.value))
 		}
 	}
@@ -32,7 +33,7 @@ public enum InputText: Equatable, Hashable {
 	public var isFulfilled: Bool {
 		switch self {
 		case .justText(let text):
-			return !text.isEmpty
+			return !(text?.isEmpty ?? true)
 		case .date(let date):
 			return date != nil
 		}

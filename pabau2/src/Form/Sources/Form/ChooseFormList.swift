@@ -48,7 +48,6 @@ public let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, Fo
 		//												 allTemplates: state.templates)
 		return .none
 	case .gotResponse(let result):
-		print(result)
 		switch result {
 		case .success(let templates):
 			state.templates = IdentifiedArray(templates)

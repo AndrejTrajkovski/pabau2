@@ -96,12 +96,10 @@ struct PabauTabBar: View {
 		self.viewStore = ViewStore(self.store
 			.scope(state: ViewState.init(state:),
 						 action: { $0 }))
-		print("PabauTabBar init")
 	}
 
 	var body: some View {
-		print("PabauTabBar body")
-		return ZStack(alignment: .topTrailing) {
+		ZStack(alignment: .topTrailing) {
 			TabView {
 				calendar()
 				journey()

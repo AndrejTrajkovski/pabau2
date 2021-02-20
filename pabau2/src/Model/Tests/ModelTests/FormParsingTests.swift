@@ -85,8 +85,6 @@ final class FormParsingTests: XCTestCase {
 			fatalError("Unable to convert UnitTestData.json to String")
 		}
 
-		print("The JSON string is: \(jsonString)")
-
 		guard let jsonData = try? Data(contentsOf: resourceURL) else {
 			fatalError("Unable to convert UnitTestData.json to Data")
 		}

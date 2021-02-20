@@ -84,6 +84,21 @@ struct _FormStructure: Codable {
 		}
 	}
 	
+	func getLabelTitle() -> String {
+		switch self.cssClass {
+		case .input_text, .textarea:
+			return extract(case: Values.string, from: self.values) ?? ""
+		case .radio, .checkbox, .select, .signature, .diagram_mini:
+			return self.title ?? ""
+		case .staticText, .heading:
+			return ""
+		case .cl_drugs:
+			return "" // TODO
+		case .image:
+			return ""
+		}
+	}
+	
 	enum CodingKeys: String, CodingKey {
 		case cssClass
 		case formStructureRequired = "required"

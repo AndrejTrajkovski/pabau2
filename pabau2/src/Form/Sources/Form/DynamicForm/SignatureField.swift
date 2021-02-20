@@ -30,8 +30,7 @@ struct SignatureField: View {
 	}
 
 	var body: some View {
-		print("isSigning \(isSigning)")
-		return Group {
+		Group {
 			if isSigning {
 				DrawingPad(drawings: $signature.drawings)
 					.disabled(true)

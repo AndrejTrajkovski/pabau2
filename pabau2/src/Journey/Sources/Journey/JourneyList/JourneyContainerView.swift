@@ -67,7 +67,6 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 				.receive(on: DispatchQueue.main)
 				.eraseToEffect()
 		case .gotResponse(let result):
-			print(result)
 			switch result {
 			case .success(let appointments):
 //				state.appointments.refresh(events: appointments.appointments,
@@ -75,7 +74,6 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 //										   employees: state.employeesFilter.employees.elements)
 				state.loadingState = .gotSuccess
 			case .failure(let error):
-				print(error)
 				state.loadingState = .gotError(error)
 			}
 		default:

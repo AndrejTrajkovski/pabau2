@@ -17,7 +17,7 @@ public class APIClient: LoginAPI, JourneyAPI, ClientsAPI, FormAPI {
 			.tryMap(HTMLFormBuilder.init(formEntry:))
 			.eraseToEffect()
 			.map(HTMLForm.init(builder:))
-			.print()
+//			.print()
 			.mapError { error in
 				if let formError = error as? HTMLFormBuilderError {
 					return RequestError.jsonDecoding(formError.description)
@@ -43,7 +43,7 @@ public class APIClient: LoginAPI, JourneyAPI, ClientsAPI, FormAPI {
 			.tryMap(HTMLFormBuilder.init(template:))
 			.eraseToEffect()
 			.map(HTMLForm.init(builder:))
-			.print()
+//			.print()
 			.mapError { error in
 				if let formError = error as? HTMLFormBuilderError {
 					return RequestError.jsonDecoding(formError.description)

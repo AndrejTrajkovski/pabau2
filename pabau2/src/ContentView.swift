@@ -116,12 +116,10 @@ struct LoginContainer: View {
 		self.viewStore = ViewStore(self.store
 			.scope(state: ViewState.init(state:),
 						 action: { $0 }))
-		print("LoginContainer init")
 	}
 
 	var body: some View {
-		print("LoginContainer body")
-		return NavigationView {
+		NavigationView {
 			ViewBuilder.buildBlock(
 				viewStore.state.shouldShowWalkthrough ?
 					ViewBuilder.buildEither(first: WalkthroughContainer(store))

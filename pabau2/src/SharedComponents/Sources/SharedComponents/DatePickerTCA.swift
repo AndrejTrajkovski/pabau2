@@ -15,20 +15,21 @@ public enum DatePickerTCAAction: Equatable {
 }
 
 public struct DatePickerTCA: View {
-	
+
 	public init(mode: UIDatePicker.Mode, store: Store<Date?, DatePickerTCAAction>) {
 		self.store = store
 		self.mode = mode
 	}
-	
+
 	let store: Store<Date?, DatePickerTCAAction>
 	let mode: UIDatePicker.Mode
-	
+
 	public var body: some View {
 		WithViewStore(store) {
 			DatePickerTextField(date: $0.binding(get: { $0 },
 												 send: { .onChange($0)}),
-								mode: mode)
-		}
+								mode: mode,
+								borderStyle: .roundedRect)
+		}.debug("DatePickerTCA")
 	}
 }

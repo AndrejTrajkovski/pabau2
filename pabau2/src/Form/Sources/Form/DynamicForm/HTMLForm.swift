@@ -6,13 +6,13 @@ import Util
 public let htmlFormReducer: Reducer<HTMLForm, HTMLFormAction, FormEnvironment> = .combine(
 	cssFieldReducer.forEach(
 		state: \HTMLForm.formStructure,
-		action: /HTMLFormAction.rows(idx:action:),
+		action: /HTMLFormAction.rows(id:action:),
 		environment: { $0 }
 	)
 )
 
 public enum HTMLFormAction: Equatable {
-	case rows(idx: Int, action: CSSClassAction)
+	case rows(id: CSSField.ID, action: CSSClassAction)
 	case complete(CompleteBtnAction)
 	//idea:
 //	case requests(JourneyFormRequestsAction<HTMLForm>)
@@ -49,12 +49,12 @@ struct HTMLFormView: View {
 		self.isCheckingDetails = isCheckingDetails
 		self.viewStore = ViewStore(store.scope(state: { $0.templateInfo.name }).actionless)
 	}
-
+	
 	public var body: some View {
 		ScrollView {
 			LazyVStack {
 				ForEachStore(store.scope(state: { $0.formStructure },
-										 action: { HTMLFormAction.rows(idx: $0, action: $1) }),
+										 action: { HTMLFormAction.rows(id: $0, action: $1) }),
 							 content: { localStore in
 								FormSectionField(store: localStore,
 												 isCheckingDetails: isCheckingDetails)

@@ -56,13 +56,14 @@ struct FormSectionField: View {
 struct FormFieldStore: View {
 	let store: Store<CSSClass, CSSClassAction>
 	let title: String
-	
+
 	var body: some View {
 		IfLetStore(store.scope(
 					state: { extract(case: CSSClass.staticText, from: $0)}).actionless,
 				   then: { store in
 						AttributedOrTextField(store: store.scope(state: { $0.value }))
-				   })
+				   }
+		)
 		IfLetStore(store.scope(
 					state: { extract(case: CSSClass.input_text, from: $0)},
 					action: { .inputText($0)}),
@@ -86,15 +87,18 @@ struct FormFieldStore: View {
 					SignatureField(signature: ViewStore($0).binding(get: { $0 },
 																	send: SignatureAction.update),
 								   title: title)
-				   })
+				   }
+		)
 		IfLetStore(store.scope(
 					state: { extract(case: CSSClass.checkboxes, from: $0)},
 					action: { .checkboxes($0)}),
-				   then: CheckBoxField.init(store:))
+				   then: CheckBoxField.init(store:)
+		)
 		IfLetStore(store.scope(
 					state: { extract(case: CSSClass.select, from: $0)},
 					action: { .select($0)}),
-				   then: SelectField.init(store:))
+				   then: SelectField.init(store:)
+		)
 		IfLetStore(store.scope(
 					state: { extract(case: CSSClass.heading, from: $0)}).actionless,
 				   then: { store in
