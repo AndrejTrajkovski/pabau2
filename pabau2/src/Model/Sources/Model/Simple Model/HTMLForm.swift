@@ -1,6 +1,5 @@
 import Foundation
 import Tagged
-import ComposableArchitecture
 
 public struct HTMLForm: Identifiable, Equatable {
 	
@@ -12,7 +11,7 @@ public struct HTMLForm: Identifiable, Equatable {
 	
 	public let ePaper: Bool?
 
-	public var formStructure: IdentifiedArrayOf<CSSField>
+	public var formStructure: [CSSField]
 	
 	public var canProceed: Bool {
 		return formStructure.allSatisfy {
@@ -29,7 +28,7 @@ public struct HTMLForm: Identifiable, Equatable {
 											 name: name,
 											 type: formType)
 		self.ePaper = ePaper
-		self.formStructure = IdentifiedArrayOf(formStructure)
+		self.formStructure = formStructure
 		self.entryId = nil
 	}
 	
@@ -39,7 +38,7 @@ public struct HTMLForm: Identifiable, Equatable {
 											 type: builder.formType)
 		self.entryId = builder.entryId
 		self.ePaper = builder.ePaper
-		self.formStructure = IdentifiedArrayOf(builder.formStructure)
+		self.formStructure = builder.formStructure
 	}
 }
 

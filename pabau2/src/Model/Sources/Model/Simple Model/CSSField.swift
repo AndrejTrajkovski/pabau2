@@ -1,8 +1,6 @@
-//
-// CSSField.swift
-
 import Foundation
 import Tagged
+
 public struct CSSField: Equatable, Identifiable {
 
 	public let id: CSSFieldID

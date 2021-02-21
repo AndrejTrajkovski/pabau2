@@ -20,7 +20,7 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormParentAct
 			}
 		case .form(.complete):
 			state.isComplete = true
-		case .form(.rows(id: let id, action: let action)):
+		case .form(.rows(idx: let idx, action: let action)):
 			break
 		}
 		return .none

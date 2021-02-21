@@ -15,7 +15,7 @@ public enum CSSClass: Equatable {
 		case .radio(let radio):
 			return radio.selectedChoice != nil
 		case .signature(let signature):
-			return !signature.drawings.isEmpty//TODO: add image url in check
+			return !signature.currentDrawings.isEmpty//TODO: add image url in check
 		case .checkboxes(let checkboxes):
 			return !checkboxes.selected.isEmpty
 		case .select(let select):

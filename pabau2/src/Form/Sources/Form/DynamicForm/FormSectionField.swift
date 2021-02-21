@@ -84,8 +84,7 @@ struct FormFieldStore: View {
 					state: { extract(case: CSSClass.signature, from: $0)},
 					action: { .signature($0)}),
 				   then: {
-					SignatureField(signature: ViewStore($0).binding(get: { $0 },
-																	send: SignatureAction.update),
+					SignatureField(store: $0,
 								   title: title)
 				   }
 		)
