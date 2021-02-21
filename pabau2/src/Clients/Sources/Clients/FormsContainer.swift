@@ -90,7 +90,7 @@ struct FormsContainer: View {
 					ForEachStore(store.scope(state: { $0.formsCollection },
 											 action: FormsContainerAction.forms(id: action:)),
 								 content: HTMLFormParent.init(store:)
-					)
+					).padding([.leading, .trailing], 32)
 				}
 		)
 	}

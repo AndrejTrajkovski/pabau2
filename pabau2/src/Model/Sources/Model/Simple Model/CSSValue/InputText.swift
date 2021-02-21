@@ -38,4 +38,13 @@ public enum InputText: Equatable, Hashable {
 			return date != nil
 		}
 	}
+	
+	func getValue() -> String? {
+		switch self {
+		case .date(let date):
+			return date.map{ Self.parsingDF.string(from: $0) }
+		case .justText(let string):
+			return string
+		}
+	}
 }

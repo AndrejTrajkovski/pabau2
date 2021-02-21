@@ -119,6 +119,39 @@ public enum CSSClass: Equatable {
 			return
 		}
 	}
+	
+	func getValue() -> String? {
+		switch self {
+		case .input_text(let inputText):
+		return inputText.getValue()
+		case .textarea(let textArea):
+			return textArea.text
+		case .radio(let radio):
+			return radio.selectedChoice?.title
+		case .checkboxes(let checkbox):
+			return checkbox.selected
+				.flatMap { $0.data(using: .utf8) }
+				.map { (data: Data) in data.base64EncodedString() }
+				.joined(separator: ",")
+		case .select(let select):
+			return select.selectedChoice?.title
+		case .signature:
+			return ""
+		case .diagram_mini:
+			return ""
+		case .staticText:
+			return nil
+		case .heading:
+			return nil
+		case .cl_drugs:
+			return "" // TODO
+		case .image:
+			return ""
+		case .unknown:
+			return nil
+		}
+	}
+
 }
 
 enum CSSClassTypeMismatch: Error {

@@ -9,11 +9,6 @@ import SDWebImageSwiftUI
 
 let signatureFieldReducer: Reducer<SignatureState, SignatureAction, Any> =
 	.combine (
-//		signingComponentReducer.optional.pullback(
-//			state: \SignatureState.signing,
-//			action: /SignatureAction.signing,
-//			environment: { $0 }
-//		),
 		.init { state, action, _ in
 			switch action {
 			case .tapToResign, .tapToSign:
@@ -98,9 +93,6 @@ struct SignatureField: View {
 			SigningComponent(store: store.scope(state: { _ in EmptyEquatable() },
 												action: SignatureAction.signing),
 							 title: title)
-//			IfLetStore(store.scope(state: { $0.signing },
-//								   action: SignatureAction.signing),
-//					   then: { SigningComponent.init(store: $0, title: title) })
 		}
 	}
 }
