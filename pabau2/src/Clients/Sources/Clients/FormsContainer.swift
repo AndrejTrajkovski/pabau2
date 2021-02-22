@@ -15,7 +15,7 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 		case .chooseForms(.proceed):
 			state.isFillingFormsActive = true
 			guard state.chooseForms != nil else { break }
-			let array = state.chooseForms!.selectedTemplates().map { HTMLFormParentState.init(info: $0) }
+			let array = state.chooseForms!.selectedTemplates().map { HTMLFormParentState.init(info: $0, clientId: state.clientId) }
 			state.formsCollection = IdentifiedArray(array)
 			guard let first = state.chooseForms!.selectedTemplates().first else { return .none }
 			return env.formAPI.getForm(templateId: first.id)
@@ -41,6 +41,7 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 )
 
 public struct FormsContainerState: Equatable {
+	let clientId: Client.ID
 	let formType: FormType
 	var chooseForms: ChooseFormState?
 	var isFillingFormsActive: Bool

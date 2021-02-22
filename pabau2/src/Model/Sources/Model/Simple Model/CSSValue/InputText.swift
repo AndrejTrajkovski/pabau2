@@ -9,7 +9,7 @@ public enum InputText: Equatable, Hashable {
 		if fldType == "date" {
 			self = .date(nil)
 		} else {
-			self = .justText(nil)
+			self = .justText("")
 		}
 	}
 	

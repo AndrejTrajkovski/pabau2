@@ -77,6 +77,8 @@ struct SignatureField: View {
 									WebImage(url: URL(string: baseUrl + signatureUrl))
 										.resizable()
 										.placeholder(Image("ico-journey-tap-to-sign"))
+										.indicator(.activity) // Activity Indicator
+										.scaledToFit()
 										.frame(height: 145)
 								})
 			case .drawings(let drawings):
@@ -166,10 +168,10 @@ struct TapToSign: View {
 }
 
 struct DrawingPad: View {
-	
+
 	@Binding var currentDrawing: SignatureDrawing
 	@Binding var drawings: [SignatureDrawing]
-	
+
 	var body: some View {
 		GeometryReaderPatch { geometry in
 			Path { path in

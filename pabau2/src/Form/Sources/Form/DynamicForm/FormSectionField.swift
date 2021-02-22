@@ -42,10 +42,10 @@ struct FormSectionField: View {
 		) {
 			FormFieldStore(store: store.scope(state: { $0.cssClass }),
 						   title: viewStore.title)
-				.padding([.leading, .trailing], 16)
 		}
 		.background(Color.white)
 		.border(borderColor, width: 2.0)
+		.padding([.leading, .trailing], 16)
 	}
 
 	var borderColor: Color {

@@ -19,6 +19,13 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormParentAct
 				state.loadingState = .gotError(error)
 			}
 		case .form(.complete):
+			guard let form = state.form else { break }
+			return env.formAPI.save(form: form, clientId: state.clientId)
+				.receive(on: DispatchQueue.main)
+				.catchToEffect()
+				.map(HTMLFormParentAction.gotPOSTResponse)
+		case .gotPOSTResponse(let result):
+			print(result)
 			state.isComplete = true
 		case .form(.rows(idx: let idx, action: let action)):
 			break
@@ -31,22 +38,27 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 
 	public var id: HTMLForm.ID { info.id }
 
-	public init(formData: FilledFormData) {
+	public init(formData: FilledFormData,
+				clientId: Client.ID) {
 		self.info = formData.templateInfo
 		self.form = nil
 		self.loadingState = .initial
 		self.isComplete = false
 		self.filledFormId = formData.treatmentId
+		self.clientId = clientId
 	}
 
-	public init(info: FormTemplateInfo) {
+	public init(info: FormTemplateInfo,
+				clientId: Client.ID) {
 		self.info = info
 		self.form = nil
 		self.loadingState = .initial
 		self.isComplete = false
 		self.filledFormId = nil
+		self.clientId = clientId
 	}
 
+	public let clientId: Client.ID
 	public let filledFormId: FilledFormData.ID?
 	public let info: FormTemplateInfo
 	public var form: HTMLForm?
@@ -55,6 +67,7 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 }
 
 public enum HTMLFormParentAction: Equatable {
+	case gotPOSTResponse(Result<VoidAPIResponse, RequestError>)
 	case gotForm(Result<HTMLForm, RequestError>)
 	case form(HTMLFormAction)
 }

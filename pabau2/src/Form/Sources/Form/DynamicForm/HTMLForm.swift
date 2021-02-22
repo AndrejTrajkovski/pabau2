@@ -29,12 +29,9 @@ public struct HTMLFormViewCompleteBtn: View {
 	}
 	
 	public var body: some View {
-		VStack {
+//		VStack {
 			HTMLFormView(store: store, isCheckingDetails: false)
-			CompleteButton(store: store.scope(state: { $0 },
-											  action: { .complete($0) })
-			)
-		}
+//		}
 	}
 }
 
@@ -49,7 +46,7 @@ struct HTMLFormView: View {
 		self.isCheckingDetails = isCheckingDetails
 		self.viewStore = ViewStore(store.scope(state: { $0.templateInfo.name }).actionless)
 	}
-	
+
 	public var body: some View {
 		ScrollView {
 			LazyVStack {
@@ -59,6 +56,9 @@ struct HTMLFormView: View {
 								FormSectionField(store: localStore,
 												 isCheckingDetails: isCheckingDetails)
 							 }
+				)
+				CompleteButton(store: store.scope(state: { $0 },
+												  action: { .complete($0) })
 				)
 			}
 		}

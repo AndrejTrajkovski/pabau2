@@ -19,8 +19,7 @@ extension APIClient {
         return requestBuilder.init(method: .GET,
                                    baseUrl: baseUrl,
                                    path: .getClients,
-                                   queryParams: commonAnd(other: queryItems),
-                                   isBody: false)
+                                   queryParams: commonAnd(other: queryItems))
             .effect()
             .map(\.clients)
             .eraseToEffect()
@@ -39,8 +38,7 @@ extension APIClient {
         return requestBuilder.init(method: .GET,
                                    baseUrl: baseUrl,
                                    path: .getClientsAppointmens,
-                                   queryParams: commonAnd(other: ["id": "\(clientId)"]),
-                                   isBody: false)
+                                   queryParams: commonAnd(other: ["id": "\(clientId)"]))
             .effect()
             .map(\.appointments)
             .eraseToEffect()
@@ -59,8 +57,7 @@ extension APIClient {
                                    path: .getClientsPhotos,
                                    queryParams: commonAnd(other: [
                                     "contact_id": "\(clientId)"
-                                   ]),
-                                   isBody: false)
+                                   ]))
             .effect()
             .map(\.photos)
             .eraseToEffect()
@@ -74,8 +71,7 @@ extension APIClient {
         return requestBuilder.init(method: .GET,
                                    baseUrl: baseUrl,
                                    path: .getFinancials,
-                                   queryParams: commonAnd(other: ["contact_id": "\(clientId)"]),
-                                   isBody: false)
+                                   queryParams: commonAnd(other: ["contact_id": "\(clientId)"]))
             .effect()
             .map(\.sales)
             .eraseToEffect()
@@ -93,8 +89,7 @@ extension APIClient {
         return requestBuilder.init(method: .GET,
                                    baseUrl: baseUrl,
                                    path: .getForms,
-                                   queryParams: commonAnd(other: ["contact_id": "\(clientId)"]),
-                                   isBody: false)
+                                   queryParams: commonAnd(other: ["contact_id": "\(clientId)"]))
             .effect()
 			.map { $0.forms.filter { $0.templateInfo.type == type} }
             .eraseToEffect()
@@ -111,8 +106,8 @@ extension APIClient {
         return requestBuilder.init(method: .GET,
                                    baseUrl: baseUrl,
                                    path: .getDocuments,
-                                   queryParams: commonAnd(other: ["contact_id": "\(clientId)"]),
-                                   isBody: false)
+                                   queryParams: commonAnd(other: ["contact_id": "\(clientId)"])
+		)
             .effect()
             .map(\.documents)
             .eraseToEffect()
@@ -126,8 +121,8 @@ extension APIClient {
         return requestBuilder.init(method: .GET,
                                    baseUrl: baseUrl,
                                    path: .getCommunications,
-                                   queryParams: commonAnd(other: ["contact_id": "\(clientId)"]),
-                                   isBody: false)
+                                   queryParams: commonAnd(other: ["contact_id": "\(clientId)"])
+		)
             .effect()
             .map(\.communications)
             .eraseToEffect()
@@ -144,8 +139,8 @@ extension APIClient {
                                    queryParams: commonAnd(other: [
                                     "contact_id": "\(clientId)",
                                     "mode": "get"
-                                   ]),
-                                   isBody: false)
+                                   ])
+		)
             .effect()
             .map(\.medical_alerts)
             .eraseToEffect()
@@ -164,8 +159,8 @@ extension APIClient {
                                    path: .getClientsNotes,
                                    queryParams: commonAnd(other: [
                                     "contact_id": "\(clientId)"
-                                   ]),
-                                   isBody: false)
+                                   ])
+		)
             .effect()
             .map(\.notes)
             .eraseToEffect()
@@ -182,8 +177,8 @@ extension APIClient {
         return requestBuilder.init(method: .GET,
                                    baseUrl: baseUrl,
                                    path: .getPatientDetails,
-                                   queryParams: commonAnd(other: ["contact_id": "\(clientId)"]),
-                                   isBody: false)
+                                   queryParams: commonAnd(other: ["contact_id": "\(clientId)"])
+		)
             .effect()
             .map(\.details)
             .tryMap {

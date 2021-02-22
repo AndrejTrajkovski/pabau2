@@ -13,8 +13,8 @@ extension APIClient {
 		return requestBuilder.init(method: .GET,
 								   baseUrl: baseUrl,
 								   path: .getEmployees,
-								   queryParams: commonAnd(other: [:]),
-								   isBody: false)
+								   queryParams: commonAnd(other: [:])
+		)
 			.effect()
 			.map(\.employees)
 			.eraseToEffect()
@@ -33,8 +33,8 @@ extension APIClient {
 		return requestBuilder.init(method: .GET,
 								   baseUrl: baseUrl,
 								   path: .getAppointments,
-								   queryParams: commonAnd(other: params),
-								   isBody: false)
+								   queryParams: commonAnd(other: params)
+		)
 			.effect()
 	}
 	
@@ -49,8 +49,8 @@ extension APIClient {
 		return requestBuilder.init(method: .GET,
 								   baseUrl: baseUrl,
 								   path: .getLocations,
-								   queryParams: commonParams(),
-								   isBody: false)
+								   queryParams: commonParams()
+		)
 			.effect()
 			.map(\.locations)
 			.eraseToEffect()
@@ -61,8 +61,8 @@ extension APIClient {
 		return requestBuilder.init(method: .GET,
 								   baseUrl: baseUrl,
 								   path: .getBookoutReasons,
-								   queryParams: commonParams(),
-								   isBody: false)
+								   queryParams: commonParams()
+		)
 			.effect()
 	}
 }

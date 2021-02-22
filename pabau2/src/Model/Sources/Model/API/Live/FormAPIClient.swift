@@ -2,33 +2,21 @@ import ComposableArchitecture
 //FormAPI
 extension APIClient {
 	
-	public func save(form: HTMLForm, clientId: Client.ID) -> Effect<HTMLForm, RequestError> {
-		let params = commonAnd(other: [
-								"mode": "save",
-//									"uid": "",
-//								"booking_id": ,
-								"contact_id": String(clientId.rawValue),
-								"form_id": form.templateInfo.id.rawValue,
-								"form_data": ""])
-		let requestBuilder: RequestBuilder<_FilledForm>.Type = requestBuilderFactory.getBuilder()
+	public func save(form: HTMLForm, clientId: Client.ID) -> Effect<VoidAPIResponse, RequestError> {
+		let body: [String : Any] = [
+			"mode": "save",
+			//									"uid": "",
+			//								"booking_id": ,
+			"contact_id": String(clientId.rawValue),
+			"form_id": form.templateInfo.id.rawValue,
+			"form_data": form.getJSONPOSTValues()]
+		let requestBuilder: RequestBuilder<VoidAPIResponse>.Type = requestBuilderFactory.getBuilder()
 		return requestBuilder.init(method: .POST,
 								   baseUrl: baseUrl,
 								   path: .medicalForms,
-								   queryParams: params,
-								   isBody: false)
-			.effect()
-			.tryMap(HTMLFormBuilder.init(formEntry:))
-			.eraseToEffect()
-			.map(HTMLForm.init(builder:))
-//			.print()
-			.mapError { error in
-				if let formError = error as? HTMLFormBuilderError {
-					return RequestError.jsonDecoding(formError.description)
-				} else {
-					return error as? RequestError ?? .unknown
-				}
-			}
-			.eraseToEffect()
+								   queryParams: commonParams(),
+								   body: body)
+		.effect()
 	}
 	
 	public func getForm(templateId: FormTemplateInfo.ID, entryId: FilledFormData.ID) -> Effect<HTMLForm, RequestError> {
@@ -39,8 +27,8 @@ extension APIClient {
 		return requestBuilder.init(method: .GET,
 								   baseUrl: baseUrl,
 								   path: .getFormTemplateData,
-								   queryParams: params,
-								   isBody: false)
+								   queryParams: params
+		)
 			.effect()
 			.tryMap(HTMLFormBuilder.init(formEntry:))
 			.eraseToEffect()
@@ -64,8 +52,8 @@ extension APIClient {
 		return requestBuilder.init(method: .GET,
 								   baseUrl: baseUrl,
 								   path: .getFormTemplateData,
-								   queryParams: commonAnd(other: ["form_template_id": templateId.rawValue]),
-								   isBody: false)
+								   queryParams: commonAnd(other: ["form_template_id": templateId.rawValue])
+		)
 			.effect()
 			.compactMap(\.form_template.first)
 			.tryMap(HTMLFormBuilder.init(template:))
@@ -94,8 +82,8 @@ extension APIClient {
 		return requestBuilder.init(method: .GET,
 								   baseUrl: baseUrl,
 								   path: .getFormTemplates,
-								   queryParams: commonAnd(other: ["form_template_type": type.rawValue]),
-								   isBody: false)
+								   queryParams: commonAnd(other: ["form_template_type": type.rawValue])
+		)
 			.effect()
 			.map(\.templateList)
 	}

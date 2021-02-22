@@ -17,7 +17,7 @@ public enum TextAreaFieldAction: Equatable {
 
 struct TextAreaField: View {
 	let store: Store<TextArea, TextAreaFieldAction>
-	
+
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			MultilineTextView(initialText: viewStore.text,

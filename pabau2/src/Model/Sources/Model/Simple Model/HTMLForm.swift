@@ -40,6 +40,11 @@ public struct HTMLForm: Identifiable, Equatable {
 		self.ePaper = builder.ePaper
 		self.formStructure = builder.formStructure
 	}
+	
+	public func getJSONPOSTValues() -> [CSSFieldID: String] {
+		return Dictionary.init(grouping: formStructure, by: { $0.id })
+			.compactMapValues { $0.first!.cssClass.getJSONPOSTValue() }
+	}
 }
 
 enum HTMLFormBuilderError: Error, CustomStringConvertible {

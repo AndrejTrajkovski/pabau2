@@ -29,6 +29,14 @@ open class RequestBuilderImpl<T: Decodable>: RequestBuilder<T> {
 		var request = URLRequest.init(url: url)
 		request.allHTTPHeaderFields = ["Content-Type": "application/json"]
 		request.httpMethod = method.rawValue
+		
+		if let body = self.body {
+			guard let bodyData = try? JSONSerialization.data(withJSONObject: body, options: []) else {
+				throw RequestError.urlBuilderError("Invalid HTTP body: \(body)")
+			}
+			request.httpBody = bodyData
+		}
+		
 		return request
 	}
 

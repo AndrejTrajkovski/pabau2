@@ -120,7 +120,7 @@ public enum CSSClass: Equatable {
 		}
 	}
 	
-	func getValue() -> String? {
+	func getJSONPOSTValue() -> String? {
 		switch self {
 		case .input_text(let inputText):
 		return inputText.getValue()

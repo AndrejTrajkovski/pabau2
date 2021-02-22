@@ -109,6 +109,7 @@ struct ClientCardChildReducer<T: Equatable> {
 }
 
 public struct ClientCardListState: Equatable {
+	let clientId: Client.ID
 	var appointments: AppointmentsListState
 	var details: PatientDetailsClientCardState
 	var photos: CCPhotosState
@@ -121,21 +122,22 @@ public struct ClientCardListState: Equatable {
 	var alerts: ClientCardChildState<[Model.Alert]>
 	var notes: ClientCardChildState<[Note]>
 
-	init() {
+	init(clientId: Client.ID) {
 		self.appointments = AppointmentsListState(
 			childState: ClientCardChildState.init(state: [])
 		)
 		self.details = PatientDetailsClientCardState(childState: ClientCardChildState.init(state: PatientDetails.mock))
 		self.photos = CCPhotosState.init(childState: ClientCardChildState.init(state: [:]))
 		self.financials = ClientCardChildState.init(state: [])
-		self.treatmentNotes = FormsListState(childState: ClientCardChildState(state: []), formType: .treatment)
-		self.prescriptions = FormsListState(childState: ClientCardChildState(state: []), formType: .prescription)
+		self.treatmentNotes = FormsListState(clientId: clientId, childState: ClientCardChildState(state: []), formType: .treatment)
+		self.prescriptions = FormsListState(clientId: clientId, childState: ClientCardChildState(state: []), formType: .prescription)
 		self.documents = DocumentsListState(childState:
 		ClientCardChildState.init(state: []))
 		self.communications = ClientCardChildState.init(state: [])
-		self.consents = FormsListState(childState: ClientCardChildState(state: []), formType: .consent)
+		self.consents = FormsListState(clientId: clientId, childState: ClientCardChildState(state: []), formType: .consent)
 		self.alerts = ClientCardChildState.init(state: [])
 		self.notes = ClientCardChildState.init(state: [])
+		self.clientId = clientId
 	}
 }
 
