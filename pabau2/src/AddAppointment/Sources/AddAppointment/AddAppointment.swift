@@ -48,7 +48,8 @@ public struct AddAppointmentState: Equatable {
             emailNotification: self.email,
             surveyNotification: self.feedback,
             reminderNotification: self.reminder,
-            note: self.note
+            note: self.note,
+            participantUserIDS: self.participants.chosenParticipants.compactMap { $0.id.rawValue }
         )
     }
 }
@@ -162,7 +163,7 @@ let addAppTapBtnReducer = Reducer<
     case .onChooseLocation:
         state?.chooseLocationState.isChooseLocationActive = true
     case .removeChosenParticipant:
-        state?.participants.chosenParticipant = nil
+        state?.participants.chosenParticipants = []
     case .appointmentCreated(let result):
         state?.showsLoadingSpinner = false
         switch result {
@@ -423,15 +424,15 @@ struct ServicesDurationSection: View {
                         .onTapGesture {
                         self.viewStore.send(.didTapParticipants)
                     }.isHidden(
-                        self.viewStore.state.participants.chosenParticipant?.id != nil,
+                        !self.viewStore.state.participants.chosenParticipants.isEmpty,
                         remove: true
                     )
                     TitleMinusView(
-                        title: self.viewStore.state.participants.chosenParticipant?.fullName
+                        title: "\(self.viewStore.state.participants.chosenParticipants.first?.fullName ?? "")..."
                     ).onTapGesture {
                         self.viewStore.send(.removeChosenParticipant)
                     }.isHidden(
-                        self.viewStore.state.participants.chosenParticipant?.id == nil,
+                        self.viewStore.state.participants.chosenParticipants.isEmpty,
                         remove: true
                     )
                     Spacer()

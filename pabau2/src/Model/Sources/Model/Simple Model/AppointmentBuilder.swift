@@ -17,6 +17,8 @@ public struct AppointmentBuilder {
     public var reminderNotification: Bool?
 
     public var note: String?
+    
+    public var participantUserIDS: [Int]?
 
     public init(
         isAllDay: Bool? = nil,
@@ -29,7 +31,8 @@ public struct AppointmentBuilder {
         emailNotification: Bool? = nil,
         surveyNotification: Bool? = nil,
         reminderNotification: Bool? = nil,
-        note: String? = nil
+        note: String? = nil,
+        participantUserIDS: [Int]? = nil
     ) {
         self.isAllDay = isAllDay
         self.clientID = clientID
@@ -42,6 +45,7 @@ public struct AppointmentBuilder {
         self.surveyNotification = surveyNotification
         self.reminderNotification = reminderNotification
         self.note = note
+        self.participantUserIDS = participantUserIDS
     }
 
     public init(appointment: Appointment) {

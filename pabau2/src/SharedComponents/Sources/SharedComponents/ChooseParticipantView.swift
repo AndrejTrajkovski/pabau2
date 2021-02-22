@@ -8,7 +8,7 @@ public struct ChooseParticipantState: Equatable {
     public var isChooseParticipantActive: Bool
     public var participants: IdentifiedArrayOf<Participant> = []
     public var filteredParticipants: IdentifiedArrayOf<Participant> = []
-    public var chosenParticipant: Participant?
+    public var chosenParticipants: [Participant] = []
     public var searchText: String = "" {
         didSet {
             isSearching = !searchText.isEmpty
@@ -51,7 +51,7 @@ public struct ChooseParticipantView: View {
                 ForEach(self.viewStore.state.filteredParticipants, id: \.id) { participant in
                     TextAndCheckMark(
                         participant.fullName ?? "",
-                        participant.id == self.viewStore.state.chosenParticipant?.id
+                         self.viewStore.state.chosenParticipants.contains(where: {$0.id == participant.id})
                     ).onTapGesture {
                         self.viewStore.send(.didSelectParticipant(participant))
                     }

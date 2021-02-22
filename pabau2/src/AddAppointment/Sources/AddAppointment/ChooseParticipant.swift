@@ -11,7 +11,7 @@ let chooseParticipantReducer =
             guard let participantSchema = state.participantSchema  else {
                 break
             }
- 
+
             state.searchText = ""
             return env.journeyAPI.getParticipants(
                 participantSchema: participantSchema
@@ -37,8 +37,11 @@ let chooseParticipantReducer =
                 break
             }
         case .didSelectParticipant(let participant):
-            state.chosenParticipant = participant
-            state.isChooseParticipantActive = false
+            if let index = state.chosenParticipants.firstIndex(where: {$0.id == participant.id}) {
+                state.chosenParticipants.remove(at: index)
+            } else {
+                state.chosenParticipants.append(participant)
+            }
         case .didTapBackBtn:
             state.isChooseParticipantActive = false
         }
