@@ -41,4 +41,8 @@ public struct CSSFieldID: Hashable, Equatable {
 		self.index = idx
 		self.fakeId = CSSFieldID.FakeID(rawValue: fakeId)
 	}
+	
+//	func getJSONPOSTValue() -> String {
+//		String(index) + fakeId.rawValue
+//	}
 }
