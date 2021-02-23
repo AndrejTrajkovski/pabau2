@@ -7,7 +7,7 @@ import SharedComponents
 let chooseEmployeesReducer = Reducer<
     ChooseEmployeesState,
     ChooseEmployeesAction,
-    AddShiftEnvironment
+    AddBookoutEnvironment
 > { state, action, env in
     switch action {
     case .onAppear:

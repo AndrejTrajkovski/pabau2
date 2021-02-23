@@ -19,14 +19,16 @@ public struct Bookout: Identifiable, Equatable, CalendarEventVariant {
 	}
 	
 //	public let externalGuests: String?
-	public init(id: CalendarEvent.Id,
-				start_date: Date,
-				end_date: Date,
-				employeeId: Employee.ID,
-				locationId: Location.ID,
-				_private: Bool? = nil,
-				_description: String? = nil,
-				employeeName: String) {
+	public init(
+        id: CalendarEvent.Id,
+        start_date: Date,
+        end_date: Date,
+        employeeId: Employee.ID,
+        locationId: Location.ID,
+        _private: Bool? = nil,
+        _description: String? = nil,
+        employeeName: String
+    ) {
 		self.id = id
 		self.start_date = start_date
 		self.end_date = end_date
@@ -62,3 +64,5 @@ extension Bookout {
 		self._description = try? container.decode(String.self, forKey: ._description)
 	}
 }
+
+

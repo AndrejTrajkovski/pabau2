@@ -4,64 +4,67 @@ import SharedComponents
 import Model
 import Util
 
-public let addShiftOptReducer: Reducer<AddShiftState?, AddShiftAction, AddShiftEnvironment> =
-	.combine(
-		addShiftReducer.optional.pullback(
-			state: \.self,
-			action: /AddShiftAction.self,
-			environment: { $0 }
-		),
-		.init { state, action, env in
-			switch action {
-			case .close:
-				state = nil
-			case .saveShift:
-                guard let shiftSheme = state?.shiftSchema else {
-                    break
-                }
+public let addShiftOptReducer: Reducer<
+    AddShiftState?,
+    AddShiftAction,
+    AddShiftEnvironment
+> = .combine(
+    addShiftReducer.optional.pullback(
+        state: \.self,
+        action: /AddShiftAction.self,
+        environment: { $0 }
+    ),
+    .init { state, action, env in
+        switch action {
+        case .close:
+            state = nil
+        case .saveShift:
+            guard let shiftSheme = state?.shiftSchema else {
+                break
+            }
+            
+            var isValid = true
+            
+            if state?.startTime == nil {
+                isValid = false
+                state?.startTimeConfigurator.state = .error
+            }
 
-                var isValid = true
+            if state?.endTime == nil {
+                isValid = false
+                state?.endTimeConfigurator.state = .error
+            }
 
-                if state?.startTime == nil {
-                    isValid = false
-                    state?.startTimeConfigurator.state = .error
-                }
+            if state?.chooseEmployeesState.chosenEmployee?.name == nil {
+                isValid = false
+                state?.employeeConfigurator.state = .error
+            }
 
-                if state?.endTime == nil {
-                    isValid = false
-                    state?.endTimeConfigurator.state = .error
-                }
+            if !isValid { break }
+            
+            state?.showsLoadingSpinner = true
 
-                if state?.chooseEmployeesState.chosenEmployee?.name == nil {
-                    isValid = false
-                    state?.employeeConfigurator.state = .error
-                }
+            return env.apiClient.createShift(
+                shiftSheme: shiftSheme
+            )
+            .catchToEffect()
+            .map(AddShiftAction.shiftCreated)
+            .receive(on: DispatchQueue.main)
+            .eraseToEffect()
+        case .shiftCreated(let result):
+            state?.showsLoadingSpinner = false
 
-                if !isValid { break }
-
-                state?.showsLoadingSpinner = true
-
-                return env.apiClient.createShift(
-                    shiftSheme: shiftSheme
-                )
-                .catchToEffect()
-                .map(AddShiftAction.shiftCreated)
-                .receive(on: DispatchQueue.main)
-                .eraseToEffect()
-            case .shiftCreated(let result):
-                state?.showsLoadingSpinner = false
-
-                switch result {
-                case .success:
-                    state = nil
-                case .failure(let error):
-                    print(error)
-                }
-			default: break
-			}
-			return .none
-		}
-	)
+            switch result {
+            case .success:
+                state = nil
+            case .failure(let error):
+                print(error)
+            }
+        default: break
+        }
+        return .none
+    }
+)
 
 public let addShiftReducer: Reducer<AddShiftState, AddShiftAction, AddShiftEnvironment> =
 	.combine(
@@ -108,6 +111,7 @@ public let addShiftReducer: Reducer<AddShiftState, AddShiftAction, AddShiftEnvir
 	)
 
 public struct AddShiftState: Equatable {
+    var shiftRotaID: Int?
 	var isPublished: Bool = false
     var chooseEmployeesState: ChooseEmployeesState
 	var chooseLocationState: ChooseLocationState
@@ -124,10 +128,12 @@ public struct AddShiftState: Equatable {
     var shiftSchema: ShiftSchema {
         let rotaUID = chooseEmployeesState.chosenEmployee?.id.rawValue
         let locationID = chooseLocationState.chosenLocation?.id.rawValue
+
         return ShiftSchema(
-            date: startDate?.toFormat("yyyy-dd-MM"),
-            startTime: endTime?.toFormat("HH:mm"),
-            endTime: startTime?.toFormat("HH:mm"),
+            rotaID: shiftRotaID,
+            date: startDate?.getFormattedDate(format: "yyyy-dd-MM"),
+            startTime: endTime?.getFormattedDate(format: "HH:mm"),
+            endTime: startTime?.getFormattedDate(format: "HH:mm"),
             locationID: "\(locationID)",
             notes: note,
             published: isPublished,
@@ -281,11 +287,12 @@ struct LocationAndDate: View {
 extension Employee: SingleChoiceElement { }
 extension Location: SingleChoiceElement { }
 
-public typealias AddShiftEnvironment = (apiClient: JourneyAPI, userDefaults: UserDefaultsConfig)
+public typealias AddShiftEnvironment = (apiClient: JourneyAPI, clientAPI: ClientsAPI, userDefaults: UserDefaultsConfig)
 
 extension AddShiftState {
 	public static func makeEmpty() -> AddShiftState {
 		AddShiftState(
+            shiftRotaID: nil,
             isPublished: true,
             chooseEmployeesState: ChooseEmployeesState(isChooseEmployeesActive: false),
             chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
@@ -295,4 +302,16 @@ extension AddShiftState {
             note: ""
         )
 	}
+    public static func makeEditing(shift: Shift) -> AddShiftState {
+        AddShiftState(
+            shiftRotaID: shift.rotaID,
+            isPublished: shift.published ?? false,
+            chooseEmployeesState: ChooseEmployeesState(isChooseEmployeesActive: false),
+            chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
+            startDate: shift.date,
+            startTime: shift.startTime,
+            endTime: shift.endTime,
+            note: shift.notes
+        )
+    }
 }

@@ -186,7 +186,11 @@ struct PabauTabBar: View {
 	}
 }
 
-public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> = Reducer.combine(
+public let tabBarReducer: Reducer<
+    TabBarState,
+    TabBarAction,
+    TabBarEnvironment
+> = Reducer.combine(
 	.init { state, action, _ in
 		switch action {
 		case .journey(.addAppointmentTap):
@@ -239,9 +243,11 @@ public let tabBarReducer: Reducer<TabBarState, TabBarAction, TabBarEnvironment> 
 		state: \TabBarState.calendarContainer,
 		action: /TabBarAction.calendar,
 		environment: {
-			return CalendarEnvironment(
-			apiClient: $0.journeyAPI,
-			userDefaults: $0.userDefaults)
+            return CalendarEnvironment(
+                apiClient: $0.journeyAPI,
+                clientAPI: $0.clientsAPI,
+                userDefaults: $0.userDefaults
+            )
 	}),
     communicationReducer.pullback(
         state: \TabBarState.communication,

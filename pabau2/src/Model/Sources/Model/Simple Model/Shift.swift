@@ -1,7 +1,11 @@
 import Foundation
 import Tagged
 
-public struct Shift: Codable {
+public struct Shift: Codable, Equatable {
+    public static func == (lhs: Shift, rhs: Shift) -> Bool {
+        lhs.rotaID == rhs.rotaID
+    }
+    
 	public let rotaID: Int
 	public let date: Date
 	public let startTime: Date
@@ -13,6 +17,7 @@ public struct Shift: Codable {
 	public let locationID: Location.ID
 	public let roomID: Room.Id
 	public let notes: String
+    public let published: Bool?
 
 	enum CodingKeys: String, CodingKey {
 		case rotaID = "rota_id"
@@ -26,6 +31,7 @@ public struct Shift: Codable {
 		case locationID = "location_id"
 		case roomID = "room_id"
 		case notes
+        case published
 	}
 	
 	public init(from decoder: Decoder) throws {
@@ -36,6 +42,7 @@ public struct Shift: Codable {
 		self.userName = try container.decode(String.self, forKey: .userName)
 		self.locationName = try container.decode(String.self, forKey: .locationName)
 		self.locColor = try container.decode(String.self, forKey: .locColor)
+        self.published = try container.decode(Bool.self, forKey: .published)
 		let stringLocationID = try container.decode(String.self, forKey: .locationID)
 		guard let intLocationId = Int(stringLocationID) else {
 			throw DecodingError.dataCorruptedError(forKey: .locationID, in: container, debugDescription: "Location ID expected to be Integer")
@@ -70,9 +77,11 @@ public struct Shift: Codable {
 				  debugDescription: "Date string does not match format expected by formatter.")
 		}
 	}
+    
 }
 
 public struct ShiftSchema: Codable {
+    let rotaID: Int?
     let date: String?
     let startTime: String?
     let endTime: String?
@@ -82,6 +91,7 @@ public struct ShiftSchema: Codable {
     let rotaUID: String?
     
     public init(
+        rotaID: Int? = nil,
         date: String?,
         startTime: String?,
         endTime: String?,
@@ -90,6 +100,7 @@ public struct ShiftSchema: Codable {
         published: Bool,
         rotaUID: String?
     ) {
+        self.rotaID = rotaID
         self.date = date
         self.startTime = startTime
         self.endTime = endTime
@@ -100,6 +111,7 @@ public struct ShiftSchema: Codable {
     }
     
     enum CodingKeys: String, CodingKey {
+        case rotaID = "rota_id"
         case date = "date"
         case startTime = "start_time"
         case endTime = "end_time"

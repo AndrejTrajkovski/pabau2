@@ -336,8 +336,16 @@ struct ClientDaySection: View {
                     get: { $0.startDate },
                     send: { .chooseStartDate($0!) }
                 )
-            )
+            ).isHidden(!viewStore.isAllDay, remove: true)
 
+            DatePickerControl.init(
+                "DAY", viewStore.binding(
+                    get: { $0.startDate },
+                    send: { .chooseStartDate($0!) }
+                ),
+                nil,
+                mode: .dateAndTime
+            ).isHidden(viewStore.isAllDay, remove: true)
         }
     }
 }

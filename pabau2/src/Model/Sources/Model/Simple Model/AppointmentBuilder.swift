@@ -4,6 +4,7 @@ public struct AppointmentBuilder {
     public var appointmentID: Appointment.Id?
 
     public var isAllDay: Bool?
+    public var isPrivate: Bool?
     public var clientID: Int?
     public var employeeID: String?
     public var serviceID: String?
@@ -17,11 +18,13 @@ public struct AppointmentBuilder {
     public var reminderNotification: Bool?
 
     public var note: String?
-    
+    public var description: String?
     public var participantUserIDS: [Int]?
+    
 
     public init(
         isAllDay: Bool? = nil,
+        isPrivate: Bool? = nil,
         clientID: Int? = nil,
         employeeID: String? = nil,
         serviceID: String? = nil,
@@ -32,9 +35,11 @@ public struct AppointmentBuilder {
         surveyNotification: Bool? = nil,
         reminderNotification: Bool? = nil,
         note: String? = nil,
-        participantUserIDS: [Int]? = nil
+        participantUserIDS: [Int]? = nil,
+        description: String? = nil
     ) {
         self.isAllDay = isAllDay
+        self.isPrivate = isPrivate
         self.clientID = clientID
         self.employeeID = employeeID
         self.serviceID = serviceID
@@ -46,6 +51,7 @@ public struct AppointmentBuilder {
         self.reminderNotification = reminderNotification
         self.note = note
         self.participantUserIDS = participantUserIDS
+        self.description = description
     }
 
     public init(appointment: Appointment) {

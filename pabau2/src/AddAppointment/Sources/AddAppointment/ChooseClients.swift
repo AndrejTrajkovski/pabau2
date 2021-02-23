@@ -63,11 +63,6 @@ let chooseClientsReducer =
         case .onSearch(let text):
             state.searchText = text
             state.isSearching = !text.isEmpty
-            
-            if text.isEmpty {
-                
-            }
-
             return env.clientAPI
                 .getClients(
                     search: state.isSearching ? state.searchText : nil,

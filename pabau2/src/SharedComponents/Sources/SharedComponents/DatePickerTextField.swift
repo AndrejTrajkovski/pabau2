@@ -21,13 +21,15 @@ public struct DatePickerTextField: UIViewRepresentable {
     private var keyboardType: UIKeyboardType = .default
     private var isUserInteractionEnabled: Bool = true
 
-	public init(date: Binding<Date?>,
-				mode: UIDatePicker.Mode,
-				font: UIFont = UIFont.systemFont(ofSize: 15, weight: .semibold),
-				textColor: UIColor = .black,
-				isUserInteractionEnabled: Bool = true,
-				textContentType: UITextContentType? = nil,
-				didChange: @escaping () -> Void = { }) {
+	public init(
+        date: Binding<Date?>,
+        mode: UIDatePicker.Mode,
+        font: UIFont = UIFont.systemFont(ofSize: 15, weight: .semibold),
+        textColor: UIColor = .black,
+        isUserInteractionEnabled: Bool = true,
+        textContentType: UITextContentType? = nil,
+        didChange: @escaping () -> Void = { }
+    ) {
         self._date = date
 		self.font = font
 		self.textColor = textColor
@@ -38,6 +40,12 @@ public struct DatePickerTextField: UIViewRepresentable {
 
         dateFormatter.dateStyle = mode == .date ? .long : .none
         dateFormatter.timeStyle = mode == .date ? .none : .short
+        dateFormatter.timeZone = .current
+        
+        if mode == .dateAndTime {
+            dateFormatter.dateStyle = .long
+            dateFormatter.timeStyle = .short
+        }
     }
 
     public func makeUIView(context: Context) -> UITextField {
@@ -61,6 +69,7 @@ public struct DatePickerTextField: UIViewRepresentable {
 
         let datePickerView = UIDatePicker()
         datePickerView.datePickerMode = datePickerMode
+        datePickerView.timeZone = .current
         datePickerView.maximumDate = minimumDate
         datePickerView.maximumDate = maximumDate
         datePickerView.preferredDatePickerStyle = .wheels

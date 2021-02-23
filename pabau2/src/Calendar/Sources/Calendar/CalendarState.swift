@@ -38,7 +38,7 @@ public struct CalendarState: Equatable {
 	var isShowingFilters: Bool
 	var expandedLocationsIds: [Location.Id]
 	public var appDetails: AppDetailsState?
-	public var addBookout: AddBookoutState?
+	public var addBookoutState: AddBookoutState?
 	public var addShift: AddShiftState?
 }
 
@@ -64,7 +64,7 @@ extension CalendarState {
 				selectedDate: selectedDate,
 				appointments: groupAppointments,
 				appDetails: appDetails,
-				addBookout: addBookout,
+				addBookout: addBookoutState,
 				locations: locations,
 				chosenLocationsIds: chosenLocationsIds,
 				subsections: employees,
@@ -77,7 +77,7 @@ extension CalendarState {
 				self.selectedDate = $0.selectedDate
 				self.appointments = Appointments.employee($0.appointments)
 				self.appDetails = $0.appDetails
-				self.addBookout = $0.addBookout
+				self.addBookoutState = $0.addBookout
 				self.locations = $0.locations
 				self.chosenLocationsIds = $0.chosenLocationsIds
 				self.employees = $0.subsections
@@ -94,7 +94,7 @@ extension CalendarState {
 				selectedDate: selectedDate,
 				appointments: groupAppointments,
 				appDetails: appDetails,
-				addBookout: addBookout,
+				addBookout: addBookoutState,
 				locations: locations,
 				chosenLocationsIds: chosenLocationsIds,
 				subsections: rooms,
@@ -107,7 +107,7 @@ extension CalendarState {
 				self.selectedDate = $0.selectedDate
 				self.appointments = Appointments.room($0.appointments)
 				self.appDetails = $0.appDetails
-				self.addBookout = $0.addBookout
+				self.addBookoutState = $0.addBookout
 				self.locations = $0.locations
 				self.chosenLocationsIds = $0.chosenLocationsIds
 				self.rooms = $0.subsections
@@ -122,7 +122,7 @@ extension CalendarState {
 			return CalendarWeekViewState(
 				appointments: apps,
 				selectedDate: selectedDate,
-				addBookout: addBookout,
+				addBookout: addBookoutState,
 				appDetails: appDetails
 //				locations: locations,
 //				chosenLocationsIds: chosenLocationsIds,
@@ -135,7 +135,7 @@ extension CalendarState {
 			newValue.map {
 				self.selectedDate = $0.selectedDate
 				self.appointments = Appointments.week($0.appointments)
-				self.addBookout = $0.addBookout
+				self.addBookoutState = $0.addBookout
 				self.appDetails = $0.appDetails
 //				self.locations = $0.locations
 //				self.chosenLocationsIds = $0.chosenLocationsIds

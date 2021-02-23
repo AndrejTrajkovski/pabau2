@@ -11,23 +11,28 @@ import ComposableArchitecture
 extension APIClient {
     public func createAppointment(appointment: AppointmentBuilder) -> Effect<PlaceholdeResponse, RequestError> {
         let requestBuilder: RequestBuilder<PlaceholdeResponse>.Type = requestBuilderFactory.getBuilder()
-        let dateFormatter = DateFormatter.shortDateTime
 
         var params: [String : Any] = [
             "all_day": appointment.isAllDay ?? false,
-
+            "private": appointment.isPrivate ?? false,
             "instant_sms": appointment.smsNotification ?? false,
             "sent_sms": appointment.smsNotification ?? false,
             "sent_email": appointment.emailNotification ?? false,
             "sent_survey": appointment.surveyNotification ?? false,
             "status" : "Waiting",
-            "start_time": dateFormatter.string(from: appointment.startTime ?? Date()),
         ]
 
-        if (appointment.isAllDay ?? false) {
-            params["end_date"] = dateFormatter.string(from: (appointment.startTime ?? Date()).addingTimeInterval((appointment.duration ?? 0) * 60))
-        } else {
-            params["end_date"] = dateFormatter.string(from: (appointment.startTime ?? Date()).addingTimeInterval((appointment.duration ?? 0) * 60))
+        if let startTime = appointment.startTime {
+            if (appointment.isAllDay ?? false) {
+                params["start_time"] = startTime.getFormattedDate(format: "dd-MM-yyyy")
+                params["end_time"] = startTime.getFormattedDate(format: "dd-MM-yyyy")
+            } else {
+                params["start_time"] = startTime.getFormattedDate(format: "dd-MM-yyyy HH:mm")
+                let duration = (appointment.duration ?? 0) * 60 //seconds
+                var endTime = startTime
+                endTime.addTimeInterval(duration)
+                params["end_time"] = endTime.getFormattedDate(format: "dd-MM-yyyy HH:mm")
+            }
         }
 
         if let clientID = appointment.clientID {
@@ -41,6 +46,10 @@ extension APIClient {
         if let note = appointment.note {
             params["note"] = note
         }
+        
+        if let description = appointment.description {
+            params["description"] = description
+        }
 
         if let employeeID = appointment.employeeID {
             params["uid"] = employeeID
@@ -53,12 +62,14 @@ extension APIClient {
         if let participantUserIDS = appointment.participantUserIDS {
             params["participant_user_ids"] = participantUserIDS
         }
-
-        return requestBuilder.init(method: .POST,
-                                   baseUrl: baseUrl,
-                                   path: .createAppointment,
-                                   queryParams: commonAnd(other: params),
-                                   isBody: true)
+    
+        return requestBuilder.init(
+            method: .POST,
+            baseUrl: baseUrl,
+            path: .createAppointment,
+            queryParams: commonAnd(other: params),
+            isBody: true
+        )
             .effect()
     }
 }

@@ -15,4 +15,11 @@ public extension Date {
 		components.second = hmsComps.second
 		return calendar.date(from: components)!
 	}
+ 
+    func getFormattedDate(format: String) -> String {
+        let dateformat = DateFormatter()
+        dateformat.dateFormat = format
+        dateformat.timeZone = .current
+        return dateformat.string(from: self)
+    }
 }

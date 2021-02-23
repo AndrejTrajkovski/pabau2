@@ -15,7 +15,7 @@ public enum CalendarAction {
 	case employee(SubsectionCalendarAction<Employee>)
 	case week(CalendarWeekViewAction)
 	case appDetails(AppDetailsAction)
-	case addBookout(AddBookoutAction)
+	case addBookoutAction(AddBookoutAction)
 	case onAppDetailsDismiss
 	case onBookoutDismiss
 	case onAddShiftDismiss
