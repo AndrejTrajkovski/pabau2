@@ -56,7 +56,7 @@ struct SignatureField: View {
 	let title: String
 
 	var baseUrl: String {
-		return "https://crm.pabau.com"
+		return "https://prelive-crm.pabau.com"
 		//		guard let encoded = UserDefaults.standard.value(forKey: "logged_in_user") as? Data else { return "" }
 		//		return JSONDecoder().decode(User, from: encoded).baseUrl
 	}
@@ -76,7 +76,6 @@ struct SignatureField: View {
 								content: {
 									WebImage(url: URL(string: baseUrl + signatureUrl))
 										.resizable()
-										.placeholder(Image("ico-journey-tap-to-sign"))
 										.indicator(.activity) // Activity Indicator
 										.scaledToFit()
 										.frame(height: 145)
@@ -89,7 +88,9 @@ struct SignatureField: View {
 										.disabled(true)
 								})
 			case .none:
-				TapToSign(onTap: { viewStore.send(.tapToSign) })
+				TapToSign(onTap: {
+							viewStore.send(.tapToSign)
+				})
 			}
 		}.fullScreenCover(isPresented: .constant(viewStore.isSigningPresented)) {
 			SigningComponent(store: store.scope(state: { _ in EmptyEquatable() },
@@ -160,10 +161,13 @@ struct SigningComponent: View {
 struct TapToSign: View {
 	let onTap: () -> Void
 	var body: some View {
-		Image("ico-journey-tap-to-sign")
-		.resizable()
-		.frame(width: 137, height: 137)
-		.onTapGesture(perform: onTap)
+		Button.init(action: onTap,
+					label: {
+						Image("ico-journey-tap-to-sign")
+						.resizable()
+						.aspectRatio(contentMode: .fit)
+						.frame(width: 137, height: 137)
+					})
 	}
 }
 
