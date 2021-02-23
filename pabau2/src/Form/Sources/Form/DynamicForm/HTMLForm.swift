@@ -18,37 +18,21 @@ public enum HTMLFormAction: Equatable {
 //	case requests(JourneyFormRequestsAction<HTMLForm>)
 }
 
-public struct HTMLFormViewCompleteBtn: View {
-
-	let store: Store<HTMLForm, HTMLFormAction>
-	
-	public init(store: Store<HTMLForm, HTMLFormAction>) {
-		self.store = store
-		UITableViewHeaderFooterView.appearance().tintColor = UIColor.white
-		UITableView.appearance().separatorStyle = .none
-	}
-	
-	public var body: some View {
-//		VStack {
-			HTMLFormView(store: store, isCheckingDetails: false)
-//		}
-	}
-}
-
-struct HTMLFormView: View {
+public struct HTMLFormView: View {
 
 	let isCheckingDetails: Bool
 	let store: Store<HTMLForm, HTMLFormAction>
-	@ObservedObject var viewStore: ViewStore<String, Never>
-	init(store: Store<HTMLForm, HTMLFormAction>,
-		 isCheckingDetails: Bool) {
+	public init(store: Store<HTMLForm, HTMLFormAction>,
+				isCheckingDetails: Bool = false) {
 		self.store = store
 		self.isCheckingDetails = isCheckingDetails
-		self.viewStore = ViewStore(store.scope(state: { $0.templateInfo.name }).actionless)
+		UITableViewHeaderFooterView.appearance().tintColor = UIColor.white
+		UITableView.appearance().separatorStyle = .none
 	}
 
 	public var body: some View {
-		ScrollView {
+		print("HTMLForm")
+		return ScrollView {
 			LazyVStack {
 				ForEachStore(store.scope(state: { $0.formStructure },
 										 action: { HTMLFormAction.rows(idx: $0, action: $1) }),
@@ -56,7 +40,7 @@ struct HTMLFormView: View {
 								FormSectionField(store: localStore,
 												 isCheckingDetails: isCheckingDetails)
 							 }
-				)
+				).id(UUID())
 				CompleteButton(store: store.scope(state: { $0 },
 												  action: { .complete($0) })
 				)

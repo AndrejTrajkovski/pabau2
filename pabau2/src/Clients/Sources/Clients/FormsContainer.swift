@@ -32,7 +32,7 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 		state: \FormsContainerState.formsCollection,
 		action: /FormsContainerAction.forms,
 		environment: { $0 }
-	),
+	).debug(),
 	CheckInReducer<FormsContainerState>().reducer.pullback(
 		state: \FormsContainerState.self,
 		action: /FormsContainerAction.checkIn,

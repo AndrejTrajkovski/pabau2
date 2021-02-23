@@ -35,6 +35,7 @@ extension APIClient {
 			.map(HTMLForm.init(builder:))
 //			.print()
 			.mapError { error in
+				print("form error \(error)")
 				if let formError = error as? HTMLFormBuilderError {
 					return RequestError.jsonDecoding(formError.description)
 				} else {

@@ -49,7 +49,7 @@ struct InputTextFieldParent: View {
 struct InputTextFieldWrapper: View {
 	@State var myText: String
 	var onChange: (String) -> Void
-	
+
 	init(store: Store<String, TextChangeAction>) {
 		let viewStore = ViewStore(store)
 		self._myText = State.init(initialValue: viewStore.state)

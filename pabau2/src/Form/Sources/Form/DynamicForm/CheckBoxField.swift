@@ -39,13 +39,14 @@ struct CheckBoxField: View {
 struct ChoiceRow: View {
 	let store: Store<CheckBoxChoice, CheckBoxRowAction>
 	var body: some View {
-		WithViewStore(store) { viewStore in
+		WithViewStore(store.scope(state: { $0.title })) { viewStore in
 			HStack (alignment: .center, spacing: 16) {
-				Checkbox(isSelected: viewStore.isSelected)
-				Text(viewStore.title)
-					.foregroundColor(.black).opacity(0.9)
+				Checkbox(store: store.scope(state: { $0.isSelected }).actionless)
+					.frame(width: 24, height: 24)
+				Text(viewStore.state)
+					.foregroundColor(.black)
 					.font(.regular16)
-					.alignmentGuide(VerticalAlignment.center, computeValue: { return $0[VerticalAlignment.firstTextBaseline] - 4.5 })
+//					.alignmentGuide(VerticalAlignment.center, computeValue: { return $0[VerticalAlignment.firstTextBaseline] - 4.5 })
 			}
 			.frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
 			.onTapGesture {
@@ -56,11 +57,18 @@ struct ChoiceRow: View {
 }
 
 struct Checkbox: View {
-	let isSelected: Bool
+	let store: Store<Bool, Never>
 	var body: some View {
-		Image(systemName: isSelected ? "checkmark.square" : "square")
-			.resizable()
-			.foregroundColor( isSelected ? .accentColor : .checkBoxGray)
-			.frame(width: 24, height: 24)
+		WithViewStore(store) { viewStore in
+			if viewStore.state {
+				Image(systemName: "checkmark.square")
+					.resizable()
+					.foregroundColor(.accentColor)
+			} else {
+				Image(systemName: "square")
+					.resizable()
+					.foregroundColor(.checkBoxGray)
+			}
+		}
 	}
 }

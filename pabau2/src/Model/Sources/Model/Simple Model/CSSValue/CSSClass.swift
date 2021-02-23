@@ -57,14 +57,14 @@ public enum CSSClass: Equatable {
 			self = .textarea(TextArea(text: stringValue ?? ""))
 		case .radio:
 			let choices = try extractAndSortValues(_formStructure.values)
-				.map(\.value).map(RadioChoice.init)
-			self = .radio(RadioState(choices))
+				.map(\.value).map { RadioChoice.init($0, fieldId) }
+			self = .radio(RadioState(choices, fieldId))
 		case .signature:
 			self = .signature(SignatureState(signatureUrl: stringValue))
 		case .checkbox:
 			let choices = try extractAndSortValues(_formStructure.values)
 				.map(\.value)
-			self = .checkboxes(CheckBoxState(choices))
+			self = .checkboxes(CheckBoxState(choices, fieldId))
 		case .select:
 			let choices = try extractAndSortValues(_formStructure.values)
 				.map(\.value)
@@ -91,7 +91,7 @@ public enum CSSClass: Equatable {
 			textArea.text = medicalResult.value
 			self = .textarea(textArea)
 		case .radio(var radioState):
-			radioState.selectedChoice = RadioChoice.init(medicalResult.value)
+			radioState.selectedChoice = radioState.choices.first(where: { $0.title == medicalResult.value })
 			self = .radio(radioState)
 		case .signature(var signature):
 			signature.signatureUrl = medicalResult.value.isEmpty ? nil : medicalResult.value

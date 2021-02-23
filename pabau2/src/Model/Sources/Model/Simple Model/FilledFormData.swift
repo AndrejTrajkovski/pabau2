@@ -127,6 +127,7 @@ enum Values: Codable {
 
 	init(from decoder: Decoder) throws {
 		let container = try decoder.singleValueContainer()
+		print(container)
 		if let x = try? container.decode([Int: Value].self) {
 			self = .valueMap(x)
 			return
@@ -135,6 +136,7 @@ enum Values: Codable {
 			self = .string(x)
 			return
 		}
+		
 		throw DecodingError.typeMismatch(Values.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for Values"))
 	}
 
@@ -151,8 +153,10 @@ enum Values: Codable {
 
 // MARK: - Value
 struct Value: Codable {
-	let value, baseline, critical, trigger: String
+	let value: String
+	let baseline, critical, trigger: String?
 	let desc, score: String?
+	let vaccine_scheduler: String?
 }
 
 func makeIdxsById(_ idsByIdx: [Int: CSSField.ID]) -> [CSSField.ID: Int] {

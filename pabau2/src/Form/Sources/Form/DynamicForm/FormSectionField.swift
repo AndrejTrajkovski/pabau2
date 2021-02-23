@@ -10,25 +10,23 @@ struct FormSectionField: View {
 		let title: String
 		let titleFont: Font
 		let titleAlignment: Alignment
-		let isFulfilled: Bool
-		init(state: CSSField) {
+		let borderColor: Color
+		init(state: CSSField, isCheckingDetails: Bool) {
 			let isSignature = extract(case: CSSClass.signature, from: state.cssClass) != nil
 			self.title = (state.title ?? "") + (state._required ? " (*)Required" : "")
 			self.titleFont = isSignature ? .bold18: .semibold18
 			self.titleAlignment = isSignature ? .center : .leading
-			self.isFulfilled = state.cssClass.isFulfilled
+			self.borderColor = (!state.cssClass.isFulfilled && isCheckingDetails) ? .red : .clear
 		}
 	}
-
+	
 	let store: Store<CSSField, CSSClassAction>
 	@ObservedObject var viewStore: ViewStore<State, Never>
-	let isCheckingDetails: Bool
-
+	
 	init (store: Store<CSSField, CSSClassAction>,
 		  isCheckingDetails: Bool) {
 		self.store = store
-		self.viewStore = ViewStore(store.scope(state: State.init(state:)).actionless)
-		self.isCheckingDetails = isCheckingDetails
+		self.viewStore = ViewStore(store.scope(state: { State.init(state: $0, isCheckingDetails: isCheckingDetails) }).actionless)
 	}
 
 	var body: some View {
@@ -44,12 +42,8 @@ struct FormSectionField: View {
 						   title: viewStore.title)
 		}
 		.background(Color.white)
-		.border(borderColor, width: 2.0)
+		.border(viewStore.borderColor, width: 2.0)
 		.padding([.leading, .trailing], 16)
-	}
-
-	var borderColor: Color {
-		return !viewStore.isFulfilled && self.isCheckingDetails ? .red : .clear
 	}
 }
 

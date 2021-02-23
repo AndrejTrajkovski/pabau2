@@ -6,10 +6,6 @@ public enum RadioFieldAction: Equatable {
 	case select(choice: RadioChoice?)
 }
 
-extension RadioChoice.ID {
-	static let notSelected = "notSelected"
-}
-
 let radioFieldReducer = Reducer<RadioState, RadioFieldAction, FormEnvironment> { state, action, _ in
 	switch action {
 	case .select(let choice):
