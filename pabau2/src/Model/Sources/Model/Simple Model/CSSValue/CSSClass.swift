@@ -46,7 +46,7 @@ public enum CSSClass: Equatable {
 	case diagram_mini(DiagramMini)
 	case unknown
 	
-	init(_formStructure: _FormStructure, fieldId: CSSFieldID) throws {
+	init?(_formStructure: _FormStructure, fieldId: CSSFieldID) throws {
 		let stringValue = extract(case: Values.string, from:_formStructure.values)
 		switch _formStructure.cssClass {
 		case .staticText:
@@ -77,6 +77,10 @@ public enum CSSClass: Equatable {
 			self = .cl_drugs(ClDrugs.init())
 		case .diagram_mini:
 			self = .diagram_mini(DiagramMini())
+		case .btn_medical_condition:
+			return nil
+		case .staticImage:
+			return nil
 		}
 	}
 	

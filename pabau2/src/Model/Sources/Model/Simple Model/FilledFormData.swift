@@ -81,6 +81,10 @@ struct _FormStructure: Codable {
 			return "" // TODO
 		case .image:
 			return ""
+		case .btn_medical_condition:
+			return ""
+		case .staticImage:
+			return ""
 		}
 	}
 	
@@ -95,6 +99,10 @@ struct _FormStructure: Codable {
 		case .cl_drugs:
 			return "" // TODO
 		case .image:
+			return ""
+		case .btn_medical_condition:
+			return ""
+		case .staticImage:
 			return ""
 		}
 	}
@@ -119,6 +127,8 @@ public enum CSSClassType: String, Equatable, Codable {
 	case image
 	case cl_drugs
 	case diagram_mini
+	case btn_medical_condition
+	case staticImage
 }
 
 enum Values: Codable {
