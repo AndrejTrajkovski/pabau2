@@ -13,19 +13,20 @@ import FSCalendar
 import Appointments
 
 public struct CalendarContainerState: Equatable {
-	public init(addAppointment: AddAppointmentState?, calendar: CalendarState) {
+	public init(addAppointment: AddAppointmentState?, calendar: CalendarState, appointments: Appointments) {
 		self.addAppointment = addAppointment
 		self.calendar = calendar
+		self.appointments = appointments
 	}
 
 	public var addAppointment: AddAppointmentState?
 	public var calendar: CalendarState
+	public var appointments: Appointments
 }
 
 public struct CalendarState: Equatable {
 	var isDropdownShown: Bool
 	var selectedDate: Date
-	var appointments: Appointments
 	var shifts: [Date: [Location.ID: [Employee.ID: [JZShift]]]]
 	var locations: IdentifiedArrayOf<Location>
 	public var employees: [Location.Id: IdentifiedArrayOf<Employee>]
@@ -42,47 +43,47 @@ public struct CalendarState: Equatable {
 	public var addShift: AddShiftState?
 }
 
-extension CalendarState {
+extension CalendarContainerState {
 
 	var calTypePicker: CalendarTypePickerState {
 		get {
-			CalendarTypePickerState(isDropdownShown: isDropdownShown,
+			CalendarTypePickerState(isDropdownShown: calendar.isDropdownShown,
 									appointments: appointments)
 		}
 		set {
-			self.isDropdownShown = newValue.isDropdownShown
+			self.calendar.isDropdownShown = newValue.isDropdownShown
 			self.appointments = newValue.appointments
 		}
 	}
 }
 
-extension CalendarState {
+extension CalendarContainerState {
 	var employeeSectionState: CalendarSectionViewState<Employee>? {
 		get {
 			guard let groupAppointments = extract(case: Appointments.employee, from: self.appointments) else { return nil }
 			return CalendarSectionViewState<Employee>(
-				selectedDate: selectedDate,
+				selectedDate: calendar.selectedDate,
 				appointments: groupAppointments,
-				appDetails: appDetails,
-				addBookout: addBookoutState,
-				locations: locations,
-				chosenLocationsIds: chosenLocationsIds,
-				subsections: employees,
-				chosenSubsectionsIds: chosenEmployeesIds,
-				shifts: self.shifts
+				appDetails: calendar.appDetails,
+				addBookout: calendar.addBookoutState,
+				locations: calendar.locations,
+				chosenLocationsIds: calendar.chosenLocationsIds,
+				subsections: calendar.employees,
+				chosenSubsectionsIds: calendar.chosenEmployeesIds,
+				shifts: calendar.shifts
 			)
 		}
 		set {
 			newValue.map {
-				self.selectedDate = $0.selectedDate
+				self.calendar.selectedDate = $0.selectedDate
 				self.appointments = Appointments.employee($0.appointments)
-				self.appDetails = $0.appDetails
-				self.addBookoutState = $0.addBookout
-				self.locations = $0.locations
-				self.chosenLocationsIds = $0.chosenLocationsIds
-				self.employees = $0.subsections
-				self.chosenEmployeesIds = $0.chosenSubsectionsIds
-				self.shifts = $0.shifts
+				self.calendar.appDetails = $0.appDetails
+				self.calendar.addBookoutState = $0.addBookout
+				self.calendar.locations = $0.locations
+				self.calendar.chosenLocationsIds = $0.chosenLocationsIds
+				self.calendar.employees = $0.subsections
+				self.calendar.chosenEmployeesIds = $0.chosenSubsectionsIds
+				self.calendar.shifts = $0.shifts
 			}
 		}
 	}
@@ -91,27 +92,27 @@ extension CalendarState {
 		get {
 			guard let groupAppointments = extract(case: Appointments.room, from: self.appointments) else { return nil }
 			return CalendarSectionViewState<Room>(
-				selectedDate: selectedDate,
+				selectedDate: calendar.selectedDate,
 				appointments: groupAppointments,
-				appDetails: appDetails,
-				addBookout: addBookoutState,
-				locations: locations,
-				chosenLocationsIds: chosenLocationsIds,
-				subsections: rooms,
-				chosenSubsectionsIds: chosenRoomsIds,
+				appDetails: calendar.appDetails,
+				addBookout: calendar.addBookoutState,
+				locations: calendar.locations,
+				chosenLocationsIds: calendar.chosenLocationsIds,
+				subsections: calendar.rooms,
+				chosenSubsectionsIds: calendar.chosenRoomsIds,
 				shifts: [:]
 			)
 		}
 		set {
 			newValue.map {
-				self.selectedDate = $0.selectedDate
+				self.calendar.selectedDate = $0.selectedDate
 				self.appointments = Appointments.room($0.appointments)
-				self.appDetails = $0.appDetails
-				self.addBookoutState = $0.addBookout
-				self.locations = $0.locations
-				self.chosenLocationsIds = $0.chosenLocationsIds
-				self.rooms = $0.subsections
-				self.chosenRoomsIds = $0.chosenSubsectionsIds
+				self.calendar.appDetails = $0.appDetails
+				self.calendar.addBookoutState = $0.addBookout
+				self.calendar.locations = $0.locations
+				self.calendar.chosenLocationsIds = $0.chosenLocationsIds
+				self.calendar.rooms = $0.subsections
+				self.calendar.chosenRoomsIds = $0.chosenSubsectionsIds
 			}
 		}
 	}
@@ -121,9 +122,9 @@ extension CalendarState {
 			guard let apps = extract(case: Appointments.week, from: self.appointments) else { return nil }
 			return CalendarWeekViewState(
 				appointments: apps,
-				selectedDate: selectedDate,
-				addBookout: addBookoutState,
-				appDetails: appDetails
+				selectedDate: calendar.selectedDate,
+				addBookout: calendar.addBookoutState,
+				appDetails: calendar.appDetails
 //				locations: locations,
 //				chosenLocationsIds: chosenLocationsIds,
 //				subsections: rooms,
@@ -133,10 +134,10 @@ extension CalendarState {
 		}
 		set {
 			newValue.map {
-				self.selectedDate = $0.selectedDate
+				self.calendar.selectedDate = $0.selectedDate
 				self.appointments = Appointments.week($0.appointments)
-				self.addBookoutState = $0.addBookout
-				self.appDetails = $0.appDetails
+				self.calendar.addBookoutState = $0.addBookout
+				self.calendar.appDetails = $0.appDetails
 //				self.locations = $0.locations
 //				self.chosenLocationsIds = $0.chosenLocationsIds
 //				self.rooms = $0.subsections
@@ -148,41 +149,41 @@ extension CalendarState {
 	var roomFilters: FiltersState<Room> {
 		get {
 			FiltersState(
-				locations: self.locations,
-				chosenLocationsIds: self.chosenLocationsIds,
-				subsections: self.rooms,
-				chosenSubsectionsIds: self.chosenRoomsIds,
-				expandedLocationsIds: self.expandedLocationsIds,
-				isShowingFilters: self.isShowingFilters
+				locations: self.calendar.locations,
+				chosenLocationsIds: self.calendar.chosenLocationsIds,
+				subsections: self.calendar.rooms,
+				chosenSubsectionsIds: self.calendar.chosenRoomsIds,
+				expandedLocationsIds: self.calendar.expandedLocationsIds,
+				isShowingFilters: self.calendar.isShowingFilters
 			)
 		}
 		set {
-			self.locations = newValue.locations
-			self.chosenLocationsIds = newValue.chosenLocationsIds
-			self.rooms = newValue.subsections
-			self.chosenRoomsIds = newValue.chosenSubsectionsIds
-			self.expandedLocationsIds = newValue.expandedLocationsIds
-			self.isShowingFilters = newValue.isShowingFilters
+			self.calendar.locations = newValue.locations
+			self.calendar.chosenLocationsIds = newValue.chosenLocationsIds
+			self.calendar.rooms = newValue.subsections
+			self.calendar.chosenRoomsIds = newValue.chosenSubsectionsIds
+			self.calendar.expandedLocationsIds = newValue.expandedLocationsIds
+			self.calendar.isShowingFilters = newValue.isShowingFilters
 		}
 	}
 
 	var employeeFilters: FiltersState<Employee> {
 		get {
 			FiltersState(
-				locations: self.locations,
-				chosenLocationsIds: self.chosenLocationsIds,
-				subsections: self.employees,
-				chosenSubsectionsIds: self.chosenEmployeesIds,
-				expandedLocationsIds: self.expandedLocationsIds,
-				isShowingFilters: self.isShowingFilters)
+				locations: self.calendar.locations,
+				chosenLocationsIds: self.calendar.chosenLocationsIds,
+				subsections: self.calendar.employees,
+				chosenSubsectionsIds: self.calendar.chosenEmployeesIds,
+				expandedLocationsIds: self.calendar.expandedLocationsIds,
+				isShowingFilters: self.calendar.isShowingFilters)
 		}
 		set {
-			self.locations = newValue.locations
-			self.chosenLocationsIds = newValue.chosenLocationsIds
-			self.employees = newValue.subsections
-			self.chosenEmployeesIds = newValue.chosenSubsectionsIds
-			self.expandedLocationsIds = newValue.expandedLocationsIds
-			self.isShowingFilters = newValue.isShowingFilters
+			self.calendar.locations = newValue.locations
+			self.calendar.chosenLocationsIds = newValue.chosenLocationsIds
+			self.calendar.employees = newValue.subsections
+			self.calendar.chosenEmployeesIds = newValue.chosenSubsectionsIds
+			self.calendar.expandedLocationsIds = newValue.expandedLocationsIds
+			self.calendar.isShowingFilters = newValue.isShowingFilters
 		}
 	}
 }
@@ -191,25 +192,25 @@ extension CalendarState {
 	public init() {
 		self.isDropdownShown = false
 		self.selectedDate = Calendar.gregorian.startOfDay(for: Date())
-		let employees = [Employee]()
-		let rooms = Room.mock().map { $0.value }
-		let locations = Location.mock()
-		self.appointments = .week([:])
-		let groupedEmployees = Dictionary.init(grouping: employees, by: { $0.locationId })
-			.mapValues { IdentifiedArrayOf.init($0) }
-		self.employees = locations.map(\.id).reduce(into: [Location.ID: IdentifiedArrayOf<Employee>](), {
-			$0[$1] = groupedEmployees[$1] ?? []
-		})
-		let groupedRooms = Dictionary.init(grouping: rooms, by: { $0.locationId })
-			.mapValues { IdentifiedArrayOf.init($0) }
-		self.rooms = locations.map(\.id).reduce(into: [Location.ID: IdentifiedArrayOf<Room>](), {
-			$0[$1] = groupedRooms[$1] ?? []
-		})
-		self.locations = IdentifiedArrayOf.init(locations)
-		self.chosenLocationsIds = Location.mock().map(\.id)
-		self.chosenRoomsIds = self.rooms.mapValues { $0.map(\.id) }
-		self.chosenEmployeesIds = self.employees.mapValues { $0.map(\.id) }
 		shifts = [:]
+//		let employees = [Employee]()
+//		let rooms = Room.mock().map { $0.value }
+//		let locations = Location.mock()
+//		let groupedEmployees = Dictionary.init(grouping: employees, by: { $0.locationId })
+//			.mapValues { IdentifiedArrayOf.init($0) }
+//		self.employees = locations.map(\.id).reduce(into: [Location.ID: IdentifiedArrayOf<Employee>](), {
+//			$0[$1] = groupedEmployees[$1] ?? []
+//		})
+//		let groupedRooms = Dictionary.init(grouping: rooms, by: { $0.locationId })
+//			.mapValues { IdentifiedArrayOf.init($0) }
+//		self.rooms = locations.map(\.id).reduce(into: [Location.ID: IdentifiedArrayOf<Room>](), {
+//			$0[$1] = groupedRooms[$1] ?? []
+//		})
+//		self.locations = IdentifiedArrayOf.init(locations)
+//		self.chosenLocationsIds = Location.mock().map(\.id)
+//		self.chosenRoomsIds = self.rooms.mapValues { $0.map(\.id) }
+//		self.chosenEmployeesIds = self.employees.mapValues { $0.map(\.id) }
+		
 //		shifts = Shift.mock().mapValues {
 //			$0.mapValues {
 //				$0.mapValues {
@@ -218,13 +219,28 @@ extension CalendarState {
 //				}
 //			}
 //		}
-		self.expandedLocationsIds = locations.map(\.id)
+//		self.expandedLocationsIds = locations.map(\.id)
 		self.isShowingFilters = false
+		
+		self.locations = []
+		self.employees = [:]
+		self.rooms = [:]
+		chosenLocationsIds = []
+		chosenEmployeesIds = [:]
+		chosenRoomsIds = [:]
+		isShowingFilters = false
+		expandedLocationsIds = []
+	}
+	
+	func selectedEmployeesIds() -> [Employee.Id] {
+		chosenLocationsIds.compactMap {
+			chosenEmployeesIds[$0]
+		}.flatMap { $0 }
 	}
 }
 
-extension CalendarState {
+extension CalendarContainerState {
 	mutating func switchTo(calType: Appointments.CalendarType) {
-		self.appointments = Appointments(calType: calType, events: appointments.flatten(), locationsIds: locations.map(\.id), employees: employees.flatMap(\.value), rooms: rooms.flatMap(\.value))
+		self.appointments = Appointments(calType: calType, events: appointments.flatten(), locationsIds: calendar.locations.map(\.id), employees: calendar.employees.flatMap(\.value), rooms: calendar.rooms.flatMap(\.value))
 	}
 }

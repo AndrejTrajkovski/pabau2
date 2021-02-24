@@ -4,7 +4,7 @@ import JZCalendarWeekView
 import Model
 
 public struct CalendarWrapper: View {
-	let store: Store<CalendarState, CalendarAction>
+	let store: Store<CalendarContainerState, CalendarAction>
 
 	public var body: some View {
 		WithViewStore(store) { viewStore -> AnyView in

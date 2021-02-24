@@ -22,7 +22,7 @@ extension APIClient {
 			.eraseToEffect()
 	}
 	
-	public func getAppointments(startDate: Date, endDate: Date, locationIds: [Location.ID], employeesIds: [Employee.ID], roomIds: [Room.ID]) -> Effect<CalendarResponse, RequestError> {
+	public func getAppointments(startDate: Date, endDate: Date, locationIds: [Location.ID], employeesIds: [Employee.ID], roomIds: [Room.ID]) -> Effect<[CalendarEvent], RequestError> {
 		let requestBuilder: RequestBuilder<CalendarResponse>.Type = requestBuilderFactory.getBuilder()
 		let dateFormatter = DateFormatter.yearMonthDay
 		let params = [
@@ -38,6 +38,7 @@ extension APIClient {
 								   queryParams: commonAnd(other: params)
 		)
 			.effect()
+			.map(\.appointments)
 	}
 	
 	public func getLocations() -> Effect<[Location], RequestError> {

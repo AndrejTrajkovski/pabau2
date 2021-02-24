@@ -51,11 +51,13 @@ public struct TabBarState: Equatable {
 	public var calendarContainer: CalendarContainerState {
 		get {
 			CalendarContainerState(addAppointment: addAppointment,
-								   calendar: calendar)
+								   calendar: calendar,
+								   appointments: appointments)
 		}
 		set {
 			self.addAppointment = newValue.addAppointment
 			self.calendar = newValue.calendar
+			self.appointments = newValue.appointments
 		}
 	}
 
@@ -147,7 +149,7 @@ struct PabauTabBar: View {
 	fileprivate func calendar() -> some View {
 		return CalendarContainer(store:
 									self.store.scope(
-										state: { $0.calendar },
+										state: { $0.calendarContainer },
 										action: { .calendar($0)}
 									)
 		)

@@ -6,6 +6,7 @@ import AddShift
 import Filters
 
 public enum CalendarAction {
+	case gotResponse(Result<[CalendarEvent], RequestError>)
 	case datePicker(CalendarDatePickerAction)
 	case calTypePicker(CalendarTypePickerAction)
 	case onAddShift

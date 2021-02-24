@@ -14,6 +14,30 @@ import Appointments
 public typealias CalendarEnvironment = (journeyAPI: JourneyAPI, clientsAPI: ClientsAPI, userDefaults: UserDefaultsConfig)
 
 public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAction, CalendarEnvironment> = .combine(
+	calTypePickerReducer.pullback(
+		state: \.calTypePicker,
+		action: /CalendarAction.calTypePicker,
+		environment: { $0 }),
+	calendarWeekViewReducer.optional.pullback(
+		state: \CalendarContainerState.week,
+		action: /CalendarAction.week,
+		environment: { $0 }),
+	AppointmentsByReducer<Employee>().reducer.optional.pullback(
+		state: \CalendarContainerState.employeeSectionState,
+		action: /CalendarAction.employee,
+		environment: { $0 }),
+	AppointmentsByReducer<Room>().reducer.optional.pullback(
+		state: \CalendarContainerState.roomSectionState,
+		action: /CalendarAction.room,
+		environment: { $0 }),
+	FiltersReducer<Employee>().reducer.pullback(
+		state: \.employeeFilters,
+		action: /CalendarAction.employeeFilters,
+		environment: { $0 }),
+	FiltersReducer<Room>().reducer.pullback(
+		state: \.roomFilters,
+		action: /CalendarAction.roomFilters,
+		environment: { $0 }),
 	calendarReducer.pullback(
 		state: \.calendar,
 		action: /.self,
@@ -21,6 +45,23 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 	),
 	.init { state, action, env in
 		switch action {
+		case .gotResponse(let result):
+			switch result {
+			case .success(let appointments):
+				break
+//				state.appointments = Appointments.init(calType: state.calendar.calType,
+//													   events: appointments, locationsIds: <#T##[Location.ID]#>, employees: <#T##[Employee]#>, rooms: <#T##[Room]#>)
+			case .failure(let error):
+				break
+			}
+		case .datePicker(.selectedDate(let date)):
+			return env.journeyAPI.getAppointments(startDate: date, endDate: date, locationIds: state.calendar.chosenLocationsIds, employeesIds: state.calendar.selectedEmployeesIds(), roomIds: [])
+			.receive(on: DispatchQueue.main)
+			.catchToEffect()
+			.map(CalendarAction.gotResponse)
+			.eraseToEffect()
+		case .calTypePicker(.onSelect(let calType)):
+			state.switchTo(calType: calType)
 		case .employee(.addAppointment(let startDate, let durationMins, let dropKeys)):
 			let (date, location, subsection) = dropKeys
 			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
@@ -80,22 +121,6 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 		action: /CalendarAction.datePicker,
 		environment: { $0 }
 	),
-	calTypePickerReducer.pullback(
-		state: \.calTypePicker,
-		action: /CalendarAction.calTypePicker,
-		environment: { $0 }),
-	calendarWeekViewReducer.optional.pullback(
-		state: \CalendarState.week,
-		action: /CalendarAction.week,
-		environment: { $0 }),
-	AppointmentsByReducer<Employee>().reducer.optional.pullback(
-		state: \CalendarState.employeeSectionState,
-		action: /CalendarAction.employee,
-		environment: { $0 }),
-	AppointmentsByReducer<Room>().reducer.optional.pullback(
-		state: \CalendarState.roomSectionState,
-		action: /CalendarAction.room,
-		environment: { $0 }),
 	appDetailsReducer.optional.pullback(
 		state: \CalendarState.appDetails,
 		action: /CalendarAction.appDetails,
@@ -108,19 +133,10 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 		state: \CalendarState.addShift,
 		action: /CalendarAction.addShift,
 		environment: { $0 }),
-	FiltersReducer<Employee>().reducer.pullback(
-		state: \.employeeFilters,
-		action: /CalendarAction.employeeFilters,
-		environment: { $0 }),
-	FiltersReducer<Room>().reducer.pullback(
-		state: \.roomFilters,
-		action: /CalendarAction.roomFilters,
-		environment: { $0 }),
 	.init { state, action, _ in
 		switch action {
 		case .datePicker: break
-		case .calTypePicker(.onSelect(let calType)):
-			state.switchTo(calType: calType)
+		case .calTypePicker: break
 		case .onAppDetailsDismiss:
 			state.appDetails = nil
 		case .onBookoutDismiss:
@@ -149,52 +165,52 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 )
 
 public struct CalendarContainer: View {
-	let store: Store<CalendarState, CalendarAction>
+	let store: Store<CalendarContainerState, CalendarAction>
 
 	public var body: some View {
 		WithViewStore(store) { viewStore in
 			ZStack(alignment: .topTrailing) {
 				VStack(spacing: 0) {
-					CalTopBar(store: self.store)
+					CalTopBar(store: store.scope(state: { $0 }))
 					CalendarDatePicker.init(
 						store: self.store.scope(
-							state: { $0.selectedDate },
+							state: { $0.calendar.selectedDate },
 							action: { .datePicker($0)}
 						),
 						isWeekView: viewStore.state.appointments.calendarType == Appointments.CalendarType.week,
-						scope: viewStore.scope
+						scope: viewStore.calendar.scope
 					)
 					.padding(0)
 					CalendarWrapper(store: self.store)
 					Spacer()
 				}
-				if viewStore.state.isShowingFilters {
+				if viewStore.state.calendar.isShowingFilters {
 					FiltersWrapper(store: store)
 						.transition(.moveAndFade)
 				}
 			}
 			.fullScreenCover(
                 isPresented:
-                    Binding(get: { activeSheet(state: viewStore.state) != nil },
-                            set: { _ in dismissAction(state: viewStore.state).map(viewStore.send) }
+					Binding(get: { activeSheet(state: viewStore.state.calendar) != nil },
+                            set: { _ in dismissAction(state: viewStore.state.calendar).map(viewStore.send) }
                     ),
                 content: {
                     Group {
                         IfLetStore(
                             store.scope(
-                                state: { $0.appDetails },
+								state: { $0.calendar.appDetails },
                                 action: { .appDetails($0) }),
                                 then: AppointmentDetails.init(store:)
                         )
                         IfLetStore(
                             store.scope(
-                                state: { $0.addBookoutState },
+                                state: { $0.calendar.addBookoutState },
                                 action: { .addBookoutAction($0) }),
                                 then: AddBookout.init(store:)
                         )
                         IfLetStore(
                             store.scope(
-                                state: { $0.addShift },
+                                state: { $0.calendar.addShift },
                                 action: { .addShift($0) }),
                                 then: AddShift.init(store:)
                         )
@@ -204,7 +220,7 @@ public struct CalendarContainer: View {
 		}
 	}
 
-	public init(store: Store<CalendarState, CalendarAction>) {
+	public init(store: Store<CalendarContainerState, CalendarAction>) {
 		self.store = store
 	}
 
@@ -240,7 +256,7 @@ public struct CalendarContainer: View {
 }
 
 struct CalTopBar: View {
-	let store: Store<CalendarState, CalendarAction>
+	let store: Store<CalendarContainerState, CalendarAction>
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			VStack(spacing: 0) {
