@@ -80,10 +80,11 @@ public struct HTMLFormParent: View {
 
 	let store: Store<HTMLFormParentState, HTMLFormParentAction>
 	public var body: some View {
-		IfLetStore(store.scope(state: { $0.form },
+		print("HTMLFormParent")
+		return IfLetStore(store.scope(state: { $0.form },
 							   action: { .form($0) }),
 				   then: { HTMLFormView(store: $0, isCheckingDetails: false) },
 				   else: LoadingView.init(title: "Loading", bindingIsShowing: .constant(true), content: { Spacer()})
-		)
+		).errorView(store: store, loadingState: \.loadingState)
 	}
 }
