@@ -16,6 +16,7 @@ public typealias TabBarEnvironment = (
 	loginAPI: LoginAPI,
 	journeyAPI: JourneyAPI,
 	clientsAPI: ClientsAPI,
+	formAPI: FormAPI,
 	userDefaults: UserDefaultsConfig
 )
 
@@ -103,87 +104,115 @@ struct PabauTabBar: View {
 		self.viewStore = ViewStore(self.store
 			.scope(state: ViewState.init(state:),
 						 action: { $0 }))
-		print("PabauTabBar init")
 	}
-	var body: some View {
-		print("PabauTabBar body")
-		return ZStack(alignment: .topTrailing) {
-			TabView {
-				CalendarContainer(store:
-									self.store.scope(
-										state: { $0.calendar },
-										action: { .calendar($0)}
-									)
-				)
-				.tabItem {
-						Image(systemName: "calendar")
-						Text("Calendar")
-				}
-				JourneyNavigationView(
-					self.store.scope(
-						state: { $0.journeyContainer },
-						action: { .journey($0)})
-				).tabItem {
-						Image(systemName: "staroflife")
-						Text("Journey")
-				}
-				ClientsNavigationView(
-					self.store.scope(
-						state: { $0.clients },
-						action: { .clients($0) })
-				).tabItem {
-						Image(systemName: "rectangle.stack.person.crop")
-						Text(Texts.clients)
-				}.onAppear {
-					self.viewStore.send(.clients(ClientsAction.onAppearNavigationView))
-				}
-				Settings(store:
-					store.scope(state: { $0.settings },
-										 action: { .settings($0)}))
-					.tabItem {
-						Image(systemName: "gear")
-						Text("Settings")
-				}
 
-                CommunicationView(store:
-                                store.scope(state: { $0.communication },
-                                            action: { .communication($0)}))
-                    .tabItem {
-                        Image(systemName: "ico-tab-tasks")
-                        Text("Intercom")
-                    }
-			}
-			.fullScreenCover(isPresented: .constant(self.viewStore.state.isShowingCheckin)) {
-				IfLetStore(self.store.scope(
-					state: { $0.journeyContainer.journey.checkIn },
-					action: { .journey(.checkIn($0))}
-				),
-				then: CheckInNavigationView.init(store:))
+	var body: some View {
+		ZStack(alignment: .topTrailing) {
+			TabView {
+				clients()
+				calendar()
+				journey()
+				settings()
+				communication()
 			}
 			.modalLink(isPresented: .constant(self.viewStore.state.isShowingCheckin),
 					   linkType: ModalTransition.circleReveal,
 					   destination: {
-						IfLetStore(self.store.scope(
-							state: { $0.journeyContainer.journey.checkIn },
-							action: { .journey(.checkIn($0))}
-						),
-						then: CheckInNavigationView.init(store:))
-					   })
+						checkIn()
+					   }
+			)
 			.fullScreenCover(isPresented: .constant(self.viewStore.state.isShowingAppointments)) {
-				IfLetStore(self.store.scope(
-					state: { $0.addAppointment },
-					action: { .addAppointment($0)}
-				),
-				then: AddAppointment.init(store:))
+				addAppointment()
 			}
 			if self.viewStore.state.isShowingEmployees {
-				JourneyFilter(
-					self.store.scope(state: { $0.journeyEmployeesFilter },
-					action: { .employeesFilter($0)})
-				).transition(.moveAndFade)
+				journeyFilter()
 			}
 		}
 	}
+
+	fileprivate func journey() -> some View {
+		return JourneyNavigationView(
+			self.store.scope(
+				state: { $0.journeyContainer },
+				action: { .journey($0)})
+		).tabItem {
+			Image(systemName: "staroflife")
+			Text("Journey")
+		}
+		.onAppear {
+			self.viewStore.send(.employeesFilter(JourneyFilterAction.reloadEmployees))
+		}
+	}
+
+	fileprivate func calendar() -> some View {
+		return CalendarContainer(store:
+									self.store.scope(
+										state: { $0.calendar },
+										action: { .calendar($0)}
+									)
+		)
+		.tabItem {
+			Image(systemName: "calendar")
+			Text("Calendar")
+		}
+	}
+
+	fileprivate func clients() -> some View {
+		return ClientsNavigationView(
+			self.store.scope(
+				state: { $0.clients },
+				action: { .clients($0) })
+		).tabItem {
+			Image(systemName: "rectangle.stack.person.crop")
+			Text(Texts.clients)
+		}.onAppear {
+			self.viewStore.send(.clients(ClientsAction.onAppearNavigationView))
+		}
+	}
+
+	fileprivate func settings() -> some View {
+		return Settings(store:
+							store.scope(state: { $0.settings },
+										action: { .settings($0)}))
+			.tabItem {
+				Image(systemName: "gear")
+				Text("Settings")
+			}
+	}
+
+	fileprivate func communication() -> some View {
+		return CommunicationView(store:
+									store.scope(state: { $0.communication },
+												action: { .communication($0)}))
+			.tabItem {
+				Image(systemName: "ico-tab-tasks")
+				Text("Intercom")
+			}
+	}
+
+	fileprivate func checkIn() -> IfLetStore<CheckInContainerState, CheckInContainerAction, CheckInNavigationView?> {
+		return IfLetStore(self.store.scope(
+			state: { $0.journeyContainer.journey.choosePathway.checkIn },
+			action: { .journey(.choosePathway(.checkIn($0)))}
+		),
+		then: CheckInNavigationView.init(store:))
+	}
+
+	fileprivate func addAppointment() -> IfLetStore<AddAppointmentState, AddAppointmentAction, AddAppointment?> {
+		return IfLetStore(self.store.scope(
+			state: { $0.addAppointment },
+			action: { .addAppointment($0)}
+		),
+		then: AddAppointment.init(store:))
+	}
+
+	fileprivate func journeyFilter() -> some View {
+		return JourneyFilter(
+			self.store.scope(state: { $0.journeyEmployeesFilter },
+							 action: { .employeesFilter($0)})
+		).transition(.moveAndFade)
+	}
+
 }
 
 public let tabBarReducer: Reducer<
@@ -205,69 +234,67 @@ public let tabBarReducer: Reducer<
 		action: /TabBarAction.employeesFilter,
 		environment: {
 			return EmployeesFilterEnvironment(
-				apiClient: $0.journeyAPI,
+				journeyAPI: $0.journeyAPI,
 				userDefaults: $0.userDefaults)
-	}),
+		}),
 	addAppointmentReducer.pullback(
 		state: \TabBarState.addAppointment,
 		action: /TabBarAction.addAppointment,
 		environment: {
-			return JourneyEnvironment(
-				journeyAPI: $0.journeyAPI,
-                clientsAPI: $0.clientsAPI,
-				userDefaults: $0.userDefaults)
-		}),
+			return AddAppointmentEnv(journeyAPI: $0.journeyAPI,
+									 clientAPI: $0.clientsAPI,
+									 userDefaults: $0.userDefaults)
+		}
+	),
 	settingsReducer.pullback(
 		state: \TabBarState.settings,
 		action: /TabBarAction.settings,
-		environment: { SettingsEnvironment($0) }
+		environment: {
+			SettingsEnvironment(
+				loginAPI: $0.loginAPI,
+				clientsAPI: $0.clientsAPI,
+				formAPI: $0.formAPI,
+				userDefaults: $0.userDefaults)
+		}
 	),
 	journeyContainerReducer.pullback(
 		state: \TabBarState.journeyContainer,
 		action: /TabBarAction.journey,
-		environment: {
-			return JourneyEnvironment(
-                journeyAPI: $0.journeyAPI,
-                clientsAPI: $0.clientsAPI,
-				userDefaults: $0.userDefaults)
-	}),
+		environment: makeJourneyEnv(_:)
+	),
 	clientsContainerReducer.pullback(
 		state: \TabBarState.clients,
 		action: /TabBarAction.clients,
-		environment: {
-			return ClientsEnvironment(
-				apiClient: $0.clientsAPI,
-				userDefaults: $0.userDefaults)
-	}),
+		environment: makeClientsEnv(_:)
+	),
 	calendarContainerReducer.pullback(
 		state: \TabBarState.calendarContainer,
 		action: /TabBarAction.calendar,
 		environment: {
-            return CalendarEnvironment(
-                apiClient: $0.journeyAPI,
-                clientAPI: $0.clientsAPI,
-                userDefaults: $0.userDefaults
-            )
-	}),
-    communicationReducer.pullback(
-        state: \TabBarState.communication,
-        action: /TabBarAction.communication,
-        environment: { CommunicationEnvironment($0) }
-    ),
-    .init { _, action, _ in
-        switch action {
-        case .communication(.liveChat):
-            Intercom.registerUser(withEmail: "a@a.com")
-            Intercom.presentMessenger()
-            return .none
-
-        case .communication(.helpGuides):
-            Intercom.presentHelpCenter()
-            return .none
-
-        case .communication(.carousel):
-            Intercom.presentCarousel("13796318")
-            return .none
+			return CalendarEnvironment(
+				journeyAPI: $0.journeyAPI,
+				clientsAPI: $0.clientsAPI,
+				userDefaults: $0.userDefaults)
+		}),
+	communicationReducer.pullback(
+		state: \TabBarState.communication,
+		action: /TabBarAction.communication,
+		environment: { $0 }
+	),
+	.init { _, action, _ in
+		switch action {
+		case .communication(.liveChat):
+			Intercom.registerUser(withEmail: "a@a.com")
+			Intercom.presentMessenger()
+			return .none
+			
+		case .communication(.helpGuides):
+			Intercom.presentHelpCenter()
+			return .none
+			
+		case .communication(.carousel):
+			Intercom.presentCarousel("13796318")
+			return .none
 
         default:
             break

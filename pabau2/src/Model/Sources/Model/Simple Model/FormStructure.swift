@@ -1,30 +1,3 @@
-//
-// FormTemplateFormData.swift
-
-import Foundation
-
-public struct FormStructure: Codable, Equatable {
-
-	public var canProceed: Bool {
-		return formStructure.allSatisfy {
-			!$0._required || $0.cssClass.isFulfilled
-		}
-	}
-
-	public static var defaultEmpty: FormStructure {
-		FormStructure(formStructure: [])
-	}
-
-	public var formStructure: [CSSField]
-	public enum CodingKeys: String, CodingKey {
-		case formStructure = "form_structure"
-	}
-
-	public init(formStructure: [CSSField]) {
-		self.formStructure = formStructure
-	}
-}
-
 //IDEA
 //public enum FormStructure: Codable, Equatable {
 //

@@ -1,4 +1,7 @@
 import Foundation
 import Model
 
-public typealias FormEnvironment = (journeyAPI: JourneyAPI, clientsAPI: ClientsAPI, userDefaults: UserDefaultsConfig)
+//<<<<<<< HEAD
+//public typealias FormEnvironment = (journeyAPI: JourneyAPI, clientsAPI: ClientsAPI, userDefaults: UserDefaultsConfig)
+//=======
+public typealias FormEnvironment = (formAPI: FormAPI, userDefaults: UserDefaultsConfig)

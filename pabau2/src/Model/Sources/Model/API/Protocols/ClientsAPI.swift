@@ -8,9 +8,9 @@ public protocol ClientsAPI {
     func getServices() -> Effect<[Service], RequestError>
     func createAppointment(appointment: AppointmentBuilder) -> Effect<PlaceholdeResponse, RequestError>
 	func getAppointments(clientId: Int) -> Effect<[Appointment], RequestError>
-	func getPhotos(clientId: Int) -> Effect<[SavedPhoto], RequestError>
 	func getFinancials(clientId: Int) -> Effect<[Financial], RequestError>
-	func getForms(type: FormType, clientId: Int) -> Effect<[FormData], RequestError>
+	func getPhotos(clientId: Int) -> Effect<[SavedPhoto], RequestError>
+	func getForms(type: FormType, clientId: Int) -> Effect<[FilledFormData], RequestError>
 	func getDocuments(clientId: Int) -> Effect<[Document], RequestError>
 	func getCommunications(clientId: Int) -> Effect<[Communication], RequestError>
 	func getAlerts(clientId: Int) -> Effect<[Alert], RequestError>
@@ -18,7 +18,6 @@ public protocol ClientsAPI {
 	
 	func getPatientDetails(clientId: Int) -> Effect<PatientDetails, RequestError>
 	func post(patDetails: PatientDetails) -> Effect<PatientDetails, RequestError>
-    
     func addNote(clientId: Int, note: String) -> Effect<Note, RequestError>
     func addAlert(clientId: Int, alert: String) -> Effect<Bool, RequestError>
 }

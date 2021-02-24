@@ -25,7 +25,6 @@ public struct JourneyContainerState: Equatable {
 }
 
 extension JourneyContainerState {
-
 	func filteredJourneys() -> [Journey] {
 		calendarResponseToJourneys(date: journey.selectedDate, events: appointments.flatten())
 //		return self.journeys

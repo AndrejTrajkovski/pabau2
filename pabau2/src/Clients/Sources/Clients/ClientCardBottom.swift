@@ -87,7 +87,11 @@ struct ClientCardBottom: View {
             return AnyView(PlusButton {viewStore.send(.child(.alerts(.didTouchAdd)))})
         } else if self.viewStore.state.activeItem == .notes {
             return AnyView(PlusButton {viewStore.send(.child(.notes(.didTouchAdd)))})
-        } else {
+		} else if self.viewStore.state.activeItem == .consents {
+			return AnyView(PlusButton { viewStore.send(.child(.consents(.add))) } )
+		} else if self.viewStore.state.activeItem == .treatmentNotes {
+			return AnyView(PlusButton { viewStore.send(.child(.treatmentNotes(.add))) } )
+		} else {
 			return AnyView(EmptyView())
 		}
 	}

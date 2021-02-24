@@ -11,18 +11,20 @@ let textAreaFieldReducer = Reducer<TextArea, TextAreaFieldAction, FormEnvironmen
 	return .none
 }
 
-public enum TextAreaFieldAction {
+public enum TextAreaFieldAction: Equatable {
 	case didUpdateText(String)
 }
 
 struct TextAreaField: View {
-	@Binding var textArea: TextArea
+	let store: Store<TextArea, TextAreaFieldAction>
 
 	var body: some View {
-		MultilineTextView(initialText: self.textArea.text,
-											placeholder: "Some placeholder",
-											onTextChange: {
-												self.textArea.text = $0
-		}).frame(height: 150)
+		WithViewStore(store) { viewStore in
+			MultilineTextView(initialText: viewStore.text,
+							  placeholder: "Some placeholder",
+							  onTextChange: {
+								viewStore.send(.didUpdateText($0))
+							  }).frame(height: 150)
+		}
 	}
 }

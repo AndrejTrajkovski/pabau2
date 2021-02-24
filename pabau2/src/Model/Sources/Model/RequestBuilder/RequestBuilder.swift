@@ -11,7 +11,7 @@ open class RequestBuilder<T> {
 	var credential: URLCredential?
 	var headers: [String: String]
 	public let queryParams: [String: Any?]?
-	public let isBody: Bool
+	public let body: [String: Any]?
 	public let method: HTTPMethod
 	public let baseUrl: String
 	public let path: APIPath
@@ -21,16 +21,16 @@ open class RequestBuilder<T> {
 						 baseUrl: String,
 						 path: APIPath,
 						 queryParams: [String: Any?]?,
-						 isBody: Bool,
 						 headers: [String: String] = [:],
-						 dateDecoding: JSONDecoder.DateDecodingStrategy? = nil) {
+						 dateDecoding: JSONDecoder.DateDecodingStrategy? = nil,
+						 body: [String: Any]? = nil) {
 		self.baseUrl = baseUrl
 		self.path = path
 		self.method = method
 		self.queryParams = queryParams
-		self.isBody = isBody
 		self.headers = headers
 		self.dateDecoding = dateDecoding ?? .formatted(.rfc3339)
+		self.body = body
 	}
 
 	func effect<DomainError: Error>(toDomainError: @escaping (RequestError) -> DomainError) -> Effect<T, DomainError> {
@@ -96,4 +96,30 @@ public enum RequestError: Error, Equatable {
 	case responseNotHTTP
 	case apiError(String)
 	case unknown
+}
+
+extension URLRequest {
+	public func cURL(pretty: Bool = false) -> String {
+		let newLine = pretty ? "\\\n" : ""
+		let method = (pretty ? "--request " : "-X ") + "\(self.httpMethod ?? "GET") \(newLine)"
+		let url: String = (pretty ? "--url " : "") + "\'\(self.url?.absoluteString ?? "")\' \(newLine)"
+		
+		var cURL = "curl "
+		var header = ""
+		var data: String = ""
+		
+		if let httpHeaders = self.allHTTPHeaderFields, httpHeaders.keys.count > 0 {
+			for (key,value) in httpHeaders {
+				header += (pretty ? "--header " : "-H ") + "\'\(key): \(value)\' \(newLine)"
+			}
+		}
+		
+		if let bodyData = self.httpBody, let bodyString = String(data: bodyData, encoding: .utf8) {
+			data = "--data '\(bodyString)'"
+		}
+		
+		cURL += method + url + header + data
+		
+		return cURL
+	}
 }

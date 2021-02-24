@@ -15,6 +15,8 @@ let package = Package(
     dependencies: [
 		.package(url: "../Util",
 				 from: Version.init(stringLiteral: "1.0.0")),
+		.package(url: "../Model",
+				 from: Version.init(stringLiteral: "1.0.0")),
 		.package(name: "swift-composable-architecture",
 				 url: "https://github.com/pointfreeco/swift-composable-architecture.git",
 				 from: Version.init(stringLiteral: "0.6.0"))
@@ -24,6 +26,7 @@ let package = Package(
             name: "SharedComponents",
             dependencies: [
 				"Util",
+				"Model",
 				.product(name: "ComposableArchitecture",
 						 package: "swift-composable-architecture")
 			]),

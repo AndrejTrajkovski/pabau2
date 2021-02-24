@@ -3,56 +3,72 @@ import ComposableArchitecture
 import Model
 import Util
 
-public enum CheckboxFieldAction {
-	case didUpdateChoices([CheckBoxChoice])
+public let checkBoxFieldReducer: Reducer<CheckBoxState, CheckboxFieldAction, FormEnvironment> = checkBoxRowReducer.forEach(
+	state: \CheckBoxState.rows,
+	action: /CheckboxFieldAction.rows(idx:action:),
+	environment: { $0 }
+)
+
+public enum CheckboxFieldAction: Equatable {
+	case rows(idx: Int, action: CheckBoxRowAction)
 }
 
-public let checkBoxFieldReducer =
-	Reducer<[CheckBoxChoice], CheckboxFieldAction, FormEnvironment> { state, action, _ in
+let checkBoxRowReducer: Reducer<CheckBoxChoice, CheckBoxRowAction, FormEnvironment> = .init { state, action, _ in
 	switch action {
-	case .didUpdateChoices(let updated):
-		state = updated
-		return .none
+	case .toggle:
+		state.isSelected.toggle()
 	}
+	return .none
+}
+
+public enum CheckBoxRowAction {
+	case toggle
 }
 
 struct CheckBoxField: View {
 
-	@Binding var choices: [CheckBoxChoice]
+	let store: Store<CheckBoxState, CheckboxFieldAction>
 
 	var body: some View {
-		ForEach(choices, id: \.self) { (choice: CheckBoxChoice) in
-			ChoiceRow(choice: choice)
-				.padding(4)
-				.onTapGesture {
-					let idx = self.choices.firstIndex(where: { $0.id == choice.id })
-					self.choices[idx!].isSelected.toggle()
-//					self.store.view.send(.didUpdateChoices(self.choices))
+		ForEachStore(store.scope(state: { $0.rows },
+								 action: CheckboxFieldAction.rows(idx:action:)),
+					 content: ChoiceRow.init(store:))
+	}
+}
+
+struct ChoiceRow: View {
+	let store: Store<CheckBoxChoice, CheckBoxRowAction>
+	var body: some View {
+		WithViewStore(store.scope(state: { $0.title })) { viewStore in
+			HStack (alignment: .center, spacing: 16) {
+				Checkbox(store: store.scope(state: { $0.isSelected }).actionless)
+					.frame(width: 24, height: 24)
+				Text(viewStore.state)
+					.foregroundColor(.black)
+					.font(.regular16)
+//					.alignmentGuide(VerticalAlignment.center, computeValue: { return $0[VerticalAlignment.firstTextBaseline] - 4.5 })
+			}
+			.frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+			.onTapGesture {
+				viewStore.send(.toggle)
 			}
 		}
 	}
 }
 
-struct ChoiceRow: View {
-	let choice: CheckBoxChoice
-	var body: some View {
-		HStack (alignment: .center, spacing: 16) {
-			Checkbox(isSelected: choice.isSelected)
-			Text(choice.title)
-				.foregroundColor(.black).opacity(0.9)
-				.font(.regular16)
-				.alignmentGuide(VerticalAlignment.center, computeValue: { return $0[VerticalAlignment.firstTextBaseline] - 4.5 })
-		}
-		.frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-	}
-}
-
 struct Checkbox: View {
-	let isSelected: Bool
+	let store: Store<Bool, Never>
 	var body: some View {
-		Image(systemName: isSelected ? "checkmark.square" : "square")
-			.resizable()
-			.foregroundColor( isSelected ? .accentColor : .checkBoxGray)
-			.frame(width: 24, height: 24)
+		WithViewStore(store) { viewStore in
+			if viewStore.state {
+				Image(systemName: "checkmark.square")
+					.resizable()
+					.foregroundColor(.accentColor)
+			} else {
+				Image(systemName: "square")
+					.resizable()
+					.foregroundColor(.checkBoxGray)
+			}
+		}
 	}
 }

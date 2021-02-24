@@ -16,7 +16,6 @@ public struct NotesSection: View {
 		self.store = store
 	}
 
-    
 	public var body: some View {
 		TitleAndTextField(
             title: title,

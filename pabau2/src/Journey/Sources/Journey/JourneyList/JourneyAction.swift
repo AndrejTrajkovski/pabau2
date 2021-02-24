@@ -7,7 +7,6 @@ public enum JourneyContainerAction {
 	case addAppointmentTap
 	case journey(JourneyAction)
 	case choosePathway(ChoosePathwayContainerAction)
-	case checkIn(CheckInContainerAction)
 	case toggleEmployees
     case searchQueryChanged(JourneyAction)
 	case datePicker(CalendarDatePickerAction)

@@ -8,8 +8,8 @@ extension APIClient {
 		let res = requestBuilder.init(method: .GET,
 									  baseUrl: baseUrl,
 									  path: .sendConfirmation,
-									  queryParams: [:],
-									  isBody: false)
+									  queryParams: [:]
+		)
 		return res.publisher().eraseToEffect()
 	}
 	
@@ -32,8 +32,8 @@ extension APIClient {
 								   baseUrl: baseUrl,
 								   path: .login,
 								   queryParams: ["username": username,
-												 "password": password],
-								   isBody: false)
+												 "password": password]
+		)
 			.effect()
 			.map(\.users.elements)
 			.mapError { LoginError.requestError($0) }
@@ -45,8 +45,8 @@ extension APIClient {
 		return requestBuilder.init(method: .GET,
 								   baseUrl: baseUrl,
 								   path: .resetPass,
-								   queryParams: ["email": email],
-								   isBody: false)
+								   queryParams: ["email": email]
+		)
 			.effect()
 	}
 	

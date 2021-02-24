@@ -18,34 +18,32 @@ public struct PatientDetailsForm: View {
 	}
 
 	public var body: some View {
-		print("Patient details body")
-		return
-			ScrollView {
-				VStack {
-					PatientDetailsTextFields(vms: self.vms)
-					Group {
-						SwitchCell(text: Texts.emailConfirmations,
-								   store: store.scope(
-                                    state: { $0.emailComm },
-										action: { .emailComm($0) })
-						)
-						SwitchCell(text: Texts.smsReminders,
-								   store: store.scope(
-										state: { $0.smsComm },
-										action: { .smsComm($0) })
-						)
-						SwitchCell(text: Texts.phone,
-								   store: store.scope(
-										state: { $0.phoneComm },
-										action: { .phoneComm($0) })
-						)
-						SwitchCell(text: Texts.post,
-								   store: store.scope(
-										state: { $0.postComm },
-										action: { .postComm($0) })
-						)
-					}.switchesSection(title: Texts.communications)
-				}
+		ScrollView {
+			VStack {
+				PatientDetailsTextFields(vms: self.vms)
+				Group {
+					SwitchCell(text: Texts.emailConfirmations,
+							   store: store.scope(
+								state: { $0.emailComm },
+								action: { .emailComm($0) })
+					)
+					SwitchCell(text: Texts.smsReminders,
+							   store: store.scope(
+								state: { $0.smsComm },
+								action: { .smsComm($0) })
+					)
+					SwitchCell(text: Texts.phone,
+							   store: store.scope(
+								state: { $0.phoneComm },
+								action: { .phoneComm($0) })
+					)
+					SwitchCell(text: Texts.post,
+							   store: store.scope(
+								state: { $0.postComm },
+								action: { .postComm($0) })
+					)
+				}.switchesSection(title: Texts.communications)
+			}
 		}
 	}
 }
@@ -102,24 +100,25 @@ struct ThreeTextColumns: View {
 }
 
 public enum PatientDetailsAction: Equatable {
-	case salutation(TextFieldAction)
-	case firstName(TextFieldAction)
-	case lastName(TextFieldAction)
-	case dob(TextFieldAction)
-	case phone(TextFieldAction)
-	case cellPhone(TextFieldAction)
-	case email(TextFieldAction)
-	case addressLine1(TextFieldAction)
-	case addressLine2(TextFieldAction)
-	case postCode(TextFieldAction)
-	case city(TextFieldAction)
-	case county(TextFieldAction)
-	case country(TextFieldAction)
-	case howDidYouHear(TextFieldAction)
+	case salutation(TextChangeAction)
+	case firstName(TextChangeAction)
+	case lastName(TextChangeAction)
+	case dob(TextChangeAction)
+	case phone(TextChangeAction)
+	case cellPhone(TextChangeAction)
+	case email(TextChangeAction)
+	case addressLine1(TextChangeAction)
+	case addressLine2(TextChangeAction)
+	case postCode(TextChangeAction)
+	case city(TextChangeAction)
+	case county(TextChangeAction)
+	case country(TextChangeAction)
+	case howDidYouHear(TextChangeAction)
 	case emailComm(ToggleAction)
 	case smsComm(ToggleAction)
 	case phoneComm(ToggleAction)
 	case postComm(ToggleAction)
+	case complete
 }
 
 public let patientDetailsReducer: Reducer<PatientDetails, PatientDetailsAction, Any> = (
@@ -219,85 +218,85 @@ func viewModels(_ viewStore: ViewStore<PatientDetails, PatientDetailsAction>) ->
 			TextAndTextViewVM(
 				viewStore.binding(
 					get: { $0.salutation },
-					send: { .salutation(.textFieldChanged($0)) }),
+					send: { .salutation(.textChange($0)) }),
 				Texts.salutation),
 			TextAndTextViewVM(
 				viewStore.binding(
 					get: { $0.firstName },
-					send: { .firstName(.textFieldChanged($0)) }),
+					send: { .firstName(.textChange($0)) }),
 				Texts.firstName),
 			TextAndTextViewVM(
 				viewStore.binding(
 					get: { $0.lastName },
-					send: { .lastName(.textFieldChanged($0)) }),
+					send: { .lastName(.textChange($0)) }),
 				Texts.lastName)
 		],
 		[
 			TextAndTextViewVM(
 				viewStore.binding(
                     get: { $0.dateOfBirth },
-					send: { .dob(.textFieldChanged($0)) }),
+					send: { .dob(.textChange($0)) }),
 				Texts.dob),
 			TextAndTextViewVM(
 				viewStore.binding(
 					get: { $0.phone },
-					send: { .phone(.textFieldChanged($0)) }),
+					send: { .phone(.textChange($0)) }),
 				Texts.phone),
 			TextAndTextViewVM(
 				viewStore.binding(
 					get: { $0.cellPhone },
-					send: { .cellPhone(.textFieldChanged($0)) }),
+					send: { .cellPhone(.textChange($0)) }),
 				Texts.cellPhone)
 		],
 		[
 			TextAndTextViewVM(
 				viewStore.binding(
 					get: { $0.email },
-					send: { .email(.textFieldChanged($0)) }),
+					send: { .email(.textChange($0)) }),
 				Texts.email),
 			TextAndTextViewVM(
 				viewStore.binding(
 					get: { $0.addressLine1 },
-					send: { .addressLine1(.textFieldChanged($0)) }),
+					send: { .addressLine1(.textChange($0)) }),
 				Texts.addressLine1),
 			TextAndTextViewVM(
 				viewStore.binding(
 					get: { $0.addressLine2 },
-					send: { .addressLine2(.textFieldChanged($0)) }),
+					send: { .addressLine2(.textChange($0)) }),
 				Texts.addressLine2)
 		],
 		[
 			TextAndTextViewVM(
 				viewStore.binding(
 					get: { $0.postCode },
-					send: { .postCode(.textFieldChanged($0)) }),
+					send: { .postCode(.textChange($0)) }),
 				Texts.postCode),
 			TextAndTextViewVM(
 				viewStore.binding(
 					get: { $0.city },
-					send: { .city(.textFieldChanged($0)) }),
+					send: { .city(.textChange($0)) }),
 				Texts.city),
 			TextAndTextViewVM(
 				viewStore.binding(
 					get: { $0.county },
-					send: { .county(.textFieldChanged($0)) }),
+					send: { .county(.textChange($0)) }),
 				Texts.county)
 		],
 		[
 			TextAndTextViewVM(
 				viewStore.binding(
 					get: { $0.country },
-					send: { .country(.textFieldChanged($0)) }),
+					send: { .country(.textChange($0)) }),
 				Texts.country),
 			TextAndTextViewVM(
 				viewStore.binding(
 					get: { $0.howDidYouHear },
-					send: { .howDidYouHear(.textFieldChanged($0)) }),
+					send: { .howDidYouHear(.textChange($0)) }),
 				Texts.howDidUHear),
             TextAndTextViewVM(
                 viewStore.binding(
                     get: { $0.gender },
-                    send: { .howDidYouHear(.textFieldChanged($0)) }),
+                    send: { .howDidYouHear(.textChange($0)) }),
                 Texts.gender)
             
 		]

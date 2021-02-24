@@ -3,12 +3,12 @@ import SwiftUI
 public struct AvatarView: View {
 	public init(
 		avatarUrl: String?,
-		initials: String,
+		initials: String?,
 		font: Font,
 		bgColor: Color
 	) {
 		self.avatarUrl = avatarUrl
-		self.initials = initials
+		self.initials = initials ?? ""
 		self.font = font
 		self.bgColor = bgColor
 	}

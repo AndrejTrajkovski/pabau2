@@ -1,6 +1,7 @@
 import Foundation
 import Tagged
 
+
 public struct Shift: Codable, Equatable {
     public static func == (lhs: Shift, rhs: Shift) -> Bool {
         lhs.rotaID == rhs.rotaID
@@ -42,7 +43,7 @@ public struct Shift: Codable, Equatable {
 		self.userName = try container.decode(String.self, forKey: .userName)
 		self.locationName = try container.decode(String.self, forKey: .locationName)
 		self.locColor = try container.decode(String.self, forKey: .locColor)
-        self.published = try container.decode(Bool.self, forKey: .published)
+		self.published = try container.decode(Bool.self, forKey: .published)
 		let stringLocationID = try container.decode(String.self, forKey: .locationID)
 		guard let intLocationId = Int(stringLocationID) else {
 			throw DecodingError.dataCorruptedError(forKey: .locationID, in: container, debugDescription: "Location ID expected to be Integer")
@@ -59,7 +60,7 @@ public struct Shift: Codable, Equatable {
 				  in: container,
 				  debugDescription: "Date string does not match format expected by formatter.")
 		}
-
+		
 		let startTimeString = try container.decode(String.self, forKey: .startTime)
 		if let startTime = DateFormatter.HHmmss.date(from: startTimeString) {
 			self.startTime = startTime
@@ -121,4 +122,3 @@ public struct ShiftSchema: Codable {
         case rotaUID = "rota_uid"
     }
 }
-

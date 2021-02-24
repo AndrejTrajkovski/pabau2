@@ -4,7 +4,7 @@ import SwiftDate
 
 @dynamicMemberLookup
 public enum CalendarEvent: CalendarEventVariant, Identifiable, Equatable {
-	case appointment(CalAppointment)
+	case appointment(Appointment)
 	case bookout(Bookout)
 	
 	public typealias Id = Tagged<CalendarEvent, Int>
@@ -86,8 +86,9 @@ extension CalendarEvent {
 			}
 		}
 	}
-	public var employeeInitials: String? {
+	public var employeeInitials: String {
 		get { return self[dynamicMember: \.employeeInitials] } }
+	
 	public var locationId: Location.Id {
 		get { return self[dynamicMember: \.locationId] }
 		set {
@@ -180,17 +181,17 @@ extension CalendarEvent: Decodable {
 		let employeeInitials = employeeName.split(separator: " ").joined().uppercased()
 		let serviceId = try? container.decode(Service.Id.self, forKey: .serviceID)
 		if let serviceId = serviceId {
-			let app = try CalAppointment(id,
-										 start,
-										 end,
-										 employeeId,
-										 employeeInitials,
-										 locationId,
-										 _private,
-										 status,
-										 employeeName,
-										 serviceId,
-										 decoder)
+			let app = try Appointment(id,
+									  start,
+									  end,
+									  employeeId,
+									  employeeInitials,
+									  locationId,
+									  _private,
+									  status,
+									  employeeName,
+									  serviceId,
+									  decoder)
 			self = .appointment(app)
 		} else {
 			let bookout = try Bookout(id,

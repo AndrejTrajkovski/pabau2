@@ -27,11 +27,44 @@ open class RequestBuilderImpl<T: Decodable>: RequestBuilder<T> {
 		}
 		
 		var request = URLRequest.init(url: url)
-		request.allHTTPHeaderFields = ["Content-Type": "application/json"]
+//		application/x-www-form-urlencoded
+		request.allHTTPHeaderFields = ["Content-Type": "application/x-www-form-urlencoded",
+									   "Accept-Language": "en;q=1",
+									   "User-Agent": defaultUserAgent]
 		request.httpMethod = method.rawValue
+		
+		if let body = self.body {
+			request.httpBody = Data(query(body).utf8)
+		}
+		
 		return request
 	}
 
+	func httpBodyData(params: [String: Any]) throws -> Data {
+		let jsonString = params.reduce("") { "\($0)\($1.0)=\($1.1)&" }.dropLast()
+		guard let jsonData = jsonString.data(using: .utf8, allowLossyConversion: false) else {
+			throw RequestError.urlBuilderError("Invalid HTTP body: \(params)")
+		}
+		return jsonData
+//		var urlParser = URLComponents()
+//		urlParser.queryItems = APIHelper.mapValuesToQueryItems(params)
+//		guard let bodyData = urlParser.percentEncodedQuery,
+//			  let bodyUTF8 = bodyData.data(using: .utf8) else {
+//			throw RequestError.urlBuilderError("Invalid HTTP body: \(params)")
+//		}
+//		return bodyUTF8
+	}
+	
+	private func query(_ parameters: [String: Any]) -> String {
+		var components: [(String, String)] = []
+
+		for key in parameters.keys.sorted(by: <) {
+			let value = parameters[key]!
+			components += APIHelper.queryComponents(fromKey: key, value: value)
+		}
+		return components.map { "\($0)=\($1)" }.joined(separator: "&")
+	}
+	
 	override func effect() -> Effect<T, RequestError> {
 		publisher().eraseToEffect()
 	}
@@ -39,7 +72,7 @@ open class RequestBuilderImpl<T: Decodable>: RequestBuilder<T> {
 	override open func publisher() -> AnyPublisher<T, RequestError> {
 		do {
 			let request = try buildRequest()
-			print(request)
+			print(request.cURL())
 			return URLSession.shared.dataTaskPublisher(for: request)
 				.mapError { error in
 					RequestError.networking(error)
@@ -77,7 +110,6 @@ open class RequestBuilderImpl<T: Decodable>: RequestBuilder<T> {
 					if error is DecodingError {
 						var errorMessage = error.localizedDescription + "\n" + (String.init(data: data, encoding: .utf8) ?? ". String not utf8")
 						errorMessage += self.stringIfDecodingError(error) ?? ""
-                        print("errorMessage - \(errorMessage)")
 						return RequestError.jsonDecoding(errorMessage)
 					} else {
 						return error as? RequestError ?? .unknown
@@ -105,3 +137,45 @@ open class RequestBuilderImpl<T: Decodable>: RequestBuilder<T> {
 		}
 	}
 }
+
+private let defaultUserAgent: String = {
+	let info = Bundle.main.infoDictionary
+	let executable = (info?[kCFBundleExecutableKey as String] as? String) ??
+		(ProcessInfo.processInfo.arguments.first?.split(separator: "/").last.map(String.init)) ??
+		"Unknown"
+	let bundle = info?[kCFBundleIdentifierKey as String] as? String ?? "Unknown"
+	let appVersion = info?["CFBundleShortVersionString"] as? String ?? "Unknown"
+	let appBuild = info?[kCFBundleVersionKey as String] as? String ?? "Unknown"
+
+	let osNameVersion: String = {
+		let version = ProcessInfo.processInfo.operatingSystemVersion
+		let versionString = "\(version.majorVersion).\(version.minorVersion).\(version.patchVersion)"
+		let osName: String = {
+			#if os(iOS)
+			#if targetEnvironment(macCatalyst)
+			return "macOS(Catalyst)"
+			#else
+			return "iOS"
+			#endif
+			#elseif os(watchOS)
+			return "watchOS"
+			#elseif os(tvOS)
+			return "tvOS"
+			#elseif os(macOS)
+			return "macOS"
+			#elseif os(Linux)
+			return "Linux"
+			#elseif os(Windows)
+			return "Windows"
+			#else
+			return "Unknown"
+			#endif
+		}()
+
+		return "\(osName) \(versionString)"
+	}()
+	
+	let userAgent = "\(executable)/\(appVersion) (\(bundle); build:\(appBuild); \(osNameVersion))"
+
+	return userAgent
+}()

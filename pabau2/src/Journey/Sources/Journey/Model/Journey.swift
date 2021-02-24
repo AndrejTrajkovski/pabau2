@@ -5,7 +5,7 @@ import CasePaths
 import Overture
 import Appointments
 
-public typealias Journey = [CalAppointment]
+public typealias Journey = [Appointment]
 
 public extension Journey {
 	var servicesString: String {
@@ -21,7 +21,7 @@ func calendarResponseToJourneys(date: Date, events: [CalendarEvent]) -> [Journey
 				with(date, curry(groupAndFilter(date:appointments:))))
 }
 
-func groupAndFilter(date: Date, appointments: [CalAppointment]) -> [Journey] {
+func groupAndFilter(date: Date, appointments: [Appointment]) -> [Journey] {
 	journeyGroup(appointments: appointments)
 		.first { $0.key.isInside(date: date, granularity: .day) }
 		.map(\.value) ?? []
@@ -32,7 +32,7 @@ struct JourneyKey: Hashable {
 	let employeeId: Employee.ID
 }
 
-func journeyGroup(appointments: [CalAppointment]) -> [Date: [Journey]] {
+func journeyGroup(appointments: [Appointment]) -> [Date: [Journey]] {
 	return Dictionary(grouping: appointments, by: { $0.start_date })
 		.mapValues {
 			Dictionary(grouping: $0, by: {

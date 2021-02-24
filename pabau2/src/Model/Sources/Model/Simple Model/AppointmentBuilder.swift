@@ -1,7 +1,7 @@
 import Foundation
 
 public struct AppointmentBuilder {
-    public var appointmentID: Appointment.Id?
+    public var appointmentID: Appointment.ID?
 
     public var isAllDay: Bool?
     public var isPrivate: Bool?
@@ -62,12 +62,10 @@ public struct AppointmentBuilder {
 
         self.employeeID = appointment.employeeId.rawValue
 
-        if let id = appointment.service?.id {
-            self.serviceID = String(id)
-        }
+		self.serviceID = String(appointment.service)
 
-        self.startTime = appointment.start_time
-        self.duration = appointment.end_time.timeIntervalSince(appointment.start_time) / 60
+        self.startTime = appointment.start_date
+        self.duration = appointment.end_date.timeIntervalSince(appointment.start_date) / 60
     }
 }
 

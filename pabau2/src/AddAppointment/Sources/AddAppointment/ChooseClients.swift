@@ -6,7 +6,6 @@ import SharedComponents
 
 public struct ChooseClientsState: Equatable {
     var isChooseClientsActive: Bool
-
     var clients: IdentifiedArrayOf<Client> = []
     var chosenClient: Client?
     var searchText: String = "" {

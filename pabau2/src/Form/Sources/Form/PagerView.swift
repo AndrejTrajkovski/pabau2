@@ -16,20 +16,23 @@ struct PagerView<Content: View>: View {
 
 	var body: some View {
 		GeometryReaderPatch { geometry in
-			HStack(spacing: 0) {
+			LazyHStack(spacing: 0) {
 				self.content.frame(width: geometry.size.width)
 			}
 			.frame(width: geometry.size.width, alignment: .leading)
 			.offset(x: -CGFloat(self.currentIndex) * geometry.size.width)
 			.offset(x: self.translation)
-			.animation(.interactiveSpring())
+			.animation(.default)
 			.gesture(
 				DragGesture().updating(self.$translation) { value, state, _ in
 					state = value.translation.width
 				}.onEnded { value in
 					let offset = value.translation.width / geometry.size.width
+					print(offset)
 					let newIndex = (CGFloat(self.currentIndex) - offset).rounded()
+					print(newIndex)
 					self.currentIndex = min(max(Int(newIndex), 0), self.pageCount - 1)
+					print(self.currentIndex)
 				}
 			)
 		}

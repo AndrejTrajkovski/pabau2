@@ -25,12 +25,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 			let userDefaults = StandardUDConfig()
 			let user = userDefaults.loggedInUser
 			let hasSeenWalkthrough = userDefaults.hasSeenAppIntroduction
-			print("user: \(user)")
-			let apiClient = APIClient(baseUrl: "https://prelive-crm.pabau.com/", loggedInUser: user)
+			let apiClient = APIClient(baseUrl: "https://prelive-crm.pabau.com", loggedInUser: user)
 			let env = AppEnvironment(
 				loginAPI: apiClient,
 				journeyAPI: apiClient,
 				clientsAPI: apiClient,
+				formAPI: apiClient,
 				userDefaults: userDefaults
 			)
 			window.rootViewController = UIHostingController(

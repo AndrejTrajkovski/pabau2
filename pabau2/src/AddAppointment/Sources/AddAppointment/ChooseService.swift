@@ -84,7 +84,6 @@ public enum ChooseServiceAction: Equatable {
 struct ChooseService: View {
     let store: Store<ChooseServiceState, ChooseServiceAction>
     @ObservedObject var viewStore: ViewStore<ChooseServiceState, ChooseServiceAction>
-
     init (store: Store<ChooseServiceState, ChooseServiceAction>) {
         self.store = store
         self.viewStore = ViewStore(store)

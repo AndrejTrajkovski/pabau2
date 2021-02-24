@@ -9,18 +9,18 @@ public let chooseFormJourneyReducer: Reducer<ChooseFormJourneyState,
 		chooseFormListReducer.pullback(
 			state: \.chooseForm,
 			action: /ChooseFormAction.self,
-			environment: { $0 }
+			environment: makeFormEnv(_:)
 		)
 		,
 		Reducer.init { state, action, _ in
 			switch action {
 			case .proceed:
 				//TODO:
-				updateWithKeepingOld(
-                    forms: &state.forms,
-														 finalSelectedTemplatesIds: state.selectedTemplatesIds,
-                    allTemplates: state.templates
-                )
+				let toGetIds = updateWithKeepingOld(
+					forms: &state.forms,
+					finalSelectedTemplatesIds: state.selectedTemplatesIds,
+					allTemplates: state.templates
+				)
 				return .none
 			default: break
 			}
@@ -29,11 +29,10 @@ public let chooseFormJourneyReducer: Reducer<ChooseFormJourneyState,
 )
 
 public struct ChooseFormJourneyState: Equatable {
-	var forms: IdentifiedArrayOf<MetaFormAndStatus>
-	var templates: IdentifiedArrayOf<FormTemplate>
+	var forms: IdentifiedArrayOf<HTMLForm>
+	var templates: IdentifiedArrayOf<FormTemplateInfo>
 	var templatesLoadingState: LoadingState = .initial
-	var selectedTemplatesIds: [Int]
-    var searchText: String = ""
+	var selectedTemplatesIds: [HTMLForm.ID]
 }
 
 struct ChooseFormJourney: View {
@@ -43,9 +42,9 @@ struct ChooseFormJourney: View {
 
 	var body: some View {
 		ChooseFormList(store:
-			self.store.scope(
-				state: { $0.chooseForm }, action: { $0 }),
-									 mode: self.mode)
+						self.store.scope(
+							state: { $0.chooseForm }, action: { $0 }),
+					   mode: self.mode)
 			.journeyBase(self.journey, .long)
 	}
 }
@@ -65,4 +64,20 @@ extension ChooseFormJourneyState {
 			self.selectedTemplatesIds = newValue.selectedTemplatesIds
 		}
 	}
+}
+
+private func updateWithKeepingOld(forms: inout IdentifiedArray<HTMLForm.ID, HTMLForm>,
+								  finalSelectedTemplatesIds: [HTMLForm.ID],
+								  allTemplates: IdentifiedArrayOf<FormTemplateInfo>) -> [HTMLForm.ID] {
+	let oldWithData = forms.filter { old in
+		finalSelectedTemplatesIds.contains(old.id)
+	}
+	let allNewSelected = allTemplates.filter { finalSelectedTemplatesIds.contains($0.id) }
+	let oldToKeepIds = allNewSelected.map(\.id).filter { oldWithData.map(\.id).contains($0)}
+	let newToGetIds = allNewSelected.map(\.id).filter { oldToKeepIds.contains($0)}
+	
+	let oldToKeep = oldToKeepIds.compactMap { oldWithData[id: $0 ]}
+	forms = IdentifiedArrayOf.init(oldToKeep)
+	
+	return newToGetIds
 }

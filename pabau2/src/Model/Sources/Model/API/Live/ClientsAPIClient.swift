@@ -1,6 +1,6 @@
 import ComposableArchitecture
 import Combine
-//MARK: - LoginAPI: ClientApi
+//MARK: - APIClient: ClientApi
 extension APIClient {
 	public func getClients() -> Effect<[Client], RequestError> {
 		let requestBuilder: RequestBuilder<ClientResponse>.Type = requestBuilderFactory.getBuilder()
@@ -13,8 +13,8 @@ extension APIClient {
 		return requestBuilder.init(method: .GET,
 								   baseUrl: baseUrl,
 								   path: .getClients,
-								   queryParams: commonAnd(other: [:]),
-								   isBody: false)
+								   queryParams: commonAnd(other: [:])
+		)
 			.effect()
 			.map(\.clients)
 			.eraseToEffect()
@@ -39,8 +39,7 @@ extension APIClient {
             method: .GET,
             baseUrl: baseUrl,
             path: .getClients,
-            queryParams: commonAnd(other: queryItems),
-            isBody: false
+            queryParams: commonAnd(other: queryItems)
         )
         .effect()
         .map(\.clients)
@@ -60,65 +59,12 @@ extension APIClient {
 		return requestBuilder.init(method: .GET,
 								   baseUrl: baseUrl,
 								   path: .getFinancials,
-								   queryParams: commonAnd(other: ["contact_id": "\(clientId)"]),
-								   isBody: false)
+								   queryParams: commonAnd(other: ["contact_id": "\(clientId)"]))
 			.effect()
 			.map(\.sales)
 			.eraseToEffect()
 	}
-	
-	public func getForms(type: FormType, clientId: Int) -> Effect<[FormData], RequestError> {
-		struct FormDataResponse: Codable {
-			let forms: [FormData]
-			
-			enum CodingKeys: String, CodingKey {
-				case forms = "employees"
-			}
-		}
-		let requestBuilder: RequestBuilder<FormDataResponse>.Type = requestBuilderFactory.getBuilder()
-		return requestBuilder.init(method: .GET,
-								   baseUrl: baseUrl,
-								   path: .getForms,
-								   queryParams: commonAnd(other: ["contact_id": "\(clientId)"]),
-								   isBody: false)
-			.effect()
-			.map { $0.forms.filter { $0.type == type} }
-			.eraseToEffect()
-	}
-	
-	public func getDocuments(clientId: Int) -> Effect<[Document], RequestError> {
-		struct DocumentResponse: Codable {
-			let documents: [Document]
-			enum CodingKeys: String, CodingKey {
-				case documents = "employees"
-			}
-		}
-		let requestBuilder: RequestBuilder<DocumentResponse>.Type = requestBuilderFactory.getBuilder()
-		return requestBuilder.init(method: .GET,
-								   baseUrl: baseUrl,
-								   path: .getDocuments,
-								   queryParams: commonAnd(other: ["contact_id": "\(clientId)"]),
-								   isBody: false)
-			.effect()
-			.map(\.documents)
-			.eraseToEffect()
-	}
-	
-	public func getCommunications(clientId: Int) -> Effect<[Communication], RequestError> {
-		let requestBuilder: RequestBuilder<CommunicationResponse>.Type = requestBuilderFactory.getBuilder()
-		struct CommunicationResponse: Codable {
-			let communications: [Communication]
-		}
-		return requestBuilder.init(method: .GET,
-								   baseUrl: baseUrl,
-								   path: .getCommunications,
-								   queryParams: commonAnd(other: ["contact_id": "\(clientId)"]),
-								   isBody: false)
-			.effect()
-			.map(\.communications)
-			.eraseToEffect()
-	}
-	
+		
 	public func getAlerts(clientId: Int) -> Effect<[Alert], RequestError> {
 		struct AlertResponse: Codable {
 			public let medical_alerts: [Alert]
@@ -130,30 +76,9 @@ extension APIClient {
 								   queryParams: commonAnd(other: [
 									"contact_id": "\(clientId)",
 									"mode": "get"
-								   ]),
-								   isBody: false)
+								   ]))
 			.effect()
 			.map(\.medical_alerts)
-			.eraseToEffect()
-	}
-	
-	public func getNotes(clientId: Int) -> Effect<[Note], RequestError> {
-		let requestBuilder: RequestBuilder<NoteResponse>.Type = requestBuilderFactory.getBuilder()
-		struct NoteResponse: Codable {
-			public let notes: [Note]
-			public enum CodingKeys: String, CodingKey {
-				case notes = "employees"
-			}
-		}
-		return requestBuilder.init(method: .GET,
-								   baseUrl: baseUrl,
-								   path: .getClientsNotes,
-								   queryParams: commonAnd(other: [
-															"contact_id": "\(clientId)"
-								   ]),
-								   isBody: false)
-			.effect()
-			.map(\.notes)
 			.eraseToEffect()
 	}
 	
@@ -168,8 +93,8 @@ extension APIClient {
 		return requestBuilder.init(method: .GET,
 								   baseUrl: baseUrl,
 								   path: .getPatientDetails,
-								   queryParams: commonAnd(other: ["contact_id": "\(clientId)"]),
-								   isBody: false)
+								   queryParams: commonAnd(other: ["contact_id": "\(clientId)"])
+		)
 			.effect()
 			.map(\.details)
 			.tryMap {
@@ -206,8 +131,7 @@ extension APIClient {
         return requestBuilder.init(method: .GET,
                                    baseUrl: baseUrl,
                                    path: .getClientsAppointmens,
-                                   queryParams: commonAnd(other: ["id": "\(clientId)"]),
-                                   isBody: false)
+                                   queryParams: commonAnd(other: ["id": "\(clientId)"]))
             .effect()
             .map(\.appointments)
             .eraseToEffect()
@@ -224,8 +148,8 @@ extension APIClient {
         return requestBuilder.init(method: .GET,
                                    baseUrl: baseUrl,
                                    path: .getServices,
-                                   queryParams: commonParams(),
-                                   isBody: false)
+                                   queryParams: commonParams()
+		)
             .effect()
             .map(\.services)
             .eraseToEffect()
@@ -244,8 +168,8 @@ extension APIClient {
                                    path: .getClientsPhotos,
                                    queryParams: commonAnd(other: [
                                     "contact_id": "\(clientId)"
-                                   ]),
-                                   isBody: false)
+                                   ])
+		)
             .effect()
             .map(\.photos)
             .eraseToEffect()
@@ -261,10 +185,81 @@ extension APIClient {
                                    path: .getClientAlerts,
                                    queryParams: commonAnd(other: ["contact_id": "\(clientId)",
                                                                   "note": "\(alert)",
-                                                                  "mode": "add"]),
-                                   isBody: false)
+                                                                  "mode": "add"])
+		)
             .effect()
             .map(\.success)
+            .eraseToEffect()
+    }
+
+    public func getForms(type: FormType, clientId: Int) -> Effect<[FilledFormData], RequestError> {
+        struct FormDataResponse: Decodable {
+            let forms: [FilledFormData]
+
+            enum CodingKeys: String, CodingKey {
+                case forms = "employees"
+            }
+        }
+        let requestBuilder: RequestBuilder<FormDataResponse>.Type = requestBuilderFactory.getBuilder()
+        return requestBuilder.init(method: .GET,
+                                   baseUrl: baseUrl,
+                                   path: .getForms,
+                                   queryParams: commonAnd(other: ["contact_id": "\(clientId)"]))
+            .effect()
+			.map { $0.forms.filter { $0.templateInfo.type == type} }
+            .eraseToEffect()
+    }
+
+    public func getDocuments(clientId: Int) -> Effect<[Document], RequestError> {
+        struct DocumentResponse: Codable {
+            let documents: [Document]
+            enum CodingKeys: String, CodingKey {
+                case documents = "employees"
+            }
+        }
+        let requestBuilder: RequestBuilder<DocumentResponse>.Type = requestBuilderFactory.getBuilder()
+        return requestBuilder.init(method: .GET,
+                                   baseUrl: baseUrl,
+                                   path: .getDocuments,
+                                   queryParams: commonAnd(other: ["contact_id": "\(clientId)"])
+		)
+            .effect()
+            .map(\.documents)
+            .eraseToEffect()
+    }
+
+    public func getCommunications(clientId: Int) -> Effect<[Communication], RequestError> {
+        let requestBuilder: RequestBuilder<CommunicationResponse>.Type = requestBuilderFactory.getBuilder()
+        struct CommunicationResponse: Codable {
+            let communications: [Communication]
+        }
+        return requestBuilder.init(method: .GET,
+                                   baseUrl: baseUrl,
+                                   path: .getCommunications,
+                                   queryParams: commonAnd(other: ["contact_id": "\(clientId)"])
+		)
+            .effect()
+            .map(\.communications)
+            .eraseToEffect()
+    }
+
+    public func getNotes(clientId: Int) -> Effect<[Note], RequestError> {
+        let requestBuilder: RequestBuilder<NoteResponse>.Type = requestBuilderFactory.getBuilder()
+        struct NoteResponse: Codable {
+            public let notes: [Note]
+            public enum CodingKeys: String, CodingKey {
+                case notes = "employees"
+            }
+        }
+        return requestBuilder.init(method: .GET,
+                                   baseUrl: baseUrl,
+                                   path: .getClientsNotes,
+                                   queryParams: commonAnd(other: [
+                                    "contact_id": "\(clientId)"
+                                   ])
+		)
+            .effect()
+            .map(\.notes)
             .eraseToEffect()
     }
 }

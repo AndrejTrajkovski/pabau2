@@ -54,7 +54,7 @@ let passcodeContainerReducer: Reducer<PasscodeContainerState, PasscodeAction, An
 			state: \PasscodeContainerState.passcode,
 			action: /PasscodeAction.self,
 			environment: { $0 })
-)
+	)
 
 struct Passcode: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>
@@ -93,11 +93,12 @@ struct Passcode: View {
 					)
 					NavigationLink.emptyHidden(
 						viewStore.state.didGoBackToPatientMode,
-						DoctorSummary(store: self.store.scope(
-										state: { $0 }, action: { $0 }))
-							.hideNavBar(viewStore.state.isDoctorCheckInMainActive,
-										Texts.summary)
-							.navigationBarBackButtonHidden(true)
+						EmptyView()
+//						DoctorSummary(store: self.store.scope(
+//										state: { $0 }, action: { $0 }))
+//							.hideNavBar(viewStore.state.isDoctorCheckInMainActive,
+//										Texts.summary)
+//							.navigationBarBackButtonHidden(true)
 					)
 				}
 			}

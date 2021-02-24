@@ -12,44 +12,32 @@ import Filters
 import SharedComponents
 import Appointments
 
-public typealias JourneyEnvironment = (journeyAPI: JourneyAPI, clientsAPI: ClientsAPI, userDefaults: UserDefaultsConfig)
+public typealias JourneyEnvironment = (
+	formAPI: FormAPI,
+	journeyAPI: JourneyAPI,
+	clientsAPI: ClientsAPI,
+	userDefaults: UserDefaultsConfig
+)
 
-let checkInMiddleware2 = Reducer<JourneyState, ChooseFormAction, JourneyEnvironment> { state, action, _ in
-	switch action {
-	case .proceed:
-		guard let selJ = state.selectedJourney,
-			let selP = state.selectedPathway else { return .none }
-		state.checkIn = CheckInContainerState(
-			journey: selJ,
-			pathway: selP,
-			patientDetails: PatientDetails.mock,
-			medHistory: FormTemplate.getMedHistory(),
-			consents: state.allConsents.filter(
-				pipe(get(\.id), state.selectedConsentsIds.contains)
-			),
-			allConsents: state.allConsents,
-			photosState: PhotosState.init(SavedPhoto.mock())
-		)
-	default:
-		return .none
-	}
-	return .none
+func makeFormEnv(_ journeyEnv: JourneyEnvironment) -> FormEnvironment {
+	return FormEnvironment(formAPI: journeyEnv.formAPI,
+						   userDefaults: journeyEnv.userDefaults)
 }
 
-let checkInMiddleware = Reducer<JourneyState, CheckInContainerAction, JourneyEnvironment> { state, action, _ in
+let checkInMiddleware = Reducer<ChoosePathwayState, CheckInContainerAction, JourneyEnvironment> { _, action, _ in
 	switch action {
-	case .patient(.topView(.onXButtonTap)),
-			 .doctorSummary(.xOnDoctorCheckIn):
-		state.selectedJourney = nil
-		state.selectedPathway = nil
-		state.checkIn?.didGoBackToPatientMode = false
-		state.checkIn = nil
-	case .doctor(.checkInBody(.completeJourney(.onCompleteJourney))),
-		.doctor(.checkInBody(.footer(.completeJourney(.onCompleteJourney)))):
-		state.selectedJourney = nil
-		state.selectedPathway = nil
-		state.checkIn?.didGoBackToPatientMode = false
-		state.checkIn = nil
+//	case .patient(.topView(.onXButtonTap)),
+//			 .doctorSummary(.xOnDoctorCheckIn):
+//		state.selectedJourney = nil
+//		state.selectedPathway = nil
+//		state.checkIn?.didGoBackToPatientMode = false
+//		state.checkIn = nil
+//	case .doctor(.checkInBody(.completeJourney(.onCompleteJourney))),
+//		.doctor(.checkInBody(.footer(.completeJourney(.onCompleteJourney)))):
+//		state.selectedJourney = nil
+//		state.selectedPathway = nil
+//		state.checkIn?.didGoBackToPatientMode = false
+//		state.checkIn = nil
 	default:
 		return .none
 	}
@@ -72,15 +60,11 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 			state.employeesFilter.isShowingEmployees.toggle()
 		case .datePicker(.selectedDate(let date)):
 //			state.loadingState = .loading
-			return env.journeyAPI.getAppointments(startDate: date,
-                                                  endDate: date,
-                                                  locationIds: [state.journey.selectedLocation.id],
-                                                  employeesIds: Array(state.employeesFilter.employees.map(\.id)),
-                                                  roomIds: [])
+			return env.journeyAPI.getAppointments(startDate: date, endDate: date, locationIds: [state.journey.selectedLocation.id], employeesIds: Array(state.employeesFilter.employees.map(\.id)), roomIds: [])
 //				.map(with(date, curry(calendarResponseToJourneys(date:events:))))
+				.receive(on: DispatchQueue.main)
 				.catchToEffect()
 				.map { JourneyContainerAction.gotResponse($0) }
-				.receive(on: DispatchQueue.main)
 				.eraseToEffect()
 		case .gotResponse(let result):
 			print(result)
@@ -91,7 +75,6 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 //										   employees: state.employeesFilter.employees.elements)
 				state.loadingState = .gotSuccess
 			case .failure(let error):
-				print(error)
 				state.loadingState = .gotError(error)
 			}
 		default:
@@ -104,10 +87,6 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 //JourneyState, ChooseFormAction
 public let journeyContainerReducer2: Reducer<JourneyState, JourneyContainerAction, JourneyEnvironment> =
 	.combine(
-		checkInMiddleware2.pullback(
-			state: \JourneyState.self,
-			action: /JourneyContainerAction.choosePathway..ChoosePathwayContainerAction.chooseConsent,
-			environment: { $0 }),
 		journeyReducer.pullback(
 					 state: \JourneyState.self,
 					 action: /JourneyContainerAction.journey,
@@ -119,15 +98,7 @@ public let journeyContainerReducer2: Reducer<JourneyState, JourneyContainerActio
 		choosePathwayContainerReducer.pullback(
 					 state: \JourneyState.choosePathway,
 					 action: /JourneyContainerAction.choosePathway,
-					 environment: { $0 }),
-		checkInReducer.optional.pullback(
-			state: \JourneyState.checkIn,
-			action: /JourneyContainerAction.checkIn,
-			environment: { $0 }),
-		checkInMiddleware.pullback(
-			state: \JourneyState.self,
-			action: /JourneyContainerAction.checkIn,
-			environment: { $0 })
+					 environment: { $0 })
 )
 
 let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
@@ -170,7 +141,7 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 //
 
 			case .selectedJourney(let journey):
-				state.selectedJourney = journey
+				state.choosePathway = ChoosePathwayState(selectedJourney: journey)
 			case .choosePathwayBackTap:
 				state.selectedJourney = nil
 			}
@@ -191,7 +162,7 @@ public struct JourneyContainerView: View {
 		let isLoadingJourneys: Bool
         let searchQuery: String
 		init(state: JourneyContainerState) {
-			self.isChoosePathwayShown = state.journey.selectedJourney != nil
+			self.isChoosePathwayShown = state.journey.choosePathway != nil
 			self.selectedDate = state.journey.selectedDate
 			self.listedJourneys = state.filteredJourneys()
             self.searchQuery = state.journey.searchText
@@ -236,8 +207,9 @@ public struct JourneyContainerView: View {
 
             NavigationLink.emptyHidden(
                 self.viewStore.state.isChoosePathwayShown,
-                ChoosePathway(store: self.store.scope(state: { $0.journey.choosePathway
-                }, action: { .choosePathway($0)}))
+                ChoosePathway(store:
+								self.store.scope(state: { $0.journey.choosePathway},
+												 action: { .choosePathway($0)}))
                 .navigationBarTitle("Choose Pathway")
                 .customBackButton {
                     self.viewStore.send(.journey(.choosePathwayBackTap))
@@ -301,8 +273,8 @@ func journeyCellAdapter(journey: Journey) -> JourneyCell {
 		journey: journey,
         color: Color.init(hex: journey.first!.serviceColor ?? "#000000"),
 		time: "12:30",
-		imageUrl: journey.first!.customerPhoto,
-		name: journey.first!.customerName ?? "",
+		imageUrl: journey.first!.clientPhoto ?? "",
+		name: journey.first!.clientName ?? "",
 		services: journey.servicesString,
 		status: journey.first!.status?.name,
 		employee: journey.first!.employeeName,

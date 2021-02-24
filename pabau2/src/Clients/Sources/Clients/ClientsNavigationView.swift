@@ -4,7 +4,7 @@ import ComposableArchitecture
 import Util
 import CasePaths
 
-public typealias ClientsEnvironment = (apiClient: ClientsAPI, userDefaults: UserDefaultsConfig)
+public typealias ClientsEnvironment = (apiClient: ClientsAPI, formAPI: FormAPI, userDefaults: UserDefaultsConfig)
 
 public let clientsContainerReducer: Reducer<ClientsState, ClientsAction, ClientsEnvironment> = .combine(
 	addClientOptionalReducer.pullback(

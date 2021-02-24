@@ -5,32 +5,27 @@ import Model
 import SharedComponents
 
 struct CheckPatientForm: View {
-	let didTouchDone: () -> Void
-	let patDetails: PatientDetails
-	let patientForms: [FormTemplate]
+	let store: Store<CheckPatient, Never>
+	@ObservedObject var viewStore: ViewStore<CheckPatient, Never>
+
+	init(store: Store<CheckPatient, Never>) {
+		self.store = store
+		self.viewStore = ViewStore(store)
+	}
 
 	var body: some View {
 		print("CheckPatientForm body")
 		return ScrollView {
 			VStack {
-				PatientDetailsTextFields(vms: viewModels(patDetails))
-				Group {
-					SwitchCellRaw(text: Texts.emailConfirmations,
-								  value: .constant(patDetails.emailComm)
-					)
-					SwitchCellRaw(text: Texts.smsReminders,
-								  value: .constant(patDetails.smsComm)
-					)
-					SwitchCellRaw(text: Texts.phone,
-								  value: .constant(patDetails.phoneComm)
-					)
-					SwitchCellRaw(text: Texts.post,
-								  value: .constant(patDetails.postComm)
-					)
-				}.switchesSection(title: Texts.communications)
-				ForEach(patientForms.indices, id: \.self ) { index in
-					DynamicForm(
-						template: .constant(self.patientForms[index]),
+				PatientDetailsForm(store: Store.init(initialState: viewStore.state.patDetails,
+													 reducer: Reducer.empty,
+													 environment: { })
+				)
+				ForEach(viewStore.patForms.indices, id: \.self ) { index in
+					HTMLFormView(
+						store: Store(initialState: viewStore.patForms[index],
+									 reducer: Reducer.empty,
+									 environment: { }),
 						isCheckingDetails: true
 					)
 				}

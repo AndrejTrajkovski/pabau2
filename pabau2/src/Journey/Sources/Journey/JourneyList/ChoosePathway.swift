@@ -3,19 +3,48 @@ import Model
 import Util
 import ComposableArchitecture
 import Form
+import Overture
 
 public enum ChoosePathwayContainerAction {
 	case choosePathway(ChoosePathwayAction)
 	case chooseConsent(ChooseFormAction)
+	case checkIn(CheckInContainerAction)
 }
 
 let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayContainerAction, JourneyEnvironment> =
 	.combine(
+		Reducer.init { state, action, env in
+			switch action {
+			case .chooseConsent(.proceed):
+				state.checkIn = CheckInContainerState(journey: state.selectedJourney!,
+													  pathway: state.selectedPathway!,
+													  patientDetails: PatientDetails.mock,
+													  medicalHistoryId: HTMLForm.getMedHistory().id,
+													  medHistory: HTMLForm.getMedHistory(),
+													  consents: state.allConsents.filter(
+														pipe(get(\.id), state.selectedConsentsIds.contains)
+													  ),
+													  allConsents: state.allConsents,
+													  photosState: PhotosState.init(SavedPhoto.mock())
+				)
+			default:
+				break
+			}
+			return .none
+		},
+		checkInMiddleware.pullback(
+			state: \ChoosePathwayState.self,
+			action: /ChoosePathwayContainerAction.checkIn,
+			environment: { $0 }),
+		checkInReducer.optional.pullback(
+			state: \ChoosePathwayState.checkIn,
+			action: /ChoosePathwayContainerAction.checkIn,
+			environment: { $0 }),
 		chooseFormListReducer.pullback(
 			state: \ChoosePathwayState.chooseConsentState,
 			action: /ChoosePathwayContainerAction.chooseConsent,
-			environment: { $0 })
-		,
+			environment: makeFormEnv(_:)
+		),
 		choosePathwayReducer.pullback(
 			state: \ChoosePathwayState.self,
 			action: /ChoosePathwayContainerAction.choosePathway,
@@ -33,23 +62,21 @@ let choosePathwayReducer = Reducer<ChoosePathwayState, ChoosePathwayAction, Jour
 }
 
 public enum ChoosePathwayAction {
-	case didChoosePathway(Pathway)
+	case didChoosePathway(PathwayTemplate)
 	case didTouchSelectConsentBackBtn
 }
 
 public struct ChoosePathwayState: Equatable {
-	var selectedJourney: Journey?
-	var selectedPathway: Pathway?
-	var selectedConsentsIds: [Int]
-	var allConsents: IdentifiedArrayOf<FormTemplate>
-    var searchText: String
+
+	let selectedJourney: Journey?
+	var selectedPathway: PathwayTemplate?
+	var selectedConsentsIds: [HTMLForm.ID] = []
+	var allConsents: IdentifiedArrayOf<FormTemplateInfo> = []
+	var searchText: String = ""
 	var chooseConsentState: ChooseFormState {
 		get {
-			ChooseFormState(
-                templates: allConsents,
-                selectedTemplatesIds: selectedConsentsIds,
-                searchText: searchText
-            )
+			ChooseFormState(templates: allConsents,
+							selectedTemplatesIds: selectedConsentsIds)
 		}
 		set {
 			self.selectedConsentsIds = newValue.selectedTemplatesIds
@@ -57,6 +84,8 @@ public struct ChoosePathwayState: Equatable {
             self.searchText = newValue.searchText
 		}
 	}
+	public var checkIn: CheckInContainerState?
+	//		= JourneyMocks.checkIn
 }
 
 public struct ChoosePathway: View {
@@ -67,7 +96,7 @@ public struct ChoosePathway: View {
 		let journey: Journey?
 
 		let standardPathway =
-			Pathway.init(id: 1,
+			PathwayTemplate.init(id: 1,
 									 title: "Standard",
 									 steps: [Step(id: 1, stepType: .patientdetails),
 													 Step(id: 2, stepType: .medicalhistory),
@@ -79,7 +108,7 @@ public struct ChoosePathway: View {
 													 Step(id: 8, stepType: .photos)
 			])
 		let consultationPathway =
-			Pathway.init(id: 1,
+			PathwayTemplate.init(id: 1,
 									 title: "Consultation",
 									 steps: [Step(id: 1, stepType: .patientdetails),
 													 Step(id: 2, stepType: .medicalhistory),
@@ -110,18 +139,18 @@ public struct ChoosePathway: View {
 		}
 		.journeyBase(self.viewStore.state.journey, .long)
 	}
-
+	
 	var chooseFormNavLink: some View {
 		NavigationLink.emptyHidden(self.viewStore.state.isChooseConsentShown,
-															 ChooseFormList(store:
-																self.store.scope(
-																	state: { $0.chooseConsentState },
-																	action: { .chooseConsent($0)}),
-																	mode: .consentsPreCheckIn)
-																.journeyBase(self.viewStore.state.journey, .long)
-																.customBackButton {
-																	self.viewStore.send(.choosePathway(.didTouchSelectConsentBackBtn))
-			}
+								   ChooseFormList(store:
+													self.store.scope(
+														state: { $0.chooseConsentState },
+														action: { .chooseConsent($0)}),
+												  mode: .consentsPreCheckIn)
+									.journeyBase(self.viewStore.state.journey, .long)
+									.customBackButton {
+										self.viewStore.send(.choosePathway(.didTouchSelectConsentBackBtn))
+									}
 		)
 	}
 

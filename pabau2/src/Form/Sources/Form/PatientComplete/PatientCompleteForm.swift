@@ -2,10 +2,10 @@ import SwiftUI
 import Util
 import ComposableArchitecture
 
-let patientCompleteReducer = Reducer<PatientComplete, PatientCompleteAction, FormEnvironment> { state, action, _ in
+public let patientCompleteReducer = Reducer<Bool, PatientCompleteAction, FormEnvironment> { state, action, _ in
 	switch action {
 	case .didTouchComplete:
-		state.isPatientComplete = true
+		state = true
 	}
 	return .none
 }
@@ -14,9 +14,14 @@ public enum PatientCompleteAction {
 	case didTouchComplete
 }
 
-struct PatientCompleteForm: View {
-	let store: Store<PatientComplete, PatientCompleteAction>
-	var body: some View {
+public struct PatientCompleteForm: View {
+	let store: Store<Bool, PatientCompleteAction>
+
+	public init(store: Store<Bool, PatientCompleteAction>) {
+		self.store = store
+	}
+
+	public var body: some View {
 		print("PatientCompleteForm body")
 		return WithViewStore(store) { viewStore in
 			VStack(spacing: 32) {
@@ -29,15 +34,15 @@ struct PatientCompleteForm: View {
 				Button.init(action: {
 					viewStore.send(.didTouchComplete)
 				},
-										label: {
-											Text("Complete")
-												.frame(minWidth: 0, maxWidth: .infinity)
-												.frame(height: 50)
-												.foregroundColor(Color.white)
-												.background(Color.accentColor)
-												.cornerRadius(10)
-												.font(Font.system(size: 16.0, weight: .bold))
-												.frame(width: 290)
+				label: {
+					Text("Complete")
+						.frame(minWidth: 0, maxWidth: .infinity)
+						.frame(height: 50)
+						.foregroundColor(Color.white)
+						.background(Color.accentColor)
+						.cornerRadius(10)
+						.font(Font.system(size: 16.0, weight: .bold))
+						.frame(width: 290)
 				})
 			}.padding(32)
 		}

@@ -11,7 +11,7 @@ import AddShift
 import Filters
 import Appointments
 
-public typealias CalendarEnvironment = (apiClient: JourneyAPI, clientAPI: ClientsAPI, userDefaults: UserDefaultsConfig)
+public typealias CalendarEnvironment = (journeyAPI: JourneyAPI, clientsAPI: ClientsAPI, userDefaults: UserDefaultsConfig)
 
 public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAction, CalendarEnvironment> = .combine(
 	calendarReducer.pullback(
@@ -53,7 +53,7 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
 			state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate)
         case .week(.editAppointment(let appointment)):
-            state.addAppointment = AddAppointmentState.init(editingAppointment: appointment, startDate: appointment.start_time, endDate: appointment.end_time)
+            state.addAppointment = AddAppointmentState.init(editingAppointment: appointment, startDate: appointment.start_date, endDate: appointment.end_date)
 		case .appDetails(.addService):
 			let start = state.calendar.appDetails!.app.start_date
 			let end = state.calendar.appDetails!.app.end_date
@@ -74,82 +74,78 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 	}
 )
 
-public let calendarReducer: Reducer<
-    CalendarState,
-    CalendarAction,
-    CalendarEnvironment
-> = .combine(
-    calendarDatePickerReducer.pullback(
-        state: \.selectedDate,
-        action: /CalendarAction.datePicker,
-        environment: { $0 }
-    ),
-    calTypePickerReducer.pullback(
-        state: \.calTypePicker,
-        action: /CalendarAction.calTypePicker,
-        environment: { $0 }),
-    calendarWeekViewReducer.optional.pullback(
-        state: \CalendarState.week,
-        action: /CalendarAction.week,
-        environment: { $0 }),
-    AppointmentsByReducer<Employee>().reducer.optional.pullback(
-        state: \CalendarState.employeeSectionState,
-        action: /CalendarAction.employee,
-        environment: { $0 }),
-    AppointmentsByReducer<Room>().reducer.optional.pullback(
-        state: \CalendarState.roomSectionState,
-        action: /CalendarAction.room,
-        environment: { $0 }),
-    appDetailsReducer.optional.pullback(
-        state: \CalendarState.appDetails,
-        action: /CalendarAction.appDetails,
-        environment: { $0 }),
-    addBookoutOptReducer.pullback(
-        state: \CalendarState.addBookoutState,
-        action: /CalendarAction.addBookoutAction,
-        environment: { $0 }),
-    addShiftOptReducer.pullback(
-        state: \CalendarState.addShift,
-        action: /CalendarAction.addShift,
-        environment: { $0 }),
-    FiltersReducer<Employee>().reducer.pullback(
-        state: \.employeeFilters,
-        action: /CalendarAction.employeeFilters,
-        environment: { $0 }),
-    FiltersReducer<Room>().reducer.pullback(
-        state: \.roomFilters,
-        action: /CalendarAction.roomFilters,
-        environment: { $0 }),
-    .init { state, action, _ in
-        switch action {
-        case .datePicker: break
-        case .calTypePicker(.onSelect(let calType)):
-            state.switchTo(calType: calType)
-        case .onAppDetailsDismiss:
-            state.appDetails = nil
-        case .onBookoutDismiss:
-            state.addBookoutState = nil
-        case .calTypePicker(.toggleDropdown): break
-        case .onAddShift:
-            state.addShift = AddShiftState.makeEmpty()
-        case .toggleFilters:
-            state.isShowingFilters.toggle()
-        case .room:
-            break
-        case .week:
-            break
-        case .employee:
-            break
-        case .appDetails(.close):
-            state.appDetails = nil
-        case .addBookoutAction(.close):
-            state.addBookoutState = nil
-        case .changeCalScope:
-            state.scope = state.scope == .week ? .month : .week
-        default: break
-        }
-        return .none
-    }
+public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvironment> = .combine(
+	calendarDatePickerReducer.pullback(
+		state: \.selectedDate,
+		action: /CalendarAction.datePicker,
+		environment: { $0 }
+	),
+	calTypePickerReducer.pullback(
+		state: \.calTypePicker,
+		action: /CalendarAction.calTypePicker,
+		environment: { $0 }),
+	calendarWeekViewReducer.optional.pullback(
+		state: \CalendarState.week,
+		action: /CalendarAction.week,
+		environment: { $0 }),
+	AppointmentsByReducer<Employee>().reducer.optional.pullback(
+		state: \CalendarState.employeeSectionState,
+		action: /CalendarAction.employee,
+		environment: { $0 }),
+	AppointmentsByReducer<Room>().reducer.optional.pullback(
+		state: \CalendarState.roomSectionState,
+		action: /CalendarAction.room,
+		environment: { $0 }),
+	appDetailsReducer.optional.pullback(
+		state: \CalendarState.appDetails,
+		action: /CalendarAction.appDetails,
+		environment: { $0 }),
+//	addBookoutReducer.optional.pullback(
+//		state: \CalendarState.addBookout,
+//		action: /CalendarAction.addBookout,
+//		environment: { $0 }),
+	addShiftOptReducer.pullback(
+		state: \CalendarState.addShift,
+		action: /CalendarAction.addShift,
+		environment: { $0 }),
+	FiltersReducer<Employee>().reducer.pullback(
+		state: \.employeeFilters,
+		action: /CalendarAction.employeeFilters,
+		environment: { $0 }),
+	FiltersReducer<Room>().reducer.pullback(
+		state: \.roomFilters,
+		action: /CalendarAction.roomFilters,
+		environment: { $0 }),
+	.init { state, action, _ in
+		switch action {
+		case .datePicker: break
+		case .calTypePicker(.onSelect(let calType)):
+			state.switchTo(calType: calType)
+		case .onAppDetailsDismiss:
+			state.appDetails = nil
+		case .onBookoutDismiss:
+			state.addBookoutState = nil
+		case .calTypePicker(.toggleDropdown): break
+		case .onAddShift:
+			state.addShift = AddShiftState.makeEmpty()
+		case .toggleFilters:
+			state.isShowingFilters.toggle()
+		case .room:
+			break
+		case .week:
+			break
+		case .employee:
+			break
+		case .appDetails(.close):
+			state.appDetails = nil
+		case .addBookoutAction(.close):
+			state.addBookoutState = nil
+		case .changeCalScope:
+			state.scope = state.scope == .week ? .month : .week
+		default: break
+		}
+		return .none
+	}
 )
 
 public struct CalendarContainer: View {

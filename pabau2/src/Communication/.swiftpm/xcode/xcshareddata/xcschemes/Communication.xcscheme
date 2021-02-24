@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1210"
+   LastUpgradeVersion = "1220"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,9 +14,21 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
+<<<<<<< HEAD
+<<<<<<< HEAD:pabau2/src/Communication/.swiftpm/xcode/xcshareddata/xcschemes/Communication.xcscheme
                BlueprintIdentifier = "Communication"
                BuildableName = "Communication"
                BlueprintName = "Communication"
+=======
+               BlueprintIdentifier = "Form"
+               BuildableName = "Form"
+               BlueprintName = "Form"
+>>>>>>> CCChooseForm:pabau2/src/Form/.swiftpm/xcode/xcshareddata/xcschemes/Form.xcscheme
+=======
+               BlueprintIdentifier = "Communication"
+               BuildableName = "Communication"
+               BlueprintName = "Communication"
+>>>>>>> CCChooseForm
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -47,6 +59,21 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+<<<<<<< HEAD
+<<<<<<< HEAD:pabau2/src/Communication/.swiftpm/xcode/xcshareddata/xcschemes/Communication.xcscheme
+=======
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "Form"
+            BuildableName = "Form"
+            BlueprintName = "Form"
+            ReferencedContainer = "container:">
+         </BuildableReference>
+      </MacroExpansion>
+>>>>>>> CCChooseForm:pabau2/src/Form/.swiftpm/xcode/xcshareddata/xcschemes/Form.xcscheme
+=======
+>>>>>>> CCChooseForm
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

@@ -10,7 +10,7 @@ struct DoctorSummaryState: Equatable {
 	var isChooseConsentActive: Bool
 	var isChooseTreatmentActive: Bool
 	var isDoctorCheckInMainActive: Bool
-	var doctorCheckIn: CheckInViewState
+	var doctorCheckIn: CheckInDoctorState
 }
 
 let doctorSummaryReducer = Reducer <DoctorSummaryState, DoctorSummaryAction, JourneyEnvironment> { state, action, _ in
@@ -21,8 +21,8 @@ let doctorSummaryReducer = Reducer <DoctorSummaryState, DoctorSummaryAction, Jou
 			state.isChooseConsentActive = false
 		case .treatmentNotes:
 			state.isChooseTreatmentActive = false
-		case .consentsPreCheckIn:
-			fatalError("should be handled pre checkin")
+		case .consentsPreCheckIn, .clientCard:
+			fatalError("should be handled pre checkin or client card")
 		}
 	case .didTouchAdd(let mode):
 		switch mode {
@@ -30,11 +30,12 @@ let doctorSummaryReducer = Reducer <DoctorSummaryState, DoctorSummaryAction, Jou
 			state.isChooseConsentActive = true
 		case .treatmentNotes:
 			state.isChooseTreatmentActive = true
-		case .consentsPreCheckIn:
-			fatalError("should be handled pre checkin")
+		case .consentsPreCheckIn, .clientCard:
+			fatalError("should be handled pre checkin or client card")
 		}
 	case .didTouchStep(let stepType):
-		state.doctorCheckIn.forms.selectedStep = stepType
+		//TODO
+		//		state.doctorCheckIn.forms.selectedStep = stepType
 		state.isDoctorCheckInMainActive = true
 	case .xOnDoctorCheckIn:
 		break //handled in checkInMiddleware
@@ -55,8 +56,8 @@ struct DoctorNavigation: View {
 	init (_ store: Store<CheckInContainerState, CheckInContainerAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store.scope(
-			state: { State.init($0.doctorSummary) },
-			action: { .doctorSummary($0) }))
+									state: { State.init($0.doctorSummary) },
+									action: { .doctorSummary($0) }))
 	}
 	struct State: Equatable {
 		let isDoctorCheckInMainActive: Bool
@@ -69,36 +70,37 @@ struct DoctorNavigation: View {
 		print("DoctorNavigation body")
 		return VStack {
 			NavigationLink.emptyHidden(viewStore.state.isDoctorCheckInMainActive,
-																 CheckInMain(store: self.store
-																	.scope(state: { $0.doctorCheckIn },
-																				 action: { .doctor($0) }))
+									   EmptyView()
+									   //									   CheckInMain(store: self.store
+									   //													.scope(state: { $0.doctorCheckIn },
+									   //														   action: { .doctor($0) }))
 			)
 			NavigationLink.emptyHidden(viewStore.state.isChooseConsentActive,
-																 ChooseFormJourney(store: self.store.scope(
-																	state: { $0.chooseConsents },
-																	action: { .chooseConsents($0)}),
-																									mode: .consentsCheckIn,
-																									journey: self.viewStore.state.journey)
-																	.customBackButton {
-																		self.viewStore.send(.didTouchBackFrom(.consentsCheckIn))
-				}
+									   ChooseFormJourney(store: self.store.scope(
+															state: { $0.chooseConsents },
+															action: { .chooseConsents($0)}),
+														 mode: .consentsCheckIn,
+														 journey: self.viewStore.state.journey)
+										.customBackButton {
+											self.viewStore.send(.didTouchBackFrom(.consentsCheckIn))
+										}
 			)
 			NavigationLink.emptyHidden(viewStore.state.isChooseTreatmentActive,
-																 ChooseFormJourney(store: self.store.scope(
-																	state: { $0.chooseTreatments },
-																	action: { .chooseTreatments($0)}),
-																									mode: .treatmentNotes,
-																									journey: self.viewStore.state.journey)
-																	.customBackButton {
-																		self.viewStore.send(.didTouchBackFrom(.treatmentNotes))
-				}
+									   ChooseFormJourney(store: self.store.scope(
+															state: { $0.chooseTreatments },
+															action: { .chooseTreatments($0)}),
+														 mode: .treatmentNotes,
+														 journey: self.viewStore.state.journey)
+										.customBackButton {
+											self.viewStore.send(.didTouchBackFrom(.treatmentNotes))
+										}
 			)
 		}
 	}
 }
 
 extension DoctorNavigation.State {
-  init(_ state: DoctorSummaryState) {
+	init(_ state: DoctorSummaryState) {
 		self.isChooseConsentActive = state.isChooseConsentActive
 		self.isChooseTreatmentActive = state.isChooseTreatmentActive
 		self.isDoctorCheckInMainActive = state.isDoctorCheckInMainActive
@@ -151,21 +153,20 @@ struct StepState: Equatable {
 
 extension DoctorSummaryState {
 	var steps: [StepState] {
-		return doctorCheckIn.forms.forms.map {
-			StepState.init(stepType: $0.stepType, isComplete: $0.isComplete)
-		}
-//		return Dictionary.init(grouping: doctorCheckIn.forms,
-//															 by: pipe(get(\.form), stepType(form:)))
-//			.reduce(into: [StepState](), {
-//				$0.append(
-//					StepState(stepType: $1.key,
-//										isComplete: $1.value.allSatisfy(\.isComplete))
-//				)
-//			})
-//			.sorted(by: their(get(\.stepType.order)))
+		return []
+		//		return Dictionary.init(grouping: doctorCheckIn.forms,
+		//															 by: pipe(get(\.form), stepType(form:)))
+		//			.reduce(into: [StepState](), {
+		//				$0.append(
+		//					StepState(stepType: $1.key,
+		//										isComplete: $1.value.allSatisfy(\.isComplete))
+		//				)
+		//			})
+		//			.sorted(by: their(get(\.stepType.order)))
 	}
 }
 
+//TODO: move to Util
 struct NavBarHidden: ViewModifier {
 	let isNavBarHidden: Bool
 	let title: String
@@ -182,19 +183,3 @@ extension View {
 		self.modifier(NavBarHidden(isNavBarHidden: isNavBarHidden, title: title))
 	}
 }
-
-//func calcFormsSelectedIndex(stepType: StepType,
-//														forms: IdentifiedArrayOf<MetaFormAndStatus>) -> Int? {
-//	let selectedType = steps[selectedStepIdx]
-//	let grouped = Dictionary.init(grouping: forms,
-//																by: pipe(get(\.form), stepType(form:)))
-//	guard let formsForSelectedStep = grouped[selectedType.stepType] else { return nil}
-//	let selForm = { () -> MetaFormAndStatus? in
-//		if let notCompleteForm = formsForSelectedStep.first(where: { !$0.isComplete}) {
-//			return notCompleteForm
-//		} else {
-//			return formsForSelectedStep.first
-//		}
-//	}()
-//	return forms.firstIndex(where: { $0 == selForm })
-//}

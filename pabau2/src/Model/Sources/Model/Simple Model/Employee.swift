@@ -1,5 +1,3 @@
-//
-// Employee.swift
 import Tagged
 
 public struct Employee: Codable, Identifiable, Equatable, Hashable {

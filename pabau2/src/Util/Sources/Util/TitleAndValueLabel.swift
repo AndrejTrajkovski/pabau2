@@ -16,7 +16,6 @@ public struct TitleAndValueLabel: View {
 		self.labelTxt = labelTxt
 		self.valueText = valueText
         self.textColor = textColor
-
         self._configurator = configurator ?? .constant(nil)
 	}
 	public var body: some View {

@@ -95,7 +95,7 @@ struct PhotosForm: View {
 }
 
 extension IdentifiedArray where Element == PhotoViewModel, ID == PhotoVariantId {
-	static func wrap (_ savedPhotos: [[Int: SavedPhoto]]) -> Self {
+	static func wrap (_ savedPhotos: [[SavedPhoto.ID: SavedPhoto]]) -> Self {
 		let res = savedPhotos
 			.compactMap(Dictionary<PhotoVariantId, PhotoViewModel>.wrap)
 			.compactMap(\.values.first)
@@ -104,7 +104,7 @@ extension IdentifiedArray where Element == PhotoViewModel, ID == PhotoVariantId 
 }
 
 extension Dictionary where Key == PhotoVariantId, Value == PhotoViewModel {
-	static func wrap(_ savedPhotoDict: [Int: SavedPhoto]) -> Self? {
+	static func wrap(_ savedPhotoDict: [SavedPhoto.ID: SavedPhoto]) -> Self? {
 		guard savedPhotoDict.count == 1 else { return nil }
 		return [PhotoVariantId.saved(savedPhotoDict.keys.first!):
 			PhotoViewModel.init(savedPhotoDict.values.first!) ]
@@ -112,7 +112,7 @@ extension Dictionary where Key == PhotoVariantId, Value == PhotoViewModel {
 }
 
 extension PhotosState {
-	public init(_ savedPhotos: [[Int: SavedPhoto]]) {
+	public init(_ savedPhotos: [[SavedPhoto.ID: SavedPhoto]]) {
 		self.init(photos: IdentifiedArray.wrap(savedPhotos),
 							selectedIds: [],
 							editPhotos: nil)

@@ -1,3 +1,3 @@
-public struct DiagramMini: Codable, Equatable, Hashable {
+public struct DiagramMini: Equatable, Hashable {
 
 }

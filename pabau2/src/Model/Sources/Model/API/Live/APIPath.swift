@@ -1,7 +1,7 @@
 public enum APIPath: String {
 	//Login
 	case sendConfirmation = "sendc"
-	case login = "OAuth2/staff/login-check.php"
+	case login = "/OAuth2/staff/login-check.php"
 	case resetPass = "reset"
 	//Journey
 	case getEmployees = "/OAuth2/employees/get_employees.php"
@@ -13,7 +13,12 @@ public enum APIPath: String {
     case getServices = "/OAuth2/services/get_services.php"
 
     case createAppointment = "/OAuth2/appointments/create_appointment_v1.php"
-
+	
+	//Form
+	case getFormTemplates = "/OAuth2/medical_forms/medical_forms_templates_list.php"
+	case getFormTemplateData = "/OAuth2/medical_forms/form_template_data.php"
+	case medicalForms = "/OAuth2/medical_forms/medical_forms.php"
+	
     //Appointments
     case getBookoutReasons = "OAuth2/appointments/get_bookout_reasons.php"
     

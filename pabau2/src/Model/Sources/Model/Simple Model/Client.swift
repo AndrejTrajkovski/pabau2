@@ -1,6 +1,3 @@
-//
-// Client.swift
-
 import Foundation
 import SwiftDate
 import Tagged
@@ -57,7 +54,7 @@ public struct Client: Codable, Identifiable, Equatable {
 
     public let owner: Int?
 
-    public let id: Id
+	public let id: Client.Id
 
     public let firstName: String
 
@@ -165,14 +162,7 @@ public struct Client: Codable, Identifiable, Equatable {
         self.membershipNumber = nil
         self.insuranceCompany = nil
         self.insuranceContract = nil
-                
-        if let id = try? container.decode(Int.self, forKey: .owner) {
-            self.owner = id
-        } else if let sId = try? container.decode(String.self, forKey: .owner), let id = Int(sId) {
-            self.owner = id
-        } else {
-            throw RequestError.jsonDecoding("Owner Id invalid")
-        }
+        self.owner = try container.decode(Int.self, forKey: .owner)
 
         do {
             self.id = Id(rawValue: Int(try container.decode(String.self, forKey: .id))!)
@@ -221,7 +211,6 @@ public struct Client: Codable, Identifiable, Equatable {
         self.phone = try container.decode(String.self, forKey: .phone)
 
     }
-
 }
 
 extension Client {
@@ -256,14 +245,13 @@ extension Client {
 }
 
 extension Client {
-    public init(patDetails: PatientDetails) {
-        self.init(id: patDetails.id,
-                            firstName: patDetails.firstName,
-                            lastName: patDetails.lastName,
-                            dOB: Date())
-    }
+	public init(patDetails: PatientDetails) {
+		self.init(id: patDetails.id.rawValue,
+				  firstName: patDetails.firstName,
+				  lastName: patDetails.lastName,
+				  dOB: Date())
+	}
 }
-
 
 extension Client {
     

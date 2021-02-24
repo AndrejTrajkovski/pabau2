@@ -1,49 +1,48 @@
-//
-// CSSField.swift
-
 import Foundation
+import Tagged
 
-public struct CSSField: Codable, Equatable, Identifiable {
+public struct CSSField: Equatable, Identifiable {
 
-	public static let defaultEmpty: CSSField = CSSField.init(id: -1, cssClass: .unknown)
-	
-	public let id: Int
+	public let id: CSSFieldID
 
 	public var cssClass: CSSClass
 
 	public let _required: Bool
 
-	public let searchable: Bool
-
 	public let title: String?
-
-	public init(id: Int, cssClass: CSSClass, _required: Bool = false, searchable: Bool = false, title: String? = nil) {
-		self.id = id
-		self.cssClass = cssClass
-		self._required = _required
-		self.searchable = searchable
-		self.title = title
+	
+	init?(id: CSSFieldID, formStructure: _FormStructure) {
+		do{
+			guard let cssClass = try CSSClass.init(_formStructure: formStructure, fieldId: id) else { return nil }
+			print("fieldId: \(id)")
+			self.id = id
+			self._required = Bool(formStructure.formStructureRequired) ?? false
+			self.title = formStructure.getLabelTitle()
+			self.cssClass = cssClass
+		} catch {
+			return nil
+		}
 	}
+}
 
-	public enum CodingKeys: String, CodingKey {
-		case id
-		case cssClass
-		case _required = "required"
-		case searchable
-		case title
-		case values
+public struct CSSFieldID: Hashable, Equatable {
+	
+	public typealias FakeID = Tagged<CSSFieldID, String>
+	
+	let index: Int
+	let fakeId: FakeID
+	
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(index)
+		hasher.combine(fakeId)
 	}
-
-	public init(from decoder: Decoder) throws {
-		let container = try decoder.container(keyedBy: CodingKeys.self)
-		self.id = try container.decode(Int.self, forKey: .id)
-		self.cssClass = try container.decode(CSSClass.self, forKey: .values)
-		self._required = try container.decode(Bool.self, forKey: ._required)
-		self.searchable = try container.decode(Bool.self, forKey: .searchable)
-		self.title = try container.decode(String.self, forKey: .title)
+	
+	init(idx: Int, fakeId: String) {
+		self.index = idx
+		self.fakeId = CSSFieldID.FakeID(rawValue: fakeId)
 	}
-
-	public func encode(to encoder: Encoder) throws {
-
-	}
+	
+//	func getJSONPOSTValue() -> String {
+//		String(index) + fakeId.rawValue
+//	}
 }

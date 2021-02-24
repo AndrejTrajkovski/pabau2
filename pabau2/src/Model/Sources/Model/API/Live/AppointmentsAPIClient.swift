@@ -67,8 +67,7 @@ extension APIClient {
             method: .POST,
             baseUrl: baseUrl,
             path: .createAppointment,
-            queryParams: commonAnd(other: params),
-            isBody: true
+            queryParams: commonAnd(other: params)
         )
             .effect()
     }

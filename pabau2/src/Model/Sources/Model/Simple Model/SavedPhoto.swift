@@ -1,5 +1,6 @@
 import Foundation
 import SwiftDate
+import Tagged
 
 public struct SavedPhoto: Codable, Identifiable, Equatable, Hashable {
         
@@ -63,5 +64,4 @@ extension SavedPhoto {
         ]
     }
     public static let mockCC: [SavedPhoto] = []
-
 }

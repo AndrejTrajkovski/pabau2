@@ -5,10 +5,6 @@ import Foundation
 
 public struct BaseService: Codable, Identifiable, Equatable {
 
-	public static var defaultEmpty: BaseService {
-		BaseService(id: 1, name: "", color: "#FFFFFF")
-	}
-
 	public let id: Int
 
 	public let name: String

@@ -14,8 +14,26 @@ typealias AppEnvironment = (
 	loginAPI: LoginAPI,
 	journeyAPI: JourneyAPI,
 	clientsAPI: ClientsAPI,
+	formAPI: FormAPI,
 	userDefaults: UserDefaultsConfig
 )
+
+func makeJourneyEnv(_ appEnv: AppEnvironment) -> JourneyEnvironment {
+	return JourneyEnvironment(
+		formAPI: appEnv.formAPI,
+		journeyAPI: appEnv.journeyAPI,
+		clientsAPI: appEnv.clientsAPI,
+		userDefaults: appEnv.userDefaults
+	)
+}
+
+func makeClientsEnv(_ appEnv: AppEnvironment) -> ClientsEnvironment {
+	return ClientsEnvironment(
+		apiClient: appEnv.clientsAPI,
+		formAPI: appEnv.formAPI,
+		userDefaults: appEnv.userDefaults
+	)
+}
 
 enum AppState: Equatable {
 	case walkthrough(WalkthroughContainerState)
@@ -36,7 +54,14 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = Reducer.combine(
 	tabBarReducer.pullbackCp(
 		state: /AppState.tabBar,
 		action: /AppAction.tabBar,
-		environment: { TabBarEnvironment($0) }
+		environment: {
+			TabBarEnvironment(
+				loginAPI: $0.loginAPI,
+				journeyAPI: $0.journeyAPI,
+				clientsAPI: $0.clientsAPI,
+				formAPI: $0.formAPI,
+				userDefaults: $0.userDefaults)
+			}
 	),
 	.init { state, action, env in
 		switch action {
@@ -98,12 +123,10 @@ struct LoginContainer: View {
 		self.viewStore = ViewStore(self.store
 			.scope(state: ViewState.init(state:),
 						 action: { $0 }))
-		print("LoginContainer init")
 	}
 
 	var body: some View {
-		print("LoginContainer body")
-		return NavigationView {
+		NavigationView {
 			ViewBuilder.buildBlock(
 				viewStore.state.shouldShowWalkthrough ?
 					ViewBuilder.buildEither(first: WalkthroughContainer(store))

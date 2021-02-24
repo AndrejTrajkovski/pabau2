@@ -8,4 +8,9 @@ JZCalendarWeekView/
 pabau2/src/Communication/.swiftpm/xcode/xcuserdata/andrejtrajkovski.xcuserdatad/xcschemes/xcschememanagement.plist
 pabau2.xcodeproj/xcuserdata/andrejtrajkovski.xcuserdatad/xcschemes/xcschememanagement.plist
 pabau2.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+<<<<<<< HEAD
 xcuserdata/
+=======
+**/xcuserdata/*
+xcuserdata/
+>>>>>>> CCChooseForm

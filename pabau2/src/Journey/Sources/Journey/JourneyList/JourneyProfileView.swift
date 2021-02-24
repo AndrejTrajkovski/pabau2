@@ -58,13 +58,22 @@ struct JourneyProfileView: View {
 
 extension JourneyProfileView.ViewState {
 	init(journey: Journey?) {
-		self.imageUrl = journey?.first!.customerPhoto ?? ""
-		self.name = journey?.first!.customerName ?? ""
+//<<<<<<< HEAD
+//		self.imageUrl = journey?.first!.customerPhoto ?? ""
+//		self.name = journey?.first!.customerName ?? ""
+//		self.services = journey?.servicesString ?? ""
+//		self.employeeName = journey?.first!.employeeName ?? ""
+//		self.time = journey?.first!.start_date.toFormat("HH: mm") ?? ""
+//		self.rooms = "201, 202"
+//		self.date = journey?.first!.start_date.toFormat("MMMM dd yyyy") ?? ""
+////		self.hasJourney = journey != nil
+//=======
+		self.imageUrl = journey?.first?.clientPhoto
+		self.name = journey?.first?.clientName ?? ""
 		self.services = journey?.servicesString ?? ""
-		self.employeeName = journey?.first!.employeeName ?? ""
-		self.time = journey?.first!.start_date.toFormat("HH: mm") ?? ""
+		self.employeeName = journey?.first?.employeeName ?? ""
+		self.time = journey?.first?.start_date.toFormat("HH: mm") ?? ""
 		self.rooms = "201, 202"
-		self.date = journey?.first!.start_date.toFormat("MMMM dd yyyy") ?? ""
-//		self.hasJourney = journey != nil
+		self.date = journey?.first?.start_date.toFormat("MMMM dd yyyy") ?? ""
 	}
 }

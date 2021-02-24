@@ -12,48 +12,14 @@ extension APIClient {
 			}
 		}
 		let requestBuilder: RequestBuilder<GetEmployees>.Type = requestBuilderFactory.getBuilder()
-		return requestBuilder.init(
-            method: .GET,
-            baseUrl: baseUrl,
-            path: .getEmployees,
-            queryParams: commonAnd(other: [:]),
-            isBody: false
-        ).effect()
-        .map(\.employees)
-        .eraseToEffect()
-	}
-    
-    public func getParticipants(participantSchema: ParticipantSchema) -> Effect<[Participant], RequestError> {
-        struct ParticipantsResponse: Codable {
-            public var participant: [Participant]
-            enum CodingKeys: String, CodingKey {
-                case participant = "users"
-            }
-        }
-        
-        let params = [
-            "all_day": participantSchema.isAllDays,
-            "location_id":participantSchema.location.id,
-            "owner_uid": participantSchema.employee.id,
-            "service_id": participantSchema.service.id
-        ] as [String : Any]
-        
-        let requestBuilder: RequestBuilder<ParticipantsResponse>.Type = requestBuilderFactory.getBuilder()
-        
-        return requestBuilder.init(
-            method: .GET,
-            baseUrl: baseUrl,
-            path: .getUsers,
-            queryParams: commonAnd(other: params),
-            isBody: false
-        )
-        .effect()
-        .map(\.participant)
-        .eraseToEffect()
-    }
-	
-	public func getTemplates(_ type: FormType) -> Effect<[FormTemplate], RequestError> {
-		fatalError()
+		return requestBuilder.init(method: .GET,
+								   baseUrl: baseUrl,
+								   path: .getEmployees,
+								   queryParams: commonAnd(other: [:])
+		)
+			.effect()
+			.map(\.employees)
+			.eraseToEffect()
 	}
 	
 	public func getAppointments(startDate: Date, endDate: Date, locationIds: [Location.ID], employeesIds: [Employee.ID], roomIds: [Room.ID]) -> Effect<CalendarResponse, RequestError> {
@@ -69,8 +35,8 @@ extension APIClient {
 		return requestBuilder.init(method: .GET,
 								   baseUrl: baseUrl,
 								   path: .getAppointments,
-								   queryParams: commonAnd(other: params),
-								   isBody: false)
+								   queryParams: commonAnd(other: params)
+		)
 			.effect()
 	}
 	
@@ -85,27 +51,64 @@ extension APIClient {
 		return requestBuilder.init(method: .GET,
 								   baseUrl: baseUrl,
 								   path: .getLocations,
-								   queryParams: commonParams(),
-								   isBody: false)
+								   queryParams: commonParams()
+		)
 			.effect()
 			.map(\.locations)
 			.eraseToEffect()
 	}
-    
-    public func createShift(shiftSheme: ShiftSchema) -> Effect<PlaceholdeResponse, RequestError> {
-        let requestBuilder: RequestBuilder<PlaceholdeResponse>.Type = requestBuilderFactory.getBuilder()
-        
-      
-        let shiftShemeData = try? JSONEncoder().encode(shiftSheme)
-        let params = shiftShemeData?.dictionary() ?? [:]
-        
-        return requestBuilder.init(
-            method: .POST,
-            baseUrl: baseUrl,
-            path: .createShift,
-            queryParams: commonAnd(other: params),
-            isBody: true
-        )
-        .effect()
-    }
+	
+	public func createShift(shiftSheme: ShiftSchema) -> Effect<PlaceholdeResponse, RequestError> {
+		let requestBuilder: RequestBuilder<PlaceholdeResponse>.Type = requestBuilderFactory.getBuilder()
+		
+	  
+		let shiftShemeData = try? JSONEncoder().encode(shiftSheme)
+		let params = shiftShemeData?.dictionary() ?? [:]
+		
+		return requestBuilder.init(
+			method: .POST,
+			baseUrl: baseUrl,
+			path: .createShift,
+			queryParams: commonAnd(other: params)
+		)
+		.effect()
+	}
+	
+//	public func getBookoutReasons() -> Effect<[BookoutReason], RequestError> {
+//		let requestBuilder: RequestBuilder<[BookoutReason]>.Type = requestBuilderFactory.getBuilder()
+//		return requestBuilder.init(method: .GET,
+//								   baseUrl: baseUrl,
+//								   path: .getBookoutReasons,
+//								   queryParams: commonParams()
+//		)
+//			.effect()
+//	}
+	
+	public func getParticipants(participantSchema: ParticipantSchema) -> Effect<[Participant], RequestError> {
+		struct ParticipantsResponse: Codable {
+			public var participant: [Participant]
+			enum CodingKeys: String, CodingKey {
+				case participant = "users"
+			}
+		}
+		
+		let params = [
+			"all_day": participantSchema.isAllDays,
+			"location_id":participantSchema.location.id,
+			"owner_uid": participantSchema.employee.id,
+			"service_id": participantSchema.service.id
+		] as [String : Any]
+		
+		let requestBuilder: RequestBuilder<ParticipantsResponse>.Type = requestBuilderFactory.getBuilder()
+		
+		return requestBuilder.init(
+			method: .GET,
+			baseUrl: baseUrl,
+			path: .getUsers,
+			queryParams: commonAnd(other: params)
+		)
+		.effect()
+		.map(\.participant)
+		.eraseToEffect()
+	}
 }

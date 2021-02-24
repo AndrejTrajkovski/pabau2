@@ -1,7 +1,8 @@
 import Foundation
 
 public struct PatientDetails: Equatable, Identifiable, Codable {
-	public var id: Int
+	
+	public var id: Client.ID
 	public var canProceed: Bool {
 		return !firstName.isEmpty && !lastName.isEmpty && !email.isEmpty
 	}
@@ -51,9 +52,9 @@ public struct PatientDetails: Equatable, Identifiable, Codable {
             
         }
     
-    init(id: Int, salutation: String, firstName: String, lastName: String, email: String, phone: String, cellPhone: String, imageUrl: String? = nil, dob: Date, postComm: Bool = false, phoneComm: Bool = false, smsComm: Bool = false, emailComm: Bool = false, howDidYouHear: String = "", country: String, county: String, city: String, postCode: String, addressLine1: String = "", addressLine2: String = "", gender: String = "N/A") {
+	init(id: Client.Id, salutation: String, firstName: String, lastName: String, email: String, phone: String, cellPhone: String, imageUrl: String? = nil, dob: Date, postComm: Bool = false, phoneComm: Bool = false, smsComm: Bool = false, emailComm: Bool = false, howDidYouHear: String = "", country: String, county: String, city: String, postCode: String, addressLine1: String = "", addressLine2: String = "", gender: String = "N/A") {
         
-        self.id = id
+		self.id = id
         self.salutation = salutation
         self.firstName = firstName
         self.lastName = lastName
@@ -112,7 +113,7 @@ public struct PatientDetails: Equatable, Identifiable, Codable {
         }
         
         if let strId = try container.decodeIfPresent(String.self, forKey: .id), let id = Int(strId) {
-            self.id = id
+			self.id = Client.ID(rawValue: id)
         } else {
             self.id = 0
         }
@@ -145,7 +146,7 @@ public struct PatientDetails: Equatable, Identifiable, Codable {
 
 extension PatientDetails {
 	public static let mock = PatientDetails(
-		id: Int.random(in: 1...99999999),
+		id: Client.Id(rawValue: Int.random(in: 1...99999999)),
 		salutation: "Test ",
 		firstName: "Test ",
 		lastName: "Test ",
@@ -166,36 +167,13 @@ extension PatientDetails {
         addressLine1: "Test ",
         gender: "N/A"
 	)
-    
-    public static let emptyMock = PatientDetails(
-        id: Int.random(in: 1...99999999),
-        salutation: "",
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
-        cellPhone: "",
-        imageUrl: "",
-        dob: Date(),
-        postComm: false,
-        phoneComm: false,
-        smsComm: false,
-        emailComm: false,
-        howDidYouHear: "",
-        country: "",
-        county: "",
-        city: "",
-        postCode: "",
-        addressLine1: "",
-        gender: ""
-    )
 }
 
 extension PatientDetails {
 
 	public static func mock(clientId: Int) -> PatientDetails {
         let client = Client.mockClients.first(where: { clientId == $0.id.rawValue })!
-        return PatientDetails(id: client.id.rawValue,
+		return PatientDetails(id: Client.Id(rawValue: client.id.rawValue),
                               salutation: client.salutation ?? "Mr.",
                               firstName: client.firstName,
                               lastName: client.lastName,
@@ -220,7 +198,7 @@ extension PatientDetails {
 
 extension PatientDetails {
 	public static let empty = PatientDetails(
-		id: Int.random(in: 1...99999999),
+		id: Client.Id(rawValue: Int.random(in: 1...99999999)),
 		salutation: "",
 		firstName: "",
 		lastName: "",

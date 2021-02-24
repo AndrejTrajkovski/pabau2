@@ -10,7 +10,7 @@ public struct Bookout: Identifiable, Equatable, CalendarEventVariant {
 	public var locationId: Location.ID
 	public let _private: Bool?
 	public let _description: String?
-	public var employeeInitials: String?
+	public var employeeInitials: String
 	public var locationName: String?
 	public var employeeName: String
 	public var roomId: Room.Id {
@@ -27,7 +27,8 @@ public struct Bookout: Identifiable, Equatable, CalendarEventVariant {
         locationId: Location.ID,
         _private: Bool? = nil,
         _description: String? = nil,
-        employeeName: String
+        employeeName: String,
+		employeeInitials: String
     ) {
 		self.id = id
 		self.start_date = start_date
@@ -37,6 +38,7 @@ public struct Bookout: Identifiable, Equatable, CalendarEventVariant {
 		self._private = _private
 		self._description = _description
 		self.employeeName = employeeName
+		self.employeeInitials = employeeInitials
 	}
 }
 
@@ -46,7 +48,7 @@ extension Bookout {
 		_ start_date: Date,
 		_ end_date: Date,
 		_ employeeId: Employee.Id,
-		_ employeeInitials: String?,
+		_ employeeInitials: String,
 		_ locationId: Location.Id,
 		_ _private: Bool?,
 		_ employeeName: String,

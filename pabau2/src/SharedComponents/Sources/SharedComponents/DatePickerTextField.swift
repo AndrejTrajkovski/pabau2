@@ -9,7 +9,7 @@ public struct DatePickerTextField: UIViewRepresentable {
     private var maximumDate: Date?
     private let datePickerMode: UIDatePicker.Mode
     private var placeholder: String? = "Select a date"
-
+	
     private var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         return formatter
@@ -20,16 +20,17 @@ public struct DatePickerTextField: UIViewRepresentable {
     private var textContentType: UITextContentType?
     private var keyboardType: UIKeyboardType = .default
     private var isUserInteractionEnabled: Bool = true
-
-	public init(
-        date: Binding<Date?>,
-        mode: UIDatePicker.Mode,
-        font: UIFont = UIFont.systemFont(ofSize: 15, weight: .semibold),
-        textColor: UIColor = .black,
-        isUserInteractionEnabled: Bool = true,
-        textContentType: UITextContentType? = nil,
-        didChange: @escaping () -> Void = { }
-    ) {
+	private var borderStyle: UITextField.BorderStyle
+	
+	public init(date: Binding<Date?>,
+				mode: UIDatePicker.Mode,
+				font: UIFont = UIFont.systemFont(ofSize: 15, weight: .semibold),
+				textColor: UIColor = .black,
+				isUserInteractionEnabled: Bool = true,
+				textContentType: UITextContentType? = nil,
+				borderStyle: UITextField.BorderStyle = .none,
+				didChange: @escaping () -> Void = { }) {
+		print(date.wrappedValue)
         self._date = date
 		self.font = font
 		self.textColor = textColor
@@ -37,7 +38,7 @@ public struct DatePickerTextField: UIViewRepresentable {
         self.datePickerMode = mode
 		self.isUserInteractionEnabled = isUserInteractionEnabled
 		self.textContentType = textContentType
-
+		self.borderStyle = borderStyle
         dateFormatter.dateStyle = mode == .date ? .long : .none
         dateFormatter.timeStyle = mode == .date ? .none : .short
         dateFormatter.timeZone = .current
@@ -51,12 +52,13 @@ public struct DatePickerTextField: UIViewRepresentable {
     public func makeUIView(context: Context) -> UITextField {
 
         let textField = UITextField()
+		textField.borderStyle = borderStyle
         textField.delegate = context.coordinator
 		date.map { textField.text = dateFormatter.string(from: $0) }
         textField.font = font
         textField.textColor = textColor
 		textField.borderStyle = .none
-
+		
         if let contentType = textContentType {
             textField.textContentType = contentType
         }
@@ -89,7 +91,7 @@ public struct DatePickerTextField: UIViewRepresentable {
     }
 
     private func addDoneButtonToKeyboard(_ view: UITextField) {
-        let doneToolbar: UIToolbar = UIToolbar()
+        let doneToolbar: UIToolbar = UIToolbar(frame: CGRect(x:0, y:0, width:100, height:100))
         doneToolbar.barStyle = .default
 
         let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
