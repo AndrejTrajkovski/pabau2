@@ -193,6 +193,7 @@ extension CalendarState {
 		self.isDropdownShown = false
 		self.selectedDate = Calendar.gregorian.startOfDay(for: Date())
 		shifts = [:]
+		//MARK: - Iurii
 //		let employees = [Employee]()
 //		let rooms = Room.mock().map { $0.value }
 //		let locations = Location.mock()

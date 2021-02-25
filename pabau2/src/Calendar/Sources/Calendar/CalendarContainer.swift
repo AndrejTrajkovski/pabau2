@@ -49,6 +49,7 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 			print(result)
 			switch result {
 			case .success(let appointments):
+				//MARK: Iurii
 				state.appointments.refresh(events: appointments,
 										   locationsIds: state.calendar.chosenLocationsIds,
 										   employees: state.calendar.employees.mapValues {
@@ -73,12 +74,14 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 			employee.map {
 				state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate, employee: $0)
 			}
+			//- TODO Iurii
 		case .room(.addAppointment(let startDate, let durationMins, let dropKeys)):
 			let (date, location, subsection) = dropKeys
 			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
 			let room = state.calendar.rooms[location]?[id: subsection]
 			//FIXME: missing room in add appointments screen
 			state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate)
+		//- TODO Iurii
 		case .employee(.addBookout(let startDate, let durationMins, let dropKeys)):
 			let (date, location, subsection) = dropKeys
 			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
@@ -87,6 +90,7 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 			state.calendar.addBookoutState = AddBookoutState(employees: employees,
 														chosenEmployee: chosenEmployee?.id,
 														start: startDate)
+		//- TODO Iurii
 		case .room(.addBookout(let startDate, let durationMins, let dropKeys)):
 			let (date, location, subsection) = dropKeys
 			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
@@ -94,12 +98,15 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 			state.calendar.addBookoutState = AddBookoutState(employees: employees,
 														chosenEmployee: nil,
 														start: startDate)
+		//- TODO Iurii
 		case .week(.addAppointment(let startOfDayDate, let startDate, let durationMins)):
 			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
 			state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate)
         case .week(.editAppointment(let appointment)):
+			//- TODO Iurii
             state.addAppointment = AddAppointmentState.init(editingAppointment: appointment, startDate: appointment.start_date, endDate: appointment.end_date)
 		case .appDetails(.addService):
+			//- TODO Iurii
 			let start = state.calendar.appDetails!.app.start_date
 			let end = state.calendar.appDetails!.app.end_date
 			let employee = state.calendar.employees.flatMap { $0.value }.first(where: { $0.id == state.calendar.appDetails?.app.employeeId })
@@ -112,6 +119,7 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 				return .none
 			}
 		case .showAddApp(let start, let end, let employee):
+			//- TODO Iurii
 			state.addAppointment = AddAppointmentState.init(startDate: start, endDate: end, employee: employee)
 		default: break
 		}

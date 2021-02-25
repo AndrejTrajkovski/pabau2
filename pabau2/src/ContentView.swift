@@ -71,7 +71,8 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = Reducer.combine(
 			)
 		case .walkthrough(.login(.login(.gotResponse(.success(let user))))):
 			state = .tabBar(TabBarState())
-			return .concatenate(
+			return .concatenate( // one after another
+				// .merge( // in parallel
 				env.journeyAPI.getLocations()
 					.receive(on: DispatchQueue.main)
 					.catchToEffect()
