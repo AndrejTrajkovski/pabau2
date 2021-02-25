@@ -228,7 +228,9 @@ public let tabBarReducer: Reducer<
 			switch locationsResponse {
 			case .success(let locations):
 				state.calendar.locations = IdentifiedArray(locations)
-				state.calendar.chosenLocationsIds = locations.map(\.id) 
+//				state.calendar.chosenLocationsIds = locations.map(\.id)
+				print("chosenLocation: \(locations.map(\.id).first!)")
+				state.calendar.chosenLocationsIds = [locations.map(\.id).first!]
 			case .failure(let error):
 				break
 			}

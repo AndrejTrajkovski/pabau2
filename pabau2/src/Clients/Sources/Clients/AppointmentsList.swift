@@ -5,7 +5,7 @@ import Util
 import ComposableArchitecture
 
 public let appointmentsListReducer: Reducer<AppointmentsListState, AppointmentsListAction, ClientsEnvironment> = Reducer.combine(
-	ClientCardChildReducer<[Appointment]>().reducer.pullback(
+	ClientCardChildReducer<[CCAppointment]>().reducer.pullback(
 		state: \AppointmentsListState.childState,
 		action: /AppointmentsListAction.action,
 		environment: { $0 }
@@ -13,7 +13,7 @@ public let appointmentsListReducer: Reducer<AppointmentsListState, AppointmentsL
 )
 
 public enum AppointmentsListAction: ClientCardChildParentAction, Equatable {
-	var action: GotClientListAction<[Appointment]>? {
+	var action: GotClientListAction<[CCAppointment]>? {
 		get {
 			if case .action(let app) = self {
 				return app
@@ -27,13 +27,13 @@ public enum AppointmentsListAction: ClientCardChildParentAction, Equatable {
 			}
 		}
 	}
-	case action(GotClientListAction<[Appointment]>)
-	typealias T = [Appointment]
+	case action(GotClientListAction<[CCAppointment]>)
+	typealias T = [CCAppointment]
 }
 
 public struct AppointmentsListState: ClientCardChildParentState, Equatable {
-	typealias T = [Appointment]
-	var childState: ClientCardChildState<[Appointment]>
+	typealias T = [CCAppointment]
+	var childState: ClientCardChildState<[CCAppointment]>
 }
 
 struct AppointmentsList: ClientCardChild {
@@ -50,7 +50,7 @@ struct AppointmentsList: ClientCardChild {
 }
 
 struct AppointmentRow: View {
-	let app: Appointment
+	let app: CCAppointment
 	var body: some View {
 		VStack(spacing: 0) {
 			HStack {
@@ -100,7 +100,7 @@ struct LocationLabel: View {
 }
 
 struct DateLocation: View {
-	let app: Appointment
+	let app: CCAppointment
 	var body: some View {
 		HStack {
 			DateLabel(date: app.start_date)

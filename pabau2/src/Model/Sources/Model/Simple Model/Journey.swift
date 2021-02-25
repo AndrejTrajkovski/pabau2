@@ -4,7 +4,7 @@ public extension Journey {
 	
 	static func group(apps: [Appointment]) -> [Journey] {
 		return Dictionary.init(grouping: apps, by: {
-			Journey.ID.init(clientId: $0.customer_id, employeeId: $0.employeeId, startDate: $0.start_date)
+			Journey.ID.init(clientId: $0.customerId, employeeId: $0.employeeId, startDate: $0.start_date)
 		}).mapValues(Journey.init(appointments:)).values.map { $0 }
 	}	
 }
@@ -24,7 +24,7 @@ public struct Journey: Equatable, Identifiable, Hashable {
 	public let appointments: [Appointment]
 	
 	public var clientId: Client.ID {
-		appointments.first!.customer_id
+		appointments.first!.customerId
 	}
 	
 	public var employeeId: Employee.ID {

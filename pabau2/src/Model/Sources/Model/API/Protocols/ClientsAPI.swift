@@ -7,7 +7,7 @@ public protocol ClientsAPI {
 
     func getServices() -> Effect<[Service], RequestError>
     func createAppointment(appointment: AppointmentBuilder) -> Effect<PlaceholdeResponse, RequestError>
-	func getAppointments(clientId: Client.Id) -> Effect<[Appointment], RequestError>
+	func getAppointments(clientId: Client.Id) -> Effect<[CCAppointment], RequestError>
 	func getFinancials(clientId: Client.Id) -> Effect<[Financial], RequestError>
 	func getPhotos(clientId: Client.Id) -> Effect<[SavedPhoto], RequestError>
 	func getForms(type: FormType, clientId: Client.Id) -> Effect<[FilledFormData], RequestError>

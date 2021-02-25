@@ -7,7 +7,7 @@ public struct Bookout: Identifiable, Equatable, CalendarEventVariant {
 	public var start_date: Date
 	public var end_date: Date
 	public var employeeId: Employee.ID
-	public var locationId: Location.Id
+	public var locationId: Location.ID
 	public let _private: Bool?
 	public let _description: String?
 	public var employeeInitials: String
@@ -52,7 +52,7 @@ extension Bookout {
 		_ locationId: Location.Id,
 		_ _private: Bool?,
 		_ employeeName: String,
-		_ decoder: Decoder
+		_ container: KeyedDecodingContainer<CalendarEvent.CodingKeys>
 	) throws {
 		self.id = id
 		self.start_date = start_date
@@ -62,7 +62,6 @@ extension Bookout {
 		self.locationId = locationId
 		self._private = _private
 		self.employeeName = employeeName
-		let container = try decoder.container(keyedBy: CodingKeys.self)
 		self._description = try? container.decode(String.self, forKey: ._description)
 	}
 }

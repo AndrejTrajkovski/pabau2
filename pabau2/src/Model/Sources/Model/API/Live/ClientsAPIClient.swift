@@ -118,9 +118,9 @@ extension APIClient {
 			.eraseToEffect()
 	}
 
-    public func getAppointments(clientId: Client.Id) -> Effect<[Appointment], RequestError> {
-        struct AppointmentResponse: Decodable {
-            let appointments: [Appointment]
+    public func getAppointments(clientId: Client.Id) -> Effect<[CCAppointment], RequestError> {
+		struct AppointmentResponse: Decodable {
+            let appointments: [CCAppointment]
         }
         let requestBuilder: RequestBuilder<AppointmentResponse>.Type = requestBuilderFactory.getBuilder()
         return requestBuilder.init(method: .GET,

@@ -154,8 +154,9 @@ extension CalendarEvent: Decodable {
 		case allDay = "all_day"
 		case contactID = "contact_id"
 		case appointmentPrivate = "private"
-		case appointmentDescription = "description"
+		case _description = "description"
 		case fontColor = "font_color"
+		case extraEmployees = "extra_employees"
 	}
 	
 	public init(from decoder: Decoder) throws {
@@ -206,7 +207,7 @@ extension CalendarEvent: Decodable {
 									  status,
 									  employeeName,
 									  serviceId,
-									  decoder)
+									  container)
 			self = .appointment(app)
 		} else {
 			let bookout = try Bookout(id,
@@ -217,7 +218,7 @@ extension CalendarEvent: Decodable {
 									  locationId,
 									  _private,
 									  employeeName,
-									  decoder)
+									  container)
 			self = .bookout(bookout)
 		}
 	}

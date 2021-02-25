@@ -24,7 +24,7 @@ public struct Appointment: Equatable, Identifiable, Hashable, Decodable {
 	public var roomId: Room.Id
 	public let employeeName: String
 	public let roomName: String?
-	public let customer_id: Client.ID
+	public let customerId: Client.ID
 	public let serviceId: Service.Id
 	public let locationName: String?
 }
@@ -44,7 +44,7 @@ extension Appointment {
 		_ status: AppointmentStatus?,
 		_ employeeName: String,
 		_ serviceId: Service.Id,
-		_ decoder: Decoder
+		_ container: KeyedDecodingContainer<CalendarEvent.CodingKeys>
 	) throws {
 		self.id = id
 		self.start_date = start_date
@@ -56,19 +56,18 @@ extension Appointment {
 		self.status = status
 		self.employeeName = employeeName
 		self.serviceId = serviceId
-		let container = try decoder.container(keyedBy: CodingKeys.self)
 		self.extraEmployees = try? container.decode([Employee].self, forKey: .extraEmployees)
 		self.service = try container.decode(String.self, forKey: .service)
 		self.serviceColor = try? container.decode(String.self, forKey: .serviceColor)
-		self.clientName = try? container.decode(String.self, forKey: .clientName)
+		self.clientName = try? container.decode(String.self, forKey: .customerName)
 		self.clientPhoto = try? container.decode(String.self, forKey: .clientPhoto)
-		if let roomId = try? container.decode(Room.Id.self, forKey: .roomId) {
+		if let roomId = try? container.decode(Room.Id.self, forKey: .roomID) {
 			self.roomId = roomId
 		} else {
 			self.roomId = Room.Id.init(rawValue: -1)
 		}
 		self.roomName = try? container.decode(String.self, forKey: .roomName)
-		self.customer_id = try container.decode(Client.Id.self, forKey: .customer_id)
+		self.customerId = try container.decode(Client.ID.self, forKey: .customerID)
 		self.locationName = "TO ADD IN BACKEND"
 	}
 }
