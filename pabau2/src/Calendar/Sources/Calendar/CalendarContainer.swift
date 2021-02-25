@@ -46,11 +46,15 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 	.init { state, action, env in
 		switch action {
 		case .gotResponse(let result):
+			print(result)
 			switch result {
 			case .success(let appointments):
-				break
-//				state.appointments = Appointments.init(calType: state.calendar.calType,
-//													   events: appointments, locationsIds: <#T##[Location.ID]#>, employees: <#T##[Employee]#>, rooms: <#T##[Room]#>)
+				state.appointments.refresh(events: appointments,
+										   locationsIds: state.calendar.chosenLocationsIds,
+										   employees: state.calendar.employees.mapValues {
+											$0.elements
+										   }.flatMap(\.value),
+										   rooms: [])
 			case .failure(let error):
 				break
 			}

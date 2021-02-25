@@ -71,17 +71,17 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = Reducer.combine(
 			)
 		case .walkthrough(.login(.login(.gotResponse(.success(let user))))):
 			state = .tabBar(TabBarState())
-			return .merge(
-				env.journeyAPI.getEmployees()
-					.receive(on: DispatchQueue.main)
-					.catchToEffect()
-					.map { AppAction.tabBar(.employeesFilter(.gotResponse($0)))}
-					.eraseToEffect(),
-				
+			return .concatenate(
 				env.journeyAPI.getLocations()
 					.receive(on: DispatchQueue.main)
 					.catchToEffect()
 					.map { AppAction.tabBar(.gotLocationsResponse($0))}
+					.eraseToEffect(),
+				
+				env.journeyAPI.getEmployees()
+					.receive(on: DispatchQueue.main)
+					.catchToEffect()
+					.map { AppAction.tabBar(.employeesFilter(.gotResponse($0)))}
 					.eraseToEffect()
 			)
 		default:

@@ -51,7 +51,18 @@ public enum Appointments: Equatable {
 }
 
 public extension Appointments {
-
+	
+	mutating func refresh(events: [CalendarEvent],
+				 locationsIds: [Location.ID],
+				 employees: [Employee],
+				 rooms: [Room]) {
+		self = .init(calType: self.calendarType,
+					 events: events,
+					 locationsIds: locationsIds,
+					 employees: employees,
+					 rooms: rooms)
+	}
+	
 	init(calType: CalendarType,
 		 events: [CalendarEvent],
 		 locationsIds: [Location.ID],

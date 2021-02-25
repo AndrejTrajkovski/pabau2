@@ -224,6 +224,29 @@ public let tabBarReducer: Reducer<
 > = Reducer.combine(
 	.init { state, action, _ in
 		switch action {
+		case .gotLocationsResponse(let locationsResponse):
+			switch locationsResponse {
+			case .success(let locations):
+				state.calendar.locations = IdentifiedArray(locations)
+				state.calendar.chosenLocationsIds = locations.map(\.id)
+			case .failure(let error):
+				break
+			}
+		case .employeesFilter(.gotResponse(let employeesResponse)):
+			switch employeesResponse {
+			case .success(let employees):
+				print(employees)
+				//TODO: ASK Backend to Add LocationId in response
+				state.calendar.employees = Dictionary.init(grouping: state.calendar.locations,
+														   by: { $0.id }).mapValues { _ in
+															return IdentifiedArray(employees)
+														}
+				state.calendar.chosenEmployeesIds = state.calendar.employees.mapValues {
+					$0.map(\.id)
+				}
+			case .failure(let error):
+				break
+			}
 		case .journey(.addAppointmentTap):
 			state.addAppointment = AddAppointmentState.dummy
 		default:
@@ -289,15 +312,12 @@ public let tabBarReducer: Reducer<
 			Intercom.registerUser(withEmail: "a@a.com")
 			Intercom.presentMessenger()
 			return .none
-			
 		case .communication(.helpGuides):
 			Intercom.presentHelpCenter()
 			return .none
-			
 		case .communication(.carousel):
 			Intercom.presentCarousel("13796318")
 			return .none
-
         default:
             break
         }
@@ -313,7 +333,7 @@ extension TabBarState {
 		self.calendar = CalendarState()
 		self.settings = SettingsState()
 		self.communication = CommunicationState()
-		self.appointments = .week([:])
+		self.appointments = .employee(EventsBy<Employee>.init(events: [], locationsIds: [], subsections: [], sectionKeypath: \CalendarEvent.locationId, subsKeypath: \CalendarEvent.employeeId))
 		self.appsLoadingState = .initial
 	}
 }

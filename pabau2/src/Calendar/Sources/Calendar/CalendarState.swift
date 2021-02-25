@@ -28,11 +28,11 @@ public struct CalendarState: Equatable {
 	var isDropdownShown: Bool
 	var selectedDate: Date
 	var shifts: [Date: [Location.ID: [Employee.ID: [JZShift]]]]
-	var locations: IdentifiedArrayOf<Location>
+	public var locations: IdentifiedArrayOf<Location>
 	public var employees: [Location.Id: IdentifiedArrayOf<Employee>]
 	public var rooms: [Location.Id: IdentifiedArrayOf<Room>]
-	var chosenLocationsIds: [Location.Id]
-	var chosenEmployeesIds: [Location.Id: [Employee.Id]]
+	public var chosenLocationsIds: [Location.Id]
+	public var chosenEmployeesIds: [Location.Id: [Employee.Id]]
 	var chosenRoomsIds: [Location.Id: [Room.Id]]
 
 	var scope: FSCalendarScope = .week
@@ -221,7 +221,6 @@ extension CalendarState {
 //		}
 //		self.expandedLocationsIds = locations.map(\.id)
 		self.isShowingFilters = false
-		
 		self.locations = []
 		self.employees = [:]
 		self.rooms = [:]

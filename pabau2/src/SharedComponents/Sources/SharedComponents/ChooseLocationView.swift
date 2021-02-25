@@ -31,7 +31,7 @@ public enum ChooseLocationAction: Equatable {
 public struct ChooseLocationView: View {
     let store: Store<ChooseLocationState, ChooseLocationAction>
     @ObservedObject var viewStore: ViewStore<ChooseLocationState, ChooseLocationAction>
-    
+	
     public init(store: Store<ChooseLocationState, ChooseLocationAction>) {
         self.store = store
         self.viewStore = ViewStore(store)

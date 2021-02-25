@@ -1,7 +1,7 @@
 import Foundation
 import Tagged
 
-public struct Room: Codable, Identifiable, Equatable {
+public struct Room: Decodable, Identifiable, Equatable {
 	
 	public typealias Id = Tagged<Room, Int>
 	

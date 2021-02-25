@@ -160,7 +160,15 @@ extension CalendarEvent: Decodable {
 	
 	public init(from decoder: Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
-		let id = try container.decode(CalendarEvent.Id.self, forKey: .id)
+		let id: Self.Id
+		if let intId = try? container.decode(Int.self, forKey: .id) {
+			id = Self.Id.init(rawValue: intId)
+		} else if let stringId = try? container.decode(String.self, forKey: .id),
+				  let intFromStringId = Int(stringId) {
+			id = Self.Id.init(rawValue: intFromStringId)
+		} else {
+			throw DecodingError.dataCorruptedError(forKey: CodingKeys.id, in: container, debugDescription: "Id is not string or int")
+		}
 		let employeeId = try container.decode(Employee.Id.self, forKey: .employeeId)
 		let locationId = try container.decode(Location.ID.self, forKey: .locationID)
 		let _private = try container.decode(Bool.self, forKey: .appointmentPrivate)

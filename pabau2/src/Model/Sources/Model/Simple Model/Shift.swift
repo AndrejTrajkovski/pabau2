@@ -2,7 +2,7 @@ import Foundation
 import Tagged
 
 
-public struct Shift: Codable, Equatable {
+public struct Shift: Decodable, Equatable {
     public static func == (lhs: Shift, rhs: Shift) -> Bool {
         lhs.rotaID == rhs.rotaID
     }
@@ -44,11 +44,7 @@ public struct Shift: Codable, Equatable {
 		self.locationName = try container.decode(String.self, forKey: .locationName)
 		self.locColor = try container.decode(String.self, forKey: .locColor)
 		self.published = try container.decode(Bool.self, forKey: .published)
-		let stringLocationID = try container.decode(String.self, forKey: .locationID)
-		guard let intLocationId = Int(stringLocationID) else {
-			throw DecodingError.dataCorruptedError(forKey: .locationID, in: container, debugDescription: "Location ID expected to be Integer")
-		}
-		self.locationID = Location.Id.init(rawValue: intLocationId)
+		self.locationID = try container.decode(Location.Id.self, forKey: .locationID)
 		self.roomID = try container.decode(Room.Id.self, forKey: .roomID)
 		self.notes = try container.decode(String.self, forKey: .notes)
 		

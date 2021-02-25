@@ -7,7 +7,7 @@ public struct Bookout: Identifiable, Equatable, CalendarEventVariant {
 	public var start_date: Date
 	public var end_date: Date
 	public var employeeId: Employee.ID
-	public var locationId: Location.ID
+	public var locationId: Location.Id
 	public let _private: Bool?
 	public let _description: String?
 	public var employeeInitials: String

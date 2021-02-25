@@ -1,24 +1,32 @@
 import Foundation
 import Tagged
 
-public struct Location: Codable, Identifiable, Equatable {
+public typealias EitherStringOrInt = Either<String, Int>
 
-	public typealias Id = Tagged<Location, Int>
+public enum Either<Left: Decodable & Equatable & Hashable, Right: Decodable & Equatable & Hashable>: Decodable, Equatable, Hashable {
+	case left(Left)
+	case right(Right)
+	
+	public init(from decoder: Decoder) throws {
+		let container = try decoder.singleValueContainer()
+		if let leftValue = try? container.decode(Left.self) {
+			self = .left(leftValue)
+		} else if let rightValue = try? container.decode(Right.self) {
+			self = .right(rightValue)
+		} else {
+			throw DecodingError.dataCorruptedError(in: container, debugDescription: "Could not decode either type")
+		}
+	}
+}
+
+public struct Location: Decodable, Identifiable, Equatable {
+
+	public typealias Id = Tagged<Location, EitherStringOrInt>
 	
     public let id: Id
 
     public let name: String
 	public let color: String?
-	
-	public init(
-        id: Int,
-        name: String,
-        color: String?
-    ) {
-		self.id = Id(rawValue: id)
-		self.name = name
-		self.color = color
-	}
 	
     public enum CodingKeys: String, CodingKey {
         case id = "id"
@@ -28,15 +36,8 @@ public struct Location: Codable, Identifiable, Equatable {
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let stringID = try container.decode(String.self, forKey: .id)
         
-        guard let id = Int(stringID) else {
-            throw DecodingError.dataCorruptedError(
-                forKey: .id, in: container, debugDescription: "Location ID expected to be Integer"
-            )
-        }
-        
-        self.id = Id(rawValue: id)
+		self.id = try container.decode(Location.Id.self, forKey: .id)
         self.name = try container.decode(String.self, forKey: .name)
         self.color = try container.decodeIfPresent(String.self, forKey: .color)
     }
