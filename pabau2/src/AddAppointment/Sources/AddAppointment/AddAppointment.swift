@@ -40,7 +40,7 @@ public struct AddAppointmentState: Equatable {
 
         return AppointmentBuilder(
             isAllDay: self.isAllDay,
-            clientID: self.clients.chosenClient?.id.rawValue,
+            clientID: self.clients.chosenClient?.id,
             employeeID: self.with.chosenEmployee?.id.rawValue,
             serviceID: self.services.chosenService?.id.rawValue,
             startTime: self.startDate,
@@ -627,10 +627,10 @@ struct AddAppMocks {
     static let clientState: SingleChoiceLinkState<Client> =
         SingleChoiceLinkState.init(
             dataSource: [
-                Client.init(id: 1, firstName: "Wayne", lastName: "Rooney", dOB: Date()),
-                Client.init(id: 2, firstName: "Adam", lastName: "Smith", dOB: Date())
+                Client.init(id: Client.Id.init(rawValue: .right(1)), firstName: "Wayne", lastName: "Rooney", dOB: Date()),
+                Client.init(id: Client.Id.init(rawValue: .right(2)), firstName: "Adam", lastName: "Smith", dOB: Date())
             ],
-            chosenItemId: 1,
+			chosenItemId: Client.Id.init(rawValue: .right(1)),
             isActive: false)
 
     static let serviceState: SingleChoiceLinkState<Service> =

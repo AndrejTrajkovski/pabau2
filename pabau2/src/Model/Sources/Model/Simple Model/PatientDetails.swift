@@ -1,6 +1,6 @@
 import Foundation
 
-public struct PatientDetails: Equatable, Identifiable, Codable {
+public struct PatientDetails: Equatable, Identifiable, Decodable {
 	
 	public var id: Client.ID
 	public var canProceed: Bool {
@@ -112,11 +112,7 @@ public struct PatientDetails: Equatable, Identifiable, Codable {
             dob = Date()
         }
         
-        if let strId = try container.decodeIfPresent(String.self, forKey: .id), let id = Int(strId) {
-			self.id = Client.ID(rawValue: id)
-        } else {
-            self.id = 0
-        }
+		self.id = try container.decode(Client.Id.self, forKey: .id)
         
         if let postComm = try container.decodeIfPresent(String.self, forKey: .postComm) {
             if let no = Int(postComm) {
@@ -146,7 +142,7 @@ public struct PatientDetails: Equatable, Identifiable, Codable {
 
 extension PatientDetails {
 	public static let mock = PatientDetails(
-		id: Client.Id(rawValue: Int.random(in: 1...99999999)),
+		id: Client.Id(rawValue: .right(Int.random(in: 1...99999999))),
 		salutation: "Test ",
 		firstName: "Test ",
 		lastName: "Test ",
@@ -170,35 +166,8 @@ extension PatientDetails {
 }
 
 extension PatientDetails {
-
-	public static func mock(clientId: Int) -> PatientDetails {
-        let client = Client.mockClients.first(where: { clientId == $0.id.rawValue })!
-		return PatientDetails(id: Client.Id(rawValue: client.id.rawValue),
-                              salutation: client.salutation ?? "Mr.",
-                              firstName: client.firstName,
-                              lastName: client.lastName,
-                              email: "",
-                              phone: "",
-                              cellPhone: "",
-                              imageUrl: "",
-                              dob: Date(),
-                              postComm: false,
-                              phoneComm: false,
-                              smsComm: false,
-                              emailComm: false,
-                              howDidYouHear: "",
-                              country: "",
-                              county: "",
-                              city: "",
-                              postCode: "",
-                              addressLine1: "",
-                              addressLine2: "")
-	}
-}
-
-extension PatientDetails {
 	public static let empty = PatientDetails(
-		id: Client.Id(rawValue: Int.random(in: 1...99999999)),
+		id: Client.Id(rawValue: .right(Int.random(in: 1...99999999))),
 		salutation: "",
 		firstName: "",
 		lastName: "",

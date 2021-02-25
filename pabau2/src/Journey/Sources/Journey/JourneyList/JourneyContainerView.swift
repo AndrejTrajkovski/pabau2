@@ -60,7 +60,7 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 			state.employeesFilter.isShowingEmployees.toggle()
 		case .datePicker(.selectedDate(let date)):
 //			state.loadingState = .loading
-			return env.journeyAPI.getAppointments(startDate: date, endDate: date, locationIds: [state.journey.selectedLocation.id], employeesIds: Array(state.employeesFilter.employees.map(\.id)), roomIds: [])
+			return env.journeyAPI.getAppointments(startDate: date, endDate: date, locationIds: [], employeesIds: Array(state.employeesFilter.employees.map(\.id)), roomIds: [])
 //				.map(with(date, curry(calendarResponseToJourneys(date:events:))))
 				.receive(on: DispatchQueue.main)
 				.catchToEffect()

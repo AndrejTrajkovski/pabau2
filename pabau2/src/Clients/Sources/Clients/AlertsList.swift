@@ -47,7 +47,7 @@ let clientAlertsReducer: Reducer<ClientAlertsState, ClientAlertsAction, ClientsE
             state.showAlert = false
             state.childState.loadingState = .loading
             return env.apiClient
-                .addAlert(clientId: state.client.id.rawValue, alert: alert)
+                .addAlert(clientId: state.client.id, alert: alert)
                 .catchToEffect()
                 .receive(on: DispatchQueue.main)
                 .map { .onResponseSaveAlert(.gotResult($0)) }
@@ -56,7 +56,7 @@ let clientAlertsReducer: Reducer<ClientAlertsState, ClientAlertsAction, ClientsE
             switch result {
             case .gotResult(.success(let success)):
                 return env.apiClient
-                    .getAlerts(clientId: state.client.id.rawValue)
+                    .getAlerts(clientId: state.client.id)
                     .catchToEffect()
                     .receive(on: DispatchQueue.main)
                     .map { .action(.gotResult($0)) }

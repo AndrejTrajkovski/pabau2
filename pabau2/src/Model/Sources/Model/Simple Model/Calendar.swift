@@ -26,7 +26,7 @@
 //	public var roomId: Room.Id
 //	public let employeeName: String
 //	public let roomName: String
-//	public let customerId: Client.ID
+//	public let customer_id: Client.ID
 //	public let serviceId: Service.Id
 //}
 //

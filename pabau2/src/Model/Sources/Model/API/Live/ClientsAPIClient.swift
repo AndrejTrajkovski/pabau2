@@ -4,7 +4,7 @@ import Combine
 extension APIClient {
 	public func getClients() -> Effect<[Client], RequestError> {
 		let requestBuilder: RequestBuilder<ClientResponse>.Type = requestBuilderFactory.getBuilder()
-		struct ClientResponse: Codable, Equatable {
+		struct ClientResponse: Decodable, Equatable {
 			public let clients: [Client]
 			public enum CodingKeys: String, CodingKey {
 				case clients = "appointments"
@@ -22,7 +22,7 @@ extension APIClient {
     
     public func getClients(search: String?, offset: Int) -> Effect<[Client], RequestError> {
         let requestBuilder: RequestBuilder<ClientResponse>.Type = requestBuilderFactory.getBuilder()
-        struct ClientResponse: Codable, Equatable {
+        struct ClientResponse: Decodable, Equatable {
             public let clients: [Client]
             public enum CodingKeys: String, CodingKey {
                 case clients = "appointments"
@@ -46,12 +46,12 @@ extension APIClient {
         .eraseToEffect()
     }
 	
-	public func getItemsCount(clientId: Int) -> Effect<ClientItemsCount, RequestError> {
+	public func getItemsCount(clientId: Client.Id) -> Effect<ClientItemsCount, RequestError> {
 		Effect(value: ClientItemsCount.init(id: 1, appointments: 2, photos: 4, financials: 6, treatmentNotes: 3, presriptions: 10, documents: 15, communications: 123, consents: 4381, alerts: 123, notes: 0))
 			.eraseToEffect()
 	}
 	
-	public func getFinancials(clientId: Int) -> Effect<[Financial], RequestError> {
+	public func getFinancials(clientId: Client.Id) -> Effect<[Financial], RequestError> {
 		struct FinancialResponse: Codable {
 			let sales: [Financial]
 		}
@@ -65,7 +65,7 @@ extension APIClient {
 			.eraseToEffect()
 	}
 		
-	public func getAlerts(clientId: Int) -> Effect<[Alert], RequestError> {
+	public func getAlerts(clientId: Client.Id) -> Effect<[Alert], RequestError> {
 		struct AlertResponse: Codable {
 			public let medical_alerts: [Alert]
 		}
@@ -82,8 +82,8 @@ extension APIClient {
 			.eraseToEffect()
 	}
 	
-	public func getPatientDetails(clientId: Int) -> Effect<PatientDetails, RequestError> {
-		struct PatientDetailsResponse: Codable {
+	public func getPatientDetails(clientId: Client.Id) -> Effect<PatientDetails, RequestError> {
+		struct PatientDetailsResponse: Decodable {
 			let details: [PatientDetails]
 			enum CodingKeys: String, CodingKey {
 				case details = "appointments"
@@ -112,19 +112,14 @@ extension APIClient {
 		fatalError("TODO Cristian")
 	}
     
-    public func addNote(clientId: Int, note: String) -> Effect<Note, RequestError> {
+    public func addNote(clientId: Client.Id, note: String) -> Effect<Note, RequestError> {
         Just(Note(id: 24214, content: note, date: Date()))
             .mapError { _ in RequestError.unknown }
 			.eraseToEffect()
 	}
 
-    public func getItemsCount(clientId: Client.ID) -> Effect<ClientItemsCount, RequestError> {
-        Effect(value: ClientItemsCount.init(id: 1, appointments: 2, photos: 4, financials: 6, treatmentNotes: 3, presriptions: 10, documents: 15, communications: 123, consents: 4381, alerts: 123, notes: 0))
-            .eraseToEffect()
-    }
-
-    public func getAppointments(clientId: Int) -> Effect<[Appointment], RequestError> {
-        struct AppointmentResponse: Codable {
+    public func getAppointments(clientId: Client.Id) -> Effect<[Appointment], RequestError> {
+        struct AppointmentResponse: Decodable {
             let appointments: [Appointment]
         }
         let requestBuilder: RequestBuilder<AppointmentResponse>.Type = requestBuilderFactory.getBuilder()
@@ -155,7 +150,7 @@ extension APIClient {
             .eraseToEffect()
     }
 
-    public func getPhotos(clientId: Int) -> Effect<[SavedPhoto], RequestError> {
+    public func getPhotos(clientId: Client.Id) -> Effect<[SavedPhoto], RequestError> {
         struct PhotoResponse: Codable {
             public let photos: [SavedPhoto]
             enum CodingKeys: String, CodingKey {
@@ -175,7 +170,7 @@ extension APIClient {
             .eraseToEffect()
     }
     
-    public func addAlert(clientId: Int, alert: String) -> Effect<Bool, RequestError> {
+    public func addAlert(clientId: Client.Id, alert: String) -> Effect<Bool, RequestError> {
         struct AlertAddResponse: Codable {
             public let success: Bool
         }
@@ -192,7 +187,7 @@ extension APIClient {
             .eraseToEffect()
     }
 
-    public func getForms(type: FormType, clientId: Int) -> Effect<[FilledFormData], RequestError> {
+    public func getForms(type: FormType, clientId: Client.Id) -> Effect<[FilledFormData], RequestError> {
         struct FormDataResponse: Decodable {
             let forms: [FilledFormData]
 
@@ -210,7 +205,7 @@ extension APIClient {
             .eraseToEffect()
     }
 
-    public func getDocuments(clientId: Int) -> Effect<[Document], RequestError> {
+    public func getDocuments(clientId: Client.Id) -> Effect<[Document], RequestError> {
         struct DocumentResponse: Codable {
             let documents: [Document]
             enum CodingKeys: String, CodingKey {
@@ -228,7 +223,7 @@ extension APIClient {
             .eraseToEffect()
     }
 
-    public func getCommunications(clientId: Int) -> Effect<[Communication], RequestError> {
+    public func getCommunications(clientId: Client.Id) -> Effect<[Communication], RequestError> {
         let requestBuilder: RequestBuilder<CommunicationResponse>.Type = requestBuilderFactory.getBuilder()
         struct CommunicationResponse: Codable {
             let communications: [Communication]
@@ -243,7 +238,7 @@ extension APIClient {
             .eraseToEffect()
     }
 
-    public func getNotes(clientId: Int) -> Effect<[Note], RequestError> {
+    public func getNotes(clientId: Client.Id) -> Effect<[Note], RequestError> {
         let requestBuilder: RequestBuilder<NoteResponse>.Type = requestBuilderFactory.getBuilder()
         struct NoteResponse: Codable {
             public let notes: [Note]

@@ -1,6 +1,6 @@
 import Tagged
 
-public struct Employee: Codable, Identifiable, Equatable, Hashable {
+public struct Employee: Decodable, Identifiable, Equatable, Hashable {
 	public typealias Id = Tagged<Employee, String>
 		
 	public let id: Employee.Id

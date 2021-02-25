@@ -5,7 +5,7 @@ public struct AppointmentBuilder {
 
     public var isAllDay: Bool?
     public var isPrivate: Bool?
-    public var clientID: Int?
+	public var clientID: Client.Id?
     public var employeeID: String?
     public var serviceID: String?
 
@@ -25,7 +25,7 @@ public struct AppointmentBuilder {
     public init(
         isAllDay: Bool? = nil,
         isPrivate: Bool? = nil,
-        clientID: Int? = nil,
+        clientID: Client.Id? = nil,
         employeeID: String? = nil,
         serviceID: String? = nil,
         startTime: Date? = nil,

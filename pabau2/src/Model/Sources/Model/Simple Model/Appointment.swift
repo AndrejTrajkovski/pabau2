@@ -2,7 +2,7 @@ import SwiftDate
 import Tagged
 import Foundation
 
-public struct Appointment: Equatable, Identifiable, Hashable, Codable {
+public struct Appointment: Equatable, Identifiable, Hashable, Decodable {
 	
 	public func hash(into hasher: inout Hasher) {
 		hasher.combine(id)
@@ -23,8 +23,8 @@ public struct Appointment: Equatable, Identifiable, Hashable, Codable {
 	public let clientPhoto: String?
 	public var roomId: Room.Id
 	public let employeeName: String
-	public let roomName: String
-	public let customerId: Client.ID
+	public let roomName: String?
+	public let customer_id: Client.ID
 	public let serviceId: Service.Id
 	public let locationName: String?
 }
@@ -62,9 +62,13 @@ extension Appointment {
 		self.serviceColor = try? container.decode(String.self, forKey: .serviceColor)
 		self.clientName = try? container.decode(String.self, forKey: .clientName)
 		self.clientPhoto = try? container.decode(String.self, forKey: .clientPhoto)
-		self.roomId = try container.decode(Room.Id.self, forKey: .roomId)
-		self.roomName = try container.decode(String.self, forKey: .roomName)
-		self.customerId = try container.decode(Client.ID.self, forKey: .customerId)
+		if let roomId = try? container.decode(Room.Id.self, forKey: .roomId) {
+			self.roomId = roomId
+		} else {
+			self.roomId = Room.Id.init(rawValue: -1)
+		}
+		self.roomName = try? container.decode(String.self, forKey: .roomName)
+		self.customer_id = try container.decode(Client.Id.self, forKey: .customer_id)
 		self.locationName = "TO ADD IN BACKEND"
 	}
 }

@@ -14,7 +14,7 @@ let clientNotesListReducer: Reducer<NotesListState, NotesListAction, ClientsEnvi
         case .saveNote(let content):
             state.showAlert = false
             return env.apiClient
-                .addNote(clientId: state.client.id.rawValue, note: content)
+                .addNote(clientId: state.client.id, note: content)
                 .catchToEffect()
                 .receive(on: DispatchQueue.main)
                 .map { .onResponseSave(.gotResult($0)) }

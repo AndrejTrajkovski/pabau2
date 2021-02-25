@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol CalendarEventVariant: Codable {
+public protocol CalendarEventVariant: Decodable {
 	var id: CalendarEvent.Id { get }
 	var start_date: Date { get set }
 	var end_date: Date { get set }

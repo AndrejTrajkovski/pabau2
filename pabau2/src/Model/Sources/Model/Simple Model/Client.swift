@@ -2,9 +2,9 @@ import Foundation
 import SwiftDate
 import Tagged
 
-public struct Client: Codable, Identifiable, Equatable {
+public struct Client: Decodable, Identifiable, Equatable {
 
-    public typealias Id = Tagged<Client, Int>
+    public typealias Id = Tagged<Client, EitherStringOrInt>
 
     public let mobile: String?
 
@@ -69,7 +69,7 @@ public struct Client: Codable, Identifiable, Equatable {
     public let phone: String?
 
     public var count: ClientItemsCount?
-    public init(mobile: String? = nil, salutation: String? = nil, leadSource: String? = nil, mailingStreet: String? = nil, otherStreet: String? = nil, mailingCity: String? = nil, mailingCounty: String? = nil, mailingCountry: String? = nil, mailingPostal: String? = nil, gender: String? = nil, optInEmail: Bool? = nil, optInPhone: Bool? = nil, optInPost: Bool? = nil, optInSms: Bool? = nil, optInNewsletter: Bool? = nil, marketingSource: String? = nil, customId: Int? = nil, medicalAlerts: [String]? = nil, insuranceCompanyId: Int? = nil, insuranceContractId: Int? = nil, membershipNumber: Int? = nil, insuranceCompany: String? = nil, insuranceContract: String? = nil, owner: Int? = nil, customFields: [CustomField]? = nil, id: Int, firstName: String, lastName: String, dOB: Date, email: String? = nil, avatar: String? = nil, phone: String? = nil, count: ClientItemsCount? = nil) {
+	public init(mobile: String? = nil, salutation: String? = nil, leadSource: String? = nil, mailingStreet: String? = nil, otherStreet: String? = nil, mailingCity: String? = nil, mailingCounty: String? = nil, mailingCountry: String? = nil, mailingPostal: String? = nil, gender: String? = nil, optInEmail: Bool? = nil, optInPhone: Bool? = nil, optInPost: Bool? = nil, optInSms: Bool? = nil, optInNewsletter: Bool? = nil, marketingSource: String? = nil, customId: Int? = nil, medicalAlerts: [String]? = nil, insuranceCompanyId: Int? = nil, insuranceContractId: Int? = nil, membershipNumber: Int? = nil, insuranceCompany: String? = nil, insuranceContract: String? = nil, owner: Int? = nil, customFields: [CustomField]? = nil, id: Client.Id, firstName: String, lastName: String, dOB: Date, email: String? = nil, avatar: String? = nil, phone: String? = nil, count: ClientItemsCount? = nil) {
         self.mobile = mobile
         self.salutation = salutation
         self.leadSource = leadSource
@@ -95,7 +95,7 @@ public struct Client: Codable, Identifiable, Equatable {
         self.insuranceContract = insuranceContract
         self.owner = owner
         //self.customFields = customFields
-        self.id = Id(rawValue: id)
+		self.id = id
         self.firstName = firstName
         self.lastName = lastName
         self.dOB = dOB
@@ -164,12 +164,9 @@ public struct Client: Codable, Identifiable, Equatable {
         self.insuranceContract = nil
         self.owner = try container.decode(Int.self, forKey: .owner)
 
-        do {
-            self.id = Id(rawValue: Int(try container.decode(String.self, forKey: .id))!)
-        } catch {
-            throw RequestError.jsonDecoding("Id invalid")
-        }
-
+        
+		self.id = try container.decode(Client.Id.self, forKey: .id)
+		
         if let sDate = try? container.decode(String.self, forKey: .dOB), let dob = Date(sDate, format: "yyyy-mm-dd", region: .local) {
             self.dOB = dob
         } else {
@@ -214,39 +211,8 @@ public struct Client: Codable, Identifiable, Equatable {
 }
 
 extension Client {
-    static let mockClients =
-        [
-            Client(id:1, firstName: "Jessica", lastName:"Avery", dOB: Date(), email: "ninenine@me.com", avatar: "dummy1"),
-            Client(id:2, firstName: "Joan", lastName:"Bailey", dOB: Date(), email: "bmcmahon@outlook.com", avatar: nil),
-            Client(id:3, firstName: "Joanne", lastName:"Baker", dOB: Date(), email: "redingtn@yahoo.ca", avatar: nil),
-            Client(id:4, firstName: "Julia", lastName:"Ball", dOB: Date(), email: "bolow@mac.com", avatar: "dummy2"),
-            Client(id:5, firstName: "Karen", lastName:"Bell", dOB: Date(), email: "microfab@msn.com", avatar: nil),
-            Client(id:6, firstName: "Katherine", lastName:"Berry", dOB: Date(), avatar: nil),
-            Client(id:7, firstName: "Kimberly", lastName:"Black", dOB: Date(), email: "msloan@msn.com", avatar: nil),
-            Client(id:8, firstName: "Kylie", lastName:"Blake", dOB: Date(), email: "seano@yahoo.com", avatar: "dummy3"),
-            Client(id:9, firstName: "Lauren", lastName:"Bond", dOB: Date(), email: "jorgb@aol.com", avatar: "dummy4"),
-            Client(id:10, firstName: "Leah", lastName:"Bower", dOB: Date(), avatar: "dummy5"),
-            Client(id:11, firstName: "Lillian", lastName:"Brown", dOB: Date(), email: "nogin@gmail.com", avatar: "dummy6"),
-            Client(id:12, firstName: "Lily", lastName:"Buckland", dOB: Date(), email: "redingtn@hotmail.com", avatar: "dummy7"),
-            Client(id:13, firstName: "Lisa", lastName:"Burgess", dOB: Date(), avatar: nil),
-            Client(id:14, firstName: "Madeleine", lastName:"Butler", dOB: Date(), avatar: nil),
-            Client(id:15, firstName: "Maria", lastName:"Cameron", dOB: Date(), email: "gilmoure@verizon.net", avatar: nil),
-            Client(id:16, firstName: "Mary", lastName:"Campbell", dOB: Date(), avatar: nil),
-            Client(id:17, firstName: "Megan", lastName:"Carr", dOB: Date(), avatar: "dummy8"),
-            Client(id:18, firstName: "Melanie", lastName:"Chapman", dOB: Date(), email: "dpitts@att.net", avatar: "dummy9"),
-            Client(id:19, firstName: "Michelle", lastName:"Churchill", dOB: Date(), avatar: nil),
-            Client(id:20, firstName: "Molly", lastName:"Clark", dOB: Date(), avatar: nil),
-            Client(id:21, firstName: "Natalie", lastName:"Clarkson", dOB: Date(), email: "bmcmahon@outlook.com", avatar: nil),
-            Client(id:22, firstName: "Nicola", lastName:"Avery", dOB: Date(), avatar: nil),
-            Client(id:23, firstName: "Olivia", lastName:"Bailey", dOB: Date(), avatar: nil),
-            Client(id:24, firstName: "Penelope", lastName:"Baker", dOB: Date(), avatar: "dummy10"),
-            Client(id:25, firstName: "Pippa", lastName:"Ball", dOB: Date(), avatar: nil),
-    ]
-}
-
-extension Client {
 	public init(patDetails: PatientDetails) {
-		self.init(id: patDetails.id.rawValue,
+		self.init(id: patDetails.id,
 				  firstName: patDetails.firstName,
 				  lastName: patDetails.lastName,
 				  dOB: Date())

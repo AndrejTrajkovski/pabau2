@@ -3,6 +3,17 @@ import Tagged
 
 public typealias EitherStringOrInt = Either<String, Int>
 
+extension EitherStringOrInt: CustomStringConvertible {
+	public var description: String {
+		switch self {
+		case .left(let string):
+			return string
+		case .right(let int):
+			return String(int) 
+		}
+	}
+}
+
 public enum Either<Left: Decodable & Equatable & Hashable, Right: Decodable & Equatable & Hashable>: Decodable, Equatable, Hashable {
 	case left(Left)
 	case right(Right)
@@ -41,25 +52,10 @@ public struct Location: Decodable, Identifiable, Equatable {
         self.name = try container.decode(String.self, forKey: .name)
         self.color = try container.decodeIfPresent(String.self, forKey: .color)
     }
-
-}
-
-extension Location {
 	
-	public static func randomId() -> Location.Id {
-		mock().randomElement()!.id
-	}
-	
-	public static func mock() -> [Location] {
-		[
-			Location(id: 1, name: "Leicester", color: "#FF0000"),
-			Location(id: 2, name: "London", color: "#FF00FF"),
-			Location(id: 3, name: "Birmingham", color: "#800080"),
-			Location(id: 4, name: "Manchester", color: "#00FF00"),
-			Location(id: 5, name: "Portsmouth", color: "#FFB6C1"),
-			Location(id: 6, name: "Skopje", color: "#FFFF00"),
-			Location(id: 7, name: "Liverpool", color: "#9932CC")
-		]
+	public init(id: String, name: String) {
+		self.id = Self.Id.init(rawValue: EitherStringOrInt.left(id))
+		self.name = name
+		self.color = nil
 	}
 }
-

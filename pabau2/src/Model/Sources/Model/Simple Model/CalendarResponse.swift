@@ -26,7 +26,7 @@ public struct CalendarResponse: Decodable {
 }
 
 // MARK: - Rota
-public struct Rota: Codable {
+public struct Rota: Decodable {
 	
 	let shift: [Shift]
 }

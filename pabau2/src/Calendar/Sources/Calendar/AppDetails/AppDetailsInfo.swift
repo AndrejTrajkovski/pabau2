@@ -67,7 +67,7 @@ extension AppDetailsInfo.ViewState {
 		self.serviceName = state.app.service
 		self.dateString = state.app.start_date.toString(.time(.short))
 		self.employeeName = state.app.employeeName
-		self.roomName = state.app.roomName
+		self.roomName = state.app.roomName ?? ""
 		self.serviceColor = state.app.serviceColor ?? "00000000"
 	}
 }

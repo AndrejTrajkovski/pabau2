@@ -7,7 +7,7 @@ extension APIClient {
 			"mode": "save",
 			//									"uid": "",
 			"booking_id": "",
-			"contact_id": String(clientId.rawValue),
+			"contact_id": clientId.description,
 			"form_id": form.templateInfo.id.rawValue,
 			"form_data": form.getJSONPOSTValues()]
 		let requestBuilder: RequestBuilder<VoidAPIResponse>.Type = requestBuilderFactory.getBuilder()

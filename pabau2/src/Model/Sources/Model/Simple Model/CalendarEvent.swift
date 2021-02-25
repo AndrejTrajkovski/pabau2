@@ -171,7 +171,14 @@ extension CalendarEvent: Decodable {
 		}
 		let employeeId = try container.decode(Employee.Id.self, forKey: .employeeId)
 		let locationId = try container.decode(Location.ID.self, forKey: .locationID)
-		let _private = try container.decode(Bool.self, forKey: .appointmentPrivate)
+		let _private: Bool
+		let eitherPrivate = try container.decode(Either<Bool, String>.self, forKey: .appointmentPrivate)
+		switch eitherPrivate {
+		case .left(let bool):
+			_private = bool
+		case .right(let string):
+			_private = Bool.init(string) ?? false
+		}
 		let status = try? container.decode(AppointmentStatus?.self, forKey: .appointmentStatus)
 		let start_date = try Date(container: container,
 								  codingKey: .startDate,

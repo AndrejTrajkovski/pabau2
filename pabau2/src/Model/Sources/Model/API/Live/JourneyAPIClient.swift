@@ -5,7 +5,7 @@ import Util
 extension APIClient {
 	
 	public func getEmployees() -> Effect<[Employee], RequestError> {
-		struct GetEmployees: Codable {
+		struct GetEmployees: Decodable {
 			public let employees: [Employee]
 			enum CodingKeys: String, CodingKey {
 				case employees
@@ -42,7 +42,7 @@ extension APIClient {
 	}
 	
 	public func getLocations() -> Effect<[Location], RequestError> {
-		struct GetLocations: Codable {
+		struct GetLocations: Decodable {
 			let locations: [Location]
 			enum CodingKeys: String, CodingKey {
 				case locations = "employees"

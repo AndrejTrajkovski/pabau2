@@ -36,7 +36,7 @@ func journeyGroup(appointments: [Appointment]) -> [Date: [Journey]] {
 	return Dictionary(grouping: appointments, by: { $0.start_date })
 		.mapValues {
 			Dictionary(grouping: $0, by: {
-				return JourneyKey(customerId: $0.customerId, employeeId: $0.employeeId)
+				return JourneyKey(customerId: $0.customer_id, employeeId: $0.employeeId)
 			}).map(\.value)
 		}
 }
