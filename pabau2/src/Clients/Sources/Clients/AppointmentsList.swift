@@ -103,7 +103,9 @@ struct DateLocation: View {
 	let app: CCAppointment
 	var body: some View {
 		HStack {
-			DateLabel(date: app.start_date)
+			if let date = app.startDate {
+				DateLabel(date: date)
+			}
 			LocationLabel(location: app.locationName ?? "")
 		}
 	}

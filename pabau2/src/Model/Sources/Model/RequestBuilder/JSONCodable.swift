@@ -36,6 +36,13 @@ extension Formatter {
         formatter.dateFormat = "dd-MM-yyyy HH:mm"
         return formatter
     }()
+	
+	static let ccAppointments: DateFormatter = {
+		let formatter = DateFormatter()
+		formatter.locale = Locale(identifier: "en_US_POSIX")
+		formatter.dateFormat = "yyyy-MM-dd' 'HH:mm:ss"
+		return formatter
+	}()
 }
 
 func newJSONDecoder() -> JSONDecoder {
