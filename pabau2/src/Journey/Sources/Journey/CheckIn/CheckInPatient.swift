@@ -55,11 +55,11 @@ let checkInPatientReducer: Reducer<CheckInPatientState, CheckInPatientAction, Jo
 		state: \CheckInPatientState.patientDetails,
 		action: /CheckInPatientAction.patientDetails,
 		environment: { $0 }),
-	htmlFormReducer.pullback(
+	htmlFormParentReducer.pullback(
 		state: \CheckInPatientState.medicalHistory,
 		action: /CheckInPatientAction.medicalHistory,
 		environment: makeFormEnv(_:)),
-	htmlFormReducer.forEach(
+	htmlFormParentReducer.forEach(
 		state: \CheckInPatientState.consents,
 		action: /CheckInPatientAction.consents(id:action:),
 		environment: makeFormEnv(_:)),
@@ -80,9 +80,9 @@ struct CheckInPatientState: Equatable, CheckInState {
 	var patientDetails: PatientDetails
 	var patientDetailsStatus: Bool
 	var medicalHistoryId: HTMLForm.ID
-	var medicalHistory: HTMLForm
+	var medicalHistory: HTMLFormParentState
 	var medicalHistoryStatus: Bool
-	var consents: IdentifiedArray<HTMLForm.ID, HTMLForm>
+	var consents: IdentifiedArrayOf<HTMLFormParentState>
 	var consentsStatuses: [HTMLForm.ID: Bool]
 	var isPatientComplete: Bool
 	var selectedIdx: Int
@@ -114,7 +114,7 @@ extension CheckInPatientState {
 		case .consents:
 			return consents.map {
 				StepFormInfo(status: consentsStatuses[$0.id]!,
-							 title: $0.templateInfo.name)
+							 title: $0.info.name)
 			}
 		case .patientComplete:
 			return [StepFormInfo(status: isPatientComplete,
@@ -150,13 +150,13 @@ func patientForm(stepType: StepType,
 										action: { .patientDetails($0) })
 		)
 	case .medicalhistory:
-		HTMLFormView(store: store.scope(state: { $0.medicalHistory },
+		HTMLFormParent(store: store.scope(state: { $0.medicalHistory },
 										  action: { .medicalHistory($0) })
 		)
 	case .consents:
 		ForEachStore(store.scope(state: { $0.consents },
 								 action: CheckInPatientAction.consents(id: action:)),
-					 content: { HTMLFormView.init(store:$0, isCheckingDetails: false) }
+					 content: { HTMLFormParent.init(store:$0) }
 		)
 	case .patientComplete:
 		PatientCompleteForm(store: store.scope(state: { $0.isPatientComplete }, action: { .patientComplete($0)})

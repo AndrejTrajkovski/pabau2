@@ -13,10 +13,10 @@ public struct CheckInContainerState: Equatable {
 	var patientDetailsStatus: Bool
 
 	var medicalHistoryId: HTMLForm.ID
-	var medicalHistory: HTMLForm
+	var medicalHistory: HTMLFormParentState
 	var medicalHistoryStatus: Bool
 
-	var consents: IdentifiedArrayOf<HTMLForm>
+	var consents: IdentifiedArrayOf<HTMLFormParentState>
 	var consentsStatuses: [HTMLForm.ID: Bool]
 
 	var treatmentNotes: IdentifiedArrayOf<HTMLForm>
@@ -139,7 +139,7 @@ extension CheckInContainerState {
 		 pathway: PathwayTemplate,
 		 patientDetails: PatientDetails,
 		 medicalHistoryId: HTMLForm.ID,
-		 medHistory: HTMLForm,
+		 medHistory: HTMLFormParentState,
 		 consents: IdentifiedArrayOf<FormTemplateInfo>,
 		 allConsents: IdentifiedArrayOf<FormTemplateInfo>,
 		 photosState: PhotosState) {

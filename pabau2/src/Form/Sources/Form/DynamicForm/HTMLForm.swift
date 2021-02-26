@@ -3,21 +3,6 @@ import SwiftUI
 import ComposableArchitecture
 import Util
 
-public let htmlFormReducer: Reducer<HTMLForm, HTMLFormAction, FormEnvironment> = .combine(
-	cssFieldReducer.forEach(
-		state: \HTMLForm.formStructure,
-		action: /HTMLFormAction.rows(idx:action:),
-		environment: { $0 }
-	)
-)
-
-public enum HTMLFormAction: Equatable {
-	case rows(idx: Int, action: CSSClassAction)
-	case complete(CompleteBtnAction)
-	//idea:
-//	case requests(JourneyFormRequestsAction<HTMLForm>)
-}
-
 public struct HTMLFormView: View {
 
 	let isCheckingDetails: Bool
@@ -34,6 +19,7 @@ public struct HTMLFormView: View {
 		print("HTMLForm")
 		return ScrollView {
 			LazyVStack {
+				HTMLFormTitle(store: store.scope(state: { $0.templateInfo.name }).actionless)
 				ForEachStore(store.scope(state: { $0.formStructure },
 										 action: { HTMLFormAction.rows(idx: $0, action: $1) }),
 							 content: { localStore in
@@ -45,6 +31,15 @@ public struct HTMLFormView: View {
 												  action: { .complete($0) })
 				)
 			}
+		}
+	}
+}
+
+public struct HTMLFormTitle: View {
+	let store: Store<String, Never>
+	public var body: some View {
+		WithViewStore(store) { viewStore in
+			Text(viewStore.state).font(.title)
 		}
 	}
 }

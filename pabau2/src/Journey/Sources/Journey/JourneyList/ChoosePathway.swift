@@ -20,7 +20,7 @@ let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayCont
 													  pathway: state.selectedPathway!,
 													  patientDetails: PatientDetails.mock,
 													  medicalHistoryId: HTMLForm.getMedHistory().id,
-													  medHistory: HTMLForm.getMedHistory(),
+													  medHistory: HTMLFormParentState.init(info: FormTemplateInfo(id: HTMLForm.getMedHistory().id, name: "MEDICAL HISTORY", type: .history), clientId: Client.ID.init(rawValue: .right(1))),
 													  consents: state.allConsents.filter(
 														pipe(get(\.id), state.selectedConsentsIds.contains)
 													  ),

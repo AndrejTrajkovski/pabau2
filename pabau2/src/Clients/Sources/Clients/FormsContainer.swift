@@ -11,7 +11,6 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 		environment: { $0 }
 	),
 	.init { state, action, env in
-		
 		func getForm(_ templateId: HTMLForm.ID,_ formAPI: FormAPI) -> Effect<FormsContainerAction, Never> {
 			return formAPI.getForm(templateId: templateId)
 				.catchToEffect()
@@ -71,7 +70,7 @@ public struct FormsContainerState: Equatable {
 
 public enum FormsContainerAction: Equatable {
 	case chooseForms(ChooseFormAction)
-	case forms(id: HTMLForm.ID, action: HTMLFormParentAction)
+	case forms(id: HTMLForm.ID, action: HTMLFormAction)
 	case checkIn(CheckInAction)
 }
 
