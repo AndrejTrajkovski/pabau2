@@ -11,18 +11,38 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 		environment: { $0 }
 	),
 	.init { state, action, env in
+		
+		func getForm(_ templateId: HTMLForm.ID,_ formAPI: FormAPI) -> Effect<FormsContainerAction, Never> {
+			return formAPI.getForm(templateId: templateId)
+				.catchToEffect()
+				.receive(on: DispatchQueue.main)
+				.map { FormsContainerAction.forms(id: templateId, action: .gotForm($0))}
+				.eraseToEffect()
+		}
+		
 		switch action {
+		
 		case .chooseForms(.proceed):
 			state.isFillingFormsActive = true
 			guard state.chooseForms != nil else { break }
 			let array = state.chooseForms!.selectedTemplates().map { HTMLFormParentState.init(info: $0, clientId: state.clientId) }
 			state.formsCollection = IdentifiedArray(array)
 			guard let first = state.chooseForms!.selectedTemplates().first else { return .none }
-			return env.formAPI.getForm(templateId: first.id)
-				.catchToEffect()
-				.receive(on: DispatchQueue.main)
-				.map { FormsContainerAction.forms(id: first.id, action: .gotForm($0))}
-				.eraseToEffect()
+			return .concatenate (
+				state.formsCollection.map(\.id).map { getForm($0, env.formAPI) }
+			)
+			
+		case .forms(let id, let action):
+			switch action {
+			case .gotPOSTResponse(let response):
+				if case .success = response {
+					state.next()
+				}
+				return getForm(state.formsCollection[state.selectedIdx].id, env.formAPI)
+			default:
+				break
+			}
+			
 		default:
 			break
 		}
@@ -57,7 +77,7 @@ public enum FormsContainerAction: Equatable {
 
 extension FormsContainerState: CheckInState {
 	public func stepForms() -> [StepFormInfo] {
-		formsCollection.map { StepFormInfo.init(status: $0.isComplete, title: $0.form?.title ?? "")}
+		formsCollection.map { StepFormInfo.init(status: $0.isComplete, title: $0.info.name )}
 	}
 }
 
@@ -84,7 +104,8 @@ struct FormsContainer: View {
 	}
 
 	var checkInView: some View {
-		CheckIn(store: store.scope(state: { $0 },
+		print("FormsContainer")
+		return CheckIn(store: store.scope(state: { $0 },
 								   action: { .checkIn($0)}),
 				avatarView: { Text("avatar") },
 				content: {

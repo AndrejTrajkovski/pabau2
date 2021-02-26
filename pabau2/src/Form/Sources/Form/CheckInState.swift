@@ -6,7 +6,7 @@ public protocol CheckInState {
 	func stepForms() -> [StepFormInfo]
 }
 
-extension CheckInState {
+public extension CheckInState {
 
 	mutating func select(idx: Int) {
 		selectedIdx = idx

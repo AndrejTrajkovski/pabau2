@@ -40,7 +40,7 @@ public struct HTMLFormView: View {
 								FormSectionField(store: localStore,
 												 isCheckingDetails: isCheckingDetails)
 							 }
-				).id(UUID())
+				)
 				CompleteButton(store: store.scope(state: { $0 },
 												  action: { .complete($0) })
 				)
