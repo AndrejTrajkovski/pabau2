@@ -81,14 +81,10 @@ struct CheckInPatientState: Equatable, CheckInState {
 	var patientDetailsStatus: Bool
 	var medicalHistoryId: HTMLForm.ID
 	var medicalHistory: HTMLFormParentState
-	var medicalHistoryStatus: Bool
 	var consents: IdentifiedArrayOf<HTMLFormParentState>
-	var consentsStatuses: [HTMLForm.ID: Bool]
 	var isPatientComplete: Bool
 	var selectedIdx: Int
 	var patientDetailsLS: LoadingState
-	var medHistoryLS: LoadingState
-	var consentsLS: [HTMLForm.ID: LoadingState]
 }
 
 //MARK: - CheckInState
@@ -109,11 +105,11 @@ extension CheckInPatientState {
 			return [StepFormInfo(status: patientDetailsStatus,
 								 title: "PATIENT DETAILS")]
 		case .medicalhistory:
-			return [StepFormInfo(status: medicalHistoryStatus,
+			return [StepFormInfo(status: medicalHistory.isComplete,
 								 title: "MEDICAL HISTORY")]
 		case .consents:
 			return consents.map {
-				StepFormInfo(status: consentsStatuses[$0.id]!,
+				StepFormInfo(status: $0.isComplete,
 							 title: $0.info.name)
 			}
 		case .patientComplete:
