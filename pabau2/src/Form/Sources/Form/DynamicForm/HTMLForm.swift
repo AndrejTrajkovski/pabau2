@@ -14,23 +14,24 @@ public struct HTMLFormView: View {
 		UITableViewHeaderFooterView.appearance().tintColor = UIColor.white
 		UITableView.appearance().separatorStyle = .none
 	}
-
+	
 	public var body: some View {
-		print("HTMLForm")
-		return ScrollView {
-			LazyVStack {
-				HTMLFormTitle(store: store.scope(state: { $0.templateInfo.name }).actionless)
-				ForEachStore(store.scope(state: { $0.formStructure },
-										 action: { HTMLFormAction.rows(idx: $0, action: $1) }),
-							 content: { localStore in
-								FormSectionField(store: localStore,
-												 isCheckingDetails: isCheckingDetails)
-							 }
-				)
-				CompleteButton(store: store.scope(state: { $0 },
-												  action: { .complete($0) })
-				)
+		VStack {
+			HTMLFormTitle(store: store.scope(state: { $0.templateInfo.name }).actionless)
+			ScrollView {
+				LazyVStack {
+					ForEachStore(store.scope(state: { $0.formStructure },
+											 action: { HTMLFormAction.rows(idx: $0, action: $1) }),
+								 content: { localStore in
+									FormSectionField(store: localStore,
+													 isCheckingDetails: isCheckingDetails)
+								 }
+					)
+				}
 			}
+			CompleteButton(store: store.scope(state: { $0 },
+											  action: { .complete($0) })
+			)
 		}
 	}
 }

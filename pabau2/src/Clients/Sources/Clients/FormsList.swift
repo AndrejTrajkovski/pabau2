@@ -9,11 +9,6 @@ public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnv
 		action: /FormsListAction.action,
 		environment: { $0 }
 	),
-	formsContainerReducer.optional.pullback(
-		state: \FormsListState.formsContainer,
-		action: /FormsListAction.formsContainer,
-		environment: { FormEnvironment($0.formAPI, $0.userDefaults) }
-	),
 	.init { state, action, env in
 		switch action {
 		case .add:
@@ -29,13 +24,27 @@ public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnv
 			state.formsContainer = nil
 		case .formsContainer(.checkIn(.onXTap)):
 			state.formsContainer = nil
+		case .formsContainer(.forms(let id, .gotPOSTResponse(.success(let filledFormId)))):
+			guard state.formsContainer != nil else { return .none }
+			if let savedForm = state.formsContainer!.formsCollection[id: id] {
+				state.childState.state.removeAll {
+					$0.templateInfo == savedForm.info
+				}
+				let savedFilledForm = FilledFormData.init(templateInfo: savedForm.info, treatmentId: filledFormId)
+				state.childState.state.insert(savedFilledForm, at: 0)
+			}
+			if state.formsContainer!.formsCollection.count == state.formsContainer!.selectedIdx + 1 {
+				state.formsContainer = nil
+			} else {
+				_ = state.formsContainer!.next()
+			}
 		case .formsContainer:
 			break
 		case .formRaw(.rows(let id, let rowAction)):
 			switch rowAction {
 			case .select:
 				let selected: FilledFormData = state.childState.state[id: id]!
-				let formState = HTMLFormParentState.init(formData: selected, clientId: state.clientId)
+				let formState = HTMLFormParentState.init(formData: selected, clientId: state.clientId, getLoadingState: .loading)
 				state.formsContainer = FormsContainerState(clientId: state.clientId,
 														   formType: state.formType,
 														   chooseForms: nil,
@@ -51,7 +60,12 @@ public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnv
 			}
 		}
 		return .none
-	}
+	},
+	formsContainerReducer.optional.pullback(
+		state: \FormsListState.formsContainer,
+		action: /FormsListAction.formsContainer,
+		environment: { FormEnvironment($0.formAPI, $0.userDefaults) }
+	)
 )
 
 public struct FormsListState: ClientCardChildParentState, Equatable {

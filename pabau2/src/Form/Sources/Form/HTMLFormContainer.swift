@@ -4,14 +4,10 @@ import Util
 import SwiftUI
 
 public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, FormEnvironment> = .combine(
-//	cssFieldReducer.optional.forEach(
-//		state: \HTMLFormParentState.form.formStructure,
-//		action: /HTMLFormAction.rows(idx:action:),
-//		environment: { $0 }
-//	),
 	.init { state, action, env in
 		switch action {
 		case .gotForm(let result):
+			print("enters here")
 			switch result {
 			case .success(let value):
 				state.form = value
@@ -31,11 +27,20 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, F
 			state.isComplete = true
 		case .rows(idx: let idx, action: let action):
 			break
+		case .saveAlertCanceled:
+			state.saveFailureAlert = nil
 		case .getFormError(.retry):
+			break
+		default:
 			break
 		}
 		return .none
-	}
+	},
+	formReducer.optional.pullback(
+		state: \HTMLFormParentState.form,
+		action: /.self,
+		environment: { $0 }
+	)
 )
 
 public struct HTMLFormParentState: Equatable, Identifiable {
@@ -43,10 +48,11 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 	public var id: HTMLForm.ID { info.id }
 
 	public init(formData: FilledFormData,
-				clientId: Client.ID) {
+				clientId: Client.ID,
+				getLoadingState: LoadingState) {
 		self.info = formData.templateInfo
 		self.form = nil
-		self.getLoadingState = .initial
+		self.getLoadingState = getLoadingState
 		self.isComplete = false
 		self.filledFormId = formData.treatmentId
 		self.clientId = clientId
@@ -54,10 +60,11 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 	}
 
 	public init(info: FormTemplateInfo,
-				clientId: Client.ID) {
+				clientId: Client.ID,
+				getLoadingState: LoadingState) {
 		self.info = info
 		self.form = nil
-		self.getLoadingState = .initial
+		self.getLoadingState = getLoadingState
 		self.isComplete = false
 		self.filledFormId = nil
 		self.clientId = clientId
@@ -71,48 +78,73 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 	public var getLoadingState: LoadingState
 	public var postLoadingState: LoadingState
 	public var isComplete: Bool
-//	public var saveAlert: AlertState<HTMLFormAction>
+	public var saveFailureAlert: AlertState<HTMLFormAction>?
 }
 
 public enum HTMLFormAction: Equatable {
-	case gotPOSTResponse(Result<VoidAPIResponse, RequestError>)
+	case gotPOSTResponse(Result<FilledFormData.ID, RequestError>)
 	case gotForm(Result<HTMLForm, RequestError>)
 	case getFormError(ErrorViewAction)
 	case complete(CompleteBtnAction)
 	case rows(idx: Int, action: CSSClassAction)
+	case saveAlertCanceled
 }
 
 public struct HTMLFormParent: View {
 	public init(store: Store<HTMLFormParentState, HTMLFormAction>) {
 		self.store = store
+//		self.viewStore = ViewStore(store.scope(state: State.init(state:)))
+	}
+
+	enum State: Equatable {
+		case getting
+		case saving
+		case loaded
+		case initial
+		init(state: HTMLFormParentState) {
+			if state.getLoadingState == .loading {
+				self = .getting
+			} else if state.postLoadingState == .loading {
+				self = .saving
+			} else if case LoadingState.gotError(_) = state.getLoadingState {
+				self = .loaded
+			} else if case LoadingState.gotSuccess = state.getLoadingState {
+				self = .loaded
+			} else {
+				self = .initial
+			}
+		}
 	}
 
 	let store: Store<HTMLFormParentState, HTMLFormAction>
+//	@ObservedObject var viewStore: ViewStore<State, HTMLFormAction>
+
 	public var body: some View {
+//		switch viewStore.state {
+//		case .getting:
+//			LoadingView.init(title: "Loading", bindingIsShowing: .constant(true), content: { Spacer() })
+//		case .saving:
+//			LoadingView.init(title: "Saving", bindingIsShowing: .constant(true), content: { Spacer() })
+//		case .loaded:
 			IfLetStore(store.scope(state: { $0.form }),
 					   then: { HTMLFormView(store: $0, isCheckingDetails: false) },
-					   else: LoadingStateView(store: store.scope(state: { $0.getLoadingState },
+					   else: Loading(store: store.scope(state: { $0.getLoadingState },
 																 action: { .getFormError($0) }))
-			)
+			).alert(store.scope(state: \.saveFailureAlert), dismiss: HTMLFormAction.saveAlertCanceled)
+//		case .initial:
+//			EmptyView()
+//		}
 	}
 }
 
-struct LoadingStateView: View {
+struct Loading: View {
 	let store: Store<LoadingState, ErrorViewAction>
-	
+
 	var body: some View {
 		IfLetStore(store.scope(state: { state in
-			return state == .loading
+			extract(case: LoadingState.gotError, from: state)
 		}),
-		then: {
-			_ in LoadingView.init(title: "Loading", bindingIsShowing: .constant(true), content: { Spacer() })
-		},
-		else:
-			IfLetStore(store.scope(state: { state in
-				extract(case: LoadingState.gotError, from: state)
-			}),
-				then: ErrorView.init(store:)
-			)
+			then: ErrorRetry.init(store:)
 		)
 	}
 }
@@ -121,14 +153,23 @@ public enum ErrorViewAction {
 	case retry
 }
 
-struct ErrorView: View {
+struct ErrorRetry: View {
 	let store: Store<RequestError, ErrorViewAction>
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			HStack {
-				Text(viewStore.state.localizedDescription).foregroundColor(.red)
+				PlainError(store: store.actionless)
 				Button("Retry", action: { viewStore.send(.retry) })
 			}
+		}
+	}
+}
+
+struct PlainError: View {
+	let store: Store<RequestError, Never>
+	var body: some View {
+		WithViewStore(store) { viewStore in
+			Text(viewStore.state.localizedDescription).foregroundColor(.red)
 		}
 	}
 }

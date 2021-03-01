@@ -11,7 +11,7 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 		environment: { $0 }
 	),
 	.init { state, action, env in
-		func getForm(_ templateId: HTMLForm.ID,_ formAPI: FormAPI) -> Effect<FormsContainerAction, Never> {
+		func getForm(_ templateId: HTMLForm.ID, _ formAPI: FormAPI) -> Effect<FormsContainerAction, Never> {
 			return formAPI.getForm(templateId: templateId)
 				.catchToEffect()
 				.receive(on: DispatchQueue.main)
@@ -24,23 +24,11 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 		case .chooseForms(.proceed):
 			state.isFillingFormsActive = true
 			guard state.chooseForms != nil else { break }
-			let array = state.chooseForms!.selectedTemplates().map { HTMLFormParentState.init(info: $0, clientId: state.clientId) }
+			let array = state.chooseForms!.selectedTemplates().map { HTMLFormParentState.init(info: $0, clientId: state.clientId, getLoadingState: .loading) }
 			state.formsCollection = IdentifiedArray(array)
-			guard let first = state.chooseForms!.selectedTemplates().first else { return .none }
 			return .concatenate (
 				state.formsCollection.map(\.id).map { getForm($0, env.formAPI) }
 			)
-			
-		case .forms(let id, let action):
-			switch action {
-			case .gotPOSTResponse(let response):
-				if case .success = response {
-					state.next()
-				}
-				return getForm(state.formsCollection[state.selectedIdx].id, env.formAPI)
-			default:
-				break
-			}
 			
 		default:
 			break

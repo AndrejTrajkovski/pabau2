@@ -113,6 +113,13 @@ struct FormFieldStore: View {
 	}
 }
 
+let formReducer: Reducer<HTMLForm, HTMLFormAction, FormEnvironment> =
+	cssFieldReducer.forEach(
+		state: \HTMLForm.formStructure,
+		action: /HTMLFormAction.rows(idx:action:),
+		environment: { $0 }
+	)
+
 let cssFieldReducer: Reducer<CSSField, CSSClassAction, FormEnvironment> =
 	cssClassReducer.pullback(
 		state: \CSSField.cssClass,

@@ -84,7 +84,7 @@ struct CompleteButton<State>: View where State: Equatable & CompleteBtnState {
 	let store: Store<State, CompleteBtnAction>
 	public var body: some View {
 		WithViewStore(store) { viewStore in
-			PrimaryButton(viewStore.title,
+			PrimaryButton(Texts.complete,
 						  isDisabled: !viewStore.canProceed) {
 				viewStore.send(.onTap)
 			}

@@ -2,7 +2,10 @@ import ComposableArchitecture
 //FormAPI
 extension APIClient {
 	
-	public func save(form: HTMLForm, clientId: Client.ID) -> Effect<VoidAPIResponse, RequestError> {
+	public func save(form: HTMLForm, clientId: Client.ID) -> Effect<FilledFormData.ID, RequestError> {
+		struct Response: Codable {
+			let medical_form_contact_id: FilledFormData.ID
+		}
 		let body: [String : Any] = [
 			"mode": "save",
 			//									"uid": "",
@@ -10,13 +13,14 @@ extension APIClient {
 			"contact_id": clientId.description,
 			"form_id": form.templateInfo.id.rawValue,
 			"form_data": form.getJSONPOSTValues()]
-		let requestBuilder: RequestBuilder<VoidAPIResponse>.Type = requestBuilderFactory.getBuilder()
+		let requestBuilder: RequestBuilder<Response>.Type = requestBuilderFactory.getBuilder()
 		return requestBuilder.init(method: .POST,
 								   baseUrl: baseUrl,
 								   path: .medicalForms,
 								   queryParams: commonParams(),
 								   body: body)
 		.effect()
+		.map(\.medical_form_contact_id)
 	}
 	
 	public func getForm(templateId: FormTemplateInfo.ID, entryId: FilledFormData.ID) -> Effect<HTMLForm, RequestError> {

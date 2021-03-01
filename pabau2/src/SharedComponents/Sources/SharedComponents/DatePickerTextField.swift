@@ -57,7 +57,6 @@ public struct DatePickerTextField: UIViewRepresentable {
 		date.map { textField.text = dateFormatter.string(from: $0) }
         textField.font = font
         textField.textColor = textColor
-		textField.borderStyle = .none
 		
         if let contentType = textContentType {
             textField.textContentType = contentType
@@ -91,7 +90,7 @@ public struct DatePickerTextField: UIViewRepresentable {
     }
 
     private func addDoneButtonToKeyboard(_ view: UITextField) {
-        let doneToolbar: UIToolbar = UIToolbar(frame: CGRect(x:0, y:0, width:100, height:100))
+        let doneToolbar: UIToolbar = UIToolbar(frame: CGRect(x: 0, y:0, width:100, height:50))
         doneToolbar.barStyle = .default
 
         let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
@@ -110,7 +109,7 @@ public struct DatePickerTextField: UIViewRepresentable {
         items.append(done)
 
         doneToolbar.items = items
-        doneToolbar.sizeToFit()
+//        doneToolbar.sizeToFit()
 
         view.inputAccessoryView = doneToolbar
     }

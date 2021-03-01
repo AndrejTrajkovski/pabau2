@@ -103,14 +103,14 @@ public struct ChooseFormList: View {
 				.map { $0 }
 				.sorted(by: \.name)
 		}
-	
+
 		var selectedTemplates: [FormTemplateInfo] {
 			selectedTemplatesIds.compactMap {
 				templates[id: $0]
 			}
 		}
 	}
-	
+
 	public var body: some View {
 		chooseFormCells
 			.onAppear {

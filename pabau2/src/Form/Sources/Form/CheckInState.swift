@@ -12,16 +12,20 @@ public extension CheckInState {
 		selectedIdx = idx
 	}
 
-	mutating func next() {
+	mutating func next() -> Bool {
 		if stepForms().count - 1 > selectedIdx {
 			selectedIdx += 1
+			return true
 		}
+		return false
 	}
 
-	mutating func previous() {
+	mutating func previous() -> Bool  {
 		if selectedIdx > 0 {
 			selectedIdx -= 1
+			return true
 		}
+		return false
 	}
 
 	mutating func goToNextUncomplete() {
@@ -38,9 +42,9 @@ public struct CheckInReducer<T: CheckInState> {
 		case .didSelectFlatFormIndex(let idx):
 			state.selectedIdx = idx
 		case .didSelectNextStep:
-			state.next()
+			_ = state.next()
 		case .didSelectPrevStep:
-			state.previous()
+			_ = state.previous()
 		case .onXTap:
 			break
 		}
