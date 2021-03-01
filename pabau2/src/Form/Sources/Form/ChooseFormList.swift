@@ -46,7 +46,7 @@ public let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, Fo
 		//		updateWithKeepingOld(forms: &state.forms,
 		//												 finalSelectedTemplatesIds: state.selectedTemplatesIds,
 		//												 allTemplates: state.templates)
-		return .none
+		break
 	case .gotResponse(let result):
 		switch result {
 		case .success(let templates):

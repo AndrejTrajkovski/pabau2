@@ -18,14 +18,14 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 				.map { FormsContainerAction.forms(id: templateId, action: .gotForm($0))}
 				.eraseToEffect()
 		}
-		
-		switch action {
-		
+	
+	switch action {
+	
 		case .chooseForms(.proceed):
-			state.isFillingFormsActive = true
 			guard state.chooseForms != nil else { break }
 			let array = state.chooseForms!.selectedTemplates().map { HTMLFormParentState.init(info: $0, clientId: state.clientId, getLoadingState: .loading) }
 			state.formsCollection = IdentifiedArray(array)
+			state.isFillingFormsActive = true
 			return .concatenate (
 				state.formsCollection.map(\.id).map { getForm($0, env.formAPI) }
 			)
@@ -79,18 +79,18 @@ struct FormsContainer: View {
 							ChooseFormList(store: chooseFormsStore, mode: .consentsCheckIn)
 							checkInNavigationLink(isActive: viewStore.state)
 						}
-					   }, else: checkInView
+					   }, else: checkInView()
 			)
 		}.debug("Forms Container")
 	}
 
 	func checkInNavigationLink(isActive: Bool) -> some View {
 		NavigationLink.emptyHidden(isActive,
-								   checkInView
+								   checkInView()
 		)
 	}
 
-	var checkInView: some View {
+	func checkInView() -> some View {
 		print("FormsContainer")
 		return CheckIn(store: store.scope(state: { $0 },
 								   action: { .checkIn($0)}),

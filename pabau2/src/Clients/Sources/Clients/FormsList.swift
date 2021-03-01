@@ -4,6 +4,11 @@ import ComposableArchitecture
 import Form
 
 public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnvironment> = .combine (
+	formsContainerReducer.optional.pullback(
+		state: \FormsListState.formsContainer,
+		action: /FormsListAction.formsContainer,
+		environment: { FormEnvironment($0.formAPI, $0.userDefaults) }
+	),
 	ClientCardChildReducer<IdentifiedArrayOf<FilledFormData>>().reducer.pullback(
 		state: \FormsListState.childState,
 		action: /FormsListAction.action,
@@ -60,12 +65,7 @@ public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnv
 			}
 		}
 		return .none
-	},
-	formsContainerReducer.optional.pullback(
-		state: \FormsListState.formsContainer,
-		action: /FormsListAction.formsContainer,
-		environment: { FormEnvironment($0.formAPI, $0.userDefaults) }
-	)
+	}
 )
 
 public struct FormsListState: ClientCardChildParentState, Equatable {

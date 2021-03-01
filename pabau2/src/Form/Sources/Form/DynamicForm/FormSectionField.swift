@@ -113,12 +113,18 @@ struct FormFieldStore: View {
 	}
 }
 
-let formReducer: Reducer<HTMLForm, HTMLFormAction, FormEnvironment> =
+public enum HTMLRowsAction: Equatable {
+	case rows(idx: Int, action: CSSClassAction)
+	case complete(CompleteBtnAction)
+}
+
+let formReducer: Reducer<HTMLForm, HTMLRowsAction, FormEnvironment> = .combine(
 	cssFieldReducer.forEach(
 		state: \HTMLForm.formStructure,
-		action: /HTMLFormAction.rows(idx:action:),
+		action: /HTMLRowsAction.rows(idx:action:),
 		environment: { $0 }
 	)
+)
 
 let cssFieldReducer: Reducer<CSSField, CSSClassAction, FormEnvironment> =
 	cssClassReducer.pullback(

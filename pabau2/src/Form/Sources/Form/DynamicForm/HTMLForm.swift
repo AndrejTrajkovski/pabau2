@@ -6,8 +6,8 @@ import Util
 public struct HTMLFormView: View {
 
 	let isCheckingDetails: Bool
-	let store: Store<HTMLForm, HTMLFormAction>
-	public init(store: Store<HTMLForm, HTMLFormAction>,
+	let store: Store<HTMLForm, HTMLRowsAction>
+	public init(store: Store<HTMLForm, HTMLRowsAction>,
 				isCheckingDetails: Bool = false) {
 		self.store = store
 		self.isCheckingDetails = isCheckingDetails
@@ -21,7 +21,7 @@ public struct HTMLFormView: View {
 			ScrollView {
 				LazyVStack {
 					ForEachStore(store.scope(state: { $0.formStructure },
-											 action: { HTMLFormAction.rows(idx: $0, action: $1) }),
+											 action: { HTMLRowsAction.rows(idx: $0, action: $1) }),
 								 content: { localStore in
 									FormSectionField(store: localStore,
 													 isCheckingDetails: isCheckingDetails)
