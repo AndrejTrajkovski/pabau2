@@ -23,13 +23,24 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, F
 			}
 		case .rows(.complete):
 			guard let form = state.form else { break }
+			state.postLoadingState = .loading
 			return env.formAPI.save(form: form, clientId: state.clientId)
 				.receive(on: DispatchQueue.main)
 				.catchToEffect()
 				.map(HTMLFormAction.gotPOSTResponse)
 		case .gotPOSTResponse(let result):
-			print(result)
-			state.isComplete = true
+			switch result {
+			case .success(_):
+				state.postLoadingState = .gotSuccess
+				state.isComplete = true
+			case .failure(let error):
+				state.postLoadingState = .gotError(error)
+				state.saveFailureAlert = AlertState(
+					title: "Error Saving Form",
+					message: error.description,
+					dismissButton: .default("OK")
+				)
+			}
 		case .saveAlertCanceled:
 			state.saveFailureAlert = nil
 		case .getFormError(.retry):
@@ -166,7 +177,7 @@ struct PlainError: View {
 	let store: Store<RequestError, Never>
 	var body: some View {
 		WithViewStore(store) { viewStore in
-			Text(viewStore.state.localizedDescription).foregroundColor(.red)
+			Text(viewStore.state.description).foregroundColor(.red)
 		}
 	}
 }

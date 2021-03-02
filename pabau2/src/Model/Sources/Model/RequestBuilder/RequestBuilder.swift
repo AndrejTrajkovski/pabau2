@@ -67,7 +67,7 @@ private enum DownloadException: Error {
 	case requestMissingURL
 }
 
-public enum RequestError: Error, Equatable {
+public enum RequestError: Error, Equatable, CustomStringConvertible {
 	public static func == (lhs: RequestError, rhs: RequestError) -> Bool {
 		switch (lhs, rhs) {
 		case (.urlBuilderError, .urlBuilderError),
@@ -96,6 +96,31 @@ public enum RequestError: Error, Equatable {
 	case responseNotHTTP
 	case apiError(String)
 	case unknown
+	
+	public var description: String {
+		switch self {
+		case .urlBuilderError(let message):
+			return message
+		case .emptyDataResponse:
+			return "Empty Data Response."
+		case .nilHTTPResponse:
+			return "Nil HTTP Response."
+		case .jsonDecoding(let message):
+			return message
+		case .networking(let message):
+			return message.localizedDescription
+		case .generalError(let message):
+			return message.localizedDescription
+		case .serverError(let message):
+			return message
+		case .responseNotHTTP:
+			return "Response not HTTP."
+		case .apiError(let message):
+			return message
+		case .unknown:
+			return "Unknown Error."
+		}
+	}
 }
 
 extension URLRequest {

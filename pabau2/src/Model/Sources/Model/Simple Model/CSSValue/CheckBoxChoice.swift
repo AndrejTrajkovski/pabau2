@@ -13,8 +13,8 @@ public struct CheckBoxState: Equatable {
 	
 	public var rows: [CheckBoxChoice] {
 		get {
-			self.checkboxes.map {
-				CheckBoxChoice.init(parentId: parentId, title: $0, isSelected: selected.contains($0))
+			zip(self.checkboxes, self.checkboxes.indices).map {
+				CheckBoxChoice.init(index: $0.1, parentId: parentId, title: $0.0, isSelected: selected.contains($0.0))
 			}
 		}
 		set {
@@ -25,9 +25,10 @@ public struct CheckBoxState: Equatable {
 
 public struct CheckBoxChoice: Identifiable, Equatable {
 	public var id: String {
-		parentId.fakeId.rawValue + title
+		parentId.fakeId.rawValue + title + String(index)
 	}
 	
+	let index: Int
 	let parentId: CSSFieldID
 	public let title: String
 	public var isSelected: Bool
