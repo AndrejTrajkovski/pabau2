@@ -19,7 +19,7 @@ public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnv
 		case .add:
 			state.formsContainer = FormsContainerState(clientId: state.clientId,
 													   formType: state.formType,
-													   chooseForms: ChooseFormState(templates: [], selectedTemplatesIds: []),
+													   chooseForms: ChooseFormState(templates: [], selectedTemplatesIds: [], mode: .clientCard(state.formType)),
 													   isFillingFormsActive: false,
 													   formsCollection: [],
 													   selectedIdx: 0)

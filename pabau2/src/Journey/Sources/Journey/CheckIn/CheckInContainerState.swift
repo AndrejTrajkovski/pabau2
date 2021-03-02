@@ -68,6 +68,7 @@ extension CheckInContainerState {
 	var chooseTreatments: ChooseFormJourneyState {
 		get {
 			return ChooseFormJourneyState(
+				mode: .treatmentNotes,
 				forms: treatmentNotes,
 				templates: allTreatmentForms,
 				templatesLoadingState: .initial,
@@ -84,6 +85,7 @@ extension CheckInContainerState {
 	var chooseConsents: ChooseFormJourneyState {
 		get {
 			return ChooseFormJourneyState(
+				mode: .consentsCheckIn,
 				forms: consents,
 				templates: allConsents,
 				templatesLoadingState: .initial,

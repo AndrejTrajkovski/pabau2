@@ -18,7 +18,7 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 				.map { FormsContainerAction.forms(id: templateId, action: .gotForm($0))}
 				.eraseToEffect()
 		}
-	
+
 	switch action {
 	
 		case .chooseForms(.proceed):
@@ -76,7 +76,7 @@ struct FormsContainer: View {
 								   action: { .chooseForms($0) }),
 					   then: { chooseFormsStore in
 						Group {
-							ChooseFormList(store: chooseFormsStore, mode: .consentsCheckIn)
+							ChooseFormList(store: chooseFormsStore)
 							checkInNavigationLink(isActive: viewStore.state)
 						}
 					   }, else: checkInView()

@@ -29,6 +29,7 @@ public let chooseFormJourneyReducer: Reducer<ChooseFormJourneyState,
 )
 
 public struct ChooseFormJourneyState: Equatable {
+	let mode: ChooseFormMode
 	var forms: IdentifiedArrayOf<HTMLFormParentState>
 	var templates: IdentifiedArrayOf<FormTemplateInfo>
 	var templatesLoadingState: LoadingState = .initial
@@ -37,14 +38,12 @@ public struct ChooseFormJourneyState: Equatable {
 
 struct ChooseFormJourney: View {
 	let store: Store<ChooseFormJourneyState, ChooseFormAction>
-	let mode: ChooseFormMode
 	let journey: Journey?
 
 	var body: some View {
 		ChooseFormList(store:
 						self.store.scope(
-							state: { $0.chooseForm }, action: { $0 }),
-					   mode: self.mode)
+							state: { $0.chooseForm }, action: { $0 }))
 			.journeyBase(self.journey, .long)
 	}
 }
@@ -55,7 +54,8 @@ extension ChooseFormJourneyState {
 			ChooseFormState(
 				templates: self.templates,
 				templatesLoadingState: self.templatesLoadingState,
-				selectedTemplatesIds: self.selectedTemplatesIds
+				selectedTemplatesIds: self.selectedTemplatesIds,
+				mode: self.mode
 			)
 		}
 		set {

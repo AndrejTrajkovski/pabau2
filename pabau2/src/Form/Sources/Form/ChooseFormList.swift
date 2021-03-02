@@ -5,6 +5,7 @@ import ComposableArchitecture
 import SharedComponents
 
 public struct ChooseFormState: Equatable {
+	let mode: ChooseFormMode
 	public var templates: IdentifiedArrayOf<FormTemplateInfo>
 	public var templatesLoadingState: LoadingState = .initial
 	public var selectedTemplatesIds: [HTMLForm.ID]
@@ -13,11 +14,13 @@ public struct ChooseFormState: Equatable {
 	public init(
 		templates: IdentifiedArrayOf<FormTemplateInfo>,
 		templatesLoadingState: LoadingState = .initial,
-		selectedTemplatesIds: [HTMLForm.ID]
+		selectedTemplatesIds: [HTMLForm.ID],
+		mode: ChooseFormMode
 	) {
 		self.templates = templates
 		self.templatesLoadingState = templatesLoadingState
 		self.selectedTemplatesIds = selectedTemplatesIds
+		self.mode = mode
 	}
 
 	public func selectedTemplates() -> [FormTemplateInfo] {
@@ -30,7 +33,7 @@ public enum ChooseFormAction: Equatable {
 	case removeTemplateId(HTMLForm.ID)
 	case proceed//Check-In or Proceed
 	case gotResponse(Result<[FormTemplateInfo], RequestError>)
-	case onAppear(FormType)
+	case onAppear
 	case onSearch(String)
 }
 
@@ -55,11 +58,11 @@ public let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, Fo
 		case .failure(let error):
 			state.templatesLoadingState = .gotError(error)
 		}
-	case .onAppear(let formType):
+	case .onAppear:
 		state.templatesLoadingState = .loading
 		return
 			state.templates.isEmpty ?
-			environment.formAPI.getTemplates(formType)
+			environment.formAPI.getTemplates(state.mode.formType)
 			.receive(on: DispatchQueue.main)
 			.catchToEffect()
 			.map(ChooseFormAction.gotResponse)
@@ -72,15 +75,12 @@ public let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, Fo
 }
 
 public struct ChooseFormList: View {
-	let mode: ChooseFormMode
 	let store: Store<ChooseFormState, ChooseFormAction>
 	@ObservedObject var viewStore: ViewStore<ViewState, ChooseFormAction>
 
 	public init (
-		store: Store<ChooseFormState, ChooseFormAction>,
-		mode: ChooseFormMode
+		store: Store<ChooseFormState, ChooseFormAction>
 	) {
-		self.mode = mode
 		self.store = store
 		self.viewStore = ViewStore(store.scope(state: ViewState.init))
 		UITableView.appearance().separatorStyle = .none
@@ -92,6 +92,9 @@ public struct ChooseFormList: View {
 		let searchText: String
 		let isSearching: Bool
 		let notSelectedTemplates: [FormTemplateInfo]
+		let navigationTitle: String
+		let formTypeName: String
+		let primaryBtnTitle: String
 		init(_ state: ChooseFormState) {
 			self.templates = state.templates
 			self.selectedTemplatesIds = state.selectedTemplatesIds
@@ -102,6 +105,9 @@ public struct ChooseFormList: View {
 				.filter { !state.selectedTemplatesIds.contains($0.id) }
 				.map { $0 }
 				.sorted(by: \.name)
+			self.navigationTitle = state.mode.navigationTitle
+			self.formTypeName = state.mode == .treatmentNotes ? Texts.treatmentNotes : Texts.consents
+			self.primaryBtnTitle = state.mode.btnTitle
 		}
 
 		var selectedTemplates: [FormTemplateInfo] {
@@ -114,17 +120,16 @@ public struct ChooseFormList: View {
 	public var body: some View {
 		chooseFormCells
 			.onAppear {
-				print("on Appear \(self.mode)")
-				self.viewStore.send(.onAppear(self.mode.formType))
+				self.viewStore.send(.onAppear)
 			}
-			.navigationBarTitle(self.mode.navigationTitle)
+			.navigationBarTitle(viewStore.state.navigationTitle)
 	}
 	
 	var chooseFormCells: some View {
 		HStack {
 			ListFrame(style: .blue) {
 				VStack(alignment: .leading) {
-					Text(Texts.selected + " " + (self.mode == .treatmentNotes ? Texts.treatmentNotes : Texts.consents ))
+					Text(Texts.selected + " " + viewStore.state.formTypeName)
 						.font(.bold17)
 					FormTemplateList(
 						templates: self.viewStore.state.selectedTemplates,
@@ -134,7 +139,7 @@ public struct ChooseFormList: View {
 						}, onSelect: {
 							self.viewStore.send(.removeTemplateId($0.id))
 						})
-					PrimaryButton(self.mode.btnTitle) {
+					PrimaryButton(viewStore.primaryBtnTitle) {
 						withAnimation(Animation.linear(duration: 1)) {
 							self.viewStore.send(.proceed)
 						}
