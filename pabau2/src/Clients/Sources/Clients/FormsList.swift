@@ -17,7 +17,7 @@ public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnv
 	.init { state, action, env in
 		switch action {
 		case .add:
-			state.formsContainer = FormsContainerState(clientId: state.clientId,
+			state.formsContainer = FormsContainerState(client: state.client,
 													   formType: state.formType,
 													   chooseForms: ChooseFormState(templates: [], selectedTemplatesIds: [], mode: .clientCard(state.formType)),
 													   isFillingFormsActive: false,
@@ -49,8 +49,8 @@ public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnv
 			switch rowAction {
 			case .select:
 				let selected: FilledFormData = state.childState.state[id: id]!
-				let formState = HTMLFormParentState.init(formData: selected, clientId: state.clientId, getLoadingState: .loading)
-				state.formsContainer = FormsContainerState(clientId: state.clientId,
+				let formState = HTMLFormParentState.init(formData: selected, clientId: state.client.id, getLoadingState: .loading)
+				state.formsContainer = FormsContainerState(client: state.client,
 														   formType: state.formType,
 														   chooseForms: nil,
 														   isFillingFormsActive: true,
@@ -69,7 +69,7 @@ public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnv
 )
 
 public struct FormsListState: ClientCardChildParentState, Equatable {
-	let clientId: Client.ID
+	let client: Client
 	var childState: ClientCardChildState<IdentifiedArrayOf<FilledFormData>>
 	var formType: FormType
 	var formsContainer: FormsContainerState?

@@ -23,7 +23,7 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 	
 		case .chooseForms(.proceed):
 			guard state.chooseForms != nil else { break }
-			let array = state.chooseForms!.selectedTemplates().map { HTMLFormParentState.init(info: $0, clientId: state.clientId, getLoadingState: .loading) }
+			let array = state.chooseForms!.selectedTemplates().map { HTMLFormParentState.init(info: $0, clientId: state.client.id, getLoadingState: .loading) }
 			state.formsCollection = IdentifiedArray(array)
 			state.isFillingFormsActive = true
 			return .concatenate (
@@ -48,7 +48,7 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 )
 
 public struct FormsContainerState: Equatable {
-	let clientId: Client.ID
+	let client: Client
 	let formType: FormType
 	var chooseForms: ChooseFormState?
 	var isFillingFormsActive: Bool
@@ -94,7 +94,7 @@ struct FormsContainer: View {
 		print("FormsContainer")
 		return CheckIn(store: store.scope(state: { $0 },
 								   action: { .checkIn($0)}),
-				avatarView: { Text("avatar") },
+					   avatarView: { ClientAvatar(store: store.scope(state: { $0.client }).actionless) },
 				content: {
 					ForEachStore(store.scope(state: { $0.formsCollection },
 											 action: FormsContainerAction.forms(id: action:)),
@@ -102,5 +102,17 @@ struct FormsContainer: View {
 					).padding([.leading, .trailing], 32)
 				}
 		)
+	}
+}
+
+struct ClientAvatar: View {
+	let store: Store<Client, Never>
+	var body: some View {
+		WithViewStore(store) { viewStore in
+			AvatarView(avatarUrl: viewStore.avatar,
+					   initials: viewStore.initials,
+					   font: .semibold24,
+					   bgColor: .accentColor)
+		}
 	}
 }

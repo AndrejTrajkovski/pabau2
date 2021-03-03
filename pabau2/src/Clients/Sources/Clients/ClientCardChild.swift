@@ -128,15 +128,15 @@ public struct ClientCardListState: Equatable {
 		self.details = PatientDetailsClientCardState(childState: ClientCardChildState.init(state: PatientDetails.mock))
 		self.photos = CCPhotosState.init(childState: ClientCardChildState.init(state: [:]))
 		self.financials = ClientCardChildState.init(state: [])
-		self.treatmentNotes = FormsListState(clientId: client.id, childState: ClientCardChildState(state: []), formType: .treatment)
-		self.prescriptions = FormsListState(clientId: client.id, childState: ClientCardChildState(state: []), formType: .prescription)
+		self.treatmentNotes = FormsListState(client: client, childState: ClientCardChildState(state: []), formType: .treatment)
+		self.prescriptions = FormsListState(client: client, childState: ClientCardChildState(state: []), formType: .prescription)
 		self.documents = DocumentsListState(childState:
 		ClientCardChildState.init(state: []))
 		self.communications = ClientCardChildState.init(state: [])
-		self.consents = FormsListState(clientId: client.id, childState: ClientCardChildState(state: []), formType: .consent)
+		self.consents = FormsListState(client: client, childState: ClientCardChildState(state: []), formType: .consent)
         self.alerts = ClientAlertsState(client: client, childState: ClientCardChildState(state: []))
         self.notes = NotesListState.init(client: client, childState: ClientCardChildState(state: []))
-		self.consents = FormsListState(clientId: client.id, childState: ClientCardChildState(state: []), formType: .consent)
+		self.consents = FormsListState(client: client, childState: ClientCardChildState(state: []), formType: .consent)
 	}
 }
 

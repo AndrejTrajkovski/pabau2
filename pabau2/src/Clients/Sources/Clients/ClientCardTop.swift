@@ -17,10 +17,7 @@ struct ClientCardTop: View {
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			VStack {
-				AvatarView(avatarUrl: viewStore.avatar,
-									 initials: viewStore.initials,
-									 font: .regular18,
-									 bgColor: .accentColor)
+				ClientAvatar(store: store.actionless)
 					.frame(width: 84, height: 84)
 				Text(viewStore.fullname)
 					.font(Font.semibold24)
