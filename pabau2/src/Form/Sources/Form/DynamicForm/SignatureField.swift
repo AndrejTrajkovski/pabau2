@@ -36,7 +36,7 @@ struct SignatureField: View {
 	struct State: Equatable {
 		let isSigningPresented: Bool
 		let signed: SignedState?
-		
+		let image: UIImage?
 		enum SignedState: Equatable {
 			case url(String)
 			case drawings([SignatureDrawing])
@@ -51,6 +51,7 @@ struct SignatureField: View {
 			} else {
 				self.signed = nil
 			}
+			self.image = state.image()
 		}
 	}
 
@@ -81,7 +82,6 @@ struct SignatureField: View {
 										.resizable()
 										.indicator(.activity) // Activity Indicator
 										.scaledToFit()
-										.frame(height: 145)
 								})
 			case .drawings(let drawings):
 				SignedComponent(onResign: { viewStore.send(.tapToResign) },

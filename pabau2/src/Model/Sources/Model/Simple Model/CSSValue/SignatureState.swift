@@ -22,8 +22,17 @@ public struct SignatureState: Equatable {
 	private func image(canvasSize: CGSize, drawings: [SignatureDrawing]) -> UIImage {
 		let renderer = UIGraphicsImageRenderer(size: canvasSize)
 		return renderer.image { ctx in
+			let rectangle = CGRect(x: 0, y: 0, width: canvasSize.width, height: canvasSize.height)
+//
+			ctx.cgContext.setFillColor(UIColor.white.cgColor)
+//			ctx.cgContext.setStrokeColor(UIColor.black.cgColor)
+//			ctx.cgContext.setLineWidth(10)
+//
+			ctx.cgContext.addRect(rectangle)
+
+			ctx.cgContext.setStrokeColor(UIColor.black.cgColor)
+			ctx.cgContext.setLineWidth(1.0)
 			drawings.forEach { drawing in
-				ctx.cgContext.beginPath()
 				let points = drawing.points
 				if points.count > 1 {
 					for idx in 0..<points.count-1 {
@@ -33,8 +42,8 @@ public struct SignatureState: Equatable {
 						ctx.cgContext.addLine(to: next)
 					}
 				}
-				ctx.cgContext.closePath()
 			}
+			ctx.cgContext.drawPath(using: .fillStroke)
 		}
 	}
 }
