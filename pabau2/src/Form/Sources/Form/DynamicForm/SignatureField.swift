@@ -5,6 +5,7 @@ import Model
 import Util
 import ComposableArchitecture
 import SDWebImageSwiftUI
+import UIKit
 //for creating Image: https://www.hackingwithswift.com/read/27/3/drawing-into-a-core-graphics-context-with-uigraphicsimagerenderer
 
 let signatureFieldReducer: Reducer<SignatureState, SignatureAction, Any> =
@@ -13,7 +14,8 @@ let signatureFieldReducer: Reducer<SignatureState, SignatureAction, Any> =
 			switch action {
 			case .tapToResign, .tapToSign:
 				state.isSigning = true
-			case .signing(.done(let drawings)):
+			case .signing(.done(let drawings, let canvasSize)):
+				state.canvasSize = canvasSize
 				state.currentDrawings = drawings
 				state.isSigning = false
 			case .signing(.cancel):
@@ -34,6 +36,7 @@ struct SignatureField: View {
 	struct State: Equatable {
 		let isSigningPresented: Bool
 		let signed: SignedState?
+		
 		enum SignedState: Equatable {
 			case url(String)
 			case drawings([SignatureDrawing])
@@ -84,7 +87,8 @@ struct SignatureField: View {
 				SignedComponent(onResign: { viewStore.send(.tapToResign) },
 								content: {
 									DrawingPad(currentDrawing: .constant(SignatureDrawing()),
-											   drawings: .constant(drawings))
+											   drawings: .constant(drawings),
+											   childSize: .constant(.zero))
 										.disabled(true)
 								})
 			case .none:
@@ -119,7 +123,7 @@ struct SignedComponent<Content: View>: View {
 }
 
 public enum SigningComponentAction: Equatable {
-	case done([SignatureDrawing])
+	case done(drawings: [SignatureDrawing], canvasSize: CGSize)
 	case cancel
 }
 
@@ -132,6 +136,7 @@ struct SigningComponent: View {
 	let title: String
 	@State var currentDrawing = SignatureDrawing()
 	@State var drawings = [SignatureDrawing]()
+	@State var drawingPadSize: CGSize = .zero
 	
 	init(store: Store<EmptyEquatable, SigningComponentAction>,
 		 title: String) {
@@ -144,14 +149,14 @@ struct SigningComponent: View {
 		VStack(spacing: 32.0) {
 			Text(title).font(.largeTitle)
 			DrawingPad(currentDrawing: $currentDrawing,
-					   drawings: $drawings)
+					   drawings: $drawings, childSize: $drawingPadSize)
 			HStack {
 				SecondaryButton(Texts.cancel,
 								{ self.viewStore.send(.cancel) }
 				)
 				PrimaryButton(Texts.done,
 							  isDisabled: drawings.isEmpty,
-							  { self.viewStore.send(.done(drawings)) })
+							  { self.viewStore.send(.done(drawings: drawings, canvasSize: drawingPadSize)) })
 				//					self.onDone(self.drawings)
 			}
 		}.padding()
@@ -175,7 +180,8 @@ struct DrawingPad: View {
 
 	@Binding var currentDrawing: SignatureDrawing
 	@Binding var drawings: [SignatureDrawing]
-
+	@Binding var childSize: CGSize
+	
 	var body: some View {
 		GeometryReaderPatch { geometry in
 			Path { path in
@@ -186,23 +192,31 @@ struct DrawingPad: View {
 			}
 			.stroke(lineWidth: 1.0)
 			.background(Color(white: 0.95))
-				.gesture(
-					DragGesture(minimumDistance: 0.1)
-						.onChanged({ (value) in
-							let currentPoint = value.location
-							if currentPoint.y >= 0 && currentPoint.y < geometry.size.height {
-								currentDrawing.points.append(currentPoint)
-							}
-						})
-						.onEnded({ _ in
-							drawings.append(currentDrawing)
-							currentDrawing = SignatureDrawing()
-						})
-				)
+			.gesture(
+				DragGesture(minimumDistance: 0.1)
+					.onChanged({ (value) in
+						let currentPoint = value.location
+						if currentPoint.y >= 0 && currentPoint.y < geometry.size.height {
+							currentDrawing.points.append(currentPoint)
+						}
+					})
+					.onEnded({ _ in
+						drawings.append(currentDrawing)
+						currentDrawing = SignatureDrawing()
+					})
+			)
 		}
 		.background(Color(hex: "F6F6F6"))
 		.border(Color(hex: "DADADA"), width: 1)
 		.frame(height: 200)
+		.background(
+			GeometryReaderPatch { proxy in
+				Color.clear.preference(key: SizePreferenceKey.self, value: proxy.size)
+			}
+		)
+		.onPreferenceChange(SizePreferenceKey.self) { preferences in
+			self.childSize = preferences
+		}
 	}
 
 	private func add(drawing: SignatureDrawing, toPath path: inout Path) {
@@ -215,5 +229,14 @@ struct DrawingPad: View {
 				path.addLine(to: next)
 			}
 		}
+	}
+}
+
+struct SizePreferenceKey: PreferenceKey {
+	typealias Value = CGSize
+	static var defaultValue: Value = .zero
+	
+	static func reduce(value: inout Value, nextValue: () -> Value) {
+		value = nextValue()
 	}
 }

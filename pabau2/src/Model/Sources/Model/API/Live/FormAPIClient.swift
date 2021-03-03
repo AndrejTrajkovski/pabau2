@@ -14,15 +14,15 @@ extension APIClient {
 			"form_id": form.templateInfo.id.rawValue,
 			"form_data": form.getJSONPOSTValues()]
 		let requestBuilder: RequestBuilder<Response>.Type = requestBuilderFactory.getBuilder()
-//		return requestBuilder.init(method: .POST,
-//								   baseUrl: baseUrl,
-//								   path: .medicalForms,
-//								   queryParams: commonParams(),
-//								   body: body)
-//		.effect()
-//		.map(\.medical_form_contact_id)
-		return Effect.init(error: RequestError.apiError("SOME API ERROR"))
-			.debounce(id: UUID(), for: 5.0, scheduler: DispatchQueue.main)
+		return requestBuilder.init(method: .POST,
+								   baseUrl: baseUrl,
+								   path: .medicalForms,
+								   queryParams: commonParams(),
+								   body: body)
+		.effect()
+		.map(\.medical_form_contact_id)
+//		return Effect.init(error: RequestError.apiError("SOME API ERROR"))
+//			.debounce(id: UUID(), for: 5.0, scheduler: DispatchQueue.main)
 	}
 	
 	public func getForm(templateId: FormTemplateInfo.ID, entryId: FilledFormData.ID) -> Effect<HTMLForm, RequestError> {
