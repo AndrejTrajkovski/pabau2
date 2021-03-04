@@ -46,13 +46,6 @@ open class RequestBuilderImpl<T: Decodable>: RequestBuilder<T> {
 			throw RequestError.urlBuilderError("Invalid HTTP body: \(params)")
 		}
 		return jsonData
-//		var urlParser = URLComponents()
-//		urlParser.queryItems = APIHelper.mapValuesToQueryItems(params)
-//		guard let bodyData = urlParser.percentEncodedQuery,
-//			  let bodyUTF8 = bodyData.data(using: .utf8) else {
-//			throw RequestError.urlBuilderError("Invalid HTTP body: \(params)")
-//		}
-//		return bodyUTF8
 	}
 	
 	private func query(_ parameters: [String: Any]) -> String {
@@ -72,68 +65,11 @@ open class RequestBuilderImpl<T: Decodable>: RequestBuilder<T> {
 	override open func publisher() -> AnyPublisher<T, RequestError> {
 		do {
 			let request = try buildRequest()
-			print(request.cURL())
-			return URLSession.shared.dataTaskPublisher(for: request)
-				.mapError { error in
-					RequestError.networking(error)
-			}
-			.tryMap (self.validate)
-			.mapError { $0 as? RequestError ?? .unknown }
-			.flatMap(maxPublishers: .max(1)) { data in
-				return self.decode(data)
-			}
-			.eraseToAnyPublisher()
+			return Model.publisher(request: request, dateDecoding: dateDecoding)
 		} catch {
 			return Fail(error: error)
 				.mapError { $0 as? RequestError ?? .unknown}
 				.eraseToAnyPublisher()
-		}
-	}
-
-	func validate(data: Data, response: URLResponse) throws -> Data {
-		guard let httpResponse = response as? HTTPURLResponse else {
-			throw RequestError.responseNotHTTP
-		}
-		guard httpResponse.statusCode == 200 else { throw RequestError.serverError(
-			String(httpResponse.statusCode) + HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode))
-		}
-		return data
-	}
-
-	func decode<T: Decodable>(_ data: Data) -> AnyPublisher<T, RequestError> {
-		let decoder = JSONDecoder()
-		decoder.dateDecodingStrategy = self.dateDecoding
-			return Just(data)
-				.decode(type: APIResponse<T>.self, decoder: decoder)
-				.tryMap { try $0.result.get() }
-				.mapError { error in
-					if error is DecodingError {
-						var errorMessage = error.localizedDescription + "\n" + (String.init(data: data, encoding: .utf8) ?? ". String not utf8")
-						errorMessage += self.stringIfDecodingError(error) ?? ""
-						return RequestError.jsonDecoding(errorMessage)
-					} else {
-						return error as? RequestError ?? .unknown
-					}
-			}
-			.eraseToAnyPublisher()
-	}
-	
-	func stringIfDecodingError(_ error: Error) -> String? {
-		if let decodeError = error as? DecodingError {
-			switch decodeError {
-			case .typeMismatch(let key, let value):
-				return("error \(key), value \(value) and ERROR: \(decodeError.localizedDescription)")
-			case .valueNotFound(let key, let value):
-				return("error \(key), value \(value) and ERROR: \(decodeError.localizedDescription)")
-			case .keyNotFound(let key, let value):
-				return("error \(key), value \(value) and ERROR: \(decodeError.localizedDescription)")
-			case .dataCorrupted(let key):
-				return ("error \(key), and ERROR: \(decodeError.localizedDescription)")
-			default:
-				return ""
-			}
-		} else {
-			return nil
 		}
 	}
 }
@@ -179,3 +115,63 @@ private let defaultUserAgent: String = {
 
 	return userAgent
 }()
+
+func publisher<T: Decodable>(request: URLRequest, dateDecoding: JSONDecoder.DateDecodingStrategy) -> AnyPublisher<T, RequestError> {
+	return URLSession.shared.dataTaskPublisher(for: request)
+		.mapError { error in
+			RequestError.networking(error)
+		}
+		.tryMap (validate)
+		.mapError { $0 as? RequestError ?? .unknown }
+		.flatMap(maxPublishers: .max(1)) { data in
+			return decode(data, dateDecoding: dateDecoding)
+		}
+		.eraseToAnyPublisher()
+}
+
+func validate(data: Data, response: URLResponse) throws -> Data {
+	guard let httpResponse = response as? HTTPURLResponse else {
+		throw RequestError.responseNotHTTP
+	}
+	guard httpResponse.statusCode == 200 else { throw RequestError.serverError(
+		String(httpResponse.statusCode) + HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode))
+	}
+	return data
+}
+
+func decode<T: Decodable>(_ data: Data, dateDecoding: JSONDecoder.DateDecodingStrategy) -> AnyPublisher<T, RequestError> {
+	let decoder = JSONDecoder()
+	decoder.dateDecodingStrategy = dateDecoding
+		return Just(data)
+			.decode(type: APIResponse<T>.self, decoder: decoder)
+			.tryMap { try $0.result.get() }
+			.mapError { error in
+				if error is DecodingError {
+					var errorMessage = error.localizedDescription + "\n" + (String.init(data: data, encoding: .utf8) ?? ". String not utf8")
+					errorMessage += stringIfDecodingError(error) ?? ""
+					return RequestError.jsonDecoding(errorMessage)
+				} else {
+					return error as? RequestError ?? .unknown
+				}
+		}
+		.eraseToAnyPublisher()
+}
+
+func stringIfDecodingError(_ error: Error) -> String? {
+	if let decodeError = error as? DecodingError {
+		switch decodeError {
+		case .typeMismatch(let key, let value):
+			return("error \(key), value \(value) and ERROR: \(decodeError.localizedDescription)")
+		case .valueNotFound(let key, let value):
+			return("error \(key), value \(value) and ERROR: \(decodeError.localizedDescription)")
+		case .keyNotFound(let key, let value):
+			return("error \(key), value \(value) and ERROR: \(decodeError.localizedDescription)")
+		case .dataCorrupted(let key):
+			return ("error \(key), and ERROR: \(decodeError.localizedDescription)")
+		default:
+			return ""
+		}
+	} else {
+		return nil
+	}
+}

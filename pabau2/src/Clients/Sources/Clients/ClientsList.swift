@@ -65,7 +65,6 @@ let clientsListReducer: Reducer<
                     state.notFoundClients = clients.isEmpty
                     break
                 }
-              
                 state.clients = (state.clients + .init(clients))
                 state.notFoundClients = state.clients.isEmpty
             case .failure(let error):
