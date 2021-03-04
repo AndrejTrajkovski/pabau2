@@ -298,7 +298,6 @@ func viewModels(_ viewStore: ViewStore<PatientDetails, PatientDetailsAction>) ->
                     get: { $0.gender },
                     send: { .howDidYouHear(.textChange($0)) }),
                 Texts.gender)
-            
 		]
 	]
 }

@@ -3,6 +3,8 @@ import SwiftUI
 import Model
 import Util
 import ComposableArchitecture
+import SharedComponents
+import Avatar
 
 public let appointmentsListReducer: Reducer<AppointmentsListState, AppointmentsListAction, ClientsEnvironment> = Reducer.combine(
 	ClientCardChildReducer<[CCAppointment]>().reducer.pullback(

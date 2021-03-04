@@ -22,6 +22,7 @@ public enum APIPath: String {
     //Appointments
     case getBookoutReasons = "OAuth2/appointments/get_bookout_reasons.php"
     
+	case updateClient = "/OAuth2/clients/client_update.php"
 	case getClients = "/OAuth2/clients/get_clients.php"
     case getFinancials = "/OAuth2/financials/get_financials.php"
     case getPatientDetails = "/OAuth2/clients/get_clients.php/"

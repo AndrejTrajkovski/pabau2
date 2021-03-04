@@ -108,8 +108,15 @@ extension APIClient {
 			.eraseToEffect()
 	}
 	
-	public func post(patDetails: PatientDetails) -> Effect<PatientDetails, RequestError> {
-		fatalError("TODO Cristian")
+	public func update(patDetails: PatientDetails) -> Effect<VoidAPIResponse, RequestError> {
+		let requestBuilder: RequestBuilder<VoidAPIResponse>.Type = requestBuilderFactory.getBuilder()
+		return requestBuilder.init(method: .POST,
+								   baseUrl: baseUrl,
+								   path: .updateClient,
+								   queryParams: commonAnd(other: ["contact_id": "\(patDetails.id)"]),
+								   body: patDetails.toJSONValues()
+		)
+		.effect()
 	}
     
     public func addNote(clientId: Client.Id, note: String) -> Effect<Note, RequestError> {

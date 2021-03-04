@@ -3,6 +3,7 @@ import Model
 import ComposableArchitecture
 import Util
 import SharedComponents
+import Avatar
 
 public struct ChooseClientsState: Equatable {
     var isChooseClientsActive: Bool

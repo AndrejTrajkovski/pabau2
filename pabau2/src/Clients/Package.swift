@@ -17,7 +17,7 @@ let package = Package(
 						 from: Version.init(stringLiteral: "1.0.0")),
 		.package(name: "SDWebImageSwiftUI",
 						 url: "https://github.com/SDWebImage/SDWebImageSwiftUI.git",
-						 from: Version.init(stringLiteral: "1.0.0")),
+						 from: Version.init(stringLiteral: "2.0.0")),
         .package(name: "Facebook",
                          url: "https://github.com/facebook/facebook-ios-sdk.git",
                          .upToNextMajor(from: Version.init(stringLiteral: "5.10.0")))

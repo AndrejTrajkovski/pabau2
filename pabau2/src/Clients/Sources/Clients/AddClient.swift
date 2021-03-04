@@ -12,8 +12,19 @@ public let addClientOptionalReducer: Reducer<AddClientState?, AddClientAction, C
 	),
 	.init { state, action, env in
 		switch action {
-		case .onBackFromAddClient, .onResponseSave:
+		case .onBackFromAddClient:
 			state = nil
+		case .onResponseSave(let result):
+			switch result {
+			case .success:
+				break
+			case .failure(let error):
+				state?.saveFailureAlert = AlertState(
+					title: "Updating Contact Failed",
+					message: error.description,
+					dismissButton: .default("OK")
+				)
+			}
 		default: break
 		}
 		return .none
@@ -37,8 +48,9 @@ public let addClientReducer: Reducer<AddClientState, AddClientAction, ClientsEnv
 	.init { state, action, env in
 		switch action {
 		case .saveClient:
-			return env.apiClient.post(patDetails: state.patDetails)
+			return env.apiClient.update(patDetails: state.patDetails)
 				.catchToEffect()
+				.receive(on: DispatchQueue.main)
 				.map(AddClientAction.onResponseSave)
 				.eraseToEffect()
 		case .patDetails, .addPhoto, .onBackFromAddClient, .onResponseSave:
@@ -59,7 +71,8 @@ public struct AddClientState: Equatable {
 	var newPhoto: UIImage?
 	var selectCameraTypeActionSheet: ActionSheetState<AddPhotoAction>?
 	var cameraType: UIImagePickerController.SourceType?
-
+	var saveFailureAlert: AlertState<AddClientAction>?
+	
 	var addPhoto: AddPhotoState {
 		get {
 			AddPhotoState(imageUrl: patDetails.imageUrl,
@@ -82,7 +95,7 @@ public enum AddClientAction: Equatable {
 	case addPhoto(AddPhotoAction)
 	case onBackFromAddClient
 	case saveClient
-	case onResponseSave(Result<PatientDetails, RequestError>)
+	case onResponseSave(Result<VoidAPIResponse, RequestError>)
 }
 
 struct AddClient: View {

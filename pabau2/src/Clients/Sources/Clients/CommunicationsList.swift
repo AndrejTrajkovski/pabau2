@@ -3,6 +3,7 @@ import SwiftUI
 import Model
 import Util
 import ComposableArchitecture
+import Avatar
 
 struct CommunicationsList: ClientCardChild {
 	let store: Store<ClientCardChildState<[Communication]>, GotClientListAction<[Communication]>>

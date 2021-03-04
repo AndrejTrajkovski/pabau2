@@ -28,7 +28,7 @@ public struct PatientDetails: Equatable, Identifiable, Decodable {
     public var gender: String = "N/A"
     
     enum CodingKeys: String, CodingKey {
-            case id
+            case id = "contact_id"
             case salutation = "Salutation"
             case firstName = "first_name"
             case lastName = "last_name"
@@ -138,31 +138,30 @@ public struct PatientDetails: Equatable, Identifiable, Decodable {
             }
         }
     }
-}
-
-extension PatientDetails {
-	public static let mock = PatientDetails(
-		id: Client.Id(rawValue: .right(Int.random(in: 1...99999999))),
-		salutation: "Test ",
-		firstName: "Test ",
-		lastName: "Test ",
-        email: "Test ",
-        phone: "Test ",
-        cellPhone: "Test ",
-        imageUrl: "Test ",
-        dob: Date(),
-        postComm: false,
-        phoneComm: false,
-        smsComm: false,
-        emailComm: false,
-        howDidYouHear: "Test ",
-        country: "Test ",
-        county: "Test ",
-        city: "Test ",
-        postCode: "Test ",
-        addressLine1: "Test ",
-        gender: "N/A"
-	)
+	
+	func toJSONValues() -> [String: String] {
+		[
+			"Salutation": salutation,
+			"Fname": firstName,
+			"Lname": lastName,
+			"Email": email,
+			"Mobile": cellPhone,
+			"Phone": phone,
+			"gender": gender,
+			"DOB": dateOfBirth,
+			"MailingStreet": addressLine1,
+			"OtherStreet": addressLine2,
+			"MailingCity": city,
+			"MailingPostal": postCode,
+			"County": county,
+			"Country": country,
+			"MarketingOptInEmail": String(emailComm),
+			"MarketingOptInPhone": String(phoneComm),
+			"MarketingOptInText": String(smsComm),
+			"MarketingOptInPost": String(postComm)
+//			"marketing_source":
+		]
+	}
 }
 
 extension PatientDetails {

@@ -245,7 +245,7 @@ public enum ChooseFormMode: Equatable {
 		case .treatmentNotes:
 			return Texts.chooseTreatmentNote
 		case .clientCard(let formType):
-			return "Choose" + formType.rawValue
+			return "Choose " + formType.rawValue.capitalized
 		}
 	}
 

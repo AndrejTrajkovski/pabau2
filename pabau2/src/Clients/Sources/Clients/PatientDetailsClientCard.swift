@@ -5,12 +5,7 @@ import Form
 import Util
 
 public let patientDetailsClientCardReducer: Reducer<PatientDetailsClientCardState, PatientDetailsClientCardAction, ClientsEnvironment> = .combine(
-	ClientCardChildReducer<PatientDetails>().reducer.pullback(
-		state: \PatientDetailsClientCardState.childState,
-		action: /PatientDetailsClientCardAction.action,
-		environment: { $0 }
-	),
-	patientDetailsReducer.pullback(
+	patientDetailsReducer.optional.pullback(
 		state: \.childState.state,
 		action: /PatientDetailsClientCardAction.form,
 		environment: { $0 }),
@@ -21,15 +16,26 @@ public let patientDetailsClientCardReducer: Reducer<PatientDetailsClientCardStat
 	.init { state, action, env in
 		switch action {
 		case .edit:
-			state.editingClient = AddClientState(patDetails: state.childState.state)
+			guard let patDetails = state.childState.state else { break }
+			state.editingClient = AddClientState(patDetails: patDetails)
 		case .saveChanges:
 			state.editingClient.map { state.childState.state = $0.patDetails }
 			state.editingClient = nil
 		case .cancelEdit:
 			state.editingClient = nil
 		case .editingClient(.onResponseSave(let result)):
-			result.map { state.childState.state = $0 }
-		case .action, .form, .editingClient:
+			break
+		case .action(.gotResult(let result)):
+			switch result {
+			case .failure(let error):
+				print(error)
+				state.childState.loadingState = .gotError(error)
+			case .success(let success):
+				state.childState.loadingState = .gotSuccess
+				state.childState.state = success
+			}
+			return .none
+		case .form, .editingClient, .action(.none):
 			break
 		}
 		return .none
@@ -37,7 +43,7 @@ public let patientDetailsClientCardReducer: Reducer<PatientDetailsClientCardStat
 )
 
 public struct PatientDetailsClientCardState: ClientCardChildParentState {
-	var childState: ClientCardChildState<PatientDetails>
+	var childState: ClientCardChildState<PatientDetails?>
 	var editingClient: AddClientState?
 }
 
@@ -70,16 +76,17 @@ struct PatientDetailsClientCard: ClientCardChild {
 		self.viewStore = ViewStore(store)
 	}
 
-	var store: Store<PatientDetailsClientCardState, PatientDetailsClientCardAction>
+	let store: Store<PatientDetailsClientCardState, PatientDetailsClientCardAction>
 	@ObservedObject var viewStore: ViewStore<PatientDetailsClientCardState, PatientDetailsClientCardAction>
-
+	
 	var body: some View {
 		Group {
-			PatientDetailsForm(store: self.store.scope(
-				state: { $0.childState.state }, action: { .form($0) })
-			)
-				.padding()
-				.disabled(true)
+			IfLetStore(store.scope(
+						state: { $0.childState.state },
+							  action: { .form($0) }),
+					   then: PatientDetailsForm.init(store:))
+			.padding()
+			.disabled(true)
 			NavigationLink.emptyHidden(viewStore.state.editingClient != nil,
 									   IfLetStore(self.store.scope(
 													state: { $0.editingClient }, action: { .editingClient($0)}),

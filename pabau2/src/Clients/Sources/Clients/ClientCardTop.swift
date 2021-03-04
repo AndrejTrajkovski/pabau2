@@ -18,9 +18,6 @@ struct ClientCardTop: View {
 		WithViewStore(store) { viewStore in
 			VStack {
 				ClientAvatar(store: store.actionless)
-					.frame(width: 84, height: 84)
-				Text(viewStore.fullname)
-					.font(Font.semibold24)
 				ClientCardContactIcons(store: self.store.stateless)
 			}
 		}

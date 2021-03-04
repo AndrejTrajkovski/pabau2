@@ -70,29 +70,33 @@ struct ClientCardBottom: View {
                                   action: {
                                     viewStore.send(.backBtnTap)
                                   }),
-            trailing: self.trailingButtons
+			trailing: trailingButtons(activeItem: viewStore.activeItem)
 		).navigationBarBackButtonHidden(true)
 	}
 
-	var trailingButtons: some View {
-		if self.viewStore.state.activeItem == nil {
-			return AnyView(EmptyView())
-		} else if self.viewStore.state.activeItem == .details {
-			return AnyView(patientDetailsTrailingBtns)
-		} else if self.viewStore.state.activeItem == .appointments {
-			return AnyView(EmptyView())
-		} else if self.viewStore.state.activeItem == .photos {
-			return AnyView(EmptyView())
-        } else if self.viewStore.state.activeItem == .alerts {
-            return AnyView(PlusButton {viewStore.send(.child(.alerts(.didTouchAdd)))})
-        } else if self.viewStore.state.activeItem == .notes {
-            return AnyView(PlusButton {viewStore.send(.child(.notes(.didTouchAdd)))})
-		} else if self.viewStore.state.activeItem == .consents {
-			return AnyView(PlusButton { viewStore.send(.child(.consents(.add))) } )
-		} else if self.viewStore.state.activeItem == .treatmentNotes {
-			return AnyView(PlusButton { viewStore.send(.child(.treatmentNotes(.add))) } )
-		} else {
-			return AnyView(EmptyView())
+	@ViewBuilder
+	func trailingButtons(activeItem: ClientCardGridItem?) -> some View {
+		switch activeItem {
+		case nil:
+			EmptyView()
+		case .details:
+			patientDetailsTrailingBtns
+		case .appointments:
+			EmptyView()
+		case .photos:
+			EmptyView()
+		case .alerts:
+			PlusButton { viewStore.send(.child(.alerts(.didTouchAdd)))}
+		case .notes:
+			PlusButton { viewStore.send(.child(.notes(.didTouchAdd)))}
+		case .consents:
+			PlusButton { viewStore.send(.child(.consents(.add))) }
+		case .treatmentNotes:
+			PlusButton { viewStore.send(.child(.treatmentNotes(.add))) }
+		case .prescriptions:
+			PlusButton { viewStore.send(.child(.prescriptions(.add))) }
+		case .some(.financials), .some(.documents), .some(.communications):
+			EmptyView()
 		}
 	}
 

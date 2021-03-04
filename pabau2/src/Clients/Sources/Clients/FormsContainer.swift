@@ -3,6 +3,7 @@ import ComposableArchitecture
 import Form
 import Model
 import Util
+import Avatar
 
 public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAction, FormEnvironment> = .combine(
 	chooseFormListReducer.optional.pullback(
@@ -76,7 +77,10 @@ struct FormsContainer: View {
 								   action: { .chooseForms($0) }),
 					   then: { chooseFormsStore in
 						Group {
-							ChooseFormList(store: chooseFormsStore)
+							VStack {
+								ClientAvatar(store: store.scope(state: { $0.client }).actionless).padding()
+								ChooseFormList(store: chooseFormsStore)
+							}
 							checkInNavigationLink(isActive: viewStore.state)
 						}
 					   }, else: checkInView()
@@ -109,10 +113,15 @@ struct ClientAvatar: View {
 	let store: Store<Client, Never>
 	var body: some View {
 		WithViewStore(store) { viewStore in
-			AvatarView(avatarUrl: viewStore.avatar,
-					   initials: viewStore.initials,
-					   font: .semibold24,
-					   bgColor: .accentColor)
+			VStack {
+				AvatarView(avatarUrl: viewStore.avatar,
+						   initials: viewStore.initials,
+						   font: .semibold24,
+						   bgColor: .accentColor)
+					.frame(width: 84, height: 84)
+				Text(viewStore.fullname)
+					.font(Font.semibold24)
+			}
 		}
 	}
 }

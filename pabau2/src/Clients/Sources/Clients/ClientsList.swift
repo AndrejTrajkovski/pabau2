@@ -72,23 +72,26 @@ let clientsListReducer: Reducer<
                 state.contactListLS = .gotError(error)
             }
         case .gotItemsResponse(let result):
-            guard case .success(let count) = result else { break }
-            state.selectedClient?.client.count = count
-        case .selectedClient(.bottom(.child(.details(.editingClient(.onResponseSave(let result)))))):
-            result
-                .map(Client.init(patDetails:))
-                .map {
-                    state.clients[id: $0.id] = $0
-                    state.selectedClient!.client = $0
-                }
-        case .onAddClient:
-            state.addClient = AddClientState(patDetails: PatientDetails.empty)
-        case .addClient(.onResponseSave(let result)):
-            result
-                .map(Client.init(patDetails:))
-                .map { state.clients.append($0) }
-            state.addClient = nil
-        case .addClient: break
+			guard case .success(let count) = result else { break }
+			state.selectedClient?.client.count = count
+		case .selectedClient(.bottom(.child(.details(.editingClient(.onResponseSave(let result)))))):
+			if case .success = result,
+			   let patDetails = state.selectedClient?.list.details.editingClient?.patDetails {
+				let client = Client.init(patDetails: patDetails)
+				state.clients[id: patDetails.id] = client
+				state.selectedClient!.client = client
+				state.selectedClient!.list.details.childState.state = patDetails
+				state.selectedClient!.list.details.editingClient = nil
+			}
+		case .onAddClient:
+			state.addClient = AddClientState(patDetails: PatientDetails.empty)
+		case .addClient(.onResponseSave(let result)):
+			if case .success = result,
+			   let newClient = state.addClient?.patDetails {
+				state.clients.append(Client.init(patDetails: newClient))
+				state.addClient = nil
+			}
+		case .addClient: break
         case .selectedClient(.bottom(.backBtnTap)):
             break
         case .selectedClient: break
