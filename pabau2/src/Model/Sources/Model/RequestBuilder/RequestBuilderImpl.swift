@@ -28,34 +28,12 @@ open class RequestBuilderImpl<T: Decodable>: RequestBuilder<T> {
 		
 		var request = URLRequest.init(url: url)
 //		application/x-www-form-urlencoded
-		request.allHTTPHeaderFields = ["Content-Type": "application/x-www-form-urlencoded",
-									   "Accept-Language": "en;q=1",
-									   "User-Agent": defaultUserAgent]
+		request.allHTTPHeaderFields = self.headers
 		request.httpMethod = method.rawValue
 		
-		if let body = self.body {
-			request.httpBody = Data(query(body).utf8)
-		}
+		request.httpBody = body
 		
 		return request
-	}
-
-	func httpBodyData(params: [String: Any]) throws -> Data {
-		let jsonString = params.reduce("") { "\($0)\($1.0)=\($1.1)&" }.dropLast()
-		guard let jsonData = jsonString.data(using: .utf8, allowLossyConversion: false) else {
-			throw RequestError.urlBuilderError("Invalid HTTP body: \(params)")
-		}
-		return jsonData
-	}
-	
-	private func query(_ parameters: [String: Any]) -> String {
-		var components: [(String, String)] = []
-
-		for key in parameters.keys.sorted(by: <) {
-			let value = parameters[key]!
-			components += APIHelper.queryComponents(fromKey: key, value: value)
-		}
-		return components.map { "\($0)=\($1)" }.joined(separator: "&")
 	}
 	
 	override func effect() -> Effect<T, RequestError> {
@@ -74,49 +52,22 @@ open class RequestBuilderImpl<T: Decodable>: RequestBuilder<T> {
 	}
 }
 
-private let defaultUserAgent: String = {
-	let info = Bundle.main.infoDictionary
-	let executable = (info?[kCFBundleExecutableKey as String] as? String) ??
-		(ProcessInfo.processInfo.arguments.first?.split(separator: "/").last.map(String.init)) ??
-		"Unknown"
-	let bundle = info?[kCFBundleIdentifierKey as String] as? String ?? "Unknown"
-	let appVersion = info?["CFBundleShortVersionString"] as? String ?? "Unknown"
-	let appBuild = info?[kCFBundleVersionKey as String] as? String ?? "Unknown"
+func bodyData(parameters: [String: Any]) -> Data {
+	Data(query(parameters).utf8)
+}
 
-	let osNameVersion: String = {
-		let version = ProcessInfo.processInfo.operatingSystemVersion
-		let versionString = "\(version.majorVersion).\(version.minorVersion).\(version.patchVersion)"
-		let osName: String = {
-			#if os(iOS)
-			#if targetEnvironment(macCatalyst)
-			return "macOS(Catalyst)"
-			#else
-			return "iOS"
-			#endif
-			#elseif os(watchOS)
-			return "watchOS"
-			#elseif os(tvOS)
-			return "tvOS"
-			#elseif os(macOS)
-			return "macOS"
-			#elseif os(Linux)
-			return "Linux"
-			#elseif os(Windows)
-			return "Windows"
-			#else
-			return "Unknown"
-			#endif
-		}()
+func query(_ parameters: [String: Any]) -> String {
+	var components: [(String, String)] = []
 
-		return "\(osName) \(versionString)"
-	}()
-	
-	let userAgent = "\(executable)/\(appVersion) (\(bundle); build:\(appBuild); \(osNameVersion))"
-
-	return userAgent
-}()
+	for key in parameters.keys.sorted(by: <) {
+		let value = parameters[key]!
+		components += APIHelper.queryComponents(fromKey: key, value: value)
+	}
+	return components.map { "\($0)=\($1)" }.joined(separator: "&")
+}
 
 func publisher<T: Decodable>(request: URLRequest, dateDecoding: JSONDecoder.DateDecodingStrategy) -> AnyPublisher<T, RequestError> {
+//	print(request.cURL())
 	return URLSession.shared.dataTaskPublisher(for: request)
 		.mapError { error in
 			RequestError.networking(error)
@@ -130,6 +81,7 @@ func publisher<T: Decodable>(request: URLRequest, dateDecoding: JSONDecoder.Date
 }
 
 func validate(data: Data, response: URLResponse) throws -> Data {
+	print(response)
 	guard let httpResponse = response as? HTTPURLResponse else {
 		throw RequestError.responseNotHTTP
 	}

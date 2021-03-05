@@ -78,7 +78,7 @@ struct FormsContainer: View {
 					   then: { chooseFormsStore in
 						Group {
 							VStack {
-								ClientAvatar(store: store.scope(state: { $0.client }).actionless).padding()
+								ClientAvatarAndName(store: store.scope(state: { $0.client }).actionless).padding()
 								ChooseFormList(store: chooseFormsStore)
 							}
 							checkInNavigationLink(isActive: viewStore.state)
@@ -98,7 +98,7 @@ struct FormsContainer: View {
 		print("FormsContainer")
 		return CheckIn(store: store.scope(state: { $0 },
 								   action: { .checkIn($0)}),
-					   avatarView: { ClientAvatar(store: store.scope(state: { $0.client }).actionless) },
+					   avatarView: { ClientAvatarAndName(store: store.scope(state: { $0.client }).actionless) },
 				content: {
 					ForEachStore(store.scope(state: { $0.formsCollection },
 											 action: FormsContainerAction.forms(id: action:)),
@@ -109,19 +109,29 @@ struct FormsContainer: View {
 	}
 }
 
+struct ClientAvatarAndName: View {
+	let store: Store<Client, Never>
+
+	var body: some View {
+		WithViewStore(store) { viewStore in
+			VStack {
+				ClientAvatar(store: store)
+				Text(viewStore.fullname)
+					.font(Font.semibold24)
+			}
+		}
+	}
+}
+
 struct ClientAvatar: View {
 	let store: Store<Client, Never>
 	var body: some View {
 		WithViewStore(store) { viewStore in
-			VStack {
-				AvatarView(avatarUrl: viewStore.avatar,
-						   initials: viewStore.initials,
-						   font: .semibold24,
-						   bgColor: .accentColor)
-					.frame(width: 84, height: 84)
-				Text(viewStore.fullname)
-					.font(Font.semibold24)
-			}
+			AvatarView(avatarUrl: viewStore.avatar,
+					   initials: viewStore.initials,
+					   font: .semibold24,
+					   bgColor: .accentColor)
+				.frame(width: 84, height: 84)
 		}
 	}
 }

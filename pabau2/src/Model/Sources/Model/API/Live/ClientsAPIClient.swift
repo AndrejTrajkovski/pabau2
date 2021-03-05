@@ -114,7 +114,7 @@ extension APIClient {
 								   baseUrl: baseUrl,
 								   path: .updateClient,
 								   queryParams: commonAnd(other: ["contact_id": "\(patDetails.id)"]),
-								   body: patDetails.toJSONValues()
+								   body: bodyData(parameters: patDetails.toJSONValues())
 		)
 		.effect()
 	}

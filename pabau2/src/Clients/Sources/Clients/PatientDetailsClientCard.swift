@@ -78,7 +78,7 @@ struct PatientDetailsClientCard: ClientCardChild {
 
 	let store: Store<PatientDetailsClientCardState, PatientDetailsClientCardAction>
 	@ObservedObject var viewStore: ViewStore<PatientDetailsClientCardState, PatientDetailsClientCardAction>
-	
+
 	var body: some View {
 		Group {
 			IfLetStore(store.scope(

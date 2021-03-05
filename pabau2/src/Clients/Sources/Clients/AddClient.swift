@@ -66,26 +66,29 @@ public struct AddClientState: Equatable {
 		self.newPhoto = nil
 		self.selectCameraTypeActionSheet = nil
 		self.cameraType = nil
+		self.photoUploading = .initial
 	}
 	var patDetails: PatientDetails
 	var newPhoto: UIImage?
 	var selectCameraTypeActionSheet: ActionSheetState<AddPhotoAction>?
 	var cameraType: UIImagePickerController.SourceType?
 	var saveFailureAlert: AlertState<AddClientAction>?
+	var photoUploading: LoadingState
 	
 	var addPhoto: AddPhotoState {
 		get {
-			AddPhotoState(imageUrl: patDetails.imageUrl,
-										newPhoto: self.newPhoto,
-										selectCameraTypeActionSheet: self.selectCameraTypeActionSheet,
-										cameraType: self.cameraType
+			AddPhotoState(patDetails: patDetails,
+						  newPhoto: self.newPhoto,
+						  selectCameraTypeActionSheet: self.selectCameraTypeActionSheet,
+						  cameraType: self.cameraType,
+						  photoUploading: photoUploading
 			)
 		}
 		set {
-			self.patDetails.imageUrl = newValue.imageUrl
 			self.newPhoto = newValue.newPhoto
 			self.selectCameraTypeActionSheet = newValue.selectCameraTypeActionSheet
 			self.cameraType = newValue.cameraType
+			self.photoUploading = newValue.photoUploading
 		}
 	}
 }

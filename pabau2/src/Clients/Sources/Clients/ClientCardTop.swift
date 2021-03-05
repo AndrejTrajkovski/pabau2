@@ -17,7 +17,7 @@ struct ClientCardTop: View {
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			VStack {
-				ClientAvatar(store: store.actionless)
+				ClientAvatarAndName(store: store.actionless)
 				ClientCardContactIcons(store: self.store.stateless)
 			}
 		}

@@ -6,4 +6,5 @@ public protocol FormAPI {
 	func getForm(templateId: FormTemplateInfo.ID, entryId: FilledFormData.ID) -> Effect<HTMLForm, RequestError>
 	func post(form: HTMLForm, appointments: [CalendarEvent.Id]) -> Effect<HTMLForm, RequestError>
 	func getTemplates(_ type: FormType) -> Effect<[FormTemplateInfo], RequestError>
+	func updateProfilePic(image: Data, clientId: Client.ID) -> Effect<VoidAPIResponse, RequestError>
 }

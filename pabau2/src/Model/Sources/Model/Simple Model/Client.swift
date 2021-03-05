@@ -215,7 +215,8 @@ extension Client {
 		self.init(id: patDetails.id,
 				  firstName: patDetails.firstName,
 				  lastName: patDetails.lastName,
-				  dOB: Date())
+				  dOB: patDetails.dob,
+				  avatar: patDetails.imageUrl)
 	}
 }
 
