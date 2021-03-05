@@ -27,7 +27,7 @@ public let clientsContainerReducer: Reducer<ClientsState, ClientsAction, Clients
                 .receive(on: DispatchQueue.main)
 				.eraseToEffect()
 		case .gotClientsResponse(let result):
-            
+			
 			switch result {
 			case .success(let contacts):
                 state.clients = .init(contacts)

@@ -32,9 +32,6 @@ public let addClientOptionalReducer: Reducer<AddClientState?, AddClientAction, C
 )
 
 public let addClientReducer: Reducer<AddClientState, AddClientAction, ClientsEnvironment> = .combine(
-	.init { state, action, env in
-		return .none
-	},
 	addPhotoReducer.pullback(
 		state: \.addPhoto,
 		action: /AddClientAction.addPhoto,
@@ -53,8 +50,10 @@ public let addClientReducer: Reducer<AddClientState, AddClientAction, ClientsEnv
 				.receive(on: DispatchQueue.main)
 				.map(AddClientAction.onResponseSave)
 				.eraseToEffect()
-		case .patDetails, .addPhoto, .onBackFromAddClient, .onResponseSave:
+		case .patDetails, .addPhoto, .onResponseSave:
 			break
+		case .onBackFromAddClient:
+			return .cancel(id: UploadPhotoId())
 		}
 		return .none
 	}

@@ -5,8 +5,11 @@ import UIKit
 import Model
 import Avatar
 
+struct UploadPhotoId: Hashable {}
+
 public let addPhotoReducer: Reducer<AddPhotoState, AddPhotoAction, ClientsEnvironment> =
 	.init { state, action, env in
+		
 		switch action {
 		case .onTouchOnPhoto:
 			state.selectCameraTypeActionSheet = ActionSheetState(
@@ -21,7 +24,7 @@ public let addPhotoReducer: Reducer<AddPhotoState, AddPhotoAction, ClientsEnviro
 			state.selectCameraTypeActionSheet = nil
 		case .onCameraType(let sourceType):
 			state.selectCameraTypeActionSheet = nil
-		  state.cameraType = sourceType
+			state.cameraType = sourceType
 		case .onTakePhoto(let image):
 			let scaledImage = image.scalePreservingAspectRatio(targetSize: CGSize.init(width: 1024, height: 1024))
 			state.photoUploading = .loading
@@ -32,6 +35,7 @@ public let addPhotoReducer: Reducer<AddPhotoState, AddPhotoAction, ClientsEnviro
 				.receive(on: DispatchQueue.main)
 				.catchToEffect()
 				.map(AddPhotoAction.photoUploadResponse)
+				.cancellable(id: UploadPhotoId())
 		case .onDismissImagePicker:
 			state.cameraType = nil
 		case .photoUploadResponse(let result):
