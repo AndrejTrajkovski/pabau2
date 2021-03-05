@@ -52,8 +52,6 @@ public struct Client: Decodable, Identifiable, Equatable {
 
     public let insuranceContract: String?
 
-    public let owner: Int?
-
 	public let id: Client.Id
 
     public let firstName: String
@@ -69,7 +67,7 @@ public struct Client: Decodable, Identifiable, Equatable {
     public let phone: String?
 
     public var count: ClientItemsCount?
-	public init(mobile: String? = nil, salutation: String? = nil, leadSource: String? = nil, mailingStreet: String? = nil, otherStreet: String? = nil, mailingCity: String? = nil, mailingCounty: String? = nil, mailingCountry: String? = nil, mailingPostal: String? = nil, gender: String? = nil, optInEmail: Bool? = nil, optInPhone: Bool? = nil, optInPost: Bool? = nil, optInSms: Bool? = nil, optInNewsletter: Bool? = nil, marketingSource: String? = nil, customId: Int? = nil, medicalAlerts: [String]? = nil, insuranceCompanyId: Int? = nil, insuranceContractId: Int? = nil, membershipNumber: Int? = nil, insuranceCompany: String? = nil, insuranceContract: String? = nil, owner: Int? = nil, customFields: [CustomField]? = nil, id: Client.Id, firstName: String, lastName: String, dOB: Date, email: String? = nil, avatar: String? = nil, phone: String? = nil, count: ClientItemsCount? = nil) {
+	public init(mobile: String? = nil, salutation: String? = nil, leadSource: String? = nil, mailingStreet: String? = nil, otherStreet: String? = nil, mailingCity: String? = nil, mailingCounty: String? = nil, mailingCountry: String? = nil, mailingPostal: String? = nil, gender: String? = nil, optInEmail: Bool? = nil, optInPhone: Bool? = nil, optInPost: Bool? = nil, optInSms: Bool? = nil, optInNewsletter: Bool? = nil, marketingSource: String? = nil, customId: Int? = nil, medicalAlerts: [String]? = nil, insuranceCompanyId: Int? = nil, insuranceContractId: Int? = nil, membershipNumber: Int? = nil, insuranceCompany: String? = nil, insuranceContract: String? = nil, customFields: [CustomField]? = nil, id: Client.Id, firstName: String, lastName: String, dOB: Date, email: String? = nil, avatar: String? = nil, phone: String? = nil, count: ClientItemsCount? = nil) {
         self.mobile = mobile
         self.salutation = salutation
         self.leadSource = leadSource
@@ -93,7 +91,6 @@ public struct Client: Decodable, Identifiable, Equatable {
         self.membershipNumber = membershipNumber
         self.insuranceCompany = insuranceCompany
         self.insuranceContract = insuranceContract
-        self.owner = owner
         //self.customFields = customFields
 		self.id = id
         self.firstName = firstName
@@ -162,9 +159,7 @@ public struct Client: Decodable, Identifiable, Equatable {
         self.membershipNumber = nil
         self.insuranceCompany = nil
         self.insuranceContract = nil
-        self.owner = try container.decode(Int.self, forKey: .owner)
 
-        
 		self.id = try container.decode(Client.Id.self, forKey: .id)
 		
         if let sDate = try? container.decode(String.self, forKey: .dOB), let dob = Date(sDate, format: "yyyy-mm-dd", region: .local) {
@@ -227,6 +222,8 @@ extension Client {
     }
     
     public var initials: String {
-        return String(self.firstName.first ?? Character.init("")) + String(self.lastName.first ?? Character.init(""))
+		let firstInitial = firstName.first.map(String.init(_:)) ?? ""
+		let lastInitial = lastName.first.map(String.init(_:)) ?? ""
+		return firstInitial + lastInitial
     }
 }

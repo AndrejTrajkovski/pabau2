@@ -19,6 +19,7 @@ public let addClientOptionalReducer: Reducer<AddClientState?, AddClientAction, C
 			case .success:
 				break
 			case .failure(let error):
+				state?.formSaving = .gotError(error)
 				state?.saveFailureAlert = AlertState(
 					title: "Updating Contact Failed",
 					message: error.description,
@@ -45,11 +46,14 @@ public let addClientReducer: Reducer<AddClientState, AddClientAction, ClientsEnv
 	.init { state, action, env in
 		switch action {
 		case .saveClient:
+			state.formSaving = .loading
 			return env.apiClient.update(patDetails: state.patDetails)
 				.catchToEffect()
 				.receive(on: DispatchQueue.main)
 				.map(AddClientAction.onResponseSave)
 				.eraseToEffect()
+		case .saveAlertCanceled:
+			state.saveFailureAlert = nil
 		case .patDetails, .addPhoto, .onResponseSave:
 			break
 		case .onBackFromAddClient:
@@ -66,6 +70,7 @@ public struct AddClientState: Equatable {
 		self.selectCameraTypeActionSheet = nil
 		self.cameraType = nil
 		self.photoUploading = .initial
+		self.formSaving = .initial
 	}
 	var patDetails: PatientDetails
 	var newPhoto: UIImage?
@@ -73,6 +78,7 @@ public struct AddClientState: Equatable {
 	var cameraType: UIImagePickerController.SourceType?
 	var saveFailureAlert: AlertState<AddClientAction>?
 	var photoUploading: LoadingState
+	var formSaving: LoadingState
 	
 	var addPhoto: AddPhotoState {
 		get {
@@ -98,6 +104,7 @@ public enum AddClientAction: Equatable {
 	case onBackFromAddClient
 	case saveClient
 	case onResponseSave(Result<VoidAPIResponse, RequestError>)
+	case saveAlertCanceled
 }
 
 struct AddClient: View {
@@ -109,8 +116,10 @@ struct AddClient: View {
 					state: { $0.addPhoto }, action: { .addPhoto($0) }
 				)).padding()
 				PatientDetailsForm(store: self.store.scope(
-					state: { $0.patDetails }, action: { .patDetails($0) })
+									state: { $0.patDetails }, action: { .patDetails($0) })
 				).padding()
+				.loadingView(.constant(viewStore.formSaving == .loading), "Saving...")
+				.alert(store.scope(state: \.saveFailureAlert), dismiss: AddClientAction.saveAlertCanceled)
 			}.navigationBarItems(
 				leading:
 				MyBackButton(text: Texts.back, action: {

@@ -67,7 +67,7 @@ func query(_ parameters: [String: Any]) -> String {
 }
 
 func publisher<T: Decodable>(request: URLRequest, dateDecoding: JSONDecoder.DateDecodingStrategy) -> AnyPublisher<T, RequestError> {
-//	print(request.cURL())
+	print(request.cURL())
 	return URLSession.shared.dataTaskPublisher(for: request)
 		.mapError { error in
 			RequestError.networking(error)
@@ -81,7 +81,6 @@ func publisher<T: Decodable>(request: URLRequest, dateDecoding: JSONDecoder.Date
 }
 
 func validate(data: Data, response: URLResponse) throws -> Data {
-	print(response)
 	guard let httpResponse = response as? HTTPURLResponse else {
 		throw RequestError.responseNotHTTP
 	}

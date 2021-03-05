@@ -12,7 +12,7 @@ let clientsListReducer: Reducer<
     clientCardReducer.pullback(
         state: \.selectedClient,
         action: /ClientsListAction.selectedClient,
-        environment: { $0}),
+		environment: { $0}),
     .init { state, action, env in
         struct CancelDelayId: Hashable {}
         switch action {
@@ -27,6 +27,7 @@ let clientsListReducer: Reducer<
                 .eraseToEffect()
         case .identified(id: let id, action: .onAppear):
             if state.clients.last?.id == id && !state.isSearching && !state.isClientsLoading {
+				state.contactListLS = .loading
                 return env.apiClient.getClients(
                     search: nil,
                     offset: state.clients.count
@@ -40,11 +41,11 @@ let clientsListReducer: Reducer<
         case .onSearchText(let text):
             state.searchText = text
             state.isSearching = !text.isEmpty
-
+			
             if text.isEmpty {
                 state.clients = .init([])
             }
-
+			state.contactListLS = .loading
             return env.apiClient
                 .getClients(
                     search: state.isSearching ? state.searchText : nil,
@@ -58,6 +59,7 @@ let clientsListReducer: Reducer<
         case .gotClientsResponse(let result):
             switch result {
             case .success(let clients):
+				print("clients.count \(clients.count)")
                 state.contactListLS = .gotSuccess
 
                 if state.isSearching {
@@ -65,9 +67,11 @@ let clientsListReducer: Reducer<
                     state.notFoundClients = clients.isEmpty
                     break
                 }
+				
                 state.clients = (state.clients + .init(clients))
                 state.notFoundClients = state.clients.isEmpty
             case .failure(let error):
+				print("error \(error)")
                 state.contactListLS = .gotError(error)
             }
         case .gotItemsResponse(let result):
@@ -98,88 +102,6 @@ let clientsListReducer: Reducer<
         return .none
     }
 )
-//=======
-//let clientsListReducer: Reducer<ClientsState, ClientsListAction, ClientsEnvironment> =
-//    .combine (
-//        clientCardReducer.pullback(
-//            state: \.selectedClient,
-//            action: /ClientsListAction.selectedClient,
-//            environment: { $0}),
-//        .init { state, action, env in
-//            struct ClientsId: Hashable {}
-//
-//            switch action {
-//            case .identified(let id, ClientRowAction.onSelectClient):
-//                state.selectedClient = ClientCardState(
-//                    client: state.clients[id: id]!,
-//					list: ClientCardListState(clientId: id)
-//                )
-//                return env.apiClient.getItemsCount(clientId: id)
-//                    .catchToEffect()
-//                    .map(ClientsListAction.gotItemsResponse)
-//                    .eraseToEffect()
-//            case .identified(id: let id, action: .onAppear):
-//				guard state.selectedClient == nil else { break }
-//                if state.clients.last?.id == id && !state.isSearching && !state.isClientsLoading {
-//                    return env.apiClient.getClients(
-//                        search: nil,
-//                        offset: state.clients.count
-//                    )
-//                    .catchToEffect()
-//                    .receive(on: DispatchQueue.main)
-//                    .eraseToEffect()
-//                    .debounce(id: ClientsId(), for: 0.3, scheduler: DispatchQueue.main)
-//                    .map(ClientsListAction.gotClientsResponse)
-//                    .cancellable(id: ClientsId(), cancelInFlight: true)
-//                }
-//            case .onSearchText(let text):
-//                state.searchText = text
-//                return env.apiClient
-//                    .getClients(
-//                        search: text,
-//                        offset: 0
-//                    )
-//                    .catchToEffect()
-//                    .receive(on: DispatchQueue.main)
-//                    .eraseToEffect()
-//                    .debounce(id: ClientsId(), for: 0.3, scheduler: DispatchQueue.main)
-//                    .map(ClientsListAction.gotClientsResponse)
-//                    .cancellable(id: ClientsId(), cancelInFlight: true)
-//            case .gotClientsResponse(let result):
-//                switch result {
-//                case .success(let clients):
-//                    state.clients = .init(state.searchText.isEmpty ? clients : state.clients + clients)
-//                    state.notFoundClients = state.clients.isEmpty
-//                    state.contactListLS = .gotSuccess
-//                case .failure(let error):
-//                    state.contactListLS = .gotError(error)
-//                }
-//            case .gotItemsResponse(let result):
-//                guard case .success(let count) = result else { break }
-//                state.selectedClient?.client.count = count
-//            case .selectedClient(.bottom(.child(.details(.editingClient(.onResponseSave(let result)))))):
-//                result
-//                    .map(Client.init(patDetails:))
-//                    .map {
-//                        state.clients[id: $0.id] = $0
-//                        state.selectedClient!.client = $0
-//                    }
-//            case .onAddClient:
-//                state.addClient = AddClientState(patDetails: PatientDetails.empty)
-//            case .addClient(.onResponseSave(let result)):
-//                result
-//                    .map(Client.init(patDetails:))
-//                    .map { state.clients.append($0) }
-//                state.addClient = nil
-//            case .addClient: break
-//            case .selectedClient(.bottom(.backBtnTap)):
-//                break
-//            case .selectedClient: break
-//            }
-//            return .none
-//        }
-//    )
-//>>>>>>> CCChooseForm
 
 public enum ClientsListAction: Equatable {
     case identified(id: Client.ID, action: ClientRowAction)
@@ -193,15 +115,21 @@ public enum ClientsListAction: Equatable {
 
 struct ClientsList: View {
     let store: Store<ClientsState, ClientsListAction>
-
+	@ObservedObject var viewStore: ViewStore<State, ClientsListAction>
+	
+	init(store: Store<ClientsState, ClientsListAction>) {
+		self.store = store
+		self.viewStore = ViewStore(store.scope(state: State.init(state:)))
+	}
+	
     struct State: Equatable {
         let searchText: String
         let isSelectedClient: Bool
         let isLoading: Bool
         let isAddClientActive: Bool
-        var isSearching = false
-        var notFoundClients = false
-
+		let isSearching: Bool
+		let notFoundClients: Bool
+		let error: RequestError?
         init(state: ClientsState) {
             self.searchText = state.searchText
             self.isSelectedClient = state.selectedClient != nil
@@ -209,66 +137,72 @@ struct ClientsList: View {
             self.isAddClientActive = state.addClient != nil
             self.isSearching = state.isSearching
             self.notFoundClients = state.notFoundClients
+			self.error = extract(case: LoadingState.gotError, from: state.contactListLS)
         }
     }
 
-    var body: some View {
-        WithViewStore(
-            store.scope(state: State.init(state:))
-        ) { viewStore in
-            VStack {
-                SearchView(
-                    placeholder: Texts.clientSearchPlaceholder,
-                    text: viewStore.binding(
-                        get: \.searchText,
-                        send: ClientsListAction.onSearchText
-                    )
-                ).padding(.horizontal, 10)
-                ZStack {
-                    List {
-                        ForEachStore(
-                            self.store.scope(
-                                state: { $0.clients },
-                                action: ClientsListAction.identified(id:action:)
-                            ),
-                            content: { store in
-                                ClientListRow(store: store)
-                            }
-                        )
-                    }
-                    EmptyDataView(
-                        imageName: "clients_image",
-                        title: "Nothing found",
-                        description: "Start searching the clients by name, email or mobile number"
-                    ).show(isVisible: .constant(viewStore.state.notFoundClients && viewStore.state.isSearching && !viewStore.state.isLoading))
-                }
-                NavigationLink.emptyHidden(
-                    viewStore.state.isSelectedClient,
-                    IfLetStore(
-                        self.store.scope(
-                            state: { $0.selectedClient },
-                            action: { .selectedClient($0) }
-                        ),
-                        then: {
-                            ClientCard(store: $0)
-                        }
-                    )
-                )
-                NavigationLink.emptyHidden(
-                    viewStore.isAddClientActive,
-                    IfLetStore(
-                        self.store.scope(
-                            state: { $0.addClient },
-                            action: { .addClient($0) }
-                        ),
-                        then: {
-                            AddClient(store: $0)}
-                    )
-                )
-            }.loadingView(.constant(viewStore.state.isLoading))
-            .navigationBarTitle(Text(Texts.clients), displayMode: .inline)
-            .navigationBarItems(trailing: PlusButton { viewStore.send(.onAddClient) }
-            )
-        }
+	var body: some View {
+		VStack {
+			SearchView(
+				placeholder: Texts.clientSearchPlaceholder,
+				text: viewStore.binding(
+					get: \.searchText,
+					send: ClientsListAction.onSearchText
+				)
+			).padding(.horizontal, 10)
+			if viewStore.error != nil {
+				Text("Error loading contacts: \(viewStore.error!.description)")
+			} else if viewStore.state.isLoading {
+				VStack {
+					Text("Loading...").foregroundColor(.accentColor)
+					ActivityIndicator(isAnimating: .constant(true), style: .large)
+				}
+			} else {
+				ZStack {
+					List {
+						ForEachStore(
+							self.store.scope(
+								state: { $0.clients },
+								action: ClientsListAction.identified(id:action:)
+							),
+							content: { store in
+								ClientListRow(store: store)
+							}
+						)
+					}
+					EmptyDataView(
+						imageName: "clients_image",
+						title: "Nothing found",
+						description: "Start searching the clients by name, email or mobile number"
+					).show(isVisible: .constant(viewStore.state.notFoundClients && viewStore.state.isSearching && !viewStore.state.isLoading))
+				}
+			}
+			NavigationLink.emptyHidden(
+				viewStore.state.isSelectedClient,
+				IfLetStore(
+					self.store.scope(
+						state: { $0.selectedClient },
+						action: { .selectedClient($0) }
+					),
+					then: {
+						ClientCard(store: $0)
+					}
+				)
+			)
+			NavigationLink.emptyHidden(
+				viewStore.isAddClientActive,
+				IfLetStore(
+					self.store.scope(
+						state: { $0.addClient },
+						action: { .addClient($0) }
+					),
+					then: {
+						AddClient(store: $0)}
+				)
+			)
+		}
+		.navigationBarTitle(Text(Texts.clients), displayMode: .inline)
+		.navigationBarItems(trailing: PlusButton { viewStore.send(.onAddClient) }
+		)
     }
 }
