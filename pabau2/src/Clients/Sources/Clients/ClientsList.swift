@@ -151,24 +151,28 @@ struct ClientsList: View {
 				)
 			).padding(.horizontal, 10)
 			if viewStore.error != nil {
-				Text("Error loading contacts: \(viewStore.error!.description)")
-			} else if viewStore.state.isLoading {
-				VStack {
-					Text("Loading...").foregroundColor(.accentColor)
-					ActivityIndicator(isAnimating: .constant(true), style: .large)
-				}
+				Text("Error loading contacts.").foregroundColor(.accentColor)
+			} else if viewStore.state.isLoading && viewStore.state.isSearching {
+				Spacer()
+				Text("Searching...").foregroundColor(.accentColor)
+				Spacer()
 			} else {
 				ZStack {
-					List {
-						ForEachStore(
-							self.store.scope(
-								state: { $0.clients },
-								action: ClientsListAction.identified(id:action:)
-							),
-							content: { store in
-								ClientListRow(store: store)
-							}
-						)
+					VStack {
+						List {
+							ForEachStore(
+								self.store.scope(
+									state: { $0.clients },
+									action: ClientsListAction.identified(id:action:)
+								),
+								content: { store in
+									ClientListRow(store: store)
+								}
+							)
+						}
+						ActivityIndicator(isAnimating: .constant(true), style: .large)
+							.foregroundColor(.accentColor)
+							.isHidden(!(viewStore.isLoading && !viewStore.isSearching))
 					}
 					EmptyDataView(
 						imageName: "clients_image",
