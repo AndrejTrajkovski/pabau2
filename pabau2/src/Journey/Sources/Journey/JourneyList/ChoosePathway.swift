@@ -18,7 +18,7 @@ let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayCont
 			case .chooseConsent(.proceed):
 				state.checkIn = CheckInContainerState(journey: state.selectedJourney!,
 													  pathway: state.selectedPathway!,
-													  patientDetails: PatientDetails.empty,
+													  patientDetails: ClientBuilder.empty,
 													  medicalHistoryId: HTMLForm.getMedHistory().id,
 													  medHistory: HTMLFormParentState.init(info: FormTemplateInfo(id: HTMLForm.getMedHistory().id, name: "MEDICAL HISTORY", type: .history), clientId: Client.ID.init(rawValue: .right(1)), getLoadingState: .initial),
 													  consents: state.allConsents.filter(

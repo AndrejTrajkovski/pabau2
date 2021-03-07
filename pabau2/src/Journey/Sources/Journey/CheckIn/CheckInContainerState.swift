@@ -10,7 +10,7 @@ public struct CheckInContainerState: Equatable {
 	let pathway: PathwayTemplate
 
 	var patientDetailsLS: LoadingState
-	var patientDetails: PatientDetails
+	var patientDetails: ClientBuilder
 	var patientDetailsStatus: Bool
 
 	var medicalHistoryId: HTMLForm.ID
@@ -132,7 +132,7 @@ extension CheckInContainerState {
 
 	init(journey: Journey,
 		 pathway: PathwayTemplate,
-		 patientDetails: PatientDetails,
+		 patientDetails: ClientBuilder,
 		 medicalHistoryId: HTMLForm.ID,
 		 medHistory: HTMLFormParentState,
 		 consents: IdentifiedArrayOf<FormTemplateInfo>,

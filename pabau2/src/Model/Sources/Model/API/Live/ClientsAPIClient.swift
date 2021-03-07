@@ -2,23 +2,6 @@ import ComposableArchitecture
 import Combine
 //MARK: - APIClient: ClientApi
 extension APIClient {
-	public func getClients() -> Effect<[Client], RequestError> {
-		let requestBuilder: RequestBuilder<ClientResponse>.Type = requestBuilderFactory.getBuilder()
-		struct ClientResponse: Decodable, Equatable {
-			public let clients: [Client]
-			public enum CodingKeys: String, CodingKey {
-				case clients = "appointments"
-			}
-		}
-		return requestBuilder.init(method: .GET,
-								   baseUrl: baseUrl,
-								   path: .getClients,
-								   queryParams: commonAnd(other: [:])
-		)
-			.effect()
-			.map(\.clients)
-			.eraseToEffect()
-	}
     
     public func getClients(search: String?, offset: Int) -> Effect<[Client], RequestError> {
         let requestBuilder: RequestBuilder<ClientResponse>.Type = requestBuilderFactory.getBuilder()
@@ -82,9 +65,9 @@ extension APIClient {
 			.eraseToEffect()
 	}
 	
-	public func getPatientDetails(clientId: Client.Id) -> Effect<PatientDetails, RequestError> {
+	public func getPatientDetails(clientId: Client.Id) -> Effect<Client, RequestError> {
 		struct PatientDetailsResponse: Decodable {
-			let details: [PatientDetails]
+			let details: [Client]
 			enum CodingKeys: String, CodingKey {
 				case details = "appointments"
 			}
@@ -108,7 +91,7 @@ extension APIClient {
 			.eraseToEffect()
 	}
 	
-	public func update(patDetails: PatientDetails) -> Effect<VoidAPIResponse, RequestError> {
+	public func update(patDetails: ClientBuilder) -> Effect<VoidAPIResponse, RequestError> {
 		let requestBuilder: RequestBuilder<VoidAPIResponse>.Type = requestBuilderFactory.getBuilder()
 		return requestBuilder.init(method: .POST,
 								   baseUrl: baseUrl,

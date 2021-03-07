@@ -624,14 +624,6 @@ extension AddAppointmentState {
 }
 
 struct AddAppMocks {
-    static let clientState: SingleChoiceLinkState<Client> =
-        SingleChoiceLinkState.init(
-            dataSource: [
-                Client.init(id: Client.Id.init(rawValue: .right(1)), firstName: "Wayne", lastName: "Rooney", dOB: Date()),
-                Client.init(id: Client.Id.init(rawValue: .right(2)), firstName: "Adam", lastName: "Smith", dOB: Date())
-            ],
-			chosenItemId: Client.Id.init(rawValue: .right(1)),
-            isActive: false)
 
     static let serviceState: SingleChoiceLinkState<Service> =
         SingleChoiceLinkState.init(

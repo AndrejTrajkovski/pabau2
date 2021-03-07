@@ -80,18 +80,19 @@ let clientsListReducer: Reducer<
 		case .selectedClient(.bottom(.child(.details(.editingClient(.onResponseSave(let result)))))):
 			if case .success = result,
 			   let patDetails = state.selectedClient?.list.details.editingClient?.patDetails {
-				let client = Client.init(patDetails: patDetails)
-				state.clients[id: patDetails.id] = client
+				let client = Client.init(patDetails: patDetails, id: patDetails.id!)
+				state.clients[id: patDetails.id!] = client
 				state.selectedClient!.client = client
 				state.selectedClient!.list.details.childState.state = patDetails
 				state.selectedClient!.list.details.editingClient = nil
 			}
 		case .onAddClient:
-			state.addClient = AddClientState(patDetails: PatientDetails.empty)
+			state.addClient = AddClientState(patDetails: ClientBuilder.empty)
 		case .addClient(.onResponseSave(let result)):
 			if case .success = result,
 			   let newClient = state.addClient?.patDetails {
-				state.clients.append(Client.init(patDetails: newClient))
+				fatalError("GET ID FROM RESULT")
+				state.clients.append(Client.init(patDetails: newClient, id: Client.ID.init(rawValue: .left("1123123123"))))
 				state.addClient = nil
 			}
 		case .addClient: break

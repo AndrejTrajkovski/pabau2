@@ -64,7 +64,7 @@ public let addClientReducer: Reducer<AddClientState, AddClientAction, ClientsEnv
 )
 
 public struct AddClientState: Equatable {
-	init (patDetails: PatientDetails) {
+	init (patDetails: ClientBuilder) {
 		self.patDetails = patDetails
 		self.newPhoto = nil
 		self.selectCameraTypeActionSheet = nil
@@ -72,7 +72,7 @@ public struct AddClientState: Equatable {
 		self.photoUploading = .initial
 		self.formSaving = .initial
 	}
-	var patDetails: PatientDetails
+	var patDetails: ClientBuilder
 	var newPhoto: UIImage?
 	var selectCameraTypeActionSheet: ActionSheetState<AddPhotoAction>?
 	var cameraType: UIImagePickerController.SourceType?
@@ -132,26 +132,3 @@ struct AddClient: View {
 		}
 	}
 }
-
-//extension PatientDetails {
-//	static let empty: PatientDetails(
-//	salutation: "",
-//	firstName: "",
-//	lastName: "",
-//	dob: "",
-//	phone: "",
-//	cellPhone: "",
-//	email: "",
-//	addressLine1: "",
-//	addressLine2: "",
-//	postCode: "",
-//	city: "",
-//	county: "",
-//	country: "",
-//	howDidYouHear: "",
-//	emailComm: false,
-//	smsComm: false,
-//	phoneComm: false,
-//	postComm: false
-//	)
-//}

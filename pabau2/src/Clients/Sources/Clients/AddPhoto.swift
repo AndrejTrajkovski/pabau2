@@ -31,7 +31,8 @@ public let addPhotoReducer: Reducer<AddPhotoState, AddPhotoAction, ClientsEnviro
 			state.newPhoto = scaledImage
 			state.cameraType = nil
 			let imageData = scaledImage.jpegData(compressionQuality: 0.5)!
-			return env.formAPI.updateProfilePic(image: imageData, clientId: state.patDetails.id)
+			guard let editingClientId = state.patDetails.id else { return .none } //NO API FOR ADDING PROFILE IMAGE WHEN JUST ADDING (NOT EDITING) A CLIENT
+			return env.formAPI.updateProfilePic(image: imageData, clientId: editingClientId)
 				.receive(on: DispatchQueue.main)
 				.catchToEffect()
 				.map(AddPhotoAction.photoUploadResponse)
@@ -50,14 +51,14 @@ public let addPhotoReducer: Reducer<AddPhotoState, AddPhotoAction, ClientsEnviro
 }
 
 public struct AddPhotoState: Equatable {
-	var patDetails: PatientDetails
+	var patDetails: ClientBuilder
 	var newPhoto: UIImage?
 	var selectCameraTypeActionSheet: ActionSheetState<AddPhotoAction>?
 	var cameraType: UIImagePickerController.SourceType?
 	var photoUploading: LoadingState
 	
 	public init(
-		patDetails: PatientDetails,
+		patDetails: ClientBuilder,
 		newPhoto: UIImage?,
 		selectCameraTypeActionSheet: ActionSheetState<AddPhotoAction>?,
 		cameraType: UIImagePickerController.SourceType?,
@@ -130,7 +131,12 @@ extension AddPhotoState {
 struct ClientAvatarUploadState: Equatable {
 	var newPhoto: UIImage?
 	var photoUploading: LoadingState
-	var patDetails: PatientDetails
+	var patDetails: ClientBuilder
+	
+	var editingClient: Client? {
+		guard let editingClientId = patDetails.id else { return nil }
+		return Client(patDetails: patDetails, id: editingClientId)
+	}
 }
 
 struct ClientAvatarUpload: View {
@@ -139,7 +145,7 @@ struct ClientAvatarUpload: View {
 		WithViewStore(store) { viewStore in
 			switch viewStore.photoUploading {
 			case .initial:
-				ClientAvatar(store: store.scope(state: { Client(patDetails: $0.patDetails) }))
+				clientAvatar(store: store)
 			case .loading:
 				VStack {
 					ActivityIndicator(isAnimating: .constant(true), style: .large)
@@ -151,11 +157,17 @@ struct ClientAvatarUpload: View {
 						.clipShape(Circle())
 			case .gotError:
 				ZStack {
-					ClientAvatar(store: store.scope(state: { Client(patDetails: $0.patDetails) }))
+					clientAvatar(store: store)
 					Text("Update Failed.").foregroundColor(.red)
 				}
 			}
 		}
+	}
+	
+	func clientAvatar(store: Store<ClientAvatarUploadState, Never>) -> some View {
+		IfLetStore(store.scope(state: { $0.editingClient }),
+				   then: ClientAvatar.init(store:)
+		)
 	}
 }
 

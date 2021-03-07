@@ -61,4 +61,12 @@ struct HorizontalLine: View {
 		HorizontalLineShape().fill(self.color).frame(minWidth: 0, maxWidth: .infinity, minHeight: height, maxHeight: height).opacity(0.1)
 	}
 }
+
+public func ??<T>(lhs: Binding<Optional<T>>, rhs: T) -> Binding<T> {
+	Binding(
+		get: { lhs.wrappedValue ?? rhs },
+		set: { lhs.wrappedValue = $0 }
+	)
+}
+
 #endif

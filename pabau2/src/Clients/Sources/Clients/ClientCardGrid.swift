@@ -79,12 +79,15 @@ let clientCardGridReducer: Reducer<ClientCardState, ClientCardBottomAction, Clie
 						.receive(on: DispatchQueue.main)
 						.eraseToEffect()
 				case .details:
-					state.list.details.childState.loadingState = .loading
-                    return env.apiClient.getPatientDetails(clientId: state.client.id)
-						.catchToEffect()
-						.map { .child(.details(.action(.gotResult($0)))) }
-						.receive(on: DispatchQueue.main)
-						.eraseToEffect()
+					state.list.details.childState.state = ClientBuilder.init(client: state.client)
+//					state.list.details.childState.loadingState = .loading
+//                    return env.apiClient.getPatientDetails(clientId: state.client.id)
+//						.catchToEffect()
+//						.map { client in
+//							.child(.details(.action(.gotResult(ClientBuilder.init(client: client)))))
+//						}
+//						.receive(on: DispatchQueue.main)
+//						.eraseToEffect()
 				case .photos:
 					state.list.photos.childState.loadingState = .loading
                     return env.apiClient.getPhotos(clientId: state.client.id)

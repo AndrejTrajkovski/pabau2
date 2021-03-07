@@ -77,7 +77,7 @@ let checkInPatientReducer: Reducer<CheckInPatientState, CheckInPatientAction, Jo
 struct CheckInPatientState: Equatable, CheckInState {
 	let journey: Journey
 	let pathway: PathwayTemplate
-	var patientDetails: PatientDetails
+	var patientDetails: ClientBuilder
 	var patientDetailsStatus: Bool
 	var medicalHistoryId: HTMLForm.ID
 	var medicalHistory: HTMLFormParentState

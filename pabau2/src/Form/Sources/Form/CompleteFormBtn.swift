@@ -98,7 +98,11 @@ extension HTMLForm: CompleteBtnState {
 	}
 }
 
-extension PatientDetails: CompleteBtnState {
+extension ClientBuilder: CompleteBtnState {
+	public var canProceed: Bool {
+		return firstName?.isEmpty ?? false && lastName?.isEmpty ?? false && email?.isEmpty ?? false
+	}
+	
 	public var title: String {
 		"Patient Details"
 	}

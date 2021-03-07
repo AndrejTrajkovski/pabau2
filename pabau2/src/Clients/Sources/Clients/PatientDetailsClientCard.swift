@@ -43,7 +43,7 @@ public let patientDetailsClientCardReducer: Reducer<PatientDetailsClientCardStat
 )
 
 public struct PatientDetailsClientCardState: ClientCardChildParentState {
-	var childState: ClientCardChildState<PatientDetails?>
+	var childState: ClientCardChildState<ClientBuilder?>
 	var editingClient: AddClientState?
 }
 
@@ -51,10 +51,10 @@ public enum PatientDetailsClientCardAction: ClientCardChildParentAction {
 	case cancelEdit
 	case saveChanges
 	case edit
-	case action(GotClientListAction<PatientDetails>?)
+	case action(GotClientListAction<ClientBuilder>?)
 	case form(PatientDetailsAction)
 	case editingClient(AddClientAction)
-	var action: GotClientListAction<PatientDetails>? {
+	var action: GotClientListAction<ClientBuilder>? {
 		get {
 			if case .action(let app) = self {
 				return app
