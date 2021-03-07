@@ -24,7 +24,7 @@ public struct JourneyState: Equatable {
 }
 
 extension JourneyState {
-	
+
 	public var choosePathway: ChoosePathwayState {
 		get {
 			ChoosePathwayState(

@@ -5,7 +5,6 @@ import Util
 import Form
 import SharedComponents
 
-
 public typealias AddAppointmentEnv = (journeyAPI: JourneyAPI, clientAPI: ClientsAPI, userDefaults: UserDefaultsConfig)
 
 public struct AddAppointmentState: Equatable {

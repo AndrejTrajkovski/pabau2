@@ -100,9 +100,9 @@ extension HTMLForm: CompleteBtnState {
 
 extension ClientBuilder: CompleteBtnState {
 	public var canProceed: Bool {
-		return firstName?.isEmpty ?? false && lastName?.isEmpty ?? false && email?.isEmpty ?? false
+		return !firstName.isEmpty && !lastName.isEmpty && !email.isEmpty
 	}
-	
+
 	public var title: String {
 		"Patient Details"
 	}

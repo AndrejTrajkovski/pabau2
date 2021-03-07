@@ -26,7 +26,7 @@ struct PhotoCompareState: Equatable {
 		self.rightId = photos.values.flatMap { $0 }.sorted(by: dateKP).first!.id
 		self.leftId = selectedId
     }
-	
+
 	var leftId: PhotoVariantId
 	var rightId: PhotoVariantId
 	var activeSide: ActiveSide = .left
@@ -37,7 +37,7 @@ struct PhotoCompareState: Equatable {
 	var position: CGSize = .zero
 	var currentMagnification: CGFloat = 1
 	var pinchMagnification: CGFloat = 1
-	
+
     var shareSelectState: PhotoShareSelectState?
 }
 
@@ -87,8 +87,7 @@ struct PhotoCompareView: View {
 
                 Spacer()
                 PhotosListTimelineView(store: self.store)
-				
-                
+
                 NavigationLink
                     .emptyHidden(viewStore.shareSelectState != nil,
                                  IfLetStore(store.scope(state: { $0.shareSelectState },
@@ -96,9 +95,7 @@ struct PhotoCompareView: View {
                                             then: { PhotoShareSelectView(store: $0) }
                                  )
                     )
-                
-                
-                
+
             }
             .navigationBarTitle("Progress Gallery")
             .navigationBarItems(

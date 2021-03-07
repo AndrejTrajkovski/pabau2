@@ -21,7 +21,7 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 		}
 
 	switch action {
-	
+
 		case .chooseForms(.proceed):
 			guard state.chooseForms != nil else { break }
 			let array = state.chooseForms!.selectedTemplates().map { HTMLFormParentState.init(info: $0, clientId: state.client.id, getLoadingState: .loading) }
@@ -30,7 +30,7 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 			return .concatenate (
 				state.formsCollection.map(\.id).map { getForm($0, env.formAPI) }
 			)
-			
+
 		default:
 			break
 		}

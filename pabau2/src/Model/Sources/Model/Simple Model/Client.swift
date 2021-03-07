@@ -7,28 +7,27 @@ public struct Client: Decodable, Identifiable, Equatable {
     public typealias Id = Tagged<Client, EitherStringOrInt>
 
 	public let id: Client.Id
-    public let mobile: String?
-    public let salutation: String?
-    public let leadSource: String?
-    public let mailingStreet: String?
-    public let otherStreet: String?
-    public let mailingCity: String?
-    public let mailingCounty: String?
-    public let mailingCountry: String?
-    public let mailingPostal: String?
-    public let gender: String?
+    public let mobile: String
+    public let salutation: String
+    public let leadSource: String
+    public let mailingStreet: String
+    public let otherStreet: String
+    public let mailingCity: String
+    public let mailingCounty: String
+    public let mailingCountry: String
+    public let mailingPostal: String
+    public let gender: String
+	public let email: String
+	public let avatar: String?
+	public let phone: String
+	public var count: ClientItemsCount?
+	public let dOB: Date?
     public let optInEmail: Bool
     public let optInPhone: Bool
     public let optInPost: Bool
     public let optInSms: Bool
     public let firstName: String
     public let lastName: String
-    public let dOB: Date?
-    public let email: String?
-    public let avatar: String?
-    public let phone: String?
-    public var count: ClientItemsCount?
-	
 	
     public enum CodingKeys: String, CodingKey {
         case mobile
@@ -120,28 +119,28 @@ public struct Client: Decodable, Identifiable, Equatable {
 }
 
 extension Client {
-	public init(patDetails: ClientBuilder, id: Client.ID) {
+	public init(clientBuilder: ClientBuilder, id: Client.ID) {
 		self.id = id
-		self.mobile = patDetails.mobile
-		self.salutation = patDetails.salutation
-		self.leadSource = patDetails.leadSource
-		self.mailingStreet = patDetails.mailingStreet
-		self.otherStreet = patDetails.otherStreet
-		self.mailingCity = patDetails.mailingCity
-		self.mailingCounty = patDetails.mailingCounty
-		self.mailingCountry = patDetails.mailingCountry
-		self.mailingPostal = patDetails.mailingPostal
-		self.gender = patDetails.gender
-		self.optInEmail = patDetails.optInEmail
-		self.optInPhone = patDetails.optInPhone
-		self.optInPost = patDetails.optInPost
-		self.optInSms = patDetails.optInSms
-		self.firstName = patDetails.firstName ?? ""
-		self.lastName = patDetails.lastName ?? ""
-		self.dOB = patDetails.dOB
-		self.email = patDetails.email
-		self.avatar = patDetails.avatar
-		self.phone = patDetails.phone
+		self.mobile = clientBuilder.mobile
+		self.salutation = clientBuilder.salutation
+		self.leadSource = clientBuilder.leadSource
+		self.mailingStreet = clientBuilder.mailingStreet
+		self.otherStreet = clientBuilder.otherStreet
+		self.mailingCity = clientBuilder.mailingCity
+		self.mailingCounty = clientBuilder.mailingCounty
+		self.mailingCountry = clientBuilder.mailingCountry
+		self.mailingPostal = clientBuilder.mailingPostal
+		self.gender = clientBuilder.gender
+		self.optInEmail = clientBuilder.optInEmail
+		self.optInPhone = clientBuilder.optInPhone
+		self.optInPost = clientBuilder.optInPost
+		self.optInSms = clientBuilder.optInSms
+		self.firstName = clientBuilder.firstName
+		self.lastName = clientBuilder.lastName
+		self.dOB = clientBuilder.dOB
+		self.email = clientBuilder.email
+		self.avatar = clientBuilder.avatar
+		self.phone = clientBuilder.phone
 	}
 }
 

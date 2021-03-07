@@ -66,7 +66,7 @@ struct PhotoSideBySideView: View {
 }
 
 extension PhotoCompareState {
-	
+
 	var leftState: PhotoDetailState {
 		get {
 			PhotoDetailState(photo: photos.flatMap(\.value).first(where: { $0.id == leftId })!,
@@ -84,7 +84,7 @@ extension PhotoCompareState {
 			self.pinchMagnification = newValue.pinchMagnification
 		}
 	}
-	
+
 	var rightState: PhotoDetailState {
 		get {
 			PhotoDetailState(photo: photos.flatMap(\.value).first(where: { $0.id == rightId })!,

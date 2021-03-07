@@ -16,10 +16,10 @@ public let patientDetailsClientCardReducer: Reducer<PatientDetailsClientCardStat
 	.init { state, action, env in
 		switch action {
 		case .edit:
-			guard let patDetails = state.childState.state else { break }
-			state.editingClient = AddClientState(patDetails: patDetails)
+			guard let clientBuilder = state.childState.state else { break }
+			state.editingClient = AddClientState(clientBuilder: clientBuilder)
 		case .saveChanges:
-			state.editingClient.map { state.childState.state = $0.patDetails }
+			state.editingClient.map { state.childState.state = $0.clientBuilder }
 			state.editingClient = nil
 		case .cancelEdit:
 			state.editingClient = nil

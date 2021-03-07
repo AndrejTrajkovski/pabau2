@@ -22,7 +22,7 @@ public enum CheckEmailAction: Equatable {
 public struct CheckEmail: View {
 	let store: Store<[LoginNavScreen], CheckEmailAction>
 	@ObservedObject var viewStore: ViewStore<[LoginNavScreen], CheckEmailAction>
-	
+
 	let resetPassStore: Store<ResetPasswordState, ResetPasswordAction>
 	let passChangedStore: Store<[LoginNavScreen], PassChangedAction>
 	public init(store: Store<[LoginNavScreen], CheckEmailAction>,
@@ -47,7 +47,7 @@ public struct CheckEmail: View {
 				resetPassView)
 		}
 	}
-	
+
 	var resetPassView: ResetPassword {
 		ResetPassword(store: resetPassStore,
 					  passChangedStore: passChangedStore

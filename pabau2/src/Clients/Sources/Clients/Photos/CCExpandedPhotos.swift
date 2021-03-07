@@ -41,14 +41,14 @@ struct CCExpandedPhotos: View {
 		let selectedDatePhotos: [PhotoViewModel]
 		let isCompareActive: Bool
 		let selectedDate: Date
-		
+
 		init(state: CCExpandedPhotosState) {
 			self.selectedDate = state.selectedDate
 			self.isCompareActive = state.photoCompare != nil
 			self.selectedDatePhotos = state.photos[state.selectedDate] ?? []
 		}
 	}
-	
+
 	init(store: Store<CCExpandedPhotosState, CCExpandedPhotosAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store.scope(state: State.init(state:)))
@@ -72,7 +72,7 @@ struct CCExpandedPhotos: View {
 				}
 		}
 	}
-	
+
 	var selectedDateSection: ASCollectionViewSection<Date> {
 		ExpandedPhotosSection(date: viewStore.selectedDate,
                               photos: viewStore.selectedDatePhotos,
@@ -84,7 +84,7 @@ struct ExpandedPhotosSection {
 	let date: Date
 	let photos: [PhotoViewModel]
     let action: (PhotoVariantId) -> Void
-    
+
 	var section: ASCollectionViewSection<Date> {
 		ASCollectionViewSection(
 			id: date,

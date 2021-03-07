@@ -30,7 +30,7 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, F
 				.map(HTMLFormAction.gotPOSTResponse)
 		case .gotPOSTResponse(let result):
 			switch result {
-			case .success(_):
+			case .success:
 				state.postLoadingState = .gotSuccess
 				state.isComplete = true
 			case .failure(let error):

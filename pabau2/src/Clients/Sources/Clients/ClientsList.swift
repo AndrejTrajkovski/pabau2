@@ -41,7 +41,7 @@ let clientsListReducer: Reducer<
         case .onSearchText(let text):
             state.searchText = text
             state.isSearching = !text.isEmpty
-			
+
             if text.isEmpty {
                 state.clients = .init([])
             }
@@ -67,7 +67,7 @@ let clientsListReducer: Reducer<
                     state.notFoundClients = clients.isEmpty
                     break
                 }
-				
+
                 state.clients = (state.clients + .init(clients))
                 state.notFoundClients = state.clients.isEmpty
             case .failure(let error):
@@ -78,21 +78,21 @@ let clientsListReducer: Reducer<
 			guard case .success(let count) = result else { break }
 			state.selectedClient?.client.count = count
 		case .selectedClient(.bottom(.child(.details(.editingClient(.onResponseSave(let result)))))):
-			if case .success = result,
-			   let patDetails = state.selectedClient?.list.details.editingClient?.patDetails {
-				let client = Client.init(patDetails: patDetails, id: patDetails.id!)
-				state.clients[id: patDetails.id!] = client
-				state.selectedClient!.client = client
-				state.selectedClient!.list.details.childState.state = patDetails
+			if case .success(let newId) = result,
+			   let clientBuilder = state.selectedClient?.list.details.editingClient?.clientBuilder {
+				let newClient = Client.init(clientBuilder: clientBuilder, id: newId)
+				state.clients.remove(id: clientBuilder.id!)
+				state.selectedClient!.client = newClient
+				state.selectedClient!.list.details.childState.state = ClientBuilder.init(client: newClient)
+				state.clients.append(newClient)
 				state.selectedClient!.list.details.editingClient = nil
 			}
 		case .onAddClient:
-			state.addClient = AddClientState(patDetails: ClientBuilder.empty)
+			state.addClient = AddClientState(clientBuilder: ClientBuilder.empty)
 		case .addClient(.onResponseSave(let result)):
-			if case .success = result,
-			   let newClient = state.addClient?.patDetails {
-				fatalError("GET ID FROM RESULT")
-				state.clients.append(Client.init(patDetails: newClient, id: Client.ID.init(rawValue: .left("1123123123"))))
+			if case .success(let newId) = result,
+			   let newClient = state.addClient?.clientBuilder {
+				state.clients.append(Client.init(clientBuilder: newClient, id: newId))
 				state.addClient = nil
 			}
 		case .addClient: break
@@ -117,12 +117,12 @@ public enum ClientsListAction: Equatable {
 struct ClientsList: View {
     let store: Store<ClientsState, ClientsListAction>
 	@ObservedObject var viewStore: ViewStore<State, ClientsListAction>
-	
+
 	init(store: Store<ClientsState, ClientsListAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store.scope(state: State.init(state:)))
 	}
-	
+
     struct State: Equatable {
         let searchText: String
         let isSelectedClient: Bool

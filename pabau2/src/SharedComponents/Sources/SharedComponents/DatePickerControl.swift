@@ -2,7 +2,7 @@ import SwiftUI
 import Util
 
 public struct DatePickerControl: View {
-    
+
 	public init(
         _ title: String,
         _ date: Binding<Date?>,
@@ -12,7 +12,7 @@ public struct DatePickerControl: View {
 		self.title = title
 		self.mode = mode
 		self._date = date
-        
+
         self._configurator = configurator ?? .constant(nil)
 	}
 

@@ -13,7 +13,7 @@ public enum ChoosePathwayContainerAction {
 
 let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayContainerAction, JourneyEnvironment> =
 	.combine(
-		Reducer.init { state, action, env in
+		Reducer.init { state, action, _ in
 			switch action {
 			case .chooseConsent(.proceed):
 				state.checkIn = CheckInContainerState(journey: state.selectedJourney!,

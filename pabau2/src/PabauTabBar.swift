@@ -226,7 +226,7 @@ public let tabBarReducer: Reducer<
 		switch action {
 		case .gotLocationsResponse(let locationsResponse):
 			switch locationsResponse {
-				//MARK: - Iurii
+				// MARK: - Iurii
 			case .success(let locations):
 				state.calendar.locations = IdentifiedArray(locations)
 //				state.calendar.chosenLocationsIds = locations.map(\.id)
@@ -239,7 +239,7 @@ public let tabBarReducer: Reducer<
 			switch employeesResponse {
 			case .success(let employees):
 				print(employees)
-				//MARK: - Iurii
+				// MARK: - Iurii
 				//TODO: ASK Backend to Add LocationId in response
 				state.calendar.employees = Dictionary.init(grouping: state.calendar.locations,
 														   by: { $0.id }).mapValues { _ in

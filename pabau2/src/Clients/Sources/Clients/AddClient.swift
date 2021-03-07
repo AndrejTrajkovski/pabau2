@@ -39,22 +39,22 @@ public let addClientReducer: Reducer<AddClientState, AddClientAction, ClientsEnv
 		environment: { $0 }
 	),
 	patientDetailsReducer.pullback(
-		state: \.patDetails,
-		action: /AddClientAction.patDetails,
+		state: \.clientBuilder,
+		action: /AddClientAction.clientBuilder,
 		environment: { $0 }
 	),
 	.init { state, action, env in
 		switch action {
 		case .saveClient:
 			state.formSaving = .loading
-			return env.apiClient.update(patDetails: state.patDetails)
+			return env.apiClient.update(clientBuilder: state.clientBuilder)
 				.catchToEffect()
 				.receive(on: DispatchQueue.main)
 				.map(AddClientAction.onResponseSave)
 				.eraseToEffect()
 		case .saveAlertCanceled:
 			state.saveFailureAlert = nil
-		case .patDetails, .addPhoto, .onResponseSave:
+		case .clientBuilder, .addPhoto, .onResponseSave:
 			break
 		case .onBackFromAddClient:
 			return .cancel(id: UploadPhotoId())
@@ -64,25 +64,25 @@ public let addClientReducer: Reducer<AddClientState, AddClientAction, ClientsEnv
 )
 
 public struct AddClientState: Equatable {
-	init (patDetails: ClientBuilder) {
-		self.patDetails = patDetails
+	init (clientBuilder: ClientBuilder) {
+		self.clientBuilder = clientBuilder
 		self.newPhoto = nil
 		self.selectCameraTypeActionSheet = nil
 		self.cameraType = nil
 		self.photoUploading = .initial
 		self.formSaving = .initial
 	}
-	var patDetails: ClientBuilder
+	var clientBuilder: ClientBuilder
 	var newPhoto: UIImage?
 	var selectCameraTypeActionSheet: ActionSheetState<AddPhotoAction>?
 	var cameraType: UIImagePickerController.SourceType?
 	var saveFailureAlert: AlertState<AddClientAction>?
 	var photoUploading: LoadingState
 	var formSaving: LoadingState
-	
+
 	var addPhoto: AddPhotoState {
 		get {
-			AddPhotoState(patDetails: patDetails,
+			AddPhotoState(clientBuilder: clientBuilder,
 						  newPhoto: self.newPhoto,
 						  selectCameraTypeActionSheet: self.selectCameraTypeActionSheet,
 						  cameraType: self.cameraType,
@@ -99,11 +99,11 @@ public struct AddClientState: Equatable {
 }
 
 public enum AddClientAction: Equatable {
-	case patDetails(PatientDetailsAction)
+	case clientBuilder(PatientDetailsAction)
 	case addPhoto(AddPhotoAction)
 	case onBackFromAddClient
 	case saveClient
-	case onResponseSave(Result<VoidAPIResponse, RequestError>)
+	case onResponseSave(Result<Client.ID, RequestError>)
 	case saveAlertCanceled
 }
 
@@ -116,7 +116,7 @@ struct AddClient: View {
 					state: { $0.addPhoto }, action: { .addPhoto($0) }
 				)).padding()
 				PatientDetailsForm(store: self.store.scope(
-									state: { $0.patDetails }, action: { .patDetails($0) })
+									state: { $0.clientBuilder }, action: { .clientBuilder($0) })
 				).padding()
 				.loadingView(.constant(viewStore.formSaving == .loading), "Saving...")
 				.alert(store.scope(state: \.saveFailureAlert), dismiss: AddClientAction.saveAlertCanceled)

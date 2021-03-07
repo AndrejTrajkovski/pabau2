@@ -124,7 +124,7 @@ public struct ChooseFormList: View {
 			}
 			.navigationBarTitle(viewStore.state.navigationTitle)
 	}
-	
+
 	var chooseFormCells: some View {
 		HStack {
 			ListFrame(style: .blue) {
@@ -237,7 +237,7 @@ public enum ChooseFormMode: Equatable {
 	case consentsPreCheckIn
 	case treatmentNotes
 	case clientCard(FormType)
-	
+
 	var navigationTitle: String {
 		switch self {
 		case .consentsCheckIn, .consentsPreCheckIn:
@@ -257,7 +257,7 @@ public enum ChooseFormMode: Equatable {
 			return Texts.checkIn
 		case .treatmentNotes:
 			return Texts.proceed
-		case .clientCard(_):
+		case .clientCard:
 			return Texts.proceed
 		}
 	}

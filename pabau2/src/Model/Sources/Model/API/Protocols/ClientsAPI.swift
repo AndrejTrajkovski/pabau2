@@ -17,7 +17,7 @@ public protocol ClientsAPI {
 	func getNotes(clientId: Client.Id) -> Effect<[Note], RequestError>
 	
 	func getPatientDetails(clientId: Client.Id) -> Effect<Client, RequestError>
-	func update(patDetails: ClientBuilder) -> Effect<VoidAPIResponse, RequestError>
+	func update(clientBuilder: ClientBuilder) -> Effect<Client.ID, RequestError>
     func addNote(clientId: Client.Id, note: String) -> Effect<Note, RequestError>
     func addAlert(clientId: Client.Id, alert: String) -> Effect<Bool, RequestError>
 }

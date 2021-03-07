@@ -20,7 +20,7 @@ public extension CheckInState {
 		return false
 	}
 
-	mutating func previous() -> Bool  {
+	mutating func previous() -> Bool {
 		if selectedIdx > 0 {
 			selectedIdx -= 1
 			return true

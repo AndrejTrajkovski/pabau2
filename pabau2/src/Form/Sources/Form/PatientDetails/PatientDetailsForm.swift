@@ -123,17 +123,17 @@ public enum PatientDetailsAction: Equatable {
 
 public let patientDetailsReducer: Reducer<ClientBuilder, PatientDetailsAction, Any> = (
 	.combine(
-		textFieldReducer.optional.pullback(
+		textFieldReducer.pullback(
 			state: \ClientBuilder.salutation,
 			action: /PatientDetailsAction.salutation,
 			environment: { $0 }
 		),
-		textFieldReducer.optional.pullback(
+		textFieldReducer.pullback(
 			state: \ClientBuilder.firstName,
 			action: /PatientDetailsAction.firstName,
 			environment: { $0 }
 		),
-		textFieldReducer.optional.pullback(
+		textFieldReducer.pullback(
 			state: \ClientBuilder.lastName,
 			action: /PatientDetailsAction.lastName,
 			environment: { $0 }
@@ -143,52 +143,52 @@ public let patientDetailsReducer: Reducer<ClientBuilder, PatientDetailsAction, A
 			action: /PatientDetailsAction.dob,
 			environment: { $0 }
 		),
-		textFieldReducer.optional.pullback(
+		textFieldReducer.pullback(
 			state: \ClientBuilder.phone,
 			action: /PatientDetailsAction.phone,
 			environment: { $0 }
 		),
-		textFieldReducer.optional.pullback(
+		textFieldReducer.pullback(
 			state: \ClientBuilder.mobile,
 			action: /PatientDetailsAction.cellPhone,
 			environment: { $0 }
 		),
-		textFieldReducer.optional.pullback(
+		textFieldReducer.pullback(
 			state: \ClientBuilder.email,
 			action: /PatientDetailsAction.email,
 			environment: { $0 }
 		),
-		textFieldReducer.optional.pullback(
+		textFieldReducer.pullback(
 			state: \ClientBuilder.mailingStreet,
 			action: /PatientDetailsAction.addressLine1,
 			environment: { $0 }
 		),
-		textFieldReducer.optional.pullback(
+		textFieldReducer.pullback(
 			state: \ClientBuilder.otherStreet,
 			action: /PatientDetailsAction.addressLine2,
 			environment: { $0 }
 		),
-		textFieldReducer.optional.pullback(
+		textFieldReducer.pullback(
 			state: \ClientBuilder.mailingPostal,
 			action: /PatientDetailsAction.postCode,
 			environment: { $0 }
 		),
-		textFieldReducer.optional.pullback(
+		textFieldReducer.pullback(
 			state: \ClientBuilder.mailingCity,
 			action: /PatientDetailsAction.city,
 			environment: { $0 }
 		),
-		textFieldReducer.optional.pullback(
+		textFieldReducer.pullback(
 			state: \ClientBuilder.mailingCounty,
 			action: /PatientDetailsAction.county,
 			environment: { $0 }
 		),
-		textFieldReducer.optional.pullback(
+		textFieldReducer.pullback(
 			state: \ClientBuilder.mailingCountry,
 			action: /PatientDetailsAction.country,
 			environment: { $0 }
 		),
-		textFieldReducer.optional.pullback(
+		textFieldReducer.pullback(
 			state: \ClientBuilder.howDidYouHear,
 			action: /PatientDetailsAction.howDidYouHear,
 			environment: { $0 }
@@ -217,18 +217,18 @@ func viewModels(_ viewStore: ViewStore<ClientBuilder, PatientDetailsAction>) -> 
 		[
 			TextAndTextViewVM(
 				viewStore.binding(
-					get: { ($0.salutation ?? "") },
+					get: { ($0.salutation ) },
 					send: { .salutation(.textChange($0)) }
 				),
 				Texts.salutation),
 			TextAndTextViewVM(
 				viewStore.binding(
-					get: { $0.firstName ?? ""},
+					get: { $0.firstName },
 					send: { .firstName(.textChange($0)) }),
 				Texts.firstName),
 			TextAndTextViewVM(
 				viewStore.binding(
-					get: { $0.lastName ?? ""},
+					get: { $0.lastName },
 					send: { .lastName(.textChange($0)) }),
 				Texts.lastName)
 		],
@@ -240,63 +240,63 @@ func viewModels(_ viewStore: ViewStore<ClientBuilder, PatientDetailsAction>) -> 
 				Texts.dob),
 			TextAndTextViewVM(
 				viewStore.binding(
-					get: { $0.phone ?? ""},
+					get: { $0.phone },
 					send: { .phone(.textChange($0)) }),
 				Texts.phone),
 			TextAndTextViewVM(
 				viewStore.binding(
-					get: { $0.mobile ?? ""},
+					get: { $0.mobile },
 					send: { .cellPhone(.textChange($0)) }),
 				Texts.cellPhone)
 		],
 		[
 			TextAndTextViewVM(
 				viewStore.binding(
-					get: { $0.email ?? ""},
+					get: { $0.email },
 					send: { .email(.textChange($0)) }),
 				Texts.email),
 			TextAndTextViewVM(
 				viewStore.binding(
-					get: { $0.mailingStreet ?? ""},
+					get: { $0.mailingStreet },
 					send: { .addressLine1(.textChange($0)) }),
 				Texts.addressLine1),
 			TextAndTextViewVM(
 				viewStore.binding(
-					get: { $0.otherStreet ?? ""},
+					get: { $0.otherStreet },
 					send: { .addressLine2(.textChange($0)) }),
 				Texts.addressLine2)
 		],
 		[
 			TextAndTextViewVM(
 				viewStore.binding(
-					get: { $0.mailingPostal ?? ""},
+					get: { $0.mailingPostal },
 					send: { .postCode(.textChange($0)) }),
 				Texts.postCode),
 			TextAndTextViewVM(
 				viewStore.binding(
-					get: { $0.mailingCity ?? ""},
+					get: { $0.mailingCity },
 					send: { .city(.textChange($0)) }),
 				Texts.city),
 			TextAndTextViewVM(
 				viewStore.binding(
-					get: { $0.mailingCounty ?? ""},
+					get: { $0.mailingCounty },
 					send: { .county(.textChange($0)) }),
 				Texts.county)
 		],
 		[
 			TextAndTextViewVM(
 				viewStore.binding(
-					get: { $0.mailingCountry ?? ""},
+					get: { $0.mailingCountry },
 					send: { .country(.textChange($0)) }),
 				Texts.country),
 			TextAndTextViewVM(
 				viewStore.binding(
-					get: { $0.howDidYouHear ?? ""},
+					get: { $0.howDidYouHear },
 					send: { .howDidYouHear(.textChange($0)) }),
 				Texts.howDidUHear),
             TextAndTextViewVM(
                 viewStore.binding(
-                    get: { $0.gender ?? ""},
+                    get: { $0.gender },
                     send: { .howDidYouHear(.textChange($0)) }),
                 Texts.gender)
 		]

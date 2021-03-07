@@ -87,18 +87,18 @@ struct CheckInPatientState: Equatable, CheckInState {
 	var patientDetailsLS: LoadingState
 }
 
-//MARK: - CheckInState
+// MARK: - CheckInState
 extension CheckInPatientState {
 	func stepTypes() -> [StepType] {
 		return pathway.steps.map(\.stepType).filter(filterBy(.patient))
 	}
-	
+
 	func stepForms() -> [StepFormInfo] {
 		return stepTypes().map {
 			getForms($0)
 		}.flatMap { $0 }
 	}
-	
+
 	func getForms(_ stepType: StepType) -> [StepFormInfo] {
 		switch stepType {
 		case .patientdetails:
@@ -152,7 +152,7 @@ func patientForm(stepType: StepType,
 	case .consents:
 		ForEachStore(store.scope(state: { $0.consents },
 								 action: CheckInPatientAction.consents(id: action:)),
-					 content: { HTMLFormParent.init(store:$0) }
+					 content: { HTMLFormParent.init(store: $0) }
 		)
 	case .patientComplete:
 		PatientCompleteForm(store: store.scope(state: { $0.isPatientComplete }, action: { .patientComplete($0)})

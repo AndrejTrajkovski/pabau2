@@ -75,9 +75,9 @@ private func updateWithKeepingOld(forms: inout IdentifiedArrayOf<HTMLFormParentS
 	let allNewSelected = allTemplates.filter { finalSelectedTemplatesIds.contains($0.id) }
 	let oldToKeepIds = allNewSelected.map(\.id).filter { oldWithData.map(\.id).contains($0)}
 	let newToGetIds = allNewSelected.map(\.id).filter { oldToKeepIds.contains($0)}
-	
+
 	let oldToKeep = oldToKeepIds.compactMap { oldWithData[id: $0 ]}
 	forms = IdentifiedArrayOf.init(oldToKeep)
-	
+
 	return newToGetIds
 }

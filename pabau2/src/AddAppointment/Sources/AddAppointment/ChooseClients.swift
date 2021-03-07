@@ -36,7 +36,7 @@ let chooseClientsReducer =
             state.searchText = ""
             state.isSearching = false
             state.clients = .init([])
-            
+
             return env.clientAPI
                 .getClients(
                     search: nil,

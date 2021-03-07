@@ -20,7 +20,7 @@ public let clientCardBottomReducer: Reducer<ClientCardState, ClientCardBottomAct
 			state: \ClientCardState.self,
 			action: /ClientCardBottomAction.self,
 			environment: { $0 }
-        ), Reducer<ClientCardState, ClientCardBottomAction, ClientsEnvironment> { state, action, _ in
+        ), Reducer<ClientCardState, ClientCardBottomAction, ClientsEnvironment> { _, action, _ in
             switch action {
             case .backBtnTap:
                 break

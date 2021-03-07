@@ -14,7 +14,7 @@ public struct HTMLFormView: View {
 		UITableViewHeaderFooterView.appearance().tintColor = UIColor.white
 		UITableView.appearance().separatorStyle = .none
 	}
-	
+
 	public var body: some View {
 		VStack {
 			HTMLFormTitle(store: store.scope(state: { $0.templateInfo.name }).actionless)

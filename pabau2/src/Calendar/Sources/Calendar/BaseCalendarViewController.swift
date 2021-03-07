@@ -54,7 +54,7 @@ public class BaseCalendarViewController: UIViewController {
 		alert.popoverPresentationController?.sourceRect = anchorView.bounds
 		present(alert, animated: true)
 	}
-    
+
     public func presentAlert(
         _ date: Date,
         _ anchorView: UIView,

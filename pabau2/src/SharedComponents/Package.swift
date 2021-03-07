@@ -21,8 +21,8 @@ let package = Package(
 				 url: "https://github.com/pointfreeco/swift-composable-architecture.git",
 				 from: Version.init(stringLiteral: "0.6.0")),
 		.package(url: "../Avatar",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		
+				 from: Version.init(stringLiteral: "1.0.0"))
+
     ],
     targets: [
         .target(

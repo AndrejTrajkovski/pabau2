@@ -15,7 +15,7 @@ import Form
 //		return [MetaFormAndStatus(MetaForm.aftercare(Aftercare.mock), index: 0)]
 //	case .checkpatient:
 //		let patientForms = [medHistory] + consents
-//		let checkPatient = CheckPatient(patDetails: patientDetails, patForms: patientForms)
+//		let checkPatient = CheckPatient(clientBuilder: patientDetails, patForms: patientForms)
 //		return [MetaFormAndStatus(MetaForm.checkPatient(checkPatient), index: 0)]
 //	case .treatmentnotes:
 //		return wrap(treatmentNotes)
@@ -124,4 +124,3 @@ import Form
 //	}).flatMap(\.value)
 //	forms = IdentifiedArray.init(wrap(IdentifiedArray(result)))
 //}
-

@@ -9,7 +9,7 @@ struct UploadPhotoId: Hashable {}
 
 public let addPhotoReducer: Reducer<AddPhotoState, AddPhotoAction, ClientsEnvironment> =
 	.init { state, action, env in
-		
+
 		switch action {
 		case .onTouchOnPhoto:
 			state.selectCameraTypeActionSheet = ActionSheetState(
@@ -31,7 +31,7 @@ public let addPhotoReducer: Reducer<AddPhotoState, AddPhotoAction, ClientsEnviro
 			state.newPhoto = scaledImage
 			state.cameraType = nil
 			let imageData = scaledImage.jpegData(compressionQuality: 0.5)!
-			guard let editingClientId = state.patDetails.id else { return .none } //NO API FOR ADDING PROFILE IMAGE WHEN JUST ADDING (NOT EDITING) A CLIENT
+			guard let editingClientId = state.clientBuilder.id else { return .none } //NO API FOR ADDING PROFILE IMAGE WHEN JUST ADDING (NOT EDITING) A CLIENT
 			return env.formAPI.updateProfilePic(image: imageData, clientId: editingClientId)
 				.receive(on: DispatchQueue.main)
 				.catchToEffect()
@@ -51,20 +51,20 @@ public let addPhotoReducer: Reducer<AddPhotoState, AddPhotoAction, ClientsEnviro
 }
 
 public struct AddPhotoState: Equatable {
-	var patDetails: ClientBuilder
+	var clientBuilder: ClientBuilder
 	var newPhoto: UIImage?
 	var selectCameraTypeActionSheet: ActionSheetState<AddPhotoAction>?
 	var cameraType: UIImagePickerController.SourceType?
 	var photoUploading: LoadingState
-	
+
 	public init(
-		patDetails: ClientBuilder,
+		clientBuilder: ClientBuilder,
 		newPhoto: UIImage?,
 		selectCameraTypeActionSheet: ActionSheetState<AddPhotoAction>?,
 		cameraType: UIImagePickerController.SourceType?,
 		photoUploading: LoadingState
 	) {
-		self.patDetails = patDetails
+		self.clientBuilder = clientBuilder
 		self.newPhoto = newPhoto
 		self.selectCameraTypeActionSheet = selectCameraTypeActionSheet
 		self.cameraType = cameraType
@@ -117,13 +117,13 @@ extension AddPhotoState {
 			ClientAvatarUploadState(
 				newPhoto: self.newPhoto,
 				photoUploading: self.photoUploading,
-				patDetails: self.patDetails
+				clientBuilder: self.clientBuilder
 			)
 		}
 		set {
 			self.newPhoto = newValue.newPhoto
 			self.photoUploading = newValue.photoUploading
-			self.patDetails = newValue.patDetails
+			self.clientBuilder = newValue.clientBuilder
 		}
 	}
 }
@@ -131,11 +131,11 @@ extension AddPhotoState {
 struct ClientAvatarUploadState: Equatable {
 	var newPhoto: UIImage?
 	var photoUploading: LoadingState
-	var patDetails: ClientBuilder
-	
+	var clientBuilder: ClientBuilder
+
 	var editingClient: Client? {
-		guard let editingClientId = patDetails.id else { return nil }
-		return Client(patDetails: patDetails, id: editingClientId)
+		guard let editingClientId = clientBuilder.id else { return nil }
+		return Client(clientBuilder: clientBuilder, id: editingClientId)
 	}
 }
 
@@ -163,7 +163,7 @@ struct ClientAvatarUpload: View {
 			}
 		}
 	}
-	
+
 	func clientAvatar(store: Store<ClientAvatarUploadState, Never>) -> some View {
 		IfLetStore(store.scope(state: { $0.editingClient }),
 				   then: ClientAvatar.init(store:)
@@ -194,7 +194,7 @@ extension UIImage {
 				size: scaledImageSize
 			))
 		}
-		
+
 		return scaledImage
 	}
 }

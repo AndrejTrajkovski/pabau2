@@ -91,15 +91,19 @@ extension APIClient {
 			.eraseToEffect()
 	}
 	
-	public func update(patDetails: ClientBuilder) -> Effect<VoidAPIResponse, RequestError> {
-		let requestBuilder: RequestBuilder<VoidAPIResponse>.Type = requestBuilderFactory.getBuilder()
+	public func update(clientBuilder: ClientBuilder) -> Effect<Client.ID, RequestError> {
+		struct ClientResponse: Decodable {
+			let contact_id: Client.ID
+		}
+		let requestBuilder: RequestBuilder<ClientResponse>.Type = requestBuilderFactory.getBuilder()
 		return requestBuilder.init(method: .POST,
 								   baseUrl: baseUrl,
 								   path: .updateClient,
-								   queryParams: commonAnd(other: ["contact_id": "\(patDetails.id)"]),
-								   body: bodyData(parameters: patDetails.toJSONValues())
+								   queryParams: commonAnd(other: ["contact_id": clientBuilder.id?.description ?? "0"]),
+								   body: bodyData(parameters: clientBuilder.toJSONValues())
 		)
 		.effect()
+		.map(\.contact_id)
 	}
     
     public func addNote(clientId: Client.Id, note: String) -> Effect<Note, RequestError> {

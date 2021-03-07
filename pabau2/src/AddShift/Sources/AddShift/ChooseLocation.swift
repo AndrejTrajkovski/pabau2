@@ -20,7 +20,7 @@ let chooseLocationsReducer =
                 state.filteredLocations = state.locations
                 break
             }
-        
+
             state.filteredLocations = state.locations.filter {$0.name.lowercased().contains(text.lowercased())}
         case .gotLocationsResponse(let result):
             switch result {

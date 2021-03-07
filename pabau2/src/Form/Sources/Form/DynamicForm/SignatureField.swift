@@ -137,7 +137,7 @@ struct SigningComponent: View {
 	@State var currentDrawing = SignatureDrawing()
 	@State var drawings = [SignatureDrawing]()
 	@State var drawingPadSize: CGSize = .zero
-	
+
 	init(store: Store<EmptyEquatable, SigningComponentAction>,
 		 title: String) {
 		self.store = store
@@ -151,12 +151,10 @@ struct SigningComponent: View {
 			DrawingPad(currentDrawing: $currentDrawing,
 					   drawings: $drawings, childSize: $drawingPadSize)
 			HStack {
-				SecondaryButton(Texts.cancel,
-								{ self.viewStore.send(.cancel) }
+				SecondaryButton(Texts.cancel, { self.viewStore.send(.cancel) }
 				)
 				PrimaryButton(Texts.done,
-							  isDisabled: drawings.isEmpty,
-							  { self.viewStore.send(.done(drawings: drawings, canvasSize: drawingPadSize)) })
+							  isDisabled: drawings.isEmpty, { self.viewStore.send(.done(drawings: drawings, canvasSize: drawingPadSize)) })
 				//					self.onDone(self.drawings)
 			}
 		}.padding()
@@ -181,7 +179,7 @@ struct DrawingPad: View {
 	@Binding var currentDrawing: SignatureDrawing
 	@Binding var drawings: [SignatureDrawing]
 	@Binding var childSize: CGSize
-	
+
 	var body: some View {
 		GeometryReaderPatch { geometry in
 			Path { path in
@@ -235,7 +233,7 @@ struct DrawingPad: View {
 struct SizePreferenceKey: PreferenceKey {
 	typealias Value = CGSize
 	static var defaultValue: Value = .zero
-	
+
 	static func reduce(value: inout Value, nextValue: () -> Value) {
 		value = nextValue()
 	}

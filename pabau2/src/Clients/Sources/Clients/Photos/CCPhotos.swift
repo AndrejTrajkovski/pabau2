@@ -46,7 +46,7 @@ struct CCPhotos: ClientCardChild {
 				   then: CCExpandedPhotos.init(store:),
 				   else: groupedPhotos)
 	}
-	
+
 	var groupedPhotos: some View {
 		CCGroupedPhotos(store: store.scope(state: { $0.childState.state },
 											action: { $0 }))

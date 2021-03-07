@@ -21,7 +21,7 @@ public struct Aftercare: Equatable, Identifiable {
 }
 
 extension Aftercare {
-	
+
 	public static let mock = Aftercare(
 		profile: SingleSelectImages(
 			images: [ImageUrl("emily"),

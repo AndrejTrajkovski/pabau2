@@ -16,7 +16,7 @@ public let clientsContainerReducer: Reducer<ClientsState, ClientsAction, Clients
 		action: /ClientsAction.list,
 		environment: { $0 }),
 	.init { state, action, env in
-        
+
 		switch action {
 		case .onAppearNavigationView:
 			state.contactListLS = .loading
