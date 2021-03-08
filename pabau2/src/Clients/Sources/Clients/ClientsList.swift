@@ -152,7 +152,9 @@ struct ClientsList: View {
 				)
 			).padding(.horizontal, 10)
 			if viewStore.error != nil {
-				Text("Error loading contacts.").foregroundColor(.accentColor)
+				Spacer()
+				Text("Error loading contacts").foregroundColor(.accentColor)
+				Spacer()
 			} else if viewStore.state.isLoading && viewStore.state.isSearching {
 				Spacer()
 				Text("Searching...").foregroundColor(.accentColor)

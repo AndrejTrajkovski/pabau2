@@ -4,7 +4,7 @@ public struct ClientBuilder: Equatable {
 	
 	public let id: Client.Id?
 	public var mobile: String
-	public var salutation: String
+	public var salutation: Salutation?
 	public var leadSource: String
 	public var mailingStreet: String
 	public var otherStreet: String
@@ -49,10 +49,10 @@ public struct ClientBuilder: Equatable {
 		self.phone = client.phone
 		self.howDidYouHear = ""
 	}
-    	
+	
 	func toJSONValues() -> [String: String] {
 		[
-			"Salutation": salutation,
+			"Salutation": salutation?.rawValue ?? "",
 			"Fname": firstName,
 			"Lname": lastName,
 			"Email": email,
@@ -76,7 +76,7 @@ public struct ClientBuilder: Equatable {
 
 extension ClientBuilder {
 	
-	internal init(id: Client.Id?, mobile: String, salutation: String, leadSource: String, mailingStreet: String, otherStreet: String, mailingCity: String, mailingCounty: String, mailingCountry: String, mailingPostal: String, gender: String, optInEmail: Bool = false, optInPhone: Bool = false, optInPost: Bool = false, optInSms: Bool = false, firstName: String, lastName: String, dOB: Date? = nil, email: String, avatar: String, phone: String, howDidYouHear: String) {
+	internal init(id: Client.Id?, mobile: String, salutation: Salutation?, leadSource: String, mailingStreet: String, otherStreet: String, mailingCity: String, mailingCounty: String, mailingCountry: String, mailingPostal: String, gender: String, optInEmail: Bool = false, optInPhone: Bool = false, optInPost: Bool = false, optInSms: Bool = false, firstName: String, lastName: String, dOB: Date? = nil, email: String, avatar: String, phone: String, howDidYouHear: String) {
 		self.id = id
 		self.mobile = mobile
 		self.salutation = salutation
@@ -101,5 +101,5 @@ extension ClientBuilder {
 		self.howDidYouHear = howDidYouHear
 	}
 
-	public static let empty = ClientBuilder.init(id: nil, mobile: "", salutation: "", leadSource: "", mailingStreet: "", otherStreet: "", mailingCity: "", mailingCounty: "", mailingCountry: "", mailingPostal: "", gender: "", optInEmail: false, optInPhone: false, optInPost: false, optInSms: false, firstName: "", lastName: "", dOB: nil, email: "", avatar: "", phone: "", howDidYouHear: "")
+	public static let empty = ClientBuilder.init(id: nil, mobile: "", salutation: nil, leadSource: "", mailingStreet: "", otherStreet: "", mailingCity: "", mailingCounty: "", mailingCountry: "", mailingPostal: "", gender: "", optInEmail: false, optInPhone: false, optInPost: false, optInSms: false, firstName: "", lastName: "", dOB: nil, email: "", avatar: "", phone: "", howDidYouHear: "")
 }

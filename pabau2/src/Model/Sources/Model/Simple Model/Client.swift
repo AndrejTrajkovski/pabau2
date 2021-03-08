@@ -8,7 +8,7 @@ public struct Client: Decodable, Identifiable, Equatable {
 
 	public let id: Client.Id
     public let mobile: String
-    public let salutation: String
+    public let salutation: Salutation?
     public let leadSource: String
     public let mailingStreet: String
     public let otherStreet: String
@@ -70,7 +70,8 @@ public struct Client: Decodable, Identifiable, Equatable {
         self.lastName = try container.decode(String.self, forKey: .lastName)
 
         self.mobile = try container.decode(String.self, forKey: .mobile)
-        self.salutation = try container.decode(String.self, forKey: .salutation)
+		let salut = try? container.decode(String.self, forKey: .salutation)
+		self.salutation = salut.flatMap { Salutation.init(rawValue: $0) }
         self.leadSource = try container.decode(String.self, forKey: .leadSource)
         self.mailingStreet = try container.decode(String.self, forKey: .mailingStreet)
         self.otherStreet = try container.decode(String.self, forKey: .otherStreet)

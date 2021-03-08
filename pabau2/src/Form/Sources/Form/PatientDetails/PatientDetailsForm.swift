@@ -14,16 +14,13 @@ public struct PatientDetailsForm: View {
 //		let viewStore = ViewStore(store)
 //		self.viewStore = viewStore
 	}
-
+	
 	public var body: some View {
 		ScrollView {
 			VStack {
-				
 				HStack {
-					TextAndTextFieldStore(store: store.scope(state: { $0.salutation },
-															 action: { .salutation($0) }),
-										  title: Texts.salutation)
-						.fixedSize(horizontal: false, vertical: false)
+					SalutationPicker(store: store.scope(state: { $0.salutation },
+														action: { .salutation($0) }))
 					Spacer()
 					TextAndTextFieldStore(store: store.scope(state: { $0.firstName },
 															 action: { .firstName($0) }),
@@ -60,12 +57,12 @@ public struct PatientDetailsForm: View {
 						.keyboardType(.emailAddress)
 					Spacer()
 					TextAndTextFieldStore(store: store.scope(state: { $0.mailingStreet },
-															 action: { .addressLine1($0) }),
-										  title: Texts.addressLine1)
+															 action: { .street($0) }),
+										  title: Texts.street)
 					Spacer()
 					TextAndTextFieldStore(store: store.scope(state: { $0.otherStreet },
-															 action: { .addressLine2($0) }),
-										  title: Texts.addressLine2)
+															 action: { .otherStreet($0) }),
+										  title: Texts.otherStreet)
 				}
 				
 				HStack {
@@ -157,15 +154,15 @@ struct TextAndTextFieldStore: View {
 }
 
 public enum PatientDetailsAction: Equatable {
-	case salutation(TextChangeAction)
+	case salutation(SalutationPickerAction)
 	case firstName(TextChangeAction)
 	case lastName(TextChangeAction)
 	case dob(DatePickerTCAAction)
 	case phone(TextChangeAction)
 	case cellPhone(TextChangeAction)
 	case email(TextChangeAction)
-	case addressLine1(TextChangeAction)
-	case addressLine2(TextChangeAction)
+	case street(TextChangeAction)
+	case otherStreet(TextChangeAction)
 	case postCode(TextChangeAction)
 	case city(TextChangeAction)
 	case county(TextChangeAction)
@@ -180,11 +177,11 @@ public enum PatientDetailsAction: Equatable {
 
 public let patientDetailsReducer: Reducer<ClientBuilder, PatientDetailsAction, Any> = (
 	.combine(
-		textFieldReducer.pullback(
-			state: \ClientBuilder.salutation,
-			action: /PatientDetailsAction.salutation,
-			environment: { $0 }
-		),
+//		textFieldReducer.pullback(
+//			state: \ClientBuilder.salutation,
+//			action: /PatientDetailsAction.salutation,
+//			environment: { $0 }
+//		),
 		textFieldReducer.pullback(
 			state: \ClientBuilder.firstName,
 			action: /PatientDetailsAction.firstName,
@@ -217,12 +214,12 @@ public let patientDetailsReducer: Reducer<ClientBuilder, PatientDetailsAction, A
 		),
 		textFieldReducer.pullback(
 			state: \ClientBuilder.mailingStreet,
-			action: /PatientDetailsAction.addressLine1,
+			action: /PatientDetailsAction.street,
 			environment: { $0 }
 		),
 		textFieldReducer.pullback(
 			state: \ClientBuilder.otherStreet,
-			action: /PatientDetailsAction.addressLine2,
+			action: /PatientDetailsAction.otherStreet,
 			environment: { $0 }
 		),
 		textFieldReducer.pullback(
