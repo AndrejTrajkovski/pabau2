@@ -28,6 +28,7 @@ public struct PatientDetailsField<Content: View>: View {
 					.frame(height: 36)
 					.font(.medium15)
 				HorizontalLine(color: .black)
+					.frame(maxWidth: .infinity)
 			}
 				.padding(.bottom, 1.0)
 

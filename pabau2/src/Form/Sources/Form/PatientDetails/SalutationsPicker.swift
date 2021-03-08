@@ -1,6 +1,7 @@
 import SwiftUI
 import ComposableArchitecture
 import Model
+import Util
 
 public enum SalutationPickerAction: Equatable {
 	case pick(Salutation?)
@@ -10,59 +11,69 @@ struct SalutationPicker: View {
 	let store: Store<Salutation?, SalutationPickerAction>
 	var body: some View {
 		WithViewStore(store) { viewStore in
-//			PickerView(data: Salutation.allCases,
-//					   selection: viewStore.binding(get: { $0 }, send: { .pick($0) })
-//			)
-
-			Picker.init(selection: viewStore.binding(get: { $0 }, send: { .pick($0) }),
-						label: Text(viewStore.state?.rawValue ?? ""),
-						content: {
-							ForEach(Salutation.allCases) { value in
-								Text(value.rawValue)
-									.tag(value as Salutation?)
-							}
-						}
-			)
-			.frame(width: 120, height: 50)
-			.clipped()
+			PatientDetailsField(Texts.salutation) {
+				PickerView2(data: Salutation.allCases,
+							selection: viewStore.binding(get: { $0 }, send: { .pick($0) })
+				).id(UUID())
+			}
+			.frame(width: 95)
+//			PatientDetailsField(Texts.salutation) {
+//				Picker.init(selection: viewStore.binding(get: { $0 }, send: { .pick($0) }),
+//							label: EmptyView(),
+//							content: {
+//								ForEach(Salutation.allCases) { value in
+//									Text(value.rawValue)
+//										.tag(value as Salutation?)
+//								}
+//							}
+//				)
+//				.frame(width: 120, height: 50)
+//				.clipped()
+//			}
 		}
 	}
 }
 
 import UIKit
 
-struct PickerView<Option: Equatable & CustomStringConvertible>: UIViewRepresentable {
+struct PickerView2 <Option: Equatable & CustomStringConvertible>: UIViewRepresentable {
+//	static func == (lhs: PickerView2<Option>, rhs: PickerView2<Option>) -> Bool {
+//		lhs.selection == rhs.selection &&
+//			lhs.data == rhs.data
+//	}
+	
+	
 	var data: [Option]
 	@Binding var selection: Option?
-
-	//makeCoordinator()
-	func makeCoordinator() -> PickerView.Coordinator {
-		Coordinator(self)
-	}
-
-	//makeUIView(context:)
-	func makeUIView(context: UIViewRepresentableContext<PickerView>) -> UIPickerView {
+	let textField = UITextField()
+	
+	func makeUIView(context: Context) -> UITextField {
 		let picker = UIPickerView(frame: .zero)
-
+		
 		picker.dataSource = context.coordinator
 		picker.delegate = context.coordinator
-
-		return picker
+		textField.inputView = picker
+		textField.font = UIFont.systemFont(ofSize: 15, weight: .medium)
+		return textField
 	}
-
-	//updateUIView(_:context:)
-	func updateUIView(_ view: UIPickerView, context: UIViewRepresentableContext<PickerView>) {
-		if let selection = selection,
-		   let selectedIdx = data.firstIndex(of: selection) {
-			view.selectRow(selectedIdx, inComponent: 0, animated: false)
-		}
+	
+	func updateUIView(_ uiView: UITextField, context: Context) {
+		print("UPDATING")
+		print(selection?.description ?? "")
+		textField.text = selection?.description ?? ""
 	}
-
+	
+	typealias UIViewType = UITextField
+	
+	func makeCoordinator() -> PickerView2<Option>.Coordinator {
+		Coordinator(self)
+	}
+	
 	class Coordinator: NSObject, UIPickerViewDataSource, UIPickerViewDelegate {
-		var parent: PickerView
+		var parent: PickerView2<Option>
 
 		//init(_:)
-		init(_ pickerView: PickerView) {
+		init(_ pickerView: PickerView2<Option>) {
 			self.parent = pickerView
 		}
 
@@ -83,7 +94,11 @@ struct PickerView<Option: Equatable & CustomStringConvertible>: UIViewRepresenta
 
 		//pickerView(_:didSelectRow:inComponent:)
 		func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+//			self.parent.text = self.parent.data[self.parent.selectionIndex]
 			self.parent.selection = self.parent.data[row]
+			self.parent.textField.text = self.parent.data[row].description
+			self.parent.textField.endEditing(true)
+//			self.parent.textField.endEditing(true)
 		}
 	}
 }

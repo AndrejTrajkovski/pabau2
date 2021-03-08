@@ -21,11 +21,9 @@ public struct PatientDetailsForm: View {
 				HStack {
 					SalutationPicker(store: store.scope(state: { $0.salutation },
 														action: { .salutation($0) }))
-					Spacer()
 					TextAndTextFieldStore(store: store.scope(state: { $0.firstName },
 															 action: { .firstName($0) }),
 										  title: Texts.firstName)
-					Spacer()
 					TextAndTextFieldStore(store: store.scope(state: { $0.lastName },
 															 action: { .lastName($0) }),
 										  title: Texts.lastName)
@@ -38,12 +36,10 @@ public struct PatientDetailsForm: View {
 									  borderStyle: .none
 						)
 					}
-					Spacer()
 					TextAndTextFieldStore(store: store.scope(state: { $0.phone },
 															 action: { .phone($0) }),
 										  title: Texts.phone)
 						.keyboardType(.phonePad)
-					Spacer()
 					TextAndTextFieldStore(store: store.scope(state: { $0.mobile },
 															 action: { .cellPhone($0) }),
 										  title: Texts.cellPhone)
@@ -55,11 +51,9 @@ public struct PatientDetailsForm: View {
 															 action: { .email($0) }),
 										  title: Texts.email)
 						.keyboardType(.emailAddress)
-					Spacer()
 					TextAndTextFieldStore(store: store.scope(state: { $0.mailingStreet },
 															 action: { .street($0) }),
 										  title: Texts.street)
-					Spacer()
 					TextAndTextFieldStore(store: store.scope(state: { $0.otherStreet },
 															 action: { .otherStreet($0) }),
 										  title: Texts.otherStreet)
@@ -69,11 +63,9 @@ public struct PatientDetailsForm: View {
 					TextAndTextFieldStore(store: store.scope(state: { $0.mailingPostal },
 															 action: { .postCode($0) }),
 										  title: Texts.postCode)
-					Spacer()
 					TextAndTextFieldStore(store: store.scope(state: { $0.mailingCity },
 															 action: { .city($0) }),
 										  title: Texts.city)
-					Spacer()
 					TextAndTextFieldStore(store: store.scope(state: { $0.mailingCounty },
 															 action: { .county($0) }),
 										  title: Texts.county)
@@ -83,13 +75,11 @@ public struct PatientDetailsForm: View {
 					TextAndTextFieldStore(store: store.scope(state: { $0.mailingCountry },
 															 action: { .country($0) }),
 										  title: Texts.country)
-					Spacer()
 					TextAndTextFieldStore(store: store.scope(state: { $0.howDidYouHear },
 															 action: { .howDidYouHear($0) }),
 										  title: Texts.howDidUHear)
 					Spacer()
 						.fixedSize(horizontal: false, vertical: true)
-					
 				}
 				
 				Group {
@@ -177,11 +167,15 @@ public enum PatientDetailsAction: Equatable {
 
 public let patientDetailsReducer: Reducer<ClientBuilder, PatientDetailsAction, Any> = (
 	.combine(
-//		textFieldReducer.pullback(
-//			state: \ClientBuilder.salutation,
-//			action: /PatientDetailsAction.salutation,
-//			environment: { $0 }
-//		),
+		.init { state, action, _ in
+			switch action {
+			case .salutation(.pick(let salutation)):
+				state.salutation = salutation
+			default:
+				break
+			}
+			return .none
+		},
 		textFieldReducer.pullback(
 			state: \ClientBuilder.firstName,
 			action: /PatientDetailsAction.firstName,

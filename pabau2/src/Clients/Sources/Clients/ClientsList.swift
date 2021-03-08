@@ -82,6 +82,7 @@ let clientsListReducer: Reducer<
 			   let clientBuilder = state.selectedClient?.list.details.editingClient?.clientBuilder {
 				let newClient = Client.init(clientBuilder: clientBuilder, id: newId)
 				state.clients.remove(id: clientBuilder.id!)
+				print(newClient)
 				state.selectedClient!.client = newClient
 				state.selectedClient!.list.details.childState.state = ClientBuilder.init(client: newClient)
 				state.clients.append(newClient)

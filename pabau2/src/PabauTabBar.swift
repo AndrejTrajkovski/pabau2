@@ -295,7 +295,7 @@ public let tabBarReducer: Reducer<
 		state: \TabBarState.clients,
 		action: /TabBarAction.clients,
 		environment: makeClientsEnv(_:)
-	).debug(),
+	),
 	calendarContainerReducer.pullback(
 		state: \TabBarState.calendarContainer,
 		action: /TabBarAction.calendar,
