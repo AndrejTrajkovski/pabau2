@@ -39,7 +39,6 @@ struct CommunicationRow: View {
 					Text(comm.subtitle)
 				}
 			}
-			Divider()
 		}
 	}
 }

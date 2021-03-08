@@ -49,15 +49,6 @@ public struct ClientBuilder: Equatable {
 		self.phone = client.phone
 		self.howDidYouHear = ""
 	}
-	
-    public var dateOfBirth: String {
-        get {
-			return dOB?.toFormat("yyyy-MM-dd") ?? ""
-        }
-        set {
-			dOB = newValue.toDate("yyyy-MM-dd", region: .local)?.date
-        }
-    }
     	
 	func toJSONValues() -> [String: String] {
 		[
@@ -68,7 +59,7 @@ public struct ClientBuilder: Equatable {
 			"Mobile": mobile,
 			"Phone": phone,
 			"gender": gender,
-			"DOB": dateOfBirth,
+			"DOB": dOB?.toFormat("yyyy-MM-dd", locale: Locale(identifier: "en_US_POSIX")) ?? "",
 			"MailingStreet": mailingStreet,
 			"OtherStreet": otherStreet,
 			"MailingCity": mailingCity,

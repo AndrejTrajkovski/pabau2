@@ -7,20 +7,94 @@ import SwiftDate
 
 public struct PatientDetailsForm: View {
 	let store: Store<ClientBuilder, PatientDetailsAction>
-	@ObservedObject var viewStore: ViewStore<ClientBuilder, PatientDetailsAction>
-	let vms: [[TextAndTextViewVM]]
+//	@ObservedObject var viewStore: ViewStore<ClientBuilder, PatientDetailsAction>
 
 	public init(store: Store<ClientBuilder, PatientDetailsAction>) {
 		self.store = store
-		let viewStore = ViewStore(store)
-		self.vms = viewModels(viewStore)
-		self.viewStore = viewStore
+//		let viewStore = ViewStore(store)
+//		self.viewStore = viewStore
 	}
 
 	public var body: some View {
 		ScrollView {
 			VStack {
-				PatientDetailsTextFields(vms: self.vms)
+				
+				HStack {
+					TextAndTextFieldStore(store: store.scope(state: { $0.salutation },
+															 action: { .salutation($0) }),
+										  title: Texts.salutation)
+						.fixedSize(horizontal: false, vertical: false)
+					Spacer()
+					TextAndTextFieldStore(store: store.scope(state: { $0.firstName },
+															 action: { .firstName($0) }),
+										  title: Texts.firstName)
+					Spacer()
+					TextAndTextFieldStore(store: store.scope(state: { $0.lastName },
+															 action: { .lastName($0) }),
+										  title: Texts.lastName)
+				}
+				
+				HStack {
+					PatientDetailsField(Texts.dob) {
+						DatePickerTCA(mode: .date,
+									  store: store.scope( state: { $0.dOB }, action: { .dob($0) }),
+									  borderStyle: .none
+						)
+					}
+					Spacer()
+					TextAndTextFieldStore(store: store.scope(state: { $0.phone },
+															 action: { .phone($0) }),
+										  title: Texts.phone)
+						.keyboardType(.phonePad)
+					Spacer()
+					TextAndTextFieldStore(store: store.scope(state: { $0.mobile },
+															 action: { .cellPhone($0) }),
+										  title: Texts.cellPhone)
+						.keyboardType(.phonePad)
+				}
+				
+				HStack {
+					TextAndTextFieldStore(store: store.scope(state: { $0.email },
+															 action: { .email($0) }),
+										  title: Texts.email)
+						.keyboardType(.emailAddress)
+					Spacer()
+					TextAndTextFieldStore(store: store.scope(state: { $0.mailingStreet },
+															 action: { .addressLine1($0) }),
+										  title: Texts.addressLine1)
+					Spacer()
+					TextAndTextFieldStore(store: store.scope(state: { $0.otherStreet },
+															 action: { .addressLine2($0) }),
+										  title: Texts.addressLine2)
+				}
+				
+				HStack {
+					TextAndTextFieldStore(store: store.scope(state: { $0.mailingPostal },
+															 action: { .postCode($0) }),
+										  title: Texts.postCode)
+					Spacer()
+					TextAndTextFieldStore(store: store.scope(state: { $0.mailingCity },
+															 action: { .city($0) }),
+										  title: Texts.city)
+					Spacer()
+					TextAndTextFieldStore(store: store.scope(state: { $0.mailingCounty },
+															 action: { .county($0) }),
+										  title: Texts.county)
+				}
+
+				HStack {
+					TextAndTextFieldStore(store: store.scope(state: { $0.mailingCountry },
+															 action: { .country($0) }),
+										  title: Texts.country)
+					Spacer()
+					TextAndTextFieldStore(store: store.scope(state: { $0.howDidYouHear },
+															 action: { .howDidYouHear($0) }),
+										  title: Texts.howDidUHear)
+					Spacer()
+						.fixedSize(horizontal: false, vertical: true)
+					
+				}
+				
 				Group {
 					SwitchCell(text: Texts.emailConfirmations,
 							   store: store.scope(
@@ -49,14 +123,14 @@ public struct PatientDetailsForm: View {
 }
 
 struct PatientDetailsTextFields: View {
-	let vms: [[TextAndTextViewVM]]
+	let store: Store<ClientBuilder, PatientDetailsAction>
 	var body: some View {
 		VStack {
-			ThreeTextColumns(self.vms[0], isFirstFixSized: false)
-			ThreeTextColumns(self.vms[1])
-			ThreeTextColumns(self.vms[2])
-			ThreeTextColumns(self.vms[3])
-			ThreeTextColumns(self.vms[4])
+//			ThreeTextColumns(self.vms[0], isFirstFixSized: false)
+//			ThreeTextColumns(self.vms[1])
+//			ThreeTextColumns(self.vms[2])
+//			ThreeTextColumns(self.vms[3])
+//			ThreeTextColumns(self.vms[4])
 		}
 	}
 }
@@ -70,31 +144,14 @@ struct TextAndTextViewVM {
 	}
 }
 
-struct ThreeTextColumns: View {
-	let vms: [TextAndTextViewVM]
-	let isFirstFixSized: Bool
-
-	init(_ vms: [TextAndTextViewVM], isFirstFixSized: Bool = false) {
-		self.vms = vms
-		self.isFirstFixSized = isFirstFixSized
-	}
-
+struct TextAndTextFieldStore: View {
+	let store: Store<String, TextChangeAction>
+	let title: String
 	var body: some View {
-		HStack {
-			TextAndTextField(self.vms[0].title,
-											 self.vms[0].value)
-				.fixedSize(horizontal: isFirstFixSized, vertical: false)
-			Spacer()
-			TextAndTextField(self.vms[1].title,
-											 self.vms[1].value)
-			Spacer()
-			if self.vms.count == 3 {
-				TextAndTextField(self.vms[2].title,
-												 self.vms[2].value)
-			} else {
-				Spacer()
-					.fixedSize(horizontal: false, vertical: true)
-			}
+		WithViewStore(store) { viewStore in
+			TextAndTextField(title,
+							 viewStore.binding(get: { $0 },
+											   send: TextChangeAction.textChange))
 		}
 	}
 }
@@ -103,7 +160,7 @@ public enum PatientDetailsAction: Equatable {
 	case salutation(TextChangeAction)
 	case firstName(TextChangeAction)
 	case lastName(TextChangeAction)
-	case dob(TextChangeAction)
+	case dob(DatePickerTCAAction)
 	case phone(TextChangeAction)
 	case cellPhone(TextChangeAction)
 	case email(TextChangeAction)
@@ -138,8 +195,8 @@ public let patientDetailsReducer: Reducer<ClientBuilder, PatientDetailsAction, A
 			action: /PatientDetailsAction.lastName,
 			environment: { $0 }
 		),
-		textFieldReducer.pullback(
-            state: \ClientBuilder.dateOfBirth,
+		datePickerReducer.pullback(
+            state: \ClientBuilder.dOB,
 			action: /PatientDetailsAction.dob,
 			environment: { $0 }
 		),
@@ -211,94 +268,3 @@ public let patientDetailsReducer: Reducer<ClientBuilder, PatientDetailsAction, A
 			environment: { $0 })
 	)
 )
-
-func viewModels(_ viewStore: ViewStore<ClientBuilder, PatientDetailsAction>) -> [[TextAndTextViewVM]] {
-	[
-		[
-			TextAndTextViewVM(
-				viewStore.binding(
-					get: { ($0.salutation ) },
-					send: { .salutation(.textChange($0)) }
-				),
-				Texts.salutation),
-			TextAndTextViewVM(
-				viewStore.binding(
-					get: { $0.firstName },
-					send: { .firstName(.textChange($0)) }),
-				Texts.firstName),
-			TextAndTextViewVM(
-				viewStore.binding(
-					get: { $0.lastName },
-					send: { .lastName(.textChange($0)) }),
-				Texts.lastName)
-		],
-		[
-			TextAndTextViewVM(
-				viewStore.binding(
-                    get: { $0.dateOfBirth },
-					send: { .dob(.textChange($0)) }),
-				Texts.dob),
-			TextAndTextViewVM(
-				viewStore.binding(
-					get: { $0.phone },
-					send: { .phone(.textChange($0)) }),
-				Texts.phone),
-			TextAndTextViewVM(
-				viewStore.binding(
-					get: { $0.mobile },
-					send: { .cellPhone(.textChange($0)) }),
-				Texts.cellPhone)
-		],
-		[
-			TextAndTextViewVM(
-				viewStore.binding(
-					get: { $0.email },
-					send: { .email(.textChange($0)) }),
-				Texts.email),
-			TextAndTextViewVM(
-				viewStore.binding(
-					get: { $0.mailingStreet },
-					send: { .addressLine1(.textChange($0)) }),
-				Texts.addressLine1),
-			TextAndTextViewVM(
-				viewStore.binding(
-					get: { $0.otherStreet },
-					send: { .addressLine2(.textChange($0)) }),
-				Texts.addressLine2)
-		],
-		[
-			TextAndTextViewVM(
-				viewStore.binding(
-					get: { $0.mailingPostal },
-					send: { .postCode(.textChange($0)) }),
-				Texts.postCode),
-			TextAndTextViewVM(
-				viewStore.binding(
-					get: { $0.mailingCity },
-					send: { .city(.textChange($0)) }),
-				Texts.city),
-			TextAndTextViewVM(
-				viewStore.binding(
-					get: { $0.mailingCounty },
-					send: { .county(.textChange($0)) }),
-				Texts.county)
-		],
-		[
-			TextAndTextViewVM(
-				viewStore.binding(
-					get: { $0.mailingCountry },
-					send: { .country(.textChange($0)) }),
-				Texts.country),
-			TextAndTextViewVM(
-				viewStore.binding(
-					get: { $0.howDidYouHear },
-					send: { .howDidYouHear(.textChange($0)) }),
-				Texts.howDidUHear),
-            TextAndTextViewVM(
-                viewStore.binding(
-                    get: { $0.gender },
-                    send: { .howDidYouHear(.textChange($0)) }),
-                Texts.gender)
-		]
-	]
-}

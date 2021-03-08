@@ -81,7 +81,7 @@ public struct Client: Decodable, Identifiable, Equatable {
         self.gender = try container.decode(String.self, forKey: .gender)
 		self.id = try container.decode(Client.Id.self, forKey: .id)
 		
-        if let sDate = try? container.decode(String.self, forKey: .dOB), let dob = Date(sDate, format: "yyyy-mm-dd", region: .local) {
+        if let sDate = try? container.decode(String.self, forKey: .dOB), let dob = Date(sDate, format: "yyyy-MM-dd", region: .local) {
             self.dOB = dob
         } else {
             self.dOB =  nil

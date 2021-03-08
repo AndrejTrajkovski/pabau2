@@ -111,9 +111,9 @@ struct PabauTabBar: View {
 	var body: some View {
 		ZStack(alignment: .topTrailing) {
 			TabView {
-				clients()
 				calendar()
 				journey()
+				clients()
 				settings()
 				communication()
 			}

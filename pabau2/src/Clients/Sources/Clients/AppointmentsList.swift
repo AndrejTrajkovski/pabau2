@@ -70,7 +70,6 @@ struct AppointmentRow: View {
 				AppointmentIcons()
 					.padding()
 			}
-			Divider()
 		}
 	}
 }

@@ -20,25 +20,6 @@ struct ButtonWithBottomLine: View {
 	}
 }
 
-struct TextFieldWithBottomLine: View {
-	@Binding var text: String
-	private let placeholder: String
-	private let lineThickness = CGFloat(1.0)
-
-	init(placeholder: String, text: Binding<String>) {
-		self.placeholder = placeholder
-		self._text = text
-	}
-
-	var body: some View {
-		VStack(spacing: 0) {
-			TextField(placeholder, text: $text)
-				.frame(height: 36)
-			HorizontalLine(color: .black)
-		}.padding(.bottom, lineThickness)
-	}
-}
-
 struct HorizontalLineShape: Shape {
 	func path(in rect: CGRect) -> Path {
 		let fill = CGRect(x: 0, y: 0, width: rect.size.width, height: rect.size.height)
