@@ -89,7 +89,7 @@ public struct DatePickerTextField: UIViewRepresentable {
 		date.map { uiView.text = dateFormatter.string(from: $0) }
     }
 
-    private func addDoneButtonToKeyboard(_ view: UITextField) {
+    func addDoneButtonToKeyboard(_ view: UITextField) {
         let doneToolbar: UIToolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: 100, height: 50))
         doneToolbar.barStyle = .default
 

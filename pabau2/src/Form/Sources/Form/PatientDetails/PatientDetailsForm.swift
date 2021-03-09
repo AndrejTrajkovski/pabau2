@@ -7,12 +7,9 @@ import SwiftDate
 
 public struct PatientDetailsForm: View {
 	let store: Store<ClientBuilder, PatientDetailsAction>
-//	@ObservedObject var viewStore: ViewStore<ClientBuilder, PatientDetailsAction>
 
 	public init(store: Store<ClientBuilder, PatientDetailsAction>) {
 		self.store = store
-//		let viewStore = ViewStore(store)
-//		self.viewStore = viewStore
 	}
 	
 	public var body: some View {
@@ -106,28 +103,6 @@ public struct PatientDetailsForm: View {
 				}.switchesSection(title: Texts.communications)
 			}
 		}
-	}
-}
-
-struct PatientDetailsTextFields: View {
-	let store: Store<ClientBuilder, PatientDetailsAction>
-	var body: some View {
-		VStack {
-//			ThreeTextColumns(self.vms[0], isFirstFixSized: false)
-//			ThreeTextColumns(self.vms[1])
-//			ThreeTextColumns(self.vms[2])
-//			ThreeTextColumns(self.vms[3])
-//			ThreeTextColumns(self.vms[4])
-		}
-	}
-}
-
-struct TextAndTextViewVM {
-	let value: Binding<String>
-	let title: String
-	init(_ value: Binding<String>, _ title: String) {
-		self.value = value
-		self.title = title
 	}
 }
 

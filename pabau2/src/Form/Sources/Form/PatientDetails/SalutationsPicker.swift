@@ -37,11 +37,6 @@ struct SalutationPicker: View {
 import UIKit
 
 struct PickerView2 <Option: Equatable & CustomStringConvertible>: UIViewRepresentable {
-//	static func == (lhs: PickerView2<Option>, rhs: PickerView2<Option>) -> Bool {
-//		lhs.selection == rhs.selection &&
-//			lhs.data == rhs.data
-//	}
-	
 	
 	var data: [Option]
 	@Binding var selection: Option?
@@ -58,8 +53,6 @@ struct PickerView2 <Option: Equatable & CustomStringConvertible>: UIViewRepresen
 	}
 	
 	func updateUIView(_ uiView: UITextField, context: Context) {
-		print("UPDATING")
-		print(selection?.description ?? "")
 		textField.text = selection?.description ?? ""
 	}
 	
