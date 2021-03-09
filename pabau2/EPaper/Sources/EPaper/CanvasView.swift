@@ -3,14 +3,12 @@ import PencilKit
 import ComposableArchitecture
 import Form
 
-public struct CanvasViewState: Equatable, Identifiable {
-    public var photo: PhotoViewModel
+struct CanvasViewState: Equatable, Identifiable {
     var isDisabled: Bool
-    public var id: UUID
-    public var canvas: PKCanvasView
+    var id: UUID
+    var canvas: PKCanvasView
 
-    public init(uuid: UUID = UUID(), photo: PhotoViewModel, isDisabled: Bool, canvas: PKCanvasView = PKCanvasView()) {
-        self.photo = photo
+    init(uuid: UUID = UUID(), isDisabled: Bool, canvas: PKCanvasView = PKCanvasView()) {
         self.isDisabled = isDisabled
         self.id = uuid
         self.canvas = canvas
@@ -21,7 +19,7 @@ public struct CanvasEnvironment {
     public init() {}
 }
 
-public let canvasStateReducer = Reducer<CanvasViewState, PhotoAndCanvasAction, CanvasEnvironment>.init { state, action, env in
+let canvasStateReducer = Reducer<CanvasViewState, PhotoAndCanvasAction, CanvasEnvironment>.init { state, action, env in
     switch action {
     case .onDrawingChange(let drawing):
         state.canvas.drawing = drawing
@@ -30,7 +28,7 @@ public let canvasStateReducer = Reducer<CanvasViewState, PhotoAndCanvasAction, C
     }
     return .none
 }
-
+/*
 public struct CanvasView: UIViewRepresentable {
     let store: Store<CanvasViewState, PhotoAndCanvasAction>
     @ObservedObject var viewStore: ViewStore<CanvasViewState, PhotoAndCanvasAction>
@@ -71,11 +69,10 @@ public struct CanvasView: UIViewRepresentable {
 
     public static func dismantleUIView(_ canvasViewWrapper: CanvasViewWrapper, coordinator: Coordinator) {
         canvasViewWrapper.canvasView.delegate = nil
-        if let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first,
-            let toolPicker = PKToolPicker.shared(for: window) {
-            toolPicker.setVisible(false, forFirstResponder: canvasViewWrapper)
-            toolPicker.removeObserver(canvasViewWrapper.canvasView)
-        }
+        let toolPicker = PKToolPicker.init()
+        toolPicker.setVisible(false, forFirstResponder: canvasViewWrapper)
+        canvasViewWrapper.becomeFirstResponder()
+        
         print("dismantle view")
     }
 
@@ -122,3 +119,4 @@ public class CanvasViewWrapper: UIView {
         fatalError("CanvasViewWrapper init")
     }
 }
+*/

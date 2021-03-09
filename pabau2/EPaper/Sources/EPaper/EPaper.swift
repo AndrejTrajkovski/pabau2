@@ -13,8 +13,10 @@ public enum PhotoAndCanvasAction: Equatable {
 public struct FormData: Equatable {
     var epaperImages: [String] = []
     
-    public static let mockEpaper = FormData(epaperImages: ["https://prelive-crm.pabau.com/cdn/medical_images/3470/medical_photos/epaper_5bcee4590b611.jpg",
-        "https://prelive-crm.pabau.com/cdn/medical_images/3470/medical_photos/epaper_5bcee4590b611.jpg"])
+    public static let mockEpaper = FormData(epaperImages: ["https://prelive-crm.pabau.com/cdn/medical_images/3470/medical_photos/epaper_5bcee4590b611.jpg"//,
+        //"https://homepages.cae.wisc.edu/~ece533/images/monarch.png",
+        //"https://prelive-crm.pabau.com/cdn/medical_images/3470/medical_photos/epaper_5bcee45d2701f.jpg"
+    ])
     
 }
 
@@ -27,12 +29,7 @@ public struct EpaperState: Equatable {
     var mergedImages: [UIImage] = []
     public init(formData: FormData) {
         self.formData = formData
-        formData.epaperImages.forEach { imageUrl in
-            let emptyState = CanvasViewState(
-                photo: PhotoViewModel(NewPhoto(id: UUID(), image: UIImage(), date: Date())),
-                isDisabled: false)
-            canvasStateArray.append(emptyState)
-        }
+        canvasStateArray = formData.epaperImages.map { _ in  CanvasViewState(isDisabled: false) }
     }
     
     var isDisabledPreviousBtn: Bool {
@@ -47,6 +44,9 @@ public enum EpaperAction: Equatable {
     case canvasAction(index: Int, action: PhotoAndCanvasAction)
     case onAppear
     case didDownloadImages([UIImage])
+    
+    //fix this
+    case onDrawingChange
 }
 
 public struct EpaperEnvironment {
@@ -75,6 +75,8 @@ public let epaperReducer = Reducer<EpaperState, EpaperAction, EpaperEnvironment>
                 .eraseToEffect()
         case .didDownloadImages(let images):
             state.imagesContainer = images
+        case .onDrawingChange:
+            print("on drawing change")
         default:
             break
         }
@@ -97,7 +99,25 @@ public struct EPaperView: View {
     public var body: some View {
         WithViewStore(store) { viewStore in
             NavigationView {
-                ZStack {
+//                ZStack {
+//                    if viewStore.shouldUpdate && !viewStore.imagesContainer.isEmpty { // for testing
+//                        List {
+//                            ForEach(viewStore.state.mergedImages, id: \.self) { image in
+//                                Image(uiImage: image)
+//                            }
+//                        }
+//                    } else {
+//                        WebImage(url: URL(string: viewStore.state.formData.epaperImages[viewStore.state.activeImageIndex])!)
+//                        CanvasView(store: self.store.scope(state: { $0.canvasStateArray[viewStore.activeImageIndex] },
+//                                                           action:  { EpaperAction.canvasAction(index: viewStore.activeImageIndex,
+//                                                                                                action: $0)}
+//                        ))
+//                    }
+//                }
+                
+                VStack {
+                    
+                    // Remove this before commit
                     if viewStore.shouldUpdate && !viewStore.imagesContainer.isEmpty { // for testing
                         List {
                             ForEach(viewStore.state.mergedImages, id: \.self) { image in
@@ -105,12 +125,14 @@ public struct EPaperView: View {
                             }
                         }
                     } else {
-                        WebImage(url: URL(string: viewStore.state.formData.epaperImages[viewStore.state.activeImageIndex])!)
-                        CanvasView(store: self.store.scope(state: { $0.canvasStateArray[viewStore.activeImageIndex] },
-                                                           action:  { EpaperAction.canvasAction(index: viewStore.activeImageIndex, action: $0)}
-                        ))
+                        PhotoCanvasView(imageURL: URL(string: viewStore.state.formData.epaperImages[viewStore.state.activeImageIndex])!,
+                                        canvasView: viewStore.state.canvasStateArray[viewStore.state.activeImageIndex].canvas) {
+                            viewStore.send(.onDrawingChange)
+                        }
                     }
                 }
+                
+                
                 .toolbar {
                     ToolbarItem(placement: ToolbarItemPlacement.navigationBarLeading) {
                         Button("Close") { }
@@ -136,4 +158,12 @@ public struct EPaperView: View {
                 }
             }.navigationViewStyle(StackNavigationViewStyle())
         }
+}
+
+
+extension View {
+    func printv( _ data : Any)-> EmptyView {
+        print(data)
+        return EmptyView()
+       }
 }
