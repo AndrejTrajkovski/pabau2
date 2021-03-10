@@ -64,15 +64,20 @@ struct FilterSection<S: Identifiable & Equatable & Named> : View {
 				)
 				.padding()
 				.frame(height: 60)
-				if viewStore.isExpanded {
-					ForEachStore(store.scope(state: { $0.rows },
-											 action: FilterSectionAction<S>.rows(id:action:)),
-								 content: { rowStore in
-									SelectableRow(store: rowStore,
-												  textFont: Font.regular15)
-								 }
-					)
-				}
+                if viewStore.isExpanded {
+                    ForEachStore(
+                        store.scope(
+                            state: { $0.rows },
+                            action: FilterSectionAction<S>.rows(id:action:)
+                        ),
+                        content: { rowStore in
+                            SelectableRow(
+                                store: rowStore,
+                                textFont: Font.regular15
+                            )
+                        }
+                    )
+                }
 			}
 			.background(Color.employeeBg)
 		}

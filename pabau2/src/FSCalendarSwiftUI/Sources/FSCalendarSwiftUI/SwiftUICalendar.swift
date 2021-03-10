@@ -11,18 +11,19 @@ public struct CalendarDatePicker: View {
 	@State var totalHeight: CGFloat?
 	public var body: some View {
 		WithViewStore(store) { viewStore in
-			SwiftUICalendar.init(viewStore.state,
-								 scope,
-								 isWeekView: isWeekView,
-								 onHeightChange: { height in
-									DispatchQueue.main.async {
-										withAnimation {
-											self.totalHeight = height
-										}
-									}
-								 },
-								 onDateChanged: { viewStore.send(.selectedDate($0))}
-			).frame(height: self.totalHeight)
+            SwiftUICalendar.init(
+                viewStore.state,
+                scope,
+                isWeekView: isWeekView,
+                onHeightChange: { height in
+                    DispatchQueue.main.async {
+                        withAnimation {
+                            self.totalHeight = height
+                        }
+                    }
+                },
+                onDateChanged: { viewStore.send(.selectedDate($0))}
+            ).frame(height: self.totalHeight)
 		}
 	}
 

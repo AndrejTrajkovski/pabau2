@@ -47,8 +47,10 @@ extension CalendarContainerState {
 
 	var calTypePicker: CalendarTypePickerState {
 		get {
-			CalendarTypePickerState(isDropdownShown: calendar.isDropdownShown,
-									appointments: appointments)
+			CalendarTypePickerState(
+                isDropdownShown: calendar.isDropdownShown,
+                appointments: appointments
+            )
 		}
 		set {
 			self.calendar.isDropdownShown = newValue.isDropdownShown
@@ -60,7 +62,12 @@ extension CalendarContainerState {
 extension CalendarContainerState {
 	var employeeSectionState: CalendarSectionViewState<Employee>? {
 		get {
-			guard let groupAppointments = extract(case: Appointments.employee, from: self.appointments) else { return nil }
+			guard let groupAppointments = extract(
+                    case: Appointments.employee,
+                    from: self.appointments
+            ) else {
+                return nil
+            }
 			return CalendarSectionViewState<Employee>(
 				selectedDate: calendar.selectedDate,
 				appointments: groupAppointments,
@@ -193,6 +200,7 @@ extension CalendarState {
 		self.isDropdownShown = false
 		self.selectedDate = Calendar.gregorian.startOfDay(for: Date())
 		shifts = [:]
+        
 		// MARK: - Iurii
 //		let employees = [Employee]()
 //		let rooms = Room.mock().map { $0.value }
@@ -211,7 +219,7 @@ extension CalendarState {
 //		self.chosenLocationsIds = Location.mock().map(\.id)
 //		self.chosenRoomsIds = self.rooms.mapValues { $0.map(\.id) }
 //		self.chosenEmployeesIds = self.employees.mapValues { $0.map(\.id) }
-
+//
 //		shifts = Shift.mock().mapValues {
 //			$0.mapValues {
 //				$0.mapValues {
@@ -221,6 +229,7 @@ extension CalendarState {
 //			}
 //		}
 //		self.expandedLocationsIds = locations.map(\.id)
+     
 		self.isShowingFilters = false
 		self.locations = []
 		self.employees = [:]

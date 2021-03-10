@@ -12,33 +12,47 @@ extension APIClient {
 			}
 		}
 		let requestBuilder: RequestBuilder<GetEmployees>.Type = requestBuilderFactory.getBuilder()
-		return requestBuilder.init(method: .GET,
-								   baseUrl: baseUrl,
-								   path: .getEmployees,
-								   queryParams: commonAnd(other: [:])
-		)
-			.effect()
-			.map(\.employees)
-			.eraseToEffect()
+        
+        return requestBuilder.init(
+            method: .GET,
+            baseUrl: baseUrl,
+            path: .getEmployees,
+            queryParams: commonAnd(other: [:]
+            )
+        )
+        .effect()
+        .map(\.employees)
+        .eraseToEffect()
 	}
 	
 	public func getAppointments(startDate: Date, endDate: Date, locationIds: [Location.ID], employeesIds: [Employee.ID], roomIds: [Room.ID]) -> Effect<[CalendarEvent], RequestError> {
 		let requestBuilder: RequestBuilder<CalendarResponse>.Type = requestBuilderFactory.getBuilder()
 		let dateFormatter = DateFormatter.yearMonthDay
-		let params = [
+        var params: [String : Any] = [
 			"start_date": dateFormatter.string(from: startDate),
 			"end_date": dateFormatter.string(from: endDate),
-			"location_id": locationIds.map(String.init).joined(separator: ","),
-			"user_ids": employeesIds.map(String.init).joined(separator: ","),
-			"room_id": roomIds.map(String.init).joined(separator: ",")
-		]
-		return requestBuilder.init(method: .GET,
-								   baseUrl: baseUrl,
-								   path: .getAppointments,
-								   queryParams: commonAnd(other: params)
-		)
-			.effect()
-			.map(\.appointments)
+        ]
+        
+        if !locationIds.isEmpty {
+            params["location_id"] = locationIds.map(String.init).joined(separator: ",")
+        }
+        
+        if !employeesIds.isEmpty {
+            params["user_ids"] = employeesIds.map(String.init).joined(separator: ",")
+        }
+        
+        if !roomIds.isEmpty {
+            params["room_id"] = roomIds.map(String.init).joined(separator: ",")
+        }
+        
+		return requestBuilder.init(
+            method: .GET,
+            baseUrl: baseUrl,
+            path: .getAppointments,
+            queryParams: commonAnd(other: params)
+        )
+        .effect()
+        .map(\.appointments)
 	}
 	
 	public func getLocations() -> Effect<[Location], RequestError> {

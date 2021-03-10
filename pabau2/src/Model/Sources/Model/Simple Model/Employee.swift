@@ -14,6 +14,8 @@ public struct Employee: Decodable, Identifiable, Equatable, Hashable {
 	public let locationId: Location.Id?
 	
 	public let passcode: String
+    
+    public let locations: String?
 	
 	enum CodingKeys: String, CodingKey {
 		case id
@@ -21,5 +23,6 @@ public struct Employee: Decodable, Identifiable, Equatable, Hashable {
 		case email, avatar
 		case passcode
 		case locationId
+        case locations
 	}
 }

@@ -45,22 +45,63 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 	),
 	.init { state, action, env in
 		switch action {
+        case .onAppear:
+            return env.journeyAPI.getLocations().receive(on: DispatchQueue.main)
+                .catchToEffect()
+                .map(CalendarAction.gotLocationsResponse)
+                .eraseToEffect()
+        case .gotLocationsResponse(let result):
+            switch result {
+            case .success(let locations):
+                state.calendar.locations = .init(locations)
+                return env.journeyAPI.getEmployees().receive(on: DispatchQueue.main)
+                    .catchToEffect()
+                    .map(CalendarAction.gotEmployeeResponse)
+                    .eraseToEffect()
+            case .failure(let error):
+                break
+            }
+        case .gotEmployeeResponse(let result):
+            switch result {
+            case .success(let employees):
+                state.calendar.locations.forEach { location in
+                    state.calendar.employees[location.id] = IdentifiedArrayOf<Employee>.init([])
+                }
+                state.calendar.employees.keys.forEach { key in
+                    employees.forEach { employee in
+                        if employee.locations?.contains(key.description) == true {
+                            state.calendar.employees[key]?.append(employee)
+                        }
+                    }
+                }
+            case .failure(let error):
+                break
+            }
 		case .gotResponse(let result):
-			print(result)
 			switch result {
 			case .success(let appointments):
+                print(appointments)
 				// MARK: Iurii
-				state.appointments.refresh(events: appointments,
-										   locationsIds: state.calendar.chosenLocationsIds,
-										   employees: state.calendar.employees.mapValues {
-											$0.elements
-										   }.flatMap(\.value),
-										   rooms: [])
+				state.appointments.refresh(
+                    events: appointments,
+                    locationsIds: state.calendar.chosenLocationsIds,
+                    employees: state.calendar.employees.mapValues {
+                        $0.elements
+                    }.flatMap(\.value),
+                    rooms: []
+                )
 			case .failure(let error):
 				break
 			}
 		case .datePicker(.selectedDate(let date)):
-			return env.journeyAPI.getAppointments(startDate: date, endDate: date, locationIds: state.calendar.chosenLocationsIds, employeesIds: state.calendar.selectedEmployeesIds(), roomIds: [])
+            print(state.calendar.selectedEmployeesIds())
+			return env.journeyAPI.getAppointments(
+                startDate: date,
+                endDate: date,
+                locationIds: state.calendar.chosenLocationsIds,
+                employeesIds: state.calendar.selectedEmployeesIds(),
+                roomIds: []
+            )
 			.receive(on: DispatchQueue.main)
 			.catchToEffect()
 			.map(CalendarAction.gotResponse)
@@ -195,7 +236,9 @@ public struct CalendarContainer: View {
 					.padding(0)
 					CalendarWrapper(store: self.store)
 					Spacer()
-				}
+                }.onAppear {
+                    viewStore.send(.onAppear)
+                }
 				if viewStore.state.calendar.isShowingFilters {
 					FiltersWrapper(store: store)
 						.transition(.moveAndFade)
@@ -203,8 +246,9 @@ public struct CalendarContainer: View {
 			}
 			.fullScreenCover(
                 isPresented:
-					Binding(get: { activeSheet(state: viewStore.state.calendar) != nil },
-                            set: { _ in dismissAction(state: viewStore.state.calendar).map(viewStore.send) }
+					Binding(
+                        get: { activeSheet(state: viewStore.state.calendar) != nil },
+                        set: { _ in dismissAction(state: viewStore.state.calendar).map(viewStore.send) }
                     ),
                 content: {
                     Group {
@@ -229,7 +273,7 @@ public struct CalendarContainer: View {
                     }
                 }
 			)
-		}
+        }
 	}
 
 	public init(store: Store<CalendarContainerState, CalendarAction>) {

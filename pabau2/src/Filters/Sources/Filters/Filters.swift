@@ -13,8 +13,19 @@ public struct FiltersReducer<S: Identifiable & Equatable & Named> {
 			switch action {
 				case .onHeaderTap:
 					state.isShowingFilters.toggle()
-				default:
-					break
+                case .rows(let id, let action):
+                    switch action {
+                    case .header:
+                        print(id)
+                    case .rows(_, _):
+                        if let index = state.chosenLocationsIds.firstIndex( where: { $0 == id }) {
+                            state.chosenLocationsIds.remove(at: index)
+                            
+                            break
+                        }
+
+                        state.chosenLocationsIds.append(id)
+                    }
 			}
 			return .none
 		}
@@ -23,19 +34,21 @@ public struct FiltersReducer<S: Identifiable & Equatable & Named> {
 
 public struct FiltersState<S: Identifiable & Equatable & Named>: Equatable {
 
-	public init(locations: IdentifiedArrayOf<Location>,
-				chosenLocationsIds: [Location.ID],
-				subsections: [Location.ID: IdentifiedArrayOf<S>],
-				chosenSubsectionsIds: [Location.ID: [S.ID]],
-				expandedLocationsIds: [Location.ID],
-				isShowingFilters: Bool) {
-		self.locations = locations
-		self.chosenLocationsIds = chosenLocationsIds
-		self.subsections = subsections
-		self.chosenSubsectionsIds = chosenSubsectionsIds
-		self.expandedLocationsIds = expandedLocationsIds
-		self.isShowingFilters = isShowingFilters
-	}
+    public init(
+        locations: IdentifiedArrayOf<Location>,
+        chosenLocationsIds: [Location.ID],
+        subsections: [Location.ID: IdentifiedArrayOf<S>],
+        chosenSubsectionsIds: [Location.ID: [S.ID]],
+        expandedLocationsIds: [Location.ID],
+        isShowingFilters: Bool
+    ) {
+        self.locations = locations
+        self.chosenLocationsIds = chosenLocationsIds
+        self.subsections = subsections
+        self.chosenSubsectionsIds = chosenSubsectionsIds
+        self.expandedLocationsIds = expandedLocationsIds
+        self.isShowingFilters = isShowingFilters
+    }
 
 	public let locations: IdentifiedArrayOf<Location>
 	public var chosenLocationsIds: [Location.ID]
@@ -47,11 +60,12 @@ public struct FiltersState<S: Identifiable & Equatable & Named>: Equatable {
 	var rows: IdentifiedArrayOf<FilterSectionState<S>> {
 		get {
 			let res = self.locations.map { location in
-				FilterSectionState(location: location,
-								   values: subsections[location.id] ?? [],
-								   isLocationChosen: chosenLocationsIds.contains(location.id),
-								   chosenValues: chosenSubsectionsIds[location.id] ?? [],
-								   isExpanded: expandedLocationsIds.contains(location.id)
+				FilterSectionState(
+                    location: location,
+                    values: subsections[location.id] ?? [],
+                    isLocationChosen: chosenLocationsIds.contains(location.id),
+                    chosenValues: chosenSubsectionsIds[location.id] ?? [],
+                    isExpanded: expandedLocationsIds.contains(location.id)
 				)
 			}
 			return IdentifiedArrayOf(res)
@@ -92,10 +106,13 @@ public struct Filters<S: Identifiable & Equatable & Named>: View {
 				LazyVStack(spacing: 0) {
 					CalendarHeader<S>(onTap: { viewStore.send(.onHeaderTap) })
 					Divider()
-					ForEachStore(store.scope(state: { $0.rows },
-											 action: FiltersAction.rows(id:action:)),
-								 content: FilterSection.init(store:))
-					Spacer()
+                    ForEachStore(
+                        store.scope(
+                            state: { $0.rows },
+                            action: FiltersAction.rows(id:action:)),
+                        content: FilterSection.init(store:)
+                    )
+                    Spacer()
 				}
 			}
 			.frame(width: 302)
