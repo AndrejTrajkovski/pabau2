@@ -144,7 +144,8 @@ struct ClientsList: View {
     }
 
 	var body: some View {
-		VStack {
+		print("client list body")
+		return VStack {
 			SearchView(
 				placeholder: Texts.clientSearchPlaceholder,
 				text: viewStore.binding(

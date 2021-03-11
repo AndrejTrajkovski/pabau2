@@ -194,7 +194,7 @@ struct PabauTabBar: View {
 
 	fileprivate func checkIn() -> IfLetStore<CheckInContainerState, CheckInContainerAction, CheckInNavigationView?> {
 		return IfLetStore(self.store.scope(
-			state: { $0.journeyContainer.journey.choosePathway.checkIn },
+			state: { $0.journeyContainer.journey.choosePathway?.checkIn },
 			action: { .journey(.choosePathway(.checkIn($0)))}
 		),
 		then: CheckInNavigationView.init(store:))
@@ -231,6 +231,7 @@ public let tabBarReducer: Reducer<
 				state.calendar.locations = IdentifiedArray(locations)
 //				state.calendar.chosenLocationsIds = locations.map(\.id)
 				print("chosenLocation: \(locations.map(\.id).first!)")
+				state.journey.selectedLocation = locations.first!
 				state.calendar.chosenLocationsIds = [locations.map(\.id).first!]
 			case .failure(let error):
 				break
@@ -240,10 +241,10 @@ public let tabBarReducer: Reducer<
 			case .success(let employees):
 				print(employees)
 				// MARK: - Iurii
-				//TODO: ASK Backend to Add LocationId in response
-				state.calendar.employees = Dictionary.init(grouping: state.calendar.locations,
-														   by: { $0.id }).mapValues { _ in
-															return IdentifiedArray(employees)
+				let groupedEmployees = Dictionary.init(grouping: employees, by: { $0.locations })
+				state.calendar.employees = Dictionary.init(grouping: state.calendar.locations.map(\.id),
+														   by: { $0 }).mapValues {
+															IdentifiedArrayOf.init(groupedEmployees[$0] ?? [])
 														}
 				state.calendar.chosenEmployeesIds = state.calendar.employees.mapValues {
 					$0.map(\.id)
