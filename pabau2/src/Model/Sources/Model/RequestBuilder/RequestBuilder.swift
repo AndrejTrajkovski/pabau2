@@ -11,28 +11,33 @@ open class RequestBuilder<T> {
 	var credential: URLCredential?
 	var headers: [String: String]
 	public let queryParams: [String: Any?]?
-	public let body: [String: Any]?
+	public let body: Data?
 	public let method: HTTPMethod
 	public let baseUrl: String
 	public let path: APIPath
 	public let dateDecoding: JSONDecoder.DateDecodingStrategy
-
+	
 	required public init(method: HTTPMethod,
 						 baseUrl: String,
 						 path: APIPath,
 						 queryParams: [String: Any?]?,
 						 headers: [String: String] = [:],
 						 dateDecoding: JSONDecoder.DateDecodingStrategy? = nil,
-						 body: [String: Any]? = nil) {
+						 body: Data? = nil) {
 		self.baseUrl = baseUrl
 		self.path = path
 		self.method = method
 		self.queryParams = queryParams
-		self.headers = headers
+		self.headers = headers.isEmpty ? defaultHeaders : headers
 		self.dateDecoding = dateDecoding ?? .formatted(.rfc3339)
 		self.body = body
 	}
-
+	
+	let defaultHeaders =
+		["Content-Type": "application/x-www-form-urlencoded",
+		 "Accept-Language": "en;q=1",
+		 "User-Agent": defaultUserAgent]
+	
 	func effect<DomainError: Error>(toDomainError: @escaping (RequestError) -> DomainError) -> Effect<T, DomainError> {
 		fatalError("override in superclass")
 	}
@@ -67,7 +72,7 @@ private enum DownloadException: Error {
 	case requestMissingURL
 }
 
-public enum RequestError: Error, Equatable {
+public enum RequestError: Error, Equatable, CustomStringConvertible {
 	public static func == (lhs: RequestError, rhs: RequestError) -> Bool {
 		switch (lhs, rhs) {
 		case (.urlBuilderError, .urlBuilderError),
@@ -96,6 +101,31 @@ public enum RequestError: Error, Equatable {
 	case responseNotHTTP
 	case apiError(String)
 	case unknown
+	
+	public var description: String {
+		switch self {
+		case .urlBuilderError(let message):
+			return message
+		case .emptyDataResponse:
+			return "Empty Data Response."
+		case .nilHTTPResponse:
+			return "Nil HTTP Response."
+		case .jsonDecoding(let message):
+			return message
+		case .networking(let message):
+			return message.localizedDescription
+		case .generalError(let message):
+			return message.localizedDescription
+		case .serverError(let message):
+			return message
+		case .responseNotHTTP:
+			return "Response not HTTP."
+		case .apiError(let message):
+			return message
+		case .unknown:
+			return "Unknown Error."
+		}
+	}
 }
 
 extension URLRequest {
@@ -123,3 +153,45 @@ extension URLRequest {
 		return cURL
 	}
 }
+
+private let defaultUserAgent: String = {
+	let info = Bundle.main.infoDictionary
+	let executable = (info?[kCFBundleExecutableKey as String] as? String) ??
+		(ProcessInfo.processInfo.arguments.first?.split(separator: "/").last.map(String.init)) ??
+		"Unknown"
+	let bundle = info?[kCFBundleIdentifierKey as String] as? String ?? "Unknown"
+	let appVersion = info?["CFBundleShortVersionString"] as? String ?? "Unknown"
+	let appBuild = info?[kCFBundleVersionKey as String] as? String ?? "Unknown"
+
+	let osNameVersion: String = {
+		let version = ProcessInfo.processInfo.operatingSystemVersion
+		let versionString = "\(version.majorVersion).\(version.minorVersion).\(version.patchVersion)"
+		let osName: String = {
+			#if os(iOS)
+			#if targetEnvironment(macCatalyst)
+			return "macOS(Catalyst)"
+			#else
+			return "iOS"
+			#endif
+			#elseif os(watchOS)
+			return "watchOS"
+			#elseif os(tvOS)
+			return "tvOS"
+			#elseif os(macOS)
+			return "macOS"
+			#elseif os(Linux)
+			return "Linux"
+			#elseif os(Windows)
+			return "Windows"
+			#else
+			return "Unknown"
+			#endif
+		}()
+
+		return "\(osName) \(versionString)"
+	}()
+	
+	let userAgent = "\(executable)/\(appVersion) (\(bundle); build:\(appBuild); \(osNameVersion))"
+
+	return userAgent
+}()

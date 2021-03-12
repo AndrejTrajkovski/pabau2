@@ -29,7 +29,8 @@ public let chooseFormJourneyReducer: Reducer<ChooseFormJourneyState,
 )
 
 public struct ChooseFormJourneyState: Equatable {
-	var forms: IdentifiedArrayOf<HTMLForm>
+	let mode: ChooseFormMode
+	var forms: IdentifiedArrayOf<HTMLFormParentState>
 	var templates: IdentifiedArrayOf<FormTemplateInfo>
 	var templatesLoadingState: LoadingState = .initial
 	var selectedTemplatesIds: [HTMLForm.ID]
@@ -37,14 +38,12 @@ public struct ChooseFormJourneyState: Equatable {
 
 struct ChooseFormJourney: View {
 	let store: Store<ChooseFormJourneyState, ChooseFormAction>
-	let mode: ChooseFormMode
 	let journey: Journey?
 
 	var body: some View {
 		ChooseFormList(store:
 						self.store.scope(
-							state: { $0.chooseForm }, action: { $0 }),
-					   mode: self.mode)
+							state: { $0.chooseForm }, action: { $0 }))
 			.journeyBase(self.journey, .long)
 	}
 }
@@ -55,7 +54,8 @@ extension ChooseFormJourneyState {
 			ChooseFormState(
 				templates: self.templates,
 				templatesLoadingState: self.templatesLoadingState,
-				selectedTemplatesIds: self.selectedTemplatesIds
+				selectedTemplatesIds: self.selectedTemplatesIds,
+				mode: self.mode
 			)
 		}
 		set {
@@ -66,7 +66,7 @@ extension ChooseFormJourneyState {
 	}
 }
 
-private func updateWithKeepingOld(forms: inout IdentifiedArray<HTMLForm.ID, HTMLForm>,
+private func updateWithKeepingOld(forms: inout IdentifiedArrayOf<HTMLFormParentState>,
 								  finalSelectedTemplatesIds: [HTMLForm.ID],
 								  allTemplates: IdentifiedArrayOf<FormTemplateInfo>) -> [HTMLForm.ID] {
 	let oldWithData = forms.filter { old in
@@ -75,9 +75,9 @@ private func updateWithKeepingOld(forms: inout IdentifiedArray<HTMLForm.ID, HTML
 	let allNewSelected = allTemplates.filter { finalSelectedTemplatesIds.contains($0.id) }
 	let oldToKeepIds = allNewSelected.map(\.id).filter { oldWithData.map(\.id).contains($0)}
 	let newToGetIds = allNewSelected.map(\.id).filter { oldToKeepIds.contains($0)}
-	
+
 	let oldToKeep = oldToKeepIds.compactMap { oldWithData[id: $0 ]}
 	forms = IdentifiedArrayOf.init(oldToKeep)
-	
+
 	return newToGetIds
 }

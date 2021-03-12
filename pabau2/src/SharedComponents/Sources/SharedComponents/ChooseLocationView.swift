@@ -14,7 +14,7 @@ public struct ChooseLocationState: Equatable {
         }
     }
     public var isSearching = false
-    
+
     public init(isChooseLocationActive: Bool) {
         self.isChooseLocationActive = isChooseLocationActive
     }
@@ -31,13 +31,13 @@ public enum ChooseLocationAction: Equatable {
 public struct ChooseLocationView: View {
     let store: Store<ChooseLocationState, ChooseLocationAction>
     @ObservedObject var viewStore: ViewStore<ChooseLocationState, ChooseLocationAction>
-	
+
     public init(store: Store<ChooseLocationState, ChooseLocationAction>) {
         self.store = store
         self.viewStore = ViewStore(store)
         UITableViewHeaderFooterView.appearance().tintColor = UIColor.clear
     }
-    
+
     public var body: some View {
         VStack {
             SearchView(

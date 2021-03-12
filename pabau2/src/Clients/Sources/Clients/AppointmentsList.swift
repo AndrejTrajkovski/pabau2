@@ -3,6 +3,8 @@ import SwiftUI
 import Model
 import Util
 import ComposableArchitecture
+import SharedComponents
+import Avatar
 
 public let appointmentsListReducer: Reducer<AppointmentsListState, AppointmentsListAction, ClientsEnvironment> = Reducer.combine(
 	ClientCardChildReducer<[CCAppointment]>().reducer.pullback(
@@ -68,7 +70,6 @@ struct AppointmentRow: View {
 				AppointmentIcons()
 					.padding()
 			}
-			Divider()
 		}
 	}
 }
@@ -103,7 +104,9 @@ struct DateLocation: View {
 	let app: CCAppointment
 	var body: some View {
 		HStack {
-			DateLabel(date: app.start_date)
+			if let date = app.startDate {
+				DateLabel(date: date)
+			}
 			LocationLabel(location: app.locationName ?? "")
 		}
 	}

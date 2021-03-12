@@ -45,14 +45,3 @@ struct ClientListRow: View {
 		}
 	}
 }
-
-extension Client {
-
-	var fullname: String {
-		return "\(self.firstName) \(self.lastName)"
-	}
-
-	var initials: String {
-		return String(self.firstName.first ?? Character.init("")) + String(self.lastName.first ?? Character.init(""))
-	}
-}

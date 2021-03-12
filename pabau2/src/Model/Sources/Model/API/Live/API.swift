@@ -10,5 +10,5 @@ public class APIClient: LoginAPI, JourneyAPI, ClientsAPI, FormAPI {
 
     var baseUrl: String = "https://crm.pabau.com"
     var loggedInUser: User? = nil
-    let requestBuilderFactory: RequestBuilderFactory = RequestBuilderFactoryImpl()
+	let requestBuilderFactory: RequestBuilderFactory = RequestBuilderFactoryImpl()
 }

@@ -9,6 +9,7 @@ public enum ResetPassValidationError: Error, Equatable {
 	case confirmPassEmpty
 	case nonMatchingPasswords
 	case emptyCode
+
 	public var localizedDescription: String {
 		switch self {
 		case .newPassEmpty:

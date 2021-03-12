@@ -53,9 +53,9 @@ public enum Appointments: Equatable {
 public extension Appointments {
 	
 	mutating func refresh(events: [CalendarEvent],
-				 locationsIds: [Location.ID],
-				 employees: [Employee],
-				 rooms: [Room]) {
+						  locationsIds: [Location.ID],
+						  employees: [Employee],
+						  rooms: [Room]) {
 		self = .init(calType: self.calendarType,
 					 events: events,
 					 locationsIds: locationsIds,
@@ -72,8 +72,8 @@ public extension Appointments {
 		switch calType {
 		case .employee:
 			let appointments = EventsBy<Employee>.init(events: events,
-													   locationsIds: locationsIds,//locations.map(\.id)
-													   subsections: employees,//employees.flatMap({ $0.value })
+													   locationsIds: locationsIds, //locations.map(\.id)
+													   subsections: employees, //employees.flatMap({ $0.value })
 													   sectionKeypath: \CalendarEvent.locationId,
 													   subsKeypath: \CalendarEvent.employeeId)
 			self = .employee(appointments)

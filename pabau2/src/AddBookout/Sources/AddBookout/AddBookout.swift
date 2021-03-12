@@ -24,7 +24,7 @@ public let addBookoutOptReducer: Reducer<
             }
 
             var isValid = true
-            
+
             if state?.chooseEmployeesState.chosenEmployee?.name == nil {
                 state?.employeeConfigurator.state = .error
 
@@ -109,7 +109,7 @@ public let addBookoutReducer: Reducer<
 )
 
 public struct AddBookoutState: Equatable {
-    var editingBookout: Bookout? = nil
+    var editingBookout: Bookout?
 	var chooseEmployee: SingleChoiceLinkState<Employee>
 	var chooseDuration: SingleChoiceState<Duration>
     var chooseEmployeesState: ChooseEmployeesState
@@ -249,7 +249,7 @@ struct DateAndTime: View {
                         send: .ignore
                     )
                 ).isHidden(!viewStore.isAllDay, remove: true)
-                
+
                 DatePickerControl.init(
                     "DAY",
                     viewStore.binding(
@@ -262,7 +262,7 @@ struct DateAndTime: View {
                     ),
                     mode: .dateAndTime
                 ).isHidden(viewStore.isAllDay, remove: true)
-                
+
 //                DatePickerControl.init(
 //                    "TIME",
 //                    viewStore.binding(

@@ -55,11 +55,11 @@ let checkInPatientReducer: Reducer<CheckInPatientState, CheckInPatientAction, Jo
 		state: \CheckInPatientState.patientDetails,
 		action: /CheckInPatientAction.patientDetails,
 		environment: { $0 }),
-	htmlFormReducer.pullback(
+	htmlFormParentReducer.pullback(
 		state: \CheckInPatientState.medicalHistory,
 		action: /CheckInPatientAction.medicalHistory,
 		environment: makeFormEnv(_:)),
-	htmlFormReducer.forEach(
+	htmlFormParentReducer.forEach(
 		state: \CheckInPatientState.consents,
 		action: /CheckInPatientAction.consents(id:action:),
 		environment: makeFormEnv(_:)),
@@ -77,44 +77,40 @@ let checkInPatientReducer: Reducer<CheckInPatientState, CheckInPatientAction, Jo
 struct CheckInPatientState: Equatable, CheckInState {
 	let journey: Journey
 	let pathway: PathwayTemplate
-	var patientDetails: PatientDetails
+	var patientDetails: ClientBuilder
 	var patientDetailsStatus: Bool
 	var medicalHistoryId: HTMLForm.ID
-	var medicalHistory: HTMLForm
-	var medicalHistoryStatus: Bool
-	var consents: IdentifiedArray<HTMLForm.ID, HTMLForm>
-	var consentsStatuses: [HTMLForm.ID: Bool]
+	var medicalHistory: HTMLFormParentState
+	var consents: IdentifiedArrayOf<HTMLFormParentState>
 	var isPatientComplete: Bool
 	var selectedIdx: Int
 	var patientDetailsLS: LoadingState
-	var medHistoryLS: LoadingState
-	var consentsLS: [HTMLForm.ID: LoadingState]
 }
 
-//MARK: - CheckInState
+// MARK: - CheckInState
 extension CheckInPatientState {
 	func stepTypes() -> [StepType] {
 		return pathway.steps.map(\.stepType).filter(filterBy(.patient))
 	}
-	
+
 	func stepForms() -> [StepFormInfo] {
 		return stepTypes().map {
 			getForms($0)
 		}.flatMap { $0 }
 	}
-	
+
 	func getForms(_ stepType: StepType) -> [StepFormInfo] {
 		switch stepType {
 		case .patientdetails:
 			return [StepFormInfo(status: patientDetailsStatus,
 								 title: "PATIENT DETAILS")]
 		case .medicalhistory:
-			return [StepFormInfo(status: medicalHistoryStatus,
+			return [StepFormInfo(status: medicalHistory.isComplete,
 								 title: "MEDICAL HISTORY")]
 		case .consents:
 			return consents.map {
-				StepFormInfo(status: consentsStatuses[$0.id]!,
-							 title: $0.templateInfo.name)
+				StepFormInfo(status: $0.isComplete,
+							 title: $0.info.name)
 			}
 		case .patientComplete:
 			return [StepFormInfo(status: isPatientComplete,
@@ -150,13 +146,13 @@ func patientForm(stepType: StepType,
 										action: { .patientDetails($0) })
 		)
 	case .medicalhistory:
-		HTMLFormView(store: store.scope(state: { $0.medicalHistory },
+		HTMLFormParent(store: store.scope(state: { $0.medicalHistory },
 										  action: { .medicalHistory($0) })
 		)
 	case .consents:
 		ForEachStore(store.scope(state: { $0.consents },
 								 action: CheckInPatientAction.consents(id: action:)),
-					 content: { HTMLFormView.init(store:$0, isCheckingDetails: false) }
+					 content: { HTMLFormParent.init(store: $0) }
 		)
 	case .patientComplete:
 		PatientCompleteForm(store: store.scope(state: { $0.isPatientComplete }, action: { .patientComplete($0)})

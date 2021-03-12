@@ -14,7 +14,7 @@ public struct ChooseEmployeesState: Equatable {
         }
     }
     public var isSearching = false
-    
+
     public init(isChooseEmployeesActive: Bool) {
         self.isChooseEmployeesActive = isChooseEmployeesActive
     }

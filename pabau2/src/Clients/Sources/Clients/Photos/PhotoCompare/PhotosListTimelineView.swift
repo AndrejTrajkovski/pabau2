@@ -12,7 +12,7 @@ struct PhotosListTimelineView: View {
 	struct State: Equatable {
 		let photos: [PhotoViewModel]
         let selectedPhotoId: PhotoVariantId
-		
+
 		init(state: PhotoCompareState) {
 			self.photos = state.photos.flatMap(\.value)
 			self.selectedPhotoId = state.getSelectedId()
@@ -50,7 +50,7 @@ public struct TimelinePhotoCell: View {
     public init(photo: PhotoViewModel) {
         self.photo = photo
     }
-    
+
     public var body: some View {
         Group {
             if extract(case: Photo.saved, from: photo.basePhoto) != nil {

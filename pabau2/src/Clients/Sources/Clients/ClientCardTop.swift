@@ -15,15 +15,9 @@ struct ClientCardTop: View {
 	let store: Store<Client, ClientCardTopAction>
 
 	var body: some View {
-		WithViewStore(store) { viewStore in
+		WithViewStore(store) { _ in
 			VStack {
-				AvatarView(avatarUrl: viewStore.avatar,
-									 initials: viewStore.initials,
-									 font: .regular18,
-									 bgColor: .accentColor)
-					.frame(width: 84, height: 84)
-				Text(viewStore.fullname)
-					.font(Font.semibold24)
+				ClientAvatarAndName(store: store.actionless)
 				ClientCardContactIcons(store: self.store.stateless)
 			}
 		}

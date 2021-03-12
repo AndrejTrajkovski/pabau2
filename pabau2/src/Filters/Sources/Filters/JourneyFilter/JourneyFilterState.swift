@@ -8,7 +8,7 @@ public struct JourneyFilterState: Equatable {
 	public var employees: IdentifiedArrayOf<Employee>
 	public var selectedEmployeesIds: Set<Employee.Id>
 	public var isShowingEmployees: Bool
-	
+
 	public init(
 		locationId: Location.Id,
 		employeesLoadingState: LoadingState,
@@ -22,7 +22,7 @@ public struct JourneyFilterState: Equatable {
 		self.selectedEmployeesIds = selectedEmployeesIds
 		self.isShowingEmployees = isShowingEmployees
 	}
-	
+
 	public func selectedEmployees() -> IdentifiedArrayOf<Employee> {
 		employees.filter { selectedEmployeesIds.contains($0.id) }
 	}

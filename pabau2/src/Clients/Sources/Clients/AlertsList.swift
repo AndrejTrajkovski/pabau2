@@ -102,7 +102,6 @@ struct AlertRow: View {
 	var body: some View {
 		VStack(alignment: .leading) {
 			TitleAndDate(title: alert.title, date: alert.date)
-			Divider()
 		}
 	}
 }

@@ -1,8 +1,11 @@
 import ComposableArchitecture
 //FormAPI
-extension APIClient {
+public extension APIClient {
 	
-	public func save(form: HTMLForm, clientId: Client.ID) -> Effect<VoidAPIResponse, RequestError> {
+	func save(form: HTMLForm, clientId: Client.ID) -> Effect<FilledFormData.ID, RequestError> {
+		struct Response: Codable {
+			let medical_form_contact_id: FilledFormData.ID
+		}
 		let body: [String : Any] = [
 			"mode": "save",
 			//									"uid": "",
@@ -10,16 +13,20 @@ extension APIClient {
 			"contact_id": clientId.description,
 			"form_id": form.templateInfo.id.rawValue,
 			"form_data": form.getJSONPOSTValues()]
-		let requestBuilder: RequestBuilder<VoidAPIResponse>.Type = requestBuilderFactory.getBuilder()
+		let requestBuilder: RequestBuilder<Response>.Type = requestBuilderFactory.getBuilder()
 		return requestBuilder.init(method: .POST,
 								   baseUrl: baseUrl,
 								   path: .medicalForms,
 								   queryParams: commonParams(),
-								   body: body)
+								   body: bodyData(parameters: body)
+		)
 		.effect()
+		.map(\.medical_form_contact_id)
+//		return Effect.init(error: RequestError.apiError("SOME API ERROR"))
+//			.debounce(id: UUID(), for: 5.0, scheduler: DispatchQueue.main)
 	}
 	
-	public func getForm(templateId: FormTemplateInfo.ID, entryId: FilledFormData.ID) -> Effect<HTMLForm, RequestError> {
+	func getForm(templateId: FormTemplateInfo.ID, entryId: FilledFormData.ID) -> Effect<HTMLForm, RequestError> {
 		
 		let params = commonAnd(other: ["form_template_id": templateId.rawValue,
 									   "form_id": entryId.rawValue])
@@ -33,7 +40,6 @@ extension APIClient {
 			.tryMap(HTMLFormBuilder.init(formEntry:))
 			.eraseToEffect()
 			.map(HTMLForm.init(builder:))
-//			.print()
 			.mapError { error in
 				print("form error \(error)")
 				if let formError = error as? HTMLFormBuilderError {
@@ -45,7 +51,7 @@ extension APIClient {
 			.eraseToEffect()
 	}
 	
-	public func getForm(templateId: FormTemplateInfo.ID) -> Effect<HTMLForm, RequestError> {
+	func getForm(templateId: FormTemplateInfo.ID) -> Effect<HTMLForm, RequestError> {
 		struct GetTemplate: Codable {
 			let form_template: [_FormTemplate]
 		}
@@ -60,7 +66,6 @@ extension APIClient {
 			.tryMap(HTMLFormBuilder.init(template:))
 			.eraseToEffect()
 			.map(HTMLForm.init(builder:))
-//			.print()
 			.mapError { error in
 				if let formError = error as? HTMLFormBuilderError {
 					return RequestError.jsonDecoding(formError.description)
@@ -71,11 +76,11 @@ extension APIClient {
 			.eraseToEffect()
 	}
 	
-	public func post(form: HTMLForm, appointments: [CalendarEvent.Id]) -> Effect<HTMLForm, RequestError> {
+	func post(form: HTMLForm, appointments: [CalendarEvent.Id]) -> Effect<HTMLForm, RequestError> {
 		fatalError()
 	}
 	
-	public func getTemplates(_ type: FormType) -> Effect<[FormTemplateInfo], RequestError> {
+	func getTemplates(_ type: FormType) -> Effect<[FormTemplateInfo], RequestError> {
 		struct GetTemplates: Codable {
 			let templateList: [FormTemplateInfo]
 		}
@@ -88,5 +93,91 @@ extension APIClient {
 			.effect()
 			.map(\.templateList)
 	}
+	
+	func updateProfilePic(image: Data, clientId: Client.ID) -> Effect<VoidAPIResponse, RequestError> {
+		let photo = PhotoUpload(fileData: image)
+		return uploadPhoto(photo,
+						   0,
+						   ["contact_id": clientId.description,
+							"counter": "1",
+							"mode": "upload_photo",
+							"profile_picture": "1",
+							"uid": String(loggedInUser!.userID.rawValue)
+						   ])
+	}
 
+}
+
+//MARK: - Photos
+extension APIClient {
+	func uploadPhotos(_ photos: PhotosUpload) -> Effect<VoidAPIResponse, RequestError> {
+		return Effect.concatenate (
+			zip(photos.photos, photos.photos.indices).map {
+				uploadPhoto($0.0, $0.1, photos.params)
+			}
+		)
+	}
+	
+	func uploadPhoto(_ photo: PhotoUpload,
+					 _ index: Int,
+					 _ params: [String: String]) -> Effect<VoidAPIResponse, RequestError> {
+		let requestBuilder: RequestBuilder<VoidAPIResponse>.Type = requestBuilderFactory.getBuilder()
+		
+		//USED WHEN UPLOADING FORMS
+//		let delete: Bool = (bookingId != nil) && (index == 0)
+//		let bookingId = bookingId != nil ? bookingId!.rawValue : 0
+//		let queryParams = commonAnd(other: ["booking_id": String(bookingId),
+//											"delete": String(delete)])
+		
+		let boundary = "Boundary-\(UUID().uuidString)"
+		let httpBody = NSMutableData()
+		for (key, value) in params {
+		  httpBody.appendString(convertFormField(named: key, value: value, using: boundary))
+		}
+
+		httpBody.append(convertFileData(name: "photos" + String(index),
+										fileName: photo.fileName,
+										mimeType: "image/jpg",
+										fileData: photo.fileData,
+										using: boundary))
+		httpBody.appendString("--\(boundary)--")
+		
+		return requestBuilder.init(method: .POST,
+								   baseUrl: baseUrl,
+								   path: .uploadPhotos,
+								   queryParams: commonAnd(other: params),
+								   headers: ["Content-Type": "multipart/form-data; boundary=\(boundary)"],
+								   body: httpBody as Data
+		)
+			.effect()
+	}
+	
+	func convertFormField(named name: String, value: String, using boundary: String) -> String {
+	  var fieldString = "--\(boundary)\r\n"
+	  fieldString += "Content-Disposition: form-data; name=\"\(name)\"\r\n"
+	  fieldString += "\r\n"
+	  fieldString += "\(value)\r\n"
+
+	  return fieldString
+	}
+
+	func convertFileData(name: String, fileName: String, mimeType: String, fileData: Data, using boundary: String) -> Data {
+		let data = NSMutableData()
+		
+		data.appendString("--\(boundary)\r\n")
+		data.appendString("Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(fileName)\"\r\n")
+		data.appendString("Content-Type: \(mimeType)\r\n\r\n")
+		data.append(fileData)
+		data.appendString("\r\n")
+		
+		return data as Data
+	}
+}
+
+extension NSMutableData {
+	func appendString(_ string: String) {
+		if let data = string.data(using: .utf8) {
+			self.append(data)
+		}
+	}
 }

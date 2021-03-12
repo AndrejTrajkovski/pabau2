@@ -19,7 +19,10 @@ let package = Package(
 				 from: Version.init(stringLiteral: "1.0.0")),
 		.package(name: "swift-composable-architecture",
 				 url: "https://github.com/pointfreeco/swift-composable-architecture.git",
-				 from: Version.init(stringLiteral: "0.6.0"))
+				 from: Version.init(stringLiteral: "0.6.0")),
+		.package(url: "../Avatar",
+				 from: Version.init(stringLiteral: "1.0.0"))
+
     ],
     targets: [
         .target(
@@ -27,6 +30,7 @@ let package = Package(
             dependencies: [
 				"Util",
 				"Model",
+				"Avatar",
 				.product(name: "ComposableArchitecture",
 						 package: "swift-composable-architecture")
 			]),

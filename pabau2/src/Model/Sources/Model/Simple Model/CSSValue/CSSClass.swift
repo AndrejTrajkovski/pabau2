@@ -138,8 +138,13 @@ public enum CSSClass: Equatable {
 				.joined(separator: ",")
 		case .select(let select):
 			return select.selectedChoice?.title
-		case .signature:
-			return ""
+		case .signature(let signature):
+			if let signatureStr = signature.image()?.pngData()?.base64EncodedString(options: .lineLength64Characters) {
+				print(signatureStr)
+				return "data:image/jpg;base64," + signatureStr
+			} else {
+				return nil
+			}
 		case .diagram_mini:
 			return ""
 		case .staticText:
@@ -154,7 +159,6 @@ public enum CSSClass: Equatable {
 			return nil
 		}
 	}
-
 }
 
 enum CSSClassTypeMismatch: Error {

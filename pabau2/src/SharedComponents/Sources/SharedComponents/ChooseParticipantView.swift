@@ -32,7 +32,7 @@ public enum ChooseParticipantAction: Equatable {
 public struct ChooseParticipantView: View {
     let store: Store<ChooseParticipantState, ChooseParticipantAction>
     @ObservedObject var viewStore: ViewStore<ChooseParticipantState, ChooseParticipantAction>
-    
+
     public init(store: Store<ChooseParticipantState, ChooseParticipantAction>) {
         self.store = store
         self.viewStore = ViewStore(store)

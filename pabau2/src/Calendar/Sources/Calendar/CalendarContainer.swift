@@ -49,7 +49,7 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 			print(result)
 			switch result {
 			case .success(let appointments):
-				//MARK: Iurii
+				// MARK: Iurii
 				state.appointments.refresh(events: appointments,
 										   locationsIds: state.calendar.chosenLocationsIds,
 										   employees: state.calendar.employees.mapValues {

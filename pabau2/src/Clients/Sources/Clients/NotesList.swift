@@ -95,7 +95,6 @@ struct NoteRow: View {
 	var body: some View {
 		VStack(alignment: .leading) {
 			TitleAndDate(title: note.content, date: note.date)
-			Divider()
 		}
 	}
 }

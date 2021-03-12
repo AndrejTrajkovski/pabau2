@@ -1,10 +1,10 @@
 import SwiftUI
 
-public struct EmptyDataView : View {
+public struct EmptyDataView: View {
     let imageName: String
     let title: String
     let description: String
-    
+
     public init(
         imageName: String,
         title: String,
@@ -14,7 +14,7 @@ public struct EmptyDataView : View {
         self.title = title
         self.description = description
     }
-    
+
     public var body: some View {
         VStack(alignment: .center, spacing: 20) {
             Image(imageName)

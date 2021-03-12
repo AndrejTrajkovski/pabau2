@@ -10,7 +10,7 @@ public struct JourneyContainerState: Equatable {
 	public var employeesFilter: JourneyFilterState
 	public var appointments: Appointments
 	public var loadingState: LoadingState = .initial
-	
+
 	public init(
 		journey: JourneyState,
 		employeesFilter: JourneyFilterState,

@@ -193,7 +193,7 @@ extension CalendarState {
 		self.isDropdownShown = false
 		self.selectedDate = Calendar.gregorian.startOfDay(for: Date())
 		shifts = [:]
-		//MARK: - Iurii
+		// MARK: - Iurii
 //		let employees = [Employee]()
 //		let rooms = Room.mock().map { $0.value }
 //		let locations = Location.mock()
@@ -211,7 +211,7 @@ extension CalendarState {
 //		self.chosenLocationsIds = Location.mock().map(\.id)
 //		self.chosenRoomsIds = self.rooms.mapValues { $0.map(\.id) }
 //		self.chosenEmployeesIds = self.employees.mapValues { $0.map(\.id) }
-		
+
 //		shifts = Shift.mock().mapValues {
 //			$0.mapValues {
 //				$0.mapValues {
@@ -231,7 +231,7 @@ extension CalendarState {
 		isShowingFilters = false
 		expandedLocationsIds = []
 	}
-	
+
 	func selectedEmployeesIds() -> [Employee.Id] {
 		chosenLocationsIds.compactMap {
 			chosenEmployeesIds[$0]

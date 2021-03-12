@@ -78,7 +78,7 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = Reducer.combine(
 					.catchToEffect()
 					.map { AppAction.tabBar(.gotLocationsResponse($0))}
 					.eraseToEffect(),
-				
+
 				env.journeyAPI.getEmployees()
 					.receive(on: DispatchQueue.main)
 					.catchToEffect()

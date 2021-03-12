@@ -26,11 +26,11 @@ struct InputTextFieldParent: View {
 							   action: InputTextAction.justText),
 				   then:
 					InputTextFieldWrapper.init(store:)
-//					InputTextField.init(store:)
+				   //					InputTextField.init(store:)
 		)
 		IfLetStore(store.scope(state: { extract(case: InputText.date, from: $0)},
 							   action: InputTextAction.date),
-				   then: { return DatePickerTCA.init(mode: UIDatePicker.Mode.date, store: $0) })
+				   then: { return DatePickerTCA.init(mode: UIDatePicker.Mode.date, store: $0, borderStyle: .roundedRect) })
 	}
 }
 

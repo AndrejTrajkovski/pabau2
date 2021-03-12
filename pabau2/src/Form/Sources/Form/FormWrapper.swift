@@ -123,9 +123,9 @@
 //						action: { .patientComplete($0) }),
 //					then: PatientCompleteForm.init(store:)
 //				)
-//			} else if self.viewStore.state.checkPatient?.patDetails != nil {
+//			} else if self.viewStore.state.checkPatient?.clientBuilder != nil {
 //				CheckPatientForm(didTouchDone: { },
-//												 patDetails: self.viewStore.state.checkPatient!.patDetails!,
+//												 clientBuilder: self.viewStore.state.checkPatient!.clientBuilder!,
 //												 patientForms: self.viewStore.state.checkPatient!.patForms)
 //			} else if self.viewStore.state.photos != nil {
 //				IfLetStore(

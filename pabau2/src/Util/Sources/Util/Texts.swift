@@ -59,9 +59,9 @@ public struct Texts {
 	public static let email = "EMAIL".localized
 	public static let phone = "PHONE".localized
 	public static let cellPhone = "CELL PHONE".localized
-	public static let addressLine1 = "ADDRESS LINE 1".localized
-	public static let addressLine2 = "ADDRESS LINE 2".localized
-	public static let postCode = "PSOT CODE".localized
+	public static let street = "STREET".localized
+	public static let otherStreet = "OTHER STREET".localized
+	public static let postCode = "POST CODE".localized
 	public static let city = "CITY".localized
 	public static let county = "COUNTY".localized
 	public static let country = "COUNTRY".localized

@@ -51,7 +51,7 @@ struct DocumentRow: View {
 	let doc: Document
 	var body: some View {
 		ClientCardItemBaseRow(title: doc.title,
-													date: doc.date,
-													image: Image(asset(doc.format)))
+							  date: doc.date,
+							  image: Image(asset(doc.format)))
 	}
 }

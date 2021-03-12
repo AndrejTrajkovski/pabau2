@@ -83,7 +83,7 @@ struct PhotoShareSelectView: View {
 	init(store: Store<PhotoShareSelectState, PhotoShareSelectAction>) {
 		self.store = store
 	}
-	
+
     let layout = [GridItem(.flexible()), GridItem(.flexible())]
 
     var body: some View {

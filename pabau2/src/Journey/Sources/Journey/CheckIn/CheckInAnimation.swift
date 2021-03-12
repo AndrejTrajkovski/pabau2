@@ -26,21 +26,21 @@ struct JourneyTransitionCircle: View {
 	let journey: Journey
 	var body: some View {
 		JourneyTransitionView(title: Texts.checkInDesc,
-													description: Texts.checkInTitle,
-													content: {
-														Circle()
-															.overlay(
-																ZStack {
-																	JourneyAvatarView(journey: self.journey,
-																						 font: .regular90,
-																						 bgColor: .clear)
-																		.foregroundColor(.white)
-																	Circle()
-																		.stroke(Color.white, lineWidth: 3.0)
-																}
-														).foregroundColor(Color.clear)
-															.frame(width: 214, height: 214)
-		})
+							  description: Texts.checkInTitle,
+							  content: {
+								Circle()
+									.overlay(
+										ZStack {
+											JourneyAvatarView(journey: self.journey,
+															  font: .regular90,
+															  bgColor: .clear)
+												.foregroundColor(.white)
+											Circle()
+												.stroke(Color.white, lineWidth: 3.0)
+										}
+									).foregroundColor(Color.clear)
+									.frame(width: 214, height: 214)
+							  })
 	}
 }
 
