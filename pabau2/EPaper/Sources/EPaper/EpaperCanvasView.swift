@@ -1,14 +1,21 @@
 import SwiftUI
 import PencilKit
+import ComposableArchitecture
 
 struct EpaperCanvasView: View {
-    @State var canvasView: PKCanvasView
-    @State var onSaved: () -> Void
+    let store: Store<CanvasViewState, PhotoAndCanvasAction>
+    @ObservedObject var viewStore: ViewStore<CanvasViewState, PhotoAndCanvasAction>
+    
+    init(store: Store<CanvasViewState, PhotoAndCanvasAction>) {
+        self.store = store
+        self.viewStore = ViewStore(store)
+    }
 }
 
 extension EpaperCanvasView: UIViewRepresentable {
     func makeUIView(context: Context) -> PKCanvasView {
-        canvasView.tool = PKInkingTool(.pen, color: .black, width: 1)
+        let canvasView = PKCanvasView()
+        canvasView.tool = PKInkingTool(.pen, color: UIColor.black, width: 1)
         canvasView.backgroundColor = UIColor.clear
         canvasView.isScrollEnabled = false
         
@@ -21,26 +28,31 @@ extension EpaperCanvasView: UIViewRepresentable {
         return canvasView
     }
     
-    func updateUIView(_ uiView: PKCanvasView, context: Context) { }
+    func updateUIView(_ uiView: PKCanvasView, context: Context) {
+        uiView.drawing = viewStore.canvasDrawingState.canvasView.drawing
+    }
+    
+    static func dismantleUIView(_ uiView: PKCanvasView, coordinator: Coordinator) { }
     
     class Coordinator: NSObject, PKCanvasViewDelegate {
-        var canvasView: Binding<PKCanvasView>
-        let onSaved: () -> Void
-        
-        init(canvasView: Binding<PKCanvasView>, onSaved: @escaping () -> Void) {
-            self.canvasView = canvasView
-            self.onSaved = onSaved
-        }
-        
-        func canvasViewDrawingDidChange(_ canvasView: PKCanvasView) {
-            if !canvasView.drawing.bounds.isEmpty {
-                onSaved()
-            }
+        let parent: EpaperCanvasView
+        let viewStore: ViewStore<CanvasViewState, PhotoAndCanvasAction>
+        init(_ parent: EpaperCanvasView, viewStore: ViewStore<CanvasViewState, PhotoAndCanvasAction>) {
+            self.parent = parent
+            self.viewStore = viewStore
         }
     }
     
     func makeCoordinator() -> Coordinator {
-        Coordinator(canvasView: $canvasView, onSaved: onSaved)
+        Coordinator(self, viewStore: viewStore)
     }
     
+}
+
+extension EpaperCanvasView.Coordinator {
+    func canvasViewDrawingDidChange(_ canvasView: PKCanvasView) {
+        if !canvasView.drawing.bounds.isEmpty {
+            viewStore.send(.onDrawingChange(canvasView.drawing))
+        }
+    }
 }
