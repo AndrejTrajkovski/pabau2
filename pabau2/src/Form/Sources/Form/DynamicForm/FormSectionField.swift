@@ -19,10 +19,10 @@ struct FormSectionField: View {
 			self.borderColor = (!state.cssClass.isFulfilled && isCheckingDetails) ? .red : .clear
 		}
 	}
-	
+
 	let store: Store<CSSField, CSSClassAction>
 	@ObservedObject var viewStore: ViewStore<State, Never>
-	
+
 	init (store: Store<CSSField, CSSClassAction>,
 		  isCheckingDetails: Bool) {
 		self.store = store
@@ -112,6 +112,19 @@ struct FormFieldStore: View {
 //				   })
 	}
 }
+
+public enum HTMLRowsAction: Equatable {
+	case rows(idx: Int, action: CSSClassAction)
+	case complete(CompleteBtnAction)
+}
+
+let formReducer: Reducer<HTMLForm, HTMLRowsAction, FormEnvironment> = .combine(
+	cssFieldReducer.forEach(
+		state: \HTMLForm.formStructure,
+		action: /HTMLRowsAction.rows(idx:action:),
+		environment: { $0 }
+	)
+)
 
 let cssFieldReducer: Reducer<CSSField, CSSClassAction, FormEnvironment> =
 	cssClassReducer.pullback(

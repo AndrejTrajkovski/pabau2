@@ -87,8 +87,6 @@ struct ClientCardChildWrapper: View {
 		}
 	}
 }
-//case alerts
-//case notes
 
 struct ClientCardChildReducer<T: Equatable> {
 	let reducer = Reducer<ClientCardChildState<T>, GotClientListAction<T>, ClientsEnvironment> { state, action, _ in
@@ -125,18 +123,18 @@ public struct ClientCardListState: Equatable {
 		self.appointments = AppointmentsListState(
 			childState: ClientCardChildState.init(state: [])
 		)
-		self.details = PatientDetailsClientCardState(childState: ClientCardChildState.init(state: PatientDetails.mock))
+		self.details = PatientDetailsClientCardState(childState: ClientCardChildState.init(state: nil))
 		self.photos = CCPhotosState.init(childState: ClientCardChildState.init(state: [:]))
 		self.financials = ClientCardChildState.init(state: [])
-		self.treatmentNotes = FormsListState(clientId: client.id, childState: ClientCardChildState(state: []), formType: .treatment)
-		self.prescriptions = FormsListState(clientId: client.id, childState: ClientCardChildState(state: []), formType: .prescription)
+		self.treatmentNotes = FormsListState(client: client, childState: ClientCardChildState(state: []), formType: .treatment)
+		self.prescriptions = FormsListState(client: client, childState: ClientCardChildState(state: []), formType: .prescription)
 		self.documents = DocumentsListState(childState:
 		ClientCardChildState.init(state: []))
 		self.communications = ClientCardChildState.init(state: [])
-		self.consents = FormsListState(clientId: client.id, childState: ClientCardChildState(state: []), formType: .consent)
+		self.consents = FormsListState(client: client, childState: ClientCardChildState(state: []), formType: .consent)
         self.alerts = ClientAlertsState(client: client, childState: ClientCardChildState(state: []))
         self.notes = NotesListState.init(client: client, childState: ClientCardChildState(state: []))
-		self.consents = FormsListState(clientId: client.id, childState: ClientCardChildState(state: []), formType: .consent)
+		self.consents = FormsListState(client: client, childState: ClientCardChildState(state: []), formType: .consent)
 	}
 }
 
@@ -237,12 +235,12 @@ protocol ClientCardChild: View {
 	init(store: Store<State, Action>)
 }
 
-struct ChildViewHolder< U, V,
-Child: ClientCardChild>: View where U == Child.State, V == Child.Action {
+struct ChildViewHolder<U, V,
+						Child: ClientCardChild>: View where U == Child.State, V == Child.Action {
 	let store: Store<U, V>
 	let child: Child.Type
 	init(child: Child.Type,
-			 store: Store<U, V>) {
+		 store: Store<U, V>) {
 		self.child = child
 		self.store = store
 	}
@@ -251,10 +249,10 @@ Child: ClientCardChild>: View where U == Child.State, V == Child.Action {
 			ViewBuilder.buildBlock(
 				(viewStore.state.childState.loadingState == .loading) ?
 					ViewBuilder.buildEither(second: LoadingView(title: "Loading",
-																											bindingIsShowing: .constant(true), content: { EmptyView() }))
+																bindingIsShowing: .constant(true), content: { EmptyView() }))
 					:
 					ViewBuilder.buildEither(first: Child.init(store: self.store)
-				)
+					)
 			)
 		}
 	}

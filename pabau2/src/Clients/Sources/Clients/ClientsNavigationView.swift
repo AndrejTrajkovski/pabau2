@@ -16,18 +16,17 @@ public let clientsContainerReducer: Reducer<ClientsState, ClientsAction, Clients
 		action: /ClientsAction.list,
 		environment: { $0 }),
 	.init { state, action, env in
-        
+
 		switch action {
 		case .onAppearNavigationView:
 			state.contactListLS = .loading
 			return env.apiClient
                 .getClients(search: nil, offset: state.clients.count)
+				.receive(on: DispatchQueue.main)
                 .catchToEffect()
 				.map(ClientsAction.gotClientsResponse)
-                .receive(on: DispatchQueue.main)
 				.eraseToEffect()
 		case .gotClientsResponse(let result):
-            
 			switch result {
 			case .success(let contacts):
                 state.clients = .init(contacts)
@@ -48,11 +47,7 @@ public struct ClientsState: Equatable {
     var clients: IdentifiedArrayOf<Client> = []
 	var addClient: AddClientState?
 	var selectedClient: ClientCardState?
-    var searchText: String = "" {
-        didSet {
-            isSearching = !searchText.isEmpty
-        }
-    }
+    var searchText: String = ""
     var isSearching = false
     var notFoundClients = false
     var isClientsLoading = false

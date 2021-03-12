@@ -2,7 +2,12 @@ import Foundation
 import SwiftDate
 
 public extension Date {
-
+	
+	func cutToDay(_ calendar: Calendar = .gregorian) -> Date {
+		let comps = calendar.dateComponents([.year, .month, .day], from: self)
+		return calendar.date(from: comps)!
+	}
+	
 	static func concat(_ yearMonthDay: Date, _ hourMinuteSecond: Date, _ calendar: Calendar = .gregorian) -> Date {
 		let ymdComps = calendar.dateComponents([.year, .month, .day], from: yearMonthDay)
 		let hmsComps = calendar.dateComponents([.hour, .minute, .second], from: hourMinuteSecond)

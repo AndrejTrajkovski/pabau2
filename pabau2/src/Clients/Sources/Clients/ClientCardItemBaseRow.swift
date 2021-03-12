@@ -15,7 +15,6 @@ struct ClientCardItemBaseRow: View {
 					.padding()
 				TitleAndDate(title: title, date: date)
 			}
-			Divider()
 		}
 			.frame(height: 80)
 	}

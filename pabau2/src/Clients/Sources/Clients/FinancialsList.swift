@@ -33,6 +33,7 @@ struct FinancialsList: ClientCardChild {
 				ForEach(viewStore.state.state.indices, id: \.self) { idx in
 					FinancialRow(financial: viewStore.state.state[idx])
 						.background(idx % 2 == 0 ? Color.clear : Color(hex: "F9F9F9"))
+						.listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
 				}
 			}
 		}
@@ -44,8 +45,8 @@ private struct FinancialRow: View {
 	var body: some View {
 		VStack {
 			InvoiceRow(text1: Texts.invoice,
-                       invoice: "\(financial.id.rawValue)",
-                       date: financial.date)
+					   invoice: "\(financial.id.rawValue)",
+					   date: financial.date)
 			FinancialsTextRow(text1: Texts.location, text2: financial.locationName ?? "")
 			FinancialsTextRow(text1: Texts.employee, text2: financial.employeeName)
 			FinancialsTextRow(text1: Texts.issuedTo, text2: financial.issuedTo)
@@ -60,11 +61,13 @@ private struct FinancialsRow<Content: View>: View {
 	let content: () -> Content
 	var body: some View {
 		VStack(spacing: 0) {
+			Spacer()
 			HStack {
 				Text(title).font(.semibold17)
 				Spacer()
 				content()
 			}
+			Spacer()
 			Divider()
 		}.frame(height: 44.0)
 	}
@@ -76,12 +79,12 @@ private struct InvoiceRow: View {
 	let date: Date
 	var body: some View {
 		FinancialsRow(title: text1,
-									content: {
-										HStack {
-											DateLabel(date: self.date)
-											InvoiceLabel(invoiceNumber: self.invoice)
-										}
-		})
+					  content: {
+						HStack {
+							DateLabel(date: self.date)
+							InvoiceLabel(invoiceNumber: self.invoice)
+						}
+					  })
 	}
 }
 
@@ -90,10 +93,10 @@ private struct FinancialsTextRow: View {
 	let text2: String
 	var body: some View {
 		FinancialsRow(title: text1,
-									content: {
-										Text(self.text2)
-											.foregroundColor(.clientCardNeutral)
-		})
+					  content: {
+						Text(self.text2)
+							.foregroundColor(.clientCardNeutral)
+					  })
 	}
 }
 

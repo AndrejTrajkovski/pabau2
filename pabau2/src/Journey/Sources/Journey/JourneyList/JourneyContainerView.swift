@@ -60,7 +60,7 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 			state.employeesFilter.isShowingEmployees.toggle()
 		case .datePicker(.selectedDate(let date)):
 //			state.loadingState = .loading
-			return env.journeyAPI.getAppointments(startDate: date, endDate: date, locationIds: [], employeesIds: Array(state.employeesFilter.employees.map(\.id)), roomIds: [])
+			return env.journeyAPI.getAppointments(startDate: date, endDate: date, locationIds: [state.employeesFilter.locationId], employeesIds: Array(state.employeesFilter.employees.map(\.id)), roomIds: [])
 //				.map(with(date, curry(calendarResponseToJourneys(date:events:))))
 				.receive(on: DispatchQueue.main)
 				.catchToEffect()
@@ -70,9 +70,13 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 			print(result)
 			switch result {
 			case .success(let appointments):
-//				state.appointments.refresh(events: appointments.appointments,
-//										   locationIds: [state.journey.selectedLocation.id],
-//										   employees: state.employeesFilter.employees.elements)
+				print("response: \(appointments)")
+//				print("selectedLocations: \(state.journey.selectedLocation.id)")
+//				print("selectedEmployees: \(state.employeesFilter.employees.elements)")
+				state.appointments.refresh(events: appointments,
+										   locationsIds: [state.journey.selectedLocation.id],
+										   employees: state.employeesFilter.employees.elements,
+										   rooms: [])
 				state.loadingState = .gotSuccess
 			case .failure(let error):
 				state.loadingState = .gotError(error)
@@ -95,7 +99,7 @@ public let journeyContainerReducer2: Reducer<JourneyState, JourneyContainerActio
                      state: \JourneyState.self,
                      action: /JourneyContainerAction.searchQueryChanged,
                      environment: { $0 }),
-		choosePathwayContainerReducer.pullback(
+		choosePathwayContainerReducer.optional.pullback(
 					 state: \JourneyState.choosePathway,
 					 action: /JourneyContainerAction.choosePathway,
 					 environment: { $0 })
@@ -165,6 +169,8 @@ public struct JourneyContainerView: View {
 			self.isChoosePathwayShown = state.journey.choosePathway != nil
 			self.selectedDate = state.journey.selectedDate
 			self.listedJourneys = state.filteredJourneys()
+			print("apps + ", state.appointments)
+			print("filteredJourneys() + ", state.filteredJourneys())
             self.searchQuery = state.journey.searchText
 			self.isLoadingJourneys = state.loadingState.isLoading
 			UITableView.appearance().separatorStyle = .none
@@ -203,17 +209,22 @@ public struct JourneyContainerView: View {
 
             JourneyList(self.viewStore.state.listedJourneys) {
                 self.viewStore.send(.journey(.selectedJourney($0)))
-            }.loadingView(.constant(self.viewStore.state.isLoadingJourneys), Texts.fetchingJourneys)
+            }.loadingView(.constant(self.viewStore.state.isLoadingJourneys),
+						  Texts.fetchingJourneys)
 
             NavigationLink.emptyHidden(
                 self.viewStore.state.isChoosePathwayShown,
-                ChoosePathway(store:
-								self.store.scope(state: { $0.journey.choosePathway},
-												 action: { .choosePathway($0)}))
-                .navigationBarTitle("Choose Pathway")
-                .customBackButton {
-                    self.viewStore.send(.journey(.choosePathwayBackTap))
-                }
+				IfLetStore(
+					store.scope(state: { $0.journey.choosePathway },
+								action: { .choosePathway($0) }),
+					then: { choosePathwayStore in
+						ChoosePathway.init(store: choosePathwayStore)
+							.navigationBarTitle("Choose Pathway")
+							.customBackButton {
+								self.viewStore.send(.journey(.choosePathwayBackTap))
+							}
+					}
+				)
             )
             Spacer()
         }
@@ -248,24 +259,6 @@ public struct JourneyContainerView: View {
                 })
         )
     }
-
-	struct ChoosePathwayEither: View {
-		let store: Store<JourneyState, JourneyContainerAction>
-		let isSelectedJourney: Bool
-		var body: some View {
-			ViewBuilder.buildBlock(
-				(isSelectedJourney) ?
-					ViewBuilder.buildEither(second:
-						ChoosePathway(store: self.store.scope(state: { $0.choosePathway
-						}, action: { .choosePathway($0)}))
-					)
-					:
-					ViewBuilder.buildEither(first:
-						EmptyView()
-				)
-			)
-		}
-	}
 }
 
 func journeyCellAdapter(journey: Journey) -> JourneyCell {
@@ -293,7 +286,7 @@ struct JourneyList: View {
 	}
 	var body: some View {
 		List {
-			ForEach(journeys, id: \.hashValue) { journey in
+			ForEach(journeys) { journey in
 				journeyCellAdapter(journey: journey)
 					.contextMenu {
 						JourneyListContextMenu()
@@ -354,8 +347,8 @@ struct IconAndText: View {
 	let image: Image
 	let textColor: Color
 	init(_ image: Image,
-			 _ text: String,
-			 _ textColor: Color = .black) {
+		 _ text: String,
+		 _ textColor: Color = .black) {
 		self.image = image
 		self.text = text
 		self.textColor = textColor

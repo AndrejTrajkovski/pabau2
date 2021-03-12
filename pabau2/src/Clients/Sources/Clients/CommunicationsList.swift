@@ -3,6 +3,7 @@ import SwiftUI
 import Model
 import Util
 import ComposableArchitecture
+import Avatar
 
 struct CommunicationsList: ClientCardChild {
 	let store: Store<ClientCardChildState<[Communication]>, GotClientListAction<[Communication]>>
@@ -38,7 +39,6 @@ struct CommunicationRow: View {
 					Text(comm.subtitle)
 				}
 			}
-			Divider()
 		}
 	}
 }

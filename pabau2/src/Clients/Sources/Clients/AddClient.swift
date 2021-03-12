@@ -12,8 +12,20 @@ public let addClientOptionalReducer: Reducer<AddClientState?, AddClientAction, C
 	),
 	.init { state, action, env in
 		switch action {
-		case .onBackFromAddClient, .onResponseSave:
+		case .onBackFromAddClient:
 			state = nil
+		case .onResponseSave(let result):
+			switch result {
+			case .success:
+				break
+			case .failure(let error):
+				state?.formSaving = .gotError(error)
+				state?.saveFailureAlert = AlertState(
+					title: "Updating Contact Failed",
+					message: error.description,
+					dismissButton: .default("OK")
+				)
+			}
 		default: break
 		}
 		return .none
@@ -21,68 +33,78 @@ public let addClientOptionalReducer: Reducer<AddClientState?, AddClientAction, C
 )
 
 public let addClientReducer: Reducer<AddClientState, AddClientAction, ClientsEnvironment> = .combine(
-	.init { state, action, env in
-		return .none
-	},
 	addPhotoReducer.pullback(
 		state: \.addPhoto,
 		action: /AddClientAction.addPhoto,
 		environment: { $0 }
 	),
 	patientDetailsReducer.pullback(
-		state: \.patDetails,
-		action: /AddClientAction.patDetails,
+		state: \.clientBuilder,
+		action: /AddClientAction.clientBuilder,
 		environment: { $0 }
 	),
 	.init { state, action, env in
 		switch action {
 		case .saveClient:
-			return env.apiClient.post(patDetails: state.patDetails)
+			state.formSaving = .loading
+			return env.apiClient.update(clientBuilder: state.clientBuilder)
 				.catchToEffect()
+				.receive(on: DispatchQueue.main)
 				.map(AddClientAction.onResponseSave)
 				.eraseToEffect()
-		case .patDetails, .addPhoto, .onBackFromAddClient, .onResponseSave:
+		case .saveAlertCanceled:
+			state.saveFailureAlert = nil
+		case .clientBuilder, .addPhoto, .onResponseSave:
 			break
+		case .onBackFromAddClient:
+			return .cancel(id: UploadPhotoId())
 		}
 		return .none
 	}
 )
 
 public struct AddClientState: Equatable {
-	init (patDetails: PatientDetails) {
-		self.patDetails = patDetails
+	init (clientBuilder: ClientBuilder) {
+		self.clientBuilder = clientBuilder
 		self.newPhoto = nil
 		self.selectCameraTypeActionSheet = nil
 		self.cameraType = nil
+		self.photoUploading = .initial
+		self.formSaving = .initial
 	}
-	var patDetails: PatientDetails
+	var clientBuilder: ClientBuilder
 	var newPhoto: UIImage?
 	var selectCameraTypeActionSheet: ActionSheetState<AddPhotoAction>?
 	var cameraType: UIImagePickerController.SourceType?
+	var saveFailureAlert: AlertState<AddClientAction>?
+	var photoUploading: LoadingState
+	var formSaving: LoadingState
 
 	var addPhoto: AddPhotoState {
 		get {
-			AddPhotoState(imageUrl: patDetails.imageUrl,
-										newPhoto: self.newPhoto,
-										selectCameraTypeActionSheet: self.selectCameraTypeActionSheet,
-										cameraType: self.cameraType
+			AddPhotoState(clientBuilder: clientBuilder,
+						  newPhoto: self.newPhoto,
+						  selectCameraTypeActionSheet: self.selectCameraTypeActionSheet,
+						  cameraType: self.cameraType,
+						  photoUploading: photoUploading
 			)
 		}
 		set {
-			self.patDetails.imageUrl = newValue.imageUrl
 			self.newPhoto = newValue.newPhoto
 			self.selectCameraTypeActionSheet = newValue.selectCameraTypeActionSheet
 			self.cameraType = newValue.cameraType
+			self.photoUploading = newValue.photoUploading
 		}
 	}
 }
 
 public enum AddClientAction: Equatable {
-	case patDetails(PatientDetailsAction)
+	case clientBuilder(PatientDetailsAction)
 	case addPhoto(AddPhotoAction)
 	case onBackFromAddClient
 	case saveClient
-	case onResponseSave(Result<PatientDetails, RequestError>)
+	case onResponseSave(Result<Client.ID, RequestError>)
+	case saveAlertCanceled
 }
 
 struct AddClient: View {
@@ -94,8 +116,10 @@ struct AddClient: View {
 					state: { $0.addPhoto }, action: { .addPhoto($0) }
 				)).padding()
 				PatientDetailsForm(store: self.store.scope(
-					state: { $0.patDetails }, action: { .patDetails($0) })
+									state: { $0.clientBuilder }, action: { .clientBuilder($0) })
 				).padding()
+				.loadingView(.constant(viewStore.formSaving == .loading), "Saving...")
+				.alert(store.scope(state: \.saveFailureAlert), dismiss: AddClientAction.saveAlertCanceled)
 			}.navigationBarItems(
 				leading:
 				MyBackButton(text: Texts.back, action: {
@@ -108,26 +132,3 @@ struct AddClient: View {
 		}
 	}
 }
-
-//extension PatientDetails {
-//	static let empty: PatientDetails(
-//	salutation: "",
-//	firstName: "",
-//	lastName: "",
-//	dob: "",
-//	phone: "",
-//	cellPhone: "",
-//	email: "",
-//	addressLine1: "",
-//	addressLine2: "",
-//	postCode: "",
-//	city: "",
-//	county: "",
-//	country: "",
-//	howDidYouHear: "",
-//	emailComm: false,
-//	smsComm: false,
-//	phoneComm: false,
-//	postComm: false
-//	)
-//}

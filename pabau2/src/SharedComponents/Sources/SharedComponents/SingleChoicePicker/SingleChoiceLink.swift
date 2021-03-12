@@ -34,7 +34,7 @@ public struct SingleChoiceLink<Content: View, T: SingleChoiceElement, Cell: View
 	let content: () -> Content
 	let cell: (SingleChoiceItemState<T>) -> Cell
 
-    var title: String? = nil
+    var title: String?
 
 	public init (
         @ViewBuilder content: @escaping () -> Content,

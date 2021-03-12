@@ -11,7 +11,7 @@ public struct Employee: Decodable, Identifiable, Equatable, Hashable {
 	
 	public let avatar: String?
 	
-	public let locationId: Location.Id?
+	public let locations: [Location.Id]
 	
 	public let passcode: String
 	
@@ -20,6 +20,16 @@ public struct Employee: Decodable, Identifiable, Equatable, Hashable {
 		case name = "full_name"
 		case email, avatar
 		case passcode
-		case locationId
+		case locations
+	}
+	
+	public init(from decoder: Decoder) throws {
+		let container = try decoder.container(keyedBy: Self.CodingKeys)
+		self.id = try container.decode(Self.Id, forKey: .id)
+		self.name = try container.decode(String.self, forKey: .name)
+		self.email = try container.decode(String.self, forKey: .email)
+		self.avatar = try container.decode(String?.self, forKey: .avatar)
+		self.locations = try container.decode(String.self, forKey: .avatar).split(separator: ",").map { Location.Id.init(rawValue: .left(String($0))) }
+		self.passcode = try container.decode(String.self, forKey: .passcode)
 	}
 }

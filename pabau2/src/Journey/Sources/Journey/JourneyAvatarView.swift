@@ -1,6 +1,7 @@
 import Model
 import Util
 import SwiftUI
+import Avatar
 
 struct JourneyAvatarView: View {
 	let journey: Journey

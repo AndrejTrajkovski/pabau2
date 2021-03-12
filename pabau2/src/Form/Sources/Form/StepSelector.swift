@@ -35,7 +35,7 @@ struct StepSelector<S: CheckInState>: View where S: Equatable {
 	}
 
 	fileprivate func scrollView() -> some View {
-		ScrollViewReader { scrollProxy in
+		ScrollViewReader { _ in
 			ScrollView(.horizontal) {
 				HStack(spacing: spacing) {
 					ForEach(viewStore.state.stepForms.indices, id: \.self) { idx in

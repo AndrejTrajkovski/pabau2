@@ -3,7 +3,7 @@ public struct StepFormInfo: Equatable {
 		self.status = status
 		self.title = title
 	}
-	
+
 	public let status: Bool
 	public let title: String
 }

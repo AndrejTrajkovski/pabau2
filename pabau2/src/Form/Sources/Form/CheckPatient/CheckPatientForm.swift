@@ -17,7 +17,7 @@ struct CheckPatientForm: View {
 		print("CheckPatientForm body")
 		return ScrollView {
 			VStack {
-				PatientDetailsForm(store: Store.init(initialState: viewStore.state.patDetails,
+				PatientDetailsForm(store: Store.init(initialState: viewStore.state.clientBuilder,
 													 reducer: Reducer.empty,
 													 environment: { })
 				)
@@ -32,61 +32,4 @@ struct CheckPatientForm: View {
 			}.disabled(true)
 		}
 	}
-}
-
-func viewModels(_ patientDetails: PatientDetails) -> [[TextAndTextViewVM]] {
-	[
-		[
-			TextAndTextViewVM(
-				.constant(patientDetails.salutation),
-				Texts.salutation),
-			TextAndTextViewVM(
-				.constant(patientDetails.firstName),
-				Texts.firstName),
-			TextAndTextViewVM(
-				.constant(patientDetails.lastName),
-				Texts.lastName)
-		],
-		[
-			TextAndTextViewVM(
-                .constant(patientDetails.dateOfBirth),
-				Texts.dob),
-			TextAndTextViewVM(
-				.constant(patientDetails.phone),
-				Texts.phone),
-			TextAndTextViewVM(
-				.constant(patientDetails.cellPhone),
-				Texts.cellPhone)
-		],
-		[
-			TextAndTextViewVM(
-				.constant(patientDetails.email),
-				Texts.email),
-			TextAndTextViewVM(
-				.constant(patientDetails.addressLine1),
-				Texts.addressLine1),
-			TextAndTextViewVM(
-				.constant(patientDetails.addressLine2),
-				Texts.addressLine2)
-		],
-		[
-			TextAndTextViewVM(
-				.constant(patientDetails.postCode),
-				Texts.postCode),
-			TextAndTextViewVM(
-				.constant(patientDetails.city),
-				Texts.city),
-			TextAndTextViewVM(
-				.constant(patientDetails.county),
-				Texts.county)
-		],
-		[
-			TextAndTextViewVM(
-				.constant(patientDetails.country),
-				Texts.country),
-			TextAndTextViewVM(
-				.constant(patientDetails.howDidYouHear),
-				Texts.howDidUHear)
-		]
-	]
 }

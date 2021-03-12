@@ -22,9 +22,9 @@ public let addShiftOptReducer: Reducer<
             guard let shiftSheme = state?.shiftSchema else {
                 break
             }
-            
+
             var isValid = true
-            
+
             if state?.startTime == nil {
                 isValid = false
                 state?.startTimeConfigurator.state = .error
@@ -41,7 +41,7 @@ public let addShiftOptReducer: Reducer<
             }
 
             if !isValid { break }
-            
+
             state?.showsLoadingSpinner = true
 
             return env.apiClient.createShift(

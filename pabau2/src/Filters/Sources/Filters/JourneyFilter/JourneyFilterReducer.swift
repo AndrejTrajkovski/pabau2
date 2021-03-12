@@ -33,7 +33,7 @@ public let journeyFilterReducer = Reducer<JourneyFilterState, JourneyFilterActio
 
     case .toggleEmployees:
         state.isShowingEmployees.toggle()
-        
+
     case .reloadEmployees:
         state.employeesLoadingState = .loading
         return env.journeyAPI.getEmployees()

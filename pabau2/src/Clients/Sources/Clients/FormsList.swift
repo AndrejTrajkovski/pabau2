@@ -4,22 +4,22 @@ import ComposableArchitecture
 import Form
 
 public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnvironment> = .combine (
-	ClientCardChildReducer<IdentifiedArrayOf<FilledFormData>>().reducer.pullback(
-		state: \FormsListState.childState,
-		action: /FormsListAction.action,
-		environment: { $0 }
-	),
 	formsContainerReducer.optional.pullback(
 		state: \FormsListState.formsContainer,
 		action: /FormsListAction.formsContainer,
 		environment: { FormEnvironment($0.formAPI, $0.userDefaults) }
 	),
+	ClientCardChildReducer<IdentifiedArrayOf<FilledFormData>>().reducer.pullback(
+		state: \FormsListState.childState,
+		action: /FormsListAction.action,
+		environment: { $0 }
+	),
 	.init { state, action, env in
 		switch action {
 		case .add:
-			state.formsContainer = FormsContainerState(clientId: state.clientId,
+			state.formsContainer = FormsContainerState(client: state.client,
 													   formType: state.formType,
-													   chooseForms: ChooseFormState(templates: [], selectedTemplatesIds: []),
+													   chooseForms: ChooseFormState(templates: [], selectedTemplatesIds: [], mode: .clientCard(state.formType)),
 													   isFillingFormsActive: false,
 													   formsCollection: [],
 													   selectedIdx: 0)
@@ -29,14 +29,28 @@ public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnv
 			state.formsContainer = nil
 		case .formsContainer(.checkIn(.onXTap)):
 			state.formsContainer = nil
+		case .formsContainer(.forms(let id, .gotPOSTResponse(.success(let filledFormId)))):
+			guard state.formsContainer != nil else { return .none }
+			if let savedForm = state.formsContainer!.formsCollection[id: id] {
+				state.childState.state.removeAll {
+					$0.templateInfo == savedForm.info
+				}
+				let savedFilledForm = FilledFormData.init(templateInfo: savedForm.info, treatmentId: filledFormId)
+				state.childState.state.insert(savedFilledForm, at: 0)
+			}
+			if state.formsContainer!.formsCollection.count == state.formsContainer!.selectedIdx + 1 {
+				state.formsContainer = nil
+			} else {
+				_ = state.formsContainer!.next()
+			}
 		case .formsContainer:
 			break
 		case .formRaw(.rows(let id, let rowAction)):
 			switch rowAction {
 			case .select:
 				let selected: FilledFormData = state.childState.state[id: id]!
-				let formState = HTMLFormParentState.init(formData: selected, clientId: state.clientId)
-				state.formsContainer = FormsContainerState(clientId: state.clientId,
+				let formState = HTMLFormParentState.init(formData: selected, clientId: state.client.id, getLoadingState: .loading)
+				state.formsContainer = FormsContainerState(client: state.client,
 														   formType: state.formType,
 														   chooseForms: nil,
 														   isFillingFormsActive: true,
@@ -55,7 +69,7 @@ public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnv
 )
 
 public struct FormsListState: ClientCardChildParentState, Equatable {
-	let clientId: Client.ID
+	let client: Client
 	var childState: ClientCardChildState<IdentifiedArrayOf<FilledFormData>>
 	var formType: FormType
 	var formsContainer: FormsContainerState?

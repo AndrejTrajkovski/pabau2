@@ -65,7 +65,7 @@ public struct ChooseServiceState: Equatable {
                 .sorted(by: { ($0.first!.categoryName ?? "") > ($1.first!.categoryName ?? "")})
         }
     }
-    var listServices : [[Service]] = []
+    var listServices: [[Service]] = []
     var isChooseServiceActive: Bool
     var chosenService: Service?
     var filterChosen: ChooseServiceFilter
@@ -106,7 +106,7 @@ struct ChooseService: View {
             List {
                 ForEach(self.viewStore.state.listServices, id: \.self.first?.categoryName) { (group: [Service]) in
                     Section(
-                        header:TextHeader(name: group.first?.categoryName ?? "No name")
+                        header: TextHeader(name: group.first?.categoryName ?? "No name")
                     ) {
                         ForEach(group, id: \.self) { (service: Service) in
                             ServiceRow(service: service).onTapGesture {

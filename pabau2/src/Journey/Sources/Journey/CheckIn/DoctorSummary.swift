@@ -79,7 +79,6 @@ struct DoctorNavigation: View {
 									   ChooseFormJourney(store: self.store.scope(
 															state: { $0.chooseConsents },
 															action: { .chooseConsents($0)}),
-														 mode: .consentsCheckIn,
 														 journey: self.viewStore.state.journey)
 										.customBackButton {
 											self.viewStore.send(.didTouchBackFrom(.consentsCheckIn))
@@ -89,7 +88,6 @@ struct DoctorNavigation: View {
 									   ChooseFormJourney(store: self.store.scope(
 															state: { $0.chooseTreatments },
 															action: { .chooseTreatments($0)}),
-														 mode: .treatmentNotes,
 														 journey: self.viewStore.state.journey)
 										.customBackButton {
 											self.viewStore.send(.didTouchBackFrom(.treatmentNotes))

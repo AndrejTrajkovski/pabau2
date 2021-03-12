@@ -3,6 +3,15 @@ import Tagged
 
 public struct FilledFormData: Decodable, Identifiable, Equatable {
 	
+	public init(templateInfo: FormTemplateInfo, treatmentId: FilledFormData.ID, createdAt: Date = Date(), epaperImageIds: Int? = nil, epaperFormIds: Int? = nil, uploadedPhotos: String? = nil) {
+		self.templateInfo = templateInfo
+		self.treatmentId = treatmentId
+		self.createdAt = createdAt
+		self.epaperImageIds = epaperImageIds
+		self.epaperFormIds = epaperFormIds
+		self.uploadedPhotos = uploadedPhotos
+	}
+	
 	public typealias ID = Tagged<FilledFormData, Int>
 	
 	public var id: Self.ID { treatmentId }

@@ -84,7 +84,7 @@ struct CompleteButton<State>: View where State: Equatable & CompleteBtnState {
 	let store: Store<State, CompleteBtnAction>
 	public var body: some View {
 		WithViewStore(store) { viewStore in
-			PrimaryButton(viewStore.title,
+			PrimaryButton(Texts.complete,
 						  isDisabled: !viewStore.canProceed) {
 				viewStore.send(.onTap)
 			}
@@ -94,12 +94,16 @@ struct CompleteButton<State>: View where State: Equatable & CompleteBtnState {
 
 extension HTMLForm: CompleteBtnState {
 	public var title: String {
-		Texts.complete
+		templateInfo.name
 	}
 }
 
-extension PatientDetails: CompleteBtnState {
+extension ClientBuilder: CompleteBtnState {
+	public var canProceed: Bool {
+		return !firstName.isEmpty && !lastName.isEmpty && !email.isEmpty
+	}
+
 	public var title: String {
-		"PATIENT DETAILS"
+		"Patient Details"
 	}
 }

@@ -10,7 +10,7 @@ public struct Walkthrough: View {
 						  imageTitles: WalkthroughStatic.images)
 	let action: () -> Void
 	@State var pageIdx: Int = 0
-	
+
 	public var body: some View {
 		VStack {
 			PageView(state.map { WalkthroughContentView(state: $0)},

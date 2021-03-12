@@ -20,6 +20,9 @@ public enum Either<Left: Decodable & Equatable & Hashable, Right: Decodable & Eq
 	
 	public init(from decoder: Decoder) throws {
 		let container = try decoder.singleValueContainer()
+		print("either parsing")
+		print(container)
+		print(decoder)
 		if let leftValue = try? container.decode(Left.self) {
 			self = .left(leftValue)
 		} else if let rightValue = try? container.decode(Right.self) {

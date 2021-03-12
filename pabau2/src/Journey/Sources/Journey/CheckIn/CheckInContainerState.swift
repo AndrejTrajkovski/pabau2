@@ -9,21 +9,18 @@ public struct CheckInContainerState: Equatable {
 	let journey: Journey
 	let pathway: PathwayTemplate
 
-	var patientDetails: PatientDetails
+	var patientDetailsLS: LoadingState
+	var patientDetails: ClientBuilder
 	var patientDetailsStatus: Bool
 
 	var medicalHistoryId: HTMLForm.ID
-	var medicalHistory: HTMLForm
-	var medicalHistoryStatus: Bool
+	var medicalHistory: HTMLFormParentState
 
-	var consents: IdentifiedArrayOf<HTMLForm>
-	var consentsStatuses: [HTMLForm.ID: Bool]
+	var consents: IdentifiedArrayOf<HTMLFormParentState>
 
-	var treatmentNotes: IdentifiedArrayOf<HTMLForm>
-	var treatmentNotesStatuses: [HTMLForm.ID: Bool]
+	var treatmentNotes: IdentifiedArrayOf<HTMLFormParentState>
 
-	var prescriptions: IdentifiedArrayOf<HTMLForm>
-	var prescriptionsStatuses: [HTMLForm.ID: Bool]
+	var prescriptions: IdentifiedArrayOf<HTMLFormParentState>
 
 	var allTreatmentForms: IdentifiedArrayOf<FormTemplateInfo>
 	var allConsents: IdentifiedArrayOf<FormTemplateInfo>
@@ -40,10 +37,6 @@ public struct CheckInContainerState: Equatable {
 
 	var patientSelectedIndex: Int
 	var doctorSelectedIndex: Int
-	
-	var patientDetailsLS: LoadingState
-	var medHistoryLS: LoadingState
-	var consentsLS: [HTMLForm.ID: LoadingState]
 
 	var passcodeState = PasscodeState()
 	var isEnterPasscodeActive: Bool = false
@@ -75,6 +68,7 @@ extension CheckInContainerState {
 	var chooseTreatments: ChooseFormJourneyState {
 		get {
 			return ChooseFormJourneyState(
+				mode: .treatmentNotes,
 				forms: treatmentNotes,
 				templates: allTreatmentForms,
 				templatesLoadingState: .initial,
@@ -82,7 +76,7 @@ extension CheckInContainerState {
 			)
 		}
 		set {
-			treatmentNotes = newValue.forms
+			self.treatmentNotes = newValue.forms
 			self.allTreatmentForms = newValue.templates
 			self.selectedTreatmentFormsIds = newValue.selectedTemplatesIds
 		}
@@ -91,6 +85,7 @@ extension CheckInContainerState {
 	var chooseConsents: ChooseFormJourneyState {
 		get {
 			return ChooseFormJourneyState(
+				mode: .consentsCheckIn,
 				forms: consents,
 				templates: allConsents,
 				templatesLoadingState: .initial,
@@ -137,9 +132,9 @@ extension CheckInContainerState {
 
 	init(journey: Journey,
 		 pathway: PathwayTemplate,
-		 patientDetails: PatientDetails,
+		 patientDetails: ClientBuilder,
 		 medicalHistoryId: HTMLForm.ID,
-		 medHistory: HTMLForm,
+		 medHistory: HTMLFormParentState,
 		 consents: IdentifiedArrayOf<FormTemplateInfo>,
 		 allConsents: IdentifiedArrayOf<FormTemplateInfo>,
 		 photosState: PhotosState) {
@@ -152,22 +147,16 @@ extension CheckInContainerState {
 		self.allTreatmentForms = []
 		self.selectedConsentsIds = []
 		self.selectedTreatmentFormsIds = []
-		self.patientDetailsStatus = false
-		self.medicalHistoryStatus = false
-		self.consentsStatuses = Dictionary.init(grouping: consents.map(\.id), by: { $0 }).mapValues { _ in return false }
 		self.treatmentNotes = []
-		self.treatmentNotesStatuses = [:]
 		self.prescriptions = []
-		self.prescriptionsStatuses = [:]
 		self.aftercareStatus = false
 		self.isPatientComplete = false
 		self.photos = PhotosState([[:]])
 		self.patientSelectedIndex = 0
 		self.doctorSelectedIndex = 0
 		self.patientDetailsLS = .initial
-		self.medHistoryLS = .initial
-		self.consentsLS = Dictionary.init(grouping: consents.map(\.id), by: { $0 }).mapValues { _ in return .initial }
 		self.medicalHistoryId = medicalHistoryId
+		self.patientDetailsStatus = false
 	}
 }
 
@@ -179,9 +168,7 @@ extension CheckInContainerState {
 				journey: self.journey,
 				pathway: self.pathway,
 				treatmentNotes: self.treatmentNotes,
-				treatmentNotesStatuses: self.treatmentNotesStatuses,
 				prescriptions: self.prescriptions,
-				prescriptionsStatuses: self.prescriptionsStatuses,
 				aftercare: self.aftercare,
 				aftercareStatus: self.aftercareStatus,
 				photos: self.photos,
@@ -190,9 +177,7 @@ extension CheckInContainerState {
 		}
 		set {
 			self.treatmentNotes = newValue.treatmentNotes
-			self.treatmentNotesStatuses = newValue.treatmentNotesStatuses
 			self.prescriptions = newValue.prescriptions
-			self.prescriptionsStatuses = newValue.prescriptionsStatuses
 			self.aftercare = newValue.aftercare
 			self.aftercareStatus = newValue.aftercareStatus
 			self.photos = newValue.photos
@@ -209,14 +194,10 @@ extension CheckInContainerState {
 				patientDetailsStatus: patientDetailsStatus,
 				medicalHistoryId: medicalHistoryId,
 				medicalHistory: medicalHistory,
-				medicalHistoryStatus: medicalHistoryStatus,
 				consents: consents,
-				consentsStatuses: consentsStatuses,
 				isPatientComplete: isPatientComplete,
 				selectedIdx: patientSelectedIndex,
-				patientDetailsLS: patientDetailsLS,
-				medHistoryLS: medHistoryLS,
-				consentsLS: consentsLS
+				patientDetailsLS: patientDetailsLS
 			)
 		}
 
@@ -224,14 +205,10 @@ extension CheckInContainerState {
 			self.patientDetails = newValue.patientDetails
 			self.patientDetailsStatus = newValue.patientDetailsStatus
 			self.medicalHistory = newValue.medicalHistory
-			self.medicalHistoryStatus = newValue.medicalHistoryStatus
 			self.consents = newValue.consents
-			self.consentsStatuses = newValue.consentsStatuses
 			self.isPatientComplete = newValue.isPatientComplete
 			self.patientSelectedIndex = newValue.selectedIdx
 			self.patientDetailsLS = newValue.patientDetailsLS
-			self.medHistoryLS = newValue.medHistoryLS
-			self.consentsLS = newValue.consentsLS
 		}
 	}
 }

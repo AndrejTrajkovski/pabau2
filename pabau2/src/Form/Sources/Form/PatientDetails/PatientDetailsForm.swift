@@ -6,40 +6,98 @@ import SharedComponents
 import SwiftDate
 
 public struct PatientDetailsForm: View {
-	let store: Store<PatientDetails, PatientDetailsAction>
-	@ObservedObject var viewStore: ViewStore<PatientDetails, PatientDetailsAction>
-	let vms: [[TextAndTextViewVM]]
+	let store: Store<ClientBuilder, PatientDetailsAction>
 
-	public init(store: Store<PatientDetails, PatientDetailsAction>) {
+	public init(store: Store<ClientBuilder, PatientDetailsAction>) {
 		self.store = store
-		let viewStore = ViewStore(store)
-		self.vms = viewModels(viewStore)
-		self.viewStore = viewStore
 	}
-
+	
 	public var body: some View {
 		ScrollView {
 			VStack {
-				PatientDetailsTextFields(vms: self.vms)
+				HStack {
+					SalutationPicker(store: store.scope(state: { $0.salutation },
+														action: { .salutation($0) }))
+					TextAndTextFieldStore(store: store.scope(state: { $0.firstName },
+															 action: { .firstName($0) }),
+										  title: Texts.firstName)
+					TextAndTextFieldStore(store: store.scope(state: { $0.lastName },
+															 action: { .lastName($0) }),
+										  title: Texts.lastName)
+				}
+				
+				HStack {
+					PatientDetailsField(Texts.dob) {
+						DatePickerTCA(mode: .date,
+									  store: store.scope( state: { $0.dOB }, action: { .dob($0) }),
+									  borderStyle: .none
+						)
+					}
+					TextAndTextFieldStore(store: store.scope(state: { $0.phone },
+															 action: { .phone($0) }),
+										  title: Texts.phone)
+						.keyboardType(.phonePad)
+					TextAndTextFieldStore(store: store.scope(state: { $0.mobile },
+															 action: { .cellPhone($0) }),
+										  title: Texts.cellPhone)
+						.keyboardType(.phonePad)
+				}
+				
+				HStack {
+					TextAndTextFieldStore(store: store.scope(state: { $0.email },
+															 action: { .email($0) }),
+										  title: Texts.email)
+						.keyboardType(.emailAddress)
+					TextAndTextFieldStore(store: store.scope(state: { $0.mailingStreet },
+															 action: { .street($0) }),
+										  title: Texts.street)
+					TextAndTextFieldStore(store: store.scope(state: { $0.otherStreet },
+															 action: { .otherStreet($0) }),
+										  title: Texts.otherStreet)
+				}
+				
+				HStack {
+					TextAndTextFieldStore(store: store.scope(state: { $0.mailingPostal },
+															 action: { .postCode($0) }),
+										  title: Texts.postCode)
+					TextAndTextFieldStore(store: store.scope(state: { $0.mailingCity },
+															 action: { .city($0) }),
+										  title: Texts.city)
+					TextAndTextFieldStore(store: store.scope(state: { $0.mailingCounty },
+															 action: { .county($0) }),
+										  title: Texts.county)
+				}
+
+				HStack {
+					TextAndTextFieldStore(store: store.scope(state: { $0.mailingCountry },
+															 action: { .country($0) }),
+										  title: Texts.country)
+					TextAndTextFieldStore(store: store.scope(state: { $0.howDidYouHear },
+															 action: { .howDidYouHear($0) }),
+										  title: Texts.howDidUHear)
+					Spacer()
+						.fixedSize(horizontal: false, vertical: true)
+				}
+				
 				Group {
 					SwitchCell(text: Texts.emailConfirmations,
 							   store: store.scope(
-								state: { $0.emailComm },
+								state: { $0.optInEmail },
 								action: { .emailComm($0) })
 					)
 					SwitchCell(text: Texts.smsReminders,
 							   store: store.scope(
-								state: { $0.smsComm },
+								state: { $0.optInSms },
 								action: { .smsComm($0) })
 					)
 					SwitchCell(text: Texts.phone,
 							   store: store.scope(
-								state: { $0.phoneComm },
+								state: { $0.optInPhone },
 								action: { .phoneComm($0) })
 					)
 					SwitchCell(text: Texts.post,
 							   store: store.scope(
-								state: { $0.postComm },
+								state: { $0.optInPost },
 								action: { .postComm($0) })
 					)
 				}.switchesSection(title: Texts.communications)
@@ -48,67 +106,28 @@ public struct PatientDetailsForm: View {
 	}
 }
 
-struct PatientDetailsTextFields: View {
-	let vms: [[TextAndTextViewVM]]
-	var body: some View {
-		VStack {
-			ThreeTextColumns(self.vms[0], isFirstFixSized: false)
-			ThreeTextColumns(self.vms[1])
-			ThreeTextColumns(self.vms[2])
-			ThreeTextColumns(self.vms[3])
-			ThreeTextColumns(self.vms[4])
-		}
-	}
-}
-
-struct TextAndTextViewVM {
-	let value: Binding<String>
+struct TextAndTextFieldStore: View {
+	let store: Store<String, TextChangeAction>
 	let title: String
-	init(_ value: Binding<String>, _ title: String) {
-		self.value = value
-		self.title = title
-	}
-}
-
-struct ThreeTextColumns: View {
-	let vms: [TextAndTextViewVM]
-	let isFirstFixSized: Bool
-
-	init(_ vms: [TextAndTextViewVM], isFirstFixSized: Bool = false) {
-		self.vms = vms
-		self.isFirstFixSized = isFirstFixSized
-	}
-
 	var body: some View {
-		HStack {
-			TextAndTextField(self.vms[0].title,
-											 self.vms[0].value)
-				.fixedSize(horizontal: isFirstFixSized, vertical: false)
-			Spacer()
-			TextAndTextField(self.vms[1].title,
-											 self.vms[1].value)
-			Spacer()
-			if self.vms.count == 3 {
-				TextAndTextField(self.vms[2].title,
-												 self.vms[2].value)
-			} else {
-				Spacer()
-					.fixedSize(horizontal: false, vertical: true)
-			}
+		WithViewStore(store) { viewStore in
+			TextAndTextField(title,
+							 viewStore.binding(get: { $0 },
+											   send: TextChangeAction.textChange))
 		}
 	}
 }
 
 public enum PatientDetailsAction: Equatable {
-	case salutation(TextChangeAction)
+	case salutation(SalutationPickerAction)
 	case firstName(TextChangeAction)
 	case lastName(TextChangeAction)
-	case dob(TextChangeAction)
+	case dob(DatePickerTCAAction)
 	case phone(TextChangeAction)
 	case cellPhone(TextChangeAction)
 	case email(TextChangeAction)
-	case addressLine1(TextChangeAction)
-	case addressLine2(TextChangeAction)
+	case street(TextChangeAction)
+	case otherStreet(TextChangeAction)
 	case postCode(TextChangeAction)
 	case city(TextChangeAction)
 	case county(TextChangeAction)
@@ -121,184 +140,97 @@ public enum PatientDetailsAction: Equatable {
 	case complete
 }
 
-public let patientDetailsReducer: Reducer<PatientDetails, PatientDetailsAction, Any> = (
+public let patientDetailsReducer: Reducer<ClientBuilder, PatientDetailsAction, Any> = (
 	.combine(
+		.init { state, action, _ in
+			switch action {
+			case .salutation(.pick(let salutation)):
+				state.salutation = salutation
+			default:
+				break
+			}
+			return .none
+		},
 		textFieldReducer.pullback(
-			state: \PatientDetails.salutation,
-			action: /PatientDetailsAction.salutation,
-			environment: { $0 }
-		),
-		textFieldReducer.pullback(
-			state: \PatientDetails.firstName,
+			state: \ClientBuilder.firstName,
 			action: /PatientDetailsAction.firstName,
 			environment: { $0 }
 		),
 		textFieldReducer.pullback(
-			state: \PatientDetails.lastName,
+			state: \ClientBuilder.lastName,
 			action: /PatientDetailsAction.lastName,
 			environment: { $0 }
 		),
-		textFieldReducer.pullback(
-            state: \PatientDetails.dateOfBirth,
+		datePickerReducer.pullback(
+            state: \ClientBuilder.dOB,
 			action: /PatientDetailsAction.dob,
 			environment: { $0 }
 		),
 		textFieldReducer.pullback(
-			state: \PatientDetails.phone,
+			state: \ClientBuilder.phone,
 			action: /PatientDetailsAction.phone,
 			environment: { $0 }
 		),
 		textFieldReducer.pullback(
-			state: \PatientDetails.cellPhone,
+			state: \ClientBuilder.mobile,
 			action: /PatientDetailsAction.cellPhone,
 			environment: { $0 }
 		),
 		textFieldReducer.pullback(
-			state: \PatientDetails.email,
+			state: \ClientBuilder.email,
 			action: /PatientDetailsAction.email,
 			environment: { $0 }
 		),
 		textFieldReducer.pullback(
-			state: \PatientDetails.addressLine1,
-			action: /PatientDetailsAction.addressLine1,
+			state: \ClientBuilder.mailingStreet,
+			action: /PatientDetailsAction.street,
 			environment: { $0 }
 		),
 		textFieldReducer.pullback(
-			state: \PatientDetails.addressLine2,
-			action: /PatientDetailsAction.addressLine2,
+			state: \ClientBuilder.otherStreet,
+			action: /PatientDetailsAction.otherStreet,
 			environment: { $0 }
 		),
 		textFieldReducer.pullback(
-			state: \PatientDetails.postCode,
+			state: \ClientBuilder.mailingPostal,
 			action: /PatientDetailsAction.postCode,
 			environment: { $0 }
 		),
 		textFieldReducer.pullback(
-			state: \PatientDetails.city,
+			state: \ClientBuilder.mailingCity,
 			action: /PatientDetailsAction.city,
 			environment: { $0 }
 		),
 		textFieldReducer.pullback(
-			state: \PatientDetails.county,
+			state: \ClientBuilder.mailingCounty,
 			action: /PatientDetailsAction.county,
 			environment: { $0 }
 		),
 		textFieldReducer.pullback(
-			state: \PatientDetails.country,
+			state: \ClientBuilder.mailingCountry,
 			action: /PatientDetailsAction.country,
 			environment: { $0 }
 		),
 		textFieldReducer.pullback(
-			state: \PatientDetails.howDidYouHear,
+			state: \ClientBuilder.howDidYouHear,
 			action: /PatientDetailsAction.howDidYouHear,
 			environment: { $0 }
 		),
 		switchCellReducer.pullback(
-			state: \PatientDetails.emailComm,
+			state: \ClientBuilder.optInEmail,
 			action: /PatientDetailsAction.emailComm,
 			environment: { $0 }),
 		switchCellReducer.pullback(
-			state: \PatientDetails.smsComm,
+			state: \ClientBuilder.optInSms,
 			action: /PatientDetailsAction.smsComm,
 			environment: { $0 }),
 		switchCellReducer.pullback(
-			state: \PatientDetails.phoneComm,
+			state: \ClientBuilder.optInPhone,
 			action: /PatientDetailsAction.phoneComm,
 			environment: { $0 }),
 		switchCellReducer.pullback(
-			state: \PatientDetails.postComm,
+			state: \ClientBuilder.optInPost,
 			action: /PatientDetailsAction.postComm,
 			environment: { $0 })
 	)
 )
-
-func viewModels(_ viewStore: ViewStore<PatientDetails, PatientDetailsAction>) -> [[TextAndTextViewVM]] {
-	[
-		[
-			TextAndTextViewVM(
-				viewStore.binding(
-					get: { $0.salutation },
-					send: { .salutation(.textChange($0)) }),
-				Texts.salutation),
-			TextAndTextViewVM(
-				viewStore.binding(
-					get: { $0.firstName },
-					send: { .firstName(.textChange($0)) }),
-				Texts.firstName),
-			TextAndTextViewVM(
-				viewStore.binding(
-					get: { $0.lastName },
-					send: { .lastName(.textChange($0)) }),
-				Texts.lastName)
-		],
-		[
-			TextAndTextViewVM(
-				viewStore.binding(
-                    get: { $0.dateOfBirth },
-					send: { .dob(.textChange($0)) }),
-				Texts.dob),
-			TextAndTextViewVM(
-				viewStore.binding(
-					get: { $0.phone },
-					send: { .phone(.textChange($0)) }),
-				Texts.phone),
-			TextAndTextViewVM(
-				viewStore.binding(
-					get: { $0.cellPhone },
-					send: { .cellPhone(.textChange($0)) }),
-				Texts.cellPhone)
-		],
-		[
-			TextAndTextViewVM(
-				viewStore.binding(
-					get: { $0.email },
-					send: { .email(.textChange($0)) }),
-				Texts.email),
-			TextAndTextViewVM(
-				viewStore.binding(
-					get: { $0.addressLine1 },
-					send: { .addressLine1(.textChange($0)) }),
-				Texts.addressLine1),
-			TextAndTextViewVM(
-				viewStore.binding(
-					get: { $0.addressLine2 },
-					send: { .addressLine2(.textChange($0)) }),
-				Texts.addressLine2)
-		],
-		[
-			TextAndTextViewVM(
-				viewStore.binding(
-					get: { $0.postCode },
-					send: { .postCode(.textChange($0)) }),
-				Texts.postCode),
-			TextAndTextViewVM(
-				viewStore.binding(
-					get: { $0.city },
-					send: { .city(.textChange($0)) }),
-				Texts.city),
-			TextAndTextViewVM(
-				viewStore.binding(
-					get: { $0.county },
-					send: { .county(.textChange($0)) }),
-				Texts.county)
-		],
-		[
-			TextAndTextViewVM(
-				viewStore.binding(
-					get: { $0.country },
-					send: { .country(.textChange($0)) }),
-				Texts.country),
-			TextAndTextViewVM(
-				viewStore.binding(
-					get: { $0.howDidYouHear },
-					send: { .howDidYouHear(.textChange($0)) }),
-				Texts.howDidUHear),
-            TextAndTextViewVM(
-                viewStore.binding(
-                    get: { $0.gender },
-                    send: { .howDidYouHear(.textChange($0)) }),
-                Texts.gender)
-            
-		]
-	]
-}

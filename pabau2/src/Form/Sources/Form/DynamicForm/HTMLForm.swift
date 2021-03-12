@@ -3,26 +3,11 @@ import SwiftUI
 import ComposableArchitecture
 import Util
 
-public let htmlFormReducer: Reducer<HTMLForm, HTMLFormAction, FormEnvironment> = .combine(
-	cssFieldReducer.forEach(
-		state: \HTMLForm.formStructure,
-		action: /HTMLFormAction.rows(idx:action:),
-		environment: { $0 }
-	)
-)
-
-public enum HTMLFormAction: Equatable {
-	case rows(idx: Int, action: CSSClassAction)
-	case complete(CompleteBtnAction)
-	//idea:
-//	case requests(JourneyFormRequestsAction<HTMLForm>)
-}
-
 public struct HTMLFormView: View {
 
 	let isCheckingDetails: Bool
-	let store: Store<HTMLForm, HTMLFormAction>
-	public init(store: Store<HTMLForm, HTMLFormAction>,
+	let store: Store<HTMLForm, HTMLRowsAction>
+	public init(store: Store<HTMLForm, HTMLRowsAction>,
 				isCheckingDetails: Bool = false) {
 		self.store = store
 		self.isCheckingDetails = isCheckingDetails
@@ -31,20 +16,31 @@ public struct HTMLFormView: View {
 	}
 
 	public var body: some View {
-		print("HTMLForm")
-		return ScrollView {
-			LazyVStack {
-				ForEachStore(store.scope(state: { $0.formStructure },
-										 action: { HTMLFormAction.rows(idx: $0, action: $1) }),
-							 content: { localStore in
-								FormSectionField(store: localStore,
-												 isCheckingDetails: isCheckingDetails)
-							 }
-				).id(UUID())
-				CompleteButton(store: store.scope(state: { $0 },
-												  action: { .complete($0) })
-				)
+		VStack {
+			HTMLFormTitle(store: store.scope(state: { $0.templateInfo.name }).actionless)
+			ScrollView {
+				LazyVStack {
+					ForEachStore(store.scope(state: { $0.formStructure },
+											 action: { HTMLRowsAction.rows(idx: $0, action: $1) }),
+								 content: { localStore in
+									FormSectionField(store: localStore,
+													 isCheckingDetails: isCheckingDetails)
+								 }
+					)
+				}
 			}
+			CompleteButton(store: store.scope(state: { $0 },
+											  action: { .complete($0) })
+			)
+		}
+	}
+}
+
+public struct HTMLFormTitle: View {
+	let store: Store<String, Never>
+	public var body: some View {
+		WithViewStore(store) { viewStore in
+			Text(viewStore.state).font(.title)
 		}
 	}
 }
