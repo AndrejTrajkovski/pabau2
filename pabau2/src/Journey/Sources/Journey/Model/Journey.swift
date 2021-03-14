@@ -7,13 +7,6 @@ import Appointments
 
 public typealias Journey = [Appointment]
 
-extension Journey: Identifiable {
-	public var id: JourneyKey {
-		JourneyKey(customerId: self.first!.customerId,
-				   employeeId: self.first!.employeeId)
-	}
-}
-
 public extension Journey {
 	var servicesString: String {
 		self.compactMap { $0.service }

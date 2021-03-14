@@ -82,7 +82,7 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = Reducer.combine(
 				env.journeyAPI.getEmployees()
 					.receive(on: DispatchQueue.main)
 					.catchToEffect()
-					.map { AppAction.tabBar(.employeesFilter(.gotResponse($0)))}
+					.map { AppAction.tabBar(.journey(.employeesFilter(.gotResponse($0))))}
 					.eraseToEffect()
 			)
 		default:

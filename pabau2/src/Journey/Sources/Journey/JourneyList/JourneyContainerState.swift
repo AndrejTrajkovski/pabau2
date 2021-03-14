@@ -6,21 +6,41 @@ import Appointments
 import ComposableArchitecture
 
 public struct JourneyContainerState: Equatable {
+	
+	public let employees: [Location.ID: IdentifiedArrayOf<Employee>]
 	public var journey: JourneyState
-	public var employeesFilter: JourneyFilterState
 	public var appointments: Appointments
 	public var loadingState: LoadingState = .initial
 
 	public init(
 		journey: JourneyState,
-		employeesFilter: JourneyFilterState,
+		employees: [Location.ID: IdentifiedArrayOf<Employee>],
 		appointments: Appointments,
 		loadingState: LoadingState
 	) {
 		self.journey = journey
-		self.employeesFilter = employeesFilter
+		self.employees = employees
 		self.appointments = appointments
 		self.loadingState = loadingState
+	}
+	
+	var journeyEmployeesFilter: JourneyFilterState? {
+		get {
+			guard let selectedLocationId = journey.selectedLocation?.id else { return nil }
+			return JourneyFilterState(
+				locationId: selectedLocationId,
+				employeesLoadingState: journey.employeesLoadingState,
+				employees: employees,
+				selectedEmployeesIds: journey.selectedEmployeesIds,
+				isShowingEmployees: journey.isShowingEmployeesFilter
+			)
+		}
+		set {
+			guard let newValue = newValue else { return }
+			self.journey.employeesLoadingState = newValue.employeesLoadingState
+			self.journey.selectedEmployeesIds = newValue.selectedEmployeesIds
+			self.journey.isShowingEmployeesFilter = newValue.isShowingEmployees
+		}
 	}
 }
 

@@ -4,16 +4,16 @@ import ComposableArchitecture
 
 public struct JourneyFilterState: Equatable {
 	public let locationId: Location.Id
+	public let employees: [Location.ID: IdentifiedArrayOf<Employee>]
 	public var employeesLoadingState: LoadingState
-	public var employees: IdentifiedArrayOf<Employee>
-	public var selectedEmployeesIds: Set<Employee.Id>
+	public var selectedEmployeesIds: Set<Employee.ID>
 	public var isShowingEmployees: Bool
 
 	public init(
 		locationId: Location.Id,
 		employeesLoadingState: LoadingState,
-		employees: IdentifiedArrayOf<Employee>,
-		selectedEmployeesIds: Set<Employee.Id>,
+		employees: [Location.ID: IdentifiedArrayOf<Employee>],
+		selectedEmployeesIds: Set<Employee.ID>,
 		isShowingEmployees: Bool
 	) {
 		self.locationId = locationId
@@ -21,9 +21,5 @@ public struct JourneyFilterState: Equatable {
 		self.employees = employees
 		self.selectedEmployeesIds = selectedEmployeesIds
 		self.isShowingEmployees = isShowingEmployees
-	}
-
-	public func selectedEmployees() -> IdentifiedArrayOf<Employee> {
-		employees.filter { selectedEmployeesIds.contains($0.id) }
 	}
 }

@@ -10,7 +10,7 @@ public struct JourneyState: Equatable {
 	public init() {}
 	public var selectedDate: Date = Date()
 	public var selectedFilter: CompleteFilter = .all
-	public var selectedLocation: Location = Location.init(id: "1", name: "Skopje")
+	public var selectedLocation: Location?
 	public var employeesLoadingState: LoadingState = .initial
 	public var selectedEmployeesIds: Set<Employee.Id> = Set()
 	public var isShowingEmployeesFilter: Bool = false

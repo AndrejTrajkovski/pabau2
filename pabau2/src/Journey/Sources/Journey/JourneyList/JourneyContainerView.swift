@@ -54,13 +54,25 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 		action: /JourneyContainerAction.self,
 		environment: { $0 }
 	),
+	journeyFilterReducer.optional.pullback(
+		state: \JourneyContainerState.journeyEmployeesFilter,
+		action: /JourneyContainerAction.employeesFilter,
+		environment: {
+			return EmployeesFilterEnvironment(
+				journeyAPI: $0.journeyAPI,
+				userDefaults: $0.userDefaults)
+		}),
 	.init { state, action, env in
 		switch action {
 		case .toggleEmployees:
-			state.employeesFilter.isShowingEmployees.toggle()
+			if state.journeyEmployeesFilter != nil {
+				state.journeyEmployeesFilter!.isShowingEmployees.toggle()
+			}
 		case .datePicker(.selectedDate(let date)):
-//			state.loadingState = .loading
-			return env.journeyAPI.getAppointments(startDate: date, endDate: date, locationIds: [state.employeesFilter.locationId], employeesIds: Array(state.employeesFilter.employees.map(\.id)), roomIds: [])
+			guard let locId = state.journeyEmployeesFilter?.locationId,
+				  let employees = state.employees[locId] else { return .none }
+			state.loadingState = .loading
+			return env.journeyAPI.getAppointments(startDate: date, endDate: date, locationIds: [locId], employeesIds: Array(employees.map(\.id)), roomIds: [])
 //				.map(with(date, curry(calendarResponseToJourneys(date:events:))))
 				.receive(on: DispatchQueue.main)
 				.catchToEffect()
@@ -71,11 +83,13 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 			switch result {
 			case .success(let appointments):
 				print("response: \(appointments)")
-//				print("selectedLocations: \(state.journey.selectedLocation.id)")
-//				print("selectedEmployees: \(state.employeesFilter.employees.elements)")
+				guard let selectedLocationId = state.journey.selectedLocation?.id,
+					  let employees = state.employees[selectedLocationId] else {
+					return .none
+				}
 				state.appointments.refresh(events: appointments,
-										   locationsIds: [state.journey.selectedLocation.id],
-										   employees: state.employeesFilter.employees.elements,
+										   locationsIds: [selectedLocationId],
+										   employees: employees.elements,
 										   rooms: [])
 				state.loadingState = .gotSuccess
 			case .failure(let error):
@@ -165,6 +179,7 @@ public struct JourneyContainerView: View {
 		let listedJourneys: [Journey]
 		let isLoadingJourneys: Bool
         let searchQuery: String
+		let navigationTitle: String
 		init(state: JourneyContainerState) {
 			self.isChoosePathwayShown = state.journey.choosePathway != nil
 			self.selectedDate = state.journey.selectedDate
@@ -173,6 +188,7 @@ public struct JourneyContainerView: View {
 			print("filteredJourneys() + ", state.filteredJourneys())
             self.searchQuery = state.journey.searchText
 			self.isLoadingJourneys = state.loadingState.isLoading
+			self.navigationTitle = state.journey.selectedLocation?.name ?? "No Location Chosen"
 			UITableView.appearance().separatorStyle = .none
 		}
 	}
@@ -183,7 +199,8 @@ public struct JourneyContainerView: View {
 						 action: { $0 }))
 	}
 	public var body: some View {
-        VStack {
+		print("JourneyContainerView")
+        return VStack {
             CalendarDatePicker.init(
                 store: self.store.scope(
 					state: { $0.journey.selectedDate },
@@ -228,7 +245,7 @@ public struct JourneyContainerView: View {
             )
             Spacer()
         }
-        .navigationBarTitle("Manchester", displayMode: .inline)
+		.navigationBarTitle(viewStore.navigationTitle, displayMode: .inline)
         .navigationBarItems(
             leading:
                 HStack(spacing: 8.0) {
@@ -286,12 +303,12 @@ struct JourneyList: View {
 	}
 	var body: some View {
 		List {
-			ForEach(journeys) { journey in
-				journeyCellAdapter(journey: journey)
+			ForEach(journeys.indices) { idx in
+				journeyCellAdapter(journey: journeys[idx])
 					.contextMenu {
 						JourneyListContextMenu()
 					}
-					.onTapGesture { self.onSelect(journey) }
+					.onTapGesture { self.onSelect(journeys[idx]) }
 					.listRowInsets(EdgeInsets())
 			}
 		}.id(UUID())

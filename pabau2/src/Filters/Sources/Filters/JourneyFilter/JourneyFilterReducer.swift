@@ -5,24 +5,11 @@ import ComposableArchitecture
 public typealias EmployeesFilterEnvironment = (journeyAPI: JourneyAPI, userDefaults: UserDefaultsConfig)
 
 public let journeyFilterReducer = Reducer<JourneyFilterState, JourneyFilterAction, EmployeesFilterEnvironment> { state, action, env in
-	func handle(result: Result<[Employee], RequestError>,
-				state: inout JourneyFilterState) -> Effect<JourneyFilterAction, Never> {
-		switch result {
-		case .success(let employees):
-			state.employees = IdentifiedArrayOf.init(employees)
-			state.employeesLoadingState = .gotSuccess
-			state.selectedEmployeesIds = Set.init(employees.map { $0.id })
-		case .failure(let error):
-			print(error)
-			state.employeesLoadingState = .gotError(error)
-		}
-		return .none
-	}
 
 	switch action {
 
-	case .gotResponse(let response):
-		return handle(result: response, state: &state)
+	case .gotResponse:
+		break //tabBarReducer
 
 	case .onTapGestureEmployee(let employee):
 		if state.selectedEmployeesIds.contains(employee.id) {

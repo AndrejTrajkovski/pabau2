@@ -30,24 +30,6 @@ public struct TabBarState: Equatable {
 	var settings: SettingsState
     var communication: CommunicationState
 
-	var journeyEmployeesFilter: JourneyFilterState {
-		get {
-			JourneyFilterState(
-				locationId: journey.selectedLocation.id,
-				employeesLoadingState: journey.employeesLoadingState,
-				employees: calendar.employees[journey.selectedLocation.id] ?? [],
-				selectedEmployeesIds: journey.selectedEmployeesIds,
-				isShowingEmployees: journey.isShowingEmployeesFilter
-			)
-		}
-		set {
-			self.journey.employeesLoadingState = newValue.employeesLoadingState
-			self.calendar.employees[journey.selectedLocation.id] = newValue.employees
-			self.journey.selectedEmployeesIds = newValue.selectedEmployeesIds
-			self.journey.isShowingEmployeesFilter = newValue.isShowingEmployees
-		}
-	}
-
 	public var calendarContainer: CalendarContainerState {
 		get {
 			CalendarContainerState(addAppointment: addAppointment,
@@ -64,13 +46,12 @@ public struct TabBarState: Equatable {
 	public var journeyContainer: JourneyContainerState {
 		get {
 			JourneyContainerState(journey: self.journey,
-								  employeesFilter: self.journeyEmployeesFilter,
+								  employees: self.calendar.employees,
 								  appointments: self.appointments,
 								  loadingState: self.appsLoadingState)
 		}
 		set {
 			self.journey = newValue.journey
-			self.journeyEmployeesFilter = newValue.employeesFilter
 			self.appointments = newValue.appointments
 			self.appsLoadingState = newValue.loadingState
 		}
@@ -82,7 +63,6 @@ public enum TabBarAction {
 	case journey(JourneyContainerAction)
 	case clients(ClientsAction)
 	case calendar(CalendarAction)
-	case employeesFilter(JourneyFilterAction)
 	case addAppointment(AddAppointmentAction)
     case communication(CommunicationAction)
 	case gotLocationsResponse(Result<[Location], RequestError>)
@@ -92,11 +72,9 @@ struct PabauTabBar: View {
 	let store: Store<TabBarState, TabBarAction>
 	@ObservedObject var viewStore: ViewStore<ViewState, TabBarAction>
 	struct ViewState: Equatable {
-		let isShowingEmployees: Bool
 		let isShowingCheckin: Bool
 		let isShowingAppointments: Bool
 		init(state: TabBarState) {
-			self.isShowingEmployees = state.journeyEmployeesFilter.isShowingEmployees
 			self.isShowingCheckin = state.journeyContainer.journey.checkIn != nil
 			self.isShowingAppointments = state.addAppointment != nil
 		}
@@ -109,26 +87,21 @@ struct PabauTabBar: View {
 	}
 
 	var body: some View {
-		ZStack(alignment: .topTrailing) {
-			TabView {
-				calendar()
-				journey()
-				clients()
-				settings()
-				communication()
-			}
-			.modalLink(isPresented: .constant(self.viewStore.state.isShowingCheckin),
-					   linkType: ModalTransition.circleReveal,
-					   destination: {
-						checkIn()
-					   }
-			)
-			.fullScreenCover(isPresented: .constant(self.viewStore.state.isShowingAppointments)) {
-				addAppointment()
-			}
-			if self.viewStore.state.isShowingEmployees {
-				journeyFilter()
-			}
+		TabView {
+			journey()
+			calendar()
+			clients()
+			settings()
+			communication()
+		}
+		.modalLink(isPresented: .constant(self.viewStore.state.isShowingCheckin),
+				   linkType: ModalTransition.circleReveal,
+				   destination: {
+					checkIn()
+				   }
+		)
+		.fullScreenCover(isPresented: .constant(self.viewStore.state.isShowingAppointments)) {
+			addAppointment()
 		}
 	}
 
@@ -140,9 +113,6 @@ struct PabauTabBar: View {
 		).tabItem {
 			Image(systemName: "staroflife")
 			Text("Journey")
-		}
-		.onAppear {
-			self.viewStore.send(.employeesFilter(JourneyFilterAction.reloadEmployees))
 		}
 	}
 
@@ -207,14 +177,6 @@ struct PabauTabBar: View {
 		),
 		then: AddAppointment.init(store:))
 	}
-
-	fileprivate func journeyFilter() -> some View {
-		return JourneyFilter(
-			self.store.scope(state: { $0.journeyEmployeesFilter },
-							 action: { .employeesFilter($0)})
-		).transition(.moveAndFade)
-	}
-
 }
 
 public let tabBarReducer: Reducer<
@@ -236,16 +198,28 @@ public let tabBarReducer: Reducer<
 			case .failure(let error):
 				break
 			}
-		case .employeesFilter(.gotResponse(let employeesResponse)):
+		case .journey(.employeesFilter(.gotResponse(let employeesResponse))):
 			switch employeesResponse {
 			case .success(let employees):
-				print(employees)
 				// MARK: - Iurii
-				let groupedEmployees = Dictionary.init(grouping: employees, by: { $0.locations })
-				state.calendar.employees = Dictionary.init(grouping: state.calendar.locations.map(\.id),
-														   by: { $0 }).mapValues {
-															IdentifiedArrayOf.init(groupedEmployees[$0] ?? [])
-														}
+				state.calendar.employees = employees.reduce(into: [Location.ID: IdentifiedArrayOf<Employee>](),
+								 { result, employee in
+									employee.locations.forEach { location in
+										if result[location] != nil {
+											result[location]!.append(employee)
+										} else {
+											result[location] = IdentifiedArrayOf.init([employee])
+										}
+									}
+								 })
+				
+				print(state.calendar.employees)
+//				let locs = state.calendar.locations.map(\.id)
+//				state.calendar.employees = locs.reduce(into: [Location.ID: IdentifiedArrayOf<Employee>](),
+//													   {
+//														$0[$1] = []
+//													   })
+				
 				state.calendar.chosenEmployeesIds = state.calendar.employees.mapValues {
 					$0.map(\.id)
 				}
@@ -259,14 +233,6 @@ public let tabBarReducer: Reducer<
 		}
 		return .none
 	},
-	journeyFilterReducer.pullback(
-		state: \TabBarState.journeyEmployeesFilter,
-		action: /TabBarAction.employeesFilter,
-		environment: {
-			return EmployeesFilterEnvironment(
-				journeyAPI: $0.journeyAPI,
-				userDefaults: $0.userDefaults)
-		}),
 	addAppointmentReducer.pullback(
 		state: \TabBarState.addAppointment,
 		action: /TabBarAction.addAppointment,
