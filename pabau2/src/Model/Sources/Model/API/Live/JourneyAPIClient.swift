@@ -24,7 +24,9 @@ extension APIClient {
 	
 	public func getAppointments(startDate: Date, endDate: Date, locationIds: [Location.ID], employeesIds: [Employee.ID], roomIds: [Room.ID]) -> Effect<[CalendarEvent], RequestError> {
 		let requestBuilder: RequestBuilder<CalendarResponse>.Type = requestBuilderFactory.getBuilder()
-		let dateFormatter = DateFormatter.yearMonthDay
+		let dateFormatter = DateFormatter()
+		dateFormatter.locale = Locale.init(identifier: "en_US_POSIX")
+		dateFormatter.dateFormat = "yyyy-MM-dd"
 		let params = [
 			"start_date": dateFormatter.string(from: startDate),
 			"end_date": dateFormatter.string(from: endDate),

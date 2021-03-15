@@ -212,8 +212,6 @@ public let tabBarReducer: Reducer<
 										}
 									}
 								 })
-				
-				print(state.calendar.employees)
 //				let locs = state.calendar.locations.map(\.id)
 //				state.calendar.employees = locs.reduce(into: [Location.ID: IdentifiedArrayOf<Employee>](),
 //													   {

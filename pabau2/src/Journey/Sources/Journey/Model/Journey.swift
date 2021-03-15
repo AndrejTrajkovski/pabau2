@@ -4,6 +4,7 @@ import NonEmpty
 import CasePaths
 import Overture
 import Appointments
+import SwiftDate
 
 public typealias Journey = [Appointment]
 
@@ -23,7 +24,7 @@ func calendarResponseToJourneys(date: Date, events: [CalendarEvent]) -> [Journey
 
 func groupAndFilter(date: Date, appointments: [Appointment]) -> [Journey] {
 	journeyGroup(appointments: appointments)
-		.first { $0.key.isInside(date: date.cutToDay(), granularity: .day) }
+		.first { $0.key.cutToDay() == date }
 		.map(\.value) ?? []
 }
 

@@ -186,6 +186,7 @@ public struct JourneyContainerView: View {
 			self.listedJourneys = state.filteredJourneys()
 			print("apps + ", state.appointments)
 			print("filteredJourneys() + ", state.filteredJourneys())
+			print("date:", state.journey.selectedDate)
             self.searchQuery = state.journey.searchText
 			self.isLoadingJourneys = state.loadingState.isLoading
 			self.navigationTitle = state.journey.selectedLocation?.name ?? "No Location Chosen"
