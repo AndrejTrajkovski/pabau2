@@ -45,13 +45,6 @@ public let calendarDatePickerReducer: Reducer<Date, CalendarDatePickerAction, An
 	case .selectedDate(let date):
 		//TODO: see comment in JZBaseWeekView
 		//- If you want to update this value instead of using [updateWeekView(to date: Date)](), please **make sure the date is startOfDay**.
-		
-//		NSDateFormatter *df = [[NSDateFormatter alloc] init];
-//		NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-//		[df setLocale:enUSPOSIXLocale];
-//		return df;
-		
-//		print("selectedDate in reducer: ", date + 1.hours)
 		state = date
 	}
 	return .none
