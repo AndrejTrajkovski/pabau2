@@ -19,7 +19,7 @@ let package = Package(
                  from: Version.init(stringLiteral: "1.0.0")),
         .package(name: "SDWebImageSwiftUI",
                  url: "https://github.com/SDWebImage/SDWebImageSwiftUI.git",
-                 from: Version.init(stringLiteral: "1.0.0")),
+                 from: Version.init(stringLiteral: "2.0.0"))
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.

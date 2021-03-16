@@ -4,6 +4,8 @@ import Model
 import PencilKit
 import ComposableArchitecture
 import Form
+import Tagged
+import Combine
 
 public struct EpaperState: Equatable {
     let epaperImages: [String]
@@ -31,10 +33,15 @@ public enum EpaperAction: Equatable {
     case canvasAction(index: Int, action: PhotoAndCanvasAction)
     case onAppear
     case didDownloadImages([UIImage])
+    case didFinishedMergeImagesWithDrawings
+    case photoUploadResponse
 }
 
 public struct EpaperEnvironment {
-    public init() { }
+    var apiClient: FormAPI
+    public init(apiClient: FormAPI) {
+        self.apiClient = apiClient
+    }
 }
 
 public let epaperReducer = Reducer<EpaperState, EpaperAction, EpaperEnvironment>.combine(
@@ -50,8 +57,11 @@ public let epaperReducer = Reducer<EpaperState, EpaperAction, EpaperEnvironment>
             }
         case .update:
             state.shouldUpdate = true
-            state.mergedImages = CanvasHelper.mergeImagesWithDrawings(images: state.imagesContainer,
-                                                                      canvases: state.canvasStateArray.map { return $0.canvasDrawingState.canvasView })
+            let mergedImages = CanvasHelper.mergeImagesWithDrawings(images: state.imagesContainer,
+                                                        canvases: state.canvasStateArray.map { $0.canvasDrawingState.canvasView })
+            state.mergedImages = mergedImages
+            return Just(EpaperAction.didFinishedMergeImagesWithDrawings)
+                .eraseToEffect()
         case .onAppear:
             return ImageDownloader()
                 .downloadImages(urlStrings: state.epaperImages)
@@ -59,6 +69,27 @@ public let epaperReducer = Reducer<EpaperState, EpaperAction, EpaperEnvironment>
                 .eraseToEffect()
         case .didDownloadImages(let images):
             state.imagesContainer = images
+        case .didFinishedMergeImagesWithDrawings:
+            let clientId: Client.Id = Client.Id.init(rawValue: .right(12148231))
+            let medicalUniqId = UUID().uuidString
+            let params: [String: String] = [
+                "contact_id": "\(clientId.description)",
+                "medical_uniqid": "\(medicalUniqId)",
+                "medical_form_id": "280232"
+            ]
+            
+            return env.apiClient
+                .uploadEpaperImages(images: state.mergedImages.map { $0.pngData()! }, params: params)
+                .catchToEffect()
+                .map { response in
+                    switch response {
+                    case .success(let voResponse):
+                        print(voResponse)
+                    case .failure(let error):
+                        print(error)
+                    }
+                    return EpaperAction.photoUploadResponse
+                }
         default:
             break
         }
