@@ -54,6 +54,25 @@ extension APIClient {
         .effect()
         .map(\.appointments)
 	}
+    
+    public func getShifts() -> Effect<[CalendarEvent], RequestError> {
+        let requestBuilder: RequestBuilder<CalendarResponse>.Type = requestBuilderFactory.getBuilder()
+        let dateFormatter = DateFormatter.yearMonthDay
+        
+        var params: [String : Any] = [
+            "date": dateFormatter.string(from: Date()),
+            "all": true,
+        ]
+        
+        return requestBuilder.init(
+            method: .GET,
+            baseUrl: baseUrl,
+            path: .getShifts,
+            queryParams: commonAnd(other: params)
+        )
+        .effect()
+        .map(\.appointments)
+    }
 	
 	public func getLocations() -> Effect<[Location], RequestError> {
 		struct GetLocations: Decodable {

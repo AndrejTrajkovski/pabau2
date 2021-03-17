@@ -50,9 +50,11 @@ public struct TabBarState: Equatable {
 
 	public var calendarContainer: CalendarContainerState {
 		get {
-			CalendarContainerState(addAppointment: addAppointment,
-								   calendar: calendar,
-								   appointments: appointments)
+            CalendarContainerState(
+                addAppointment: addAppointment,
+                calendar: calendar,
+                appointments: appointments
+            )
 		}
 		set {
 			self.addAppointment = newValue.addAppointment
@@ -63,10 +65,12 @@ public struct TabBarState: Equatable {
 
 	public var journeyContainer: JourneyContainerState {
 		get {
-			JourneyContainerState(journey: self.journey,
-								  employeesFilter: self.journeyEmployeesFilter,
-								  appointments: self.appointments,
-								  loadingState: self.appsLoadingState)
+            JourneyContainerState(
+                journey: self.journey,
+                employeesFilter: self.journeyEmployeesFilter,
+                appointments: self.appointments,
+                loadingState: self.appsLoadingState
+            )
 		}
 		set {
 			self.journey = newValue.journey

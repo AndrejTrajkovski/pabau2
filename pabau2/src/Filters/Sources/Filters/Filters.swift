@@ -17,14 +17,17 @@ public struct FiltersReducer<S: Identifiable & Equatable & Named> {
                     switch action {
                     case .header:
                         print(id)
-                    case .rows(_, _):
-                        if let index = state.chosenLocationsIds.firstIndex( where: { $0 == id }) {
-                            state.chosenLocationsIds.remove(at: index)
-                            
-                            break
+                    case .rows(let rid, let action):
+                        switch action {
+                        case .select:
+                            if !state.chosenLocationsIds.contains(id) {
+                                state.chosenLocationsIds.append(id)
+                            }
+                        case .deselect:
+                            if let index = state.chosenLocationsIds.firstIndex( where: { $0 == id }) {
+                                state.chosenLocationsIds.remove(at: index)
+                            }
                         }
-
-                        state.chosenLocationsIds.append(id)
                     }
 			}
 			return .none
@@ -104,7 +107,9 @@ public struct Filters<S: Identifiable & Equatable & Named>: View {
 		WithViewStore(store) { viewStore in
 			ScrollView {
 				LazyVStack(spacing: 0) {
-					CalendarHeader<S>(onTap: { viewStore.send(.onHeaderTap) })
+					CalendarHeader<S>(
+                        onTap: { viewStore.send(.onHeaderTap) }
+                    )
 					Divider()
                     ForEachStore(
                         store.scope(
