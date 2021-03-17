@@ -14,11 +14,13 @@ public struct EpaperState: Equatable {
     var shouldUpdate = false
     var imagesContainer: [UIImage] = []
     var mergedImages: [UIImage] = []
+    let isDisabled: Bool
     
-    public init(epaperImages: [String]) {
+    public init(epaperImages: [String], isDisabled: Bool = false) {
         self.epaperImages = epaperImages
+        self.isDisabled = isDisabled
         canvasStateArray = epaperImages.map { CanvasViewState(imageURL: $0,
-                                                              isDisabled: false) }
+                                                              isDisabled: isDisabled) }
     }
     
     var isDisabledPreviousBtn: Bool {
@@ -30,6 +32,7 @@ public enum EpaperAction: Equatable {
     case nextImage
     case previousImage
     case update
+    case clear
     case canvasAction(index: Int, action: PhotoAndCanvasAction)
     case onAppear
     case didDownloadImages([UIImage])
@@ -62,6 +65,10 @@ public let epaperReducer = Reducer<EpaperState, EpaperAction, EpaperEnvironment>
             state.mergedImages = mergedImages
             return Just(EpaperAction.didFinishedMergeImagesWithDrawings)
                 .eraseToEffect()
+        case .clear:
+            let imageURL = state.canvasStateArray[state.activeImageIndex].imageURL
+            state.canvasStateArray[state.activeImageIndex] = CanvasViewState(imageURL: imageURL,
+                                                                             isDisabled: state.isDisabled)
         case .onAppear:
             return ImageDownloader()
                 .downloadImages(urlStrings: state.epaperImages)
@@ -133,14 +140,16 @@ public struct EPaperView: View {
                         Button("Close") { }
                     }
                     ToolbarItem(placement: ToolbarItemPlacement.navigationBarTrailing) {
-                        Button("Clear") { }
+                        Button("Clear") {
+                            viewStore.send(.clear)
+                        }
                     }
                     ToolbarItemGroup(placement: .bottomBar) {
                         Button("Previous") {
                             viewStore.send(.previousImage)
                         }.disabled(viewStore.state.isDisabledPreviousBtn)
                         Spacer()
-                        Button((viewStore.state.epaperImages.count - 1) == viewStore.state.activeImageIndex ? "Update" : "Next") {
+                        Button((viewStore.state.epaperImages.count - 1) == viewStore.state.activeImageIndex ? "Agree" : "Next") {
                             (viewStore.state.epaperImages.count - 1 == viewStore.state.activeImageIndex) ? viewStore.send(.update) :
                             viewStore.send(.nextImage)
                         }
