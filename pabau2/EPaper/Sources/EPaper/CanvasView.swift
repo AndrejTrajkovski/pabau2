@@ -13,7 +13,12 @@ let canvasStateReducer = Reducer<CanvasViewState, PhotoAndCanvasAction, CanvasEn
         state.canvasDrawingState.canvasView.drawing = drawing
     case .onSave:
         break
+    case .imageDownloaded(let uiImage):
+        state.uiImage = uiImage
+    case .mergeWithDrawing:
+        let drawingRectSize = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+        let drawingImage = state.canvasDrawingState.canvasView.drawing.image(from: drawingRectSize, scale: 1.0)
+        state.mergeImage = state.uiImage.mergeWith(topImage: drawingImage)
     }
-    
     return .none
 }

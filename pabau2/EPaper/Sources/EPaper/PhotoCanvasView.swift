@@ -2,10 +2,13 @@ import SwiftUI
 import SDWebImageSwiftUI
 import PencilKit
 import ComposableArchitecture
+import Combine
 
 public enum PhotoAndCanvasAction: Equatable {
     case onSave
     case onDrawingChange(PKDrawing)
+    case imageDownloaded(UIImage)
+    case mergeWithDrawing
 }
 
 struct CanvasDrawingState: Equatable {
@@ -19,11 +22,18 @@ struct CanvasDrawingState: Equatable {
 }
 
 struct CanvasViewState: Equatable, Identifiable {
+    static func == (lhs: CanvasViewState, rhs: CanvasViewState) -> Bool {
+        lhs.id == rhs.id
+    }
+    
     let id: UUID
     let imageURL: String
     var isDisabled: Bool
     var canvasDrawingState: CanvasDrawingState = CanvasDrawingState(canvasView: PKCanvasView())
-        
+     
+    var uiImage: UIImage = UIImage()
+    var mergeImage: UIImage = UIImage()
+    
     init(uuid: UUID = UUID(), imageURL: String, isDisabled: Bool) {
         self.isDisabled = isDisabled
         self.id = uuid
@@ -36,10 +46,15 @@ struct PhotoCanvasView: View {
     
     var body: some View {
         WithViewStore(store) { viewStore in
-            ZStack {
-                WebImage(url: URL(string: viewStore.state.imageURL)!)
-                    .resizable()
-                EpaperCanvasView(store: store)
+            VStack {
+                ZStack {
+                    WebImage(url: URL(string: viewStore.state.imageURL)!)
+                        .onSuccess(perform: { (uiImage, _, _) in
+                            viewStore.send(.imageDownloaded(uiImage))
+                        })
+                        .indicator(.activity)
+                    EpaperCanvasView(store: store)
+                }
             }
         }
     }

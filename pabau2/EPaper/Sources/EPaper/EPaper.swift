@@ -34,7 +34,6 @@ public enum EpaperAction: Equatable {
     case update
     case clear
     case canvasAction(index: Int, action: PhotoAndCanvasAction)
-    case onAppear
     case didDownloadImages([UIImage])
     case didFinishedMergeImagesWithDrawings
     case photoUploadResponse
@@ -42,7 +41,7 @@ public enum EpaperAction: Equatable {
 
 public struct EpaperEnvironment {
     var apiClient: FormAPI
-    public init(apiClient: FormAPI) {
+    public init(apiClient: FormAPI) { 
         self.apiClient = apiClient
     }
 }
@@ -60,7 +59,7 @@ public let epaperReducer = Reducer<EpaperState, EpaperAction, EpaperEnvironment>
             }
         case .update:
             state.shouldUpdate = true
-            let mergedImages = CanvasHelper.mergeImagesWithDrawings(images: state.imagesContainer,
+            let mergedImages = CanvasHelper.mergeImagesWithDrawings(images: state.canvasStateArray.map { $0.uiImage },
                                                         canvases: state.canvasStateArray.map { $0.canvasDrawingState.canvasView })
             state.mergedImages = mergedImages
             return Just(EpaperAction.didFinishedMergeImagesWithDrawings)
@@ -69,11 +68,6 @@ public let epaperReducer = Reducer<EpaperState, EpaperAction, EpaperEnvironment>
             let imageURL = state.canvasStateArray[state.activeImageIndex].imageURL
             state.canvasStateArray[state.activeImageIndex] = CanvasViewState(imageURL: imageURL,
                                                                              isDisabled: state.isDisabled)
-        case .onAppear:
-            return ImageDownloader()
-                .downloadImages(urlStrings: state.epaperImages)
-                .map { .didDownloadImages($0) }
-                .eraseToEffect()
         case .didDownloadImages(let images):
             state.imagesContainer = images
         case .didFinishedMergeImagesWithDrawings:
@@ -120,20 +114,11 @@ public struct EPaperView: View {
         WithViewStore(store) { viewStore in
             NavigationView {                
                 VStack {
-                    // Remove this before commit
-                    if viewStore.shouldUpdate && !viewStore.imagesContainer.isEmpty { // for testing
-                        List {
-                            ForEach(viewStore.state.mergedImages, id: \.self) { image in
-                                Image(uiImage: image)
-                            }
-                        }
-                    } else {
-                        PhotoCanvasView(store: self.store.scope(state: { $0.canvasStateArray[viewStore.activeImageIndex]},
-                                                                    action: { EpaperAction.canvasAction(index: viewStore.activeImageIndex,
-                                                                                                        action: $0)
-                                                                    }
-                            ))
-                    }
+                    PhotoCanvasView(store: self.store.scope(state: { $0.canvasStateArray[viewStore.activeImageIndex]},
+                                                                action: { EpaperAction.canvasAction(index: viewStore.activeImageIndex,
+                                                                                                    action: $0)
+                                                                }
+                        ))
                 }
                 .toolbar {
                     ToolbarItem(placement: ToolbarItemPlacement.navigationBarLeading) {
@@ -156,9 +141,6 @@ public struct EPaperView: View {
                     }
                 }
                 .navigationBarTitle("Page \(viewStore.state.activeImageIndex + 1) of \(viewStore.state.epaperImages.count)", displayMode: .inline)
-                    .onAppear {
-                        viewStore.send(.onAppear)
-                    }
                 }
             }.navigationViewStyle(StackNavigationViewStyle())
         }
