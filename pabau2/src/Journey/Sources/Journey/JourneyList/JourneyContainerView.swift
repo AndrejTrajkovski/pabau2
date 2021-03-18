@@ -112,39 +112,22 @@ public let journeyContainerReducer2: Reducer<JourneyState, JourneyContainerActio
         journeyReducer.pullback(
                      state: \JourneyState.self,
                      action: /JourneyContainerAction.searchQueryChanged,
-                     environment: { $0 }),
-		choosePathwayContainerReducer.optional.pullback(
-					 state: \JourneyState.choosePathway,
-					 action: /JourneyContainerAction.choosePathway,
-					 environment: { $0 })
+                     environment: { $0 })
 )
 
 let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 	.combine (
+		choosePathwayContainerReducer.optional.pullback(
+					 state: \JourneyState.choosePathway,
+					 action: /JourneyAction.choosePathway,
+					 environment: { $0 }),
 		.init { state, action, environment in
             struct SearchJourneyId: Hashable {}
 
 			switch action {
 			case .selectedFilter(let filter):
 				state.selectedFilter = filter
-
-//			case .datePicker(.selectedDate(let date)):
-//				state.loadingState = .loading
-//				return environment.apiClient.getJourneys(date: date, searchTerm: nil)
-//					.catchToEffect()
-//					.map(JourneyAction.gotResponse)
-//					.receive(on: DispatchQueue.main)
-//					.eraseToEffect()
-//			case .gotResponse(let result):
-//				switch result {
-//				case .success(let journeys):
-//					state.journeys.formUnion(journeys)
-//					state.loadingState = .gotSuccess
-//
-//				case .failure(let error):
-//					state.loadingState = .gotError(error)
-//				}
-
+				
 			case .searchedText(let searchText):
 				state.searchText = searchText
 
@@ -160,8 +143,17 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 
 			case .selectedJourney(let journey):
 				state.choosePathway = ChoosePathwayState(selectedJourney: journey)
+				return environment.journeyAPI.getPathwayTemplates()
+					.delay(for: 5, scheduler: DispatchQueue.main)
+					.receive(on: DispatchQueue.main)
+					.catchToEffect()
+					.map { .choosePathway(.gotPathwayTemplates($0))  }
+				
 			case .choosePathwayBackTap:
-				state.selectedJourney = nil
+				state.choosePathway = nil
+				
+			case .choosePathway(_):
+				break
 			}
 			return .none
 	}
@@ -184,9 +176,6 @@ public struct JourneyContainerView: View {
 			self.isChoosePathwayShown = state.journey.choosePathway != nil
 			self.selectedDate = state.journey.selectedDate
 			self.listedJourneys = state.filteredJourneys()
-			print("apps + ", state.appointments)
-			print("filteredJourneys() + ", state.filteredJourneys())
-			print("date:", state.journey.selectedDate)
             self.searchQuery = state.journey.searchText
 			self.isLoadingJourneys = state.loadingState.isLoading
 			self.navigationTitle = state.journey.selectedLocation?.name ?? "No Location Chosen"
@@ -234,7 +223,7 @@ public struct JourneyContainerView: View {
                 self.viewStore.state.isChoosePathwayShown,
 				IfLetStore(
 					store.scope(state: { $0.journey.choosePathway },
-								action: { .choosePathway($0) }),
+								action: { .journey(.choosePathway($0)) }),
 					then: { choosePathwayStore in
 						ChoosePathway.init(store: choosePathwayStore)
 							.navigationBarTitle("Choose Pathway")

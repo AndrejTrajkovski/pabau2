@@ -2,7 +2,6 @@ import SwiftUI
 import FSCalendar
 import ComposableArchitecture
 import SwiftDate
-import Model
 
 public struct CalendarDatePicker: View {
 	let store: Store<Date, CalendarDatePickerAction>

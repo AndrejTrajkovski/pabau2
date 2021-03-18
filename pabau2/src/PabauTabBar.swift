@@ -165,7 +165,7 @@ struct PabauTabBar: View {
 	fileprivate func checkIn() -> IfLetStore<CheckInContainerState, CheckInContainerAction, CheckInNavigationView?> {
 		return IfLetStore(self.store.scope(
 			state: { $0.journeyContainer.journey.choosePathway?.checkIn },
-			action: { .journey(.choosePathway(.checkIn($0)))}
+			action: { .journey(.journey(.choosePathway(.checkIn($0)))) }
 		),
 		then: CheckInNavigationView.init(store:))
 	}

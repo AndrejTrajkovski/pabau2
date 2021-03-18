@@ -6,9 +6,11 @@ import Form
 import Overture
 
 public enum ChoosePathwayContainerAction {
+	case rows(id: PathwayTemplate.ID, action: PathwayTemplateRowAction)
 	case choosePathway(ChoosePathwayAction)
 	case chooseConsent(ChooseFormAction)
 	case checkIn(CheckInContainerAction)
+	case gotPathwayTemplates(Result<IdentifiedArrayOf<PathwayTemplate>, RequestError>)
 }
 
 let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayContainerAction, JourneyEnvironment> =
@@ -27,6 +29,9 @@ let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayCont
 													  allConsents: state.allConsents,
 													  photosState: PhotosState.init(SavedPhoto.mock())
 				)
+			case .gotPathwayTemplates(let pathwayTemplates):
+				print(pathwayTemplates)
+				state.pathwayTemplates.update(pathwayTemplates)
 			default:
 				break
 			}
@@ -53,8 +58,6 @@ let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayCont
 
 let choosePathwayReducer = Reducer<ChoosePathwayState, ChoosePathwayAction, JourneyEnvironment> { state, action, _ in
 	switch action {
-	case .didChoosePathway(let pathway):
-		state.selectedPathway = pathway
 	case .didTouchSelectConsentBackBtn:
 		state.selectedPathway = nil
 	}
@@ -62,16 +65,16 @@ let choosePathwayReducer = Reducer<ChoosePathwayState, ChoosePathwayAction, Jour
 }
 
 public enum ChoosePathwayAction {
-	case didChoosePathway(PathwayTemplate)
 	case didTouchSelectConsentBackBtn
 }
 
 public struct ChoosePathwayState: Equatable {
-
+	
 	let selectedJourney: Journey
 	var selectedPathway: PathwayTemplate?
 	var selectedConsentsIds: [HTMLForm.ID] = []
 	var allConsents: IdentifiedArrayOf<FormTemplateInfo> = []
+	var pathwayTemplates: LoadingState2<IdentifiedArrayOf<PathwayTemplate>> = .loading
 	public var checkIn: CheckInContainerState?
 	
 	var chooseConsentState: ChooseFormState {
@@ -93,31 +96,6 @@ public struct ChoosePathway: View {
 	struct State: Equatable {
 		let isChooseConsentShown: Bool
 		let journey: Journey?
-
-		let standardPathway =
-			PathwayTemplate.init(id: 1,
-									 title: "Standard",
-									 steps: [Step(id: 1, stepType: .patientdetails),
-													 Step(id: 2, stepType: .medicalhistory),
-													 Step(id: 3, stepType: .consents),
-													 Step(id: 4, stepType: .treatmentnotes),
-													 Step(id: 5, stepType: .prescriptions),
-													 Step(id: 6, stepType: .aftercares),
-													 Step(id: 7, stepType: .checkpatient),
-													 Step(id: 8, stepType: .photos)
-			])
-		let consultationPathway =
-			PathwayTemplate.init(id: 1,
-									 title: "Consultation",
-									 steps: [Step(id: 1, stepType: .patientdetails),
-													 Step(id: 2, stepType: .medicalhistory),
-													 Step(id: 3, stepType: .consents),
-													 Step(id: 3, stepType: .treatmentnotes),
-													 Step(id: 6, stepType: .aftercares),
-													 Step(id: 5, stepType: .checkpatient),
-													 Step(id: 8, stepType: .photos)
-				]
-		)
 		init(state: ChoosePathwayState) {
 			self.isChooseConsentShown = state.selectedPathway != nil
 			self.journey = state.selectedJourney
@@ -133,7 +111,13 @@ public struct ChoosePathway: View {
 	}
 	public var body: some View {
 		HStack {
-			pathwayCells
+			LoadingStore(store.scope(state: { $0.pathwayTemplates }, action: { $0 }),
+						 then: { (tmplts: Store<IdentifiedArrayOf<PathwayTemplate>,
+							ChoosePathwayContainerAction>) in
+							ForEachStore(tmplts.scope(state: { $0 },
+													  action: { .rows(id: $0, action: $1) }),
+										 content: PathwayTemplateRow.init(store:))
+						 })
 			chooseFormNavLink
 		}
 		.journeyBase(self.viewStore.state.journey, .long)
@@ -153,29 +137,54 @@ public struct ChoosePathway: View {
 	}
 
 	var pathwayCells: some View {
-		HStack {
-			ListFrame(style: .blue) {
-				ChoosePathwayListContent(
-					.blue,
-					Image(systemName: "arrow.right"),
-					self.viewStore.state.standardPathway.steps.count,
-					"Standard Pathway",
-					"Provides a basic standard pathway, defined for the company.",
-					self.viewStore.state.standardPathway.steps.map { $0.stepType.title },
-					"Standard") {
-						self.viewStore.send(.choosePathway(.didChoosePathway(self.viewStore.state.standardPathway)))
+		EmptyView()
+//		HStack {
+//			ListFrame(style: .blue) {
+//				ChoosePathwayListContent(
+//					.blue,
+//					Image(systemName: "arrow.right"),
+//					self.viewStore.state.standardPathway.steps.count,
+//					"Standard Pathway",
+//					"Provides a basic standard pathway, defined for the company.",
+//					self.viewStore.state.standardPathway.steps.map { $0.stepType.title },
+//					"Standard") {
+//						self.viewStore.send(.choosePathway(.didChoosePathway(self.viewStore.state.standardPathway)))
+//				}
+//			}
+//			ListFrame(style: .white) {
+//				ChoosePathwayListContent(
+//					.white,
+//					Image("ico-journey-consulting"),
+//					self.viewStore.state.consultationPathway.steps.count,
+//					"Consultation Pathway",
+//					"Provides a consultation pathway, to hear out the person's needs.",
+//					self.viewStore.state.consultationPathway.steps.map { $0.stepType.title },
+//					"Consultation") {
+//						self.viewStore.send(.choosePathway(.didChoosePathway(self.viewStore.state.consultationPathway)))
+//				}
+//			}
+//		}
+	}
+}
+
+public enum PathwayTemplateRowAction {
+	case select
+}
+
+struct PathwayTemplateRow: View {
+	let store: Store<PathwayTemplate, PathwayTemplateRowAction>
+	var body: some View {
+		WithViewStore(store) { viewStore in
+			VStack(alignment: .leading, spacing: 16) {
+				HStack {
+					Spacer()
+					Image(systemName: "list.bullet").foregroundColor(.blue2)
+					Text(String("\(viewStore.steps.count)")).font(.semibold17)
 				}
-			}
-			ListFrame(style: .white) {
-				ChoosePathwayListContent(
-					.white,
-					Image("ico-journey-consulting"),
-					self.viewStore.state.consultationPathway.steps.count,
-					"Consultation Pathway",
-					"Provides a consultation pathway, to hear out the person's needs.",
-					self.viewStore.state.consultationPathway.steps.map { $0.stepType.title },
-					"Consultation") {
-						self.viewStore.send(.choosePathway(.didChoosePathway(self.viewStore.state.consultationPathway)))
+//				Text(viewStore.title).font(.semibold20).foregroundColor(.black42)
+				Text(viewStore._description ?? "").font(.medium15)
+				PrimaryButton(viewStore.title) {
+					viewStore.send(.select)
 				}
 			}
 		}

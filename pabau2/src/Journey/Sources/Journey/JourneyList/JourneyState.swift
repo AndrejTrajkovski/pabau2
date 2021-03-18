@@ -15,7 +15,6 @@ public struct JourneyState: Equatable {
 	public var selectedEmployeesIds: Set<Employee.Id> = Set()
 	public var isShowingEmployeesFilter: Bool = false
 	public var searchText: String = ""
-	public var selectedJourney: Journey?
 	public var selectedPathway: PathwayTemplate?
 	public var selectedConsentsIds: [HTMLForm.ID] = []
 	public var allConsents: IdentifiedArrayOf<FormTemplateInfo> = []

@@ -4,6 +4,22 @@ import Util
 //MARK: - JourneyAPI
 extension APIClient {
 	
+	public func getPathwayTemplates() -> Effect<IdentifiedArrayOf<PathwayTemplate>, RequestError> {
+		struct GetPathways: Codable {
+			let pathways: [PathwayTemplate]
+		}
+		let companyId = loggedInUser?.companyID ?? ""
+		let requestBuilder: RequestBuilder<GetPathways>.Type = requestBuilderFactory.getBuilder()
+		return requestBuilder.init(method: .GET,
+								   baseUrl: baseUrl,
+								   path: .getPathwaysTemplates,
+								   queryParams: commonAnd(other: ["company_id" : companyId])
+		)
+			.effect()
+			.map { IdentifiedArrayOf.init($0.pathways) }
+			.eraseToEffect()
+	}
+	
 	public func getEmployees() -> Effect<[Employee], RequestError> {
 		struct GetEmployees: Decodable {
 			public let employees: [Employee]

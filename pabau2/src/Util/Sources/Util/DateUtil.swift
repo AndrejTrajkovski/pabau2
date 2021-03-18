@@ -6,7 +6,6 @@ public extension Date {
 	func cutToDay(_ calendar: Calendar = .gregorian) -> Date {
 		let comps = calendar.dateComponents([.year, .month, .day], from: self)
 		let result = calendar.date(from: comps)!
-		print("cutToDay", result)
 		return result
 	}
 	

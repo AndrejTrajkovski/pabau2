@@ -6,7 +6,6 @@ import FSCalendarSwiftUI
 public enum JourneyContainerAction {
 	case addAppointmentTap
 	case journey(JourneyAction)
-	case choosePathway(ChoosePathwayContainerAction)
 	case toggleEmployees
     case searchQueryChanged(JourneyAction)
 	case datePicker(CalendarDatePickerAction)
@@ -19,4 +18,5 @@ public enum JourneyAction {
 	case searchedText(String)
 	case selectedJourney(Journey)
 	case choosePathwayBackTap
+	case choosePathway(ChoosePathwayContainerAction)
 }
