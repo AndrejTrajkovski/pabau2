@@ -262,22 +262,6 @@ struct DateAndTime: View {
                     ),
                     mode: .dateAndTime
                 ).isHidden(viewStore.isAllDay, remove: true)
-
-//                DatePickerControl.init(
-//                    "TIME",
-//                    viewStore.binding(
-//                        get: { $0.time },
-//                        send: { .chooseTime($0) }
-//                    ),
-//                    viewStore.binding(
-//                        get: { $0.timeConfigurator },
-//                        send: .ignore
-//                    ),
-//                    mode: .time
-//                )
-//                .isHidden(
-//                    viewStore.state.isAllDay
-//                )
 			}
 			GeometryReader { geo in
 				HStack {

@@ -11,9 +11,12 @@ public struct CalendarWrapper: View {
 			switch viewStore.state.appointments {
 			case .week:
 				return AnyView(
-					IfLetStore.init(store.scope(state: { $0.week },
-												action: { .week($0) }),
-									then: CalendarWeekSwiftUI.init(store:)
+                    IfLetStore.init(
+                        store.scope(
+                            state: { $0.week },
+                            action: { .week($0) }
+                        ),
+                        then: CalendarWeekSwiftUI.init(store:)
 					)
 				)
 			case .employee:
@@ -29,10 +32,13 @@ public struct CalendarWrapper: View {
 											_ConditionalContent<CalendarSwiftUI<Room>, EmptyView>>
 
 	var employeeCalendarView: EmployeeCalView {
-		let ifLetStore = IfLetStore(store.scope(
-										state: { $0.employeeSectionState },
-										action: { .employee($0) }),
-									then: CalendarSwiftUI<Employee>.init(store:), else: EmptyView())
+        let ifLetStore = IfLetStore(
+            store.scope(
+                state: { $0.employeeSectionState },
+                action: { .employee($0) }
+            ),
+            then: CalendarSwiftUI<Employee>.init(store:), else: EmptyView()
+        )
 		return ifLetStore
 	}
 

@@ -32,9 +32,11 @@ public struct TabBarState: Equatable {
 
 	public var calendarContainer: CalendarContainerState {
 		get {
-			CalendarContainerState(addAppointment: addAppointment,
-								   calendar: calendar,
-								   appointments: appointments)
+            CalendarContainerState(
+                addAppointment: addAppointment,
+                calendar: calendar,
+                appointments: appointments
+            )
 		}
 		set {
 			self.addAppointment = newValue.addAppointment

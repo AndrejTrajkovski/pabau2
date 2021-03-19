@@ -6,7 +6,9 @@ public struct SelectFilterReducer<S: Identifiable & Equatable & Named> {
 	public let reducer: Reducer<SelectableState<S>, SelectableAction, Any> = .init { state, action, env in
 		switch action {
 		case .select:
-			state.isSelected.toggle()
+			state.isSelected = true
+        case .deselect:
+            state.isSelected = false
 		}
 		return .none
 	}
@@ -20,6 +22,7 @@ public struct SelectableState<T: Equatable & Identifiable & Named>: Equatable, I
 
 public enum SelectableAction {
 	case select
+    case deselect
 }
 
 struct SelectableRow<T: Equatable & Identifiable & Named>: View {
@@ -34,7 +37,7 @@ struct SelectableRow<T: Equatable & Identifiable & Named>: View {
 				Text(viewStore.item.name)
 					.font(textFont)
 			}.onTapGesture {
-				viewStore.send(.select)
+                viewStore.send(viewStore.isSelected ? .deselect : .select)
 			}
 		}
 		.padding()

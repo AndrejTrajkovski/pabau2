@@ -145,11 +145,3 @@ public struct EPaperView: View {
             }.navigationViewStyle(StackNavigationViewStyle())
         }
 }
-
-
-extension View {
-    func printv( _ data : Any)-> EmptyView {
-        print(data)
-        return EmptyView()
-       }
-}

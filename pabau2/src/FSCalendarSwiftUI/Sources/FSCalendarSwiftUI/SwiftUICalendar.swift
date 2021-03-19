@@ -11,18 +11,19 @@ public struct CalendarDatePicker: View {
 	@State var totalHeight: CGFloat?
 	public var body: some View {
 		WithViewStore(store) { viewStore in
-			SwiftUICalendar.init(viewStore.state,
-								 scope,
-								 isWeekView: isWeekView,
-								 onHeightChange: { height in
-									DispatchQueue.main.async {
-										withAnimation {
-											self.totalHeight = height
-										}
-									}
-								 },
-								 onDateChanged: { viewStore.send(.selectedDate($0))}
-			).frame(height: self.totalHeight)
+            SwiftUICalendar.init(
+                viewStore.state,
+                scope,
+                isWeekView: isWeekView,
+                onHeightChange: { height in
+                    DispatchQueue.main.async {
+                        withAnimation {
+                            self.totalHeight = height
+                        }
+                    }
+                },
+                onDateChanged: { viewStore.send(.selectedDate($0))}
+            ).frame(height: self.totalHeight)
 		}
 	}
 
@@ -83,9 +84,11 @@ struct SwiftUICalendar: UIViewRepresentable {
 		calendar.setScope(scope, animated: true)
 	}
 
-	func update(calendar: FSCalendar,
-				selDate: Date,
-				isWeekView: Bool) {
+	func update(
+        calendar: FSCalendar,
+        selDate: Date,
+        isWeekView: Bool
+    ) {
 		let newDates = datesToSelect(date: selDate, isWeekView: isWeekView)
 		if calendar.selectedDates != newDates {
 			calendar.selectedDates.forEach {
@@ -99,13 +102,16 @@ struct SwiftUICalendar: UIViewRepresentable {
 		if isWeekView {
 			calendar.setCurrentPage(selDate, animated: true)
 			calendar.allowsMultipleSelection = true
+            
 		} else {
 			calendar.allowsMultipleSelection = false
 		}
 	}
 
-	func datesToSelect(date: Date,
-					   isWeekView: Bool) -> [Date] {
+	func datesToSelect(
+        date: Date,
+		isWeekView: Bool
+    ) -> [Date] {
 		if isWeekView {
 			return date.datesInWeekOf()
 		} else {
