@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0854E6B525F12331007087B8 /* EPaper in Frameworks */ = {isa = PBXBuildFile; productRef = 0854E6B425F12331007087B8 /* EPaper */; };
 		08C726E925876D9100F622CB /* SFProText-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 08C726E6258764C100F622CB /* SFProText-Medium.ttf */; };
 		08C726EA25876D9400F622CB /* SFProText-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 08C726E82587684300F622CB /* SFProText-MediumItalic.ttf */; };
 		08C726EB25876D9700F622CB /* SFProText-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 08C726E7258764C100F622CB /* SFProText-Semibold.ttf */; };
@@ -47,6 +48,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0854E6A525F11B77007087B8 /* EPaper */ = {isa = PBXFileReference; lastKnownFileType = text; name = EPaper; path = pabau2/EPaper; sourceTree = SOURCE_ROOT; };
 		08C726E6258764C100F622CB /* SFProText-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-Medium.ttf"; sourceTree = "<group>"; };
 		08C726E7258764C100F622CB /* SFProText-Semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-Semibold.ttf"; sourceTree = "<group>"; };
 		08C726E82587684300F622CB /* SFProText-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-MediumItalic.ttf"; sourceTree = "<group>"; };
@@ -92,6 +94,7 @@
 				82182C4F25265C5D00E5479F /* FSCalendarSwiftUI in Frameworks */,
 				82182C4D25265C5D00E5479F /* Form in Frameworks */,
 				82182C4725265C5D00E5479F /* Calendar in Frameworks */,
+				0854E6B525F12331007087B8 /* EPaper in Frameworks */,
 				82182C5325265C5D00E5479F /* Login in Frameworks */,
 				82182C5125265C5D00E5479F /* Journey in Frameworks */,
 				82182C5525265C5D00E5479F /* Model in Frameworks */,
@@ -174,6 +177,7 @@
 		82CACDF7241027320021E1DE /* src */ = {
 			isa = PBXGroup;
 			children = (
+				0854E6A525F11B77007087B8 /* EPaper */,
 				82A5317525EFD63A00840749 /* Avatar */,
 				745E58A125D28B3A00EDD10D /* Appointments */,
 				08C726E52587644200F622CB /* Fonts */,
@@ -238,6 +242,7 @@
 				82182C5425265C5D00E5479F /* Model */,
 				82182C5625265C5D00E5479F /* Util */,
 				74DD9D33256EAB1A00CC3920 /* Communication */,
+				0854E6B425F12331007087B8 /* EPaper */,
 			);
 			productName = pabau2;
 			productReference = 82BE2F4423D97D9C00B3678A /* pabau2.app */;
@@ -591,6 +596,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		0854E6B425F12331007087B8 /* EPaper */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = EPaper;
+		};
 		74DD9D33256EAB1A00CC3920 /* Communication */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Communication;
