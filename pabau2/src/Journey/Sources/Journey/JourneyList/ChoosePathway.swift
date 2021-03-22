@@ -29,9 +29,14 @@ let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayCont
 													  allConsents: state.allConsents,
 													  photosState: PhotosState.init(SavedPhoto.mock())
 				)
+				
 			case .gotPathwayTemplates(let pathwayTemplates):
 				print(pathwayTemplates)
 				state.pathwayTemplates.update(pathwayTemplates)
+				
+			case .rows(let id, _):
+				guard case .loaded(let pathways) = state.pathwayTemplates else { return .none }
+				state.selectedPathway = pathways[id: id]
 			default:
 				break
 			}
@@ -110,16 +115,6 @@ public struct ChoosePathway: View {
 						 action: { $0 }))
 	}
 	
-	fileprivate func choosePathwayList(_ tmplts: Store<IdentifiedArrayOf<PathwayTemplate>, ChoosePathwayContainerAction>) -> some View {
-		return ScrollView {
-			LazyVStack {
-				ForEachStore(tmplts.scope(state: { $0 },
-										  action: { .rows(id: $0, action: $1) }),
-							 content: PathwayTemplateRow.init(store:))
-			}
-		}
-	}
-	
 	public var body: some View {
 		HStack {
 			LoadingStore(store.scope(state: { $0.pathwayTemplates }, action: { $0 }),
@@ -133,6 +128,16 @@ public struct ChoosePathway: View {
 		.journeyBase(self.viewStore.state.journey, .long)
 	}
 
+	fileprivate func choosePathwayList(_ tmplts: Store<IdentifiedArrayOf<PathwayTemplate>, ChoosePathwayContainerAction>) -> some View {
+		return ScrollView {
+			LazyVStack {
+				ForEachStore(tmplts.scope(state: { $0 },
+										  action: { .rows(id: $0, action: $1) }),
+							 content: PathwayTemplateRow.init(store:))
+			}
+		}
+	}
+	
 	var chooseFormNavLink: some View {
 		NavigationLink.emptyHidden(self.viewStore.state.isChooseConsentShown,
 								   ChooseFormList(store:
@@ -144,36 +149,6 @@ public struct ChoosePathway: View {
 										self.viewStore.send(.choosePathway(.didTouchSelectConsentBackBtn))
 									}
 		)
-	}
-
-	var pathwayCells: some View {
-		EmptyView()
-//		HStack {
-//			ListFrame(style: .blue) {
-//				ChoosePathwayListContent(
-//					.blue,
-//					Image(systemName: "arrow.right"),
-//					self.viewStore.state.standardPathway.steps.count,
-//					"Standard Pathway",
-//					"Provides a basic standard pathway, defined for the company.",
-//					self.viewStore.state.standardPathway.steps.map { $0.stepType.title },
-//					"Standard") {
-//						self.viewStore.send(.choosePathway(.didChoosePathway(self.viewStore.state.standardPathway)))
-//				}
-//			}
-//			ListFrame(style: .white) {
-//				ChoosePathwayListContent(
-//					.white,
-//					Image("ico-journey-consulting"),
-//					self.viewStore.state.consultationPathway.steps.count,
-//					"Consultation Pathway",
-//					"Provides a consultation pathway, to hear out the person's needs.",
-//					self.viewStore.state.consultationPathway.steps.map { $0.stepType.title },
-//					"Consultation") {
-//						self.viewStore.send(.choosePathway(.didChoosePathway(self.viewStore.state.consultationPathway)))
-//				}
-//			}
-//		}
 	}
 }
 
@@ -197,6 +172,9 @@ struct PathwayTemplateRow: View {
 //					viewStore.send(.select)
 //				}
 			}.padding([.leading, .trailing])
+			.onTapGesture {
+				viewStore.send(.select)
+			}
 		}.frame(height: 44)
 	}
 }

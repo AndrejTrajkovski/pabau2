@@ -13,11 +13,11 @@ struct LoadingStore<State, Action, Content>: View where Content: View, State: Eq
 	public init<IfContent>(
 		_ store: Store<LoadingState2<State>, Action>,
 		then ifContent: @escaping (Store<State, Action>) -> IfContent
-	) where Content == _ConditionalContent<IfContent, _ConditionalContent<ErrorViewStore<RequestError>, LoadingView>> {
+	) where Content == _ConditionalContent<IfContent, _ConditionalContent<ErrorViewStore<RequestError>, LoadingSpinner>> {
 		self.init(store,
 				  then: ifContent,
 				  error: ErrorViewStore.init(store:),
-				  loading: LoadingView.init
+				  loading: { LoadingSpinner() }
 		)
 	}
 	
@@ -76,7 +76,7 @@ struct LoadingStore<State, Action, Content>: View where Content: View, State: Eq
 		error errorContent: (Store<RequestError, ErrorAction>) -> ErrorContent,
 		loading loadingContent: () -> LoadingContent
 	) -> _ConditionalContent<ErrorContent, LoadingContent> {
-		if case .error(let error) = state {
+		if case .error = state {
 			return ViewBuilder.buildEither(first:
 											errorContent(store)
 			)
@@ -84,25 +84,6 @@ struct LoadingStore<State, Action, Content>: View where Content: View, State: Eq
 			return ViewBuilder.buildEither(second: loadingContent())
 		}
 	}
-	
-//	func errorOrLoadingView(error: RequestError,
-//							loadingTitle: String) -> _ConditionalContent<ErrorView<RequestError>, LoadingView<EmptyView>> {
-//		if case .error(let error) = state {
-//			return ViewBuilder.buildEither(first: ErrorView(error: error) )
-//		} else {
-//			return ViewBuilder.buildEither(second: LoadingView.init(title: loadingTitle,
-//																	bindingIsShowing: .constant(true), content: EmptyView()))
-//		}
-//	}
-//
-//	func errorOrLoading(state: LoadingState2<State>,
-//						loadingContent: () -> LoadingView<EmptyView>) -> _ConditionalContent<LoadingView<EmptyView>, ErrorView<RequestError>> {
-//		if case .error(let error) = state {
-//			return ViewBuilder.buildEither(second: ErrorView(error: error) )
-//		} else {
-//			return ViewBuilder.buildEither(first: loadingContent())
-//		}
-//	}
 	
 	var body: some View {
 		WithViewStore(store) { viewStore in
@@ -125,13 +106,6 @@ public struct ErrorViewStore<E: Error>: View where E: CustomStringConvertible & 
 		}
 	}
 }
-
-struct LoadingView: View {
-	var body: some View {
-		Text("Loading...").frame(maxWidth: .infinity, maxHeight: .infinity)
-	}
-}
-
 
 public struct ErrorView<E: Error>: View where E: CustomStringConvertible {
 	

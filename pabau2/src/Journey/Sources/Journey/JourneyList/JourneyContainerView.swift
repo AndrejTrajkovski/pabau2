@@ -144,7 +144,6 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 			case .selectedJourney(let journey):
 				state.choosePathway = ChoosePathwayState(selectedJourney: journey)
 				return environment.journeyAPI.getPathwayTemplates()
-					.delay(for: 5, scheduler: DispatchQueue.main)
 					.receive(on: DispatchQueue.main)
 					.catchToEffect()
 					.map { .choosePathway(.gotPathwayTemplates($0))  }
