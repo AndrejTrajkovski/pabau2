@@ -5,7 +5,7 @@ import Util
 extension APIClient {
 	
 	public func getPathwayTemplates() -> Effect<IdentifiedArrayOf<PathwayTemplate>, RequestError> {
-		struct GetPathways: Codable {
+		struct GetPathways: Decodable {
 			let pathways: [PathwayTemplate]
 		}
 		let companyId = loggedInUser?.companyID ?? ""

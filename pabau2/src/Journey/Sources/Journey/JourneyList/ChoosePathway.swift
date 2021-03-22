@@ -109,15 +109,25 @@ public struct ChoosePathway: View {
 			.scope(state: State.init(state:),
 						 action: { $0 }))
 	}
+	
+	fileprivate func choosePathwayList(_ tmplts: Store<IdentifiedArrayOf<PathwayTemplate>, ChoosePathwayContainerAction>) -> some View {
+		return ScrollView {
+			LazyVStack {
+				ForEachStore(tmplts.scope(state: { $0 },
+										  action: { .rows(id: $0, action: $1) }),
+							 content: PathwayTemplateRow.init(store:))
+			}
+		}
+	}
+	
 	public var body: some View {
 		HStack {
 			LoadingStore(store.scope(state: { $0.pathwayTemplates }, action: { $0 }),
 						 then: { (tmplts: Store<IdentifiedArrayOf<PathwayTemplate>,
-							ChoosePathwayContainerAction>) in
-							ForEachStore(tmplts.scope(state: { $0 },
-													  action: { .rows(id: $0, action: $1) }),
-										 content: PathwayTemplateRow.init(store:))
-						 })
+												ChoosePathwayContainerAction>) in
+							choosePathwayList(tmplts)
+						 }
+			)
 			chooseFormNavLink
 		}
 		.journeyBase(self.viewStore.state.journey, .long)
@@ -177,17 +187,17 @@ struct PathwayTemplateRow: View {
 		WithViewStore(store) { viewStore in
 			VStack(alignment: .leading, spacing: 16) {
 				HStack {
+					Text(viewStore.title).font(.semibold20).foregroundColor(.black42)
 					Spacer()
 					Image(systemName: "list.bullet").foregroundColor(.blue2)
 					Text(String("\(viewStore.steps.count)")).font(.semibold17)
 				}
-//				Text(viewStore.title).font(.semibold20).foregroundColor(.black42)
-				Text(viewStore._description ?? "").font(.medium15)
-				PrimaryButton(viewStore.title) {
-					viewStore.send(.select)
-				}
-			}
-		}
+				Divider()
+//				SecondaryButton(viewStore.title) {
+//					viewStore.send(.select)
+//				}
+			}.padding([.leading, .trailing])
+		}.frame(height: 44)
 	}
 }
 

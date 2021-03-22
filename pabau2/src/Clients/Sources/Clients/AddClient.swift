@@ -21,9 +21,9 @@ public let addClientOptionalReducer: Reducer<AddClientState?, AddClientAction, C
 			case .failure(let error):
 				state?.formSaving = .gotError(error)
 				state?.saveFailureAlert = AlertState(
-					title: "Updating Contact Failed",
-					message: error.description,
-					dismissButton: .default("OK")
+					title: TextState("Updating Contact Failed"),
+					message: TextState(error.description),
+					dismissButton: .default(TextState("OK"))
 				)
 			}
 		default: break

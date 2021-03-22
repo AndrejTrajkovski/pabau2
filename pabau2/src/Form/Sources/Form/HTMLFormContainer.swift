@@ -36,9 +36,9 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, F
 			case .failure(let error):
 				state.postLoadingState = .gotError(error)
 				state.saveFailureAlert = AlertState(
-					title: "Error Saving Form",
-					message: error.description,
-					dismissButton: .default("OK")
+					title: TextState("Error Saving Form"),
+					message: TextState(error.description),
+					dismissButton: .default(TextState("OK"))
 				)
 			}
 		case .saveAlertCanceled:
