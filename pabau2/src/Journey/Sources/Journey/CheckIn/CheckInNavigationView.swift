@@ -6,7 +6,7 @@ import Combine
 
 public enum CheckInContainerAction {
 	case showPatientMode
-	case onAnimationAppear
+//	case onAnimationAppear
 	case chooseTreatments(ChooseFormAction)
 	case chooseConsents(ChooseFormAction)
 	case passcode(PasscodeAction)
@@ -82,10 +82,6 @@ public let navigationReducer = Reducer<CheckInContainerState, CheckInContainerAc
 		state.isChooseTreatmentActive = false
 	case .didTouchHandbackDevice:
 		state.isEnterPasscodeActive = true
-	case .onAnimationAppear:
-		return Just(CheckInContainerAction.showPatientMode)
-			.delay(for: .seconds(state.animationDuration), scheduler: DispatchQueue.main)
-			.eraseToEffect()
 	case .showPatientMode:
 		state.isPatientModeActive = true
 	//TODO
@@ -113,30 +109,27 @@ public struct CheckInNavigationView: View {
 		print("check in navigation")
 		return NavigationView {
 			if !viewStore.state.isPatientModeActive {
-				CheckInAnimation(animationDuration: viewStore.animationDuration,
-									journey: viewStore.state.journey)
-					.onAppear {
-						viewStore.send(.onAnimationAppear)
-					}
+				CheckInAnimation(animationDuration: checkInAnimationDuration,
+								 journey: viewStore.state.journey)
+//					.onAppear {
+//						viewStore.send(.onAnimationAppear)
+//					}
+			} else {
+				CheckInPatientContainer(store:
+											store.scope(state: { $0 },
+														action: { $0 }
+											)
+				)
 			}
-			NavigationLink.emptyHidden(viewStore.state.isPatientModeActive,
-									   CheckInPatientContainer(store:
-																store.scope(state: { $0 },
-																			action: { $0 }
-																)
-									   )
-			)
 		}
 		.navigationViewStyle(StackNavigationViewStyle())
 	}
 }
 
-extension CheckInContainerState {
-	var animationDuration: Double {
-		#if DEBUG
-			return 0.0
-		#else
-			return 2.0
-		#endif
-	}
-}
+public let checkInAnimationDuration: Double = {
+	#if DEBUG
+	return 2.0
+	#else
+	return 2.0
+	#endif
+}()

@@ -4,6 +4,7 @@ import Util
 import ComposableArchitecture
 import Form
 import Overture
+import Combine
 
 public enum ChoosePathwayContainerAction {
 	case rows(id: PathwayTemplate.ID, action: PathwayTemplateRowAction)
@@ -29,6 +30,9 @@ let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayCont
 													  allConsents: state.allConsents,
 													  photosState: PhotosState.init(SavedPhoto.mock())
 				)
+				return Just(ChoosePathwayContainerAction.checkIn(CheckInContainerAction.showPatientMode))
+					.delay(for: .seconds(checkInAnimationDuration), scheduler: DispatchQueue.main)
+					.eraseToEffect()
 				
 			case .gotPathwayTemplates(let pathwayTemplates):
 				print(pathwayTemplates)
@@ -42,10 +46,6 @@ let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayCont
 			}
 			return .none
 		},
-		checkInReducer.optional.pullback(
-			state: \ChoosePathwayState.checkIn,
-			action: /ChoosePathwayContainerAction.checkIn,
-			environment: { $0 }),
 		chooseFormListReducer.pullback(
 			state: \ChoosePathwayState.chooseConsentState,
 			action: /ChoosePathwayContainerAction.chooseConsent,
@@ -54,6 +54,10 @@ let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayCont
 		choosePathwayReducer.pullback(
 			state: \ChoosePathwayState.self,
 			action: /ChoosePathwayContainerAction.choosePathway,
+			environment: { $0 }),
+		checkInReducer.optional.pullback(
+			state: \ChoosePathwayState.checkIn,
+			action: /ChoosePathwayContainerAction.checkIn,
 			environment: { $0 }),
 		checkInMiddleware.pullback(
 			state: \ChoosePathwayState.self,
