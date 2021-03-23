@@ -84,7 +84,7 @@ public let navigationReducer = Reducer<CheckInContainerState, CheckInContainerAc
 		state.isEnterPasscodeActive = true
 	case .onAnimationAppear:
 		return Just(CheckInContainerAction.showPatientMode)
-			.delay(for: 2, scheduler: DispatchQueue.main)
+			.delay(for: .seconds(state.animationDuration), scheduler: DispatchQueue.main)
 			.eraseToEffect()
 	case .showPatientMode:
 		state.isPatientModeActive = true
@@ -112,8 +112,13 @@ public struct CheckInNavigationView: View {
 	public var body: some View {
 		print("check in navigation")
 		return NavigationView {
-			CheckInAnimation(onAppear: { viewStore.send(.onAnimationAppear) },
-							 journey: viewStore.state.journey)
+			if !viewStore.state.isPatientModeActive {
+				CheckInAnimation(animationDuration: viewStore.animationDuration,
+									journey: viewStore.state.journey)
+					.onAppear {
+						viewStore.send(.onAnimationAppear)
+					}
+			}
 			NavigationLink.emptyHidden(viewStore.state.isPatientModeActive,
 									   CheckInPatientContainer(store:
 																store.scope(state: { $0 },
@@ -123,5 +128,15 @@ public struct CheckInNavigationView: View {
 			)
 		}
 		.navigationViewStyle(StackNavigationViewStyle())
+	}
+}
+
+extension CheckInContainerState {
+	var animationDuration: Double {
+		#if DEBUG
+			return 0.0
+		#else
+			return 2.0
+		#endif
 	}
 }
