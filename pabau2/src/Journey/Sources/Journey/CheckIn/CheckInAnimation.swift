@@ -4,14 +4,15 @@ import Util
 import Model
 
 struct CheckInAnimation: View {
-	@Binding var isRunningAnimation: Bool
+	
+	var onAppear: () -> Void
+	
 	let journey: Journey
 	var player = Player()
 	var body: some View {
 			VStack(spacing: 24) {
-				Checkmark(animationDuration: self.animationDuration, onAnimationFinish: {
-					self.isRunningAnimation = true
-				})
+				Checkmark(animationDuration: self.animationDuration,
+						  onAppear: onAppear)
 				JourneyTransitionCircle(journey: journey)
 			}.offset(x: 0, y: -50)
 				.gradientView()
@@ -46,17 +47,17 @@ struct JourneyTransitionCircle: View {
 
 extension CheckInAnimation {
 	var animationDuration: Double {
-		#if DEBUG
-			return 0.0
-		#else
+//		#if DEBUG
+//			return 0.0
+//		#else
 			return 2.0
-		#endif
+//		#endif
 	}
 }
 
 struct Checkmark: View {
 	let animationDuration: Double
-	let onAnimationFinish: () -> Void
+	let onAppear: () -> Void
 	@State var showFirstStroke: Bool = false
 	@State var showSecondStroke: Bool = false
 	@State var showCheckMark: Bool = false
@@ -86,9 +87,7 @@ struct Checkmark: View {
 		self.showFirstStroke.toggle()
 		self.showSecondStroke.toggle()
 		self.showCheckMark.toggle()
-		DispatchQueue.main.asyncAfter(deadline: .now() + self.animationDuration) {
-			self.onAnimationFinish()
-		}
+		self.onAppear()
 	})
 		.frame(width: 95, height: 90)
 	}
