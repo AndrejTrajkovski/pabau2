@@ -42,10 +42,6 @@ let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayCont
 			}
 			return .none
 		},
-		checkInMiddleware.pullback(
-			state: \ChoosePathwayState.self,
-			action: /ChoosePathwayContainerAction.checkIn,
-			environment: { $0 }),
 		checkInReducer.optional.pullback(
 			state: \ChoosePathwayState.checkIn,
 			action: /ChoosePathwayContainerAction.checkIn,
@@ -58,6 +54,10 @@ let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayCont
 		choosePathwayReducer.pullback(
 			state: \ChoosePathwayState.self,
 			action: /ChoosePathwayContainerAction.choosePathway,
+			environment: { $0 }),
+		checkInMiddleware.pullback(
+			state: \ChoosePathwayState.self,
+			action: /ChoosePathwayContainerAction.checkIn,
 			environment: { $0 })
 )
 

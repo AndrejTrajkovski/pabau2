@@ -24,8 +24,11 @@ func makeFormEnv(_ journeyEnv: JourneyEnvironment) -> FormEnvironment {
 						   userDefaults: journeyEnv.userDefaults)
 }
 
-let checkInMiddleware = Reducer<ChoosePathwayState, CheckInContainerAction, JourneyEnvironment> { _, action, _ in
+let checkInMiddleware = Reducer<ChoosePathwayState, CheckInContainerAction, JourneyEnvironment> { state, action, _ in
 	switch action {
+	case .patient(.stepsView(.onXTap)):
+		state.checkIn = nil
+		return .none
 //	case .patient(.topView(.onXButtonTap)),
 //			 .doctorSummary(.xOnDoctorCheckIn):
 //		state.selectedJourney = nil

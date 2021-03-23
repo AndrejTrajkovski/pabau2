@@ -12,7 +12,6 @@ public enum CheckInContainerAction {
 	case doctor(CheckInDoctorAction)
 	case didTouchHandbackDevice
 	case doctorSummary(DoctorSummaryAction)
-	case closeBtnTap
 }
 
 public enum CheckInAnimationAction {
@@ -107,9 +106,13 @@ public struct CheckInNavigationView: View {
 				VStack {
 					CheckInAnimation(isRunningAnimation: self.$isRunningAnimation,
 									 journey: viewStore.state)
-					NavigationLink.emptyHidden(self.isRunningAnimation,
-											   CheckInPatientContainer(store: store.scope(state: { $0 }, action: { $0 })))
 				}
+				NavigationLink.init(destination: CheckInPatientContainer(store:
+																			store.scope(state: { $0 },
+																				  action: { $0 })
+											 ),
+									isActive: $isRunningAnimation,
+									label: { EmptyView() }).hidden()
 			}
 			.navigationViewStyle(StackNavigationViewStyle())
 		}

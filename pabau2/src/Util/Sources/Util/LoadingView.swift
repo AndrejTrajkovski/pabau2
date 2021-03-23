@@ -57,7 +57,9 @@ public struct LoadingSpinner: View {
 		VStack {
 			Text(title ?? "Loading...")
 			ActivityIndicator(isAnimating: .constant(true), style: .large)
-		}.foregroundColor(Color.blue)
+		}
+		.foregroundColor(Color.blue)
+		.frame(maxWidth: .infinity, maxHeight: .infinity)
 	}
 }
 
