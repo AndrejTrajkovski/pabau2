@@ -36,7 +36,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 			window.rootViewController = UIHostingController(
 				rootView: ContentView(
 					store: Store(
-						initialState: AppState(loggedInUser: nil,
+						initialState: AppState(loggedInUser: user,
 											   hasSeenWalkthrough: hasSeenWalkthrough!
 						),
 						reducer: reducer,

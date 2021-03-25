@@ -21,7 +21,7 @@ public struct AvatarView: View {
 	let bgColor: Color
 
 	var baseUrl: String {
-		return "https://crm.pabau.com"
+		return "https://ios.pabau.me/"
 	}
 
 	public var body: some View {

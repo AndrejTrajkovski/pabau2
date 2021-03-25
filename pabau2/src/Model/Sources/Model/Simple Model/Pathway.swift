@@ -1,4 +1,4 @@
-public struct Pathway {
+public struct Pathway: Decodable {
 
 	public let id: Int
 

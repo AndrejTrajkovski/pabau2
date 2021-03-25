@@ -164,4 +164,23 @@ extension APIClient {
 		.map(\.participant)
 		.eraseToEffect()
 	}
+	
+	public func match(journey: Journey, pathwayTemplateId: PathwayTemplate.ID) -> Effect<[Appointment.ID: Pathway], RequestError> {
+		
+		let params = [
+			"booking_ids": journey.appointments.map(\.id).map(String.init).joined(separator: ","),
+			"pathway_template_id": pathwayTemplateId.description,
+			"clientId": journey.clientId.description
+		]
+		
+		let requestBuilder: RequestBuilder<[Appointment.ID: Pathway]>.Type = requestBuilderFactory.getBuilder()
+		
+		return requestBuilder.init(
+			method: .POST,
+			baseUrl: baseUrl,
+			path: .pathwaysMatch,
+			queryParams: commonAnd(other: params)
+		)
+		.effect()
+	}
 }

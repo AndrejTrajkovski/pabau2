@@ -7,7 +7,7 @@ struct CheckInAnimation: View {
 	
 	let animationDuration: Double
 	let journey: Journey
-	var player = Player()
+	let player = Player()
 	var body: some View {
 			VStack(spacing: 24) {
 				Checkmark(animationDuration: self.animationDuration)

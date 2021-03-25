@@ -6,15 +6,6 @@ import Overture
 import Appointments
 import SwiftDate
 
-public typealias Journey = [Appointment]
-
-public extension Journey {
-	var servicesString: String {
-		self.compactMap { $0.service }
-			.reduce("", +)
-	}
-}
-
 let filterAppointments = with(CalendarEvent.appointment, curry(extract(case:from:)))
 
 func calendarResponseToJourneys(date: Date, events: [CalendarEvent]) -> [Journey] {
@@ -33,12 +24,20 @@ public struct JourneyKey: Hashable {
 	let employeeId: Employee.ID
 }
 
+public extension Journey {
+	var servicesString: String {
+		self.appointments.compactMap { $0.service }
+			.joined(separator: " + ")
+	}
+}
+
 func journeyGroup(appointments: [Appointment]) -> [Date: [Journey]] {
 	return Dictionary(grouping: appointments, by: { $0.start_date.cutToDay() })
 		.mapValues {
 			Dictionary(grouping: $0, by: {
 				return JourneyKey(customerId: $0.customerId, employeeId: $0.employeeId)
-			}).map(\.value)
-			.sorted(by: \.first!.start_date)
+			})
+			.map { Journey.init(appointments: $0.value) }
+			.sorted(by: \.start_date)
 		}
 }

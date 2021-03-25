@@ -8,6 +8,7 @@ import Combine
 
 public enum ChoosePathwayContainerAction {
 	case rows(id: PathwayTemplate.ID, action: PathwayTemplateRowAction)
+	case matchResponse(Result<[Appointment.ID: Pathway], RequestError>)
 	case choosePathway(ChoosePathwayAction)
 	case chooseConsent(ChooseFormAction)
 	case checkIn(CheckInContainerAction)
@@ -16,7 +17,7 @@ public enum ChoosePathwayContainerAction {
 
 let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayContainerAction, JourneyEnvironment> =
 	.combine(
-		Reducer.init { state, action, _ in
+		Reducer.init { state, action, env in
 			switch action {
 			case .chooseConsent(.proceed):
 				state.checkIn = CheckInContainerState(journey: state.selectedJourney,
@@ -41,6 +42,12 @@ let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayCont
 			case .rows(let id, _):
 				guard case .loaded(let pathways) = state.pathwayTemplates else { return .none }
 				state.selectedPathway = pathways[id: id]
+				return env.journeyAPI.match(journey: state.selectedJourney,
+											pathwayTemplateId: id)
+					.receive(on: DispatchQueue.main)
+					.catchToEffect()
+					.map { ChoosePathwayContainerAction.matchResponse($0) }
+					.eraseToEffect()
 			default:
 				break
 			}
