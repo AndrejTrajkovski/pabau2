@@ -1,5 +1,6 @@
 import Foundation
 import Tagged
+import JZCalendarWeekView
 
 
 public struct Shift: Decodable, Equatable {
@@ -43,7 +44,7 @@ public struct Shift: Decodable, Equatable {
 		self.userName = try container.decode(String.self, forKey: .userName)
 		self.locationName = try container.decode(String.self, forKey: .locationName)
 		self.locColor = try container.decode(String.self, forKey: .locColor)
-		self.published = try container.decode(Bool.self, forKey: .published)
+		self.published = try container.decodeIfPresent(Bool.self, forKey: .published)
 		self.locationID = try container.decode(Location.Id.self, forKey: .locationID)
 		self.roomID = try container.decode(Room.Id.self, forKey: .roomID)
 		self.notes = try container.decode(String.self, forKey: .notes)
@@ -118,3 +119,43 @@ public struct ShiftSchema: Codable {
         case rotaUID = "rota_uid"
     }
 }
+
+extension Shift {
+    public static func convertToCalendar(
+        employees: [Employee],
+        shifts: [Shift]
+    ) -> [Date: [Location.ID: [Employee.Id: [Shift]]]] {
+        
+        let byDate = Dictionary.init(grouping: shifts, by: { $0.date })
+        
+        return byDate.mapValues { events in
+            return Dictionary.init(
+                grouping: events,
+                by: { $0.locationID }
+            )
+            .mapValues { events2 in
+                Dictionary.init(
+                    grouping: events2,
+                    by: { $0.userID }
+                )
+            }
+        }
+    }
+}
+
+//extension Shift {
+//    public static func mock () -> [Date: [Location.ID: [Employee.Id: [Shift]]]] {
+//        var shifts = [Shift]()
+//        for (idx, emp) in Employee.mockEmployees.enumerated() {
+//            let mockStartEnd = Date.mockStartAndEndDate(endRangeMax: 600)
+//            let startOfDay = Calendar.init(identifier: .gregorian).startOfDay(for: mockStartEnd.0)
+//            shifts.append(Shift.init(id: idx, employeeId: emp.id, locationId: emp.locationId, date: startOfDay, startTime: mockStartEnd.0, endTime: mockStartEnd.1))
+//        }
+//        let byDate = Dictionary.init(grouping: shifts, by: { $0.date })
+//        return byDate.mapValues { events in
+//            return Dictionary.init(grouping: events, by: { $0.locationId }).mapValues { events2 in
+//                Dictionary.init(grouping: events2, by: { $0.employeeId })
+//            }
+//        }
+//    }
+//}

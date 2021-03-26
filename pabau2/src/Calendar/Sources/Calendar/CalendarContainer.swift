@@ -68,11 +68,9 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
             switch result {
             case .success(let employees):
                 state.calendar.employees = [:]
-                
                 state.calendar.locations.forEach { location in
                     state.calendar.employees[location.id] = IdentifiedArrayOf<Employee>.init([])
                 }
-                
                 state.calendar.employees.keys.forEach { key in
                     employees.forEach { employee in
                         if employee.locations.contains(key) {
@@ -83,33 +81,41 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
             case .failure(let error):
                 break
             }
-		case .gotResponse(let result):
-			switch result {
-			case .success(let appointments):
-				// MARK: Iurii
+		case .gotCalendarResponse(let result):
+            switch result {
+            case .success(let calendarResponse):
+                // MARK: Iurii
                 let employees = state.calendar.employees.mapValues {
                     $0.elements
                 }.flatMap(\.value)
-
-                let chosenEmployeesIds = state.calendar.chosenEmployeesIds.compactMap { $0.value }.flatMap { $0 }
+                
+                let chosenEmployeesIds = state.calendar.chosenEmployeesIds
+                    .compactMap { $0.value }
+                    .flatMap { $0 }
+                    .removingDuplicates()
                 let filteredEmployees = employees.filter { chosenEmployeesIds.contains($0.id) }
-                print(filteredEmployees, "filteredEmployees")
-				state.appointments.refresh(
-                    events: appointments,
+                
+                let shifts = calendarResponse.rota.compactMap { $0.value }.flatMap { $0.shift }
+                let calendarShifts = Shift.convertToCalendar(employees: filteredEmployees, shifts: shifts)
+                state.calendar.shifts = calendarShifts.mapValues {
+                    $0.mapValues {
+                        $0.mapValues {
+                            let jzshifts = $0.map { JZShift.init(shift: $0)}
+                            return [JZShift].init(jzshifts)
+                        }
+                    }
+                }
+                print(state.calendar.shifts, "<---- CalendarShifts")
+                state.appointments.refresh(
+                    events: calendarResponse.appointments,
                     locationsIds: state.calendar.chosenLocationsIds,
                     employees: filteredEmployees,
                     rooms: []
                 )
             case .failure(let error):
-				break
-			}
+                break
+            }
 		case .datePicker(.selectedDate(let date)):
-            return env.journeyAPI.getShifts()
-                .receive(on: DispatchQueue.main)
-                .catchToEffect()
-                .map(CalendarAction.gotResponse)
-                .eraseToEffect()
-            
             let startDate = date
             var endDate = date
 
@@ -117,7 +123,7 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
                 endDate = Calendar.current.date(byAdding: .day, value: 7, to: endDate) ?? endDate
             }
 
-			return env.journeyAPI.getAppointments(
+			return env.journeyAPI.getCalendar(
                 startDate: startDate,
                 endDate: endDate,
                 locationIds: state.calendar.chosenLocationsIds,
@@ -126,10 +132,11 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
             )
 			.receive(on: DispatchQueue.main)
 			.catchToEffect()
-			.map(CalendarAction.gotResponse)
+			.map(CalendarAction.gotCalendarResponse)
 			.eraseToEffect()
 		case .calTypePicker(.onSelect(let calType)):
             state.switchTo(calType: calType)
+            return Effect(value: CalendarAction.datePicker(.selectedDate(Date())))
 		case .employee(.addAppointment(let startDate, let durationMins, let dropKeys)):
 			let (date, location, subsection) = dropKeys
 			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
@@ -190,7 +197,6 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
                 endDate: end,
                 employee: employee
             )
-        
 		default: break
 		}
 		return .none

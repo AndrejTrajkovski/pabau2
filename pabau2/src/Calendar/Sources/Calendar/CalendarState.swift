@@ -241,7 +241,6 @@ extension CalendarState {
 
 extension CalendarContainerState {
 	mutating func switchTo(calType: Appointments.CalendarType) {
-        print(appointments.flatten())
 		self.appointments = Appointments(
             calType: calType,
             events: appointments.flatten(),

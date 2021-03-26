@@ -47,11 +47,6 @@ public class SectionCalendarViewController<Subsection: Identifiable & Equatable>
 				let events = $0.0.0.0.1
 				let subsections = $0.0.0.1.mapValuesFrom(dict: self.viewStore.state.subsections)
 				let shifts = $0.1
-				print("events")
-                print(subsections, "subsections")
-				print(events.appointments , "")
-				print("locations")
-				print(self.viewStore.state.chosenLocations())
                 self.reload(
                     selectedDate: date,
                     locations: self.viewStore.state.chosenLocations(),
@@ -63,7 +58,7 @@ public class SectionCalendarViewController<Subsection: Identifiable & Equatable>
 	}
 
 	func reload(
-		selectedDate: Date,
+        selectedDate: Date,
 		locations: [Location],
 		subsections: [Location.ID: [Subsection]],
 		events: [Date: [Location.ID: [Subsection.ID: IdentifiedArrayOf<CalendarEvent>]]],

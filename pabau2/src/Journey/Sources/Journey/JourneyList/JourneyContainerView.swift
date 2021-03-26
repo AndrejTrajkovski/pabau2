@@ -72,12 +72,16 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 			guard let locId = state.journeyEmployeesFilter?.locationId,
 				  let employees = state.employees[locId] else { return .none }
 			state.loadingState = .loading
-			return env.journeyAPI.getAppointments(startDate: date, endDate: date, locationIds: [locId], employeesIds: Array(employees.map(\.id)), roomIds: [])
-//				.map(with(date, curry(calendarResponseToJourneys(date:events:))))
-				.receive(on: DispatchQueue.main)
-				.catchToEffect()
-				.map { JourneyContainerAction.gotResponse($0) }
-				.eraseToEffect()
+            return env.journeyAPI.getAppointments(
+                startDate: date,
+                endDate: date, locationIds: [locId],
+                employeesIds: Array(employees.map(\.id)),
+                roomIds: []
+            )
+            .receive(on: DispatchQueue.main)
+            .catchToEffect()
+            .map { JourneyContainerAction.gotResponse($0) }
+            .eraseToEffect()
 		case .gotResponse(let result):
 			print(result)
 			switch result {

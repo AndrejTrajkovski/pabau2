@@ -3,6 +3,44 @@ import Util
 
 //MARK: - JourneyAPI
 extension APIClient {
+    
+    public func getCalendar(
+        startDate: Date,
+        endDate: Date,
+        locationIds: [Location.ID],
+        employeesIds: [Employee.ID],
+        roomIds: [Room.ID]
+    ) -> Effect<CalendarResponse, RequestError> {
+        let requestBuilder: RequestBuilder<CalendarResponse>.Type = requestBuilderFactory.getBuilder()
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale.init(identifier: "en_US_POSIX")
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        var params: [String : Any] = [
+            "start_date": dateFormatter.string(from: startDate),
+            "end_date": dateFormatter.string(from: endDate),
+        ]
+        
+        if !locationIds.isEmpty {
+            params["location_id"] = locationIds.map(String.init).joined(separator: ",")
+        }
+        
+        if !employeesIds.isEmpty {
+            params["user_ids"] = employeesIds.map(String.init).joined(separator: ",")
+        }
+        
+        if !roomIds.isEmpty {
+            params["room_id"] = roomIds.map(String.init).joined(separator: ",")
+        }
+        
+        return requestBuilder.init(
+            method: .GET,
+            baseUrl: baseUrl,
+            path: .getAppointments,
+            queryParams: commonAnd(other: params)
+        )
+        .effect()
+    }
 	
 	public func getPathwayTemplates() -> Effect<IdentifiedArrayOf<PathwayTemplate>, RequestError> {
 		struct GetPathways: Codable {
@@ -41,7 +79,13 @@ extension APIClient {
         .eraseToEffect()
 	}
 	
-	public func getAppointments(startDate: Date, endDate: Date, locationIds: [Location.ID], employeesIds: [Employee.ID], roomIds: [Room.ID]) -> Effect<[CalendarEvent], RequestError> {
+	public func getAppointments(
+        startDate: Date,
+        endDate: Date,
+        locationIds: [Location.ID],
+        employeesIds: [Employee.ID],
+        roomIds: [Room.ID]
+    ) -> Effect<[CalendarEvent], RequestError> {
 		let requestBuilder: RequestBuilder<CalendarResponse>.Type = requestBuilderFactory.getBuilder()
 		let dateFormatter = DateFormatter()
 		dateFormatter.locale = Locale.init(identifier: "en_US_POSIX")
@@ -73,42 +117,23 @@ extension APIClient {
         .effect()
         .map(\.appointments)
 	}
-    
-    public func getShifts() -> Effect<[CalendarEvent], RequestError> {
-        let requestBuilder: RequestBuilder<CalendarResponse>.Type = requestBuilderFactory.getBuilder()
-        let dateFormatter = DateFormatter.yearMonthDay
-        
-        var params: [String : Any] = [
-            "date": dateFormatter.string(from: Date()),
-            "all": true,
-        ]
-        
-        return requestBuilder.init(
-            method: .GET,
-            baseUrl: baseUrl,
-            path: .getShifts,
-            queryParams: commonAnd(other: params)
-        )
-        .effect()
-        .map(\.appointments)
-    }
 	
 	public func getLocations() -> Effect<[Location], RequestError> {
-		struct GetLocations: Decodable {
-			let locations: [Location]
-			enum CodingKeys: String, CodingKey {
-				case locations = "employees"
-			}
-		}
-		let requestBuilder: RequestBuilder<GetLocations>.Type = requestBuilderFactory.getBuilder()
-		return requestBuilder.init(method: .GET,
-								   baseUrl: baseUrl,
-								   path: .getLocations,
-								   queryParams: commonParams()
-		)
-			.effect()
-			.map(\.locations)
-			.eraseToEffect()
+        struct GetLocations: Decodable {
+            let locations: [Location]
+            enum CodingKeys: String, CodingKey {
+                case locations = "employees"
+            }
+        }
+        let requestBuilder: RequestBuilder<GetLocations>.Type = requestBuilderFactory.getBuilder()
+        return requestBuilder.init(method: .GET,
+                                   baseUrl: baseUrl,
+                                   path: .getLocations,
+                                   queryParams: commonParams()
+        )
+        .effect()
+        .map(\.locations)
+        .eraseToEffect()
 	}
 	
 	public func createShift(shiftSheme: ShiftSchema) -> Effect<PlaceholdeResponse, RequestError> {

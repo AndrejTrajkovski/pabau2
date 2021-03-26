@@ -2,7 +2,7 @@ import Foundation
 import Tagged
 
 public struct CalendarResponse: Decodable {
-	public let rota: [Employee.ID: Rota]
+	public let rota: [String: Rota]
 	public let appointments: [CalendarEvent]
 	public let intervalSetting: Int
 
@@ -14,8 +14,8 @@ public struct CalendarResponse: Decodable {
 	public init(from decoder: Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
 		self.appointments = try container.decode([CalendarEvent].self, forKey: .appointments)
-		let rota: [Employee.ID: Rota]
-		if let rotaDict = try? container.decode([Employee.ID: Rota].self, forKey: .rota) {
+		let rota: [String: Rota]
+		if let rotaDict = try? container.decode([String: Rota].self, forKey: .rota) {
 			rota = rotaDict
 		} else {
 			rota = [:]
@@ -27,6 +27,5 @@ public struct CalendarResponse: Decodable {
 
 // MARK: - Rota
 public struct Rota: Decodable {
-	
-	let shift: [Shift]
+    public let shift: [Shift]
 }

@@ -7,7 +7,7 @@ import Filters
 
 public enum CalendarAction {
     case onAppear
-	case gotResponse(Result<[CalendarEvent], RequestError>)
+	case gotCalendarResponse(Result<CalendarResponse, RequestError>)
     case gotEmployeeResponse(Result<[Employee], RequestError>)
     case gotLocationsResponse(Result<[Location], RequestError>)
 	case datePicker(CalendarDatePickerAction)

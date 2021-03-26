@@ -14,21 +14,12 @@ public struct FiltersReducer<S: Identifiable & Equatable & Named> {
 				case .onHeaderTap:
 					state.isShowingFilters.toggle()
                 case .rows(let id, let action):
-                    switch action {
-                    case .header:
-                        print(id)
-                    case .rows(let rid, let action):
-                        switch action {
-                        case .select:
-                            if !state.chosenLocationsIds.contains(id) {
-                                state.chosenLocationsIds.append(id)
-                            }
-                        case .deselect:
-                            if let index = state.chosenLocationsIds.firstIndex( where: { $0 == id }) {
-                                state.chosenLocationsIds.remove(at: index)
-                            }
+                    state.chosenLocationsIds = state.chosenSubsectionsIds.compactMap({ (key, value) in
+                        if !value.isEmpty {
+                            return key
                         }
-                    }
+                        return nil
+                    })
 			}
 			return .none
 		}
