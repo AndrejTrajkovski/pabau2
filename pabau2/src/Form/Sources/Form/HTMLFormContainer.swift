@@ -4,7 +4,7 @@ import Util
 import SwiftUI
 
 public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, FormEnvironment> = .combine(
-	formReducer.optional.pullback(
+	formReducer.optional().pullback(
 		state: \HTMLFormParentState.form,
 		action: /HTMLFormAction.rows,
 		environment: { $0 }

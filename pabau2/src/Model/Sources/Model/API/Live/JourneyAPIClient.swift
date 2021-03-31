@@ -167,7 +167,7 @@ extension APIClient {
 	
 	public func match(journey: Journey, pathwayTemplateId: PathwayTemplate.ID) -> Effect<[Appointment.ID: Pathway], RequestError> {
 		
-		let params = [
+		let body = [
 			"booking_ids": journey.appointments.map(\.id).map(String.init).joined(separator: ","),
 			"pathway_template_id": pathwayTemplateId.description,
 			"clientId": journey.clientId.description
@@ -179,7 +179,8 @@ extension APIClient {
 			method: .POST,
 			baseUrl: baseUrl,
 			path: .pathwaysMatch,
-			queryParams: commonAnd(other: params)
+			queryParams: commonAnd(other: ["company_id": loggedInUser?.companyID ?? ""]),
+			body: bodyData(parameters: body)
 		)
 		.effect()
 	}
