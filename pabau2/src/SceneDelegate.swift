@@ -25,7 +25,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 			let userDefaults = StandardUDConfig()
 			let user = userDefaults.loggedInUser
 			let hasSeenWalkthrough = userDefaults.hasSeenAppIntroduction
-			let apiClient = APIClient(baseUrl: "https://prelive-crm.pabau.com", loggedInUser: user)
+			let apiClient = APIClient(baseUrl: "https://ios.pabau.me", loggedInUser: user)
 			let env = AppEnvironment(
 				loginAPI: apiClient,
 				journeyAPI: apiClient,
@@ -36,7 +36,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 			window.rootViewController = UIHostingController(
 				rootView: ContentView(
 					store: Store(
-						initialState: AppState(loggedInUser: user,
+						initialState: AppState(loggedInUser: nil,
 											   hasSeenWalkthrough: hasSeenWalkthrough!
 						),
 						reducer: reducer,

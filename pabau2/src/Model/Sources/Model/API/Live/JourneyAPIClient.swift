@@ -167,21 +167,34 @@ extension APIClient {
 	
 	public func match(journey: Journey, pathwayTemplateId: PathwayTemplate.ID) -> Effect<[Appointment.ID: Pathway], RequestError> {
 		
+		let appointmentsIds = journey.appointments.map(\.id)
+		
 		let body = [
-			"booking_ids": journey.appointments.map(\.id).map(String.init).joined(separator: ","),
+			"booking_ids": appointmentsIds.map(String.init).joined(separator: ","),
 			"pathway_template_id": pathwayTemplateId.description,
-			"clientId": journey.clientId.description
+			"contact_id": journey.clientId.description
 		]
 		
-		let requestBuilder: RequestBuilder<[Appointment.ID: Pathway]>.Type = requestBuilderFactory.getBuilder()
+		struct Response: Decodable {
+			let pathway_data: [Pathway]
+		}
+		
+		let requestBuilder: RequestBuilder<Response>.Type = requestBuilderFactory.getBuilder()
 		
 		return requestBuilder.init(
 			method: .POST,
 			baseUrl: baseUrl,
 			path: .pathwaysMatch,
-			queryParams: commonAnd(other: ["company_id": loggedInUser?.companyID ?? ""]),
+			queryParams: commonParams(),
 			body: bodyData(parameters: body)
 		)
 		.effect()
+		.map { pathwayResponse in
+			let pathways = pathwayResponse.pathway_data
+			return zip(appointmentsIds, pathways).reduce(into: [Appointment.ID: Pathway]()) {
+				$0[$1.0] = $1.1
+			}
+		}
+		.eraseToEffect()
 	}
 }
