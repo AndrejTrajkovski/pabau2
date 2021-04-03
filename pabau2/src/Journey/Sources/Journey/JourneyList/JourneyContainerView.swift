@@ -144,8 +144,8 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 //                    .cancellable(id: SearchJourneyId(), cancelInFlight: true)
 //
 
-			case .selectedJourney(let journey):
-				state.choosePathway = ChoosePathwayState(selectedJourney: journey)
+			case .selectedAppointment(let appointment):
+				state.choosePathway = ChoosePathwayState(selectedAppointment: appointment)
 				return environment.journeyAPI.getPathwayTemplates()
 					.receive(on: DispatchQueue.main)
 					.catchToEffect()
@@ -170,14 +170,14 @@ public struct JourneyContainerView: View {
 	struct ViewState: Equatable {
 		let isChoosePathwayShown: Bool
 		let selectedDate: Date
-		let listedJourneys: [Journey]
+		let listedAppointments: [Appointment]
 		let isLoadingJourneys: Bool
         let searchQuery: String
 		let navigationTitle: String
 		init(state: JourneyContainerState) {
 			self.isChoosePathwayShown = state.journey.choosePathway != nil
 			self.selectedDate = state.journey.selectedDate
-			self.listedJourneys = state.filteredJourneys()
+			self.listedAppointments = state.filteredAppointments()
             self.searchQuery = state.journey.searchText
 			self.isLoadingJourneys = state.loadingState.isLoading
 			self.navigationTitle = state.journey.selectedLocation?.name ?? "No Location Chosen"
@@ -216,8 +216,8 @@ public struct JourneyContainerView: View {
                 .padding([.leading, .trailing], 16)
             }
 
-            JourneyList(self.viewStore.state.listedJourneys) {
-                self.viewStore.send(.journey(.selectedJourney($0)))
+            JourneyList(self.viewStore.state.listedAppointments) {
+                self.viewStore.send(.journey(.selectedAppointment($0)))
             }.loadingView(.constant(self.viewStore.state.isLoadingJourneys),
 						  Texts.fetchingJourneys)
 
@@ -270,37 +270,37 @@ public struct JourneyContainerView: View {
     }
 }
 
-func journeyCellAdapter(journey: Journey) -> JourneyCell {
+func journeyCellAdapter(appointment: Appointment) -> JourneyCell {
 	return JourneyCell(
-		journey: journey,
-		color: Color.init(hex: journey.appointments.first!.serviceColor ?? "#000000"),
+		appointment: appointment,
+		color: Color.init(hex: appointment.serviceColor ?? "#000000"),
 		time: "12:30",
-		imageUrl: journey.clientPhoto ?? "",
-		name: journey.clientName ?? "",
-		services: journey.servicesString,
-		status: journey.appointments.first!.status?.name,
-		employee: journey.appointments.first!.employeeName,
+		imageUrl: appointment.clientPhoto ?? "",
+		name: appointment.clientName ?? "",
+		services: appointment.service,
+		status: appointment.status?.name,
+		employee: appointment.employeeName,
 		paidStatus: "",
 		stepsComplete: 0,
 		stepsTotal: 3)
 }
 
 struct JourneyList: View {
-	let journeys: [Journey]
-	let onSelect: (Journey) -> Void
-	init (_ journeys: [Journey],
-				_ onSelect: @escaping (Journey) -> Void) {
-		self.journeys = journeys
+	let appointments: [Appointment]
+	let onSelect: (Appointment) -> Void
+	init (_ appointments: [Appointment],
+				_ onSelect: @escaping (Appointment) -> Void) {
+		self.appointments = appointments
 		self.onSelect = onSelect
 	}
 	var body: some View {
 		List {
-			ForEach(journeys.indices) { idx in
-				journeyCellAdapter(journey: journeys[idx])
+			ForEach(appointments.indices) { idx in
+				journeyCellAdapter(appointment: appointments[idx])
 					.contextMenu {
 						JourneyListContextMenu()
 					}
-					.onTapGesture { self.onSelect(journeys[idx]) }
+					.onTapGesture { self.onSelect(appointments[idx]) }
 					.listRowInsets(EdgeInsets())
 			}
 		}.id(UUID())
@@ -308,7 +308,7 @@ struct JourneyList: View {
 }
 
 struct JourneyCell: View {
-	let journey: Journey
+	let appointment: Appointment
 	let color: Color
 	let time: String
 	let imageUrl: String?
@@ -327,7 +327,7 @@ struct JourneyCell: View {
 				Group {
 					Text(time).font(Font.semibold11)
 					Spacer()
-					JourneyAvatarView(journey: journey, font: .regular18, bgColor: .accentColor)
+					JourneyAvatarView(appointment: appointment, font: .regular18, bgColor: .accentColor)
 						.frame(width: 55, height: 55)
 					VStack(alignment: .leading, spacing: 4) {
 						Text(name).font(Font.semibold14)

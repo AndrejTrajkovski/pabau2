@@ -38,13 +38,13 @@ public struct ChooseFormJourneyState: Equatable {
 
 struct ChooseFormJourney: View {
 	let store: Store<ChooseFormJourneyState, ChooseFormAction>
-	let journey: Journey?
+	let appointment: Appointment?
 
 	var body: some View {
 		ChooseFormList(store:
 						self.store.scope(
 							state: { $0.chooseForm }, action: { $0 }))
-			.journeyBase(self.journey, .long)
+			.journeyBase(self.appointment, .long)
 	}
 }
 

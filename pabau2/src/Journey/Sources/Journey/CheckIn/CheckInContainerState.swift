@@ -6,7 +6,7 @@ import Form
 
 public struct CheckInContainerState: Equatable {
 
-	let journey: Journey
+	let appointment: Appointment
 	let pathway: PathwayTemplate
 	
 	var isPatientModeActive: Bool = false
@@ -53,7 +53,7 @@ extension CheckInContainerState {
 
 	var doctorSummary: DoctorSummaryState {
 		get {
-			DoctorSummaryState(journey: journey,
+			DoctorSummaryState(appointment: appointment,
 							   isChooseConsentActive: isChooseConsentActive,
 							   isChooseTreatmentActive: isChooseTreatmentActive,
 							   isDoctorCheckInMainActive: isDoctorCheckInMainActive,
@@ -132,7 +132,7 @@ extension CheckInContainerState {
 
 extension CheckInContainerState {
 
-	init(journey: Journey,
+	init(appointment: Appointment,
 		 pathway: PathwayTemplate,
 		 patientDetails: ClientBuilder,
 		 medicalHistoryId: HTMLForm.ID,
@@ -140,7 +140,7 @@ extension CheckInContainerState {
 		 consents: IdentifiedArrayOf<FormTemplateInfo>,
 		 allConsents: IdentifiedArrayOf<FormTemplateInfo>,
 		 photosState: PhotosState) {
-		self.journey = journey
+		self.appointment = appointment
 		self.pathway = pathway
 		self.patientDetails = patientDetails
 		self.medicalHistory = medHistory
@@ -167,7 +167,7 @@ extension CheckInContainerState {
 	var doctorCheckIn: CheckInDoctorState {
 		get {
 			CheckInDoctorState(
-				journey: self.journey,
+				appointment: self.appointment,
 				pathway: self.pathway,
 				treatmentNotes: self.treatmentNotes,
 				prescriptions: self.prescriptions,
@@ -190,7 +190,7 @@ extension CheckInContainerState {
 	var patientCheckIn: CheckInPatientState {
 		get {
 			CheckInPatientState(
-				journey: journey,
+				appointment: appointment,
 				pathway: pathway,
 				patientDetails: patientDetails,
 				patientDetailsStatus: patientDetailsStatus,

@@ -8,7 +8,7 @@ import Combine
 
 public enum ChoosePathwayContainerAction {
 	case rows(id: PathwayTemplate.ID, action: PathwayTemplateRowAction)
-	case matchResponse(Result<[Appointment.ID: Pathway], RequestError>)
+	case matchResponse(Result<Pathway, RequestError>)
 	case choosePathway(ChoosePathwayAction)
 	case chooseConsent(ChooseFormAction)
 	case checkIn(CheckInContainerAction)
@@ -20,7 +20,7 @@ let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayCont
 		Reducer.init { state, action, env in
 			switch action {
 			case .chooseConsent(.proceed):
-				state.checkIn = CheckInContainerState(journey: state.selectedJourney,
+				state.checkIn = CheckInContainerState(appointment: state.selectedAppointment,
 													  pathway: state.selectedPathway!,
 													  patientDetails: ClientBuilder.empty,
 													  medicalHistoryId: HTMLForm.getMedHistory().id,
@@ -42,7 +42,7 @@ let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayCont
 			case .rows(let id, _):
 				guard case .loaded(let pathways) = state.pathwayTemplates else { return .none }
 				state.selectedPathway = pathways[id: id]
-				return env.journeyAPI.match(journey: state.selectedJourney,
+				return env.journeyAPI.match(appointment: state.selectedAppointment,
 											pathwayTemplateId: id)
 					.receive(on: DispatchQueue.main)
 					.catchToEffect()
@@ -86,7 +86,7 @@ public enum ChoosePathwayAction {
 
 public struct ChoosePathwayState: Equatable {
 	
-	let selectedJourney: Journey
+	let selectedAppointment: Appointment
 	var selectedPathway: PathwayTemplate?
 	var selectedConsentsIds: [HTMLForm.ID] = []
 	var allConsents: IdentifiedArrayOf<FormTemplateInfo> = []
@@ -111,10 +111,10 @@ public struct ChoosePathway: View {
 	@ObservedObject var viewStore: ViewStore<State, ChoosePathwayContainerAction>
 	struct State: Equatable {
 		let isChooseConsentShown: Bool
-		let journey: Journey?
+		let appointment: Appointment?
 		init(state: ChoosePathwayState) {
 			self.isChooseConsentShown = state.selectedPathway != nil
-			self.journey = state.selectedJourney
+			self.appointment = state.selectedAppointment
 			UITableView.appearance().separatorStyle = .none
 		}
 	}
@@ -136,7 +136,7 @@ public struct ChoosePathway: View {
 			)
 			chooseFormNavLink
 		}
-		.journeyBase(self.viewStore.state.journey, .long)
+		.journeyBase(self.viewStore.state.appointment, .long)
 	}
 
 	fileprivate func choosePathwayList(_ tmplts: Store<IdentifiedArrayOf<PathwayTemplate>, ChoosePathwayContainerAction>) -> some View {
@@ -155,7 +155,7 @@ public struct ChoosePathway: View {
 													self.store.scope(
 														state: { $0.chooseConsentState },
 														action: { .chooseConsent($0)}))
-									.journeyBase(self.viewStore.state.journey, .long)
+									.journeyBase(self.viewStore.state.appointment, .long)
 									.customBackButton {
 										self.viewStore.send(.choosePathway(.didTouchSelectConsentBackBtn))
 									}

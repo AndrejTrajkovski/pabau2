@@ -14,7 +14,7 @@ struct CheckInPatientContainer: View {
 							action: { .patient(.stepsView($0)) }),
 						avatarView: {
 							JourneyProfileView(style: .short,
-											   viewState: .init(journey: viewStore.state.journey))
+											   viewState: .init(appointment: viewStore.state.appointment))
 						},
 						content: {
 							patientForms(store:
@@ -75,7 +75,7 @@ let checkInPatientReducer: Reducer<CheckInPatientState, CheckInPatientAction, Jo
 )
 
 struct CheckInPatientState: Equatable, CheckInState {
-	let journey: Journey
+	let appointment: Appointment
 	let pathway: PathwayTemplate
 	var patientDetails: ClientBuilder
 	var patientDetailsStatus: Bool

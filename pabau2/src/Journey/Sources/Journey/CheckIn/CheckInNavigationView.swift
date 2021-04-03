@@ -110,7 +110,7 @@ public struct CheckInNavigationView: View {
 		return NavigationView {
 			if !viewStore.state.isPatientModeActive {
 				CheckInAnimation(animationDuration: checkInAnimationDuration,
-								 journey: viewStore.state.journey)
+								 appointment: viewStore.state.appointment)
 			} else {
 				CheckInPatientContainer(store:
 											store.scope(state: { $0 },

@@ -45,12 +45,10 @@ public struct JourneyContainerState: Equatable {
 }
 
 extension JourneyContainerState {
-	func filteredJourneys() -> [Journey] {
-		calendarResponseToJourneys(date: journey.selectedDate, events: appointments.flatten())
-//		return self.journeys
-//			.filter { $0.first!.start_date.isInside(date: selectedDate, granularity: .day) }
-//			.filter { employeesFilter.selectedEmployeesIds.contains($0.first!.employeeId) }
-//			.sorted(by: { $0.first!.start_date > $1.first!.start_date })
+	func filteredAppointments() -> [Appointment] {
+		[]
+//		let flat = appointments.flatten()
+//		return flat[journey.selectedDate]
 	}
 
 	func filter(appointments: Appointments, date: Date) -> [Location.ID: [CalendarEvent]] {

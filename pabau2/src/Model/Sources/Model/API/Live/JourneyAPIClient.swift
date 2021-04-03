@@ -165,14 +165,12 @@ extension APIClient {
 		.eraseToEffect()
 	}
 	
-	public func match(journey: Journey, pathwayTemplateId: PathwayTemplate.ID) -> Effect<[Appointment.ID: Pathway], RequestError> {
-		
-		let appointmentsIds = journey.appointments.map(\.id)
+	public func match(appointment: Appointment, pathwayTemplateId: PathwayTemplate.ID) -> Effect<Pathway, RequestError> {
 		
 		let body = [
-			"booking_ids": appointmentsIds.map(String.init).joined(separator: ","),
+			"booking_ids": appointment.id.description,
 			"pathway_template_id": pathwayTemplateId.description,
-			"contact_id": journey.clientId.description
+			"contact_id": appointment.customerId.description
 		]
 		
 		struct Response: Decodable {
@@ -189,12 +187,13 @@ extension APIClient {
 			body: bodyData(parameters: body)
 		)
 		.effect()
-		.map { pathwayResponse in
-			let pathways = pathwayResponse.pathway_data
-			return zip(appointmentsIds, pathways).reduce(into: [Appointment.ID: Pathway]()) {
-				$0[$1.0] = $1.1
+		.tryMap { pathwayResponse in
+			guard let pathway = pathwayResponse.pathway_data.first else {
+				throw RequestError.emptyDataResponse
 			}
+			return pathway
 		}
+		.mapError { $0 as? RequestError ?? RequestError.unknown }
 		.eraseToEffect()
 	}
 }
