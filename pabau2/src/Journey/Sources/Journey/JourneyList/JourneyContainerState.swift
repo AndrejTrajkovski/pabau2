@@ -9,13 +9,13 @@ public struct JourneyContainerState: Equatable {
 	
 	public let employees: [Location.ID: IdentifiedArrayOf<Employee>]
 	public var journey: JourneyState
-	public var appointments: Appointments
+	public var appointments: CalAppointments
 	public var loadingState: LoadingState = .initial
 
 	public init(
 		journey: JourneyState,
 		employees: [Location.ID: IdentifiedArrayOf<Employee>],
-		appointments: Appointments,
+		appointments: CalAppointments,
 		loadingState: LoadingState
 	) {
 		self.journey = journey
@@ -51,7 +51,7 @@ extension JourneyContainerState {
 //		return flat[journey.selectedDate]
 	}
 
-	func filter(appointments: Appointments, date: Date) -> [Location.ID: [CalendarEvent]] {
+	func filter(appointments: CalAppointments, date: Date) -> [Location.ID: [CalendarEvent]] {
 		switch appointments {
 		case .employee(let byEmployee):
 			return byEmployee.filterBy(date: date)

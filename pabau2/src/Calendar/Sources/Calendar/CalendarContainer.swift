@@ -259,7 +259,7 @@ public struct CalendarContainer: View {
 							state: { $0.calendar.selectedDate },
 							action: { .datePicker($0)}
 						),
-						isWeekView: viewStore.state.appointments.calendarType == Appointments.CalendarType.week,
+						isWeekView: viewStore.state.appointments.calendarType == CalAppointments.CalendarType.week,
 						scope: viewStore.calendar.scope
 					)
 					.padding(0)

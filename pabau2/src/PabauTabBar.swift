@@ -22,7 +22,7 @@ public typealias TabBarEnvironment = (
 
 public struct TabBarState: Equatable {
 	var appsLoadingState: LoadingState
-	var appointments: Appointments
+	var appointments: CalAppointments
 	var addAppointment: AddAppointmentState?
 	var journey: JourneyState
 	var clients: ClientsState

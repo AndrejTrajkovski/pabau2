@@ -75,7 +75,7 @@ public struct FiltersState<S: Identifiable & Equatable & Named>: Equatable {
 		}
 
 		set {
-			newValue.map { sectionState in
+			newValue.forEach { sectionState in
 				let locId = sectionState.location.id
 				if !sectionState.isLocationChosen && chosenLocationsIds.contains(locId) {
 					chosenLocationsIds.removeAll(where: { $0 == locId })
