@@ -12,18 +12,6 @@ import Filters
 import SharedComponents
 import Appointments
 
-public typealias JourneyEnvironment = (
-	formAPI: FormAPI,
-	journeyAPI: JourneyAPI,
-	clientsAPI: ClientsAPI,
-	userDefaults: UserDefaultsConfig
-)
-
-func makeFormEnv(_ journeyEnv: JourneyEnvironment) -> FormEnvironment {
-	return FormEnvironment(formAPI: journeyEnv.formAPI,
-						   userDefaults: journeyEnv.userDefaults)
-}
-
 let checkInMiddleware = Reducer<ChoosePathwayState, CheckInContainerAction, JourneyEnvironment> { state, action, _ in
 	switch action {
 	case .patient(.stepsView(.onXTap)):
@@ -163,7 +151,7 @@ public struct JourneyContainerView: View {
 	@ObservedObject var viewStore: ViewStore<ViewState, JourneyContainerAction>
 
     @State var showSearchBar: Bool = false
-
+	
 	struct ViewState: Equatable {
 		let isChoosePathwayShown: Bool
 		let selectedDate: Date
@@ -188,98 +176,98 @@ public struct JourneyContainerView: View {
 						 action: { $0 }))
 	}
 	public var body: some View {
-		print("JourneyContainerView")
-        return VStack {
-            CalendarDatePicker.init(
-                store: self.store.scope(
-					state: { $0.journey.selectedDate },
-                    action: { .datePicker($0)}),
-                isWeekView: false,
-                scope: .week
-            )
-            .padding(0)
+		VStack {
+            datePicker
 
             FilterPicker()
 
             if self.showSearchBar {
-                SearchView(
-                    placeholder: "Search",
-                    text: viewStore.binding(
-                    get: \.searchQuery,
-                    send: { JourneyContainerAction.searchQueryChanged(JourneyAction.searchedText($0)) }
-                    )
-                )
-                .isHidden(!self.showSearchBar)
-                .padding([.leading, .trailing], 16)
+                searchBar
             }
 
             JourneyList(self.viewStore.state.listedAppointments) {
                 self.viewStore.send(.journey(.selectedAppointment($0)))
             }.loadingView(.constant(self.viewStore.state.isLoadingJourneys),
 						  Texts.fetchingJourneys)
-
-            NavigationLink.emptyHidden(
-                self.viewStore.state.isChoosePathwayShown,
-				IfLetStore(
-					store.scope(state: { $0.journey.choosePathway },
-								action: { .journey(.choosePathway($0)) }),
-					then: { choosePathwayStore in
-						ChoosePathway.init(store: choosePathwayStore)
-							.navigationBarTitle("Choose Pathway")
-							.customBackButton {
-								self.viewStore.send(.journey(.choosePathwayBackTap))
-							}
-					}
-				)
-            )
+			
+			choosePathwayLink
+			
             Spacer()
         }
 		.navigationBarTitle(viewStore.navigationTitle, displayMode: .inline)
-        .navigationBarItems(
-            leading:
-                HStack(spacing: 8.0) {
-                    PlusButton {
-                        withAnimation(Animation.easeIn(duration: 0.5)) {
-                            self.viewStore.send(.addAppointmentTap)
-                        }
-                    }
-                    Button(action: {
-                        withAnimation {
-                            self.showSearchBar.toggle()
-                        }
-                    }, label: {
-                        Image(systemName: "magnifyingglass")
-                            .font(.system(size: 20))
-                            .frame(width: 44, height: 44)
-                    })
-                },
-            trailing:
-                Button(action: {
-                    withAnimation {
-                        self.viewStore.send(.toggleEmployees)
-                    }
-                }, label: {
-                    Image(systemName: "person")
-                        .font(.system(size: 20))
-                        .frame(width: 44, height: 44)
-                })
-        )
+        .navigationBarItems(leading: leadingItems, trailing: trailingItems)
     }
-}
-
-func journeyCellAdapter(appointment: Appointment) -> JourneyCell {
-	return JourneyCell(
-		appointment: appointment,
-		color: Color.init(hex: appointment.serviceColor ?? "#000000"),
-		time: "12:30",
-		imageUrl: appointment.clientPhoto ?? "",
-		name: appointment.clientName ?? "",
-		services: appointment.service,
-		status: appointment.status?.name,
-		employee: appointment.employeeName,
-		paidStatus: "",
-		stepsComplete: 0,
-		stepsTotal: 3)
+	
+	var datePicker: some View {
+		CalendarDatePicker.init(
+			store: self.store.scope(
+				state: { $0.journey.selectedDate },
+				action: { .datePicker($0)}),
+			isWeekView: false,
+			scope: .week
+		)
+		.padding(0)
+	}
+	
+	var searchBar: some View {
+		SearchView(
+			placeholder: "Search",
+			text: viewStore.binding(
+				get: \.searchQuery,
+				send: { JourneyContainerAction.searchQueryChanged(JourneyAction.searchedText($0)) }
+			)
+		)
+		.isHidden(!self.showSearchBar)
+		.padding([.leading, .trailing], 16)
+	}
+	
+	var leadingItems: some View {
+		HStack(spacing: 8.0) {
+			PlusButton {
+				withAnimation(Animation.easeIn(duration: 0.5)) {
+					self.viewStore.send(.addAppointmentTap)
+				}
+			}
+			Button(action: {
+				withAnimation {
+					self.showSearchBar.toggle()
+				}
+			}, label: {
+				Image(systemName: "magnifyingglass")
+					.font(.system(size: 20))
+					.frame(width: 44, height: 44)
+			})
+		}
+	}
+	
+	var trailingItems: some View {
+		Button(action: {
+			withAnimation {
+				self.viewStore.send(.toggleEmployees)
+			}
+		}, label: {
+			Image(systemName: "person")
+				.font(.system(size: 20))
+				.frame(width: 44, height: 44)
+		})
+	}
+		
+	var choosePathwayLink: some View {
+		NavigationLink.emptyHidden(
+			viewStore.state.isChoosePathwayShown,
+			IfLetStore(
+				store.scope(state: { $0.journey.choosePathway },
+							action: { .journey(.choosePathway($0)) }),
+				then: { choosePathwayStore in
+					ChoosePathway.init(store: choosePathwayStore)
+						.navigationBarTitle("Choose Pathway")
+						.customBackButton {
+							viewStore.send(.journey(.choosePathwayBackTap))
+						}
+				}
+			)
+		)
+	}
 }
 
 struct JourneyList: View {
@@ -293,7 +281,7 @@ struct JourneyList: View {
 	var body: some View {
 		List {
 			ForEach(appointments.indices) { idx in
-				journeyCellAdapter(appointment: appointments[idx])
+				JourneyCell.init(appointment: appointments[idx])
 					.contextMenu {
 						JourneyListContextMenu()
 					}
@@ -301,92 +289,6 @@ struct JourneyList: View {
 					.listRowInsets(EdgeInsets())
 			}
 		}.id(UUID())
-	}
-}
-
-struct JourneyCell: View {
-	let appointment: Appointment
-	let color: Color
-	let time: String
-	let imageUrl: String?
-	let name: String
-	let services: String
-	let status: String?
-	let employee: String
-	let paidStatus: String
-	let stepsComplete: Int
-	let stepsTotal: Int
-	var body: some View {
-		VStack(spacing: 0) {
-			HStack {
-				JourneyColorRect(color: color)
-				Spacer()
-				Group {
-					Text(time).font(Font.semibold11)
-					Spacer()
-					JourneyAvatarView(appointment: appointment, font: .regular18, bgColor: .accentColor)
-						.frame(width: 55, height: 55)
-					VStack(alignment: .leading, spacing: 4) {
-						Text(name).font(Font.semibold14)
-						Text(services).font(Font.regular12)
-						Text(status ?? "").font(.medium9).foregroundColor(.deepSkyBlue)
-					}.frame(maxWidth: 158, alignment: .leading)
-				}
-				Spacer()
-				IconAndText(Image(systemName: "person"), employee)
-					.frame(maxWidth: 110, alignment: .leading)
-				Spacer()
-				IconAndText(Image(systemName: "bag"), paidStatus)
-					.frame(maxWidth: 110, alignment: .leading)
-				Spacer()
-				StepsStatusView(stepsComplete: stepsComplete, stepsTotal: stepsTotal)
-				Spacer()
-			}
-			Divider().frame(height: 1)
-		}
-		.frame(minWidth: 0, maxWidth: .infinity, idealHeight: 97)
-	}
-}
-
-struct IconAndText: View {
-	let text: String
-	let image: Image
-	let textColor: Color
-	init(_ image: Image,
-		 _ text: String,
-		 _ textColor: Color = .black) {
-		self.image = image
-		self.text = text
-		self.textColor = textColor
-	}
-	var body: some View {
-		HStack {
-			image
-				.resizable()
-				.scaledToFit()
-				.foregroundColor(.blue2)
-				.frame(width: 20, height: 20)
-			Text(text)
-				.font(Font.semibold11)
-				.foregroundColor(textColor)
-		}
-	}
-}
-
-struct StepsStatusView: View {
-	let stepsComplete: Int
-	let stepsTotal: Int
-	var body: some View {
-		NumberEclipse(text: "\(stepsComplete)/\(stepsTotal)")
-	}
-}
-
-struct JourneyColorRect: View {
-	public let color: Color
-	var body: some View {
-		Rectangle()
-			.foregroundColor(color)
-			.frame(width: 8.0)
 	}
 }
 
