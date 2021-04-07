@@ -241,10 +241,10 @@ extension CalendarState {
 
 extension CalendarContainerState {
 	
-	mutating func switchTo(appsType: Appointments.ViewType) {
+	mutating func switchTo(calType: CalAppointments.CalendarType) {
         print(appointments.flatten())
-		self.appointments = Appointments(
-            type: appsType,
+		self.appointments = CalAppointments(
+            calType: calType,
             events: appointments.flatten(),
             locationsIds: calendar.locations.map(\.id),
             employees: calendar.employees.flatMap(\.value),

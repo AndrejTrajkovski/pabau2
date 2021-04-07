@@ -97,7 +97,7 @@ struct Login: View {
 	let store: Store<WalkthroughContainerState, LoginAction>
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
 	@Binding private var email: String
-	@State private var password: String = "Andrej123"
+	@State private var password: String = "Andrej1234"
 	struct ViewState: Equatable {
 		let emailValidationText: String
 		let passValidationText: String

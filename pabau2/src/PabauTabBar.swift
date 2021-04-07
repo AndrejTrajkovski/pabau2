@@ -20,9 +20,18 @@ public typealias TabBarEnvironment = (
 	userDefaults: UserDefaultsConfig
 )
 
+public enum TabItemId: String {
+	case journey
+	case calendar
+	case settings
+	case communication
+	case clients
+}
+
 public struct TabBarState: Equatable {
+	var selectedTab: TabItemId = .journey
 	var appsLoadingState: LoadingState
-	var appointments: CalAppointments
+	var appointments: Appointments
 	var addAppointment: AddAppointmentState?
 	var journey: JourneyState
 	var clients: ClientsState
@@ -30,37 +39,42 @@ public struct TabBarState: Equatable {
 	var settings: SettingsState
     var communication: CommunicationState
 
-	public var calendarContainer: CalendarContainerState {
+	public var calendarContainer: CalendarContainerState? {
 		get {
-            CalendarContainerState(
+			guard case .calendar(let calApps) = appointments else { return nil }
+            return CalendarContainerState(
                 addAppointment: addAppointment,
                 calendar: calendar,
-                appointments: appointments
+                appointments: calApps
             )
 		}
 		set {
+			guard let newValue = newValue else { return }
 			self.addAppointment = newValue.addAppointment
 			self.calendar = newValue.calendar
-			self.appointments = newValue.appointments
+			self.appointments = .calendar(newValue.appointments)
 		}
 	}
 
-	public var journeyContainer: JourneyContainerState {
+	public var journeyContainer: JourneyContainerState? {
 		get {
-			JourneyContainerState(journey: self.journey,
-								  employees: self.calendar.employees,
-								  appointments: self.appointments,
-								  loadingState: self.appsLoadingState)
+			guard case .journey(let journeyApps) = appointments else { return nil }
+			return JourneyContainerState(journey: self.journey,
+										 employees: self.calendar.employees,
+										 appointments: journeyApps,
+										 loadingState: self.appsLoadingState)
 		}
 		set {
+			guard let newValue = newValue else { return }
 			self.journey = newValue.journey
-			self.appointments = newValue.appointments
+			self.appointments = .journey(newValue.appointments)
 			self.appsLoadingState = newValue.loadingState
 		}
 	}
 }
 
 public enum TabBarAction {
+	case selectTab(TabItemId)
 	case settings(SettingsAction)
 	case journey(JourneyContainerAction)
 	case clients(ClientsAction)
@@ -76,9 +90,11 @@ struct PabauTabBar: View {
 	struct ViewState: Equatable {
 		let isShowingCheckin: Bool
 		let isShowingAppointments: Bool
+		let selectedTab: TabItemId
 		init(state: TabBarState) {
-			self.isShowingCheckin = state.journeyContainer.journey.choosePathway?.checkIn != nil
+			self.isShowingCheckin = state.journeyContainer?.journey.choosePathway?.checkIn != nil
 			self.isShowingAppointments = state.addAppointment != nil
+			self.selectedTab = state.selectedTab
 		}
 	}
 	init (store: Store<TabBarState, TabBarAction>) {
@@ -89,12 +105,13 @@ struct PabauTabBar: View {
 	}
 
 	var body: some View {
-		TabView {
-			journey()
-			calendar()
-			clients()
-			settings()
-			communication()
+		TabView(selection: viewStore.binding(get: { $0.selectedTab },
+											 send: { .selectTab($0) })) {
+			journey().tag(TabItemId.journey)
+			calendar().tag(TabItemId.calendar)
+			clients().tag(TabItemId.clients)
+			settings().tag(TabItemId.settings)
+			communication().tag(TabItemId.communication)
 		}
 		.modalLink(isPresented: .constant(self.viewStore.state.isShowingCheckin),
 				   linkType: ModalTransition.circleReveal,
@@ -108,27 +125,27 @@ struct PabauTabBar: View {
 	}
 
 	fileprivate func journey() -> some View {
-		return JourneyNavigationView(
-			self.store.scope(
-				state: { $0.journeyContainer },
-				action: { .journey($0)})
-		).tabItem {
-			Image(systemName: "staroflife")
-			Text("Journey")
-		}
+		return
+			IfLetStore(store.scope(state: { $0.journeyContainer },
+								   action: { .journey($0) }),
+					   then: JourneyNavigationView.init(_:), else: Text("journey")
+			)
+			.tabItem {
+				Image(systemName: "staroflife")
+				Text("Journey")
+			}
 	}
-
+	
 	fileprivate func calendar() -> some View {
-		return CalendarContainer(store:
-									self.store.scope(
-										state: { $0.calendarContainer },
-										action: { .calendar($0)}
-									)
-		)
-		.tabItem {
-			Image(systemName: "calendar")
-			Text("Calendar")
-		}
+		return
+			IfLetStore(store.scope(state: { $0.calendarContainer },
+								   action: { .calendar($0) }),
+					   then: CalendarContainer.init(store:), else: Text("calendar")
+			)
+			.tabItem {
+				Image(systemName: "calendar")
+				Text("Calendar")
+			}
 	}
 
 	fileprivate func clients() -> some View {
@@ -166,7 +183,7 @@ struct PabauTabBar: View {
 
 	fileprivate func checkIn() -> IfLetStore<CheckInContainerState, CheckInContainerAction, CheckInNavigationView?> {
 		return IfLetStore(self.store.scope(
-			state: { $0.journeyContainer.journey.choosePathway?.checkIn },
+			state: { $0.journeyContainer?.journey.choosePathway?.checkIn },
 			action: { .journey(.journey(.choosePathway(.checkIn($0)))) }
 		),
 		then: CheckInNavigationView.init(store:))
@@ -188,6 +205,21 @@ public let tabBarReducer: Reducer<
 > = Reducer.combine(
 	.init { state, action, _ in
 		switch action {
+		case .selectTab(let tabItemId):
+			state.selectedTab = tabItemId
+			switch tabItemId {
+			case .calendar:
+				state.appointments.switchTo(type: .calendar(.employee),
+											locationsIds: state.calendar.locations.map(\.id),
+											employees: state.calendar.employees.flatMap(\.value),
+											rooms: state.calendar.rooms.flatMap(\.value)
+				)
+			case .journey:
+				state.appointments.switchTo(type: .journey,
+											locationsIds: [], employees: [], rooms: [])
+			default:
+				break
+			}
 		case .gotLocationsResponse(let locationsResponse):
 			switch locationsResponse {
 				// MARK: - Iurii
@@ -253,7 +285,7 @@ public let tabBarReducer: Reducer<
 				userDefaults: $0.userDefaults)
 		}
 	),
-	journeyContainerReducer.pullback(
+	journeyContainerReducer.optional().pullback(
 		state: \TabBarState.journeyContainer,
 		action: /TabBarAction.journey,
 		environment: makeJourneyEnv(_:)
@@ -263,7 +295,7 @@ public let tabBarReducer: Reducer<
 		action: /TabBarAction.clients,
 		environment: makeClientsEnv(_:)
 	),
-	calendarContainerReducer.pullback(
+	calendarContainerReducer.optional().pullback(
 		state: \TabBarState.calendarContainer,
 		action: /TabBarAction.calendar,
 		environment: {
@@ -304,7 +336,8 @@ extension TabBarState {
 		self.calendar = CalendarState()
 		self.settings = SettingsState()
 		self.communication = CommunicationState()
-		self.appointments = .employee(EventsBy<Employee>.init(events: [], locationsIds: [], subsections: [], sectionKeypath: \CalendarEvent.locationId, subsKeypath: \CalendarEvent.employeeId))
+		self.appointments = .journey(JourneyAppointments.init(events: []))
+//		self.appointments = .employee(EventsBy<Employee>.init(events: [], locationsIds: [], subsections: [], sectionKeypath: \CalendarEvent.locationId, subsKeypath: \CalendarEvent.employeeId))
 		self.appsLoadingState = .initial
 	}
 }

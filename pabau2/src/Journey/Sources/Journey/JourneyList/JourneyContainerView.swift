@@ -90,10 +90,7 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 					  let employees = state.employees[selectedLocationId] else {
 					return .none
 				}
-				state.appointments.refresh(events: appointments,
-										   locationsIds: [selectedLocationId],
-										   employees: employees.elements,
-										   rooms: [])
+				state.appointments = .init(events: appointments)
 				state.loadingState = .gotSuccess
 			case .failure(let error):
 				state.loadingState = .gotError(error)
@@ -177,7 +174,7 @@ public struct JourneyContainerView: View {
 		init(state: JourneyContainerState) {
 			self.isChoosePathwayShown = state.journey.choosePathway != nil
 			self.selectedDate = state.journey.selectedDate
-			self.listedAppointments = state.filteredAppointments()
+			self.listedAppointments = state.appointments.appointments[state.journey.selectedDate]?.elements ?? []
             self.searchQuery = state.journey.searchText
 			self.isLoadingJourneys = state.loadingState.isLoading
 			self.navigationTitle = state.journey.selectedLocation?.name ?? "No Location Chosen"
