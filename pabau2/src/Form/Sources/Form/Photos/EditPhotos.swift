@@ -5,7 +5,7 @@ import PencilKit
 import ComposableArchitecture
 import Util
 
-let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnvironment>
+public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnvironment>
 	.combine(
 		editPhotosRightSideReducer.pullback(
 			state: \EditPhotosState.rightSide,
@@ -52,7 +52,7 @@ public struct EditPhotosState: Equatable {
 	var isTagsAlertActive: Bool = false
 	var stencils = ["stencil1", "stencil2", "stencil3", "stencil4"]
 	var isShowingPhotoLib: Bool = false
-	var isShowingStencils: Bool = false
+	var isShowingStencils: Bool = true//false
 	var selectedStencilIdx: Int?
 	var isFlashOn: Bool = false
 	var frontOrRear: UIImagePickerController.CameraDevice = .rear
@@ -80,10 +80,10 @@ public struct EditPhotosState: Equatable {
 	}
 }
 
-struct EditPhotos: View {
+public struct EditPhotos: View {
 
 	let store: Store<EditPhotosState, EditPhotoAction>
-	init (store: Store<EditPhotosState, EditPhotoAction>) {
+	public init (store: Store<EditPhotosState, EditPhotoAction>) {
 		self.store = store
 	}
 
@@ -102,7 +102,7 @@ struct EditPhotos: View {
 		}
 	}
 
-	var body: some View {
+	public var body: some View {
 		WithViewStore(store.scope(state: State.init(state:))) { viewStore in
 			VStack {
 				HStack {

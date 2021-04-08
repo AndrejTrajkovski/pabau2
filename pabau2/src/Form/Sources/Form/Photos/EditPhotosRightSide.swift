@@ -88,7 +88,7 @@ struct EditPhotosRightSide: View {
 		let pencilIconColor: Color
 		init(state: EditPhotosRightSideState) {
 			self.isDeleteAlertActive = state.deletePhotoAlert != nil
-			self.isChooseInjectablesActive = state.activeCanvas == .injectables
+			self.isChooseInjectablesActive = true//state.activeCanvas == .injectables
 			self.eyeIconColor = state.editingPhoto?.isPrivate ?? false ? .blue : Color.gray184
 			self.pencilIconColor = state.activeCanvas == .drawing ? .blue : Color.gray184
 		}
