@@ -1,4 +1,4 @@
-enum StepStatus: String, Decodable {
+enum StepStatus: String, Decodable, Equatable {
 	case complete
 	case skipped
 }

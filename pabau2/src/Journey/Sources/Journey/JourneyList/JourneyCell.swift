@@ -12,21 +12,21 @@ struct JourneyCell: View {
 	let status: String?
 	let employee: String
 	let paidStatus: String
-	let stepsComplete: Int
-	let stepsTotal: Int
+	let stepsComplete: String
+	let stepsTotal: String
 	
 	init(appointment: Appointment) {
 		self.appointment = appointment
 		self.color = Color.init(hex: appointment.serviceColor ?? "#000000")
-		self.time = "12:30"
+		self.time = DateFormatter.HHmm.string(from: appointment.start_date)
 		self.imageUrl = appointment.clientPhoto ?? ""
 		self.name = appointment.clientName ?? ""
 		self.services = appointment.service
 		self.status = appointment.status?.name
 		self.employee = appointment.employeeName
 		self.paidStatus = ""
-		self.stepsComplete = 0
-		self.stepsTotal = 3
+		self.stepsComplete = appointment.stepsComplete?.description ?? ""
+		self.stepsTotal = appointment.stepsTotal?.description ?? ""
 	}
 	
 	var body: some View {
@@ -87,10 +87,10 @@ struct IconAndText: View {
 }
 
 struct StepsStatusView: View {
-	let stepsComplete: Int
-	let stepsTotal: Int
+	let stepsComplete: String
+	let stepsTotal: String
 	var body: some View {
-		NumberEclipse(text: "\(stepsComplete)/\(stepsTotal)")
+		NumberEclipse(text: stepsComplete + "/" + stepsTotal)
 	}
 }
 

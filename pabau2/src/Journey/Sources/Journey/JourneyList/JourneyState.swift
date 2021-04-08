@@ -16,8 +16,7 @@ public struct JourneyState: Equatable {
 	public var isShowingEmployeesFilter: Bool = false
 	public var searchText: String = ""
 	public var selectedPathway: PathwayTemplate?
-	public var selectedConsentsIds: [HTMLForm.ID] = []
-	public var allConsents: IdentifiedArrayOf<FormTemplateInfo> = []
 	public var choosePathway: ChoosePathwayState?
+	public var checkIn: CheckInContainerState?
 //		= JourneyMocks.checkIn
 }

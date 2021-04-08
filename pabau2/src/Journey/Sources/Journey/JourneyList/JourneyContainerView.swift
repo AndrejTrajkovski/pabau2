@@ -12,7 +12,7 @@ import Filters
 import SharedComponents
 import Appointments
 
-let checkInMiddleware = Reducer<ChoosePathwayState, CheckInContainerAction, JourneyEnvironment> { state, action, _ in
+let checkInMiddleware = Reducer<JourneyState, CheckInContainerAction, JourneyEnvironment> { state, action, _ in
 	switch action {
 	case .patient(.stepsView(.onXTap)):
 		state.checkIn = nil
@@ -39,11 +39,17 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 	calendarDatePickerReducer.pullback(
 		state: \JourneyContainerState.journey.selectedDate,
 		action: /JourneyContainerAction.datePicker,
-		environment: { $0 }),
-	journeyContainerReducer2.pullback(
-		state: \JourneyContainerState.journey,
-		action: /JourneyContainerAction.self,
 		environment: { $0 }
+	),
+	journeyReducer.pullback(
+				 state: \JourneyContainerState.journey,
+				 action: /JourneyContainerAction.journey,
+				 environment: { $0 }
+	),
+	journeyReducer.pullback(
+				 state: \JourneyContainerState.journey,
+				 action: /JourneyContainerAction.searchQueryChanged,
+				 environment: { $0 }
 	),
 	journeyFilterReducer.optional.pullback(
 		state: \JourneyContainerState.journeyEmployeesFilter,
@@ -52,7 +58,8 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 			return EmployeesFilterEnvironment(
 				journeyAPI: $0.journeyAPI,
 				userDefaults: $0.userDefaults)
-		}),
+		}
+	),
 	.init { state, action, env in
 		switch action {
 		case .toggleEmployees:
@@ -90,19 +97,6 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 	}
 )
 
-//JourneyState, ChooseFormAction
-public let journeyContainerReducer2: Reducer<JourneyState, JourneyContainerAction, JourneyEnvironment> =
-	.combine(
-		journeyReducer.pullback(
-					 state: \JourneyState.self,
-					 action: /JourneyContainerAction.journey,
-					 environment: { $0 }),
-        journeyReducer.pullback(
-                     state: \JourneyState.self,
-                     action: /JourneyContainerAction.searchQueryChanged,
-                     environment: { $0 })
-)
-
 let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 	.combine (
 		choosePathwayContainerReducer.optional.pullback(
@@ -113,6 +107,23 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
             struct SearchJourneyId: Hashable {}
 
 			switch action {
+//			case .chooseConsent(.proceed):
+//				state.checkIn = CheckInContainerState(appointment: state.selectedAppointment,
+//													  pathway: ,
+//													  pathwayTemplate: state.selectedPathway!
+//													  patientDetails: ClientBuilder.empty,
+//													  medicalHistoryId: HTMLForm.getMedHistory().id,
+//													  medHistory: HTMLFormParentState.init(info: FormTemplateInfo(id: HTMLForm.getMedHistory().id, name: "MEDICAL HISTORY", type: .history), clientId: Client.ID.init(rawValue: .right(1)), getLoadingState: .initial),
+//													  consents: state.allConsents.filter(
+//														pipe(get(\.id), state.selectedConsentsIds.contains)
+//													  ),
+//													  allConsents: state.allConsents,
+//													  photosState: PhotosState.init(SavedPhoto.mock())
+//				)
+//				return Just(ChoosePathwayContainerAction.checkIn(CheckInContainerAction.showPatientMode))
+//					.delay(for: .seconds(checkInAnimationDuration), scheduler: DispatchQueue.main)
+//					.eraseToEffect()
+				
 			case .selectedFilter(let filter):
 				state.selectedFilter = filter
 				
@@ -139,11 +150,33 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 			case .choosePathwayBackTap:
 				state.choosePathway = nil
 				
-			case .choosePathway(_):
+			case .choosePathway(.matchResponse(let pathwayResult)):
+				switch pathwayResult {
+				case .success(let pathway):
+					break
+				case .failure(let error):
+					break
+				}
+				
+			case .checkIn(_):
+				break
+				
+			case .choosePathway(.rows(id: let id, action: let action)):
+				break
+			case .choosePathway(.gotPathwayTemplates(_)):
 				break
 			}
 			return .none
-	}
+	},
+		checkInReducer.optional.pullback(
+			state: \JourneyState.checkIn,
+			action: /JourneyAction.checkIn,
+			environment: { $0 }),
+		checkInMiddleware.pullback(
+			state: \JourneyState.self,
+			action: /JourneyAction.checkIn,
+			environment: { $0 }
+		)
 )
 
 public struct JourneyContainerView: View {
@@ -169,12 +202,14 @@ public struct JourneyContainerView: View {
 			UITableView.appearance().separatorStyle = .none
 		}
 	}
+	
 	public init(_ store: Store<JourneyContainerState, JourneyContainerAction>) {
 		self.store = store
 		self.viewStore = ViewStore(self.store
 			.scope(state: ViewState.init(state:),
 						 action: { $0 }))
 	}
+	
 	public var body: some View {
 		VStack {
             datePicker

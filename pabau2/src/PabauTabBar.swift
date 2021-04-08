@@ -92,7 +92,7 @@ struct PabauTabBar: View {
 		let isShowingAppointments: Bool
 		let selectedTab: TabItemId
 		init(state: TabBarState) {
-			self.isShowingCheckin = state.journeyContainer?.journey.choosePathway?.checkIn != nil
+			self.isShowingCheckin = state.journeyContainer?.journey.checkIn != nil
 			self.isShowingAppointments = state.addAppointment != nil
 			self.selectedTab = state.selectedTab
 		}
@@ -183,8 +183,8 @@ struct PabauTabBar: View {
 
 	fileprivate func checkIn() -> IfLetStore<CheckInContainerState, CheckInContainerAction, CheckInNavigationView?> {
 		return IfLetStore(self.store.scope(
-			state: { $0.journeyContainer?.journey.choosePathway?.checkIn },
-			action: { .journey(.journey(.choosePathway(.checkIn($0)))) }
+			state: { $0.journeyContainer?.journey.checkIn },
+			action: { .journey(.journey(.checkIn($0))) }
 		),
 		then: CheckInNavigationView.init(store:))
 	}

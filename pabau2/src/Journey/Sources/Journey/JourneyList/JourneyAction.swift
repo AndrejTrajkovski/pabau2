@@ -19,4 +19,5 @@ public enum JourneyAction {
 	case selectedAppointment(Appointment)
 	case choosePathwayBackTap
 	case choosePathway(ChoosePathwayContainerAction)
+	case checkIn(CheckInContainerAction)
 }

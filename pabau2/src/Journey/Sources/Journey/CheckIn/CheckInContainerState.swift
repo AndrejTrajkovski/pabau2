@@ -5,41 +5,42 @@ import Util
 import Form
 
 public struct CheckInContainerState: Equatable {
-
+	
 	let appointment: Appointment
-	let pathway: PathwayTemplate
+	let pathway: Pathway
+	let pathwayTemplate: PathwayTemplate
 	
 	var isPatientModeActive: Bool = false
 	
 	var patientDetailsLS: LoadingState
 	var patientDetails: ClientBuilder
 	var patientDetailsStatus: Bool
-
+	
 	var medicalHistoryId: HTMLForm.ID
 	var medicalHistory: HTMLFormParentState
-
+	
 	var consents: IdentifiedArrayOf<HTMLFormParentState>
-
+	
 	var treatmentNotes: IdentifiedArrayOf<HTMLFormParentState>
-
+	
 	var prescriptions: IdentifiedArrayOf<HTMLFormParentState>
-
+	
 	var allTreatmentForms: IdentifiedArrayOf<FormTemplateInfo>
 	var allConsents: IdentifiedArrayOf<FormTemplateInfo>
-
+	
 	var aftercare: Aftercare?
 	var aftercareStatus: Bool
-
+	
 	var isPatientComplete: Bool
-
+	
 	var photos: PhotosState
-
+	
 	var selectedConsentsIds: [HTMLForm.ID]
 	var selectedTreatmentFormsIds: [HTMLForm.ID]
-
+	
 	var patientSelectedIndex: Int
 	var doctorSelectedIndex: Int
-
+	
 	var passcodeState = PasscodeState()
 	var isEnterPasscodeActive: Bool = false
 	var isChooseConsentActive: Bool = false
@@ -50,102 +51,21 @@ public struct CheckInContainerState: Equatable {
 }
 
 extension CheckInContainerState {
-
-	var doctorSummary: DoctorSummaryState {
-		get {
-			DoctorSummaryState(appointment: appointment,
-							   isChooseConsentActive: isChooseConsentActive,
-							   isChooseTreatmentActive: isChooseTreatmentActive,
-							   isDoctorCheckInMainActive: isDoctorCheckInMainActive,
-							   doctorCheckIn: doctorCheckIn)
-		}
-		set {
-			self.doctorCheckIn = newValue.doctorCheckIn
-			self.isChooseConsentActive = newValue.isChooseConsentActive
-			self.isChooseTreatmentActive = newValue.isChooseTreatmentActive
-			self.isDoctorCheckInMainActive = newValue.isDoctorCheckInMainActive
-		}
-	}
-
-	var chooseTreatments: ChooseFormJourneyState {
-		get {
-			return ChooseFormJourneyState(
-				mode: .treatmentNotes,
-				forms: treatmentNotes,
-				templates: allTreatmentForms,
-				templatesLoadingState: .initial,
-				selectedTemplatesIds: selectedTreatmentFormsIds
-			)
-		}
-		set {
-			self.treatmentNotes = newValue.forms
-			self.allTreatmentForms = newValue.templates
-			self.selectedTreatmentFormsIds = newValue.selectedTemplatesIds
-		}
-	}
-
-	var chooseConsents: ChooseFormJourneyState {
-		get {
-			return ChooseFormJourneyState(
-				mode: .consentsCheckIn,
-				forms: consents,
-				templates: allConsents,
-				templatesLoadingState: .initial,
-				selectedTemplatesIds: selectedConsentsIds
-			)
-		}
-		set {
-			self.consents = newValue.forms
-			self.allConsents = newValue.templates
-			self.selectedConsentsIds = newValue.selectedTemplatesIds
-		}
-	}
-
-	var passcode: PasscodeContainerState {
-		get {
-			PasscodeContainerState(
-				passcode: self.passcodeState,
-				didGoBackToPatientMode: self.didGoBackToPatientMode,
-				isDoctorCheckInMainActive: self.isDoctorCheckInMainActive
-			)
-		}
-		set {
-			self.passcodeState = newValue.passcode
-			self.didGoBackToPatientMode = newValue.didGoBackToPatientMode
-			self.isDoctorCheckInMainActive = newValue.isDoctorCheckInMainActive
-		}
-	}
-
-	var isHandBackDeviceActive: Bool {
-		get { isPatientComplete }
-		set { isPatientComplete = newValue }
-	}
-
-	var handback: HandBackDeviceState {
-		get {
-			HandBackDeviceState(isEnterPasscodeActive: self.isEnterPasscodeActive,
-								isNavBarHidden: !self.passcode.passcode.unlocked
-			)
-		}
-	}
-}
-
-extension CheckInContainerState {
-
+	
 	init(appointment: Appointment,
-		 pathway: PathwayTemplate,
+		 pathway: Pathway,
+		 pathwayTemplate: PathwayTemplate,
 		 patientDetails: ClientBuilder,
 		 medicalHistoryId: HTMLForm.ID,
 		 medHistory: HTMLFormParentState,
-		 consents: IdentifiedArrayOf<FormTemplateInfo>,
-		 allConsents: IdentifiedArrayOf<FormTemplateInfo>,
 		 photosState: PhotosState) {
 		self.appointment = appointment
 		self.pathway = pathway
+		self.pathwayTemplate = pathwayTemplate
 		self.patientDetails = patientDetails
 		self.medicalHistory = medHistory
 		self.consents = []
-		self.allConsents = allConsents
+		self.allConsents = []
 		self.allTreatmentForms = []
 		self.selectedConsentsIds = []
 		self.selectedTreatmentFormsIds = []
@@ -162,13 +82,95 @@ extension CheckInContainerState {
 	}
 }
 
-extension CheckInContainerState {
 
+extension CheckInContainerState {
+	
+	var doctorSummary: DoctorSummaryState {
+		get {
+			DoctorSummaryState(appointment: appointment,
+							   isChooseConsentActive: isChooseConsentActive,
+							   isChooseTreatmentActive: isChooseTreatmentActive,
+							   isDoctorCheckInMainActive: isDoctorCheckInMainActive,
+							   doctorCheckIn: doctorCheckIn)
+		}
+		set {
+			self.doctorCheckIn = newValue.doctorCheckIn
+			self.isChooseConsentActive = newValue.isChooseConsentActive
+			self.isChooseTreatmentActive = newValue.isChooseTreatmentActive
+			self.isDoctorCheckInMainActive = newValue.isDoctorCheckInMainActive
+		}
+	}
+	
+	var chooseTreatments: ChooseFormJourneyState {
+		get {
+			return ChooseFormJourneyState(
+				mode: .treatmentNotes,
+				forms: treatmentNotes,
+				templates: allTreatmentForms,
+				templatesLoadingState: .initial,
+				selectedTemplatesIds: selectedTreatmentFormsIds
+			)
+		}
+		set {
+			self.treatmentNotes = newValue.forms
+			self.allTreatmentForms = newValue.templates
+			self.selectedTreatmentFormsIds = newValue.selectedTemplatesIds
+		}
+	}
+	
+	var chooseConsents: ChooseFormJourneyState {
+		get {
+			return ChooseFormJourneyState(
+				mode: .consentsCheckIn,
+				forms: consents,
+				templates: allConsents,
+				templatesLoadingState: .initial,
+				selectedTemplatesIds: selectedConsentsIds
+			)
+		}
+		set {
+			self.consents = newValue.forms
+			self.allConsents = newValue.templates
+			self.selectedConsentsIds = newValue.selectedTemplatesIds
+		}
+	}
+	
+	var passcode: PasscodeContainerState {
+		get {
+			PasscodeContainerState(
+				passcode: self.passcodeState,
+				didGoBackToPatientMode: self.didGoBackToPatientMode,
+				isDoctorCheckInMainActive: self.isDoctorCheckInMainActive
+			)
+		}
+		set {
+			self.passcodeState = newValue.passcode
+			self.didGoBackToPatientMode = newValue.didGoBackToPatientMode
+			self.isDoctorCheckInMainActive = newValue.isDoctorCheckInMainActive
+		}
+	}
+	
+	var isHandBackDeviceActive: Bool {
+		get { isPatientComplete }
+		set { isPatientComplete = newValue }
+	}
+	
+	var handback: HandBackDeviceState {
+		get {
+			HandBackDeviceState(isEnterPasscodeActive: self.isEnterPasscodeActive,
+								isNavBarHidden: !self.passcode.passcode.unlocked
+			)
+		}
+	}
+}
+
+extension CheckInContainerState {
+	
 	var doctorCheckIn: CheckInDoctorState {
 		get {
 			CheckInDoctorState(
 				appointment: self.appointment,
-				pathway: self.pathway,
+				pathway: self.pathwayTemplate,
 				treatmentNotes: self.treatmentNotes,
 				prescriptions: self.prescriptions,
 				aftercare: self.aftercare,
@@ -186,12 +188,12 @@ extension CheckInContainerState {
 			self.doctorSelectedIndex = newValue.doctorSelectedIndex
 		}
 	}
-
+	
 	var patientCheckIn: CheckInPatientState {
 		get {
 			CheckInPatientState(
 				appointment: appointment,
-				pathway: pathway,
+				pathway: pathwayTemplate,
 				patientDetails: patientDetails,
 				patientDetailsStatus: patientDetailsStatus,
 				medicalHistoryId: medicalHistoryId,
@@ -202,7 +204,7 @@ extension CheckInContainerState {
 				patientDetailsLS: patientDetailsLS
 			)
 		}
-
+		
 		set {
 			self.patientDetails = newValue.patientDetails
 			self.patientDetailsStatus = newValue.patientDetailsStatus

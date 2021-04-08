@@ -159,6 +159,8 @@ extension CalendarEvent: Decodable {
 		case extraEmployees = "extra_employees"
 		case linked_pathway_id
 		case pathway_template_id
+		case steps_total
+		case steps_complete
 	}
 	
 	public init(from decoder: Decoder) throws {
@@ -243,6 +245,16 @@ extension Date {
 }
 
 extension DateFormatter {
+	
+	public static let HHmm: DateFormatter = {
+		let formatter = DateFormatter()
+		formatter.dateFormat = "HH:mm"
+		formatter.calendar = Calendar(identifier: .iso8601)
+		formatter.timeZone = TimeZone(secondsFromGMT: 0)
+		formatter.locale = Locale(identifier: "en_US_POSIX")
+		return formatter
+	}()
+	
 	public static let HHmmss: DateFormatter = {
 		let formatter = DateFormatter()
 		formatter.dateFormat = "HH:mm:ss"
