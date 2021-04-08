@@ -13,15 +13,15 @@ extension APIClient {
         let requestBuilder: RequestBuilder<PlaceholdeResponse>.Type = requestBuilderFactory.getBuilder()
 
         var params: [String : Any] = [
-            "all_day": appointment.isAllDay ?? false,
-            "private": appointment.isPrivate ?? false,
-            "instant_sms": appointment.smsNotification ?? false,
-            "sent_sms": appointment.smsNotification ?? false,
-            "sent_email": appointment.emailNotification ?? false,
-            "sent_survey": appointment.surveyNotification ?? false,
+            "all_day": (appointment.isAllDay ?? false) ? 1 : 0,
+            "private": (appointment.isPrivate ?? false) ? 1 : 0,
+            "instant_sms": (appointment.smsNotification ?? false) ? 1 : 0,
+            "sent_sms": (appointment.smsNotification ?? false) ? 1 : 0,
+            "sent_email": (appointment.emailNotification ?? false) ? 1 : 0,
+            "sent_survey": (appointment.surveyNotification ?? false) ? 1 : 0,
             "status" : "Waiting",
         ]
-
+    
         if let startTime = appointment.startTime {
             if (appointment.isAllDay ?? false) {
                 params["start_time"] = startTime.getFormattedDate(format: "dd-MM-yyyy")
@@ -33,6 +33,10 @@ extension APIClient {
                 endTime.addTimeInterval(duration)
                 params["end_time"] = endTime.getFormattedDate(format: "dd-MM-yyyy HH:mm")
             }
+        }
+        
+        if let locationID = appointment.locationID {
+            params["location_id"] = locationID
         }
 
         if let clientID = appointment.clientID {
@@ -63,6 +67,7 @@ extension APIClient {
             params["participant_user_ids"] = participantUserIDS
         }
     
+        print(params as NSDictionary)
         return requestBuilder.init(
             method: .POST,
             baseUrl: baseUrl,
@@ -70,5 +75,36 @@ extension APIClient {
             queryParams: commonAnd(other: params)
         )
             .effect()
+    }
+    
+    public func updateAppointment(appointment: AppointmentBuilder) -> Effect<PlaceholdeResponse, RequestError> {
+        let requestBuilder: RequestBuilder<PlaceholdeResponse>.Type = requestBuilderFactory.getBuilder()
+        
+        var params: [String : Any] = [:]
+        
+        if let appointmentID = appointment.appointmentID {
+            params["appointment_id"] = appointmentID
+        }
+        
+        if let employeeID = appointment.employeeID {
+            params["uid"] = employeeID
+        }
+        
+        if let startTime = appointment.startTime {
+            params["start_time"] = startTime.getFormattedDate(format: "dd-MM-yyyy HH:mm")
+            let duration = (appointment.duration ?? 0) * 60 //seconds
+            var endTime = startTime
+            endTime.addTimeInterval(duration)
+            params["end_time"] = endTime.getFormattedDate(format: "dd-MM-yyyy HH:mm")
+        }
+        
+        print(params as NSDictionary)
+        return requestBuilder.init(
+            method: .POST,
+            baseUrl: baseUrl,
+            path: .createAppointment,
+            queryParams: commonAnd(other: params)
+        )
+        .effect()
     }
 }

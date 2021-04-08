@@ -2,14 +2,14 @@ import Foundation
 import SwiftDate
 
 public extension Date {
-	
+
 	func cutToDay(_ calendar: Calendar = .gregorian) -> Date {
 		let comps = calendar.dateComponents([.year, .month, .day], from: self)
 		let result = calendar.date(from: comps)!
 		return result
 	}
 	
-	static func concat(_ yearMonthDay: Date, _ hourMinuteSecond: Date, _ calendar: Calendar = .gregorian) -> Date {
+    static func concat(_ yearMonthDay: Date, _ hourMinuteSecond: Date, _ calendar: Calendar = .gregorian) -> Date {
 		let ymdComps = calendar.dateComponents([.year, .month, .day], from: yearMonthDay)
 		let hmsComps = calendar.dateComponents([.hour, .minute, .second], from: hourMinuteSecond)
 		var components = DateComponents()

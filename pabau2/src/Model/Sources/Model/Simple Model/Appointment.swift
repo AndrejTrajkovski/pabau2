@@ -7,8 +7,9 @@ public struct Appointment: Equatable, Identifiable, Hashable, Decodable {
 	public func hash(into hasher: inout Hasher) {
 		hasher.combine(id)
 	}
-	
+    
 	public let id: CalendarEvent.Id
+    public let all_day: Bool
 	public var start_date: Date
 	public var end_date: Date
 	public var employeeId: Employee.Id
@@ -35,6 +36,7 @@ extension Appointment {
 	
 	public init(
 		_ id: CalendarEvent.Id,
+        _ all_day: Bool,
 		_ start_date: Date,
 		_ end_date: Date,
 		_ employeeId: Employee.Id,
@@ -47,6 +49,7 @@ extension Appointment {
 		_ container: KeyedDecodingContainer<CalendarEvent.CodingKeys>
 	) throws {
 		self.id = id
+        self.all_day = all_day
 		self.start_date = start_date
 		self.end_date = end_date
 		self.employeeId = employeeId

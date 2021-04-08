@@ -78,13 +78,13 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
                         }
                     }
                 }
+                
             case .failure(let error):
                 break
             }
 		case .gotCalendarResponse(let result):
             switch result {
             case .success(let calendarResponse):
-                // MARK: Iurii
                 let employees = state.calendar.employees.mapValues {
                     $0.elements
                 }.flatMap(\.value)
@@ -105,7 +105,9 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
                         }
                     }
                 }
-                print(state.calendar.shifts, "<---- CalendarShifts")
+                print(calendarResponse.appointments, "<---- appointments")
+                print(state.calendar.chosenLocationsIds)
+                print(filteredEmployees)
                 state.appointments.refresh(
                     events: calendarResponse.appointments,
                     locationsIds: state.calendar.chosenLocationsIds,
@@ -122,12 +124,13 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
             if state.appointments.calendarType == .week {
                 endDate = Calendar.current.date(byAdding: .day, value: 7, to: endDate) ?? endDate
             }
-
+            var employeesIds = state.calendar.selectedEmployeesIds().removingDuplicates()
+            var locationIds = state.calendar.chosenLocationsIds.removingDuplicates()
 			return env.journeyAPI.getCalendar(
                 startDate: startDate,
                 endDate: endDate,
-                locationIds: state.calendar.chosenLocationsIds,
-                employeesIds: state.calendar.selectedEmployeesIds(),
+                locationIds: locationIds,
+                employeesIds: employeesIds,
                 roomIds: []
             )
 			.receive(on: DispatchQueue.main)
@@ -144,7 +147,6 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 			employee.map {
 				state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate, employee: $0)
 			}
-			//- TODO Iurii
 		case .room(.addAppointment(let startDate, let durationMins, let dropKeys)):
 			let (date, location, subsection) = dropKeys
 			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
@@ -175,7 +177,7 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
 			state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate)
         case .week(.editAppointment(let appointment)):
-			//- TODO Iurii
+            print(appointment)
             state.addAppointment = AddAppointmentState.init(editingAppointment: appointment, startDate: appointment.start_date, endDate: appointment.end_date)
 		case .appDetails(.addService):
 			//- TODO Iurii
@@ -292,7 +294,16 @@ public struct CalendarContainer: View {
                 isPresented:
 					Binding(
                         get: { activeSheet(state: viewStore.state.calendar) != nil },
-                        set: { _ in dismissAction(state: viewStore.state.calendar).map(viewStore.send) }
+                        set: {
+                            _ in dismissAction(state: viewStore.state.calendar).map(viewStore.send)
+                            viewStore.send(
+                                .datePicker(
+                                    .selectedDate(
+                                        viewStore.state.calendar.selectedDate
+                                    )
+                                )
+                            )
+                        }
                     ),
                 content: {
                     Group {

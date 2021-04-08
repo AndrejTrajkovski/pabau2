@@ -16,7 +16,6 @@ public class JZAppointmentEvent: JZBaseEvent, Identifiable {
 	public init(appointment: CalendarEvent) {
 		self.app = appointment
 		let jzid = appointment.id.rawValue
-		// If you want to have you custom uid, you can set the parent class's id with your uid or UUID().uuidString (In this case, we just use the base class id)
 		super.init(id: jzid, startDate: appointment.start_date, endDate: appointment.end_date)
 	}
 

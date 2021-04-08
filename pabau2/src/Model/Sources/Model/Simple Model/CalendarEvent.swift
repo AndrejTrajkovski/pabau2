@@ -43,6 +43,16 @@ extension CalendarEvent {
 }
 
 extension CalendarEvent {
+    
+    public func getAppointment() -> Appointment? {
+        switch self {
+        case .appointment(let app):
+            return app
+        default:
+            return nil
+        }
+    }
+    
 	public var id: CalendarEvent.Id {
 		return self[dynamicMember: \.id]
 	}
@@ -181,6 +191,7 @@ extension CalendarEvent: Decodable {
 			_private = Bool.init(string) ?? false
 		}
 		let status = try? container.decode(AppointmentStatus?.self, forKey: .appointmentStatus)
+        let allDay = try? container.decode(String.self, forKey: .allDay)
 		let start_date = try Date(container: container,
 								  codingKey: .startDate,
 								  formatter: DateFormatter.yearMonthDay)
@@ -190,25 +201,28 @@ extension CalendarEvent: Decodable {
 		let end_time = try Date(container: container,
 								codingKey: .endTime,
 								formatter: DateFormatter.HHmmss)
+   
 		let start = Date.concat(start_date, start_time)
 		let end = Date.concat(start_date, end_time)
-		
 		let employeeName = try container.decode(String.self, forKey: .employeeName)
 		let employeeInitials = employeeName.split(separator: " ").joined().uppercased()
 		let serviceId = try? container.decode(Service.Id.self, forKey: .serviceID)
 		if let serviceId = serviceId,
 		   serviceId.rawValue != "0" {
-			let app = try Appointment(id,
-									  start,
-									  end,
-									  employeeId,
-									  employeeInitials,
-									  locationId,
-									  _private,
-									  status,
-									  employeeName,
-									  serviceId,
-									  container)
+            let app = try Appointment(
+                id,
+                allDay == "1",
+                start,
+                end,
+                employeeId,
+                employeeInitials,
+                locationId,
+                _private,
+                status,
+                employeeName,
+                serviceId,
+                container
+            )
 			self = .appointment(app)
 		} else {
 			let bookout = try Bookout(id,

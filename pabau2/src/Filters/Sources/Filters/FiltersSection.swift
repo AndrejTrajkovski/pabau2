@@ -28,9 +28,11 @@ struct FilterSectionState<S: Identifiable & Equatable & Named>: Equatable, Ident
 
 	var header: FilterSectionHeaderState {
 		get {
-			FilterSectionHeaderState(location: location,
-									 isLocationChosen: isLocationChosen,
-									 isExpanded: isExpanded)
+			FilterSectionHeaderState(
+                location: location,
+				isLocationChosen: isLocationChosen,
+				isExpanded: isExpanded
+            )
 		}
 		set {
 			self.isLocationChosen = newValue.isLocationChosen
@@ -59,8 +61,11 @@ struct FilterSection<S: Identifiable & Equatable & Named> : View {
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			VStack(spacing: 0) {
-				FilterSectionHeader(store: store.scope(state: { $0.header },
-													   action: { .header($0) })
+				FilterSectionHeader(
+                    store: store.scope(
+                        state: { $0.header },
+						action: { .header($0) }
+                    )
 				)
 				.padding()
 				.frame(height: 60)

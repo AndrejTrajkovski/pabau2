@@ -19,8 +19,10 @@ class CalendarWeekView: JZLongPressWeekView {
 	public override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		if var cell = collectionView.dequeueReusableCell(withReuseIdentifier: Self.cellId, for: indexPath) as? BaseCalendarCell,
 			let event = getCurrentEvent(with: indexPath) as? JZAppointmentEvent {
-			CellConfigurator().configure(cell: &cell,
-										 appointment: event)
+			CellConfigurator().configure(
+                cell: &cell,
+				appointment: event
+            )
 			return cell
 		}
 		preconditionFailure("LongPressEventCell and AllDayEvent should be casted")

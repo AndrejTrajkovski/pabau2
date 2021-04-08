@@ -22,12 +22,14 @@ public class CalendarWeekViewController: BaseCalendarViewController {
 
 	public override func viewDidLoad() {
 		super.viewDidLoad()
-		weekView.setupCalendar(numOfDays: 7,
-							   setDate: viewStore.state.selectedDate.getMondayOfWeek(),
-							   allEvents: [:],
-							   scrollType: .pageScroll,
-							   firstDayOfWeek: .Monday,
-							   scrollableRange: (nil, nil))
+        weekView.setupCalendar(
+            numOfDays: 7,
+            setDate: viewStore.state.selectedDate.getMondayOfWeek(),
+            allEvents: [:],
+            scrollType: .pageScroll,
+            firstDayOfWeek: .Monday,
+            scrollableRange: (nil, nil)
+        )
 		self.viewStore.publisher.selectedDate
 			.combineLatest(self.viewStore.publisher.appointments)
 			.receive(on: DispatchQueue.main)
@@ -35,7 +37,7 @@ public class CalendarWeekViewController: BaseCalendarViewController {
 				let newInitDate = $0.0.getMondayOfWeek()
 				self?.weekView.updateWeekView(to: newInitDate)
 				self?.weekView.forceReload(reloadEvents: $0.1.mapValues(pipe(get(\.elements), map(JZAppointmentEvent.init(appointment:)))))
-			}).store(in: &self.cancellables)
+        }).store(in: &self.cancellables)
 	}
 
 	public override func loadView() {
@@ -80,9 +82,11 @@ extension CalendarWeekViewController: JZLongPressViewDelegate {
 					})
 	}
 
-	public func weekView(_ weekView: JZLongPressWeekView,
-						 didSelect editingEvent: JZBaseEvent,
-						 startOfDay: Date) {
+    public func weekView(
+        _ weekView: JZLongPressWeekView,
+        didSelect editingEvent: JZBaseEvent,
+        startOfDay: Date
+    ) {
 		viewStore.send(.onSelect(startOfDayDate: startOfDay, eventId: editingEvent.id))
 	}
 }
