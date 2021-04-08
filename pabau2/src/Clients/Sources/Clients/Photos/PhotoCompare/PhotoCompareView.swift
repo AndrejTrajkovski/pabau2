@@ -81,11 +81,14 @@ let photoCompareReducer = Reducer.combine(
             state.photos.map { photos in
                 photosArray.append(contentsOf: photos.value)
             }
-            state.editPhotoState = EditPhotosState(photosArray)
+            //state.editPhotoState = EditPhotosState(photosArray)
+            state.editPhotoState = EditPhotosState(photosArray, currentPhoto: state.leftId)
             
             state.isEditPhotosActive = true
         case .shareAction(.backButton):
             state.shareSelectState = nil
+        case .editPhoto(.goBack):
+            state.isEditPhotosActive = false
         default:
             break
         }

@@ -29,8 +29,10 @@ public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnv
 				state.isCameraActive = true
 			case .openPhotoAlbum:
 				state.isPhotosAlbumActive = true
-			case .editPhotoList, .rightSide, .cameraOverlay, .singlePhotoEdit, .chooseInjectables:
+            case .editPhotoList, .rightSide, .cameraOverlay, .singlePhotoEdit, .chooseInjectables, .goBack:
 				break
+            case .save:
+                break
 			}
 			return .none
 		}
@@ -44,6 +46,8 @@ public enum EditPhotoAction: Equatable {
 	case cameraOverlay(CameraOverlayAction)
 	case singlePhotoEdit(SinglePhotoEditAction)
 	case chooseInjectables(ChooseInjectableAction)
+    case goBack
+    case save
 }
 
 public struct EditPhotosState: Equatable {
@@ -69,6 +73,12 @@ public struct EditPhotosState: Equatable {
 		self.editingPhotoId = photos.last?.id
 		self.isCameraActive = self.photos.isEmpty
 	}
+    
+    public init(_ photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>, currentPhoto: PhotoVariantId) {
+        self.photos = photos
+        self.editingPhotoId = currentPhoto
+        self.isCameraActive = self.photos.isEmpty
+    }
 
 	var isCameraActive: Bool {
 		get { self.showingImagePicker == .some(.camera) }
@@ -143,6 +153,14 @@ public struct EditPhotos: View {
 				.frame(height: 128)
 //				.padding()
 			}
+                .navigationBarItems(leading:
+                                        MyBackButton(text: Texts.back, action: { viewStore.send(.goBack)}
+                                        ), trailing:
+                                            Button(action: { viewStore.send(.save) }, //viewStore.send(.saveEdited) },
+                                                   label: { Text(Texts.save) })
+                )
+                .navigationBarBackButtonHidden(true)
+
 				.modalLink(isPresented: .constant(viewStore.state.isPhotosAlbumActive),
 									 linkType: ModalTransition.fullScreenModal,
 									 destination: {
@@ -282,4 +300,22 @@ func getPhoto(_ photos: IdentifiedArrayOf<PhotoViewModel>,
 	return id.map {
 		photos[id: $0]!
 	}
+}
+
+
+extension View {
+    public func snapshot() -> UIImage {
+        let controller = UIHostingController(rootView: self)
+        let view = controller.view
+        
+        let targetSize = controller.view.intrinsicContentSize
+        view?.bounds = CGRect(origin: .zero, size: targetSize)
+        view?.backgroundColor = .clear
+        
+        let renderer = UIGraphicsImageRenderer(size: targetSize)
+        
+        return renderer.image { _ in
+            view?.drawHierarchy(in: controller.view.bounds, afterScreenUpdates: true)
+        }
+    }
 }

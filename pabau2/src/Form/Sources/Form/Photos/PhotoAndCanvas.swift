@@ -27,16 +27,29 @@ struct PhotoParent: View {
 		self.store = store
 		self._photoSize = photoSize
 	}
-
+    
+    //using "preference key " in background() is not working https://developer.apple.com/forums/thread/668976
 	var body: some View {
 		PhotoCell(photo: ViewStore(store).state)
-			.background(PhotoSizePreferenceSetter())
-			.onPreferenceChange(PhotoSize.self) { size in
-				print(size)
-				self.photoSize = size
-		}
+        ContainerView {
+            PhotoSizePreferenceSetter()
+        }.onPreferenceChange(PhotoSize.self) { size in
+            self.photoSize = size
+        }
 	}
 }
+
+struct ContainerView<Content: View>: View {
+    let content: Content
+
+    init(@ViewBuilder content: @escaping () -> Content) {
+        self.content = content()
+    }
+    var body: some View {
+        content.isHidden(true)
+    }
+}
+
 
 struct PhotoSizePreferenceSetter: View {
 	var body: some View {
