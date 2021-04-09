@@ -184,8 +184,3 @@ struct ForgotPasswordView: View {
 		self.store.scope(state: { $0.resetPass }, action: { .resetPass($0)})
 	}
 }
-
-public func pprint(message: String) -> some View {
-    print(message)
-    return EmptyView().isHidden(true)
-}

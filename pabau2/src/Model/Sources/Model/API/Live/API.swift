@@ -9,7 +9,7 @@ public class APIClient: LoginAPI, JourneyAPI, ClientsAPI, FormAPI {
     }
 
     var baseUrl: String = "https://crm.pabau.com"
-    var newBaseUrl: String = "https://ios.pabau.me"
+    var forgotPwBaseUrl: String = "https://ios.pabau.me"
         
     var loggedInUser: User? = nil
 	let requestBuilderFactory: RequestBuilderFactory = RequestBuilderFactoryImpl()

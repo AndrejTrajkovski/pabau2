@@ -45,7 +45,7 @@ extension APIClient {
         let bodyValues = "email=\(email)&forgot_password_ios=true".data(using: .utf8)
 
 		return requestBuilder.init(method: .POST,
-								   baseUrl: newBaseUrl,
+								   baseUrl: forgotPwBaseUrl,
                                    path: .resetPass,
                                    queryParams: [:],
                                    body: bodyValues
