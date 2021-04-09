@@ -105,15 +105,7 @@ struct PhotoCompareView: View {
                 viewStore.state.isEditPhotosActive,
                 IfLetStore(self.store.scope(
                             state: { $0.editPhotoState }, action: { .editPhoto($0) }),
-                           then: {
-                            EditPhotos(store: $0)
-                                .navigationBarItems(leading:
-                                                        MyBackButton(text: Texts.back, action: { viewStore.send(.didTouchBackOnEditPhotos)}
-                                                        ), trailing:
-                                                            Button(action: { } , //viewStore.send(.saveEdited) },
-                                                                   label: { Text(Texts.save) })
-                                ).navigationBarBackButtonHidden(true)
-                           }
+                           then: { EditPhotos(store: $0) }
                 )
             )
             VStack {

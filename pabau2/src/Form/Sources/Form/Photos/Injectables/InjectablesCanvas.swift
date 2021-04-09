@@ -53,6 +53,7 @@ public enum InjectablesCanvasAction: Equatable {
 }
 
 struct InjectablesCanvas: View {
+    @Binding var didChange: Bool
 	let size: CGSize
 	let store: Store<InjectablesCanvasState, InjectablesCanvasAction>
 	struct State: Equatable {
@@ -71,6 +72,7 @@ struct InjectablesCanvas: View {
 			ZStack(alignment: .topLeading) {
 				TappableView { location in
 					viewStore.send(.didTapOnCanvas(location))
+                    didChange.toggle()
 				}
 				.background(Color.clear)
 				ForEachStore(self.store.scope(

@@ -31,7 +31,7 @@ public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnv
 				state.isPhotosAlbumActive = true
             case .editPhotoList, .rightSide, .cameraOverlay, .singlePhotoEdit, .chooseInjectables, .goBack:
 				break
-            case .save:
+            case .save:   
                 break
 			}
 			return .none
@@ -67,6 +67,11 @@ public struct EditPhotosState: Equatable {
 	var deletePhotoAlert: AlertState<EditPhotosRightSideAction>?
 
 	private var showingImagePicker: UIImagePickerController.SourceType?
+    
+    var isSavedPhoto: Bool = false
+    var editedPhoto: UIImage = UIImage()
+    var imageInjectable: UIImage = UIImage()
+    var photoSize: CGSize = .zero
 
 	public init (_ photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>) {
 		self.photos = photos
@@ -103,12 +108,16 @@ public struct EditPhotos: View {
 		let isChooseInjectablesActive: Bool
 		let editingPhotoId: PhotoVariantId?
 		let isDrawingDisabled: Bool
+        let isSavedPhoto: Bool
+        let editedPhoto: UIImage
 		init (state: EditPhotosState) {
 			self.isCameraActive = state.isCameraActive
 			self.isChooseInjectablesActive = state.isChooseInjectablesActive
 			self.editingPhotoId = state.editingPhotoId
 			self.isDrawingDisabled = state.activeCanvas != .drawing
 			self.isPhotosAlbumActive = state.isPhotosAlbumActive
+            self.isSavedPhoto = state.isSavedPhoto
+            self.editedPhoto = state.editedPhoto
 		}
 	}
 
@@ -153,11 +162,11 @@ public struct EditPhotos: View {
 				.frame(height: 128)
 //				.padding()
 			}
-                .navigationBarItems(leading:
-                                        MyBackButton(text: Texts.back, action: { viewStore.send(.goBack)}
-                                        ), trailing:
-                                            Button(action: { viewStore.send(.save) }, //viewStore.send(.saveEdited) },
-                                                   label: { Text(Texts.save) })
+                .navigationBarItems(
+                    leading: MyBackButton( text: Texts.back,
+                                           action: { viewStore.send(.goBack)} ),
+                    trailing: Button( action: { viewStore.send(.singlePhotoEdit(.saveDrawings)) },
+                                      label: { Text(Texts.save) })
                 )
                 .navigationBarBackButtonHidden(true)
 
@@ -254,7 +263,9 @@ extension EditPhotosState {
 				photo: editingPhoto,
 				allInjectables: self.allInjectables,
 				isChooseInjectablesActive: self.isChooseInjectablesActive,
-				chosenInjectatbleId: self.chosenInjectableId
+				chosenInjectatbleId: self.chosenInjectableId,
+                imageInjectable: self.imageInjectable,
+                photoSize: self.photoSize
 			)
 		}
 		set {
@@ -264,6 +275,8 @@ extension EditPhotosState {
 			self.allInjectables = newValue.allInjectables
 			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
 			self.chosenInjectableId = newValue.chosenInjectatbleId
+            self.imageInjectable = newValue.imageInjectable
+            self.photoSize = newValue.photoSize
 		}
 	}
 
