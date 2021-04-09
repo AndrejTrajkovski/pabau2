@@ -91,6 +91,8 @@ let loginViewReducer: Reducer<WalkthroughContainerState, LoginViewAction, LoginE
 		state: \WalkthroughContainerState.forgotPass,
 		action: /LoginViewAction.forgotPass,
 		environment: { $0 })
+        
+    
 )
 
 struct Login: View {

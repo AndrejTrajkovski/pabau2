@@ -40,7 +40,7 @@ public struct Texts {
 	public static let verifyingCode = "Verifying code...".localized
 
 	public static let checkYourEmail = "Check your email".localized
-	public static let checkEmailDesc = "The reset code for the email has been sent.".localized
+	public static let checkEmailDesc = "Your request has been sent. Please check your email for further instructions".localized
 
 	public static let passwordChanged = "Password Changed".localized
 	public static let passwordChangedDesc = "Please use your new password when logging in."
