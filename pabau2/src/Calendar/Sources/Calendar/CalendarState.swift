@@ -47,8 +47,10 @@ extension CalendarContainerState {
 
 	var calTypePicker: CalendarTypePickerState {
 		get {
-			CalendarTypePickerState(isDropdownShown: calendar.isDropdownShown,
-									appointments: appointments)
+			CalendarTypePickerState(
+                isDropdownShown: calendar.isDropdownShown,
+                appointments: appointments
+            )
 		}
 		set {
 			self.calendar.isDropdownShown = newValue.isDropdownShown
@@ -60,7 +62,12 @@ extension CalendarContainerState {
 extension CalendarContainerState {
 	var employeeSectionState: CalendarSectionViewState<Employee>? {
 		get {
-			guard let groupAppointments = extract(case: Appointments.employee, from: self.appointments) else { return nil }
+			guard let groupAppointments = extract(
+                    case: Appointments.employee,
+                    from: self.appointments
+            ) else {
+                return nil
+            }
 			return CalendarSectionViewState<Employee>(
 				selectedDate: calendar.selectedDate,
 				appointments: groupAppointments,
@@ -125,11 +132,6 @@ extension CalendarContainerState {
 				selectedDate: calendar.selectedDate,
 				addBookout: calendar.addBookoutState,
 				appDetails: calendar.appDetails
-//				locations: locations,
-//				chosenLocationsIds: chosenLocationsIds,
-//				subsections: rooms,
-//				chosenSubsectionsIds: chosenRoomsIds,
-//				shifts: [:]
 			)
 		}
 		set {
@@ -138,10 +140,6 @@ extension CalendarContainerState {
 				self.appointments = Appointments.week($0.appointments)
 				self.calendar.addBookoutState = $0.addBookout
 				self.calendar.appDetails = $0.appDetails
-//				self.locations = $0.locations
-//				self.chosenLocationsIds = $0.chosenLocationsIds
-//				self.rooms = $0.subsections
-//				self.chosenRoomsIds = $0.chosenSubsectionsIds
 			}
 		}
 	}
@@ -193,6 +191,7 @@ extension CalendarState {
 		self.isDropdownShown = false
 		self.selectedDate = Calendar.gregorian.startOfDay(for: Date())
 		shifts = [:]
+   
 		// MARK: - Iurii
 //		let employees = [Employee]()
 //		let rooms = Room.mock().map { $0.value }
@@ -211,7 +210,7 @@ extension CalendarState {
 //		self.chosenLocationsIds = Location.mock().map(\.id)
 //		self.chosenRoomsIds = self.rooms.mapValues { $0.map(\.id) }
 //		self.chosenEmployeesIds = self.employees.mapValues { $0.map(\.id) }
-
+//
 //		shifts = Shift.mock().mapValues {
 //			$0.mapValues {
 //				$0.mapValues {
@@ -221,6 +220,7 @@ extension CalendarState {
 //			}
 //		}
 //		self.expandedLocationsIds = locations.map(\.id)
+     
 		self.isShowingFilters = false
 		self.locations = []
 		self.employees = [:]
@@ -241,6 +241,12 @@ extension CalendarState {
 
 extension CalendarContainerState {
 	mutating func switchTo(calType: Appointments.CalendarType) {
-		self.appointments = Appointments(calType: calType, events: appointments.flatten(), locationsIds: calendar.locations.map(\.id), employees: calendar.employees.flatMap(\.value), rooms: calendar.rooms.flatMap(\.value))
+		self.appointments = Appointments(
+            calType: calType,
+            events: appointments.flatten(),
+            locationsIds: calendar.locations.map(\.id),
+            employees: calendar.employees.flatMap(\.value),
+            rooms: calendar.rooms.flatMap(\.value)
+        )
 	}
 }

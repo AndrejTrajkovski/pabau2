@@ -2,7 +2,7 @@ import ComposableArchitecture
 import Combine
 //MARK: - APIClient: ClientApi
 extension APIClient {
-    
+
     public func getClients(search: String?, offset: Int) -> Effect<[Client], RequestError> {
         let requestBuilder: RequestBuilder<ClientResponse>.Type = requestBuilderFactory.getBuilder()
         struct ClientResponse: Decodable, Equatable {

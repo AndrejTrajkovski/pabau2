@@ -5,7 +5,8 @@ public extension Date {
 	
 	func cutToDay(_ calendar: Calendar = .gregorian) -> Date {
 		let comps = calendar.dateComponents([.year, .month, .day], from: self)
-		return calendar.date(from: comps)!
+		let result = calendar.date(from: comps)!
+		return result
 	}
 	
 	static func concat(_ yearMonthDay: Date, _ hourMinuteSecond: Date, _ calendar: Calendar = .gregorian) -> Date {

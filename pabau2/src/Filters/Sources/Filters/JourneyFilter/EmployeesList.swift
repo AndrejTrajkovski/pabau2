@@ -5,15 +5,29 @@ import ComposableArchitecture
 
 public struct JourneyFilter: View {
 	let store: Store<JourneyFilterState, JourneyFilterAction>
-	@ObservedObject var viewStore: ViewStore<JourneyFilterState, JourneyFilterAction>
+	@ObservedObject var viewStore: ViewStore<State, JourneyFilterAction>
 
+	struct State: Equatable {
+		let employees: IdentifiedArrayOf<Employee>
+		let selectedIds: Set<Employee.Id>
+		init(state: JourneyFilterState) {
+			self.employees = state.employees[state.locationId] ?? []
+			self.selectedIds = state.selectedEmployeesIds
+		}
+	}
+	
 	public init(_ store: Store<JourneyFilterState, JourneyFilterAction>) {
 		self.store = store
-		self.viewStore = ViewStore(store)
+		print("JourneyFilter viewStore:")
+		print(ViewStore(store).state)
+		self.viewStore = ViewStore(store.scope(state: State.init(state:)))
+		print("JourneyFilter employees2:")
+		print(self.viewStore.state.employees)
 	}
 
 	public var body: some View {
-		EmployeeList(selectedEmployeesIds: self.viewStore.state.selectedEmployeesIds,
+		print("JourneyFilter")
+		return EmployeeList(selectedEmployeesIds: self.viewStore.state.selectedIds,
 					 employees: self.viewStore.state.employees,
 					 header: EmployeeHeader {
 						withAnimation {

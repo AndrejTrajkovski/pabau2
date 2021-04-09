@@ -29,7 +29,7 @@ public struct Employee: Decodable, Identifiable, Equatable, Hashable {
 		self.name = try container.decode(String.self, forKey: .name)
 		self.email = try container.decode(String.self, forKey: .email)
 		self.avatar = try container.decode(String?.self, forKey: .avatar)
-		self.locations = try container.decode(String.self, forKey: .avatar).split(separator: ",").map { Location.Id.init(rawValue: .left(String($0))) }
+		self.locations = try container.decode(String.self, forKey: .locations).split(separator: ",").map { Location.Id.init(rawValue: .left(String($0))) }
 		self.passcode = try container.decode(String.self, forKey: .passcode)
 	}
 }

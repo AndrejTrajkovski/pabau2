@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "FSCalendarSwiftUI",
-		platforms: [.iOS("13.0")],
+		platforms: [.iOS("14.0")],
     products: [
         .library(
             name: "FSCalendarSwiftUI",

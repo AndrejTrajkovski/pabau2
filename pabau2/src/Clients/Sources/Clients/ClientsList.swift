@@ -15,6 +15,8 @@ let clientsListReducer: Reducer<
 		environment: { $0}),
     .init { state, action, env in
         struct CancelDelayId: Hashable {}
+        struct RequestCancelID: Hashable {}
+        
         switch action {
         case .identified(let id, ClientRowAction.onSelectClient):
             state.selectedClient = ClientCardState(
@@ -22,9 +24,11 @@ let clientsListReducer: Reducer<
                 list: ClientCardListState(client: state.clients[id: id]!)
             )
             return env.apiClient.getItemsCount(clientId: id)
+                .receive(on: DispatchQueue.main.eraseToAnyScheduler())
                 .catchToEffect()
-                .map(ClientsListAction.gotItemsResponse)
                 .eraseToEffect()
+                .map(ClientsListAction.gotItemsResponse)
+                .cancellable(id: RequestCancelID(), cancelInFlight: true)
         case .identified(id: let id, action: .onAppear):
             if state.clients.last?.id == id && !state.isSearching && !state.isClientsLoading {
 				state.contactListLS = .loading
@@ -32,11 +36,16 @@ let clientsListReducer: Reducer<
                     search: nil,
                     offset: state.clients.count
                 )
+                .receive(on: DispatchQueue.main.eraseToAnyScheduler())
                 .catchToEffect()
-                .debounce(id: CancelDelayId(), for: 0.5, scheduler: DispatchQueue.main)
-                .receive(on: DispatchQueue.main)
-                .map(ClientsListAction.gotClientsResponse)
+                .debounce(
+                    id: CancelDelayId(),
+                    for: 0.5,
+                    scheduler: DispatchQueue.main.eraseToAnyScheduler()
+                )
                 .eraseToEffect()
+                .map(ClientsListAction.gotClientsResponse)
+                .cancellable(id: RequestCancelID(), cancelInFlight: true)
             }
         case .onSearchText(let text):
             state.searchText = text
@@ -51,15 +60,18 @@ let clientsListReducer: Reducer<
                     search: state.isSearching ? state.searchText : nil,
                     offset: 0
                 )
+                .receive(on: DispatchQueue.main.eraseToAnyScheduler())
                 .catchToEffect()
-                .debounce(id: CancelDelayId(), for: 0.5, scheduler: DispatchQueue.main)
-                .receive(on: DispatchQueue.main)
-                .map(ClientsListAction.gotClientsResponse)
+                .debounce(
+                    id: CancelDelayId(), for: 0.5,
+                    scheduler: DispatchQueue.main.eraseToAnyScheduler()
+                )
                 .eraseToEffect()
+                .map(ClientsListAction.gotClientsResponse)
+                .cancellable(id: RequestCancelID(), cancelInFlight: true)
         case .gotClientsResponse(let result):
             switch result {
             case .success(let clients):
-				print("clients.count \(clients.count)")
                 state.contactListLS = .gotSuccess
 
                 if state.isSearching {
@@ -67,7 +79,6 @@ let clientsListReducer: Reducer<
                     state.notFoundClients = clients.isEmpty
                     break
                 }
-
                 state.clients = (state.clients + .init(clients))
                 state.notFoundClients = state.clients.isEmpty
             case .failure(let error):

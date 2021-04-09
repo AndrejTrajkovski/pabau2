@@ -3,6 +3,60 @@ import Util
 
 //MARK: - JourneyAPI
 extension APIClient {
+    
+    public func getCalendar(
+        startDate: Date,
+        endDate: Date,
+        locationIds: [Location.ID],
+        employeesIds: [Employee.ID],
+        roomIds: [Room.ID]
+    ) -> Effect<CalendarResponse, RequestError> {
+        let requestBuilder: RequestBuilder<CalendarResponse>.Type = requestBuilderFactory.getBuilder()
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale.init(identifier: "en_US_POSIX")
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        var params: [String : Any] = [
+            "start_date": dateFormatter.string(from: startDate),
+            "end_date": dateFormatter.string(from: endDate),
+        ]
+        
+        if !locationIds.isEmpty {
+            params["location_id"] = locationIds.map(String.init).joined(separator: ",")
+        }
+        
+        if !employeesIds.isEmpty {
+            params["user_ids"] = employeesIds.map(String.init).joined(separator: ",")
+        }
+        
+        if !roomIds.isEmpty {
+            params["room_id"] = roomIds.map(String.init).joined(separator: ",")
+        }
+        
+        return requestBuilder.init(
+            method: .GET,
+            baseUrl: baseUrl,
+            path: .getAppointments,
+            queryParams: commonAnd(other: params)
+        )
+        .effect()
+    }
+	
+	public func getPathwayTemplates() -> Effect<IdentifiedArrayOf<PathwayTemplate>, RequestError> {
+		struct GetPathways: Codable {
+			let pathways: [PathwayTemplate]
+		}
+		let companyId = loggedInUser?.companyID ?? ""
+		let requestBuilder: RequestBuilder<GetPathways>.Type = requestBuilderFactory.getBuilder()
+		return requestBuilder.init(method: .GET,
+								   baseUrl: baseUrl,
+								   path: .getPathwaysTemplates,
+								   queryParams: commonAnd(other: ["company_id" : companyId])
+		)
+			.effect()
+			.map { IdentifiedArrayOf.init($0.pathways) }
+			.eraseToEffect()
+	}
 	
 	public func getEmployees() -> Effect<[Employee], RequestError> {
 		struct GetEmployees: Decodable {
@@ -12,51 +66,74 @@ extension APIClient {
 			}
 		}
 		let requestBuilder: RequestBuilder<GetEmployees>.Type = requestBuilderFactory.getBuilder()
-		return requestBuilder.init(method: .GET,
-								   baseUrl: baseUrl,
-								   path: .getEmployees,
-								   queryParams: commonAnd(other: [:])
-		)
-			.effect()
-			.map(\.employees)
-			.eraseToEffect()
+        
+        return requestBuilder.init(
+            method: .GET,
+            baseUrl: baseUrl,
+            path: .getEmployees,
+            queryParams: commonAnd(other: [:]
+            )
+        )
+        .effect()
+        .map(\.employees)
+        .eraseToEffect()
 	}
 	
-	public func getAppointments(startDate: Date, endDate: Date, locationIds: [Location.ID], employeesIds: [Employee.ID], roomIds: [Room.ID]) -> Effect<[CalendarEvent], RequestError> {
+	public func getAppointments(
+        startDate: Date,
+        endDate: Date,
+        locationIds: [Location.ID],
+        employeesIds: [Employee.ID],
+        roomIds: [Room.ID]
+    ) -> Effect<[CalendarEvent], RequestError> {
 		let requestBuilder: RequestBuilder<CalendarResponse>.Type = requestBuilderFactory.getBuilder()
-		let dateFormatter = DateFormatter.yearMonthDay
-		let params = [
+		let dateFormatter = DateFormatter()
+		dateFormatter.locale = Locale.init(identifier: "en_US_POSIX")
+		dateFormatter.dateFormat = "yyyy-MM-dd"
+		
+        var params: [String : Any] = [
 			"start_date": dateFormatter.string(from: startDate),
 			"end_date": dateFormatter.string(from: endDate),
-			"location_id": locationIds.map(String.init).joined(separator: ","),
-			"user_ids": employeesIds.map(String.init).joined(separator: ","),
-			"room_id": roomIds.map(String.init).joined(separator: ",")
-		]
-		return requestBuilder.init(method: .GET,
-								   baseUrl: baseUrl,
-								   path: .getAppointments,
-								   queryParams: commonAnd(other: params)
-		)
-			.effect()
-			.map(\.appointments)
+        ]
+        
+        if !locationIds.isEmpty {
+            params["location_id"] = locationIds.map(String.init).joined(separator: ",")
+        }
+        
+        if !employeesIds.isEmpty {
+            params["user_ids"] = employeesIds.map(String.init).joined(separator: ",")
+        }
+        
+        if !roomIds.isEmpty {
+            params["room_id"] = roomIds.map(String.init).joined(separator: ",")
+        }
+        
+		return requestBuilder.init(
+            method: .GET,
+            baseUrl: baseUrl,
+            path: .getAppointments,
+            queryParams: commonAnd(other: params)
+        )
+        .effect()
+        .map(\.appointments)
 	}
 	
 	public func getLocations() -> Effect<[Location], RequestError> {
-		struct GetLocations: Decodable {
-			let locations: [Location]
-			enum CodingKeys: String, CodingKey {
-				case locations = "employees"
-			}
-		}
-		let requestBuilder: RequestBuilder<GetLocations>.Type = requestBuilderFactory.getBuilder()
-		return requestBuilder.init(method: .GET,
-								   baseUrl: baseUrl,
-								   path: .getLocations,
-								   queryParams: commonParams()
-		)
-			.effect()
-			.map(\.locations)
-			.eraseToEffect()
+        struct GetLocations: Decodable {
+            let locations: [Location]
+            enum CodingKeys: String, CodingKey {
+                case locations = "employees"
+            }
+        }
+        let requestBuilder: RequestBuilder<GetLocations>.Type = requestBuilderFactory.getBuilder()
+        return requestBuilder.init(method: .GET,
+                                   baseUrl: baseUrl,
+                                   path: .getLocations,
+                                   queryParams: commonParams()
+        )
+        .effect()
+        .map(\.locations)
+        .eraseToEffect()
 	}
 	
 	public func createShift(shiftSheme: ShiftSchema) -> Effect<PlaceholdeResponse, RequestError> {

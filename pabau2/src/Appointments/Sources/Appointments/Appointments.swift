@@ -52,17 +52,21 @@ public enum Appointments: Equatable {
 
 public extension Appointments {
 	
-	mutating func refresh(events: [CalendarEvent],
-						  locationsIds: [Location.ID],
-						  employees: [Employee],
-						  rooms: [Room]) {
-		self = .init(calType: self.calendarType,
-					 events: events,
-					 locationsIds: locationsIds,
-					 employees: employees,
-					 rooms: rooms)
+	mutating func refresh(
+        events: [CalendarEvent],
+        locationsIds: [Location.ID],
+        employees: [Employee],
+        rooms: [Room]
+    ) {
+        self = .init(
+            calType: self.calendarType,
+            events: events,
+            locationsIds: locationsIds,
+            employees: employees,
+            rooms: rooms
+        )
 	}
-	
+
 	init(calType: CalendarType,
 		 events: [CalendarEvent],
 		 locationsIds: [Location.ID],
@@ -71,18 +75,22 @@ public extension Appointments {
 	) {
 		switch calType {
 		case .employee:
-			let appointments = EventsBy<Employee>.init(events: events,
-													   locationsIds: locationsIds, //locations.map(\.id)
-													   subsections: employees, //employees.flatMap({ $0.value })
-													   sectionKeypath: \CalendarEvent.locationId,
-													   subsKeypath: \CalendarEvent.employeeId)
+            let appointments = EventsBy<Employee>.init(
+                events: events,
+                locationsIds: locationsIds, //locations.map(\.id)
+                subsections: employees, //employees.flatMap({ $0.value })
+                sectionKeypath: \CalendarEvent.locationId,
+                subsKeypath: \CalendarEvent.employeeId
+            )
 			self = .employee(appointments)
 		case .room:
-			let appointments = EventsBy<Room>(events: events,
-											  locationsIds: locationsIds,
-											  subsections: rooms,
-											  sectionKeypath: \CalendarEvent.locationId,
-											  subsKeypath: \CalendarEvent.roomId)
+            let appointments = EventsBy<Room>(
+                events: events,
+                locationsIds: locationsIds,
+                subsections: rooms,
+                sectionKeypath: \CalendarEvent.locationId,
+                subsKeypath: \CalendarEvent.roomId
+            )
 			self = .room(appointments)
 		case .week:
 			let weekApps = SectionHelper.groupByStartOfDay(originalEvents: events).mapValues { IdentifiedArrayOf.init($0)}

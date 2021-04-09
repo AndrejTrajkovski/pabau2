@@ -54,28 +54,46 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 		action: /JourneyContainerAction.self,
 		environment: { $0 }
 	),
+	journeyFilterReducer.optional.pullback(
+		state: \JourneyContainerState.journeyEmployeesFilter,
+		action: /JourneyContainerAction.employeesFilter,
+		environment: {
+			return EmployeesFilterEnvironment(
+				journeyAPI: $0.journeyAPI,
+				userDefaults: $0.userDefaults)
+		}),
 	.init { state, action, env in
 		switch action {
 		case .toggleEmployees:
-			state.employeesFilter.isShowingEmployees.toggle()
+			if state.journeyEmployeesFilter != nil {
+				state.journeyEmployeesFilter!.isShowingEmployees.toggle()
+			}
 		case .datePicker(.selectedDate(let date)):
-//			state.loadingState = .loading
-			return env.journeyAPI.getAppointments(startDate: date, endDate: date, locationIds: [state.employeesFilter.locationId], employeesIds: Array(state.employeesFilter.employees.map(\.id)), roomIds: [])
-//				.map(with(date, curry(calendarResponseToJourneys(date:events:))))
-				.receive(on: DispatchQueue.main)
-				.catchToEffect()
-				.map { JourneyContainerAction.gotResponse($0) }
-				.eraseToEffect()
+			guard let locId = state.journeyEmployeesFilter?.locationId,
+				  let employees = state.employees[locId] else { return .none }
+			state.loadingState = .loading
+            return env.journeyAPI.getAppointments(
+                startDate: date,
+                endDate: date, locationIds: [locId],
+                employeesIds: Array(employees.map(\.id)),
+                roomIds: []
+            )
+            .receive(on: DispatchQueue.main)
+            .catchToEffect()
+            .map { JourneyContainerAction.gotResponse($0) }
+            .eraseToEffect()
 		case .gotResponse(let result):
 			print(result)
 			switch result {
 			case .success(let appointments):
 				print("response: \(appointments)")
-//				print("selectedLocations: \(state.journey.selectedLocation.id)")
-//				print("selectedEmployees: \(state.employeesFilter.employees.elements)")
+				guard let selectedLocationId = state.journey.selectedLocation?.id,
+					  let employees = state.employees[selectedLocationId] else {
+					return .none
+				}
 				state.appointments.refresh(events: appointments,
-										   locationsIds: [state.journey.selectedLocation.id],
-										   employees: state.employeesFilter.employees.elements,
+										   locationsIds: [selectedLocationId],
+										   employees: employees.elements,
 										   rooms: [])
 				state.loadingState = .gotSuccess
 			case .failure(let error):
@@ -98,39 +116,22 @@ public let journeyContainerReducer2: Reducer<JourneyState, JourneyContainerActio
         journeyReducer.pullback(
                      state: \JourneyState.self,
                      action: /JourneyContainerAction.searchQueryChanged,
-                     environment: { $0 }),
-		choosePathwayContainerReducer.optional.pullback(
-					 state: \JourneyState.choosePathway,
-					 action: /JourneyContainerAction.choosePathway,
-					 environment: { $0 })
+                     environment: { $0 })
 )
 
 let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 	.combine (
+		choosePathwayContainerReducer.optional.pullback(
+					 state: \JourneyState.choosePathway,
+					 action: /JourneyAction.choosePathway,
+					 environment: { $0 }),
 		.init { state, action, environment in
             struct SearchJourneyId: Hashable {}
 
 			switch action {
 			case .selectedFilter(let filter):
 				state.selectedFilter = filter
-
-//			case .datePicker(.selectedDate(let date)):
-//				state.loadingState = .loading
-//				return environment.apiClient.getJourneys(date: date, searchTerm: nil)
-//					.catchToEffect()
-//					.map(JourneyAction.gotResponse)
-//					.receive(on: DispatchQueue.main)
-//					.eraseToEffect()
-//			case .gotResponse(let result):
-//				switch result {
-//				case .success(let journeys):
-//					state.journeys.formUnion(journeys)
-//					state.loadingState = .gotSuccess
-//
-//				case .failure(let error):
-//					state.loadingState = .gotError(error)
-//				}
-
+				
 			case .searchedText(let searchText):
 				state.searchText = searchText
 
@@ -146,8 +147,17 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 
 			case .selectedJourney(let journey):
 				state.choosePathway = ChoosePathwayState(selectedJourney: journey)
+				return environment.journeyAPI.getPathwayTemplates()
+					.delay(for: 5, scheduler: DispatchQueue.main)
+					.receive(on: DispatchQueue.main)
+					.catchToEffect()
+					.map { .choosePathway(.gotPathwayTemplates($0))  }
+				
 			case .choosePathwayBackTap:
-				state.selectedJourney = nil
+				state.choosePathway = nil
+				
+			case .choosePathway(_):
+				break
 			}
 			return .none
 	}
@@ -165,14 +175,14 @@ public struct JourneyContainerView: View {
 		let listedJourneys: [Journey]
 		let isLoadingJourneys: Bool
         let searchQuery: String
+		let navigationTitle: String
 		init(state: JourneyContainerState) {
 			self.isChoosePathwayShown = state.journey.choosePathway != nil
 			self.selectedDate = state.journey.selectedDate
 			self.listedJourneys = state.filteredJourneys()
-			print("apps + ", state.appointments)
-			print("filteredJourneys() + ", state.filteredJourneys())
             self.searchQuery = state.journey.searchText
 			self.isLoadingJourneys = state.loadingState.isLoading
+			self.navigationTitle = state.journey.selectedLocation?.name ?? "No Location Chosen"
 			UITableView.appearance().separatorStyle = .none
 		}
 	}
@@ -183,7 +193,8 @@ public struct JourneyContainerView: View {
 						 action: { $0 }))
 	}
 	public var body: some View {
-        VStack {
+		print("JourneyContainerView")
+        return VStack {
             CalendarDatePicker.init(
                 store: self.store.scope(
 					state: { $0.journey.selectedDate },
@@ -216,7 +227,7 @@ public struct JourneyContainerView: View {
                 self.viewStore.state.isChoosePathwayShown,
 				IfLetStore(
 					store.scope(state: { $0.journey.choosePathway },
-								action: { .choosePathway($0) }),
+								action: { .journey(.choosePathway($0)) }),
 					then: { choosePathwayStore in
 						ChoosePathway.init(store: choosePathwayStore)
 							.navigationBarTitle("Choose Pathway")
@@ -228,7 +239,7 @@ public struct JourneyContainerView: View {
             )
             Spacer()
         }
-        .navigationBarTitle("Manchester", displayMode: .inline)
+		.navigationBarTitle(viewStore.navigationTitle, displayMode: .inline)
         .navigationBarItems(
             leading:
                 HStack(spacing: 8.0) {
@@ -286,12 +297,12 @@ struct JourneyList: View {
 	}
 	var body: some View {
 		List {
-			ForEach(journeys) { journey in
-				journeyCellAdapter(journey: journey)
+			ForEach(journeys.indices) { idx in
+				journeyCellAdapter(journey: journeys[idx])
 					.contextMenu {
 						JourneyListContextMenu()
 					}
-					.onTapGesture { self.onSelect(journey) }
+					.onTapGesture { self.onSelect(journeys[idx]) }
 					.listRowInsets(EdgeInsets())
 			}
 		}.id(UUID())

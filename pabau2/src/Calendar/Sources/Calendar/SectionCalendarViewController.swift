@@ -22,11 +22,13 @@ public class SectionCalendarViewController<Subsection: Identifiable & Equatable>
 		calendarView.setupCalendar(setDate: viewStore.state.selectedDate)
 		let subs = viewStore.state.chosenSubsectionsIds.mapValuesFrom(dict: viewStore.state.subsections)
 		let shifts = viewStore.state.shifts
-		self.reload(selectedDate: viewStore.state.selectedDate,
-					locations: viewStore.state.chosenLocations(),
-					subsections: subs,
-					events: viewStore.state.appointments.appointments,
-					shifts: shifts)
+        self.reload(
+            selectedDate: viewStore.state.selectedDate,
+            locations: viewStore.state.chosenLocations(),
+            subsections: subs,
+            events: viewStore.state.appointments.appointments,
+            shifts: shifts
+        )
 		calendarView.forceReload()
 		viewStore.publisher.selectedDate.removeDuplicates()
 			.combineLatest(
@@ -45,31 +47,31 @@ public class SectionCalendarViewController<Subsection: Identifiable & Equatable>
 				let events = $0.0.0.0.1
 				let subsections = $0.0.0.1.mapValuesFrom(dict: self.viewStore.state.subsections)
 				let shifts = $0.1
-				print("events")
-				print(events.appointments)
-				print("locations")
-				print(self.viewStore.state.chosenLocations())
-				self.reload(selectedDate: date,
-							locations: self.viewStore.state.chosenLocations(),
-							subsections: subsections,
-							events: events.appointments,
-							shifts: shifts)
+                self.reload(
+                    selectedDate: date,
+                    locations: self.viewStore.state.chosenLocations(),
+                    subsections: subsections,
+                    events: events.appointments,
+                    shifts: shifts
+                )
 			}).store(in: &self.cancellables)
 	}
 
 	func reload(
-		selectedDate: Date,
+        selectedDate: Date,
 		locations: [Location],
 		subsections: [Location.ID: [Subsection]],
 		events: [Date: [Location.ID: [Subsection.ID: IdentifiedArrayOf<CalendarEvent>]]],
 		shifts: [Date: [Location.ID: [Subsection.ID: [JZShift]]]]
 	) {
 		calendarView.updateWeekView(to: selectedDate)
-		sectionDataSource.update(selectedDate,
-									  locations,
-									  subsections,
-									  events.mapValues { $0.mapValues { $0.mapValues { $0.elements.map(JZAppointmentEvent.init(appointment:)) }}},
-									  shifts)
+        sectionDataSource.update(
+            selectedDate,
+            locations,
+            subsections,
+            events.mapValues { $0.mapValues { $0.mapValues { $0.elements.map(JZAppointmentEvent.init(appointment:)) }}},
+            shifts
+        )
 		calendarView.layoutSubviews()
 		calendarView.forceReload()
 	}
