@@ -84,7 +84,6 @@ let forgotPasswordReducer = Reducer<ForgotPassState, ForgotPasswordAction, Login
 			let isValid = isValidEmail(email)
 			state.fpValidation = emailValidationText(isValid)
 			if isValid {
-//                state.navigation.append(.checkEmailScreen) // remove this line after finish testing and uncomment code below
 				state.loadingState = .loading
 				return environment.apiClient.resetPass(email)
 						.catchToEffect()

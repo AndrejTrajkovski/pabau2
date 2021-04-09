@@ -42,10 +42,13 @@ extension APIClient {
 	
 	public func resetPass(_ email: String) -> Effect<ForgotPassSuccess, RequestError> {
 		let requestBuilder: RequestBuilder<ForgotPassSuccess>.Type = requestBuilderFactory.getBuilder()
-		return requestBuilder.init(method: .GET,
-								   baseUrl: baseUrl,
-								   path: .resetPass,
-								   queryParams: ["email": email]
+        let bodyValues = "email=\(email)&forgot_password_ios=true".data(using: .utf8)
+
+		return requestBuilder.init(method: .POST,
+								   baseUrl: newBaseUrl,
+                                   path: .resetPass,
+                                   queryParams: [:],
+                                   body: bodyValues
 		)
 			.effect()
 	}
