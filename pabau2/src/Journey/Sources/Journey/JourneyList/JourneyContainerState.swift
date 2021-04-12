@@ -9,13 +9,13 @@ public struct JourneyContainerState: Equatable {
 	
 	public let employees: [Location.ID: IdentifiedArrayOf<Employee>]
 	public var journey: JourneyState
-	public var appointments: Appointments
+	public var appointments: JourneyAppointments
 	public var loadingState: LoadingState = .initial
 
 	public init(
 		journey: JourneyState,
 		employees: [Location.ID: IdentifiedArrayOf<Employee>],
-		appointments: Appointments,
+		appointments: JourneyAppointments,
 		loadingState: LoadingState
 	) {
 		self.journey = journey
@@ -45,15 +45,8 @@ public struct JourneyContainerState: Equatable {
 }
 
 extension JourneyContainerState {
-	func filteredJourneys() -> [Journey] {
-		calendarResponseToJourneys(date: journey.selectedDate, events: appointments.flatten())
-//		return self.journeys
-//			.filter { $0.first!.start_date.isInside(date: selectedDate, granularity: .day) }
-//			.filter { employeesFilter.selectedEmployeesIds.contains($0.first!.employeeId) }
-//			.sorted(by: { $0.first!.start_date > $1.first!.start_date })
-	}
 
-	func filter(appointments: Appointments, date: Date) -> [Location.ID: [CalendarEvent]] {
+	func filter(appointments: CalAppointments, date: Date) -> [Location.ID: [CalendarEvent]] {
 		switch appointments {
 		case .employee(let byEmployee):
 			return byEmployee.filterBy(date: date)

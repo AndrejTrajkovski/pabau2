@@ -28,6 +28,10 @@ public struct Appointment: Equatable, Identifiable, Hashable, Decodable {
 	public let customerId: Client.ID
 	public let serviceId: Service.Id
 	public let locationName: String?
+	public let pathwayTemplateId: PathwayTemplate.ID?
+	public let pathwayId: Pathway.ID?
+	public let stepsTotal: Int?
+	public let stepsComplete: Int?
 }
 
 extension Appointment: CalendarEventVariant { }
@@ -72,6 +76,10 @@ extension Appointment {
 		self.roomName = try? container.decode(String.self, forKey: .roomName)
 		self.customerId = try container.decode(Client.ID.self, forKey: .customerID)
 		self.locationName = "TO ADD IN BACKEND"
+		self.pathwayId = try? container.decode(Pathway.ID.self, forKey: .linked_pathway_id)
+		self.pathwayTemplateId = try? container.decode(PathwayTemplate.ID.self, forKey: .pathway_template_id)
+		self.stepsTotal = try? container.decode(Int.self, forKey: .steps_total)
+		self.stepsComplete = try? container.decode(Int.self, forKey: .steps_complete)
 	}
 }
 

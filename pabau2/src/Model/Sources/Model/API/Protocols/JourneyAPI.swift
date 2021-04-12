@@ -8,5 +8,5 @@ public protocol JourneyAPI {
 	func createShift(shiftSheme: ShiftSchema) -> Effect<PlaceholdeResponse, RequestError>
 	func getPathwayTemplates() -> Effect<IdentifiedArrayOf<PathwayTemplate>, RequestError>
     func getCalendar(startDate: Date, endDate: Date, locationIds: [Location.ID], employeesIds: [Employee.ID], roomIds: [Room.ID]) -> Effect<CalendarResponse, RequestError>
-	func match(journey: Journey, pathwayTemplateId: PathwayTemplate.ID) -> Effect<[Appointment.ID: Pathway], RequestError>
+	func match(appointment: Appointment, pathwayTemplateId: PathwayTemplate.ID) -> Effect<Pathway, RequestError>
 }

@@ -4,12 +4,12 @@ import SwiftUI
 import Avatar
 
 struct JourneyAvatarView: View {
-	let journey: Journey
+	let appointment: Appointment
 	let font: Font
 	let bgColor: Color
 	var body: some View {
-		AvatarView(avatarUrl: journey.clientPhoto ?? "",
-				   initials: journey.initials,
+		AvatarView(avatarUrl: appointment.clientPhoto,
+				   initials: appointment.employeeInitials,
 				   font: font,
 				   bgColor: bgColor)
 	}

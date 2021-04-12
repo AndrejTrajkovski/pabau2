@@ -45,12 +45,12 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 	),
 	.init { state, action, env in
 		switch action {
-        case .onAppear:
-            return env.journeyAPI.getLocations()
-                .receive(on: DispatchQueue.main)
-                .catchToEffect()
-                .map(CalendarAction.gotLocationsResponse)
-                .eraseToEffect()
+//        case .onAppear:
+//            return env.journeyAPI.getLocations()
+//                .receive(on: DispatchQueue.main)
+//                .catchToEffect()
+//                .map(CalendarAction.gotLocationsResponse)
+//                .eraseToEffect()
         case .gotLocationsResponse(let result):
             switch result {
             case .success(let locations):
@@ -267,14 +267,12 @@ public struct CalendarContainer: View {
 							state: { $0.calendar.selectedDate },
 							action: { .datePicker($0)}
 						),
-						isWeekView: viewStore.state.appointments.calendarType == Appointments.CalendarType.week,
+						isWeekView: viewStore.state.appointments.calendarType == CalAppointments.CalendarType.week,
 						scope: viewStore.calendar.scope
 					)
 					.padding(0)
 					CalendarWrapper(store: self.store)
 					Spacer()
-                }.onAppear {
-                    viewStore.send(.onAppear)
                 }
 				if viewStore.state.calendar.isShowingFilters {
 					FiltersWrapper(store: store)

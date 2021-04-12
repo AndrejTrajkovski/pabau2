@@ -6,23 +6,23 @@ import Model
 struct CheckInAnimation: View {
 	
 	let animationDuration: Double
-	let journey: Journey
+	let appointment: Appointment
 	let player = Player()
 	var body: some View {
-			VStack(spacing: 24) {
-				Checkmark(animationDuration: self.animationDuration)
-				JourneyTransitionCircle(journey: journey)
-			}.offset(x: 0, y: -50)
-				.gradientView()
-				.edgesIgnoringSafeArea(.top)
-				.onAppear(perform: {
-					self.player.playSoundAndVibrate()
-				})
+		VStack(spacing: 24) {
+			Checkmark(animationDuration: self.animationDuration)
+			JourneyTransitionCircle(appointment: appointment)
+		}.offset(x: 0, y: -50)
+		.gradientView()
+		.edgesIgnoringSafeArea(.top)
+		.onAppear(perform: {
+			self.player.playSoundAndVibrate()
+		})
 	}
 }
 
 struct JourneyTransitionCircle: View {
-	let journey: Journey
+	let appointment: Appointment
 	var body: some View {
 		JourneyTransitionView(title: Texts.checkInDesc,
 							  description: Texts.checkInTitle,
@@ -30,7 +30,7 @@ struct JourneyTransitionCircle: View {
 								Circle()
 									.overlay(
 										ZStack {
-											JourneyAvatarView(journey: self.journey,
+											JourneyAvatarView(appointment: self.appointment,
 															  font: .regular90,
 															  bgColor: .clear)
 												.foregroundColor(.white)
@@ -48,7 +48,7 @@ struct Checkmark: View {
 	@State var showFirstStroke: Bool = false
 	@State var showSecondStroke: Bool = false
 	@State var showCheckMark: Bool = false
-
+	
 	var body: some View {
 		ZStack {
 			Circle()
@@ -65,16 +65,16 @@ struct Checkmark: View {
 				path.addLine(to: CGPoint(x: 40, y: 60))
 				path.addLine(to: CGPoint(x: 70, y: 30))
 			}//45 x 30
-				.trim(from: 0, to: showCheckMark ? 1 : 0)
-				.stroke(style: StrokeStyle.init(lineWidth: 6, lineCap: .round, lineJoin: .round))
-				.foregroundColor(.white)
-				.animation(Animation.easeInOut.delay(0.3))
+			.trim(from: 0, to: showCheckMark ? 1 : 0)
+			.stroke(style: StrokeStyle.init(lineWidth: 6, lineCap: .round, lineJoin: .round))
+			.foregroundColor(.white)
+			.animation(Animation.easeInOut.delay(0.3))
 		}
-	.onAppear(perform: {
-		self.showFirstStroke.toggle()
-		self.showSecondStroke.toggle()
-		self.showCheckMark.toggle()
-	})
+		.onAppear(perform: {
+			self.showFirstStroke.toggle()
+			self.showSecondStroke.toggle()
+			self.showCheckMark.toggle()
+		})
 		.frame(width: 95, height: 90)
 	}
 }

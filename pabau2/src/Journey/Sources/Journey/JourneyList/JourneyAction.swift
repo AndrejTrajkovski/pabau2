@@ -16,7 +16,8 @@ public enum JourneyContainerAction {
 public enum JourneyAction {
 	case selectedFilter(CompleteFilter)
 	case searchedText(String)
-	case selectedJourney(Journey)
+	case selectedAppointment(Appointment)
 	case choosePathwayBackTap
 	case choosePathway(ChoosePathwayContainerAction)
+	case checkIn(CheckInContainerAction)
 }

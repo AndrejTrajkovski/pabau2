@@ -8,10 +8,7 @@ import Combine
 
 public enum ChoosePathwayContainerAction {
 	case rows(id: PathwayTemplate.ID, action: PathwayTemplateRowAction)
-	case matchResponse(Result<[Appointment.ID: Pathway], RequestError>)
-	case choosePathway(ChoosePathwayAction)
-	case chooseConsent(ChooseFormAction)
-	case checkIn(CheckInContainerAction)
+	case matchResponse(Result<Pathway, RequestError>)
 	case gotPathwayTemplates(Result<IdentifiedArrayOf<PathwayTemplate>, RequestError>)
 }
 
@@ -19,21 +16,6 @@ let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayCont
 	.combine(
 		Reducer.init { state, action, env in
 			switch action {
-			case .chooseConsent(.proceed):
-				state.checkIn = CheckInContainerState(journey: state.selectedJourney,
-													  pathway: state.selectedPathway!,
-													  patientDetails: ClientBuilder.empty,
-													  medicalHistoryId: HTMLForm.getMedHistory().id,
-													  medHistory: HTMLFormParentState.init(info: FormTemplateInfo(id: HTMLForm.getMedHistory().id, name: "MEDICAL HISTORY", type: .history), clientId: Client.ID.init(rawValue: .right(1)), getLoadingState: .initial),
-													  consents: state.allConsents.filter(
-														pipe(get(\.id), state.selectedConsentsIds.contains)
-													  ),
-													  allConsents: state.allConsents,
-													  photosState: PhotosState.init(SavedPhoto.mock())
-				)
-				return Just(ChoosePathwayContainerAction.checkIn(CheckInContainerAction.showPatientMode))
-					.delay(for: .seconds(checkInAnimationDuration), scheduler: DispatchQueue.main)
-					.eraseToEffect()
 				
 			case .gotPathwayTemplates(let pathwayTemplates):
 				print(pathwayTemplates)
@@ -42,68 +24,25 @@ let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayCont
 			case .rows(let id, _):
 				guard case .loaded(let pathways) = state.pathwayTemplates else { return .none }
 				state.selectedPathway = pathways[id: id]
-				return env.journeyAPI.match(journey: state.selectedJourney,
+				return env.journeyAPI.match(appointment: state.selectedAppointment,
 											pathwayTemplateId: id)
 					.receive(on: DispatchQueue.main)
 					.catchToEffect()
 					.map { ChoosePathwayContainerAction.matchResponse($0) }
 					.eraseToEffect()
+				
 			default:
 				break
 			}
 			return .none
-		},
-		chooseFormListReducer.pullback(
-			state: \ChoosePathwayState.chooseConsentState,
-			action: /ChoosePathwayContainerAction.chooseConsent,
-			environment: makeFormEnv(_:)
-		),
-		choosePathwayReducer.pullback(
-			state: \ChoosePathwayState.self,
-			action: /ChoosePathwayContainerAction.choosePathway,
-			environment: { $0 }),
-		checkInReducer.optional.pullback(
-			state: \ChoosePathwayState.checkIn,
-			action: /ChoosePathwayContainerAction.checkIn,
-			environment: { $0 }),
-		checkInMiddleware.pullback(
-			state: \ChoosePathwayState.self,
-			action: /ChoosePathwayContainerAction.checkIn,
-			environment: { $0 })
+		}
 )
-
-let choosePathwayReducer = Reducer<ChoosePathwayState, ChoosePathwayAction, JourneyEnvironment> { state, action, _ in
-	switch action {
-	case .didTouchSelectConsentBackBtn:
-		state.selectedPathway = nil
-	}
-	return .none
-}
-
-public enum ChoosePathwayAction {
-	case didTouchSelectConsentBackBtn
-}
 
 public struct ChoosePathwayState: Equatable {
 	
-	let selectedJourney: Journey
+	let selectedAppointment: Appointment
 	var selectedPathway: PathwayTemplate?
-	var selectedConsentsIds: [HTMLForm.ID] = []
-	var allConsents: IdentifiedArrayOf<FormTemplateInfo> = []
 	var pathwayTemplates: LoadingState2<IdentifiedArrayOf<PathwayTemplate>> = .loading
-	public var checkIn: CheckInContainerState?
-	
-	var chooseConsentState: ChooseFormState {
-		get {
-			ChooseFormState(templates: allConsents,
-							selectedTemplatesIds: selectedConsentsIds,
-							mode: .consentsPreCheckIn)
-		}
-		set {
-			self.selectedConsentsIds = newValue.selectedTemplatesIds
-			self.allConsents = newValue.templates
-		}
-	}
 }
 
 public struct ChoosePathway: View {
@@ -111,10 +50,10 @@ public struct ChoosePathway: View {
 	@ObservedObject var viewStore: ViewStore<State, ChoosePathwayContainerAction>
 	struct State: Equatable {
 		let isChooseConsentShown: Bool
-		let journey: Journey?
+		let appointment: Appointment?
 		init(state: ChoosePathwayState) {
 			self.isChooseConsentShown = state.selectedPathway != nil
-			self.journey = state.selectedJourney
+			self.appointment = state.selectedAppointment
 			UITableView.appearance().separatorStyle = .none
 		}
 	}
@@ -127,16 +66,13 @@ public struct ChoosePathway: View {
 	}
 	
 	public var body: some View {
-		HStack {
-			LoadingStore(store.scope(state: { $0.pathwayTemplates }, action: { $0 }),
-						 then: { (tmplts: Store<IdentifiedArrayOf<PathwayTemplate>,
-												ChoosePathwayContainerAction>) in
-							choosePathwayList(tmplts)
-						 }
-			)
-			chooseFormNavLink
-		}
-		.journeyBase(self.viewStore.state.journey, .long)
+		LoadingStore(store.scope(state: { $0.pathwayTemplates }, action: { $0 }),
+					 then: { (tmplts: Store<IdentifiedArrayOf<PathwayTemplate>,
+											ChoosePathwayContainerAction>) in
+						choosePathwayList(tmplts)
+					 }
+		)
+		.journeyBase(self.viewStore.state.appointment, .long)
 	}
 
 	fileprivate func choosePathwayList(_ tmplts: Store<IdentifiedArrayOf<PathwayTemplate>, ChoosePathwayContainerAction>) -> some View {
@@ -147,19 +83,6 @@ public struct ChoosePathway: View {
 							 content: PathwayTemplateRow.init(store:))
 			}
 		}
-	}
-	
-	var chooseFormNavLink: some View {
-		NavigationLink.emptyHidden(self.viewStore.state.isChooseConsentShown,
-								   ChooseFormList(store:
-													self.store.scope(
-														state: { $0.chooseConsentState },
-														action: { .chooseConsent($0)}))
-									.journeyBase(self.viewStore.state.journey, .long)
-									.customBackButton {
-										self.viewStore.send(.choosePathway(.didTouchSelectConsentBackBtn))
-									}
-		)
 	}
 }
 

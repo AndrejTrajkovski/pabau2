@@ -6,7 +6,7 @@ import Util
 import Form
 
 struct DoctorSummaryState: Equatable {
-	let journey: Journey
+	let appointment: Appointment
 	var isChooseConsentActive: Bool
 	var isChooseTreatmentActive: Bool
 	var isDoctorCheckInMainActive: Bool
@@ -63,7 +63,7 @@ struct DoctorNavigation: View {
 		let isDoctorCheckInMainActive: Bool
 		let isChooseTreatmentActive: Bool
 		let isChooseConsentActive: Bool
-		let journey: Journey
+		let appointment: Appointment
 	}
 
 	var body: some View {
@@ -79,7 +79,7 @@ struct DoctorNavigation: View {
 									   ChooseFormJourney(store: self.store.scope(
 															state: { $0.chooseConsents },
 															action: { .chooseConsents($0)}),
-														 journey: self.viewStore.state.journey)
+														 appointment: self.viewStore.state.appointment)
 										.customBackButton {
 											self.viewStore.send(.didTouchBackFrom(.consentsCheckIn))
 										}
@@ -88,7 +88,7 @@ struct DoctorNavigation: View {
 									   ChooseFormJourney(store: self.store.scope(
 															state: { $0.chooseTreatments },
 															action: { .chooseTreatments($0)}),
-														 journey: self.viewStore.state.journey)
+														 appointment: self.viewStore.state.appointment)
 										.customBackButton {
 											self.viewStore.send(.didTouchBackFrom(.treatmentNotes))
 										}
@@ -102,7 +102,7 @@ extension DoctorNavigation.State {
 		self.isChooseConsentActive = state.isChooseConsentActive
 		self.isChooseTreatmentActive = state.isChooseTreatmentActive
 		self.isDoctorCheckInMainActive = state.isDoctorCheckInMainActive
-		self.journey = state.journey
+		self.appointment = state.appointment
 	}
 }
 
