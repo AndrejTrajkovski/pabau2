@@ -6,5 +6,5 @@ public struct Pathway: Decodable, Identifiable, Equatable {
 	
 	public let id: ID
 
-	public let steps: [Step.ID: FormStepInfo]
+	public let steps: [Step.ID: FormStepEntry]
 }

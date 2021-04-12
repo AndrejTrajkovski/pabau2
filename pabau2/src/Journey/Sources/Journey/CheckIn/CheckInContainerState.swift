@@ -16,8 +16,7 @@ public struct CheckInContainerState: Equatable {
 	var patientDetails: ClientBuilder
 	var patientDetailsStatus: Bool
 	
-	var medicalHistoryId: HTMLForm.ID
-	var medicalHistory: HTMLFormParentState
+	var medicalHistories: IdentifiedArrayOf<HTMLFormParentState>
 	
 	var consents: IdentifiedArrayOf<HTMLFormParentState>
 	
@@ -56,16 +55,17 @@ extension CheckInContainerState {
 		 pathway: Pathway,
 		 pathwayTemplate: PathwayTemplate,
 		 patientDetails: ClientBuilder,
-		 medicalHistoryId: HTMLForm.ID,
-		 medHistory: HTMLFormParentState,
+		 medicalHistories: IdentifiedArrayOf<FormTemplateInfo>,
+		 consents: IdentifiedArrayOf<FormTemplateInfo>,
+		 allConsents: IdentifiedArrayOf<FormTemplateInfo>,
 		 photosState: PhotosState) {
 		self.appointment = appointment
 		self.pathway = pathway
 		self.pathwayTemplate = pathwayTemplate
 		self.patientDetails = patientDetails
-		self.medicalHistory = medHistory
+		self.medicalHistories = []
 		self.consents = []
-		self.allConsents = []
+		self.allConsents = allConsents
 		self.allTreatmentForms = []
 		self.selectedConsentsIds = []
 		self.selectedTreatmentFormsIds = []
@@ -77,7 +77,6 @@ extension CheckInContainerState {
 		self.patientSelectedIndex = 0
 		self.doctorSelectedIndex = 0
 		self.patientDetailsLS = .initial
-		self.medicalHistoryId = medicalHistoryId
 		self.patientDetailsStatus = false
 	}
 }
@@ -196,8 +195,7 @@ extension CheckInContainerState {
 				pathway: pathwayTemplate,
 				patientDetails: patientDetails,
 				patientDetailsStatus: patientDetailsStatus,
-				medicalHistoryId: medicalHistoryId,
-				medicalHistory: medicalHistory,
+				medicalHistories: medicalHistories,
 				consents: consents,
 				isPatientComplete: isPatientComplete,
 				selectedIdx: patientSelectedIndex,
@@ -208,7 +206,7 @@ extension CheckInContainerState {
 		set {
 			self.patientDetails = newValue.patientDetails
 			self.patientDetailsStatus = newValue.patientDetailsStatus
-			self.medicalHistory = newValue.medicalHistory
+			self.medicalHistories = newValue.medicalHistories
 			self.consents = newValue.consents
 			self.isPatientComplete = newValue.isPatientComplete
 			self.patientSelectedIndex = newValue.selectedIdx

@@ -11,6 +11,7 @@ import Overture
 import Filters
 import SharedComponents
 import Appointments
+import Combine
 
 let checkInMiddleware = Reducer<JourneyState, CheckInContainerAction, JourneyEnvironment> { state, action, _ in
 	switch action {
@@ -99,7 +100,7 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 
 let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 	.combine (
-		choosePathwayContainerReducer.optional.pullback(
+		choosePathwayContainerReducer.optional().pullback(
 					 state: \JourneyState.choosePathway,
 					 action: /JourneyAction.choosePathway,
 					 environment: { $0 }),
@@ -107,23 +108,7 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
             struct SearchJourneyId: Hashable {}
 
 			switch action {
-//			case .chooseConsent(.proceed):
-//				state.checkIn = CheckInContainerState(appointment: state.selectedAppointment,
-//													  pathway: ,
-//													  pathwayTemplate: state.selectedPathway!
-//													  patientDetails: ClientBuilder.empty,
-//													  medicalHistoryId: HTMLForm.getMedHistory().id,
-//													  medHistory: HTMLFormParentState.init(info: FormTemplateInfo(id: HTMLForm.getMedHistory().id, name: "MEDICAL HISTORY", type: .history), clientId: Client.ID.init(rawValue: .right(1)), getLoadingState: .initial),
-//													  consents: state.allConsents.filter(
-//														pipe(get(\.id), state.selectedConsentsIds.contains)
-//													  ),
-//													  allConsents: state.allConsents,
-//													  photosState: PhotosState.init(SavedPhoto.mock())
-//				)
-//				return Just(ChoosePathwayContainerAction.checkIn(CheckInContainerAction.showPatientMode))
-//					.delay(for: .seconds(checkInAnimationDuration), scheduler: DispatchQueue.main)
-//					.eraseToEffect()
-				
+			
 			case .selectedFilter(let filter):
 				state.selectedFilter = filter
 				
@@ -151,11 +136,27 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 				state.choosePathway = nil
 				
 			case .choosePathway(.matchResponse(let pathwayResult)):
+				print(pathwayResult)
 				switch pathwayResult {
 				case .success(let pathway):
-					break
+					
+					state.checkIn = CheckInContainerState(appointment: state.choosePathway!.selectedAppointment,
+														  pathway: pathway,
+														  pathwayTemplate: state.choosePathway!.selectedPathway!,
+														  patientDetails: ClientBuilder.empty,
+														  medicalHistories: [],
+														  consents: [],
+														  allConsents: [],
+														  photosState: PhotosState.init(SavedPhoto.mock()
+														  )
+					)
+					
+					return Just(JourneyAction.checkIn(CheckInContainerAction.showPatientMode))
+						.delay(for: .seconds(checkInAnimationDuration), scheduler: DispatchQueue.main)
+						.eraseToEffect()
+					
 				case .failure(let error):
-					break
+					print(error)
 				}
 				
 			case .checkIn(_):
@@ -163,7 +164,8 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 				
 			case .choosePathway(.rows(id: let id, action: let action)):
 				break
-			case .choosePathway(.gotPathwayTemplates(_)):
+				
+			case .choosePathway(.gotPathwayTemplates):
 				break
 			}
 			return .none
