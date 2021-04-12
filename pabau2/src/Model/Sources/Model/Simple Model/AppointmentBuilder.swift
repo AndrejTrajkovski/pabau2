@@ -6,6 +6,7 @@ public struct AppointmentBuilder {
     public var isAllDay: Bool?
     public var isPrivate: Bool?
 	public var clientID: Client.Id?
+    public var locationID: Location.Id?
     public var employeeID: String?
     public var serviceID: String?
 
@@ -26,6 +27,7 @@ public struct AppointmentBuilder {
         isAllDay: Bool? = nil,
         isPrivate: Bool? = nil,
         clientID: Client.Id? = nil,
+        locationID: Location.Id? = nil,
         employeeID: String? = nil,
         serviceID: String? = nil,
         startTime: Date? = nil,
@@ -40,6 +42,7 @@ public struct AppointmentBuilder {
     ) {
         self.isAllDay = isAllDay
         self.isPrivate = isPrivate
+        self.locationID = locationID
         self.clientID = clientID
         self.employeeID = employeeID
         self.serviceID = serviceID
@@ -55,15 +58,15 @@ public struct AppointmentBuilder {
     }
 
     public init(appointment: Appointment) {
-
-        self.appointmentID = appointment.id
         #warning("Fix all day value")
-        self.isAllDay = false
-
+        self.appointmentID = appointment.id
+        self.isAllDay = appointment.all_day
+        self.isPrivate = appointment._private
         self.employeeID = appointment.employeeId.rawValue
-
+        self.locationID = appointment.locationId
+        self.serviceID = appointment.serviceId.rawValue
+        self.clientID = appointment.customerId
 		self.serviceID = String(appointment.service)
-
         self.startTime = appointment.start_date
         self.duration = appointment.end_date.timeIntervalSince(appointment.start_date) / 60
     }

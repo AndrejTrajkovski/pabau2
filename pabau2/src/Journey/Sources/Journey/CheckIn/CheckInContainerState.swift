@@ -5,39 +5,41 @@ import Util
 import Form
 
 public struct CheckInContainerState: Equatable {
-
-	let journey: Journey
-	let pathway: PathwayTemplate
-
+	
+	let appointment: Appointment
+	let pathway: Pathway
+	let pathwayTemplate: PathwayTemplate
+	
+	var isPatientModeActive: Bool = false
+	
 	var patientDetailsLS: LoadingState
 	var patientDetails: ClientBuilder
 	var patientDetailsStatus: Bool
-
-	var medicalHistoryId: HTMLForm.ID
-	var medicalHistory: HTMLFormParentState
-
+	
+	var medicalHistories: IdentifiedArrayOf<HTMLFormParentState>
+	
 	var consents: IdentifiedArrayOf<HTMLFormParentState>
-
+	
 	var treatmentNotes: IdentifiedArrayOf<HTMLFormParentState>
-
+	
 	var prescriptions: IdentifiedArrayOf<HTMLFormParentState>
-
+	
 	var allTreatmentForms: IdentifiedArrayOf<FormTemplateInfo>
 	var allConsents: IdentifiedArrayOf<FormTemplateInfo>
-
+	
 	var aftercare: Aftercare?
 	var aftercareStatus: Bool
-
+	
 	var isPatientComplete: Bool
-
+	
 	var photos: PhotosState
-
+	
 	var selectedConsentsIds: [HTMLForm.ID]
 	var selectedTreatmentFormsIds: [HTMLForm.ID]
-
+	
 	var patientSelectedIndex: Int
 	var doctorSelectedIndex: Int
-
+	
 	var passcodeState = PasscodeState()
 	var isEnterPasscodeActive: Bool = false
 	var isChooseConsentActive: Bool = false
@@ -48,10 +50,43 @@ public struct CheckInContainerState: Equatable {
 }
 
 extension CheckInContainerState {
+	
+	init(appointment: Appointment,
+		 pathway: Pathway,
+		 pathwayTemplate: PathwayTemplate,
+		 patientDetails: ClientBuilder,
+		 medicalHistories: IdentifiedArrayOf<FormTemplateInfo>,
+		 consents: IdentifiedArrayOf<FormTemplateInfo>,
+		 allConsents: IdentifiedArrayOf<FormTemplateInfo>,
+		 photosState: PhotosState) {
+		self.appointment = appointment
+		self.pathway = pathway
+		self.pathwayTemplate = pathwayTemplate
+		self.patientDetails = patientDetails
+		self.medicalHistories = []
+		self.consents = []
+		self.allConsents = allConsents
+		self.allTreatmentForms = []
+		self.selectedConsentsIds = []
+		self.selectedTreatmentFormsIds = []
+		self.treatmentNotes = []
+		self.prescriptions = []
+		self.aftercareStatus = false
+		self.isPatientComplete = false
+		self.photos = PhotosState([[:]])
+		self.patientSelectedIndex = 0
+		self.doctorSelectedIndex = 0
+		self.patientDetailsLS = .initial
+		self.patientDetailsStatus = false
+	}
+}
 
+
+extension CheckInContainerState {
+	
 	var doctorSummary: DoctorSummaryState {
 		get {
-			DoctorSummaryState(journey: journey,
+			DoctorSummaryState(appointment: appointment,
 							   isChooseConsentActive: isChooseConsentActive,
 							   isChooseTreatmentActive: isChooseTreatmentActive,
 							   isDoctorCheckInMainActive: isDoctorCheckInMainActive,
@@ -64,7 +99,7 @@ extension CheckInContainerState {
 			self.isDoctorCheckInMainActive = newValue.isDoctorCheckInMainActive
 		}
 	}
-
+	
 	var chooseTreatments: ChooseFormJourneyState {
 		get {
 			return ChooseFormJourneyState(
@@ -81,7 +116,7 @@ extension CheckInContainerState {
 			self.selectedTreatmentFormsIds = newValue.selectedTemplatesIds
 		}
 	}
-
+	
 	var chooseConsents: ChooseFormJourneyState {
 		get {
 			return ChooseFormJourneyState(
@@ -98,7 +133,7 @@ extension CheckInContainerState {
 			self.selectedConsentsIds = newValue.selectedTemplatesIds
 		}
 	}
-
+	
 	var passcode: PasscodeContainerState {
 		get {
 			PasscodeContainerState(
@@ -113,12 +148,12 @@ extension CheckInContainerState {
 			self.isDoctorCheckInMainActive = newValue.isDoctorCheckInMainActive
 		}
 	}
-
+	
 	var isHandBackDeviceActive: Bool {
 		get { isPatientComplete }
 		set { isPatientComplete = newValue }
 	}
-
+	
 	var handback: HandBackDeviceState {
 		get {
 			HandBackDeviceState(isEnterPasscodeActive: self.isEnterPasscodeActive,
@@ -129,44 +164,12 @@ extension CheckInContainerState {
 }
 
 extension CheckInContainerState {
-
-	init(journey: Journey,
-		 pathway: PathwayTemplate,
-		 patientDetails: ClientBuilder,
-		 medicalHistoryId: HTMLForm.ID,
-		 medHistory: HTMLFormParentState,
-		 consents: IdentifiedArrayOf<FormTemplateInfo>,
-		 allConsents: IdentifiedArrayOf<FormTemplateInfo>,
-		 photosState: PhotosState) {
-		self.journey = journey
-		self.pathway = pathway
-		self.patientDetails = patientDetails
-		self.medicalHistory = medHistory
-		self.consents = []
-		self.allConsents = allConsents
-		self.allTreatmentForms = []
-		self.selectedConsentsIds = []
-		self.selectedTreatmentFormsIds = []
-		self.treatmentNotes = []
-		self.prescriptions = []
-		self.aftercareStatus = false
-		self.isPatientComplete = false
-		self.photos = PhotosState([[:]])
-		self.patientSelectedIndex = 0
-		self.doctorSelectedIndex = 0
-		self.patientDetailsLS = .initial
-		self.medicalHistoryId = medicalHistoryId
-		self.patientDetailsStatus = false
-	}
-}
-
-extension CheckInContainerState {
-
+	
 	var doctorCheckIn: CheckInDoctorState {
 		get {
 			CheckInDoctorState(
-				journey: self.journey,
-				pathway: self.pathway,
+				appointment: self.appointment,
+				pathway: self.pathwayTemplate,
 				treatmentNotes: self.treatmentNotes,
 				prescriptions: self.prescriptions,
 				aftercare: self.aftercare,
@@ -184,27 +187,26 @@ extension CheckInContainerState {
 			self.doctorSelectedIndex = newValue.doctorSelectedIndex
 		}
 	}
-
+	
 	var patientCheckIn: CheckInPatientState {
 		get {
 			CheckInPatientState(
-				journey: journey,
-				pathway: pathway,
+				appointment: appointment,
+				pathway: pathwayTemplate,
 				patientDetails: patientDetails,
 				patientDetailsStatus: patientDetailsStatus,
-				medicalHistoryId: medicalHistoryId,
-				medicalHistory: medicalHistory,
+				medicalHistories: medicalHistories,
 				consents: consents,
 				isPatientComplete: isPatientComplete,
 				selectedIdx: patientSelectedIndex,
 				patientDetailsLS: patientDetailsLS
 			)
 		}
-
+		
 		set {
 			self.patientDetails = newValue.patientDetails
 			self.patientDetailsStatus = newValue.patientDetailsStatus
-			self.medicalHistory = newValue.medicalHistory
+			self.medicalHistories = newValue.medicalHistories
 			self.consents = newValue.consents
 			self.isPatientComplete = newValue.isPatientComplete
 			self.patientSelectedIndex = newValue.selectedIdx

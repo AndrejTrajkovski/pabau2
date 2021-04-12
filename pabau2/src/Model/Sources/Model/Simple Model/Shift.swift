@@ -1,7 +1,5 @@
 import Foundation
 import Tagged
-import JZCalendarWeekView
-
 
 public struct Shift: Decodable, Equatable {
     public static func == (lhs: Shift, rhs: Shift) -> Bool {

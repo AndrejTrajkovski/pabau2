@@ -1,8 +1,10 @@
-public struct Pathway {
+import Tagged
 
-	public let id: Int
+public struct Pathway: Decodable, Identifiable, Equatable {
 
-	public let consentsIds: String
+	public typealias ID = Tagged<Pathway, Int>
+	
+	public let id: ID
 
-	public let steps: [Step]	
+	public let steps: [Step.ID: FormStepEntry]
 }

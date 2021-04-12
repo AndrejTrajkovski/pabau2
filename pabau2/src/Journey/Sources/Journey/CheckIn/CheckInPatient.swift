@@ -14,7 +14,7 @@ struct CheckInPatientContainer: View {
 							action: { .patient(.stepsView($0)) }),
 						avatarView: {
 							JourneyProfileView(style: .short,
-											   viewState: .init(journey: viewStore.state.journey))
+											   viewState: .init(appointment: viewStore.state.appointment))
 						},
 						content: {
 							patientForms(store:
@@ -55,9 +55,9 @@ let checkInPatientReducer: Reducer<CheckInPatientState, CheckInPatientAction, Jo
 		state: \CheckInPatientState.patientDetails,
 		action: /CheckInPatientAction.patientDetails,
 		environment: { $0 }),
-	htmlFormParentReducer.pullback(
-		state: \CheckInPatientState.medicalHistory,
-		action: /CheckInPatientAction.medicalHistory,
+	htmlFormParentReducer.forEach(
+		state: \CheckInPatientState.medicalHistories,
+		action: /CheckInPatientAction.medicalHistories,
 		environment: makeFormEnv(_:)),
 	htmlFormParentReducer.forEach(
 		state: \CheckInPatientState.consents,
@@ -75,12 +75,11 @@ let checkInPatientReducer: Reducer<CheckInPatientState, CheckInPatientAction, Jo
 )
 
 struct CheckInPatientState: Equatable, CheckInState {
-	let journey: Journey
+	let appointment: Appointment
 	let pathway: PathwayTemplate
 	var patientDetails: ClientBuilder
 	var patientDetailsStatus: Bool
-	var medicalHistoryId: HTMLForm.ID
-	var medicalHistory: HTMLFormParentState
+	var medicalHistories: IdentifiedArrayOf<HTMLFormParentState>
 	var consents: IdentifiedArrayOf<HTMLFormParentState>
 	var isPatientComplete: Bool
 	var selectedIdx: Int
@@ -105,8 +104,10 @@ extension CheckInPatientState {
 			return [StepFormInfo(status: patientDetailsStatus,
 								 title: "PATIENT DETAILS")]
 		case .medicalhistory:
-			return [StepFormInfo(status: medicalHistory.isComplete,
-								 title: "MEDICAL HISTORY")]
+			return medicalHistories.map {
+				StepFormInfo(status: $0.isComplete,
+							 title: $0.info.name)
+			}
 		case .consents:
 			return consents.map {
 				StepFormInfo(status: $0.isComplete,
@@ -123,7 +124,7 @@ extension CheckInPatientState {
 
 public enum CheckInPatientAction {
 	case patientDetails(PatientDetailsAction)
-	case medicalHistory(HTMLFormAction)
+	case medicalHistories(id: HTMLForm.ID, action: HTMLFormAction)
 	case consents(id: HTMLForm.ID, action: HTMLFormAction)
 	case patientComplete(PatientCompleteAction)
 	case stepsView(CheckInAction)
@@ -146,8 +147,9 @@ func patientForm(stepType: StepType,
 										action: { .patientDetails($0) })
 		)
 	case .medicalhistory:
-		HTMLFormParent(store: store.scope(state: { $0.medicalHistory },
-										  action: { .medicalHistory($0) })
+		ForEachStore(store.scope(state: { $0.medicalHistories },
+								 action: CheckInPatientAction.medicalHistories(id: action:)),
+					 content: { HTMLFormParent.init(store: $0) }
 		)
 	case .consents:
 		ForEachStore(store.scope(state: { $0.consents },

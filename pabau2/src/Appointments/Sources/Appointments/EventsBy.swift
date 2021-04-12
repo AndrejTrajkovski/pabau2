@@ -39,7 +39,7 @@ open class SectionHelper {
 																		   _ sectionKeyPath: KeyPath<CalendarEvent, SectionId>,
 																		   _ subsectionKeyPath: KeyPath<CalendarEvent, Subsection.ID>)
 	-> [Date: [SectionId: [Subsection.ID: IdentifiedArrayOf<CalendarEvent>]]] {
-		let byDate = Self.groupByStartOfDay(originalEvents: events)
+		let byDate = groupByStartOfDay(originalEvents: events)
 		return byDate.mapValues {
 			let byLocation = Dictionary.init(grouping: $0, by: { $0[keyPath: sectionKeyPath] })
 			let byLocationAll = sectionIds.reduce(into: [SectionId: [CalendarEvent]]()) { res, secId in
@@ -64,8 +64,8 @@ open class SectionHelper {
 			res[sectionId] = IdentifiedArrayOf.init(array)
 		})
 	}
+}
 
-	open class func groupByStartOfDay(originalEvents: [CalendarEvent]) -> [Date: [CalendarEvent]] {
-		return Dictionary.init(grouping: originalEvents, by: { Calendar.gregorian.startOfDay(for: $0.start_date) })
-	}
+func groupByStartOfDay(originalEvents: [CalendarEvent]) -> [Date: [CalendarEvent]] {
+	return Dictionary.init(grouping: originalEvents, by: { Calendar.gregorian.startOfDay(for: $0.start_date) })
 }

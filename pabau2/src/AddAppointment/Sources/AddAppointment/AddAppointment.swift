@@ -40,6 +40,7 @@ public struct AddAppointmentState: Equatable {
         return AppointmentBuilder(
             isAllDay: self.isAllDay,
             clientID: self.clients.chosenClient?.id,
+            locationID: self.chooseLocationState.chosenLocation?.id,
             employeeID: self.with.chosenEmployee?.id.rawValue,
             serviceID: self.services.chosenService?.id.rawValue,
             startTime: self.startDate,

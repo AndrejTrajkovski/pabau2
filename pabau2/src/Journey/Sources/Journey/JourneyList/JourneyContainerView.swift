@@ -11,21 +11,13 @@ import Overture
 import Filters
 import SharedComponents
 import Appointments
+import Combine
 
-public typealias JourneyEnvironment = (
-	formAPI: FormAPI,
-	journeyAPI: JourneyAPI,
-	clientsAPI: ClientsAPI,
-	userDefaults: UserDefaultsConfig
-)
-
-func makeFormEnv(_ journeyEnv: JourneyEnvironment) -> FormEnvironment {
-	return FormEnvironment(formAPI: journeyEnv.formAPI,
-						   userDefaults: journeyEnv.userDefaults)
-}
-
-let checkInMiddleware = Reducer<ChoosePathwayState, CheckInContainerAction, JourneyEnvironment> { _, action, _ in
+let checkInMiddleware = Reducer<JourneyState, CheckInContainerAction, JourneyEnvironment> { state, action, _ in
 	switch action {
+	case .patient(.stepsView(.onXTap)):
+		state.checkIn = nil
+		return .none
 //	case .patient(.topView(.onXButtonTap)),
 //			 .doctorSummary(.xOnDoctorCheckIn):
 //		state.selectedJourney = nil
@@ -48,11 +40,17 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 	calendarDatePickerReducer.pullback(
 		state: \JourneyContainerState.journey.selectedDate,
 		action: /JourneyContainerAction.datePicker,
-		environment: { $0 }),
-	journeyContainerReducer2.pullback(
-		state: \JourneyContainerState.journey,
-		action: /JourneyContainerAction.self,
 		environment: { $0 }
+	),
+	journeyReducer.pullback(
+				 state: \JourneyContainerState.journey,
+				 action: /JourneyContainerAction.journey,
+				 environment: { $0 }
+	),
+	journeyReducer.pullback(
+				 state: \JourneyContainerState.journey,
+				 action: /JourneyContainerAction.searchQueryChanged,
+				 environment: { $0 }
 	),
 	journeyFilterReducer.optional.pullback(
 		state: \JourneyContainerState.journeyEmployeesFilter,
@@ -61,7 +59,8 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 			return EmployeesFilterEnvironment(
 				journeyAPI: $0.journeyAPI,
 				userDefaults: $0.userDefaults)
-		}),
+		}
+	),
 	.init { state, action, env in
 		switch action {
 		case .toggleEmployees:
@@ -91,10 +90,7 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 					  let employees = state.employees[selectedLocationId] else {
 					return .none
 				}
-				state.appointments.refresh(events: appointments,
-										   locationsIds: [selectedLocationId],
-										   employees: employees.elements,
-										   rooms: [])
+				state.appointments = .init(events: appointments)
 				state.loadingState = .gotSuccess
 			case .failure(let error):
 				state.loadingState = .gotError(error)
@@ -106,22 +102,9 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 	}
 )
 
-//JourneyState, ChooseFormAction
-public let journeyContainerReducer2: Reducer<JourneyState, JourneyContainerAction, JourneyEnvironment> =
-	.combine(
-		journeyReducer.pullback(
-					 state: \JourneyState.self,
-					 action: /JourneyContainerAction.journey,
-					 environment: { $0 }),
-        journeyReducer.pullback(
-                     state: \JourneyState.self,
-                     action: /JourneyContainerAction.searchQueryChanged,
-                     environment: { $0 })
-)
-
 let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 	.combine (
-		choosePathwayContainerReducer.optional.pullback(
+		choosePathwayContainerReducer.optional().pullback(
 					 state: \JourneyState.choosePathway,
 					 action: /JourneyAction.choosePathway,
 					 environment: { $0 }),
@@ -129,6 +112,7 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
             struct SearchJourneyId: Hashable {}
 
 			switch action {
+			
 			case .selectedFilter(let filter):
 				state.selectedFilter = filter
 				
@@ -145,10 +129,9 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 //                    .cancellable(id: SearchJourneyId(), cancelInFlight: true)
 //
 
-			case .selectedJourney(let journey):
-				state.choosePathway = ChoosePathwayState(selectedJourney: journey)
+			case .selectedAppointment(let appointment):
+				state.choosePathway = ChoosePathwayState(selectedAppointment: appointment)
 				return environment.journeyAPI.getPathwayTemplates()
-					.delay(for: 5, scheduler: DispatchQueue.main)
 					.receive(on: DispatchQueue.main)
 					.catchToEffect()
 					.map { .choosePathway(.gotPathwayTemplates($0))  }
@@ -156,11 +139,50 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 			case .choosePathwayBackTap:
 				state.choosePathway = nil
 				
-			case .choosePathway(_):
+			case .choosePathway(.matchResponse(let pathwayResult)):
+				print(pathwayResult)
+				switch pathwayResult {
+				case .success(let pathway):
+					
+					state.checkIn = CheckInContainerState(appointment: state.choosePathway!.selectedAppointment,
+														  pathway: pathway,
+														  pathwayTemplate: state.choosePathway!.selectedPathway!,
+														  patientDetails: ClientBuilder.empty,
+														  medicalHistories: [],
+														  consents: [],
+														  allConsents: [],
+														  photosState: PhotosState.init(SavedPhoto.mock()
+														  )
+					)
+					
+					return Just(JourneyAction.checkIn(CheckInContainerAction.showPatientMode))
+						.delay(for: .seconds(checkInAnimationDuration), scheduler: DispatchQueue.main)
+						.eraseToEffect()
+					
+				case .failure(let error):
+					print(error)
+				}
+				
+			case .checkIn(_):
+				break
+				
+			case .choosePathway(.rows(id: let id, action: let action)):
+				break
+				
+			case .choosePathway(.gotPathwayTemplates):
 				break
 			}
 			return .none
-	}
+	},
+		checkInReducer.optional.pullback(
+			state: \JourneyState.checkIn,
+			action: /JourneyAction.checkIn,
+			environment: { $0 }),
+		checkInMiddleware.pullback(
+			state: \JourneyState.self,
+			action: /JourneyAction.checkIn,
+			environment: { $0 }
+		)
 )
 
 public struct JourneyContainerView: View {
@@ -168,230 +190,146 @@ public struct JourneyContainerView: View {
 	@ObservedObject var viewStore: ViewStore<ViewState, JourneyContainerAction>
 
     @State var showSearchBar: Bool = false
-
+	
 	struct ViewState: Equatable {
 		let isChoosePathwayShown: Bool
 		let selectedDate: Date
-		let listedJourneys: [Journey]
+		let listedAppointments: [Appointment]
 		let isLoadingJourneys: Bool
         let searchQuery: String
 		let navigationTitle: String
 		init(state: JourneyContainerState) {
 			self.isChoosePathwayShown = state.journey.choosePathway != nil
 			self.selectedDate = state.journey.selectedDate
-			self.listedJourneys = state.filteredJourneys()
+			self.listedAppointments = state.appointments.appointments[state.journey.selectedDate]?.elements ?? []
             self.searchQuery = state.journey.searchText
 			self.isLoadingJourneys = state.loadingState.isLoading
 			self.navigationTitle = state.journey.selectedLocation?.name ?? "No Location Chosen"
 			UITableView.appearance().separatorStyle = .none
 		}
 	}
+	
 	public init(_ store: Store<JourneyContainerState, JourneyContainerAction>) {
 		self.store = store
 		self.viewStore = ViewStore(self.store
 			.scope(state: ViewState.init(state:),
 						 action: { $0 }))
 	}
+	
 	public var body: some View {
-		print("JourneyContainerView")
-        return VStack {
-            CalendarDatePicker.init(
-                store: self.store.scope(
-					state: { $0.journey.selectedDate },
-                    action: { .datePicker($0)}),
-                isWeekView: false,
-                scope: .week
-            )
-            .padding(0)
+		VStack {
+            datePicker
 
             FilterPicker()
 
             if self.showSearchBar {
-                SearchView(
-                    placeholder: "Search",
-                    text: viewStore.binding(
-                    get: \.searchQuery,
-                    send: { JourneyContainerAction.searchQueryChanged(JourneyAction.searchedText($0)) }
-                    )
-                )
-                .isHidden(!self.showSearchBar)
-                .padding([.leading, .trailing], 16)
+                searchBar
             }
 
-            JourneyList(self.viewStore.state.listedJourneys) {
-                self.viewStore.send(.journey(.selectedJourney($0)))
+            JourneyList(self.viewStore.state.listedAppointments) {
+                self.viewStore.send(.journey(.selectedAppointment($0)))
             }.loadingView(.constant(self.viewStore.state.isLoadingJourneys),
 						  Texts.fetchingJourneys)
-
-            NavigationLink.emptyHidden(
-                self.viewStore.state.isChoosePathwayShown,
-				IfLetStore(
-					store.scope(state: { $0.journey.choosePathway },
-								action: { .journey(.choosePathway($0)) }),
-					then: { choosePathwayStore in
-						ChoosePathway.init(store: choosePathwayStore)
-							.navigationBarTitle("Choose Pathway")
-							.customBackButton {
-								self.viewStore.send(.journey(.choosePathwayBackTap))
-							}
-					}
-				)
-            )
+			
+			choosePathwayLink
+			
             Spacer()
         }
 		.navigationBarTitle(viewStore.navigationTitle, displayMode: .inline)
-        .navigationBarItems(
-            leading:
-                HStack(spacing: 8.0) {
-                    PlusButton {
-                        withAnimation(Animation.easeIn(duration: 0.5)) {
-                            self.viewStore.send(.addAppointmentTap)
-                        }
-                    }
-                    Button(action: {
-                        withAnimation {
-                            self.showSearchBar.toggle()
-                        }
-                    }, label: {
-                        Image(systemName: "magnifyingglass")
-                            .font(.system(size: 20))
-                            .frame(width: 44, height: 44)
-                    })
-                },
-            trailing:
-                Button(action: {
-                    withAnimation {
-                        self.viewStore.send(.toggleEmployees)
-                    }
-                }, label: {
-                    Image(systemName: "person")
-                        .font(.system(size: 20))
-                        .frame(width: 44, height: 44)
-                })
-        )
+        .navigationBarItems(leading: leadingItems, trailing: trailingItems)
     }
-}
-
-func journeyCellAdapter(journey: Journey) -> JourneyCell {
-	return JourneyCell(
-		journey: journey,
-        color: Color.init(hex: journey.first!.serviceColor ?? "#000000"),
-		time: "12:30",
-		imageUrl: journey.first!.clientPhoto ?? "",
-		name: journey.first!.clientName ?? "",
-		services: journey.servicesString,
-		status: journey.first!.status?.name,
-		employee: journey.first!.employeeName,
-		paidStatus: "",
-		stepsComplete: 0,
-		stepsTotal: 3)
+	
+	var datePicker: some View {
+		CalendarDatePicker.init(
+			store: self.store.scope(
+				state: { $0.journey.selectedDate },
+				action: { .datePicker($0)}),
+			isWeekView: false,
+			scope: .week
+		)
+		.padding(0)
+	}
+	
+	var searchBar: some View {
+		SearchView(
+			placeholder: "Search",
+			text: viewStore.binding(
+				get: \.searchQuery,
+				send: { JourneyContainerAction.searchQueryChanged(JourneyAction.searchedText($0)) }
+			)
+		)
+		.isHidden(!self.showSearchBar)
+		.padding([.leading, .trailing], 16)
+	}
+	
+	var leadingItems: some View {
+		HStack(spacing: 8.0) {
+			PlusButton {
+				withAnimation(Animation.easeIn(duration: 0.5)) {
+					self.viewStore.send(.addAppointmentTap)
+				}
+			}
+			Button(action: {
+				withAnimation {
+					self.showSearchBar.toggle()
+				}
+			}, label: {
+				Image(systemName: "magnifyingglass")
+					.font(.system(size: 20))
+					.frame(width: 44, height: 44)
+			})
+		}
+	}
+	
+	var trailingItems: some View {
+		Button(action: {
+			withAnimation {
+				self.viewStore.send(.toggleEmployees)
+			}
+		}, label: {
+			Image(systemName: "person")
+				.font(.system(size: 20))
+				.frame(width: 44, height: 44)
+		})
+	}
+		
+	var choosePathwayLink: some View {
+		NavigationLink.emptyHidden(
+			viewStore.state.isChoosePathwayShown,
+			IfLetStore(
+				store.scope(state: { $0.journey.choosePathway },
+							action: { .journey(.choosePathway($0)) }),
+				then: { choosePathwayStore in
+					ChoosePathway.init(store: choosePathwayStore)
+						.navigationBarTitle("Choose Pathway")
+						.customBackButton {
+							viewStore.send(.journey(.choosePathwayBackTap))
+						}
+				}
+			)
+		)
+	}
 }
 
 struct JourneyList: View {
-	let journeys: [Journey]
-	let onSelect: (Journey) -> Void
-	init (_ journeys: [Journey],
-				_ onSelect: @escaping (Journey) -> Void) {
-		self.journeys = journeys
+	let appointments: [Appointment]
+	let onSelect: (Appointment) -> Void
+	init (_ appointments: [Appointment],
+				_ onSelect: @escaping (Appointment) -> Void) {
+		self.appointments = appointments
 		self.onSelect = onSelect
 	}
 	var body: some View {
 		List {
-			ForEach(journeys.indices) { idx in
-				journeyCellAdapter(journey: journeys[idx])
+			ForEach(appointments.indices) { idx in
+				JourneyCell.init(appointment: appointments[idx])
 					.contextMenu {
 						JourneyListContextMenu()
 					}
-					.onTapGesture { self.onSelect(journeys[idx]) }
+					.onTapGesture { self.onSelect(appointments[idx]) }
 					.listRowInsets(EdgeInsets())
 			}
 		}.id(UUID())
-	}
-}
-
-struct JourneyCell: View {
-	let journey: Journey
-	let color: Color
-	let time: String
-	let imageUrl: String?
-	let name: String
-	let services: String
-	let status: String?
-	let employee: String
-	let paidStatus: String
-	let stepsComplete: Int
-	let stepsTotal: Int
-	var body: some View {
-		VStack(spacing: 0) {
-			HStack {
-				JourneyColorRect(color: color)
-				Spacer()
-				Group {
-					Text(time).font(Font.semibold11)
-					Spacer()
-					JourneyAvatarView(journey: journey, font: .regular18, bgColor: .accentColor)
-						.frame(width: 55, height: 55)
-					VStack(alignment: .leading, spacing: 4) {
-						Text(name).font(Font.semibold14)
-						Text(services).font(Font.regular12)
-						Text(status ?? "").font(.medium9).foregroundColor(.deepSkyBlue)
-					}.frame(maxWidth: 158, alignment: .leading)
-				}
-				Spacer()
-				IconAndText(Image(systemName: "person"), employee)
-					.frame(maxWidth: 110, alignment: .leading)
-				Spacer()
-				IconAndText(Image(systemName: "bag"), paidStatus)
-					.frame(maxWidth: 110, alignment: .leading)
-				Spacer()
-				StepsStatusView(stepsComplete: stepsComplete, stepsTotal: stepsTotal)
-				Spacer()
-			}
-			Divider().frame(height: 1)
-		}
-		.frame(minWidth: 0, maxWidth: .infinity, idealHeight: 97)
-	}
-}
-
-struct IconAndText: View {
-	let text: String
-	let image: Image
-	let textColor: Color
-	init(_ image: Image,
-		 _ text: String,
-		 _ textColor: Color = .black) {
-		self.image = image
-		self.text = text
-		self.textColor = textColor
-	}
-	var body: some View {
-		HStack {
-			image
-				.resizable()
-				.scaledToFit()
-				.foregroundColor(.blue2)
-				.frame(width: 20, height: 20)
-			Text(text)
-				.font(Font.semibold11)
-				.foregroundColor(textColor)
-		}
-	}
-}
-
-struct StepsStatusView: View {
-	let stepsComplete: Int
-	let stepsTotal: Int
-	var body: some View {
-		NumberEclipse(text: "\(stepsComplete)/\(stepsTotal)")
-	}
-}
-
-struct JourneyColorRect: View {
-	public let color: Color
-	var body: some View {
-		Rectangle()
-			.foregroundColor(color)
-			.frame(width: 8.0)
 	}
 }
 

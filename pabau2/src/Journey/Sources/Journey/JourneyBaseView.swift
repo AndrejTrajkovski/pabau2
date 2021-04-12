@@ -9,13 +9,13 @@ public enum JourneyProfileViewStyle {
 
 public struct JourneyBaseView<Content: View>: View {
 	let content: Content
-	let journey: Journey?
+	let appointment: Appointment?
 	let style: JourneyProfileViewStyle
 
-	init(journey: Journey?,
+	init(appointment: Appointment?,
 		 style: JourneyProfileViewStyle,
 		 @ViewBuilder content: () -> Content) {
-		self.journey = journey
+		self.appointment = appointment
 		self.content = content()
 		self.style = style
 	}
@@ -23,7 +23,7 @@ public struct JourneyBaseView<Content: View>: View {
 	public var body: some View {
 		VStack(spacing: 64) {
 			JourneyProfileView(style: style,
-							   viewState: JourneyProfileView.ViewState.init(journey: journey))
+							   viewState: JourneyProfileView.ViewState.init(appointment: appointment))
 				.padding(.top, 32)
 				.padding(.bottom, 32)
 			content
@@ -32,17 +32,17 @@ public struct JourneyBaseView<Content: View>: View {
 }
 
 struct JourneyBaseModifier: ViewModifier {
-	let journey: Journey?
+	let appointment: Appointment?
 	let style: JourneyProfileViewStyle
 	func body(content: Content) -> some View {
-		JourneyBaseView(journey: journey, style: style, content: { content })
+		JourneyBaseView(appointment: appointment, style: style, content: { content })
 	}
 }
 
 public extension View {
 
-	func journeyBase(_ journey: Journey?,
+	func journeyBase(_ appointment: Appointment?,
 					 _ style: JourneyProfileViewStyle) -> some View {
-		self.modifier(JourneyBaseModifier(journey: journey, style: style))
+		self.modifier(JourneyBaseModifier(appointment: appointment, style: style))
 	}
 }

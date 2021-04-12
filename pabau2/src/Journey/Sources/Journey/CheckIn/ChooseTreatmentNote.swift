@@ -11,21 +11,21 @@ struct ChooseTreatmentNote: View {
 		self.viewStore = ViewStore(store.scope(state: {
 			State.init(isDoctorSummaryActive: $0.isDoctorSummaryActive,
 								 isDoctorCheckInMainActive: $0.isDoctorCheckInMainActive,
-								 journey: $0.journey)
+								 appointment: $0.appointment)
 		}))
 	}
 
 	struct State: Equatable {
 		let isDoctorSummaryActive: Bool
 		let isDoctorCheckInMainActive: Bool
-		let journey: Journey
+		let appointment: Appointment
 	}
 
 	var body: some View {
 		VStack {
 			ChooseFormJourney(store: store.scope(state: { $0.chooseTreatments },
 												 action: { .chooseTreatments($0)}),
-							  journey: self.viewStore.state.journey)
+							  appointment: self.viewStore.state.appointment)
 			NavigationLink.emptyHidden(self.viewStore.state.isDoctorSummaryActive,
 									   EmptyView()
 //									   DoctorSummary(store:

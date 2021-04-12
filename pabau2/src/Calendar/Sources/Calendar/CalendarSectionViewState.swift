@@ -41,6 +41,11 @@ public extension Dictionary {
 extension CalendarSectionViewState {
 
 	public func chosenLocations() -> [Location] {
-		chosenLocationsIds.compactMap { locations[id: $0] }
+        if chosenLocationsIds.isEmpty {
+            return []
+        }
+        
+        return locations.compactMap { $0 }
+		//chosenLocationsIds.compactMap { locations[id: $0] }
 	}
 }

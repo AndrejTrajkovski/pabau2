@@ -98,7 +98,8 @@ struct FormsContainer: View {
 		print("FormsContainer")
 		return CheckIn(store: store.scope(state: { $0 },
 								   action: { .checkIn($0)}),
-					   avatarView: { ClientAvatarAndName(store: store.scope(state: { $0.client }).actionless) },
+					   avatarView: {
+						ClientAvatarAndName(store: store.scope(state: { $0.client }).actionless) },
 				content: {
 					ForEachStore(store.scope(state: { $0.formsCollection },
 											 action: FormsContainerAction.forms(id: action:)),
