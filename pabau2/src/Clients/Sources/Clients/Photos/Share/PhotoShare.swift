@@ -6,7 +6,6 @@ import UIKit
 
 public struct PhotoShareState: Equatable {
     var message: String = ""
-
     var isMessagePosted: Bool = false
     var shouldDisplayActivity: Bool = false
     var shouldDisplayFacebookDialog: Bool = false

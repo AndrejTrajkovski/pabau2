@@ -8,7 +8,9 @@ public struct CheckInContainerState: Equatable {
 
 	let journey: Journey
 	let pathway: PathwayTemplate
-
+	
+	var isPatientModeActive: Bool = false
+	
 	var patientDetailsLS: LoadingState
 	var patientDetails: ClientBuilder
 	var patientDetailsStatus: Bool

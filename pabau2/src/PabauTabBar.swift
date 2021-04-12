@@ -77,7 +77,7 @@ struct PabauTabBar: View {
 		let isShowingCheckin: Bool
 		let isShowingAppointments: Bool
 		init(state: TabBarState) {
-			self.isShowingCheckin = state.journeyContainer.journey.checkIn != nil
+			self.isShowingCheckin = state.journeyContainer.journey.choosePathway?.checkIn != nil
 			self.isShowingAppointments = state.addAppointment != nil
 		}
 	}

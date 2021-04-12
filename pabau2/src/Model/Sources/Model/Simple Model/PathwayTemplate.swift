@@ -1,9 +1,9 @@
 import Foundation
 import Tagged
 
-public struct PathwayTemplate: Codable, Identifiable, Equatable {
+public struct PathwayTemplate: Decodable, Identifiable, Equatable {
 
-	public typealias ID = Tagged<PathwayTemplate, Int>
+	public typealias ID = Tagged<PathwayTemplate, EitherStringOrInt>
 	
     public let id: ID
 
@@ -14,7 +14,7 @@ public struct PathwayTemplate: Codable, Identifiable, Equatable {
     public let _description: String?
 	
     public init(id: Int, title: String, steps: [Step], _description: String? = nil) {
-		self.id = Self.ID.init(rawValue: id)
+		self.id = Self.ID.init(rawValue: .right(id))
         self.title = title
         self.steps = steps
         self._description = _description
@@ -31,7 +31,7 @@ public struct PathwayTemplate: Codable, Identifiable, Equatable {
 		let container = try decoder.container(keyedBy: Self.CodingKeys)
 		self.id = try container.decode(Self.ID.self, forKey: .id)
 		self.title = try container.decode(String.self, forKey: .title)
-		self.steps = (try? container.decode([Step].self, forKey: .steps)) ?? []
+		self.steps = try container.decode([Step].self, forKey: .steps)
 		self._description = try container.decode(String.self, forKey: ._description)
 	}
 }

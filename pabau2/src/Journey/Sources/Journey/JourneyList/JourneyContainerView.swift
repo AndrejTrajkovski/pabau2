@@ -24,8 +24,11 @@ func makeFormEnv(_ journeyEnv: JourneyEnvironment) -> FormEnvironment {
 						   userDefaults: journeyEnv.userDefaults)
 }
 
-let checkInMiddleware = Reducer<ChoosePathwayState, CheckInContainerAction, JourneyEnvironment> { _, action, _ in
+let checkInMiddleware = Reducer<ChoosePathwayState, CheckInContainerAction, JourneyEnvironment> { state, action, _ in
 	switch action {
+	case .patient(.stepsView(.onXTap)):
+		state.checkIn = nil
+		return .none
 //	case .patient(.topView(.onXButtonTap)),
 //			 .doctorSummary(.xOnDoctorCheckIn):
 //		state.selectedJourney = nil
@@ -148,7 +151,6 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 			case .selectedJourney(let journey):
 				state.choosePathway = ChoosePathwayState(selectedJourney: journey)
 				return environment.journeyAPI.getPathwayTemplates()
-					.delay(for: 5, scheduler: DispatchQueue.main)
 					.receive(on: DispatchQueue.main)
 					.catchToEffect()
 					.map { .choosePathway(.gotPathwayTemplates($0))  }
@@ -275,13 +277,13 @@ public struct JourneyContainerView: View {
 func journeyCellAdapter(journey: Journey) -> JourneyCell {
 	return JourneyCell(
 		journey: journey,
-        color: Color.init(hex: journey.first!.serviceColor ?? "#000000"),
+		color: Color.init(hex: journey.appointments.first!.serviceColor ?? "#000000"),
 		time: "12:30",
-		imageUrl: journey.first!.clientPhoto ?? "",
-		name: journey.first!.clientName ?? "",
+		imageUrl: journey.clientPhoto ?? "",
+		name: journey.clientName ?? "",
 		services: journey.servicesString,
-		status: journey.first!.status?.name,
-		employee: journey.first!.employeeName,
+		status: journey.appointments.first!.status?.name,
+		employee: journey.appointments.first!.employeeName,
 		paidStatus: "",
 		stepsComplete: 0,
 		stepsTotal: 3)

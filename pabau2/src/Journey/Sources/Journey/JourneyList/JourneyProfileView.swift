@@ -2,6 +2,7 @@ import SwiftUI
 import Util
 import Model
 import SwiftDate
+import Avatar
 
 struct JourneyProfileView: View {
 	let style: JourneyProfileViewStyle
@@ -15,16 +16,14 @@ struct JourneyProfileView: View {
 		let time: String
 		let rooms: String
 		let date: String
+		let initials: String
 	}
 	var body: some View {
 		VStack {
-			Group {
-				if viewState.imageUrl != nil {
-					Image(viewState.imageUrl!).resizable().scaledToFill().clipShape(Circle())
-				} else {
-					Image(systemName: "person").resizable()
-				}
-			}
+			AvatarView(avatarUrl: viewState.imageUrl,
+					   initials: viewState.initials,
+					   font: nameFont,
+					   bgColor: .accentColor)
 			.frame(width: profileImageRadius, height: profileImageRadius)
 			Text(viewState.name).font(nameFont)
 			Text(viewState.services).foregroundColor(.gray838383).font(serviceFont)
@@ -58,12 +57,13 @@ struct JourneyProfileView: View {
 
 extension JourneyProfileView.ViewState {
 	init(journey: Journey?) {
-		self.imageUrl = journey?.first?.clientPhoto
-		self.name = journey?.first?.clientName ?? ""
+		self.imageUrl = journey?.clientPhoto
+		self.name = journey?.clientName ?? ""
 		self.services = journey?.servicesString ?? ""
-		self.employeeName = journey?.first?.employeeName ?? ""
-		self.time = journey?.first?.start_date.toFormat("HH: mm") ?? ""
+		self.employeeName = journey?.employeeName ?? ""
+		self.time = journey?.start_date.toFormat("HH: mm") ?? ""
 		self.rooms = "201, 202"
-		self.date = journey?.first?.start_date.toFormat("MMMM dd yyyy") ?? ""
+		self.date = journey?.start_date.toFormat("MMMM dd yyyy") ?? ""
+		self.initials = journey?.initials ?? ""
 	}
 }

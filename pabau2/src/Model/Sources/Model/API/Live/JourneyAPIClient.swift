@@ -43,7 +43,7 @@ extension APIClient {
     }
 	
 	public func getPathwayTemplates() -> Effect<IdentifiedArrayOf<PathwayTemplate>, RequestError> {
-		struct GetPathways: Codable {
+		struct GetPathways: Decodable {
 			let pathways: [PathwayTemplate]
 		}
 		let companyId = loggedInUser?.companyID ?? ""
@@ -188,5 +188,25 @@ extension APIClient {
 		.effect()
 		.map(\.participant)
 		.eraseToEffect()
+	}
+	
+	public func match(journey: Journey, pathwayTemplateId: PathwayTemplate.ID) -> Effect<[Appointment.ID: Pathway], RequestError> {
+		
+		let body = [
+			"booking_ids": journey.appointments.map(\.id).map(String.init).joined(separator: ","),
+			"pathway_template_id": pathwayTemplateId.description,
+			"clientId": journey.clientId.description
+		]
+		
+		let requestBuilder: RequestBuilder<[Appointment.ID: Pathway]>.Type = requestBuilderFactory.getBuilder()
+		
+		return requestBuilder.init(
+			method: .POST,
+			baseUrl: baseUrl,
+			path: .pathwaysMatch,
+			queryParams: commonAnd(other: ["company_id": loggedInUser?.companyID ?? ""]),
+			body: bodyData(parameters: body)
+		)
+		.effect()
 	}
 }

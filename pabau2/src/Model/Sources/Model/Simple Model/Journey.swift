@@ -11,6 +11,10 @@ public extension Journey {
 
 public struct Journey: Equatable, Identifiable, Hashable {
 	
+	public init(appointments: [Appointment]) {
+		self.appointments = appointments
+	}
+	
 	public struct ID: Hashable {
 		let clientId: Client.ID
 		let employeeId: Employee.ID

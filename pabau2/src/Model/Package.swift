@@ -13,7 +13,7 @@ let package = Package(
 	dependencies: [
 		.package(name: "swift-composable-architecture",
 				 url: "https://github.com/pointfreeco/swift-composable-architecture.git",
-				 from: Version.init(stringLiteral: "0.6.0")),
+				 from: Version.init(stringLiteral: "0.16.0")),
 		.package(name: "Tagged",
 				 url: "https://github.com/pointfreeco/swift-tagged.git",
 				 from: Version.init(stringLiteral: "0.5.0")),

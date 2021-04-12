@@ -4,9 +4,11 @@ import Util
 import ComposableArchitecture
 import Form
 import Overture
+import Combine
 
 public enum ChoosePathwayContainerAction {
 	case rows(id: PathwayTemplate.ID, action: PathwayTemplateRowAction)
+	case matchResponse(Result<[Appointment.ID: Pathway], RequestError>)
 	case choosePathway(ChoosePathwayAction)
 	case chooseConsent(ChooseFormAction)
 	case checkIn(CheckInContainerAction)
@@ -15,7 +17,7 @@ public enum ChoosePathwayContainerAction {
 
 let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayContainerAction, JourneyEnvironment> =
 	.combine(
-		Reducer.init { state, action, _ in
+		Reducer.init { state, action, env in
 			switch action {
 			case .chooseConsent(.proceed):
 				state.checkIn = CheckInContainerState(journey: state.selectedJourney,
@@ -29,22 +31,28 @@ let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayCont
 													  allConsents: state.allConsents,
 													  photosState: PhotosState.init(SavedPhoto.mock())
 				)
+				return Just(ChoosePathwayContainerAction.checkIn(CheckInContainerAction.showPatientMode))
+					.delay(for: .seconds(checkInAnimationDuration), scheduler: DispatchQueue.main)
+					.eraseToEffect()
+				
 			case .gotPathwayTemplates(let pathwayTemplates):
 				print(pathwayTemplates)
 				state.pathwayTemplates.update(pathwayTemplates)
+				
+			case .rows(let id, _):
+				guard case .loaded(let pathways) = state.pathwayTemplates else { return .none }
+				state.selectedPathway = pathways[id: id]
+				return env.journeyAPI.match(journey: state.selectedJourney,
+											pathwayTemplateId: id)
+					.receive(on: DispatchQueue.main)
+					.catchToEffect()
+					.map { ChoosePathwayContainerAction.matchResponse($0) }
+					.eraseToEffect()
 			default:
 				break
 			}
 			return .none
 		},
-		checkInMiddleware.pullback(
-			state: \ChoosePathwayState.self,
-			action: /ChoosePathwayContainerAction.checkIn,
-			environment: { $0 }),
-		checkInReducer.optional.pullback(
-			state: \ChoosePathwayState.checkIn,
-			action: /ChoosePathwayContainerAction.checkIn,
-			environment: { $0 }),
 		chooseFormListReducer.pullback(
 			state: \ChoosePathwayState.chooseConsentState,
 			action: /ChoosePathwayContainerAction.chooseConsent,
@@ -53,6 +61,14 @@ let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayCont
 		choosePathwayReducer.pullback(
 			state: \ChoosePathwayState.self,
 			action: /ChoosePathwayContainerAction.choosePathway,
+			environment: { $0 }),
+		checkInReducer.optional.pullback(
+			state: \ChoosePathwayState.checkIn,
+			action: /ChoosePathwayContainerAction.checkIn,
+			environment: { $0 }),
+		checkInMiddleware.pullback(
+			state: \ChoosePathwayState.self,
+			action: /ChoosePathwayContainerAction.checkIn,
 			environment: { $0 })
 )
 
@@ -109,20 +125,30 @@ public struct ChoosePathway: View {
 			.scope(state: State.init(state:),
 						 action: { $0 }))
 	}
+	
 	public var body: some View {
 		HStack {
 			LoadingStore(store.scope(state: { $0.pathwayTemplates }, action: { $0 }),
 						 then: { (tmplts: Store<IdentifiedArrayOf<PathwayTemplate>,
-							ChoosePathwayContainerAction>) in
-							ForEachStore(tmplts.scope(state: { $0 },
-													  action: { .rows(id: $0, action: $1) }),
-										 content: PathwayTemplateRow.init(store:))
-						 })
+												ChoosePathwayContainerAction>) in
+							choosePathwayList(tmplts)
+						 }
+			)
 			chooseFormNavLink
 		}
 		.journeyBase(self.viewStore.state.journey, .long)
 	}
 
+	fileprivate func choosePathwayList(_ tmplts: Store<IdentifiedArrayOf<PathwayTemplate>, ChoosePathwayContainerAction>) -> some View {
+		return ScrollView {
+			LazyVStack {
+				ForEachStore(tmplts.scope(state: { $0 },
+										  action: { .rows(id: $0, action: $1) }),
+							 content: PathwayTemplateRow.init(store:))
+			}
+		}
+	}
+	
 	var chooseFormNavLink: some View {
 		NavigationLink.emptyHidden(self.viewStore.state.isChooseConsentShown,
 								   ChooseFormList(store:
@@ -134,36 +160,6 @@ public struct ChoosePathway: View {
 										self.viewStore.send(.choosePathway(.didTouchSelectConsentBackBtn))
 									}
 		)
-	}
-
-	var pathwayCells: some View {
-		EmptyView()
-//		HStack {
-//			ListFrame(style: .blue) {
-//				ChoosePathwayListContent(
-//					.blue,
-//					Image(systemName: "arrow.right"),
-//					self.viewStore.state.standardPathway.steps.count,
-//					"Standard Pathway",
-//					"Provides a basic standard pathway, defined for the company.",
-//					self.viewStore.state.standardPathway.steps.map { $0.stepType.title },
-//					"Standard") {
-//						self.viewStore.send(.choosePathway(.didChoosePathway(self.viewStore.state.standardPathway)))
-//				}
-//			}
-//			ListFrame(style: .white) {
-//				ChoosePathwayListContent(
-//					.white,
-//					Image("ico-journey-consulting"),
-//					self.viewStore.state.consultationPathway.steps.count,
-//					"Consultation Pathway",
-//					"Provides a consultation pathway, to hear out the person's needs.",
-//					self.viewStore.state.consultationPathway.steps.map { $0.stepType.title },
-//					"Consultation") {
-//						self.viewStore.send(.choosePathway(.didChoosePathway(self.viewStore.state.consultationPathway)))
-//				}
-//			}
-//		}
 	}
 }
 
@@ -177,17 +173,20 @@ struct PathwayTemplateRow: View {
 		WithViewStore(store) { viewStore in
 			VStack(alignment: .leading, spacing: 16) {
 				HStack {
+					Text(viewStore.title).font(.semibold20).foregroundColor(.black42)
 					Spacer()
 					Image(systemName: "list.bullet").foregroundColor(.blue2)
 					Text(String("\(viewStore.steps.count)")).font(.semibold17)
 				}
-//				Text(viewStore.title).font(.semibold20).foregroundColor(.black42)
-				Text(viewStore._description ?? "").font(.medium15)
-				PrimaryButton(viewStore.title) {
-					viewStore.send(.select)
-				}
+				Divider()
+//				SecondaryButton(viewStore.title) {
+//					viewStore.send(.select)
+//				}
+			}.padding([.leading, .trailing])
+			.onTapGesture {
+				viewStore.send(.select)
 			}
-		}
+		}.frame(height: 44)
 	}
 }
 
