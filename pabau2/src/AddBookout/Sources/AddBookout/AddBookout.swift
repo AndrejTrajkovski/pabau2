@@ -4,7 +4,7 @@ import Util
 import Model
 import SharedComponents
 
-public typealias AddBookoutEnvironment = (apiClient: JourneyAPI, clientAPI: ClientsAPI, userDefaults: UserDefaultsConfig)
+public typealias AddBookoutEnvironment = (journeyAPI: JourneyAPI, clientAPI: ClientsAPI, userDefaults: UserDefaultsConfig)
 
 public let addBookoutOptReducer: Reducer<
     AddBookoutState?,
@@ -83,6 +83,10 @@ public let addBookoutReducer: Reducer<
         action: /AddBookoutAction.chooseEmployeesAction,
         environment: { $0 }
     ),
+    chooseLocationsReducer.pullback(
+        state: \AddBookoutState.chooseLocationState,
+        action: /AddBookoutAction.chooseLocation,
+        environment: { $0 }),
     switchCellReducer.pullback(
         state: \.isAllDay,
         action: /AddBookoutAction.isAllDay,
@@ -101,6 +105,8 @@ public let addBookoutReducer: Reducer<
         case .onChooseEmployee:
             state.chooseEmployeesState.isChooseEmployeesActive = true
             state.employeeConfigurator.state = .normal
+        case .onChooseLocation:
+            state.chooseLocationState.isChooseLocationActive = true
         default:
             break
         }
@@ -112,6 +118,7 @@ public struct AddBookoutState: Equatable {
     var editingBookout: Bookout?
 	var chooseEmployee: SingleChoiceLinkState<Employee>
 	var chooseDuration: SingleChoiceState<Duration>
+    var chooseLocationState: ChooseLocationState
     var chooseEmployeesState: ChooseEmployeesState
     var startDate: Date
     var time: Date?
@@ -131,6 +138,7 @@ public struct AddBookoutState: Equatable {
         return AppointmentBuilder(
             isAllDay: self.isAllDay,
             isPrivate: self.isPrivate,
+            locationID: self.chooseLocationState.chosenLocation?.id,
             employeeID: self.chooseEmployeesState.chosenEmployee?.id.rawValue,
             startTime: self.startDate,
             duration: self.chooseDuration.dataSource.first(where: {$0.id == self.chooseDuration.chosenItemId})?.duration,
@@ -146,6 +154,8 @@ public enum AddBookoutAction {
     case chooseEmployeesAction(ChooseEmployeesAction)
     case onChooseEmployee
 	case chooseDuration(SingleChoiceActions<Duration>)
+    case chooseLocation(ChooseLocationAction)
+    case onChooseLocation
 	case isPrivate(ToggleAction)
 	case isAllDay(ToggleAction)
 	case note(TextChangeAction)
@@ -218,6 +228,22 @@ struct FirstSection: View {
                         store: self.store.scope(
                             state: { $0.chooseEmployeesState },
                             action: { .chooseEmployeesAction($0) }
+                        )
+                    )
+                )
+                TitleAndValueLabel(
+                    "LOCATION",
+                    self.viewStore.state.chooseLocationState.chosenLocation?.name ?? "Choose Location",
+                    self.viewStore.state.chooseLocationState.chosenLocation?.name == nil ? Color.grayPlaceholder : nil
+                ).onTapGesture {
+                    self.viewStore.send(.onChooseLocation)
+                }
+                NavigationLink.emptyHidden(
+                    self.viewStore.state.chooseLocationState.isChooseLocationActive,
+                    ChooseLocationView(
+                        store: self.store.scope(
+                            state: { $0.chooseLocationState },
+                            action: { .chooseLocation($0) }
                         )
                     )
                 )
@@ -342,6 +368,7 @@ extension AddBookoutState {
                     dataSource: IdentifiedArray.init(Duration.all),
                     chosenItemId: nil
                 ),
+            chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
             chooseEmployeesState: ChooseEmployeesState(isChooseEmployeesActive: false),
             startDate: start,
             time: nil,
@@ -367,6 +394,7 @@ extension AddBookoutState {
                     dataSource: IdentifiedArray.init(Duration.all),
                     chosenItemId: nil
                 ),
+            chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
             chooseEmployeesState: ChooseEmployeesState(isChooseEmployeesActive: false),
             startDate: bookout.start_date,
             time: nil,

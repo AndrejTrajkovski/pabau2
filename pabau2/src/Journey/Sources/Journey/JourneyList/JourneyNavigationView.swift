@@ -5,7 +5,7 @@ import Filters
 
 public struct JourneyNavigationView: View {
 	let store: Store<JourneyContainerState, JourneyContainerAction>
-	@ObservedObject var viewStore: ViewStore<JourneyContainerState, JourneyContainerAction>
+	@ObservedObject var viewStore: ViewStore<Bool, JourneyContainerAction>
 //	struct ViewState: Equatable {
 //		let isShowingEmployees: Bool
 //		init(state: JourneyContainerState) {
@@ -14,7 +14,7 @@ public struct JourneyNavigationView: View {
 //	}
 	public init(_ store: Store<JourneyContainerState, JourneyContainerAction>) {
 		self.store = store
-		self.viewStore = ViewStore(store)
+		self.viewStore = ViewStore(store.scope(state: { $0.journey.isShowingEmployeesFilter }))
 	}
 	public var body: some View {
 		print("JourneyNavigationView")
@@ -24,7 +24,7 @@ public struct JourneyNavigationView: View {
 												 action: { $0 }))
 			}
 			.navigationViewStyle(StackNavigationViewStyle())
-			if self.viewStore.state.journey.isShowingEmployeesFilter {
+			if self.viewStore.state {
 				journeyFilter()
 			}
 		}

@@ -52,10 +52,11 @@ private struct EmployeeList: View {
 			List {
 				Section(header: header) {
 					ForEach(employees) { employee in
-						EmployeeRow(employee: employee,
-												isSelected: self.selectedEmployeesIds.contains(employee.id)) {
-													self.didSelectEmployee($0)
-						}
+                        EmployeeRow(
+                            employee: employee,
+                            isSelected: self.selectedEmployeesIds.contains(employee.id)) {
+                               self.didSelectEmployee($0)
+                        }
 					}
 				}
 			}

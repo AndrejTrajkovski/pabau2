@@ -1,39 +1,51 @@
 import Foundation
 import Tagged
 
-public struct Step: Codable, Identifiable, Equatable {
+public struct Step: Decodable, Identifiable, Equatable {
 	
-	public typealias Id = Tagged<Step, Int>
+	public typealias Id = Tagged<Step, String>
 	
-	public enum PreselectedTemplateType: String, Codable, Equatable {
-		case definedbyservice = "definedByService"
-		case template = "template"
+	public enum PreselectedTemplate: Equatable {
+		case definedbyservice
+		case template(HTMLForm.ID)
 	}
-
+	
 	public let id: Id
-
-	public let stepType: StepType
-
-//	public let _required: Bool
-//
-//	public let preselectedTemplateType: PreselectedTemplateType?
-//
-//	public let formTemplate: [BaseFormTemplate]?
 	
-	public init(id: Int, stepType: StepType, _required: Bool = false, preselectedTemplateType: PreselectedTemplateType? = nil, formTemplate: [BaseFormTemplate]? = nil) {
-		self.id = Self.Id.init(rawValue: id)
-		self.stepType = stepType
-//		self._required = _required
-//		self.preselectedTemplateType = preselectedTemplateType
-//		self.formTemplate = formTemplate
-	}
+	public let stepType: StepType
+	
+	public let preselectedTemplate: PreselectedTemplate?
+	//	public let _required: Bool
+	//
+	//	public let preselectedTemplateType: PreselectedTemplateType?
+	//
+	//	public let formTemplate: [BaseFormTemplate]?
 	
 	public enum CodingKeys: String, CodingKey {
 		case id = "id"
 		case stepType = "step"
-//		case _required = "required"
-//		case preselectedTemplateType
-//		case formTemplate
+		case form_template_id = "item_id"
+		//		case _required = "required"
+		//		case preselectedTemplateType
+		//		case formTemplate
 	}
-
+	
+	public init(from decoder: Decoder) throws {
+		let container = try decoder.container(keyedBy: Self.CodingKeys)
+		self.id = try container.decode(Self.ID.self, forKey: .id)
+		let stepType = try container.decode(StepType.self, forKey: .stepType)
+		switch stepType {
+		case .consents, .treatmentnotes, .medicalhistory, .prescriptions:
+			let form_template_id = try? container.decode(HTMLForm.ID.self, forKey: .form_template_id)
+			if let form_template_id = form_template_id,
+			   form_template_id.rawValue != "0" {
+				self.preselectedTemplate = .template(form_template_id)
+			} else {
+				self.preselectedTemplate = .definedbyservice
+			}
+		default:
+			self.preselectedTemplate = nil
+		}
+		self.stepType = stepType
+	}
 }

@@ -29,7 +29,7 @@ public struct SignatureState: Equatable {
 //			ctx.cgContext.setLineWidth(10)
 //
 			ctx.cgContext.addRect(rectangle)
-
+			
 			ctx.cgContext.setStrokeColor(UIColor.black.cgColor)
 			ctx.cgContext.setLineWidth(1.0)
 			drawings.forEach { drawing in

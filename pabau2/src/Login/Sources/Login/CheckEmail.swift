@@ -6,7 +6,7 @@ import Model
 public let checkEmailReducer = Reducer<[LoginNavScreen], CheckEmailAction, LoginEnvironment> { state, action, _ in
 	switch action {
 	case .resetPassTapped:
-		state.append(.resetPassScreen)
+        state.removeAll(where: { $0 == .checkEmailScreen })
 		return .none
 	case .backBtnTapped:
 		state.removeAll(where: { $0 == .checkEmailScreen })
@@ -36,21 +36,13 @@ public struct CheckEmail: View {
 	let content = WalkthroughContentContent(title: Texts.checkYourEmail,
 											description: Texts.checkEmailDesc,
 											imageTitle: "illu-check-email")
-	public var body: some View {
-		VStack {
-			WalkthroughContentAndButton(content: content,
-										btnTitle: Texts.resetPass,
-										btnAction: { self.viewStore.send(.resetPassTapped) }
-			).customBackButton { self.viewStore.send(.backBtnTapped) }
-			NavigationLink.emptyHidden(
-				self.viewStore.state.contains(.resetPassScreen),
-				resetPassView)
-		}
-	}
-
-	var resetPassView: ResetPassword {
-		ResetPassword(store: resetPassStore,
-					  passChangedStore: passChangedStore
-		)
-	}
+    public var body: some View {
+        WalkthroughContentAndButton(content: content,
+                                    btnTitle: Texts.signIn,
+                                    btnAction: {
+                                        self.viewStore.send(.resetPassTapped)
+                                        self.viewStore.send(.backBtnTapped)
+                                    }
+        ).customBackButton { self.viewStore.send(.backBtnTapped) }
+    }
 }

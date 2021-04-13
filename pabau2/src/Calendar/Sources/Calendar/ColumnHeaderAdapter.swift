@@ -25,17 +25,27 @@ enum ColumnHeaderAdapter {
 
 	static func viewModel(room: Room?,
 						  location: Location?) -> ColumnHeaderViewModel {
-		let color = location?.color != nil ? UIColor.fromHex(location?.color ?? "") : UIColor.clear
-		return ColumnHeaderViewModel(title: room?.name ?? "unknown",
-									 subtitle: location?.name ?? "unknown",
-									 color: color)
+		let color = location?.color != nil ? UIColor.fromHex(location?.color ?? "") : UIColor.random
+		return ColumnHeaderViewModel(
+            title: room?.name ?? "unknown",
+			subtitle: location?.name ?? "unknown",
+			color: color
+        )
 	}
 
 	static func viewModel(employee: Employee?,
 						  location: Location?) -> ColumnHeaderViewModel {
-		let color = location?.color != nil ? UIColor.fromHex(location?.color ?? "") : UIColor.clear
-		return ColumnHeaderViewModel(title: employee?.name ?? "unknown",
-									 subtitle: location?.name ?? "unknown",
-									 color: color)
+		let color = location?.color != nil ? UIColor.fromHex(location?.color ?? "") : UIColor.random
+		return ColumnHeaderViewModel(
+            title: employee?.name ?? "unknown",
+			subtitle: location?.name ?? "unknown",
+			color: color
+        )
 	}
+}
+
+extension UIColor {
+    static var random: UIColor {
+        return .init(hue: .random(in: 0...1), saturation: 1, brightness: 1, alpha: 1)
+    }
 }

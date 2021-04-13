@@ -63,7 +63,16 @@ let forgotPassViewReducer: Reducer<ForgotPassContainerState,
 		passChangedReducer.pullback(
 					 state: \ForgotPassContainerState.navigation,
 					 action: /ForgotPassViewAction.passChanged,
-					 environment: { $0 })
+					 environment: { $0 }),
+        .init { state, action, _ in
+            switch action {
+            case .checkEmail(.resetPassTapped):
+                state.navigation.removeAll(where: { $0 == .forgotPassScreen })
+            default:
+                break
+            }
+            return .none
+        }
 )
 
 let forgotPasswordReducer = Reducer<ForgotPassState, ForgotPasswordAction, LoginEnvironment> { state, action, environment in
@@ -82,7 +91,7 @@ let forgotPasswordReducer = Reducer<ForgotPassState, ForgotPasswordAction, Login
 						.receive(on: DispatchQueue.main)
 						.eraseToEffect()
 			} else {
-				return .none
+                return .none
 			}
 		case .gotResponse(let result):
 			switch result {

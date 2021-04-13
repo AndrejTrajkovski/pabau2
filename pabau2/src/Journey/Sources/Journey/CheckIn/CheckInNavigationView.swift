@@ -2,8 +2,11 @@ import SwiftUI
 import ComposableArchitecture
 import Model
 import Form
+import Combine
 
 public enum CheckInContainerAction {
+	case showPatientMode
+//	case onAnimationAppear
 	case chooseTreatments(ChooseFormAction)
 	case chooseConsents(ChooseFormAction)
 	case passcode(PasscodeAction)
@@ -12,7 +15,6 @@ public enum CheckInContainerAction {
 	case doctor(CheckInDoctorAction)
 	case didTouchHandbackDevice
 	case doctorSummary(DoctorSummaryAction)
-	case closeBtnTap
 }
 
 public enum CheckInAnimationAction {
@@ -80,13 +82,15 @@ public let navigationReducer = Reducer<CheckInContainerState, CheckInContainerAc
 		state.isChooseTreatmentActive = false
 	case .didTouchHandbackDevice:
 		state.isEnterPasscodeActive = true
-		//TODO
-//	case .doctor(.checkInBody(.footer(.toPatientMode))):
-//		backToPatientMode()
-//	case .doctor(.checkInBody(.footer(.photos(.addPhotos)))):
-//		state.doctorForms.photosState.editPhotos = EditPhotosState([])
-//	case .doctor(.checkInBody(.footer(.photos(.editPhotos)))):
-//		state.doctorForms.photosState.editPhotos = EditPhotosState(state.doctorForms.photosState.selectedPhotos())
+	case .showPatientMode:
+		state.isPatientModeActive = true
+	//TODO
+	//	case .doctor(.checkInBody(.footer(.toPatientMode))):
+	//		backToPatientMode()
+	//	case .doctor(.checkInBody(.footer(.photos(.addPhotos)))):
+	//		state.doctorForms.photosState.editPhotos = EditPhotosState([])
+	//	case .doctor(.checkInBody(.footer(.photos(.editPhotos)))):
+	//		state.doctorForms.photosState.editPhotos = EditPhotosState(state.doctorForms.photosState.selectedPhotos())
 	default:
 		break
 	}
@@ -95,23 +99,34 @@ public let navigationReducer = Reducer<CheckInContainerState, CheckInContainerAc
 
 public struct CheckInNavigationView: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>
-	@State var isRunningAnimation: Bool
+	@ObservedObject var viewStore: ViewStore<CheckInContainerState, CheckInContainerAction>
 	public init(store: Store<CheckInContainerState, CheckInContainerAction>) {
 		self.store = store
-		self._isRunningAnimation = State.init(initialValue: false)
+		self.viewStore = ViewStore(store)
 	}
-
+	
 	public var body: some View {
-		WithViewStore(store.scope(state: { $0.journey })) { viewStore in
-			NavigationView {
-				VStack {
-					CheckInAnimation(isRunningAnimation: self.$isRunningAnimation,
-									 journey: viewStore.state)
-					NavigationLink.emptyHidden(self.isRunningAnimation,
-											   CheckInPatientContainer(store: store.scope(state: { $0 }, action: { $0 })))
-				}
+		print("check in navigation")
+		return NavigationView {
+			if !viewStore.state.isPatientModeActive {
+				CheckInAnimation(animationDuration: checkInAnimationDuration,
+								 appointment: viewStore.state.appointment)
+			} else {
+				CheckInPatientContainer(store:
+											store.scope(state: { $0 },
+														action: { $0 }
+											)
+				)
 			}
-			.navigationViewStyle(StackNavigationViewStyle())
 		}
+		.navigationViewStyle(StackNavigationViewStyle())
 	}
 }
+
+public let checkInAnimationDuration: Double = {
+	#if DEBUG
+	return 2.0
+	#else
+	return 2.0
+	#endif
+}()

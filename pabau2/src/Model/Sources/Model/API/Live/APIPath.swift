@@ -2,15 +2,18 @@ public enum APIPath: String {
 	//Login
 	case sendConfirmation = "sendc"
 	case login = "/OAuth2/staff/login-check.php"
-	case resetPass = "reset"
+	case resetPass = "/modules/t/secure/password/reset.php"
 	//Journey
 	case getEmployees = "/OAuth2/employees/get_employees.php"
 	case getAppointments = "/OAuth2/appointments/get_appointments_v1.php"
 	case getLocations = "/OAuth2/locations/get_locations_v1.php"
 	case getPathwaysTemplates = "/OAuth2/pathway/list_pathways.php"
-    case getShifts = "OAuth2/staff/get_rota_shifts.php"
+
+    case getShifts = "/OAuth2/staff/get_rota_shifts.php"
+	case pathwaysMatch = "/OAuth2/pathway/match.php"
+	
 	//Calendar
-    case createShift = "OAuth2/staff/create_shift.php"
+    case createShift = "/OAuth2/staff/create_shift.php"
     //Services
     case getServices = "/OAuth2/services/get_services.php"
 

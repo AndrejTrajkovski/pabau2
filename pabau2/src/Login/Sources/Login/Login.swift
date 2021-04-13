@@ -97,7 +97,8 @@ struct Login: View {
 	let store: Store<WalkthroughContainerState, LoginAction>
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
 	@Binding private var email: String
-	@State private var password: String = "cristian123"
+	@State private var password: String = "Andrej1234"
+	
 	struct ViewState: Equatable {
 		let emailValidationText: String
 		let passValidationText: String
@@ -151,7 +152,9 @@ public struct LoginView: View {
 			self.isForgotPassActive = state.navigation.contains(.forgotPassScreen)
 		}
 	}
-	@State var email: String = "petra.cristian@gmail.com"
+	
+	@State var email: String = "andrej@pabau.com"
+	
 	public init(store: Store<WalkthroughContainerState, LoginViewAction>) {
 		self.store = store
 		self.viewStore = ViewStore.init(self.store

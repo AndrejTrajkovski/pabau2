@@ -4,90 +4,45 @@ import Util
 import ComposableArchitecture
 import Form
 import Overture
+import Combine
 
 public enum ChoosePathwayContainerAction {
 	case rows(id: PathwayTemplate.ID, action: PathwayTemplateRowAction)
-	case choosePathway(ChoosePathwayAction)
-	case chooseConsent(ChooseFormAction)
-	case checkIn(CheckInContainerAction)
+	case matchResponse(Result<Pathway, RequestError>)
 	case gotPathwayTemplates(Result<IdentifiedArrayOf<PathwayTemplate>, RequestError>)
 }
 
 let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayContainerAction, JourneyEnvironment> =
 	.combine(
-		Reducer.init { state, action, _ in
+		Reducer.init { state, action, env in
 			switch action {
-			case .chooseConsent(.proceed):
-				state.checkIn = CheckInContainerState(journey: state.selectedJourney,
-													  pathway: state.selectedPathway!,
-													  patientDetails: ClientBuilder.empty,
-													  medicalHistoryId: HTMLForm.getMedHistory().id,
-													  medHistory: HTMLFormParentState.init(info: FormTemplateInfo(id: HTMLForm.getMedHistory().id, name: "MEDICAL HISTORY", type: .history), clientId: Client.ID.init(rawValue: .right(1)), getLoadingState: .initial),
-													  consents: state.allConsents.filter(
-														pipe(get(\.id), state.selectedConsentsIds.contains)
-													  ),
-													  allConsents: state.allConsents,
-													  photosState: PhotosState.init(SavedPhoto.mock())
-				)
+				
 			case .gotPathwayTemplates(let pathwayTemplates):
 				print(pathwayTemplates)
 				state.pathwayTemplates.update(pathwayTemplates)
+				
+			case .rows(let id, _):
+				guard case .loaded(let pathways) = state.pathwayTemplates else { return .none }
+				state.selectedPathway = pathways[id: id]
+				return env.journeyAPI.match(appointment: state.selectedAppointment,
+											pathwayTemplateId: id)
+					.receive(on: DispatchQueue.main)
+					.catchToEffect()
+					.map { ChoosePathwayContainerAction.matchResponse($0) }
+					.eraseToEffect()
+				
 			default:
 				break
 			}
 			return .none
-		},
-		checkInMiddleware.pullback(
-			state: \ChoosePathwayState.self,
-			action: /ChoosePathwayContainerAction.checkIn,
-			environment: { $0 }),
-		checkInReducer.optional.pullback(
-			state: \ChoosePathwayState.checkIn,
-			action: /ChoosePathwayContainerAction.checkIn,
-			environment: { $0 }),
-		chooseFormListReducer.pullback(
-			state: \ChoosePathwayState.chooseConsentState,
-			action: /ChoosePathwayContainerAction.chooseConsent,
-			environment: makeFormEnv(_:)
-		),
-		choosePathwayReducer.pullback(
-			state: \ChoosePathwayState.self,
-			action: /ChoosePathwayContainerAction.choosePathway,
-			environment: { $0 })
+		}
 )
-
-let choosePathwayReducer = Reducer<ChoosePathwayState, ChoosePathwayAction, JourneyEnvironment> { state, action, _ in
-	switch action {
-	case .didTouchSelectConsentBackBtn:
-		state.selectedPathway = nil
-	}
-	return .none
-}
-
-public enum ChoosePathwayAction {
-	case didTouchSelectConsentBackBtn
-}
 
 public struct ChoosePathwayState: Equatable {
 	
-	let selectedJourney: Journey
+	let selectedAppointment: Appointment
 	var selectedPathway: PathwayTemplate?
-	var selectedConsentsIds: [HTMLForm.ID] = []
-	var allConsents: IdentifiedArrayOf<FormTemplateInfo> = []
 	var pathwayTemplates: LoadingState2<IdentifiedArrayOf<PathwayTemplate>> = .loading
-	public var checkIn: CheckInContainerState?
-	
-	var chooseConsentState: ChooseFormState {
-		get {
-			ChooseFormState(templates: allConsents,
-							selectedTemplatesIds: selectedConsentsIds,
-							mode: .consentsPreCheckIn)
-		}
-		set {
-			self.selectedConsentsIds = newValue.selectedTemplatesIds
-			self.allConsents = newValue.templates
-		}
-	}
 }
 
 public struct ChoosePathway: View {
@@ -95,10 +50,10 @@ public struct ChoosePathway: View {
 	@ObservedObject var viewStore: ViewStore<State, ChoosePathwayContainerAction>
 	struct State: Equatable {
 		let isChooseConsentShown: Bool
-		let journey: Journey?
+		let appointment: Appointment?
 		init(state: ChoosePathwayState) {
 			self.isChooseConsentShown = state.selectedPathway != nil
-			self.journey = state.selectedJourney
+			self.appointment = state.selectedAppointment
 			UITableView.appearance().separatorStyle = .none
 		}
 	}
@@ -109,61 +64,25 @@ public struct ChoosePathway: View {
 			.scope(state: State.init(state:),
 						 action: { $0 }))
 	}
+	
 	public var body: some View {
-		HStack {
-			LoadingStore(store.scope(state: { $0.pathwayTemplates }, action: { $0 }),
-						 then: { (tmplts: Store<IdentifiedArrayOf<PathwayTemplate>,
-							ChoosePathwayContainerAction>) in
-							ForEachStore(tmplts.scope(state: { $0 },
-													  action: { .rows(id: $0, action: $1) }),
-										 content: PathwayTemplateRow.init(store:))
-						 })
-			chooseFormNavLink
-		}
-		.journeyBase(self.viewStore.state.journey, .long)
-	}
-
-	var chooseFormNavLink: some View {
-		NavigationLink.emptyHidden(self.viewStore.state.isChooseConsentShown,
-								   ChooseFormList(store:
-													self.store.scope(
-														state: { $0.chooseConsentState },
-														action: { .chooseConsent($0)}))
-									.journeyBase(self.viewStore.state.journey, .long)
-									.customBackButton {
-										self.viewStore.send(.choosePathway(.didTouchSelectConsentBackBtn))
-									}
+		LoadingStore(store.scope(state: { $0.pathwayTemplates }, action: { $0 }),
+					 then: { (tmplts: Store<IdentifiedArrayOf<PathwayTemplate>,
+											ChoosePathwayContainerAction>) in
+						choosePathwayList(tmplts)
+					 }
 		)
+		.journeyBase(self.viewStore.state.appointment, .long)
 	}
 
-	var pathwayCells: some View {
-		EmptyView()
-//		HStack {
-//			ListFrame(style: .blue) {
-//				ChoosePathwayListContent(
-//					.blue,
-//					Image(systemName: "arrow.right"),
-//					self.viewStore.state.standardPathway.steps.count,
-//					"Standard Pathway",
-//					"Provides a basic standard pathway, defined for the company.",
-//					self.viewStore.state.standardPathway.steps.map { $0.stepType.title },
-//					"Standard") {
-//						self.viewStore.send(.choosePathway(.didChoosePathway(self.viewStore.state.standardPathway)))
-//				}
-//			}
-//			ListFrame(style: .white) {
-//				ChoosePathwayListContent(
-//					.white,
-//					Image("ico-journey-consulting"),
-//					self.viewStore.state.consultationPathway.steps.count,
-//					"Consultation Pathway",
-//					"Provides a consultation pathway, to hear out the person's needs.",
-//					self.viewStore.state.consultationPathway.steps.map { $0.stepType.title },
-//					"Consultation") {
-//						self.viewStore.send(.choosePathway(.didChoosePathway(self.viewStore.state.consultationPathway)))
-//				}
-//			}
-//		}
+	fileprivate func choosePathwayList(_ tmplts: Store<IdentifiedArrayOf<PathwayTemplate>, ChoosePathwayContainerAction>) -> some View {
+		return ScrollView {
+			LazyVStack {
+				ForEachStore(tmplts.scope(state: { $0 },
+										  action: { .rows(id: $0, action: $1) }),
+							 content: PathwayTemplateRow.init(store:))
+			}
+		}
 	}
 }
 
@@ -177,17 +96,20 @@ struct PathwayTemplateRow: View {
 		WithViewStore(store) { viewStore in
 			VStack(alignment: .leading, spacing: 16) {
 				HStack {
+					Text(viewStore.title).font(.semibold20).foregroundColor(.black42)
 					Spacer()
 					Image(systemName: "list.bullet").foregroundColor(.blue2)
 					Text(String("\(viewStore.steps.count)")).font(.semibold17)
 				}
-//				Text(viewStore.title).font(.semibold20).foregroundColor(.black42)
-				Text(viewStore._description ?? "").font(.medium15)
-				PrimaryButton(viewStore.title) {
-					viewStore.send(.select)
-				}
+				Divider()
+//				SecondaryButton(viewStore.title) {
+//					viewStore.send(.select)
+//				}
+			}.padding([.leading, .trailing])
+			.onTapGesture {
+				viewStore.send(.select)
 			}
-		}
+		}.frame(height: 44)
 	}
 }
 

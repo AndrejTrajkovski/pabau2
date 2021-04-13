@@ -13,21 +13,12 @@ public struct FiltersReducer<S: Identifiable & Equatable & Named> {
 			switch action {
 				case .onHeaderTap:
 					state.isShowingFilters.toggle()
-                case .rows(let id, let action):
-                    switch action {
-                    case .header:
-                        print(id)
-                    case .rows(let rid, let action):
-                        switch action {
-                        case .select:
-                            if !state.chosenLocationsIds.contains(id) {
-                                state.chosenLocationsIds.append(id)
-                            }
-                        case .deselect:
-                            if let index = state.chosenLocationsIds.firstIndex( where: { $0 == id }) {
-                                state.chosenLocationsIds.remove(at: index)
-                            }
+                case .rows:
+                    state.chosenLocationsIds = state.chosenSubsectionsIds.compactMap { key, value in
+                        if !value.isEmpty {
+                            return key
                         }
+                        return nil
                     }
 			}
 			return .none
@@ -75,14 +66,18 @@ public struct FiltersState<S: Identifiable & Equatable & Named>: Equatable {
 		}
 
 		set {
-			newValue.map { sectionState in
+			newValue.forEach { sectionState in
 				let locId = sectionState.location.id
 				if !sectionState.isLocationChosen && chosenLocationsIds.contains(locId) {
 					chosenLocationsIds.removeAll(where: { $0 == locId })
 				} else if sectionState.isLocationChosen && !chosenLocationsIds.contains(locId) {
 					chosenLocationsIds.append(locId)
 				}
-				chosenSubsectionsIds[locId] = sectionState.chosenValues
+                var chosenValues = sectionState.chosenValues
+                if chosenValues.count == 7 {
+                    chosenValues.removeLast()
+                }
+				chosenSubsectionsIds[locId] = chosenValues
 				if !sectionState.isExpanded && expandedLocationsIds.contains(locId) {
 					expandedLocationsIds.removeAll(where: { $0 == locId })
 				} else if sectionState.isExpanded && !expandedLocationsIds.contains(locId) {

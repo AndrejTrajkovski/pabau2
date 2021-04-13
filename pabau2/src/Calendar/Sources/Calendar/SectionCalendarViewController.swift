@@ -42,16 +42,12 @@ public class SectionCalendarViewController<Subsection: Identifiable & Equatable>
 			)
 			.receive(on: DispatchQueue.main)
 			.sink(receiveValue: { [weak self] in
+                
 				guard let self = self else { return }
 				let date = $0.0.0.0.0
-				let events = $0.0.0.0.1
+                let events = $0.0.0.0.1
 				let subsections = $0.0.0.1.mapValuesFrom(dict: self.viewStore.state.subsections)
 				let shifts = $0.1
-				print("events")
-                print(subsections, "subsections")
-				print(events.appointments , "")
-				print("locations")
-				print(self.viewStore.state.chosenLocations())
                 self.reload(
                     selectedDate: date,
                     locations: self.viewStore.state.chosenLocations(),
@@ -59,16 +55,18 @@ public class SectionCalendarViewController<Subsection: Identifiable & Equatable>
                     events: events.appointments,
                     shifts: shifts
                 )
+                
 			}).store(in: &self.cancellables)
 	}
 
 	func reload(
-		selectedDate: Date,
+        selectedDate: Date,
 		locations: [Location],
 		subsections: [Location.ID: [Subsection]],
 		events: [Date: [Location.ID: [Subsection.ID: IdentifiedArrayOf<CalendarEvent>]]],
 		shifts: [Date: [Location.ID: [Subsection.ID: [JZShift]]]]
 	) {
+        print(selectedDate)
 		calendarView.updateWeekView(to: selectedDate)
         sectionDataSource.update(
             selectedDate,

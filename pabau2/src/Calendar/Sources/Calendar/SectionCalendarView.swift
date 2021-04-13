@@ -11,19 +11,30 @@ public class SectionCalendarView<E: JZBaseEvent, Subsection: Identifiable & Equa
 	let columnBackground = "ColumnBackground"
 
 	public override func registerViewClasses() {
-		// Register CollectionViewCell
 		super.registerViewClasses()
-		collectionView.register(BaseCalendarCell.self,
-								forCellWithReuseIdentifier: cellId)
-		collectionView.register(ColumnHeader.self, forSupplementaryViewOfKind: JZSupplementaryViewKinds.columnHeader, withReuseIdentifier: columnHeaderId)
-		collectionView.register(JZColumnBackground.self, forSupplementaryViewOfKind: JZSupplementaryViewKinds.columnBackground, withReuseIdentifier: columnBackground)
+		collectionView.register(
+            BaseCalendarCell.self,
+            forCellWithReuseIdentifier: cellId
+        )
+		collectionView.register(
+            ColumnHeader.self,
+            forSupplementaryViewOfKind: JZSupplementaryViewKinds.columnHeader,
+            withReuseIdentifier: columnHeaderId
+        )
+		collectionView.register(
+            JZColumnBackground.self,
+            forSupplementaryViewOfKind: JZSupplementaryViewKinds.columnBackground,
+            withReuseIdentifier: columnBackground
+        )
 	}
 
 	public override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		if var cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as? BaseCalendarCell,
 			let event = getCurrentEvent(with: indexPath) as? JZAppointmentEvent {
-			CellConfigurator().configure(cell: &cell,
-										 appointment: event)
+			CellConfigurator().configure(
+                cell: &cell,
+				appointment: event
+            )
 			return cell
 		}
 		preconditionFailure("LongPressEventCell and AllDayEvent should be casted")

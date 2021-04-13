@@ -8,7 +8,7 @@ import Filters
 
 public struct JourneyState: Equatable {
 	public init() {}
-	public var selectedDate: Date = Date()
+	public var selectedDate: Date = DateFormatter.yearMonthDay.date(from: "2021-03-11")!
 	public var selectedFilter: CompleteFilter = .all
 	public var selectedLocation: Location?
 	public var employeesLoadingState: LoadingState = .initial
@@ -16,9 +16,7 @@ public struct JourneyState: Equatable {
 	public var isShowingEmployeesFilter: Bool = false
 	public var searchText: String = ""
 	public var selectedPathway: PathwayTemplate?
-	public var selectedConsentsIds: [HTMLForm.ID] = []
-	public var allConsents: IdentifiedArrayOf<FormTemplateInfo> = []
-	public var checkIn: CheckInContainerState?
 	public var choosePathway: ChoosePathwayState?
+	public var checkIn: CheckInContainerState?
 //		= JourneyMocks.checkIn
 }

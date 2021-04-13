@@ -4,11 +4,11 @@ import Appointments
 
 public struct CalendarTypePickerState: Equatable {
 	var isDropdownShown: Bool
-	var appointments: Appointments
+	var appointments: CalAppointments
 }
 
 public enum CalendarTypePickerAction {
-	case onSelect(Appointments.CalendarType)
+	case onSelect(CalAppointments.CalendarType)
 	case toggleDropdown
 }
 
@@ -33,7 +33,7 @@ struct CalendarTypePicker: View {
 				viewStore.send(.toggleDropdown)
 			}
 			.popover(isPresented: .constant(viewStore.state.isDropdownShown)) {
-				ForEach(Appointments.CalendarType.allCases, id: \.self) { calType in
+				ForEach(CalAppointments.CalendarType.allCases, id: \.self) { calType in
 					CalendarTypeRow(calType: calType).onTapGesture {
 						viewStore.send(.onSelect(calType))
 					}
@@ -45,7 +45,7 @@ struct CalendarTypePicker: View {
 }
 
 struct CalendarTypePickerTitle: View {
-	let calType: Appointments.CalendarType
+	let calType: CalAppointments.CalendarType
 	let expanded: Bool
 	let action: () -> Void
 	var body: some View {
@@ -61,7 +61,7 @@ struct CalendarTypePickerTitle: View {
 }
 
 struct CalendarTypeRow: View {
-	let calType: Appointments.CalendarType
+	let calType: CalAppointments.CalendarType
 
 	var body: some View {
 		Text(calType.title())

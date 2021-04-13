@@ -102,7 +102,6 @@ struct SwiftUICalendar: UIViewRepresentable {
 		if isWeekView {
 			calendar.setCurrentPage(selDate, animated: true)
 			calendar.allowsMultipleSelection = true
-            
 		} else {
 			calendar.allowsMultipleSelection = false
 		}
@@ -131,7 +130,7 @@ struct SwiftUICalendar: UIViewRepresentable {
 		}
 
 		public func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
-			self.parent.onDateChanged(date)
+            self.parent.onDateChanged(date)
 		}
 
 		public func calendar(_ calendar: FSCalendar, boundingRectWillChange bounds: CGRect, animated: Bool) {

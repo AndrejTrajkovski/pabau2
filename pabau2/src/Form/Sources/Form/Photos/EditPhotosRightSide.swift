@@ -10,9 +10,9 @@ public let editPhotosRightSideReducer = Reducer<EditPhotosRightSideState, EditPh
 		state.editingPhoto?.isPrivate.toggle()
 	case .didTouchTrash:
 		state.deletePhotoAlert = AlertState(
-			title: "Delete Photo",
-			message: "Are you sure you want to delete this photo?",
-			primaryButton: .default("Yes", send: .deleteAlertConfirmed),
+			title: TextState("Delete Photo"),
+			message: TextState("Are you sure you want to delete this photo?"),
+			primaryButton: .default(TextState("Yes"), send: .deleteAlertConfirmed),
 			secondaryButton: .cancel()
 		)
 	case .deleteAlertConfirmed:
