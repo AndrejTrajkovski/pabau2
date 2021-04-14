@@ -18,5 +18,5 @@ public struct JourneyState: Equatable {
 	public var selectedPathway: PathwayTemplate?
 	public var choosePathway: ChoosePathwayState?
 	public var checkIn: CheckInContainerState?
-//		= JourneyMocks.checkIn
+	public var getPathwaysAlertState: AlertState<JourneyAction>?
 }

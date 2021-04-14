@@ -4,7 +4,7 @@ import Model
 import Form
 import Combine
 
-public enum CheckInContainerAction {
+public enum CheckInContainerAction: Equatable {
 	case showPatientMode
 //	case onAnimationAppear
 	case chooseTreatments(ChooseFormAction)

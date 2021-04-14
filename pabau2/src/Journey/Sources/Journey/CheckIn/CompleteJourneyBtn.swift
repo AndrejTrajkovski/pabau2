@@ -3,7 +3,7 @@ import SwiftUI
 import ComposableArchitecture
 import Form
 
-public enum CompleteJourneyBtnAction {
+public enum CompleteJourneyBtnAction: Equatable {
 	case onCompleteJourney
 }
 

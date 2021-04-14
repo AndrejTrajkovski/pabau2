@@ -43,7 +43,7 @@ let doctorSummaryReducer = Reducer <DoctorSummaryState, DoctorSummaryAction, Jou
 	return .none
 }
 
-public enum DoctorSummaryAction {
+public enum DoctorSummaryAction: Equatable {
 	case didTouchAdd(ChooseFormMode)
 	case didTouchStep(StepType)
 	case didTouchBackFrom(ChooseFormMode)

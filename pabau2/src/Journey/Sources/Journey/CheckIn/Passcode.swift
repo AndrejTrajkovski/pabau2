@@ -21,7 +21,7 @@ public struct PasscodeState: Equatable {
 	var wrongAttempts: Int = 0
 }
 
-public enum PasscodeAction {
+public enum PasscodeAction: Equatable {
 	case touchDigit(String)
 	case deleteLast
 }

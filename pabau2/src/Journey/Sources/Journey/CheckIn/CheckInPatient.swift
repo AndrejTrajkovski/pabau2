@@ -122,7 +122,7 @@ extension CheckInPatientState {
 	}
 }
 
-public enum CheckInPatientAction {
+public enum CheckInPatientAction: Equatable {
 	case patientDetails(PatientDetailsAction)
 	case medicalHistories(id: HTMLForm.ID, action: HTMLFormAction)
 	case consents(id: HTMLForm.ID, action: HTMLFormAction)

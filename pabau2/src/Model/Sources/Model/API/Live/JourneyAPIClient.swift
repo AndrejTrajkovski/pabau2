@@ -221,4 +221,17 @@ extension APIClient {
 		.mapError { $0 as? RequestError ?? RequestError.unknown }
 		.eraseToEffect()
 	}
+	
+	public func getPathway(id: Pathway.ID) -> Effect<Pathway, RequestError> {
+		
+		let requestBuilder: RequestBuilder<Pathway>.Type = requestBuilderFactory.getBuilder()
+		
+		return requestBuilder.init(
+			method: .GET,
+			baseUrl: baseUrl,
+			path: .getPathway,
+			queryParams: commonAnd(other: ["id": String(id.rawValue)])
+		)
+		.effect()
+	}
 }
