@@ -23,15 +23,21 @@ let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction,
             let renderer = UIGraphicsImageRenderer(size: size)
             let img = renderer.image { (ctx) in
                 if case .saved(let savedPhoto) = state.photo.basePhoto {
-                    let photoImage = UIImage(contentsOfFile: savedPhoto.normalSizePhoto!)
-                    photoImage?.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+                    if let photoImageURLString = savedPhoto.normalSizePhoto, let url = URL(string: photoImageURLString) {
+                        if let dataImage = try? Data(contentsOf: url) {
+                            if let pImage = UIImage(data: dataImage) {
+                                pImage.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+                            }
+                        }
+                    }
                 }
                 
                 state.imageInjectable.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
                 state.photo.drawing.image(from: CGRect(x: 0, y: 0, width: size.width, height: size.height), scale: 1)
                     .draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
                 
-            }            
+            }
+            state.imageInjectable = img
         case .updateImageInjectables(let image):
             state.imageInjectable = image
         case .onChangePhotoSize(let size):

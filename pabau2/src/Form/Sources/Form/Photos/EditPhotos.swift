@@ -108,7 +108,6 @@ public struct EditPhotos: View {
 		let isChooseInjectablesActive: Bool
 		let editingPhotoId: PhotoVariantId?
 		let isDrawingDisabled: Bool
-        let isSavedPhoto: Bool
         let editedPhoto: UIImage
 		init (state: EditPhotosState) {
 			self.isCameraActive = state.isCameraActive
@@ -116,7 +115,6 @@ public struct EditPhotos: View {
 			self.editingPhotoId = state.editingPhotoId
 			self.isDrawingDisabled = state.activeCanvas != .drawing
 			self.isPhotosAlbumActive = state.isPhotosAlbumActive
-            self.isSavedPhoto = state.isSavedPhoto
             self.editedPhoto = state.editedPhoto
 		}
 	}
