@@ -123,16 +123,3 @@ struct ClientAvatarAndName: View {
 		}
 	}
 }
-
-struct ClientAvatar: View {
-	let store: Store<Client, Never>
-	var body: some View {
-		WithViewStore(store) { viewStore in
-			AvatarView(avatarUrl: viewStore.avatar,
-					   initials: viewStore.initials,
-					   font: .semibold24,
-					   bgColor: .accentColor)
-				.frame(width: 84, height: 84)
-		}
-	}
-}

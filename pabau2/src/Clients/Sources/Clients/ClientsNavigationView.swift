@@ -3,6 +3,7 @@ import Model
 import ComposableArchitecture
 import Util
 import CasePaths
+import Form
 
 public typealias ClientsEnvironment = (apiClient: ClientsAPI, formAPI: FormAPI, userDefaults: UserDefaultsConfig)
 

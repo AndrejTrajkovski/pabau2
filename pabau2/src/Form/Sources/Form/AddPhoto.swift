@@ -7,7 +7,7 @@ import Avatar
 
 struct UploadPhotoId: Hashable {}
 
-public let addPhotoReducer: Reducer<AddPhotoState, AddPhotoAction, ClientsEnvironment> =
+public let addPhotoReducer: Reducer<AddPhotoState, AddPhotoAction, FormEnvironment> =
 	.init { state, action, env in
 
 		switch action {

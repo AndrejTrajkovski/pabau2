@@ -1,6 +1,7 @@
 import Model
+import Form
 
 struct PatientDetailsParentState: Equatable {
-	var clientBuilder: ClientBuilder
-	var status: Bool
+	var editClient: AddClientState
+	var status: StepStatus
 }
