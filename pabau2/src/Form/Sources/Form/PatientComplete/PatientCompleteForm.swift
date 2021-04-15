@@ -1,11 +1,12 @@
 import SwiftUI
 import Util
 import ComposableArchitecture
+import Model
 
-public let patientCompleteReducer = Reducer<Bool, PatientCompleteAction, FormEnvironment> { state, action, _ in
+public let patientCompleteReducer = Reducer<StepStatus, PatientCompleteAction, FormEnvironment> { state, action, _ in
 	switch action {
 	case .didTouchComplete:
-		state = true
+		state = .complete
 	}
 	return .none
 }
@@ -15,9 +16,9 @@ public enum PatientCompleteAction {
 }
 
 public struct PatientCompleteForm: View {
-	let store: Store<Bool, PatientCompleteAction>
+	let store: Store<StepStatus, PatientCompleteAction>
 
-	public init(store: Store<Bool, PatientCompleteAction>) {
+	public init(store: Store<StepStatus, PatientCompleteAction>) {
 		self.store = store
 	}
 

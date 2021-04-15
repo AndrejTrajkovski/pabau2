@@ -35,6 +35,6 @@ struct CompleteJourneyBtn: View {
 
 extension DoctorSummaryCompleteBtn.State {
 	init(state: [StepFormInfo]) {
-		self.isBtnDisabled = !state.allSatisfy { $0.status }
+		self.isBtnDisabled = !state.allSatisfy { $0.status == .complete }
 	}
 }

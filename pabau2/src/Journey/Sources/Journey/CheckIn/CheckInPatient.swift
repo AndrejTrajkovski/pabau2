@@ -78,10 +78,10 @@ struct CheckInPatientState: Equatable, CheckInState {
 	let appointment: Appointment
 	let pathway: PathwayTemplate
 	var patientDetails: ClientBuilder
-	var patientDetailsStatus: Bool
+	var patientDetailsStatus: StepStatus
 	var medicalHistories: IdentifiedArrayOf<HTMLFormParentState>
 	var consents: IdentifiedArrayOf<HTMLFormParentState>
-	var isPatientComplete: Bool
+	var isPatientComplete: StepStatus
 	var selectedIdx: Int
 	var patientDetailsLS: LoadingState
 }
@@ -105,12 +105,12 @@ extension CheckInPatientState {
 								 title: "PATIENT DETAILS")]
 		case .medicalhistory:
 			return medicalHistories.map {
-				StepFormInfo(status: $0.isComplete,
+				StepFormInfo(status: $0.status,
 							 title: $0.info.name)
 			}
 		case .consents:
 			return consents.map {
-				StepFormInfo(status: $0.isComplete,
+				StepFormInfo(status: $0.status,
 							 title: $0.info.name)
 			}
 		case .patientComplete:

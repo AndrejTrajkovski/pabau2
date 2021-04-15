@@ -65,7 +65,7 @@ public enum FormsContainerAction: Equatable {
 
 extension FormsContainerState: CheckInState {
 	public func stepForms() -> [StepFormInfo] {
-		formsCollection.map { StepFormInfo.init(status: $0.isComplete, title: $0.info.name )}
+		formsCollection.map { StepFormInfo.init(status: $0.status, title: $0.info.name )}
 	}
 }
 
