@@ -5,7 +5,9 @@ import UIKit
 import Model
 import Avatar
 
-struct UploadPhotoId: Hashable {}
+public struct UploadPhotoId: Hashable {
+	public init () {}
+}
 
 public let addPhotoReducer: Reducer<AddPhotoState, AddPhotoAction, FormEnvironment> =
 	.init { state, action, env in

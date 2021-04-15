@@ -5,15 +5,10 @@ import Util
 import Form
 
 public let addClientOptionalReducer: Reducer<AddClientState?, ClientCardAddClientAction, ClientsEnvironment> = .combine(
-	addClientReducer.optional().pullback(
+	clientCardAddClientReducer.optional().pullback(
 		state: \.self,
-		action: /ClientCardAddClientAction.addClient,
-		environment: {
-			FormEnvironment(
-				formAPI: $0.formAPI,
-				userDefaults: $0.userDefaults
-			)
-		}
+		action: /ClientCardAddClientAction.self,
+		environment: { $0 }
 	),
 	.init { state, action, env in
 		switch action {
@@ -37,27 +32,36 @@ public let addClientOptionalReducer: Reducer<AddClientState?, ClientCardAddClien
 	}
 )
 
-//public let clientCardAddClientReducer: Reducer<AddClientState, ClientCardAddClientAction, ClientsEnvironment> = .combine(
-//.init { state, action, env in
-//	switch action {
-//	case .saveClient:
-//		state.formSaving = .loading
-//		return env.apiClient.update(clientBuilder: state.clientBuilder)
-//			.catchToEffect()
-//			.receive(on: DispatchQueue.main)
-//			.map(AddClientAction.onResponseSave)
-//			.eraseToEffect()
-//	case .saveAlertCanceled:
-//		state.saveFailureAlert = nil
-//	case .clientBuilder, .addPhoto, .onResponseSave:
-//		break
-//	case .onBackFromAddClient:
-//		return .cancel(id: UploadPhotoId())
-//	}
-//	return .none
-//},
-// addClientReducer.pullback
-//)
+public let clientCardAddClientReducer: Reducer<AddClientState, ClientCardAddClientAction, ClientsEnvironment> = .combine(
+.init { state, action, env in
+	switch action {
+	case .saveClient:
+		state.formSaving = .loading
+		return env.apiClient.update(clientBuilder: state.clientBuilder)
+			.catchToEffect()
+			.receive(on: DispatchQueue.main)
+			.map { ClientCardAddClientAction.addClient(.onResponseSave($0)) }
+			.eraseToEffect()
+	case .addClient(.saveAlertCanceled):
+		state.saveFailureAlert = nil
+	case .addClient:
+		break
+	case .onBackFromAddClient:
+		return .cancel(id: UploadPhotoId())
+	}
+	return .none
+},
+	addClientReducer.pullback(
+		state: \.self,
+		action: /ClientCardAddClientAction.addClient,
+		environment: {
+			FormEnvironment(
+				formAPI: $0.formAPI,
+				userDefaults: $0.userDefaults
+			)
+		}
+	)
+)
 
 
 public enum ClientCardAddClientAction: Equatable {
