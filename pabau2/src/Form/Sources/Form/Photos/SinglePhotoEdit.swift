@@ -1,6 +1,8 @@
 import SwiftUI
 import ComposableArchitecture
 import PencilKit
+import Combine
+import Model
 
 enum CanvasMode: Equatable {
 	case drawing
@@ -16,7 +18,7 @@ let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction,
 		state: \SinglePhotoEditState.photo,
 		action: /SinglePhotoEditAction.photoAndCanvas,
 		environment: { $0 }),
-    .init { state, action, _ in
+    .init { state, action, env in
         switch action {
         case .saveDrawings:
             let size = state.photoSize
@@ -38,10 +40,35 @@ let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction,
                 
             }
             state.imageInjectable = img
+            
+            return Just(SinglePhotoEditAction.uploadPhoto(img))
+                .eraseToEffect()
         case .updateImageInjectables(let image):
             state.imageInjectable = image
         case .onChangePhotoSize(let size):
             state.photoSize = size
+        case .uploadPhoto(let image):
+            var params: [String: String] = [
+                "booking_id": "0",
+                "delete": "0",
+                "contact_id": UserDefaults.standard.string(forKey: "selectedClientId") ?? "",
+                "photo_id": state.editingPhotoId?.description ?? "",
+            ]
+            
+            return env.formAPI
+                .uploadClientEditedImage(image: image.pngData()!, params: params)
+                .catchToEffect()
+                .map { response in
+                    switch response {
+                    case .success(let voResponse):
+                        print(voResponse)
+                    case .failure(let error):
+                        print(error)
+                    }
+                    return SinglePhotoEditAction.photoUploadResponse
+                }
+        case .photoUploadResponse:
+            print("photo upload response")
         default:
             break
         }
@@ -57,6 +84,7 @@ struct SinglePhotoEditState: Equatable {
 	var chosenInjectatbleId: InjectableId?
     var imageInjectable: UIImage
     var photoSize: CGSize = .zero
+    var editingPhotoId: PhotoVariantId?
 
 	var injectables: InjectablesState {
 		get {
@@ -93,6 +121,8 @@ public enum SinglePhotoEditAction: Equatable {
     case saveDrawings
     case updateImageInjectables(UIImage)
     case onChangePhotoSize(CGSize)
+    case uploadPhoto(UIImage)
+    case photoUploadResponse
 }
 
 struct SinglePhotoEdit: View {

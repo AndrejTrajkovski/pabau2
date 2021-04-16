@@ -19,6 +19,7 @@ let clientsListReducer: Reducer<
         
         switch action {
         case .identified(let id, ClientRowAction.onSelectClient):
+            UserDefaults.standard.set(id.description, forKey: "selectedClientId")
             state.selectedClient = ClientCardState(
                 client: state.clients[id: id]!,
                 list: ClientCardListState(client: state.clients[id: id]!)

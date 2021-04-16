@@ -31,7 +31,7 @@ public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnv
 				state.isPhotosAlbumActive = true
             case .editPhotoList, .rightSide, .cameraOverlay, .singlePhotoEdit, .chooseInjectables, .goBack:
 				break
-            case .save:   
+            case .save:
                 break
 			}
 			return .none
@@ -72,6 +72,7 @@ public struct EditPhotosState: Equatable {
     var editedPhoto: UIImage = UIImage()
     var imageInjectable: UIImage = UIImage()
     var photoSize: CGSize = .zero
+    var loadingState: LoadingState = .initial
 
 	public init (_ photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>) {
 		self.photos = photos
@@ -263,7 +264,8 @@ extension EditPhotosState {
 				isChooseInjectablesActive: self.isChooseInjectablesActive,
 				chosenInjectatbleId: self.chosenInjectableId,
                 imageInjectable: self.imageInjectable,
-                photoSize: self.photoSize
+                photoSize: self.photoSize,
+                editingPhotoId: self.editingPhotoId
 			)
 		}
 		set {
@@ -275,6 +277,7 @@ extension EditPhotosState {
 			self.chosenInjectableId = newValue.chosenInjectatbleId
             self.imageInjectable = newValue.imageInjectable
             self.photoSize = newValue.photoSize
+            self.editingPhotoId = newValue.editingPhotoId
 		}
 	}
 

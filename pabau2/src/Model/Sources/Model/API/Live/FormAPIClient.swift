@@ -201,6 +201,24 @@ extension APIClient {
     
 }
 
+// MARK - ClientCard
+extension APIClient {
+    public func uploadClientEditedImage(image: Data, params: [String: String]) -> Effect<VoidAPIResponse, RequestError> {
+        let photo = PhotoUpload(fileData: image)
+        var commonParams: [String: String] = [
+            "counter": "1",
+            "mode": "upload_photo",
+            "photo_type": "contact",
+            "uid": String(loggedInUser!.userID.rawValue)
+        ]
+        commonParams.merge(params) { (_, new) in new }
+
+        return uploadPhoto(photo,
+                           0,
+                           commonParams)
+    }
+}
+
 extension NSMutableData {
 	func appendString(_ string: String) {
 		if let data = string.data(using: .utf8) {
