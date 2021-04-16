@@ -15,11 +15,11 @@ public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnv
 			state: \EditPhotosState.editPhotoList,
 			action: /EditPhotoAction.editPhotoList,
 			environment: { $0 }),
-		singlePhotoEditReducer.optional.pullback(
+		singlePhotoEditReducer.optional().pullback(
 			state: \EditPhotosState.singlePhotoEdit,
 			action: /EditPhotoAction.singlePhotoEdit,
 			environment: { $0 }),
-		cameraOverlayReducer.optional.pullback(
+		cameraOverlayReducer.optional().pullback(
 			state: \EditPhotosState.cameraOverlay,
 			action: /EditPhotoAction.cameraOverlay,
 			environment: { $0 }),

@@ -68,7 +68,7 @@ let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction,
                     return SinglePhotoEditAction.photoUploadResponse
                 }
         case .photoUploadResponse:
-            print("photo upload response")
+            break
         default:
             break
         }

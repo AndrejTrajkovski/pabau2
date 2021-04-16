@@ -76,18 +76,17 @@ let photoCompareReducer = Reducer.combine(
         case .didTouchBackOnEditPhotos:
             state.isEditPhotosActive = false
         case .didSelectEdit:
-            print("Edit")
             var photosArray: IdentifiedArray<PhotoVariantId, PhotoViewModel> = []
-            state.photos.map { photos in
-                photosArray.append(contentsOf: photos.value)
+            _ = state.photos.map { photos in
+                    photosArray.append(contentsOf: photos.value)
             }
-            //state.editPhotoState = EditPhotosState(photosArray)
             state.editPhotoState = EditPhotosState(photosArray, currentPhoto: state.leftId)
-            
             state.isEditPhotosActive = true
         case .shareAction(.backButton):
             state.shareSelectState = nil
         case .editPhoto(.goBack):
+            state.isEditPhotosActive = false
+        case .editPhoto(.singlePhotoEdit(.photoUploadResponse)):
             state.isEditPhotosActive = false
         default:
             break
