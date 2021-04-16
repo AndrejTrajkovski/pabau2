@@ -15,7 +15,7 @@ public struct CheckInDoctorState: Equatable {
 	var doctorSelectedIndex: Int
 }
 
-public enum CheckInDoctorAction {
+public enum CheckInDoctorAction: Equatable {
 	case aftercare(AftercareAction)
 	case photos(PhotosFormAction)
 	case completeJourney(CompleteJourneyBtnAction)

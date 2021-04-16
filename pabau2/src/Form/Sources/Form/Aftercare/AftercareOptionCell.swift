@@ -10,7 +10,7 @@ public let aftercareOptionReducer: Reducer<AftercareOption, ToggleAction, Any> =
 		environment: { $0 })
 )
 
-public struct AftercareOption: Hashable, Identifiable {
+public struct AftercareOption: Hashable, Identifiable, Equatable {
 	let title: String
 	let channel: AftercareChannel
 	var isSelected: Bool

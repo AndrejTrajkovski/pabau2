@@ -32,7 +32,7 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, F
 			switch result {
 			case .success:
 				state.postLoadingState = .gotSuccess
-				state.isComplete = true
+				state.status = .complete
 			case .failure(let error):
 				state.postLoadingState = .gotError(error)
 				state.saveFailureAlert = AlertState(
@@ -62,7 +62,7 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 		self.info = formData.templateInfo
 		self.form = nil
 		self.getLoadingState = getLoadingState
-		self.isComplete = false
+		self.status = .pending
 		self.filledFormId = formData.treatmentId
 		self.clientId = clientId
 		self.postLoadingState = .initial
@@ -74,7 +74,7 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 		self.info = info
 		self.form = nil
 		self.getLoadingState = getLoadingState
-		self.isComplete = false
+		self.status = .pending
 		self.filledFormId = nil
 		self.clientId = clientId
 		self.postLoadingState = .initial
@@ -86,7 +86,7 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 	public var form: HTMLForm?
 	public var getLoadingState: LoadingState
 	public var postLoadingState: LoadingState
-	public var isComplete: Bool
+	public var status: StepStatus
 	public var saveFailureAlert: AlertState<HTMLFormAction>?
 }
 

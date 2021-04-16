@@ -130,11 +130,44 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 //
 
 			case .selectedAppointment(let appointment):
-				state.choosePathway = ChoosePathwayState(selectedAppointment: appointment)
-				return environment.journeyAPI.getPathwayTemplates()
-					.receive(on: DispatchQueue.main)
-					.catchToEffect()
-					.map { .choosePathway(.gotPathwayTemplates($0))  }
+				
+				if let pathwayId = appointment.pathwayId,
+				   let pathwayTemplateId = appointment.pathwayTemplateId {
+					print(pathwayId, pathwayTemplateId)
+					let getTemplate = environment.journeyAPI.getPathwayTemplates()
+						.map { $0.first(where: { $0.id.description == pathwayTemplateId.description }) }
+						.tryMap { optionalPwT -> PathwayTemplate in
+							if let pathwayTemplate = optionalPwT {
+								return pathwayTemplate
+							} else {
+								throw RequestError.emptyDataResponse
+							}
+						}
+						.mapError { $0 as? RequestError ?? .unknown }
+						.eraseToEffect()
+					
+					let getPathway = environment.journeyAPI.getPathway(id: pathwayId)
+					
+					let zipped = Publishers.Zip.init(getTemplate, getPathway)
+						.receive(on: DispatchQueue.main)
+						.eraseToEffect()
+						.catchToEffect()
+						.map {
+							$0.map { CombinedPathwayResponse.init(pathwayTemplate: $0.0,
+																  pathway: $0.1,
+																  appointment: appointment)}
+						}
+						.map(JourneyAction.combinedPathwaysResponse)
+					
+					return zipped
+					
+				} else {
+					state.choosePathway = ChoosePathwayState(selectedAppointment: appointment)
+					return environment.journeyAPI.getPathwayTemplates()
+						.receive(on: DispatchQueue.main)
+						.catchToEffect()
+						.map { .choosePathway(.gotPathwayTemplates($0))  }
+				}
 				
 			case .choosePathwayBackTap:
 				state.choosePathway = nil
@@ -160,7 +193,7 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 						.eraseToEffect()
 					
 				case .failure(let error):
-					print(error)
+					break// handled in choosePathwayContainerReducer
 				}
 				
 			case .checkIn(_):
@@ -171,6 +204,40 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 				
 			case .choosePathway(.gotPathwayTemplates):
 				break
+			
+			case .choosePathway(.dismissPathwayErrorAlert):
+				break
+				
+			case .combinedPathwaysResponse(let pathwaysResult):
+				switch pathwaysResult {
+				case .success(let pwys):
+					
+					state.checkIn = CheckInContainerState(appointment: pwys.appointment,
+														  pathway: pwys.pathway,
+														  pathwayTemplate: pwys.pathwayTemplate,
+														  patientDetails: ClientBuilder.empty,
+														  medicalHistories: [],
+														  consents: [],
+														  allConsents: [],
+														  photosState: PhotosState.init(SavedPhoto.mock()
+														  )
+					)
+					
+					return Just(JourneyAction.checkIn(CheckInContainerAction.showPatientMode))
+						.delay(for: .seconds(checkInAnimationDuration), scheduler: DispatchQueue.main)
+						.eraseToEffect()
+					
+				case .failure(let error):
+					state.getPathwaysAlertState = AlertState(
+						title: TextState("Pathway Error"),
+						message: TextState(error.description),
+						dismissButton: .default(TextState("OK"), send: .dismissGetPathwaysErrorAlert)
+					)
+				}
+				
+			case .dismissGetPathwaysErrorAlert:
+				state.getPathwaysAlertState = nil
+				
 			}
 			return .none
 	},
@@ -230,6 +297,9 @@ public struct JourneyContainerView: View {
                 self.viewStore.send(.journey(.selectedAppointment($0)))
             }.loadingView(.constant(self.viewStore.state.isLoadingJourneys),
 						  Texts.fetchingJourneys)
+			.alert(store.scope(state: { $0.journey.getPathwaysAlertState },
+							   action: { .journey($0) }),
+				   dismiss: JourneyAction.dismissGetPathwaysErrorAlert)
 			
 			choosePathwayLink
 			

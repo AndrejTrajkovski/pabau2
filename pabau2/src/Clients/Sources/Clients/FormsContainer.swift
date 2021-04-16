@@ -65,7 +65,7 @@ public enum FormsContainerAction: Equatable {
 
 extension FormsContainerState: CheckInState {
 	public func stepForms() -> [StepFormInfo] {
-		formsCollection.map { StepFormInfo.init(status: $0.isComplete, title: $0.info.name )}
+		formsCollection.map { StepFormInfo.init(status: $0.status, title: $0.info.name )}
 	}
 }
 
@@ -120,19 +120,6 @@ struct ClientAvatarAndName: View {
 				Text(viewStore.fullname)
 					.font(Font.semibold24)
 			}
-		}
-	}
-}
-
-struct ClientAvatar: View {
-	let store: Store<Client, Never>
-	var body: some View {
-		WithViewStore(store) { viewStore in
-			AvatarView(avatarUrl: viewStore.avatar,
-					   initials: viewStore.initials,
-					   font: .semibold24,
-					   bgColor: .accentColor)
-				.frame(width: 84, height: 84)
 		}
 	}
 }

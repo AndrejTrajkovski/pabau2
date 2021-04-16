@@ -4,6 +4,46 @@ import Overture
 import Util
 import Form
 
+public struct CheckInState2: Equatable {
+	
+	let appointment: Appointment
+	let pathway: Pathway
+	let pathwayTemplate: PathwayTemplate
+	
+	var passcodeState = PasscodeState()
+	var isEnterPasscodeActive: Bool = false
+	var isChooseConsentActive: Bool = false
+	var isChooseTreatmentActive: Bool = false
+	var isDoctorCheckInMainActive: Bool = false
+	var isDoctorSummaryActive: Bool = false
+	var didGoBackToPatientMode: Bool = false
+	
+	var doctorState: PathwayContainerState
+	var patientState: PathwayContainerState
+	var isPatientModeActive = false
+}
+
+public struct PathwayContainerState: Equatable {
+	
+	init(
+		appointment: Appointment,
+		pathway: Pathway,
+		pathwayTemplate: PathwayTemplate
+	) {
+		self.appointment = appointment
+		self.pathway = pathway
+		self.pathwayTemplate = pathwayTemplate
+		self.steps = makeSteps(pathway: pathway, template: pathwayTemplate)
+		self.selectedIdx = 0
+	}
+	
+	let appointment: Appointment
+	let pathway: Pathway
+	let pathwayTemplate: PathwayTemplate
+	var steps: [StepState]
+	var selectedIdx: Int
+}
+
 public struct CheckInContainerState: Equatable {
 	
 	let appointment: Appointment
@@ -14,7 +54,7 @@ public struct CheckInContainerState: Equatable {
 	
 	var patientDetailsLS: LoadingState
 	var patientDetails: ClientBuilder
-	var patientDetailsStatus: Bool
+	var patientDetailsStatus: StepStatus
 	
 	var medicalHistories: IdentifiedArrayOf<HTMLFormParentState>
 	
@@ -30,7 +70,7 @@ public struct CheckInContainerState: Equatable {
 	var aftercare: Aftercare?
 	var aftercareStatus: Bool
 	
-	var isPatientComplete: Bool
+	var isPatientComplete: StepStatus
 	
 	var photos: PhotosState
 	
@@ -72,12 +112,12 @@ extension CheckInContainerState {
 		self.treatmentNotes = []
 		self.prescriptions = []
 		self.aftercareStatus = false
-		self.isPatientComplete = false
+		self.isPatientComplete = .pending
 		self.photos = PhotosState([[:]])
 		self.patientSelectedIndex = 0
 		self.doctorSelectedIndex = 0
 		self.patientDetailsLS = .initial
-		self.patientDetailsStatus = false
+		self.patientDetailsStatus = .pending
 	}
 }
 
@@ -150,8 +190,8 @@ extension CheckInContainerState {
 	}
 	
 	var isHandBackDeviceActive: Bool {
-		get { isPatientComplete }
-		set { isPatientComplete = newValue }
+		get { isPatientComplete == .complete }
+		set { isPatientComplete = newValue ? .complete : .pending }
 	}
 	
 	var handback: HandBackDeviceState {

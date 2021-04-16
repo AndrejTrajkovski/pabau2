@@ -43,7 +43,7 @@ let doctorSummaryReducer = Reducer <DoctorSummaryState, DoctorSummaryAction, Jou
 	return .none
 }
 
-public enum DoctorSummaryAction {
+public enum DoctorSummaryAction: Equatable {
 	case didTouchAdd(ChooseFormMode)
 	case didTouchStep(StepType)
 	case didTouchBackFrom(ChooseFormMode)
@@ -107,9 +107,9 @@ extension DoctorNavigation.State {
 }
 
 struct DoctorSummaryStepList: View {
-	let onSelect: (StepState) -> Void
-	let stepsVMs: [StepState]
-	init (_ stepsVMs: [StepState], _ onSelect: @escaping (StepState) -> Void) {
+	let onSelect: (StepStateVM) -> Void
+	let stepsVMs: [StepStateVM]
+	init (_ stepsVMs: [StepStateVM], _ onSelect: @escaping (StepStateVM) -> Void) {
 		self.stepsVMs = stepsVMs
 		self.onSelect = onSelect
 	}
@@ -129,7 +129,7 @@ struct DoctorSummaryStepList: View {
 }
 
 struct DoctorSummaryRow: View {
-	let step: StepState
+	let step: StepStateVM
 	var body: some View {
 		HStack {
 			Text(step.stepType.title).font(.semibold17)
@@ -144,13 +144,13 @@ struct DoctorSummaryRow: View {
 	}
 }
 
-struct StepState: Equatable {
+struct StepStateVM: Equatable {
 	var stepType: StepType
 	var isComplete: Bool
 }
 
 extension DoctorSummaryState {
-	var steps: [StepState] {
+	var steps: [StepStateVM] {
 		return []
 		//		return Dictionary.init(grouping: doctorCheckIn.forms,
 		//															 by: pipe(get(\.form), stepType(form:)))
