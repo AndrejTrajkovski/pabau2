@@ -33,7 +33,7 @@ public struct PathwayContainerState: Equatable {
 		self.appointment = appointment
 		self.pathway = pathway
 		self.pathwayTemplate = pathwayTemplate
-		self.steps = makeSteps(pathway: pathway, template: pathwayTemplate)
+		self.steps = makeSteps(pathway: pathway, template: pathwayTemplate, appointment: appointment)
 		self.selectedIdx = 0
 	}
 	

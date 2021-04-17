@@ -13,28 +13,24 @@ enum StepState: Equatable {
 	case patientdetails(PatientDetailsParentState)
 }
 
-func makeSteps(pathway: Pathway, template: PathwayTemplate) -> [StepState] {
+func makeSteps(pathway: Pathway, template: PathwayTemplate, appointment: Appointment) -> [StepState] {
 	fatalError()
-//	template.steps.map {
+//	return template.steps.map {
+//		let stepEntry = pathway.stepEntries[$0.id] =
 //		switch $0.stepType {
 //		case .patientdetails:
-//
-//		case .medicalhistory:
-//			
-//		case .consents:
-//			
+//			return PatientDetailsParentState(clientId: appointment.customerId,
+//											 status: stepEntry.status ?? .pending)
+//		case .medicalhistory, .consents, .treatmentnotes, .prescriptions:
+//			return fatalError()
 //		case .checkpatient:
-//			
-//		case .treatmentnotes:
-//			
-//		case .prescriptions:
-//			
+//			return fatalError()
 //		case .photos:
-//			
+//			return fatalError()
 //		case .aftercares:
-//			
+//			return fatalError()
 //		case .patientComplete:
-//			
+//			return fatalError()
 //		}
 //	}
 }

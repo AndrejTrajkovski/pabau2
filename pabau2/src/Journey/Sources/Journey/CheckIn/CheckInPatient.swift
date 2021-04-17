@@ -106,12 +106,12 @@ extension CheckInPatientState {
 		case .medicalhistory:
 			return medicalHistories.map {
 				StepFormInfo(status: $0.status,
-							 title: $0.info.name)
+							 title: $0.templateName)
 			}
 		case .consents:
 			return consents.map {
 				StepFormInfo(status: $0.status,
-							 title: $0.info.name)
+							 title: $0.templateName)
 			}
 		case .patientComplete:
 			return [StepFormInfo(status: isPatientComplete,

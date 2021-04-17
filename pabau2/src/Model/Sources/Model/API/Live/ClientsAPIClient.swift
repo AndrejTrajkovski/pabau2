@@ -169,7 +169,7 @@ extension APIClient {
                                    path: .getForms,
                                    queryParams: commonAnd(other: ["contact_id": "\(clientId)"]))
             .effect()
-			.map { $0.forms.filter { $0.templateInfo.type == type} }
+			.map { $0.forms.filter { $0.templateType == type} }
             .eraseToEffect()
     }
 

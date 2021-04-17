@@ -11,7 +11,7 @@ public extension APIClient {
 			//									"uid": "",
 			"booking_id": "",
 			"contact_id": clientId.description,
-			"form_id": form.templateInfo.id.rawValue,
+			"form_id": form.id.rawValue,
 			"form_data": form.getJSONPOSTValues()]
 		let requestBuilder: RequestBuilder<Response>.Type = requestBuilderFactory.getBuilder()
 		return requestBuilder.init(method: .POST,
