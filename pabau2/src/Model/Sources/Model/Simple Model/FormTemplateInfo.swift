@@ -3,15 +3,13 @@ import Tagged
 
 public struct FormTemplateInfo: Codable, Identifiable, Equatable {
 	
-	public init(id: FormTemplateInfo.ID, name: String, type: FormType) {
+	public init(id: HTMLForm.ID, name: String, type: FormType) {
 		self.id = id
 		self.name = name
 		self.type = type
 	}
 	
-	public typealias ID = Tagged<FormTemplateInfo, String>
-	
-	public let id: FormTemplateInfo.ID
+	public let id: HTMLForm.ID
 	public let name: String
 	public let type: FormType
 	

@@ -33,9 +33,13 @@ public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnv
 			guard state.formsContainer != nil else { return .none }
 			if let savedForm = state.formsContainer!.formsCollection[id: id] {
 				state.childState.state.removeAll {
-					$0.templateInfo == savedForm.info
+					$0.templateId == savedForm.id
 				}
-				let savedFilledForm = FilledFormData.init(templateInfo: savedForm.info, treatmentId: filledFormId)
+				let savedFilledForm = FilledFormData.init(
+					templateId: savedForm.id,
+					templateName: savedForm.templateName,
+					templateType: savedForm.type,
+					treatmentId: filledFormId)
 				state.childState.state.insert(savedFilledForm, at: 0)
 			}
 			if state.formsContainer!.formsCollection.count == state.formsContainer!.selectedIdx + 1 {
@@ -56,11 +60,11 @@ public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnv
 														   isFillingFormsActive: true,
 														   formsCollection: [formState],
 														   selectedIdx: 0)
-				return env.formAPI.getForm(templateId: selected.templateInfo.id,
+				return env.formAPI.getForm(templateId: selected.templateId,
 										   entryId: selected.treatmentId)
 					.receive(on: DispatchQueue.main)
 					.catchToEffect()
-					.map { FormsListAction.formsContainer(FormsContainerAction.forms(id: selected.templateInfo.id, action: .gotForm($0)))}
+					.map { FormsListAction.formsContainer(FormsContainerAction.forms(id: selected.templateId, action: .gotForm($0)))}
 					.eraseToEffect()
 			}
 		}
@@ -130,9 +134,9 @@ struct FormsListRow: View {
 	let store: Store<FilledFormData, FormRowAction>
 	var body: some View {
 		WithViewStore(store) { viewStore in
-			ClientCardItemBaseRow(title: viewStore.templateInfo.name,
+			ClientCardItemBaseRow(title: viewStore.templateName,
 								  date: viewStore.createdAt,
-								  image: Image(systemName: viewStore.templateInfo.type.imageName)
+								  image: Image(systemName: viewStore.templateType.imageName)
 			).onTapGesture {
 				viewStore.send(.select)
 			}

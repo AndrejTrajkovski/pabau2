@@ -3,7 +3,7 @@ import SwiftUI
 import ComposableArchitecture
 import Form
 
-public enum CompleteJourneyBtnAction {
+public enum CompleteJourneyBtnAction: Equatable {
 	case onCompleteJourney
 }
 
@@ -35,6 +35,6 @@ struct CompleteJourneyBtn: View {
 
 extension DoctorSummaryCompleteBtn.State {
 	init(state: [StepFormInfo]) {
-		self.isBtnDisabled = !state.allSatisfy { $0.status }
+		self.isBtnDisabled = !state.allSatisfy { $0.status == .complete }
 	}
 }

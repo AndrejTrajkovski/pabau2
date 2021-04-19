@@ -4,7 +4,7 @@ import Util
 import ASCollectionView
 import CasePaths
 
-public enum AftercareAction {
+public enum AftercareAction: Equatable {
 	case didUpdateAftercares([AftercareOption])
 	case didUpdateRecalls([AftercareOption])
 	case profile(SingleSelectImagesAction)

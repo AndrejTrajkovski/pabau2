@@ -3,11 +3,15 @@ import Tagged
 
 public struct HTMLForm: Identifiable, Equatable {
 	
-	public var id: FormTemplateInfo.ID { templateInfo.id }
+	public typealias ID = Tagged<HTMLForm, String>
+	
+	public var id: Self.ID
+	
+	public let name: String
+	
+	public let type: FormType
 	
 	public let entryId: FilledFormData.ID?
-	
-	public let templateInfo: FormTemplateInfo
 	
 	public let ePaper: Bool?
 
@@ -24,18 +28,18 @@ public struct HTMLForm: Identifiable, Equatable {
 				formType: FormType,
 				ePaper: Bool? = nil,
 				formStructure: [CSSField]) {
-		self.templateInfo = FormTemplateInfo(id: HTMLForm.ID(rawValue: String(id)),
-											 name: name,
-											 type: formType)
+		self.id = HTMLForm.ID(rawValue: String(id))
+		self.name = name
+		self.type = formType
 		self.ePaper = ePaper
 		self.formStructure = formStructure
 		self.entryId = nil
 	}
 	
 	init(builder: HTMLFormBuilder) {
-		self.templateInfo = FormTemplateInfo(id: builder.id,
-											 name: builder.name,
-											 type: builder.formType)
+		self.id = builder.id
+		self.name = builder.name
+		self.type = builder.formType
 		self.entryId = builder.entryId
 		self.ePaper = builder.ePaper
 		self.formStructure = builder.formStructure

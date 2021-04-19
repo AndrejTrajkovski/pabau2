@@ -6,10 +6,11 @@ import Form
 import Overture
 import Combine
 
-public enum ChoosePathwayContainerAction {
+public enum ChoosePathwayContainerAction: Equatable {
 	case rows(id: PathwayTemplate.ID, action: PathwayTemplateRowAction)
 	case matchResponse(Result<Pathway, RequestError>)
 	case gotPathwayTemplates(Result<IdentifiedArrayOf<PathwayTemplate>, RequestError>)
+	case dismissPathwayErrorAlert
 }
 
 let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayContainerAction, JourneyEnvironment> =
@@ -31,9 +32,20 @@ let choosePathwayContainerReducer: Reducer<ChoosePathwayState, ChoosePathwayCont
 					.map { ChoosePathwayContainerAction.matchResponse($0) }
 					.eraseToEffect()
 				
-			default:
-				break
+			case .matchResponse(.success):
+				break //handled in parent reducer
+			
+			case .matchResponse(.failure(let error)):
+				state.matchPathwayErrorAlert = AlertState(
+					title: TextState("Error Choosing Pathway"),
+					message: TextState(error.description),
+					dismissButton: .default(TextState("OK"), send: .dismissPathwayErrorAlert)
+				)
+				
+			case .dismissPathwayErrorAlert:
+				state.matchPathwayErrorAlert = nil
 			}
+			
 			return .none
 		}
 )
@@ -43,6 +55,7 @@ public struct ChoosePathwayState: Equatable {
 	let selectedAppointment: Appointment
 	var selectedPathway: PathwayTemplate?
 	var pathwayTemplates: LoadingState2<IdentifiedArrayOf<PathwayTemplate>> = .loading
+	var matchPathwayErrorAlert: AlertState<ChoosePathwayContainerAction>?
 }
 
 public struct ChoosePathway: View {
@@ -72,6 +85,8 @@ public struct ChoosePathway: View {
 						choosePathwayList(tmplts)
 					 }
 		)
+		.alert(store.scope(state: \.matchPathwayErrorAlert),
+			   dismiss: ChoosePathwayContainerAction.dismissPathwayErrorAlert)
 		.journeyBase(self.viewStore.state.appointment, .long)
 	}
 

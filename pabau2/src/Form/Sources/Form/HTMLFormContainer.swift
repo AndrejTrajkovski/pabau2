@@ -32,7 +32,7 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, F
 			switch result {
 			case .success:
 				state.postLoadingState = .gotSuccess
-				state.isComplete = true
+				state.status = .complete
 			case .failure(let error):
 				state.postLoadingState = .gotError(error)
 				state.saveFailureAlert = AlertState(
@@ -54,15 +54,33 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, F
 
 public struct HTMLFormParentState: Equatable, Identifiable {
 
-	public var id: HTMLForm.ID { info.id }
-
+	public init(templateId: HTMLForm.ID,
+				templateName: String,
+				type: FormType,
+				clientId: Client.ID,
+				filledFormId: FilledFormData.ID,
+				status: StepStatus
+	) {
+		self.templateId = templateId
+		self.templateName = templateName
+		self.type = type
+		self.clientId = clientId
+		self.filledFormId = filledFormId
+		self.status = status
+		self.getLoadingState = .initial
+		self.postLoadingState = .initial
+		self.saveFailureAlert = nil
+	}
+	
 	public init(formData: FilledFormData,
 				clientId: Client.ID,
 				getLoadingState: LoadingState) {
-		self.info = formData.templateInfo
+		self.templateId = formData.templateId
+		self.templateName = formData.templateName
+		self.type = formData.templateType
 		self.form = nil
 		self.getLoadingState = getLoadingState
-		self.isComplete = false
+		self.status = .pending
 		self.filledFormId = formData.treatmentId
 		self.clientId = clientId
 		self.postLoadingState = .initial
@@ -71,22 +89,28 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 	public init(info: FormTemplateInfo,
 				clientId: Client.ID,
 				getLoadingState: LoadingState) {
-		self.info = info
+		self.templateId = info.id
+		self.templateName = info.name
+		self.type = info.type
 		self.form = nil
 		self.getLoadingState = getLoadingState
-		self.isComplete = false
+		self.status = .pending
 		self.filledFormId = nil
 		self.clientId = clientId
 		self.postLoadingState = .initial
 	}
-
+	
+	public var id: HTMLForm.ID { templateId }
+	
+	public let templateId: HTMLForm.ID
+	public let templateName: String
+	public let type: FormType
 	public let clientId: Client.ID
 	public let filledFormId: FilledFormData.ID?
-	public let info: FormTemplateInfo
 	public var form: HTMLForm?
 	public var getLoadingState: LoadingState
 	public var postLoadingState: LoadingState
-	public var isComplete: Bool
+	public var status: StepStatus
 	public var saveFailureAlert: AlertState<HTMLFormAction>?
 }
 

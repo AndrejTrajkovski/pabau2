@@ -1,4 +1,4 @@
-public enum CompleteFilter: Int, CaseIterable, CustomStringConvertible {
+public enum CompleteFilter: Int, CaseIterable, CustomStringConvertible, Equatable {
 	case all
 	case open
 	case complete

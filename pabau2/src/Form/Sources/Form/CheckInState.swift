@@ -29,7 +29,7 @@ public extension CheckInState {
 	}
 
 	mutating func goToNextUncomplete() {
-		stepForms().firstIndex(where: { !$0.status }).map {
+		stepForms().firstIndex(where: { $0.status == .pending }).map {
 			selectedIdx = $0
 		}
 	}

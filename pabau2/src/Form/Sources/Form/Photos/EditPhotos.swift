@@ -5,7 +5,7 @@ import PencilKit
 import ComposableArchitecture
 import Util
 
-let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnvironment>
+public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnvironment>
 	.combine(
 		editPhotosRightSideReducer.pullback(
 			state: \EditPhotosState.rightSide,
@@ -15,11 +15,11 @@ let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnvironmen
 			state: \EditPhotosState.editPhotoList,
 			action: /EditPhotoAction.editPhotoList,
 			environment: { $0 }),
-		singlePhotoEditReducer.optional.pullback(
+		singlePhotoEditReducer.optional().pullback(
 			state: \EditPhotosState.singlePhotoEdit,
 			action: /EditPhotoAction.singlePhotoEdit,
 			environment: { $0 }),
-		cameraOverlayReducer.optional.pullback(
+		cameraOverlayReducer.optional().pullback(
 			state: \EditPhotosState.cameraOverlay,
 			action: /EditPhotoAction.cameraOverlay,
 			environment: { $0 }),
@@ -29,8 +29,10 @@ let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnvironmen
 				state.isCameraActive = true
 			case .openPhotoAlbum:
 				state.isPhotosAlbumActive = true
-			case .editPhotoList, .rightSide, .cameraOverlay, .singlePhotoEdit, .chooseInjectables:
+            case .editPhotoList, .rightSide, .cameraOverlay, .singlePhotoEdit, .chooseInjectables, .goBack:
 				break
+            case .save:
+                break
 			}
 			return .none
 		}
@@ -44,6 +46,8 @@ public enum EditPhotoAction: Equatable {
 	case cameraOverlay(CameraOverlayAction)
 	case singlePhotoEdit(SinglePhotoEditAction)
 	case chooseInjectables(ChooseInjectableAction)
+    case goBack
+    case save
 }
 
 public struct EditPhotosState: Equatable {
@@ -52,7 +56,7 @@ public struct EditPhotosState: Equatable {
 	var isTagsAlertActive: Bool = false
 	var stencils = ["stencil1", "stencil2", "stencil3", "stencil4"]
 	var isShowingPhotoLib: Bool = false
-	var isShowingStencils: Bool = false
+	var isShowingStencils: Bool = true//false
 	var selectedStencilIdx: Int?
 	var isFlashOn: Bool = false
 	var frontOrRear: UIImagePickerController.CameraDevice = .rear
@@ -63,12 +67,24 @@ public struct EditPhotosState: Equatable {
 	var deletePhotoAlert: AlertState<EditPhotosRightSideAction>?
 
 	private var showingImagePicker: UIImagePickerController.SourceType?
+    
+    var isSavedPhoto: Bool = false
+    var editedPhoto: UIImage = UIImage()
+    var imageInjectable: UIImage = UIImage()
+    var photoSize: CGSize = .zero
+    var loadingState: LoadingState = .initial
 
 	public init (_ photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>) {
 		self.photos = photos
 		self.editingPhotoId = photos.last?.id
 		self.isCameraActive = self.photos.isEmpty
 	}
+    
+    public init(_ photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>, currentPhoto: PhotoVariantId) {
+        self.photos = photos
+        self.editingPhotoId = currentPhoto
+        self.isCameraActive = self.photos.isEmpty
+    }
 
 	var isCameraActive: Bool {
 		get { self.showingImagePicker == .some(.camera) }
@@ -80,10 +96,10 @@ public struct EditPhotosState: Equatable {
 	}
 }
 
-struct EditPhotos: View {
+public struct EditPhotos: View {
 
 	let store: Store<EditPhotosState, EditPhotoAction>
-	init (store: Store<EditPhotosState, EditPhotoAction>) {
+	public init (store: Store<EditPhotosState, EditPhotoAction>) {
 		self.store = store
 	}
 
@@ -93,16 +109,18 @@ struct EditPhotos: View {
 		let isChooseInjectablesActive: Bool
 		let editingPhotoId: PhotoVariantId?
 		let isDrawingDisabled: Bool
+        let editedPhoto: UIImage
 		init (state: EditPhotosState) {
 			self.isCameraActive = state.isCameraActive
 			self.isChooseInjectablesActive = state.isChooseInjectablesActive
 			self.editingPhotoId = state.editingPhotoId
 			self.isDrawingDisabled = state.activeCanvas != .drawing
 			self.isPhotosAlbumActive = state.isPhotosAlbumActive
+            self.editedPhoto = state.editedPhoto
 		}
 	}
 
-	var body: some View {
+	public var body: some View {
 		WithViewStore(store.scope(state: State.init(state:))) { viewStore in
 			VStack {
 				HStack {
@@ -143,6 +161,14 @@ struct EditPhotos: View {
 				.frame(height: 128)
 //				.padding()
 			}
+                .navigationBarItems(
+                    leading: MyBackButton( text: Texts.back,
+                                           action: { viewStore.send(.goBack)} ),
+                    trailing: Button( action: { viewStore.send(.singlePhotoEdit(.saveDrawings)) },
+                                      label: { Text(Texts.save) })
+                )
+                .navigationBarBackButtonHidden(true)
+
 				.modalLink(isPresented: .constant(viewStore.state.isPhotosAlbumActive),
 									 linkType: ModalTransition.fullScreenModal,
 									 destination: {
@@ -236,7 +262,10 @@ extension EditPhotosState {
 				photo: editingPhoto,
 				allInjectables: self.allInjectables,
 				isChooseInjectablesActive: self.isChooseInjectablesActive,
-				chosenInjectatbleId: self.chosenInjectableId
+				chosenInjectatbleId: self.chosenInjectableId,
+                imageInjectable: self.imageInjectable,
+                photoSize: self.photoSize,
+                editingPhotoId: self.editingPhotoId
 			)
 		}
 		set {
@@ -246,6 +275,9 @@ extension EditPhotosState {
 			self.allInjectables = newValue.allInjectables
 			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
 			self.chosenInjectableId = newValue.chosenInjectatbleId
+            self.imageInjectable = newValue.imageInjectable
+            self.photoSize = newValue.photoSize
+            self.editingPhotoId = newValue.editingPhotoId
 		}
 	}
 
@@ -282,4 +314,22 @@ func getPhoto(_ photos: IdentifiedArrayOf<PhotoViewModel>,
 	return id.map {
 		photos[id: $0]!
 	}
+}
+
+
+extension View {
+    public func snapshot() -> UIImage {
+        let controller = UIHostingController(rootView: self)
+        let view = controller.view
+        
+        let targetSize = controller.view.intrinsicContentSize
+        view?.bounds = CGRect(origin: .zero, size: targetSize)
+        view?.backgroundColor = .clear
+        
+        let renderer = UIGraphicsImageRenderer(size: targetSize)
+        
+        return renderer.image { _ in
+            view?.drawHierarchy(in: controller.view.bounds, afterScreenUpdates: true)
+        }
+    }
 }

@@ -11,7 +11,7 @@ public extension APIClient {
 			//									"uid": "",
 			"booking_id": "",
 			"contact_id": clientId.description,
-			"form_id": form.templateInfo.id.rawValue,
+			"form_id": form.id.rawValue,
 			"form_data": form.getJSONPOSTValues()]
 		let requestBuilder: RequestBuilder<Response>.Type = requestBuilderFactory.getBuilder()
 		return requestBuilder.init(method: .POST,
@@ -199,6 +199,49 @@ extension APIClient {
                            commonParams)
     }
     
+	public func getPatientDetails(clientId: Client.Id) -> Effect<Client, RequestError> {
+		struct PatientDetailsResponse: Decodable {
+			let details: [Client]
+			enum CodingKeys: String, CodingKey {
+				case details = "appointments"
+			}
+		}
+		let requestBuilder: RequestBuilder<PatientDetailsResponse>.Type = requestBuilderFactory.getBuilder()
+		return requestBuilder.init(method: .GET,
+								   baseUrl: baseUrl,
+								   path: .getPatientDetails,
+								   queryParams: commonAnd(other: ["contact_id": "\(clientId)"])
+		)
+			.effect()
+			.map(\.details)
+			.tryMap {
+				if let first = $0.first {
+					return first
+				} else {
+					throw RequestError.apiError("No Patient Details found")
+				}
+			}
+			.mapError { $0 as? RequestError ?? RequestError.unknown }
+			.eraseToEffect()
+	}
+}
+
+// MARK - ClientCard
+extension APIClient {
+    public func uploadClientEditedImage(image: Data, params: [String: String]) -> Effect<VoidAPIResponse, RequestError> {
+        let photo = PhotoUpload(fileData: image)
+        var commonParams: [String: String] = [
+            "counter": "1",
+            "mode": "upload_photo",
+            "photo_type": "contact",
+            "uid": String(loggedInUser!.userID.rawValue)
+        ]
+        commonParams.merge(params) { (_, new) in new }
+
+        return uploadPhoto(photo,
+                           0,
+                           commonParams)
+    }
 }
 
 extension NSMutableData {
