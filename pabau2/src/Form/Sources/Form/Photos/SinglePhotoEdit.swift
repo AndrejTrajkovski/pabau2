@@ -9,6 +9,13 @@ enum CanvasMode: Equatable {
 	case injectables
 }
 
+func draw(injectionSize: CGSize,
+		  widthToHeight: CGFloat,
+			injection: Injection,
+		  in ctxt: CGContext) {
+	fatalError("TODO Cristan")
+}
+
 let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction, FormEnvironment> = .combine (
 	injectablesContainerReducer.pullback(
 		state: \SinglePhotoEditState.injectables,
@@ -31,10 +38,17 @@ let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction,
                                 pImage.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
                             }
                         }
-                    }
-                }
-                
-                state.imageInjectable.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+					}
+				}
+				
+				state.injectables.photoInjections.values.forEach { (injections: IdentifiedArrayOf<Injection>) in
+					injections.forEach { injection in
+						draw(injectionSize: InjectableMarker.MarkerSizes.markerSize,
+							 widthToHeight: InjectableMarker.MarkerSizes.wToHRatio,
+							 injection: injection,
+							 in: ctx)
+					}
+				}
                 state.photo.drawing.image(from: CGRect(x: 0, y: 0, width: size.width, height: size.height), scale: 1)
                     .draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
                 
@@ -43,8 +57,6 @@ let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction,
             
             return Just(SinglePhotoEditAction.uploadPhoto(img))
                 .eraseToEffect()
-        case .updateImageInjectables(let image):
-            state.imageInjectable = image
         case .onChangePhotoSize(let size):
             state.photoSize = size
         case .uploadPhoto(let image):
@@ -134,8 +146,6 @@ struct SinglePhotoEdit: View {
 		self.store = store
 		self.viewStore = ViewStore(store.scope(state: ViewState.init(state:)))
 	}
-    
-    @State private var didChangeInjection: Bool = false
 
 	struct ViewState: Equatable {
 		let injectablesZIndex: Double
@@ -179,7 +189,7 @@ struct SinglePhotoEdit: View {
 					state: { $0.injectables.canvas },
 					action: { .injectables(InjectablesAction.canvas($0))}),
 									 then: {
-                                        InjectablesCanvas(didChange: $didChangeInjection, size: self.photoSize, store: $0)
+                                        InjectablesCanvas(size: self.photoSize, store: $0)
 											.frame(width: self.photoSize.width,
 														 height: self.photoSize.height)
 											.disabled(viewStore.state.isInjectablesDisabled)
@@ -196,10 +206,6 @@ struct SinglePhotoEdit: View {
                            height: self.photoSize.height)
 					.zIndex(viewStore.state.drawingCanvasZIndex)
             }
-            .onChange(of: didChangeInjection, perform: { _ in
-                let snapshot = self.viewSnapshot()
-                viewStore.send(.updateImageInjectables(snapshot))
-            })
 			.sheet(isPresented: viewStore.binding(
 				get: { $0.isChooseInjectablesActive },
 				send: { _ in .injectables(.chooseInjectables(.onDismissChooseInjectables)) }
@@ -215,19 +221,19 @@ struct SinglePhotoEdit: View {
 }
 
 
-extension View {
-   public func viewSnapshot() -> UIImage {
-            let controller = UIHostingController(rootView: self)
-            let view = controller.view
-
-            let targetSize = controller.view.intrinsicContentSize
-            view?.bounds = CGRect(origin: .zero, size: targetSize)
-            view?.backgroundColor = .clear
-
-            let renderer = UIGraphicsImageRenderer(size: targetSize)
-
-            return renderer.image { _ in
-                view?.drawHierarchy(in: controller.view.bounds, afterScreenUpdates: true)
-            }
-        }
-}
+//extension View {
+//	public func viewSnapshot() -> UIImage {
+//		let controller = UIHostingController(rootView: self)
+//		let view = controller.view
+//
+//		let targetSize = controller.view.intrinsicContentSize
+//		view?.bounds = CGRect(origin: .zero, size: targetSize)
+//		view?.backgroundColor = .clear
+//
+//		let renderer = UIGraphicsImageRenderer(size: targetSize)
+//
+//		return renderer.image { _ in
+//			view?.drawHierarchy(in: controller.view.bounds, afterScreenUpdates: true)
+//		}
+//	}
+//}

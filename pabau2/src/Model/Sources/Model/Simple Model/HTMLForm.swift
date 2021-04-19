@@ -3,7 +3,7 @@ import Tagged
 
 public struct HTMLForm: Identifiable, Equatable {
 	
-	public typealias ID = Tagged<FormTemplateInfo, String>
+	public typealias ID = Tagged<HTMLForm, String>
 	
 	public var id: Self.ID
 	

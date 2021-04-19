@@ -54,6 +54,24 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, F
 
 public struct HTMLFormParentState: Equatable, Identifiable {
 
+	public init(templateId: HTMLForm.ID,
+				templateName: String,
+				type: FormType,
+				clientId: Client.ID,
+				filledFormId: FilledFormData.ID,
+				status: StepStatus
+	) {
+		self.templateId = templateId
+		self.templateName = templateName
+		self.type = type
+		self.clientId = clientId
+		self.filledFormId = filledFormId
+		self.status = status
+		self.getLoadingState = .initial
+		self.postLoadingState = .initial
+		self.saveFailureAlert = nil
+	}
+	
 	public init(formData: FilledFormData,
 				clientId: Client.ID,
 				getLoadingState: LoadingState) {
