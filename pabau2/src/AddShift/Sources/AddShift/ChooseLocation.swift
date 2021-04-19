@@ -11,8 +11,8 @@ let chooseLocationsReducer =
             state.searchText = ""
             return env.apiClient.getLocations()
                 .catchToEffect()
-                .map(ChooseLocationAction.gotLocationsResponse)
                 .receive(on: DispatchQueue.main)
+                .map(ChooseLocationAction.gotLocationsResponse)
                 .eraseToEffect()
         case .onSearch(let text):
             state.searchText = text

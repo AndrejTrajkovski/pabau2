@@ -37,8 +37,8 @@ public let addBookoutOptReducer: Reducer<
 
             return env.clientAPI.createAppointment(appointment: appointmentsBody)
                 .catchToEffect()
-                .map(AddBookoutAction.appointmentCreated)
                 .receive(on: DispatchQueue.main)
+                .map(AddBookoutAction.appointmentCreated)
                 .eraseToEffect()
         case .appointmentCreated(let result):
             state?.showsLoadingSpinner = false

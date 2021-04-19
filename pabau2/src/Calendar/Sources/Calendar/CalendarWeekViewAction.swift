@@ -26,6 +26,7 @@ public let calendarWeekViewReducer: Reducer<CalendarWeekViewState, CalendarWeekV
 			}
 			state.appointments[startOfDayDate]!.append($0)
 		}
+
 	case .editDuration(let startOfDayDate, let endDate, let eventId):
 		let calId = CalendarEvent.ID.init(rawValue: eventId)
 		state.appointments[startOfDayDate]?[id: calId]?.end_date = endDate

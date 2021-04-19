@@ -62,7 +62,7 @@ public extension CalAppointments {
 					 employees: employees,
 					 rooms: rooms)
 	}
-	
+
 	init(calType: CalendarType,
 		 events: [CalendarEvent],
 		 locationsIds: [Location.ID],

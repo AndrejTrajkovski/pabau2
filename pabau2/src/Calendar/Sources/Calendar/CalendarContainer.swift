@@ -45,12 +45,6 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 	),
 	.init { state, action, env in
 		switch action {
-//        case .onAppear:
-//            return env.journeyAPI.getLocations()
-//                .receive(on: DispatchQueue.main)
-//                .catchToEffect()
-//                .map(CalendarAction.gotLocationsResponse)
-//                .eraseToEffect()
         case .gotLocationsResponse(let result):
             switch result {
             case .success(let locations):

@@ -44,6 +44,15 @@ extension CalendarEvent {
 
 extension CalendarEvent {
     
+    public func getBookout() -> Bookout? {
+        switch self {
+        case .bookout(let app):
+            return app
+        default:
+            return nil
+        }
+    }
+    
     public func getAppointment() -> Appointment? {
         switch self {
         case .appointment(let app):
@@ -78,8 +87,8 @@ extension CalendarEvent {
 				app.end_date = newValue
 				self = .appointment(app)
 			case .bookout(var bookout):
-				bookout.start_date = newValue
 				bookout.end_date = newValue
+                self = .bookout(bookout)
 			}
 		}
 	}
@@ -229,15 +238,18 @@ extension CalendarEvent: Decodable {
             )
 			self = .appointment(app)
 		} else {
-			let bookout = try Bookout(id,
-									  start,
-									  end,
-									  employeeId,
-									  employeeInitials,
-									  locationId,
-									  _private,
-									  employeeName,
-									  container)
+            let bookout = try Bookout(
+                id,
+                allDay == "1",
+                start,
+                end,
+                employeeId,
+                employeeInitials,
+                locationId,
+                _private,
+                employeeName,
+                container
+            )
 			self = .bookout(bookout)
 		}
 	}

@@ -29,14 +29,24 @@ public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
 			if state.appointments.appointments[dropIndexes.date] == nil {
 				state.appointments.appointments[dropIndexes.date] = [:]
 			}
-            
+
             state.appointments.appointments[dropIndexes.date]?[dropIndexes.location]?[dropIndexes.subsection]?.append(app)
             
-            guard let appointment = app.getAppointment() else {
-               break
+            var appointmentBuilder: AppointmentBuilder?
+            
+            if let appointment = app.getAppointment() {
+                appointmentBuilder = AppointmentBuilder(appointment: appointment)
             }
             
-            return env.clientsAPI.updateAppointment(appointment: AppointmentBuilder(appointment: appointment) )
+            if let bookout = app.getBookout() {
+                appointmentBuilder = AppointmentBuilder(bookout: bookout)
+            }
+            
+            guard let appointment = appointmentBuilder else {
+                return .none
+            }
+
+            return env.clientsAPI.updateAppointment(appointment: appointment)
                 .catchToEffect()
                 .map(SubsectionCalendarAction.appointmentEdited)
                 .receive(on: DispatchQueue.main)
@@ -49,20 +59,31 @@ public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
 			let calId = CalendarEvent.Id(rawValue: eventId)
 			let oldDateO = state.appointments.appointments[startIndexes.date]?[startIndexes.location]?[startIndexes.subsection]?[id: calId]?.end_date
 			guard let oldDate = oldDateO else { return .none }
+            
 			state.appointments.appointments[startIndexes.date]?[startIndexes.location]?[startIndexes.subsection]?[id: calId]?.end_date = Date.concat(oldDate, newEndDate)
             
             guard let app = state.appointments.appointments[startIndexes.date]?[startIndexes.location]?[startIndexes.subsection]?[id: calId] else {
                 return .none
             }
-            
-            guard let appointment = app.getAppointment() else {
+
+            var appointmentBuilder: AppointmentBuilder?
+
+            if let appointment = app.getAppointment() {
+                appointmentBuilder = AppointmentBuilder(appointment: appointment)
+            }
+
+            if let bookout = app.getBookout() {
+                appointmentBuilder = AppointmentBuilder(bookout: bookout)
+            }
+
+            guard let appointment = appointmentBuilder else {
                 return .none
             }
             
-            return env.clientsAPI.updateAppointment(appointment: AppointmentBuilder(appointment: appointment) )
+            return env.clientsAPI.updateAppointment(appointment: appointment )
+                .receive(on: DispatchQueue.main)
                 .catchToEffect()
                 .map(SubsectionCalendarAction.appointmentEdited)
-                .receive(on: DispatchQueue.main)
                 .eraseToEffect()
 		case .onSelect(let keys, let eventId):
 			let (date, location, subsection) = keys

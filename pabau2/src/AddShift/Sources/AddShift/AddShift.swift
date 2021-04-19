@@ -48,8 +48,8 @@ public let addShiftOptReducer: Reducer<
                 shiftSheme: shiftSheme
             )
             .catchToEffect()
-            .map(AddShiftAction.shiftCreated)
             .receive(on: DispatchQueue.main)
+            .map(AddShiftAction.shiftCreated)
             .eraseToEffect()
         case .shiftCreated(let result):
             state?.showsLoadingSpinner = false

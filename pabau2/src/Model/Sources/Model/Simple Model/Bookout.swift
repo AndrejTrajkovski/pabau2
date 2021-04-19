@@ -4,6 +4,7 @@ import Tagged
 public struct Bookout: Identifiable, Equatable, CalendarEventVariant {
 	
 	public let id: CalendarEvent.Id
+    public let all_day: Bool
 	public var start_date: Date
 	public var end_date: Date
 	public var employeeId: Employee.ID
@@ -21,6 +22,7 @@ public struct Bookout: Identifiable, Equatable, CalendarEventVariant {
 //	public let externalGuests: String?
 	public init(
         id: CalendarEvent.Id,
+        all_day: Bool,
         start_date: Date,
         end_date: Date,
         employeeId: Employee.ID,
@@ -31,6 +33,7 @@ public struct Bookout: Identifiable, Equatable, CalendarEventVariant {
 		employeeInitials: String
     ) {
 		self.id = id
+        self.all_day = all_day
 		self.start_date = start_date
 		self.end_date = end_date
 		self.employeeId = employeeId
@@ -45,6 +48,7 @@ public struct Bookout: Identifiable, Equatable, CalendarEventVariant {
 extension Bookout {
 	public init(
 		_ id: CalendarEvent.Id,
+        _ all_day: Bool,
 		_ start_date: Date,
 		_ end_date: Date,
 		_ employeeId: Employee.Id,
@@ -55,6 +59,7 @@ extension Bookout {
 		_ container: KeyedDecodingContainer<CalendarEvent.CodingKeys>
 	) throws {
 		self.id = id
+        self.all_day = all_day
 		self.start_date = start_date
 		self.end_date = end_date
 		self.employeeId = employeeId

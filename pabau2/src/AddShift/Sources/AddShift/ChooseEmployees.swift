@@ -14,8 +14,8 @@ let chooseEmployeesReducer = Reducer<
         state.searchText = ""
         return env.apiClient.getEmployees()
             .catchToEffect()
-            .map(ChooseEmployeesAction.gotEmployeeResponse)
             .receive(on: DispatchQueue.main)
+            .map(ChooseEmployeesAction.gotEmployeeResponse)
             .eraseToEffect()
     case .onSearch(let text):
         state.searchText = text

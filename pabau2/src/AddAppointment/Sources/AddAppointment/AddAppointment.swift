@@ -120,8 +120,8 @@ let addAppTapBtnReducer = Reducer<
 
             return env.clientAPI.createAppointment(appointment: appointmentsBody)
                 .catchToEffect()
-                .map(AddAppointmentAction.appointmentCreated)
                 .receive(on: DispatchQueue.main)
+                .map(AddAppointmentAction.appointmentCreated)
                 .eraseToEffect()
         }
 

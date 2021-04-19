@@ -70,23 +70,14 @@ public struct AppointmentBuilder {
         self.startTime = appointment.start_date
         self.duration = appointment.end_date.timeIntervalSince(appointment.start_date) / 60
     }
+    
+    public init(bookout: Bookout) {
+        self.appointmentID = bookout.id
+        self.isAllDay = bookout.all_day
+        self.isPrivate = bookout._private
+        self.employeeID = bookout.employeeId.rawValue
+        self.locationID = bookout.locationId
+        self.startTime = bookout.start_date
+        self.duration = bookout.end_date.timeIntervalSince(bookout.start_date) / 60
+    }
 }
-
-
-//all_day    0
-//contact_id    12148213
-//end_time    10-02-2021 14:45
-//equipment_id
-//instant_sms    1
-//insurance_company_id    11509
-//insurance_contract_id
-//location_id    2668
-//membership_number
-//room_id    5578
-//sent_email    0
-//sent_sms    1
-//sent_survey    1
-//service_id    2407704
-//start_time    10-02-2021 14:00
-//status    Waiting
-//uid    76101
