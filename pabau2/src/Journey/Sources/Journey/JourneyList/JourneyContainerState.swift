@@ -11,17 +11,20 @@ public struct JourneyContainerState: Equatable {
 	public var journey: JourneyState
 	public var appointments: JourneyAppointments
 	public var loadingState: LoadingState = .initial
-
+	public var selectedDate: Date
+	
 	public init(
 		journey: JourneyState,
 		employees: [Location.ID: IdentifiedArrayOf<Employee>],
 		appointments: JourneyAppointments,
-		loadingState: LoadingState
+		loadingState: LoadingState,
+		selectedDate: Date
 	) {
 		self.journey = journey
 		self.employees = employees
 		self.appointments = appointments
 		self.loadingState = loadingState
+		self.selectedDate = selectedDate
 	}
 	
 	var journeyEmployeesFilter: JourneyFilterState? {

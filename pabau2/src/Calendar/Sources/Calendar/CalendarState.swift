@@ -13,20 +13,24 @@ import FSCalendar
 import Appointments
 
 public struct CalendarContainerState: Equatable {
-	public init(addAppointment: AddAppointmentState?, calendar: CalendarState, appointments: CalAppointments) {
+	public init(addAppointment: AddAppointmentState?,
+				calendar: CalendarState,
+				appointments: CalAppointments,
+				selectedDate: Date) {
 		self.addAppointment = addAppointment
 		self.calendar = calendar
 		self.appointments = appointments
+		self.selectedDate = selectedDate
 	}
 
 	public var addAppointment: AddAppointmentState?
 	public var calendar: CalendarState
 	public var appointments: CalAppointments
+	public var selectedDate: Date
 }
 
 public struct CalendarState: Equatable {
 	var isDropdownShown: Bool
-	var selectedDate: Date
 	var shifts: [Date: [Location.ID: [Employee.ID: [JZShift]]]]
 	public var locations: IdentifiedArrayOf<Location>
 	public var employees: [Location.Id: IdentifiedArrayOf<Employee>]
@@ -69,7 +73,7 @@ extension CalendarContainerState {
                 return nil
             }
 			return CalendarSectionViewState<Employee>(
-				selectedDate: calendar.selectedDate,
+				selectedDate: selectedDate,
 				appointments: groupAppointments,
 				appDetails: calendar.appDetails,
 				addBookout: calendar.addBookoutState,
@@ -82,7 +86,7 @@ extension CalendarContainerState {
 		}
 		set {
 			newValue.map {
-				self.calendar.selectedDate = $0.selectedDate
+				self.selectedDate = $0.selectedDate
 				self.appointments = CalAppointments.employee($0.appointments)
 				self.calendar.appDetails = $0.appDetails
 				self.calendar.addBookoutState = $0.addBookout
@@ -99,7 +103,7 @@ extension CalendarContainerState {
 		get {
 			guard let groupAppointments = extract(case: CalAppointments.room, from: self.appointments) else { return nil }
 			return CalendarSectionViewState<Room>(
-				selectedDate: calendar.selectedDate,
+				selectedDate: selectedDate,
 				appointments: groupAppointments,
 				appDetails: calendar.appDetails,
 				addBookout: calendar.addBookoutState,
@@ -112,7 +116,7 @@ extension CalendarContainerState {
 		}
 		set {
 			newValue.map {
-				self.calendar.selectedDate = $0.selectedDate
+				self.selectedDate = $0.selectedDate
 				self.appointments = CalAppointments.room($0.appointments)
 				self.calendar.appDetails = $0.appDetails
 				self.calendar.addBookoutState = $0.addBookout
@@ -129,14 +133,14 @@ extension CalendarContainerState {
 			guard let apps = extract(case: CalAppointments.week, from: self.appointments) else { return nil }
 			return CalendarWeekViewState(
 				appointments: apps,
-				selectedDate: calendar.selectedDate,
+				selectedDate: selectedDate,
 				addBookout: calendar.addBookoutState,
 				appDetails: calendar.appDetails
 			)
 		}
 		set {
 			newValue.map {
-				self.calendar.selectedDate = $0.selectedDate
+				self.selectedDate = $0.selectedDate
 				self.appointments = CalAppointments.week($0.appointments)
 				self.calendar.addBookoutState = $0.addBookout
 				self.calendar.appDetails = $0.appDetails
@@ -189,7 +193,6 @@ extension CalendarContainerState {
 extension CalendarState {
 	public init() {
 		self.isDropdownShown = false
-		self.selectedDate = Calendar.gregorian.startOfDay(for: Date())
 		shifts = [:]
    
 		// MARK: - Iurii

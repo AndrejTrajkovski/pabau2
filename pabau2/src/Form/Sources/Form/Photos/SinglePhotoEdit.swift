@@ -12,7 +12,7 @@ enum CanvasMode: Equatable {
 func draw(injectionSize: CGSize,
 		  widthToHeight: CGFloat,
 			injection: Injection,
-		  in ctxt: CGContext) {
+		  in ctxt: UIGraphicsImageRendererContext) {
 	fatalError("TODO Cristan")
 }
 

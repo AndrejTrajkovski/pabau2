@@ -112,6 +112,8 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
                 break
             }
 		case .datePicker(.selectedDate(let date)):
+			state.selectedDate = date
+			
             let startDate = date
             var endDate = date
 
@@ -120,6 +122,7 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
             }
             var employeesIds = state.calendar.selectedEmployeesIds().removingDuplicates()
             var locationIds = state.calendar.chosenLocationsIds.removingDuplicates()
+			
 			return env.journeyAPI.getCalendar(
                 startDate: startDate,
                 endDate: endDate,
@@ -200,11 +203,6 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 )
 
 public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvironment> = .combine(
-	calendarDatePickerReducer.pullback(
-		state: \.selectedDate,
-		action: /CalendarAction.datePicker,
-		environment: { $0 }
-	),
 	appDetailsReducer.optional.pullback(
 		state: \CalendarState.appDetails,
 		action: /CalendarAction.appDetails,
@@ -258,7 +256,7 @@ public struct CalendarContainer: View {
 					CalTopBar(store: store.scope(state: { $0 }))
 					CalendarDatePicker.init(
 						store: self.store.scope(
-							state: { $0.calendar.selectedDate },
+							state: { $0.selectedDate },
 							action: { .datePicker($0)}
 						),
 						isWeekView: viewStore.state.appointments.calendarType == CalAppointments.CalendarType.week,
@@ -275,7 +273,7 @@ public struct CalendarContainer: View {
                             viewStore.send(
                                 .datePicker(
                                     .selectedDate(
-                                        viewStore.state.calendar.selectedDate
+                                        viewStore.state.selectedDate
                                     )
                                 )
                             )
@@ -291,7 +289,7 @@ public struct CalendarContainer: View {
                             viewStore.send(
                                 .datePicker(
                                     .selectedDate(
-                                        viewStore.state.calendar.selectedDate
+                                        viewStore.state.selectedDate
                                     )
                                 )
                             )

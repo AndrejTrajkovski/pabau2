@@ -38,14 +38,16 @@ public struct TabBarState: Equatable {
 	var calendar: CalendarState
 	var settings: SettingsState
     var communication: CommunicationState
-
+	var selectedDate: Date = DateFormatter.yearMonthDay.date(from: "2021-03-11")!
+	
 	public var calendarContainer: CalendarContainerState? {
 		get {
 			guard case .calendar(let calApps) = appointments else { return nil }
             return CalendarContainerState(
                 addAppointment: addAppointment,
                 calendar: calendar,
-                appointments: calApps
+                appointments: calApps,
+				selectedDate: selectedDate
             )
 		}
 		set {
@@ -53,6 +55,7 @@ public struct TabBarState: Equatable {
 			self.addAppointment = newValue.addAppointment
 			self.calendar = newValue.calendar
 			self.appointments = .calendar(newValue.appointments)
+			self.selectedDate = newValue.selectedDate
 		}
 	}
 
@@ -62,13 +65,15 @@ public struct TabBarState: Equatable {
 			return JourneyContainerState(journey: self.journey,
 										 employees: self.calendar.employees,
 										 appointments: journeyApps,
-										 loadingState: self.appsLoadingState)
+										 loadingState: self.appsLoadingState,
+										 selectedDate: self.selectedDate)
 		}
 		set {
 			guard let newValue = newValue else { return }
 			self.journey = newValue.journey
 			self.appointments = .journey(newValue.appointments)
 			self.appsLoadingState = newValue.loadingState
+			self.selectedDate = newValue.selectedDate
 		}
 	}
 }
@@ -82,6 +87,7 @@ public enum TabBarAction {
 	case addAppointment(AddAppointmentAction)
     case communication(CommunicationAction)
 	case gotLocationsResponse(Result<[Location], RequestError>)
+	case gotEmployeesResponse(Result<[Employee], RequestError>)
 }
 
 struct PabauTabBar: View {
@@ -225,10 +231,11 @@ public let tabBarReducer: Reducer<
 				// MARK: - Iurii
 			case .success(let locations):
 				state.calendar.locations = IdentifiedArray(locations)
+				state.journey.selectedLocation = locations.first
 			case .failure(let error):
 				break
 			}
-		case .journey(.employeesFilter(.gotResponse(let employeesResponse))):
+		case .gotEmployeesResponse(let employeesResponse):
 			switch employeesResponse {
 			case .success(let employees):
 				// MARK: - Iurii
