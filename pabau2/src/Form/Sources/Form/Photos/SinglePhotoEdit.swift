@@ -11,9 +11,27 @@ enum CanvasMode: Equatable {
 
 func draw(injectionSize: CGSize,
 		  widthToHeight: CGFloat,
-			injection: Injection,
-		  in ctxt: CGContext) {
-	fatalError("TODO Cristan")
+          injection: Injection,
+		  in ctxt: UIGraphicsImageRendererContext) {
+    
+    let colorInjection = Injectable.injectables().filter { $0.id == injection.injectableId }.first?.color
+    let injectableMarkerPlain = InjectableMarkerPlain(wToHRatio: InjectableMarker.MarkerSizes.wToHRatio,
+                                                      color: colorInjection ?? .white,
+                                                      isActive: false,
+                                                      increment: "\(injection.units)")
+    
+    let contentView: UIView = UIView(frame: CGRect(x: injection.position.x,
+                                                   y: injection.position.y,
+                                                   width: injectionSize.width,
+                                                   height: injectionSize.height))
+    
+    let child = UIHostingController(rootView: injectableMarkerPlain)
+    contentView.addSubview(child.view)
+    child.view.frame = contentView.bounds
+    child.view.backgroundColor = .clear
+    
+    contentView.drawHierarchy(in: contentView.frame, afterScreenUpdates: true)
+    
 }
 
 let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction, FormEnvironment> = .combine (
@@ -46,15 +64,15 @@ let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction,
 						draw(injectionSize: InjectableMarker.MarkerSizes.markerSize,
 							 widthToHeight: InjectableMarker.MarkerSizes.wToHRatio,
 							 injection: injection,
-							 in: ctx)
+                             in: ctx)
 					}
 				}
+                
                 state.photo.drawing.image(from: CGRect(x: 0, y: 0, width: size.width, height: size.height), scale: 1)
                     .draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
                 
             }
             state.imageInjectable = img
-            
             return Just(SinglePhotoEditAction.uploadPhoto(img))
                 .eraseToEffect()
         case .onChangePhotoSize(let size):
