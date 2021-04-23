@@ -4,7 +4,7 @@ import Util
 import Model
 import SharedComponents
 
-public typealias AddBookoutEnvironment = (journeyAPI: JourneyAPI, clientAPI: ClientsAPI, userDefaults: UserDefaultsConfig)
+public typealias AddBookoutEnvironment = (journeyAPI: JourneyAPI, clientAPI: ClientsAPI, userDefaults: UserDefaultsConfig, storage: CoreDataStorage)
 
 public let addBookoutOptReducer: Reducer<
     AddBookoutState?,
@@ -87,6 +87,10 @@ public let addBookoutReducer: Reducer<
         state: \AddBookoutState.chooseLocationState,
         action: /AddBookoutAction.chooseLocation,
         environment: { $0 }),
+    chooseBookoutReasonReducer.pullback(
+        state: \AddBookoutState.chooseBookoutReasonState,
+        action: /AddBookoutAction.chooseBookoutReason,
+        environment: { $0 }),
     switchCellReducer.pullback(
         state: \.isAllDay,
         action: /AddBookoutAction.isAllDay,
@@ -107,6 +111,8 @@ public let addBookoutReducer: Reducer<
             state.employeeConfigurator.state = .normal
         case .onChooseLocation:
             state.chooseLocationState.isChooseLocationActive = true
+        case .onChooseBookoutReason:
+            state.chooseBookoutReasonState.isChooseBookoutReasonActive = true
         default:
             break
         }
@@ -120,6 +126,7 @@ public struct AddBookoutState: Equatable {
 	var chooseDuration: SingleChoiceState<Duration>
     var chooseLocationState: ChooseLocationState
     var chooseEmployeesState: ChooseEmployeesState
+    var chooseBookoutReasonState: ChooseBookoutReasonState
     var startDate: Date
     var time: Date?
 	var description: String = ""
@@ -143,7 +150,7 @@ public struct AddBookoutState: Equatable {
             startTime: self.startDate,
             duration: self.chooseDuration.dataSource.first(where: {$0.id == self.chooseDuration.chosenItemId})?.duration,
             note: self.note,
-            description: self.description
+            description: self.chooseBookoutReasonState.chosenReasons?.name
         )
     }
 }
@@ -155,7 +162,9 @@ public enum AddBookoutAction {
     case onChooseEmployee
 	case chooseDuration(SingleChoiceActions<Duration>)
     case chooseLocation(ChooseLocationAction)
+    case chooseBookoutReason(ChooseBookoutReasonAction)
     case onChooseLocation
+    case onChooseBookoutReason
 	case isPrivate(ToggleAction)
 	case isAllDay(ToggleAction)
 	case note(TextChangeAction)
@@ -317,21 +326,31 @@ struct DateAndTime: View {
 struct DescriptionAndNotes: View {
 
 	let store: Store<AddBookoutState, AddBookoutAction>
+    @ObservedObject var viewStore: ViewStore<AddBookoutState, AddBookoutAction>
 
 	public init(store: Store<AddBookoutState, AddBookoutAction>) {
 		self.store = store
+        self.viewStore = ViewStore(store)
 	}
 
 	var body: some View {
 		VStack(spacing: 16) {
-			TitleAndTextField(
-                title: "DESCRIPTION",
-				tfLabel: "Add description.",
-				store: store.scope(
-                    state: { $0.description },
-					action: { .description($0) }
+            TitleAndValueLabel(
+                "DESCRIPTION",
+                self.viewStore.state.chooseBookoutReasonState.chosenReasons?.name ?? "Add description",
+                self.viewStore.state.chooseBookoutReasonState.chosenReasons?.name == nil ? Color.grayPlaceholder : nil
+            ).onTapGesture {
+                self.viewStore.send(.onChooseBookoutReason)
+            }
+            NavigationLink.emptyHidden(
+                self.viewStore.state.chooseBookoutReasonState.isChooseBookoutReasonActive,
+                ChooseBookoutReasonView(
+                    store: self.store.scope(
+                        state: { $0.chooseBookoutReasonState },
+                        action: { .chooseBookoutReason($0) }
+                    )
                 )
-			)
+            )
 			TitleAndTextField(
                 title: "NOTE",
 				tfLabel: "Add a note.",
@@ -370,6 +389,7 @@ extension AddBookoutState {
                 ),
             chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
             chooseEmployeesState: ChooseEmployeesState(isChooseEmployeesActive: false),
+            chooseBookoutReasonState: ChooseBookoutReasonState(isChooseBookoutReasonActive: false),
             startDate: start,
             time: nil,
             description: "",
@@ -396,6 +416,7 @@ extension AddBookoutState {
                 ),
             chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
             chooseEmployeesState: ChooseEmployeesState(isChooseEmployeesActive: false),
+            chooseBookoutReasonState: ChooseBookoutReasonState(isChooseBookoutReasonActive: false),
             startDate: bookout.start_date,
             time: nil,
             description: bookout._description ?? "",

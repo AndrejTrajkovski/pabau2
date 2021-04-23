@@ -41,6 +41,7 @@ public extension Dictionary {
 extension CalendarSectionViewState {
 
 	public func chosenLocations() -> [Location] {
+        print(chosenLocationsIds)
         if chosenLocationsIds.isEmpty {
             return []
         }

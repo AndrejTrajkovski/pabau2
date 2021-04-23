@@ -12,10 +12,15 @@ import FacebookShare
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 	var window: UIWindow?
+    
 	func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
-        Intercom.setApiKey("ios_sdk-f223a9e3f380f60354bc459db9d5c0349c61fd7c",
-                           forAppId: "m3fk3gh1")
+        Intercom.setApiKey(
+            "ios_sdk-f223a9e3f380f60354bc459db9d5c0349c61fd7c",
+             forAppId: "m3fk3gh1"
+        )
+        
+        //CDStorage.shared.initialized()
 
 		SwiftDate.defaultRegion = Region.UTC
 		if let windowScene = scene as? UIWindowScene {
@@ -26,13 +31,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 			let user = userDefaults.loggedInUser
 			let hasSeenWalkthrough = userDefaults.hasSeenAppIntroduction
 			let apiClient = APIClient(baseUrl: "https://ios.pabau.me", loggedInUser: user)
+            let storage = PabauStorage()
+            storage.initialized()
+            
 			let env = AppEnvironment(
 				loginAPI: apiClient,
 				journeyAPI: apiClient,
 				clientsAPI: apiClient,
 				formAPI: apiClient,
-				userDefaults: userDefaults
+				userDefaults: userDefaults,
+                storage: storage
 			)
+            
 			window.rootViewController = UIHostingController(
 				rootView: ContentView(
 					store: Store(

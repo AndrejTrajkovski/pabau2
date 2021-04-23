@@ -17,7 +17,8 @@ public typealias TabBarEnvironment = (
 	journeyAPI: JourneyAPI,
 	clientsAPI: ClientsAPI,
 	formAPI: FormAPI,
-	userDefaults: UserDefaultsConfig
+	userDefaults: UserDefaultsConfig,
+    storage: CoreDataStorage
 )
 
 public enum TabItemId: String {
@@ -225,6 +226,10 @@ public let tabBarReducer: Reducer<
 				// MARK: - Iurii
 			case .success(let locations):
 				state.calendar.locations = IdentifiedArray(locations)
+//				state.calendar.chosenLocationsIds = locations.map(\.id)
+//				print("chosenLocation: \(locations.map(\.id).first!)")
+//				state.journey.selectedLocation = locations.first!
+//				state.calendar.chosenLocationsIds = [locations.map(\.id).first!]
 			case .failure(let error):
 				break
 			}
@@ -242,7 +247,15 @@ public let tabBarReducer: Reducer<
 										}
 									}
 								 })
-
+//				let locs = state.calendar.locations.map(\.id)
+//				state.calendar.employees = locs.reduce(into: [Location.ID: IdentifiedArrayOf<Employee>](),
+//													   {
+//														$0[$1] = []
+//													   })
+				
+//				state.calendar.chosenEmployeesIds = state.calendar.employees.mapValues {
+//					$0.map(\.id)
+//				}
 			case .failure(let error):
 				break
 			}
@@ -290,7 +303,9 @@ public let tabBarReducer: Reducer<
 			return CalendarEnvironment(
 				journeyAPI: $0.journeyAPI,
 				clientsAPI: $0.clientsAPI,
-				userDefaults: $0.userDefaults)
+                userDefaults: $0.userDefaults,
+                storage: $0.storage
+            )
 		}),
 	communicationReducer.pullback(
 		state: \TabBarState.communication,
@@ -325,6 +340,7 @@ extension TabBarState {
 		self.settings = SettingsState()
 		self.communication = CommunicationState()
 		self.appointments = .journey(JourneyAppointments.init(events: []))
+//		self.appointments = .employee(EventsBy<Employee>.init(events: [], locationsIds: [], subsections: [], sectionKeypath: \CalendarEvent.locationId, subsKeypath: \CalendarEvent.employeeId))
 		self.appsLoadingState = .initial
 	}
 }

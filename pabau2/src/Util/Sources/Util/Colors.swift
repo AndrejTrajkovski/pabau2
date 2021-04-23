@@ -88,7 +88,7 @@ public extension Color {
 
 	static let clientCardNeutral = Color(hex: "8C8C8C")
     
-    static let grayPlaceholder = Color.init(hex: "#9B9B9B")
+    static let grayPlaceholder = Color(UIColor(red: 0, green: 0, blue: 0.0980392, alpha: 0.22))
     
     static let random: UIColor = .init(hue: .random(in: 0...1), saturation: 1, brightness: 1, alpha: 1)
 }

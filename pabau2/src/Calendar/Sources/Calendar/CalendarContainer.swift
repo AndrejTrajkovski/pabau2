@@ -11,7 +11,7 @@ import AddShift
 import Filters
 import Appointments
 
-public typealias CalendarEnvironment = (journeyAPI: JourneyAPI, clientsAPI: ClientsAPI, userDefaults: UserDefaultsConfig)
+public typealias CalendarEnvironment = (journeyAPI: JourneyAPI, clientsAPI: ClientsAPI, userDefaults: UserDefaultsConfig, storage: CoreDataStorage)
 
 public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAction, CalendarEnvironment> = .combine(
 	calTypePickerReducer.pullback(
@@ -44,6 +44,7 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 		environment: { $0 }
 	),
 	.init { state, action, env in
+        print("\(action)")
 		switch action {
         case .gotLocationsResponse(let result):
             switch result {
@@ -173,6 +174,21 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
         case .week(.editAppointment(let appointment)):
             print(appointment)
             state.addAppointment = AddAppointmentState.init(editingAppointment: appointment, startDate: appointment.start_date, endDate: appointment.end_date)
+//
+//
+//                case .week(.editStartTime(let startOfDayDate, let startDate, let eventId, let startingPointStartOfDay)):
+//                    let calId = CalendarEvent.ID.init(rawValue: eventId)
+//                    var app = state.appointments[startingPointStartOfDay]?.remove(id: calId)
+//                    app?.update(start: startDate)
+//                    app.map {
+//                        if state.appointments[startOfDayDate] == nil {
+//                            state.appointments[startOfDayDate] = IdentifiedArrayOf<CalendarEvent>.init()
+//                        }
+//                        state.appointments[startOfDayDate]!.append($0)
+//                    }
+//
+//
+
 		case .appDetails(.addService):
 			//- TODO Iurii
 			let start = state.calendar.appDetails!.app.start_date

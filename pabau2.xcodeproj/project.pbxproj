@@ -31,6 +31,7 @@
 		82BE2F4E23D97D9F00B3678A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 82BE2F4D23D97D9F00B3678A /* Assets.xcassets */; };
 		82BE2F5123D97D9F00B3678A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 82BE2F5023D97D9F00B3678A /* Preview Assets.xcassets */; };
 		82F6ADAE23F2C7B1001B3ACE /* PabauTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */; };
+		BA3E68AE262F18DA00C71DB9 /* CoreStore in Frameworks */ = {isa = PBXBuildFile; productRef = BA3E68AD262F18DA00C71DB9 /* CoreStore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -98,6 +99,7 @@
 				82182C5325265C5D00E5479F /* Login in Frameworks */,
 				82182C5125265C5D00E5479F /* Journey in Frameworks */,
 				82182C5525265C5D00E5479F /* Model in Frameworks */,
+				BA3E68AE262F18DA00C71DB9 /* CoreStore in Frameworks */,
 				74DD9D34256EAB1A00CC3920 /* Communication in Frameworks */,
 				8246DB3925716DF900F5D87E /* Intercom.framework in Frameworks */,
 				82182C4925265C5D00E5479F /* Clients in Frameworks */,
@@ -243,6 +245,7 @@
 				82182C5625265C5D00E5479F /* Util */,
 				74DD9D33256EAB1A00CC3920 /* Communication */,
 				0854E6B425F12331007087B8 /* EPaper */,
+				BA3E68AD262F18DA00C71DB9 /* CoreStore */,
 			);
 			productName = pabau2;
 			productReference = 82BE2F4423D97D9C00B3678A /* pabau2.app */;
@@ -276,6 +279,7 @@
 			packageReferences = (
 				8280D4822463F2BE0077A73F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 				820C74E224FFA8BE00B7542F /* XCRemoteSwiftPackageReference "swift-tagged" */,
+				BA3E68AC262F18DA00C71DB9 /* XCRemoteSwiftPackageReference "CoreStore" */,
 			);
 			productRefGroup = 82BE2F4523D97D9C00B3678A /* Products */;
 			projectDirPath = "";
@@ -593,6 +597,14 @@
 				minimumVersion = 0.6.0;
 			};
 		};
+		BA3E68AC262F18DA00C71DB9 /* XCRemoteSwiftPackageReference "CoreStore" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/JohnEstropia/CoreStore";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -635,6 +647,11 @@
 		82182C5625265C5D00E5479F /* Util */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Util;
+		};
+		BA3E68AD262F18DA00C71DB9 /* CoreStore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BA3E68AC262F18DA00C71DB9 /* XCRemoteSwiftPackageReference "CoreStore" */;
+			productName = CoreStore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
