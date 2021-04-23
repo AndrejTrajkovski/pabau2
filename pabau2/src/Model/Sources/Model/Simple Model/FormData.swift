@@ -3,8 +3,17 @@ import Tagged
 
 public struct FilledFormData: Decodable, Identifiable, Equatable {
 	
-	public init(templateInfo: FormTemplateInfo, treatmentId: FilledFormData.ID, createdAt: Date = Date(), epaperImageIds: Int? = nil, epaperFormIds: Int? = nil, uploadedPhotos: String? = nil) {
-		self.templateInfo = templateInfo
+	public init(templateId: HTMLForm.ID,
+				templateName: String,
+				templateType: FormType,
+				treatmentId: FilledFormData.ID,
+				createdAt: Date = Date(),
+				epaperImageIds: Int? = nil,
+				epaperFormIds: Int? = nil,
+				uploadedPhotos: String? = nil) {
+		self.templateId = templateId
+		self.templateName = templateName
+		self.templateType = templateType
 		self.treatmentId = treatmentId
 		self.createdAt = createdAt
 		self.epaperImageIds = epaperImageIds
@@ -15,7 +24,10 @@ public struct FilledFormData: Decodable, Identifiable, Equatable {
 	public typealias ID = Tagged<FilledFormData, Int>
 	
 	public var id: Self.ID { treatmentId }
-	public let templateInfo: FormTemplateInfo
+	
+	public let templateId: HTMLForm.ID
+	public let templateName: String
+	public let templateType: FormType
     public let treatmentId: Self.ID
     public let createdAt: Date
     public let epaperImageIds: Int?
@@ -31,16 +43,18 @@ public struct FilledFormData: Decodable, Identifiable, Equatable {
         } else {
 			throw DecodingError.dataCorruptedError(forKey: CodingKeys.templateId, in: container, debugDescription: "Can't parse id for FormData.")
         }
+		self.templateId = templateId
         
-        let name = try container.decodeIfPresent(String.self, forKey: .name) ?? ""
+		self.templateName = try container.decodeIfPresent(String.self, forKey: .name) ?? ""
+		
+		
 		let formType: FormType
         if let type = try? container.decodeIfPresent(String.self, forKey: .type) {
 			formType = FormType(rawValue: type) ?? .unknown
         } else {
 			formType = .unknown
         }
-        
-		self.templateInfo = FormTemplateInfo(id: templateId, name: name, type: formType)
+		self.templateType = formType
 		
 		if let strID = try container.decodeIfPresent(String.self, forKey: .treatmentId), let id = Int(strID) {
 			self.treatmentId = FilledFormData.ID.init(rawValue: id)

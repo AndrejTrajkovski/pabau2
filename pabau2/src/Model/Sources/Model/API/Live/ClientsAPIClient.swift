@@ -65,32 +65,6 @@ extension APIClient {
 			.eraseToEffect()
 	}
 	
-	public func getPatientDetails(clientId: Client.Id) -> Effect<Client, RequestError> {
-		struct PatientDetailsResponse: Decodable {
-			let details: [Client]
-			enum CodingKeys: String, CodingKey {
-				case details = "appointments"
-			}
-		}
-		let requestBuilder: RequestBuilder<PatientDetailsResponse>.Type = requestBuilderFactory.getBuilder()
-		return requestBuilder.init(method: .GET,
-								   baseUrl: baseUrl,
-								   path: .getPatientDetails,
-								   queryParams: commonAnd(other: ["contact_id": "\(clientId)"])
-		)
-			.effect()
-			.map(\.details)
-			.tryMap {
-				if let first = $0.first {
-					return first
-				} else {
-					throw RequestError.apiError("No Patient Details found")
-				}
-			}
-			.mapError { $0 as? RequestError ?? RequestError.unknown }
-			.eraseToEffect()
-	}
-	
 	public func update(clientBuilder: ClientBuilder) -> Effect<Client.ID, RequestError> {
 		struct ClientResponse: Decodable {
 			let contact_id: Client.ID
@@ -195,7 +169,7 @@ extension APIClient {
                                    path: .getForms,
                                    queryParams: commonAnd(other: ["contact_id": "\(clientId)"]))
             .effect()
-			.map { $0.forms.filter { $0.templateInfo.type == type} }
+			.map { $0.forms.filter { $0.templateType == type} }
             .eraseToEffect()
     }
 

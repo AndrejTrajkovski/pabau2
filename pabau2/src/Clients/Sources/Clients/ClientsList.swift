@@ -3,6 +3,7 @@ import ComposableArchitecture
 import Model
 import Util
 import SharedComponents
+import Form
 
 let clientsListReducer: Reducer<
     ClientsState,
@@ -19,6 +20,7 @@ let clientsListReducer: Reducer<
         
         switch action {
         case .identified(let id, ClientRowAction.onSelectClient):
+            UserDefaults.standard.set(id.description, forKey: "selectedClientId")
             state.selectedClient = ClientCardState(
                 client: state.clients[id: id]!,
                 list: ClientCardListState(client: state.clients[id: id]!)
@@ -88,7 +90,7 @@ let clientsListReducer: Reducer<
         case .gotItemsResponse(let result):
 			guard case .success(let count) = result else { break }
 			state.selectedClient?.client.count = count
-		case .selectedClient(.bottom(.child(.details(.editingClient(.onResponseSave(let result)))))):
+		case .selectedClient(.bottom(.child(.details(.editingClient(.addClient(.onResponseSave(let result))))))):
 			if case .success(let newId) = result,
 			   let clientBuilder = state.selectedClient?.list.details.editingClient?.clientBuilder {
 				let newClient = Client.init(clientBuilder: clientBuilder, id: newId)
@@ -101,7 +103,7 @@ let clientsListReducer: Reducer<
 			}
 		case .onAddClient:
 			state.addClient = AddClientState(clientBuilder: ClientBuilder.empty)
-		case .addClient(.onResponseSave(let result)):
+		case .addClient(.addClient(.onResponseSave(let result))):
 			if case .success(let newId) = result,
 			   let newClient = state.addClient?.clientBuilder {
 				state.clients.append(Client.init(clientBuilder: newClient, id: newId))
@@ -123,7 +125,7 @@ public enum ClientsListAction: Equatable {
     case gotClientsResponse(Result<[Client], RequestError>)
     case gotItemsResponse(Result<ClientItemsCount, RequestError>)
     case onAddClient
-    case addClient(AddClientAction)
+    case addClient(ClientCardAddClientAction)
 }
 
 struct ClientsList: View {
@@ -217,7 +219,7 @@ struct ClientsList: View {
 						action: { .addClient($0) }
 					),
 					then: {
-						AddClient(store: $0)}
+						ClientCardAddClient(store: $0)}
 				)
 			)
 		}

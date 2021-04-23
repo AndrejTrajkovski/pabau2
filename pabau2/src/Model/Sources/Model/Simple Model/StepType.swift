@@ -67,4 +67,19 @@ public enum StepType: String, Codable, Equatable, CaseIterable, Identifiable {
 			return "Complete"
 		}
 	}
+	
+	public func formType() -> FormType {
+		switch self {
+		case .consents:
+			return .consent
+		case .medicalhistory:
+			return .history
+		case .prescriptions:
+			return .prescription
+		case .treatmentnotes:
+			return .treatment
+		case .aftercares, .checkpatient, .patientdetails, .photos, .patientComplete:
+			fatalError()
+		}
+	}
 }

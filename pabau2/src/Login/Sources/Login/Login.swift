@@ -36,10 +36,10 @@ func handleLoginTapped(_ email: String, _ password: String, state: inout Walkthr
 	if validEmail && !emptyPass {
 		state.loginViewState.loginLS = .loading
 		return apiClient.login(email, password: password)
-				.catchToEffect()
-				.map(LoginAction.gotResponse)
-				.receive(on: DispatchQueue.main)
-				.eraseToEffect()
+			.catchToEffect()
+			.map(LoginAction.gotResponse)
+			.receive(on: DispatchQueue.main)
+			.eraseToEffect()
 	} else {
 		return .none
 	}

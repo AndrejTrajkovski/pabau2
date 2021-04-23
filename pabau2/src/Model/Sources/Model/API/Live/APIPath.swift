@@ -11,6 +11,7 @@ public enum APIPath: String {
 
     case getShifts = "/OAuth2/staff/get_rota_shifts.php"
 	case pathwaysMatch = "/OAuth2/pathway/match.php"
+	case getPathway = "/OAuth2/pathway/get_pathway.php"
 	
 	//Calendar
     case createShift = "/OAuth2/staff/create_shift.php"

@@ -58,9 +58,9 @@ struct StepSelector<S: CheckInState>: View where S: Equatable {
 	}
 
 	func stepView(for viewModel: StepFormInfo) -> some View {
-		VStack {
+		return VStack {
 			Image(systemName: "checkmark.circle.fill")
-				.foregroundColor(viewModel.status ? .blue : Color(hex: "C7C7CC"))
+				.foregroundColor(color(status: viewModel.status))
 				.frame(width: 30, height: 30)
 			Text(viewModel.title.uppercased())
 				.fixedSize(horizontal: false, vertical: true)
@@ -71,6 +71,17 @@ struct StepSelector<S: CheckInState>: View where S: Equatable {
 		}
 	}
 
+	fileprivate func color(status: StepStatus) -> Color {
+		switch status {
+		case .complete:
+			return Color.blue
+		case .pending:
+			return Color(hex: "C7C7CC")
+		case .skipped:
+			return Color.yellow
+		}
+	}
+	
 	fileprivate func previousArrow() -> some View {
 		Image(systemName: "chevron.left")
 			.font(.regular30).foregroundColor(Color(hex: "909090"))

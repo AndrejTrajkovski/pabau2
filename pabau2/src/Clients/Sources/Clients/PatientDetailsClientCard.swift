@@ -5,7 +5,7 @@ import Form
 import Util
 
 public let patientDetailsClientCardReducer: Reducer<PatientDetailsClientCardState, PatientDetailsClientCardAction, ClientsEnvironment> = .combine(
-	patientDetailsReducer.optional.pullback(
+	patientDetailsReducer.optional().pullback(
 		state: \.childState.state,
 		action: /PatientDetailsClientCardAction.form,
 		environment: { $0 }),
@@ -23,7 +23,7 @@ public let patientDetailsClientCardReducer: Reducer<PatientDetailsClientCardStat
 			state.editingClient = nil
 		case .cancelEdit:
 			state.editingClient = nil
-		case .editingClient(.onResponseSave(let result)):
+		case .editingClient(.addClient(.onResponseSave(let result))):
 			break
 		case .action(.gotResult(let result)):
 			switch result {
@@ -53,7 +53,7 @@ public enum PatientDetailsClientCardAction: ClientCardChildParentAction {
 	case edit
 	case action(GotClientListAction<ClientBuilder>?)
 	case form(PatientDetailsAction)
-	case editingClient(AddClientAction)
+	case editingClient(ClientCardAddClientAction)
 	var action: GotClientListAction<ClientBuilder>? {
 		get {
 			if case .action(let app) = self {
@@ -89,21 +89,11 @@ struct PatientDetailsClientCard: ClientCardChild {
 			.disabled(true)
 			NavigationLink.emptyHidden(viewStore.state.editingClient != nil,
 									   IfLetStore(self.store.scope(
-													state: { $0.editingClient }, action: { .editingClient($0)}),
-												  then: AddClient.init(store:)
+													state: { $0.editingClient },
+													action: { .editingClient($0)}),
+												  then: ClientCardAddClient.init(store:)
 									   )
 			)
 		}
 	}
-
-//	var patientDetailsDisabled: some View {
-//		return
-//	}
 }
-
-//struct EditButtons: View {
-//
-//	var body: some View {
-//
-//	}
-//}

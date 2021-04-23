@@ -14,7 +14,7 @@ public struct CheckInContainerState: Equatable {
 	
 	var patientDetailsLS: LoadingState
 	var patientDetails: ClientBuilder
-	var patientDetailsStatus: Bool
+	var patientDetailsStatus: StepStatus
 	
 	var medicalHistories: IdentifiedArrayOf<HTMLFormParentState>
 	
@@ -30,7 +30,7 @@ public struct CheckInContainerState: Equatable {
 	var aftercare: Aftercare?
 	var aftercareStatus: Bool
 	
-	var isPatientComplete: Bool
+	var isPatientComplete: StepStatus
 	
 	var photos: PhotosState
 	
@@ -72,12 +72,12 @@ extension CheckInContainerState {
 		self.treatmentNotes = []
 		self.prescriptions = []
 		self.aftercareStatus = false
-		self.isPatientComplete = false
+		self.isPatientComplete = .pending
 		self.photos = PhotosState([[:]])
 		self.patientSelectedIndex = 0
 		self.doctorSelectedIndex = 0
 		self.patientDetailsLS = .initial
-		self.patientDetailsStatus = false
+		self.patientDetailsStatus = .pending
 	}
 }
 
@@ -150,8 +150,8 @@ extension CheckInContainerState {
 	}
 	
 	var isHandBackDeviceActive: Bool {
-		get { isPatientComplete }
-		set { isPatientComplete = newValue }
+		get { isPatientComplete == .complete }
+		set { isPatientComplete = newValue ? .complete : .pending }
 	}
 	
 	var handback: HandBackDeviceState {

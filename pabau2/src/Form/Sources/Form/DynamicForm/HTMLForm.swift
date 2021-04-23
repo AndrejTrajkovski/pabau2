@@ -17,7 +17,7 @@ public struct HTMLFormView: View {
 
 	public var body: some View {
 		VStack {
-			HTMLFormTitle(store: store.scope(state: { $0.templateInfo.name }).actionless)
+			HTMLFormTitle(store: store.scope(state: { $0.name }).actionless)
 			ScrollView {
 				LazyVStack {
 					ForEachStore(store.scope(state: { $0.formStructure },

@@ -4,12 +4,12 @@ import ComposableArchitecture
 public let injectablesCanvasReducer = Reducer<InjectablesCanvasState, InjectablesCanvasAction, FormEnvironment>.init { state, action, _ in
 	switch action {
 	case .didTapOnCanvas(let point):
-		let injCenter = CGPoint(x: point.x - InjectableMarker.markerSize.width / 2,
-														y: point.y - InjectableMarker.markerSize.height / 2)
+		let injCenter = CGPoint(x: point.x - InjectableMarker.MarkerSizes.markerSize.width / 2,
+								y: point.y - InjectableMarker.MarkerSizes.markerSize.height / 2)
 		let units = state.allInjectables[id: state.chosenInjectableId]!.runningIncrement
 		let newInj = Injection(units: units,
-													 position: injCenter,
-													 injectableId: state.chosenInjectableId)
+							   position: injCenter,
+							   injectableId: state.chosenInjectableId)
 		if var injections = state.photoInjections[state.chosenInjectableId] {
 			injections.append(newInj)
 			state.photoInjections[state.chosenInjectableId] = injections
@@ -20,8 +20,8 @@ public let injectablesCanvasReducer = Reducer<InjectablesCanvasState, Injectable
 	case .injectable(let injectableId, let markerAction):
 		switch markerAction {
 		case .didTouchMarker(idx: let idx, action: let action):
-				switch action {
-				case .didSelectInjectionId(let injectionId):
+			switch action {
+			case .didSelectInjectionId(let injectionId):
 					state.chosenInjectionId = injectionId
 					state.chosenInjectableId = injectableId
 				case .didDragToPosition(let point):
@@ -162,13 +162,15 @@ struct InjectableMarker: View {
 	let store: Store<InjectableMarkerState, MarkerAction>
 	@ObservedObject var viewStore: ViewStore<ViewState, MarkerAction>
 
-	public static let markerHeight: CGFloat = 60
-	public static let wToHRatio: CGFloat = 0.7
-	public static var markerSize: CGSize {
-		CGSize.init(width: markerHeight * wToHRatio,
-								height: markerHeight)
+	struct MarkerSizes {
+		public static let markerHeight: CGFloat = 60
+		public static let wToHRatio: CGFloat = 0.7
+		public static var markerSize: CGSize {
+			CGSize.init(width: markerHeight * wToHRatio,
+									height: markerHeight)
+		}
 	}
-
+	
 	let imageSize: CGSize
 	@State var offset: CGSize
 
@@ -200,8 +202,8 @@ struct InjectableMarker: View {
 								y: self.offset.height + value.translation.height)
 			if calculatedPos.x > 0 &&
 				calculatedPos.y > 0 &&
-				calculatedPos.x + Self.markerSize.width < self.imageSize.width &&
-				calculatedPos.y + Self.markerSize.height < self.imageSize.height {
+				calculatedPos.x + MarkerSizes.markerSize.width < self.imageSize.width &&
+				calculatedPos.y + MarkerSizes.markerSize.height < self.imageSize.height {
 				self.offset = CGSize(width: calculatedPos.x, height: calculatedPos.y)
 			}
 		}
@@ -211,20 +213,20 @@ struct InjectableMarker: View {
 								y: self.offset.height + value.translation.height)
 			if calculatedPos.x > 0 &&
 				calculatedPos.y > 0 &&
-				calculatedPos.x + Self.markerSize.width < self.imageSize.width &&
-				calculatedPos.y + Self.markerSize.height < self.imageSize.height {
+				calculatedPos.x + MarkerSizes.markerSize.width < self.imageSize.width &&
+				calculatedPos.y + MarkerSizes.markerSize.height < self.imageSize.height {
 				self.viewStore.send(.didDragToPosition(calculatedPos))
 			}
 		}
 
 		return InjectableMarkerPlain(
-			wToHRatio: Self.wToHRatio,
+			wToHRatio: MarkerSizes.wToHRatio,
 			color: self.viewStore.state.color,
 			isActive: self.viewStore.state.isActive,
 			increment: self.viewStore.state.units
 		)
-			.frame(width: Self.markerSize.width,
-						 height: Self.markerSize.height)
+			.frame(width: MarkerSizes.markerSize.width,
+						 height: MarkerSizes.markerSize.height)
 		.onTapGesture {
 				self.viewStore.send(.didSelectInjectionId(self.viewStore.state.id))
 		}
