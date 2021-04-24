@@ -43,7 +43,7 @@ public struct CalendarState: Equatable {
 
 	var scope: FSCalendarScope = .week
 	var isShowingFilters: Bool
-	var expandedLocationsIds: [Location.Id]
+	var expandedLocationsIds: Set<Location.Id>
 	public var appDetails: AppDetailsState?
 	public var addBookoutState: AddBookoutState?
 	public var addShift: AddShiftState?

@@ -40,7 +40,7 @@ public struct FiltersState<S: Identifiable & Equatable & Named>: Equatable {
         chosenLocationsIds: Set<Location.ID>,
         subsections: [Location.ID: IdentifiedArrayOf<S>],
         chosenSubsectionsIds: [Location.ID: [S.ID]],
-        expandedLocationsIds: [Location.ID],
+        expandedLocationsIds: Set<Location.Id>,
         isShowingFilters: Bool
     ) {
         self.locations = locations
@@ -55,7 +55,7 @@ public struct FiltersState<S: Identifiable & Equatable & Named>: Equatable {
 	public var chosenLocationsIds: Set<Location.ID>
 	public let subsections: [Location.ID: IdentifiedArrayOf<S>]
 	public var chosenSubsectionsIds: [Location.ID: [S.ID]]
-	public var expandedLocationsIds: [Location.ID]
+	public var expandedLocationsIds: Set<Location.Id>
 	public var isShowingFilters: Bool
 
 	var rows: IdentifiedArrayOf<FilterSectionState<S>> {
@@ -81,10 +81,10 @@ public struct FiltersState<S: Identifiable & Equatable & Named>: Equatable {
 					chosenLocationsIds.insert(locId)
 				}
 				chosenSubsectionsIds[locId] = sectionState.chosenValues
-				if !sectionState.isExpanded && expandedLocationsIds.contains(locId) {
-					expandedLocationsIds.removeAll(where: { $0 == locId })
-				} else if sectionState.isExpanded && !expandedLocationsIds.contains(locId) {
-					expandedLocationsIds.append(locId)
+				if !sectionState.isExpanded {
+					expandedLocationsIds.remove(locId)
+				} else {
+					expandedLocationsIds.insert(locId)
 				}
 			}
 		}
