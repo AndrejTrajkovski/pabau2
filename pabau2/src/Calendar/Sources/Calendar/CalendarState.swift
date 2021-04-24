@@ -16,17 +16,20 @@ public struct CalendarContainerState: Equatable {
 	public init(addAppointment: AddAppointmentState?,
 				calendar: CalendarState,
 				appointments: CalAppointments,
-				selectedDate: Date) {
+				selectedDate: Date,
+				chosenLocationsIds: Set<Location.Id>) {
 		self.addAppointment = addAppointment
 		self.calendar = calendar
 		self.appointments = appointments
 		self.selectedDate = selectedDate
+		self.chosenLocationsIds = chosenLocationsIds
 	}
 
 	public var addAppointment: AddAppointmentState?
 	public var calendar: CalendarState
 	public var appointments: CalAppointments
 	public var selectedDate: Date
+	public var chosenLocationsIds: Set<Location.Id>
 }
 
 public struct CalendarState: Equatable {
@@ -35,7 +38,6 @@ public struct CalendarState: Equatable {
 	public var locations: IdentifiedArrayOf<Location>
 	public var employees: [Location.Id: IdentifiedArrayOf<Employee>]
 	public var rooms: [Location.Id: IdentifiedArrayOf<Room>]
-	public var chosenLocationsIds: [Location.Id]
 	public var chosenEmployeesIds: [Location.Id: [Employee.Id]]
 	var chosenRoomsIds: [Location.Id: [Room.Id]]
 
@@ -78,7 +80,7 @@ extension CalendarContainerState {
 				appDetails: calendar.appDetails,
 				addBookout: calendar.addBookoutState,
 				locations: calendar.locations,
-				chosenLocationsIds: calendar.chosenLocationsIds,
+				chosenLocationsIds: chosenLocationsIds,
 				subsections: calendar.employees,
 				chosenSubsectionsIds: calendar.chosenEmployeesIds,
 				shifts: calendar.shifts
@@ -91,7 +93,7 @@ extension CalendarContainerState {
 				self.calendar.appDetails = $0.appDetails
 				self.calendar.addBookoutState = $0.addBookout
 				self.calendar.locations = $0.locations
-				self.calendar.chosenLocationsIds = $0.chosenLocationsIds
+				self.chosenLocationsIds = $0.chosenLocationsIds
 				self.calendar.employees = $0.subsections
 				self.calendar.chosenEmployeesIds = $0.chosenSubsectionsIds
 				self.calendar.shifts = $0.shifts
@@ -108,7 +110,7 @@ extension CalendarContainerState {
 				appDetails: calendar.appDetails,
 				addBookout: calendar.addBookoutState,
 				locations: calendar.locations,
-				chosenLocationsIds: calendar.chosenLocationsIds,
+				chosenLocationsIds: chosenLocationsIds,
 				subsections: calendar.rooms,
 				chosenSubsectionsIds: calendar.chosenRoomsIds,
 				shifts: [:]
@@ -121,7 +123,7 @@ extension CalendarContainerState {
 				self.calendar.appDetails = $0.appDetails
 				self.calendar.addBookoutState = $0.addBookout
 				self.calendar.locations = $0.locations
-				self.calendar.chosenLocationsIds = $0.chosenLocationsIds
+				self.chosenLocationsIds = $0.chosenLocationsIds
 				self.calendar.rooms = $0.subsections
 				self.calendar.chosenRoomsIds = $0.chosenSubsectionsIds
 			}
@@ -152,7 +154,7 @@ extension CalendarContainerState {
 		get {
 			FiltersState(
 				locations: self.calendar.locations,
-				chosenLocationsIds: self.calendar.chosenLocationsIds,
+				chosenLocationsIds: self.chosenLocationsIds,
 				subsections: self.calendar.rooms,
 				chosenSubsectionsIds: self.calendar.chosenRoomsIds,
 				expandedLocationsIds: self.calendar.expandedLocationsIds,
@@ -161,7 +163,7 @@ extension CalendarContainerState {
 		}
 		set {
 			self.calendar.locations = newValue.locations
-			self.calendar.chosenLocationsIds = newValue.chosenLocationsIds
+			self.chosenLocationsIds = newValue.chosenLocationsIds
 			self.calendar.rooms = newValue.subsections
 			self.calendar.chosenRoomsIds = newValue.chosenSubsectionsIds
 			self.calendar.expandedLocationsIds = newValue.expandedLocationsIds
@@ -173,7 +175,7 @@ extension CalendarContainerState {
 		get {
 			FiltersState(
 				locations: self.calendar.locations,
-				chosenLocationsIds: self.calendar.chosenLocationsIds,
+				chosenLocationsIds: self.chosenLocationsIds,
 				subsections: self.calendar.employees,
 				chosenSubsectionsIds: self.calendar.chosenEmployeesIds,
 				expandedLocationsIds: self.calendar.expandedLocationsIds,
@@ -181,7 +183,7 @@ extension CalendarContainerState {
 		}
 		set {
 			self.calendar.locations = newValue.locations
-			self.calendar.chosenLocationsIds = newValue.chosenLocationsIds
+			self.chosenLocationsIds = newValue.chosenLocationsIds
 			self.calendar.employees = newValue.subsections
 			self.calendar.chosenEmployeesIds = newValue.chosenSubsectionsIds
 			self.calendar.expandedLocationsIds = newValue.expandedLocationsIds
@@ -228,27 +230,27 @@ extension CalendarState {
 		self.locations = []
 		self.employees = [:]
 		self.rooms = [:]
-		chosenLocationsIds = []
 		chosenEmployeesIds = [:]
 		chosenRoomsIds = [:]
 		isShowingFilters = false
 		expandedLocationsIds = []
 	}
-
-	func selectedEmployeesIds() -> [Employee.Id] {
-		chosenLocationsIds.compactMap {
-			chosenEmployeesIds[$0]
-		}.flatMap { $0 }
-	}
 }
 
 extension CalendarContainerState {
+	
+	func selectedEmployeesIds() -> [Employee.Id] {
+		chosenLocationsIds.compactMap {
+			calendar.chosenEmployeesIds[$0]
+		}.flatMap { $0 }
+	}
+	
 	mutating func switchTo(calType: CalAppointments.CalendarType) {
         print(appointments.flatten())
 		self.appointments = CalAppointments(
             calType: calType,
             events: appointments.flatten(),
-            locationsIds: calendar.locations.map(\.id),
+            locationsIds: Set(calendar.locations.map(\.id)),
             employees: calendar.employees.flatMap(\.value),
             rooms: calendar.rooms.flatMap(\.value)
         )

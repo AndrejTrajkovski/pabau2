@@ -100,11 +100,10 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
                     }
                 }
                 print(calendarResponse.appointments, "<---- appointments")
-                print(state.calendar.chosenLocationsIds)
                 print(filteredEmployees)
                 state.appointments.refresh(
                     events: calendarResponse.appointments,
-                    locationsIds: state.calendar.chosenLocationsIds,
+                    locationsIds: state.chosenLocationsIds,
                     employees: filteredEmployees,
                     rooms: []
                 )
@@ -120,13 +119,12 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
             if state.appointments.calendarType == .week {
                 endDate = Calendar.current.date(byAdding: .day, value: 7, to: endDate) ?? endDate
             }
-            var employeesIds = state.calendar.selectedEmployeesIds().removingDuplicates()
-            var locationIds = state.calendar.chosenLocationsIds.removingDuplicates()
+            var employeesIds = state.selectedEmployeesIds().removingDuplicates()
 			
 			return env.journeyAPI.getCalendar(
                 startDate: startDate,
                 endDate: endDate,
-                locationIds: locationIds,
+                locationIds: state.chosenLocationsIds,
                 employeesIds: employeesIds,
                 roomIds: []
             )

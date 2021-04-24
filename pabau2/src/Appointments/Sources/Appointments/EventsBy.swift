@@ -7,7 +7,7 @@ public struct EventsBy<SubsectionHeader: Identifiable & Equatable> {
 
 	public var appointments: [Date: [Location.ID: [SubsectionHeader.ID: IdentifiedArrayOf<CalendarEvent>]]]
 	public init(events: [CalendarEvent],
-				locationsIds: [Location.ID],
+				locationsIds: Set<Location.ID>,
 				subsections: [SubsectionHeader],
 				sectionKeypath: KeyPath<CalendarEvent, Location.ID>,
 				subsKeypath: KeyPath<CalendarEvent, SubsectionHeader.ID>) {
@@ -35,7 +35,7 @@ open class SectionHelper {
 
 	@available(iOS 13, *)
 	public class func group<SectionId: Hashable, Subsection: Identifiable>(_ events: [CalendarEvent],
-																		   _ sectionIds: [SectionId], _ subsections: [Subsection],
+																		   _ sectionIds: Set<SectionId>, _ subsections: [Subsection],
 																		   _ sectionKeyPath: KeyPath<CalendarEvent, SectionId>,
 																		   _ subsectionKeyPath: KeyPath<CalendarEvent, Subsection.ID>)
 	-> [Date: [SectionId: [Subsection.ID: IdentifiedArrayOf<CalendarEvent>]]] {

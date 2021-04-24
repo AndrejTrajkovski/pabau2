@@ -20,7 +20,9 @@ public class SectionCalendarViewController<Subsection: Identifiable & Equatable>
 	public override func viewDidLoad() {
 		super.viewDidLoad()
 		calendarView.setupCalendar(setDate: viewStore.state.selectedDate)
-		let subs = viewStore.state.chosenSubsectionsIds.mapValuesFrom(dict: viewStore.state.subsections)
+		let subs = viewStore.state.chosenSubsectionsIds
+			.filter { viewStore.state.chosenLocationsIds.contains($0.key) }
+			.mapValuesFrom(dict: viewStore.state.subsections)
 		let shifts = viewStore.state.shifts
         self.reload(
             selectedDate: viewStore.state.selectedDate,
@@ -46,7 +48,9 @@ public class SectionCalendarViewController<Subsection: Identifiable & Equatable>
 				guard let self = self else { return }
 				let date = $0.0.0.0.0
                 let events = $0.0.0.0.1
-				let subsections = $0.0.0.1.mapValuesFrom(dict: self.viewStore.state.subsections)
+				let subsections = $0.0.0.1
+					.filter { self.viewStore.state.chosenLocationsIds.contains($0.key) }
+					.mapValuesFrom(dict: self.viewStore.state.subsections)
 				let shifts = $0.1
                 self.reload(
                     selectedDate: date,

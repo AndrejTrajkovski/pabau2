@@ -11,7 +11,7 @@ struct CalendarSectionViewState<Subsection: Identifiable & Equatable>: Equatable
 	var appDetails: AppDetailsState?
 	var addBookout: AddBookoutState?
 	let locations: IdentifiedArrayOf<Location>
-	let chosenLocationsIds: [Location.ID]
+	let chosenLocationsIds: Set<Location.ID>
 	let subsections: [Location.ID: IdentifiedArrayOf<Subsection>]
 	let chosenSubsectionsIds: [Location.ID: [Subsection.ID]]
 	let shifts: [Date: [Location.ID: [Subsection.ID: [JZShift]]]]

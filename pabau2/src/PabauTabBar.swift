@@ -39,6 +39,7 @@ public struct TabBarState: Equatable {
 	var settings: SettingsState
     var communication: CommunicationState
 	var selectedDate: Date = DateFormatter.yearMonthDay.date(from: "2021-03-11")!
+	var chosenLocationsIds: Set<Location.Id>
 	
 	public var calendarContainer: CalendarContainerState? {
 		get {
@@ -47,7 +48,8 @@ public struct TabBarState: Equatable {
                 addAppointment: addAppointment,
                 calendar: calendar,
                 appointments: calApps,
-				selectedDate: selectedDate
+				selectedDate: selectedDate,
+				chosenLocationsIds: chosenLocationsIds
             )
 		}
 		set {
@@ -56,6 +58,7 @@ public struct TabBarState: Equatable {
 			self.calendar = newValue.calendar
 			self.appointments = .calendar(newValue.appointments)
 			self.selectedDate = newValue.selectedDate
+			self.chosenLocationsIds = newValue.chosenLocationsIds
 		}
 	}
 
@@ -92,22 +95,22 @@ public enum TabBarAction {
 
 struct PabauTabBar: View {
 	let store: Store<TabBarState, TabBarAction>
-	@ObservedObject var viewStore: ViewStore<ViewState, TabBarAction>
-	struct ViewState: Equatable {
-		let isShowingCheckin: Bool
-		let isShowingAppointments: Bool
-		let selectedTab: TabItemId
-		init(state: TabBarState) {
-			self.isShowingCheckin = state.journeyContainer?.journey.checkIn != nil
-			self.isShowingAppointments = state.addAppointment != nil
-			self.selectedTab = state.selectedTab
-		}
-	}
+	@ObservedObject var viewStore: ViewStore<TabBarState, TabBarAction>
+//	struct ViewState: Equatable {
+//		let isShowingCheckin: Bool
+//		let isShowingAppointments: Bool
+//		let selectedTab: TabItemId
+//		init(state: TabBarState) {
+//			self.isShowingCheckin = state.journeyContainer?.journey.checkIn != nil
+//			self.isShowingAppointments = state.addAppointment != nil
+//			self.selectedTab = state.selectedTab
+//		}
+//	}
 	init (store: Store<TabBarState, TabBarAction>) {
 		self.store = store
-		self.viewStore = ViewStore(self.store
-			.scope(state: ViewState.init(state:),
-						 action: { $0 }))
+		self.viewStore = ViewStore(self.store)
+//			.scope(state: ViewState.init(state:),
+//						 action: { $0 }))
 	}
 
 	var body: some View {
@@ -119,13 +122,13 @@ struct PabauTabBar: View {
 			settings().tag(TabItemId.settings)
 			communication().tag(TabItemId.communication)
 		}
-		.modalLink(isPresented: .constant(self.viewStore.state.isShowingCheckin),
+		.modalLink(isPresented: .constant(self.viewStore.state.journeyContainer?.journey.checkIn != nil),
 				   linkType: ModalTransition.circleReveal,
 				   destination: {
 					checkIn()
 				   }
 		)
-		.fullScreenCover(isPresented: .constant(self.viewStore.state.isShowingAppointments)) {
+		.fullScreenCover(isPresented: .constant(self.viewStore.state.addAppointment != nil)) {
 			addAppointment()
 		}
 	}
@@ -216,7 +219,7 @@ public let tabBarReducer: Reducer<
 			switch tabItemId {
 			case .calendar:
 				state.appointments.switchTo(type: .calendar(.employee),
-											locationsIds: state.calendar.locations.map(\.id),
+											locationsIds: Set(state.calendar.locations.map(\.id)),
 											employees: state.calendar.employees.flatMap(\.value),
 											rooms: state.calendar.rooms.flatMap(\.value)
 				)
@@ -333,5 +336,6 @@ extension TabBarState {
 		self.communication = CommunicationState()
 		self.appointments = .journey(JourneyAppointments.init(events: []))
 		self.appsLoadingState = .initial
+		self.chosenLocationsIds = Set()
 	}
 }
