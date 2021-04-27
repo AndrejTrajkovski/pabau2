@@ -369,7 +369,7 @@ extension AddBookoutState {
                     chosenItemId: nil
                 ),
             chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
-            chooseEmployeesState: ChooseEmployeesState(isChooseEmployeesActive: false),
+            chooseEmployeesState: ChooseEmployeesState(chosenEmployee: nil),
             startDate: start,
             time: nil,
             description: "",
@@ -395,7 +395,7 @@ extension AddBookoutState {
                     chosenItemId: nil
                 ),
             chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
-            chooseEmployeesState: ChooseEmployeesState(isChooseEmployeesActive: false),
+            chooseEmployeesState: ChooseEmployeesState(chosenEmployee: nil),
             startDate: bookout.start_date,
             time: nil,
             description: bookout._description ?? "",

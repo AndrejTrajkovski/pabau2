@@ -165,8 +165,8 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
 			let employees = state.calendar.employees[location] ?? []
 			state.calendar.addBookoutState = AddBookoutState(employees: employees,
-														chosenEmployee: nil,
-														start: startDate)
+															 chosenEmployee: nil,
+															 start: startDate)
 		//- TODO Iurii
 		case .week(.addAppointment(let startOfDayDate, let startDate, let durationMins)):
 			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
