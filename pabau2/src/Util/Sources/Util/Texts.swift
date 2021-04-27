@@ -171,6 +171,8 @@ Tap the aftercare bellow that you wish to send to the client. The aftercare will
     public static let gender = "Gender"
     public static let items = "Items"
     public static let date = "Date"
+    
+    public static let uploadingPhoto = "Uploading photo..."
 }
 
 extension String {

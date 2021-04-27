@@ -265,7 +265,8 @@ extension EditPhotosState {
 				chosenInjectatbleId: self.chosenInjectableId,
                 imageInjectable: self.imageInjectable,
                 photoSize: self.photoSize,
-                editingPhotoId: self.editingPhotoId
+                editingPhotoId: self.editingPhotoId,
+                loadingState: self.loadingState
 			)
 		}
 		set {
@@ -278,6 +279,7 @@ extension EditPhotosState {
             self.imageInjectable = newValue.imageInjectable
             self.photoSize = newValue.photoSize
             self.editingPhotoId = newValue.editingPhotoId
+            self.loadingState = newValue.loadingState
 		}
 	}
 

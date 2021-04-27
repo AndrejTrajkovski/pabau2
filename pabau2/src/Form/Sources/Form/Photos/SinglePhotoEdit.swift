@@ -3,6 +3,7 @@ import ComposableArchitecture
 import PencilKit
 import Combine
 import Model
+import Util
 
 enum CanvasMode: Equatable {
 	case drawing
@@ -46,6 +47,7 @@ let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction,
     .init { state, action, env in
         switch action {
         case .saveDrawings:
+            state.loadingState = .loading
             let size = state.photoSize
             let renderer = UIGraphicsImageRenderer(size: size)
             let img = renderer.image { (ctx) in
@@ -73,10 +75,12 @@ let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction,
                 
             }
             state.imageInjectable = img
+            
             return Just(SinglePhotoEditAction.uploadPhoto(img))
                 .eraseToEffect()
         case .onChangePhotoSize(let size):
             state.photoSize = size
+        
         case .uploadPhoto(let image):
             var params: [String: String] = [
                 "booking_id": "0",
@@ -87,18 +91,21 @@ let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction,
             
             return env.formAPI
                 .uploadClientEditedImage(image: image.pngData()!, params: params)
+                .receive(on: DispatchQueue.main)
                 .catchToEffect()
                 .map { response in
-                    switch response {
-                    case .success(let voResponse):
-                        print(voResponse)
-                    case .failure(let error):
-                        print(error)
-                    }
-                    return SinglePhotoEditAction.photoUploadResponse
+                    return SinglePhotoEditAction.photoUploadResponse(response)
                 }
-        case .photoUploadResponse:
-            break
+                
+        case .photoUploadResponse(let result):
+            state.loadingState = .initial
+            switch result {
+            case .success(let voResponse):
+                state.loadingState = .gotSuccess
+            case .failure(let error):
+                state.loadingState = .gotError(error)
+            }
+            
         default:
             break
         }
@@ -115,7 +122,8 @@ struct SinglePhotoEditState: Equatable {
     var imageInjectable: UIImage
     var photoSize: CGSize = .zero
     var editingPhotoId: PhotoVariantId?
-
+    var loadingState: LoadingState = .initial
+    
 	var injectables: InjectablesState {
 		get {
 			InjectablesState(
@@ -152,7 +160,7 @@ public enum SinglePhotoEditAction: Equatable {
     case updateImageInjectables(UIImage)
     case onChangePhotoSize(CGSize)
     case uploadPhoto(UIImage)
-    case photoUploadResponse
+    case photoUploadResponse(Result<VoidAPIResponse, RequestError>)
 }
 
 struct SinglePhotoEdit: View {
@@ -173,6 +181,7 @@ struct SinglePhotoEdit: View {
 		let isInjectablesDisabled: Bool
         let imageInjectable: UIImage
         let photoSize: CGSize
+        let loadingState: LoadingState
 		init (state: SinglePhotoEditState) {
 			let isInjectablesActive = state.activeCanvas == CanvasMode.injectables ? true : false
 			if isInjectablesActive {
@@ -187,6 +196,7 @@ struct SinglePhotoEdit: View {
 			self.isChooseInjectablesActive = state.isChooseInjectablesActive
             self.imageInjectable = state.imageInjectable
             self.photoSize = state.photoSize
+            self.loadingState = state.loadingState
 		}
 	}
 
@@ -224,6 +234,7 @@ struct SinglePhotoEdit: View {
                            height: self.photoSize.height)
 					.zIndex(viewStore.state.drawingCanvasZIndex)
             }
+            .loadingView(.constant(viewStore.state.loadingState == .loading), Texts.uploadingPhoto)
 			.sheet(isPresented: viewStore.binding(
 				get: { $0.isChooseInjectablesActive },
 				send: { _ in .injectables(.chooseInjectables(.onDismissChooseInjectables)) }
