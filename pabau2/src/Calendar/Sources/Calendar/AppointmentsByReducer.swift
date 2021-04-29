@@ -104,7 +104,11 @@ public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
             default:
                 break
             }
-        }
+		case .nextSection:
+			state.sectionOffsetIndex += 1
+		case .previousSection:
+			state.sectionOffsetIndex -= 1
+		}
 		return .none
 	}
 	//	.debug(state: { return $0 }, action: (/SubsectionCalendarAction.editAppointment))

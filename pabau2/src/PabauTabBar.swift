@@ -40,6 +40,7 @@ public struct TabBarState: Equatable {
     var communication: CommunicationState
 	var selectedDate: Date = DateFormatter.yearMonthDay.date(from: "2021-03-11")!
 	var chosenLocationsIds: Set<Location.Id>
+	var sectionOffsetIndex: Int
 	
 	public var calendarContainer: CalendarContainerState? {
 		get {
@@ -49,7 +50,8 @@ public struct TabBarState: Equatable {
                 calendar: calendar,
                 appointments: calApps,
 				selectedDate: selectedDate,
-				chosenLocationsIds: chosenLocationsIds
+				chosenLocationsIds: chosenLocationsIds,
+				sectionOffsetIndex: sectionOffsetIndex
             )
 		}
 		set {
@@ -59,6 +61,7 @@ public struct TabBarState: Equatable {
 			self.appointments = .calendar(newValue.appointments)
 			self.selectedDate = newValue.selectedDate
 			self.chosenLocationsIds = newValue.chosenLocationsIds
+			self.sectionOffsetIndex = newValue.sectionOffsetIndex
 		}
 	}
 
@@ -337,5 +340,6 @@ extension TabBarState {
 		self.appointments = .journey(JourneyAppointments.init(events: []))
 		self.appsLoadingState = .initial
 		self.chosenLocationsIds = Set()
+		self.sectionOffsetIndex = 0
 	}
 }

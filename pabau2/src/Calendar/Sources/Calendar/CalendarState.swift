@@ -17,12 +17,14 @@ public struct CalendarContainerState: Equatable {
 				calendar: CalendarState,
 				appointments: CalAppointments,
 				selectedDate: Date,
-				chosenLocationsIds: Set<Location.Id>) {
+				chosenLocationsIds: Set<Location.Id>,
+				sectionOffsetIndex: Int) {
 		self.addAppointment = addAppointment
 		self.calendar = calendar
 		self.appointments = appointments
 		self.selectedDate = selectedDate
 		self.chosenLocationsIds = chosenLocationsIds
+		self.sectionOffsetIndex = sectionOffsetIndex
 	}
 
 	public var addAppointment: AddAppointmentState?
@@ -30,6 +32,7 @@ public struct CalendarContainerState: Equatable {
 	public var appointments: CalAppointments
 	public var selectedDate: Date
 	public var chosenLocationsIds: Set<Location.Id>
+	public var sectionOffsetIndex: Int
 }
 
 public struct CalendarState: Equatable {
@@ -83,7 +86,8 @@ extension CalendarContainerState {
 				chosenLocationsIds: chosenLocationsIds,
 				subsections: calendar.employees,
 				chosenSubsectionsIds: calendar.chosenEmployeesIds,
-				shifts: calendar.shifts
+				shifts: calendar.shifts,
+				sectionOffsetIndex: sectionOffsetIndex
 			)
 		}
 		set {
@@ -97,6 +101,7 @@ extension CalendarContainerState {
 				self.calendar.employees = $0.subsections
 				self.calendar.chosenEmployeesIds = $0.chosenSubsectionsIds
 				self.calendar.shifts = $0.shifts
+				self.sectionOffsetIndex = $0.sectionOffsetIndex
 			}
 		}
 	}
@@ -113,7 +118,8 @@ extension CalendarContainerState {
 				chosenLocationsIds: chosenLocationsIds,
 				subsections: calendar.rooms,
 				chosenSubsectionsIds: calendar.chosenRoomsIds,
-				shifts: [:]
+				shifts: [:],
+				sectionOffsetIndex: sectionOffsetIndex
 			)
 		}
 		set {
@@ -126,6 +132,7 @@ extension CalendarContainerState {
 				self.chosenLocationsIds = $0.chosenLocationsIds
 				self.calendar.rooms = $0.subsections
 				self.calendar.chosenRoomsIds = $0.chosenSubsectionsIds
+				self.sectionOffsetIndex = $0.sectionOffsetIndex
 			}
 		}
 	}
