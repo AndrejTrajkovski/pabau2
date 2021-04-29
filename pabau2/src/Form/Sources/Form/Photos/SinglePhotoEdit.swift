@@ -87,7 +87,7 @@ let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction,
                 "photo_id": state.editingPhotoId?.description ?? "",
             ]
             return env.formAPI
-                .uploadClientEditedImage(image: image.pngData()!, params: params)
+                .uploadClientEditedImage(image: image.jpegData(compressionQuality: 0.5)!, params: params)
                 .receive(on: DispatchQueue.main)
                 .catchToEffect()
                 .map { response in
