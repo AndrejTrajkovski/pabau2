@@ -173,6 +173,8 @@ Tap the aftercare bellow that you wish to send to the client. The aftercare will
     public static let date = "Date"
     
     public static let uploadingPhoto = "Uploading photo..."
+    public static let uploadAlertTitle = "Cancel uploading?"
+    public static let uploadAlertMessage = "If you go back uploading image will be canceled!"
 }
 
 extension String {

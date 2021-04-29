@@ -43,7 +43,7 @@ let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction,
 	photoAndCanvasReducer.pullback(
 		state: \SinglePhotoEditState.photo,
 		action: /SinglePhotoEditAction.photoAndCanvas,
-		environment: { $0 }),
+        environment: { $0 }),
     .init { state, action, env in
         switch action {
         case .saveDrawings:
@@ -58,24 +58,22 @@ let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction,
                                 pImage.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
                             }
                         }
-					}
-				}
-				
-				state.injectables.photoInjections.values.forEach { (injections: IdentifiedArrayOf<Injection>) in
-					injections.forEach { injection in
-						draw(injectionSize: InjectableMarker.MarkerSizes.markerSize,
-							 widthToHeight: InjectableMarker.MarkerSizes.wToHRatio,
-							 injection: injection,
+                    }
+                }
+                
+                state.injectables.photoInjections.values.forEach { (injections: IdentifiedArrayOf<Injection>) in
+                    injections.forEach { injection in
+                        draw(injectionSize: InjectableMarker.MarkerSizes.markerSize,
+                             widthToHeight: InjectableMarker.MarkerSizes.wToHRatio,
+                             injection: injection,
                              in: ctx)
-					}
-				}
+                    }
+                }
                 
                 state.photo.drawing.image(from: CGRect(x: 0, y: 0, width: size.width, height: size.height), scale: 1)
                     .draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
-                
             }
             state.imageInjectable = img
-            
             return Just(SinglePhotoEditAction.uploadPhoto(img))
                 .eraseToEffect()
         case .onChangePhotoSize(let size):
@@ -88,7 +86,6 @@ let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction,
                 "contact_id": UserDefaults.standard.string(forKey: "selectedClientId") ?? "",
                 "photo_id": state.editingPhotoId?.description ?? "",
             ]
-            
             return env.formAPI
                 .uploadClientEditedImage(image: image.pngData()!, params: params)
                 .receive(on: DispatchQueue.main)
@@ -96,7 +93,7 @@ let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction,
                 .map { response in
                     return SinglePhotoEditAction.photoUploadResponse(response)
                 }
-                
+                .cancellable(id: UploadPhotoId())
         case .photoUploadResponse(let result):
             state.loadingState = .initial
             switch result {
@@ -105,7 +102,8 @@ let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction,
             case .failure(let error):
                 state.loadingState = .gotError(error)
             }
-            
+        case .cancelUpload:
+            return .cancel(id: UploadPhotoId())
         default:
             break
         }
@@ -123,7 +121,6 @@ struct SinglePhotoEditState: Equatable {
     var photoSize: CGSize = .zero
     var editingPhotoId: PhotoVariantId?
     var loadingState: LoadingState = .initial
-    
 	var injectables: InjectablesState {
 		get {
 			InjectablesState(
@@ -161,6 +158,7 @@ public enum SinglePhotoEditAction: Equatable {
     case onChangePhotoSize(CGSize)
     case uploadPhoto(UIImage)
     case photoUploadResponse(Result<VoidAPIResponse, RequestError>)
+    case cancelUpload
 }
 
 struct SinglePhotoEdit: View {
