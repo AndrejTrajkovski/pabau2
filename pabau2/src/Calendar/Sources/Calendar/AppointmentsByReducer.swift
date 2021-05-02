@@ -105,9 +105,13 @@ public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
                 break
             }
 		case .nextSection:
-			state.sectionOffsetIndex += 1
+			guard let sectionOffsetIndex = state.sectionOffsetIndex else { return .none }
+			state.sectionOffsetIndex! = sectionOffsetIndex + 1
 		case .previousSection:
-			state.sectionOffsetIndex -= 1
+			guard let sectionOffsetIndex = state.sectionOffsetIndex else { return .none  }
+			state.sectionOffsetIndex! = sectionOffsetIndex - 1
+		case .viewDidLayoutSubviews(let sectionWidth):
+			state.sectionWidth = sectionWidth
 		}
 		return .none
 	}

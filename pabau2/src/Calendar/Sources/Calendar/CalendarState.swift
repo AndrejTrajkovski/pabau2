@@ -18,13 +18,15 @@ public struct CalendarContainerState: Equatable {
 				appointments: CalAppointments,
 				selectedDate: Date,
 				chosenLocationsIds: Set<Location.Id>,
-				sectionOffsetIndex: Int) {
+				sectionOffsetIndex: Int?,
+				sectionWidth: Float?) {
 		self.addAppointment = addAppointment
 		self.calendar = calendar
 		self.appointments = appointments
 		self.selectedDate = selectedDate
 		self.chosenLocationsIds = chosenLocationsIds
 		self.sectionOffsetIndex = sectionOffsetIndex
+		self.sectionWidth = sectionWidth
 	}
 
 	public var addAppointment: AddAppointmentState?
@@ -32,7 +34,8 @@ public struct CalendarContainerState: Equatable {
 	public var appointments: CalAppointments
 	public var selectedDate: Date
 	public var chosenLocationsIds: Set<Location.Id>
-	public var sectionOffsetIndex: Int
+	public var sectionOffsetIndex: Int?
+	public var sectionWidth: Float?
 }
 
 public struct CalendarState: Equatable {
@@ -87,7 +90,8 @@ extension CalendarContainerState {
 				subsections: calendar.employees,
 				chosenSubsectionsIds: calendar.chosenEmployeesIds,
 				shifts: calendar.shifts,
-				sectionOffsetIndex: sectionOffsetIndex
+				sectionOffsetIndex: sectionOffsetIndex,
+				sectionWidth: sectionWidth
 			)
 		}
 		set {
@@ -102,6 +106,7 @@ extension CalendarContainerState {
 				self.calendar.chosenEmployeesIds = $0.chosenSubsectionsIds
 				self.calendar.shifts = $0.shifts
 				self.sectionOffsetIndex = $0.sectionOffsetIndex
+				self.sectionWidth = $0.sectionWidth
 			}
 		}
 	}
@@ -119,7 +124,8 @@ extension CalendarContainerState {
 				subsections: calendar.rooms,
 				chosenSubsectionsIds: calendar.chosenRoomsIds,
 				shifts: [:],
-				sectionOffsetIndex: sectionOffsetIndex
+				sectionOffsetIndex: sectionOffsetIndex,
+				sectionWidth: sectionWidth
 			)
 		}
 		set {
@@ -133,6 +139,7 @@ extension CalendarContainerState {
 				self.calendar.rooms = $0.subsections
 				self.calendar.chosenRoomsIds = $0.chosenSubsectionsIds
 				self.sectionOffsetIndex = $0.sectionOffsetIndex
+				self.sectionWidth = $0.sectionWidth
 			}
 		}
 	}

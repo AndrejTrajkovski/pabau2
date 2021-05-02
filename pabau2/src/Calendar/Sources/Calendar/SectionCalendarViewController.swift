@@ -12,7 +12,7 @@ public class SectionCalendarViewController<Subsection: Identifiable & Equatable>
 	let viewStore: ViewStore<CalendarSectionViewState<Subsection>, SubsectionCalendarAction<Subsection>>
 	
 	init(_ viewStore: ViewStore<CalendarSectionViewState<Subsection>, SubsectionCalendarAction<Subsection>>) {
-		let dataSource = SectionWeekViewDataSource<JZAppointmentEvent, Location, Subsection, JZShift>.init()
+		let dataSource = Self.makeSectionDataSource(state: viewStore.state)
 		self.sectionDataSource = dataSource
 		self.viewStore = viewStore
 		super.init()
@@ -21,75 +21,43 @@ public class SectionCalendarViewController<Subsection: Identifiable & Equatable>
 	public override func viewDidLoad() {
 		super.viewDidLoad()
 		calendarView.setupCalendar(setDate: viewStore.state.selectedDate)
-		let shifts = viewStore.state.shifts
-        self.reload(
-            selectedDate: viewStore.state.selectedDate,
-            locations: viewStore.state.chosenLocations(),
-            subsections: viewStore.state.chosenSubsections(),
-            events: viewStore.state.appointments.appointments,
-            shifts: shifts,
-			sectionOffsetIndex: viewStore.state.sectionOffsetIndex
-        )
+		self.reload(state: viewStore.state)
 		calendarView.forceReload()
-		viewStore.publisher.selectedDate.removeDuplicates().eraseToAnyPublisher()
-			.combineLatest(
-				viewStore.publisher.appointments.removeDuplicates().eraseToAnyPublisher()
-			).combineLatest(
-				viewStore.publisher.chosenSubsectionsIds.removeDuplicates().eraseToAnyPublisher()
-			).combineLatest(
-				viewStore.publisher.chosenLocationsIds.removeDuplicates().eraseToAnyPublisher()
-			).combineLatest(
-				viewStore.publisher.shifts.removeDuplicates().eraseToAnyPublisher()
-			).combineLatest(
-				viewStore.publisher.sectionOffsetIndex.removeDuplicates().eraseToAnyPublisher()
-			)
+		viewStore.publisher.removeDuplicates()
 			.receive(on: DispatchQueue.main)
 			.eraseToAnyPublisher()
 			.sink(receiveValue: { [weak self] in
-                
 				guard let self = self else { return }
-				let date: Date = $0.0.0.0.0.0
-				let events: EventsBy<Subsection> = $0.0.0.0.0.1
-				let chosenSubsectionIds:[Location.ID :[Subsection.ID]] = $0.0.0.0.1
-//				let subsections: [Location.ID: [Subsection]] = chosenSubsectionIds
-//					.filter { self.viewStore.state.chosenLocationsIds.contains($0.key) }
-//					.mapValuesFrom(dict: self.viewStore.state.subsections)
-				let shifts: [Date: [Location.ID: [Subsection.ID: [JZShift]]]] = $0.0.1
-				let sectionOffsetIndex = $0.1
-                self.reload(
-                    selectedDate: date,
-                    locations: self.viewStore.state.chosenLocations(),
-                    subsections: self.viewStore.state.chosenSubsections(),
-                    events: events.appointments,
-                    shifts: shifts,
-					sectionOffsetIndex: sectionOffsetIndex
-                )
-                
+                self.reload(state: $0)
 			}).store(in: &self.cancellables)
 	}
 
+	public override func viewDidLayoutSubviews() {
+		super.viewDidLayoutSubviews()
+		viewStore.send(.viewDidLayoutSubviews(sectionWidth: Float(calendarView.sectionsFlowLayout.sectionWidth ?? 0)))
+	}
+	
 	func reload(
-        selectedDate: Date,
-		locations: [Location],
-		subsections: [Location.ID: [Subsection]],
-		events: [Date: [Location.ID: [Subsection.ID: IdentifiedArrayOf<CalendarEvent>]]],
-		shifts: [Date: [Location.ID: [Subsection.ID: [JZShift]]]],
-		sectionOffsetIndex: Int
+		state: CalendarSectionViewState<Subsection>
 	) {
-        print(selectedDate)
-		calendarView.updateWeekView(to: selectedDate)
-        sectionDataSource.update(
-            selectedDate,
-            locations,
-            subsections,
-            events.mapValues { $0.mapValues { $0.mapValues { $0.elements.map(JZAppointmentEvent.init(appointment:)) }}},
-            shifts,
-			viewStore.state.sectionOffsetIndex
-        )
+		calendarView.updateWeekView(to: state.selectedDate)
+		sectionDataSource = Self.makeSectionDataSource(state: state)
+		calendarView.sectionsDataSource = sectionDataSource
 		calendarView.layoutSubviews()
 		calendarView.forceReload()
 	}
-
+	
+	static func makeSectionDataSource(state: CalendarSectionViewState<Subsection>) ->
+	SectionWeekViewDataSource<JZAppointmentEvent, Location, Subsection, JZShift> {
+		let jzApps = state.appointments.appointments.mapValues { $0.mapValues { $0.mapValues { $0.elements.map(JZAppointmentEvent.init(appointment:)) }}}
+		return SectionWeekViewDataSource.init(state.selectedDate,
+											  state.chosenLocations(),
+											  state.chosenSubsections(),
+											  jzApps,
+											  state.shifts,
+											  state.sectionOffsetIndex)
+	}
+	
 	public override func loadView() {
 		view = setupCalendarView()
 	}
