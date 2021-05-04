@@ -4,7 +4,6 @@ import ComposableArchitecture
 import SwiftDate
 import Appointments
 
-
 public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
 	let reducer = Reducer<CalendarSectionViewState<Subsection>, SubsectionCalendarAction<Subsection>, CalendarEnvironment> { state, action, env in
 		switch action {
@@ -105,10 +104,12 @@ public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
                 break
             }
 		case .nextSection:
-			guard let sectionOffsetIndex = state.sectionOffsetIndex else { return .none }
+			guard let sectionOffsetIndex = state.sectionOffsetIndex,
+				  sectionOffsetIndex < state.chosenSubsections().flatMap(\.value).count - 1 else { return .none }
 			state.sectionOffsetIndex! = sectionOffsetIndex + 1
 		case .previousSection:
-			guard let sectionOffsetIndex = state.sectionOffsetIndex else { return .none  }
+			guard let sectionOffsetIndex = state.sectionOffsetIndex,
+				  sectionOffsetIndex > 0 else { return .none }
 			state.sectionOffsetIndex! = sectionOffsetIndex - 1
 		case .viewDidLayoutSubviews(let sectionWidth):
 			state.sectionWidth = sectionWidth

@@ -13,6 +13,22 @@ import Appointments
 
 public typealias CalendarEnvironment = (journeyAPI: JourneyAPI, clientsAPI: ClientsAPI, userDefaults: UserDefaultsConfig)
 
+struct CalendarSectionOffsetReducer<Section: Identifiable & Equatable & Named> {
+	public let reducer: Reducer<CalendarSectionViewState<Section>, FiltersAction<Section>, CalendarEnvironment> = .init { state, action, _ in
+		
+		switch action {
+		case .rows(id: let locId, action: .header(.expand(let expand))):
+			guard let sectionWidth = state.sectionWidth else { break }
+		case .rows(id: let locId, action: .rows(let sectionId, action: .toggle)):
+			break
+		default:
+			break
+		}
+		
+		return .none
+	}
+}
+
 public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAction, CalendarEnvironment> = .combine(
 	calTypePickerReducer.pullback(
 		state: \.calTypePicker,
