@@ -23,6 +23,7 @@ public class SectionCalendarViewController<Subsection: Identifiable & Equatable>
 		calendarView.setupCalendar(setDate: viewStore.state.selectedDate)
 		self.reload(state: viewStore.state)
 		calendarView.forceReload()
+		
 		viewStore.publisher.removeDuplicates()
 			.receive(on: DispatchQueue.main)
 			.eraseToAnyPublisher()
@@ -30,6 +31,20 @@ public class SectionCalendarViewController<Subsection: Identifiable & Equatable>
 				guard let self = self else { return }
                 self.reload(state: $0)
 			}).store(in: &self.cancellables)
+		
+//		viewStore.publisher.sectionOffsetIndex.removeDuplicates()
+//			.receive(on: DispatchQueue.main)
+//			.eraseToAnyPublisher()
+//			.sink(receiveValue: { [weak self] in
+//				guard let self = self else { return }
+//				let pageWidth = self.viewStore.state.sectionWidth ?? 0
+//				let sizes = SectionCalendarSizes(totalNumberOfRowsOnPage: self.viewStore.state.chosenSubsections().flatMap(\.value).count, pageWidth: CGFloat(pageWidth))
+//
+//				let offset = CGFloat(Int($0 ?? 0)) * sizes.rowWidth
+//				var collViewOffset = self.calendarView.collectionView.contentOffset
+//				collViewOffset.x += offset
+//				self.calendarView.collectionView.setContentOffsetWithoutDelegate(collViewOffset, animated: true)
+//			}).store(in: &self.cancellables)
 	}
 
 	public override func viewDidLayoutSubviews() {
