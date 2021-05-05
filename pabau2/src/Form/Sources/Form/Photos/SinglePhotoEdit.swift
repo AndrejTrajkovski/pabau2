@@ -32,7 +32,6 @@ func draw(injectionSize: CGSize,
     child.view.backgroundColor = .clear
     
     contentView.drawHierarchy(in: contentView.frame, afterScreenUpdates: true)
-    
 }
 
 let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction, FormEnvironment> = .combine (

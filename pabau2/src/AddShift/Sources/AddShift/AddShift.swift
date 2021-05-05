@@ -48,8 +48,8 @@ public let addShiftOptReducer: Reducer<
                 shiftSheme: shiftSheme
             )
             .catchToEffect()
-            .map(AddShiftAction.shiftCreated)
             .receive(on: DispatchQueue.main)
+            .map(AddShiftAction.shiftCreated)
             .eraseToEffect()
         case .shiftCreated(let result):
             state?.showsLoadingSpinner = false
@@ -294,7 +294,7 @@ extension AddShiftState {
 		AddShiftState(
             shiftRotaID: nil,
             isPublished: true,
-            chooseEmployeesState: ChooseEmployeesState(isChooseEmployeesActive: false),
+			chooseEmployeesState: ChooseEmployeesState(chosenEmployee: nil),
             chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
             startDate: nil,
             startTime: nil,
@@ -306,7 +306,7 @@ extension AddShiftState {
         AddShiftState(
             shiftRotaID: shift.rotaID,
             isPublished: shift.published ?? false,
-            chooseEmployeesState: ChooseEmployeesState(isChooseEmployeesActive: false),
+			chooseEmployeesState: ChooseEmployeesState(chosenEmployee: nil),
             chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
             startDate: shift.date,
             startTime: shift.startTime,

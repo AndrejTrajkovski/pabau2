@@ -1,13 +1,14 @@
 import ComposableArchitecture
 
 public protocol ClientsAPI {
-	
+
 	func getClients(search: String?, offset: Int) -> Effect<[Client], RequestError>
 	func getItemsCount(clientId: Client.Id) -> Effect<ClientItemsCount, RequestError>
 	
 	func getServices() -> Effect<[Service], RequestError>
 	func createAppointment(appointment: AppointmentBuilder) -> Effect<PlaceholdeResponse, RequestError>
 	func updateAppointment(appointment: AppointmentBuilder) -> Effect<PlaceholdeResponse, RequestError>
+
 	func getAppointments(clientId: Client.Id) -> Effect<[CCAppointment], RequestError>
 	func getFinancials(clientId: Client.Id) -> Effect<[Financial], RequestError>
 	func getPhotos(clientId: Client.Id) -> Effect<[SavedPhoto], RequestError>

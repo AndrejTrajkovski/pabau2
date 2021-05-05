@@ -33,15 +33,9 @@ let checkInMiddleware = Reducer<JourneyState, CheckInContainerAction, JourneyEnv
 	default:
 		return .none
 	}
-	return .none
 }
 
 public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContainerAction, JourneyEnvironment> = .combine(
-	calendarDatePickerReducer.pullback(
-		state: \JourneyContainerState.journey.selectedDate,
-		action: /JourneyContainerAction.datePicker,
-		environment: { $0 }
-	),
 	journeyReducer.pullback(
 				 state: \JourneyContainerState.journey,
 				 action: /JourneyContainerAction.journey,
@@ -52,7 +46,7 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 				 action: /JourneyContainerAction.searchQueryChanged,
 				 environment: { $0 }
 	),
-	journeyFilterReducer.optional.pullback(
+	journeyFilterReducer.optional().pullback(
 		state: \JourneyContainerState.journeyEmployeesFilter,
 		action: /JourneyContainerAction.employeesFilter,
 		environment: {
@@ -64,10 +58,10 @@ public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContai
 	.init { state, action, env in
 		switch action {
 		case .toggleEmployees:
-			if state.journeyEmployeesFilter != nil {
-				state.journeyEmployeesFilter!.isShowingEmployees.toggle()
-			}
+			state.journey.isShowingEmployeesFilter = true
 		case .datePicker(.selectedDate(let date)):
+			state.selectedDate = date
+			
 			guard let locId = state.journeyEmployeesFilter?.locationId,
 				  let employees = state.employees[locId] else { return .none }
 			state.loadingState = .loading
@@ -267,8 +261,8 @@ public struct JourneyContainerView: View {
 		let navigationTitle: String
 		init(state: JourneyContainerState) {
 			self.isChoosePathwayShown = state.journey.choosePathway != nil
-			self.selectedDate = state.journey.selectedDate
-			self.listedAppointments = state.appointments.appointments[state.journey.selectedDate]?.elements ?? []
+			self.selectedDate = state.selectedDate
+			self.listedAppointments = state.appointments.appointments[state.selectedDate]?.elements ?? []
             self.searchQuery = state.journey.searchText
 			self.isLoadingJourneys = state.loadingState.isLoading
 			self.navigationTitle = state.journey.selectedLocation?.name ?? "No Location Chosen"
@@ -312,7 +306,7 @@ public struct JourneyContainerView: View {
 	var datePicker: some View {
 		CalendarDatePicker.init(
 			store: self.store.scope(
-				state: { $0.journey.selectedDate },
+				state: { $0.selectedDate },
 				action: { .datePicker($0)}),
 			isWeekView: false,
 			scope: .week

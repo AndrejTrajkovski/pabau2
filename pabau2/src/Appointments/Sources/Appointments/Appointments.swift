@@ -34,7 +34,7 @@ public enum Appointments: Equatable {
 	}
 	
 	public mutating func switchTo(type: ViewType,
-								  locationsIds: [Location.ID],
+								  locationsIds: Set<Location.ID>,
 								  employees: [Employee],
 								  rooms: [Room]
 	) {
@@ -67,7 +67,7 @@ public enum Appointments: Equatable {
 	
 	public init(type: ViewType,
 				events: [CalendarEvent],
-				locationsIds: [Location.ID],
+				locationsIds: Set<Location.ID>,
 				employees: [Employee],
 				rooms: [Room]
 	) {

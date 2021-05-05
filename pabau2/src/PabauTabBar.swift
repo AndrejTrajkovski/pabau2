@@ -38,14 +38,22 @@ public struct TabBarState: Equatable {
 	var calendar: CalendarState
 	var settings: SettingsState
     var communication: CommunicationState
-
+	var selectedDate: Date = DateFormatter.yearMonthDay.date(from: "2021-03-11")!
+	var chosenLocationsIds: Set<Location.Id>
+	var sectionOffsetIndex: Int?
+	var sectionWidth: Float?
+	
 	public var calendarContainer: CalendarContainerState? {
 		get {
 			guard case .calendar(let calApps) = appointments else { return nil }
             return CalendarContainerState(
                 addAppointment: addAppointment,
                 calendar: calendar,
-                appointments: calApps
+                appointments: calApps,
+				selectedDate: selectedDate,
+				chosenLocationsIds: chosenLocationsIds,
+				sectionOffsetIndex: sectionOffsetIndex,
+				sectionWidth: sectionWidth
             )
 		}
 		set {
@@ -53,6 +61,10 @@ public struct TabBarState: Equatable {
 			self.addAppointment = newValue.addAppointment
 			self.calendar = newValue.calendar
 			self.appointments = .calendar(newValue.appointments)
+			self.selectedDate = newValue.selectedDate
+			self.chosenLocationsIds = newValue.chosenLocationsIds
+			self.sectionOffsetIndex = newValue.sectionOffsetIndex
+			self.sectionWidth = newValue.sectionWidth
 		}
 	}
 
@@ -62,13 +74,15 @@ public struct TabBarState: Equatable {
 			return JourneyContainerState(journey: self.journey,
 										 employees: self.calendar.employees,
 										 appointments: journeyApps,
-										 loadingState: self.appsLoadingState)
+										 loadingState: self.appsLoadingState,
+										 selectedDate: self.selectedDate)
 		}
 		set {
 			guard let newValue = newValue else { return }
 			self.journey = newValue.journey
 			self.appointments = .journey(newValue.appointments)
 			self.appsLoadingState = newValue.loadingState
+			self.selectedDate = newValue.selectedDate
 		}
 	}
 }
@@ -82,26 +96,27 @@ public enum TabBarAction {
 	case addAppointment(AddAppointmentAction)
     case communication(CommunicationAction)
 	case gotLocationsResponse(Result<[Location], RequestError>)
+	case gotEmployeesResponse(Result<[Employee], RequestError>)
 }
 
 struct PabauTabBar: View {
 	let store: Store<TabBarState, TabBarAction>
-	@ObservedObject var viewStore: ViewStore<ViewState, TabBarAction>
-	struct ViewState: Equatable {
-		let isShowingCheckin: Bool
-		let isShowingAppointments: Bool
-		let selectedTab: TabItemId
-		init(state: TabBarState) {
-			self.isShowingCheckin = state.journeyContainer?.journey.checkIn != nil
-			self.isShowingAppointments = state.addAppointment != nil
-			self.selectedTab = state.selectedTab
-		}
-	}
+	@ObservedObject var viewStore: ViewStore<TabBarState, TabBarAction>
+//	struct ViewState: Equatable {
+//		let isShowingCheckin: Bool
+//		let isShowingAppointments: Bool
+//		let selectedTab: TabItemId
+//		init(state: TabBarState) {
+//			self.isShowingCheckin = state.journeyContainer?.journey.checkIn != nil
+//			self.isShowingAppointments = state.addAppointment != nil
+//			self.selectedTab = state.selectedTab
+//		}
+//	}
 	init (store: Store<TabBarState, TabBarAction>) {
 		self.store = store
-		self.viewStore = ViewStore(self.store
-			.scope(state: ViewState.init(state:),
-						 action: { $0 }))
+		self.viewStore = ViewStore(self.store)
+//			.scope(state: ViewState.init(state:),
+//						 action: { $0 }))
 	}
 
 	var body: some View {
@@ -113,13 +128,13 @@ struct PabauTabBar: View {
 			settings().tag(TabItemId.settings)
 			communication().tag(TabItemId.communication)
 		}
-		.modalLink(isPresented: .constant(self.viewStore.state.isShowingCheckin),
+		.modalLink(isPresented: .constant(self.viewStore.state.journeyContainer?.journey.checkIn != nil),
 				   linkType: ModalTransition.circleReveal,
 				   destination: {
 					checkIn()
 				   }
 		)
-		.fullScreenCover(isPresented: .constant(self.viewStore.state.isShowingAppointments)) {
+		.fullScreenCover(isPresented: .constant(self.viewStore.state.addAppointment != nil)) {
 			addAppointment()
 		}
 	}
@@ -210,7 +225,7 @@ public let tabBarReducer: Reducer<
 			switch tabItemId {
 			case .calendar:
 				state.appointments.switchTo(type: .calendar(.employee),
-											locationsIds: state.calendar.locations.map(\.id),
+											locationsIds: Set(state.calendar.locations.map(\.id)),
 											employees: state.calendar.employees.flatMap(\.value),
 											rooms: state.calendar.rooms.flatMap(\.value)
 				)
@@ -225,14 +240,11 @@ public let tabBarReducer: Reducer<
 				// MARK: - Iurii
 			case .success(let locations):
 				state.calendar.locations = IdentifiedArray(locations)
-//				state.calendar.chosenLocationsIds = locations.map(\.id)
-				print("chosenLocation: \(locations.map(\.id).first!)")
-				state.journey.selectedLocation = locations.first!
-				state.calendar.chosenLocationsIds = [locations.map(\.id).first!]
+				state.journey.selectedLocation = locations.first
 			case .failure(let error):
 				break
 			}
-		case .journey(.employeesFilter(.gotResponse(let employeesResponse))):
+		case .gotEmployeesResponse(let employeesResponse):
 			switch employeesResponse {
 			case .success(let employees):
 				// MARK: - Iurii
@@ -246,15 +258,7 @@ public let tabBarReducer: Reducer<
 										}
 									}
 								 })
-//				let locs = state.calendar.locations.map(\.id)
-//				state.calendar.employees = locs.reduce(into: [Location.ID: IdentifiedArrayOf<Employee>](),
-//													   {
-//														$0[$1] = []
-//													   })
-				
-				state.calendar.chosenEmployeesIds = state.calendar.employees.mapValues {
-					$0.map(\.id)
-				}
+
 			case .failure(let error):
 				break
 			}
@@ -337,7 +341,8 @@ extension TabBarState {
 		self.settings = SettingsState()
 		self.communication = CommunicationState()
 		self.appointments = .journey(JourneyAppointments.init(events: []))
-//		self.appointments = .employee(EventsBy<Employee>.init(events: [], locationsIds: [], subsections: [], sectionKeypath: \CalendarEvent.locationId, subsKeypath: \CalendarEvent.employeeId))
 		self.appsLoadingState = .initial
+		self.chosenLocationsIds = Set()
+		self.sectionOffsetIndex = 0
 	}
 }

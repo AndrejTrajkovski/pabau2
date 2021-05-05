@@ -19,4 +19,7 @@ public enum SubsectionCalendarAction<Subsection: Identifiable & Equatable> {
 					durationMins: Int,
 					dropKeys:(date: Date, location: Location.ID, subsection: Subsection.ID))
     case appointmentEdited(Result<PlaceholdeResponse, RequestError>)
+	case nextSection
+	case previousSection
+	case viewDidLayoutSubviews(sectionWidth: Float)
 }

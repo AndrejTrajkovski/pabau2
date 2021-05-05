@@ -11,7 +11,7 @@ public let filterSectionHeaderReducer: Reducer<FilterSectionHeaderState, FilterS
 		switch action {
 		case .expand(let value):
 			state.isExpanded = value
-		case .select:
+		case .select(.toggle):
 			break
 		}
 		return .none
@@ -43,10 +43,34 @@ struct FilterSectionHeader: View {
 					Spacer()
 					ExpandableButton(expanded: viewStore.binding(get: { $0.isExpanded },
 																 send: { .expand($0) }))
+					Checkbox(store: store.scope(state: { $0.isLocationChosen },
+												action: { .select($0) }))
 				}
 				Divider()
 			}
 		}.foregroundColor(.black)
 		.font(Font.semibold17)
+	}
+}
+
+struct Checkbox: View {
+	let store: Store<Bool, SelectableAction>
+	var body: some View {
+		WithViewStore(store) { viewStore in
+			Group {
+				if viewStore.state {
+					Image(systemName: "checkmark.square")
+//						.resizable()
+						.foregroundColor(.accentColor)
+				} else {
+					Image(systemName: "square")
+//						.resizable()
+						.foregroundColor(.checkBoxGray)
+				}
+			}
+			.onTapGesture {
+				viewStore.send(.toggle)
+			}
+		}
 	}
 }

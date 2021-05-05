@@ -37,8 +37,8 @@ public let addBookoutOptReducer: Reducer<
 
             return env.clientAPI.createAppointment(appointment: appointmentsBody)
                 .catchToEffect()
-                .map(AddBookoutAction.appointmentCreated)
                 .receive(on: DispatchQueue.main)
+                .map(AddBookoutAction.appointmentCreated)
                 .eraseToEffect()
         case .appointmentCreated(let result):
             state?.showsLoadingSpinner = false
@@ -369,7 +369,7 @@ extension AddBookoutState {
                     chosenItemId: nil
                 ),
             chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
-            chooseEmployeesState: ChooseEmployeesState(isChooseEmployeesActive: false),
+            chooseEmployeesState: ChooseEmployeesState(chosenEmployee: nil),
             startDate: start,
             time: nil,
             description: "",
@@ -395,7 +395,7 @@ extension AddBookoutState {
                     chosenItemId: nil
                 ),
             chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
-            chooseEmployeesState: ChooseEmployeesState(isChooseEmployeesActive: false),
+            chooseEmployeesState: ChooseEmployeesState(chosenEmployee: nil),
             startDate: bookout.start_date,
             time: nil,
             description: bookout._description ?? "",

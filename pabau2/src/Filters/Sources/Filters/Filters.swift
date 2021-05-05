@@ -13,13 +13,20 @@ public struct FiltersReducer<S: Identifiable & Equatable & Named> {
 			switch action {
 				case .onHeaderTap:
 					state.isShowingFilters.toggle()
-                case .rows:
-                    state.chosenLocationsIds = state.chosenSubsectionsIds.compactMap { key, value in
-                        if !value.isEmpty {
-                            return key
-                        }
-                        return nil
-                    }
+				case .rows(let locId, .rows(id: let id, action: .toggle)):
+					guard let chosenSubsectionIds = state.chosenSubsectionsIds[locId] else { break}
+					let isItemChosen = chosenSubsectionIds.contains(where: { $0 == id })
+					if isItemChosen && chosenSubsectionIds.count == 1 {
+						state.chosenLocationsIds.insert(locId)
+					} else if !isItemChosen && chosenSubsectionIds.isEmpty {
+						state.chosenLocationsIds.remove(locId)
+					}
+			case .rows(id: let id, action: .header(.expand(_))):
+				break
+			case .rows(id: let id, action: .rows):
+				break
+			case .rows(id: let id, action: .header(.select(_))):
+				break
 			}
 			return .none
 		}
@@ -30,10 +37,10 @@ public struct FiltersState<S: Identifiable & Equatable & Named>: Equatable {
 
     public init(
         locations: IdentifiedArrayOf<Location>,
-        chosenLocationsIds: [Location.ID],
+        chosenLocationsIds: Set<Location.ID>,
         subsections: [Location.ID: IdentifiedArrayOf<S>],
         chosenSubsectionsIds: [Location.ID: [S.ID]],
-        expandedLocationsIds: [Location.ID],
+        expandedLocationsIds: Set<Location.Id>,
         isShowingFilters: Bool
     ) {
         self.locations = locations
@@ -45,10 +52,10 @@ public struct FiltersState<S: Identifiable & Equatable & Named>: Equatable {
     }
 
 	public let locations: IdentifiedArrayOf<Location>
-	public var chosenLocationsIds: [Location.ID]
+	public var chosenLocationsIds: Set<Location.ID>
 	public let subsections: [Location.ID: IdentifiedArrayOf<S>]
 	public var chosenSubsectionsIds: [Location.ID: [S.ID]]
-	public var expandedLocationsIds: [Location.ID]
+	public var expandedLocationsIds: Set<Location.Id>
 	public var isShowingFilters: Bool
 
 	var rows: IdentifiedArrayOf<FilterSectionState<S>> {
@@ -68,20 +75,16 @@ public struct FiltersState<S: Identifiable & Equatable & Named>: Equatable {
 		set {
 			newValue.forEach { sectionState in
 				let locId = sectionState.location.id
-				if !sectionState.isLocationChosen && chosenLocationsIds.contains(locId) {
-					chosenLocationsIds.removeAll(where: { $0 == locId })
-				} else if sectionState.isLocationChosen && !chosenLocationsIds.contains(locId) {
-					chosenLocationsIds.append(locId)
+				if !sectionState.isLocationChosen {
+					chosenLocationsIds.remove(locId)
+				} else {
+					chosenLocationsIds.insert(locId)
 				}
-                var chosenValues = sectionState.chosenValues
-                if chosenValues.count == 7 {
-                    chosenValues.removeLast()
-                }
-				chosenSubsectionsIds[locId] = chosenValues
-				if !sectionState.isExpanded && expandedLocationsIds.contains(locId) {
-					expandedLocationsIds.removeAll(where: { $0 == locId })
-				} else if sectionState.isExpanded && !expandedLocationsIds.contains(locId) {
-					expandedLocationsIds.append(locId)
+				chosenSubsectionsIds[locId] = sectionState.chosenValues
+				if !sectionState.isExpanded {
+					expandedLocationsIds.remove(locId)
+				} else {
+					expandedLocationsIds.insert(locId)
 				}
 			}
 		}

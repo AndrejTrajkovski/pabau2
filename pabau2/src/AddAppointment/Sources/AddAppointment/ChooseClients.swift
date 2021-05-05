@@ -44,7 +44,7 @@ let chooseClientsReducer =
                 )
                 .catchToEffect()
                 .map(ChooseClientsAction.gotClientsResponse)
-                .receive(on: DispatchQueue.main)
+                
                 .eraseToEffect()
         case .gotClientsResponse(let result):
             switch result {
