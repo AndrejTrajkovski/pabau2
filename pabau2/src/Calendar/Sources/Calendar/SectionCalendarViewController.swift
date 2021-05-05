@@ -55,7 +55,9 @@ public class SectionCalendarViewController<Subsection: Identifiable & Equatable>
 											  state.chosenSubsections(),
 											  jzApps,
 											  state.shifts,
-											  state.sectionOffsetIndex)
+											  state.sectionOffsetIndex,
+											  CGFloat(state.sectionWidth ?? 0)
+											  )
 	}
 	
 	public override func loadView() {
