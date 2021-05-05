@@ -10,6 +10,7 @@ import Combine
 import AddShift
 import Filters
 import Appointments
+import JZCalendarWeekView
 
 public typealias CalendarEnvironment = (journeyAPI: JourneyAPI, clientsAPI: ClientsAPI, userDefaults: UserDefaultsConfig)
 
@@ -19,7 +20,23 @@ struct CalendarSectionOffsetReducer<Section: Identifiable & Equatable & Named> {
 		switch action {
 		case .rows(id: let locId, action: .header(.expand(let expand))):
 			guard let sectionWidth = state.sectionWidth else { break }
+			let sizes = SectionCalendarSizes(totalNumberOfRowsOnPage: state.chosenSubsections().count,
+											 pageWidth: CGFloat(sectionWidth))
+			if sizes.leftOutRowsOnPage > 0 {
+				state.sectionOffsetIndex = nil
+			} else {
+				state.sectionOffsetIndex = 0
+			}
+			break
 		case .rows(id: let locId, action: .rows(let sectionId, action: .toggle)):
+			guard let sectionWidth = state.sectionWidth else { break }
+			let sizes = SectionCalendarSizes(totalNumberOfRowsOnPage: state.chosenSubsections().count,
+											 pageWidth: CGFloat(sectionWidth))
+			if sizes.leftOutRowsOnPage > 0 {
+				state.sectionOffsetIndex = nil
+			} else {
+				state.sectionOffsetIndex = 0
+			}
 			break
 		default:
 			break

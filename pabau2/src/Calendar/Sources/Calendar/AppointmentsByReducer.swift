@@ -3,6 +3,8 @@ import Foundation
 import ComposableArchitecture
 import SwiftDate
 import Appointments
+import JZCalendarWeekView
+import CoreGraphics
 
 public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
 	let reducer = Reducer<CalendarSectionViewState<Subsection>, SubsectionCalendarAction<Subsection>, CalendarEnvironment> { state, action, env in
@@ -104,8 +106,14 @@ public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
                 break
             }
 		case .nextSection:
+			guard let sectionWidth = state.sectionWidth else { break }
+			print(sectionWidth)
+			let sizes = SectionCalendarSizes(totalNumberOfRowsOnPage: state.chosenSubsections().flatMap(\.value).count,
+											 pageWidth: CGFloat(sectionWidth))
+			print(sizes.leftOutRowsOnPage)
+			print(state.sectionOffsetIndex)
 			guard let sectionOffsetIndex = state.sectionOffsetIndex,
-				  sectionOffsetIndex < state.chosenSubsections().flatMap(\.value).count - 1 else { return .none }
+				  sectionOffsetIndex < sizes.leftOutRowsOnPage else { return .none }
 			state.sectionOffsetIndex! = sectionOffsetIndex + 1
 		case .previousSection:
 			guard let sectionOffsetIndex = state.sectionOffsetIndex,
