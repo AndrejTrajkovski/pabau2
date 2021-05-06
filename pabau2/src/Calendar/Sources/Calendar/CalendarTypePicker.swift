@@ -15,7 +15,6 @@ public enum CalendarTypePickerAction {
 public let calTypePickerReducer: Reducer<CalendarTypePickerState, CalendarTypePickerAction, CalendarEnvironment> = .init { state, action, _ in
 	switch action {
 	case .onSelect(let calTypeId):
-//		state.calendarType = calType
 		state.isDropdownShown = false
 	case .toggleDropdown:
 		state.isDropdownShown.toggle()

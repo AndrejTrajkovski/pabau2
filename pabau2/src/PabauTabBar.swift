@@ -239,6 +239,7 @@ public let tabBarReducer: Reducer<
 			switch locationsResponse {
 				// MARK: - Iurii
 			case .success(let locations):
+				print(locations)
 				state.calendar.locations = IdentifiedArray(locations)
 				state.journey.selectedLocation = locations.first
 			case .failure(let error):

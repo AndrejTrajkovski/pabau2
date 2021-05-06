@@ -15,6 +15,9 @@ import JZCalendarWeekView
 public typealias CalendarEnvironment = (journeyAPI: JourneyAPI, clientsAPI: ClientsAPI, userDefaults: UserDefaultsConfig)
 
 struct CalendarSectionOffsetReducer<Section: Identifiable & Equatable & Named> {
+	
+	init() {}
+	
 	public let reducer: Reducer<CalendarSectionViewState<Section>, FiltersAction<Section>, CalendarEnvironment> = .init { state, action, _ in
 		
 		switch action {
@@ -27,7 +30,6 @@ struct CalendarSectionOffsetReducer<Section: Identifiable & Equatable & Named> {
 			} else {
 				state.sectionOffsetIndex = 0
 			}
-			break
 		case .rows(id: let locId, action: .rows(let sectionId, action: .toggle)):
 			guard let sectionWidth = state.sectionWidth else { break }
 			let sizes = SectionCalendarSizes(totalNumberOfRowsOnPage: state.chosenSubsections().count,
@@ -37,7 +39,6 @@ struct CalendarSectionOffsetReducer<Section: Identifiable & Equatable & Named> {
 			} else {
 				state.sectionOffsetIndex = 0
 			}
-			break
 		default:
 			break
 		}
@@ -51,15 +52,15 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 		state: \.calTypePicker,
 		action: /CalendarAction.calTypePicker,
 		environment: { $0 }),
-	calendarWeekViewReducer.optional.pullback(
+	calendarWeekViewReducer.optional().pullback(
 		state: \CalendarContainerState.week,
 		action: /CalendarAction.week,
 		environment: { $0 }),
-	AppointmentsByReducer<Employee>().reducer.optional.pullback(
+	AppointmentsByReducer<Employee>().reducer.optional().pullback(
 		state: \CalendarContainerState.employeeSectionState,
 		action: /CalendarAction.employee,
 		environment: { $0 }),
-	AppointmentsByReducer<Room>().reducer.optional.pullback(
+	AppointmentsByReducer<Room>().reducer.optional().pullback(
 		state: \CalendarContainerState.roomSectionState,
 		action: /CalendarAction.room,
 		environment: { $0 }),
@@ -69,6 +70,14 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 		environment: { $0 }),
 	FiltersReducer<Room>().reducer.pullback(
 		state: \.roomFilters,
+		action: /CalendarAction.roomFilters,
+		environment: { $0 }),
+	CalendarSectionOffsetReducer<Employee>().reducer.optional().pullback(
+		state: \CalendarContainerState.employeeSectionState,
+		action: /CalendarAction.employeeFilters,
+		environment: { $0 }),
+	CalendarSectionOffsetReducer<Room>().reducer.optional().pullback(
+		state: \CalendarContainerState.roomSectionState,
 		action: /CalendarAction.roomFilters,
 		environment: { $0 }),
 	calendarReducer.pullback(
@@ -152,7 +161,7 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
             if state.appointments.calendarType == .week {
                 endDate = Calendar.current.date(byAdding: .day, value: 7, to: endDate) ?? endDate
             }
-            var employeesIds = state.selectedEmployeesIds().removingDuplicates()
+            let employeesIds = state.selectedEmployeesIds().removingDuplicates()
 			
 			return env.journeyAPI.getCalendar(
                 startDate: startDate,
