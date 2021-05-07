@@ -3,6 +3,7 @@ import Model
 import ComposableArchitecture
 import Util
 import SharedComponents
+import CoreDataModel
 
 let chooseBookoutReasonReducer = Reducer<
     ChooseBookoutReasonState,

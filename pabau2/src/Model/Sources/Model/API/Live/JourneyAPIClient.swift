@@ -126,14 +126,17 @@ extension APIClient {
             }
         }
         let requestBuilder: RequestBuilder<GetLocations>.Type = requestBuilderFactory.getBuilder()
-        return requestBuilder.init(method: .GET,
-                                   baseUrl: baseUrl,
-                                   path: .getLocations,
-                                   queryParams: commonParams()
+        let result = requestBuilder.init(
+            method: .GET,
+            baseUrl: baseUrl,
+            path: .getLocations,
+            queryParams: commonParams()
         )
         .effect()
         .map(\.locations)
         .eraseToEffect()
+        
+        return result
 	}
 	
 	public func createShift(shiftSheme: ShiftSchema) -> Effect<PlaceholdeResponse, RequestError> {

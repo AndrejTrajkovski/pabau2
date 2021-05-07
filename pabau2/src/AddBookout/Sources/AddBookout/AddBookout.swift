@@ -3,8 +3,9 @@ import ComposableArchitecture
 import Util
 import Model
 import SharedComponents
+import CoreDataModel
 
-public typealias AddBookoutEnvironment = (journeyAPI: JourneyAPI, clientAPI: ClientsAPI, userDefaults: UserDefaultsConfig, storage: CoreDataStorage)
+public typealias AddBookoutEnvironment = (journeyAPI: JourneyAPI, clientAPI: ClientsAPI, userDefaults: UserDefaultsConfig, storage: CoreDataModel)
 
 public let addBookoutOptReducer: Reducer<
     AddBookoutState?,

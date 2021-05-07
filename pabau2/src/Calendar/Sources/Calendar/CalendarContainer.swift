@@ -11,8 +11,9 @@ import AddShift
 import Filters
 import Appointments
 import JZCalendarWeekView
+import CoreDataModel
 
-public typealias CalendarEnvironment = (journeyAPI: JourneyAPI, clientsAPI: ClientsAPI, userDefaults: UserDefaultsConfig, storage: CoreDataStorage)
+public typealias CalendarEnvironment = (journeyAPI: JourneyAPI, clientsAPI: ClientsAPI, userDefaults: UserDefaultsConfig, storage: CoreDataModel)
 
 struct CalendarSectionOffsetReducer<Section: Identifiable & Equatable & Named> {
 	public let reducer: Reducer<CalendarSectionViewState<Section>, FiltersAction<Section>, CalendarEnvironment> = .init { state, action, _ in

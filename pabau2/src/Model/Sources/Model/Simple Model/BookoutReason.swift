@@ -2,7 +2,6 @@
 // BookoutReason.swift
 
 import Foundation
-import CoreStore
 import ComposableArchitecture
 import Tagged
 
@@ -37,33 +36,5 @@ public struct BookoutReason: Decodable, Identifiable, Equatable {
         case id = "id"
         case name = "room_name"
         case color = "block_color"
-    }
-}
-
-public class BookoutReasonScheme: CoreStoreObject {
-    @Field.Stored("id")
-    public var id: Int = 0
-    
-    @Field.Stored("name")
-    public var name: String = ""
-    
-    @Field.Stored("color")
-    public var color: String = ""
-}
-
-
-extension BookoutReason {
-    public func save(to store: CoreDataStorage)  {
-        store.dataStack.perform { (transaction) -> BookoutReasonScheme? in
-            let scheme = transaction.create(Into<BookoutReasonScheme>())
-            scheme.id = self.id
-            scheme.name = self.name ?? ""
-            scheme.color = self.color ?? ""
-            return scheme
-        } completion: { (result) in
-            #if DEBUG
-            print(result, "BookoutReasonScheme created")
-            #endif
-        }
     }
 }

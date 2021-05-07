@@ -8,6 +8,7 @@ import Clients
 import SwiftDate
 import Intercom
 import FacebookShare
+import CoreDataModel
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 

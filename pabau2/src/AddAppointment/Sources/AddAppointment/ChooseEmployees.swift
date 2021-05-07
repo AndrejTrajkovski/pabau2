@@ -3,6 +3,11 @@ import Model
 import ComposableArchitecture
 import Util
 import SharedComponents
+import CoreDataModel
+import Combine
+
+#warning("Temporary")
+var bag = Set<AnyCancellable>()
 
 let chooseEmployeesReducer =
     Reducer<ChooseEmployeesState, ChooseEmployeesAction, AddAppointmentEnv> { state, action, env in
@@ -25,6 +30,27 @@ let chooseEmployeesReducer =
         case .gotEmployeeResponse(let result):
             switch result {
             case .success(let employees):
+                
+                #warning("Example")
+                env.storage.fetchAllSchemes(EmployeeScheme.self).sink(
+                    receiveCompletion: { completion in
+                        switch completion {
+                        case .failure(let error):
+                            print(error)
+                        case .finished:
+                            print("Success")
+                        }
+                    },
+                    receiveValue: { savedEmployees in
+                        log(savedEmployees)
+                        if savedEmployees.isEmpty {
+                            employees.forEach {
+                                $0.save(to: env.storage)
+                            }
+                        }
+                    }
+                ).store(in: &bag)
+
                 state.employees = .init(employees)
                 state.filteredEmployees = state.employees
             case .failure:

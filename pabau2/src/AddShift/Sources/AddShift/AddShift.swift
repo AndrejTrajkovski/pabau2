@@ -3,6 +3,7 @@ import ComposableArchitecture
 import SharedComponents
 import Model
 import Util
+import CoreDataModel
 
 public let addShiftOptReducer: Reducer<
     AddShiftState?,
@@ -287,7 +288,7 @@ struct LocationAndDate: View {
 extension Employee: SingleChoiceElement { }
 extension Location: SingleChoiceElement { }
 
-public typealias AddShiftEnvironment = (apiClient: JourneyAPI, clientAPI: ClientsAPI, userDefaults: UserDefaultsConfig, storage: CoreDataStorage)
+public typealias AddShiftEnvironment = (apiClient: JourneyAPI, clientAPI: ClientsAPI, userDefaults: UserDefaultsConfig, storage: CoreDataModel)
 
 extension AddShiftState {
 	public static func makeEmpty() -> AddShiftState {

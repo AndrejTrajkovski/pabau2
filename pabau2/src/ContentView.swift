@@ -9,6 +9,7 @@ import Clients
 import Calendar
 import Communication
 import Overture
+import CoreDataModel
 
 typealias AppEnvironment = (
 	loginAPI: LoginAPI,
@@ -16,7 +17,7 @@ typealias AppEnvironment = (
 	clientsAPI: ClientsAPI,
 	formAPI: FormAPI,
 	userDefaults: UserDefaultsConfig,
-    storage: CoreDataStorage
+    storage: CoreDataModel
 )
 
 func makeJourneyEnv(_ appEnv: AppEnvironment) -> JourneyEnvironment {

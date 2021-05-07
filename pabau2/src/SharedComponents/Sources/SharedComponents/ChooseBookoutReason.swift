@@ -2,7 +2,7 @@ import SwiftUI
 import ComposableArchitecture
 import Util
 import Model
-import CoreStore
+import CoreDataModel
 
 public struct ChooseBookoutReasonState: Equatable {
     public var isChooseBookoutReasonActive: Bool
@@ -24,7 +24,7 @@ public struct ChooseBookoutReasonState: Equatable {
 public enum ChooseBookoutReasonAction: Equatable {
     case onAppear
     case gotReasonResponse(Result<[BookoutReason], RequestError>)
-    case gotStoredReasonResponse(Result<[BookoutReasonScheme], CoreStoreError>)
+    case gotStoredReasonResponse(Result<[BookoutReasonScheme], CoreDataModelError>)
     case didSelectReason(BookoutReason)
     case onSearch(String)
     case didTapBackBtn

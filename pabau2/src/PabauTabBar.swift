@@ -11,6 +11,7 @@ import AddAppointment
 import Communication
 import Intercom
 import Appointments
+import CoreDataModel
 
 public typealias TabBarEnvironment = (
 	loginAPI: LoginAPI,
@@ -18,7 +19,7 @@ public typealias TabBarEnvironment = (
 	clientsAPI: ClientsAPI,
 	formAPI: FormAPI,
 	userDefaults: UserDefaultsConfig,
-    storage: CoreDataStorage
+    storage: CoreDataModel
 )
 
 public enum TabItemId: String {
@@ -282,9 +283,12 @@ public let tabBarReducer: Reducer<
 		state: \TabBarState.addAppointment,
 		action: /TabBarAction.addAppointment,
 		environment: {
-			return AddAppointmentEnv(journeyAPI: $0.journeyAPI,
-									 clientAPI: $0.clientsAPI,
-									 userDefaults: $0.userDefaults)
+            return AddAppointmentEnv(
+                journeyAPI: $0.journeyAPI,
+                clientAPI: $0.clientsAPI,
+                userDefaults: $0.userDefaults,
+                storage: $0.storage
+            )
 		}
 	),
 	settingsReducer.pullback(
