@@ -29,14 +29,32 @@ public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnv
 				state.isCameraActive = true
 			case .openPhotoAlbum:
 				state.isPhotosAlbumActive = true
-            case .editPhotoList, .rightSide, .cameraOverlay, .singlePhotoEdit, .chooseInjectables, .goBack:
+            case .editPhotoList, .rightSide, .cameraOverlay, .chooseInjectables:
 				break
             case .save:
                 break
+            case .singlePhotoEdit(.saveDrawings):
+                state.isUploadingImage = true
+            case .goBack:
+                break
+            case .showAlert:
+                state.uploadAlert = AlertState(title: TextState(Texts.uploadAlertTitle),
+                                               message: TextState(Texts.uploadAlertMessage),
+                                               primaryButton: .destructive(TextState("Yes"), send: .abortUpload),
+                                               secondaryButton: .default(TextState("No"), send: .continueUpload))
+            case .abortUpload:
+                return .merge(
+                    Effect(value: EditPhotoAction.goBack),
+                    Effect(value: EditPhotoAction.singlePhotoEdit(.cancelUpload))
+                )
+            case .continueUpload:
+                state.uploadAlert = nil
+            default:
+                break
 			}
 			return .none
-		}
-)
+        }
+    ).debug()
 
 public enum EditPhotoAction: Equatable {
 	case openCamera
@@ -48,6 +66,9 @@ public enum EditPhotoAction: Equatable {
 	case chooseInjectables(ChooseInjectableAction)
     case goBack
     case save
+    case showAlert
+    case abortUpload
+    case continueUpload
 }
 
 public struct EditPhotosState: Equatable {
@@ -65,10 +86,10 @@ public struct EditPhotosState: Equatable {
 	var isChooseInjectablesActive: Bool = false
 	var chosenInjectableId: InjectableId?
 	var deletePhotoAlert: AlertState<EditPhotosRightSideAction>?
-
+    var isUploadingImage: Bool = false
+    var uploadAlert: AlertState<EditPhotoAction>?
 	private var showingImagePicker: UIImagePickerController.SourceType?
     
-    var isSavedPhoto: Bool = false
     var editedPhoto: UIImage = UIImage()
     var imageInjectable: UIImage = UIImage()
     var photoSize: CGSize = .zero
@@ -110,6 +131,7 @@ public struct EditPhotos: View {
 		let editingPhotoId: PhotoVariantId?
 		let isDrawingDisabled: Bool
         let editedPhoto: UIImage
+        var isUploadingImage: Bool = false
 		init (state: EditPhotosState) {
 			self.isCameraActive = state.isCameraActive
 			self.isChooseInjectablesActive = state.isChooseInjectablesActive
@@ -117,6 +139,7 @@ public struct EditPhotos: View {
 			self.isDrawingDisabled = state.activeCanvas != .drawing
 			self.isPhotosAlbumActive = state.isPhotosAlbumActive
             self.editedPhoto = state.editedPhoto
+            self.isUploadingImage = state.isUploadingImage
 		}
 	}
 
@@ -159,38 +182,37 @@ public struct EditPhotos: View {
 					}
 				}
 				.frame(height: 128)
-//				.padding()
-			}
-                .navigationBarItems(
-                    leading: MyBackButton( text: Texts.back,
-                                           action: { viewStore.send(.goBack)} ),
-                    trailing: Button( action: { viewStore.send(.singlePhotoEdit(.saveDrawings)) },
-                                      label: { Text(Texts.save) })
-                )
-                .navigationBarBackButtonHidden(true)
-
-				.modalLink(isPresented: .constant(viewStore.state.isPhotosAlbumActive),
-									 linkType: ModalTransition.fullScreenModal,
-									 destination: {
-										IfLetStore(self.store.scope(
-											state: { $0.cameraOverlay },
-											action: { .cameraOverlay($0) }),
-															 then: PhotoLibraryPicker.init(store:)
-										)
-											.navigationBarHidden(true)
-											.navigationBarTitle("")
-				})
-				.modalLink(isPresented: .constant(viewStore.state.isCameraActive),
-								 linkType: ModalTransition.fullScreenModal,
-								 destination: {
-									IfLetStore(self.store.scope(
-										state: { $0.cameraOverlay },
-										action: { .cameraOverlay($0) }),
-														 then: ImagePicker.init(store:)
-									).navigationBarHidden(true)
-										.navigationBarTitle("")
-			})
-		}.debug("Edit Photos")
+            }
+            .alert(store.scope(state: { $0.uploadAlert }), dismiss: EditPhotoAction.continueUpload)
+            .navigationBarItems(
+                leading: MyBackButton(text: Texts.back,
+                                      action: { viewStore.isUploadingImage ? viewStore.send(.showAlert) : viewStore.send(.goBack) }),
+                trailing: Button( action: { viewStore.send(.singlePhotoEdit(.saveDrawings)) },
+                                  label: { Text(Texts.save) })
+            )
+            .navigationBarBackButtonHidden(true)
+            .modalLink(isPresented: .constant(viewStore.state.isPhotosAlbumActive),
+                       linkType: ModalTransition.fullScreenModal,
+                       destination: {
+                        IfLetStore(self.store.scope(
+                                    state: { $0.cameraOverlay },
+                                    action: { .cameraOverlay($0) }),
+                                   then: PhotoLibraryPicker.init(store:)
+                        )
+                        .navigationBarHidden(true)
+                        .navigationBarTitle("")
+                       })
+            .modalLink(isPresented: .constant(viewStore.state.isCameraActive),
+                       linkType: ModalTransition.fullScreenModal,
+                       destination: {
+                        IfLetStore(self.store.scope(
+                                    state: { $0.cameraOverlay },
+                                    action: { .cameraOverlay($0) }),
+                                   then: ImagePicker.init(store:)
+                        ).navigationBarHidden(true)
+                        .navigationBarTitle("")
+                       })
+        }.debug("Edit Photos")
 	}
 }
 
@@ -265,7 +287,8 @@ extension EditPhotosState {
 				chosenInjectatbleId: self.chosenInjectableId,
                 imageInjectable: self.imageInjectable,
                 photoSize: self.photoSize,
-                editingPhotoId: self.editingPhotoId
+                editingPhotoId: self.editingPhotoId,
+                loadingState: self.loadingState
 			)
 		}
 		set {
@@ -278,6 +301,7 @@ extension EditPhotosState {
             self.imageInjectable = newValue.imageInjectable
             self.photoSize = newValue.photoSize
             self.editingPhotoId = newValue.editingPhotoId
+            self.loadingState = newValue.loadingState
 		}
 	}
 

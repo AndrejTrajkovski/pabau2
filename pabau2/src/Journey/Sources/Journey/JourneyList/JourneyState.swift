@@ -8,7 +8,6 @@ import Filters
 
 public struct JourneyState: Equatable {
 	public init() {}
-	public var selectedDate: Date = DateFormatter.yearMonthDay.date(from: "2021-03-11")!
 	public var selectedFilter: CompleteFilter = .all
 	public var selectedLocation: Location?
 	public var employeesLoadingState: LoadingState = .initial

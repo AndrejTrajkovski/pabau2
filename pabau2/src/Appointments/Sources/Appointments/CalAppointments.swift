@@ -53,7 +53,7 @@ public enum CalAppointments: Equatable {
 public extension CalAppointments {
 	
 	mutating func refresh(events: [CalendarEvent],
-						  locationsIds: [Location.ID],
+						  locationsIds: Set<Location.ID>,
 						  employees: [Employee],
 						  rooms: [Room]) {
 		self = .init(calType: self.calendarType,
@@ -65,7 +65,7 @@ public extension CalAppointments {
 
 	init(calType: CalendarType,
 		 events: [CalendarEvent],
-		 locationsIds: [Location.ID],
+		 locationsIds: Set<Location.ID>,
 		 employees: [Employee],
 		 rooms: [Room]
 	) {

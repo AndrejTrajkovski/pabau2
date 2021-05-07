@@ -7,7 +7,7 @@ extension APIClient {
     public func getCalendar(
         startDate: Date,
         endDate: Date,
-        locationIds: [Location.ID],
+        locationIds: Set<Location.ID>,
         employeesIds: [Employee.ID],
         roomIds: [Room.ID]
     ) -> Effect<CalendarResponse, RequestError> {

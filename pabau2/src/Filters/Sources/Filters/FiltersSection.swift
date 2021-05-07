@@ -4,7 +4,7 @@ import Model
 
 public struct FilterSectionReducer<S: Identifiable & Equatable & Named> {
 	let reducer: Reducer<FilterSectionState<S>, FilterSectionAction<S>, Any> = Reducer.combine(
-		SelectFilterReducer<S>().reducer.forEach(
+		SelectableRowReducer<S>().reducer.forEach(
 			state: \.rows,
 			action: /FilterSectionAction<S>.rows,
 			environment: { $0}
@@ -39,14 +39,19 @@ struct FilterSectionState<S: Identifiable & Equatable & Named>: Equatable, Ident
 			self.isExpanded = newValue.isExpanded
 		}
 	}
-
-	var rows: IdentifiedArrayOf<SelectableState<S>> {
+	
+	var rows: IdentifiedArrayOf<SelectableRowState<S>> {
 		get {
-			let res = values.map { SelectableState(item: $0, isSelected: chosenValues.contains($0.id)) }
+			let res: [SelectableRowState<S>] = values.map {
+				let sls = SelectableState(item: $0, isSelected: chosenValues.contains($0.id))
+				return SelectableRowState(selectableState: sls,
+										  isLocationChosen: isLocationChosen)
+				
+			}
 			return IdentifiedArray.init(res)
 		}
 		set {
-			self.chosenValues = newValue.filter(\.isSelected).map(\.id)
+			self.chosenValues = newValue.filter(\.selectableState.isSelected).map(\.id)
 		}
 	}
 }

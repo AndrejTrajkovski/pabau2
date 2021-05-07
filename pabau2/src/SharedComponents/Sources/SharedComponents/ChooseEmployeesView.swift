@@ -4,7 +4,7 @@ import Util
 import Model
 
 public struct ChooseEmployeesState: Equatable {
-    public var isChooseEmployeesActive: Bool
+    public var isChooseEmployeesActive: Bool = false
     public var employees: IdentifiedArrayOf<Employee> = []
     public var filteredEmployees: IdentifiedArrayOf<Employee> = []
     public var chosenEmployee: Employee?
@@ -15,8 +15,8 @@ public struct ChooseEmployeesState: Equatable {
     }
     public var isSearching = false
 
-    public init(isChooseEmployeesActive: Bool) {
-        self.isChooseEmployeesActive = isChooseEmployeesActive
+    public init(chosenEmployee: Employee?) {
+		self.chosenEmployee = chosenEmployee
     }
 }
 

@@ -101,7 +101,7 @@ public let epaperReducer = Reducer<EpaperState, EpaperAction, EpaperEnvironment>
         action: /EpaperAction.canvasAction(index:action:),
         environment: { _ in CanvasEnvironment() }
     )
-).debug()
+)
 
 public struct EPaperView: View {
 

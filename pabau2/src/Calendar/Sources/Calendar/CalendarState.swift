@@ -13,31 +13,43 @@ import FSCalendar
 import Appointments
 
 public struct CalendarContainerState: Equatable {
-	public init(addAppointment: AddAppointmentState?, calendar: CalendarState, appointments: CalAppointments) {
+	public init(addAppointment: AddAppointmentState?,
+				calendar: CalendarState,
+				appointments: CalAppointments,
+				selectedDate: Date,
+				chosenLocationsIds: Set<Location.Id>,
+				sectionOffsetIndex: Int?,
+				sectionWidth: Float?) {
 		self.addAppointment = addAppointment
 		self.calendar = calendar
 		self.appointments = appointments
+		self.selectedDate = selectedDate
+		self.chosenLocationsIds = chosenLocationsIds
+		self.sectionOffsetIndex = sectionOffsetIndex
+		self.sectionWidth = sectionWidth
 	}
 
 	public var addAppointment: AddAppointmentState?
 	public var calendar: CalendarState
 	public var appointments: CalAppointments
+	public var selectedDate: Date
+	public var chosenLocationsIds: Set<Location.Id>
+	public var sectionOffsetIndex: Int?
+	public var sectionWidth: Float?
 }
 
 public struct CalendarState: Equatable {
 	var isDropdownShown: Bool
-	var selectedDate: Date
 	var shifts: [Date: [Location.ID: [Employee.ID: [JZShift]]]]
 	public var locations: IdentifiedArrayOf<Location>
 	public var employees: [Location.Id: IdentifiedArrayOf<Employee>]
 	public var rooms: [Location.Id: IdentifiedArrayOf<Room>]
-	public var chosenLocationsIds: [Location.Id]
 	public var chosenEmployeesIds: [Location.Id: [Employee.Id]]
 	var chosenRoomsIds: [Location.Id: [Room.Id]]
 
 	var scope: FSCalendarScope = .week
 	var isShowingFilters: Bool
-	var expandedLocationsIds: [Location.Id]
+	var expandedLocationsIds: Set<Location.Id>
 	public var appDetails: AppDetailsState?
 	public var addBookoutState: AddBookoutState?
 	public var addShift: AddShiftState?
@@ -69,28 +81,32 @@ extension CalendarContainerState {
                 return nil
             }
 			return CalendarSectionViewState<Employee>(
-				selectedDate: calendar.selectedDate,
+				selectedDate: selectedDate,
 				appointments: groupAppointments,
 				appDetails: calendar.appDetails,
 				addBookout: calendar.addBookoutState,
 				locations: calendar.locations,
-				chosenLocationsIds: calendar.chosenLocationsIds,
+				chosenLocationsIds: chosenLocationsIds,
 				subsections: calendar.employees,
 				chosenSubsectionsIds: calendar.chosenEmployeesIds,
-				shifts: calendar.shifts
+				shifts: calendar.shifts,
+				sectionOffsetIndex: sectionOffsetIndex,
+				sectionWidth: sectionWidth
 			)
 		}
 		set {
 			newValue.map {
-				self.calendar.selectedDate = $0.selectedDate
+				self.selectedDate = $0.selectedDate
 				self.appointments = CalAppointments.employee($0.appointments)
 				self.calendar.appDetails = $0.appDetails
 				self.calendar.addBookoutState = $0.addBookout
 				self.calendar.locations = $0.locations
-				self.calendar.chosenLocationsIds = $0.chosenLocationsIds
+				self.chosenLocationsIds = $0.chosenLocationsIds
 				self.calendar.employees = $0.subsections
 				self.calendar.chosenEmployeesIds = $0.chosenSubsectionsIds
 				self.calendar.shifts = $0.shifts
+				self.sectionOffsetIndex = $0.sectionOffsetIndex
+				self.sectionWidth = $0.sectionWidth
 			}
 		}
 	}
@@ -99,27 +115,31 @@ extension CalendarContainerState {
 		get {
 			guard let groupAppointments = extract(case: CalAppointments.room, from: self.appointments) else { return nil }
 			return CalendarSectionViewState<Room>(
-				selectedDate: calendar.selectedDate,
+				selectedDate: selectedDate,
 				appointments: groupAppointments,
 				appDetails: calendar.appDetails,
 				addBookout: calendar.addBookoutState,
 				locations: calendar.locations,
-				chosenLocationsIds: calendar.chosenLocationsIds,
+				chosenLocationsIds: chosenLocationsIds,
 				subsections: calendar.rooms,
 				chosenSubsectionsIds: calendar.chosenRoomsIds,
-				shifts: [:]
+				shifts: [:],
+				sectionOffsetIndex: sectionOffsetIndex,
+				sectionWidth: sectionWidth
 			)
 		}
 		set {
 			newValue.map {
-				self.calendar.selectedDate = $0.selectedDate
+				self.selectedDate = $0.selectedDate
 				self.appointments = CalAppointments.room($0.appointments)
 				self.calendar.appDetails = $0.appDetails
 				self.calendar.addBookoutState = $0.addBookout
 				self.calendar.locations = $0.locations
-				self.calendar.chosenLocationsIds = $0.chosenLocationsIds
+				self.chosenLocationsIds = $0.chosenLocationsIds
 				self.calendar.rooms = $0.subsections
 				self.calendar.chosenRoomsIds = $0.chosenSubsectionsIds
+				self.sectionOffsetIndex = $0.sectionOffsetIndex
+				self.sectionWidth = $0.sectionWidth
 			}
 		}
 	}
@@ -129,14 +149,14 @@ extension CalendarContainerState {
 			guard let apps = extract(case: CalAppointments.week, from: self.appointments) else { return nil }
 			return CalendarWeekViewState(
 				appointments: apps,
-				selectedDate: calendar.selectedDate,
+				selectedDate: selectedDate,
 				addBookout: calendar.addBookoutState,
 				appDetails: calendar.appDetails
 			)
 		}
 		set {
 			newValue.map {
-				self.calendar.selectedDate = $0.selectedDate
+				self.selectedDate = $0.selectedDate
 				self.appointments = CalAppointments.week($0.appointments)
 				self.calendar.addBookoutState = $0.addBookout
 				self.calendar.appDetails = $0.appDetails
@@ -148,7 +168,7 @@ extension CalendarContainerState {
 		get {
 			FiltersState(
 				locations: self.calendar.locations,
-				chosenLocationsIds: self.calendar.chosenLocationsIds,
+				chosenLocationsIds: self.chosenLocationsIds,
 				subsections: self.calendar.rooms,
 				chosenSubsectionsIds: self.calendar.chosenRoomsIds,
 				expandedLocationsIds: self.calendar.expandedLocationsIds,
@@ -157,7 +177,7 @@ extension CalendarContainerState {
 		}
 		set {
 			self.calendar.locations = newValue.locations
-			self.calendar.chosenLocationsIds = newValue.chosenLocationsIds
+			self.chosenLocationsIds = newValue.chosenLocationsIds
 			self.calendar.rooms = newValue.subsections
 			self.calendar.chosenRoomsIds = newValue.chosenSubsectionsIds
 			self.calendar.expandedLocationsIds = newValue.expandedLocationsIds
@@ -169,7 +189,7 @@ extension CalendarContainerState {
 		get {
 			FiltersState(
 				locations: self.calendar.locations,
-				chosenLocationsIds: self.calendar.chosenLocationsIds,
+				chosenLocationsIds: self.chosenLocationsIds,
 				subsections: self.calendar.employees,
 				chosenSubsectionsIds: self.calendar.chosenEmployeesIds,
 				expandedLocationsIds: self.calendar.expandedLocationsIds,
@@ -177,7 +197,7 @@ extension CalendarContainerState {
 		}
 		set {
 			self.calendar.locations = newValue.locations
-			self.calendar.chosenLocationsIds = newValue.chosenLocationsIds
+			self.chosenLocationsIds = newValue.chosenLocationsIds
 			self.calendar.employees = newValue.subsections
 			self.calendar.chosenEmployeesIds = newValue.chosenSubsectionsIds
 			self.calendar.expandedLocationsIds = newValue.expandedLocationsIds
@@ -189,7 +209,6 @@ extension CalendarContainerState {
 extension CalendarState {
 	public init() {
 		self.isDropdownShown = false
-		self.selectedDate = Calendar.gregorian.startOfDay(for: Date())
 		shifts = [:]
    
 		// MARK: - Iurii
@@ -225,27 +244,27 @@ extension CalendarState {
 		self.locations = []
 		self.employees = [:]
 		self.rooms = [:]
-		chosenLocationsIds = []
 		chosenEmployeesIds = [:]
 		chosenRoomsIds = [:]
 		isShowingFilters = false
 		expandedLocationsIds = []
 	}
-
-	func selectedEmployeesIds() -> [Employee.Id] {
-		chosenLocationsIds.compactMap {
-			chosenEmployeesIds[$0]
-		}.flatMap { $0 }
-	}
 }
 
 extension CalendarContainerState {
+	
+	func selectedEmployeesIds() -> [Employee.Id] {
+		chosenLocationsIds.compactMap {
+			calendar.chosenEmployeesIds[$0]
+		}.flatMap { $0 }
+	}
+	
 	mutating func switchTo(calType: CalAppointments.CalendarType) {
         print(appointments.flatten())
 		self.appointments = CalAppointments(
             calType: calType,
             events: appointments.flatten(),
-            locationsIds: calendar.locations.map(\.id),
+            locationsIds: Set(calendar.locations.map(\.id)),
             employees: calendar.employees.flatMap(\.value),
             rooms: calendar.rooms.flatMap(\.value)
         )

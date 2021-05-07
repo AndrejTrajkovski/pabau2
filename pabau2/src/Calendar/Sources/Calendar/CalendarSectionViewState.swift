@@ -11,10 +11,12 @@ struct CalendarSectionViewState<Subsection: Identifiable & Equatable>: Equatable
 	var appDetails: AppDetailsState?
 	var addBookout: AddBookoutState?
 	let locations: IdentifiedArrayOf<Location>
-	let chosenLocationsIds: [Location.ID]
+	let chosenLocationsIds: Set<Location.ID>
 	let subsections: [Location.ID: IdentifiedArrayOf<Subsection>]
 	let chosenSubsectionsIds: [Location.ID: [Subsection.ID]]
 	let shifts: [Date: [Location.ID: [Subsection.ID: [JZShift]]]]
+	var sectionOffsetIndex: Int?
+	var sectionWidth: Float?
 }
 
 public extension Dictionary {
@@ -28,7 +30,7 @@ public extension Dictionary {
 //			result[chosenLocId] = locSubs
 //		}
 //	}
-
+	
 	func mapValuesFrom<T: Identifiable>(dict: Dictionary<Key, IdentifiedArrayOf<T>>) -> [Key: [T]] where Self.Value == Array<T.ID> {
 		return self.reduce(into: [Key: [T]]()) { (result, arg1) in
 			let (locationId, subsIds) = arg1
@@ -40,6 +42,12 @@ public extension Dictionary {
 
 extension CalendarSectionViewState {
 
+	public func chosenSubsections() -> [Location.ID: [Subsection]] {
+		return chosenSubsectionsIds
+			.filter { chosenLocationsIds.contains($0.key) }
+			.mapValuesFrom(dict: subsections)
+	}
+	
 	public func chosenLocations() -> [Location] {
         print(chosenLocationsIds)
         if chosenLocationsIds.isEmpty {
