@@ -4,12 +4,12 @@ import Model
 import ComposableArchitecture
 import SwiftDate
 
-public class SectionCalendarView<E: JZBaseEvent, Subsection: Identifiable & Equatable>: SectionWeekView<E, Location, Subsection, JZShift> {
-
+public class SectionCalendarView<Subsection: Identifiable & Equatable>: SectionWeekView<JZAppointmentEvent, Location, Subsection, JZShift> {
+	
 	let cellId = "CalendarCell"
 	let columnHeaderId = "ColumnHeader"
 	let columnBackground = "ColumnBackground"
-
+	
 	public override func registerViewClasses() {
 		super.registerViewClasses()
 		collectionView.register(
@@ -26,6 +26,15 @@ public class SectionCalendarView<E: JZBaseEvent, Subsection: Identifiable & Equa
             forSupplementaryViewOfKind: JZSupplementaryViewKinds.columnBackground,
             withReuseIdentifier: columnBackground
         )
+	}
+	
+	func reload(state: CalendarSectionViewState<Subsection>) {
+		self.sectionsDataSource = Self.makeSectionDataSource(state: state)
+		updateWeekView(to: state.selectedDate)
+		layoutSubviews()
+		updateAllDayBar(isScrolling: false)
+		sectionsFlowLayout.invalidateLayoutCache()
+		collectionView.reloadData()
 	}
 
 	public override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -65,5 +74,18 @@ public class SectionCalendarView<E: JZBaseEvent, Subsection: Identifiable & Equa
 
 	@objc override public func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, backgroundTimesAtSection section: Int) -> [JZBackgroundTime] {
 		return sectionsDataSource!.backgroundTimes(section: section)
+	}
+	
+	static func makeSectionDataSource(state: CalendarSectionViewState<Subsection>) ->
+	SectionWeekViewDataSource<JZAppointmentEvent, Location, Subsection, JZShift> {
+		let jzApps = state.appointments.appointments.mapValues { $0.mapValues { $0.mapValues { $0.elements.map(JZAppointmentEvent.init(appointment:)) }}}
+		print("appointments: \(jzApps)")
+		return SectionWeekViewDataSource.init(state.selectedDate,
+											  state.chosenLocations(),
+											  state.chosenSubsections(),
+											  jzApps[state.selectedDate] ?? [:],
+											  state.shifts[state.selectedDate] ?? [:],
+											  CGFloat(state.sectionWidth ?? 0)
+		)
 	}
 }
