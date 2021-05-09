@@ -13,7 +13,7 @@ let chooseBookoutReasonReducer = Reducer<
     switch action {
     case .onAppear:
         state.searchText = ""
-        
+		
         return env.storage.fetchAllSchemes(BookoutReasonScheme.self)
             .catchToEffect()
             .receive(on: DispatchQueue.main)

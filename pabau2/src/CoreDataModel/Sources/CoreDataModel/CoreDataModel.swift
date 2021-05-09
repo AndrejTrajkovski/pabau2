@@ -1,6 +1,7 @@
 import Util
 import ComposableArchitecture
 import CoreStore
+import Combine
 // https://github.com/JohnEstropia/CoreStore
 
 public protocol CoreDataModel {
@@ -107,6 +108,50 @@ public class PabauStorage: CoreDataModel {
             )
         }
     }
+	
+	public func fetchCount<T: DynamicObject>(_ type: T.Type) -> Effect<(Int), Error> {
+		Effect<(Int), Error>.future { [weak self] callback in
+			guard let self = self else {
+				return
+			}
+			do {
+				let count = try self.dataStack.fetchCount(From(type))
+				callback(.success(count))
+			} catch {
+				callback(.failure(error))
+			}
+		}
+	}
+	
+	public func fetchAllIfCount<T: DynamicObject>(_ type: T.Type) -> Effect<[T]?, Error> {
+		return fetchCount(type).upstream.flatMap { count -> AnyPublisher<[T]?, Error> in
+			if count > 0 {
+				return self.fetchAllSchemes(type)
+					.upstream
+					.map { Optional.some($0) }
+					.mapError { $0 as Error }
+					.eraseToAnyPublisher()
+			} else {
+				return Just<[T]?>(nil)
+					.setFailureType(to: Error.self)
+					.eraseToAnyPublisher()
+			}
+		}.eraseToEffect()
+	}
+	
+	public func fetchFromDB<T: DynamicObject>(_ type: T.Type,
+											  or API: Effect<[T], Error>) -> Effect<[T], Error> {
+		return fetchAllIfCount(type).upstream.flatMap { fetchResult -> AnyPublisher<[T], Error> in
+			switch fetchResult {
+			case .none:
+				return API.upstream
+			case .some(let result):
+				return Just(result)
+					.setFailureType(to: Error.self)
+					.eraseToAnyPublisher()
+			}
+		}.eraseToEffect()
+	}
 }
 
 public enum CoreDataModelError: Error, Equatable, CustomStringConvertible {
