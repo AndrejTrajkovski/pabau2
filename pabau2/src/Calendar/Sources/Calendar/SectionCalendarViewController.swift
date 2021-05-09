@@ -30,10 +30,10 @@ public class SectionCalendarViewController<Subsection: Identifiable & Equatable>
 			}).store(in: &self.cancellables)
 	}
 
-	public override func viewDidAppear(_ animated: Bool) {
-		super.viewDidAppear(animated)
-		viewStore.send(.viewDidAppear(sectionWidth: Float(calendarView.getSectionWidth())))
-	}
+//	public override func viewDidAppear(_ animated: Bool) {
+//		super.viewDidAppear(animated)
+//		viewStore.send(.viewDidAppear(sectionWidth: Float(calendarView.getSectionWidth())))
+//	}
 	
 	public override func loadView() {
 		view = setupCalendarView()

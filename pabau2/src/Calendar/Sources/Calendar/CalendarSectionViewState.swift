@@ -15,7 +15,6 @@ struct CalendarSectionViewState<Subsection: Identifiable & Equatable>: Equatable
 	let subsections: [Location.ID: IdentifiedArrayOf<Subsection>]
 	let chosenSubsectionsIds: [Location.ID: [Subsection.ID]]
 	let shifts: [Date: [Location.ID: [Subsection.ID: [JZShift]]]]
-	var sectionOffsetIndex: Int?
 	var sectionWidth: Float?
 }
 

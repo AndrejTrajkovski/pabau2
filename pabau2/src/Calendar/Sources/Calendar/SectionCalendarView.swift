@@ -29,10 +29,13 @@ public class SectionCalendarView<Subsection: Identifiable & Equatable>: SectionW
 	}
 	
 	func reload(state: CalendarSectionViewState<Subsection>) {
-		self.sectionsDataSource = Self.makeSectionDataSource(state: state)
-		updateWeekView(to: state.selectedDate)
+		self.sectionsDataSource = Self.makeSectionDataSource(state: state,
+															 pageWidth: getSectionWidth())
+		initDate = state.selectedDate
 		layoutSubviews()
 		updateAllDayBar(isScrolling: false)
+		//FIXME: Add calculation to keep previous offset if date is changed.
+		collectionView.setContentOffsetWithoutDelegate(CGPoint(x: 0, y: getYOffset()), animated: false)
 		sectionsFlowLayout.invalidateLayoutCache()
 		collectionView.reloadData()
 	}
@@ -76,7 +79,8 @@ public class SectionCalendarView<Subsection: Identifiable & Equatable>: SectionW
 		return sectionsDataSource!.backgroundTimes(section: section)
 	}
 	
-	static func makeSectionDataSource(state: CalendarSectionViewState<Subsection>) ->
+	static func makeSectionDataSource(state: CalendarSectionViewState<Subsection>,
+									  pageWidth: CGFloat) ->
 	SectionWeekViewDataSource<JZAppointmentEvent, Location, Subsection, JZShift> {
 		let jzApps = state.appointments.appointments.mapValues { $0.mapValues { $0.mapValues { $0.elements.map(JZAppointmentEvent.init(appointment:)) }}}
 		print("appointments: \(jzApps)")
@@ -85,7 +89,7 @@ public class SectionCalendarView<Subsection: Identifiable & Equatable>: SectionW
 											  state.chosenSubsections(),
 											  jzApps[state.selectedDate] ?? [:],
 											  state.shifts[state.selectedDate] ?? [:],
-											  CGFloat(state.sectionWidth ?? 0)
+											  pageWidth
 		)
 	}
 }

@@ -14,39 +14,6 @@ import JZCalendarWeekView
 
 public typealias CalendarEnvironment = (journeyAPI: JourneyAPI, clientsAPI: ClientsAPI, userDefaults: UserDefaultsConfig)
 
-struct CalendarSectionOffsetReducer<Section: Identifiable & Equatable & Named> {
-	
-	init() {}
-	
-	public let reducer: Reducer<CalendarSectionViewState<Section>, FiltersAction<Section>, CalendarEnvironment> = .init { state, action, _ in
-		
-		switch action {
-		case .rows(id: let locId, action: .header(.expand(let expand))):
-			guard let sectionWidth = state.sectionWidth else { break }
-			let sizes = SectionCalendarSizes(totalNumberOfRowsOnPage: state.chosenSubsections().count,
-											 pageWidth: CGFloat(sectionWidth))
-			if sizes.leftOutRowsOnPage > 0 {
-				state.sectionOffsetIndex = nil
-			} else {
-				state.sectionOffsetIndex = 0
-			}
-		case .rows(id: let locId, action: .rows(let sectionId, action: .toggle)):
-			guard let sectionWidth = state.sectionWidth else { break }
-			let sizes = SectionCalendarSizes(totalNumberOfRowsOnPage: state.chosenSubsections().count,
-											 pageWidth: CGFloat(sectionWidth))
-			if sizes.leftOutRowsOnPage > 0 {
-				state.sectionOffsetIndex = nil
-			} else {
-				state.sectionOffsetIndex = 0
-			}
-		default:
-			break
-		}
-		
-		return .none
-	}
-}
-
 public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAction, CalendarEnvironment> = .combine(
 	calTypePickerReducer.pullback(
 		state: \.calTypePicker,
@@ -70,14 +37,6 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 		environment: { $0 }),
 	FiltersReducer<Room>().reducer.pullback(
 		state: \.roomFilters,
-		action: /CalendarAction.roomFilters,
-		environment: { $0 }),
-	CalendarSectionOffsetReducer<Employee>().reducer.optional().pullback(
-		state: \CalendarContainerState.employeeSectionState,
-		action: /CalendarAction.employeeFilters,
-		environment: { $0 }),
-	CalendarSectionOffsetReducer<Room>().reducer.optional().pullback(
-		state: \CalendarContainerState.roomSectionState,
 		action: /CalendarAction.roomFilters,
 		environment: { $0 }),
 	calendarReducer.pullback(
@@ -163,17 +122,18 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
             }
             let employeesIds = state.selectedEmployeesIds().removingDuplicates()
 			
-			return env.journeyAPI.getCalendar(
-                startDate: startDate,
-                endDate: endDate,
-                locationIds: state.chosenLocationsIds,
-                employeesIds: employeesIds,
-                roomIds: []
-            )
-			.receive(on: DispatchQueue.main)
-			.catchToEffect()
-			.map(CalendarAction.gotCalendarResponse)
-			.eraseToEffect()
+			return .none
+//			return env.journeyAPI.getCalendar(
+//                startDate: startDate,
+//                endDate: endDate,
+//                locationIds: state.chosenLocationsIds,
+//                employeesIds: employeesIds,
+//                roomIds: []
+//            )
+//			.receive(on: DispatchQueue.main)
+//			.catchToEffect()
+//			.map(CalendarAction.gotCalendarResponse)
+//			.eraseToEffect()
 		case .calTypePicker(.onSelect(let calType)):
             state.switchTo(calType: calType)
 			return .none

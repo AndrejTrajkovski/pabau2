@@ -105,21 +105,6 @@ public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
             default:
                 break
             }
-		case .previousSection:
-			
-			guard let sectionOffsetIndex = state.sectionOffsetIndex,
-				  sectionOffsetIndex > 0 else { return .none }
-			state.sectionOffsetIndex! = sectionOffsetIndex - 1
-			
-		case .nextSection:
-			
-			guard let sectionWidth = state.sectionWidth else { break }
-			
-			let sizes = SectionCalendarSizes(totalNumberOfRowsOnPage: state.chosenSubsections().flatMap(\.value).count,
-											 pageWidth: CGFloat(sectionWidth))
-			guard let sectionOffsetIndex = state.sectionOffsetIndex,
-				  sectionOffsetIndex < sizes.leftOutRowsOnPage else { return .none }
-			state.sectionOffsetIndex! = sectionOffsetIndex + 1
 			
 		case .viewDidAppear(let sectionWidth):
 			print("sectionWidth: \(sectionWidth)")
