@@ -95,10 +95,10 @@ extension SectionCalendarViewController: SectionLongPressDelegate {
 			  let subsection = startPageAndSectionIdx.1 else { return }
 		let startKeys = (section as! Location.ID, subsection as! Subsection.ID)
 		presentAlert(onDate, anchorView, weekView,
-					 onAddBookout: {
-						self.viewStore.send(.addBookout(startDate: onDate, durationMins: weekView.addNewDurationMins, dropKeys: startKeys))
-					 }, onAddAppointment: {
-						self.viewStore.send(.addAppointment(startDate: onDate, durationMins: weekView.addNewDurationMins, dropKeys: startKeys))
+					 onAddBookout: { [weak self] in
+						self!.viewStore.send(.addBookout(startDate: onDate, durationMins: weekView.addNewDurationMins, dropKeys: startKeys))
+					 }, onAddAppointment: { [weak self] in
+						self!.viewStore.send(.addAppointment(startDate: onDate, durationMins: weekView.addNewDurationMins, dropKeys: startKeys))
 					})
 	}
 }
