@@ -45,11 +45,12 @@ public class SectionCalendarViewController<Subsection: Identifiable & Equatable>
 //				collViewOffset.x += offset
 //				self.calendarView.collectionView.setContentOffsetWithoutDelegate(collViewOffset, animated: true)
 //			}).store(in: &self.cancellables)
+		
 	}
 
-	public override func viewDidLayoutSubviews() {
-		super.viewDidLayoutSubviews()
-		viewStore.send(.viewDidLayoutSubviews(sectionWidth: Float(calendarView.sectionsFlowLayout.sectionWidth ?? 0)))
+	public override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+		viewStore.send(.viewDidAppear(sectionWidth: Float(calendarView.getSectionWidth())))
 	}
 	
 	func reload(
@@ -65,6 +66,7 @@ public class SectionCalendarViewController<Subsection: Identifiable & Equatable>
 	static func makeSectionDataSource(state: CalendarSectionViewState<Subsection>) ->
 	SectionWeekViewDataSource<JZAppointmentEvent, Location, Subsection, JZShift> {
 		let jzApps = state.appointments.appointments.mapValues { $0.mapValues { $0.mapValues { $0.elements.map(JZAppointmentEvent.init(appointment:)) }}}
+		print("appointments: \(jzApps)")
 		return SectionWeekViewDataSource.init(state.selectedDate,
 											  state.chosenLocations(),
 											  state.chosenSubsections(),
@@ -150,6 +152,7 @@ extension SectionCalendarViewController: SectionLongPressDelegate {
 }
 
 extension SectionCalendarViewController {
+	
 	var calendarView: SectionCalendarView<JZAppointmentEvent, Subsection> {
 		return view as! SectionCalendarView<JZAppointmentEvent, Subsection>
 	}

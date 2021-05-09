@@ -14,13 +14,15 @@ extension APIClient {
         let requestBuilder: RequestBuilder<CalendarResponse>.Type = requestBuilderFactory.getBuilder()
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale.init(identifier: "en_US_POSIX")
+//		dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
         dateFormatter.dateFormat = "yyyy-MM-dd"
-        
+		print(startDate.timeIntervalSince1970)
         var params: [String : Any] = [
             "start_date": dateFormatter.string(from: startDate),
             "end_date": dateFormatter.string(from: endDate),
         ]
         
+		print(params)
         if !locationIds.isEmpty {
             params["location_id"] = locationIds.map(String.init).joined(separator: ",")
         }
@@ -77,45 +79,6 @@ extension APIClient {
         .effect()
         .map(\.employees)
         .eraseToEffect()
-	}
-	
-	public func getAppointments(
-        startDate: Date,
-        endDate: Date,
-        locationIds: [Location.ID],
-        employeesIds: [Employee.ID],
-        roomIds: [Room.ID]
-    ) -> Effect<[CalendarEvent], RequestError> {
-		let requestBuilder: RequestBuilder<CalendarResponse>.Type = requestBuilderFactory.getBuilder()
-		let dateFormatter = DateFormatter()
-		dateFormatter.locale = Locale.init(identifier: "en_US_POSIX")
-		dateFormatter.dateFormat = "yyyy-MM-dd"
-		
-        var params: [String : Any] = [
-			"start_date": dateFormatter.string(from: startDate),
-			"end_date": dateFormatter.string(from: endDate),
-        ]
-        
-        if !locationIds.isEmpty {
-            params["location_id"] = locationIds.map(String.init).joined(separator: ",")
-        }
-        
-        if !employeesIds.isEmpty {
-            params["user_ids"] = employeesIds.map(String.init).joined(separator: ",")
-        }
-        
-        if !roomIds.isEmpty {
-            params["room_id"] = roomIds.map(String.init).joined(separator: ",")
-        }
-        
-		return requestBuilder.init(
-            method: .GET,
-            baseUrl: baseUrl,
-            path: .getAppointments,
-            queryParams: commonAnd(other: params)
-        )
-        .effect()
-        .map(\.appointments)
 	}
 	
 	public func getLocations() -> Effect<[Location], RequestError> {

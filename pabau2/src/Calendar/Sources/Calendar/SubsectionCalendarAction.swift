@@ -21,5 +21,5 @@ public enum SubsectionCalendarAction<Subsection: Identifiable & Equatable> {
     case appointmentEdited(Result<PlaceholdeResponse, RequestError>)
 	case nextSection
 	case previousSection
-	case viewDidLayoutSubviews(sectionWidth: Float)
+	case viewDidAppear(sectionWidth: Float)
 }

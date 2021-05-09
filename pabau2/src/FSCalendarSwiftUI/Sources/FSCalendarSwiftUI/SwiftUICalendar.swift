@@ -130,6 +130,7 @@ struct SwiftUICalendar: UIViewRepresentable {
 		}
 
 		public func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
+			print(date.timeIntervalSince1970)
             self.parent.onDateChanged(date)
 		}
 

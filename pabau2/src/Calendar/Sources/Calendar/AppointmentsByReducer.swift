@@ -121,7 +121,8 @@ public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
 				  sectionOffsetIndex < sizes.leftOutRowsOnPage else { return .none }
 			state.sectionOffsetIndex! = sectionOffsetIndex + 1
 			
-		case .viewDidLayoutSubviews(let sectionWidth):
+		case .viewDidAppear(let sectionWidth):
+			print("sectionWidth: \(sectionWidth)")
 			state.sectionWidth = sectionWidth
 		}
 		return .none
