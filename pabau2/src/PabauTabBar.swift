@@ -42,7 +42,6 @@ public struct TabBarState: Equatable {
     var communication: CommunicationState
 	var selectedDate: Date = DateFormatter.yearMonthDay.date(from: "2021-03-11")!
 	var chosenLocationsIds: Set<Location.Id>
-	var sectionOffsetIndex: Int?
 	var sectionWidth: Float?
 	
 	public var calendarContainer: CalendarContainerState? {
@@ -54,7 +53,6 @@ public struct TabBarState: Equatable {
                 appointments: calApps,
 				selectedDate: selectedDate,
 				chosenLocationsIds: chosenLocationsIds,
-				sectionOffsetIndex: sectionOffsetIndex,
 				sectionWidth: sectionWidth
             )
 		}
@@ -65,7 +63,6 @@ public struct TabBarState: Equatable {
 			self.appointments = .calendar(newValue.appointments)
 			self.selectedDate = newValue.selectedDate
 			self.chosenLocationsIds = newValue.chosenLocationsIds
-			self.sectionOffsetIndex = newValue.sectionOffsetIndex
 			self.sectionWidth = newValue.sectionWidth
 		}
 	}
@@ -103,22 +100,21 @@ public enum TabBarAction {
 
 struct PabauTabBar: View {
 	let store: Store<TabBarState, TabBarAction>
-	@ObservedObject var viewStore: ViewStore<TabBarState, TabBarAction>
-//	struct ViewState: Equatable {
-//		let isShowingCheckin: Bool
-//		let isShowingAppointments: Bool
-//		let selectedTab: TabItemId
-//		init(state: TabBarState) {
-//			self.isShowingCheckin = state.journeyContainer?.journey.checkIn != nil
-//			self.isShowingAppointments = state.addAppointment != nil
-//			self.selectedTab = state.selectedTab
-//		}
-//	}
+	@ObservedObject var viewStore: ViewStore<ViewState, TabBarAction>
+	struct ViewState: Equatable {
+		let isShowingCheckin: Bool
+		let isShowingAddAppointment: Bool
+		let selectedTab: TabItemId
+		init(state: TabBarState) {
+			self.isShowingCheckin = state.journeyContainer?.journey.checkIn != nil
+			self.isShowingAddAppointment = state.addAppointment != nil
+			self.selectedTab = state.selectedTab
+		}
+	}
 	init (store: Store<TabBarState, TabBarAction>) {
 		self.store = store
-		self.viewStore = ViewStore(self.store)
-//			.scope(state: ViewState.init(state:),
-//						 action: { $0 }))
+		self.viewStore = ViewStore(store.scope(state: ViewState.init(state:),
+											   action: { $0 }))
 	}
 
 	var body: some View {
@@ -130,13 +126,13 @@ struct PabauTabBar: View {
 			settings().tag(TabItemId.settings)
 			communication().tag(TabItemId.communication)
 		}
-		.modalLink(isPresented: .constant(self.viewStore.state.journeyContainer?.journey.checkIn != nil),
+		.modalLink(isPresented: .constant(self.viewStore.state.isShowingCheckin),
 				   linkType: ModalTransition.circleReveal,
 				   destination: {
 					checkIn()
 				   }
 		)
-		.fullScreenCover(isPresented: .constant(self.viewStore.state.addAppointment != nil)) {
+		.fullScreenCover(isPresented: .constant(self.viewStore.state.isShowingAddAppointment)) {
 			addAppointment()
 		}
 	}
@@ -360,6 +356,5 @@ extension TabBarState {
 //		self.appointments = .employee(EventsBy<Employee>.init(events: [], locationsIds: [], subsections: [], sectionKeypath: \CalendarEvent.locationId, subsKeypath: \CalendarEvent.employeeId))
 		self.appsLoadingState = .initial
 		self.chosenLocationsIds = Set()
-		self.sectionOffsetIndex = 0
 	}
 }

@@ -27,9 +27,9 @@ public struct CalendarWrapper: View {
 		}
 	}
 
-	typealias EmployeeCalView = IfLetStore<CalendarSectionViewState<Employee>, SubsectionCalendarAction<Employee>, _ConditionalContent<CalendarSwiftUIAndArrows<Employee>, EmptyView>>
+	typealias EmployeeCalView = IfLetStore<CalendarSectionViewState<Employee>, SubsectionCalendarAction<Employee>, _ConditionalContent<CalendarSwiftUI<Employee>, EmptyView>>
 	typealias RoomCalView = IfLetStore<CalendarSectionViewState<Room>, SubsectionCalendarAction<Room>,
-											_ConditionalContent<CalendarSwiftUIAndArrows<Room>, EmptyView>>
+											_ConditionalContent<CalendarSwiftUI<Room>, EmptyView>>
 
 	var employeeCalendarView: EmployeeCalView {
         let ifLetStore = IfLetStore(
@@ -37,7 +37,7 @@ public struct CalendarWrapper: View {
                 state: { $0.employeeSectionState },
                 action: { .employee($0) }
             ),
-            then: CalendarSwiftUIAndArrows<Employee>.init(store:), else: EmptyView()
+            then: CalendarSwiftUI<Employee>.init(store:), else: EmptyView()
         )
 		return ifLetStore
 	}
@@ -46,39 +46,8 @@ public struct CalendarWrapper: View {
 		let ifLetStore = IfLetStore(store.scope(
 										state: { $0.roomSectionState },
 										action: { .room($0) }),
-									then: CalendarSwiftUIAndArrows<Room>.init(store:), else: EmptyView())
+									then: CalendarSwiftUI<Room>.init(store:), else: EmptyView())
 		return ifLetStore
-	}
-}
-
-struct CalendarSwiftUIAndArrows<Section: Identifiable & Equatable>: View {
-	let store: Store<CalendarSectionViewState<Section>, SubsectionCalendarAction<Section>>
-	var body: some View {
-		VStack {
-			CalendarArrowsView(store: store.stateless).frame(height: 44)
-			CalendarSwiftUI<Section>(store: store)
-		}
-	}
-}
-
-struct CalendarArrowsView<Section: Identifiable & Equatable>: View {
-	let store: Store<Void, SubsectionCalendarAction<Section>>
-	var body: some View {
-		WithViewStore(store) { viewStore in
-			HStack {
-				Button.init(action: { viewStore.send(.previousSection) },
-							label: {
-								Text("previous")
-//								Image(systemName: "chevron.left")
-							})
-				Spacer()
-				Button.init(action: { viewStore.send(.nextSection) },
-							label: {
-								Text("next")
-//								Image(systemName: "chevron.right")
-							})
-			}
-		}
 	}
 }
 
