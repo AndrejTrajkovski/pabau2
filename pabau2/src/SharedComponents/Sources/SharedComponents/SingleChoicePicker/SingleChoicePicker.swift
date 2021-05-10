@@ -37,8 +37,8 @@ public struct SingleChoicePicker<T: SingleChoiceElement, Cell: View>: View {
 			return IdentifiedArray.init(array)
 		},
 		action: SingleChoiceActions.action(id:action:)),
-		content: {
-			SingleChoiceItem.init(store: $0, cell: cell)
+		content: { (singleChoiceStore: Store<SingleChoiceItemState<T>, SingleChoiceAction<T>>) in
+			SingleChoiceItem.init(store: singleChoiceStore, cell: cell)
 		})
 	}
 }
