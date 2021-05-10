@@ -33,6 +33,8 @@
 		82BE2F4E23D97D9F00B3678A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 82BE2F4D23D97D9F00B3678A /* Assets.xcassets */; };
 		82BE2F5123D97D9F00B3678A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 82BE2F5023D97D9F00B3678A /* Preview Assets.xcassets */; };
 		82F6ADAE23F2C7B1001B3ACE /* PabauTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */; };
+		BA6FD88F2645616C00ACB1B2 /* CoreDataModel in Frameworks */ = {isa = PBXBuildFile; productRef = BA6FD88E2645616C00ACB1B2 /* CoreDataModel */; };
+		BA6FD892264565E400ACB1B2 /* CoreStore in Frameworks */ = {isa = PBXBuildFile; productRef = BA6FD891264565E400ACB1B2 /* CoreStore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -89,6 +91,7 @@
 		82E9C11E24D024E50023B98B /* Model */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Model; sourceTree = "<group>"; };
 		82E9C12524D035A60023B98B /* Journey */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Journey; sourceTree = "<group>"; };
 		82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PabauTabBar.swift; sourceTree = "<group>"; };
+		BA6FD88D26454B1F00ACB1B2 /* CoreDataModel */ = {isa = PBXFileReference; lastKnownFileType = folder; path = CoreDataModel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,7 +101,9 @@
 			files = (
 				08D74502264917F2000605FD /* JourneyBase in Frameworks */,
 				82182C4F25265C5D00E5479F /* FSCalendarSwiftUI in Frameworks */,
+				BA6FD88F2645616C00ACB1B2 /* CoreDataModel in Frameworks */,
 				82182C4D25265C5D00E5479F /* Form in Frameworks */,
+				BA6FD892264565E400ACB1B2 /* CoreStore in Frameworks */,
 				82182C4725265C5D00E5479F /* Calendar in Frameworks */,
 				0854E6B525F12331007087B8 /* EPaper in Frameworks */,
 				08CF80E52645625500A206BA /* ChoosePathway in Frameworks */,
@@ -204,6 +209,7 @@
 				82E9C11C24D021550023B98B /* Login */,
 				829D61FF24D18CF90049D5D0 /* FSCalendarSwiftUI */,
 				82E9C11E24D024E50023B98B /* Model */,
+				BA6FD88D26454B1F00ACB1B2 /* CoreDataModel */,
 				82E9C11D24D0242E0023B98B /* Util */,
 				8297A2B123D9BA0200D091FF /* Locales */,
 				82BE2F4723D97D9C00B3678A /* AppDelegate.swift */,
@@ -255,6 +261,8 @@
 				0854E6B425F12331007087B8 /* EPaper */,
 				08CF80E42645625500A206BA /* ChoosePathway */,
 				08D74501264917F2000605FD /* JourneyBase */,
+				BA6FD88E2645616C00ACB1B2 /* CoreDataModel */,
+				BA6FD891264565E400ACB1B2 /* CoreStore */,
 			);
 			productName = pabau2;
 			productReference = 82BE2F4423D97D9C00B3678A /* pabau2.app */;
@@ -288,6 +296,7 @@
 			packageReferences = (
 				8280D4822463F2BE0077A73F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 				820C74E224FFA8BE00B7542F /* XCRemoteSwiftPackageReference "swift-tagged" */,
+				BA6FD890264565E400ACB1B2 /* XCRemoteSwiftPackageReference "CoreStore" */,
 			);
 			productRefGroup = 82BE2F4523D97D9C00B3678A /* Products */;
 			projectDirPath = "";
@@ -605,6 +614,14 @@
 				minimumVersion = 0.6.0;
 			};
 		};
+		BA6FD890264565E400ACB1B2 /* XCRemoteSwiftPackageReference "CoreStore" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/JohnEstropia/CoreStore";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -655,6 +672,15 @@
 		82182C5625265C5D00E5479F /* Util */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Util;
+		};
+		BA6FD88E2645616C00ACB1B2 /* CoreDataModel */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CoreDataModel;
+		};
+		BA6FD891264565E400ACB1B2 /* CoreStore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BA6FD890264565E400ACB1B2 /* XCRemoteSwiftPackageReference "CoreStore" */;
+			productName = CoreStore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

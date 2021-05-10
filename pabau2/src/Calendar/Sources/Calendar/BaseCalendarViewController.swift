@@ -41,21 +41,21 @@ public class BaseCalendarViewController: UIViewController {
         let alert = UIAlertController(
             title: date.toString(.dateTime(.short)),
             message: nil,
-            preferredStyle: .actionSheet
+            preferredStyle: .alert
         )
         alert.addAction(UIAlertAction.init(title: "Add  Appointment", style: .default, handler: { _ in
-            anchorView.removeFromSuperview()
             onAddAppointment()
+			anchorView.removeFromSuperview()
         }))
         alert.addAction(UIAlertAction.init(title: "Add Bookout", style: .default, handler: { _ in
-            anchorView.removeFromSuperview()
             onAddBookout()
+			anchorView.removeFromSuperview()
         }))
-        alert.addAction(UIAlertAction.init(title: "Cancel", style: .cancel, handler: {_ in
+        alert.addAction(UIAlertAction.init(title: "Cancel", style: .destructive, handler: {_ in
             anchorView.removeFromSuperview()
         }))
-        alert.popoverPresentationController?.sourceView = anchorView
-        alert.popoverPresentationController?.sourceRect = anchorView.bounds
+//        alert.popoverPresentationController?.sourceView = anchorView
+//        alert.popoverPresentationController?.sourceRect = anchorView.bounds
         present(alert, animated: true)
     }
 
@@ -67,16 +67,16 @@ public class BaseCalendarViewController: UIViewController {
     ) {
         let alert = UIAlertController(title: date.toString(.dateTime(.short)),
                                       message: nil,
-                                      preferredStyle: .actionSheet)
+                                      preferredStyle: .alert)
         alert.addAction(UIAlertAction.init(title: "Edit Appointment", style: .default, handler: { _ in
             anchorView.removeFromSuperview()
             onEditAppointment()
         }))
-        alert.addAction(UIAlertAction.init(title: "Cancel", style: .cancel, handler: {_ in
+        alert.addAction(UIAlertAction.init(title: "Cancel", style: .destructive, handler: {_ in
             anchorView.removeFromSuperview()
         }))
-        alert.popoverPresentationController?.sourceView = anchorView
-        alert.popoverPresentationController?.sourceRect = anchorView.bounds
+//        alert.popoverPresentationController?.sourceView = anchorView
+//        alert.popoverPresentationController?.sourceRect = anchorView.bounds
         present(alert, animated: true)
     }
 }

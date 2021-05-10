@@ -9,13 +9,15 @@ import Clients
 import Calendar
 import Communication
 import Overture
+import CoreDataModel
 
 typealias AppEnvironment = (
 	loginAPI: LoginAPI,
 	journeyAPI: JourneyAPI,
 	clientsAPI: ClientsAPI,
 	formAPI: FormAPI,
-	userDefaults: UserDefaultsConfig
+	userDefaults: UserDefaultsConfig,
+    storage: CoreDataModel
 )
 
 func makeJourneyEnv(_ appEnv: AppEnvironment) -> JourneyEnvironment {
@@ -60,7 +62,9 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = Reducer.combine(
 				journeyAPI: $0.journeyAPI,
 				clientsAPI: $0.clientsAPI,
 				formAPI: $0.formAPI,
-				userDefaults: $0.userDefaults)
+				userDefaults: $0.userDefaults,
+                storage: $0.storage
+              )
 			}
 	),
 	.init { state, action, env in

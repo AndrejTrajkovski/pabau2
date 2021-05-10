@@ -11,13 +11,15 @@ import AddAppointment
 import Communication
 import Intercom
 import Appointments
+import CoreDataModel
 
 public typealias TabBarEnvironment = (
 	loginAPI: LoginAPI,
 	journeyAPI: JourneyAPI,
 	clientsAPI: ClientsAPI,
 	formAPI: FormAPI,
-	userDefaults: UserDefaultsConfig
+	userDefaults: UserDefaultsConfig,
+    storage: CoreDataModel
 )
 
 public enum TabItemId: String {
@@ -40,7 +42,6 @@ public struct TabBarState: Equatable {
     var communication: CommunicationState
 	var selectedDate: Date = DateFormatter.yearMonthDay.date(from: "2021-03-11")!
 	var chosenLocationsIds: Set<Location.Id>
-	var sectionOffsetIndex: Int?
 	var sectionWidth: Float?
 	
 	public var calendarContainer: CalendarContainerState? {
@@ -52,7 +53,6 @@ public struct TabBarState: Equatable {
                 appointments: calApps,
 				selectedDate: selectedDate,
 				chosenLocationsIds: chosenLocationsIds,
-				sectionOffsetIndex: sectionOffsetIndex,
 				sectionWidth: sectionWidth
             )
 		}
@@ -63,7 +63,6 @@ public struct TabBarState: Equatable {
 			self.appointments = .calendar(newValue.appointments)
 			self.selectedDate = newValue.selectedDate
 			self.chosenLocationsIds = newValue.chosenLocationsIds
-			self.sectionOffsetIndex = newValue.sectionOffsetIndex
 			self.sectionWidth = newValue.sectionWidth
 		}
 	}
@@ -101,22 +100,21 @@ public enum TabBarAction {
 
 struct PabauTabBar: View {
 	let store: Store<TabBarState, TabBarAction>
-	@ObservedObject var viewStore: ViewStore<TabBarState, TabBarAction>
-//	struct ViewState: Equatable {
-//		let isShowingCheckin: Bool
-//		let isShowingAppointments: Bool
-//		let selectedTab: TabItemId
-//		init(state: TabBarState) {
-//			self.isShowingCheckin = state.journeyContainer?.journey.checkIn != nil
-//			self.isShowingAppointments = state.addAppointment != nil
-//			self.selectedTab = state.selectedTab
-//		}
-//	}
+	@ObservedObject var viewStore: ViewStore<ViewState, TabBarAction>
+	struct ViewState: Equatable {
+		let isShowingCheckin: Bool
+		let isShowingAddAppointment: Bool
+		let selectedTab: TabItemId
+		init(state: TabBarState) {
+			self.isShowingCheckin = state.journeyContainer?.journey.checkIn != nil
+			self.isShowingAddAppointment = state.addAppointment != nil
+			self.selectedTab = state.selectedTab
+		}
+	}
 	init (store: Store<TabBarState, TabBarAction>) {
 		self.store = store
-		self.viewStore = ViewStore(self.store)
-//			.scope(state: ViewState.init(state:),
-//						 action: { $0 }))
+		self.viewStore = ViewStore(store.scope(state: ViewState.init(state:),
+											   action: { $0 }))
 	}
 
 	var body: some View {
@@ -128,13 +126,13 @@ struct PabauTabBar: View {
 			settings().tag(TabItemId.settings)
 			communication().tag(TabItemId.communication)
 		}
-		.modalLink(isPresented: .constant(self.viewStore.state.journeyContainer?.journey.checkIn != nil),
+		.modalLink(isPresented: .constant(self.viewStore.state.isShowingCheckin),
 				   linkType: ModalTransition.circleReveal,
 				   destination: {
 					checkIn()
 				   }
 		)
-		.fullScreenCover(isPresented: .constant(self.viewStore.state.addAppointment != nil)) {
+		.fullScreenCover(isPresented: .constant(self.viewStore.state.isShowingAddAppointment)) {
 			addAppointment()
 		}
 	}
@@ -239,6 +237,7 @@ public let tabBarReducer: Reducer<
 			switch locationsResponse {
 				// MARK: - Iurii
 			case .success(let locations):
+				print(locations)
 				state.calendar.locations = IdentifiedArray(locations)
 				state.journey.selectedLocation = locations.first
 			case .failure(let error):
@@ -258,7 +257,15 @@ public let tabBarReducer: Reducer<
 										}
 									}
 								 })
-
+//				let locs = state.calendar.locations.map(\.id)
+//				state.calendar.employees = locs.reduce(into: [Location.ID: IdentifiedArrayOf<Employee>](),
+//													   {
+//														$0[$1] = []
+//													   })
+				
+//				state.calendar.chosenEmployeesIds = state.calendar.employees.mapValues {
+//					$0.map(\.id)
+//				}
 			case .failure(let error):
 				break
 			}
@@ -273,9 +280,12 @@ public let tabBarReducer: Reducer<
 		state: \TabBarState.addAppointment,
 		action: /TabBarAction.addAppointment,
 		environment: {
-			return AddAppointmentEnv(journeyAPI: $0.journeyAPI,
-									 clientAPI: $0.clientsAPI,
-									 userDefaults: $0.userDefaults)
+            return AddAppointmentEnv(
+                journeyAPI: $0.journeyAPI,
+                clientAPI: $0.clientsAPI,
+                userDefaults: $0.userDefaults,
+                storage: $0.storage
+            )
 		}
 	),
 	settingsReducer.pullback(
@@ -306,7 +316,9 @@ public let tabBarReducer: Reducer<
 			return CalendarEnvironment(
 				journeyAPI: $0.journeyAPI,
 				clientsAPI: $0.clientsAPI,
-				userDefaults: $0.userDefaults)
+                userDefaults: $0.userDefaults,
+                storage: $0.storage
+            )
 		}),
 	communicationReducer.pullback(
 		state: \TabBarState.communication,
@@ -341,8 +353,8 @@ extension TabBarState {
 		self.settings = SettingsState()
 		self.communication = CommunicationState()
 		self.appointments = .journey(JourneyAppointments.init(events: []))
+//		self.appointments = .employee(EventsBy<Employee>.init(events: [], locationsIds: [], subsections: [], sectionKeypath: \CalendarEvent.locationId, subsKeypath: \CalendarEvent.employeeId))
 		self.appsLoadingState = .initial
 		self.chosenLocationsIds = Set()
-		self.sectionOffsetIndex = 0
 	}
 }

@@ -40,15 +40,15 @@ public enum CalendarDatePickerAction: Equatable {
 	case selectedDate(Date)
 }
 
-public let calendarDatePickerReducer: Reducer<Date, CalendarDatePickerAction, Any> = Reducer.init { state, action, _ in
-	switch action {
-	case .selectedDate(let date):
-		//TODO: see comment in JZBaseWeekView
-		//- If you want to update this value instead of using [updateWeekView(to date: Date)](), please **make sure the date is startOfDay**.
-		state = date
-	}
-	return .none
-}
+//public let calendarDatePickerReducer: Reducer<Date, CalendarDatePickerAction, Any> = Reducer.init { state, action, _ in
+//	switch action {
+//	case .selectedDate(let date):
+//		//TODO: see comment in JZBaseWeekView
+//		//- If you want to update this value instead of using [updateWeekView(to date: Date)](), please **make sure the date is startOfDay**.
+//		state = date
+//	}
+//	return .none
+//}
 
 struct SwiftUICalendar: UIViewRepresentable {
 	public typealias UIViewType = FSCalendar
@@ -130,6 +130,7 @@ struct SwiftUICalendar: UIViewRepresentable {
 		}
 
 		public func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
+			print(date.timeIntervalSince1970)
             self.parent.onDateChanged(date)
 		}
 

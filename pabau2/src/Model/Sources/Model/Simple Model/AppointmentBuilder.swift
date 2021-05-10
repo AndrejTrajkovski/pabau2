@@ -81,3 +81,33 @@ public struct AppointmentBuilder {
         self.duration = bookout.end_date.timeIntervalSince(bookout.start_date) / 60
     }
 }
+
+//return AppointmentBuilder(
+//    isAllDay: self.isAllDay,
+//    isPrivate: self.isPrivate,
+//    locationID: self.chooseLocationState.chosenLocation?.id,
+//    employeeID: self.chooseEmployeesState.chosenEmployee?.id.rawValue,
+//    startTime: self.startDate,
+//    duration: self.chooseDuration.dataSource.first(where: {$0.id == self.chooseDuration.chosenItemId})?.duration,
+//    note: self.note,
+//    description: self.description
+//)
+
+
+//all_day    0
+//contact_id    12148213
+//end_time    10-02-2021 14:45
+//equipment_id
+//instant_sms    1
+//insurance_company_id    11509
+//insurance_contract_id
+//location_id    2668
+//membership_number
+//room_id    5578
+//sent_email    0
+//sent_sms    1
+//sent_survey    1
+//service_id    2407704
+//start_time    10-02-2021 14:00
+//status    Waiting
+//uid    76101
