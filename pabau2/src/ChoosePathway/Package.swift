@@ -13,7 +13,7 @@ let package = Package(
             targets: ["ChoosePathway"]),
     ],
     dependencies: [
-        .package(url: "../Form",
+        .package(url: "../JourneyBase",
                  from: Version.init(stringLiteral: "1.0.0"))
     ],
     targets: [
@@ -21,7 +21,7 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "ChoosePathway",
-            dependencies: ["Form"]),
+            dependencies: ["JourneyBase"]),
         .testTarget(
             name: "ChoosePathwayTests",
             dependencies: ["ChoosePathway"]),

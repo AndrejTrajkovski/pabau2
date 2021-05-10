@@ -1,6 +1,7 @@
 import Model
 import SwiftUI
 import Util
+import JourneyBase
 
 struct JourneyCell: View {
 	let appointment: Appointment
@@ -58,31 +59,6 @@ struct JourneyCell: View {
 			Divider().frame(height: 1)
 		}
 		.frame(minWidth: 0, maxWidth: .infinity, idealHeight: 97)
-	}
-}
-
-struct IconAndText: View {
-	let text: String
-	let image: Image
-	let textColor: Color
-	init(_ image: Image,
-		 _ text: String,
-		 _ textColor: Color = .black) {
-		self.image = image
-		self.text = text
-		self.textColor = textColor
-	}
-	var body: some View {
-		HStack {
-			image
-				.resizable()
-				.scaledToFit()
-				.foregroundColor(.blue2)
-				.frame(width: 20, height: 20)
-			Text(text)
-				.font(Font.semibold11)
-				.foregroundColor(textColor)
-		}
 	}
 }
 

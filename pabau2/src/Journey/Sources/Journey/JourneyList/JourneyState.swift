@@ -5,6 +5,7 @@ import SwiftDate
 import Foundation
 import ComposableArchitecture
 import Filters
+import ChoosePathway
 
 public struct JourneyState: Equatable {
 	public init() {}

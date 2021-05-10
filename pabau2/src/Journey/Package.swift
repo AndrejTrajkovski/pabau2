@@ -20,7 +20,11 @@ let package = Package(
 		.package(url: "../AddAppointment",
 				 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../Appointments",
-				 from: Version.init(stringLiteral: "1.0.0"))
+				 from: Version.init(stringLiteral: "1.0.0")),
+        .package(url: "../ChoosePathway",
+                 from: Version.init(stringLiteral: "1.0.0")),
+        .package(url: "../JourneyBase",
+                 from: Version.init(stringLiteral: "1.0.0"))
 	],
 	targets: [
 		.target(
@@ -29,7 +33,9 @@ let package = Package(
 						   "FSCalendarSwiftUI",
 						   "Filters",
 						   "AddAppointment",
-						   "Appointments"
+						   "Appointments",
+                           "ChoosePathway",
+                           "JourneyBase"
 			]
 		)
 	]

@@ -12,6 +12,7 @@ import Filters
 import SharedComponents
 import Appointments
 import Combine
+import ChoosePathway
 
 let checkInMiddleware = Reducer<JourneyState, CheckInContainerAction, JourneyEnvironment> { state, action, _ in
 	switch action {
@@ -124,7 +125,6 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 //
 
 			case .selectedAppointment(let appointment):
-				
 				if let pathwayId = appointment.pathwayId,
 				   let pathwayTemplateId = appointment.pathwayTemplateId {
 					print(pathwayId, pathwayTemplateId)
@@ -393,7 +393,7 @@ struct JourneyList: View {
 					.onTapGesture { self.onSelect(appointments[idx]) }
 					.listRowInsets(EdgeInsets())
 			}
-		}.id(UUID())
+        }.id(UUID())
 	}
 }
 

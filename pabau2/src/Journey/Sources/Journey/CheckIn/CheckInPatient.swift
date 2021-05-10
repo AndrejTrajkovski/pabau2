@@ -3,6 +3,7 @@ import ComposableArchitecture
 import Model
 import Form
 import Util
+import JourneyBase
 
 struct CheckInPatientContainer: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>
@@ -13,7 +14,7 @@ struct CheckInPatientContainer: View {
 							state: { $0.patientCheckIn },
 							action: { .patient(.stepsView($0)) }),
 						avatarView: {
-							JourneyProfileView(style: .short,
+							JourneyProfileView(style: JourneyProfileViewStyle.short,
 											   viewState: .init(appointment: viewStore.state.appointment))
 						},
 						content: {

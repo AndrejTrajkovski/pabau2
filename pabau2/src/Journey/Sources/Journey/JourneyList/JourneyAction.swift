@@ -2,6 +2,7 @@ import Model
 import Foundation
 import Filters
 import FSCalendarSwiftUI
+import ChoosePathway
 
 public enum JourneyContainerAction {
 	case addAppointmentTap
