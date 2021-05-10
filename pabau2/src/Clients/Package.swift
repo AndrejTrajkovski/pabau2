@@ -20,7 +20,7 @@ let package = Package(
 						 from: Version.init(stringLiteral: "2.0.0")),
         .package(name: "Facebook",
                          url: "https://github.com/facebook/facebook-ios-sdk.git",
-                         .upToNextMajor(from: Version.init(stringLiteral: "5.10.0")))
+                         .upToNextMajor(from: Version.init(stringLiteral: "9.3.0")))
 	],
 	targets: [
 		.target(

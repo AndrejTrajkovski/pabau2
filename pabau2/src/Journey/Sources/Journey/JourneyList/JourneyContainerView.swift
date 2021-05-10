@@ -2,7 +2,6 @@ import SwiftUI
 import FSCalendarSwiftUI
 import Model
 import Util
-import NonEmpty
 import ComposableArchitecture
 import SwiftDate
 import CasePaths
