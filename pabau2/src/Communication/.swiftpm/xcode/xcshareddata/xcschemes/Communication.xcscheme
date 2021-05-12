@@ -17,9 +17,6 @@
                BlueprintIdentifier = "Communication"
                BuildableName = "Communication"
                BlueprintName = "Communication"
-               BlueprintIdentifier = "Communication"
-               BuildableName = "Communication"
-               BlueprintName = "Communication"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -50,21 +47,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-<<<<<<< HEAD
-<<<<<<< HEAD:pabau2/src/Communication/.swiftpm/xcode/xcshareddata/xcschemes/Communication.xcscheme
-=======
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "Form"
-            BuildableName = "Form"
-            BlueprintName = "Form"
+            BlueprintIdentifier = "Communication"
+            BuildableName = "Communication"
+            BlueprintName = "Communication"
             ReferencedContainer = "container:">
          </BuildableReference>
       </MacroExpansion>
->>>>>>> CCChooseForm:pabau2/src/Form/.swiftpm/xcode/xcshareddata/xcschemes/Form.xcscheme
-=======
->>>>>>> CCChooseForm
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
