@@ -10,7 +10,7 @@ public let ccPhotosReducer: Reducer<CCPhotosState, CCPhotosAction, ClientsEnviro
 		action: /CCPhotosAction.action,
 		environment: { $0 }
 	),
-	expandedPhotoReducer.optional.pullback(
+	expandedPhotoReducer.optional().pullback(
 		state: \CCPhotosState.expandedSection,
 		action: /CCPhotosAction.expanded,
 		environment: { $0 }),

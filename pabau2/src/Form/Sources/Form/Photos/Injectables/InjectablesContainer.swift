@@ -16,11 +16,11 @@ public enum InjectablesAction: Equatable {
 }
 
 public let injectablesContainerReducer: Reducer<InjectablesState, InjectablesAction, FormEnvironment> = .combine(
-	injectablesToolReducer.optional.pullback(
+	injectablesToolReducer.optional().pullback(
 		state: \InjectablesState.injectablesTool,
 		action: /InjectablesAction.injectablesTool,
 		environment: { $0 }),
-	injectablesCanvasReducer.optional.pullback(
+	injectablesCanvasReducer.optional().pullback(
 		state: \InjectablesState.canvas,
 		action: /InjectablesAction.canvas,
 		environment: { $0 }),

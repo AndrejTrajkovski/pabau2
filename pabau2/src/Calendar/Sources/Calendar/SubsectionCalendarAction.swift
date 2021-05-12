@@ -19,5 +19,4 @@ public enum SubsectionCalendarAction<Subsection: Identifiable & Equatable> {
 					durationMins: Int,
 					dropKeys:(location: Location.ID, subsection: Subsection.ID))
     case appointmentEdited(Result<PlaceholdeResponse, RequestError>)
-	case viewDidAppear(sectionWidth: Float)
 }

@@ -4,8 +4,9 @@ import Util
 import Tagged
 import ComposableArchitecture
 
-public enum CalAppointments: Equatable {
+public enum Appointments: Equatable {
 
+	case list(ListAppointments)
 	case employee(EventsBy<Employee>)
 	case room(EventsBy<Room>)
 	case week([Date: IdentifiedArrayOf<CalendarEvent>])
@@ -18,14 +19,18 @@ public enum CalAppointments: Equatable {
 			return .room
 		case .week:
 			return .week
+		case .list:
+			return .list
 		}
 	}
 
 	public enum CalendarType: Equatable, CaseIterable {
+		
 		case employee
 		case room
 		case week
-
+		case list
+		
 		public func title() -> String {
 			switch self {
 			case .employee:
@@ -34,6 +39,8 @@ public enum CalAppointments: Equatable {
 				return Texts.room
 			case .week:
 				return Texts.week
+			case .list:
+				return Texts.list
 			}
 		}
 	}
@@ -46,11 +53,13 @@ public enum CalAppointments: Equatable {
 			return apps.flatten()
 		case .week(let apps):
 			return apps.flatMap { $0.value.elements }
+		case .list(let apps):
+			return apps.flatten()
 		}
 	}
 }
 
-public extension CalAppointments {
+public extension Appointments {
 	
 	mutating func refresh(events: [CalendarEvent],
 						  locationsIds: Set<Location.ID>,
@@ -91,6 +100,8 @@ public extension CalAppointments {
 		case .week:
 			let weekApps = groupByStartOfDay(originalEvents: events).mapValues { IdentifiedArrayOf.init($0)}
 			self = .week(weekApps)
+		case .list:
+			self = .list(ListAppointments.init(events: events))
 		}
 	}
 }

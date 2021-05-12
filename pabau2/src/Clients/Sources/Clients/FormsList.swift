@@ -4,7 +4,7 @@ import ComposableArchitecture
 import Form
 
 public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnvironment> = .combine (
-	formsContainerReducer.optional.pullback(
+	formsContainerReducer.optional().pullback(
 		state: \FormsListState.formsContainer,
 		action: /FormsListAction.formsContainer,
 		environment: { FormEnvironment($0.formAPI, $0.userDefaults) }

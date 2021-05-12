@@ -6,7 +6,7 @@ import Util
 import Avatar
 
 public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAction, FormEnvironment> = .combine(
-	chooseFormListReducer.optional.pullback(
+	chooseFormListReducer.optional().pullback(
 		state: \FormsContainerState.chooseForms,
 		action: /FormsContainerAction.chooseForms,
 		environment: { $0 }
