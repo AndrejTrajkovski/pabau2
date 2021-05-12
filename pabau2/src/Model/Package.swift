@@ -18,6 +18,7 @@ let package = Package(
 				 url: "https://github.com/pointfreeco/swift-tagged.git",
 				 from: Version.init(stringLiteral: "0.5.0")),
 		.package(url: "../Util", from: Version.init(stringLiteral: "1.0.0")),
+        .package(url: "../CoreDataModel", from: Version.init(stringLiteral: "1.0.0")),
 		.package(name: "Overture",
 				 url: "https://github.com/pointfreeco/swift-overture.git",
 				 from: Version.init(stringLiteral: "0.5.0"))
@@ -26,15 +27,17 @@ let package = Package(
 		.target(
 			name: "Model",
 			dependencies: [
-				.product(name: "ComposableArchitecture",
-						 package: "swift-composable-architecture"),
-				.product(name: "Tagged",
-						 package: "Tagged"),
-				.product(name: "Util",
-						 package: "Util"),
-				.product(name: "Overture",
-						 package: "Overture")
-			]
+                .product(name: "ComposableArchitecture",
+                         package: "swift-composable-architecture"),
+                .product(name: "Tagged",
+                         package: "Tagged"),
+                .product(name: "Util",
+                         package: "Util"),
+                .product(name: "Overture",
+                         package: "Overture"),
+                .product(name: "Overture",
+                         package: "Overture")
+            ]
 		),
 		.testTarget(
 			name: "ModelTests",

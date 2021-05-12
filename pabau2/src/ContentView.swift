@@ -17,7 +17,7 @@ typealias AppEnvironment = (
 	clientsAPI: ClientsAPI,
 	formAPI: FormAPI,
 	userDefaults: UserDefaultsConfig,
-    storage: CoreDataModel
+    repository: Repository
 )
 
 func makeJourneyEnv(_ appEnv: AppEnvironment) -> JourneyEnvironment {
@@ -63,7 +63,7 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = Reducer.combine(
 				clientsAPI: $0.clientsAPI,
 				formAPI: $0.formAPI,
 				userDefaults: $0.userDefaults,
-                storage: $0.storage
+                repository: $0.repository
               )
 			}
 	),

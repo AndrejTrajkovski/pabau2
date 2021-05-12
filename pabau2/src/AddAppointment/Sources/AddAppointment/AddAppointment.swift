@@ -6,7 +6,7 @@ import Form
 import SharedComponents
 import CoreDataModel
 
-public typealias AddAppointmentEnv = (journeyAPI: JourneyAPI, clientAPI: ClientsAPI, userDefaults: UserDefaultsConfig, storage: CoreDataModel)
+public typealias AddAppointmentEnv = (journeyAPI: JourneyAPI, clientAPI: ClientsAPI, userDefaults: UserDefaultsConfig, repository: Repository)
 
 public struct AddAppointmentState: Equatable {
 	let editingAppointment: Appointment?

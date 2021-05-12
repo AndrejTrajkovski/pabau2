@@ -10,16 +10,16 @@ let chooseBookoutReasonReducer = Reducer<
     ChooseBookoutReasonAction,
     AddBookoutEnvironment
 > { state, action, env in
+    struct LoadBookoutReasons: Hashable {}
+
     switch action {
     case .onAppear:
         state.searchText = ""
-		
-        return env.storage.fetchAllSchemes(BookoutReasonScheme.self)
+        return env.repository.getBookoutReasons()
             .catchToEffect()
             .receive(on: DispatchQueue.main)
-            .map(ChooseBookoutReasonAction.gotStoredReasonResponse)
+            .map(ChooseBookoutReasonAction.gotReasonResponse)
             .eraseToEffect()
-        
     case .onSearch(let text):
         state.searchText = text
         if state.searchText.isEmpty {
@@ -30,37 +30,12 @@ let chooseBookoutReasonReducer = Reducer<
         state.filteredReasons = state.reasons.filter {($0.name?.lowercased().contains(text.lowercased()) ?? false)}
     case .gotReasonResponse(let result):
         switch result {
-        case .success(let reasons):
-            reasons.forEach { $0.save(to: env.storage) }
-            
-            state.reasons = .init(reasons)
+        case .success(let response):
+            log(response.isDB, text: "is from db")
+            state.reasons = .init(response.value)
             state.filteredReasons = state.reasons
         case .failure:
             break
-        }
-    case .gotStoredReasonResponse(let result):
-        switch result {
-        case .success(let schemes):
-            if schemes.isEmpty {
-                return env.clientAPI.getBookoutReasons()
-                    .catchToEffect()
-                    .receive(on: DispatchQueue.main)
-                    .map(ChooseBookoutReasonAction.gotReasonResponse)
-                    .eraseToEffect()
-            }
-
-            var reasons = schemes.compactMap {
-                BookoutReason(id: $0.id, name: $0.name, color: $0.color)
-            }
-       
-            state.reasons = .init(reasons)
-            state.filteredReasons = state.reasons
-        case .failure:
-            return env.clientAPI.getBookoutReasons()
-                .catchToEffect()
-                .receive(on: DispatchQueue.main)
-                .map(ChooseBookoutReasonAction.gotReasonResponse)
-                .eraseToEffect()
         }
     case .didSelectReason(let reason):
         state.chosenReasons = reason

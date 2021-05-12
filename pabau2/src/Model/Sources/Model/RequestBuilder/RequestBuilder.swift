@@ -84,7 +84,8 @@ public enum RequestError: Error, Equatable, CustomStringConvertible {
 				 (.serverError, .serverError),
 				 (.responseNotHTTP, .responseNotHTTP),
 				 (.unknown, .unknown),
-				 (.apiError, .apiError):
+				 (.apiError, .apiError),
+                 (.dumpError, .dumpError):
 			return true
 		default:
 			return false
@@ -100,6 +101,7 @@ public enum RequestError: Error, Equatable, CustomStringConvertible {
 	case serverError(String)
 	case responseNotHTTP
 	case apiError(String)
+    case dumpError(String)
 	case unknown
 	
 	public var description: String {
@@ -122,6 +124,8 @@ public enum RequestError: Error, Equatable, CustomStringConvertible {
 			return "Response not HTTP."
 		case .apiError(let message):
 			return message
+        case .dumpError(let message):
+            return message
 		case .unknown:
 			return "Unknown Error."
 		}

@@ -32,8 +32,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 			let user = userDefaults.loggedInUser
 			let hasSeenWalkthrough = userDefaults.hasSeenAppIntroduction
 			let apiClient = APIClient(baseUrl: "https://ios.pabau.me", loggedInUser: user)
+            
             let storage = PabauStorage()
             storage.initialized()
+            
+            let repository = Repository(
+                journeyAPI: apiClient,
+                clientAPI: apiClient,
+                userDefaults: userDefaults,
+                coreDataModel: storage
+            )
             
 			let env = AppEnvironment(
 				loginAPI: apiClient,
@@ -41,7 +49,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 				clientsAPI: apiClient,
 				formAPI: apiClient,
 				userDefaults: userDefaults,
-                storage: storage
+                repository: repository
 			)
             
 			window.rootViewController = UIHostingController(

@@ -5,7 +5,7 @@ import Model
 import SharedComponents
 import CoreDataModel
 
-public typealias AddBookoutEnvironment = (journeyAPI: JourneyAPI, clientAPI: ClientsAPI, userDefaults: UserDefaultsConfig, storage: CoreDataModel)
+public typealias AddBookoutEnvironment = (repository: Repository, userDefaults: UserDefaultsConfig)
 
 public let addBookoutOptReducer: Reducer<
     AddBookoutState?,
@@ -36,7 +36,7 @@ public let addBookoutOptReducer: Reducer<
 
             state?.showsLoadingSpinner = true
 
-            return env.clientAPI.createAppointment(appointment: appointmentsBody)
+            return env.repository.clientAPI.createAppointment(appointment: appointmentsBody)
                 .catchToEffect()
                 .receive(on: DispatchQueue.main)
                 .map(AddBookoutAction.appointmentCreated)

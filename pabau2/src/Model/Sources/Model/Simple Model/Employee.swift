@@ -22,6 +22,23 @@ public struct Employee: Decodable, Identifiable, Equatable, Hashable {
 		case passcode
 		case locations
 	}
+    
+    public init(
+        id: Employee.Id,
+        name: String,
+        email: String,
+        avatar: String?,
+        locations: [Location.Id],
+        passcode: String
+        
+    ) {
+        self.id = id
+        self.name = name
+        self.email = email
+        self.avatar = avatar
+        self.locations = locations
+        self.passcode = passcode
+    }
 	
 	public init(from decoder: Decoder) throws {
 		let container = try decoder.container(keyedBy: Self.CodingKeys)

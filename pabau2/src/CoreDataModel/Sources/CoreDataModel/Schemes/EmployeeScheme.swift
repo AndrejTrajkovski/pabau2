@@ -1,6 +1,7 @@
 import CoreStore
 import Model
 import Util
+import Tagged
 
 public class IDsScheme: CoreStoreObject {
     @Field.Relationship("master")
@@ -32,6 +33,19 @@ public class EmployeeScheme: CoreStoreObject {
 }
 
 extension Employee {
+    public static func convert(from schemes: [EmployeeScheme]) -> [Employee]  {
+        schemes.compactMap {
+            Employee(
+                id: Id(rawValue: $0.id),
+                name: $0.name,
+                email: $0.email,
+                avatar: $0.avatar,
+                locations: $0.locations.map { Location.Id(rawValue: EitherStringOrInt.left($0.id)) },
+                passcode: $0.passcode
+            )
+        }
+    }
+    
     public func save(to store: CoreDataModel)  {
         store.dataStack.perform { (transaction) -> EmployeeScheme? in
             let employeeScheme = transaction.create(Into<EmployeeScheme>())

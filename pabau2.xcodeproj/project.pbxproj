@@ -60,7 +60,6 @@
 		74DD9D37256EB28C00CC3920 /* Intercom.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intercom.framework; path = pabau2/Intercom.framework; sourceTree = "<group>"; };
 		82018FE62567D59300E740A9 /* AddAppointment */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AddAppointment; sourceTree = "<group>"; };
 		82018FE72569657100E740A9 /* AddBookout */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AddBookout; sourceTree = "<group>"; };
-		820A343D252E0E1100C6AB29 /* JZCalendarWeekView */ = {isa = PBXFileReference; lastKnownFileType = folder; path = JZCalendarWeekView; sourceTree = "<group>"; };
 		82104534240CE516004EA838 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		82104536240CE524004EA838 /* libswiftXCTest.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftXCTest.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/libswiftXCTest.tbd; sourceTree = DEVELOPER_DIR; };
 		8246DB37256FCE2300F5D87E /* Filters */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Filters; sourceTree = "<group>"; };
@@ -146,7 +145,6 @@
 		82BE2F3B23D97D9C00B3678A = {
 			isa = PBXGroup;
 			children = (
-				820A343D252E0E1100C6AB29 /* JZCalendarWeekView */,
 				825BE7E92436226300422910 /* checkIn.mp4 */,
 				82BE2F4623D97D9C00B3678A /* pabau2 */,
 				82BE2F4523D97D9C00B3678A /* Products */,

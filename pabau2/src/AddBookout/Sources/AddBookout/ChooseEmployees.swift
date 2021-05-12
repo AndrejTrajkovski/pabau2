@@ -12,7 +12,7 @@ let chooseEmployeesReducer = Reducer<
     switch action {
     case .onAppear:
         state.searchText = ""
-        return env.journeyAPI.getEmployees()
+        return env.repository.journeyAPI.getEmployees()
             .catchToEffect()
             .receive(on: DispatchQueue.main)
             .map(ChooseEmployeesAction.gotEmployeeResponse)

@@ -288,7 +288,7 @@ struct LocationAndDate: View {
 extension Employee: SingleChoiceElement { }
 extension Location: SingleChoiceElement { }
 
-public typealias AddShiftEnvironment = (apiClient: JourneyAPI, clientAPI: ClientsAPI, userDefaults: UserDefaultsConfig, storage: CoreDataModel)
+public typealias AddShiftEnvironment = (apiClient: JourneyAPI, clientAPI: ClientsAPI, userDefaults: UserDefaultsConfig, repository: Repository)
 
 extension AddShiftState {
 	public static func makeEmpty() -> AddShiftState {

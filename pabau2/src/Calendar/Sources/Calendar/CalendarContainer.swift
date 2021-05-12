@@ -13,7 +13,7 @@ import Appointments
 import JZCalendarWeekView
 import CoreDataModel
 
-public typealias CalendarEnvironment = (journeyAPI: JourneyAPI, clientsAPI: ClientsAPI, userDefaults: UserDefaultsConfig, storage: CoreDataModel)
+public typealias CalendarEnvironment = (journeyAPI: JourneyAPI, clientsAPI: ClientsAPI, userDefaults: UserDefaultsConfig, repository: Repository)
 
 public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAction, CalendarEnvironment> = .combine(
 	calTypePickerReducer.pullback(
@@ -224,10 +224,16 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 		state: \CalendarState.appDetails,
 		action: /CalendarAction.appDetails,
 		environment: { $0 }),
-	addBookoutOptReducer.pullback(
-		state: \CalendarState.addBookoutState,
-		action: /CalendarAction.addBookoutAction,
-		environment: { $0 }),
+    addBookoutOptReducer.pullback(
+        state: \CalendarState.addBookoutState,
+        action: /CalendarAction.addBookoutAction,
+        environment: {
+            AddBookoutEnvironment(
+                repository: $0.repository,
+                userDefaults: $0.userDefaults
+            )
+        }
+    ),
 	addShiftOptReducer.pullback(
 		state: \CalendarState.addShift,
 		action: /CalendarAction.addShift,

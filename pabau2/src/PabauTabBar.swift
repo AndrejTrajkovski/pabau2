@@ -19,7 +19,7 @@ public typealias TabBarEnvironment = (
 	clientsAPI: ClientsAPI,
 	formAPI: FormAPI,
 	userDefaults: UserDefaultsConfig,
-    storage: CoreDataModel
+    repository: Repository
 )
 
 public enum TabItemId: String {
@@ -284,7 +284,7 @@ public let tabBarReducer: Reducer<
                 journeyAPI: $0.journeyAPI,
                 clientAPI: $0.clientsAPI,
                 userDefaults: $0.userDefaults,
-                storage: $0.storage
+                repository: $0.repository
             )
 		}
 	),
@@ -317,7 +317,7 @@ public let tabBarReducer: Reducer<
 				journeyAPI: $0.journeyAPI,
 				clientsAPI: $0.clientsAPI,
                 userDefaults: $0.userDefaults,
-                storage: $0.storage
+                repository: $0.repository
             )
 		}),
 	communicationReducer.pullback(

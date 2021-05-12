@@ -10,7 +10,7 @@ let chooseLocationsReducer =
         switch action {
         case .onAppear:
             state.searchText = ""
-            return env.journeyAPI.getLocations()
+            return env.repository.journeyAPI.getLocations()
                 .catchToEffect()
                 .receive(on: DispatchQueue.main)
                 .map(ChooseLocationAction.gotLocationsResponse)

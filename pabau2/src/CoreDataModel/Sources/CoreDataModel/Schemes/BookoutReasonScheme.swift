@@ -13,6 +13,12 @@ public class BookoutReasonScheme: CoreStoreObject {
 }
 
 extension BookoutReason {
+    public static func convert(from schemes: [BookoutReasonScheme]) -> [BookoutReason] {
+        schemes.compactMap {
+             BookoutReason(id: $0.id, name: $0.name, color: $0.color)
+        }
+    }
+    
     public func save(to store: CoreDataModel)  {
         store.dataStack.perform { (transaction) -> BookoutReasonScheme? in
             let scheme = transaction.create(Into<BookoutReasonScheme>())

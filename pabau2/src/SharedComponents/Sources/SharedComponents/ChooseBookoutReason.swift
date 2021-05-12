@@ -23,8 +23,7 @@ public struct ChooseBookoutReasonState: Equatable {
 
 public enum ChooseBookoutReasonAction: Equatable {
     case onAppear
-    case gotReasonResponse(Result<[BookoutReason], RequestError>)
-    case gotStoredReasonResponse(Result<[BookoutReasonScheme], CoreDataModelError>)
+    case gotReasonResponse(Result<Repository.BookoutReasonsResponse, RequestError>)
     case didSelectReason(BookoutReason)
     case onSearch(String)
     case didTapBackBtn
