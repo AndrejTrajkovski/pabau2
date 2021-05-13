@@ -7,7 +7,7 @@ import Model
 
 public protocol CoreDataModel {
      var dataStack: DataStack { get }
-   
+ 
      func initialized()
      func fetchAllSchemes<T: DynamicObject>(_ type: T.Type) -> Effect<[T], RequestError>
      func fetchCount<T: DynamicObject>(_ type: T.Type) -> Int
@@ -110,7 +110,7 @@ public class PabauStorage: CoreDataModel {
             )
         }
     }
-   
+ 
     public func fetchCount<T: DynamicObject>(_ type: T.Type) -> Int {
         do {
             let count = try self.dataStack.fetchCount(From(type))

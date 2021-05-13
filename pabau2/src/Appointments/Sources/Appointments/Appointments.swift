@@ -64,7 +64,7 @@ public enum Appointments: Equatable {
 			return journeyApps.flatten()
 		}
 	}
-	
+
 	public init(type: ViewType,
 				events: [CalendarEvent],
 				locationsIds: Set<Location.ID>,

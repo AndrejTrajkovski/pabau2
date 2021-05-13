@@ -3,6 +3,7 @@ import ComposableArchitecture
 import Model
 import Form
 import Util
+import CoreDataModel
 
 struct CheckInPatientContainer: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>
@@ -70,7 +71,7 @@ let checkInPatientReducer: Reducer<CheckInPatientState, CheckInPatientAction, Jo
 	CheckInReducer<CheckInPatientState>().reducer.pullback(
 		state: \CheckInPatientState.self,
 		action: /CheckInPatientAction.stepsView,
-		environment: { FormEnvironment($0.formAPI, $0.userDefaults) }
+        environment: { FormEnvironment($0.formAPI, $0.userDefaults, $0.repository) }
 	)
 )
 

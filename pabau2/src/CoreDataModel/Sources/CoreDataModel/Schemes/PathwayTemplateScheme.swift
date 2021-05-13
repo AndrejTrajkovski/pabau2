@@ -1,6 +1,7 @@
 import CoreStore
 import Model
 import Util
+import ComposableArchitecture
 
 public class PathwayTemplateScheme: CoreStoreObject {
     @Field.Stored("id")
@@ -17,6 +18,28 @@ public class PathwayTemplateScheme: CoreStoreObject {
 }
 
 extension PathwayTemplate {
+    public static func convert(
+        from schemes: [PathwayTemplateScheme]
+    ) -> IdentifiedArrayOf<PathwayTemplate> {
+        
+        let array: [PathwayTemplate] = schemes.compactMap { sheme in
+            PathwayTemplate(
+                id: PathwayTemplate.ID(rawValue: EitherStringOrInt.left(sheme.id)),
+                title: sheme.title,
+                steps: sheme.steps.compactMap { stepSheme in
+                    Step(
+                        id: Step.Id(rawValue: stepSheme.id),
+                        stepType: StepType(rawValue: stepSheme.stepType) ?? .photos,
+                        preselectedTemplate: stepSheme.formTemplateID == "0" ?
+                            .definedbyservice :
+                            .template(HTMLForm.ID(rawValue: stepSheme.formTemplateID)))
+                },
+                _description: sheme.descript
+            )
+        }
+        
+        return IdentifiedArrayOf(array)
+    }
     public func save(to store: CoreDataModel) {
         store.dataStack.perform { (transaction) -> PathwayTemplateScheme? in
             let pathwayTemplateScheme = transaction.create(Into<PathwayTemplateScheme>())

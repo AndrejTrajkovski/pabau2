@@ -2,12 +2,13 @@ import SwiftUI
 import Model
 import ComposableArchitecture
 import Form
+import CoreDataModel
 
 public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnvironment> = .combine (
 	formsContainerReducer.optional.pullback(
 		state: \FormsListState.formsContainer,
 		action: /FormsListAction.formsContainer,
-		environment: { FormEnvironment($0.formAPI, $0.userDefaults) }
+        environment: { FormEnvironment($0.formAPI, $0.userDefaults, $0.repository) }
 	),
 	ClientCardChildReducer<IdentifiedArrayOf<FilledFormData>>().reducer.pullback(
 		state: \FormsListState.childState,
@@ -17,12 +18,14 @@ public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnv
 	.init { state, action, env in
 		switch action {
 		case .add:
-			state.formsContainer = FormsContainerState(client: state.client,
-													   formType: state.formType,
-													   chooseForms: ChooseFormState(templates: [], selectedTemplatesIds: [], mode: .clientCard(state.formType)),
-													   isFillingFormsActive: false,
-													   formsCollection: [],
-													   selectedIdx: 0)
+			state.formsContainer = FormsContainerState(
+                client: state.client,
+                formType: state.formType,
+                chooseForms: ChooseFormState(templates: [], selectedTemplatesIds: [], mode: .clientCard(state.formType)),
+                isFillingFormsActive: false,
+                formsCollection: [],
+                selectedIdx: 0
+            )
 		case .action:
 			break
 		case .backFromChooseForms:

@@ -14,7 +14,13 @@ public class FormTemplateInfoScheme: CoreStoreObject {
 }
 
 extension FormTemplateInfo {
-    public func save(to store: CoreDataModel)  {
+    public static func convert(from schemes: [FormTemplateInfoScheme]) -> [FormTemplateInfo] {
+        schemes.compactMap {
+            FormTemplateInfo(id: HTMLForm.ID(stringLiteral: $0.id), name: $0.name, type: FormType(rawValue: $0.type) ?? .unknown)
+        }
+    }
+    
+    public func save(to store: CoreDataModel) {
         store.dataStack.perform { (transaction) -> FormTemplateInfoScheme? in
             let scheme = transaction.create(Into<FormTemplateInfoScheme>())
             scheme.id = self.id.description

@@ -25,7 +25,8 @@ func makeJourneyEnv(_ appEnv: AppEnvironment) -> JourneyEnvironment {
 		formAPI: appEnv.formAPI,
 		journeyAPI: appEnv.journeyAPI,
 		clientsAPI: appEnv.clientsAPI,
-		userDefaults: appEnv.userDefaults
+		userDefaults: appEnv.userDefaults,
+        repository: appEnv.repository
 	)
 }
 
@@ -33,7 +34,8 @@ func makeClientsEnv(_ appEnv: AppEnvironment) -> ClientsEnvironment {
 	return ClientsEnvironment(
 		apiClient: appEnv.clientsAPI,
 		formAPI: appEnv.formAPI,
-		userDefaults: appEnv.userDefaults
+		userDefaults: appEnv.userDefaults,
+        repository: appEnv.repository
 	)
 }
 

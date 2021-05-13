@@ -1,4 +1,4 @@
 import Foundation
 import Model
-
-public typealias FormEnvironment = (formAPI: FormAPI, userDefaults: UserDefaultsConfig)
+import CoreDataModel
+public typealias FormEnvironment = (formAPI: FormAPI, userDefaults: UserDefaultsConfig, repository: Repository)

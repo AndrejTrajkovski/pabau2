@@ -129,7 +129,7 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 				if let pathwayId = appointment.pathwayId,
 				   let pathwayTemplateId = appointment.pathwayTemplateId {
 					print(pathwayId, pathwayTemplateId)
-					let getTemplate = environment.journeyAPI.getPathwayTemplates()
+					let getTemplate = environment.repository.getPathwayTemplates()
 						.map { $0.first(where: { $0.id.description == pathwayTemplateId.description }) }
 						.tryMap { optionalPwT -> PathwayTemplate in
 							if let pathwayTemplate = optionalPwT {

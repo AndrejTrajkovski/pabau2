@@ -19,6 +19,13 @@ public struct PathwayTemplate: Decodable, Identifiable, Equatable {
         self.steps = steps
         self._description = _description
     }
+    
+    public init(id: ID, title: String, steps: [Step], _description: String? = nil) {
+        self.id = id
+        self.title = title
+        self.steps = steps
+        self._description = _description
+    }
 	
     public enum CodingKeys: String, CodingKey {
         case id = "id"

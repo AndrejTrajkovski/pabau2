@@ -14,7 +14,13 @@ public class LocationScheme: CoreStoreObject {
 }
 
 extension Location {
-    public func save(to store: CoreDataModel)  {
+    public static func convert(from schemes: [LocationScheme]) -> [Location] {
+        schemes.compactMap {
+            Location(id: $0.id, name: $0.name, color: $0.color)
+        }
+    }
+    
+    public func save(to store: CoreDataModel) {
         store.dataStack.perform { (transaction) -> LocationScheme? in
             let scheme = transaction.create(Into<LocationScheme>())
             scheme.id = self.id.description

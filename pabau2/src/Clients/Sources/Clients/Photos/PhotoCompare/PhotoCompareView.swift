@@ -59,7 +59,7 @@ let photoCompareReducer = Reducer.combine(
     editPhotosReducer.optional.pullback(
         state: \PhotoCompareState.editPhotoState,
         action: /PhotoCompareAction.editPhoto,
-        environment: { FormEnvironment(formAPI: $0.formAPI, userDefaults: $0.userDefaults) }
+        environment: { FormEnvironment(formAPI: $0.formAPI, userDefaults: $0.userDefaults, repository: $0.repository) }
     ),
     Reducer<PhotoCompareState, PhotoCompareAction, ClientsEnvironment> { state, action, _ in
 		switch action {

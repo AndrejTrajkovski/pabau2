@@ -24,9 +24,9 @@ public struct Location: Decodable, Identifiable, Equatable {
         self.color = try container.decodeIfPresent(String.self, forKey: .color)
     }
 	
-	public init(id: String, name: String) {
+    public init(id: String, name: String, color: String? = nil) {
 		self.id = Self.Id.init(rawValue: EitherStringOrInt.left(id))
 		self.name = name
-		self.color = nil
+		self.color = color
 	}
 }

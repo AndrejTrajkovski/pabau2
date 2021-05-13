@@ -3,13 +3,14 @@ import Model
 import ComposableArchitecture
 import Util
 import SharedComponents
+import CoreDataModel
 
 let chooseLocationsReducer =
     Reducer<ChooseLocationState, ChooseLocationAction, AddShiftEnvironment> { state, action, env in
         switch action {
         case .onAppear:
             state.searchText = ""
-            return env.apiClient.getLocations()
+            return env.repository.getLocations()
                 .catchToEffect()
                 .receive(on: DispatchQueue.main)
                 .map(ChooseLocationAction.gotLocationsResponse)

@@ -39,6 +39,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let repository = Repository(
                 journeyAPI: apiClient,
                 clientAPI: apiClient,
+                formAPI: apiClient,
                 userDefaults: userDefaults,
                 coreDataModel: storage
             )

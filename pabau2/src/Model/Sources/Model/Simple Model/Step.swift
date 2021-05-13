@@ -29,6 +29,12 @@ public struct Step: Decodable, Identifiable, Equatable {
 		//		case preselectedTemplateType
 		//		case formTemplate
 	}
+    
+    public init(id: Id, stepType: StepType, preselectedTemplate: PreselectedTemplate?) {
+        self.id = id
+        self.stepType = stepType
+        self.preselectedTemplate = preselectedTemplate
+    }
 	
 	public init(from decoder: Decoder) throws {
 		let container = try decoder.container(keyedBy: Self.CodingKeys)

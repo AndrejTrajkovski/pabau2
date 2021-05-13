@@ -3,6 +3,7 @@ import ComposableArchitecture
 import Model
 import Util
 import Form
+import CoreDataModel
 
 public let addClientOptionalReducer: Reducer<AddClientState?, ClientCardAddClientAction, ClientsEnvironment> = .combine(
 	clientCardAddClientReducer.optional().pullback(
@@ -57,7 +58,8 @@ public let clientCardAddClientReducer: Reducer<AddClientState, ClientCardAddClie
 		environment: {
 			FormEnvironment(
 				formAPI: $0.formAPI,
-				userDefaults: $0.userDefaults
+				userDefaults: $0.userDefaults,
+                repository:  $0.repository
 			)
 		}
 	)
