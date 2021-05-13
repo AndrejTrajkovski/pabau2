@@ -215,7 +215,7 @@ public struct CalendarContainer: View {
 			ZStack(alignment: .topTrailing) {
 				VStack(spacing: 0) {
 					CalTopBar(store: store.scope(state: { $0 }))
-					CalendarDatePicker.init(
+					CalendarDatePicker(
 						store: self.store.scope(
 							state: { $0.selectedDate },
 							action: { .datePicker($0)}
@@ -235,7 +235,6 @@ public struct CalendarContainer: View {
                         }
 				}
 			}
-			.navigationBarItems(leading: leadingItems)
 			.fullScreenCover(
                 isPresented:
 					Binding(
@@ -311,7 +310,7 @@ public struct CalendarContainer: View {
 		}
 	}
 	
-	var leadingItems: some View {
+	var searchBarButton: some View {
 		HStack(spacing: 8.0) {
 			Button(action: {
 				withAnimation {

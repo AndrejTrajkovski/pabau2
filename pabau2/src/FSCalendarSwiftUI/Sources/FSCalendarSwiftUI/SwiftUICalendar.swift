@@ -73,6 +73,9 @@ struct SwiftUICalendar: UIViewRepresentable {
 	public func makeUIView(context: UIViewRepresentableContext<SwiftUICalendar>) -> FSCalendar {
 		print("makeUIView FSCalendar")
 		let calendar = FSCalendar()
+//		calendar.weekdayHeight = 50
+//		calendar.rowHeight = 44
+//		calendar.headerHeight = 50
 		calendar.firstWeekday = 2 //Monday
 		update(calendar: calendar, selDate: date, isWeekView: isWeekView)
 		calendar.delegate = context.coordinator
