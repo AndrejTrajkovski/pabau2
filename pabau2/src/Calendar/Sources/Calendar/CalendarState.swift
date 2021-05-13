@@ -202,6 +202,7 @@ extension CalendarState {
 		self.isShowingFilters = false
 		self.expandedLocationsIds = []
 		self.appointments = .list(ListAppointments.init(events: []))
+//		self.appointments = .employee(EventsBy.init(events: [], locationsIds: [], subsections: [], sectionKeypath: \.locationId, subsKeypath: \.employeeId))
 		self.chosenLocationsIds = Set()
 	}
 }

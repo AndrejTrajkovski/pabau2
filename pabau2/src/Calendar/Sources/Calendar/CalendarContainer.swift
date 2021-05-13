@@ -223,9 +223,8 @@ public struct CalendarContainer: View {
 						isWeekView: viewStore.state.appointments.calendarType == Appointments.CalendarType.week,
 						scope: viewStore.scope
 					)
-					.padding(0)
 					CalendarWrapper(store: self.store)
-					Spacer()
+						.frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
 				if viewStore.state.isShowingFilters {
 					FiltersWrapper(store: store)
