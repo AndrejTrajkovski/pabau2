@@ -4,7 +4,7 @@ import ComposableArchitecture
 import Util
 
 let clientCardReducer: Reducer<ClientCardState?, ClientCardAction, ClientsEnvironment> = .combine(
-	clientCardBottomReducer.optional.pullback(
+	clientCardBottomReducer.optional().pullback(
 		state: \ClientCardState.self,
 		action: /ClientCardAction.bottom,
 		environment: { $0 }),

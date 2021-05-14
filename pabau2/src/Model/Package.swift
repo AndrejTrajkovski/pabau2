@@ -18,7 +18,6 @@ let package = Package(
 				 url: "https://github.com/pointfreeco/swift-tagged.git",
 				 from: Version.init(stringLiteral: "0.5.0")),
 		.package(url: "../Util", from: Version.init(stringLiteral: "1.0.0")),
-        .package(url: "../CoreDataModel", from: Version.init(stringLiteral: "1.0.0")),
 		.package(name: "Overture",
 				 url: "https://github.com/pointfreeco/swift-overture.git",
 				 from: Version.init(stringLiteral: "0.5.0"))

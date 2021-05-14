@@ -5,7 +5,7 @@ import Model
 import AddBookout
 import Appointments
 
-struct CalendarSectionViewState<Subsection: Identifiable & Equatable>: Equatable {
+public struct CalendarSectionViewState<Subsection: Identifiable & Equatable>: Equatable {
 	var selectedDate: Date
 	var appointments: EventsBy<Subsection>
 	var appDetails: AppDetailsState?
@@ -15,7 +15,6 @@ struct CalendarSectionViewState<Subsection: Identifiable & Equatable>: Equatable
 	let subsections: [Location.ID: IdentifiedArrayOf<Subsection>]
 	let chosenSubsectionsIds: [Location.ID: [Subsection.ID]]
 	let shifts: [Date: [Location.ID: [Subsection.ID: [JZShift]]]]
-	var sectionWidth: Float?
 }
 
 public extension Dictionary {

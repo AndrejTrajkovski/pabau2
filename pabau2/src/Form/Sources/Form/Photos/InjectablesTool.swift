@@ -13,7 +13,7 @@ public let injectablesToolReducer: Reducer<InjectablesToolState, InjectablesTool
 		state: \.self,
 		action: /InjectablesToolAction.stepper,
 		environment: { $0 }),
-	injectablesToolAnglePickerReducer.optional.pullback(
+	injectablesToolAnglePickerReducer.optional().pullback(
 		state: \InjectablesToolState.anglePicker,
 		action: /InjectablesToolAction.anglePicker,
 		environment: { $0 })

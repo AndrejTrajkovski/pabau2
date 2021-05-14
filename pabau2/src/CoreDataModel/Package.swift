@@ -13,13 +13,16 @@ let package = Package(
     ],
     dependencies: [
         .package(name: "CoreStore",
-                 url: "https://github.com/JohnEstropia/CoreStore", from: "8.0.1")
+                 url: "https://github.com/JohnEstropia/CoreStore", from: "8.0.1"),
+		.package(url: "../Model",
+				 from: Version.init(stringLiteral: "1.0.0"))
     ],
     targets: [
         .target(
             name: "CoreDataModel",
             dependencies: [
-                "CoreStore"
+                "CoreStore",
+				"Model"
             ]
         ),
         .testTarget(

@@ -16,11 +16,7 @@ public struct CalendarDatePicker: View {
                 scope,
                 isWeekView: isWeekView,
                 onHeightChange: { height in
-                    DispatchQueue.main.async {
-                        withAnimation {
-                            self.totalHeight = height
-                        }
-                    }
+					self.totalHeight = height
                 },
                 onDateChanged: { viewStore.send(.selectedDate($0))}
             ).frame(height: self.totalHeight)

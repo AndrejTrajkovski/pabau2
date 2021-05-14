@@ -22,72 +22,17 @@ public typealias TabBarEnvironment = (
     repository: Repository
 )
 
-public enum TabItemId: String {
-	case journey
-	case calendar
-	case settings
-	case communication
-	case clients
-}
-
 public struct TabBarState: Equatable {
-	var selectedTab: TabItemId = .journey
 	var appsLoadingState: LoadingState
-	var appointments: Appointments
-	var addAppointment: AddAppointmentState?
-	var journey: JourneyState
+	var journey: ListState
 	var clients: ClientsState
 	var calendar: CalendarState
 	var settings: SettingsState
     var communication: CommunicationState
-	var selectedDate: Date = DateFormatter.yearMonthDay.date(from: "2021-03-11")!
-	var chosenLocationsIds: Set<Location.Id>
-	var sectionWidth: Float?
-	
-	public var calendarContainer: CalendarContainerState? {
-		get {
-			guard case .calendar(let calApps) = appointments else { return nil }
-            return CalendarContainerState(
-                addAppointment: addAppointment,
-                calendar: calendar,
-                appointments: calApps,
-				selectedDate: selectedDate,
-				chosenLocationsIds: chosenLocationsIds,
-				sectionWidth: sectionWidth
-            )
-		}
-		set {
-			guard let newValue = newValue else { return }
-			self.addAppointment = newValue.addAppointment
-			self.calendar = newValue.calendar
-			self.appointments = .calendar(newValue.appointments)
-			self.selectedDate = newValue.selectedDate
-			self.chosenLocationsIds = newValue.chosenLocationsIds
-			self.sectionWidth = newValue.sectionWidth
-		}
-	}
-
-	public var journeyContainer: JourneyContainerState? {
-		get {
-			guard case .journey(let journeyApps) = appointments else { return nil }
-			return JourneyContainerState(journey: self.journey,
-										 employees: self.calendar.employees,
-										 appointments: journeyApps,
-										 loadingState: self.appsLoadingState,
-										 selectedDate: self.selectedDate)
-		}
-		set {
-			guard let newValue = newValue else { return }
-			self.journey = newValue.journey
-			self.appointments = .journey(newValue.appointments)
-			self.appsLoadingState = newValue.loadingState
-			self.selectedDate = newValue.selectedDate
-		}
-	}
+	var addAppointment: AddAppointmentState?
 }
 
 public enum TabBarAction {
-	case selectTab(TabItemId)
 	case settings(SettingsAction)
 	case journey(JourneyContainerAction)
 	case clients(ClientsAction)
@@ -104,13 +49,14 @@ struct PabauTabBar: View {
 	struct ViewState: Equatable {
 		let isShowingCheckin: Bool
 		let isShowingAddAppointment: Bool
-		let selectedTab: TabItemId
 		init(state: TabBarState) {
-			self.isShowingCheckin = state.journeyContainer?.journey.checkIn != nil
-			self.isShowingAddAppointment = state.addAppointment != nil
-			self.selectedTab = state.selectedTab
+//			self.isShowingCheckin = false state.journeyContainer?.journey.checkIn != nil
+//			self.isShowingAddAppointment = state.addAppointment != nil
+			self.isShowingCheckin = false
+			self.isShowingAddAppointment = false
 		}
 	}
+	
 	init (store: Store<TabBarState, TabBarAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store.scope(state: ViewState.init(state:),
@@ -118,49 +64,35 @@ struct PabauTabBar: View {
 	}
 
 	var body: some View {
-		TabView(selection: viewStore.binding(get: { $0.selectedTab },
-											 send: { .selectTab($0) })) {
-			journey().tag(TabItemId.journey)
-			calendar().tag(TabItemId.calendar)
-			clients().tag(TabItemId.clients)
-			settings().tag(TabItemId.settings)
-			communication().tag(TabItemId.communication)
+		TabView {
+			calendar()
+			clients()
+			settings()
+			communication()
 		}
-		.modalLink(isPresented: .constant(self.viewStore.state.isShowingCheckin),
-				   linkType: ModalTransition.circleReveal,
-				   destination: {
-					checkIn()
-				   }
-		)
+//		.modalLink(isPresented: .constant(self.viewStore.state.isShowingCheckin),
+//				   linkType: ModalTransition.circleReveal,
+//				   destination: {
+//					checkIn()
+//				   }
+//		)
 		.fullScreenCover(isPresented: .constant(self.viewStore.state.isShowingAddAppointment)) {
 			addAppointment()
 		}
 	}
-
-	fileprivate func journey() -> some View {
-		return
-			IfLetStore(store.scope(state: { $0.journeyContainer },
-								   action: { .journey($0) }),
-					   then: JourneyNavigationView.init(_:), else: Text("journey")
-			)
-			.tabItem {
-				Image(systemName: "staroflife")
-				Text("Journey")
-			}
-	}
 	
 	fileprivate func calendar() -> some View {
-		return
-			IfLetStore(store.scope(state: { $0.calendarContainer },
-								   action: { .calendar($0) }),
-					   then: CalendarContainer.init(store:), else: Text("calendar")
-			)
-			.tabItem {
-				Image(systemName: "calendar")
-				Text("Calendar")
-			}
+		CalendarContainer(store:
+							store.scope(state: { $0.calendar },
+										action: { .calendar($0) }
+							)
+		)
+		.tabItem {
+			Image(systemName: "calendar")
+			Text("Calendar")
+		}
 	}
-
+	
 	fileprivate func clients() -> some View {
 		return ClientsNavigationView(
 			self.store.scope(
@@ -194,13 +126,13 @@ struct PabauTabBar: View {
 			}
 	}
 
-	fileprivate func checkIn() -> IfLetStore<CheckInContainerState, CheckInContainerAction, CheckInNavigationView?> {
-		return IfLetStore(self.store.scope(
-			state: { $0.journeyContainer?.journey.checkIn },
-			action: { .journey(.journey(.checkIn($0))) }
-		),
-		then: CheckInNavigationView.init(store:))
-	}
+//	fileprivate func checkIn() -> IfLetStore<CheckInContainerState, CheckInContainerAction, CheckInNavigationView?> {
+//		return IfLetStore(self.store.scope(
+//			state: { $0.journeyContainer?.journey.checkIn },
+//			action: { .journey(.journey(.checkIn($0))) }
+//		),
+//		then: CheckInNavigationView.init(store:))
+//	}
 
 	fileprivate func addAppointment() -> IfLetStore<AddAppointmentState, AddAppointmentAction, AddAppointment?> {
 		return IfLetStore(self.store.scope(
@@ -216,60 +148,36 @@ public let tabBarReducer: Reducer<
     TabBarAction,
     TabBarEnvironment
 > = Reducer.combine(
-	.init { state, action, _ in
+	
+	.init { state, action, env in
 		switch action {
-		case .selectTab(let tabItemId):
-			state.selectedTab = tabItemId
-			switch tabItemId {
-			case .calendar:
-				state.appointments.switchTo(type: .calendar(.employee),
-											locationsIds: Set(state.calendar.locations.map(\.id)),
-											employees: state.calendar.employees.flatMap(\.value),
-											rooms: state.calendar.rooms.flatMap(\.value)
-				)
-			case .journey:
-				state.appointments.switchTo(type: .journey,
-											locationsIds: [], employees: [], rooms: [])
-			default:
-				break
-			}
-		case .gotLocationsResponse(let locationsResponse):
-			switch locationsResponse {
-				// MARK: - Iurii
+		case .gotLocationsResponse(let result):
+			switch result {
 			case .success(let locations):
-				print(locations)
-				state.calendar.locations = IdentifiedArray(locations)
-				state.journey.selectedLocation = locations.first
+				state.calendar.locations = .init(locations)
+				return .none
 			case .failure(let error):
 				break
 			}
-		case .gotEmployeesResponse(let employeesResponse):
-			switch employeesResponse {
+		case .gotEmployeesResponse(let result):
+			switch result {
 			case .success(let employees):
-				// MARK: - Iurii
-				state.calendar.employees = employees.reduce(into: [Location.ID: IdentifiedArrayOf<Employee>](),
-								 { result, employee in
-									employee.locations.forEach { location in
-										if result[location] != nil {
-											result[location]!.append(employee)
-										} else {
-											result[location] = IdentifiedArrayOf.init([employee])
-										}
-									}
-								 })
-//				let locs = state.calendar.locations.map(\.id)
-//				state.calendar.employees = locs.reduce(into: [Location.ID: IdentifiedArrayOf<Employee>](),
-//													   {
-//														$0[$1] = []
-//													   })
+				state.calendar.employees = [:]
+				state.calendar.locations.forEach { location in
+					state.calendar.employees[location.id] = IdentifiedArrayOf<Employee>.init([])
+				}
+				state.calendar.employees.keys.forEach { key in
+					employees.forEach { employee in
+						if employee.locations.contains(key) {
+							state.calendar.employees[key]?.append(employee)
+						}
+					}
+				}
 				
-//				state.calendar.chosenEmployeesIds = state.calendar.employees.mapValues {
-//					$0.map(\.id)
-//				}
 			case .failure(let error):
 				break
 			}
-		case .journey(.addAppointmentTap):
+		case .calendar(.addAppointmentTap):
 			state.addAppointment = AddAppointmentState.dummy
 		default:
 			break
@@ -299,18 +207,23 @@ public let tabBarReducer: Reducer<
 				userDefaults: $0.userDefaults)
 		}
 	),
-	journeyContainerReducer.optional().pullback(
-		state: \TabBarState.journeyContainer,
-		action: /TabBarAction.journey,
-		environment: makeJourneyEnv(_:)
+//	journeyContainerReducer.optional().pullback(
+//		state: \TabBarState.journeyContainer,
+//		action: /TabBarAction.journey,
+//		environment: makeJourneyEnv(_:)
+//	),
+	showAddAppointmentReducer.pullback(
+		state: \TabBarState.self,
+		action: /TabBarAction.calendar,
+		environment: makeClientsEnv(_:)
 	),
 	clientsContainerReducer.pullback(
 		state: \TabBarState.clients,
 		action: /TabBarAction.clients,
 		environment: makeClientsEnv(_:)
 	),
-	calendarContainerReducer.optional().pullback(
-		state: \TabBarState.calendarContainer,
+	calendarContainerReducer.pullback(
+		state: \TabBarState.calendar,
 		action: /TabBarAction.calendar,
 		environment: {
 			return CalendarEnvironment(
@@ -345,16 +258,48 @@ public let tabBarReducer: Reducer<
     }
 )
 
+public let showAddAppointmentReducer: Reducer<TabBarState, CalendarAction, Any> = .init { state, action, env in
+	switch action {
+	case .employee(.addAppointment(let startDate, let durationMins, let dropKeys)):
+		let (location, subsection) = dropKeys
+		let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
+		let employee = state.calendar.employees[location]?[id: subsection]
+		employee.map {
+			state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate, employee: $0)
+		}
+	case .room(.addAppointment(let startDate, let durationMins, let dropKeys)):
+		let (location, subsection) = dropKeys
+		let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
+		let room = state.calendar.rooms[location]?[id: subsection]
+		//FIXME: missing room in add appointments screen
+		state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate)
+		
+	case .week(.addAppointment(let startOfDayDate, let startDate, let durationMins)):
+		let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
+		state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate)
+	case .showAddApp(let start, let end, let employee):
+		
+		state.addAppointment = AddAppointmentState.init(
+			startDate: start,
+			endDate: end,
+			employee: employee
+		)
+	case .week(.editAppointment(let appointment)):
+		print(appointment)
+		state.addAppointment = AddAppointmentState.init(editingAppointment: appointment, startDate: appointment.start_date, endDate: appointment.end_date)
+	default:
+		break
+	}
+	return .none
+}
+
 extension TabBarState {
 	public init() {
-		self.journey = JourneyState()
+		self.journey = ListState()
 		self.clients = ClientsState()
 		self.calendar = CalendarState()
 		self.settings = SettingsState()
 		self.communication = CommunicationState()
-		self.appointments = .journey(JourneyAppointments.init(events: []))
-//		self.appointments = .employee(EventsBy<Employee>.init(events: [], locationsIds: [], subsections: [], sectionKeypath: \CalendarEvent.locationId, subsKeypath: \CalendarEvent.employeeId))
 		self.appsLoadingState = .initial
-		self.chosenLocationsIds = Set()
 	}
 }

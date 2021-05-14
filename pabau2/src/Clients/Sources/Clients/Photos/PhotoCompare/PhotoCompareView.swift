@@ -46,7 +46,7 @@ struct PhotoCompareState: Equatable {
 }
 
 let photoCompareReducer = Reducer.combine(
-	photoShareSelectViewReducer.optional.pullback(
+	photoShareSelectViewReducer.optional().pullback(
         state: \PhotoCompareState.shareSelectState,
         action: /PhotoCompareAction.shareAction,
         environment: { $0 }
@@ -56,7 +56,7 @@ let photoCompareReducer = Reducer.combine(
         action: /PhotoCompareAction.sideBySideAction,
         environment: { $0 }
     ),
-    editPhotosReducer.optional.pullback(
+    editPhotosReducer.optional().pullback(
         state: \PhotoCompareState.editPhotoState,
         action: /PhotoCompareAction.editPhoto,
         environment: { FormEnvironment(formAPI: $0.formAPI, userDefaults: $0.userDefaults, repository: $0.repository) }

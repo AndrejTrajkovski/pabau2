@@ -4,7 +4,7 @@ import ASCollectionView
 import Form
 
 let expandedPhotoReducer: Reducer<CCExpandedPhotosState, CCExpandedPhotosAction, ClientsEnvironment> = .combine(
-    photoCompareReducer.optional.pullback(
+    photoCompareReducer.optional().pullback(
         state: \CCExpandedPhotosState.photoCompare,
         action: /CCExpandedPhotosAction.photoCompare,
         environment: { $0 }

@@ -16,6 +16,8 @@ let package = Package(
 		.package(url: "../Form",
 				 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../SharedComponents",
+						 from: Version.init(stringLiteral: "1.0.0")),
+		.package(url: "../CoreDataModel",
 						 from: Version.init(stringLiteral: "1.0.0"))
     ],
     targets: [
@@ -23,7 +25,8 @@ let package = Package(
             name: "AddAppointment",
             dependencies: [
 				"Form",
-				"SharedComponents"
+				"SharedComponents",
+				"CoreDataModel"
 			]),
         .testTarget(
             name: "AddAppointmentTests",

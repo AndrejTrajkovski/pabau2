@@ -248,7 +248,7 @@ public let addAppointmentReducer: Reducer<
 	AddAppointmentAction,
 	AddAppointmentEnv
 > = .combine(
-	addAppointmentValueReducer.optional.pullback(
+	addAppointmentValueReducer.optional().pullback(
 		state: \AddAppointmentState.self,
 		action: /AddAppointmentAction.self,
 		environment: { $0 }),

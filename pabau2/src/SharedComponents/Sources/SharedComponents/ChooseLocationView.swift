@@ -2,6 +2,7 @@ import SwiftUI
 import ComposableArchitecture
 import Util
 import Model
+import CoreDataModel
 
 public struct ChooseLocationState: Equatable {
     public var isChooseLocationActive: Bool
@@ -21,11 +22,11 @@ public struct ChooseLocationState: Equatable {
 }
 
 public enum ChooseLocationAction: Equatable {
-    case onAppear
-    case gotLocationsResponse(Result<[Location], RequestError>)
-    case didSelectLocation(Location)
-    case onSearch(String)
-    case didTapBackBtn
+	case onAppear
+	case gotLocationsResponse(Result<SuccessState<[Location]>, RequestError>)
+	case didSelectLocation(Location)
+	case onSearch(String)
+	case didTapBackBtn
 }
 
 public struct ChooseLocationView: View {
