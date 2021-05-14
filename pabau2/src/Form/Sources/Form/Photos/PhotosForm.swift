@@ -41,7 +41,7 @@ let photosFormReducer: Reducer<PhotosState, PhotosFormAction, FormEnvironment> =
 			}
 			return .none
 		},
-		editPhotosReducer.optional.pullback(
+		editPhotosReducer.optional().pullback(
 			state: \PhotosState.editPhotos,
 			action: /PhotosFormAction.editPhoto,
 			environment: { $0 }),

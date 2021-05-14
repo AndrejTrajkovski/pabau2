@@ -105,10 +105,6 @@ public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
             default:
                 break
             }
-			
-		case .viewDidAppear(let sectionWidth):
-			print("sectionWidth: \(sectionWidth)")
-			state.sectionWidth = sectionWidth
 		}
 		return .none
 	}

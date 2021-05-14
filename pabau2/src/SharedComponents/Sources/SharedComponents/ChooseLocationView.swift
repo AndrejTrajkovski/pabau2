@@ -21,11 +21,11 @@ public struct ChooseLocationState: Equatable {
 }
 
 public enum ChooseLocationAction: Equatable {
-    case onAppear
-    case gotLocationsResponse(Result<[Location], RequestError>)
-    case didSelectLocation(Location)
-    case onSearch(String)
-    case didTapBackBtn
+	case onAppear
+	case gotLocationsResponse(Result<[Location], RequestError>)
+	case didSelectLocation(Location)
+	case onSearch(String)
+	case didTapBackBtn
 }
 
 public struct ChooseLocationView: View {

@@ -13,7 +13,7 @@ import Appointments
 import Combine
 import ChoosePathway
 
-let checkInMiddleware = Reducer<JourneyState, CheckInContainerAction, JourneyEnvironment> { state, action, _ in
+let checkInMiddleware = Reducer<ListState, CheckInContainerAction, JourneyEnvironment> { state, action, _ in
 	switch action {
 	case .patient(.stepsView(.onXTap)):
 		state.checkIn = nil
@@ -35,73 +35,23 @@ let checkInMiddleware = Reducer<JourneyState, CheckInContainerAction, JourneyEnv
 	}
 }
 
-public let journeyContainerReducer: Reducer<JourneyContainerState, JourneyContainerAction, JourneyEnvironment> = .combine(
+public let journeyContainerReducer: Reducer<ListContainerState, JourneyContainerAction, JourneyEnvironment> = .combine(
 	journeyReducer.pullback(
-				 state: \JourneyContainerState.journey,
+				 state: \ListContainerState.journey,
 				 action: /JourneyContainerAction.journey,
 				 environment: { $0 }
 	),
 	journeyReducer.pullback(
-				 state: \JourneyContainerState.journey,
+				 state: \ListContainerState.journey,
 				 action: /JourneyContainerAction.searchQueryChanged,
 				 environment: { $0 }
-	),
-	journeyFilterReducer.optional().pullback(
-		state: \JourneyContainerState.journeyEmployeesFilter,
-		action: /JourneyContainerAction.employeesFilter,
-		environment: {
-			return EmployeesFilterEnvironment(
-				journeyAPI: $0.journeyAPI,
-				userDefaults: $0.userDefaults)
-		}
-	),
-	.init { state, action, env in
-		switch action {
-		case .toggleEmployees:
-			state.journey.isShowingEmployeesFilter = true
-		case .datePicker(.selectedDate(let date)):
-			state.selectedDate = date
-			
-			guard let locId = state.journeyEmployeesFilter?.locationId,
-				  let employees = state.employees[locId] else { return .none }
-			state.loadingState = .loading
-            return env.journeyAPI.getCalendar(
-                startDate: date,
-                endDate: date,
-				locationIds: [locId],
-                employeesIds: Array(employees.map(\.id)),
-                roomIds: []
-            )
-            .receive(on: DispatchQueue.main)
-			.map(\.appointments)
-			.catchToEffect()
-            .map { JourneyContainerAction.gotResponse($0) }
-            .eraseToEffect()
-		case .gotResponse(let result):
-			print(result)
-			switch result {
-			case .success(let appointments):
-				print("response: \(appointments)")
-				guard let selectedLocationId = state.journey.selectedLocation?.id,
-					  let employees = state.employees[selectedLocationId] else {
-					return .none
-				}
-				state.appointments = .init(events: appointments)
-				state.loadingState = .gotSuccess
-			case .failure(let error):
-				state.loadingState = .gotError(error)
-			}
-		default:
-			break
-		}
-		return .none
-	}
+	)
 )
 
-let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
+let journeyReducer: Reducer<ListState, JourneyAction, JourneyEnvironment> =
 	.combine (
 		choosePathwayContainerReducer.optional().pullback(
-					 state: \JourneyState.choosePathway,
+					 state: \ListState.choosePathway,
 					 action: /JourneyAction.choosePathway,
 					 environment: { $0 }),
 		.init { state, action, environment in
@@ -236,42 +186,38 @@ let journeyReducer: Reducer<JourneyState, JourneyAction, JourneyEnvironment> =
 			}
 			return .none
 	},
-		checkInReducer.optional.pullback(
-			state: \JourneyState.checkIn,
+		checkInReducer.optional().pullback(
+			state: \ListState.checkIn,
 			action: /JourneyAction.checkIn,
 			environment: { $0 }),
 		checkInMiddleware.pullback(
-			state: \JourneyState.self,
+			state: \ListState.self,
 			action: /JourneyAction.checkIn,
 			environment: { $0 }
 		)
 )
 
 public struct JourneyContainerView: View {
-	let store: Store<JourneyContainerState, JourneyContainerAction>
+	let store: Store<ListContainerState, JourneyContainerAction>
 	@ObservedObject var viewStore: ViewStore<ViewState, JourneyContainerAction>
 
     @State var showSearchBar: Bool = false
 	
 	struct ViewState: Equatable {
 		let isChoosePathwayShown: Bool
-		let selectedDate: Date
 		let listedAppointments: [Appointment]
 		let isLoadingJourneys: Bool
         let searchQuery: String
-		let navigationTitle: String
-		init(state: JourneyContainerState) {
+		init(state: ListContainerState) {
 			self.isChoosePathwayShown = state.journey.choosePathway != nil
-			self.selectedDate = state.selectedDate
 			self.listedAppointments = state.appointments.appointments[state.selectedDate]?.elements ?? []
             self.searchQuery = state.journey.searchText
 			self.isLoadingJourneys = state.loadingState.isLoading
-			self.navigationTitle = state.journey.selectedLocation?.name ?? "No Location Chosen"
 			UITableView.appearance().separatorStyle = .none
 		}
 	}
 	
-	public init(_ store: Store<JourneyContainerState, JourneyContainerAction>) {
+	public init(_ store: Store<ListContainerState, JourneyContainerAction>) {
 		self.store = store
 		self.viewStore = ViewStore(self.store
 			.scope(state: ViewState.init(state:),
@@ -280,7 +226,6 @@ public struct JourneyContainerView: View {
 	
 	public var body: some View {
 		VStack {
-            datePicker
 
             FilterPicker()
 
@@ -300,20 +245,7 @@ public struct JourneyContainerView: View {
 			
             Spacer()
         }
-		.navigationBarTitle(viewStore.navigationTitle, displayMode: .inline)
-        .navigationBarItems(leading: leadingItems, trailing: trailingItems)
     }
-	
-	var datePicker: some View {
-		CalendarDatePicker.init(
-			store: self.store.scope(
-				state: { $0.selectedDate },
-				action: { .datePicker($0)}),
-			isWeekView: false,
-			scope: .week
-		)
-		.padding(0)
-	}
 	
 	var searchBar: some View {
 		SearchView(
@@ -325,37 +257,6 @@ public struct JourneyContainerView: View {
 		)
 		.isHidden(!self.showSearchBar)
 		.padding([.leading, .trailing], 16)
-	}
-	
-	var leadingItems: some View {
-		HStack(spacing: 8.0) {
-			PlusButton {
-				withAnimation(Animation.easeIn(duration: 0.5)) {
-					self.viewStore.send(.addAppointmentTap)
-				}
-			}
-			Button(action: {
-				withAnimation {
-					self.showSearchBar.toggle()
-				}
-			}, label: {
-				Image(systemName: "magnifyingglass")
-					.font(.system(size: 20))
-					.frame(width: 44, height: 44)
-			})
-		}
-	}
-	
-	var trailingItems: some View {
-		Button(action: {
-			withAnimation {
-				self.viewStore.send(.toggleEmployees)
-			}
-		}, label: {
-			Image(systemName: "person")
-				.font(.system(size: 20))
-				.frame(width: 44, height: 44)
-		})
 	}
 		
 	var choosePathwayLink: some View {

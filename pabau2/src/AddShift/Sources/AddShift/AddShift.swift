@@ -10,7 +10,7 @@ public let addShiftOptReducer: Reducer<
     AddShiftAction,
     AddShiftEnvironment
 > = .combine(
-    addShiftReducer.optional.pullback(
+    addShiftReducer.optional().pullback(
         state: \.self,
         action: /AddShiftAction.self,
         environment: { $0 }

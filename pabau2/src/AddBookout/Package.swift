@@ -15,14 +15,17 @@ let package = Package(
 		.package(url: "../Form",
 				 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../SharedComponents",
-						 from: Version.init(stringLiteral: "1.0.0"))
+						 from: Version.init(stringLiteral: "1.0.0")),
+		.package(url: "../CoreDataModel",
+				 from: Version.init(stringLiteral: "1.0.0"))
     ],
     targets: [
         .target(
             name: "AddBookout",
             dependencies: [
 				"Form",
-				"SharedComponents"
+				"SharedComponents",
+				"CoreDataModel"
 			]),
         .testTarget(
             name: "AddBookoutTests",

@@ -12,7 +12,7 @@ public let addBookoutOptReducer: Reducer<
     AddBookoutAction,
     AddBookoutEnvironment
 > = .combine(
-    addBookoutReducer.optional.pullback(
+    addBookoutReducer.optional().pullback(
         state: \.self,
         action: /AddBookoutAction.self,
         environment: { $0 }

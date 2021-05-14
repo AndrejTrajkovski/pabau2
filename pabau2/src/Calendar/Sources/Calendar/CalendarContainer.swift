@@ -15,78 +15,48 @@ import CoreDataModel
 
 public typealias CalendarEnvironment = (journeyAPI: JourneyAPI, clientsAPI: ClientsAPI, userDefaults: UserDefaultsConfig, storage: CoreDataModel)
 
-public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAction, CalendarEnvironment> = .combine(
+public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, CalendarEnvironment> = .combine(
 	calTypePickerReducer.pullback(
 		state: \.calTypePicker,
 		action: /CalendarAction.calTypePicker,
 		environment: { $0 }),
 	calendarWeekViewReducer.optional().pullback(
-		state: \CalendarContainerState.week,
+		state: \CalendarState.week,
 		action: /CalendarAction.week,
 		environment: { $0 }),
 	AppointmentsByReducer<Employee>().reducer.optional().pullback(
-		state: \CalendarContainerState.employeeSectionState,
+		state: \CalendarState.employeeSectionState,
 		action: /CalendarAction.employee,
 		environment: { $0 }),
 	AppointmentsByReducer<Room>().reducer.optional().pullback(
-		state: \CalendarContainerState.roomSectionState,
+		state: \CalendarState.roomSectionState,
 		action: /CalendarAction.room,
 		environment: { $0 }),
 	FiltersReducer<Employee>().reducer.pullback(
-		state: \.employeeFilters,
+		state: \CalendarState.employeeFilters,
 		action: /CalendarAction.employeeFilters,
 		environment: { $0 }),
 	FiltersReducer<Room>().reducer.pullback(
-		state: \.roomFilters,
+		state: \CalendarState.roomFilters,
 		action: /CalendarAction.roomFilters,
 		environment: { $0 }),
 	calendarReducer.pullback(
-		state: \.calendar,
+		state: \.self,
 		action: /.self,
 		environment: { $0 }
 	),
 	.init { state, action, env in
         print("\(action)")
 		switch action {
-        case .gotLocationsResponse(let result):
-            switch result {
-            case .success(let locations):
-                state.calendar.locations = .init(locations)
-                
-                return env.journeyAPI.getEmployees()
-                    .receive(on: DispatchQueue.main)
-                    .catchToEffect()
-                    .map(CalendarAction.gotEmployeeResponse)
-                    .eraseToEffect()
-            case .failure(let error):
-                break
-            }
-        case .gotEmployeeResponse(let result):
-            switch result {
-            case .success(let employees):
-                state.calendar.employees = [:]
-                state.calendar.locations.forEach { location in
-                    state.calendar.employees[location.id] = IdentifiedArrayOf<Employee>.init([])
-                }
-                state.calendar.employees.keys.forEach { key in
-                    employees.forEach { employee in
-                        if employee.locations.contains(key) {
-                            state.calendar.employees[key]?.append(employee)
-                        }
-                    }
-                }
-                
-            case .failure(let error):
-                break
-            }
+        
 		case .gotCalendarResponse(let result):
             switch result {
             case .success(let calendarResponse):
-                let employees = state.calendar.employees.mapValues {
+                let employees = state.employees.mapValues {
                     $0.elements
                 }.flatMap(\.value)
                 
-                let chosenEmployeesIds = state.calendar.chosenEmployeesIds
+                let chosenEmployeesIds = state.chosenEmployeesIds
                     .compactMap { $0.value }
                     .flatMap { $0 }
                     .removingDuplicates()
@@ -94,7 +64,7 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
                 
                 let shifts = calendarResponse.rota.compactMap { $0.value }.flatMap { $0.shift }
                 let calendarShifts = Shift.convertToCalendar(employees: filteredEmployees, shifts: shifts)
-                state.calendar.shifts = calendarShifts.mapValues {
+                state.shifts = calendarShifts.mapValues {
                     $0.mapValues {
                         $0.mapValues {
                             let jzshifts = $0.map { JZShift.init(shift: $0)}
@@ -139,26 +109,13 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 		case .calTypePicker(.onSelect(let calType)):
             state.switchTo(calType: calType)
 			return .none
-		case .employee(.addAppointment(let startDate, let durationMins, let dropKeys)):
-			let (location, subsection) = dropKeys
-			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
-			let employee = state.calendar.employees[location]?[id: subsection]
-			employee.map {
-				state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate, employee: $0)
-			}
-		case .room(.addAppointment(let startDate, let durationMins, let dropKeys)):
-			let (location, subsection) = dropKeys
-			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
-			let room = state.calendar.rooms[location]?[id: subsection]
-			//FIXME: missing room in add appointments screen
-			state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate)
-		//- TODO Iurii
+		
 		case .employee(.addBookout(let startDate, let durationMins, let dropKeys)):
 			let (location, subsection) = dropKeys
 			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
-			let employees = state.calendar.employees[location] ?? []
+			let employees = state.employees[location] ?? []
 			let chosenEmployee = employees[id: subsection]
-            state.calendar.addBookoutState = AddBookoutState(
+            state.addBookoutState = AddBookoutState(
                 employees: employees,
                 chosenEmployee: chosenEmployee?.id,
                 start: startDate
@@ -167,17 +124,11 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 		case .room(.addBookout(let startDate, let durationMins, let dropKeys)):
 			let (location, subsection) = dropKeys
 			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
-			let employees = state.calendar.employees[location] ?? []
-			state.calendar.addBookoutState = AddBookoutState(employees: employees,
+			let employees = state.employees[location] ?? []
+			state.addBookoutState = AddBookoutState(employees: employees,
 															 chosenEmployee: nil,
 															 start: startDate)
-		//- TODO Iurii
-		case .week(.addAppointment(let startOfDayDate, let startDate, let durationMins)):
-			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
-			state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate)
-        case .week(.editAppointment(let appointment)):
-            print(appointment)
-            state.addAppointment = AddAppointmentState.init(editingAppointment: appointment, startDate: appointment.start_date, endDate: appointment.end_date)
+		
 //
 //
 //                case .week(.editStartTime(let startOfDayDate, let startDate, let eventId, let startingPointStartOfDay)):
@@ -195,10 +146,10 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 
 		case .appDetails(.addService):
 			//- TODO Iurii
-			let start = state.calendar.appDetails!.app.start_date
-			let end = state.calendar.appDetails!.app.end_date
-			let employee = state.calendar.employees.flatMap { $0.value }.first(where: { $0.id == state.calendar.appDetails?.app.employeeId })
-			state.calendar.appDetails = nil
+			let start = state.appDetails!.app.start_date
+			let end = state.appDetails!.app.end_date
+			let employee = state.employees.flatMap { $0.value }.first(where: { $0.id == state.appDetails?.app.employeeId })
+			state.appDetails = nil
 			if let emp = employee {
 				return Just(CalendarAction.showAddApp(startDate: start, endDate: end, employee: emp))
 					.delay(for: 0.1, scheduler: DispatchQueue.main)
@@ -206,13 +157,6 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 			} else {
 				return .none
 			}
-		case .showAddApp(let start, let end, let employee):
-			//- TODO Iurii
-			state.addAppointment = AddAppointmentState.init(
-                startDate: start,
-                endDate: end,
-                employee: employee
-            )
 		default: break
 		}
 		return .none
@@ -220,7 +164,7 @@ public let calendarContainerReducer: Reducer<CalendarContainerState, CalendarAct
 )
 
 public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvironment> = .combine(
-	appDetailsReducer.optional.pullback(
+	appDetailsReducer.optional().pullback(
 		state: \CalendarState.appDetails,
 		action: /CalendarAction.appDetails,
 		environment: { $0 }),
@@ -264,26 +208,25 @@ public let calendarReducer: Reducer<CalendarState, CalendarAction, CalendarEnvir
 )
 
 public struct CalendarContainer: View {
-	let store: Store<CalendarContainerState, CalendarAction>
-
+	let store: Store<CalendarState, CalendarAction>
+	
 	public var body: some View {
 		WithViewStore(store) { viewStore in
 			ZStack(alignment: .topTrailing) {
 				VStack(spacing: 0) {
 					CalTopBar(store: store.scope(state: { $0 }))
-					CalendarDatePicker.init(
+					CalendarDatePicker(
 						store: self.store.scope(
 							state: { $0.selectedDate },
 							action: { .datePicker($0)}
 						),
-						isWeekView: viewStore.state.appointments.calendarType == CalAppointments.CalendarType.week,
-						scope: viewStore.calendar.scope
+						isWeekView: viewStore.state.appointments.calendarType == Appointments.CalendarType.week,
+						scope: viewStore.scope
 					)
-					.padding(0)
 					CalendarWrapper(store: self.store)
-					Spacer()
+						.frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-				if viewStore.state.calendar.isShowingFilters {
+				if viewStore.state.isShowingFilters {
 					FiltersWrapper(store: store)
                         .transition(.moveAndFade)
                         .onDisappear {
@@ -294,9 +237,9 @@ public struct CalendarContainer: View {
 			.fullScreenCover(
                 isPresented:
 					Binding(
-                        get: { activeSheet(state: viewStore.state.calendar) != nil },
+                        get: { activeSheet(state: viewStore.state) != nil },
                         set: {
-                            _ in dismissAction(state: viewStore.state.calendar).map(viewStore.send)
+                            _ in dismissAction(state: viewStore.state).map(viewStore.send)
                             viewStore.send(
                                 .datePicker(
                                     .selectedDate(
@@ -310,19 +253,19 @@ public struct CalendarContainer: View {
                     Group {
                         IfLetStore(
                             store.scope(
-								state: { $0.calendar.appDetails },
+								state: { $0.appDetails },
                                 action: { .appDetails($0) }),
                                 then: AppointmentDetails.init(store:)
                         )
                         IfLetStore(
                             store.scope(
-                                state: { $0.calendar.addBookoutState },
+                                state: { $0.addBookoutState },
                                 action: { .addBookoutAction($0) }),
                                 then: AddBookout.init(store:)
                         )
                         IfLetStore(
                             store.scope(
-                                state: { $0.calendar.addShift },
+                                state: { $0.addShift },
                                 action: { .addShift($0) }),
                                 then: AddShift.init(store:)
                         )
@@ -332,7 +275,7 @@ public struct CalendarContainer: View {
         }
 	}
 
-	public init(store: Store<CalendarContainerState, CalendarAction>) {
+	public init(store: Store<CalendarState, CalendarAction>) {
 		self.store = store
 	}
 
@@ -365,47 +308,77 @@ public struct CalendarContainer: View {
 			return nil
 		}
 	}
+	
+	var searchBarButton: some View {
+		HStack(spacing: 8.0) {
+			Button(action: {
+				withAnimation {
+//					self.showSearchBar.toggle()
+				}
+			}, label: {
+				Image(systemName: "magnifyingglass")
+					.font(.system(size: 20))
+					.frame(width: 44, height: 44)
+			})
+		}
+	}
 }
 
 struct CalTopBar: View {
-	let store: Store<CalendarContainerState, CalendarAction>
+	let store: Store<CalendarState, CalendarAction>
+	@ObservedObject var viewStore: ViewStore<CalendarState, CalendarAction>
+	
+	init(store: Store<CalendarState, CalendarAction>) {
+		self.store = store
+		self.viewStore = ViewStore(store)
+	}
+	
 	var body: some View {
-		WithViewStore(store) { viewStore in
-			VStack(spacing: 0) {
-				ZStack {
-					PlusButton {
-						viewStore.send(.onAddShift)
-					}
+		VStack(spacing: 0) {
+			ZStack {
+				addButtons
 					.padding(.leading, 20)
 					.exploding(.leading)
-                    CalendarTypePicker(
-                        store:
-                            self.store.scope(
-                                state: { $0.calTypePicker },
-                                action: { .calTypePicker($0) }
-                            )
-                    )
-					.padding()
-					.exploding(.center)
-					HStack {
-						Button {
-							viewStore.send(.changeCalScope)
-						} label: {
-							Image("calendar_icon")
-								.renderingMode(.template)
-								.accentColor(.blue)
-						}
-						Button(Texts.filters, action: {
-							viewStore.send(.toggleFilters)
-						})
+				CalendarTypePicker(
+					store:
+						self.store.scope(
+							state: { $0.calTypePicker },
+							action: { .calTypePicker($0) }
+						)
+				)
+				.padding()
+				.exploding(.center)
+				HStack {
+					Button {
+						viewStore.send(.changeCalScope)
+					} label: {
+						Image("calendar_icon")
+							.renderingMode(.template)
+							.accentColor(.blue)
 					}
-					.padding()
-					.padding(.trailing, 20)
-					.exploding(.trailing)
+					Button(Texts.filters, action: {
+						viewStore.send(.toggleFilters)
+					})
 				}
-				.frame(height: 50)
-				.background(Color(hex: "F9F9F9"))
-				Divider()
+				.padding()
+				.padding(.trailing, 20)
+				.exploding(.trailing)
+			}
+			.frame(height: 50)
+			.background(Color(hex: "F9F9F9"))
+			Divider()
+		}
+	}
+	
+	var addButtons: some View {
+		HStack {
+			PlusButton {
+				withAnimation(Animation.easeIn(duration: 0.5)) {
+					self.viewStore.send(.addAppointmentTap)
+				}
+			}
+			PlusButton {
+				self.viewStore.send(.onAddShift)
 			}
 		}
 	}
