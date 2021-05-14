@@ -2,7 +2,6 @@ import SwiftUI
 import ComposableArchitecture
 import Util
 import Model
-import CoreDataModel
 
 public struct ChooseLocationState: Equatable {
     public var isChooseLocationActive: Bool
