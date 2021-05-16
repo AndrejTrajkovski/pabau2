@@ -82,12 +82,12 @@ public class SectionCalendarView<Subsection: Identifiable & Equatable>: SectionW
 	static func makeSectionDataSource(state: CalendarSectionViewState<Subsection>,
 									  pageWidth: CGFloat) ->
 	SectionWeekViewDataSource<JZAppointmentEvent, Location, Subsection, JZShift> {
-		let jzApps = state.appointments.appointments.mapValues { $0.mapValues { $0.mapValues { $0.elements.map(JZAppointmentEvent.init(appointment:)) }}}
+		let jzApps = state.appointments.appointments.mapValues { $0.mapValues { $0.elements.map(JZAppointmentEvent.init(appointment:)) }}
 		print("appointments: \(jzApps)")
 		return SectionWeekViewDataSource.init(state.selectedDate,
 											  state.chosenLocations(),
 											  state.chosenSubsections(),
-											  jzApps[state.selectedDate] ?? [:],
+											  jzApps,
 											  state.shifts[state.selectedDate] ?? [:],
 											  pageWidth
 		)

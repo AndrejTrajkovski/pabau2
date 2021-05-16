@@ -14,7 +14,7 @@ public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
 		case .editSections(startDate: let startDate, startKeys: let startIndexes, dropKeys: let dropIndexes, eventId: let eventId):
 			let calId = CalendarEvent.Id(rawValue: eventId)
             
-            guard var app = state.appointments.appointments[state.selectedDate]?[startIndexes.location]?[startIndexes.subsection]?.remove(id: calId) else {
+            guard var app = state.appointments.appointments[startIndexes.location]?[startIndexes.subsection]?.remove(id: calId) else {
                 break
             }
             
@@ -27,11 +27,11 @@ public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
 				app.employeeId = empId
 			}
             
-			if state.appointments.appointments[state.selectedDate] == nil {
-				state.appointments.appointments[state.selectedDate] = [:]
+			if state.appointments.appointments[dropIndexes.location] == nil {
+				state.appointments.appointments[dropIndexes.location] = [:]
 			}
 
-            state.appointments.appointments[startDate]?[dropIndexes.location]?[dropIndexes.subsection]?.append(app)
+            state.appointments.appointments[dropIndexes.location]?[dropIndexes.subsection]?.append(app)
             
             var appointmentBuilder: AppointmentBuilder?
             
@@ -58,12 +58,12 @@ public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
 			state.selectedDate = newDate
 		case .editDuration(let newEndDate, let startIndexes, let eventId):
 			let calId = CalendarEvent.Id(rawValue: eventId)
-			let oldDateO = state.appointments.appointments[state.selectedDate]?[startIndexes.location]?[startIndexes.subsection]?[id: calId]?.end_date
+			let oldDateO = state.appointments.appointments[startIndexes.location]?[startIndexes.subsection]?[id: calId]?.end_date
 			guard let oldDate = oldDateO else { return .none }
             
-			state.appointments.appointments[state.selectedDate]?[startIndexes.location]?[startIndexes.subsection]?[id: calId]?.end_date = Date.concat(oldDate, newEndDate)
+			state.appointments.appointments[startIndexes.location]?[startIndexes.subsection]?[id: calId]?.end_date = Date.concat(oldDate, newEndDate)
             
-            guard let app = state.appointments.appointments[state.selectedDate]?[startIndexes.location]?[startIndexes.subsection]?[id: calId] else {
+            guard let app = state.appointments.appointments[startIndexes.location]?[startIndexes.subsection]?[id: calId] else {
                 return .none
             }
 
@@ -89,7 +89,7 @@ public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
 		case .onSelect(let keys, let eventId):
 			let (location, subsection) = keys
 			let calId = CalendarEvent.Id(rawValue: eventId)
-			let event = state.appointments.appointments[state.selectedDate]?[keys.location]?[keys.subsection]?[id: calId]
+			let event = state.appointments.appointments[keys.location]?[keys.subsection]?[id: calId]
 			switch event {
 			case .appointment(let app):
 				state.appDetails = AppDetailsState(app: app)

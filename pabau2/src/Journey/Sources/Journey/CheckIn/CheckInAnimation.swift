@@ -2,6 +2,7 @@ import SwiftUI
 import ComposableArchitecture
 import Util
 import Model
+import SharedComponents
 
 struct CheckInAnimation: View {
 	
@@ -30,9 +31,9 @@ struct JourneyTransitionCircle: View {
 								Circle()
 									.overlay(
 										ZStack {
-											JourneyAvatarView(appointment: self.appointment,
-															  font: .regular90,
-															  bgColor: .clear)
+											ListCellAvatarView(appointment: self.appointment,
+															   font: .regular90,
+															   bgColor: .clear)
 												.foregroundColor(.white)
 											Circle()
 												.stroke(Color.white, lineWidth: 3.0)

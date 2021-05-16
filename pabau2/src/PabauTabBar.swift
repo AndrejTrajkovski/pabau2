@@ -12,6 +12,7 @@ import Communication
 import Intercom
 import Appointments
 import CoreDataModel
+import CalendarList
 
 public typealias TabBarEnvironment = (
 	loginAPI: LoginAPI,
@@ -293,7 +294,6 @@ public let showAddAppointmentReducer: Reducer<TabBarState, CalendarAction, Any> 
 
 extension TabBarState {
 	public init() {
-		self.journey = ListState()
 		self.clients = ClientsState()
 		self.calendar = CalendarState()
 		self.settings = SettingsState()

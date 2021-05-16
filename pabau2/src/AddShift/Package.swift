@@ -15,12 +15,18 @@ let package = Package(
 		.package(url: "../SharedComponents",
 						 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../Model",
+				 from: Version.init(stringLiteral: "1.0.0")),
+		.package(url: "../CoreDataModel",
 				 from: Version.init(stringLiteral: "1.0.0"))
     ],
     targets: [
         .target(
             name: "AddShift",
-            dependencies: ["SharedComponents", "Model"]),
+            dependencies: [
+				"SharedComponents",
+				"Model",
+				"CoreDataModel"
+			]),
         .testTarget(
             name: "AddShiftTests",
             dependencies: ["AddShift"])

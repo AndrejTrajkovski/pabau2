@@ -3,7 +3,6 @@ import Model
 import SwiftUI
 import ComposableArchitecture
 import Util
-import SharedComponents
 
 struct LoadingStore<State, Action, Content>: View where Content: View, State: Equatable {
     
