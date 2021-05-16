@@ -1,7 +1,7 @@
 import SwiftUI
 import Util
 
-struct JourneyListContextMenu: View {
+struct ListCellContextMenu: View {
 	let dataSource = Array(zip(systemImages, titles))
 	var body: some View {
 		VStack {
@@ -13,12 +13,6 @@ struct JourneyListContextMenu: View {
 								})
 			}
 		}
-	}
-}
-
-struct JourneyListContextMenu_Previews: PreviewProvider {
-	static var previews: some View {
-		JourneyListContextMenu()
 	}
 }
 

@@ -24,7 +24,6 @@ public typealias TabBarEnvironment = (
 
 public struct TabBarState: Equatable {
 	var appsLoadingState: LoadingState
-	var journey: ListState
 	var clients: ClientsState
 	var calendar: CalendarState
 	var settings: SettingsState
@@ -34,7 +33,6 @@ public struct TabBarState: Equatable {
 
 public enum TabBarAction {
 	case settings(SettingsAction)
-	case journey(JourneyContainerAction)
 	case clients(ClientsAction)
 	case calendar(CalendarAction)
 	case addAppointment(AddAppointmentAction)

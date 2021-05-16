@@ -1,68 +1,107 @@
-import ComposableArchitecture
 import Model
+import Foundation
+import Util
+import Tagged
+import ComposableArchitecture
 
-public struct ListAppointments: Equatable {
-	public var bookouts: [Date: IdentifiedArrayOf<Bookout>]
-	public var appointments: [Date: IdentifiedArrayOf<Appointment>]
-	
-	public init(events: [CalendarEvent]) {
-		let byDate = groupByStartOfDay(originalEvents: events)
-		self.bookouts = byDate.mapValues { values in
-			let array = values.compactMap { extract(case: CalendarEvent.bookout, from: $0) }
-			return IdentifiedArrayOf(array)
-		}
-		self.appointments = byDate.mapValues { values in
-			let array = values.compactMap { extract(case: CalendarEvent.appointment, from: $0) }
-			return IdentifiedArrayOf(array)
+public enum Appointments: Equatable {
+
+	case list(ListAppointments)
+	case employee(EventsBy<Employee>)
+	case room(EventsBy<Room>)
+	case week([Date: IdentifiedArrayOf<CalendarEvent>])
+
+	public var calendarType: CalendarType {
+		switch self {
+		case .employee:
+			return .employee
+		case .room:
+			return .room
+		case .week:
+			return .week
+		case .list:
+			return .list
 		}
 	}
-	
-	func flatten() -> [CalendarEvent] {
-		let flatBookouts = bookouts.flatMap { $0.value }.map { CalendarEvent.bookout($0) }
-		let flatApps = appointments.flatMap { $0.value }.map { CalendarEvent.appointment($0) }
-		return flatBookouts + flatApps
+
+	public enum CalendarType: Equatable, CaseIterable {
+		
+		case employee
+		case room
+		case week
+		case list
+		
+		public func title() -> String {
+			switch self {
+			case .employee:
+				return Texts.employee
+			case .room:
+				return Texts.room
+			case .week:
+				return Texts.week
+			case .list:
+				return Texts.list
+			}
+		}
+	}
+
+	public func flatten() -> [CalendarEvent] {
+		switch self {
+		case .employee(let apps):
+			return apps.flatten()
+		case .room(let apps):
+			return apps.flatten()
+		case .week(let apps):
+			return apps.flatMap { $0.value.elements }
+		case .list(let apps):
+			return apps.flatten()
+		}
 	}
 }
+
+public extension Appointments {
 	
-//public mutating func switchTo(type: ViewType,
-//							  locationsIds: Set<Location.ID>,
-//							  employees: [Employee],
-//							  rooms: [Room]
-//) {
-//	switch (self, type) {
-//	case (.journey(_), .journey):
-//		break
-//	case (.journey(let journeyApps), .calendar(let calType)):
-//		let calApps = Appointments.init(calType: calType,
-//										   events: journeyApps.flatten(),
-//										   locationsIds: locationsIds,
-//										   employees: employees,
-//										   rooms: rooms)
-//		self = .calendar(calApps)
-//	case (.calendar(_), .calendar(_)):
-//		fatalError("should be handled in calendar reducers")
-//	case (.calendar(let calApps), .journey):
-//		let journeyApps = ListAppointments.init(events: calApps.flatten())
-//		self = .journey(journeyApps)
-//	}
-//}
-//
-//public init(type: ViewType,
-//			events: [CalendarEvent],
-//			locationsIds: Set<Location.ID>,
-//			employees: [Employee],
-//			rooms: [Room]
-//) {
-//	switch type {
-//	case .journey:
-//		let apps = ListAppointments.init(events: events)
-//		self = .journey(apps)
-//	case .calendar(let calType):
-//		let calApps = Appointments.init(calType: calType,
-//										   events: events,
-//										   locationsIds: locationsIds,
-//										   employees: employees,
-//										   rooms: rooms)
-//		self = .calendar(calApps)
-//	}
-//}
+	mutating func refresh(events: [CalendarEvent],
+						  locationsIds: Set<Location.ID>,
+						  employees: [Employee],
+						  rooms: [Room]) {
+		self = .init(calType: self.calendarType,
+					 events: events,
+					 locationsIds: locationsIds,
+					 employees: employees,
+					 rooms: rooms)
+	}
+
+	init(calType: CalendarType,
+		 events: [CalendarEvent],
+		 locationsIds: Set<Location.ID>,
+		 employees: [Employee],
+		 rooms: [Room]
+	) {
+		switch calType {
+		case .employee:
+            let appointments = EventsBy<Employee>.init(
+                events: events,
+                locationsIds: locationsIds, //locations.map(\.id)
+                subsections: employees, //employees.flatMap({ $0.value })
+                sectionKeypath: \CalendarEvent.locationId,
+                subsKeypath: \CalendarEvent.employeeId
+            )
+			self = .employee(appointments)
+		case .room:
+            let appointments = EventsBy<Room>(
+                events: events,
+                locationsIds: locationsIds,
+                subsections: rooms,
+                sectionKeypath: \CalendarEvent.locationId,
+                subsKeypath: \CalendarEvent.roomId
+            )
+			self = .room(appointments)
+		case .week:
+			let weekApps = groupByStartOfDay(originalEvents: events).mapValues { IdentifiedArrayOf.init($0)}
+			self = .week(weekApps)
+		case .list:
+			self = .list(ListAppointments.init(events: events))
+		}
+	}
+}

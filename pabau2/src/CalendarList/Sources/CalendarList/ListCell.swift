@@ -3,7 +3,7 @@ import SwiftUI
 import Util
 import JourneyBase
 
-struct JourneyCell: View {
+struct ListCell: View {
 	let appointment: Appointment
 	let color: Color
 	let time: String
@@ -38,7 +38,7 @@ struct JourneyCell: View {
 				Group {
 					Text(time).font(Font.semibold11)
 					Spacer()
-					JourneyAvatarView(appointment: appointment, font: .regular18, bgColor: .accentColor)
+					ListCellAvatarView(appointment: appointment, font: .regular18, bgColor: .accentColor)
 						.frame(width: 55, height: 55)
 					VStack(alignment: .leading, spacing: 4) {
 						Text(name).font(Font.semibold14)

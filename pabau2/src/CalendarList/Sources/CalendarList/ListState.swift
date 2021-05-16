@@ -3,18 +3,16 @@ import Util
 import SwiftDate
 import Foundation
 import ComposableArchitecture
-import Filters
 import Appointments
-import ChoosePathway
 
 public struct ListState: Equatable {
 	public init() {}
 	public var selectedFilter: CompleteFilter = .all
 	public var searchText: String = ""
-	public var selectedPathway: PathwayTemplate?
-	public var choosePathway: ChoosePathwayState?
-	public var checkIn: CheckInContainerState?
-	public var getPathwaysAlertState: AlertState<JourneyAction>?
+//	public var selectedPathway: PathwayTemplate?
+//	public var choosePathway: ChoosePathwayState?
+//	public var checkIn: CheckInContainerState?
+//	public var getPathwaysAlertState: AlertState<ListAction>?
 }
 
 public struct ListContainerState: Equatable {

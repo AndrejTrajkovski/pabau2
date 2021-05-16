@@ -3,7 +3,7 @@ import Util
 import SwiftUI
 import Avatar
 
-struct JourneyAvatarView: View {
+struct ListCellAvatarView: View {
 	let appointment: Appointment
 	let font: Font
 	let bgColor: Color
