@@ -27,8 +27,8 @@ let listCalendarReducer: Reducer<ListState, ListAction, ListCalendarEnvironment>
 				
 			case .searchedText(let searchText):
 				state.searchText = searchText
-			
-			case .selectedAppointment:
+				
+			case .locationSection(id: _, action: _):
 				break
 			}
 			return .none
@@ -46,7 +46,7 @@ public struct ListContainerView: View {
 		let isLoadingJourneys: Bool
         let searchQuery: String
 		init(state: ListContainerState) {
-			self.listedAppointments = state.appointments.appointments[state.selectedDate]?.elements ?? []
+			self.listedAppointments = []
             self.searchQuery = state.journey.searchText
 			self.isLoadingJourneys = state.loadingState.isLoading
 			UITableView.appearance().separatorStyle = .none
@@ -68,11 +68,14 @@ public struct ListContainerView: View {
             if self.showSearchBar {
                 searchBar
             }
-
-            JourneyList(self.viewStore.state.listedAppointments) {
-                self.viewStore.send(.selectedAppointment($0))
-            }.loadingView(.constant(self.viewStore.state.isLoadingJourneys),
-						  Texts.fetchingJourneys)
+			
+			ForEachStore(store.scope(state: { $0.locationSections },
+									 action: ListAction.locationSection(id:action:)), content: LocationSection.init(store:)
+			)
+//            JourneyList(self.viewStore.state.listedAppointments) {
+//                self.viewStore.send(.selectedAppointment($0))
+//            }.loadingView(.constant(self.viewStore.state.isLoadingJourneys),
+//						  Texts.fetchingJourneys)
 			
             Spacer()
         }
@@ -88,6 +91,47 @@ public struct ListContainerView: View {
 		)
 		.isHidden(!self.showSearchBar)
 		.padding([.leading, .trailing], 16)
+	}
+}
+
+struct LocationSectionState: Equatable, Identifiable {
+	var location: Location
+	var appointments: IdentifiedArrayOf<Appointment>
+	var id: Location.ID { location.id }
+}
+
+struct LocationSection: View {
+	let store: Store<LocationSectionState, LocationSectionAction>
+	@ObservedObject var viewStore: ViewStore<String, Never>
+	
+	init(store: Store<LocationSectionState, LocationSectionAction>) {
+		self.store = store
+		self.viewStore = ViewStore(store.scope(state: { $0.location.name }).actionless)
+	}
+	
+	var body: some View {
+		Section.init(header: Text(viewStore.state),
+					 content: {
+						ForEachStore(store.scope(state: { $0.appointments },
+												 action: LocationSectionAction.rows(id:action:)),
+									 content: ListCellStoreRow.init(store:)
+						)
+					 })
+	}
+}
+
+struct ListCellStoreRow: View {
+	let store: Store<Appointment, ListRowAction>
+	
+	var body: some View {
+		WithViewStore(store) { viewStore in
+			ListCell(appointment: viewStore.state)
+//				.contextMenu {
+//					ListCellContextMenu()
+//				}
+				.onTapGesture { viewStore.send(.select) }
+				.listRowInsets(EdgeInsets())
+		}
 	}
 }
 

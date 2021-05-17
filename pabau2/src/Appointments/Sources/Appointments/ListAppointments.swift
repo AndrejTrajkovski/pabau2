@@ -2,23 +2,22 @@ import ComposableArchitecture
 import Model
 
 public struct ListAppointments: Equatable {
-	public var bookouts: [Date: IdentifiedArrayOf<Bookout>]
-	public var appointments: [Date: IdentifiedArrayOf<Appointment>]
+	public var bookouts: IdentifiedArrayOf<Bookout>
+	public var appointments: [Location.ID: IdentifiedArrayOf<Appointment>]
 	
 	public init(events: [CalendarEvent]) {
-		let byDate = groupByStartOfDay(originalEvents: events)
-		self.bookouts = byDate.mapValues { values in
-			let array = values.compactMap { extract(case: CalendarEvent.bookout, from: $0) }
-			return IdentifiedArrayOf(array)
-		}
-		self.appointments = byDate.mapValues { values in
-			let array = values.compactMap { extract(case: CalendarEvent.appointment, from: $0) }
-			return IdentifiedArrayOf(array)
-		}
+		
+		let array = events.compactMap { extract(case: CalendarEvent.bookout, from: $0) }
+		self.bookouts = IdentifiedArrayOf(array)
+		
+		let apps = events.compactMap { extract(case: CalendarEvent.appointment, from: $0) }
+		let byLocation = Dictionary.init(grouping: apps, by: { $0.locationId })
+			.mapValues(IdentifiedArray.init(_:))
+		self.appointments = byLocation
 	}
 	
 	func flatten() -> [CalendarEvent] {
-		let flatBookouts = bookouts.flatMap { $0.value }.map { CalendarEvent.bookout($0) }
+		let flatBookouts = bookouts.map { CalendarEvent.bookout($0) }
 		let flatApps = appointments.flatMap { $0.value }.map { CalendarEvent.appointment($0) }
 		return flatBookouts + flatApps
 	}

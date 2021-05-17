@@ -52,7 +52,7 @@ extension CalendarSectionViewState {
             return []
         }
         
-        return locations.compactMap { $0 }
+		return locations.filter { chosenLocationsIds.contains($0.id) }
 		//chosenLocationsIds.compactMap { locations[id: $0] }
 	}
 }

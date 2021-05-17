@@ -24,6 +24,20 @@ public struct ListContainerState: Equatable {
 	public let employees: [Location.Id: IdentifiedArrayOf<Employee>]
 	public let chosenEmployeesIds: [Location.Id: [Employee.Id]]
 	public let expandedLocationsIds: Set<Location.Id>
-	public let selectedDate: Date = DateFormatter.yearMonthDay.date(from: "2021-03-11")!
+	public let selectedDate: Date
 	public let chosenLocationsIds: Set<Location.Id>
+}
+
+extension ListContainerState {
+	
+	var locationSections: IdentifiedArrayOf<LocationSectionState> {
+		get {
+			let chosenLocations = locations.filter { chosenLocationsIds.contains($0.id) }
+			let array = chosenLocations.map { (location) -> LocationSectionState in
+				return LocationSectionState(location: location,
+											appointments: appointments.appointments[location.id] ?? [])
+			}
+			return IdentifiedArray(array)
+		}
+	}
 }

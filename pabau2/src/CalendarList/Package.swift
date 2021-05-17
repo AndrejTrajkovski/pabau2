@@ -9,7 +9,7 @@ let package = Package(
     products: [
         .library(
             name: "CalendarList",
-            targets: ["CalendarList"]),
+            targets: ["CalendarList"])
     ],
     dependencies: [
 		.package(url: "../Appointments",
