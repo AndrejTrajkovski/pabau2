@@ -107,4 +107,24 @@ extension APIClient {
         )
         .effect()
     }
+    
+    public func appointmentChangeStatus(appointmentId: Appointment.ID, status: String) -> Effect<Bool, RequestError> {
+        struct AppointmentChangeStatusResponse: Decodable {
+            let success: Bool
+        }
+        var params: [String: Any] = [:]
+        params["data"] = status
+        params["change_by_id"] = self.loggedInUser?.userID
+        params["appointment_id"] = appointmentId
+        
+        let requestBuilder: RequestBuilder<AppointmentChangeStatusResponse>.Type = requestBuilderFactory.getBuilder()
+        return requestBuilder.init(
+            method: .GET,
+            baseUrl: baseUrl,
+            path: .appointmentChangeStatus,
+            queryParams: commonAnd(other: params)
+        )
+        .effect()
+        .map(\.success)        
+    }
 }

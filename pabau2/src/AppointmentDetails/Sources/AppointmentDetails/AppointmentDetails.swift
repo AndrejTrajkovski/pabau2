@@ -24,7 +24,59 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, Calenda
     chooseRepeatReducer.pullback(
         state: \AppDetailsState.chooseRepeat,
         action: /AppDetailsAction.chooseRepeat,
-        environment: { $0 })
+        environment: { $0 }),
+    
+    Reducer.init { state, action, env in
+        switch action {
+        case .chooseStatus(let singleChoiceLinkAction):
+            print(singleChoiceLinkAction)
+            print(singleChoiceLinkAction)
+            
+            switch singleChoiceLinkAction {
+            case .singleChoice(let single):
+                switch single {
+                case .action(let id, let action):
+                    let status = state.appStatuses[id: id]
+                    return env.clientsAPI.appointmentChangeStatus(appointmentId: state.app.id, status: "\(status)")
+                        .catchToEffect()
+                        .map { response in
+                            return AppDetailsAction.close
+                        }
+                        .eraseToEffect()
+                }
+            default:
+                break
+            }
+            
+            break
+        case .buttons(let appDetailsButtonsAction):
+            print(appDetailsButtonsAction)
+            switch appDetailsButtonsAction {
+            case .onStatus:
+                return env.clientsAPI.getAppointmentStatus()
+                    .catchToEffect()
+                    .map{ response in
+                        switch response {
+                        case .success(let statuses):
+                            return AppDetailsAction.buttons(.onDownloadStatuses(statuses))
+                        case .failure(let error):
+                            return AppDetailsAction.buttons(.onDownloadStatuses([]))
+                        }
+                    }
+                    .eraseToEffect()
+            case .onDownloadStatuses(let statuses):
+                state.appStatuses = IdentifiedArrayOf(statuses)
+                state.isStatusActive = true
+            default:
+                break
+            }
+            break
+            
+        default:
+            break
+        }
+        return .none
+    }
 )
 
 public struct AppDetailsState: Equatable {

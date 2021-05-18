@@ -4,7 +4,7 @@ import ComposableArchitecture
 import Model
 import SharedComponents
 
-public let appDetailsButtonsReducer: Reducer<AppDetailsButtonsState, AppDetailsButtonsAction, Any?> = .init {
+public let appDetailsButtonsReducer: Reducer<AppDetailsButtonsState, AppDetailsButtonsAction, CalendarEnvironment> = .init {
 	state, action, env in
 	switch action {
 	case .onPayment:
@@ -12,7 +12,10 @@ public let appDetailsButtonsReducer: Reducer<AppDetailsButtonsState, AppDetailsB
 	case .onCancel:
 		state.isCancelActive = true
 	case .onStatus:
-		state.isStatusActive = true
+		//state.isStatusActive = true
+        break
+    case .onDownloadStatuses:
+        state.isStatusActive = true
 	case .onRepeat:
 		state.isRepeatActive = true
 	case .onDocuments:
@@ -32,24 +35,25 @@ public struct AppDetailsButtonsState: Equatable {
 	var isRescheduleActive: Bool
 }
 
-public enum AppDetailsButtonsAction: Equatable, CaseIterable {
+public enum AppDetailsButtonsAction: Equatable {
 	case onPayment
 	case onCancel
 	case onStatus
 	case onRepeat
 	case onDocuments
 	case onReschedule
+    case onDownloadStatuses([AppointmentStatus])
 }
 
 struct AppDetailsButtons: View {
 
-	public let store: Store<AppDetailsState, AppDetailsAction>
-	@ObservedObject var viewStore: ViewStore<AppDetailsState, AppDetailsAction>
+    public let store: Store<AppDetailsState, AppDetailsAction>
+    @ObservedObject var viewStore: ViewStore<AppDetailsState, AppDetailsAction>
 
-	init(store: Store<AppDetailsState, AppDetailsAction>) {
-		self.store = store
-		self.viewStore = ViewStore(store)
-	}
+    init(store: Store<AppDetailsState, AppDetailsAction>) {
+        self.store = store
+        self.viewStore = ViewStore(store)
+    }
 
 	let columns = [
 		GridItem(.flexible(), spacing: 0),

@@ -26,6 +26,17 @@ public struct AppointmentStatus: Codable, Identifiable, Equatable {
         case status
         case value
     }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        self.status = try container.decode(String.self, forKey: .status)
+        self.value = try container.decode(String.self, forKey: .value)
+        
+        self.id = Int.random(in: 0...50)
+        self.name = status
+        self.color = "1ad36b"
+    }
 }
 
 extension AppointmentStatus {

@@ -8,7 +8,7 @@ public enum APIPath: String {
 	case getAppointments = "/OAuth2/appointments/get_appointments_v1.php"
 	case getLocations = "/OAuth2/locations/get_locations_v1.php"
 	case getPathwaysTemplates = "/OAuth2/pathway/list_pathways.php"
-
+    
     case getShifts = "/OAuth2/staff/get_rota_shifts.php"
 	case pathwaysMatch = "/OAuth2/pathway/match.php"
 	case getPathway = "/OAuth2/pathway/get_pathway.php"
@@ -17,7 +17,6 @@ public enum APIPath: String {
     case createShift = "/OAuth2/staff/create_shift.php"
     //Services
     case getServices = "/OAuth2/services/get_services.php"
-
     case createAppointment = "/OAuth2/appointments/create_appointment_v1.php"
 	
 	//Form
@@ -27,6 +26,8 @@ public enum APIPath: String {
 	
     //Appointments
     case getBookoutReasons = "/OAuth2/appointments/get_bookout_reasons.php"
+    case getAppointmentsStatus = "/OAuth2/appointments/get_appt_status.php"
+    case appointmentChangeStatus = "/OAuth2/appointments/appointment_change_status.php"
     
 	case updateClient = "/OAuth2/clients/client_update.php"
 	case getClients = "/OAuth2/clients/get_clients.php"
