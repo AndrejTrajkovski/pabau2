@@ -25,4 +25,20 @@ extension APIClient: AppointmentsAPI {
         .effect()
         .map(\.employees)
     }
+    
+    public func getAppointmentStatus() -> Effect<[AppointmentStatus], RequestError> {
+        struct AppointmentStatusResponse: Decodable {
+            let statuses: [AppointmentStatus]
+        }
+        
+        let requestBuilder: RequestBuilder<AppointmentStatusResponse>.Type = requestBuilderFactory.getBuilder()
+        return requestBuilder.init(
+            method: .GET,
+            baseUrl: baseUrl,
+            path: .getAppointments,
+            queryParams: commonParams()
+        )
+        .effect()
+        .map(\.statuses)
+    }
 }
