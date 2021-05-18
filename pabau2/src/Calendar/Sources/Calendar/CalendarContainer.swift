@@ -13,6 +13,7 @@ import Appointments
 import JZCalendarWeekView
 import CoreDataModel
 import Overture
+import AppointmentDetails
 
 public typealias CalendarEnvironment = (journeyAPI: JourneyAPI, clientsAPI: ClientsAPI, userDefaults: UserDefaultsConfig, repository: Repository)
 

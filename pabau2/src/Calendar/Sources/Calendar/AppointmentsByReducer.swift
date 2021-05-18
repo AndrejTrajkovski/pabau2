@@ -5,6 +5,7 @@ import SwiftDate
 import Appointments
 import JZCalendarWeekView
 import CoreGraphics
+import AppointmentDetails
 
 public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
 	let reducer = Reducer<CalendarSectionViewState<Subsection>, SubsectionCalendarAction<Subsection>, CalendarEnvironment> { state, action, env in

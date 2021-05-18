@@ -4,6 +4,7 @@ import ComposableArchitecture
 import Model
 import AddBookout
 import Appointments
+import AppointmentDetails
 
 public struct CalendarSectionViewState<Subsection: Identifiable & Equatable>: Equatable {
 	var selectedDate: Date

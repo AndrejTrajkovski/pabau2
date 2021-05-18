@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0854E6B525F12331007087B8 /* EPaper in Frameworks */ = {isa = PBXBuildFile; productRef = 0854E6B425F12331007087B8 /* EPaper */; };
+		08C19B34264BC2E000465BDA /* AppointmentDetails in Frameworks */ = {isa = PBXBuildFile; productRef = 08C19B33264BC2E000465BDA /* AppointmentDetails */; };
 		08C726E925876D9100F622CB /* SFProText-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 08C726E6258764C100F622CB /* SFProText-Medium.ttf */; };
 		08C726EA25876D9400F622CB /* SFProText-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 08C726E82587684300F622CB /* SFProText-MediumItalic.ttf */; };
 		08C726EB25876D9700F622CB /* SFProText-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 08C726E7258764C100F622CB /* SFProText-Semibold.ttf */; };
@@ -55,6 +56,7 @@
 
 /* Begin PBXFileReference section */
 		0854E6A525F11B77007087B8 /* EPaper */ = {isa = PBXFileReference; lastKnownFileType = text; name = EPaper; path = pabau2/EPaper; sourceTree = SOURCE_ROOT; };
+		08C19B32264BC26E00465BDA /* AppointmentDetails */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AppointmentDetails; sourceTree = "<group>"; };
 		08C726E6258764C100F622CB /* SFProText-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-Medium.ttf"; sourceTree = "<group>"; };
 		08C726E7258764C100F622CB /* SFProText-Semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-Semibold.ttf"; sourceTree = "<group>"; };
 		08C726E82587684300F622CB /* SFProText-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-MediumItalic.ttf"; sourceTree = "<group>"; };
@@ -105,6 +107,7 @@
 				08D74502264917F2000605FD /* JourneyBase in Frameworks */,
 				82182C4F25265C5D00E5479F /* FSCalendarSwiftUI in Frameworks */,
 				8223F5F0265115FD0056023C /* CalendarList in Frameworks */,
+				08C19B34264BC2E000465BDA /* AppointmentDetails in Frameworks */,
 				BA6FD88F2645616C00ACB1B2 /* CoreDataModel in Frameworks */,
 				82182C4D25265C5D00E5479F /* Form in Frameworks */,
 				BA6FD892264565E400ACB1B2 /* CoreStore in Frameworks */,
@@ -195,6 +198,7 @@
 				8223F5EC264FB9F20056023C /* CalendarList */,
 				08D74500264916F4000605FD /* JourneyBase */,
 				08CF80E32645593B00A206BA /* ChoosePathway */,
+				08C19B32264BC26E00465BDA /* AppointmentDetails */,
 				82E9C12524D035A60023B98B /* Journey */,
 				82C02732262AEA5400764597 /* Pathway */,
 				0854E6A525F11B77007087B8 /* EPaper */,
@@ -269,6 +273,7 @@
 				BA6FD88E2645616C00ACB1B2 /* CoreDataModel */,
 				BA6FD891264565E400ACB1B2 /* CoreStore */,
 				8223F5EF265115FD0056023C /* CalendarList */,
+				08C19B33264BC2E000465BDA /* AppointmentDetails */,
 			);
 			productName = pabau2;
 			productReference = 82BE2F4423D97D9C00B3678A /* pabau2.app */;
@@ -643,6 +648,10 @@
 		08D74501264917F2000605FD /* JourneyBase */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = JourneyBase;
+		};
+		08C19B33264BC2E000465BDA /* AppointmentDetails */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AppointmentDetails;
 		};
 		74DD9D33256EAB1A00CC3920 /* Communication */ = {
 			isa = XCSwiftPackageProductDependency;

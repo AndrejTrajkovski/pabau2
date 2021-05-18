@@ -13,6 +13,7 @@ import FSCalendar
 import Appointments
 import CalendarList
 import Util
+import AppointmentDetails
 
 public struct CalendarState: Equatable {
 	

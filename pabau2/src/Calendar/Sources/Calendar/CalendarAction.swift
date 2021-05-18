@@ -5,6 +5,7 @@ import AddBookout
 import AddShift
 import Filters
 import CalendarList
+import AppointmentDetails
 
 public enum CalendarAction {
 	case addAppointmentTap

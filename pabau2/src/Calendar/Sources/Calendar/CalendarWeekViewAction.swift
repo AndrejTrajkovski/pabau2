@@ -2,6 +2,7 @@ import ComposableArchitecture
 import SwiftDate
 import Model
 import AddBookout
+import AppointmentDetails
 
 public struct CalendarWeekViewState: Equatable {
 	var appointments: [Date: IdentifiedArrayOf<CalendarEvent>]
