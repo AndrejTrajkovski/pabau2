@@ -29,27 +29,36 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, Calenda
     
     Reducer.init { state, action, env in
         switch action {
+        case .chooseCancelReason(let singleChoiceLinkAction):
+            switch singleChoiceLinkAction {
+            case .singleChoice(let single):
+                switch single {
+                case .action(let id, let action):
+                    let cancelReason = state.cancelReasons[id: id]
+                    return env.clientsAPI.appointmentChangeCancelReason(appointmentId: state.app.id, reason: "\(String(describing: cancelReason))")
+                        .catchToEffect()
+                        .map { _ in  AppDetailsAction.onResponseChangeAppointment }
+                        .eraseToEffect()
+                    
+                }
+            default:
+                break
+            }
         case .chooseStatus(let singleChoiceLinkAction):
-            print(singleChoiceLinkAction)
-            print(singleChoiceLinkAction)
-            
             switch singleChoiceLinkAction {
             case .singleChoice(let single):
                 switch single {
                 case .action(let id, let action):
                     let status = state.appStatuses[id: id]
-                    return env.clientsAPI.appointmentChangeStatus(appointmentId: state.app.id, status: "\(status)")
+                    return env.clientsAPI.appointmentChangeStatus(appointmentId: state.app.id, status: "\(String(describing: status))")
                         .catchToEffect()
-                        .map { response in
-                            return AppDetailsAction.close
-                        }
+                        .map { _ in  AppDetailsAction.onResponseChangeAppointment }
                         .eraseToEffect()
+                    
                 }
             default:
                 break
             }
-            
-            break
         case .buttons(let appDetailsButtonsAction):
             print(appDetailsButtonsAction)
             switch appDetailsButtonsAction {
@@ -122,6 +131,7 @@ public enum AppDetailsAction {
     case addService
     case chooseRepeat(ChooseRepeatAction)
     case close
+    case onResponseChangeAppointment
 }
 
 public struct AppointmentDetails: View {
