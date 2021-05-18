@@ -24,7 +24,6 @@ public typealias TabBarEnvironment = (
 )
 
 public struct TabBarState: Equatable {
-	var appsLoadingState: LoadingState
 	var clients: ClientsState
 	var calendar: CalendarState
 	var settings: SettingsState
@@ -154,6 +153,7 @@ public let tabBarReducer: Reducer<
 			switch result {
 			case .success(let locations):
 				state.calendar.locations = .init(locations)
+				state.calendar.chosenLocationsIds = Set(locations.map(\.id))
 				return .none
 			case .failure(let error):
 				break
@@ -164,11 +164,13 @@ public let tabBarReducer: Reducer<
 				state.calendar.employees = [:]
 				state.calendar.locations.forEach { location in
 					state.calendar.employees[location.id] = IdentifiedArrayOf<Employee>.init([])
+					state.calendar.chosenEmployeesIds[location.id] = []
 				}
 				state.calendar.employees.keys.forEach { key in
 					employees.forEach { employee in
 						if employee.locations.contains(key) {
 							state.calendar.employees[key]?.append(employee)
+							state.calendar.chosenEmployeesIds[key]?.append(employee.id)
 						}
 					}
 				}
@@ -298,6 +300,5 @@ extension TabBarState {
 		self.calendar = CalendarState()
 		self.settings = SettingsState()
 		self.communication = CommunicationState()
-		self.appsLoadingState = .initial
 	}
 }

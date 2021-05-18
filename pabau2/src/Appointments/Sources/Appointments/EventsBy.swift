@@ -8,7 +8,7 @@ public struct EventsBy<SubsectionHeader: Identifiable & Equatable> {
 	public var appointments: [Location.ID: [SubsectionHeader.ID: IdentifiedArrayOf<CalendarEvent>]]
 	public init(events: [CalendarEvent],
 				locationsIds: Set<Location.ID>,
-				subsections: [SubsectionHeader],
+				subsections: [SubsectionHeader.ID],
 				sectionKeypath: KeyPath<CalendarEvent, Location.ID>,
 				subsKeypath: KeyPath<CalendarEvent, SubsectionHeader.ID>) {
 		self.appointments = SectionHelper.group(events,
@@ -28,11 +28,11 @@ extension EventsBy: Equatable { }
 open class SectionHelper {
 
 	@available(iOS 13, *)
-	public class func group<SectionId: Hashable, Subsection: Identifiable>(_ events: [CalendarEvent],
-																		   _ sectionIds: Set<SectionId>, _ subsections: [Subsection],
+	public class func group<SectionId: Hashable, SubsectionId: Hashable>(_ events: [CalendarEvent],
+																		   _ sectionIds: Set<SectionId>, _ subsections: [SubsectionId],
 																		   _ sectionKeyPath: KeyPath<CalendarEvent, SectionId>,
-																		   _ subsectionKeyPath: KeyPath<CalendarEvent, Subsection.ID>)
-	-> [SectionId: [Subsection.ID: IdentifiedArrayOf<CalendarEvent>]] {
+																		   _ subsectionKeyPath: KeyPath<CalendarEvent, SubsectionId>)
+	-> [SectionId: [SubsectionId: IdentifiedArrayOf<CalendarEvent>]] {
 		let byLocation = Dictionary.init(grouping: events, by: { $0[keyPath: sectionKeyPath] })
 		let byLocationAll = sectionIds.reduce(into: [SectionId: [CalendarEvent]]()) { res, secId in
 			res[secId] = byLocation[secId, default: []]
@@ -46,11 +46,11 @@ open class SectionHelper {
 	}
 	
 	@available(iOS 13, *)
-	public class func group<T: Identifiable, CalendarEvent>(_ subsections: [T],
+	public class func group<T: Hashable, CalendarEvent>(_ subsections: [T],
 															_ events: [CalendarEvent],
-															_ keyPath: KeyPath<CalendarEvent, T.ID>) -> [T.ID: IdentifiedArrayOf<CalendarEvent>] {
+															_ keyPath: KeyPath<CalendarEvent, T>) -> [T: IdentifiedArrayOf<CalendarEvent>] {
 		let eventsBySection = Dictionary.init(grouping: events, by: { $0[keyPath: keyPath] })
-		return subsections.map(\.id).reduce(into: [T.ID: IdentifiedArrayOf<CalendarEvent>](), { res, sectionId in
+		return subsections.reduce(into: [T: IdentifiedArrayOf<CalendarEvent>](), { res, sectionId in
 			let array = eventsBySection[sectionId, default: []]
 			res[sectionId] = IdentifiedArrayOf.init(array)
 		})

@@ -17,8 +17,20 @@ public struct ListState: Equatable {
 
 public struct ListContainerState: Equatable {
 	
-	public var loadingState: LoadingState
-	public var journey: ListState
+	public init(appsLoadingState: LoadingState, list: ListState, appointments: ListAppointments, locations: IdentifiedArrayOf<Location>, employees: [Location.Id : IdentifiedArrayOf<Employee>], chosenEmployeesIds: [Location.Id : [Employee.Id]], expandedLocationsIds: Set<Location.Id>, selectedDate: Date, chosenLocationsIds: Set<Location.Id>) {
+		self.appsLoadingState = appsLoadingState
+		self.list = list
+		self.appointments = appointments
+		self.locations = locations
+		self.employees = employees
+		self.chosenEmployeesIds = chosenEmployeesIds
+		self.expandedLocationsIds = expandedLocationsIds
+		self.selectedDate = selectedDate
+		self.chosenLocationsIds = chosenLocationsIds
+	}
+	
+	public var appsLoadingState: LoadingState
+	public var list: ListState
 	public var appointments: ListAppointments
 	public let locations: IdentifiedArrayOf<Location>
 	public let employees: [Location.Id: IdentifiedArrayOf<Employee>]
@@ -34,8 +46,19 @@ extension ListContainerState {
 		get {
 			let chosenLocations = locations.filter { chosenLocationsIds.contains($0.id) }
 			let array = chosenLocations.map { (location) -> LocationSectionState in
+				
+				let chosenEmployeesForLocation = chosenEmployeesIds[location.id]
+				
+				let appsForLocationByEmployeeId = appointments.appointments[location.id]
+				
+				let appsForLocationAndChosenEmployees = chosenEmployeesForLocation?.compactMap {
+					appsForLocationByEmployeeId?[$0]
+				}.flatMap { $0 } ?? []
+				
+				let idArray = IdentifiedArray(appsForLocationAndChosenEmployees)
+				
 				return LocationSectionState(location: location,
-											appointments: appointments.appointments[location.id] ?? [])
+											appointments: idArray)
 			}
 			return IdentifiedArray(array)
 		}

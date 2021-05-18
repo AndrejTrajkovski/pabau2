@@ -63,8 +63,8 @@ public extension Appointments {
 	
 	mutating func refresh(events: [CalendarEvent],
 						  locationsIds: Set<Location.ID>,
-						  employees: [Employee],
-						  rooms: [Room]) {
+						  employees: [Employee.ID],
+						  rooms: [Room.ID]) {
 		self = .init(calType: self.calendarType,
 					 events: events,
 					 locationsIds: locationsIds,
@@ -75,8 +75,8 @@ public extension Appointments {
 	init(calType: CalendarType,
 		 events: [CalendarEvent],
 		 locationsIds: Set<Location.ID>,
-		 employees: [Employee],
-		 rooms: [Room]
+		 employees: [Employee.ID],
+		 rooms: [Room.Id]
 	) {
 		switch calType {
 		case .employee:

@@ -59,7 +59,8 @@ struct ListCell: View {
 			}
 			Divider().frame(height: 1)
 		}
-		.frame(minWidth: 0, maxWidth: .infinity, idealHeight: 97)
+		.frame(minWidth: 0, maxWidth: .infinity)
+		.frame(height: 97)
 	}
 }
 

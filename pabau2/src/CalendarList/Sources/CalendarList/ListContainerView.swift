@@ -36,6 +36,7 @@ let listCalendarReducer: Reducer<ListState, ListAction, ListCalendarEnvironment>
 )
 
 public struct ListContainerView: View {
+	
 	let store: Store<ListContainerState, ListAction>
 	@ObservedObject var viewStore: ViewStore<ViewState, ListAction>
 
@@ -43,17 +44,17 @@ public struct ListContainerView: View {
 	
 	struct ViewState: Equatable {
 		let listedAppointments: [Appointment]
-		let isLoadingJourneys: Bool
+		let isLoadingApps: Bool
         let searchQuery: String
 		init(state: ListContainerState) {
 			self.listedAppointments = []
-            self.searchQuery = state.journey.searchText
-			self.isLoadingJourneys = state.loadingState.isLoading
+            self.searchQuery = state.list.searchText
+			self.isLoadingApps = state.appsLoadingState.isLoading
 			UITableView.appearance().separatorStyle = .none
 		}
 	}
 	
-	public init(_ store: Store<ListContainerState, ListAction>) {
+	public init(store: Store<ListContainerState, ListAction>) {
 		self.store = store
 		self.viewStore = ViewStore(self.store
 			.scope(state: ViewState.init(state:),
@@ -69,12 +70,16 @@ public struct ListContainerView: View {
                 searchBar
             }
 			
-			ForEachStore(store.scope(state: { $0.locationSections },
-									 action: ListAction.locationSection(id:action:)), content: LocationSection.init(store:)
-			)
+			ScrollView {
+				LazyVStack {
+					ForEachStore(store.scope(state: { $0.locationSections },
+											 action: ListAction.locationSection(id:action:)), content: LocationSection.init(store:)
+					)
+				}
+			}
 //            JourneyList(self.viewStore.state.listedAppointments) {
 //                self.viewStore.send(.selectedAppointment($0))
-//            }.loadingView(.constant(self.viewStore.state.isLoadingJourneys),
+//            }.loadingView(.constant(self.viewStore.state.isLoadingApps),
 //						  Texts.fetchingJourneys)
 			
             Spacer()
@@ -110,13 +115,19 @@ struct LocationSection: View {
 	}
 	
 	var body: some View {
-		Section.init(header: Text(viewStore.state),
-					 content: {
-						ForEachStore(store.scope(state: { $0.appointments },
-												 action: LocationSectionAction.rows(id:action:)),
-									 content: ListCellStoreRow.init(store:)
-						)
-					 })
+		Section.init(header:
+						Text(viewStore.state)
+						.padding(.leading, 16)
+						.font(.semibold20)
+						.frame(maxWidth: .infinity, alignment: .leading)
+		,
+		content: {
+			Divider()
+			ForEachStore(store.scope(state: { $0.appointments },
+									 action: LocationSectionAction.rows(id:action:)),
+						 content: ListCellStoreRow.init(store:)
+			)
+		})
 	}
 }
 
@@ -132,28 +143,6 @@ struct ListCellStoreRow: View {
 				.onTapGesture { viewStore.send(.select) }
 				.listRowInsets(EdgeInsets())
 		}
-	}
-}
-
-struct JourneyList: View {
-	let appointments: [Appointment]
-	let onSelect: (Appointment) -> Void
-	init (_ appointments: [Appointment],
-				_ onSelect: @escaping (Appointment) -> Void) {
-		self.appointments = appointments
-		self.onSelect = onSelect
-	}
-	var body: some View {
-		List {
-			ForEach(appointments.indices) { idx in
-				ListCell.init(appointment: appointments[idx])
-					.contextMenu {
-						ListCellContextMenu()
-					}
-					.onTapGesture { self.onSelect(appointments[idx]) }
-					.listRowInsets(EdgeInsets())
-			}
-        }.id(UUID())
 	}
 }
 

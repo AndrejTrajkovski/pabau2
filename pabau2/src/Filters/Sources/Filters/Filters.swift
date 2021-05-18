@@ -12,7 +12,7 @@ public struct FiltersReducer<S: Identifiable & Equatable & Named> {
 		.init { state, action, env in
 			switch action {
 				case .onHeaderTap:
-					state.isShowingFilters.toggle()
+					break
 				case .rows(let locId, .rows(id: let id, action: .toggle)):
 					guard let chosenSubsectionIds = state.chosenSubsectionsIds[locId] else { break}
 					let isItemChosen = chosenSubsectionIds.contains(where: { $0 == id })

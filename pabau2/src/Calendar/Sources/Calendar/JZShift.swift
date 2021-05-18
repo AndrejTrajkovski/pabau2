@@ -4,11 +4,11 @@ import Model
 
 public class JZShift: JZBackgroundTime, Identifiable {
 
-	subscript<Value>(dynamicMember keyPath: WritableKeyPath<Shift, Value>) -> Value {
+	public subscript<Value>(dynamicMember keyPath: KeyPath<Shift, Value>) -> Value {
 		shift[keyPath: keyPath]
 	}
 
-	public var shift: Shift
+	public let shift: Shift
 	public init(shift: Shift) {
 		self.shift = shift
 		let start = Calendar.gregorian.dateComponents([.hour, .minute], from: shift.startTime)

@@ -11,8 +11,13 @@ import AddShift
 import Filters
 import FSCalendar
 import Appointments
+import CalendarList
+import Util
 
 public struct CalendarState: Equatable {
+	
+	var appsLoadingState: LoadingState = .initial
+	var list: ListState
 	public var appointments: Appointments
 	var isDropdownShown: Bool
 	var shifts: [Date: [Location.ID: [Employee.ID: [JZShift]]]]
@@ -135,17 +140,36 @@ extension CalendarState {
 		}
 	}
 	
-//	public var list: ListContainerState? {
-//		get {
-//			guard let apps = extract(case: Appointments.list, from: self.appointments) else { return nil }
-//			return nil
-//		}
-//		set {
-//			newValue.map {
-//
-//			}
-//		}
-//	}
+	public var listContainer: ListContainerState? {
+		get {
+			guard let apps = extract(case: Appointments.list, from: self.appointments) else { return nil }
+			
+			return ListContainerState(
+				appsLoadingState: self.appsLoadingState,
+				list: self.list,
+				appointments: apps,
+				locations: self.locations,
+				employees: self.employees,
+				chosenEmployeesIds: self.chosenEmployeesIds,
+				expandedLocationsIds: self.expandedLocationsIds,
+				selectedDate: self.selectedDate,
+				chosenLocationsIds: self.chosenLocationsIds
+			)
+		}
+		set {
+			newValue.map {
+				self.appsLoadingState = $0.appsLoadingState
+				self.list = $0.list
+				self.appointments = Appointments.list($0.appointments)
+				self.locations = $0.locations
+				self.employees = $0.employees
+				self.chosenEmployeesIds = $0.chosenEmployeesIds
+				self.expandedLocationsIds = $0.expandedLocationsIds
+				self.selectedDate = $0.selectedDate
+				self.chosenLocationsIds = $0.chosenLocationsIds
+			}
+		}
+	}
 
 	var roomFilters: FiltersState<Room> {
 		get {
@@ -204,15 +228,26 @@ extension CalendarState {
 		self.appointments = .list(ListAppointments.init(events: []))
 //		self.appointments = .employee(EventsBy.init(events: [], locationsIds: [], subsections: [], sectionKeypath: \.locationId, subsKeypath: \.employeeId))
 		self.chosenLocationsIds = Set()
+		self.list = ListState()
 	}
 }
 
 extension CalendarState {
 	
+	func selectedRoomsIds() -> [Room.Id] {
+		chosenLocationsIds.compactMap {
+			chosenRoomsIds[$0]
+		}.flatMap { $0 }
+	}
+	
 	func selectedEmployeesIds() -> [Employee.Id] {
 		chosenLocationsIds.compactMap {
 			chosenEmployeesIds[$0]
 		}.flatMap { $0 }
+	}
+	
+	mutating func refresh(calendarResponse: CalendarResponse) {
+		
 	}
 	
 	mutating func switchTo(calType: Appointments.CalendarType) {
@@ -221,8 +256,8 @@ extension CalendarState {
             calType: calType,
             events: appointments.flatten(),
             locationsIds: Set(locations.map(\.id)),
-            employees: employees.flatMap(\.value),
-            rooms: rooms.flatMap(\.value)
+            employees: selectedEmployeesIds(),
+            rooms: selectedRoomsIds()
         )
 	}
 }

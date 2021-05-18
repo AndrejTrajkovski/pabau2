@@ -16,7 +16,11 @@ public struct CalendarDatePicker: View {
                 scope,
                 isWeekView: isWeekView,
                 onHeightChange: { height in
-					self.totalHeight = height
+					DispatchQueue.main.async {
+						withAnimation {
+							self.totalHeight = height
+						}
+					}
                 },
                 onDateChanged: { viewStore.send(.selectedDate($0))}
             ).frame(height: self.totalHeight)
@@ -140,7 +144,7 @@ struct SwiftUICalendar: UIViewRepresentable {
 	}
 }
 
-extension Date {
+public extension Date {
 	// mon // tue // wed // thu // fri // sat // sun
 //		12	  13     14  	15	   16      17     18
 //		1      2      3      4      5      6       7
@@ -152,7 +156,7 @@ extension Date {
 		return shiftedWeekDaysIdxs
 	}
 
-	public func getMondayOfWeek() -> Date {
+	func getMondayOfWeek() -> Date {
 		self.nextWeekday(.monday) - 1.weeks
 	}
 }

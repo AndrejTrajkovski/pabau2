@@ -8,8 +8,8 @@ extension APIClient {
         startDate: Date,
         endDate: Date,
         locationIds: Set<Location.ID>,
-        employeesIds: [Employee.ID],
-        roomIds: [Room.ID]
+        employeesIds: [Employee.ID]?,
+        roomIds: [Room.ID]?
     ) -> Effect<CalendarResponse, RequestError> {
         let requestBuilder: RequestBuilder<CalendarResponse>.Type = requestBuilderFactory.getBuilder()
         let dateFormatter = DateFormatter()
@@ -27,11 +27,11 @@ extension APIClient {
             params["location_id"] = locationIds.map(String.init).joined(separator: ",")
         }
         
-        if !employeesIds.isEmpty {
+        if let employeesIds = employeesIds {
             params["user_ids"] = employeesIds.map(String.init).joined(separator: ",")
         }
         
-        if !roomIds.isEmpty {
+        if let roomIds = roomIds {
             params["room_id"] = roomIds.map(String.init).joined(separator: ",")
         }
         

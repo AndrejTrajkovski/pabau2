@@ -4,11 +4,11 @@ import Foundation
 import AddBookout
 import AddShift
 import Filters
+import CalendarList
 
 public enum CalendarAction {
 	case addAppointmentTap
 	case gotCalendarResponse(Result<CalendarResponse, RequestError>)
-	case gotResponse(Result<[CalendarEvent], RequestError>)
 	case datePicker(CalendarDatePickerAction)
 	case calTypePicker(CalendarTypePickerAction)
 	case onAddShift
@@ -26,4 +26,5 @@ public enum CalendarAction {
 	case employeeFilters(FiltersAction<Employee>)
 	case roomFilters(FiltersAction<Room>)
 	case changeCalScope
+	case list(ListAction)
 }

@@ -3,7 +3,7 @@ import Model
 
 public struct ListAppointments: Equatable {
 	public var bookouts: IdentifiedArrayOf<Bookout>
-	public var appointments: [Location.ID: IdentifiedArrayOf<Appointment>]
+	public var appointments: [Location.ID: [Employee.ID: IdentifiedArrayOf<Appointment>]]
 	
 	public init(events: [CalendarEvent]) {
 		
@@ -11,14 +11,17 @@ public struct ListAppointments: Equatable {
 		self.bookouts = IdentifiedArrayOf(array)
 		
 		let apps = events.compactMap { extract(case: CalendarEvent.appointment, from: $0) }
-		let byLocation = Dictionary.init(grouping: apps, by: { $0.locationId })
-			.mapValues(IdentifiedArray.init(_:))
+		let byLocation: [Location.Id: [Employee.Id : IdentifiedArrayOf<Appointment>]] = Dictionary.init(grouping: apps, by: { $0.locationId })
+			.mapValues {
+				let byEmployee = Dictionary.init(grouping: $0, by: { $0.employeeId }).mapValues(IdentifiedArray.init(_:))
+				return byEmployee
+			}
 		self.appointments = byLocation
 	}
 	
 	func flatten() -> [CalendarEvent] {
 		let flatBookouts = bookouts.map { CalendarEvent.bookout($0) }
-		let flatApps = appointments.flatMap { $0.value }.map { CalendarEvent.appointment($0) }
+		let flatApps = appointments.flatMap { $0.value }.flatMap { $0.value }.map { CalendarEvent.appointment($0) }
 		return flatBookouts + flatApps
 	}
 }

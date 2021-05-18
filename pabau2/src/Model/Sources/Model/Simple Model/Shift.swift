@@ -2,9 +2,6 @@ import Foundation
 import Tagged
 
 public struct Shift: Decodable, Equatable {
-    public static func == (lhs: Shift, rhs: Shift) -> Bool {
-        lhs.rotaID == rhs.rotaID
-    }
     
 	public let rotaID: Int
 	public let date: Date
@@ -115,29 +112,6 @@ public struct ShiftSchema: Codable {
         case notes
         case published
         case rotaUID = "rota_uid"
-    }
-}
-
-extension Shift {
-    public static func convertToCalendar(
-        employees: [Employee],
-        shifts: [Shift]
-    ) -> [Date: [Location.ID: [Employee.Id: [Shift]]]] {
-        
-        let byDate = Dictionary.init(grouping: shifts, by: { $0.date })
-        
-        return byDate.mapValues { events in
-            return Dictionary.init(
-                grouping: events,
-                by: { $0.locationID }
-            )
-            .mapValues { events2 in
-                Dictionary.init(
-                    grouping: events2,
-                    by: { $0.userID }
-                )
-            }
-        }
     }
 }
 

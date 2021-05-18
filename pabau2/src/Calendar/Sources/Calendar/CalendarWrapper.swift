@@ -1,6 +1,6 @@
 import SwiftUI
 import ComposableArchitecture
-//import Journey
+import CalendarList
 import Model
 
 public struct CalendarWrapper: View {
@@ -10,17 +10,9 @@ public struct CalendarWrapper: View {
 		WithViewStore(store) { viewStore -> AnyView in
 			switch viewStore.state.appointments {
 			case .list:
-				return AnyView(Text("LIST"))
+				return AnyView(listContainerView)
 			case .week:
-				return AnyView(
-					IfLetStore.init(
-						store.scope(
-							state: { $0.week },
-							action: { .week($0) }
-						),
-						then: CalendarWeekSwiftUI.init(store:)
-					)
-				)
+				return AnyView(weekView)
 			case .employee:
 				return AnyView(employeeCalendarView)
 			case .room:
@@ -28,7 +20,25 @@ public struct CalendarWrapper: View {
 			}
 		}
 	}
+	
+	var listContainerView: some View {
+		IfLetStore(
+			store.scope(state: { $0.listContainer },
+						action: { .list($0) }),
+			then: ListContainerView.init(store:)
+		)
+	}
 
+	var weekView: some View {
+		IfLetStore.init(
+			store.scope(
+				state: { $0.week },
+				action: { .week($0) }
+			),
+			then: CalendarWeekSwiftUI.init(store:)
+		)
+	}
+	
 	typealias EmployeeCalView = IfLetStore<CalendarSectionViewState<Employee>, SubsectionCalendarAction<Employee>, _ConditionalContent<CalendarSwiftUI<Employee>, EmptyView>>
 	typealias RoomCalView = IfLetStore<CalendarSectionViewState<Room>, SubsectionCalendarAction<Room>,
 											_ConditionalContent<CalendarSwiftUI<Room>, EmptyView>>
