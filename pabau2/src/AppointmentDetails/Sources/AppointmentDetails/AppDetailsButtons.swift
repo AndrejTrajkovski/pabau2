@@ -10,7 +10,8 @@ public let appDetailsButtonsReducer: Reducer<AppDetailsButtonsState, AppDetailsB
 	case .onPayment:
 		state.isPaymentActive = true
 	case .onCancel:
-		state.isCancelActive = true
+		//state.isCancelActive = true
+        break
 	case .onStatus:
 		//state.isStatusActive = true
         break
@@ -22,6 +23,8 @@ public let appDetailsButtonsReducer: Reducer<AppDetailsButtonsState, AppDetailsB
 		state.isDocumentsActive = true
 	case .onReschedule:
 		state.isRescheduleActive = true
+    default:
+        break
 	}
 	return .none
 }
@@ -43,6 +46,7 @@ public enum AppDetailsButtonsAction: Equatable {
 	case onDocuments
 	case onReschedule
     case onDownloadStatuses([AppointmentStatus])
+    case onDownloadCancelReasons([CancelReason])
 }
 
 struct AppDetailsButtons: View {

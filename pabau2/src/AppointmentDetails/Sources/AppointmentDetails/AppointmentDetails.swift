@@ -4,6 +4,7 @@ import ComposableArchitecture
 import Model
 import SharedComponents
 import CoreDataModel
+import Foundation
 
 public typealias CalendarEnvironment = (journeyAPI: JourneyAPI, clientsAPI: ClientsAPI, userDefaults: UserDefaultsConfig, repository: Repository)
 
@@ -64,9 +65,25 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, Calenda
                         }
                     }
                     .eraseToEffect()
+            case .onCancel:
+                return env.clientsAPI.getAppointmentCancelReasons()
+                    .catchToEffect()
+                    .map { response in
+                        switch response {
+                        case .success(let reasons):
+                            return AppDetailsAction.buttons(.onDownloadCancelReasons(reasons))
+                        case .failure(let error):
+                            return AppDetailsAction.buttons(.onDownloadCancelReasons([]))
+                        }
+                    }
+                    .eraseToEffect()
+                
             case .onDownloadStatuses(let statuses):
                 state.appStatuses = IdentifiedArrayOf(statuses)
                 state.isStatusActive = true
+            case .onDownloadCancelReasons(let reasons):
+                state.cancelReasons = IdentifiedArrayOf(reasons)
+                state.isCancelActive = true
             default:
                 break
             }

@@ -12,6 +12,7 @@ public protocol ClientsAPI {
 	func getAppointments(clientId: Client.Id) -> Effect<[CCAppointment], RequestError>
     func getAppointmentStatus() -> Effect<[AppointmentStatus], RequestError>
     func appointmentChangeStatus(appointmentId: Appointment.ID, status: String) -> Effect<Bool, RequestError>
+    func getAppointmentCancelReasons() -> Effect<[CancelReason], RequestError>
     
     func getBookoutReasons() -> Effect<[BookoutReason], RequestError>
 	func getFinancials(clientId: Client.Id) -> Effect<[Financial], RequestError>

@@ -125,6 +125,22 @@ extension APIClient {
             queryParams: commonAnd(other: params)
         )
         .effect()
-        .map(\.success)        
+        .map(\.success)
+    }
+    
+    public func getAppointmentCancelReasons() -> Effect<[CancelReason], RequestError> {
+        struct CancelReasonResponse: Decodable {
+            let employees: [CancelReason]
+        }
+        
+        let requestBuilder: RequestBuilder<CancelReasonResponse>.Type = requestBuilderFactory.getBuilder()
+        return requestBuilder.init(
+            method: .GET,
+            baseUrl: baseUrl,
+            path: .getAppointmentCancelReason,
+            queryParams: commonParams()
+        )
+        .effect()
+        .map(\.employees)
     }
 }
