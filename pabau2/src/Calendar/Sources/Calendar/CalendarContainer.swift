@@ -16,8 +16,6 @@ import Overture
 
 public typealias CalendarEnvironment = (journeyAPI: JourneyAPI, clientsAPI: ClientsAPI, userDefaults: UserDefaultsConfig, repository: Repository)
 
-struct CalendarCancelID: Hashable { }
-
 public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, CalendarEnvironment> = .combine(
 	calTypePickerReducer.pullback(
 		state: \.calTypePicker,
@@ -35,11 +33,11 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 		state: \CalendarState.roomSectionState,
 		action: /CalendarAction.room,
 		environment: { $0 }),
-	FiltersReducer<Employee>().reducer.pullback(
+	FiltersReducer<Employee>(locationsKeyPath: \Employee.locations).reducer.pullback(
 		state: \CalendarState.employeeFilters,
 		action: /CalendarAction.employeeFilters,
 		environment: { $0 }),
-	FiltersReducer<Room>().reducer.pullback(
+	FiltersReducer<Room>(locationsKeyPath: \Room.locationIds).reducer.pullback(
 		state: \CalendarState.roomFilters,
 		action: /CalendarAction.roomFilters,
 		environment: { $0 }),
@@ -64,23 +62,27 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 	),
 	.init { state, action, env in
 		
-		func getCalendar() -> Effect<CalendarAction, Never> {
-			let params = calendarAPIParams(state: state)
+		struct GetAppointmentsCancelID: Hashable { }
+		
+		func getAppointments() -> Effect<CalendarAction, Never> {
+			state.appsLS = .loading
+			let params = appointmentsAPIParams(state: state)
 			let getCalendar = with(params, env.journeyAPI.getCalendar)
 			return getCalendar
 			.receive(on: DispatchQueue.main)
 			.catchToEffect()
-			.map(CalendarAction.gotCalendarResponse)
+			.map(CalendarAction.gotAppointmentsResponse)
 			.eraseToEffect()
-			.cancellable(id: CalendarCancelID(), cancelInFlight: true)
+			.cancellable(id: GetAppointmentsCancelID(), cancelInFlight: true)
 		}
 		
 		switch action {
         
-		case .gotCalendarResponse(let result):
+		case .gotAppointmentsResponse(let result):
 			switch result {
 			case .success(let calendarResponse):
 				
+				state.appsLS = .gotSuccess
 				let shifts = calendarResponse.rota.values.flatMap { $0.shift }
 				state.shifts = Shift.convertToCalendar(shifts: shifts)
 				state.appointments.refresh(
@@ -90,19 +92,19 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 					rooms: state.selectedRoomsIds()
 				)
 			case .failure(let error):
-				state.appsLoadingState = .gotError(error)
+				state.appsLS = .gotError(error)
 			}
 			
 		case .datePicker(.selectedDate(let date)):
 			
 			state.selectedDate = date
 			
-			return getCalendar()
+			return getAppointments()
 			
 		case .calTypePicker(.onSelect(let calType)):
 			guard calType != state.appointments.calendarType else { return .none }
             state.switchTo(calType: calType)
-			return getCalendar()
+			return getAppointments()
 			
 		case .employee(.addBookout(let startDate, let durationMins, let dropKeys)):
 			let (location, subsection) = dropKeys
@@ -189,17 +191,26 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			break
 		case .showAddApp(startDate: _, endDate: _, employee: _):
 			break
-		case .employeeFilters(.onHeaderTap):
+		case .employeeFilters(.onHeaderTap), .roomFilters(.onHeaderTap):
 			state.isShowingFilters.toggle()
 			guard !state.isShowingFilters else { return .none }
-			return getCalendar()
+			return getAppointments()
 			
 		case .roomFilters(_):
 			break
 		case .list(_):
 			break
-		case .employeeFilters(.rows(id: let id, action: let action)):
+		case .employeeFilters(_):
 			break
+		case .gotLocationsResponse(let result):
+			switch result {
+			case .success(let locations):
+				state.locationsLS = .gotSuccess
+				state.locations = .init(locations)
+				state.chosenLocationsIds = Set(locations.map(\.id))
+			case .failure(let error):
+				state.locationsLS = .gotError(error)
+			}
 		}
 		return .none
 	}

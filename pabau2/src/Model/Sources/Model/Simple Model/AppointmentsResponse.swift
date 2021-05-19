@@ -1,7 +1,7 @@
 import Foundation
 import Tagged
 
-public struct CalendarResponse: Decodable {
+public struct AppointmentsResponse: Decodable {
 	public let rota: [String: Rota]
 	public let appointments: [CalendarEvent]
 	public let intervalSetting: Int

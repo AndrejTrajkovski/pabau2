@@ -49,7 +49,7 @@ public struct ListContainerView: View {
 		init(state: ListContainerState) {
 			self.listedAppointments = []
             self.searchQuery = state.list.searchText
-			self.isLoadingApps = state.appsLoadingState.isLoading
+			self.isLoadingApps = state.appsLS.isLoading
 			UITableView.appearance().separatorStyle = .none
 		}
 	}

@@ -16,7 +16,10 @@ import Util
 
 public struct CalendarState: Equatable {
 	
-	var appsLoadingState: LoadingState = .initial
+	var employeesLS: LoadingState
+	var roomsLS: LoadingState
+	var locationsLS: LoadingState
+	var appsLS: LoadingState
 	var list: ListState
 	public var appointments: Appointments
 	var isDropdownShown: Bool
@@ -145,7 +148,7 @@ extension CalendarState {
 			guard let apps = extract(case: Appointments.list, from: self.appointments) else { return nil }
 			
 			return ListContainerState(
-				appsLoadingState: self.appsLoadingState,
+				appsLS: self.appsLS,
 				list: self.list,
 				appointments: apps,
 				locations: self.locations,
@@ -158,7 +161,7 @@ extension CalendarState {
 		}
 		set {
 			newValue.map {
-				self.appsLoadingState = $0.appsLoadingState
+				self.appsLS = $0.appsLS
 				self.list = $0.list
 				self.appointments = Appointments.list($0.appointments)
 				self.locations = $0.locations
@@ -179,7 +182,9 @@ extension CalendarState {
 				subsections: self.rooms,
 				chosenSubsectionsIds: self.chosenRoomsIds,
 				expandedLocationsIds: self.expandedLocationsIds,
-				isShowingFilters: self.isShowingFilters
+				isShowingFilters: self.isShowingFilters,
+				locationsLS: self.locationsLS,
+				subsectionsLS: self.roomsLS
 			)
 		}
 		set {
@@ -189,6 +194,8 @@ extension CalendarState {
 			self.chosenRoomsIds = newValue.chosenSubsectionsIds
 			self.expandedLocationsIds = newValue.expandedLocationsIds
 			self.isShowingFilters = newValue.isShowingFilters
+			self.locationsLS = newValue.locationsLS
+			self.roomsLS = newValue.subsectionsLS
 		}
 	}
 
@@ -200,7 +207,10 @@ extension CalendarState {
 				subsections: self.employees,
 				chosenSubsectionsIds: self.chosenEmployeesIds,
 				expandedLocationsIds: self.expandedLocationsIds,
-				isShowingFilters: self.isShowingFilters)
+				isShowingFilters: self.isShowingFilters,
+				locationsLS: self.locationsLS,
+				subsectionsLS: self.employeesLS
+			)
 		}
 		set {
 			self.locations = newValue.locations
@@ -209,6 +219,8 @@ extension CalendarState {
 			self.chosenEmployeesIds = newValue.chosenSubsectionsIds
 			self.expandedLocationsIds = newValue.expandedLocationsIds
 			self.isShowingFilters = newValue.isShowingFilters
+			self.locationsLS = newValue.locationsLS
+			self.employeesLS = newValue.subsectionsLS
 		}
 	}
 }
@@ -229,6 +241,10 @@ extension CalendarState {
 //		self.appointments = .employee(EventsBy.init(events: [], locationsIds: [], subsections: [], sectionKeypath: \.locationId, subsKeypath: \.employeeId))
 		self.chosenLocationsIds = Set()
 		self.list = ListState()
+		self.locationsLS = .loading
+		self.employeesLS = .loading
+		self.roomsLS = .loading
+		self.appsLS = .initial
 	}
 }
 
@@ -246,7 +262,7 @@ extension CalendarState {
 		}.flatMap { $0 }
 	}
 	
-	mutating func refresh(calendarResponse: CalendarResponse) {
+	mutating func refresh(calendarResponse: AppointmentsResponse) {
 		
 	}
 	
@@ -260,4 +276,89 @@ extension CalendarState {
             rooms: selectedRoomsIds()
         )
 	}
+	
+	mutating func update(locations: [Location], employees: [Employee]) {
+		let data = merge(locations, employees)
+		self.employees = data.employeesResult
+		self.chosenEmployeesIds = data.chosenEmployeesIds
+	}
+	
+	mutating func update(locations: [Location], rooms: [Room]) {
+		let data = merge(locations, rooms)
+		self.rooms = data.roomsResult
+		self.chosenRoomsIds = data.chosenRoomsIds
+	}
+	
+	func merge(_ locations: [Location], _ rooms: [Room]) -> (
+		roomsResult: [Location.Id: IdentifiedArrayOf<Room>],
+		chosenRoomsIds: [Location.Id: [Room.Id]]
+	) {
+		var roomsResult: [Location.Id: IdentifiedArrayOf<Room>] = [:]
+		var chosenRoomsIds: [Location.Id: [Room.Id]] = [:]
+		
+		locations.forEach { location in
+			roomsResult[location.id] = IdentifiedArrayOf<Room>.init([])
+			chosenRoomsIds[location.id] = []
+		}
+		
+		roomsResult.keys.forEach { key in
+			rooms.forEach { room in
+				if room.locationIds.contains(key) {
+					roomsResult[key]?.append(room)
+					chosenRoomsIds[key]?.append(room.id)
+				}
+			}
+		}
+		
+		return (
+			roomsResult: roomsResult,
+			chosenRoomsIds: chosenRoomsIds
+		)
+	}
+	
+	func merge(_ locations: [Location], _ employees: [Employee]) -> (
+		employeesResult: [Location.Id: IdentifiedArrayOf<Employee>],
+		chosenEmployeesIds: [Location.Id: [Employee.Id]]
+	) {
+		var employeesResult: [Location.Id: IdentifiedArrayOf<Employee>] = [:]
+		var chosenEmployeesIds: [Location.Id: [Employee.Id]] = [:]
+		
+		locations.forEach { location in
+			employeesResult[location.id] = IdentifiedArrayOf<Employee>.init([])
+			chosenEmployeesIds[location.id] = []
+		}
+		
+		employeesResult.keys.forEach { key in
+			employees.forEach { employee in
+				if employee.locations.contains(key) {
+					employeesResult[key]?.append(employee)
+					chosenEmployeesIds[key]?.append(employee.id)
+				}
+			}
+		}
+		
+		return(
+			employeesResult: employeesResult,
+			chosenEmployeesIds: chosenEmployeesIds
+		)
+	}
 }
+
+//func group(rooms: [Room]) -> [Location.ID: IdentifiedArrayOf<Room>] {
+//	
+//	let locations = Set(rooms.flatMap(\.locationIds))
+//	var result: [Location.Id: IdentifiedArrayOf<Room>] = [:]
+//	
+//	locations.forEach { locationId in
+//		rooms.forEach { room in
+//			if room.locationIds.contains(locationId) {
+//				if result[locationId] != nil {
+//					result[locationId]!.append(room)
+//				} else {
+//					result[locationId] = IdentifiedArray()
+//				}
+//			}
+//		}
+//	}
+//	return result
+//}

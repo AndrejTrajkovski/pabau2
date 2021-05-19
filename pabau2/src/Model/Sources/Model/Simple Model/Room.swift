@@ -9,17 +9,18 @@ public struct Room: Decodable, Identifiable, Equatable {
 
     public let name: String
 	
-	public let locationId: Location.Id
+	public let locationIds: [Location.Id]
 	
-	public init(id: Int, name: String, locationId: Location.Id) {
+	public init(id: Int, name: String, locationIds: [Location.Id]) {
 		self.id = Id(rawValue: id)
         self.name = name
-		self.locationId = locationId
+		self.locationIds = locationIds
     }
+	
     public enum CodingKeys: String, CodingKey {
         case id = "id"
         case name
-		case locationId
+		case locationIds
     }
 
 }
