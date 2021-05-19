@@ -12,7 +12,7 @@ let chooseEmployeesReducer = Reducer<
     switch action {
     case .onAppear:
         state.searchText = ""
-        return env.apiClient.getEmployees()
+        return env.repository.getEmployees()
             .catchToEffect()
             .receive(on: DispatchQueue.main)
             .map(ChooseEmployeesAction.gotEmployeeResponse)
@@ -27,8 +27,8 @@ let chooseEmployeesReducer = Reducer<
         state.filteredEmployees = state.employees.filter {$0.name.lowercased().contains(text.lowercased())}
     case .gotEmployeeResponse(let result):
         switch result {
-        case .success(let employees):
-            state.employees = .init(employees)
+        case .success(let response):
+            state.employees = .init(response.state)
             state.filteredEmployees = state.employees
         case .failure:
             break

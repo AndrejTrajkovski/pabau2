@@ -15,7 +15,8 @@ let package = Package(
         .package(name: "CoreStore",
                  url: "https://github.com/JohnEstropia/CoreStore", from: "8.0.1"),
 		.package(url: "../Model",
-				 from: Version.init(stringLiteral: "1.0.0"))
+				 from: Version.init(stringLiteral: "1.0.0")),
+        .package(url: "../Util", from: Version.init(stringLiteral: "1.0.0"))
     ],
     targets: [
         .target(

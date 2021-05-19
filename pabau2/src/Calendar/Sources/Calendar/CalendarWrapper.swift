@@ -43,22 +43,25 @@ public struct CalendarWrapper: View {
 	typealias RoomCalView = IfLetStore<CalendarSectionViewState<Room>, SubsectionCalendarAction<Room>,
 											_ConditionalContent<CalendarSwiftUI<Room>, EmptyView>>
 
-	var employeeCalendarView: EmployeeCalView {
+	var employeeCalendarView: some View {
 		let ifLetStore = IfLetStore(
 			store.scope(
 				state: { $0.employeeSectionState },
 				action: { .employee($0) }
 			),
-			then: CalendarSwiftUI<Employee>.init(store:), else: { EmptyView() }
+			then: CalendarSwiftUI<Employee>.init(store:)
 		)
 		return ifLetStore
 	}
 
-	var roomCalendarView: RoomCalView {
-		let ifLetStore = IfLetStore(store.scope(
-										state: { $0.roomSectionState },
-										action: { .room($0) }),
-									then: CalendarSwiftUI<Room>.init(store:), else: { EmptyView() })
+	var roomCalendarView: some View {
+        let ifLetStore = IfLetStore(
+            store.scope(
+                state: { $0.roomSectionState },
+                action: { .room($0) }
+            ),
+            then: CalendarSwiftUI<Room>.init(store:)
+        )
 		return ifLetStore
 	}
 }

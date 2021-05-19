@@ -32,7 +32,7 @@ public enum ChooseFormAction: Equatable {
 	case addTemplateId(HTMLForm.ID)
 	case removeTemplateId(HTMLForm.ID)
 	case proceed//Check-In or Proceed
-	case gotResponse(Result<[FormTemplateInfo], RequestError>)
+	case gotResponse(Result<SuccessState<[FormTemplateInfo]>, RequestError>)
 	case onAppear
 	case onSearch(String)
 }
@@ -52,8 +52,8 @@ public let chooseFormListReducer = Reducer<ChooseFormState, ChooseFormAction, Fo
 		break
 	case .gotResponse(let result):
 		switch result {
-		case .success(let templates):
-			state.templates = IdentifiedArray(templates)
+		case .success(let response):
+            state.templates = IdentifiedArray(response.state)
 			state.templatesLoadingState = .gotSuccess
 		case .failure(let error):
 			state.templatesLoadingState = .gotError(error)

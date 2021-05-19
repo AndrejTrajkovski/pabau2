@@ -1,36 +1,39 @@
-public enum SuccessState<Model> {
-	case db(Model)
-	case api(Model)
-	
-	public func get() -> Model {
-		switch self {
-		case .api(let value):
-			return value
-		case .db(let value):
-			return value
-		}
-	}
+//public enum SuccessState<Model> {
+//	case db(Model)
+//	case api(Model)
+//
+//	public func get() -> Model {
+//		switch self {
+//		case .api(let value):
+//			return value
+//		case .db(let value):
+//			return value
+//		}
+//	}
+//}
+
+public struct SuccessState<Model> {
+    public var state: Model
+    public var isFromDB: Bool
+    
+    public init(state: Model, isFromDB: Bool) {
+        self.state = state
+        self.isFromDB = isFromDB
+    }
 }
 
 extension SuccessState: Equatable where Model: Equatable {
-	public static func == (lhs: Self, rhs: Self) -> Bool {
-		switch (lhs, rhs) {
-		case (.db(let lhdb), .db(let rhdb)):
-			return lhdb == rhdb
-		case (.api(let lhapi), .api(let rhapi)):
-			return lhapi == rhapi
-		default:
-			return false
-		}
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.state == rhs.state && lhs.isFromDB == rhs.isFromDB
 	}
 }
 
-extension Result {
-	public func toAPI() -> Result<SuccessState<Success>, Failure> {
-		self.map(SuccessState.api)
-	}
-	
-	public func toDB() -> Result<SuccessState<Success>, Failure> {
-		self.map(SuccessState.db)
-	}
-}
+//extension Result {
+//	public func toAPI() -> Result<SuccessState<Success>, Failure> {
+//        self.map(SuccessState<Success>.init(state: , isFromDB: false))
+//	}
+//	
+//	public func toDB() -> Result<SuccessState<Success>, Failure> {
+//		self.map(SuccessState.db)
+//	}
+//}
