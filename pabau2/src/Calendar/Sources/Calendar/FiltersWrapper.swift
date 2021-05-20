@@ -9,8 +9,7 @@ struct FiltersWrapper: View {
 
 	var body: some View {
 		WithViewStore(store) { viewStore in
-			switch viewStore.appointments.calendarType {
-			case .list, .employee, .week:
+			if viewStore.appointments.calendarType.isEmployeeFilter() {
 				Filters<Employee>(
 					store:
 						store.scope(
@@ -18,14 +17,14 @@ struct FiltersWrapper: View {
 							action: { .employeeFilters($0) }
 						)
 				)
-			case .room:
-                Filters<Room>(
-                    store:
-                        store.scope(
-                            state: { $0.roomFilters },
-                            action: { .roomFilters($0) }
-                        )
-                )
+			} else {
+				Filters<Room>(
+					store:
+						store.scope(
+							state: { $0.roomFilters },
+							action: { .roomFilters($0) }
+						)
+				)
 			}
 		}
 	}

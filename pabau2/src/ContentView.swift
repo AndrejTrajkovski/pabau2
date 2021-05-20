@@ -87,6 +87,7 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = Reducer.combine(
 				env.journeyAPI.getEmployees()
 					.receive(on: DispatchQueue.main)
 					.catchToEffect()
+					.delay(for: 2.0, scheduler: DispatchQueue.main)
 					.map { AppAction.tabBar(.calendar(.employeeFilters(.gotSubsectionResponse($0))))}
 					.eraseToEffect(),
 				

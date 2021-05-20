@@ -274,10 +274,9 @@ extension CalendarState {
 	}
 	
 	var filtersLoadingState: LoadingState {
-		switch appointments.calendarType {
-		case .list, .employee, .week:
+		if appointments.calendarType.isEmployeeFilter() {
 			return employeeFilters.sumLoadingState
-		case .room:
+		} else {
 			return roomFilters.sumLoadingState
 		}
 	}

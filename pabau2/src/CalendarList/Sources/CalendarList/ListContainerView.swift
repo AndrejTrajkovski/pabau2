@@ -38,27 +38,25 @@ let listCalendarReducer: Reducer<ListState, ListAction, ListCalendarEnvironment>
 public struct ListContainerView: View {
 	
 	let store: Store<ListContainerState, ListAction>
-	@ObservedObject var viewStore: ViewStore<ViewState, ListAction>
+	@ObservedObject var viewStore: ViewStore<ListContainerState, ListAction>
 
     @State var showSearchBar: Bool = false
 	
-	struct ViewState: Equatable {
-		let listedAppointments: [Appointment]
-		let isLoadingApps: Bool
-        let searchQuery: String
-		init(state: ListContainerState) {
-			self.listedAppointments = []
-            self.searchQuery = state.list.searchText
-			self.isLoadingApps = state.appsLS.isLoading
-			UITableView.appearance().separatorStyle = .none
-		}
-	}
+//	struct ViewState: Equatable {
+//		let appsLoadingState: LoadingState
+//        let searchQuery: String
+//		init(state: ListContainerState) {
+//            self.searchQuery = state.list.searchText
+//			self.appsLoadingState = state.appsLS
+//			UITableView.appearance().separatorStyle = .none
+//		}
+//	}
 	
 	public init(store: Store<ListContainerState, ListAction>) {
 		self.store = store
-		self.viewStore = ViewStore(self.store
-			.scope(state: ViewState.init(state:),
-						 action: { $0 }))
+		self.viewStore = ViewStore(self.store)
+//			.scope(state: ViewState.init(state:),
+//						 action: { $0 }))
 	}
 	
 	public var body: some View {
@@ -90,7 +88,7 @@ public struct ListContainerView: View {
 		SearchView(
 			placeholder: "Search",
 			text: viewStore.binding(
-				get: \.searchQuery,
+				get: { $0.list.searchText },
 				send: { ListAction.searchedText($0) }
 			)
 		)
