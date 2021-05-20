@@ -194,21 +194,46 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			guard !state.isShowingFilters else { return .none }
 			return getAppointments()
 			
-		case .roomFilters(_):
-			break
+		case .roomFilters(.gotSubsectionResponse(let result)):
+			if case .success = result,
+			   state.appsLS == .initial,
+			   state.locationsLS == .gotSuccess {
+				//load appointments after  login if room is selected
+				return getAppointments()
+			}
 		case .list(_):
 			break
-		case .employeeFilters(_):
-			break
+		case .employeeFilters(.gotSubsectionResponse(let result)):
+			if case .success = result,
+			   state.appsLS == .initial,
+			   state.locationsLS == .gotSuccess {
+				//load appointments after login if employee, week or list is selected
+				return getAppointments()
+			}
 		case .gotLocationsResponse(let result):
 			switch result {
 			case .success(let locations):
 				state.locationsLS = .gotSuccess
 				state.locations = .init(locations)
 				state.chosenLocationsIds = Set(locations.map(\.id))
+				if state.appsLS == .initial && state.filtersLoadingState == .gotSuccess {
+					return getAppointments()
+				}
 			case .failure(let error):
 				state.locationsLS = .gotError(error)
 			}
+		case .roomFilters(.rows(id: let id, action: let action)):
+			break
+		case .roomFilters(.gotLocationsResponse(_)):
+			break
+		case .roomFilters(.reload):
+			break
+		case .employeeFilters(.rows(id: let id, action: let action)):
+			break
+		case .employeeFilters(.gotLocationsResponse(_)):
+			break
+		case .employeeFilters(.reload):
+			break
 		}
 		return .none
 	}
