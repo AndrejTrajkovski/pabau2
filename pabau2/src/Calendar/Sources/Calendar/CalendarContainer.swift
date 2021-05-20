@@ -198,7 +198,7 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			if case .success = result,
 			   state.appsLS == .initial,
 			   state.locationsLS == .gotSuccess {
-				//load appointments after  login if room is selected
+				//load appointments after login if room is selected
 				return getAppointments()
 			}
 		case .list(_):
