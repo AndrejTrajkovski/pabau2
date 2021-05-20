@@ -164,4 +164,27 @@ extension APIClient {
         .effect()
         .map(\.employees)
     }
+    
+    public func createRecurringAppointment(appointmentId: Appointment.ID, repeatRange: Int, repeatNumber: Int, repeatUntil: Date) -> Effect<Bool, RequestError> {
+        struct AppointmentRecurringResponse: Decodable {
+            let success: Bool
+        }
+        var params: [String: Any] = [:]
+        params["appointment_id"] = appointmentId
+        params["repeat_range"] = "month"
+        params["repeat_number"] = 1
+        params["repeat_until"] = "24-05-2021"
+        
+        let requestBuilder: RequestBuilder<AppointmentRecurringResponse>.Type = requestBuilderFactory.getBuilder()
+        return requestBuilder.init(
+            method: .GET,
+            baseUrl: baseUrl,
+            path: .createRecurringAppointment,
+            queryParams: commonAnd(other: params)
+        )
+        .effect()
+        .map(\.success)
+    }
+    
+    
 }

@@ -14,6 +14,7 @@ public protocol ClientsAPI {
     func appointmentChangeStatus(appointmentId: Appointment.ID, status: String) -> Effect<Bool, RequestError>
     func appointmentChangeCancelReason(appointmentId: Appointment.ID, reason: String) -> Effect<Bool, RequestError>
     func getAppointmentCancelReasons() -> Effect<[CancelReason], RequestError>
+    func createRecurringAppointment(appointmentId: Appointment.ID, repeatRange: Int, repeatNumber: Int, repeatUntil: Date) -> Effect<Bool, RequestError>
     
     func getBookoutReasons() -> Effect<[BookoutReason], RequestError>
 	func getFinancials(clientId: Client.Id) -> Effect<[Financial], RequestError>
