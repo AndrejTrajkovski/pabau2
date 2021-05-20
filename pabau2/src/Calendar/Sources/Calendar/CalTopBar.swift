@@ -35,9 +35,21 @@ struct CalTopBar: View {
 							.renderingMode(.template)
 							.accentColor(.blue)
 					}
-					Button(Texts.filters, action: {
-						viewStore.send(.toggleFilters)
-					})
+					Button(
+						action: { viewStore.send(.toggleFilters)},
+						label: {
+							switch viewStore.state.filtersLoadingState {
+							case .gotSuccess:
+								Text(Texts.filters)
+							case .gotError(_), .initial:
+								Image(systemName: "exclamationmark.triangle.fill")
+									.font(.system(size: 20))
+									.foregroundColor(.red)
+							case .loading:
+								ActivityIndicator(isAnimating: .constant(true), style: .medium)
+									.foregroundColor(Color.blue)
+							}
+						})
 				}
 				.padding()
 				.padding(.trailing, 20)

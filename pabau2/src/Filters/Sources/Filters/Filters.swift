@@ -3,26 +3,6 @@ import ComposableArchitecture
 import Model
 import Util
 
-func groupDict<T, Key: Hashable>(elements: [T],
-								 keyPath: KeyPath<T, [Key]>) -> [Key: IdentifiedArrayOf<T>] {
-	
-	let keys = Set(elements.flatMap { $0[keyPath: keyPath] })
-	var result: [Key: IdentifiedArrayOf<T>] = [:]
-	
-	keys.forEach { key in
-		elements.forEach { element in
-			if element[keyPath: keyPath].contains(key) {
-				if result[key] != nil {
-					result[key]!.append(element)
-				} else {
-					result[key] = IdentifiedArray()
-				}
-			}
-		}
-	}
-	return result
-}
-
 public struct FiltersReducer<S: Identifiable & Equatable & Named> {
 	public init(locationsKeyPath: KeyPath<S, [Location.ID]>) {
 		self.reducer =
@@ -43,13 +23,13 @@ public struct FiltersReducer<S: Identifiable & Equatable & Named> {
 						} else if !isItemChosen && chosenSubsectionIds.isEmpty {
 							state.chosenLocationsIds.remove(locId)
 						}
-					case .rows(id: let id, action: .header(.expand(_))):
+					case .rows(id: _, action: .header(.expand(_))):
 						break
-					case .rows(id: let id, action: .rows):
+					case .rows(id: _, action: .rows):
 						break
-					case .rows(id: let id, action: .header(.select(_))):
+					case .rows(id: _, action: .header(.select(_))):
 						break
-					case .gotResponse(let result):
+					case .gotSubsectionResponse(let result):
 						switch result {
 						case .success(let employees):
 							state.subsectionsLS = .gotSuccess
@@ -60,12 +40,54 @@ public struct FiltersReducer<S: Identifiable & Equatable & Named> {
 						case .failure(let error):
 							state.subsectionsLS = .gotError(error)
 						}
+					case .reload:
+						
+						let getSubsection: Effect<FiltersAction<S>, Never>
+						
+						if S.self is Employee.Type {
+							getSubsection = env.journeyAPI.getEmployees()
+								.receive(on: DispatchQueue.main)
+								.catchToEffect()
+								.map { FiltersAction<Employee>.gotSubsectionResponse($0) }
+								.eraseToEffect() as! Effect<FiltersAction<S>, Never>
+						} else if S.self is Room.Type {
+							getSubsection = env.journeyAPI.getRooms()
+								.receive(on: DispatchQueue.main)
+								.catchToEffect()
+								.map { FiltersAction<Room>.gotSubsectionResponse($0) }
+								.eraseToEffect() as! Effect<FiltersAction<S>, Never>
+						} else {
+							fatalError()
+						}
+						
+						let getLocactions = env.journeyAPI.getLocations()
+							.receive(on: DispatchQueue.main)
+							.catchToEffect()
+							.map { FiltersAction<S>.gotLocationsResponse($0) }
+							.eraseToEffect()
+						
+						state.locationsLS = .loading
+						state.subsectionsLS = .loading
+						
+						return .merge(
+							getLocactions,
+							getSubsection
+						)
+						
+					case .gotLocationsResponse(let result):
+						switch result {
+						case .success(let locations):
+							state.locationsLS = .gotSuccess
+							state.locations = .init(locations)
+						case .failure(let error):
+							state.locationsLS = .gotError(error)
+						}
 					}
 					return .none
 				}
 			)
 	}
-	public let reducer: Reducer<FiltersState<S>, FiltersAction<S>, Any>
+	public let reducer: Reducer<FiltersState<S>, FiltersAction<S>, FiltersEnvironment>
 }
 
 public struct FiltersState<S: Identifiable & Equatable & Named>: Equatable {
@@ -130,12 +152,27 @@ public struct FiltersState<S: Identifiable & Equatable & Named>: Equatable {
 			}
 		}
 	}
+	
+	public var sumLoadingState: LoadingState {
+		switch (locationsLS, subsectionsLS) {
+		case (.loading, _), (_, .loading):
+			return .loading
+		case (.gotError(let error), _), (_, .gotError(let error)):
+			return .gotError(error)
+		case (.gotSuccess, _), (_, .gotSuccess):
+			return .gotSuccess
+		case (.initial, .initial):
+			return .initial
+		}
+	}
 }
 
 public enum FiltersAction<S: Identifiable & Equatable & Named> {
 	case onHeaderTap
 	case rows(id: Location.ID, action: FilterSectionAction<S>)
-	case gotResponse(Result<[S], RequestError>)
+	case gotSubsectionResponse(Result<[S], RequestError>)
+	case gotLocationsResponse(Result<[Location], RequestError>)
+	case reload
 }
 
 public struct Filters<S: Identifiable & Equatable & Named>: View {
@@ -148,15 +185,25 @@ public struct Filters<S: Identifiable & Equatable & Named>: View {
 			ScrollView {
 				LazyVStack(spacing: 0) {
 					CalendarHeader<S>(
-						onTap: { viewStore.send(.onHeaderTap) }
+						onTap: { viewStore.send(.onHeaderTap) },
+						onReload: { viewStore.send(.reload) }
 					)
 					Divider()
-					ForEachStore(
-						store.scope(
-							state: { $0.rows },
-							action: FiltersAction.rows(id:action:)),
-						content: FilterSection.init(store:)
-					)
+					switch viewStore.state.sumLoadingState {
+					case .loading:
+						LoadingSpinner().padding()
+					case .gotError:
+						Text("Error loading data. Please reload.").foregroundColor(.red).padding()
+					case .gotSuccess:
+						ForEachStore(
+							store.scope(
+								state: { $0.rows },
+								action: FiltersAction.rows(id:action:)),
+							content: FilterSection.init(store:)
+						)
+					case .initial:
+						EmptyView()
+					}
 					Spacer()
 				}
 			}

@@ -87,13 +87,13 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = Reducer.combine(
 				env.journeyAPI.getEmployees()
 					.receive(on: DispatchQueue.main)
 					.catchToEffect()
-					.map { AppAction.tabBar(.calendar(.employeeFilters(.gotResponse($0))))}
+					.map { AppAction.tabBar(.calendar(.employeeFilters(.gotSubsectionResponse($0))))}
 					.eraseToEffect(),
 				
 				env.journeyAPI.getRooms()
 					.receive(on: DispatchQueue.main)
 					.catchToEffect()
-					.map { AppAction.tabBar(.calendar(.roomFilters(.gotResponse($0))))}
+					.map { AppAction.tabBar(.calendar(.roomFilters(.gotSubsectionResponse($0))))}
 					.eraseToEffect()
 			)
 		default:

@@ -14,8 +14,6 @@ import JZCalendarWeekView
 import CoreDataModel
 import Overture
 
-public typealias CalendarEnvironment = (journeyAPI: JourneyAPI, clientsAPI: ClientsAPI, userDefaults: UserDefaultsConfig, repository: Repository)
-
 public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, CalendarEnvironment> = .combine(
 	calTypePickerReducer.pullback(
 		state: \.calTypePicker,
@@ -36,11 +34,11 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 	FiltersReducer<Employee>(locationsKeyPath: \Employee.locations).reducer.pullback(
 		state: \CalendarState.employeeFilters,
 		action: /CalendarAction.employeeFilters,
-		environment: { $0 }),
+		environment: makeFiltersEnv(calendarEnv:)),
 	FiltersReducer<Room>(locationsKeyPath: \Room.locationIds).reducer.pullback(
 		state: \CalendarState.roomFilters,
 		action: /CalendarAction.roomFilters,
-		environment: { $0 }),
+		environment: makeFiltersEnv(calendarEnv:)),
 	appDetailsReducer.optional().pullback(
 		state: \CalendarState.appDetails,
 		action: /CalendarAction.appDetails,

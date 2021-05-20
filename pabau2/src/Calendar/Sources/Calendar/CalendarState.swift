@@ -262,10 +262,6 @@ extension CalendarState {
 		}.flatMap { $0 }
 	}
 	
-	mutating func refresh(calendarResponse: AppointmentsResponse) {
-		
-	}
-	
 	mutating func switchTo(calType: Appointments.CalendarType) {
         print(appointments.flatten())
 		self.appointments = Appointments(
@@ -277,70 +273,13 @@ extension CalendarState {
         )
 	}
 	
-	mutating func update(locations: [Location], employees: [Employee]) {
-		let data = merge(locations, employees)
-		self.employees = data.employeesResult
-		self.chosenEmployeesIds = data.chosenEmployeesIds
-	}
-	
-	mutating func update(locations: [Location], rooms: [Room]) {
-		let data = merge(locations, rooms)
-		self.rooms = data.roomsResult
-		self.chosenRoomsIds = data.chosenRoomsIds
-	}
-	
-	func merge(_ locations: [Location], _ rooms: [Room]) -> (
-		roomsResult: [Location.Id: IdentifiedArrayOf<Room>],
-		chosenRoomsIds: [Location.Id: [Room.Id]]
-	) {
-		var roomsResult: [Location.Id: IdentifiedArrayOf<Room>] = [:]
-		var chosenRoomsIds: [Location.Id: [Room.Id]] = [:]
-		
-		locations.forEach { location in
-			roomsResult[location.id] = IdentifiedArrayOf<Room>.init([])
-			chosenRoomsIds[location.id] = []
+	var filtersLoadingState: LoadingState {
+		switch appointments.calendarType {
+		case .list, .employee, .week:
+			return employeeFilters.sumLoadingState
+		case .room:
+			return roomFilters.sumLoadingState
 		}
-		
-		roomsResult.keys.forEach { key in
-			rooms.forEach { room in
-				if room.locationIds.contains(key) {
-					roomsResult[key]?.append(room)
-					chosenRoomsIds[key]?.append(room.id)
-				}
-			}
-		}
-		
-		return (
-			roomsResult: roomsResult,
-			chosenRoomsIds: chosenRoomsIds
-		)
-	}
-	
-	func merge(_ locations: [Location], _ employees: [Employee]) -> (
-		employeesResult: [Location.Id: IdentifiedArrayOf<Employee>],
-		chosenEmployeesIds: [Location.Id: [Employee.Id]]
-	) {
-		var employeesResult: [Location.Id: IdentifiedArrayOf<Employee>] = [:]
-		var chosenEmployeesIds: [Location.Id: [Employee.Id]] = [:]
-		
-		locations.forEach { location in
-			employeesResult[location.id] = IdentifiedArrayOf<Employee>.init([])
-			chosenEmployeesIds[location.id] = []
-		}
-		
-		employeesResult.keys.forEach { key in
-			employees.forEach { employee in
-				if employee.locations.contains(key) {
-					employeesResult[key]?.append(employee)
-					chosenEmployeesIds[key]?.append(employee.id)
-				}
-			}
-		}
-		
-		return(
-			employeesResult: employeesResult,
-			chosenEmployeesIds: chosenEmployeesIds
-		)
 	}
 }
 
