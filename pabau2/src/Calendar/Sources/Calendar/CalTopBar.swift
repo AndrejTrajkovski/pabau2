@@ -37,19 +37,8 @@ struct CalTopBar: View {
 					}
 					Button(
 						action: { viewStore.send(.toggleFilters)},
-						label: {
-							switch viewStore.state.filtersLoadingState {
-							case .gotSuccess:
-								Text(Texts.filters)
-							case .gotError(_), .initial:
-								Image(systemName: "exclamationmark.triangle.fill")
-									.font(.system(size: 20))
-									.foregroundColor(.red)
-							case .loading:
-								ActivityIndicator(isAnimating: .constant(true), style: .medium)
-									.foregroundColor(Color.blue)
-							}
-						})
+						label: filtersLabel
+					)
 				}
 				.padding()
 				.padding(.trailing, 20)
@@ -71,6 +60,21 @@ struct CalTopBar: View {
 			PlusButton {
 				self.viewStore.send(.onAddShift)
 			}
+		}
+	}
+	
+	@ViewBuilder
+	func filtersLabel() -> some View {
+		switch viewStore.state.filtersLoadingState {
+		case .gotSuccess:
+			Text(Texts.filters)
+		case .gotError(_), .initial:
+			Image(systemName: "exclamationmark.triangle.fill")
+				.font(.system(size: 20))
+				.foregroundColor(.red)
+		case .loading:
+			ActivityIndicator(isAnimating: .constant(true), style: .medium)
+				.foregroundColor(Color.blue)
 		}
 	}
 }
