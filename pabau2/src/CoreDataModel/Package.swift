@@ -12,12 +12,6 @@ let package = Package(
             targets: ["CoreDataModel"])
     ],
     dependencies: [
-        .package(name: "swift-composable-architecture",
-                 url: "https://github.com/pointfreeco/swift-composable-architecture.git",
-                 from: Version.init(stringLiteral: "0.16.0")),
-        .package(name: "Tagged",
-                 url: "https://github.com/pointfreeco/swift-tagged.git",
-                 from: Version.init(stringLiteral: "0.5.0")),
         .package(name: "CoreStore",
                  url: "https://github.com/JohnEstropia/CoreStore", from: "8.0.1"),
 		.package(url: "../Model",
