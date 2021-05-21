@@ -6,15 +6,13 @@ public let chooseRepeatReducer: Reducer<ChooseRepeatState, ChooseRepeatAction, C
     switch action {
     case .onBackBtn:
         state.isRepeatActive = false
-    case .onRepeat(let interval):
+    case .onChangeInterval(let interval):
         state.chosenRepeat = interval.map { RepeatOption(interval: $0, date: Date())}
-        state.isDatePickerActive = true
-    case .onRepeatChangeEndingDate(let date):
-        state.chosenRepeat = RepeatOption(interval: RepeatInterval.everyYear, date: Date())
-        state.isDatePickerActive = false
-    case .onSelectedDate(let date):
-        state.chosenRepeat = RepeatOption(interval: RepeatInterval.everyYear, date: Date())
-        return Effect(value: ChooseRepeatAction.onBackBtn)
+    case .onSelectedOkCalendar(let date):
+        state.chosenRepeat?.date = date
+        return Effect(value: ChooseRepeatAction.onRepeat(state.chosenRepeat!))
+    default:
+        break
     }
     return .none
 }
@@ -36,6 +34,21 @@ public enum RepeatInterval: Int, Identifiable, CaseIterable, Equatable {
         case .custom: return "Custom"
         }
     }
+    
+    var interval: String {
+        switch self {
+        case .everyDay:
+            return "day"
+        case .everyWeek:
+            return "week"
+        case .everyMonth:
+            return "month"
+        case .everyYear:
+            return "year"
+        default:
+            return ""
+        }
+    }
 }
 
 public struct RepeatOption: Equatable {
@@ -44,18 +57,17 @@ public struct RepeatOption: Equatable {
 }
 
 public struct ChooseRepeatState: Equatable {
-    var chosenRepeat: RepeatOption?
     var isRepeatActive: Bool = false
-    var isDatePickerActive: Bool = false
+    var chosenRepeat: RepeatOption?
     
     public init() { }
 }
 
 public enum ChooseRepeatAction {
     case onBackBtn
-    case onRepeat(RepeatInterval?)
-    case onSelectedDate(Date)
-    case onRepeatChangeEndingDate(RepeatOption)
+    case onRepeat(RepeatOption)
+    case onChangeInterval(RepeatInterval?)
+    case onSelectedOkCalendar(Date)
 }
 
 public struct ChooseRepeat: View {
@@ -79,12 +91,12 @@ public struct ChooseRepeat: View {
                         TextAndCheckMark(item.title,
                                          item == viewStore.state.chosenRepeat?.interval)
                             .onTapGesture {
-                                viewStore.send(.onRepeat(item))
+                                viewStore.send(.onChangeInterval(item))
                             }
                     }
                     TextAndCheckMark("No repeat", viewStore.state.chosenRepeat == nil)
                         .onTapGesture {
-                            viewStore.send(.onRepeat(nil))
+                            viewStore.send(.onBackBtn)
                         }
                 }.frame(height: 310)
                 
@@ -92,7 +104,7 @@ public struct ChooseRepeat: View {
                     Spacer()
                         .frame(height: 40)
                     ChooseRepeatDatePicker { date in
-                        viewStore.send(.onSelectedDate(date))
+                        viewStore.send(.onSelectedOkCalendar(date))
                     } onCancel: {
                         viewStore.send(.onBackBtn)
                     }

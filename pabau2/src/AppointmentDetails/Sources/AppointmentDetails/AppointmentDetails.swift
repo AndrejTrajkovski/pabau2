@@ -29,6 +29,18 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, Calenda
     
     Reducer.init { state, action, env in
         switch action {
+        case .chooseRepeat(.onRepeat(let chosenRepeat)):
+            let formatter = DateFormatter()
+            formatter.dateFormat = "dd-MM-yyyy"
+            let sDate = formatter.string(from: chosenRepeat.date)
+            let interval = chosenRepeat.interval.interval
+                        
+            return env.clientsAPI.createRecurringAppointment(appointmentId: state.app.id, repeatRange: interval, repeatUntil: sDate)
+                .catchToEffect()
+                .map { _ in AppDetailsAction.onResponseCreateReccuringAppointment }
+            
+        case .onResponseCreateReccuringAppointment:
+            state.chooseRepeat.isRepeatActive = false
         case .chooseCancelReason(let singleChoiceLinkAction):
             switch singleChoiceLinkAction {
             case .singleChoice(let single):
@@ -132,6 +144,7 @@ public enum AppDetailsAction {
     case chooseRepeat(ChooseRepeatAction)
     case close
     case onResponseChangeAppointment
+    case onResponseCreateReccuringAppointment
 }
 
 public struct AppointmentDetails: View {
