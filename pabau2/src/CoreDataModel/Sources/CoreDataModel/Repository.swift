@@ -93,12 +93,12 @@ public final class Repository {
                     return state
                 }
         }
-    
+  
         return self.coreDataModel.fetchAllSchemes(FormTemplateInfoScheme.self)
             .map(FormTemplateInfo.convert(from:))
             .map { SuccessState(state: $0.filter {$0.type == type}, isFromDB: true) }
     }
-	
+
     public func getPathwayTemplates() -> Effect<SuccessState<IdentifiedArrayOf<PathwayTemplate>>, RequestError> {
         let countDB = self.coreDataModel.fetchCount(PathwayTemplateScheme.self)
         

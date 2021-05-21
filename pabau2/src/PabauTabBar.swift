@@ -146,7 +146,7 @@ public let tabBarReducer: Reducer<
     TabBarAction,
     TabBarEnvironment
 > = Reducer.combine(
-	
+
 	.init { state, action, env in
 		switch action {
 		case .gotLocationsResponse(let result):
@@ -174,7 +174,7 @@ public let tabBarReducer: Reducer<
 						}
 					}
 				}
-				
+			
 			case .failure(let error):
 				break
 			}
@@ -272,21 +272,17 @@ public let showAddAppointmentReducer: Reducer<TabBarState, CalendarAction, Any> 
 		let (location, subsection) = dropKeys
 		let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
 		let room = state.calendar.rooms[location]?[id: subsection]
-		//FIXME: missing room in add appointments screen
 		state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate)
-		
 	case .week(.addAppointment(let startOfDayDate, let startDate, let durationMins)):
 		let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
 		state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate)
-	case .showAddApp(let start, let end, let employee):
-		
+    case .showAddApp(let start, let end, let employee):
 		state.addAppointment = AddAppointmentState.init(
 			startDate: start,
 			endDate: end,
 			employee: employee
 		)
 	case .week(.editAppointment(let appointment)):
-		print(appointment)
 		state.addAppointment = AddAppointmentState.init(editingAppointment: appointment, startDate: appointment.start_date, endDate: appointment.end_date)
 	default:
 		break

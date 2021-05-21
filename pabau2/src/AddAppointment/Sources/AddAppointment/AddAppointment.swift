@@ -206,7 +206,11 @@ public let addAppointmentValueReducer: Reducer<
 		chooseLocationsReducer.pullback(
 			state: \AddAppointmentState.chooseLocationState,
 			action: /AddAppointmentAction.chooseLocation,
-			environment: { $0 }),
+            environment: { ChooseLocationEnvironment(
+                repository: $0.repository,
+                userDefaults: $0.userDefaults
+            )
+        }),
 		chooseParticipantReducer.pullback(
 			state: \AddAppointmentState.participants,
 			action: /AddAppointmentAction.participants,

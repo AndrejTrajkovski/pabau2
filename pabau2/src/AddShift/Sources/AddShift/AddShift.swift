@@ -81,7 +81,11 @@ public let addShiftReducer: Reducer<AddShiftState, AddShiftAction, AddShiftEnvir
         chooseLocationsReducer.pullback(
             state: \AddShiftState.chooseLocationState,
             action: /AddShiftAction.chooseLocation,
-            environment: { $0 }),
+            environment: { ChooseLocationEnvironment(
+                repository: $0.repository,
+                userDefaults: $0.userDefaults
+            )
+        }),
 		textFieldReducer.pullback(
 			state: \.note,
 			action: /AddShiftAction.note,
