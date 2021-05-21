@@ -3,7 +3,7 @@ import ComposableArchitecture
 import Model
 
 public struct FilterSectionReducer<S: Identifiable & Equatable & Named> {
-	let reducer: Reducer<FilterSectionState<S>, FilterSectionAction<S>, Any> = Reducer.combine(
+	let reducer: Reducer<FilterSectionState<S>, FilterSectionAction<S>, FiltersEnvironment> = Reducer.combine(
 		SelectableRowReducer<S>().reducer.forEach(
 			state: \.rows,
 			action: /FilterSectionAction<S>.rows,

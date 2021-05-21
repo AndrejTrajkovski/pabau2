@@ -15,6 +15,8 @@ let package = Package(
 		.package(url: "../Util",
 				 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../Model",
+				 from: Version.init(stringLiteral: "1.0.0")),
+		.package(url: "../CoreDataModel",
 				 from: Version.init(stringLiteral: "1.0.0"))
     ],
     targets: [
@@ -22,7 +24,8 @@ let package = Package(
             name: "Filters",
             dependencies: [
 				"Util",
-				"Model"
+				"Model",
+				"CoreDataModel"
 			]),
         .testTarget(
             name: "FiltersTests",

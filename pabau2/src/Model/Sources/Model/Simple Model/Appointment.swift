@@ -71,7 +71,7 @@ extension Appointment {
 		if let roomId = try? container.decode(Room.Id.self, forKey: .roomID) {
 			self.roomId = roomId
 		} else {
-			self.roomId = Room.Id.init(rawValue: -1)
+			self.roomId = Room.Id.init(rawValue: "-1")
 		}
 		self.roomName = try? container.decode(String.self, forKey: .roomName)
 		self.customerId = try container.decode(Client.ID.self, forKey: .customerID)

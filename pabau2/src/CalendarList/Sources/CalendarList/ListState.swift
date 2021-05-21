@@ -17,8 +17,8 @@ public struct ListState: Equatable {
 
 public struct ListContainerState: Equatable {
 	
-	public init(appsLoadingState: LoadingState, list: ListState, appointments: ListAppointments, locations: IdentifiedArrayOf<Location>, employees: [Location.Id : IdentifiedArrayOf<Employee>], chosenEmployeesIds: [Location.Id : [Employee.Id]], expandedLocationsIds: Set<Location.Id>, selectedDate: Date, chosenLocationsIds: Set<Location.Id>) {
-		self.appsLoadingState = appsLoadingState
+	public init(appsLS: LoadingState, list: ListState, appointments: ListAppointments, locations: IdentifiedArrayOf<Location>, employees: [Location.Id : IdentifiedArrayOf<Employee>], chosenEmployeesIds: [Location.Id : [Employee.Id]], expandedLocationsIds: Set<Location.Id>, selectedDate: Date, chosenLocationsIds: Set<Location.Id>) {
+		self.appsLS = appsLS
 		self.list = list
 		self.appointments = appointments
 		self.locations = locations
@@ -29,7 +29,7 @@ public struct ListContainerState: Equatable {
 		self.chosenLocationsIds = chosenLocationsIds
 	}
 	
-	public var appsLoadingState: LoadingState
+	public var appsLS: LoadingState
 	public var list: ListState
 	public var appointments: ListAppointments
 	public let locations: IdentifiedArrayOf<Location>

@@ -9,7 +9,7 @@ import AppointmentDetails
 
 public enum CalendarAction {
 	case addAppointmentTap
-	case gotCalendarResponse(Result<CalendarResponse, RequestError>)
+	case gotAppointmentsResponse(Result<AppointmentsResponse, RequestError>)
 	case datePicker(CalendarDatePickerAction)
 	case calTypePicker(CalendarTypePickerAction)
 	case onAddShift
@@ -28,4 +28,5 @@ public enum CalendarAction {
 	case roomFilters(FiltersAction<Room>)
 	case changeCalScope
 	case list(ListAction)
+	case gotLocationsResponse(Result<[Location], RequestError>)
 }

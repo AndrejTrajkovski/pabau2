@@ -37,8 +37,6 @@ public enum TabBarAction {
 	case calendar(CalendarAction)
 	case addAppointment(AddAppointmentAction)
     case communication(CommunicationAction)
-	case gotLocationsResponse(Result<[Location], RequestError>)
-	case gotEmployeesResponse(Result<[Employee], RequestError>)
 }
 
 struct PabauTabBar: View {
@@ -148,36 +146,8 @@ public let tabBarReducer: Reducer<
 > = Reducer.combine(
 	
 	.init { state, action, env in
+		
 		switch action {
-		case .gotLocationsResponse(let result):
-			switch result {
-			case .success(let locations):
-				state.calendar.locations = .init(locations)
-				state.calendar.chosenLocationsIds = Set(locations.map(\.id))
-				return .none
-			case .failure(let error):
-				break
-			}
-		case .gotEmployeesResponse(let result):
-			switch result {
-			case .success(let employees):
-				state.calendar.employees = [:]
-				state.calendar.locations.forEach { location in
-					state.calendar.employees[location.id] = IdentifiedArrayOf<Employee>.init([])
-					state.calendar.chosenEmployeesIds[location.id] = []
-				}
-				state.calendar.employees.keys.forEach { key in
-					employees.forEach { employee in
-						if employee.locations.contains(key) {
-							state.calendar.employees[key]?.append(employee)
-							state.calendar.chosenEmployeesIds[key]?.append(employee.id)
-						}
-					}
-				}
-				
-			case .failure(let error):
-				break
-			}
 		case .calendar(.addAppointmentTap):
 			state.addAppointment = AddAppointmentState.dummy
 		default:

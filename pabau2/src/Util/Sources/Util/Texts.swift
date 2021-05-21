@@ -48,7 +48,8 @@ public struct Texts {
 	public static let logout = "Logout"
 	public static let fetchingJourneys = "Fetching journeys...".localized
 	public static let employee = "Employee".localized
-
+	public static let employees = "Employees".localized
+	
     public static let liveChat = "Live Chat".localized
     public static let helpGuides = "Help Guides".localized
 
@@ -164,6 +165,7 @@ Tap the aftercare bellow that you wish to send to the client. The aftercare will
 	public static let payment = "Payment"
 	public static let addService = "Add Service"
 
+	public static let rooms = "Rooms"
 	public static let room = "Room"
 	public static let week = "Week"
 	public static let list = "List"

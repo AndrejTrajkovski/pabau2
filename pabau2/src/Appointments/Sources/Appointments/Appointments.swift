@@ -31,6 +31,15 @@ public enum Appointments: Equatable {
 		case week
 		case list
 		
+		public func isEmployeeFilter() -> Bool {
+			switch self {
+			case .list, .employee, .week:
+				return true
+			case .room:
+				return false
+			}
+		}
+		
 		public func title() -> String {
 			switch self {
 			case .employee:

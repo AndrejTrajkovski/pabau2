@@ -10,8 +10,8 @@ extension APIClient {
         locationIds: Set<Location.ID>,
         employeesIds: [Employee.ID]?,
         roomIds: [Room.ID]?
-    ) -> Effect<CalendarResponse, RequestError> {
-        let requestBuilder: RequestBuilder<CalendarResponse>.Type = requestBuilderFactory.getBuilder()
+    ) -> Effect<AppointmentsResponse, RequestError> {
+        let requestBuilder: RequestBuilder<AppointmentsResponse>.Type = requestBuilderFactory.getBuilder()
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale.init(identifier: "en_US_POSIX")
 //		dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
@@ -199,5 +199,26 @@ extension APIClient {
 			queryParams: commonAnd(other: ["id": String(id.rawValue)])
 		)
 		.effect()
+	}
+	
+	public func getRooms() -> Effect<[Room], RequestError> {
+		struct GetRooms: Decodable {
+			public let employees: [Room]
+			enum CodingKeys: String, CodingKey {
+				case employees
+			}
+		}
+		let requestBuilder: RequestBuilder<GetRooms>.Type = requestBuilderFactory.getBuilder()
+		
+		return requestBuilder.init(
+			method: .GET,
+			baseUrl: baseUrl,
+			path: .getRooms,
+			queryParams: commonAnd(other: [:]
+			)
+		)
+		.effect()
+		.map(\.employees)
+		.eraseToEffect()
 	}
 }
