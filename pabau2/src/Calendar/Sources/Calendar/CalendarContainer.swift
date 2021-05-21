@@ -215,8 +215,8 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			switch result {
 			case .success(let locations):
 				state.locationsLS = .gotSuccess
-				state.locations = .init(locations)
-				state.chosenLocationsIds = Set(locations.map(\.id))
+				state.locations = .init(locations.state)
+				state.chosenLocationsIds = Set(locations.state.map(\.id))
 				if state.appsLS == .initial && state.employeesLS == .gotSuccess {
 					return getAppointments()
 				}

@@ -78,7 +78,7 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = Reducer.combine(
 		case .walkthrough(.login(.login(.gotResponse(.success(let user))))):
 			state = .tabBar(TabBarState())
 			return	 .merge( // in parallel
-				env.journeyAPI.getLocations()
+				env.repository.getLocations()
 					.receive(on: DispatchQueue.main)
 					.catchToEffect()
 					.map { AppAction.tabBar(.calendar(.gotLocationsResponse($0)))}
@@ -87,7 +87,6 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = Reducer.combine(
 				env.journeyAPI.getEmployees()
 					.receive(on: DispatchQueue.main)
 					.catchToEffect()
-					.delay(for: 2.0, scheduler: DispatchQueue.main)
 					.map { AppAction.tabBar(.calendar(.employeeFilters(.gotSubsectionResponse($0))))}
 					.eraseToEffect(),
 				

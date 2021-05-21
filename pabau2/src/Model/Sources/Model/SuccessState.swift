@@ -1,17 +1,3 @@
-//public enum SuccessState<Model> {
-//	case db(Model)
-//	case api(Model)
-//
-//	public func get() -> Model {
-//		switch self {
-//		case .api(let value):
-//			return value
-//		case .db(let value):
-//			return value
-//		}
-//	}
-//}
-
 public struct SuccessState<Model> {
     public var state: Model
     public var isFromDB: Bool
@@ -20,6 +6,10 @@ public struct SuccessState<Model> {
         self.state = state
         self.isFromDB = isFromDB
     }
+	
+	public func callAsFunction() -> Model {
+	  return state
+	}
 }
 
 extension SuccessState: Equatable where Model: Equatable {
@@ -27,13 +17,3 @@ extension SuccessState: Equatable where Model: Equatable {
         lhs.state == rhs.state && lhs.isFromDB == rhs.isFromDB
 	}
 }
-
-//extension Result {
-//	public func toAPI() -> Result<SuccessState<Success>, Failure> {
-//        self.map(SuccessState<Success>.init(state: , isFromDB: false))
-//	}
-//	
-//	public func toDB() -> Result<SuccessState<Success>, Failure> {
-//		self.map(SuccessState.db)
-//	}
-//}

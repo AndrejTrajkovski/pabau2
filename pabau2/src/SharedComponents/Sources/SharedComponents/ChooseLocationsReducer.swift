@@ -27,7 +27,7 @@ public let chooseLocationsReducer =
         case .gotLocationsResponse(let result):
             switch result {
             case .success(let result):
-                state.locations = .init(result.state)
+                state.locations = .init(result())
                 state.filteredLocations = state.locations
             case .failure(let error):
                 print(error)
