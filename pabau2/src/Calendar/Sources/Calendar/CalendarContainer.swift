@@ -24,11 +24,11 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 		state: \CalendarState.week,
 		action: /CalendarAction.week,
 		environment: { $0 }),
-	AppointmentsByReducer<Employee>().reducer.optional().pullback(
+	CalendarSectionViewReducer<Employee>().reducer.optional().pullback(
 		state: \CalendarState.employeeSectionState,
 		action: /CalendarAction.employee,
 		environment: { $0 }),
-	AppointmentsByReducer<Room>().reducer.optional().pullback(
+	CalendarSectionViewReducer<Room>().reducer.optional().pullback(
 		state: \CalendarState.roomSectionState,
 		action: /CalendarAction.room,
 		environment: { $0 }),
@@ -124,8 +124,6 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 															 chosenEmployee: nil,
 															 start: startDate)
 		
-//
-//
 //                case .week(.editStartTime(let startOfDayDate, let startDate, let eventId, let startingPointStartOfDay)):
 //                    let calId = CalendarEvent.ID.init(rawValue: eventId)
 //                    var app = state.appointments[startingPointStartOfDay]?.remove(id: calId)
@@ -194,7 +192,6 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			state.isShowingFilters.toggle()
 			guard !state.isShowingFilters else { return .none }
 			return getAppointments()
-			
 		case .roomFilters(.gotSubsectionResponse(let result)):
 			if case .success = result,
 			   state.appsLS == .initial,
@@ -203,12 +200,7 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 				//load appointments after login if room is selected
 				return getAppointments()
 			}
-		case .list(_):
-			break
 		case .employeeFilters(.gotSubsectionResponse(let result)):
-			print(result)
-			print(state.appsLS)
-			print(state.locationsLS)
 			if case .success(_) = result,
 			   state.appsLS == .initial,
 			   case .gotSuccess = state.locationsLS,
@@ -216,12 +208,14 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 				//load appointments after login if employee, week or list is selected
 				return getAppointments()
 			}
+		case .list(_):
+			break
 		case .gotLocationsResponse(let result):
 			switch result {
 			case .success(let locations):
 				state.locationsLS = .gotSuccess
-				state.locations = .init(locations)
-				state.chosenLocationsIds = Set(locations.map(\.id))
+				state.locations = .init(locations.state)
+				state.chosenLocationsIds = Set(locations.state.map(\.id))
 				if state.appsLS == .initial && state.employeesLS == .gotSuccess {
 					return getAppointments()
 				}

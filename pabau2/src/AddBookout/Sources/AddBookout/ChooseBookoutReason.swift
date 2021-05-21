@@ -26,13 +26,11 @@ let chooseBookoutReasonReducer = Reducer<
             state.filteredReasons = state.reasons
             break
         }
-        
         state.filteredReasons = state.reasons.filter {($0.name?.lowercased().contains(text.lowercased()) ?? false)}
     case .gotReasonResponse(let result):
         switch result {
         case .success(let response):
-            log(response.isDB, text: "is from db")
-            state.reasons = .init(response.value)
+            state.reasons = .init(response.state)
             state.filteredReasons = state.reasons
         case .failure:
             break
@@ -65,7 +63,7 @@ public struct ChooseBookoutReasonState: Equatable {
 
 public enum ChooseBookoutReasonAction: Equatable {
 	case onAppear
-	case gotReasonResponse(Result<Repository.BookoutReasonsResponse, RequestError>)
+	case gotReasonResponse(Result<SuccessState<[BookoutReason]>, RequestError>)
 	case didSelectReason(BookoutReason)
 	case onSearch(String)
 	case didTapBackBtn

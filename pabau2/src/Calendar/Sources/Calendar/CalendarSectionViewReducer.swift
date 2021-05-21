@@ -7,11 +7,13 @@ import JZCalendarWeekView
 import CoreGraphics
 import AppointmentDetails
 
-public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
+public struct CalendarSectionViewReducer<Subsection: Identifiable & Equatable> {
 	let reducer = Reducer<CalendarSectionViewState<Subsection>, SubsectionCalendarAction<Subsection>, CalendarEnvironment> { state, action, env in
 		switch action {
+		
 		case .addAppointment:
 			break //handled in calendarContainerReducer
+		
 		case .editSections(startDate: let startDate, startKeys: let startIndexes, dropKeys: let dropIndexes, eventId: let eventId):
 			let calId = CalendarEvent.Id(rawValue: eventId)
             
@@ -33,31 +35,23 @@ public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
 			}
 
             state.appointments.appointments[dropIndexes.location]?[dropIndexes.subsection]?.append(app)
-            
-            var appointmentBuilder: AppointmentBuilder?
-            
-            if let appointment = app.getAppointment() {
-                appointmentBuilder = AppointmentBuilder(appointment: appointment)
-            }
-            
-            if let bookout = app.getBookout() {
-                appointmentBuilder = AppointmentBuilder(bookout: bookout)
-            }
-            
-            guard let appointment = appointmentBuilder else {
-                return .none
-            }
+			
+			let appBuilder = AppointmentBuilder(calendarEvent: app)
 
-            return env.clientsAPI.updateAppointment(appointment: appointment)
+            return env.clientsAPI.updateAppointment(appointment: appBuilder)
                 .catchToEffect()
                 .map(SubsectionCalendarAction.appointmentEdited)
                 .receive(on: DispatchQueue.main)
                 .eraseToEffect()
+			
 		case .onPageSwipe(isNext: let isNext):
+			
 			let daysToAdd = isNext ? 1 : -1
 			let newDate = state.selectedDate + daysToAdd.days
 			state.selectedDate = newDate
+			
 		case .editDuration(let newEndDate, let startIndexes, let eventId):
+			
 			let calId = CalendarEvent.Id(rawValue: eventId)
 			let oldDateO = state.appointments.appointments[startIndexes.location]?[startIndexes.subsection]?[id: calId]?.end_date
 			guard let oldDate = oldDateO else { return .none }
@@ -68,25 +62,14 @@ public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
                 return .none
             }
 
-            var appointmentBuilder: AppointmentBuilder?
-
-            if let appointment = app.getAppointment() {
-                appointmentBuilder = AppointmentBuilder(appointment: appointment)
-            }
-
-            if let bookout = app.getBookout() {
-                appointmentBuilder = AppointmentBuilder(bookout: bookout)
-            }
-
-            guard let appointment = appointmentBuilder else {
-                return .none
-            }
+			let appointmentBuilder = AppointmentBuilder(calendarEvent: app)
             
-            return env.clientsAPI.updateAppointment(appointment: appointment )
+            return env.clientsAPI.updateAppointment(appointment: appointmentBuilder)
                 .receive(on: DispatchQueue.main)
                 .catchToEffect()
                 .map(SubsectionCalendarAction.appointmentEdited)
                 .eraseToEffect()
+			
 		case .onSelect(let keys, let eventId):
 			let (location, subsection) = keys
 			let calId = CalendarEvent.Id(rawValue: eventId)
@@ -100,6 +83,7 @@ public struct AppointmentsByReducer<Subsection: Identifiable & Equatable> {
 		case .addBookout(startDate: let startDxate, durationMins: let durationMins, dropKeys: let dropKeys):
 			break
         case .appointmentEdited(let result):
+			//TODO: IURII failure
             switch result {
             case .success(let placeholder):
                 print(placeholder)

@@ -44,24 +44,6 @@ extension CalendarEvent {
 
 extension CalendarEvent {
     
-    public func getBookout() -> Bookout? {
-        switch self {
-        case .bookout(let app):
-            return app
-        default:
-            return nil
-        }
-    }
-    
-    public func getAppointment() -> Appointment? {
-        switch self {
-        case .appointment(let app):
-            return app
-        default:
-            return nil
-        }
-    }
-    
 	public var id: CalendarEvent.Id {
 		return self[dynamicMember: \.id]
 	}

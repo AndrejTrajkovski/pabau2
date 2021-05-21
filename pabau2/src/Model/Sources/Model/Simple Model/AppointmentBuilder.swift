@@ -57,6 +57,15 @@ public struct AppointmentBuilder {
         self.description = description
     }
 
+	public init(calendarEvent: CalendarEvent) {
+		switch calendarEvent {
+		case .appointment(let app):
+			self = .init(appointment: app)
+		case .bookout(let bookout):
+			self = .init(bookout: bookout)
+		}
+	}
+	
     public init(appointment: Appointment) {
         #warning("Fix all day value")
         self.appointmentID = appointment.id

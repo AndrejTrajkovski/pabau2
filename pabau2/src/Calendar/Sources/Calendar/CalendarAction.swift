@@ -28,5 +28,5 @@ public enum CalendarAction {
 	case roomFilters(FiltersAction<Room>)
 	case changeCalScope
 	case list(ListAction)
-	case gotLocationsResponse(Result<[Location], RequestError>)
+	case gotLocationsResponse(Result<SuccessState<[Location]>, RequestError>)
 }

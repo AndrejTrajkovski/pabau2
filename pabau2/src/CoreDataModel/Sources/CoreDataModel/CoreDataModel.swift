@@ -9,7 +9,7 @@ public protocol CoreDataModel {
 	
 	func initialized()
 	func fetchAllSchemes<T: DynamicObject>(_ type: T.Type) -> Effect<[T], RequestError>
-	func fetchCount<T: DynamicObject>(_ type: T.Type) -> Int?
+	func fetchCount<T: DynamicObject>(_ type: T.Type) -> Int
 	func removeAll<T: DynamicObject>(_ type: T.Type) -> Effect<Int, RequestError>
 	func removeAll() -> Effect<(), RequestError>
 	
@@ -110,7 +110,7 @@ public class PabauStorage: CoreDataModel {
 				asynchronous: { [weak self] transaction in
 					guard let self = self else {
 						return
-					}
+    				}
 					do {
 						for (_, type) in self.dataStack.entityTypesByName(for: CoreStoreObject.self) {
 							try transaction.deleteAll(From(type))
@@ -126,14 +126,13 @@ public class PabauStorage: CoreDataModel {
 			)
 		}
 	}
-	
-	public func fetchCount<T: DynamicObject>(_ type: T.Type) -> Int? {
+
+	public func fetchCount<T: DynamicObject>(_ type: T.Type) -> Int {
 		do {
 			let count = try self.dataStack.fetchCount(From(type))
 			return count
 		} catch {
-//			log(error)
-			return nil
+			return 0
 		}
 	}
 }

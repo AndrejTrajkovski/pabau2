@@ -22,7 +22,7 @@ public struct ChooseEmployeesState: Equatable {
 
 public enum ChooseEmployeesAction: Equatable {
     case onAppear
-    case gotEmployeeResponse(Result<[Employee], RequestError>)
+    case gotEmployeeResponse(Result<SuccessState<[Employee]>, RequestError>)
     case didSelectEmployee(Employee)
     case onSearch(String)
     case didTapBackBtn
