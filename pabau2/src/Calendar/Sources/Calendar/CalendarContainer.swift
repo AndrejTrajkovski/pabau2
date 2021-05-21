@@ -193,7 +193,6 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			state.isShowingFilters.toggle()
 			guard !state.isShowingFilters else { return .none }
 			return getAppointments()
-			
 		case .roomFilters(.gotSubsectionResponse(let result)):
 			if case .success = result,
 			   state.appsLS == .initial,
@@ -202,12 +201,7 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 				//load appointments after login if room is selected
 				return getAppointments()
 			}
-		case .list(_):
-			break
 		case .employeeFilters(.gotSubsectionResponse(let result)):
-			print(result)
-			print(state.appsLS)
-			print(state.locationsLS)
 			if case .success(_) = result,
 			   state.appsLS == .initial,
 			   case .gotSuccess = state.locationsLS,
@@ -215,6 +209,8 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 				//load appointments after login if employee, week or list is selected
 				return getAppointments()
 			}
+		case .list(_):
+			break
 		case .gotLocationsResponse(let result):
 			switch result {
 			case .success(let locations):
