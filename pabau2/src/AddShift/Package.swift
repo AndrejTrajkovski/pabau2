@@ -4,31 +4,37 @@
 import PackageDescription
 
 let package = Package(
-    name: "AddShift",
+	name: "AddShift",
 	platforms: [.iOS(.v14)],
-    products: [
-        .library(
-            name: "AddShift",
-            targets: ["AddShift"])
-    ],
-    dependencies: [
+	products: [
+		.library(
+			name: "AddShift",
+			targets: ["AddShift"])
+	],
+	dependencies: [
 		.package(url: "../SharedComponents",
-						 from: Version.init(stringLiteral: "1.0.0")),
+				 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../Model",
 				 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../CoreDataModel",
+				 from: Version.init(stringLiteral: "1.0.0")),
+		.package(url: "../ChooseEmployees",
+				 from: Version.init(stringLiteral: "1.0.0")),
+		.package(url: "../ChooseLocation",
 				 from: Version.init(stringLiteral: "1.0.0"))
-    ],
-    targets: [
-        .target(
-            name: "AddShift",
-            dependencies: [
+	],
+	targets: [
+		.target(
+			name: "AddShift",
+			dependencies: [
 				"SharedComponents",
 				"Model",
-				"CoreDataModel"
+				"CoreDataModel",
+				"ChooseEmployees",
+				"ChooseLocation"
 			]),
-        .testTarget(
-            name: "AddShiftTests",
-            dependencies: ["AddShift"])
-    ]
+		.testTarget(
+			name: "AddShiftTests",
+			dependencies: ["AddShift"])
+	]
 )

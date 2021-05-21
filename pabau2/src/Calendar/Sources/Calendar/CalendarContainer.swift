@@ -49,6 +49,7 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 		action: /CalendarAction.addBookoutAction,
 		environment: {
 			AddBookoutEnvironment(
+				journeyAPI: $0.journeyAPI,
 				repository: $0.repository,
 				userDefaults: $0.userDefaults
 			)

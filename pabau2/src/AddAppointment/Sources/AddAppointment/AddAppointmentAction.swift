@@ -1,6 +1,8 @@
 import SharedComponents
 import Model
 import Foundation
+import ChooseEmployees
+import ChooseLocation
 
 public enum AddAppointmentAction: Equatable {
 	case saveAppointmentTap

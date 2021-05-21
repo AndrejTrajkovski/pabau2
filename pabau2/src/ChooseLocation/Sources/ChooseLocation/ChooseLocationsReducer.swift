@@ -4,8 +4,6 @@ import ComposableArchitecture
 import Util
 import CoreDataModel
 
-public typealias ChooseLocationEnvironment = (repository: Repository, userDefaults: UserDefaultsConfig)
-
 public let chooseLocationsReducer =
     Reducer<ChooseLocationState, ChooseLocationAction, ChooseLocationEnvironment> { state, action, env in
         switch action {

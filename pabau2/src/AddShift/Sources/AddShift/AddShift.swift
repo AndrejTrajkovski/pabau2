@@ -4,6 +4,8 @@ import SharedComponents
 import Model
 import Util
 import CoreDataModel
+import ChooseEmployees
+import ChooseLocation
 
 public let addShiftOptReducer: Reducer<
     AddShiftState?,
@@ -77,7 +79,7 @@ public let addShiftReducer: Reducer<AddShiftState, AddShiftAction, AddShiftEnvir
         chooseEmployeesReducer.pullback(
             state: \AddShiftState.chooseEmployeesState,
             action: /AddShiftAction.chooseEmployee,
-            environment: { $0 }),
+			environment: makeChooseEmployeesEnv(_:)),
         chooseLocationsReducer.pullback(
             state: \AddShiftState.chooseLocationState,
             action: /AddShiftAction.chooseLocation,
@@ -291,8 +293,6 @@ struct LocationAndDate: View {
 
 extension Employee: SingleChoiceElement { }
 extension Location: SingleChoiceElement { }
-
-public typealias AddShiftEnvironment = (apiClient: JourneyAPI, clientAPI: ClientsAPI, userDefaults: UserDefaultsConfig, repository: Repository)
 
 extension AddShiftState {
 	public static func makeEmpty() -> AddShiftState {

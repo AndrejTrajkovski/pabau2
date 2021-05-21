@@ -18,15 +18,21 @@ let package = Package(
 		.package(url: "../SharedComponents",
 						 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../CoreDataModel",
-						 from: Version.init(stringLiteral: "1.0.0"))
-    ],
-    targets: [
+				 from: Version.init(stringLiteral: "1.0.0")),
+		.package(url: "../ChooseEmployees",
+				 from: Version.init(stringLiteral: "1.0.0")),
+		.package(url: "../ChooseLocation",
+				 from: Version.init(stringLiteral: "1.0.0"))
+	],
+	targets: [
         .target(
             name: "AddAppointment",
             dependencies: [
 				"Form",
 				"SharedComponents",
-				"CoreDataModel"
+				"CoreDataModel",
+				"ChooseEmployees",
+				"ChooseLocation"
 			]),
         .testTarget(
             name: "AddAppointmentTests",

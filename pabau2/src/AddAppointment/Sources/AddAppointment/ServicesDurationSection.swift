@@ -3,6 +3,8 @@ import ComposableArchitecture
 import SwiftUI
 import SharedComponents
 import Util
+import ChooseEmployees
+import ChooseLocation
 
 struct ServicesDurationSection: View {
 	let store: Store<AddAppointmentState, AddAppointmentAction>

@@ -75,6 +75,8 @@
 		8246DB37256FCE2300F5D87E /* Filters */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Filters; sourceTree = "<group>"; };
 		82533424256D0C69005755D6 /* AddShift */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AddShift; sourceTree = "<group>"; };
 		82533425256D8393005755D6 /* SharedComponents */ = {isa = PBXFileReference; lastKnownFileType = folder; path = SharedComponents; sourceTree = "<group>"; };
+		8258EB2A26580E0F008BA5A2 /* ChooseEmployees */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ChooseEmployees; sourceTree = "<group>"; };
+		8258EB2B265817C6008BA5A2 /* ChooseLocation */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ChooseLocation; sourceTree = "<group>"; };
 		825BE7E92436226300422910 /* checkIn.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; name = checkIn.mp4; path = pabau2/src/Assets.xcassets/checkIn.mp4; sourceTree = "<group>"; };
 		82811EF323E06BCB0066AFDC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		828566C024DF3D5B009FA63E /* Form */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Form; sourceTree = "<group>"; };
@@ -195,6 +197,8 @@
 		82CACDF7241027320021E1DE /* src */ = {
 			isa = PBXGroup;
 			children = (
+				8258EB2B265817C6008BA5A2 /* ChooseLocation */,
+				8258EB2A26580E0F008BA5A2 /* ChooseEmployees */,
 				8223F5EC264FB9F20056023C /* CalendarList */,
 				08D74500264916F4000605FD /* JourneyBase */,
 				08CF80E32645593B00A206BA /* ChoosePathway */,
@@ -641,6 +645,10 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = EPaper;
 		};
+		08C19B33264BC2E000465BDA /* AppointmentDetails */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AppointmentDetails;
+		};
 		08CF80E42645625500A206BA /* ChoosePathway */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ChoosePathway;
@@ -648,10 +656,6 @@
 		08D74501264917F2000605FD /* JourneyBase */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = JourneyBase;
-		};
-		08C19B33264BC2E000465BDA /* AppointmentDetails */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AppointmentDetails;
 		};
 		74DD9D33256EAB1A00CC3920 /* Communication */ = {
 			isa = XCSwiftPackageProductDependency;

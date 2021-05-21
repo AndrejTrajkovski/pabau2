@@ -1,32 +1,9 @@
 import SwiftUI
-import ComposableArchitecture
 import Util
+import ComposableArchitecture
 import Model
-
-public struct ChooseEmployeesState: Equatable {
-    public var isChooseEmployeesActive: Bool = false
-    public var employees: IdentifiedArrayOf<Employee> = []
-    public var filteredEmployees: IdentifiedArrayOf<Employee> = []
-    public var chosenEmployee: Employee?
-    public var searchText: String = "" {
-        didSet {
-            isSearching = !searchText.isEmpty
-        }
-    }
-    public var isSearching = false
-
-    public init(chosenEmployee: Employee?) {
-		self.chosenEmployee = chosenEmployee
-    }
-}
-
-public enum ChooseEmployeesAction: Equatable {
-    case onAppear
-    case gotEmployeeResponse(Result<SuccessState<[Employee]>, RequestError>)
-    case didSelectEmployee(Employee)
-    case onSearch(String)
-    case didTapBackBtn
-}
+import CoreDataModel
+import SharedComponents
 
 public struct ChooseEmployeesView: View {
     let store: Store<ChooseEmployeesState, ChooseEmployeesAction>

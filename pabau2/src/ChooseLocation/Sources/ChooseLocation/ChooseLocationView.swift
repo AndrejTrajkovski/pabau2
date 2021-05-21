@@ -2,31 +2,7 @@ import SwiftUI
 import ComposableArchitecture
 import Util
 import Model
-
-public struct ChooseLocationState: Equatable {
-    public var isChooseLocationActive: Bool
-    public var locations: IdentifiedArrayOf<Location> = []
-    public var filteredLocations: IdentifiedArrayOf<Location> = []
-    public var chosenLocation: Location?
-    public var searchText: String = "" {
-        didSet {
-            isSearching = !searchText.isEmpty
-        }
-    }
-    public var isSearching = false
-
-    public init(isChooseLocationActive: Bool) {
-        self.isChooseLocationActive = isChooseLocationActive
-    }
-}
-
-public enum ChooseLocationAction: Equatable {
-	case onAppear
-	case gotLocationsResponse(Result<SuccessState<[Location]>, RequestError>)
-	case didSelectLocation(Location)
-	case onSearch(String)
-	case didTapBackBtn
-}
+import SharedComponents
 
 public struct ChooseLocationView: View {
     let store: Store<ChooseLocationState, ChooseLocationAction>

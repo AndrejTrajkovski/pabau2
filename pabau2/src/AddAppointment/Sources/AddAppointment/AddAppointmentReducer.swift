@@ -1,6 +1,8 @@
 import ComposableArchitecture
 import Model
 import SharedComponents
+import ChooseEmployees
+import ChooseLocation
 
 let addAppTapBtnReducer = Reducer<
 	AddAppointmentState?,
@@ -117,7 +119,7 @@ let addAppointmentValueReducer: Reducer<
 		chooseEmployeesReducer.pullback(
 			state: \AddAppointmentState.with,
 			action: /AddAppointmentAction.with,
-			environment: { $0 }),
+			environment: makeChooseEmployeesEnv(_:)),
 		chooseLocationsReducer.pullback(
 			state: \AddAppointmentState.chooseLocationState,
 			action: /AddAppointmentAction.chooseLocation,
