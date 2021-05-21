@@ -72,28 +72,36 @@ public struct ChooseRepeat: View {
     }
 
     public var body: some View {
-        VStack() {
-            List {
-                ForEach(RepeatInterval.allCases) { item in
-                    TextAndCheckMark(item.title,
-                                     item == viewStore.state.chosenRepeat?.interval)
-                        .onTapGesture {
-                            viewStore.send(.onRepeat(item))
-                        }
-                }
-                TextAndCheckMark("No repeat", viewStore.state.chosenRepeat == nil)
-                    .onTapGesture {
-                        viewStore.send(.onRepeat(nil))
+        GeometryReader { geo in
+            VStack {
+                List {
+                    ForEach(RepeatInterval.allCases) { item in
+                        TextAndCheckMark(item.title,
+                                         item == viewStore.state.chosenRepeat?.interval)
+                            .onTapGesture {
+                                viewStore.send(.onRepeat(item))
+                            }
                     }
-            }
-            if viewStore.chosenRepeat != nil {
-                ChooseRepeatDatePicker { date in
-                    viewStore.send(.onSelectedDate(date))
-                } onCancel: {
-                    
+                    TextAndCheckMark("No repeat", viewStore.state.chosenRepeat == nil)
+                        .onTapGesture {
+                            viewStore.send(.onRepeat(nil))
+                        }
+                }.frame(height: 310)
+                
+                if viewStore.chosenRepeat != nil {
+                    Spacer()
+                        .frame(height: 40)
+                    ChooseRepeatDatePicker { date in
+                        viewStore.send(.onSelectedDate(date))
+                    } onCancel: {
+                        viewStore.send(.onBackBtn)
+                    }
                 }
-
             }
+            .navigationBarHidden(false)
+            .customBackButton(leadingPadding: -10, action: {
+                viewStore.send(.onBackBtn)
+            })
         }
     }
 }
