@@ -23,11 +23,11 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 		state: \CalendarState.week,
 		action: /CalendarAction.week,
 		environment: { $0 }),
-	AppointmentsByReducer<Employee>().reducer.optional().pullback(
+	CalendarSectionViewReducer<Employee>().reducer.optional().pullback(
 		state: \CalendarState.employeeSectionState,
 		action: /CalendarAction.employee,
 		environment: { $0 }),
-	AppointmentsByReducer<Room>().reducer.optional().pullback(
+	CalendarSectionViewReducer<Room>().reducer.optional().pullback(
 		state: \CalendarState.roomSectionState,
 		action: /CalendarAction.room,
 		environment: { $0 }),
@@ -123,8 +123,6 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 															 chosenEmployee: nil,
 															 start: startDate)
 		
-//
-//
 //                case .week(.editStartTime(let startOfDayDate, let startDate, let eventId, let startingPointStartOfDay)):
 //                    let calId = CalendarEvent.ID.init(rawValue: eventId)
 //                    var app = state.appointments[startingPointStartOfDay]?.remove(id: calId)

@@ -47,9 +47,8 @@ struct PabauTabBar: View {
 		let isShowingAddAppointment: Bool
 		init(state: TabBarState) {
 //			self.isShowingCheckin = false state.journeyContainer?.journey.checkIn != nil
-//			self.isShowingAddAppointment = state.addAppointment != nil
+			self.isShowingAddAppointment = state.addAppointment != nil
 			self.isShowingCheckin = false
-			self.isShowingAddAppointment = false
 		}
 	}
 	

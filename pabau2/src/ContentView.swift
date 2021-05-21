@@ -75,6 +75,7 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = Reducer.combine(
 			state = .walkthrough(
 				WalkthroughContainerState(hasSeenWalkthrough: env.userDefaults.hasSeenAppIntroduction)
 			)
+			return env.repository.coreDataModel.removeAll().fireAndForget()
 		case .walkthrough(.login(.login(.gotResponse(.success(let user))))):
 			state = .tabBar(TabBarState())
 			return	 .merge( // in parallel
