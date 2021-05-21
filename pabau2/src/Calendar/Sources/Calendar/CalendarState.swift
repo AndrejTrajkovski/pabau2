@@ -16,7 +16,10 @@ import Util
 
 public struct CalendarState: Equatable {
 	
-	var appsLoadingState: LoadingState = .initial
+	var employeesLS: LoadingState
+	var roomsLS: LoadingState
+	var locationsLS: LoadingState
+	var appsLS: LoadingState
 	var list: ListState
 	public var appointments: Appointments
 	var isDropdownShown: Bool
@@ -145,7 +148,7 @@ extension CalendarState {
 			guard let apps = extract(case: Appointments.list, from: self.appointments) else { return nil }
 			
 			return ListContainerState(
-				appsLoadingState: self.appsLoadingState,
+				appsLS: self.appsLS,
 				list: self.list,
 				appointments: apps,
 				locations: self.locations,
@@ -158,7 +161,7 @@ extension CalendarState {
 		}
 		set {
 			newValue.map {
-				self.appsLoadingState = $0.appsLoadingState
+				self.appsLS = $0.appsLS
 				self.list = $0.list
 				self.appointments = Appointments.list($0.appointments)
 				self.locations = $0.locations
@@ -179,7 +182,9 @@ extension CalendarState {
 				subsections: self.rooms,
 				chosenSubsectionsIds: self.chosenRoomsIds,
 				expandedLocationsIds: self.expandedLocationsIds,
-				isShowingFilters: self.isShowingFilters
+				isShowingFilters: self.isShowingFilters,
+				locationsLS: self.locationsLS,
+				subsectionsLS: self.roomsLS
 			)
 		}
 		set {
@@ -189,6 +194,8 @@ extension CalendarState {
 			self.chosenRoomsIds = newValue.chosenSubsectionsIds
 			self.expandedLocationsIds = newValue.expandedLocationsIds
 			self.isShowingFilters = newValue.isShowingFilters
+			self.locationsLS = newValue.locationsLS
+			self.roomsLS = newValue.subsectionsLS
 		}
 	}
 
@@ -200,7 +207,10 @@ extension CalendarState {
 				subsections: self.employees,
 				chosenSubsectionsIds: self.chosenEmployeesIds,
 				expandedLocationsIds: self.expandedLocationsIds,
-				isShowingFilters: self.isShowingFilters)
+				isShowingFilters: self.isShowingFilters,
+				locationsLS: self.locationsLS,
+				subsectionsLS: self.employeesLS
+			)
 		}
 		set {
 			self.locations = newValue.locations
@@ -209,6 +219,8 @@ extension CalendarState {
 			self.chosenEmployeesIds = newValue.chosenSubsectionsIds
 			self.expandedLocationsIds = newValue.expandedLocationsIds
 			self.isShowingFilters = newValue.isShowingFilters
+			self.locationsLS = newValue.locationsLS
+			self.employeesLS = newValue.subsectionsLS
 		}
 	}
 }
@@ -229,6 +241,10 @@ extension CalendarState {
 //		self.appointments = .employee(EventsBy.init(events: [], locationsIds: [], subsections: [], sectionKeypath: \.locationId, subsKeypath: \.employeeId))
 		self.chosenLocationsIds = Set()
 		self.list = ListState()
+		self.locationsLS = .loading
+		self.employeesLS = .loading
+		self.roomsLS = .loading
+		self.appsLS = .initial
 	}
 }
 
@@ -246,10 +262,6 @@ extension CalendarState {
 		}.flatMap { $0 }
 	}
 	
-	mutating func refresh(calendarResponse: CalendarResponse) {
-		
-	}
-	
 	mutating func switchTo(calType: Appointments.CalendarType) {
         print(appointments.flatten())
 		self.appointments = Appointments(
@@ -260,4 +272,31 @@ extension CalendarState {
             rooms: selectedRoomsIds()
         )
 	}
+	
+	var filtersLoadingState: LoadingState {
+		if appointments.calendarType.isEmployeeFilter() {
+			return employeeFilters.sumLoadingState
+		} else {
+			return roomFilters.sumLoadingState
+		}
+	}
 }
+
+//func group(rooms: [Room]) -> [Location.ID: IdentifiedArrayOf<Room>] {
+//	
+//	let locations = Set(rooms.flatMap(\.locationIds))
+//	var result: [Location.Id: IdentifiedArrayOf<Room>] = [:]
+//	
+//	locations.forEach { locationId in
+//		rooms.forEach { room in
+//			if room.locationIds.contains(locationId) {
+//				if result[locationId] != nil {
+//					result[locationId]!.append(room)
+//				} else {
+//					result[locationId] = IdentifiedArray()
+//				}
+//			}
+//		}
+//	}
+//	return result
+//}

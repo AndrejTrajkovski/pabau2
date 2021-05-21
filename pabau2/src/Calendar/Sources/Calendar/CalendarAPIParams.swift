@@ -1,7 +1,7 @@
 import Model
 import Foundation
 
-func calendarAPIParams(state: CalendarState) -> (
+func appointmentsAPIParams(state: CalendarState) -> (
 	startDate: Date,
 	endDate: Date,
 	locationIds: Set<Location.ID>,
