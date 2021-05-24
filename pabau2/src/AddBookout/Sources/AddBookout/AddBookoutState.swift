@@ -1,7 +1,6 @@
 import Model
 import Util
-import ChooseLocation
-import ChooseEmployees
+import ChooseLocationAndEmployee
 import SharedComponents
 import Foundation
 import ComposableArchitecture
@@ -9,8 +8,7 @@ import ComposableArchitecture
 public struct AddBookoutState: Equatable {
 	var editingBookout: Bookout?
 	var chooseDuration: SingleChoiceState<Duration>
-	var chooseLocationState: ChooseLocationState
-	var chooseEmployeesState: ChooseEmployeesState
+	var chooseLocAndEmp: ChooseLocationAndEmployeeState
 	var chooseBookoutReasonState: ChooseBookoutReasonState
 	var startDate: Date
 	var time: Date?
@@ -21,17 +19,17 @@ public struct AddBookoutState: Equatable {
 
 	var showsLoadingSpinner: Bool = false
 
-	var employeeConfigurator = ViewConfigurator(errorString: "Employee is required")
-	var dayConfigurator = ViewConfigurator(errorString: "Day is required")
-	var timeConfigurator = ViewConfigurator(errorString: "Time is required")
-	var durationConfigurator = ViewConfigurator(errorString: "Duration is required")
+	var employeeValidator: String? = nil
+	var dayValidator: String? = nil
+	var timeValidator: String? = nil
+	var durationValidator: String? = nil
 
 	var appointmentsBody: AppointmentBuilder {
 		return AppointmentBuilder(
 			isAllDay: self.isAllDay,
 			isPrivate: self.isPrivate,
-			locationID: self.chooseLocationState.chosenLocation?.id,
-			employeeID: self.chooseEmployeesState.chosenEmployee?.id.rawValue,
+			locationID: self.chooseLocAndEmp.chosenLocationId,
+			employeeID: self.chooseLocAndEmp.chosenEmployeeId?.rawValue,
 			startTime: self.startDate,
 			duration: self.chooseDuration.dataSource.first(where: {$0.id == self.chooseDuration.chosenItemId})?.duration,
 			note: self.note,
@@ -44,8 +42,7 @@ extension Employee: SingleChoiceElement {}
 
 extension AddBookoutState {
 	public init(
-		employees: IdentifiedArrayOf<Employee>,
-		chosenEmployee: Employee.ID?,
+		chooseLocAndEmp: ChooseLocationAndEmployeeState,
 		start: Date
 	) {
 		self.init(
@@ -54,8 +51,7 @@ extension AddBookoutState {
 					dataSource: IdentifiedArray.init(Duration.all),
 					chosenItemId: nil
 				),
-			chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
-			chooseEmployeesState: ChooseEmployeesState(chosenEmployeeId: nil),
+			chooseLocAndEmp: chooseLocAndEmp,
 			chooseBookoutReasonState: ChooseBookoutReasonState(isChooseBookoutReasonActive: false),
 			startDate: start,
 			time: nil,
@@ -65,8 +61,7 @@ extension AddBookoutState {
 		)
 	}
 	public init(
-		employees: IdentifiedArrayOf<Employee>,
-		chosenEmployee: Employee.ID?,
+		chooseLocAndEmp: ChooseLocationAndEmployeeState,
 		start: Date,
 		bookout: Bookout
 	) {
@@ -76,8 +71,7 @@ extension AddBookoutState {
 					dataSource: IdentifiedArray.init(Duration.all),
 					chosenItemId: nil
 				),
-			chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
-			chooseEmployeesState: ChooseEmployeesState(chosenEmployeeId: chosenEmployee),
+			chooseLocAndEmp: chooseLocAndEmp,
 			chooseBookoutReasonState: ChooseBookoutReasonState(isChooseBookoutReasonActive: false),
 			startDate: bookout.start_date,
 			time: nil,
