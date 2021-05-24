@@ -1,8 +1,7 @@
 import ComposableArchitecture
 import Model
 import SharedComponents
-import ChooseEmployees
-import ChooseLocation
+import ChooseLocationAndEmployee
 
 let addAppTapBtnReducer = Reducer<
 	AddAppointmentState?,
@@ -12,6 +11,16 @@ let addAppTapBtnReducer = Reducer<
 	switch action {
 	case .closeBtnTap:
 		state = nil
+	case .appointmentCreated(let result):
+		state?.showsLoadingSpinner = false
+		switch result {
+		case .success(let services):
+			state = nil
+		case .failure:
+			break
+		}
+	default:
+		break
 	}
 	return .none
 }
@@ -33,18 +42,10 @@ let addAppointmentValueReducer: Reducer<
 			state: \AddAppointmentState.durations,
 			action: /AddAppointmentAction.durations,
 			environment: { $0 }),
-		chooseEmployeesReducer.pullback(
-			state: \AddAppointmentState.with,
-			action: /AddAppointmentAction.with,
-			environment: makeChooseEmployeesEnv(_:)),
-		chooseLocationsReducer.pullback(
-			state: \AddAppointmentState.chooseLocationState,
-			action: /AddAppointmentAction.chooseLocation,
-			environment: { ChooseLocationEnvironment(
-				repository: $0.repository,
-				userDefaults: $0.userDefaults
-			)
-		}),
+		chooseLocationAndEmployeeReducer.pullback(
+			state: \AddAppointmentState.chooseLocAndEmp,
+			action: /AddAppointmentAction.chooseLocAndEmp,
+			environment: makeChooseLocAndEmpEnv(_:)),
 		chooseParticipantReducer.pullback(
 			state: \AddAppointmentState.participants,
 			action: /AddAppointmentAction.participants,
@@ -73,57 +74,47 @@ let addAppointmentValueReducer: Reducer<
 			state: \AddAppointmentState.note,
 			action: /AddAppointmentAction.note,
 			environment: { $0 }),
-		.init { state, action, _ in
-			switch action {
-			case .saveAppointmentTap:
-				if let appointmentsBody = state?.appointmentsBody {
-					var isValid = true
-
-					if state?.clients.chosenClient?.fullname == nil {
-						state?.chooseClintConfigurator.state = .error
-
-						isValid = false
-					}
-
-					if state?.services.chosenService?.name == nil {
-						state?.chooseServiceConfigurator.state = .error
-
-						isValid = false
-					}
-
-					if state?.with.chosenEmployee?.name == nil {
-						state?.employeeConfigurator.state = .error
-
-						isValid = false
-					}
-
-					if !isValid { break }
-
-					state?.showsLoadingSpinner = true
-
-					return env.clientAPI.createAppointment(appointment: appointmentsBody)
-						.catchToEffect()
-						.receive(on: DispatchQueue.main)
-						.map(AddAppointmentAction.appointmentCreated)
-						.eraseToEffect()
-				}
+	.init { state, action, env in
+		switch action {
+		case .saveAppointmentTap:
+			
+			var isValid = true
+			
+			if state.clients.chosenClient?.fullname == nil {
+				state.chooseClintValidator = "Client is required."
+			}
+			
+			if state.services.chosenService?.name == nil {
+				state.chooseServiceValidator = "Service is required."
+			}
+			
+			let isLocAndEmpValid = state.chooseLocAndEmp.validate()
+			
+			isValid = isValid && isLocAndEmpValid
+			
+			if !isValid { break }
+			
+			state.showsLoadingSpinner = true
+			
+			return env.clientAPI.createAppointment(appointment: state.appointmentsBody)
+				.catchToEffect()
+				.receive(on: DispatchQueue.main)
+				.map(AddAppointmentAction.appointmentCreated)
+				.eraseToEffect()
 			
 			case .didTapServices:
-				state?.services.isChooseServiceActive = true
-				state?.chooseServiceConfigurator.state = .normal
+				state.services.isChooseServiceActive = true
+				state.chooseServiceValidator = nil
 			case .didTabClients:
-				state?.clients.isChooseClientsActive = true
-				state?.chooseClintConfigurator.state = .normal
-			case .didTapWith:
-				state?.with.isChooseEmployeesActive = true
-				state?.employeeConfigurator.state = .normal
+				state.clients.isChooseClientsActive = true
+				state.chooseClintValidator = nil
 			case .didTapParticipants:
-				guard let isAllDay = state?.isAllDay,
-					  let location = state?.chooseLocationState.chosenLocation,
-					  let service = state?.services.chosenService,
-					  let employee = state?.with.chosenEmployee
+				guard state.isAllDay,
+					  let location = state.chooseLocAndEmp.chosenLocationId,
+					  let service = state.services.chosenService,
+					  let employee = state.chooseLocAndEmp.chosenEmployeeId
 				else {
-					state?.alertBody = AlertBody(
+					state.alertBody = AlertBody(
 						title: "Info",
 						subtitle: "Please choose Service, Location and Employee",
 						primaryButtonTitle: "",
@@ -133,29 +124,19 @@ let addAppointmentValueReducer: Reducer<
 					break
 				}
 
-				state?.participants.participantSchema = ParticipantSchema(
+				state.participants.participantSchema = ParticipantSchema(
 					id: UUID(),
-					isAllDays: isAllDay,
-					location: location,
-					service: service,
-					employee: employee
+					isAllDays: state.isAllDay,
+					locationId: location,
+					serviceId: service.id,
+					employeeId: employee
 				)
 
-				state?.participants.isChooseParticipantActive = true
-			case .onChooseLocation:
-				state?.chooseLocationState.isChooseLocationActive = true
+				state.participants.isChooseParticipantActive = true
 			case .removeChosenParticipant:
-				state?.participants.chosenParticipants = []
-			case .appointmentCreated(let result):
-				state?.showsLoadingSpinner = false
-				switch result {
-				case .success(let services):
-					state = nil
-				case .failure:
-					break
-				}
+				state.participants.chosenParticipants = []
 			case .cancelAlert:
-				state?.alertBody = nil
+				state.alertBody = nil
 			case .chooseStartDate(let startDate):
 				state.startDate = startDate
 			default:

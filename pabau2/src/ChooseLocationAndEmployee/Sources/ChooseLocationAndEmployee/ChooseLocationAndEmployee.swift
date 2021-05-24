@@ -4,7 +4,13 @@ import Util
 import ChooseEmployees
 import ChooseLocation
 
-struct ChooseLocationAndEmployee: View {
+public struct ChooseLocationAndEmployee: View {
+	
+	public init(store: Store<ChooseLocationAndEmployeeState, ChooseLocationAndEmployeeAction>) {
+		self.store = store
+		self.viewStore = ViewStore(store.scope(state: State.init(state:)))
+	}
+	
 	
 	let store: Store<ChooseLocationAndEmployeeState, ChooseLocationAndEmployeeAction>
 	@ObservedObject var viewStore: ViewStore<State, ChooseLocationAndEmployeeAction>
@@ -33,7 +39,7 @@ struct ChooseLocationAndEmployee: View {
 		}
 	}
 	
-	var body: some View {
+	public var body: some View {
 		HStack(spacing: 24.0) {
 			TitleAndValueLabel(
 				"WITH",

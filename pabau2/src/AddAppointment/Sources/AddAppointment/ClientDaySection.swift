@@ -17,10 +17,7 @@ struct ClientDaySection: View {
 				"CLIENT",
 				self.viewStore.state.clients.chosenClient?.fullname ??  "Choose client",
 				self.viewStore.state.clients.chosenClient?.fullname == nil ? Color.grayPlaceholder : nil,
-				viewStore.binding(
-					get: { $0.chooseClintConfigurator },
-					send: .ignore
-				)
+				.constant(viewStore.chooseClintValidator)
 			).onTapGesture {
 				self.viewStore.send(.didTabClients)
 			}
@@ -37,7 +34,7 @@ struct ClientDaySection: View {
 				"DAY", viewStore.binding(
 					get: { $0.startDate },
 					send: { .chooseStartDate($0!) }
-				)
+				), .constant(nil)
 			).isHidden(!viewStore.isAllDay, remove: true)
 
 			DatePickerControl.init(
@@ -45,7 +42,7 @@ struct ClientDaySection: View {
 					get: { $0.startDate },
 					send: { .chooseStartDate($0!) }
 				),
-				nil,
+				.constant(nil),
 				mode: .dateAndTime
 			).isHidden(viewStore.isAllDay, remove: true)
 		}

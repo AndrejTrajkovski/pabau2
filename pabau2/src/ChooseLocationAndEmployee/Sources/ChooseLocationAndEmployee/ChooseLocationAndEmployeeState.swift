@@ -17,6 +17,18 @@ public struct ChooseLocationAndEmployeeState: Equatable {
 	}
 	
 	
+	public mutating func validate() -> Bool {
+		if chosenLocationId == nil {
+			locationValidationError = "Location is required."
+		}
+		
+		if chosenEmployeeId == nil {
+			employeeValidationError = "Employee is required."
+		}
+		
+		return chosenLocationId != nil && chosenEmployeeId != nil
+	}
+	
 	public var locations: IdentifiedArrayOf<Location>
 	public var employees: [Location.Id: IdentifiedArrayOf<Employee>]
 	public var chosenLocationId: Location.Id?
