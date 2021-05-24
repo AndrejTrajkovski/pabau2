@@ -111,6 +111,7 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
 			let employees = state.employees[location] ?? []
 			let chosenEmployee = employees[id: subsection]
+			print(chosenEmployee)
             state.addBookoutState = AddBookoutState(
                 employees: employees,
                 chosenEmployee: chosenEmployee?.id,

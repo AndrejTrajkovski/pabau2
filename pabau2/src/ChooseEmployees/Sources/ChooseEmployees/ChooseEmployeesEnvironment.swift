@@ -2,4 +2,4 @@ import Model
 import Foundation
 import CoreDataModel
 
-public typealias ChooseEmployeesEnvironment = (journeyAPI: JourneyAPI, repository: Repository)
+public typealias ChooseEmployeesEnvironment = (journeyAPI: JourneyAPI, repository: RepositoryProtocol)

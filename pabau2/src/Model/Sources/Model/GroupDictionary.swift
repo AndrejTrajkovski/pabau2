@@ -1,7 +1,7 @@
 import ComposableArchitecture
 
-func groupDict<T, Key: Hashable>(elements: [T],
-								 keyPath: KeyPath<T, [Key]>) -> [Key: IdentifiedArrayOf<T>] {
+public func groupDict<T, Key: Hashable>(elements: [T],
+										keyPath: KeyPath<T, [Key]>) -> [Key: IdentifiedArrayOf<T>] {
 	
 	let keys = Set(elements.flatMap { $0[keyPath: keyPath] })
 	var result: [Key: IdentifiedArrayOf<T>] = [:]

@@ -40,7 +40,7 @@ public struct AddAppointmentState: Equatable {
 			isAllDay: self.isAllDay,
 			clientID: self.clients.chosenClient?.id,
 			locationID: self.chooseLocationState.chosenLocation?.id,
-			employeeID: self.with.chosenEmployee?.id.rawValue,
+			employeeID: self.with.chosenEmployeeId?.rawValue,
 			serviceID: self.services.chosenService?.id.rawValue,
 			startTime: self.startDate,
 			duration: self.durations.dataSource.first(where: {$0.id == self.durations.chosenItemId})?.duration,
@@ -81,7 +81,8 @@ extension AddAppointmentState {
 			durations: AddAppMocks.durationState,
 			participants: ChooseParticipantState(isChooseParticipantActive: false),
 			chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
-			with: ChooseEmployeesState(chosenEmployee: nil),
+			with: ChooseEmployeesState(chosenEmployeeId: nil,
+									   employees: []),
 			services: ChooseServiceState(
 				isChooseServiceActive: false,
 				filterChosen: .allStaff
@@ -110,7 +111,8 @@ extension AddAppointmentState {
 			durations: AddAppMocks.durationState,
 			participants: ChooseParticipantState(isChooseParticipantActive: false),
 			chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
-			with: ChooseEmployeesState(chosenEmployee: employee),
+			with: ChooseEmployeesState(chosenEmployeeId: employee.id,
+									   employees: []),
 			services: ChooseServiceState(
 				isChooseServiceActive: false,
 				filterChosen: .allStaff
@@ -170,7 +172,8 @@ extension AddAppointmentState {
 		durations: AddAppMocks.durationState,
 		participants: ChooseParticipantState(isChooseParticipantActive: false),
 		chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
-		with: ChooseEmployeesState(chosenEmployee: nil),
+		with: ChooseEmployeesState(chosenEmployeeId: nil,
+								   employees: []),
 		services: ChooseServiceState(
 			isChooseServiceActive: false,
 			filterChosen: .allStaff

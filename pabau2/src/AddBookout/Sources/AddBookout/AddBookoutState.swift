@@ -8,7 +8,6 @@ import ComposableArchitecture
 
 public struct AddBookoutState: Equatable {
 	var editingBookout: Bookout?
-	var chooseEmployee: SingleChoiceLinkState<Employee>
 	var chooseDuration: SingleChoiceState<Duration>
 	var chooseLocationState: ChooseLocationState
 	var chooseEmployeesState: ChooseEmployeesState
@@ -50,18 +49,13 @@ extension AddBookoutState {
 		start: Date
 	) {
 		self.init(
-			chooseEmployee: SingleChoiceLinkState.init(
-				dataSource: employees,
-				chosenItemId: chosenEmployee,
-				isActive: false
-			),
 			chooseDuration:
 				SingleChoiceState<Duration>(
 					dataSource: IdentifiedArray.init(Duration.all),
 					chosenItemId: nil
 				),
 			chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
-			chooseEmployeesState: ChooseEmployeesState(chosenEmployee: nil),
+			chooseEmployeesState: ChooseEmployeesState(chosenEmployeeId: nil),
 			chooseBookoutReasonState: ChooseBookoutReasonState(isChooseBookoutReasonActive: false),
 			startDate: start,
 			time: nil,
@@ -77,18 +71,13 @@ extension AddBookoutState {
 		bookout: Bookout
 	) {
 		self.init(
-			chooseEmployee: SingleChoiceLinkState.init(
-				dataSource: employees,
-				chosenItemId: chosenEmployee,
-				isActive: false
-			),
 			chooseDuration:
 				SingleChoiceState<Duration>(
 					dataSource: IdentifiedArray.init(Duration.all),
 					chosenItemId: nil
 				),
 			chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
-			chooseEmployeesState: ChooseEmployeesState(chosenEmployee: nil),
+			chooseEmployeesState: ChooseEmployeesState(chosenEmployeeId: chosenEmployee),
 			chooseBookoutReasonState: ChooseBookoutReasonState(isChooseBookoutReasonActive: false),
 			startDate: bookout.start_date,
 			time: nil,

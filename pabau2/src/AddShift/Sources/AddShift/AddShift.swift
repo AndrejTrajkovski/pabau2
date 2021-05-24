@@ -299,7 +299,7 @@ extension AddShiftState {
 		AddShiftState(
             shiftRotaID: nil,
             isPublished: true,
-			chooseEmployeesState: ChooseEmployeesState(chosenEmployee: nil),
+			chooseEmployeesState: ChooseEmployeesState(chosenEmployeeId: nil),
             chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
             startDate: nil,
             startTime: nil,
@@ -311,7 +311,7 @@ extension AddShiftState {
         AddShiftState(
             shiftRotaID: shift.rotaID,
             isPublished: shift.published ?? false,
-			chooseEmployeesState: ChooseEmployeesState(chosenEmployee: nil),
+			chooseEmployeesState: ChooseEmployeesState(chosenEmployeeId: nil),
             chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
             startDate: shift.date,
             startTime: shift.startTime,
