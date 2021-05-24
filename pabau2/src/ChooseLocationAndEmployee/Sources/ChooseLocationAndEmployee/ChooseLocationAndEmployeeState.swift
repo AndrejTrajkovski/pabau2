@@ -5,6 +5,18 @@ import ChooseEmployees
 
 public struct ChooseLocationAndEmployeeState: Equatable {
 	
+	public init(locations: IdentifiedArrayOf<Location>, employees: [Location.Id : IdentifiedArrayOf<Employee>], chosenLocationId: Location.Id? = nil, chosenEmployeeId: Employee.Id? = nil, locationValidationError: String? = nil, employeeValidationError: String? = nil, chooseLocationState: ChooseLocationState? = nil, chooseEmployeeState: ChooseEmployeesState? = nil) {
+		self.locations = locations
+		self.employees = employees
+		self.chosenLocationId = chosenLocationId
+		self.chosenEmployeeId = chosenEmployeeId
+		self.locationValidationError = locationValidationError
+		self.employeeValidationError = employeeValidationError
+		self.chooseLocationState = chooseLocationState
+		self.chooseEmployeeState = chooseEmployeeState
+	}
+	
+	
 	public var locations: IdentifiedArrayOf<Location>
 	public var employees: [Location.Id: IdentifiedArrayOf<Employee>]
 	public var chosenLocationId: Location.Id?
