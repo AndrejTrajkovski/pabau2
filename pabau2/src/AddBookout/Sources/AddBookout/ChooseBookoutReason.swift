@@ -10,7 +10,6 @@ let chooseBookoutReasonReducer = Reducer<
     ChooseBookoutReasonAction,
     AddBookoutEnvironment
 > { state, action, env in
-    struct LoadBookoutReasons: Hashable {}
 
     switch action {
     case .onAppear:

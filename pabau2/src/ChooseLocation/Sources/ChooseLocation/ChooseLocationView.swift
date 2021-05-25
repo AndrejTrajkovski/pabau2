@@ -26,16 +26,24 @@ public struct ChooseLocationView: View {
 				
 				ReloadButton(onReload: { viewStore.send(.reload) })
 			}
-            List {
-                ForEach(self.viewStore.state.filteredLocations, id: \.id) { location in
-                    TextAndCheckMark(
-						location.name,
-						location.id == self.viewStore.state.chosenLocationId
-                    ).onTapGesture {
-						self.viewStore.send(.didSelectLocation(location.id))
-                    }
-                }
-            }
+			
+			switch viewStore.locationsLS {
+			case .initial, .gotSuccess:
+				List {
+					ForEach(self.viewStore.state.filteredLocations, id: \.id) { location in
+						TextAndCheckMark(
+							location.name,
+							location.id == self.viewStore.state.chosenLocationId
+						).onTapGesture {
+							self.viewStore.send(.didSelectLocation(location.id))
+						}
+					}
+				}
+			case .loading:
+				LoadingSpinner()
+			case .gotError(let error):
+				Text("Error loading locations.")
+			}
         }
         .padding()
         .navigationBarTitle("Locations")

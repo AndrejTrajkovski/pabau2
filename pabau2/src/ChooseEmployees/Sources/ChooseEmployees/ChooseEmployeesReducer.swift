@@ -1,5 +1,7 @@
 import ComposableArchitecture
 
+struct GetEmployeesId: Hashable { }
+
 public let chooseEmployeesParentReducer: Reducer<
 	ChooseEmployeesState?,
 	ChooseEmployeesAction,
@@ -19,10 +21,12 @@ public let chooseEmployeesParentReducer: Reducer<
 		case .didSelectEmployee(let employee):
 			
 			state = nil
+			return .cancel(id: GetEmployeesId())
 			
 		case .didTapBackBtn:
 			
 			state = nil
+			return .cancel(id: GetEmployeesId())
 			
 		case .reload:
 			
@@ -52,11 +56,14 @@ public let chooseEmployeesReducer = Reducer<
 	case .reload:
 		
 		state.searchText = ""
+		state.employeesLS = .loading
+		
 		return env.repository.getEmployees()
 			.catchToEffect()
 			.receive(on: DispatchQueue.main)
 			.map(ChooseEmployeesAction.gotEmployeeResponse)
 			.eraseToEffect()
+			.cancellable(id: GetEmployeesId())
 		
 	case .onSearch(let text):
 		
@@ -73,8 +80,9 @@ public let chooseEmployeesReducer = Reducer<
 		case .success(let response):
 			state.employees = .init(response.state)
 			state.filteredEmployees = state.employees
-		case .failure:
-			break
+			state.employeesLS = .gotSuccess
+		case .failure(let error):
+			state.employeesLS = .gotError(error)
 		}
 		
 	case .didSelectEmployee(let employeeId):
