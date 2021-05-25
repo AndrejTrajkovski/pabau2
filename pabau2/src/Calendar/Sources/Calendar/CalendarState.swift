@@ -285,21 +285,37 @@ extension CalendarState {
 	}
 }
 
-//func group(rooms: [Room]) -> [Location.ID: IdentifiedArrayOf<Room>] {
-//	
-//	let locations = Set(rooms.flatMap(\.locationIds))
-//	var result: [Location.Id: IdentifiedArrayOf<Room>] = [:]
-//	
-//	locations.forEach { locationId in
-//		rooms.forEach { room in
-//			if room.locationIds.contains(locationId) {
-//				if result[locationId] != nil {
-//					result[locationId]!.append(room)
-//				} else {
-//					result[locationId] = IdentifiedArray()
-//				}
-//			}
+extension CalendarState {
+	
+	public mutating func update(locationsResult: Result<[Location], RequestError>) {
+		switch locationsResult {
+		case .success(let locationsSuccess):
+			locationsLS = .gotSuccess
+			locations = .init(locationsSuccess)
+			chosenLocationsIds = Set(locations.map(\.id))
+		case .failure(let error):
+			locationsLS = .gotError(error)
+		}
+	}
+	
+	public mutating func update(employeesResult: Result<[Employee], RequestError>) {
+		switch employeesResult {
+		case .success(let employeesSuccess):
+			employeesLS = .gotSuccess
+			employees = groupDict(elements: employeesSuccess, keyPath: \Employee.locations)
+			chosenEmployeesIds = employees.mapValues {
+				$0.map(\.id)
+			}
+		case .failure(let error):
+			locationsLS = .gotError(error)
+		}
+//		switch locationsResult {
+//		case .success(let locations):
+//			locationsLS = .gotSuccess
+//			self.locations = .init(locations)
+//			chosenLocationsIds = Set(locations.map(\.id))
+//		case .failure(let error):
+//			locationsLS = .gotError(error)
 //		}
-//	}
-//	return result
-//}
+	}
+}

@@ -188,11 +188,7 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			break
 		case .addAppointmentTap:
 			break
-		case .addShift(_):
-			break
 		case .appDetails(_):
-			break
-		case .addBookoutAction(_):
 			break
 		case .onAddShiftDismiss:
 			state.addShift = nil
@@ -221,28 +217,39 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 		case .list(_):
 			break
 		case .gotLocationsResponse(let result):
-			switch result {
-			case .success(let locations):
-				state.locationsLS = .gotSuccess
-				state.locations = .init(locations.state)
-				state.chosenLocationsIds = Set(locations.state.map(\.id))
-				if state.appsLS == .initial && state.employeesLS == .gotSuccess {
-					return getAppointments()
-				}
-			case .failure(let error):
-				state.locationsLS = .gotError(error)
+			state.update(locationsResult: result.map(\.state))
+			if state.appsLS == .initial && state.employeesLS == .gotSuccess {
+				return getAppointments()
 			}
+		case .addBookoutAction(.chooseLocAndEmp(.chooseLocation(.gotLocationsResponse(let result)))),
+			 .addShift(.chooseLocAndEmp(.chooseLocation(.gotLocationsResponse(let result)))):
+			state.update(locationsResult: result.map(\.state))
+		case .addBookoutAction(
+				.chooseLocAndEmp(
+					.chooseEmployee(
+						.gotEmployeeResponse(let result)))),
+			 .addShift(
+				.chooseLocAndEmp(
+					.chooseEmployee(
+						.gotEmployeeResponse(let result)))):
+			
+			state.update(employeesResult: result.map(\.state))
+			
 		case .roomFilters(.rows(id: let id, action: let action)):
-			break
-		case .roomFilters(.gotLocationsResponse(_)):
 			break
 		case .roomFilters(.reload):
 			break
 		case .employeeFilters(.rows(id: let id, action: let action)):
 			break
+		case .employeeFilters(.reload):
+			break
+		case .addBookoutAction:
+			break
+		case .addShift:
+			break
 		case .employeeFilters(.gotLocationsResponse(_)):
 			break
-		case .employeeFilters(.reload):
+		case .roomFilters(.gotLocationsResponse(_)):
 			break
 		}
 		return .none
