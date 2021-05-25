@@ -16,6 +16,12 @@ public struct Room: Decodable, Identifiable, Equatable {
 		case room_name
 		case room_locations
 	}
+    
+    public init(id: Id, name: String, locationIds: [Location.Id]) {
+        self.id = id
+        self.name = name
+        self.locationIds = locationIds
+    }
 	
 	public init(from decoder: Decoder) throws {
 		let container = try decoder.container(keyedBy: Self.CodingKeys)

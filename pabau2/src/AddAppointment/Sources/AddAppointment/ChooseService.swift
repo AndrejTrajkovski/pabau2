@@ -3,22 +3,25 @@ import Model
 import ComposableArchitecture
 import Util
 import SharedComponents
+import CoreDataModel
 
 let chooseServiceReducer =
     Reducer<ChooseServiceState, ChooseServiceAction, AddAppointmentEnv> { state, action, env in
         switch action {
         case .onAppear:
             state.searchText = ""
-            return env.clientAPI.getServices()
+            return env.repository.getServices()
                 .catchToEffect()
                 .map(ChooseServiceAction.gotServiceResponse)
                 .receive(on: DispatchQueue.main)
                 .eraseToEffect()
         case .gotServiceResponse(let result):
             switch result {
-            case .success(let services):
-                state.services = .init(services)
-                state.groupedServices = [String: [Service]].init(grouping: state.services, by: { $0.categoryName ?? "" })
+            case .success(let response):
+                state.services = .init(response.state)
+                state.groupedServices = [String: [Service]].init(
+                    grouping: state.services, by: { $0.categoryName ?? "" }
+                )
             case .failure:
                 break
             }
@@ -74,7 +77,7 @@ public struct ChooseServiceState: Equatable {
 
 public enum ChooseServiceAction: Equatable {
     case onAppear
-    case gotServiceResponse(Result<[Service], RequestError>)
+    case gotServiceResponse(Result<SuccessState<[Service]>, RequestError>)
     case didSelectService(Service)
     case didSelectFilter(ChooseServiceFilter)
     case didTapBackBtn

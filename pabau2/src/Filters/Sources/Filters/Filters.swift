@@ -29,6 +29,17 @@ public struct FiltersReducer<S: Identifiable & Equatable & Named> {
 						break
 					case .rows(id: _, action: .header(.select(_))):
 						break
+                    case .gotRoomResponse(let response):
+                        switch response {
+                        case .success(let employees):
+                            state.subsectionsLS = .gotSuccess
+                            state.subsections = groupDict(elements: employees.state, keyPath: locationsKeyPath)
+                            state.chosenSubsectionsIds = state.subsections.mapValues {
+                                $0.map(\.id)
+                            }
+                        case .failure(let error):
+                            state.subsectionsLS = .gotError(error)
+                        }
 					case .gotSubsectionResponse(let result):
 						switch result {
 						case .success(let employees):
@@ -51,10 +62,10 @@ public struct FiltersReducer<S: Identifiable & Equatable & Named> {
 								.map { FiltersAction<Employee>.gotSubsectionResponse($0) }
 								.eraseToEffect() as! Effect<FiltersAction<S>, Never>
 						} else if S.self is Room.Type {
-							getSubsection = env.journeyAPI.getRooms()
+							getSubsection = env.repository.getRooms()
 								.receive(on: DispatchQueue.main)
 								.catchToEffect()
-								.map { FiltersAction<Room>.gotSubsectionResponse($0) }
+								.map { FiltersAction<Room>.gotRoomResponse($0) }
 								.eraseToEffect() as! Effect<FiltersAction<S>, Never>
 						} else {
 							fatalError()
@@ -65,7 +76,7 @@ public struct FiltersReducer<S: Identifiable & Equatable & Named> {
 							.catchToEffect()
 							.map { FiltersAction<S>.gotLocationsResponse($0) }
 							.eraseToEffect()
-						
+				
 						state.locationsLS = .loading
 						state.subsectionsLS = .loading
 						
@@ -73,7 +84,7 @@ public struct FiltersReducer<S: Identifiable & Equatable & Named> {
 							getLocactions,
 							getSubsection
 						)
-						
+				
 					case .gotLocationsResponse(let result):
 						switch result {
 						case .success(let locations):
@@ -171,6 +182,7 @@ public enum FiltersAction<S: Identifiable & Equatable & Named> {
 	case onHeaderTap
 	case rows(id: Location.ID, action: FilterSectionAction<S>)
 	case gotSubsectionResponse(Result<[S], RequestError>)
+    case gotRoomResponse(Result<SuccessState<[S]>, RequestError>)
 	case gotLocationsResponse(Result<[Location], RequestError>)
 	case reload
 }

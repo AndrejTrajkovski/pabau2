@@ -42,9 +42,12 @@ public class PabauStorage: CoreDataModel {
 				Entity<PathwayTemplateScheme>("PathwayTemplateScheme"),
 				Entity<LocationScheme>("LocationScheme"),
 				Entity<FormTemplateInfoScheme>("FormTemplateInfoScheme"),
-				Entity<IDsScheme>("EmployeeScheme_IDsScheme"),
+                Entity<EmployeeScheme.IDsScheme>("EmployeeScheme_IDsScheme"),
+                Entity<RoomScheme.IDsScheme>("RoomScheme_IDsScheme"),
 				Entity<StepScheme>("StepScheme"),
-				Entity<EmployeeScheme>("EmployeeScheme")
+				Entity<EmployeeScheme>("EmployeeScheme"),
+                Entity<RoomScheme>("RoomScheme"),
+                Entity<ServiceScheme>("ServiceScheme"),
 			]
 		)
 	)

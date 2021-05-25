@@ -3,15 +3,16 @@ import Model
 import Util
 import Tagged
 
-public class IDsScheme: CoreStoreObject {
-    @Field.Relationship("master")
-    var masterEmployeeScheme: EmployeeScheme?
-    
-    @Field.Stored("id")
-    public var id: String = ""
-}
 
 public class EmployeeScheme: CoreStoreObject {
+    public class IDsScheme: CoreStoreObject {
+        @Field.Relationship("master")
+        var masterEmployeeScheme: EmployeeScheme?
+
+        
+        @Field.Stored("id")
+        public var id: String = ""
+    }
     
     @Field.Stored("id")
     public var id: String = ""
@@ -53,13 +54,13 @@ extension Employee {
             employeeScheme.name = self.name
             employeeScheme.email = self.email
             employeeScheme.avatar = self.avatar ?? ""
-            let idsShemes: [IDsScheme] = self.locations.compactMap {
-                let scheme = transaction.create(Into<IDsScheme>())
+            let idsShemes: [EmployeeScheme.IDsScheme] = self.locations.compactMap {
+                let scheme = transaction.create(Into<EmployeeScheme.IDsScheme>())
                 scheme.id = $0.description
                 scheme.masterEmployeeScheme = employeeScheme
                 return scheme
             }
-          
+     
             employeeScheme.locations = Set(idsShemes)
             employeeScheme.passcode = self.passcode
             return employeeScheme
