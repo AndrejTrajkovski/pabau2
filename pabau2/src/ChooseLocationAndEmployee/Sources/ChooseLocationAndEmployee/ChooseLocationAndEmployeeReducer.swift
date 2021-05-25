@@ -11,8 +11,7 @@ public let chooseLocationAndEmployeeReducer: Reducer<ChooseLocationAndEmployeeSt
 				if let chosenEmployeeId = state.chosenEmployeeId,
 				   let chosenLocationId = state.chosenLocationId,
 				   let locationEmployees = state.employees[chosenLocationId],
-				   !locationEmployees.map(\.id).contains(chosenEmployeeId)
-				{
+				   !locationEmployees.map(\.id).contains(chosenEmployeeId) {
 					//if re-chosen location does not have previously selected employee id
 					state.chosenEmployeeId = nil
 				}
@@ -28,6 +27,7 @@ public let chooseLocationAndEmployeeReducer: Reducer<ChooseLocationAndEmployeeSt
 			case .onChooseEmployee:
 				
 				guard let locationId = state.chosenLocationId else {
+					state.locationValidationError = "Choose Location First"
 					break
 				}
 				
@@ -37,6 +37,7 @@ public let chooseLocationAndEmployeeReducer: Reducer<ChooseLocationAndEmployeeSt
 				
 			case .chooseLocation(.didSelectLocation(let locId)):
 				
+				state.locationValidationError = nil
 				state.chosenLocationId = locId
 				deselectEmployeeIfNeeded()
 				
@@ -64,6 +65,7 @@ public let chooseLocationAndEmployeeReducer: Reducer<ChooseLocationAndEmployeeSt
 				break
 			case .chooseEmployee(.didSelectEmployee(let empId)):
 				state.chosenEmployeeId = empId
+				state.employeeValidationError = nil
 			case .chooseEmployee(.onSearch(_)):
 				break
 			case .chooseEmployee(.didTapBackBtn):

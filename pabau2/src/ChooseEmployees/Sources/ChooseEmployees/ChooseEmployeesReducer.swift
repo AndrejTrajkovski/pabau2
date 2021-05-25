@@ -6,6 +6,12 @@ public let chooseEmployeesParentReducer: Reducer<
 	ChooseEmployeesEnvironment
 > = .combine(
 	
+	chooseEmployeesReducer.optional().pullback(
+		state: \.self,
+		action: /.self,
+		environment: { $0 }
+	),
+	
 	.init { state, action, env in
 		
 		switch action {
@@ -32,13 +38,7 @@ public let chooseEmployeesParentReducer: Reducer<
 		}
 		
 		return .none
-	},
-	
-	chooseEmployeesReducer.optional().pullback(
-		state: \.self,
-		action: /.self,
-		environment: { $0 }
-	)
+	}
 )
 
 

@@ -15,40 +15,34 @@ struct ServicesDurationSection: View {
 	}
 	
 	var body: some View {
-		VStack {
-			HStack(spacing: 24.0) {
-				TitleAndValueLabel(
-					"SERVICE",
-					self.viewStore.state.services.chosenService?.name ?? "Choose Service",
-					self.viewStore.state.services.chosenService?.name == nil ? Color.grayPlaceholder : nil,
-					.constant(viewStore.chooseServiceValidator)
-				).onTapGesture {
-					self.viewStore.send(.didTapServices)
+		Group {
+			VStack(spacing: 16){
+				HStack(spacing: 24.0) {
+					TitleAndValueLabel(
+						"SERVICE",
+						self.viewStore.state.services.chosenService?.name ?? "Choose Service",
+						self.viewStore.state.services.chosenService?.name == nil ? Color.grayPlaceholder : nil,
+						.constant(viewStore.chooseServiceValidator)
+					).onTapGesture {
+						self.viewStore.send(.didTapServices)
+					}
+					SingleChoiceLink.init(
+						content: {
+							TitleAndValueLabel.init(
+								"DURATION",
+								self.viewStore.state.durations.chosenItemName ?? "",
+								nil,
+								.constant(nil)
+							)
+						},
+						store: self.store.scope(
+							state: { $0.durations },
+							action: { .durations($0) }
+						),
+						cell: TextAndCheckMarkContainer.init(state:),
+						title: "Duration"
+					)
 				}
-				NavigationLink.emptyHidden(
-					self.viewStore.state.services.isChooseServiceActive,
-					ChooseService(store: self.store.scope(state: { $0.services }, action: {
-						.services($0)
-					}))
-				)
-				SingleChoiceLink.init(
-					content: {
-						TitleAndValueLabel.init(
-							"DURATION",
-							self.viewStore.state.durations.chosenItemName ?? "",
-							nil,
-							.constant(nil)
-						)
-					},
-					store: self.store.scope(
-						state: { $0.durations },
-						action: { .durations($0) }
-					),
-					cell: TextAndCheckMarkContainer.init(state:),
-					title: "Duration"
-				)
-			}
-			HStack(spacing: 24.0) {
 				ChooseLocationAndEmployee(store:
 											store.scope(state: { $0.chooseLocAndEmp },
 														action: { .chooseLocAndEmp($0) })
@@ -56,11 +50,11 @@ struct ServicesDurationSection: View {
 				HStack {
 					PlusTitleView()
 						.onTapGesture {
-						self.viewStore.send(.didTapParticipants)
-					}.isHidden(
-						!self.viewStore.state.participants.chosenParticipants.isEmpty,
-						remove: true
-					)
+							self.viewStore.send(.didTapParticipants)
+						}.isHidden(
+							!self.viewStore.state.participants.chosenParticipants.isEmpty,
+							remove: true
+						)
 					TitleMinusView(
 						title: "\(self.viewStore.state.participants.chosenParticipants.first?.fullName ?? "")..."
 					).onTapGesture {
@@ -71,17 +65,24 @@ struct ServicesDurationSection: View {
 					)
 					Spacer()
 				}
-				NavigationLink.emptyHidden(
-					self.viewStore.state.participants.isChooseParticipantActive,
-					ChooseParticipantView(
-						store: self.store.scope(
-							state: { $0.participants },
-							action: { .participants($0) }
-						)
+				
+			}.wrapAsSection(title: "Services")
+			NavigationLink.emptyHidden(
+				self.viewStore.state.services.isChooseServiceActive,
+				ChooseService(store: self.store.scope(state: { $0.services }, action: {
+					.services($0)
+				}))
+			)
+			NavigationLink.emptyHidden(
+				self.viewStore.state.participants.isChooseParticipantActive,
+				ChooseParticipantView(
+					store: self.store.scope(
+						state: { $0.participants },
+						action: { .participants($0) }
 					)
 				)
-			}
-		}.wrapAsSection(title: "Services")
+			)
+		}
 	}
 }
 

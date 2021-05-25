@@ -11,7 +11,6 @@ public struct ChooseLocationAndEmployee: View {
 		self.viewStore = ViewStore(store.scope(state: State.init(state:)))
 	}
 	
-	
 	let store: Store<ChooseLocationAndEmployeeState, ChooseLocationAndEmployeeAction>
 	@ObservedObject var viewStore: ViewStore<State, ChooseLocationAndEmployeeAction>
 	
@@ -40,14 +39,24 @@ public struct ChooseLocationAndEmployee: View {
 	}
 	
 	public var body: some View {
-		HStack(spacing: 24.0) {
-			TitleAndValueLabel(
-				"WITH",
-				viewStore.state.employeeName,
-				viewStore.state.employeeColor,
-				.constant(viewStore.employeeError)
-			).onTapGesture {
-				self.viewStore.send(.onChooseEmployee)
+		Group {
+			HStack(spacing: 24.0) {
+				TitleAndValueLabel(
+					"LOCATION",
+					viewStore.state.locationName,
+					viewStore.state.locationColor,
+					.constant(viewStore.locationError)
+				).onTapGesture {
+					self.viewStore.send(.onChooseLocation)
+				}
+				TitleAndValueLabel(
+					"WITH",
+					viewStore.state.employeeName,
+					viewStore.state.employeeColor,
+					.constant(viewStore.employeeError)
+				).onTapGesture {
+					self.viewStore.send(.onChooseEmployee)
+				}
 			}
 			NavigationLink.emptyHidden(viewStore.isChooseEmployeeActive,
 									   IfLetStore(
@@ -57,14 +66,6 @@ public struct ChooseLocationAndEmployee: View {
 										then: ChooseEmployeesView.init(store:)
 									   )
 			)
-			TitleAndValueLabel(
-				"LOCATION",
-				viewStore.state.locationName,
-				viewStore.state.locationColor,
-				.constant(viewStore.locationError)
-			).onTapGesture {
-				self.viewStore.send(.onChooseLocation)
-			}
 			NavigationLink.emptyHidden(viewStore.isChooseLocationActive,
 									   IfLetStore(
 										store.scope(
