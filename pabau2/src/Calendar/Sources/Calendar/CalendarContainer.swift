@@ -195,7 +195,7 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 		case .addBookoutAction(_):
 			break
 		case .onAddShiftDismiss:
-			break
+			state.addShift = nil
 		case .showAddApp(startDate: _, endDate: _, employee: _):
 			break
 		case .employeeFilters(.onHeaderTap), .roomFilters(.onHeaderTap):
@@ -282,17 +282,16 @@ public struct CalendarContainer: View {
                         get: { activeSheet(state: viewStore.state) != nil },
                         set: {
                             _ in dismissAction(state: viewStore.state).map(viewStore.send)
-                            viewStore.send(
-                                .datePicker(
-                                    .selectedDate(
-                                        viewStore.state.selectedDate
-                                    )
-                                )
-                            )
                         }
                     ),
                 content: {
                     Group {
+						IfLetStore(
+							store.scope(
+								state: { $0.addShift },
+								action: { .addShift($0) }),
+								then: AddShift.init(store:)
+						)
                         IfLetStore(
                             store.scope(
 								state: { $0.appDetails },
@@ -304,12 +303,6 @@ public struct CalendarContainer: View {
                                 state: { $0.addBookoutState },
                                 action: { .addBookoutAction($0) }),
                                 then: AddBookout.init(store:)
-                        )
-                        IfLetStore(
-                            store.scope(
-                                state: { $0.addShift },
-                                action: { .addShift($0) }),
-                                then: AddShift.init(store:)
                         )
                     }
                 }

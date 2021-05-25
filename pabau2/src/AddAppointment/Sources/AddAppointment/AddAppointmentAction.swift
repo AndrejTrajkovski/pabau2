@@ -12,7 +12,6 @@ public enum AddAppointmentAction: Equatable {
 	case participants(ChooseParticipantAction)
 	case durations(SingleChoiceLinkAction<Duration>)
 	case chooseLocAndEmp(ChooseLocationAndEmployeeAction)
-	case onChooseLocation
 	case didTapParticipants
 	case closeBtnTap
 	case didTapServices

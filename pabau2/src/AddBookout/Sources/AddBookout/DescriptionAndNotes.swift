@@ -13,17 +13,34 @@ struct DescriptionAndNotes: View {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
-
+	
 	var body: some View {
-		VStack(spacing: 16) {
-			TitleAndValueLabel(
-				"DESCRIPTION",
-				self.viewStore.state.chooseBookoutReasonState.chosenReasons?.name ?? "Add description",
-				self.viewStore.state.chooseBookoutReasonState.chosenReasons?.name == nil ? Color.grayPlaceholder : nil,
-				.constant(nil)
-			).onTapGesture {
-				self.viewStore.send(.onChooseBookoutReason)
-			}
+		Group {
+			VStack(spacing: 16) {
+				TitleAndValueLabel(
+					"DESCRIPTION",
+					self.viewStore.state.chooseBookoutReasonState.chosenReasons?.name ?? "Add description",
+					self.viewStore.state.chooseBookoutReasonState.chosenReasons?.name == nil ? Color.grayPlaceholder : nil,
+					.constant(nil)
+				).onTapGesture {
+					self.viewStore.send(.onChooseBookoutReason)
+				}
+				TitleAndTextField(
+					title: "NOTE",
+					tfLabel: "Add a note.",
+					store: store.scope(
+						state: { $0.note },
+						action: { .note($0)}
+					)
+				)
+				SwitchCell(
+					text: "Private Bookout",
+					store: store.scope(
+						state: { $0.isPrivate },
+						action: { .isPrivate($0) }
+					)
+				)
+			}.wrapAsSection(title: "Description & Notes")
 			NavigationLink.emptyHidden(
 				self.viewStore.state.chooseBookoutReasonState.isChooseBookoutReasonActive,
 				ChooseBookoutReasonView(
@@ -33,21 +50,6 @@ struct DescriptionAndNotes: View {
 					)
 				)
 			)
-			TitleAndTextField(
-				title: "NOTE",
-				tfLabel: "Add a note.",
-				store: store.scope(
-					state: { $0.note },
-					action: { .note($0)}
-				)
-			)
-			SwitchCell(
-				text: "Private Bookout",
-				store: store.scope(
-					state: { $0.isPrivate },
-					action: { .isPrivate($0) }
-				)
-			)
-		}.wrapAsSection(title: "Description & Notes")
+		}
 	}
 }
