@@ -14,6 +14,7 @@ import JZCalendarWeekView
 import CoreDataModel
 import Overture
 import AppointmentDetails
+import ChooseLocationAndEmployee
 
 public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, CalendarEnvironment> = .combine(
 	calTypePickerReducer.pullback(
@@ -109,11 +110,13 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 		case .employee(.addBookout(let startDate, let durationMins, let dropKeys)):
 			let (location, subsection) = dropKeys
 			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
-			let employees = state.employees[location] ?? []
-			let chosenEmployee = employees[id: subsection]
+			let chooseLocAndEmp = ChooseLocationAndEmployeeState(locations: state.locations,
+																 employees: state.employees,
+																 chosenLocationId: location,
+																 chosenEmployeeId: subsection)
+			
             state.addBookoutState = AddBookoutState(
-                employees: employees,
-                chosenEmployee: chosenEmployee?.id,
+				chooseLocAndEmp: chooseLocAndEmp,
                 start: startDate
             )
 		//- TODO Iurii
@@ -121,10 +124,14 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			let (location, subsection) = dropKeys
 			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
 			let employees = state.employees[location] ?? []
-			state.addBookoutState = AddBookoutState(employees: employees,
-															 chosenEmployee: nil,
-															 start: startDate)
-		
+			let chooseLocAndEmp = ChooseLocationAndEmployeeState(locations: state.locations,
+																 employees: state.employees,
+																 chosenLocationId: location)
+			state.addBookoutState = AddBookoutState(
+				chooseLocAndEmp: chooseLocAndEmp,
+				start: startDate
+			)
+			
 //                case .week(.editStartTime(let startOfDayDate, let startDate, let eventId, let startingPointStartOfDay)):
 //                    let calId = CalendarEvent.ID.init(rawValue: eventId)
 //                    var app = state.appointments[startingPointStartOfDay]?.remove(id: calId)
@@ -156,7 +163,9 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 		case .onBookoutDismiss:
 			state.addBookoutState = nil
 		case .onAddShift:
-			state.addShift = AddShiftState.makeEmpty()
+			let chooseLocAndEmp = ChooseLocationAndEmployeeState(locations: state.locations,
+																 employees: state.employees)
+			state.addShift = AddShiftState.makeEmpty(chooseLocAndEmp: chooseLocAndEmp)
 		case .toggleFilters:
 			
 			state.isShowingFilters.toggle()

@@ -35,27 +35,24 @@ public struct Participant: Codable, Identifiable, Equatable, Hashable {
 }
 
 public struct ParticipantSchema: Equatable {
-    public static func == (lhs: ParticipantSchema, rhs: ParticipantSchema) -> Bool {
-        lhs.id == rhs.id
-    }
     
     public var id: UUID
     public var isAllDays: Bool
-    public var location: Location
-    public var service: Service
-    public var employee: Employee
+	public var locationId: Location.ID
+    public var serviceId: Service.ID
+    public var employeeId: Employee.ID
     
     public init(
         id: UUID,
         isAllDays: Bool,
-        location: Location,
-        service: Service,
-        employee: Employee
+        locationId: Location.ID,
+        serviceId: Service.ID,
+        employeeId: Employee.ID
     ) {
         self.id = id
         self.isAllDays = isAllDays
-        self.location = location
-        self.service = service
-        self.employee = employee
+        self.locationId = locationId
+        self.serviceId = serviceId
+        self.employeeId = employeeId
     }
 }

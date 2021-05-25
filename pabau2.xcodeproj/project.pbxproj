@@ -97,6 +97,7 @@
 		82E9C11D24D0242E0023B98B /* Util */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Util; sourceTree = "<group>"; };
 		82E9C11E24D024E50023B98B /* Model */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Model; sourceTree = "<group>"; };
 		82E9C12524D035A60023B98B /* Journey */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Journey; sourceTree = "<group>"; };
+		82EF76FA265A876F006253AA /* ChooseLocationAndEmployee */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ChooseLocationAndEmployee; sourceTree = "<group>"; };
 		82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PabauTabBar.swift; sourceTree = "<group>"; };
 		BA6FD88D26454B1F00ACB1B2 /* CoreDataModel */ = {isa = PBXFileReference; lastKnownFileType = folder; path = CoreDataModel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -197,6 +198,8 @@
 		82CACDF7241027320021E1DE /* src */ = {
 			isa = PBXGroup;
 			children = (
+				BA6FD88D26454B1F00ACB1B2 /* CoreDataModel */,
+				82EF76FA265A876F006253AA /* ChooseLocationAndEmployee */,
 				8258EB2B265817C6008BA5A2 /* ChooseLocation */,
 				8258EB2A26580E0F008BA5A2 /* ChooseEmployees */,
 				8223F5EC264FB9F20056023C /* CalendarList */,
@@ -221,7 +224,6 @@
 				82E9C11C24D021550023B98B /* Login */,
 				829D61FF24D18CF90049D5D0 /* FSCalendarSwiftUI */,
 				82E9C11E24D024E50023B98B /* Model */,
-				BA6FD88D26454B1F00ACB1B2 /* CoreDataModel */,
 				82E9C11D24D0242E0023B98B /* Util */,
 				8297A2B123D9BA0200D091FF /* Locales */,
 				82BE2F4723D97D9C00B3678A /* AppDelegate.swift */,

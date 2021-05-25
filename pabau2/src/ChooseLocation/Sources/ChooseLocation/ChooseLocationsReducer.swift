@@ -4,16 +4,53 @@ import ComposableArchitecture
 import Util
 import CoreDataModel
 
+public let chooseLocationsParentReducer: Reducer<ChooseLocationState?, ChooseLocationAction, ChooseLocationEnvironment> =
+	.combine(
+		chooseLocationsReducer.optional().pullback(
+			state: \.self,
+			action: /.self,
+			environment: { $0 }
+		),
+		.init { state, action, env in
+			switch action {
+				
+			case .didSelectLocation(let locationId):
+				
+				state = nil
+				
+			case .didTapBackBtn:
+				
+				state = nil
+				
+			case .reload:
+				
+				break
+				
+			case .gotLocationsResponse(_):
+				
+				break
+				
+			case .onSearch(_):
+			
+				break
+			}
+			
+			return .none
+		}
+	)
+
 public let chooseLocationsReducer =
     Reducer<ChooseLocationState, ChooseLocationAction, ChooseLocationEnvironment> { state, action, env in
         switch action {
-        case .onAppear:
+		
+        case .reload:
             state.searchText = ""
             return env.repository.getLocations()
                 .catchToEffect()
                 .receive(on: DispatchQueue.main)
                 .map(ChooseLocationAction.gotLocationsResponse)
                 .eraseToEffect()
+			
         case .onSearch(let text):
             state.searchText = text
             if state.searchText.isEmpty {
@@ -22,7 +59,9 @@ public let chooseLocationsReducer =
             }
             
             state.filteredLocations = state.locations.filter {$0.name.lowercased().contains(text.lowercased())}
+			
         case .gotLocationsResponse(let result):
+			
             switch result {
             case .success(let result):
                 state.locations = .init(result())
@@ -32,11 +71,15 @@ public let chooseLocationsReducer =
             }
             
             return .none //TODO SAVE TO DB with fireAndForget()
-        case .didSelectLocation(let location):
-            state.chosenLocation = location
-            state.isChooseLocationActive = false
+		
+        case .didSelectLocation(let locationId):
+			
+            state.chosenLocationId = locationId
+			
         case .didTapBackBtn:
-            state.isChooseLocationActive = false
+			
+			break
+			
         }
         return .none
     }

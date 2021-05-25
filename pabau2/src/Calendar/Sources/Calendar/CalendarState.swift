@@ -131,7 +131,9 @@ extension CalendarState {
 				appointments: apps,
 				selectedDate: selectedDate,
 				addBookout: addBookoutState,
-				appDetails: appDetails
+				appDetails: appDetails,
+				locations: locations,
+				employees: employees
 			)
 		}
 		set {

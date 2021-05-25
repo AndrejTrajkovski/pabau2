@@ -13,6 +13,7 @@ import Intercom
 import Appointments
 import CoreDataModel
 import CalendarList
+import ChooseLocationAndEmployee
 
 public typealias TabBarEnvironment = (
 	loginAPI: LoginAPI,
@@ -148,7 +149,9 @@ public let tabBarReducer: Reducer<
 		
 		switch action {
 		case .calendar(.addAppointmentTap):
-			state.addAppointment = AddAppointmentState.dummy
+			let chooseLocAndEmp = ChooseLocationAndEmployeeState(locations: state.calendar.locations,
+																 employees: state.calendar.employees)
+			state.addAppointment = AddAppointmentState(chooseLocAndEmp: chooseLocAndEmp)
 		default:
 			break
 		}
@@ -229,30 +232,48 @@ public let tabBarReducer: Reducer<
 )
 
 public let showAddAppointmentReducer: Reducer<TabBarState, CalendarAction, Any> = .init { state, action, env in
+	
+	var chooseLocAndEmp = ChooseLocationAndEmployeeState(locations: state.calendar.locations,
+														 employees: state.calendar.employees)
+	
 	switch action {
+	
 	case .employee(.addAppointment(let startDate, let durationMins, let dropKeys)):
 		let (location, subsection) = dropKeys
 		let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
-		let employee = state.calendar.employees[location]?[id: subsection]
-		employee.map {
-			state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate, employee: $0)
-		}
+		chooseLocAndEmp.chosenLocationId = location
+		chooseLocAndEmp.chosenEmployeeId = subsection
+		state.addAppointment = AddAppointmentState(
+			startDate: startDate,
+			endDate: endDate,
+			chooseLocAndEmp: chooseLocAndEmp
+		)
 	case .room(.addAppointment(let startDate, let durationMins, let dropKeys)):
 		let (location, subsection) = dropKeys
 		let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
 		let room = state.calendar.rooms[location]?[id: subsection]
-		state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate)
+		//TODO: Add room in AddAppointment
+		state.addAppointment = AddAppointmentState(
+			startDate: startDate,
+			endDate: endDate,
+			chooseLocAndEmp: chooseLocAndEmp
+		)
 	case .week(.addAppointment(let startOfDayDate, let startDate, let durationMins)):
 		let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
-		state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate)
-    case .showAddApp(let start, let end, let employee):
-		state.addAppointment = AddAppointmentState.init(
+		state.addAppointment = AddAppointmentState(startDate: startDate,
+												   endDate: endDate,
+												   chooseLocAndEmp: chooseLocAndEmp)
+	case .showAddApp(let start, let end, let employee):
+		state.addAppointment = AddAppointmentState(
 			startDate: start,
 			endDate: end,
-			employee: employee
+			chooseLocAndEmp: chooseLocAndEmp
 		)
 	case .week(.editAppointment(let appointment)):
-		state.addAppointment = AddAppointmentState.init(editingAppointment: appointment, startDate: appointment.start_date, endDate: appointment.end_date)
+		state.addAppointment = AddAppointmentState(editingAppointment: appointment,
+												   startDate: appointment.start_date,
+												   endDate: appointment.end_date,
+												   chooseLocAndEmp: chooseLocAndEmp)
 	default:
 		break
 	}

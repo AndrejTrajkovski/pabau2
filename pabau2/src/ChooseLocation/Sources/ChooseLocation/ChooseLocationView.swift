@@ -15,26 +15,27 @@ public struct ChooseLocationView: View {
     }
 
     public var body: some View {
-        VStack {
-            SearchView(
-                placeholder: "Search",
-                text: viewStore.binding(
-                    get: \.searchText,
-                    send: ChooseLocationAction.onSearch)
-            )
+		VStack {
+			HStack {
+				SearchView(
+					placeholder: "Search",
+					text: viewStore.binding(
+						get: \.searchText,
+						send: ChooseLocationAction.onSearch)
+				)
+				
+				ReloadButton(onReload: { viewStore.send(.reload) })
+			}
             List {
-                ForEach(self.viewStore.state.filteredLocations, id: \.id) { employee in
+                ForEach(self.viewStore.state.filteredLocations, id: \.id) { location in
                     TextAndCheckMark(
-                        employee.name,
-                        employee.id == self.viewStore.state.chosenLocation?.id
+						location.name,
+						location.id == self.viewStore.state.chosenLocationId
                     ).onTapGesture {
-                        self.viewStore.send(.didSelectLocation(employee))
+						self.viewStore.send(.didSelectLocation(location.id))
                     }
                 }
             }
-        }
-        .onAppear {
-            self.viewStore.send(.onAppear)
         }
         .padding()
         .navigationBarTitle("Locations")

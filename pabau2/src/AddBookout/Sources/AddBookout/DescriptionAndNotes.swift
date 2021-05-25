@@ -19,7 +19,8 @@ struct DescriptionAndNotes: View {
 			TitleAndValueLabel(
 				"DESCRIPTION",
 				self.viewStore.state.chooseBookoutReasonState.chosenReasons?.name ?? "Add description",
-				self.viewStore.state.chooseBookoutReasonState.chosenReasons?.name == nil ? Color.grayPlaceholder : nil
+				self.viewStore.state.chooseBookoutReasonState.chosenReasons?.name == nil ? Color.grayPlaceholder : nil,
+				.constant(nil)
 			).onTapGesture {
 				self.viewStore.send(.onChooseBookoutReason)
 			}

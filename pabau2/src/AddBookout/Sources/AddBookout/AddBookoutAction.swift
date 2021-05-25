@@ -2,18 +2,14 @@ import Model
 import Util
 import SharedComponents
 import Foundation
-import ChooseLocation
-import ChooseEmployees
+import ChooseLocationAndEmployee
 
 public enum AddBookoutAction {
 	case chooseStartDate(Date?)
 	case chooseTime(Date?)
-	case chooseEmployeesAction(ChooseEmployeesAction)
-	case onChooseEmployee
+	case chooseLocAndEmp(ChooseLocationAndEmployeeAction)
 	case chooseDuration(SingleChoiceActions<Duration>)
-	case chooseLocation(ChooseLocationAction)
 	case chooseBookoutReason(ChooseBookoutReasonAction)
-	case onChooseLocation
 	case onChooseBookoutReason
 	case isPrivate(ToggleAction)
 	case isAllDay(ToggleAction)
@@ -22,5 +18,4 @@ public enum AddBookoutAction {
 	case close
 	case saveBookout
 	case appointmentCreated(Result<PlaceholdeResponse, RequestError>)
-	case ignore
 }

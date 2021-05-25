@@ -4,7 +4,7 @@ import Combine
 import Util
 import CoreStore
 
-public final class Repository {
+public final class Repository: RepositoryProtocol {
 	
 	public let journeyAPI: JourneyAPI
 	public let clientAPI: ClientsAPI

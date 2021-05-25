@@ -1,4 +1,4 @@
 import CoreDataModel
 import Model
 
-public typealias ChooseLocationEnvironment = (repository: Repository, userDefaults: UserDefaultsConfig)
+public typealias ChooseLocationEnvironment = (journeyAPI: JourneyAPI, repository: RepositoryProtocol)

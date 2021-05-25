@@ -4,142 +4,123 @@ import Util
 import Model
 import SharedComponents
 import CoreDataModel
-import ChooseEmployees
-import ChooseLocation
+import ChooseLocationAndEmployee
 
 public let addBookoutOptReducer: Reducer<
-    AddBookoutState?,
-    AddBookoutAction,
-    AddBookoutEnvironment
+	AddBookoutState?,
+	AddBookoutAction,
+	AddBookoutEnvironment
 > = .combine(
-    addBookoutReducer.optional().pullback(
-        state: \.self,
-        action: /AddBookoutAction.self,
-        environment: { $0 }
-    ),
-    .init { state, action, env in
-        switch action {
-        case .saveBookout:
-            guard let appointmentsBody =  state?.appointmentsBody  else {
-                break
-            }
-
-            var isValid = true
-
-            if state?.chooseEmployeesState.chosenEmployee?.name == nil {
-                state?.employeeConfigurator.state = .error
-
-                isValid = false
-            }
-
-            if !isValid { break }
-
-            state?.showsLoadingSpinner = true
-
-            return env.repository.clientAPI.createAppointment(appointment: appointmentsBody)
-                .catchToEffect()
-                .receive(on: DispatchQueue.main)
-                .map(AddBookoutAction.appointmentCreated)
-                .eraseToEffect()
-        case .appointmentCreated(let result):
-            state?.showsLoadingSpinner = false
-            switch result {
-            case .success:
-                state = nil
-            case .failure:
-                break
-            }
-        default:
-            break
-        }
-        return .none
-    }
+	addBookoutReducer.optional().pullback(
+		state: \.self,
+		action: /AddBookoutAction.self,
+		environment: { $0 }
+	),
+	.init { state, action, env in
+		switch action {
+		case .appointmentCreated(let result):
+			state?.showsLoadingSpinner = false
+			switch result {
+			case .success:
+				state = nil
+			case .failure:
+				break
+			}
+		default:
+			break
+		}
+		return .none
+	}
 )
 
 public let addBookoutReducer: Reducer<
-    AddBookoutState,
-    AddBookoutAction,
-    AddBookoutEnvironment
+	AddBookoutState,
+	AddBookoutAction,
+	AddBookoutEnvironment
 > = .combine(
-    SingleChoiceReducer<Duration>().reducer.pullback(
-        state: \.chooseDuration,
-        action: /AddBookoutAction.chooseDuration,
-        environment: { $0 }
-    ),
-    textFieldReducer.pullback(
-        state: \.note,
-        action: /AddBookoutAction.note,
-        environment: { $0 }),
-    textFieldReducer.pullback(
-        state: \.description,
-        action: /AddBookoutAction.description,
-        environment: { $0 }),
-    switchCellReducer.pullback(
-        state: \.isPrivate,
-        action: /AddBookoutAction.isPrivate,
-        environment: { $0 }
-    ),
-    chooseEmployeesReducer.pullback(
-        state: \AddBookoutState.chooseEmployeesState,
-        action: /AddBookoutAction.chooseEmployeesAction,
-		environment: makeChooseEmployeesEnv(_:)
-    ),
-    chooseLocationsReducer.pullback(
-        state: \AddBookoutState.chooseLocationState,
-        action: /AddBookoutAction.chooseLocation,
-		environment: makeChooseLocationEnv(_:)),
-    chooseBookoutReasonReducer.pullback(
-        state: \AddBookoutState.chooseBookoutReasonState,
-        action: /AddBookoutAction.chooseBookoutReason,
-        environment: { $0 }),
-    switchCellReducer.pullback(
-        state: \.isAllDay,
-        action: /AddBookoutAction.isAllDay,
-        environment: { $0 }
-    ),
-    .init { state, action, env in
-        switch action {
-        case .chooseStartDate(let day):
-            guard let day = day else {
-                break
-            }
-            state.startDate = day
-        case .chooseTime(let time):
-            state.timeConfigurator.state = .normal
-            state.time = time
-        case .onChooseEmployee:
-            state.chooseEmployeesState.isChooseEmployeesActive = true
-            state.employeeConfigurator.state = .normal
-        case .onChooseLocation:
-            state.chooseLocationState.isChooseLocationActive = true
-        case .onChooseBookoutReason:
-            state.chooseBookoutReasonState.isChooseBookoutReasonActive = true
-        default:
-            break
-        }
-        return .none
-   }
+	SingleChoiceReducer<Duration>().reducer.pullback(
+		state: \.chooseDuration,
+		action: /AddBookoutAction.chooseDuration,
+		environment: { $0 }
+	),
+	textFieldReducer.pullback(
+		state: \.note,
+		action: /AddBookoutAction.note,
+		environment: { $0 }),
+	textFieldReducer.pullback(
+		state: \.description,
+		action: /AddBookoutAction.description,
+		environment: { $0 }),
+	switchCellReducer.pullback(
+		state: \.isPrivate,
+		action: /AddBookoutAction.isPrivate,
+		environment: { $0 }
+	),
+	chooseLocationAndEmployeeReducer.pullback(
+		state: \AddBookoutState.chooseLocAndEmp,
+		action: /AddBookoutAction.chooseLocAndEmp,
+		environment: makeChooseLocAndEmpEnv(_:)
+	),
+	chooseBookoutReasonReducer.pullback(
+		state: \AddBookoutState.chooseBookoutReasonState,
+		action: /AddBookoutAction.chooseBookoutReason,
+		environment: { $0 }),
+	switchCellReducer.pullback(
+		state: \.isAllDay,
+		action: /AddBookoutAction.isAllDay,
+		environment: { $0 }
+	),
+	.init { state, action, env in
+		switch action {
+		case .saveBookout:
+			
+			let isValid = state.chooseLocAndEmp.validate()
+			
+			if !isValid { break }
+			
+			state.showsLoadingSpinner = true
+			
+			return env.repository.clientAPI.createAppointment(appointment: state.appointmentsBody)
+				.catchToEffect()
+				.receive(on: DispatchQueue.main)
+				.map(AddBookoutAction.appointmentCreated)
+				.eraseToEffect()
+		case .chooseStartDate(let day):
+			guard let day = day else {
+				break
+			}
+			state.startDate = day
+		case .chooseTime(let time):
+			state.timeValidator = nil
+			state.time = time
+		case .onChooseBookoutReason:
+			state.chooseBookoutReasonState.isChooseBookoutReasonActive = true
+		default:
+			break
+		}
+		return .none
+	}
 )
 
 public struct AddBookout: View {
 	let store: Store<AddBookoutState, AddBookoutAction>
 	@ObservedObject var viewStore: ViewStore<AddBookoutState, AddBookoutAction>
-
+	
 	public init(store: Store<AddBookoutState, AddBookoutAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
-
+	
 	public var body: some View {
 		VStack {
-            FirstSection(store: store)
+			FirstSection(store: store)
 			DateAndTime(store: store)
 			DescriptionAndNotes(store: store)
 			AddEventPrimaryBtn(title: "Save Bookout") {
 				viewStore.send(.saveBookout)
 			}
 		}
-        .addEventWrapper(onXBtnTap: { viewStore.send(.close) })
-        .loadingView(.constant(self.viewStore.state.showsLoadingSpinner))
+		.addEventWrapper(onXBtnTap: { viewStore.send(.close) })
+		.loadingView(.constant(self.viewStore.state.showsLoadingSpinner))
 	}
 }

@@ -18,9 +18,7 @@ let package = Package(
 						 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../CoreDataModel",
 				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../ChooseEmployees",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../ChooseLocation",
+		.package(url: "../ChooseLocationAndEmployee",
 				 from: Version.init(stringLiteral: "1.0.0"))
     ],
     targets: [
@@ -30,8 +28,7 @@ let package = Package(
 				"Form",
 				"SharedComponents",
 				"CoreDataModel",
-				"ChooseEmployees",
-				"ChooseLocation"
+				"ChooseLocationAndEmployee"
 			]),
         .testTarget(
             name: "AddBookoutTests",

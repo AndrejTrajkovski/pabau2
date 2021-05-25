@@ -22,10 +22,7 @@ struct DateAndTime: View {
 						get: { $0.startDate },
 						send: { .chooseStartDate($0) }
 					),
-					viewStore.binding(
-						get: { $0.dayConfigurator },
-						send: .ignore
-					)
+					.constant(viewStore.dayValidator)
 				).isHidden(!viewStore.isAllDay, remove: true)
 
 				DatePickerControl.init(
@@ -34,10 +31,7 @@ struct DateAndTime: View {
 						get: { $0.startDate },
 						send: { .chooseStartDate($0) }
 					),
-					viewStore.binding(
-						get: { $0.dayConfigurator },
-						send: .ignore
-					),
+					.constant(viewStore.dayValidator),
 					mode: .dateAndTime
 				).isHidden(viewStore.isAllDay, remove: true)
 			}
@@ -47,10 +41,7 @@ struct DateAndTime: View {
 						"DURATION",
 						self.viewStore.state.chooseDuration.chosenItemName ?? "",
 						nil,
-						viewStore.binding(
-							get: { $0.durationConfigurator },
-							send: .ignore
-						)
+						.constant(viewStore.durationValidator)
 					)
 					.frame(width: geo.size.width / 2)
 					DurationPicker(
