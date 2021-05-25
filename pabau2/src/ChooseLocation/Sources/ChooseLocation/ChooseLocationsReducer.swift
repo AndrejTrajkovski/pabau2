@@ -6,6 +6,11 @@ import CoreDataModel
 
 public let chooseLocationsParentReducer: Reducer<ChooseLocationState?, ChooseLocationAction, ChooseLocationEnvironment> =
 	.combine(
+		chooseLocationsReducer.optional().pullback(
+			state: \.self,
+			action: /.self,
+			environment: { $0 }
+		),
 		.init { state, action, env in
 			switch action {
 				
@@ -31,12 +36,7 @@ public let chooseLocationsParentReducer: Reducer<ChooseLocationState?, ChooseLoc
 			}
 			
 			return .none
-		},
-		chooseLocationsReducer.optional().pullback(
-			state: \.self,
-			action: /.self,
-			environment: { $0 }
-		)
+		}
 	)
 
 public let chooseLocationsReducer =

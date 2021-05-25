@@ -10,9 +10,9 @@ public let chooseLocationAndEmployeeReducer: Reducer<ChooseLocationAndEmployeeSt
 			func deselectEmployeeIfNeeded() {
 				if let chosenEmployeeId = state.chosenEmployeeId,
 				   let chosenLocationId = state.chosenLocationId,
-					  let locationEmployees = state.employees[chosenLocationId],
-					  !locationEmployees.map(\.id).contains(chosenEmployeeId)
-					  {
+				   let locationEmployees = state.employees[chosenLocationId],
+				   !locationEmployees.map(\.id).contains(chosenEmployeeId)
+				{
 					//if re-chosen location does not have previously selected employee id
 					state.chosenEmployeeId = nil
 				}
@@ -70,5 +70,15 @@ public let chooseLocationAndEmployeeReducer: Reducer<ChooseLocationAndEmployeeSt
 				break
 			}
 			return .none
-		}
+		},
+		chooseLocationsParentReducer.pullback(
+			state: \ChooseLocationAndEmployeeState.chooseLocationState,
+			action: /ChooseLocationAndEmployeeAction.chooseLocation,
+			environment: { $0 }
+		),
+		chooseEmployeesParentReducer.pullback(
+			state: \ChooseLocationAndEmployeeState.chooseEmployeeState,
+			action: /ChooseLocationAndEmployeeAction.chooseEmployee,
+			environment: { $0 }
+		)
 	)
