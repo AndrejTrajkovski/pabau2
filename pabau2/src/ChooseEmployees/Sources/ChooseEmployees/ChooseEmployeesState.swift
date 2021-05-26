@@ -1,10 +1,12 @@
 import ComposableArchitecture
 import Model
+import Util
 
 public struct ChooseEmployeesState: Equatable {
 	public var employees: IdentifiedArrayOf<Employee>
 	public var filteredEmployees: IdentifiedArrayOf<Employee>
 	public var chosenEmployeeId: Employee.Id?
+	public var employeesLS: LoadingState = .initial
 	
 	public var chosenEmployee: Employee? {
 		return chosenEmployeeId.flatMap {

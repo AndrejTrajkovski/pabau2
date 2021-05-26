@@ -82,10 +82,12 @@ let addAppointmentValueReducer: Reducer<
 			
 			if state.clients.chosenClient?.fullname == nil {
 				state.chooseClintValidator = "Client is required."
+				isValid = false
 			}
 			
 			if state.services.chosenService?.name == nil {
 				state.chooseServiceValidator = "Service is required."
+				isValid = false
 			}
 			
 			let isLocAndEmpValid = state.chooseLocAndEmp.validate()
@@ -102,13 +104,24 @@ let addAppointmentValueReducer: Reducer<
 				.map(AddAppointmentAction.appointmentCreated)
 				.eraseToEffect()
 			
-			case .didTapServices:
-				state.services.isChooseServiceActive = true
+			case .services(.didSelectService(_)):
+			
 				state.chooseServiceValidator = nil
-			case .didTabClients:
-				state.clients.isChooseClientsActive = true
+			
+			case .clients(.didSelectClient(_)):
+				
 				state.chooseClintValidator = nil
+				
+			case .didTapServices:
+				
+				state.services.isChooseServiceActive = true
+				
+			case .didTabClients:
+				
+				state.clients.isChooseClientsActive = true
+				
 			case .didTapParticipants:
+				
 				guard state.isAllDay,
 					  let location = state.chooseLocAndEmp.chosenLocationId,
 					  let service = state.services.chosenService,

@@ -26,7 +26,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		SwiftDate.defaultRegion = Region.UTC
 		if let windowScene = scene as? UIWindowScene {
 			let reducer = appReducer
-//				.debug()
       let window = UIWindow(windowScene: windowScene)
 			let userDefaults = StandardUDConfig()
 			let user = userDefaults.loggedInUser

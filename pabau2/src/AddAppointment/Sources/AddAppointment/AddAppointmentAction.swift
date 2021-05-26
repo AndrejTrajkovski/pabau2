@@ -12,7 +12,6 @@ public enum AddAppointmentAction: Equatable {
 	case participants(ChooseParticipantAction)
 	case durations(SingleChoiceLinkAction<Duration>)
 	case chooseLocAndEmp(ChooseLocationAndEmployeeAction)
-	case onChooseLocation
 	case didTapParticipants
 	case closeBtnTap
 	case didTapServices
@@ -27,5 +26,4 @@ public enum AddAppointmentAction: Equatable {
 	case note(TextChangeAction)
 	case appointmentCreated(Result<PlaceholdeResponse, RequestError>)
 	case cancelAlert
-	case ignore
 }

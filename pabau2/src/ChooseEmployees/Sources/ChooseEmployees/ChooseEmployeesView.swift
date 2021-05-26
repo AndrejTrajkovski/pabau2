@@ -13,8 +13,8 @@ public struct ChooseEmployeesView: View {
         self.store = store
         self.viewStore = ViewStore(store)
         UITableViewHeaderFooterView.appearance().tintColor = UIColor.clear
-    }
-
+	}
+	
 	public var body: some View {
 		VStack {
 			HStack {
@@ -27,16 +27,25 @@ public struct ChooseEmployeesView: View {
 				
 				ReloadButton(onReload: { viewStore.send(.reload) })
 			}
-            List {
-                ForEach(self.viewStore.state.filteredEmployees, id: \.id) { employee in
-                    TextAndCheckMark(
-                        employee.name,
-                        employee.id == self.viewStore.state.chosenEmployeeId
-                    ).onTapGesture {
-						self.viewStore.send(.didSelectEmployee(employee.id))
-                    }
-                }
-            }
+			
+			switch viewStore.employeesLS {
+			case .initial, .gotSuccess:
+				List {
+					ForEach(self.viewStore.state.filteredEmployees, id: \.id) { employee in
+						TextAndCheckMark(
+							employee.name,
+							employee.id == self.viewStore.state.chosenEmployeeId
+						).onTapGesture {
+							self.viewStore.send(.didSelectEmployee(employee.id))
+						}
+					}
+				}
+			case .loading:
+				LoadingSpinner()
+			case .gotError(let error):
+				Text("Error loading employees.")
+			}
+            
         }
         .padding()
         .navigationBarTitle("Employee")

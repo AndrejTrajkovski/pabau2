@@ -49,11 +49,10 @@ public struct TitleAndLowerContent<Content: View>: View {
 				.font(.semibold12)
 			lowerContent()
             Divider()
-                .background(error == nil ? Color.red : Color.textFieldBottomLine)
-            Text(error ?? "")
+				.background(error == nil ? Color.textFieldBottomLine : Color.red)
+            Text(error ?? " ")
                 .font(.bold13)
                 .foregroundColor(.red)
-                .isHidden(error != nil)
 		}
 	}
 }

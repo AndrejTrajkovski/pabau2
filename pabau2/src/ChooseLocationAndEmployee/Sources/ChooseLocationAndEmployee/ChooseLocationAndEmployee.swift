@@ -11,7 +11,6 @@ public struct ChooseLocationAndEmployee: View {
 		self.viewStore = ViewStore(store.scope(state: State.init(state:)))
 	}
 	
-	
 	let store: Store<ChooseLocationAndEmployeeState, ChooseLocationAndEmployeeAction>
 	@ObservedObject var viewStore: ViewStore<State, ChooseLocationAndEmployeeAction>
 	
@@ -42,22 +41,6 @@ public struct ChooseLocationAndEmployee: View {
 	public var body: some View {
 		HStack(spacing: 24.0) {
 			TitleAndValueLabel(
-				"WITH",
-				viewStore.state.employeeName,
-				viewStore.state.employeeColor,
-				.constant(viewStore.employeeError)
-			).onTapGesture {
-				self.viewStore.send(.onChooseEmployee)
-			}
-			NavigationLink.emptyHidden(viewStore.isChooseEmployeeActive,
-									   IfLetStore(
-										store.scope(
-											state: { $0.chooseEmployeeState },
-											action: { .chooseEmployee($0 )}),
-										then: ChooseEmployeesView.init(store:)
-									   )
-			)
-			TitleAndValueLabel(
 				"LOCATION",
 				viewStore.state.locationName,
 				viewStore.state.locationColor,
@@ -65,14 +48,30 @@ public struct ChooseLocationAndEmployee: View {
 			).onTapGesture {
 				self.viewStore.send(.onChooseLocation)
 			}
-			NavigationLink.emptyHidden(viewStore.isChooseLocationActive,
-									   IfLetStore(
-										store.scope(
-											state: { $0.chooseLocationState },
-											action: { .chooseLocation($0 )}),
-										then: ChooseLocationView.init(store:)
-									   )
-			)
+			TitleAndValueLabel(
+				"WITH",
+				viewStore.state.employeeName,
+				viewStore.state.employeeColor,
+				.constant(viewStore.employeeError)
+			).onTapGesture {
+				self.viewStore.send(.onChooseEmployee)
+			}
 		}
+		NavigationLink.emptyHidden(viewStore.isChooseEmployeeActive,
+								   IfLetStore(
+									store.scope(
+										state: { $0.chooseEmployeeState },
+										action: { .chooseEmployee($0 )}),
+									then: ChooseEmployeesView.init(store:)
+								   )
+		)
+		NavigationLink.emptyHidden(viewStore.isChooseLocationActive,
+								   IfLetStore(
+									store.scope(
+										state: { $0.chooseLocationState },
+										action: { .chooseLocation($0 )}),
+									then: ChooseLocationView.init(store:)
+								   )
+		)
 	}
 }

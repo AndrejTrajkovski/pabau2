@@ -18,7 +18,6 @@ public typealias ListCalendarEnvironment = (
 let listCalendarReducer: Reducer<ListState, ListAction, ListCalendarEnvironment> =
 	.combine (
 		.init { state, action, environment in
-            struct SearchJourneyId: Hashable {}
 
 			switch action {
 			

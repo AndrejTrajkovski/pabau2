@@ -16,7 +16,6 @@ public struct ChooseLocationAndEmployeeState: Equatable {
 		self.chooseEmployeeState = chooseEmployeeState
 	}
 	
-	
 	public mutating func validate() -> Bool {
 		if chosenLocationId == nil {
 			locationValidationError = "Location is required."
