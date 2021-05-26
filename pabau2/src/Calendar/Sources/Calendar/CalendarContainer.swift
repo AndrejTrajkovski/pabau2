@@ -78,7 +78,13 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 		}
 		
 		switch action {
-        
+		
+		case .addEventDelay(let eventType):
+			state.isAddEventDropdownShown = false
+			return Just(CalendarAction.onAddEvent(eventType))
+				.delay(for: 0.1, scheduler: DispatchQueue.main)
+				.eraseToEffect()
+			
 		case .gotAppointmentsResponse(let result):
 			switch result {
 			case .success(let calendarResponse):
@@ -162,7 +168,8 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			state.appDetails = nil
 		case .onBookoutDismiss:
 			state.addBookoutState = nil
-		case .onAddShift:
+		case .onAddEvent(.shift):
+			
 			let chooseLocAndEmp = ChooseLocationAndEmployeeState(locations: state.locations,
 																 employees: state.employees)
 			state.addShift = AddShiftState.makeEmpty(chooseLocAndEmp: chooseLocAndEmp)
@@ -178,27 +185,35 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			state.scope = state.scope == .week ? .month : .week
 		case .datePicker:
 			break
-		case .calTypePicker:
-			break
+		case .calTypePicker(.toggleDropdown):
+			if state.calTypePicker.isCalendarTypeDropdownShown {
+				state.isAddEventDropdownShown = false
+			}
 		case .room:
 			break
 		case .week:
 			break
 		case .employee:
 			break
-		case .addAppointmentTap:
+		case .onAddEvent(.appointment):
 			break
 		case .appDetails(_):
 			break
 		case .onAddShiftDismiss:
+			
 			state.addShift = nil
+			
 		case .showAddApp(startDate: _, endDate: _, employee: _):
 			break
+			
 		case .employeeFilters(.onHeaderTap), .roomFilters(.onHeaderTap):
+			
 			state.isShowingFilters.toggle()
 			guard !state.isShowingFilters else { return .none }
 			return getAppointments()
+			
 		case .roomFilters(.gotSubsectionResponse(let result)):
+			
 			if case .success = result,
 			   state.appsLS == .initial,
 			   state.locationsLS == .gotSuccess,
@@ -206,6 +221,7 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 				//load appointments after login if room is selected
 				return getAppointments()
 			}
+			
 		case .employeeFilters(.gotSubsectionResponse(let result)):
 			if case .success(_) = result,
 			   state.appsLS == .initial,
@@ -214,8 +230,7 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 				//load appointments after login if employee, week or list is selected
 				return getAppointments()
 			}
-		case .list(_):
-			break
+			
 		case .gotLocationsResponse(let result):
 			state.update(locationsResult: result.map(\.state))
 			if state.appsLS == .initial && state.employeesLS == .gotSuccess {
@@ -235,6 +250,17 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			
 			state.update(employeesResult: result.map(\.state))
 			
+		case .onAddEvent(.bookout):
+			
+			let chooseLocAndEmp = ChooseLocationAndEmployeeState(locations: state.locations,
+																 employees: state.employees)
+			state.addBookoutState = AddBookoutState(chooseLocAndEmp: chooseLocAndEmp,
+													start: state.selectedDate)
+		case .addEventDropdownToggle(let value):
+			
+			state.isCalendarTypeDropdownShown = false
+			state.isAddEventDropdownShown = value
+		
 		case .roomFilters(.rows(id: let id, action: let action)):
 			break
 		case .roomFilters(.reload):
@@ -251,7 +277,9 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			break
 		case .roomFilters(.gotLocationsResponse(_)):
 			break
-        }
+		case .list(_):
+			break
+		}
 		return .none
 	}
 )

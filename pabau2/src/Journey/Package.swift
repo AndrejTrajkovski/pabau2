@@ -23,8 +23,8 @@ let package = Package(
 				 from: Version.init(stringLiteral: "1.0.0")),
         .package(url: "../ChoosePathway",
                  from: Version.init(stringLiteral: "1.0.0")),
-        .package(url: "../JourneyBase",
-                 from: Version.init(stringLiteral: "1.0.0"))
+		.package(url: "../SharedComponents",
+				 from: Version.init(stringLiteral: "1.0.0"))
 	],
 	targets: [
 		.target(
@@ -35,7 +35,7 @@ let package = Package(
 						   "AddAppointment",
 						   "Appointments",
                            "ChoosePathway",
-                           "JourneyBase"
+						   "SharedComponents"
 			]
 		)
 	]

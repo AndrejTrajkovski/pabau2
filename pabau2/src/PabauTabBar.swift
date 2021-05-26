@@ -148,10 +148,13 @@ public let tabBarReducer: Reducer<
 	.init { state, action, env in
 		
 		switch action {
-		case .calendar(.addAppointmentTap):
+		
+		case .calendar(.onAddEvent(.appointment)):
+			state.calendar.isAddEventDropdownShown = false
 			let chooseLocAndEmp = ChooseLocationAndEmployeeState(locations: state.calendar.locations,
 																 employees: state.calendar.employees)
 			state.addAppointment = AddAppointmentState(chooseLocAndEmp: chooseLocAndEmp)
+			
 		case .addAppointment(
 				.chooseLocAndEmp(
 					.chooseLocation(

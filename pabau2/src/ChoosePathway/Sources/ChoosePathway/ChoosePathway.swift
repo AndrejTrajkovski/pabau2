@@ -4,8 +4,8 @@ import Util
 import ComposableArchitecture
 import Overture
 import Combine
-import JourneyBase
 import CoreDataModel
+import SharedComponents
 
 public typealias ChoosePathwayEnvironment = (
     formAPI: FormAPI,

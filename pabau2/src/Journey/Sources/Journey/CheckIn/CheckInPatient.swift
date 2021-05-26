@@ -4,7 +4,7 @@ import Model
 import Form
 import Util
 import CoreDataModel
-import JourneyBase
+import SharedComponents
 
 struct CheckInPatientContainer: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>

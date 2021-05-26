@@ -23,7 +23,8 @@ public struct CalendarState: Equatable {
 	var appsLS: LoadingState
 	var list: ListState
 	public var appointments: Appointments
-	var isDropdownShown: Bool
+	public var isAddEventDropdownShown: Bool
+	var isCalendarTypeDropdownShown: Bool
 	var shifts: [Date: [Location.ID: [Employee.ID: [JZShift]]]]
 	public var locations: IdentifiedArrayOf<Location>
 	public var employees: [Location.Id: IdentifiedArrayOf<Employee>]
@@ -48,12 +49,12 @@ extension CalendarState {
 	var calTypePicker: CalendarTypePickerState {
 		get {
 			CalendarTypePickerState(
-                isDropdownShown: isDropdownShown,
+                isCalendarTypeDropdownShown: isCalendarTypeDropdownShown,
                 appointments: appointments
             )
 		}
 		set {
-			self.isDropdownShown = newValue.isDropdownShown
+			self.isCalendarTypeDropdownShown = newValue.isCalendarTypeDropdownShown
 			self.appointments = newValue.appointments
 		}
 	}
@@ -230,7 +231,7 @@ extension CalendarState {
 
 extension CalendarState {
 	public init() {
-		self.isDropdownShown = false
+		self.isCalendarTypeDropdownShown = false
 		self.shifts = [:]
 		self.isShowingFilters = false
 		self.locations = []
@@ -248,6 +249,7 @@ extension CalendarState {
 		self.employeesLS = .loading
 		self.roomsLS = .loading
 		self.appsLS = .initial
+		self.isAddEventDropdownShown = false
 	}
 }
 
