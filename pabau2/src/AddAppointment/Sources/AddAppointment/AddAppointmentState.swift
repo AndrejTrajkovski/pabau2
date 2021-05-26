@@ -6,6 +6,7 @@ import ComposableArchitecture
 import ChooseLocationAndEmployee
 
 public struct AddAppointmentState: Equatable {
+	
 	let editingAppointment: Appointment?
 	var reminder: Bool
 	var email: Bool

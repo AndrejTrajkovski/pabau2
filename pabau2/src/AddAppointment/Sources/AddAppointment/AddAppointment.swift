@@ -7,9 +7,10 @@ import SharedComponents
 import CoreDataModel
 
 public struct AddAppointment: View {
-	@State var isAllDay: Bool = true
+	
 	let store: Store<AddAppointmentState, AddAppointmentAction>
 	@ObservedObject var viewStore: ViewStore<AddAppointmentState, AddAppointmentAction>
+	
 	public init(store: Store<AddAppointmentState, AddAppointmentAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store)
@@ -62,6 +63,7 @@ struct PlusTitleView: View {
 			.font(.semibold15)
 	}
 }
+
 struct TitleMinusView: View {
 	let title: String?
 

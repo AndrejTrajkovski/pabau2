@@ -26,5 +26,4 @@ public enum AddAppointmentAction: Equatable {
 	case note(TextChangeAction)
 	case appointmentCreated(Result<PlaceholdeResponse, RequestError>)
 	case cancelAlert
-	case ignore
 }
