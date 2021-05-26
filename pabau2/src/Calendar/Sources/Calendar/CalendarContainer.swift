@@ -251,10 +251,6 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			break
 		case .roomFilters(.gotLocationsResponse(_)):
 			break
-        case .employeeFilters(.gotRoomResponse(_)):
-            break
-        case .roomFilters(.gotRoomResponse(_)):
-            break
         }
 		return .none
 	}

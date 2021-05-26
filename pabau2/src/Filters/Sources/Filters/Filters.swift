@@ -29,25 +29,27 @@ public struct FiltersReducer<S: Identifiable & Equatable & Named> {
 						break
 					case .rows(id: _, action: .header(.select(_))):
 						break
-                    case .gotRoomResponse(let response):
-                        switch response {
-                        case .success(let employees):
-                            state.subsectionsLS = .gotSuccess
-                            state.subsections = groupDict(elements: employees.state, keyPath: locationsKeyPath)
-                            state.chosenSubsectionsIds = state.subsections.mapValues {
-                                $0.map(\.id)
-                            }
-                        case .failure(let error):
-                            state.subsectionsLS = .gotError(error)
-                        }
 					case .gotSubsectionResponse(let result):
 						switch result {
-						case .success(let employees):
+						case .success(let successResult):
 							state.subsectionsLS = .gotSuccess
-							state.subsections = groupDict(elements: employees, keyPath: locationsKeyPath)
+							state.subsections = groupDict(elements: successResult, keyPath: locationsKeyPath)
 							state.chosenSubsectionsIds = state.subsections.mapValues {
 								$0.map(\.id)
 							}
+							
+							if S.self is Employee.Type {
+								(successResult as! [Employee]).forEach {
+									$0.save(to: env.repository.coreDataModel)
+								}
+							} else if S.self is Room.Type {
+								(successResult as! [Room]).forEach {
+									$0.save(to: env.repository.coreDataModel)
+								}
+							} else {
+								fatalError()
+							}
+							
 						case .failure(let error):
 							state.subsectionsLS = .gotError(error)
 						}
@@ -62,10 +64,10 @@ public struct FiltersReducer<S: Identifiable & Equatable & Named> {
 								.map { FiltersAction<Employee>.gotSubsectionResponse($0) }
 								.eraseToEffect() as! Effect<FiltersAction<S>, Never>
 						} else if S.self is Room.Type {
-							getSubsection = env.repository.getRooms()
+							getSubsection = env.journeyAPI.getRooms()
 								.receive(on: DispatchQueue.main)
 								.catchToEffect()
-								.map { FiltersAction<Room>.gotRoomResponse($0) }
+								.map { FiltersAction<Room>.gotSubsectionResponse($0) }
 								.eraseToEffect() as! Effect<FiltersAction<S>, Never>
 						} else {
 							fatalError()
@@ -182,7 +184,6 @@ public enum FiltersAction<S: Identifiable & Equatable & Named> {
 	case onHeaderTap
 	case rows(id: Location.ID, action: FilterSectionAction<S>)
 	case gotSubsectionResponse(Result<[S], RequestError>)
-    case gotRoomResponse(Result<SuccessState<[S]>, RequestError>)
 	case gotLocationsResponse(Result<[Location], RequestError>)
 	case reload
 }
