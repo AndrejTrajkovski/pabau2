@@ -26,13 +26,13 @@ let clientsListReducer: Reducer<
                 list: ClientCardListState(client: state.clients[id: id]!)
             )
             return env.apiClient.getItemsCount(clientId: id)
-                .receive(on: DispatchQueue.main.eraseToAnyScheduler())
+                .receive(on: DispatchQueue.main)
                 .catchToEffect()
                 .eraseToEffect()
                 .map(ClientsListAction.gotItemsResponse)
                 .cancellable(id: RequestCancelID(), cancelInFlight: true)
         case .identified(id: let id, action: .onAppear):
-            if state.clients.last?.id == id && !state.isSearching && !state.isClientsLoading {
+			if state.clients.last?.id == id && state.searchText.isEmpty {
 				state.contactListLS = .loading
                 return env.apiClient.getClients(
                     search: nil,
@@ -51,7 +51,6 @@ let clientsListReducer: Reducer<
             }
         case .onSearchText(let text):
             state.searchText = text
-            state.isSearching = !text.isEmpty
 
             if text.isEmpty {
                 state.clients = .init([])
@@ -59,15 +58,12 @@ let clientsListReducer: Reducer<
 			state.contactListLS = .loading
             return env.apiClient
                 .getClients(
-                    search: state.isSearching ? state.searchText : nil,
+					search: state.searchText.isEmpty ? nil: state.searchText,
                     offset: 0
                 )
-                .receive(on: DispatchQueue.main.eraseToAnyScheduler())
+                .receive(on: DispatchQueue.main)
                 .catchToEffect()
-                .debounce(
-                    id: CancelDelayId(), for: 0.5,
-                    scheduler: DispatchQueue.main.eraseToAnyScheduler()
-                )
+                .debounce(id: CancelDelayId(), for: 0.5, scheduler: DispatchQueue.main)
                 .eraseToEffect()
                 .map(ClientsListAction.gotClientsResponse)
                 .cancellable(id: RequestCancelID(), cancelInFlight: true)
@@ -76,13 +72,11 @@ let clientsListReducer: Reducer<
             case .success(let clients):
                 state.contactListLS = .gotSuccess
 
-                if state.isSearching {
+				if !state.searchText.isEmpty {
                     state.clients = .init(clients)
-                    state.notFoundClients = clients.isEmpty
                     break
                 }
                 state.clients = (state.clients + .init(clients))
-                state.notFoundClients = state.clients.isEmpty
             case .failure(let error):
 				print("error \(error)")
                 state.contactListLS = .gotError(error)
@@ -150,8 +144,8 @@ struct ClientsList: View {
             self.isSelectedClient = state.selectedClient != nil
             self.isLoading = state.contactListLS == .loading
             self.isAddClientActive = state.addClient != nil
-            self.isSearching = state.isSearching
-            self.notFoundClients = state.notFoundClients
+			self.isSearching = !state.searchText.isEmpty
+			self.notFoundClients = state.clients.isEmpty
 			self.error = extract(case: LoadingState.gotError, from: state.contactListLS)
         }
     }

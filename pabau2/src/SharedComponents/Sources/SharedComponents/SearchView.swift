@@ -26,9 +26,7 @@ public struct SearchView: View {
                     .foregroundColor(Color(.systemGray3))
                     .padding(3)
                     .onTapGesture {
-                        withAnimation {
-                            self.text = ""
-                        }
+						self.text = ""
                     }
             }
         }

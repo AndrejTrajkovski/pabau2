@@ -18,31 +18,29 @@ let chooseServiceReducer =
         case .gotServiceResponse(let result):
             switch result {
             case .success(let response):
-                state.services = .init(response.state)
                 state.groupedServices = [String: [Service]].init(
-                    grouping: state.services, by: { $0.categoryName ?? "" }
+                    grouping: response.state, by: { $0.categoryName ?? "No Name" }
                 )
             case .failure:
                 break
-            }
-        case .didSelectFilter(let filter):
-            state.filterChosen = filter
-        case .didSelectService(let service):
-            state.chosenService = service
-            state.isChooseServiceActive = false
-        case .didTapBackBtn:
-            state.isChooseServiceActive = false
-        case .onSearch(let text):
-            state.searchText = text
-            if state.searchText.isEmpty {
-                state.groupedServices = [String: [Service]].init(grouping: state.services, by: { $0.categoryName ?? "" })
-                break
-            }
-            state.groupedServices = [String: [Service]].init(
-                grouping: state.services
-                    .filter { $0.name.lowercased().contains(state.searchText.lowercased())}, by: { $0.categoryName ?? "" }
-            )
-        }
+			}
+		case .didSelectFilter(let filter):
+			state.filterChosen = filter
+		case .didSelectService(let service):
+			state.chosenService = service
+			state.isChooseServiceActive = false
+		case .didTapBackBtn:
+			state.isChooseServiceActive = false
+		case .onSearch(let text):
+			state.searchText = text
+			if state.searchText.isEmpty {
+				break
+			}
+			state.filteredServices =
+				state.groupedServices.flatMap {
+					$0.value
+				}.filter { $0.name.lowercased().contains(state.searchText.lowercased()) }
+		}
         return .none
     }
 
@@ -61,14 +59,8 @@ public enum ChooseServiceFilter: Int, CaseIterable, CustomStringConvertible {
 }
 
 public struct ChooseServiceState: Equatable {
-    var services: IdentifiedArrayOf<Service> = []
-    var groupedServices: [String: [Service]] = [:] {
-        didSet {
-            listServices = groupedServices.map({ $0.value })
-                .sorted(by: { ($0.first!.categoryName ?? "") > ($1.first!.categoryName ?? "")})
-        }
-    }
-    var listServices: [[Service]] = []
+    var groupedServices: [String: [Service]] = [:]
+	var filteredServices: [Service] = []
     var isChooseServiceActive: Bool
     var chosenService: Service?
     var filterChosen: ChooseServiceFilter
@@ -105,25 +97,33 @@ struct ChooseService: View {
                 .padding(.leading, 60)
                 StaffFilterPicker()
                     .padding(.trailing, 60)
-            }
-            List {
-                ForEach(self.viewStore.state.listServices, id: \.self.first?.categoryName) { (group: [Service]) in
-                    Section(
-                        header: TextHeader(name: group.first?.categoryName ?? "No name")
-                    ) {
-                        ForEach(group, id: \.self) { (service: Service) in
-                            ServiceRow(service: service).onTapGesture {
-                                self.viewStore.send(.didSelectService(service))
-                            }
-                        }.listRowInsets(EdgeInsets(top: 0, leading: 60, bottom: 0, trailing: 60))
-                    }
-                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                    .background(Color.white)
-                }
-            }
-            Spacer()
-        }.onAppear {
-            self.viewStore.send(.onAppear)
+			}
+			List {
+				if viewStore.searchText.isEmpty {
+					ForEach(Array(self.viewStore.state.groupedServices.keys), id: \.self) { (key: String) in
+						Section(
+							header: TextHeader(name: key)
+						) {
+							ForEach(self.viewStore.state.groupedServices[key]!, id: \.self) { (service: Service) in
+								ServiceRow(service: service).onTapGesture {
+									self.viewStore.send(.didSelectService(service))
+								}
+							}.listRowInsets(EdgeInsets(top: 0, leading: 60, bottom: 0, trailing: 60))
+						}
+						.listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+						.background(Color.white)
+					}
+				} else {
+					ForEach(viewStore.filteredServices, id: \.self) { (service: Service) in
+						ServiceRow(service: service).onTapGesture {
+							self.viewStore.send(.didSelectService(service))
+						}
+					}.listRowInsets(EdgeInsets(top: 0, leading: 60, bottom: 0, trailing: 60))
+				}
+			}
+			Spacer()
+		}.onAppear {
+			self.viewStore.send(.onAppear)
         }
         .padding(0)
         .navigationBarTitle("Services")
