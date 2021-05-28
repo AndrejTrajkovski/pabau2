@@ -5,6 +5,9 @@ import Model
 import SharedComponents
 import CoreDataModel
 import Foundation
+import ToastAlert
+import ToastUI
+import Combine
 
 public typealias CalendarEnvironment = (journeyAPI: JourneyAPI, clientsAPI: ClientsAPI, userDefaults: UserDefaultsConfig, repository: Repository)
 
@@ -26,6 +29,10 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, Calenda
         state: \AppDetailsState.chooseRepeat,
         action: /AppDetailsAction.chooseRepeat,
         environment: { $0 }),
+    toastReducer.pullback(
+        state: \AppDetailsState.toastState,
+        action: /AppDetailsAction.onDisplayToast,
+        environment: { _ in ToastEnvironment("") } ),
     
     Reducer.init { state, action, env in
         switch action {
@@ -94,7 +101,7 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, Calenda
                         case .success(let reasons):
                             return AppDetailsAction.buttons(.onDownloadCancelReasons(reasons))
                         case .failure(let error):
-                            return AppDetailsAction.buttons(.onDownloadCancelReasons([]))
+                            return AppDetailsAction.onErrorResponse
                         }
                     }
                     .eraseToEffect()
@@ -109,7 +116,9 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, Calenda
                 break
             }
             break
-            
+        case .onErrorResponse:
+            return Just(AppDetailsAction.onDisplayToast(.onDisplay))
+                .eraseToEffect()
         default:
             break
         }
@@ -134,6 +143,7 @@ public struct AppDetailsState: Equatable {
     var isStatusActive: Bool = false
     var appStatuses = IdentifiedArrayOf(AppointmentStatus.mock)
     var chooseRepeat: ChooseRepeatState = ChooseRepeatState()
+    var toastState: ToastState = ToastState()
 }
 
 public enum AppDetailsAction {
@@ -145,6 +155,8 @@ public enum AppDetailsAction {
     case close
     case onResponseChangeAppointment
     case onResponseCreateReccuringAppointment
+    case onErrorResponse
+    case onDisplayToast(ToastAction)
 }
 
 public struct AppointmentDetails: View {
@@ -165,7 +177,14 @@ public struct AppointmentDetails: View {
             AddEventPrimaryBtn(title: Texts.addService) {
                 self.viewStore.send(.addService)
             }
-        }.addEventWrapper(
+        }
+        .toast(isPresented: viewStore.binding(get: { $0.toastState.isPresented },
+                                              send: AppDetailsAction.onDisplayToast(ToastAction.onDisplay)),
+               content: {
+                    ToastView("Loading....")
+                                .toastViewStyle(IndefiniteProgressToastViewStyle())
+               })
+        .addEventWrapper(
             onXBtnTap: { self.viewStore.send(.close) })
     }
 }
