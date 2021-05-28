@@ -45,6 +45,7 @@ public enum AppDetailsButtonsAction: Equatable {
 	case onRepeat
 	case onDocuments
 	case onReschedule
+	case onStartPathway
     case onDownloadStatuses([AppointmentStatus])
     case onDownloadCancelReasons([CancelReason])
 }
@@ -62,7 +63,7 @@ struct AppDetailsButtons: View {
 	let columns = [
 		GridItem(.flexible(), spacing: 0),
 		GridItem(.flexible(), spacing: 0),
-		GridItem(.flexible(), spacing: 0)
+		GridItem(.flexible(), spacing: 0),
 	]
 
 	let items = [
@@ -71,7 +72,8 @@ struct AppDetailsButtons: View {
 		("pencil.and.ellipsis.rectangle", Texts.status, AppDetailsButtonsAction.onStatus),
 		("arrow.2.circlepath", Texts.repeat, AppDetailsButtonsAction.onRepeat),
 		("doc.text", Texts.documents, AppDetailsButtonsAction.onDocuments),
-		("arrowshape.turn.up.right", Texts.reschedule, AppDetailsButtonsAction.onReschedule)
+		("arrowshape.turn.up.right", Texts.reschedule, AppDetailsButtonsAction.onReschedule),
+		("list.bullet.rectangle", Texts.startPathway, AppDetailsButtonsAction.onStartPathway)
 	]
 
 	var body: some View {
