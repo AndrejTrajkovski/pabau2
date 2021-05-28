@@ -145,6 +145,7 @@ struct PabauTabBar: View {
 }
 
 private let audioQueue = DispatchQueue(label: "Audio Dispatch Queue")
+struct TimerId: Hashable { }
 
 public let tabBarReducer: Reducer<
 	TabBarState,
@@ -178,20 +179,18 @@ public let tabBarReducer: Reducer<
 		
 		switch action {
 		
-//			let appointment = state.calendar.listContainer!.appointments.appointments.flatMap { $0.value }.flatMap { $0.value }.first!
-//			state.checkIn = CheckInContainerState(appointment: appointment)
-		//			return Effect.init(value: TabBarAction.checkIn(CheckInContainerAction.showPatientMode))
-		//				.delay(for: .seconds(checkInAnimationDuration),
-		//					   scheduler: DispatchQueue.main)
-		//				.eraseToEffect()
-		
 		case .delayStartPathway(let appointment):
 			
 			state.checkIn = CheckInContainerState(appointment: appointment)
-			return env.audioPlayer
-				.playCheckInSound()
-				.receive(on: audioQueue)
-				.fireAndForget()
+			return .merge([
+				env.audioPlayer
+					.playCheckInSound()
+					.receive(on: audioQueue)
+					.fireAndForget(),
+				
+				Effect.timer(id: TimerId(),
+							 every: , on: <#T##Scheduler#>)
+			])
 			
 		case .calendar(.appDetails(.buttons(.onStartPathway))):
 			
