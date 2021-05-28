@@ -21,7 +21,8 @@ public typealias TabBarEnvironment = (
 	clientsAPI: ClientsAPI,
 	formAPI: FormAPI,
 	userDefaults: UserDefaultsConfig,
-	repository: Repository
+	repository: Repository,
+	audioPlayer: AudioPlayerProtocol
 )
 
 public struct TabBarState: Equatable {
@@ -49,9 +50,11 @@ struct PabauTabBar: View {
 	struct ViewState: Equatable {
 		let isShowingCheckin: Bool
 		let isShowingAddAppointment: Bool
+		let isShowingAppDetails: Bool
 		init(state: TabBarState) {
 			self.isShowingCheckin = state.checkIn != nil
 			self.isShowingAddAppointment = state.addAppointment != nil
+			self.isShowingAppDetails = state.calendar.appDetails != nil
 		}
 	}
 	
@@ -141,26 +144,64 @@ struct PabauTabBar: View {
 	}
 }
 
+private let audioQueue = DispatchQueue(label: "Audio Dispatch Queue")
+
 public let tabBarReducer: Reducer<
 	TabBarState,
 	TabBarAction,
 	TabBarEnvironment
 > = Reducer.combine(
 	
+	showAddAppointmentReducer.pullback(
+		state: \TabBarState.self,
+		action: /TabBarAction.calendar,
+		environment: { $0 }
+	),
+	clientsContainerReducer.pullback(
+		state: \TabBarState.clients,
+		action: /TabBarAction.clients,
+		environment: makeClientsEnv(_:)
+	),
+	calendarContainerReducer.pullback(
+		state: \TabBarState.calendar,
+		action: /TabBarAction.calendar,
+		environment: {
+			return CalendarEnvironment(
+				journeyAPI: $0.journeyAPI,
+				clientsAPI: $0.clientsAPI,
+				userDefaults: $0.userDefaults,
+				repository: $0.repository
+			)
+		}),
+	
 	.init { state, action, env in
 		
 		switch action {
 		
+//			let appointment = state.calendar.listContainer!.appointments.appointments.flatMap { $0.value }.flatMap { $0.value }.first!
+//			state.checkIn = CheckInContainerState(appointment: appointment)
+		//			return Effect.init(value: TabBarAction.checkIn(CheckInContainerAction.showPatientMode))
+		//				.delay(for: .seconds(checkInAnimationDuration),
+		//					   scheduler: DispatchQueue.main)
+		//				.eraseToEffect()
+		
 		case .delayStartPathway(let appointment):
-			break
+			
+			state.checkIn = CheckInContainerState(appointment: appointment)
+			return env.audioPlayer
+				.playCheckInSound()
+				.receive(on: audioQueue)
+				.fireAndForget()
 			
 		case .calendar(.appDetails(.buttons(.onStartPathway))):
-			break
-//			guard let appointment = state.calendar.appDetails?.app else { break }
-//			state.checkIn = CheckInContainerState(appointment: appointment)
-//			return Effect.init(value: TabBarAction.checkIn(CheckInContainerAction.showPatientMode))
-//				.delay(for: .seconds(checkInAnimationDuration), scheduler: DispatchQueue.main)
-//				.eraseToEffect()
+			
+			guard let appointment = state.calendar.appDetails?.app else { break }
+			
+			state.calendar.appDetails = nil
+			
+			return Effect.init(value: TabBarAction.delayStartPathway(appointment: appointment))
+				.delay(for: 0.2, scheduler: DispatchQueue.main)
+				.eraseToEffect()
 				
 		case .calendar(.onAddEvent(.appointment)):
 			state.calendar.isAddEventDropdownShown = false
@@ -213,27 +254,7 @@ public let tabBarReducer: Reducer<
 	//		action: /TabBarAction.journey,
 	//		environment: makeJourneyEnv(_:)
 	//	),
-	showAddAppointmentReducer.pullback(
-		state: \TabBarState.self,
-		action: /TabBarAction.calendar,
-		environment: makeClientsEnv(_:)
-	),
-	clientsContainerReducer.pullback(
-		state: \TabBarState.clients,
-		action: /TabBarAction.clients,
-		environment: makeClientsEnv(_:)
-	),
-	calendarContainerReducer.pullback(
-		state: \TabBarState.calendar,
-		action: /TabBarAction.calendar,
-		environment: {
-			return CalendarEnvironment(
-				journeyAPI: $0.journeyAPI,
-				clientsAPI: $0.clientsAPI,
-				userDefaults: $0.userDefaults,
-				repository: $0.repository
-			)
-		}),
+	
 	communicationReducer.pullback(
 		state: \TabBarState.communication,
 		action: /TabBarAction.communication,

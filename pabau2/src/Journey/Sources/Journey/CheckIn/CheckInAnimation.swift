@@ -8,7 +8,7 @@ struct CheckInAnimation: View {
 	
 	let animationDuration: Double
 	let appointment: Appointment
-	let player = Player()
+	
 	var body: some View {
 		VStack(spacing: 24) {
 			Checkmark(animationDuration: self.animationDuration)
@@ -16,9 +16,6 @@ struct CheckInAnimation: View {
 		}.offset(x: 0, y: -50)
 		.gradientView()
 		.edgesIgnoringSafeArea(.top)
-		.onAppear(perform: {
-			self.player.playSoundAndVibrate()
-		})
 	}
 }
 

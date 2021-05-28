@@ -49,7 +49,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 				clientsAPI: apiClient,
 				formAPI: apiClient,
 				userDefaults: userDefaults,
-                repository: repository
+                repository: repository,
+				audioPlayer: AudioPlayer()
 			)
             
 			window.rootViewController = UIHostingController(

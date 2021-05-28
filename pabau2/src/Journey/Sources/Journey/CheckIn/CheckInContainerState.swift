@@ -9,8 +9,6 @@ public struct CheckInContainerState: Equatable {
 	
 	let appointment: Appointment
 	let choosePathway: ChoosePathwayState
-//	let pathway: Pathway
-//	let pathwayTemplate: PathwayTemplate
 	
 	var isPatientModeActive: Bool = false
 	
@@ -41,11 +39,8 @@ public struct CheckInContainerState: Equatable {
 	
 	var passcodeState = PasscodeState()
 	var isEnterPasscodeActive: Bool = false
-	var isChooseConsentActive: Bool = false
-	var isChooseTreatmentActive: Bool = false
 	var isDoctorCheckInMainActive: Bool = false
 	var isDoctorSummaryActive: Bool = false
-	var didGoBackToPatientMode: Bool = false
 }
 
 extension CheckInContainerState {
@@ -70,36 +65,17 @@ extension CheckInContainerState {
 	}
 }
 
-
 extension CheckInContainerState {
-	
-	var doctorSummary: DoctorSummaryState {
-		get {
-			DoctorSummaryState(appointment: appointment,
-							   isChooseConsentActive: isChooseConsentActive,
-							   isChooseTreatmentActive: isChooseTreatmentActive,
-							   isDoctorCheckInMainActive: isDoctorCheckInMainActive,
-							   doctorCheckIn: doctorCheckIn)
-		}
-		set {
-			self.doctorCheckIn = newValue.doctorCheckIn
-			self.isChooseConsentActive = newValue.isChooseConsentActive
-			self.isChooseTreatmentActive = newValue.isChooseTreatmentActive
-			self.isDoctorCheckInMainActive = newValue.isDoctorCheckInMainActive
-		}
-	}
 	
 	var passcode: PasscodeContainerState {
 		get {
 			PasscodeContainerState(
 				passcode: self.passcodeState,
-				didGoBackToPatientMode: self.didGoBackToPatientMode,
 				isDoctorCheckInMainActive: self.isDoctorCheckInMainActive
 			)
 		}
 		set {
 			self.passcodeState = newValue.passcode
-			self.didGoBackToPatientMode = newValue.didGoBackToPatientMode
 			self.isDoctorCheckInMainActive = newValue.isDoctorCheckInMainActive
 		}
 	}

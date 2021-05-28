@@ -17,7 +17,8 @@ typealias AppEnvironment = (
 	clientsAPI: ClientsAPI,
 	formAPI: FormAPI,
 	userDefaults: UserDefaultsConfig,
-    repository: Repository
+    repository: Repository,
+	audioPlayer: AudioPlayerProtocol
 )
 
 func makeJourneyEnv(_ appEnv: AppEnvironment) -> JourneyEnvironment {
@@ -26,7 +27,8 @@ func makeJourneyEnv(_ appEnv: AppEnvironment) -> JourneyEnvironment {
 		journeyAPI: appEnv.journeyAPI,
 		clientsAPI: appEnv.clientsAPI,
 		userDefaults: appEnv.userDefaults,
-        repository: appEnv.repository
+        repository: appEnv.repository,
+		audioPlayer: appEnv.audioPlayer
 	)
 }
 
@@ -65,7 +67,8 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = Reducer.combine(
 				clientsAPI: $0.clientsAPI,
 				formAPI: $0.formAPI,
 				userDefaults: $0.userDefaults,
-                repository: $0.repository
+                repository: $0.repository,
+				audioPlayer: $0.audioPlayer
               )
 			}
 	),

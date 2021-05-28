@@ -6,15 +6,11 @@ import Combine
 
 public enum CheckInContainerAction: Equatable {
 	case showPatientMode
-//	case onAnimationAppear
-	case chooseTreatments(ChooseFormAction)
-	case chooseConsents(ChooseFormAction)
 	case passcode(PasscodeAction)
 	case animation(CheckInAnimationAction)
 	case patient(CheckInPatientAction)
 	case doctor(CheckInDoctorAction)
 	case didTouchHandbackDevice
-	case doctorSummary(DoctorSummaryAction)
 }
 
 public enum CheckInAnimationAction {
@@ -32,54 +28,28 @@ public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction
 	//		action: /CheckInContainerAction.doctor,
 	//		environment: { $0 }
 	//	),
-//	chooseFormJourneyReducer.pullback(
-//		state: \CheckInContainerState.chooseTreatments,
-//		action: /CheckInContainerAction.chooseTreatments,
-//		environment: { $0 }
-//	),
-//	chooseFormJourneyReducer.pullback(
-//		state: \CheckInContainerState.chooseConsents,
-//		action: /CheckInContainerAction.chooseConsents,
-//		environment: { $0 }
-//	),
 	navigationReducer.pullback(
 		state: \CheckInContainerState.self,
 		action: /CheckInContainerAction.self,
-		environment: { $0 }
-	),
-	doctorSummaryReducer.pullback(
-		state: \CheckInContainerState.doctorSummary,
-		action: /CheckInContainerAction.doctorSummary,
 		environment: { $0 }
 	),
 	passcodeContainerReducer.pullback(
 		state: \CheckInContainerState.passcode,
 		action: /CheckInContainerAction.passcode,
 		environment: { $0 })
-	//	fieldsReducer.pullback(
-	//					 value: \CheckInContainerState.self,
-	//					 action: /CheckInContainerAction.main,
-	//					 environment: { $0 })
 )
 
 public let navigationReducer = Reducer<CheckInContainerState, CheckInContainerAction, Any> { state, action, _ in
 	func backToPatientMode() {
-		state.isChooseConsentActive = false
 		state.isDoctorSummaryActive = false
 		state.isDoctorCheckInMainActive = false
 		state.passcodeState = PasscodeState()
 		state.isHandBackDeviceActive = false
 		state.isEnterPasscodeActive = false
-		state.didGoBackToPatientMode = true
 		//TODO goToNextUncomplete
 		//		state.patie.goToNextUncomplete()
 	}
 	switch action {
-	case .chooseConsents(.proceed):
-		backToPatientMode()
-	case .chooseTreatments(.proceed):
-		state.isDoctorSummaryActive = true
-		state.isChooseTreatmentActive = false
 	case .didTouchHandbackDevice:
 		state.isEnterPasscodeActive = true
 	case .showPatientMode:

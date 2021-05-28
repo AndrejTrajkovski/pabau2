@@ -70,7 +70,6 @@ public struct Shift: Decodable, Equatable {
 				  debugDescription: "Date string does not match format expected by formatter.")
 		}
 	}
-    
 }
 
 public struct ShiftSchema: Codable {
@@ -114,20 +113,3 @@ public struct ShiftSchema: Codable {
         case rotaUID = "rota_uid"
     }
 }
-
-//extension Shift {
-//    public static func mock () -> [Date: [Location.ID: [Employee.Id: [Shift]]]] {
-//        var shifts = [Shift]()
-//        for (idx, emp) in Employee.mockEmployees.enumerated() {
-//            let mockStartEnd = Date.mockStartAndEndDate(endRangeMax: 600)
-//            let startOfDay = Calendar.init(identifier: .gregorian).startOfDay(for: mockStartEnd.0)
-//            shifts.append(Shift.init(id: idx, employeeId: emp.id, locationId: emp.locationId, date: startOfDay, startTime: mockStartEnd.0, endTime: mockStartEnd.1))
-//        }
-//        let byDate = Dictionary.init(grouping: shifts, by: { $0.date })
-//        return byDate.mapValues { events in
-//            return Dictionary.init(grouping: events, by: { $0.locationId }).mapValues { events2 in
-//                Dictionary.init(grouping: events2, by: { $0.employeeId })
-//            }
-//        }
-//    }
-//}

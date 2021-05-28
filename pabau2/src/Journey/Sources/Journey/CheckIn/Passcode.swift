@@ -11,7 +11,6 @@ let validPasscodes: [[String]] = [
 
 public struct PasscodeContainerState: Equatable {
 	var passcode: PasscodeState
-	var didGoBackToPatientMode: Bool
 	var isDoctorCheckInMainActive: Bool
 }
 
@@ -58,11 +57,10 @@ let passcodeContainerReducer: Reducer<PasscodeContainerState, PasscodeAction, An
 
 struct Passcode: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>
-
+	
 	var body: some View {
-		print("Passcode body")
-		return WithViewStore(self.store.scope(state: { $0.passcode },
-																	 action: { .passcode($0)})) { viewStore in
+		WithViewStore(self.store.scope(state: { $0.passcode },
+									   action: { .passcode($0)})) { viewStore in
 			VStack(spacing: 32) {
 				Image("ico-journey-locked").resizable().frame(width: 24, height: 36)
 				Text(Texts.enterPass).font(.semibold20)
@@ -72,7 +70,7 @@ struct Passcode: View {
 					}
 				}
 				.modifier(Shake(animatableData:
-					CGFloat(viewStore.state.passcode.wrongAttempts)))
+									CGFloat(viewStore.state.passcode.wrongAttempts)))
 				Digits(onTouch: { viewStore.send(.touchDigit($0)) })
 				HStack {
 					Text("Cancel")
@@ -82,30 +80,17 @@ struct Passcode: View {
 					}
 				}
 				.font(.regular16)
-				if viewStore.state.passcode.unlocked {
-					NavigationLink.emptyHidden(!viewStore.state.didGoBackToPatientMode,
-											   ChooseTreatmentNote(store: self.store.scope(
-																	state: { $0 }, action: { $0 }))
-												.navigationBarHidden(false)
-												.navigationBarTitle(Text(Texts.chooseTreatmentNote),
-																	displayMode: .inline)
-												.navigationBarBackButtonHidden(true)
+					NavigationLink.emptyHidden(viewStore.state.passcode.unlocked, doctorCheckIn
 					)
-					NavigationLink.emptyHidden(
-						viewStore.state.didGoBackToPatientMode,
-						EmptyView()
-//						DoctorSummary(store: self.store.scope(
-//										state: { $0 }, action: { $0 }))
-//							.hideNavBar(viewStore.state.isDoctorCheckInMainActive,
-//										Texts.summary)
-//							.navigationBarBackButtonHidden(true)
-					)
-				}
 			}
 			.foregroundColor(.white)
 			.fixedSize(horizontal: true, vertical: false)
 			.gradientView()
 		}
+	}
+	
+	var doctorCheckIn: some View {
+		EmptyView()
 	}
 }
 
@@ -113,11 +98,11 @@ struct DotView: View {
 	let isFilled: Bool
 	var body: some View {
 		Circle()
-		.overlay(
+			.overlay(
 				Circle()
-			 .stroke(Color.white, lineWidth: 1)
+					.stroke(Color.white, lineWidth: 1)
 			).foregroundColor(isFilled ? Color.white : .clear)
-		.frame(width: 13, height: 13)
+			.frame(width: 13, height: 13)
 	}
 }
 
@@ -155,8 +140,8 @@ struct DigitButton: View {
 				.foregroundColor(.white)
 				.font(.regular36)
 		}.frame(width: 75, height: 75)
-			.onTapGesture {
-				self.onTouch(self.digit)
+		.onTapGesture {
+			self.onTouch(self.digit)
 		}
 	}
 }
@@ -165,10 +150,10 @@ struct Shake: GeometryEffect {
 	var amount: CGFloat = 10
 	var shakesPerUnit = 3
 	var animatableData: CGFloat
-
+	
 	func effectValue(size: CGSize) -> ProjectionTransform {
 		ProjectionTransform(CGAffineTransform(translationX:
-			amount * sin(animatableData * .pi * CGFloat(shakesPerUnit)),
-																					y: 0))
+												amount * sin(animatableData * .pi * CGFloat(shakesPerUnit)),
+											  y: 0))
 	}
 }

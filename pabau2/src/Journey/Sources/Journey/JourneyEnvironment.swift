@@ -7,7 +7,8 @@ public typealias JourneyEnvironment = (
 	journeyAPI: JourneyAPI,
 	clientsAPI: ClientsAPI,
 	userDefaults: UserDefaultsConfig,
-    repository: Repository
+    repository: Repository,
+	audioPlayer: AudioPlayerProtocol
 )
 
 func makeFormEnv(_ journeyEnv: JourneyEnvironment) -> FormEnvironment {
