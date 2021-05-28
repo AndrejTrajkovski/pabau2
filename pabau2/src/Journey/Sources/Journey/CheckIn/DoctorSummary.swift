@@ -75,24 +75,24 @@ struct DoctorNavigation: View {
 									   //													.scope(state: { $0.doctorCheckIn },
 									   //														   action: { .doctor($0) }))
 			)
-			NavigationLink.emptyHidden(viewStore.state.isChooseConsentActive,
-									   ChooseFormJourney(store: self.store.scope(
-															state: { $0.chooseConsents },
-															action: { .chooseConsents($0)}),
-														 appointment: self.viewStore.state.appointment)
-										.customBackButton {
-											self.viewStore.send(.didTouchBackFrom(.consentsCheckIn))
-										}
-			)
-			NavigationLink.emptyHidden(viewStore.state.isChooseTreatmentActive,
-									   ChooseFormJourney(store: self.store.scope(
-															state: { $0.chooseTreatments },
-															action: { .chooseTreatments($0)}),
-														 appointment: self.viewStore.state.appointment)
-										.customBackButton {
-											self.viewStore.send(.didTouchBackFrom(.treatmentNotes))
-										}
-			)
+//			NavigationLink.emptyHidden(viewStore.state.isChooseConsentActive,
+//									   ChooseFormJourney(store: self.store.scope(
+//															state: { $0.chooseConsents },
+//															action: { .chooseConsents($0)}),
+//														 appointment: self.viewStore.state.appointment)
+//										.customBackButton {
+//											self.viewStore.send(.didTouchBackFrom(.consentsCheckIn))
+//										}
+//			)
+//			NavigationLink.emptyHidden(viewStore.state.isChooseTreatmentActive,
+//									   ChooseFormJourney(store: self.store.scope(
+//															state: { $0.chooseTreatments },
+//															action: { .chooseTreatments($0)}),
+//														 appointment: self.viewStore.state.appointment)
+//										.customBackButton {
+//											self.viewStore.send(.didTouchBackFrom(.treatmentNotes))
+//										}
+//			)
 		}
 	}
 }

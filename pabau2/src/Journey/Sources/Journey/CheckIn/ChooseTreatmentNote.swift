@@ -23,9 +23,9 @@ struct ChooseTreatmentNote: View {
 
 	var body: some View {
 		VStack {
-			ChooseFormJourney(store: store.scope(state: { $0.chooseTreatments },
-												 action: { .chooseTreatments($0)}),
-							  appointment: self.viewStore.state.appointment)
+//			ChooseFormJourney(store: store.scope(state: { $0.chooseTreatments },
+//												 action: { .chooseTreatments($0)}),
+//							  appointment: self.viewStore.state.appointment)
 			NavigationLink.emptyHidden(self.viewStore.state.isDoctorSummaryActive,
 									   EmptyView()
 //									   DoctorSummary(store:

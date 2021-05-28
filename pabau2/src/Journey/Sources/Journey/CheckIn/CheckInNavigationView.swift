@@ -32,16 +32,16 @@ public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction
 	//		action: /CheckInContainerAction.doctor,
 	//		environment: { $0 }
 	//	),
-	chooseFormJourneyReducer.pullback(
-		state: \CheckInContainerState.chooseTreatments,
-		action: /CheckInContainerAction.chooseTreatments,
-		environment: { $0 }
-	),
-	chooseFormJourneyReducer.pullback(
-		state: \CheckInContainerState.chooseConsents,
-		action: /CheckInContainerAction.chooseConsents,
-		environment: { $0 }
-	),
+//	chooseFormJourneyReducer.pullback(
+//		state: \CheckInContainerState.chooseTreatments,
+//		action: /CheckInContainerAction.chooseTreatments,
+//		environment: { $0 }
+//	),
+//	chooseFormJourneyReducer.pullback(
+//		state: \CheckInContainerState.chooseConsents,
+//		action: /CheckInContainerAction.chooseConsents,
+//		environment: { $0 }
+//	),
 	navigationReducer.pullback(
 		state: \CheckInContainerState.self,
 		action: /CheckInContainerAction.self,

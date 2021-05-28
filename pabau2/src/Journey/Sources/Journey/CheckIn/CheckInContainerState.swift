@@ -3,17 +3,19 @@ import ComposableArchitecture
 import Overture
 import Util
 import Form
+import ChoosePathway
 
 public struct CheckInContainerState: Equatable {
 	
 	let appointment: Appointment
-	let pathway: Pathway
-	let pathwayTemplate: PathwayTemplate
+	let choosePathway: ChoosePathwayState
+//	let pathway: Pathway
+//	let pathwayTemplate: PathwayTemplate
 	
 	var isPatientModeActive: Bool = false
 	
 	var patientDetailsLS: LoadingState
-	var patientDetails: ClientBuilder
+	var patientDetails: ClientBuilder?
 	var patientDetailsStatus: StepStatus
 	
 	var medicalHistories: IdentifiedArrayOf<HTMLFormParentState>
@@ -23,9 +25,6 @@ public struct CheckInContainerState: Equatable {
 	var treatmentNotes: IdentifiedArrayOf<HTMLFormParentState>
 	
 	var prescriptions: IdentifiedArrayOf<HTMLFormParentState>
-	
-	var allTreatmentForms: IdentifiedArrayOf<FormTemplateInfo>
-	var allConsents: IdentifiedArrayOf<FormTemplateInfo>
 	
 	var aftercare: Aftercare?
 	var aftercareStatus: Bool
@@ -51,22 +50,12 @@ public struct CheckInContainerState: Equatable {
 
 extension CheckInContainerState {
 	
-	init(appointment: Appointment,
-		 pathway: Pathway,
-		 pathwayTemplate: PathwayTemplate,
-		 patientDetails: ClientBuilder,
-		 medicalHistories: IdentifiedArrayOf<FormTemplateInfo>,
-		 consents: IdentifiedArrayOf<FormTemplateInfo>,
-		 allConsents: IdentifiedArrayOf<FormTemplateInfo>,
-		 photosState: PhotosState) {
+	public init(appointment: Appointment) {
 		self.appointment = appointment
-		self.pathway = pathway
-		self.pathwayTemplate = pathwayTemplate
-		self.patientDetails = patientDetails
+		self.choosePathway = ChoosePathwayState(selectedAppointment: appointment)
+//		self.patientDetails = patientDetails
 		self.medicalHistories = []
 		self.consents = []
-		self.allConsents = allConsents
-		self.allTreatmentForms = []
 		self.selectedConsentsIds = []
 		self.selectedTreatmentFormsIds = []
 		self.treatmentNotes = []
@@ -97,40 +86,6 @@ extension CheckInContainerState {
 			self.isChooseConsentActive = newValue.isChooseConsentActive
 			self.isChooseTreatmentActive = newValue.isChooseTreatmentActive
 			self.isDoctorCheckInMainActive = newValue.isDoctorCheckInMainActive
-		}
-	}
-	
-	var chooseTreatments: ChooseFormJourneyState {
-		get {
-			return ChooseFormJourneyState(
-				mode: .treatmentNotes,
-				forms: treatmentNotes,
-				templates: allTreatmentForms,
-				templatesLoadingState: .initial,
-				selectedTemplatesIds: selectedTreatmentFormsIds
-			)
-		}
-		set {
-			self.treatmentNotes = newValue.forms
-			self.allTreatmentForms = newValue.templates
-			self.selectedTreatmentFormsIds = newValue.selectedTemplatesIds
-		}
-	}
-	
-	var chooseConsents: ChooseFormJourneyState {
-		get {
-			return ChooseFormJourneyState(
-				mode: .consentsCheckIn,
-				forms: consents,
-				templates: allConsents,
-				templatesLoadingState: .initial,
-				selectedTemplatesIds: selectedConsentsIds
-			)
-		}
-		set {
-			self.consents = newValue.forms
-			self.allConsents = newValue.templates
-			self.selectedConsentsIds = newValue.selectedTemplatesIds
 		}
 	}
 	
@@ -169,7 +124,7 @@ extension CheckInContainerState {
 		get {
 			CheckInDoctorState(
 				appointment: self.appointment,
-				pathway: self.pathwayTemplate,
+				pathway: self.choosePathway.selectedPathway!,
 				treatmentNotes: self.treatmentNotes,
 				prescriptions: self.prescriptions,
 				aftercare: self.aftercare,
@@ -192,8 +147,8 @@ extension CheckInContainerState {
 		get {
 			CheckInPatientState(
 				appointment: appointment,
-				pathway: pathwayTemplate,
-				patientDetails: patientDetails,
+				pathway: self.choosePathway.selectedPathway!,
+				patientDetails: patientDetails!,
 				patientDetailsStatus: patientDetailsStatus,
 				medicalHistories: medicalHistories,
 				consents: consents,

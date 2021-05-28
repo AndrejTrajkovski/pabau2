@@ -25,6 +25,7 @@ public typealias TabBarEnvironment = (
 )
 
 public struct TabBarState: Equatable {
+	var checkIn: CheckInContainerState?
 	var clients: ClientsState
 	var calendar: CalendarState
 	var settings: SettingsState
@@ -38,6 +39,8 @@ public enum TabBarAction {
 	case calendar(CalendarAction)
 	case addAppointment(AddAppointmentAction)
 	case communication(CommunicationAction)
+	case checkIn(CheckInContainerAction)
+	case delayStartPathway(appointment: Appointment)
 }
 
 struct PabauTabBar: View {
@@ -47,9 +50,8 @@ struct PabauTabBar: View {
 		let isShowingCheckin: Bool
 		let isShowingAddAppointment: Bool
 		init(state: TabBarState) {
-			//			self.isShowingCheckin = false state.journeyContainer?.journey.checkIn != nil
+			self.isShowingCheckin = state.checkIn != nil
 			self.isShowingAddAppointment = state.addAppointment != nil
-			self.isShowingCheckin = false
 		}
 	}
 	
@@ -66,12 +68,12 @@ struct PabauTabBar: View {
 			settings()
 			communication()
 		}
-		//		.modalLink(isPresented: .constant(self.viewStore.state.isShowingCheckin),
-		//				   linkType: ModalTransition.circleReveal,
-		//				   destination: {
-		//					checkIn()
-		//				   }
-		//		)
+		.modalLink(isPresented: .constant(self.viewStore.state.isShowingCheckin),
+				   linkType: ModalTransition.circleReveal,
+				   destination: {
+					checkIn()
+				   }
+		)
 		.fullScreenCover(isPresented: .constant(self.viewStore.state.isShowingAddAppointment)) {
 			addAppointment()
 		}
@@ -122,13 +124,13 @@ struct PabauTabBar: View {
 			}
 	}
 	
-	//	fileprivate func checkIn() -> IfLetStore<CheckInContainerState, CheckInContainerAction, CheckInNavigationView?> {
-	//		return IfLetStore(self.store.scope(
-	//			state: { $0.journeyContainer?.journey.checkIn },
-	//			action: { .journey(.journey(.checkIn($0))) }
-	//		),
-	//		then: CheckInNavigationView.init(store:))
-	//	}
+	fileprivate func checkIn() -> IfLetStore<CheckInContainerState, CheckInContainerAction, CheckInNavigationView?> {
+		return IfLetStore(self.store.scope(
+			state: { $0.checkIn },
+			action: { .checkIn($0) }
+		),
+		then: CheckInNavigationView.init(store:))
+	}
 	
 	fileprivate func addAppointment() -> IfLetStore<AddAppointmentState, AddAppointmentAction, AddAppointment?> {
 		return IfLetStore(self.store.scope(
@@ -149,6 +151,17 @@ public let tabBarReducer: Reducer<
 		
 		switch action {
 		
+		case .delayStartPathway(let appointment):
+			break
+			
+		case .calendar(.appDetails(.buttons(.onStartPathway))):
+			break
+//			guard let appointment = state.calendar.appDetails?.app else { break }
+//			state.checkIn = CheckInContainerState(appointment: appointment)
+//			return Effect.init(value: TabBarAction.checkIn(CheckInContainerAction.showPatientMode))
+//				.delay(for: .seconds(checkInAnimationDuration), scheduler: DispatchQueue.main)
+//				.eraseToEffect()
+				
 		case .calendar(.onAddEvent(.appointment)):
 			state.calendar.isAddEventDropdownShown = false
 			let chooseLocAndEmp = ChooseLocationAndEmployeeState(locations: state.calendar.locations,
