@@ -60,13 +60,21 @@ public struct SingleChoiceLink<Content: View, T: SingleChoiceElement, Cell: View
         self.title = title
 	}
 
-	var listSingleChoicePicker: List<Never, SingleChoicePicker<T, Cell>> {
-		List {
-			SingleChoicePicker.init(
-                store: store.scope(state: { $0.singleChoice },
-													   action: { .singleChoice($0) }),
-				cell: cell
-            )
+	@ViewBuilder
+	var listSingleChoicePicker: some View {
+		switch viewStore.loadingState {
+		case .initial, .gotSuccess:
+			List {
+				SingleChoicePicker.init(
+					store: store.scope(state: { $0.singleChoice },
+														   action: { .singleChoice($0) }),
+					cell: cell
+				)
+			}
+		case .loading:
+			LoadingSpinner()
+		case .gotError(let error):
+			ErrorView(error: error)
 		}
 	}
 

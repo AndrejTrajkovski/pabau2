@@ -1,0 +1,132 @@
+import SwiftUI
+import Util
+import ComposableArchitecture
+import Model
+import SharedComponents
+import CoreDataModel
+import Foundation
+import ToastAlert
+
+public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDetailsEnvironment> = .combine(
+	appDetailsButtonsReducer.pullback(
+		state: \AppDetailsState.itemsState,
+		action: /AppDetailsAction.buttons,
+		environment: { $0 }
+	),
+	SingleChoiceLinkReducer<AppointmentStatus>().reducer.pullback(
+		state: \AppDetailsState.chooseStatus,
+		action: /AppDetailsAction.chooseStatus,
+		environment: { $0 }),
+	SingleChoiceLinkReducer<CancelReason>().reducer.pullback(
+		state: \AppDetailsState.chooseCancelReason,
+		action: /AppDetailsAction.chooseCancelReason,
+		environment: { $0 }),
+	chooseRepeatReducer.pullback(
+		state: \AppDetailsState.chooseRepeat,
+		action: /AppDetailsAction.chooseRepeat,
+		environment: { $0 }),
+//    toastReducer.pullback(
+//        state: \AppDetailsState.toastState,
+//        action: /AppDetailsAction.onDisplayToast,
+//        environment: { _ in ToastEnvironment() } ),
+	
+	Reducer.init { state, action, env in
+		switch action {
+		case .chooseRepeat(.onRepeat(let chosenRepeat)):
+			let formatter = DateFormatter()
+			formatter.dateFormat = "dd-MM-yyyy"
+			let sDate = formatter.string(from: chosenRepeat.date)
+			let interval = chosenRepeat.interval.interval
+						
+			return env.clientsAPI.createRecurringAppointment(appointmentId: state.app.id, repeatRange: interval, repeatUntil: sDate)
+				.catchToEffect()
+				.map { _ in AppDetailsAction.onResponseCreateReccuringAppointment }
+			
+		case .onResponseCreateReccuringAppointment:
+			state.chooseRepeat.isRepeatActive = false
+		case .chooseCancelReason(let singleChoiceLinkAction):
+			switch singleChoiceLinkAction {
+			case .singleChoice(let single):
+				switch single {
+				case .action(let id, let action):
+					let cancelReason = state.cancelReasons[id: id]
+					return env.clientsAPI.appointmentChangeCancelReason(appointmentId: state.app.id, reason: "\(String(describing: cancelReason))")
+						.catchToEffect()
+						.map { _ in  AppDetailsAction.onResponseChangeAppointment }
+						.eraseToEffect()
+					
+				}
+			default:
+				break
+			}
+		case .chooseStatus(let singleChoiceLinkAction):
+			switch singleChoiceLinkAction {
+			case .singleChoice(let single):
+				switch single {
+				case .action(let id, let action):
+					let status = state.appStatuses[id: id]
+					return env.clientsAPI.appointmentChangeStatus(appointmentId: state.app.id, status: "\(String(describing: status))")
+						.catchToEffect()
+						.map { _ in  AppDetailsAction.onResponseChangeAppointment }
+						.eraseToEffect()
+					
+				}
+			default:
+				break
+			}
+		case .buttons(let appDetailsButtonsAction):
+			print(appDetailsButtonsAction)
+			switch appDetailsButtonsAction {
+			case .onStatus:
+				state.isStatusActive = true
+				return env.clientsAPI.getAppointmentStatus()
+					.catchToEffect()
+					.receive(on: DispatchQueue.main)
+					.map(AppDetailsAction.downloadStatusesResponse)
+					.eraseToEffect()
+			case .onCancel:
+				state.isCancelActive = true
+				return env.clientsAPI.getAppointmentCancelReasons()
+					.catchToEffect()
+					.receive(on: DispatchQueue.main)
+					.map(AppDetailsAction.cancelReasonsResponse)
+					.eraseToEffect()
+				
+			default:
+				break
+			}
+			break
+		case .addService:
+			break
+		case .chooseRepeat(.onBackBtn):
+			break
+		case .chooseRepeat(.onChangeInterval(_)):
+			break
+		case .chooseRepeat(.onSelectedOkCalendar(_)):
+			break
+		case .close:
+			break
+		case .downloadStatusesResponse(let result):
+			switch result {
+			case .success(let downloadStatuses):
+				state.chooseStatusLS = .gotSuccess
+				state.appStatuses = IdentifiedArray(downloadStatuses)
+			case .failure(let error):
+				state.chooseStatusLS = .gotError(error)
+			}
+		case .cancelReasonsResponse(let result):
+			switch result {
+			case .success(let cancelReasons):
+				state.cancelReasonLS = .gotSuccess
+				state.cancelReasons = IdentifiedArray(cancelReasons)
+			case .failure(let error):
+				state.cancelReasonLS = .gotError(error)
+			}
+		case .onResponseChangeAppointment:
+			break
+		case .toast(_):
+			break
+		}
+		return .none
+	}
+)
