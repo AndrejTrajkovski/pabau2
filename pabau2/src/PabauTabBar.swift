@@ -186,10 +186,7 @@ public let tabBarReducer: Reducer<
 				env.audioPlayer
 					.playCheckInSound()
 					.receive(on: audioQueue)
-					.fireAndForget(),
-				
-				Effect.timer(id: TimerId(),
-							 every: , on: <#T##Scheduler#>)
+					.fireAndForget()
 			])
 			
 		case .calendar(.appDetails(.buttons(.onStartPathway))):
