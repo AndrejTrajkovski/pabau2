@@ -138,9 +138,9 @@ extension APIClient {
 		
 		let params = [
 			"all_day": participantSchema.isAllDays,
-			"location_id":participantSchema.location.id,
-			"owner_uid": participantSchema.employee.id,
-			"service_id": participantSchema.service.id
+			"location_id":participantSchema.locationId,
+			"owner_uid": participantSchema.employeeId,
+			"service_id": participantSchema.serviceId
 		] as [String : Any]
 		
 		let requestBuilder: RequestBuilder<ParticipantsResponse>.Type = requestBuilderFactory.getBuilder()

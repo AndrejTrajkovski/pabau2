@@ -18,7 +18,10 @@ let package = Package(
 		.package(url: "../Model",
 				 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../Avatar",
-				 from: Version.init(stringLiteral: "1.0.0"))
+				 from: Version.init(stringLiteral: "1.0.0")),
+		.package(name: "SDWebImageSwiftUI",
+				 url: "https://github.com/SDWebImage/SDWebImageSwiftUI.git",
+				 from: Version.init(stringLiteral: "2.0.0"))
 
     ],
     targets: [
@@ -27,7 +30,8 @@ let package = Package(
             dependencies: [
 				"Util",
 				"Model",
-				"Avatar"
+				"Avatar",
+				"SDWebImageSwiftUI"
 			]),
         .testTarget(
             name: "SharedComponentsTests",

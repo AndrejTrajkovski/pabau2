@@ -1,17 +1,23 @@
 import SwiftUI
 import ComposableArchitecture
+import Util
 
 public struct SingleChoiceState<Model: SingleChoiceElement>: Equatable {
-
+	
 	public var dataSource: IdentifiedArrayOf<Model>
 	public var chosenItemId: Model.ID?
+	public var loadingState: LoadingState
+	
 	public var chosenItemName: String? {
 		return dataSource.first(where: { $0.id == chosenItemId })?.name
 	}
 
-	public init(dataSource: IdentifiedArrayOf<Model>, chosenItemId: Model.ID?) {
+	public init(dataSource: IdentifiedArrayOf<Model>,
+				chosenItemId: Model.ID?,
+				loadingState: LoadingState) {
 		self.dataSource = dataSource
 		self.chosenItemId = chosenItemId
+		self.loadingState = loadingState
 	}
 }
 

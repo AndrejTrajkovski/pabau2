@@ -31,12 +31,25 @@ public struct FiltersReducer<S: Identifiable & Equatable & Named> {
 						break
 					case .gotSubsectionResponse(let result):
 						switch result {
-						case .success(let employees):
+						case .success(let successResult):
 							state.subsectionsLS = .gotSuccess
-							state.subsections = groupDict(elements: employees, keyPath: locationsKeyPath)
+							state.subsections = groupDict(elements: successResult, keyPath: locationsKeyPath)
 							state.chosenSubsectionsIds = state.subsections.mapValues {
 								$0.map(\.id)
 							}
+							
+							if S.self is Employee.Type {
+								(successResult as! [Employee]).forEach {
+									$0.save(to: env.repository.coreDataModel)
+								}
+							} else if S.self is Room.Type {
+								(successResult as! [Room]).forEach {
+									$0.save(to: env.repository.coreDataModel)
+								}
+							} else {
+								fatalError()
+							}
+							
 						case .failure(let error):
 							state.subsectionsLS = .gotError(error)
 						}
@@ -65,7 +78,7 @@ public struct FiltersReducer<S: Identifiable & Equatable & Named> {
 							.catchToEffect()
 							.map { FiltersAction<S>.gotLocationsResponse($0) }
 							.eraseToEffect()
-						
+				
 						state.locationsLS = .loading
 						state.subsectionsLS = .loading
 						
@@ -73,7 +86,7 @@ public struct FiltersReducer<S: Identifiable & Equatable & Named> {
 							getLocactions,
 							getSubsection
 						)
-						
+				
 					case .gotLocationsResponse(let result):
 						switch result {
 						case .success(let locations):

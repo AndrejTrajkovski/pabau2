@@ -3,22 +3,33 @@ import Util
 import ComposableArchitecture
 
 public struct SingleChoiceLinkState <Model: SingleChoiceElement>: Equatable {
-	public init(dataSource: IdentifiedArrayOf<Model>, chosenItemId: Model.ID?, isActive: Bool) {
-		self.singleChoice = SingleChoiceState(dataSource: dataSource, chosenItemId: chosenItemId)
+	public init(dataSource: IdentifiedArrayOf<Model>,
+				chosenItemId: Model.ID?,
+				isActive: Bool,
+				loadingState: LoadingState) {
+		self.singleChoice = SingleChoiceState(dataSource: dataSource, chosenItemId: chosenItemId,
+											  loadingState: loadingState)
 		self.isActive = isActive
 	}
 
 	public var isActive: Bool
 	var singleChoice: SingleChoiceState<Model>
 
+	public var loadingState: LoadingState {
+		get { singleChoice.loadingState }
+		set { singleChoice.loadingState = newValue }
+	}
+	
 	public var dataSource: IdentifiedArrayOf<Model> {
 		get { singleChoice.dataSource }
 		set { singleChoice.dataSource = newValue }
 	}
+	
 	public var chosenItemId: Model.ID? {
 		get { singleChoice.chosenItemId }
 		set { singleChoice.chosenItemId = newValue}
 	}
+	
 	public var chosenItemName: String? { singleChoice.chosenItemName }
 }
 
@@ -100,8 +111,8 @@ public struct SingleChoiceLinkReducer<T: SingleChoiceElement> {
 
 extension SingleChoiceLinkState {
 
-	public init(_ dataSource: [Model]) {
+	public init(_ dataSource: [Model], loadingState: LoadingState) {
 		isActive = false
-		singleChoice = SingleChoiceState(dataSource: IdentifiedArrayOf(dataSource), chosenItemId: nil)
+		singleChoice = SingleChoiceState(dataSource: IdentifiedArrayOf(dataSource), chosenItemId: nil, loadingState: loadingState)
 	}
 }

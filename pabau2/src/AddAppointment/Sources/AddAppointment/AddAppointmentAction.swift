@@ -1,9 +1,8 @@
 import SharedComponents
 import Model
 import Foundation
-import ChooseEmployees
-import ChooseLocation
 
+import ChooseLocationAndEmployee
 public enum AddAppointmentAction: Equatable {
 	case saveAppointmentTap
 	case addAppointmentDismissed
@@ -12,9 +11,7 @@ public enum AddAppointmentAction: Equatable {
 	case services(ChooseServiceAction)
 	case participants(ChooseParticipantAction)
 	case durations(SingleChoiceLinkAction<Duration>)
-	case with(ChooseEmployeesAction)
-	case chooseLocation(ChooseLocationAction)
-	case onChooseLocation
+	case chooseLocAndEmp(ChooseLocationAndEmployeeAction)
 	case didTapParticipants
 	case closeBtnTap
 	case didTapServices
@@ -29,5 +26,4 @@ public enum AddAppointmentAction: Equatable {
 	case note(TextChangeAction)
 	case appointmentCreated(Result<PlaceholdeResponse, RequestError>)
 	case cancelAlert
-	case ignore
 }

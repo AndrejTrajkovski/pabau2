@@ -13,7 +13,7 @@ struct LabelHeartAndTextField: View {
 		self._isHearted = State.init(initialValue: isHearted)
 	}
 	var body: some View {
-		TitleAndLowerContent(labelTxt) {
+		TitleAndLowerContent(labelTxt, .constant(nil)) {
 			HStack {
 				Image(systemName: self.isHearted ? "heart.fill" : "heart")
 					.foregroundColor(.heartRed)

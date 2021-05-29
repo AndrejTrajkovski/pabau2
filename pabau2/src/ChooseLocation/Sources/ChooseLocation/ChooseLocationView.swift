@@ -15,26 +15,35 @@ public struct ChooseLocationView: View {
     }
 
     public var body: some View {
-        VStack {
-            SearchView(
-                placeholder: "Search",
-                text: viewStore.binding(
-                    get: \.searchText,
-                    send: ChooseLocationAction.onSearch)
-            )
-            List {
-                ForEach(self.viewStore.state.filteredLocations, id: \.id) { employee in
-                    TextAndCheckMark(
-                        employee.name,
-                        employee.id == self.viewStore.state.chosenLocation?.id
-                    ).onTapGesture {
-                        self.viewStore.send(.didSelectLocation(employee))
-                    }
-                }
-            }
-        }
-        .onAppear {
-            self.viewStore.send(.onAppear)
+		VStack {
+			HStack {
+				SearchView(
+					placeholder: "Search",
+					text: viewStore.binding(
+						get: \.searchText,
+						send: ChooseLocationAction.onSearch)
+				)
+				
+				ReloadButton(onReload: { viewStore.send(.reload) })
+			}
+			
+			switch viewStore.locationsLS {
+			case .initial, .gotSuccess:
+				List {
+					ForEach(self.viewStore.state.filteredLocations, id: \.id) { location in
+						TextAndCheckMark(
+							location.name,
+							location.id == self.viewStore.state.chosenLocationId
+						).onTapGesture {
+							self.viewStore.send(.didSelectLocation(location.id))
+						}
+					}
+				}
+			case .loading:
+				LoadingSpinner()
+			case .gotError(let error):
+				Text("Error loading locations.")
+			}
         }
         .padding()
         .navigationBarTitle("Locations")

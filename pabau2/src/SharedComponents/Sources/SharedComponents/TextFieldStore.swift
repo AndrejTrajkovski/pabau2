@@ -26,7 +26,7 @@ public struct TitleAndTextField: View {
 	let tfLabel: String
 	let store: Store<String, TextChangeAction>
 	public var body: some View {
-		TitleAndLowerContent(title) {
+		TitleAndLowerContent(title, .constant(nil)) {
 			TextFieldStore(tfLabel: tfLabel, store: store)
 				.foregroundColor(Color.textFieldAndTextLabel)
 				.font(.semibold15)

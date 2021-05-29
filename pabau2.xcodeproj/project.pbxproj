@@ -13,7 +13,6 @@
 		08C726EA25876D9400F622CB /* SFProText-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 08C726E82587684300F622CB /* SFProText-MediumItalic.ttf */; };
 		08C726EB25876D9700F622CB /* SFProText-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 08C726E7258764C100F622CB /* SFProText-Semibold.ttf */; };
 		08CF80E52645625500A206BA /* ChoosePathway in Frameworks */ = {isa = PBXBuildFile; productRef = 08CF80E42645625500A206BA /* ChoosePathway */; };
-		08D74502264917F2000605FD /* JourneyBase in Frameworks */ = {isa = PBXBuildFile; productRef = 08D74501264917F2000605FD /* JourneyBase */; };
 		08DC047D26613910003846DA /* ToastAlert in Frameworks */ = {isa = PBXBuildFile; productRef = 08DC047C26613910003846DA /* ToastAlert */; };
 		745E58A225D28B3A00EDD10D /* Appointments in Resources */ = {isa = PBXBuildFile; fileRef = 745E58A125D28B3A00EDD10D /* Appointments */; };
 		74DD9D34256EAB1A00CC3920 /* Communication in Frameworks */ = {isa = PBXBuildFile; productRef = 74DD9D33256EAB1A00CC3920 /* Communication */; };
@@ -62,7 +61,6 @@
 		08C726E7258764C100F622CB /* SFProText-Semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-Semibold.ttf"; sourceTree = "<group>"; };
 		08C726E82587684300F622CB /* SFProText-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-MediumItalic.ttf"; sourceTree = "<group>"; };
 		08CF80E32645593B00A206BA /* ChoosePathway */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ChoosePathway; sourceTree = "<group>"; };
-		08D74500264916F4000605FD /* JourneyBase */ = {isa = PBXFileReference; lastKnownFileType = folder; path = JourneyBase; sourceTree = "<group>"; };
 		08DC047B266132A4003846DA /* ToastAlert */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ToastAlert; sourceTree = "<group>"; };
 		08EF32862588FC5F00E862B3 /* SFProText-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-Regular.ttf"; sourceTree = "<group>"; };
 		745E58A125D28B3A00EDD10D /* Appointments */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Appointments; sourceTree = "<group>"; };
@@ -99,6 +97,7 @@
 		82E9C11D24D0242E0023B98B /* Util */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Util; sourceTree = "<group>"; };
 		82E9C11E24D024E50023B98B /* Model */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Model; sourceTree = "<group>"; };
 		82E9C12524D035A60023B98B /* Journey */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Journey; sourceTree = "<group>"; };
+		82EF76FA265A876F006253AA /* ChooseLocationAndEmployee */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ChooseLocationAndEmployee; sourceTree = "<group>"; };
 		82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PabauTabBar.swift; sourceTree = "<group>"; };
 		BA6FD88D26454B1F00ACB1B2 /* CoreDataModel */ = {isa = PBXFileReference; lastKnownFileType = folder; path = CoreDataModel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -108,7 +107,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				08D74502264917F2000605FD /* JourneyBase in Frameworks */,
 				82182C4F25265C5D00E5479F /* FSCalendarSwiftUI in Frameworks */,
 				8223F5F0265115FD0056023C /* CalendarList in Frameworks */,
 				08DC047D26613910003846DA /* ToastAlert in Frameworks */,
@@ -201,10 +199,11 @@
 			isa = PBXGroup;
 			children = (
 				08DC047B266132A4003846DA /* ToastAlert */,
+				BA6FD88D26454B1F00ACB1B2 /* CoreDataModel */,
+				82EF76FA265A876F006253AA /* ChooseLocationAndEmployee */,
 				8258EB2B265817C6008BA5A2 /* ChooseLocation */,
 				8258EB2A26580E0F008BA5A2 /* ChooseEmployees */,
 				8223F5EC264FB9F20056023C /* CalendarList */,
-				08D74500264916F4000605FD /* JourneyBase */,
 				08CF80E32645593B00A206BA /* ChoosePathway */,
 				08C19B32264BC26E00465BDA /* AppointmentDetails */,
 				82E9C12524D035A60023B98B /* Journey */,
@@ -225,7 +224,6 @@
 				82E9C11C24D021550023B98B /* Login */,
 				829D61FF24D18CF90049D5D0 /* FSCalendarSwiftUI */,
 				82E9C11E24D024E50023B98B /* Model */,
-				BA6FD88D26454B1F00ACB1B2 /* CoreDataModel */,
 				82E9C11D24D0242E0023B98B /* Util */,
 				8297A2B123D9BA0200D091FF /* Locales */,
 				82BE2F4723D97D9C00B3678A /* AppDelegate.swift */,
@@ -277,7 +275,6 @@
 				74DD9D33256EAB1A00CC3920 /* Communication */,
 				0854E6B425F12331007087B8 /* EPaper */,
 				08CF80E42645625500A206BA /* ChoosePathway */,
-				08D74501264917F2000605FD /* JourneyBase */,
 				BA6FD88E2645616C00ACB1B2 /* CoreDataModel */,
 				BA6FD891264565E400ACB1B2 /* CoreStore */,
 				8223F5EF265115FD0056023C /* CalendarList */,
@@ -657,10 +654,6 @@
 		08CF80E42645625500A206BA /* ChoosePathway */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ChoosePathway;
-		};
-		08D74501264917F2000605FD /* JourneyBase */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = JourneyBase;
 		};
 		08DC047C26613910003846DA /* ToastAlert */ = {
 			isa = XCSwiftPackageProductDependency;

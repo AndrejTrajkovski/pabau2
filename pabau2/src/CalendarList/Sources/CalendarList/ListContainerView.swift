@@ -18,7 +18,6 @@ public typealias ListCalendarEnvironment = (
 let listCalendarReducer: Reducer<ListState, ListAction, ListCalendarEnvironment> =
 	.combine (
 		.init { state, action, environment in
-            struct SearchJourneyId: Hashable {}
 
 			switch action {
 			
@@ -105,27 +104,44 @@ struct LocationSectionState: Equatable, Identifiable {
 
 struct LocationSection: View {
 	let store: Store<LocationSectionState, LocationSectionAction>
-	@ObservedObject var viewStore: ViewStore<String, Never>
+	@ObservedObject var viewStore: ViewStore<State, Never>
+	
+	struct State: Equatable {
+		let showAppointments: Bool
+		let locationName: String
+		
+		init(state: LocationSectionState) {
+			self.showAppointments = !state.appointments.isEmpty
+			self.locationName = state.location.name
+		}
+	}
 	
 	init(store: Store<LocationSectionState, LocationSectionAction>) {
 		self.store = store
-		self.viewStore = ViewStore(store.scope(state: { $0.location.name }).actionless)
+		self.viewStore = ViewStore(store.scope(state: State.init(state:)).actionless)
 	}
 	
 	var body: some View {
 		Section.init(header:
-						Text(viewStore.state)
+						Text(viewStore.locationName)
 						.padding(.leading, 16)
 						.font(.semibold20)
 						.frame(maxWidth: .infinity, alignment: .leading)
-		,
-		content: {
-			Divider()
-			ForEachStore(store.scope(state: { $0.appointments },
-									 action: LocationSectionAction.rows(id:action:)),
-						 content: ListCellStoreRow.init(store:)
-			)
-		})
+					 ,
+					 content: {
+						if viewStore.showAppointments {
+							ForEachStore(store.scope(state: { $0.appointments },
+													 action: LocationSectionAction.rows(id:action:)),
+										 content: ListCellStoreRow.init(store:)
+							)
+						} else {
+							Text("No Appointments here.").italic()
+								.frame(maxWidth: .infinity, alignment: .leading)
+								.padding(.leading, 16)
+						}
+						Divider()
+					 }
+		)
 	}
 }
 

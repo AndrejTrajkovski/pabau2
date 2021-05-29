@@ -1,19 +1,18 @@
 import Model
 import ComposableArchitecture
+import Util
 
 public struct ChooseLocationState: Equatable {
-	public var isChooseLocationActive: Bool
-	public var locations: IdentifiedArrayOf<Location> = []
-	public var filteredLocations: IdentifiedArrayOf<Location> = []
-	public var chosenLocation: Location?
-	public var searchText: String = "" {
-		didSet {
-			isSearching = !searchText.isEmpty
-		}
-	}
-	public var isSearching = false
-
-	public init(isChooseLocationActive: Bool) {
-		self.isChooseLocationActive = isChooseLocationActive
+	public var locations: IdentifiedArrayOf<Location>
+	public var filteredLocations: IdentifiedArrayOf<Location>
+	public var chosenLocationId: Location.Id?
+	public var searchText: String = ""
+	public var locationsLS: LoadingState = .initial
+	
+	public init(locations: IdentifiedArrayOf<Location>,
+				chosenLocationId: Location.Id?) {
+		self.locations = locations
+		self.chosenLocationId = chosenLocationId
+		self.filteredLocations = locations
 	}
 }

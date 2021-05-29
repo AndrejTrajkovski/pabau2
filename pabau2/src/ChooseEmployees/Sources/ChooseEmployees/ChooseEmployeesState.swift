@@ -1,19 +1,25 @@
 import ComposableArchitecture
 import Model
+import Util
 
 public struct ChooseEmployeesState: Equatable {
-	public var isChooseEmployeesActive: Bool = false
-	public var employees: IdentifiedArrayOf<Employee> = []
-	public var filteredEmployees: IdentifiedArrayOf<Employee> = []
-	public var chosenEmployee: Employee?
-	public var searchText: String = "" {
-		didSet {
-			isSearching = !searchText.isEmpty
+	public var employees: IdentifiedArrayOf<Employee>
+	public var filteredEmployees: IdentifiedArrayOf<Employee>
+	public var chosenEmployeeId: Employee.Id?
+	public var employeesLS: LoadingState = .initial
+	
+	public var chosenEmployee: Employee? {
+		return chosenEmployeeId.flatMap {
+			employees[id: $0]
 		}
 	}
-	public var isSearching = false
+	
+	public var searchText: String = ""
 
-	public init(chosenEmployee: Employee?) {
-		self.chosenEmployee = chosenEmployee
+	public init(chosenEmployeeId: Employee.Id?,
+				employees: IdentifiedArrayOf<Employee>) {
+		self.chosenEmployeeId = chosenEmployeeId
+		self.employees = employees
+		self.filteredEmployees = employees
 	}
 }

@@ -50,9 +50,6 @@ public struct ClientsState: Equatable {
 	var addClient: AddClientState?
 	var selectedClient: ClientCardState?
     var searchText: String = ""
-    var isSearching = false
-    var notFoundClients = false
-    var isClientsLoading = false
 }
 
 public enum ClientsAction: Equatable {
@@ -62,15 +59,13 @@ public enum ClientsAction: Equatable {
 }
 
 public struct ClientsNavigationView: View {
+	
 	let store: Store<ClientsState, ClientsAction>
-//	@ObservedObject var viewStore: ViewStore<ViewState, ClientsAction>
-	struct ViewState: Equatable { init() {} }
+	
 	public init(_ store: Store<ClientsState, ClientsAction>) {
 		self.store = store
-//		self.viewStore = ViewStore(store
-//			.scope(state: {_ in ViewState()},
-//						 action: { $0 }))
 	}
+	
 	public var body: some View {
 		NavigationView {
 			ClientsList(store: self.store.scope(state: { $0 }, action: { .list($0) }))

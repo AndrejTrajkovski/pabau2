@@ -42,10 +42,11 @@ let chooseClientsReducer =
                     search: nil,
                     offset: state.clients.count
                 )
+				.receive(on: DispatchQueue.main)
                 .catchToEffect()
                 .map(ChooseClientsAction.gotClientsResponse)
-                
                 .eraseToEffect()
+			
         case .gotClientsResponse(let result):
             switch result {
             case .success(let clients):

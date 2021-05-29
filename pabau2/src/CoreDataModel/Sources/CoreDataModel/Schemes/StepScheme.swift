@@ -1,7 +1,6 @@
 import CoreStore
 import Util
 
-
 public class StepScheme: CoreStoreObject {
     @Field.Relationship("master")
     var master: PathwayTemplateScheme?

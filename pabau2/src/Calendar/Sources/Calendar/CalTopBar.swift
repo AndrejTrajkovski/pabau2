@@ -15,7 +15,7 @@ struct CalTopBar: View {
 	var body: some View {
 		VStack(spacing: 0) {
 			ZStack {
-				addButtons
+				addButton
 					.padding(.leading, 20)
 					.exploding(.leading)
 				CalendarTypePicker(
@@ -50,15 +50,15 @@ struct CalTopBar: View {
 		}
 	}
 	
-	var addButtons: some View {
+	var addButton: some View {
 		HStack {
 			PlusButton {
-				withAnimation(Animation.easeIn(duration: 0.5)) {
-					self.viewStore.send(.addAppointmentTap)
-				}
-			}
-			PlusButton {
-				self.viewStore.send(.onAddShift)
+				viewStore.send(.addEventDropdownToggle(true))
+			}.popover(isPresented:
+						viewStore.binding(
+							get: { $0.isAddEventDropdownShown },
+							send: CalendarAction.addEventDropdownToggle(false))) {
+				AddEventDropdown(store: store.stateless)
 			}
 		}
 	}

@@ -117,7 +117,11 @@ Tap the aftercare bellow that you wish to send to the client. The aftercare will
 	public static let recallsDesc = """
 	You can schedule an email or sms to the client X amiunt of days after the appointment.
 	"""
-
+	
+	public static let addBookout = "Add Bookout"
+	public static let addAppointment = "Add Appointment"
+	public static let addShift = "Add Shift"
+	
 	public static let addPhotos = "Add Photos"
 	public static let editPhotos = "Edit Photos"
 
@@ -136,6 +140,7 @@ Tap the aftercare bellow that you wish to send to the client. The aftercare will
 	public static let `repeat` = "Repeat".localized
 	public static let documents = "Documents".localized
 	public static let reschedule = "Reschedule".localized
+	public static let startPathway = "Start Pathway".localized
 
 	public static let clients = "Clients"
 	public static let clientSearchPlaceholder = "Search by first name, last name or email"

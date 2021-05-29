@@ -17,7 +17,15 @@ public struct ListState: Equatable {
 
 public struct ListContainerState: Equatable {
 	
-	public init(appsLS: LoadingState, list: ListState, appointments: ListAppointments, locations: IdentifiedArrayOf<Location>, employees: [Location.Id : IdentifiedArrayOf<Employee>], chosenEmployeesIds: [Location.Id : [Employee.Id]], expandedLocationsIds: Set<Location.Id>, selectedDate: Date, chosenLocationsIds: Set<Location.Id>) {
+	public init(appsLS: LoadingState,
+				list: ListState,
+				appointments: ListAppointments,
+				locations: IdentifiedArrayOf<Location>,
+				employees: [Location.Id : IdentifiedArrayOf<Employee>],
+				chosenEmployeesIds: [Location.Id : [Employee.Id]],
+				expandedLocationsIds: Set<Location.Id>,
+				selectedDate: Date,
+				chosenLocationsIds: Set<Location.Id>) {
 		self.appsLS = appsLS
 		self.list = list
 		self.appointments = appointments

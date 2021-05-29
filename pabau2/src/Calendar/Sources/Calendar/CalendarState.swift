@@ -23,7 +23,8 @@ public struct CalendarState: Equatable {
 	var appsLS: LoadingState
 	var list: ListState
 	public var appointments: Appointments
-	var isDropdownShown: Bool
+	public var isAddEventDropdownShown: Bool
+	var isCalendarTypeDropdownShown: Bool
 	var shifts: [Date: [Location.ID: [Employee.ID: [JZShift]]]]
 	public var locations: IdentifiedArrayOf<Location>
 	public var employees: [Location.Id: IdentifiedArrayOf<Employee>]
@@ -48,12 +49,12 @@ extension CalendarState {
 	var calTypePicker: CalendarTypePickerState {
 		get {
 			CalendarTypePickerState(
-                isDropdownShown: isDropdownShown,
+                isCalendarTypeDropdownShown: isCalendarTypeDropdownShown,
                 appointments: appointments
             )
 		}
 		set {
-			self.isDropdownShown = newValue.isDropdownShown
+			self.isCalendarTypeDropdownShown = newValue.isCalendarTypeDropdownShown
 			self.appointments = newValue.appointments
 		}
 	}
@@ -131,7 +132,9 @@ extension CalendarState {
 				appointments: apps,
 				selectedDate: selectedDate,
 				addBookout: addBookoutState,
-				appDetails: appDetails
+				appDetails: appDetails,
+				locations: locations,
+				employees: employees
 			)
 		}
 		set {
@@ -228,7 +231,7 @@ extension CalendarState {
 
 extension CalendarState {
 	public init() {
-		self.isDropdownShown = false
+		self.isCalendarTypeDropdownShown = false
 		self.shifts = [:]
 		self.isShowingFilters = false
 		self.locations = []
@@ -246,6 +249,7 @@ extension CalendarState {
 		self.employeesLS = .loading
 		self.roomsLS = .loading
 		self.appsLS = .initial
+		self.isAddEventDropdownShown = false
 	}
 }
 
@@ -283,21 +287,37 @@ extension CalendarState {
 	}
 }
 
-//func group(rooms: [Room]) -> [Location.ID: IdentifiedArrayOf<Room>] {
-//	
-//	let locations = Set(rooms.flatMap(\.locationIds))
-//	var result: [Location.Id: IdentifiedArrayOf<Room>] = [:]
-//	
-//	locations.forEach { locationId in
-//		rooms.forEach { room in
-//			if room.locationIds.contains(locationId) {
-//				if result[locationId] != nil {
-//					result[locationId]!.append(room)
-//				} else {
-//					result[locationId] = IdentifiedArray()
-//				}
-//			}
+extension CalendarState {
+	
+	public mutating func update(locationsResult: Result<[Location], RequestError>) {
+		switch locationsResult {
+		case .success(let locationsSuccess):
+			locationsLS = .gotSuccess
+			locations = .init(locationsSuccess)
+			chosenLocationsIds = Set(locations.map(\.id))
+		case .failure(let error):
+			locationsLS = .gotError(error)
+		}
+	}
+	
+	public mutating func update(employeesResult: Result<[Employee], RequestError>) {
+		switch employeesResult {
+		case .success(let employeesSuccess):
+			employeesLS = .gotSuccess
+			employees = groupDict(elements: employeesSuccess, keyPath: \Employee.locations)
+			chosenEmployeesIds = employees.mapValues {
+				$0.map(\.id)
+			}
+		case .failure(let error):
+			locationsLS = .gotError(error)
+		}
+//		switch locationsResult {
+//		case .success(let locations):
+//			locationsLS = .gotSuccess
+//			self.locations = .init(locations)
+//			chosenLocationsIds = Set(locations.map(\.id))
+//		case .failure(let error):
+//			locationsLS = .gotError(error)
 //		}
-//	}
-//	return result
-//}
+	}
+}

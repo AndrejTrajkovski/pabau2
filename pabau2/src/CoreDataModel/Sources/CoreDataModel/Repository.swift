@@ -4,7 +4,7 @@ import Combine
 import Util
 import CoreStore
 
-public final class Repository {
+public final class Repository: RepositoryProtocol {
 	
 	public let journeyAPI: JourneyAPI
 	public let clientAPI: ClientsAPI
@@ -60,9 +60,45 @@ public final class Repository {
             .map { SuccessState(state: $0, isFromDB: true) }
 	}
     
+    public func getServices() -> Effect<SuccessState<[Service]>, RequestError> {
+        let countDB = self.coreDataModel.fetchCount(ServiceScheme.self)
+
+        if countDB == 0 {
+            return self.clientAPI.getServices()
+                .map {
+                    let state = SuccessState(state: $0, isFromDB: false)
+                    state.state.forEach { $0.save(to: self.coreDataModel)}
+                    log("Saved to DB")
+                    return state
+                }
+        }
+        
+        return self.coreDataModel.fetchAllSchemes(ServiceScheme.self)
+            .map(Service.convert(from:))
+            .map { SuccessState(state: $0, isFromDB: true) }
+    }
+    
+    public func getRooms() -> Effect<SuccessState<[Room]>, RequestError> {
+        let countDB = self.coreDataModel.fetchCount(RoomScheme.self)
+        
+        if countDB == 0 {
+            return self.journeyAPI.getRooms()
+                .map {
+                    let state = SuccessState(state: $0, isFromDB: false)
+                    state.state.forEach { $0.save(to: self.coreDataModel)}
+                    log("Saved to DB")
+                    return state
+                }
+        }
+        
+        return self.coreDataModel.fetchAllSchemes(RoomScheme.self)
+            .map(Room.convert(from:))
+            .map { SuccessState(state: $0, isFromDB: true) }
+    }
+    
     public func getEmployees() -> Effect<SuccessState<[Employee]>, RequestError> {
         let countDB = self.coreDataModel.fetchCount(EmployeeScheme.self)
-        
+
         if countDB == 0 {
             return self.journeyAPI.getEmployees()
                 .map {
@@ -101,21 +137,20 @@ public final class Repository {
 
     public func getPathwayTemplates() -> Effect<SuccessState<IdentifiedArrayOf<PathwayTemplate>>, RequestError> {
         let countDB = self.coreDataModel.fetchCount(PathwayTemplateScheme.self)
-        
+
         if countDB == 0 {
             return self.journeyAPI.getPathwayTemplates()
                 .map {
                     let state = SuccessState(state: IdentifiedArrayOf.init($0), isFromDB: false)
                     state.state.forEach { $0.save(to: self.coreDataModel)}
                     log("Saved to DB")
-                    
+      
                     return  state
                 }
         }
-     
+
         return self.coreDataModel.fetchAllSchemes(PathwayTemplateScheme.self)
             .map(PathwayTemplate.convert(from:))
             .map { SuccessState(state: IdentifiedArrayOf.init($0), isFromDB: true) }
     }
 }
-

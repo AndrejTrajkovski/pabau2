@@ -12,7 +12,7 @@ let package = Package(
             targets: ["ChoosePathway"])
     ],
     dependencies: [
-        .package(url: "../JourneyBase",
+        .package(url: "../SharedComponents",
                  from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../CoreDataModel",
 				 from: Version.init(stringLiteral: "1.0.0"))
@@ -20,7 +20,7 @@ let package = Package(
     targets: [
         .target(
             name: "ChoosePathway",
-            dependencies: ["JourneyBase",
+            dependencies: ["SharedComponents",
 						   "CoreDataModel"]),
         .testTarget(
             name: "ChoosePathwayTests",

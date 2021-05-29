@@ -3,12 +3,15 @@ import SwiftDate
 import Model
 import AddBookout
 import AppointmentDetails
+import ChooseLocationAndEmployee
 
 public struct CalendarWeekViewState: Equatable {
 	var appointments: [Date: IdentifiedArrayOf<CalendarEvent>]
 	var selectedDate: Date
 	var addBookout: AddBookoutState?
 	var appDetails: AppDetailsState?
+	let locations: IdentifiedArrayOf<Location>
+	let employees: [Location.ID: IdentifiedArrayOf<Employee>]
 }
 
 public let calendarWeekViewReducer: Reducer<CalendarWeekViewState, CalendarWeekViewAction, CalendarEnvironment> = .init { state, action, env in
@@ -38,8 +41,9 @@ public let calendarWeekViewReducer: Reducer<CalendarWeekViewState, CalendarWeekV
 	case .addBookout(let startOfDayDate,
 					 let startDate,
 					 let durationMins):
-		state.addBookout = AddBookoutState(employees: IdentifiedArrayOf([]),
-										   chosenEmployee: nil,
+		let chooseLocAndEmp = ChooseLocationAndEmployeeState(locations: state.locations,
+															 employees: state.employees)
+		state.addBookout = AddBookoutState(chooseLocAndEmp: chooseLocAndEmp,
 										   start: startDate)
 	case .onSelect(startOfDayDate: let startOfDayDate, eventId: let eventId):
 		let calId = CalendarEvent.ID.init(rawValue: eventId)

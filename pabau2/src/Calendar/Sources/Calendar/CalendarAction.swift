@@ -8,11 +8,12 @@ import CalendarList
 import AppointmentDetails
 
 public enum CalendarAction {
-	case addAppointmentTap
+	case addEventDelay(EventType)
+	case onAddEvent(EventType)
+	case addEventDropdownToggle(Bool)
 	case gotAppointmentsResponse(Result<AppointmentsResponse, RequestError>)
 	case datePicker(CalendarDatePickerAction)
 	case calTypePicker(CalendarTypePickerAction)
-	case onAddShift
 	case addShift(AddShiftAction)
 	case toggleFilters
 	case room(SubsectionCalendarAction<Room>)

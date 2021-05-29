@@ -13,6 +13,7 @@ import Intercom
 import Appointments
 import CoreDataModel
 import CalendarList
+import ChooseLocationAndEmployee
 
 public typealias TabBarEnvironment = (
 	loginAPI: LoginAPI,
@@ -20,14 +21,14 @@ public typealias TabBarEnvironment = (
 	clientsAPI: ClientsAPI,
 	formAPI: FormAPI,
 	userDefaults: UserDefaultsConfig,
-    repository: Repository
+	repository: Repository
 )
 
 public struct TabBarState: Equatable {
 	var clients: ClientsState
 	var calendar: CalendarState
 	var settings: SettingsState
-    var communication: CommunicationState
+	var communication: CommunicationState
 	var addAppointment: AddAppointmentState?
 }
 
@@ -36,7 +37,7 @@ public enum TabBarAction {
 	case clients(ClientsAction)
 	case calendar(CalendarAction)
 	case addAppointment(AddAppointmentAction)
-    case communication(CommunicationAction)
+	case communication(CommunicationAction)
 }
 
 struct PabauTabBar: View {
@@ -46,7 +47,7 @@ struct PabauTabBar: View {
 		let isShowingCheckin: Bool
 		let isShowingAddAppointment: Bool
 		init(state: TabBarState) {
-//			self.isShowingCheckin = false state.journeyContainer?.journey.checkIn != nil
+			//			self.isShowingCheckin = false state.journeyContainer?.journey.checkIn != nil
 			self.isShowingAddAppointment = state.addAppointment != nil
 			self.isShowingCheckin = false
 		}
@@ -57,7 +58,7 @@ struct PabauTabBar: View {
 		self.viewStore = ViewStore(store.scope(state: ViewState.init(state:),
 											   action: { $0 }))
 	}
-
+	
 	var body: some View {
 		TabView {
 			calendar()
@@ -65,12 +66,12 @@ struct PabauTabBar: View {
 			settings()
 			communication()
 		}
-//		.modalLink(isPresented: .constant(self.viewStore.state.isShowingCheckin),
-//				   linkType: ModalTransition.circleReveal,
-//				   destination: {
-//					checkIn()
-//				   }
-//		)
+		//		.modalLink(isPresented: .constant(self.viewStore.state.isShowingCheckin),
+		//				   linkType: ModalTransition.circleReveal,
+		//				   destination: {
+		//					checkIn()
+		//				   }
+		//		)
 		.fullScreenCover(isPresented: .constant(self.viewStore.state.isShowingAddAppointment)) {
 			addAppointment()
 		}
@@ -100,7 +101,7 @@ struct PabauTabBar: View {
 			self.viewStore.send(.clients(ClientsAction.onAppearNavigationView))
 		}
 	}
-
+	
 	fileprivate func settings() -> some View {
 		return Settings(store:
 							store.scope(state: { $0.settings },
@@ -110,7 +111,7 @@ struct PabauTabBar: View {
 				Text("Settings")
 			}
 	}
-
+	
 	fileprivate func communication() -> some View {
 		return CommunicationView(store:
 									store.scope(state: { $0.communication },
@@ -120,15 +121,15 @@ struct PabauTabBar: View {
 				Text("Intercom")
 			}
 	}
-
-//	fileprivate func checkIn() -> IfLetStore<CheckInContainerState, CheckInContainerAction, CheckInNavigationView?> {
-//		return IfLetStore(self.store.scope(
-//			state: { $0.journeyContainer?.journey.checkIn },
-//			action: { .journey(.journey(.checkIn($0))) }
-//		),
-//		then: CheckInNavigationView.init(store:))
-//	}
-
+	
+	//	fileprivate func checkIn() -> IfLetStore<CheckInContainerState, CheckInContainerAction, CheckInNavigationView?> {
+	//		return IfLetStore(self.store.scope(
+	//			state: { $0.journeyContainer?.journey.checkIn },
+	//			action: { .journey(.journey(.checkIn($0))) }
+	//		),
+	//		then: CheckInNavigationView.init(store:))
+	//	}
+	
 	fileprivate func addAppointment() -> IfLetStore<AddAppointmentState, AddAppointmentAction, AddAppointment?> {
 		return IfLetStore(self.store.scope(
 			state: { $0.addAppointment },
@@ -139,16 +140,33 @@ struct PabauTabBar: View {
 }
 
 public let tabBarReducer: Reducer<
-    TabBarState,
-    TabBarAction,
-    TabBarEnvironment
+	TabBarState,
+	TabBarAction,
+	TabBarEnvironment
 > = Reducer.combine(
-
+	
 	.init { state, action, env in
 		
 		switch action {
-		case .calendar(.addAppointmentTap):
-			state.addAppointment = AddAppointmentState.dummy
+		
+		case .calendar(.onAddEvent(.appointment)):
+			state.calendar.isAddEventDropdownShown = false
+			let chooseLocAndEmp = ChooseLocationAndEmployeeState(locations: state.calendar.locations,
+																 employees: state.calendar.employees)
+			state.addAppointment = AddAppointmentState(chooseLocAndEmp: chooseLocAndEmp)
+			
+		case .addAppointment(
+				.chooseLocAndEmp(
+					.chooseLocation(
+						.gotLocationsResponse(let result)))):
+			state.calendar.update(locationsResult: result.map(\.state))
+			
+		case .addAppointment(
+				.chooseLocAndEmp(
+					.chooseEmployee(
+						.gotEmployeeResponse(let result)))):
+			state.calendar.update(employeesResult: result.map(\.state))
+			
 		default:
 			break
 		}
@@ -158,12 +176,12 @@ public let tabBarReducer: Reducer<
 		state: \TabBarState.addAppointment,
 		action: /TabBarAction.addAppointment,
 		environment: {
-            return AddAppointmentEnv(
-                journeyAPI: $0.journeyAPI,
-                clientAPI: $0.clientsAPI,
-                userDefaults: $0.userDefaults,
-                repository: $0.repository
-            )
+			return AddAppointmentEnv(
+				journeyAPI: $0.journeyAPI,
+				clientAPI: $0.clientsAPI,
+				userDefaults: $0.userDefaults,
+				repository: $0.repository
+			)
 		}
 	),
 	settingsReducer.pullback(
@@ -177,11 +195,11 @@ public let tabBarReducer: Reducer<
 				userDefaults: $0.userDefaults)
 		}
 	),
-//	journeyContainerReducer.optional().pullback(
-//		state: \TabBarState.journeyContainer,
-//		action: /TabBarAction.journey,
-//		environment: makeJourneyEnv(_:)
-//	),
+	//	journeyContainerReducer.optional().pullback(
+	//		state: \TabBarState.journeyContainer,
+	//		action: /TabBarAction.journey,
+	//		environment: makeJourneyEnv(_:)
+	//	),
 	showAddAppointmentReducer.pullback(
 		state: \TabBarState.self,
 		action: /TabBarAction.calendar,
@@ -199,9 +217,9 @@ public let tabBarReducer: Reducer<
 			return CalendarEnvironment(
 				journeyAPI: $0.journeyAPI,
 				clientsAPI: $0.clientsAPI,
-                userDefaults: $0.userDefaults,
-                repository: $0.repository
-            )
+				userDefaults: $0.userDefaults,
+				repository: $0.repository
+			)
 		}),
 	communicationReducer.pullback(
 		state: \TabBarState.communication,
@@ -220,39 +238,57 @@ public let tabBarReducer: Reducer<
 		case .communication(.carousel):
 			Intercom.presentCarousel("13796318")
 			return .none
-        default:
-            break
-        }
-
-        return .none
-    }
+		default:
+			break
+		}
+		
+		return .none
+	}
 )
 
 public let showAddAppointmentReducer: Reducer<TabBarState, CalendarAction, Any> = .init { state, action, env in
+	
+	var chooseLocAndEmp = ChooseLocationAndEmployeeState(locations: state.calendar.locations,
+														 employees: state.calendar.employees)
+	
 	switch action {
+	
 	case .employee(.addAppointment(let startDate, let durationMins, let dropKeys)):
 		let (location, subsection) = dropKeys
 		let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
-		let employee = state.calendar.employees[location]?[id: subsection]
-		employee.map {
-			state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate, employee: $0)
-		}
+		chooseLocAndEmp.chosenLocationId = location
+		chooseLocAndEmp.chosenEmployeeId = subsection
+		state.addAppointment = AddAppointmentState(
+			startDate: startDate,
+			endDate: endDate,
+			chooseLocAndEmp: chooseLocAndEmp
+		)
 	case .room(.addAppointment(let startDate, let durationMins, let dropKeys)):
 		let (location, subsection) = dropKeys
 		let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
 		let room = state.calendar.rooms[location]?[id: subsection]
-		state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate)
+		//TODO: Add room in AddAppointment
+		state.addAppointment = AddAppointmentState(
+			startDate: startDate,
+			endDate: endDate,
+			chooseLocAndEmp: chooseLocAndEmp
+		)
 	case .week(.addAppointment(let startOfDayDate, let startDate, let durationMins)):
 		let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
-		state.addAppointment = AddAppointmentState.init(startDate: startDate, endDate: endDate)
-    case .showAddApp(let start, let end, let employee):
-		state.addAppointment = AddAppointmentState.init(
+		state.addAppointment = AddAppointmentState(startDate: startDate,
+												   endDate: endDate,
+												   chooseLocAndEmp: chooseLocAndEmp)
+	case .showAddApp(let start, let end, let employee):
+		state.addAppointment = AddAppointmentState(
 			startDate: start,
 			endDate: end,
-			employee: employee
+			chooseLocAndEmp: chooseLocAndEmp
 		)
 	case .week(.editAppointment(let appointment)):
-		state.addAppointment = AddAppointmentState.init(editingAppointment: appointment, startDate: appointment.start_date, endDate: appointment.end_date)
+		state.addAppointment = AddAppointmentState(editingAppointment: appointment,
+												   startDate: appointment.start_date,
+												   endDate: appointment.end_date,
+												   chooseLocAndEmp: chooseLocAndEmp)
 	default:
 		break
 	}

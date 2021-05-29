@@ -1,8 +1,3 @@
-//
-//  DisplayView.swift
-//
-//
-
 import SwiftUI
 import ToastUI
 import ComposableArchitecture
@@ -17,7 +12,7 @@ struct DisplayView: View {
     public var body: some View {
         WithViewStore(store) { viewStore in
             Button(action: {
-                viewStore.send(.onDisplay)
+                
             }, label: {
                 Text("Tap me")
                     .padding()
@@ -25,9 +20,8 @@ struct DisplayView: View {
                     .foregroundColor(.white)
                     .cornerRadius(10)
             })
-            .toast(isPresented: viewStore.binding(
-                    get: { $0.isPresented },
-                    send: ToastAction.onDisplay)) {
+			.toast(isPresented: .constant(viewStore.isPresented),
+				   onDismiss: { viewStore.send(.dismiss) }) {
                 ToastView("Loading...")
                     .toastViewStyle(IndefiniteProgressToastViewStyle())
             }

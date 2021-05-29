@@ -14,6 +14,7 @@ import JZCalendarWeekView
 import CoreDataModel
 import Overture
 import AppointmentDetails
+import ChooseLocationAndEmployee
 
 public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, CalendarEnvironment> = .combine(
 	calTypePickerReducer.pullback(
@@ -77,7 +78,13 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 		}
 		
 		switch action {
-        
+		
+		case .addEventDelay(let eventType):
+			state.isAddEventDropdownShown = false
+			return Just(CalendarAction.onAddEvent(eventType))
+				.delay(for: 0.1, scheduler: DispatchQueue.main)
+				.eraseToEffect()
+			
 		case .gotAppointmentsResponse(let result):
 			switch result {
 			case .success(let calendarResponse):
@@ -109,11 +116,13 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 		case .employee(.addBookout(let startDate, let durationMins, let dropKeys)):
 			let (location, subsection) = dropKeys
 			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
-			let employees = state.employees[location] ?? []
-			let chosenEmployee = employees[id: subsection]
+			let chooseLocAndEmp = ChooseLocationAndEmployeeState(locations: state.locations,
+																 employees: state.employees,
+																 chosenLocationId: location,
+																 chosenEmployeeId: subsection)
+			
             state.addBookoutState = AddBookoutState(
-                employees: employees,
-                chosenEmployee: chosenEmployee?.id,
+				chooseLocAndEmp: chooseLocAndEmp,
                 start: startDate
             )
 		//- TODO Iurii
@@ -121,10 +130,14 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			let (location, subsection) = dropKeys
 			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
 			let employees = state.employees[location] ?? []
-			state.addBookoutState = AddBookoutState(employees: employees,
-															 chosenEmployee: nil,
-															 start: startDate)
-		
+			let chooseLocAndEmp = ChooseLocationAndEmployeeState(locations: state.locations,
+																 employees: state.employees,
+																 chosenLocationId: location)
+			state.addBookoutState = AddBookoutState(
+				chooseLocAndEmp: chooseLocAndEmp,
+				start: startDate
+			)
+			
 //                case .week(.editStartTime(let startOfDayDate, let startDate, let eventId, let startingPointStartOfDay)):
 //                    let calId = CalendarEvent.ID.init(rawValue: eventId)
 //                    var app = state.appointments[startingPointStartOfDay]?.remove(id: calId)
@@ -155,8 +168,11 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			state.appDetails = nil
 		case .onBookoutDismiss:
 			state.addBookoutState = nil
-		case .onAddShift:
-			state.addShift = AddShiftState.makeEmpty()
+		case .onAddEvent(.shift):
+			
+			let chooseLocAndEmp = ChooseLocationAndEmployeeState(locations: state.locations,
+																 employees: state.employees)
+			state.addShift = AddShiftState.makeEmpty(chooseLocAndEmp: chooseLocAndEmp)
 		case .toggleFilters:
 			
 			state.isShowingFilters.toggle()
@@ -169,31 +185,35 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			state.scope = state.scope == .week ? .month : .week
 		case .datePicker:
 			break
-		case .calTypePicker:
-			break
+		case .calTypePicker(.toggleDropdown):
+			if state.calTypePicker.isCalendarTypeDropdownShown {
+				state.isAddEventDropdownShown = false
+			}
 		case .room:
 			break
 		case .week:
 			break
 		case .employee:
 			break
-		case .addAppointmentTap:
-			break
-		case .addShift(_):
+		case .onAddEvent(.appointment):
 			break
 		case .appDetails(_):
 			break
-		case .addBookoutAction(_):
-			break
 		case .onAddShiftDismiss:
-			break
+			
+			state.addShift = nil
+			
 		case .showAddApp(startDate: _, endDate: _, employee: _):
 			break
+			
 		case .employeeFilters(.onHeaderTap), .roomFilters(.onHeaderTap):
+			
 			state.isShowingFilters.toggle()
 			guard !state.isShowingFilters else { return .none }
 			return getAppointments()
+			
 		case .roomFilters(.gotSubsectionResponse(let result)):
+			
 			if case .success = result,
 			   state.appsLS == .initial,
 			   state.locationsLS == .gotSuccess,
@@ -201,6 +221,7 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 				//load appointments after login if room is selected
 				return getAppointments()
 			}
+			
 		case .employeeFilters(.gotSubsectionResponse(let result)):
 			if case .success(_) = result,
 			   state.appsLS == .initial,
@@ -209,31 +230,60 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 				//load appointments after login if employee, week or list is selected
 				return getAppointments()
 			}
-		case .list(_):
-			break
+			
 		case .gotLocationsResponse(let result):
-			switch result {
-			case .success(let locations):
-				state.locationsLS = .gotSuccess
-				state.locations = .init(locations.state)
-				state.chosenLocationsIds = Set(locations.state.map(\.id))
-				if state.appsLS == .initial && state.employeesLS == .gotSuccess {
-					return getAppointments()
-				}
-			case .failure(let error):
-				state.locationsLS = .gotError(error)
+			state.update(locationsResult: result.map(\.state))
+			if state.appsLS == .initial && state.employeesLS == .gotSuccess {
+				return getAppointments()
 			}
+		case .addBookoutAction(.chooseLocAndEmp(.chooseLocation(.gotLocationsResponse(let result)))),
+			 .addShift(.chooseLocAndEmp(.chooseLocation(.gotLocationsResponse(let result)))):
+			state.update(locationsResult: result.map(\.state))
+		case .addBookoutAction(
+				.chooseLocAndEmp(
+					.chooseEmployee(
+						.gotEmployeeResponse(let result)))),
+			 .addShift(
+				.chooseLocAndEmp(
+					.chooseEmployee(
+						.gotEmployeeResponse(let result)))):
+			
+			state.update(employeesResult: result.map(\.state))
+			
+		case .onAddEvent(.bookout):
+			
+			let chooseLocAndEmp = ChooseLocationAndEmployeeState(locations: state.locations,
+																 employees: state.employees)
+			state.addBookoutState = AddBookoutState(chooseLocAndEmp: chooseLocAndEmp,
+													start: state.selectedDate)
+		case .addEventDropdownToggle(let value):
+			
+			state.isCalendarTypeDropdownShown = false
+			state.isAddEventDropdownShown = value
+		
+		case .list(.locationSection(id: let locId, action: .rows(id: let appId, action: .select))):
+			guard let app = state.listContainer?.appointments.appointments[locId]?.values.flatMap({ $0.elements }).first(where: { $0.id == appId }) else { break }
+			state.appDetails = AppDetailsState(app: app)
+			
 		case .roomFilters(.rows(id: let id, action: let action)):
-			break
-		case .roomFilters(.gotLocationsResponse(_)):
 			break
 		case .roomFilters(.reload):
 			break
 		case .employeeFilters(.rows(id: let id, action: let action)):
 			break
+		case .employeeFilters(.reload):
+			break
+		case .addBookoutAction:
+			break
+		case .addShift:
+			break
 		case .employeeFilters(.gotLocationsResponse(_)):
 			break
-		case .employeeFilters(.reload):
+		case .roomFilters(.gotLocationsResponse(_)):
+			break
+		case .list(.selectedFilter(_)):
+			break
+		case .list(.searchedText(_)):
 			break
 		}
 		return .none
@@ -273,17 +323,16 @@ public struct CalendarContainer: View {
                         get: { activeSheet(state: viewStore.state) != nil },
                         set: {
                             _ in dismissAction(state: viewStore.state).map(viewStore.send)
-                            viewStore.send(
-                                .datePicker(
-                                    .selectedDate(
-                                        viewStore.state.selectedDate
-                                    )
-                                )
-                            )
                         }
                     ),
                 content: {
                     Group {
+						IfLetStore(
+							store.scope(
+								state: { $0.addShift },
+								action: { .addShift($0) }),
+								then: AddShift.init(store:)
+						)
                         IfLetStore(
                             store.scope(
 								state: { $0.appDetails },
@@ -295,12 +344,6 @@ public struct CalendarContainer: View {
                                 state: { $0.addBookoutState },
                                 action: { .addBookoutAction($0) }),
                                 then: AddBookout.init(store:)
-                        )
-                        IfLetStore(
-                            store.scope(
-                                state: { $0.addShift },
-                                action: { .addShift($0) }),
-                                then: AddShift.init(store:)
                         )
                     }
                 }

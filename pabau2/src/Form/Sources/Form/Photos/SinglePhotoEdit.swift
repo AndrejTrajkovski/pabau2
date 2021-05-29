@@ -83,7 +83,7 @@ let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction,
                 "booking_id": "0",
                 "delete": "0",
                 "contact_id": UserDefaults.standard.string(forKey: "selectedClientId") ?? "",
-                "photo_id": state.editingPhotoId?.description ?? "",
+                "photo_id": state.editingPhotoId?.description ?? ""
             ]
             return env.formAPI
                 .uploadClientEditedImage(image: image.jpegData(compressionQuality: 0.5)!, params: params)

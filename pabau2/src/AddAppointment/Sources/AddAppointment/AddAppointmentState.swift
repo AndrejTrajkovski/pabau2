@@ -3,10 +3,10 @@ import Util
 import Foundation
 import SharedComponents
 import ComposableArchitecture
-import ChooseEmployees
-import ChooseLocation
+import ChooseLocationAndEmployee
 
 public struct AddAppointmentState: Equatable {
+	
 	let editingAppointment: Appointment?
 	var reminder: Bool
 	var email: Bool
@@ -18,15 +18,14 @@ public struct AddAppointmentState: Equatable {
 
 	var durations: SingleChoiceLinkState<Duration>
 	var participants: ChooseParticipantState
-	var chooseLocationState: ChooseLocationState
-	var with: ChooseEmployeesState
+	var chooseLocAndEmp: ChooseLocationAndEmployeeState
 	var services: ChooseServiceState
 	var clients: ChooseClientsState
 
-	var employeeConfigurator = ViewConfigurator(errorString: "Employee is required")
-	var chooseClintConfigurator = ViewConfigurator(errorString: "Client is required")
-	var chooseDateConfigurator = ViewConfigurator(errorString: "Day is required")
-	var chooseServiceConfigurator = ViewConfigurator(errorString: "Service is required")
+	var employeeValidator: String?
+	var chooseClintValidator: String?
+	var chooseDateValidator: String?
+	var chooseServiceValidator: String?
 
 	var showsLoadingSpinner: Bool
 	var alertBody: AlertBody?
@@ -39,8 +38,8 @@ public struct AddAppointmentState: Equatable {
 		return AppointmentBuilder(
 			isAllDay: self.isAllDay,
 			clientID: self.clients.chosenClient?.id,
-			locationID: self.chooseLocationState.chosenLocation?.id,
-			employeeID: self.with.chosenEmployee?.id.rawValue,
+			locationID: self.chooseLocAndEmp.chosenLocationId,
+			employeeID: self.chooseLocAndEmp.chosenEmployeeId?.rawValue,
 			serviceID: self.services.chosenService?.id.rawValue,
 			startTime: self.startDate,
 			duration: self.durations.dataSource.first(where: {$0.id == self.durations.chosenItemId})?.duration,
@@ -68,7 +67,8 @@ extension AddAppointmentState {
 	public init(
 		editingAppointment: Appointment? = nil,
 		startDate: Date,
-		endDate: Date
+		endDate: Date,
+		chooseLocAndEmp: ChooseLocationAndEmployeeState
 	) {
 		self.init(
 			editingAppointment: nil,
@@ -80,8 +80,7 @@ extension AddAppointmentState {
 			startDate: startDate,
 			durations: AddAppMocks.durationState,
 			participants: ChooseParticipantState(isChooseParticipantActive: false),
-			chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
-			with: ChooseEmployeesState(chosenEmployee: nil),
+			chooseLocAndEmp: chooseLocAndEmp,
 			services: ChooseServiceState(
 				isChooseServiceActive: false,
 				filterChosen: .allStaff
@@ -97,7 +96,8 @@ extension AddAppointmentState {
 	public init(
 		startDate: Date,
 		endDate: Date,
-		employee: Employee
+		employee: Employee,
+		chooseLocAndEmp: ChooseLocationAndEmployeeState
 	) {
 		self.init(
 			editingAppointment: nil,
@@ -109,8 +109,7 @@ extension AddAppointmentState {
 			startDate: startDate,
 			durations: AddAppMocks.durationState,
 			participants: ChooseParticipantState(isChooseParticipantActive: false),
-			chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
-			with: ChooseEmployeesState(chosenEmployee: employee),
+			chooseLocAndEmp: chooseLocAndEmp,
 			services: ChooseServiceState(
 				isChooseServiceActive: false,
 				filterChosen: .allStaff
@@ -126,59 +125,36 @@ extension AddAppointmentState {
 
 struct AddAppMocks {
 
-	static let serviceState: SingleChoiceLinkState<Service> =
-		SingleChoiceLinkState.init(
-			dataSource: [
-				Service.init(id: "1", name: "Botox", color: "", categoryName: "Injectables"),
-				Service.init(id: "2", name: "Fillers", color: "", categoryName: "Urethra"),
-				Service.init(id: "3", name: "Facial", color: "", categoryName: "Mosaic")
-			],
-			chosenItemId: "1",
-			isActive: false)
-
 	static let durationState: SingleChoiceLinkState<Duration> =
 		SingleChoiceLinkState.init(
 			dataSource: IdentifiedArray(Duration.all),
-			chosenItemId: 1,
-			isActive: false)
-
-	static let withState: SingleChoiceLinkState<Employee> =
-		SingleChoiceLinkState.init(
-			dataSource: [
-
-			],
-			chosenItemId: "456",
-			isActive: false)
-
-	static let participantsState: SingleChoiceLinkState<Employee> =
-		SingleChoiceLinkState.init(
-			dataSource: [
-			],
-			chosenItemId: "1",
-			isActive: false)
+			chosenItemId: nil,
+			isActive: false,
+			loadingState: .initial)
 }
 
 extension AddAppointmentState {
-	public static let dummy = AddAppointmentState.init(
-		editingAppointment: nil,
-		reminder: false,
-		email: false,
-		sms: false,
-		feedback: false,
-		isAllDay: false,
-		startDate: Date(),
-		durations: AddAppMocks.durationState,
-		participants: ChooseParticipantState(isChooseParticipantActive: false),
-		chooseLocationState: ChooseLocationState(isChooseLocationActive: false),
-		with: ChooseEmployeesState(chosenEmployee: nil),
-		services: ChooseServiceState(
-			isChooseServiceActive: false,
-			filterChosen: .allStaff
-		),
-		clients: ChooseClientsState(
-			isChooseClientsActive: false,
-			chosenClient: nil
-		),
-		showsLoadingSpinner: false
-	)
+	public init(chooseLocAndEmp: ChooseLocationAndEmployeeState) {
+		self.init(
+			editingAppointment: nil,
+			reminder: false,
+			email: false,
+			sms: false,
+			feedback: false,
+			isAllDay: false,
+			startDate: Date(),
+			durations: AddAppMocks.durationState,
+			participants: ChooseParticipantState(isChooseParticipantActive: false),
+			chooseLocAndEmp: chooseLocAndEmp,
+			services: ChooseServiceState(
+				isChooseServiceActive: false,
+				filterChosen: .allStaff
+			),
+			clients: ChooseClientsState(
+				isChooseClientsActive: false,
+				chosenClient: nil
+			),
+			showsLoadingSpinner: false
+		)
+	}
 }

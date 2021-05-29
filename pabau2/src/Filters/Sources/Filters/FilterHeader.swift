@@ -71,12 +71,7 @@ public struct FilterHeader<FilterImage: View>: View {
 				}
 			})
 			Spacer()
-			Button(action: {
-				onReload()
-			}, label: {
-				Image(systemName: "arrow.triangle.2.circlepath")
-					.font(.system(size: 24))
-			})
+			ReloadButton(onReload: onReload)
 		}
 		.padding()
 		.listRowInsets(EdgeInsets(

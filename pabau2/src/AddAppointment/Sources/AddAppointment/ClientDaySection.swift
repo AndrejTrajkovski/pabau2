@@ -12,18 +12,35 @@ struct ClientDaySection: View {
 		self.viewStore = ViewStore(store)
 	}
 	var body: some View {
-		HStack(spacing: 24.0) {
-			TitleAndValueLabel(
-				"CLIENT",
-				self.viewStore.state.clients.chosenClient?.fullname ??  "Choose client",
-				self.viewStore.state.clients.chosenClient?.fullname == nil ? Color.grayPlaceholder : nil,
-				viewStore.binding(
-					get: { $0.chooseClintConfigurator },
-					send: .ignore
-				)
-			).onTapGesture {
-				self.viewStore.send(.didTabClients)
+		Group {
+			HStack(spacing: 24.0) {
+				
+				TitleAndValueLabel(
+					"CLIENT",
+					self.viewStore.state.clients.chosenClient?.fullname ??  "Choose client",
+					self.viewStore.state.clients.chosenClient?.fullname == nil ? Color.grayPlaceholder : nil,
+					.constant(viewStore.chooseClintValidator)
+				).onTapGesture {
+					self.viewStore.send(.didTabClients)
+				}
+				
+				DatePickerControl.init(
+					"DAY", viewStore.binding(
+						get: { $0.startDate },
+						send: { .chooseStartDate($0!) }
+					), .constant(nil)
+				).isHidden(!viewStore.isAllDay, remove: true)
+				
+				DatePickerControl.init(
+					"DAY", viewStore.binding(
+						get: { $0.startDate },
+						send: { .chooseStartDate($0!) }
+					),
+					.constant(nil),
+					mode: .dateAndTime
+				).isHidden(viewStore.isAllDay, remove: true)
 			}
+			
 			NavigationLink.emptyHidden(
 				self.viewStore.state.clients.isChooseClientsActive,
 				ChooseClients(
@@ -33,21 +50,6 @@ struct ClientDaySection: View {
 					)
 				)
 			)
-			DatePickerControl.init(
-				"DAY", viewStore.binding(
-					get: { $0.startDate },
-					send: { .chooseStartDate($0!) }
-				)
-			).isHidden(!viewStore.isAllDay, remove: true)
-
-			DatePickerControl.init(
-				"DAY", viewStore.binding(
-					get: { $0.startDate },
-					send: { .chooseStartDate($0!) }
-				),
-				nil,
-				mode: .dateAndTime
-			).isHidden(viewStore.isAllDay, remove: true)
 		}
 	}
 }

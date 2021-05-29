@@ -29,10 +29,10 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, Calenda
         state: \AppDetailsState.chooseRepeat,
         action: /AppDetailsAction.chooseRepeat,
         environment: { $0 }),
-    toastReducer.pullback(
-        state: \AppDetailsState.toastState,
-        action: /AppDetailsAction.onDisplayToast,
-        environment: { _ in ToastEnvironment("") } ),
+//    toastReducer.pullback(
+//        state: \AppDetailsState.toastState,
+//        action: /AppDetailsAction.onDisplayToast,
+//        environment: { _ in ToastEnvironment() } ),
     
     Reducer.init { state, action, env in
         switch action {
@@ -82,46 +82,53 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, Calenda
             print(appDetailsButtonsAction)
             switch appDetailsButtonsAction {
             case .onStatus:
+				state.isStatusActive = true
                 return env.clientsAPI.getAppointmentStatus()
                     .catchToEffect()
-                    .map{ response in
-                        switch response {
-                        case .success(let statuses):
-                            return AppDetailsAction.buttons(.onDownloadStatuses(statuses))
-                        case .failure(let error):
-                            return AppDetailsAction.buttons(.onDownloadStatuses([]))
-                        }
-                    }
+					.receive(on: DispatchQueue.main)
+					.map(AppDetailsAction.downloadStatusesResponse)
                     .eraseToEffect()
             case .onCancel:
+				state.isCancelActive = true
                 return env.clientsAPI.getAppointmentCancelReasons()
                     .catchToEffect()
-                    .map { response in
-                        switch response {
-                        case .success(let reasons):
-                            return AppDetailsAction.buttons(.onDownloadCancelReasons(reasons))
-                        case .failure(let error):
-                            return AppDetailsAction.onErrorResponse
-                        }
-                    }
+					.receive(on: DispatchQueue.main)
+					.map(AppDetailsAction.cancelReasonsResponse)
                     .eraseToEffect()
                 
-            case .onDownloadStatuses(let statuses):
-                state.appStatuses = IdentifiedArrayOf(statuses)
-                state.isStatusActive = true
-            case .onDownloadCancelReasons(let reasons):
-                state.cancelReasons = IdentifiedArrayOf(reasons)
-                state.isCancelActive = true
             default:
                 break
             }
             break
-        case .onErrorResponse:
-            return Just(AppDetailsAction.onDisplayToast(.onDisplay))
-                .eraseToEffect()
-        default:
-            break
-        }
+		case .addService:
+			break
+		case .chooseRepeat(.onBackBtn):
+			break
+		case .chooseRepeat(.onChangeInterval(_)):
+			break
+		case .chooseRepeat(.onSelectedOkCalendar(_)):
+			break
+		case .close:
+			break
+		case .downloadStatusesResponse(let result):
+			switch result {
+			case .success(let downloadStatuses):
+				state.appStatuses = IdentifiedArray(downloadStatuses)
+			case .failure(let error):
+				break
+			}
+		case .cancelReasonsResponse(let result):
+			switch result {
+			case .success(let cancelReasons):
+				state.cancelReasons = IdentifiedArray(cancelReasons)
+			case .failure(let error):
+				break
+			}
+		case .onResponseChangeAppointment:
+			break
+		case .toast(_):
+			break
+		}
         return .none
     }
 )
@@ -139,11 +146,14 @@ public struct AppDetailsState: Equatable {
 
     var isCancelActive: Bool = false
     var chosenCancelReasonId: CancelReason.ID?
-    var cancelReasons = IdentifiedArrayOf(CancelReason.mock)
+	var cancelReasons: IdentifiedArrayOf<CancelReason> = []
     var isStatusActive: Bool = false
-    var appStatuses = IdentifiedArrayOf(AppointmentStatus.mock)
+	var appStatuses: IdentifiedArrayOf<AppointmentStatus> = []
     var chooseRepeat: ChooseRepeatState = ChooseRepeatState()
     var toastState: ToastState = ToastState()
+	
+	var cancelReasonLS: LoadingState = .initial
+	var chooseStatusLS: LoadingState = .initial
 }
 
 public enum AppDetailsAction {
@@ -153,10 +163,11 @@ public enum AppDetailsAction {
     case addService
     case chooseRepeat(ChooseRepeatAction)
     case close
+	case downloadStatusesResponse(Result<[AppointmentStatus], RequestError>)
+	case cancelReasonsResponse(Result<[CancelReason], RequestError>)
     case onResponseChangeAppointment
     case onResponseCreateReccuringAppointment
-    case onErrorResponse
-    case onDisplayToast(ToastAction)
+    case toast(ToastAction)
 }
 
 public struct AppointmentDetails: View {
@@ -178,12 +189,12 @@ public struct AppointmentDetails: View {
                 self.viewStore.send(.addService)
             }
         }
-        .toast(isPresented: viewStore.binding(get: { $0.toastState.isPresented },
-                                              send: AppDetailsAction.onDisplayToast(ToastAction.onDisplay)),
-               content: {
-                    ToastView("Loading....")
-                                .toastViewStyle(IndefiniteProgressToastViewStyle())
-               })
+//        .toast(isPresented: viewStore.binding(get: { $0.toastState.isPresented },
+//                                              send: AppDetailsAction.onDisplayToast(ToastAction.onDisplay)),
+//               content: {
+//                    ToastView("Loading....")
+//                                .toastViewStyle(IndefiniteProgressToastViewStyle())
+//               })
         .addEventWrapper(
             onXBtnTap: { self.viewStore.send(.close) })
     }
@@ -195,12 +206,14 @@ extension AppDetailsState {
             SingleChoiceLinkState<CancelReason>.init(
                 dataSource: cancelReasons,
                 chosenItemId: chosenCancelReasonId,
-                isActive: isCancelActive)
+				isActive: isCancelActive,
+				loadingState: cancelReasonLS)
         }
         set {
             self.cancelReasons = newValue.dataSource
             self.chosenCancelReasonId = newValue.chosenItemId
             self.isCancelActive = newValue.isActive
+			self.cancelReasonLS = newValue.loadingState
         }
     }
 
@@ -209,12 +222,14 @@ extension AppDetailsState {
             SingleChoiceLinkState<AppointmentStatus>(
                 dataSource: appStatuses,
                 chosenItemId: app.status?.id,
-                isActive: isStatusActive)
+				isActive: isStatusActive,
+				loadingState: chooseStatusLS)
         }
         set {
             self.appStatuses = newValue.dataSource
             self.app.status = newValue.chosenItemId.flatMap { appStatuses[id: $0] }
             self.isStatusActive = newValue.isActive
+			self.chooseStatusLS = newValue.loadingState
         }
     }
 

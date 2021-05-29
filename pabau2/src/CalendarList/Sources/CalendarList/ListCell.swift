@@ -1,7 +1,6 @@
 import Model
 import SwiftUI
 import Util
-import JourneyBase
 import SharedComponents
 
 struct ListCell: View {

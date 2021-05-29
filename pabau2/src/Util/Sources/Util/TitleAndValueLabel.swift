@@ -1,25 +1,25 @@
 import SwiftUI
 
 public struct TitleAndValueLabel: View {
-    @Binding var configurator: ViewConfigurator?
 
 	let labelTxt: String
 	let valueText: String
     var textColor: Color?
-
+	@Binding var error: String?
+	
 	public init(
         _ labelTxt: String,
 		_ valueText: String,
         _ textColor: Color? = nil,
-        _ configurator: Binding<ViewConfigurator?>? = nil
+		_ error: Binding<String?>
     ) {
 		self.labelTxt = labelTxt
 		self.valueText = valueText
         self.textColor = textColor
-        self._configurator = configurator ?? .constant(nil)
+        self._error = error
 	}
 	public var body: some View {
-		TitleAndLowerContent(labelTxt, $configurator) {
+		TitleAndLowerContent(labelTxt, $error) {
 			Text(self.valueText)
 				.foregroundColor(textColor ?? Color.textFieldAndTextLabel)
 				.font(.semibold15)
@@ -27,40 +27,20 @@ public struct TitleAndValueLabel: View {
 	}
 }
 
-public struct ViewConfigurator: Equatable {
-    public static func == (lhs: ViewConfigurator, rhs: ViewConfigurator) -> Bool {
-        lhs.state == rhs.state && lhs.errorString == rhs.errorString
-    }
-
-    public enum State {
-        case normal
-        case error
-    }
-
-    public var state: State
-    public var errorString: String = "Error"
-
-    public init(state: State = .normal, errorString: String = "Error") {
-        self.state = state
-        self.errorString = errorString
-    }
-}
-
 public struct TitleAndLowerContent<Content: View>: View {
 	public init(
         _ labelTxt: String,
-        _ configurator: Binding<ViewConfigurator?>? = nil,
+        _ error: Binding<String?>,
         @ViewBuilder _ lowerContent: @escaping () -> Content
     ) {
 		self.labelTxt = labelTxt
 		self.lowerContent = lowerContent
-
-        self._configurator = configurator ?? .constant(nil)
+		self._error = error
 	}
 
 	let labelTxt: String
 	let lowerContent: () -> Content
-    @Binding var configurator: ViewConfigurator?
+    @Binding var error: String?
 
 	public var body: some View {
 		VStack(alignment: .leading, spacing: 12) {
@@ -69,11 +49,10 @@ public struct TitleAndLowerContent<Content: View>: View {
 				.font(.semibold12)
 			lowerContent()
             Divider()
-                .background(configurator?.state == .error ? Color.red : Color.textFieldBottomLine)
-            Text(configurator?.errorString ?? "")
+				.background(error == nil ? Color.textFieldBottomLine : Color.red)
+            Text(error ?? " ")
                 .font(.bold13)
                 .foregroundColor(.red)
-                .isHidden(configurator == nil || configurator?.state == .normal)
 		}
 	}
 }
