@@ -125,36 +125,12 @@ extension AddAppointmentState {
 
 struct AddAppMocks {
 
-	static let serviceState: SingleChoiceLinkState<Service> =
-		SingleChoiceLinkState.init(
-			dataSource: [
-				Service.init(id: "1", name: "Botox", color: "", categoryName: "Injectables"),
-				Service.init(id: "2", name: "Fillers", color: "", categoryName: "Urethra"),
-				Service.init(id: "3", name: "Facial", color: "", categoryName: "Mosaic")
-			],
-			chosenItemId: "1",
-			isActive: false)
-
 	static let durationState: SingleChoiceLinkState<Duration> =
 		SingleChoiceLinkState.init(
 			dataSource: IdentifiedArray(Duration.all),
-			chosenItemId: 1,
-			isActive: false)
-
-	static let withState: SingleChoiceLinkState<Employee> =
-		SingleChoiceLinkState.init(
-			dataSource: [
-
-			],
-			chosenItemId: "456",
-			isActive: false)
-
-	static let participantsState: SingleChoiceLinkState<Employee> =
-		SingleChoiceLinkState.init(
-			dataSource: [
-			],
-			chosenItemId: "1",
-			isActive: false)
+			chosenItemId: nil,
+			isActive: false,
+			loadingState: .initial)
 }
 
 extension AddAppointmentState {

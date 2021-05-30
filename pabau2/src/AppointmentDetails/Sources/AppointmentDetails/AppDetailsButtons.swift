@@ -4,7 +4,7 @@ import ComposableArchitecture
 import Model
 import SharedComponents
 
-public let appDetailsButtonsReducer: Reducer<AppDetailsButtonsState, AppDetailsButtonsAction, CalendarEnvironment> = .init {
+public let appDetailsButtonsReducer: Reducer<AppDetailsButtonsState, AppDetailsButtonsAction, AppDetailsEnvironment> = .init {
 	state, action, env in
 	switch action {
 	case .onPayment:
@@ -15,8 +15,6 @@ public let appDetailsButtonsReducer: Reducer<AppDetailsButtonsState, AppDetailsB
 	case .onStatus:
 		//state.isStatusActive = true
         break
-    case .onDownloadStatuses:
-        state.isStatusActive = true
 	case .onRepeat:
 		state.isRepeatActive = true
 	case .onDocuments:
@@ -46,8 +44,6 @@ public enum AppDetailsButtonsAction: Equatable {
 	case onDocuments
 	case onReschedule
 	case onStartPathway
-    case onDownloadStatuses([AppointmentStatus])
-    case onDownloadCancelReasons([CancelReason])
 }
 
 struct AppDetailsButtons: View {
@@ -67,11 +63,11 @@ struct AppDetailsButtons: View {
 	]
 
 	let items = [
-		("briefcase", Texts.payment, AppDetailsButtonsAction.onPayment),
+//		("briefcase", Texts.payment, AppDetailsButtonsAction.onPayment),
 		("minus.circle", Texts.cancel, AppDetailsButtonsAction.onCancel),
 		("pencil.and.ellipsis.rectangle", Texts.status, AppDetailsButtonsAction.onStatus),
 		("arrow.2.circlepath", Texts.repeat, AppDetailsButtonsAction.onRepeat),
-		("doc.text", Texts.documents, AppDetailsButtonsAction.onDocuments),
+//		("doc.text", Texts.documents, AppDetailsButtonsAction.onDocuments),
 		("arrowshape.turn.up.right", Texts.reschedule, AppDetailsButtonsAction.onReschedule),
 		("list.bullet.rectangle", Texts.startPathway, AppDetailsButtonsAction.onStartPathway)
 	]

@@ -49,7 +49,8 @@ extension AddBookoutState {
 			chooseDuration:
 				SingleChoiceState<Duration>(
 					dataSource: IdentifiedArray.init(Duration.all),
-					chosenItemId: nil
+					chosenItemId: nil,
+					loadingState: .initial
 				),
 			chooseLocAndEmp: chooseLocAndEmp,
 			chooseBookoutReasonState: ChooseBookoutReasonState(isChooseBookoutReasonActive: false),
@@ -69,7 +70,8 @@ extension AddBookoutState {
 			chooseDuration:
 				SingleChoiceState<Duration>(
 					dataSource: IdentifiedArray.init(Duration.all),
-					chosenItemId: nil
+					chosenItemId: nil,
+					loadingState: .initial
 				),
 			chooseLocAndEmp: chooseLocAndEmp,
 			chooseBookoutReasonState: ChooseBookoutReasonState(isChooseBookoutReasonActive: false),

@@ -2,7 +2,7 @@ import ComposableArchitecture
 import SwiftUI
 import SharedComponents
 
-public let chooseRepeatReducer: Reducer<ChooseRepeatState, ChooseRepeatAction, CalendarEnvironment> = .init { state, action, env in
+public let chooseRepeatReducer: Reducer<ChooseRepeatState, ChooseRepeatAction, AppDetailsEnvironment> = .init { state, action, env in
     switch action {
     case .onBackBtn:
         state.isRepeatActive = false

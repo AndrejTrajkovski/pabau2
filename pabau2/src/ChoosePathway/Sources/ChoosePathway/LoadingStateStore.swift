@@ -3,6 +3,7 @@ import Model
 import SwiftUI
 import ComposableArchitecture
 import Util
+import SharedComponents
 
 struct LoadingStore<State, Action, Content>: View where Content: View, State: Equatable {
     
@@ -87,41 +88,6 @@ struct LoadingStore<State, Action, Content>: View where Content: View, State: Eq
     var body: some View {
         WithViewStore(store) { viewStore in
             content(viewStore)
-        }
-    }
-}
-
-public struct ErrorViewStore<E: Error>: View where E: CustomStringConvertible & Equatable {
-    
-    public init(store: Store<E, Never>) {
-        self.store = store
-    }
-    
-    let store: Store<E, Never>
-    
-    public var body: some View {
-        WithViewStore(store) { viewStore in
-            ErrorView(error: viewStore.state)
-        }
-    }
-}
-
-public struct ErrorView<E: Error>: View where E: CustomStringConvertible {
-    
-    public init(error: E) {
-        self.error = error
-    }
-    
-    let error: E
-    
-    public var body: some View {
-        GeometryReaderPatch { geometry in
-            Text("Error: \(error.description)")
-                .frame(width: geometry.size.width / 2,
-                       height: geometry.size.height / 5)
-                .background(Color.white)
-                .foregroundColor(Color.blue)
-                .cornerRadius(20)
         }
     }
 }
