@@ -15,6 +15,7 @@ import CoreDataModel
 import Overture
 import AppointmentDetails
 import ChooseLocationAndEmployee
+import ToastAlert
 
 public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, CalendarEnvironment> = .combine(
 	calTypePickerReducer.pullback(
@@ -70,11 +71,11 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			let params = appointmentsAPIParams(state: state)
 			let getCalendar = with(params, env.journeyAPI.getCalendar)
 			return getCalendar
-			.receive(on: DispatchQueue.main)
-			.catchToEffect()
-			.map(CalendarAction.gotAppointmentsResponse)
-			.eraseToEffect()
-			.cancellable(id: GetAppointmentsCancelID(), cancelInFlight: true)
+				.receive(on: DispatchQueue.main)
+				.catchToEffect()
+				.map(CalendarAction.gotAppointmentsResponse)
+				.eraseToEffect()
+				.cancellable(id: GetAppointmentsCancelID(), cancelInFlight: true)
 		}
 		
 		switch action {
@@ -110,7 +111,7 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			
 		case .calTypePicker(.onSelect(let calType)):
 			guard calType != state.appointments.calendarType else { return .none }
-            state.switchTo(calType: calType)
+			state.switchTo(calType: calType)
 			return getAppointments()
 			
 		case .employee(.addBookout(let startDate, let durationMins, let dropKeys)):
@@ -121,10 +122,10 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 																 chosenLocationId: location,
 																 chosenEmployeeId: subsection)
 			
-            state.addBookoutState = AddBookoutState(
+			state.addBookoutState = AddBookoutState(
 				chooseLocAndEmp: chooseLocAndEmp,
-                start: startDate
-            )
+				start: startDate
+			)
 		//- TODO Iurii
 		case .room(.addBookout(let startDate, let durationMins, let dropKeys)):
 			let (location, subsection) = dropKeys
@@ -138,34 +139,39 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 				start: startDate
 			)
 			
-//                case .week(.editStartTime(let startOfDayDate, let startDate, let eventId, let startingPointStartOfDay)):
-//                    let calId = CalendarEvent.ID.init(rawValue: eventId)
-//                    var app = state.appointments[startingPointStartOfDay]?.remove(id: calId)
-//                    app?.update(start: startDate)
-//                    app.map {
-//                        if state.appointments[startOfDayDate] == nil {
-//                            state.appointments[startOfDayDate] = IdentifiedArrayOf<CalendarEvent>.init()
-//                        }
-//                        state.appointments[startOfDayDate]!.append($0)
-//                    }
-//
-//
-
+		//                case .week(.editStartTime(let startOfDayDate, let startDate, let eventId, let startingPointStartOfDay)):
+		//                    let calId = CalendarEvent.ID.init(rawValue: eventId)
+		//                    var app = state.appointments[startingPointStartOfDay]?.remove(id: calId)
+		//                    app?.update(start: startDate)
+		//                    app.map {
+		//                        if state.appointments[startOfDayDate] == nil {
+		//                            state.appointments[startOfDayDate] = IdentifiedArrayOf<CalendarEvent>.init()
+		//                        }
+		//                        state.appointments[startOfDayDate]!.append($0)
+		//                    }
+		//
+		//
+		
 		case .appDetails(.addService):
 			
 			let start = state.appDetails!.app.start_date
 			let end = state.appDetails!.app.end_date
 			let employee = state.employees.flatMap { $0.value }.first(where: { $0.id == state.appDetails?.app.employeeId })
 			state.appDetails = nil
+			
+			var returnEffects = [Effect<CalendarAction, Never>.cancel(id: ToastTimerId())]
 			if let emp = employee {
-				return Just(CalendarAction.showAddApp(startDate: start, endDate: end, employee: emp))
+				let showAddApp = Just(CalendarAction.showAddApp(startDate: start, endDate: end, employee: emp))
 					.delay(for: 0.1, scheduler: DispatchQueue.main)
 					.eraseToEffect()
-			} else {
-				return .none
+				returnEffects.append(showAddApp)
 			}
+			return .merge(returnEffects)
 		case .onAppDetailsDismiss:
+			
 			state.appDetails = nil
+			return .cancel(id: ToastTimerId())
+			
 		case .onBookoutDismiss:
 			state.addBookoutState = nil
 		case .onAddEvent(.shift):
@@ -179,6 +185,7 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			
 		case .appDetails(.close):
 			state.appDetails = nil
+			return .cancel(id: ToastTimerId())
 		case .addBookoutAction(.close):
 			state.addBookoutState = nil
 		case .changeCalScope:
@@ -260,7 +267,7 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			
 			state.isCalendarTypeDropdownShown = false
 			state.isAddEventDropdownShown = value
-		
+			
 		case .list(.locationSection(id: let locId, action: .rows(id: let appId, action: .select))):
 			guard let app = state.listContainer?.appointments.appointments[locId]?.values.flatMap({ $0.elements }).first(where: { $0.id == appId }) else { break }
 			state.appDetails = AppDetailsState(app: app)
@@ -308,59 +315,59 @@ public struct CalendarContainer: View {
 					)
 					CalendarWrapper(store: self.store)
 						.frame(maxWidth: .infinity, maxHeight: .infinity)
-                }
+				}
 				if viewStore.state.isShowingFilters {
 					FiltersWrapper(store: store)
-                        .transition(.moveAndFade)
-                        .onDisappear {
-                            
-                        }
+						.transition(.moveAndFade)
+						.onDisappear {
+							
+						}
 				}
 			}
 			.fullScreenCover(
-                isPresented:
+				isPresented:
 					Binding(
-                        get: { activeSheet(state: viewStore.state) != nil },
-                        set: {
-                            _ in dismissAction(state: viewStore.state).map(viewStore.send)
-                        }
-                    ),
-                content: {
-                    Group {
+						get: { activeSheet(state: viewStore.state) != nil },
+						set: {
+							_ in dismissAction(state: viewStore.state).map(viewStore.send)
+						}
+					),
+				content: {
+					Group {
 						IfLetStore(
 							store.scope(
 								state: { $0.addShift },
 								action: { .addShift($0) }),
-								then: AddShift.init(store:)
+							then: AddShift.init(store:)
 						)
-                        IfLetStore(
-                            store.scope(
+						IfLetStore(
+							store.scope(
 								state: { $0.appDetails },
-                                action: { .appDetails($0) }),
-                                then: AppointmentDetails.init(store:)
-                        )
-                        IfLetStore(
-                            store.scope(
-                                state: { $0.addBookoutState },
-                                action: { .addBookoutAction($0) }),
-                                then: AddBookout.init(store:)
-                        )
-                    }
-                }
+								action: { .appDetails($0) }),
+							then: AppointmentDetails.init(store:)
+						)
+						IfLetStore(
+							store.scope(
+								state: { $0.addBookoutState },
+								action: { .addBookoutAction($0) }),
+							then: AddBookout.init(store:)
+						)
+					}
+				}
 			)
-        }
+		}
 	}
-
+	
 	public init(store: Store<CalendarState, CalendarAction>) {
 		self.store = store
 	}
-
+	
 	enum ActiveSheet {
 		case appDetails
 		case addBookout
 		case addShift
 	}
-
+	
 	func activeSheet(state: CalendarState) -> ActiveSheet? {
 		if state.addBookoutState != nil {
 			return .addBookout
@@ -372,7 +379,7 @@ public struct CalendarContainer: View {
 			return nil
 		}
 	}
-
+	
 	func dismissAction(state: CalendarState) -> CalendarAction? {
 		if state.addBookoutState != nil {
 			return .onBookoutDismiss
@@ -389,7 +396,7 @@ public struct CalendarContainer: View {
 		HStack(spacing: 8.0) {
 			Button(action: {
 				withAnimation {
-//					self.showSearchBar.toggle()
+					//					self.showSearchBar.toggle()
 				}
 			}, label: {
 				Image(systemName: "magnifyingglass")

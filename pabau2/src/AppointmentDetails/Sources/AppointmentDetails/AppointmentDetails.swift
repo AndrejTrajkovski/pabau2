@@ -6,8 +6,8 @@ import SharedComponents
 import CoreDataModel
 import Foundation
 import ToastAlert
-import ToastUI
 import Combine
+import AlertToast
 
 public struct AppointmentDetails: View {
     public let store: Store<AppDetailsState, AppDetailsAction>
@@ -24,17 +24,13 @@ public struct AppointmentDetails: View {
             AppDetailsInfo(store: self.store)
             AppDetailsButtons(store: self.store)
                 .fixedSize(horizontal: false, vertical: true)
-            AddEventPrimaryBtn(title: Texts.addService) {
-                self.viewStore.send(.addService)
-            }
-        }
-//        .toast(isPresented: viewStore.binding(get: { $0.toastState.isPresented },
-//                                              send: AppDetailsAction.onDisplayToast(ToastAction.onDisplay)),
-//               content: {
-//                    ToastView("Loading....")
-//                                .toastViewStyle(IndefiniteProgressToastViewStyle())
-//               })
-        .addEventWrapper(
-            onXBtnTap: { self.viewStore.send(.close) })
-    }
+			AddEventPrimaryBtn(title: Texts.addService) {
+				self.viewStore.send(.addService)
+			}
+		}
+		.addEventWrapper(
+			onXBtnTap: { self.viewStore.send(.close) }
+		)
+		.toast(store: store.scope(state: \.toast))
+	}
 }

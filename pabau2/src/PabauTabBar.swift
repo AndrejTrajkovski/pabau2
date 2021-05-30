@@ -14,6 +14,7 @@ import Appointments
 import CoreDataModel
 import CalendarList
 import ChooseLocationAndEmployee
+import ToastAlert
 
 public typealias TabBarEnvironment = (
 	loginAPI: LoginAPI,
@@ -195,9 +196,13 @@ public let tabBarReducer: Reducer<
 			
 			state.calendar.appDetails = nil
 			
-			return Effect.init(value: TabBarAction.delayStartPathway(appointment: appointment))
-				.delay(for: 0.2, scheduler: DispatchQueue.main)
-				.eraseToEffect()
+			return .merge([
+				Effect.init(value: TabBarAction.delayStartPathway(appointment: appointment))
+					.delay(for: 0.2, scheduler: DispatchQueue.main)
+					.eraseToEffect(),
+				
+				.cancel(id: ToastTimerId())
+			])
 				
 		case .calendar(.onAddEvent(.appointment)):
 			state.calendar.isAddEventDropdownShown = false

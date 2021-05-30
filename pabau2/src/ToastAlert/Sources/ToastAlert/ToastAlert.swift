@@ -1,46 +1,40 @@
 import SwiftUI
 import ComposableArchitecture
+import AlertToast
 
-struct ToastTimerId: Hashable {}
+public struct ToastTimerId: Hashable {
+	public init () {}
+}
 
-public struct ToastState: Equatable {
-	public init() { }
-    public var isPresented: Bool = false
-	
-	public mutating func present() -> Effect<ToastAction, Never> {
-		isPresented = true
-		return Effect.timer(id: ToastTimerId(), every: 3, on: RunLoop.main)
-			.map { _ in ToastAction.dismiss }
+public struct ToastState<Action>: Equatable {
+	public init(mode: AlertToast.DisplayMode, type: AlertToast.AlertType, title: String? = nil, subTitle: String? = nil) {
+		self.mode = mode
+		self.type = type
+		self.title = title
+		self.subTitle = subTitle
 	}
-}
-
-public enum ToastAction: Equatable {
-    case dismiss
-}
-
-public typealias ToastEnvironment = ()
-
-public let toastReducer = Reducer<ToastState, ToastAction, ToastEnvironment>.init { state, action, _ in
 	
-    switch action {
-    case .dismiss:
-        state.isPresented = false
-        return .cancel(id: ToastTimerId())
-    }
+	public var mode: AlertToast.DisplayMode
+	public var type: AlertToast.AlertType
+	public var title: String?
+	public var subTitle: String?
 }
 
 extension View {
-    func toast<Content>(state: ToastState?,
-                         @ViewBuilder content: () -> Content) -> some View {
-        self.modifier(AlertToastModifier())
-    }
-}
-
-public struct AlertToastModifier: ViewModifier {
-    
-    public func body(content: Content) -> some View {
-        content
-            .background(Color.red)
-            .padding()
-    }
+	
+	public func toast<Action>(store: Store<ToastState<Action>?, Action>) -> some View {
+		WithViewStore(store) { viewStore in
+			if let toastState = viewStore.state {
+				toast(isPresenting: .constant(true),
+					  alert: { AlertToast(displayMode: toastState.mode,
+										  type: toastState.type,
+										  title: toastState.title,
+										  subTitle: toastState.subTitle, custom: nil)
+					  }
+				)
+			} else {
+				self
+			}
+		}
+	}
 }

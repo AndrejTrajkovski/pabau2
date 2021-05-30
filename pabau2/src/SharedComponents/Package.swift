@@ -21,7 +21,8 @@ let package = Package(
 				 from: Version.init(stringLiteral: "1.0.0")),
 		.package(name: "SDWebImageSwiftUI",
 				 url: "https://github.com/SDWebImage/SDWebImageSwiftUI.git",
-				 from: Version.init(stringLiteral: "2.0.0"))
+				 from: Version.init(stringLiteral: "2.0.0")),
+		.package(url: "../ToastAlert", from: Version.init("1.0.0"))
 
     ],
     targets: [
@@ -31,7 +32,8 @@ let package = Package(
 				"Util",
 				"Model",
 				"Avatar",
-				"SDWebImageSwiftUI"
+				"SDWebImageSwiftUI",
+				"ToastAlert"
 			]),
         .testTarget(
             name: "SharedComponentsTests",

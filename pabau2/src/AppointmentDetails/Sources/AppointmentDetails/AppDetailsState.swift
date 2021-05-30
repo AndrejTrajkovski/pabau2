@@ -22,7 +22,7 @@ public struct AppDetailsState: Equatable {
 	var cancelReasons: IdentifiedArrayOf<CancelReason> = []
 	var appStatuses: IdentifiedArrayOf<AppointmentStatus> = []
 	var chooseRepeat: ChooseRepeatState = ChooseRepeatState()
-	var toastState: ToastState = ToastState()
+	var toast: ToastState<AppDetailsAction>?
 	
 	var cancelReasonLS: LoadingState = .initial
 	var chooseStatusLS: LoadingState = .initial

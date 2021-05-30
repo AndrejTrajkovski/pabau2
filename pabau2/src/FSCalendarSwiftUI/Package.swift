@@ -17,7 +17,7 @@ let package = Package(
 			.branch("master")),
 			.package(name: "swift-composable-architecture",
 							 url: "https://github.com/pointfreeco/swift-composable-architecture.git",
-							 from: Version.init(stringLiteral: "0.16.0")),
+							 from: Version.init(stringLiteral: "0.18.0")),
 			.package(name: "SwiftDate",
 							 url: "https://github.com/malcommac/SwiftDate.git",
 							 from: "6.1.0")

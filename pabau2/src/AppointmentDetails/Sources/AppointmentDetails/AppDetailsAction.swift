@@ -13,5 +13,5 @@ public enum AppDetailsAction {
 	case cancelReasonsResponse(Result<[CancelReason], RequestError>)
 	case onResponseChangeAppointment
 	case onResponseCreateReccuringAppointment
-	case toast(ToastAction)
+	case dismissToast
 }

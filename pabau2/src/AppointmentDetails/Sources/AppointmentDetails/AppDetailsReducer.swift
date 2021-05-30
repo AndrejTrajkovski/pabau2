@@ -25,11 +25,6 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 		state: \AppDetailsState.chooseRepeat,
 		action: /AppDetailsAction.chooseRepeat,
 		environment: { $0 }),
-//    toastReducer.pullback(
-//        state: \AppDetailsState.toastState,
-//        action: /AppDetailsAction.onDisplayToast,
-//        environment: { _ in ToastEnvironment() } ),
-	
 	Reducer.init { state, action, env in
 		switch action {
 		case .chooseRepeat(.onRepeat(let chosenRepeat)):
@@ -112,7 +107,13 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 				state.chooseStatusLS = .gotSuccess
 				state.appStatuses = IdentifiedArray(downloadStatuses)
 			case .failure(let error):
+				state.isStatusActive = false
 				state.chooseStatusLS = .gotError(error)
+				state.toast = ToastState(mode: .alert,
+										 type: .error(.red),
+										 title: error.description)
+				return Effect.timer(id: ToastTimerId(), every: 2, on: DispatchQueue.main)
+					.map { _ in AppDetailsAction.dismissToast }
 			}
 		case .cancelReasonsResponse(let result):
 			switch result {
@@ -120,12 +121,19 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 				state.cancelReasonLS = .gotSuccess
 				state.cancelReasons = IdentifiedArray(cancelReasons)
 			case .failure(let error):
+				state.isCancelActive = false
 				state.cancelReasonLS = .gotError(error)
+				state.toast = ToastState(mode: .alert,
+										 type: .error(.red),
+										 title: error.description)
+				return Effect.timer(id: ToastTimerId(), every: 2, on: DispatchQueue.main)
+					.map { _ in AppDetailsAction.dismissToast }
 			}
 		case .onResponseChangeAppointment:
 			break
-		case .toast(_):
-			break
+		case .dismissToast:
+			state.toast = nil
+			return .cancel(id: ToastTimerId())
 		}
 		return .none
 	}

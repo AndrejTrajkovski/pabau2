@@ -154,7 +154,10 @@ extension APIClient {
             let employees: [CancelReason]
         }
         
+		//		return Effect.init(error: RequestError.apiError("mock"))
+		
         let requestBuilder: RequestBuilder<CancelReasonResponse>.Type = requestBuilderFactory.getBuilder()
+		
         return requestBuilder.init(
             method: .GET,
             baseUrl: baseUrl,
