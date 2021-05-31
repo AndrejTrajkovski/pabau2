@@ -63,14 +63,6 @@ struct ListCell: View {
 	}
 }
 
-struct StepsStatusView: View {
-	let stepsComplete: String
-	let stepsTotal: String
-	var body: some View {
-		NumberEclipse(text: stepsComplete + "/" + stepsTotal)
-	}
-}
-
 struct JourneyColorRect: View {
 	public let color: Color
 	var body: some View {

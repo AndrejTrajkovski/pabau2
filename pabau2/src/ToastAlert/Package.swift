@@ -14,7 +14,7 @@ let package = Package(
 	dependencies: [
 		.package(name: "AlertToast",
 				 url: "https://github.com/elai950/AlertToast.git",
-				 from: Version.init(stringLiteral:"1.2.7")
+				 from: Version.init(stringLiteral: "1.2.7")
 				 ),
 		.package(name: "swift-composable-architecture",
 						 url: "https://github.com/pointfreeco/swift-composable-architecture.git",

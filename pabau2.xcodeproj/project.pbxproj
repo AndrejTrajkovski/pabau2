@@ -72,6 +72,7 @@
 		82104536240CE524004EA838 /* libswiftXCTest.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftXCTest.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/libswiftXCTest.tbd; sourceTree = DEVELOPER_DIR; };
 		8223F5EC264FB9F20056023C /* CalendarList */ = {isa = PBXFileReference; lastKnownFileType = folder; path = CalendarList; sourceTree = "<group>"; };
 		8223F5ED264FC1230056023C /* CheckInMiddleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInMiddleware.swift; sourceTree = "<group>"; };
+		823B35962664E51600A07F1E /* PathwayList */ = {isa = PBXFileReference; lastKnownFileType = folder; path = PathwayList; sourceTree = "<group>"; };
 		8246DB37256FCE2300F5D87E /* Filters */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Filters; sourceTree = "<group>"; };
 		82533424256D0C69005755D6 /* AddShift */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AddShift; sourceTree = "<group>"; };
 		82533425256D8393005755D6 /* SharedComponents */ = {isa = PBXFileReference; lastKnownFileType = folder; path = SharedComponents; sourceTree = "<group>"; };
@@ -198,6 +199,7 @@
 		82CACDF7241027320021E1DE /* src */ = {
 			isa = PBXGroup;
 			children = (
+				823B35962664E51600A07F1E /* PathwayList */,
 				08DC047B266132A4003846DA /* ToastAlert */,
 				BA6FD88D26454B1F00ACB1B2 /* CoreDataModel */,
 				82EF76FA265A876F006253AA /* ChooseLocationAndEmployee */,

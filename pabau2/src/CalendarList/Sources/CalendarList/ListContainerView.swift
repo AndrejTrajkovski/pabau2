@@ -70,7 +70,8 @@ public struct ListContainerView: View {
 			ScrollView {
 				LazyVStack {
 					ForEachStore(store.scope(state: { $0.locationSections },
-											 action: ListAction.locationSection(id:action:)), content: LocationSection.init(store:)
+											 action: ListAction.locationSection(id:action:)),
+								 content: LocationSection.init(store:)
 					)
 				}
 			}

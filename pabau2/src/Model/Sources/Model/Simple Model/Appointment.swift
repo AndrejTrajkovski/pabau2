@@ -25,13 +25,14 @@ public struct Appointment: Equatable, Identifiable, Decodable {
 	public let serviceId: Service.Id
 	public let locationName: String?
 	public let pathways: [PathwayInfo]
-	
-	public struct PathwayInfo: Decodable, Equatable {
-		public let pathwayTemplateId: PathwayTemplate.ID
-		public let pathwayId: Pathway.ID
-		public let stepsTotal: Int
-		public let stepsComplete: Int
-	}
+}
+
+public struct PathwayInfo: Decodable, Equatable, Identifiable {
+	public var id: Pathway.ID { pathwayId }
+	public let pathwayTemplateId: PathwayTemplate.ID
+	public let pathwayId: Pathway.ID
+	public let stepsTotal: Int
+	public let stepsComplete: Int
 }
 
 extension Appointment: CalendarEventVariant { }
