@@ -8,7 +8,8 @@ import ChoosePathway
 public struct CheckInContainerState: Equatable {
 	
 	let appointment: Appointment
-	let choosePathway: ChoosePathwayState
+	var pathway: Pathway
+	let pathwayTemplate: PathwayTemplate
 	
 	var isPatientModeActive: Bool = false
 	
@@ -45,10 +46,13 @@ public struct CheckInContainerState: Equatable {
 
 extension CheckInContainerState {
 	
-	public init(appointment: Appointment) {
+	public init(appointment: Appointment,
+				pathway: Pathway,
+				template: PathwayTemplate) {
 		self.appointment = appointment
-		self.choosePathway = ChoosePathwayState(selectedAppointment: appointment)
 //		self.patientDetails = patientDetails
+		self.pathway = pathway
+		self.pathwayTemplate = template
 		self.medicalHistories = []
 		self.consents = []
 		self.selectedConsentsIds = []
@@ -100,7 +104,7 @@ extension CheckInContainerState {
 		get {
 			CheckInDoctorState(
 				appointment: self.appointment,
-				pathway: self.choosePathway.selectedPathway!,
+				pathway: pathwayTemplate,
 				treatmentNotes: self.treatmentNotes,
 				prescriptions: self.prescriptions,
 				aftercare: self.aftercare,
@@ -123,7 +127,7 @@ extension CheckInContainerState {
 		get {
 			CheckInPatientState(
 				appointment: appointment,
-				pathway: self.choosePathway.selectedPathway!,
+				pathway: pathwayTemplate,
 				patientDetails: patientDetails!,
 				patientDetailsStatus: patientDetailsStatus,
 				medicalHistories: medicalHistories,

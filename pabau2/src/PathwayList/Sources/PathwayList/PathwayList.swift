@@ -3,26 +3,33 @@ import ComposableArchitecture
 import Model
 import Util
 
-enum PathwayListAction: Equatable {
+public enum PathwayListAction: Equatable {
 	case rows(id: PathwayInfo.ID, action: PathwayInfoRowAction)
 	case addNew
 }
 
-struct PathwayList: View {
+public struct PathwayList: View {
 	
-	let store: Store<IdentifiedArrayOf<PathwayInfo>, PathwayListAction>
+	public init(store: Store<Appointment, PathwayListAction>) {
+		self.store = store
+	}
 	
-	var body: some View {
-		WithViewStore(store.stateless) { viewStore in
+	let store: Store<Appointment, PathwayListAction>
+	
+	public var body: some View {
+		WithViewStore(store) { viewStore in
 			ScrollView {
 				LazyVStack {
-					ForEachStore(store.scope(state: { $0 },
+					ForEachStore(store.scope(state: { $0.pathways },
 											 action: PathwayListAction.rows(id:action:)),
 								 content: PathwayInfoRow.init(store:))
+					
+					PrimaryButton(Texts.startPathway)
+								  { viewStore.send(.addNew ) }
+						.fixedSize()
 				}
-				PrimaryButton("Start new",
-							  { viewStore.send(.addNew ) })
 			}
+//			.journeyBase(viewStore.state, .long)
 		}
 	}
 }

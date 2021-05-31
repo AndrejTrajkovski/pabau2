@@ -196,7 +196,7 @@ extension APIClient {
 			method: .GET,
 			baseUrl: baseUrl,
 			path: .getPathway,
-			queryParams: commonAnd(other: ["id": String(id.rawValue)])
+			queryParams: commonAnd(other: ["id": String(id.description)])
 		)
 		.effect()
 	}

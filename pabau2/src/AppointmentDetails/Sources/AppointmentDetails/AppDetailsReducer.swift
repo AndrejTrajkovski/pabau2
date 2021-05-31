@@ -6,6 +6,8 @@ import SharedComponents
 import CoreDataModel
 import Foundation
 import ToastAlert
+import ChoosePathway
+import PathwayList
 
 public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDetailsEnvironment> = .combine(
 	appDetailsButtonsReducer.pullback(
@@ -25,6 +27,11 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 		state: \AppDetailsState.chooseRepeat,
 		action: /AppDetailsAction.chooseRepeat,
 		environment: { $0 }),
+	choosePathwayContainerReducer.optional().pullback(
+		state: \AppDetailsState.choosePathwayTemplate,
+		action: /AppDetailsAction.choosePathwayTemplate,
+		environment: makeChoosePathwayEnv(_:)
+	),
 	Reducer.init { state, action, env in
 		switch action {
 		case .chooseRepeat(.onRepeat(let chosenRepeat)):
@@ -86,11 +93,28 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 					.receive(on: DispatchQueue.main)
 					.map(AppDetailsAction.cancelReasonsResponse)
 					.eraseToEffect()
-				
-			default:
+			case .onRepeat:
 				break
+			case .onReschedule:
+				break
+			case .onPathway:
+				if state.app.pathways.isEmpty {
+					state.choosePathwayTemplate = ChoosePathwayState(selectedAppointment: state.app)
+					return env.journeyAPI.getPathwayTemplates()
+						.receive(on: DispatchQueue.main)
+						.catchToEffect()
+						.map { .choosePathwayTemplate(.gotPathwayTemplates($0))  }
+
+				} else {
+					state.isPathwayListActive = true
+				}
 			}
-			break
+		case .choosePathway(.addNew):
+			state.choosePathwayTemplate = ChoosePathwayState(selectedAppointment: state.app)
+			return env.journeyAPI.getPathwayTemplates()
+				.receive(on: DispatchQueue.main)
+				.catchToEffect()
+				.map { .choosePathwayTemplate(.gotPathwayTemplates($0))  }
 		case .addService:
 			break
 		case .chooseRepeat(.onBackBtn):
@@ -134,6 +158,14 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 		case .dismissToast:
 			state.toast = nil
 			return .cancel(id: ToastTimerId())
+		case .choosePathwayTemplate(_):
+			break
+		case .choosePathway(_):
+			break
+		case .backFromChooseTemplates:
+			state.choosePathwayTemplate = nil
+		case .backFromPathwaysList:
+			state.isPathwayListActive = false
 		}
 		return .none
 	}

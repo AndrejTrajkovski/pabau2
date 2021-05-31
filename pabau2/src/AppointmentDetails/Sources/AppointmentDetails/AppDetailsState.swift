@@ -3,6 +3,7 @@ import Model
 import ToastAlert
 import Util
 import SharedComponents
+import ChoosePathway
 
 public struct AppDetailsState: Equatable {
 
@@ -26,6 +27,9 @@ public struct AppDetailsState: Equatable {
 	
 	var cancelReasonLS: LoadingState = .initial
 	var chooseStatusLS: LoadingState = .initial
+	
+	var isPathwayListActive: Bool = false
+	var choosePathwayTemplate: ChoosePathwayState?
 }
 
 extension AppDetailsState {
@@ -64,19 +68,16 @@ extension AppDetailsState {
 	var itemsState: AppDetailsButtonsState {
 		get {
 			AppDetailsButtonsState(
-				isPaymentActive: isPaymentActive,
 				isCancelActive: isCancelActive,
 				isStatusActive: isStatusActive,
 				isRepeatActive: chooseRepeat.isRepeatActive,
-				isDocumentsActive: isDocumentsActive,
-				isRescheduleActive: isRescheduleActive)
+				isRescheduleActive: isRescheduleActive
+			)
 		}
 		set {
-			self.isPaymentActive = newValue.isPaymentActive
 			self.isCancelActive = newValue.isCancelActive
 			self.isStatusActive = newValue.isStatusActive
 			self.chooseRepeat.isRepeatActive = newValue.isRepeatActive
-			self.isDocumentsActive = newValue.isDocumentsActive
 			self.isRescheduleActive = newValue.isRescheduleActive
 		}
 	}

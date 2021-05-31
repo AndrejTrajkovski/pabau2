@@ -8,7 +8,6 @@ import CoreDataModel
 import SharedComponents
 
 public typealias ChoosePathwayEnvironment = (
-    formAPI: FormAPI,
     journeyAPI: JourneyAPI,
     clientsAPI: ClientsAPI,
     userDefaults: UserDefaultsConfig,
@@ -100,7 +99,7 @@ public struct ChoosePathway: View {
         )
         .alert(store.scope(state: \.matchPathwayErrorAlert),
                dismiss: ChoosePathwayContainerAction.dismissPathwayErrorAlert)
-        .journeyBase(self.viewStore.state.appointment, .long)
+//        .journeyBase(self.viewStore.state.appointment, .long)
     }
 
     fileprivate func choosePathwayList(_ tmplts: Store<IdentifiedArrayOf<PathwayTemplate>, ChoosePathwayContainerAction>) -> some View {

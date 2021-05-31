@@ -1,6 +1,7 @@
 import SwiftDate
 import Tagged
 import Foundation
+import ComposableArchitecture
 
 public struct Appointment: Equatable, Identifiable, Decodable {
     
@@ -24,15 +25,22 @@ public struct Appointment: Equatable, Identifiable, Decodable {
 	public let customerId: Client.ID
 	public let serviceId: Service.Id
 	public let locationName: String?
-	public let pathways: [PathwayInfo]
+	public let pathways: IdentifiedArrayOf<PathwayInfo>
 }
 
 public struct PathwayInfo: Decodable, Equatable, Identifiable {
 	public var id: Pathway.ID { pathwayId }
 	public let pathwayTemplateId: PathwayTemplate.ID
 	public let pathwayId: Pathway.ID
-	public let stepsTotal: Int
-	public let stepsComplete: Int
+	public let stepsTotal: EitherStringOrInt
+	public let stepsComplete: EitherStringOrInt
+	
+	enum CodingKeys: String, CodingKey {
+		case pathwayTemplateId = "pathway_template_id"
+		case pathwayId = "pathway_id"
+		case stepsTotal = "steps_total"
+		case stepsComplete = "steps_complete"
+	}
 }
 
 extension Appointment: CalendarEventVariant { }
@@ -77,7 +85,8 @@ extension Appointment {
 		self.roomName = try? container.decode(String.self, forKey: .roomName)
 		self.customerId = try container.decode(Client.ID.self, forKey: .customerID)
 		self.locationName = "TO ADD IN BACKEND"
-		self.pathways = (try? container.decode([PathwayInfo].self, forKey: .pathways)) ?? []
+		let pathwayArr = (try? container.decode([PathwayInfo].self, forKey: .pathways)) ?? []
+		self.pathways = IdentifiedArrayOf(pathwayArr)
 	}
 }
 

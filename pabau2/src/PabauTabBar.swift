@@ -42,7 +42,7 @@ public enum TabBarAction {
 	case addAppointment(AddAppointmentAction)
 	case communication(CommunicationAction)
 	case checkIn(CheckInContainerAction)
-	case delayStartPathway(appointment: Appointment)
+	case delayStartPathway(appointment: Appointment, pathway: Pathway, template: PathwayTemplate)
 }
 
 struct PabauTabBar: View {
@@ -180,9 +180,11 @@ public let tabBarReducer: Reducer<
 		
 		switch action {
 		
-		case .delayStartPathway(let appointment):
+		case .delayStartPathway(let appointment, let pathway, let template):
 			
-			state.checkIn = CheckInContainerState(appointment: appointment)
+			state.checkIn = CheckInContainerState(appointment: appointment,
+												  pathway: pathway,
+												  template: template)
 			return .merge([
 				env.audioPlayer
 					.playCheckInSound()
@@ -194,19 +196,20 @@ public let tabBarReducer: Reducer<
 				.eraseToEffect()
 			])
 			
-		case .calendar(.appDetails(.buttons(.onStartPathway))):
-			
-			guard let appointment = state.calendar.appDetails?.app else { break }
-			
-			state.calendar.appDetails = nil
-			
-			return .merge([
-				Effect.init(value: TabBarAction.delayStartPathway(appointment: appointment))
-					.delay(for: 0.2, scheduler: DispatchQueue.main)
-					.eraseToEffect(),
-				
-				.cancel(id: ToastTimerId())
-			])
+		case .calendar(.appDetails(.buttons(.onPathway))):
+			break
+			//TODO
+//			guard let appointment = state.calendar.appDetails?.app else { break }
+//
+//			state.calendar.appDetails = nil
+//
+//			return .merge([
+//				Effect.init(value: TabBarAction.delayStartPathway(appointment: appointment))
+//					.delay(for: 0.2, scheduler: DispatchQueue.main)
+//					.eraseToEffect(),
+//
+//				.cancel(id: ToastTimerId())
+//			])
 				
 		case .calendar(.onAddEvent(.appointment)):
 			state.calendar.isAddEventDropdownShown = false

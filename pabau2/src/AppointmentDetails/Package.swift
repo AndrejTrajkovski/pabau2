@@ -13,13 +13,17 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "../CoreDataModel", from: Version.init(stringLiteral: "1.0.0")),
-        .package(url: "../SharedComponents", from: Version.init("1.0.0"))
+        .package(url: "../SharedComponents", from: Version.init("1.0.0")),
+		.package(url: "../ChoosePathway", from: Version.init("1.0.0")),
+		.package(url: "../PathwayList", from: Version.init("1.0.0"))
     ],
     targets: [
         .target(
             name: "AppointmentDetails",
             dependencies: ["CoreDataModel",
-                           "SharedComponents"]),
+                           "SharedComponents",
+						   "PathwayList",
+						   "ChoosePathway"]),
         .testTarget(
             name: "AppointmentDetailsTests",
             dependencies: ["AppointmentDetails"]),

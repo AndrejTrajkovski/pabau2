@@ -3,59 +3,51 @@ import Util
 import ComposableArchitecture
 import Model
 import SharedComponents
+import ChoosePathway
+import PathwayList
 
 public let appDetailsButtonsReducer: Reducer<AppDetailsButtonsState, AppDetailsButtonsAction, AppDetailsEnvironment> = .init {
 	state, action, env in
 	switch action {
-	case .onPayment:
-		state.isPaymentActive = true
 	case .onCancel:
-		//state.isCancelActive = true
-        break
+		break
 	case .onStatus:
-		//state.isStatusActive = true
-        break
+		break
 	case .onRepeat:
 		state.isRepeatActive = true
-	case .onDocuments:
-		state.isDocumentsActive = true
 	case .onReschedule:
 		state.isRescheduleActive = true
-    default:
-        break
+	case .onPathway:
+		break
 	}
 	return .none
 }
 
 public struct AppDetailsButtonsState: Equatable {
-	var isPaymentActive: Bool
 	var isCancelActive: Bool
 	var isStatusActive: Bool
 	var isRepeatActive: Bool
-	var isDocumentsActive: Bool
 	var isRescheduleActive: Bool
 }
 
 public enum AppDetailsButtonsAction: Equatable {
-	case onPayment
 	case onCancel
 	case onStatus
 	case onRepeat
-	case onDocuments
 	case onReschedule
-	case onStartPathway
+	case onPathway
 }
 
 struct AppDetailsButtons: View {
-
-    public let store: Store<AppDetailsState, AppDetailsAction>
-    @ObservedObject var viewStore: ViewStore<AppDetailsState, AppDetailsAction>
-
-    init(store: Store<AppDetailsState, AppDetailsAction>) {
-        self.store = store
-        self.viewStore = ViewStore(store)
-    }
-
+	
+	public let store: Store<AppDetailsState, AppDetailsAction>
+	@ObservedObject var viewStore: ViewStore<AppDetailsState, AppDetailsAction>
+	
+	init(store: Store<AppDetailsState, AppDetailsAction>) {
+		self.store = store
+		self.viewStore = ViewStore(store)
+	}
+	
 	let columns = [
 		GridItem(.flexible(), spacing: 0),
 		GridItem(.flexible(), spacing: 0),
@@ -76,7 +68,7 @@ struct AppDetailsButtons: View {
 					case 3:
 						reschedule
 					case 4:
-						pathways
+						pathwaysLink
 					default:
 						EmptyView()
 					}
@@ -103,7 +95,7 @@ struct AppDetailsButtons: View {
 			cell: TextAndCheckMarkContainer.init(state:)
 		)
 	}
-
+	
 	@ViewBuilder
 	var chooseStatusButton: SingleChoiceLink<TimeSlotButton, AppointmentStatus, TextAndCheckMarkContainer<AppointmentStatus>> {
 		SingleChoiceLink(
@@ -166,17 +158,58 @@ struct AppDetailsButtons: View {
 	}
 	
 	@ViewBuilder
-	var pathways: some View {
+	var pathwaysLink: some View {
 		NavigationLink(
-			destination: EmptyView(),
-			isActive: .constant(false)
+			destination: pathwaysContainer,
+			isActive: .constant(viewStore.state.isPathwayListActive || viewStore.state.choosePathwayTemplate != nil)
 		) {
 			TimeSlotButton(
 				image: "list.bullet.rectangle",
-				title: Texts.startPathway) {
-				let action = AppDetailsAction.buttons(AppDetailsButtonsAction.onStartPathway)
+				title: viewStore.app.pathways.isEmpty ? Texts.startPathway : Texts.pathways) {
+				let action = AppDetailsAction.buttons(AppDetailsButtonsAction.onPathway)
 				self.viewStore.send(action)
 			}
 		}
+	}
+	
+	@ViewBuilder
+	var pathwaysContainer: some View {
+		if viewStore.state.isPathwayListActive {
+			Group {
+				pathwaysList
+				choosePathwayTemplateLink
+			}
+		} else if viewStore.state.choosePathwayTemplate != nil {
+			choosePathwayTemplate
+		} else {
+			EmptyView()
+		}
+	}
+	
+	@ViewBuilder
+	var pathwaysList: some View {
+		PathwayList(store: store.scope(state: { $0.app },
+									   action: { .choosePathway($0) })
+		).customBackButton {
+			viewStore.send(.backFromPathwaysList)
+		}
+	}
+	
+	@ViewBuilder
+	var choosePathwayTemplateLink: some View {
+		NavigationLink.emptyHidden(viewStore.state.choosePathwayTemplate != nil,
+								   choosePathwayTemplate)
+	}
+	
+	@ViewBuilder
+	var choosePathwayTemplate: some View {
+		IfLetStore(store.scope(state: { $0.choosePathwayTemplate },
+							   action: { .choosePathwayTemplate($0) }),
+				   then: {
+					ChoosePathway.init(store:$0).customBackButton {
+						viewStore.send(.backFromChooseTemplates)
+					}
+				   }
+		)
 	}
 }

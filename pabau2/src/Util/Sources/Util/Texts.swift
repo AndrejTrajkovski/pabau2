@@ -141,7 +141,8 @@ Tap the aftercare bellow that you wish to send to the client. The aftercare will
 	public static let documents = "Documents".localized
 	public static let reschedule = "Reschedule".localized
 	public static let startPathway = "Start Pathway".localized
-
+	public static let pathways = "Pathways".localized
+	
 	public static let clients = "Clients"
 	public static let clientSearchPlaceholder = "Search by first name, last name or email"
 
