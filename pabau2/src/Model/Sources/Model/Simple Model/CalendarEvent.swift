@@ -158,10 +158,7 @@ extension CalendarEvent: Decodable {
 		case _description = "description"
 		case fontColor = "font_color"
 		case extraEmployees = "extra_employees"
-		case linked_pathway_id
-		case pathway_template_id
-		case steps_total
-		case steps_complete
+		case pathways
 	}
 	
 	public init(from decoder: Decoder) throws {

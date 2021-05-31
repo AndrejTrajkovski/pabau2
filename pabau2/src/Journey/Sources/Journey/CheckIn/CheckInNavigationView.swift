@@ -5,16 +5,11 @@ import Form
 import Combine
 
 public enum CheckInContainerAction: Equatable {
-	case showPatientMode
+	case checkInAnimationEnd
 	case passcode(PasscodeAction)
-	case animation(CheckInAnimationAction)
 	case patient(CheckInPatientAction)
 	case doctor(CheckInDoctorAction)
 	case didTouchHandbackDevice
-}
-
-public enum CheckInAnimationAction {
-	case didFinishAnimation
 }
 
 public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction, JourneyEnvironment> = .combine(
@@ -52,7 +47,7 @@ public let navigationReducer = Reducer<CheckInContainerState, CheckInContainerAc
 	switch action {
 	case .didTouchHandbackDevice:
 		state.isEnterPasscodeActive = true
-	case .showPatientMode:
+	case .checkInAnimationEnd:
 		state.isPatientModeActive = true
 	//TODO
 	//	case .doctor(.checkInBody(.footer(.toPatientMode))):

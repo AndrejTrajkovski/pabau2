@@ -59,85 +59,40 @@ struct AppDetailsButtons: View {
 	let columns = [
 		GridItem(.flexible(), spacing: 0),
 		GridItem(.flexible(), spacing: 0),
-		GridItem(.flexible(), spacing: 0),
+		GridItem(.flexible(), spacing: 0)
 	]
-
-	let items = [
-//		("briefcase", Texts.payment, AppDetailsButtonsAction.onPayment),
-		("minus.circle", Texts.cancel, AppDetailsButtonsAction.onCancel),
-		("pencil.and.ellipsis.rectangle", Texts.status, AppDetailsButtonsAction.onStatus),
-		("arrow.2.circlepath", Texts.repeat, AppDetailsButtonsAction.onRepeat),
-//		("doc.text", Texts.documents, AppDetailsButtonsAction.onDocuments),
-		("arrowshape.turn.up.right", Texts.reschedule, AppDetailsButtonsAction.onReschedule),
-		("list.bullet.rectangle", Texts.startPathway, AppDetailsButtonsAction.onStartPathway)
-	]
-
+	
 	var body: some View {
 		ScrollView {
 			LazyVGrid(columns: columns, spacing: 0) {
-				ForEach(items.indices) { idx in
-					ViewBuilder.buildBlock((idx == 2 || idx == 1 || idx == 3) ?
-											ViewBuilder.buildEither(second: choose21or3(idx: idx))
-											:
-											ViewBuilder.buildEither(first: timeSlot(idx: idx))
-					)
+				ForEach(0..<5) { idx in
+					switch idx {
+					case 0:
+						chooseCancelReason
+					case 1:
+						chooseStatusButton
+					case 2:
+						repeatLink
+					case 3:
+						reschedule
+					case 4:
+						pathways
+					default:
+						EmptyView()
+					}
 				}
 			}
 		}
 	}
-
+	
 	@ViewBuilder
-	func choose21or3(idx: Int) -> some View {
-		ViewBuilder.buildBlock((idx == 2 || idx == 1) ?
-								ViewBuilder.buildEither(second: chooseStatusOrCancelReason(idx: idx))
-								:
-								ViewBuilder.buildEither(first: repeatLink)
-		)
-	}
-
-	@ViewBuilder
-	func chooseStatusOrCancelReason(idx: Int) -> some View {
-		ViewBuilder.buildBlock((idx == 2) ?
-								ViewBuilder.buildEither(second: chooseStatusButton)
-								:
-								ViewBuilder.buildEither(first: chooseCancelReason)
-		)
-	}
-
-	func timeSlot(idx: Int) -> TimeSlotButton {
-		return TimeSlotButton(
-			image: items[idx].0,
-			title: items[idx].1) {
-			let action = AppDetailsAction.buttons(items[idx].2)
-			self.viewStore.send(action)
-		}
-	}
-
-	var chooseStatusButton: SingleChoiceLink<TimeSlotButton, AppointmentStatus, TextAndCheckMarkContainer<AppointmentStatus>> {
-		SingleChoiceLink(
-			content: {
-				TimeSlotButton(
-					image: items[2].0,
-					title: items[2].1) {
-					let action = AppDetailsAction.buttons(items[2].2)
-					self.viewStore.send(action)
-				}
-			},
-			store: self.store.scope(
-				state: { $0.chooseStatus },
-				action: { .chooseStatus($0) }
-			),
-			cell: TextAndCheckMarkContainer.init(state:)
-		)
-	}
-
 	var chooseCancelReason: SingleChoiceLink<TimeSlotButton, CancelReason, TextAndCheckMarkContainer<CancelReason>> {
 		SingleChoiceLink(
 			content: {
 				TimeSlotButton(
-					image: items[1].0,
-					title: items[1].1) {
-					let action = AppDetailsAction.buttons(items[1].2)
+					image: "minus.circle",
+					title: Texts.cancel) {
+					let action = AppDetailsAction.buttons(.onCancel)
 					self.viewStore.send(action)
 				}
 			},
@@ -149,6 +104,46 @@ struct AppDetailsButtons: View {
 		)
 	}
 
+	@ViewBuilder
+	var chooseStatusButton: SingleChoiceLink<TimeSlotButton, AppointmentStatus, TextAndCheckMarkContainer<AppointmentStatus>> {
+		SingleChoiceLink(
+			content: {
+				TimeSlotButton(
+					image: "pencil.and.ellipsis.rectangle",
+					title: Texts.status) {
+					let action = AppDetailsAction.buttons(AppDetailsButtonsAction.onStatus)
+					self.viewStore.send(action)
+				}
+			},
+			store: self.store.scope(
+				state: { $0.chooseStatus },
+				action: { .chooseStatus($0) }
+			),
+			cell: TextAndCheckMarkContainer.init(state:)
+		)
+	}
+	
+	@ViewBuilder
+	var reschedule: some View {
+		NavigationLink(
+			destination: IfLetStore(store.scope(state: { $0.chooseRepeat },
+												action: { .chooseRepeat($0) }),
+									then: ChooseRepeat.init(store:)
+			),
+			isActive: viewStore.binding(
+				get: \.chooseRepeat.isRepeatActive,
+				send: { $0 ? AppDetailsAction.buttons(.onRepeat) : AppDetailsAction.chooseRepeat(.onBackBtn) }
+			)
+		) {
+			TimeSlotButton(
+				image: "arrowshape.turn.up.right",
+				title: Texts.reschedule) {
+				let action = AppDetailsAction.buttons(AppDetailsButtonsAction.onReschedule)
+				self.viewStore.send(action)
+			}
+		}
+	}
+	
 	@ViewBuilder
 	var repeatLink: some View {
 		NavigationLink(
@@ -162,9 +157,24 @@ struct AppDetailsButtons: View {
 			)
 		) {
 			TimeSlotButton(
-				image: items[3].0,
-				title: items[3].1) {
-				let action = AppDetailsAction.buttons(items[3].2)
+				image: "arrow.2.circlepath",
+				title: Texts.repeat) {
+				let action = AppDetailsAction.buttons(AppDetailsButtonsAction.onRepeat)
+				self.viewStore.send(action)
+			}
+		}
+	}
+	
+	@ViewBuilder
+	var pathways: some View {
+		NavigationLink(
+			destination: EmptyView(),
+			isActive: .constant(false)
+		) {
+			TimeSlotButton(
+				image: "list.bullet.rectangle",
+				title: Texts.startPathway) {
+				let action = AppDetailsAction.buttons(AppDetailsButtonsAction.onStartPathway)
 				self.viewStore.send(action)
 			}
 		}

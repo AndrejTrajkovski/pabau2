@@ -187,7 +187,11 @@ public let tabBarReducer: Reducer<
 				env.audioPlayer
 					.playCheckInSound()
 					.receive(on: audioQueue)
-					.fireAndForget()
+					.fireAndForget(),
+				
+				Effect(value:TabBarAction.checkIn(CheckInContainerAction.checkInAnimationEnd))
+				.delay(for: .seconds(checkInAnimationDuration), scheduler: DispatchQueue.main)
+				.eraseToEffect()
 			])
 			
 		case .calendar(.appDetails(.buttons(.onStartPathway))):
@@ -250,11 +254,6 @@ public let tabBarReducer: Reducer<
 				userDefaults: $0.userDefaults)
 		}
 	),
-	//	journeyContainerReducer.optional().pullback(
-	//		state: \TabBarState.journeyContainer,
-	//		action: /TabBarAction.journey,
-	//		environment: makeJourneyEnv(_:)
-	//	),
 	
 	communicationReducer.pullback(
 		state: \TabBarState.communication,

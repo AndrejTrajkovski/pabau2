@@ -26,8 +26,8 @@ struct ListCell: View {
 		self.status = appointment.status?.name
 		self.employee = appointment.employeeName
 		self.paidStatus = ""
-		self.stepsComplete = appointment.stepsComplete?.description ?? ""
-		self.stepsTotal = appointment.stepsTotal?.description ?? ""
+		self.stepsComplete = appointment.pathways.first?.stepsComplete.description ?? ""
+		self.stepsTotal = appointment.pathways.first?.stepsTotal.description ?? ""
 	}
 	
 	var body: some View {
