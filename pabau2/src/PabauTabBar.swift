@@ -15,6 +15,7 @@ import CoreDataModel
 import CalendarList
 import ChooseLocationAndEmployee
 import ToastAlert
+import Combine
 
 public typealias TabBarEnvironment = (
 	loginAPI: LoginAPI,
@@ -178,6 +179,12 @@ public let tabBarReducer: Reducer<
 	
 	.init { state, action, env in
 		
+		struct CombinedPathwayResponse: Equatable {
+			let pathwayTemplate: PathwayTemplate
+			let pathway: Pathway
+			let appointment: Appointment
+		}
+		
 		switch action {
 		
 		case .delayStartPathway(let appointment, let pathway, let template):
@@ -191,25 +198,56 @@ public let tabBarReducer: Reducer<
 					.receive(on: audioQueue)
 					.fireAndForget(),
 				
-				Effect(value:TabBarAction.checkIn(CheckInContainerAction.checkInAnimationEnd))
+				Effect(value: TabBarAction.checkIn(CheckInContainerAction.checkInAnimationEnd))
 				.delay(for: .seconds(checkInAnimationDuration), scheduler: DispatchQueue.main)
 				.eraseToEffect()
 			])
 			
-		case .calendar(.appDetails(.buttons(.onPathway))):
-			break
-			//TODO
-//			guard let appointment = state.calendar.appDetails?.app else { break }
-//
-//			state.calendar.appDetails = nil
-//
-//			return .merge([
-//				Effect.init(value: TabBarAction.delayStartPathway(appointment: appointment))
+		case .calendar(.appDetails(.choosePathwayTemplate(.matchResponse(.success(let pathway))))):
+			
+			guard let appDetails = state.calendar.appDetails,
+				  let template = appDetails.choosePathwayTemplate?.selectedPathway else { return .none }
+			
+			state.calendar.appDetails = nil
+			
+			return .merge([
+				Effect.init(value: TabBarAction.delayStartPathway(appointment: appDetails.app,
+																  pathway: pathway,
+																  template: template))
+					.delay(for: 0.2, scheduler: DispatchQueue.main)
+					.eraseToEffect(),
+				
+				.cancel(id: ToastTimerId())
+			])
+			
+		case .calendar(.appDetails(.choosePathway(.rows(let id, .select)))):
+			guard let app = state.calendar.appDetails?.app,
+				  let pathwayInfo = app.pathways[id: id] else { return .none }
+			
+			state.calendar.appDetails = nil
+			
+			let getTemplate = env.journeyAPI.getPathwayTemplate(id: pathwayInfo.pathwayTemplateId)
+			let getPathway = env.journeyAPI.getPathway(id: pathwayInfo.pathwayId)
+			let zipped = Publishers.Zip.init(getTemplate, getPathway)
+				.receive(on: DispatchQueue.main)
+				.eraseToEffect()
+				.catchToEffect()
+				.map {
+					$0.map { CombinedPathwayResponse.init(pathwayTemplate: $0.0,
+														  pathway: $0.1,
+														  appointment: app)}
+				}
+				
+			
+			return .merge([
+//				Effect.init(value: TabBarAction.delayStartPathway(appointment: appDetails.app,
+//																  pathway: pathway,
+//																  template: template))
 //					.delay(for: 0.2, scheduler: DispatchQueue.main)
 //					.eraseToEffect(),
-//
-//				.cancel(id: ToastTimerId())
-//			])
+				
+				.cancel(id: ToastTimerId())
+			])
 				
 		case .calendar(.onAddEvent(.appointment)):
 			state.calendar.isAddEventDropdownShown = false

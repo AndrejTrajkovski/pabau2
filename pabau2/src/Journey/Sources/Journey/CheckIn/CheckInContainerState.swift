@@ -5,6 +5,47 @@ import Util
 import Form
 import ChoosePathway
 
+public struct CheckInParentState: Equatable {
+	var loadingOrLoaded: CheckInLoadingOrLoadedState
+	var isAnimationFinished: Bool = false
+	let appointment: Appointment
+	
+	init(loadedState: CheckInContainerState) {
+		self.loadingOrLoaded = .loaded(loadedState)
+		self.appointment = loadedState.appointment
+	}
+}
+
+public enum CheckInLoadingOrLoadedState: Equatable {
+	case loading(CheckInLoadingState)
+	case loaded(CheckInContainerState)
+}
+
+public struct CheckInInfo: Equatable {
+	let appointment: Appointment
+	let pathwayId: Pathway.ID
+	let pathwayTemplateId: PathwayTemplate.ID
+}
+
+public struct CheckInLoadingState: Equatable {
+	let appointment: Appointment
+	var pathwaysLoadingState: LoadingState
+	let pathwayId: Pathway.ID
+	let pathwayTemplateId: PathwayTemplate.ID
+	
+	init(
+		appointment:Appointment,
+		pathwayId:Pathway.ID,
+		pathwayTemplateId:PathwayTemplate.ID,
+		pathwaysLoadingState: LoadingState
+	) {
+		self.appointment = appointment
+		self.pathwayId = pathwayId
+		self.pathwayTemplateId = pathwayTemplateId
+		self.pathwaysLoadingState = pathwaysLoadingState
+	}
+}
+
 public struct CheckInContainerState: Equatable {
 	
 	let appointment: Appointment

@@ -3,6 +3,8 @@ import ComposableArchitecture
 import Model
 import Form
 import Combine
+import Util
+import SharedComponents
 
 public enum CheckInContainerAction: Equatable {
 	case checkInAnimationEnd
@@ -10,9 +12,45 @@ public enum CheckInContainerAction: Equatable {
 	case patient(CheckInPatientAction)
 	case doctor(CheckInDoctorAction)
 	case didTouchHandbackDevice
+	case retryLoadingPathways
 }
 
-public let checkInReducer: Reducer<CheckInContainerState, CheckInContainerAction, JourneyEnvironment> = .combine(
+let checkInLoadedReducer: Reducer<CheckInLoadingOrLoadedState, CheckInContainerAction, JourneyEnvironment> =
+	checkInContainerReducer.pullbackCp(
+		state: /CheckInLoadingOrLoadedState.loaded,
+		action: /CheckInContainerAction.self,
+		environment: { $0 }
+	)
+
+public let checkInLoadingReducer: Reducer<CheckInParentState, CheckInContainerAction, JourneyEnvironment> =
+	.combine(
+		
+		checkInLoadedReducer.pullback(
+			state: \CheckInParentState.loadingOrLoaded,
+			action: /CheckInContainerAction.self,
+			environment: { $0 }),
+		
+		.init { state, action, env in
+			
+			switch action {
+			case .retryLoadingPathways:
+				break
+			case .checkInAnimationEnd:
+				break
+			case .passcode(_):
+				break
+			case .patient(_):
+				break
+			case .doctor(_):
+				break
+			case .didTouchHandbackDevice:
+				break
+			}
+			return .none
+		}
+)
+
+public let checkInContainerReducer: Reducer<CheckInContainerState, CheckInContainerAction, JourneyEnvironment> = .combine(
 	checkInPatientReducer.pullback(
 		state: \CheckInContainerState.patientCheckIn,
 		action: /CheckInContainerAction.patient,
@@ -85,6 +123,56 @@ public struct CheckInNavigationView: View {
 			}
 		}
 		.navigationViewStyle(StackNavigationViewStyle())
+	}
+}
+
+struct CheckInParent: View {
+	
+	let store: Store<CheckInParentState, CheckInContainerAction>
+	
+	var body: some View {
+		WithViewStore(store.scope(state: { $0 } )) { viewStore in
+			if viewStore.state.isAnimationFinished {
+				CheckInAnimation(animationDuration: checkInAnimationDuration,
+								 appointment: viewStore.state.appointment)
+			} else {
+				CheckInLoadingOrLoaded(store: store.scope(state: { $0.loadingOrLoaded }))
+			}
+		}
+	}
+}
+
+struct CheckInLoadingOrLoaded: View {
+	
+	let store: Store<CheckInLoadingOrLoadedState, CheckInContainerAction>
+	
+	var body: some View {
+		IfLetStore(store.scope(state: /CheckInLoadingOrLoadedState.loaded),
+				   then: CheckInPatientContainer.init(store:))
+		IfLetStore(store.scope(state: /CheckInLoadingOrLoadedState.loading),
+				   then: CheckInLoading.init(store:))
+	}
+}
+
+struct CheckInLoading: View {
+	
+	init(store: Store<CheckInLoadingState, CheckInContainerAction>) {
+		self.store = store
+		self.viewStore = ViewStore(store.scope(state: { $0.pathwaysLoadingState }))
+	}
+	
+	let store: Store<CheckInLoadingState, CheckInContainerAction>
+	@ObservedObject var viewStore: ViewStore<LoadingState, CheckInContainerAction>
+	
+	var body: some View {
+		if case .gotError(let error) = viewStore.state {
+			VStack {
+				RawErrorView.init(description: (error as CustomStringConvertible).description)
+				Button("Retry", action: { viewStore.send(.retryLoadingPathways) })
+			}
+		} else {
+			LoadingSpinner(title: "Loading Pathway Data...")
+		}
 	}
 }
 

@@ -19,16 +19,24 @@ public struct ErrorViewStore<E: Error>: View where E: CustomStringConvertible & 
 
 public struct ErrorView<E: Error>: View {
 	
+	let error: E
+	
 	public init(error: E) {
-		self.description = (error as CustomStringConvertible).description
+		self.error = error
 	}
+	
+	public var body: some View {
+		RawErrorView(description: (error as CustomStringConvertible).description)
+	}
+}
+
+public struct RawErrorView: View {
 	
 	public init(description: String) {
 		self.description = description
 	}
 	
 	let description: String
-
 	
 	public var body: some View {
 		GeometryReaderPatch { geometry in

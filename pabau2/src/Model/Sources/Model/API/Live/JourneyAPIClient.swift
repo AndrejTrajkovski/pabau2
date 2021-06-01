@@ -44,6 +44,32 @@ extension APIClient {
         .effect()
     }
 	
+	public func getPathwayTemplate(id: PathwayTemplate.ID) -> Effect<PathwayTemplate, RequestError> {
+		
+		struct GetPathways: Decodable {
+			let pathways: [PathwayTemplate]
+		}
+		
+		let companyId = loggedInUser?.companyID ?? ""
+		let requestBuilder: RequestBuilder<GetPathways>.Type = requestBuilderFactory.getBuilder()
+		return requestBuilder.init(method: .GET,
+								   baseUrl: baseUrl,
+								   path: .getPathwaysTemplates,
+								   queryParams: commonAnd(other: ["company_id" : companyId,
+																  "id" : id.description])
+		)
+		.effect()
+		.tryMap {
+			if let first = $0.pathways.first {
+				return first
+			} else {
+				throw RequestError.emptyDataResponse
+			}
+		}
+		.mapError { $0 as? RequestError ?? RequestError.unknown }
+		.eraseToEffect()
+	}
+	
 	public func getPathwayTemplates() -> Effect<IdentifiedArrayOf<PathwayTemplate>, RequestError> {
 		struct GetPathways: Decodable {
 			let pathways: [PathwayTemplate]
