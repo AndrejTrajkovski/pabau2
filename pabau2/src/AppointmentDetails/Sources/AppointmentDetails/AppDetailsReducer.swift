@@ -8,6 +8,7 @@ import Foundation
 import ToastAlert
 import ChoosePathway
 import PathwayList
+import AlertToast
 
 public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDetailsEnvironment> = .combine(
 	appDetailsButtonsReducer.pullback(
@@ -54,7 +55,7 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 					let cancelReason = state.cancelReasons[id: id]
 					return env.clientsAPI.appointmentChangeCancelReason(appointmentId: state.app.id, reason: "\(String(describing: cancelReason))")
 						.catchToEffect()
-						.map { _ in  AppDetailsAction.onResponseChangeAppointment }
+                        .map { response in AppDetailsAction.onResponseChangeAppointment(response) }
 						.eraseToEffect()
 					
 				}
@@ -69,9 +70,8 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 					let status = state.appStatuses[id: id]
 					return env.clientsAPI.appointmentChangeStatus(appointmentId: state.app.id, status: "\(String(describing: status))")
 						.catchToEffect()
-						.map { _ in  AppDetailsAction.onResponseChangeAppointment }
+                        .map { response in AppDetailsAction.onResponseChangeAppointment(response) }
 						.eraseToEffect()
-					
 				}
 			default:
 				break
@@ -91,7 +91,7 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 				return env.clientsAPI.getAppointmentCancelReasons()
 					.catchToEffect()
 					.receive(on: DispatchQueue.main)
-					.map(AppDetailsAction.cancelReasonsResponse)
+					.map(AppDetailsAction.onDownloadCancelReasons)
 					.eraseToEffect()
 			case .onRepeat:
 				break
@@ -139,7 +139,7 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 				return Effect.timer(id: ToastTimerId(), every: 2, on: DispatchQueue.main)
 					.map { _ in AppDetailsAction.dismissToast }
 			}
-		case .cancelReasonsResponse(let result):
+		case .onDownloadCancelReasons(let result):
 			switch result {
 			case .success(let cancelReasons):
 				state.cancelReasonLS = .gotSuccess
@@ -152,9 +152,25 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 										 title: error.description)
 				return Effect.timer(id: ToastTimerId(), every: 2, on: DispatchQueue.main)
 					.map { _ in AppDetailsAction.dismissToast }
-			}
-		case .onResponseChangeAppointment:
-			break
+            }
+        case .onResponseChangeCancelReason(let response):
+            switch response {
+            case .success(_):
+                state.toast = ToastState(mode: .banner(.slide), type: .regular, title: "Appointment successfully canceled.")
+            case .failure(let error):
+                state.toast = ToastState(mode: .alert, type: .error(.red), title: error.description)
+            }
+            return Effect.timer(id: ToastTimerId(), every: 2, on: DispatchQueue.main)
+                .map { _ in AppDetailsAction.dismissToast }
+		case .onResponseChangeAppointment(let response):
+            switch response {
+            case .success(_):
+                state.toast = ToastState(mode: .banner(.slide), type: .regular, title: "Status successfully updated.")
+            case .failure(let error):
+                state.toast = ToastState(mode: .alert, type: .error(.red), title: error.description)
+            }
+            return Effect.timer(id: ToastTimerId(), every: 2, on: DispatchQueue.main)
+                .map { _ in AppDetailsAction.dismissToast }
 		case .dismissToast:
 			state.toast = nil
 			return .cancel(id: ToastTimerId())

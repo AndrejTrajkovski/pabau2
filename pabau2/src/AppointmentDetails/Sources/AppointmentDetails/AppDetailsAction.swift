@@ -12,8 +12,9 @@ public enum AppDetailsAction {
 	case chooseRepeat(ChooseRepeatAction)
 	case close
 	case downloadStatusesResponse(Result<[AppointmentStatus], RequestError>)
-	case cancelReasonsResponse(Result<[CancelReason], RequestError>)
-	case onResponseChangeAppointment
+    case onDownloadCancelReasons(Result<[CancelReason], RequestError>)
+    case onResponseChangeCancelReason(Result<Bool, RequestError>)
+	case onResponseChangeAppointment(Result<Bool, RequestError>)
 	case onResponseCreateReccuringAppointment
 	case dismissToast
 	case choosePathwayTemplate(ChoosePathwayContainerAction)
