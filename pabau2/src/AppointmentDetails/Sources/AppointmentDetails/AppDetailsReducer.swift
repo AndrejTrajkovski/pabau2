@@ -43,10 +43,23 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 						
 			return env.clientsAPI.createRecurringAppointment(appointmentId: state.app.id, repeatRange: interval, repeatUntil: sDate)
 				.catchToEffect()
-				.map { _ in AppDetailsAction.onResponseCreateReccuringAppointment }
+				.map { response in AppDetailsAction.onResponseCreateReccuringAppointment(response) }
 			
-		case .onResponseCreateReccuringAppointment:
+		case .onResponseCreateReccuringAppointment(let response):
 			state.chooseRepeat.isRepeatActive = false
+            switch response {
+            case .success(_):
+                state.toast = ToastState(mode: .banner(.slide),
+                                         type: .regular,
+                                         title: "Appointment repeated created.")
+            case .failure(let error):
+                state.toast = ToastState(mode: .alert,
+                                         type: .error(.red),
+                                         title: error.description)
+            }
+            return Effect.timer(id: ToastTimerId(), every: 2, on: DispatchQueue.main)
+                .map { _ in AppDetailsAction.dismissToast }
+            
 		case .chooseCancelReason(let singleChoiceLinkAction):
 			switch singleChoiceLinkAction {
 			case .singleChoice(let single):
@@ -94,7 +107,7 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 					.map(AppDetailsAction.onDownloadCancelReasons)
 					.eraseToEffect()
 			case .onRepeat:
-				break
+                state.chooseRepeat.isRepeatActive = true
 			case .onReschedule:
 				break
 			case .onPathway:

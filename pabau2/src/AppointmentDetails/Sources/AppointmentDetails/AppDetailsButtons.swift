@@ -14,7 +14,8 @@ public let appDetailsButtonsReducer: Reducer<AppDetailsButtonsState, AppDetailsB
 	case .onStatus:
 		break
 	case .onRepeat:
-		state.isRepeatActive = true
+		//state.isRepeatActive = true
+        break
 	case .onReschedule:
 		state.isRescheduleActive = true
 	case .onPathway:
@@ -123,8 +124,8 @@ struct AppDetailsButtons: View {
 									then: ChooseRepeat.init(store:)
 			),
 			isActive: viewStore.binding(
-				get: \.chooseRepeat.isRepeatActive,
-				send: { $0 ? AppDetailsAction.buttons(.onRepeat) : AppDetailsAction.chooseRepeat(.onBackBtn) }
+				get: \.chooseRepeat.isRescheduleActive,
+				send: { $0 ? AppDetailsAction.buttons(.onReschedule) : AppDetailsAction.chooseRepeat(.onBackBtn) }
 			)
 		) {
 			TimeSlotButton(

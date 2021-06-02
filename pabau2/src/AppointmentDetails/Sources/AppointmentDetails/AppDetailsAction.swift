@@ -15,7 +15,7 @@ public enum AppDetailsAction {
     case onDownloadCancelReasons(Result<[CancelReason], RequestError>)
     case onResponseChangeCancelReason(Result<Bool, RequestError>)
 	case onResponseChangeAppointment(Result<Bool, RequestError>)
-	case onResponseCreateReccuringAppointment
+	case onResponseCreateReccuringAppointment(Result<Bool, RequestError>)
 	case dismissToast
 	case choosePathwayTemplate(ChoosePathwayContainerAction)
 	case choosePathway(PathwayListAction)
