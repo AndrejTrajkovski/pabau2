@@ -28,7 +28,7 @@ public typealias TabBarEnvironment = (
 )
 
 public struct TabBarState: Equatable {
-	var checkIn: CheckInContainerState?
+	var checkIn: CheckInParentState?
 	var clients: ClientsState
 	var calendar: CalendarState
 	var settings: SettingsState
@@ -43,7 +43,7 @@ public enum TabBarAction {
 	case addAppointment(AddAppointmentAction)
 	case communication(CommunicationAction)
 	case checkIn(CheckInContainerAction)
-	case delayStartPathway(appointment: Appointment, pathway: Pathway, template: PathwayTemplate)
+	case delayStartPathway(state: CheckInParentState)
 }
 
 struct PabauTabBar: View {
@@ -129,7 +129,8 @@ struct PabauTabBar: View {
 			}
 	}
 	
-	fileprivate func checkIn() -> IfLetStore<CheckInContainerState, CheckInContainerAction, CheckInNavigationView?> {
+	fileprivate func checkIn() -> IfLetStore<CheckInParentState, CheckInContainerAction, CheckInNavigationView?> {
+		print("checkIn()")
 		return IfLetStore(self.store.scope(
 			state: { $0.checkIn },
 			action: { .checkIn($0) }
@@ -155,6 +156,12 @@ public let tabBarReducer: Reducer<
 	TabBarEnvironment
 > = Reducer.combine(
 	
+	checkInParentReducer.optional().pullback(
+		state: \TabBarState.checkIn,
+		action: /TabBarAction.checkIn,
+		environment: makeJourneyEnv(_:)
+	),
+	
 	showAddAppointmentReducer.pullback(
 		state: \TabBarState.self,
 		action: /TabBarAction.calendar,
@@ -179,29 +186,33 @@ public let tabBarReducer: Reducer<
 	
 	.init { state, action, env in
 		
-		struct CombinedPathwayResponse: Equatable {
-			let pathwayTemplate: PathwayTemplate
-			let pathway: Pathway
-			let appointment: Appointment
-		}
-		
 		switch action {
 		
-		case .delayStartPathway(let appointment, let pathway, let template):
+		case .delayStartPathway(let checkInState):
 			
-			state.checkIn = CheckInContainerState(appointment: appointment,
-												  pathway: pathway,
-												  template: template)
-			return .merge([
+			state.checkIn = checkInState
+			
+			var returnEffects: [Effect<TabBarAction, Never>] = [
 				env.audioPlayer
 					.playCheckInSound()
 					.receive(on: audioQueue)
 					.fireAndForget(),
 				
 				Effect(value: TabBarAction.checkIn(CheckInContainerAction.checkInAnimationEnd))
-				.delay(for: .seconds(checkInAnimationDuration), scheduler: DispatchQueue.main)
-				.eraseToEffect()
-			])
+					.delay(for: .seconds(checkInAnimationDuration), scheduler: DispatchQueue.main)
+					.eraseToEffect()
+			]
+			
+			if case .loading(let loadingState) = checkInState.loadingOrLoaded {
+				let getCombinedPathwaysResponse = getCombinedPathwayResponse(journeyAPI: env.journeyAPI,
+																			 checkInState: loadingState)
+					.map {
+						TabBarAction.checkIn(.loading(.gotCombinedPathwaysResponse($0)))
+					}
+				returnEffects.append(getCombinedPathwaysResponse)
+			}
+			
+			return .merge(returnEffects)
 			
 		case .calendar(.appDetails(.choosePathwayTemplate(.matchResponse(.success(let pathway))))):
 			
@@ -210,10 +221,13 @@ public let tabBarReducer: Reducer<
 			
 			state.calendar.appDetails = nil
 			
+			let loadedState = CheckInContainerState(appointment: appDetails.app,
+													pathway: pathway,
+													template: template)
+			let checkInState = CheckInParentState(loadedState: loadedState)
+			
 			return .merge([
-				Effect.init(value: TabBarAction.delayStartPathway(appointment: appDetails.app,
-																  pathway: pathway,
-																  template: template))
+				Effect.init(value: TabBarAction.delayStartPathway(state: checkInState))
 					.delay(for: 0.2, scheduler: DispatchQueue.main)
 					.eraseToEffect(),
 				
@@ -226,29 +240,20 @@ public let tabBarReducer: Reducer<
 			
 			state.calendar.appDetails = nil
 			
-			let getTemplate = env.journeyAPI.getPathwayTemplate(id: pathwayInfo.pathwayTemplateId)
-			let getPathway = env.journeyAPI.getPathway(id: pathwayInfo.pathwayId)
-			let zipped = Publishers.Zip.init(getTemplate, getPathway)
-				.receive(on: DispatchQueue.main)
-				.eraseToEffect()
-				.catchToEffect()
-				.map {
-					$0.map { CombinedPathwayResponse.init(pathwayTemplate: $0.0,
-														  pathway: $0.1,
-														  appointment: app)}
-				}
-				
+			let loadingCheckInState = CheckInLoadingState(appointment: app,
+														  pathwayId: pathwayInfo.pathwayId,
+														  pathwayTemplateId: pathwayInfo.pathwayTemplateId,
+														  pathwaysLoadingState: .loading)
+			let checkInState = CheckInParentState(loadingState: loadingCheckInState)
 			
 			return .merge([
-//				Effect.init(value: TabBarAction.delayStartPathway(appointment: appDetails.app,
-//																  pathway: pathway,
-//																  template: template))
-//					.delay(for: 0.2, scheduler: DispatchQueue.main)
-//					.eraseToEffect(),
+				Effect.init(value: TabBarAction.delayStartPathway(state: checkInState))
+					.delay(for: 0.2, scheduler: DispatchQueue.main)
+					.eraseToEffect(),
 				
 				.cancel(id: ToastTimerId())
 			])
-				
+			
 		case .calendar(.onAddEvent(.appointment)):
 			state.calendar.isAddEventDropdownShown = false
 			let chooseLocAndEmp = ChooseLocationAndEmployeeState(locations: state.calendar.locations,

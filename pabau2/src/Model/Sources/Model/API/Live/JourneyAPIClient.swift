@@ -216,7 +216,11 @@ extension APIClient {
 	
 	public func getPathway(id: Pathway.ID) -> Effect<Pathway, RequestError> {
 		
-		let requestBuilder: RequestBuilder<Pathway>.Type = requestBuilderFactory.getBuilder()
+		struct Response: Decodable {
+			let pathway_data: Pathway
+		}
+		
+		let requestBuilder: RequestBuilder<Response>.Type = requestBuilderFactory.getBuilder()
 		
 		return requestBuilder.init(
 			method: .GET,
@@ -225,6 +229,8 @@ extension APIClient {
 			queryParams: commonAnd(other: ["id": String(id.description)])
 		)
 		.effect()
+		.map(\.pathway_data)
+		.eraseToEffect()
 	}
 	
 	public func getRooms() -> Effect<[Room], RequestError> {

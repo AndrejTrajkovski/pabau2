@@ -6,13 +6,18 @@ import Form
 import ChoosePathway
 
 public struct CheckInParentState: Equatable {
-	var loadingOrLoaded: CheckInLoadingOrLoadedState
+	public var loadingOrLoaded: CheckInLoadingOrLoadedState
 	var isAnimationFinished: Bool = false
 	let appointment: Appointment
 	
-	init(loadedState: CheckInContainerState) {
+	public init(loadedState: CheckInContainerState) {
 		self.loadingOrLoaded = .loaded(loadedState)
 		self.appointment = loadedState.appointment
+	}
+	
+	public init(loadingState: CheckInLoadingState) {
+		self.loadingOrLoaded = .loading(loadingState)
+		self.appointment = loadingState.appointment
 	}
 }
 
@@ -28,15 +33,15 @@ public struct CheckInInfo: Equatable {
 }
 
 public struct CheckInLoadingState: Equatable {
-	let appointment: Appointment
-	var pathwaysLoadingState: LoadingState
-	let pathwayId: Pathway.ID
-	let pathwayTemplateId: PathwayTemplate.ID
+	public let appointment: Appointment
+	public var pathwaysLoadingState: LoadingState
+	public let pathwayId: Pathway.ID
+	public let pathwayTemplateId: PathwayTemplate.ID
 	
-	init(
-		appointment:Appointment,
-		pathwayId:Pathway.ID,
-		pathwayTemplateId:PathwayTemplate.ID,
+	public init(
+		appointment: Appointment,
+		pathwayId: Pathway.ID,
+		pathwayTemplateId: PathwayTemplate.ID,
 		pathwaysLoadingState: LoadingState
 	) {
 		self.appointment = appointment
@@ -51,8 +56,6 @@ public struct CheckInContainerState: Equatable {
 	let appointment: Appointment
 	var pathway: Pathway
 	let pathwayTemplate: PathwayTemplate
-	
-	var isPatientModeActive: Bool = false
 	
 	var patientDetailsLS: LoadingState
 	var patientDetails: ClientBuilder?

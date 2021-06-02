@@ -21,7 +21,7 @@ typealias AppEnvironment = (
 	audioPlayer: AudioPlayerProtocol
 )
 
-func makeJourneyEnv(_ appEnv: AppEnvironment) -> JourneyEnvironment {
+func makeJourneyEnv(_ appEnv: TabBarEnvironment) -> JourneyEnvironment {
 	return JourneyEnvironment(
 		formAPI: appEnv.formAPI,
 		journeyAPI: appEnv.journeyAPI,
