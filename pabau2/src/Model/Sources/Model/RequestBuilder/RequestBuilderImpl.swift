@@ -46,7 +46,7 @@ open class RequestBuilderImpl<T: Decodable>: RequestBuilder<T> {
 			return Model.publisher(request: request, dateDecoding: dateDecoding)
 		} catch {
 			return Fail(error: error)
-				.mapError { $0 as? RequestError ?? .unknown}
+				.mapError { $0 as? RequestError ?? .unknown($0) }
 				.eraseToAnyPublisher()
 		}
 	}
@@ -73,7 +73,7 @@ func publisher<T: Decodable>(request: URLRequest, dateDecoding: JSONDecoder.Date
 			RequestError.networking(error)
 		}
 		.tryMap (validate)
-		.mapError { $0 as? RequestError ?? .unknown }
+		.mapError { $0 as? RequestError ?? .unknown($0) }
 		.flatMap(maxPublishers: .max(1)) { data in
 			return decode(data, dateDecoding: dateDecoding)
 		}
@@ -101,8 +101,10 @@ func decode<T: Decodable>(_ data: Data, dateDecoding: JSONDecoder.DateDecodingSt
 					var errorMessage = error.localizedDescription + "\n" + (String.init(data: data, encoding: .utf8) ?? ". String not utf8")
 					errorMessage += stringIfDecodingError(error) ?? ""
 					return RequestError.jsonDecoding(errorMessage)
+				} else if error is URLError {
+					return error as? RequestError ?? .networking(error)
 				} else {
-					return error as? RequestError ?? .unknown
+					return error as? RequestError ?? .unknown(error)
 				}
 		}
 		.eraseToAnyPublisher()

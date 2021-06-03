@@ -18,6 +18,25 @@ public let checkInLoadingReducer: Reducer<CheckInLoadingState, CheckInLoadingAct
 	return .none
 }
 
+public struct CheckInLoadingState: Equatable {
+	public let appointment: Appointment
+	public var pathwaysLoadingState: LoadingState
+	public let pathwayId: Pathway.ID
+	public let pathwayTemplateId: PathwayTemplate.ID
+	
+	public init(
+		appointment: Appointment,
+		pathwayId: Pathway.ID,
+		pathwayTemplateId: PathwayTemplate.ID,
+		pathwaysLoadingState: LoadingState
+	) {
+		self.appointment = appointment
+		self.pathwayId = pathwayId
+		self.pathwayTemplateId = pathwayTemplateId
+		self.pathwaysLoadingState = pathwaysLoadingState
+	}
+}
+
 public enum CheckInLoadingAction: Equatable {
 	case retryLoadingPathways
 	case gotCombinedPathwaysResponse(Result<CombinedPathwayResponse, RequestError>)
@@ -34,14 +53,16 @@ struct CheckInLoading: View {
 	@ObservedObject var viewStore: ViewStore<LoadingState, CheckInLoadingAction>
 	
 	var body: some View {
-		if case .gotError(let error) = viewStore.state {
-			VStack {
-				RawErrorView.init(description: (error as CustomStringConvertible).description)
-				Button("Retry", action: { viewStore.send(.retryLoadingPathways) })
-				Spacer()
+		ZStack {
+			if case .gotError(let error) = viewStore.state {
+				VStack {
+					ErrorView(error: error)
+					Button("Retry", action: { viewStore.send(.retryLoadingPathways) })
+					Spacer()
+				}
+			} else {
+				LoadingSpinner(title: "Loading Pathway Data...")
 			}
-		} else {
-			LoadingSpinner(title: "Loading Pathway Data...")
 		}
 	}
 }

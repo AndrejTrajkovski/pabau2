@@ -3,7 +3,7 @@ import Model
 import ComposableArchitecture
 import Util
 
-public struct CheckIn<FormsContent: View, S: CheckInState, AvatarView: View>: View where S: Equatable {
+public struct CheckInForms<FormsContent: View, S: CheckInState, AvatarView: View>: View where S: Equatable {
 	public init(store: Store<S, CheckInAction>, avatarView: @escaping () -> AvatarView, content: @escaping () -> FormsContent) {
 		self.store = store
 		self.avatarView = avatarView
@@ -17,7 +17,9 @@ public struct CheckIn<FormsContent: View, S: CheckInState, AvatarView: View>: Vi
 	public var body: some View {
 		print("CheckIn")
 		return VStack (spacing: 0) {
-			TopView(store: store, avatarView: avatarView)
+			TopView(avatarView: avatarView,
+						 rightSideContent: ribbonView,
+						 store: store.stateless)
 			VStack {
 				StepSelector(store: store).frame(height: 80)
 				Divider()
@@ -31,6 +33,13 @@ public struct CheckIn<FormsContent: View, S: CheckInState, AvatarView: View>: Vi
 		}
 		.navigationBarTitle("")
 		.navigationBarHidden(true)
+	}
+	
+	@ViewBuilder
+	func ribbonView() -> some View {
+		RibbonView(store: store.actionless)
+			.offset(x: -80, y: -60)
+			.exploding(.topTrailing)
 	}
 }
 

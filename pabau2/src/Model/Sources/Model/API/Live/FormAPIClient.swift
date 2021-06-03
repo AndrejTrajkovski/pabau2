@@ -45,7 +45,7 @@ public extension APIClient {
 				if let formError = error as? HTMLFormBuilderError {
 					return RequestError.jsonDecoding(formError.description)
 				} else {
-					return error as? RequestError ?? .unknown
+					return error as? RequestError ?? .unknown(error)
 				}
 			}
 			.eraseToEffect()
@@ -70,7 +70,7 @@ public extension APIClient {
 				if let formError = error as? HTMLFormBuilderError {
 					return RequestError.jsonDecoding(formError.description)
 				} else {
-					return error as? RequestError ?? .unknown
+					return error as? RequestError ?? .unknown(error)
 				}
 			}
 			.eraseToEffect()
@@ -221,7 +221,7 @@ extension APIClient {
 					throw RequestError.apiError("No Patient Details found")
 				}
 			}
-			.mapError { $0 as? RequestError ?? RequestError.unknown }
+			.mapError { $0 as? RequestError ?? .unknown($0) }
 			.eraseToEffect()
 	}
 }

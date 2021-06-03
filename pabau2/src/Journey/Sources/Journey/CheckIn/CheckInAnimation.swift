@@ -76,3 +76,11 @@ struct Checkmark: View {
 		.frame(width: 95, height: 90)
 	}
 }
+
+public let checkInAnimationDuration: Double = {
+	#if DEBUG
+	return 2.0
+	#else
+	return 2.0
+	#endif
+}()

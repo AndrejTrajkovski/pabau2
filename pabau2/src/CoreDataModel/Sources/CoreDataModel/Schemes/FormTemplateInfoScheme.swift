@@ -9,7 +9,7 @@ public class FormTemplateInfoScheme: CoreStoreObject {
     @Field.Stored("name")
     public var name: String = ""
     
-    @Field.Stored("color")
+    @Field.Stored("type")
     public var type: String = ""
 }
 

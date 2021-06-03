@@ -56,7 +56,7 @@ let passcodeContainerReducer: Reducer<PasscodeContainerState, PasscodeAction, An
 	)
 
 struct Passcode: View {
-	let store: Store<CheckInContainerState, CheckInContainerAction>
+	let store: Store<CheckInLoadedState, CheckInContainerAction>
 	
 	var body: some View {
 		WithViewStore(self.store.scope(state: { $0.passcode },

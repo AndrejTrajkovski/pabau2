@@ -83,7 +83,7 @@ struct FormsContainer: View {
 							}
 							checkInNavigationLink(isActive: viewStore.state)
 						}
-					   }, else: checkInView()
+					   }, else: { checkInView() }
 			)
 		}.debug("Forms Container")
 	}
@@ -94,9 +94,10 @@ struct FormsContainer: View {
 		)
 	}
 
+	@ViewBuilder
 	func checkInView() -> some View {
 		print("FormsContainer")
-		return CheckIn(store: store.scope(state: { $0 },
+		return CheckInForms(store: store.scope(state: { $0 },
 								   action: { .checkIn($0)}),
 					   avatarView: {
 						ClientAvatarAndName(store: store.scope(state: { $0.client }).actionless) },

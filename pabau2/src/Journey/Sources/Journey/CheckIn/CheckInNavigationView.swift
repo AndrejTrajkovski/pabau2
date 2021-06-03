@@ -6,6 +6,22 @@ import Combine
 import Util
 import SharedComponents
 
+public struct CheckInNavigationState: Equatable {
+	public var loadingOrLoaded: CheckInLoadingOrLoadedState
+	var isAnimationFinished: Bool = false
+	let appointment: Appointment
+	
+	public init(loadedState: CheckInLoadedState) {
+		self.loadingOrLoaded = .loaded(loadedState)
+		self.appointment = loadedState.appointment
+	}
+	
+	public init(loadingState: CheckInLoadingState) {
+		self.loadingOrLoaded = .loading(loadingState)
+		self.appointment = loadingState.appointment
+	}
+}
+
 public enum CheckInContainerAction: Equatable {
 	case checkInAnimationEnd
 	case passcode(PasscodeAction)
@@ -15,62 +31,11 @@ public enum CheckInContainerAction: Equatable {
 	case loading(CheckInLoadingAction)
 }
 
-let checkInLoadingOrLoadedReducer: Reducer<CheckInLoadingOrLoadedState, CheckInContainerAction, JourneyEnvironment> = .combine (
-	
-	checkInContainerReducer.pullbackCp(
-		state: /CheckInLoadingOrLoadedState.loaded,
-		action: /CheckInContainerAction.self,
-		environment: { $0 }
-	),
-	
-	checkInLoadingReducer.pullbackCp(
-		state: /CheckInLoadingOrLoadedState.loading,
-		action: /CheckInContainerAction.loading,
-		environment: { $0 }),
-	
-	.init { state, action, env in
-		switch action {
-		
-		case .loading(.gotCombinedPathwaysResponse(let result)):
-			print("gotCombinedPathwaysResponse")
-			guard case .loading(var checkInloadingState) = state else {
-				return .none
-			}
-			switch result {
-			
-			case .success(let pathwaysResponse):
-				
-				print("success pathwaysResponse")
-				let loaded = CheckInContainerState(appointment: pathwaysResponse.appointment,
-												   pathway: pathwaysResponse.pathway,
-												   template: pathwaysResponse.pathwayTemplate)
-				state = .loaded(loaded)
-				return .none
-				
-			case .failure(let error):
-				
-				checkInloadingState.pathwaysLoadingState = .gotError(error)
-				state = .loading(checkInloadingState)
-				print(".failure(let error): ", error)
-				return .none
-			}
-		case .checkInAnimationEnd,
-			 .passcode(_),
-			 .patient(_) ,
-			 .doctor(_) ,
-			 .didTouchHandbackDevice,
-			 .loading(.retryLoadingPathways):
-			break
-		}
-		return .none
-	}
-)
-
-public let checkInParentReducer: Reducer<CheckInParentState, CheckInContainerAction, JourneyEnvironment> =
+public let checkInParentReducer: Reducer<CheckInNavigationState, CheckInContainerAction, JourneyEnvironment> =
 	.combine(
 		
 		checkInLoadingOrLoadedReducer.pullback(
-			state: \CheckInParentState.loadingOrLoaded,
+			state: \CheckInNavigationState.loadingOrLoaded,
 			action: /CheckInContainerAction.self,
 			environment: { $0 }),
 		
@@ -94,9 +59,9 @@ public let checkInParentReducer: Reducer<CheckInParentState, CheckInContainerAct
 		}
 )
 
-public let checkInContainerReducer: Reducer<CheckInContainerState, CheckInContainerAction, JourneyEnvironment> = .combine(
+public let checkInLoadedReducer: Reducer<CheckInLoadedState, CheckInContainerAction, JourneyEnvironment> = .combine(
 	checkInPatientReducer.pullback(
-		state: \CheckInContainerState.patientCheckIn,
+		state: \CheckInLoadedState.patientCheckIn,
 		action: /CheckInContainerAction.patient,
 		environment: { $0 }
 	),
@@ -106,17 +71,17 @@ public let checkInContainerReducer: Reducer<CheckInContainerState, CheckInContai
 	//		environment: { $0 }
 	//	),
 	navigationReducer.pullback(
-		state: \CheckInContainerState.self,
+		state: \CheckInLoadedState.self,
 		action: /CheckInContainerAction.self,
 		environment: { $0 }
 	),
 	passcodeContainerReducer.pullback(
-		state: \CheckInContainerState.passcode,
+		state: \CheckInLoadedState.passcode,
 		action: /CheckInContainerAction.passcode,
 		environment: { $0 })
 )
 
-public let navigationReducer = Reducer<CheckInContainerState, CheckInContainerAction, Any> { state, action, _ in
+public let navigationReducer = Reducer<CheckInLoadedState, CheckInContainerAction, Any> { state, action, _ in
 	func backToPatientMode() {
 		state.isDoctorSummaryActive = false
 		state.isDoctorCheckInMainActive = false
@@ -145,19 +110,19 @@ public let navigationReducer = Reducer<CheckInContainerState, CheckInContainerAc
 }
 
 public struct CheckInNavigationView: View {
-	let store: Store<CheckInParentState, CheckInContainerAction>
+	let store: Store<CheckInNavigationState, CheckInContainerAction>
 	@ObservedObject var viewStore: ViewStore<State, CheckInContainerAction>
 	
 	struct State: Equatable {
 		let isAnimationFinished: Bool
 		let appointment: Appointment
-		init(state: CheckInParentState) {
+		init(state: CheckInNavigationState) {
 			self.appointment = state.appointment
 			self.isAnimationFinished = state.isAnimationFinished
 		}
 	}
 	
-	public init(store: Store<CheckInParentState, CheckInContainerAction>) {
+	public init(store: Store<CheckInNavigationState, CheckInContainerAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store.scope(state: State.init(state:)))
 	}
@@ -175,24 +140,3 @@ public struct CheckInNavigationView: View {
 		.navigationViewStyle(StackNavigationViewStyle())
 	}
 }
-
-struct CheckInLoadingOrLoaded: View {
-	
-	let store: Store<CheckInLoadingOrLoadedState, CheckInContainerAction>
-	
-	var body: some View {
-		IfLetStore(store.scope(state: /CheckInLoadingOrLoadedState.loaded),
-				   then: CheckInPatientContainer.init(store:))
-		IfLetStore(store.scope(state: /CheckInLoadingOrLoadedState.loading,
-							   action: { .loading($0) }),
-				   then: CheckInLoading.init(store:))
-	}
-}
-
-public let checkInAnimationDuration: Double = {
-	#if DEBUG
-	return 2.0
-	#else
-	return 2.0
-	#endif
-}()

@@ -5,53 +5,7 @@ import Util
 import Form
 import ChoosePathway
 
-public struct CheckInParentState: Equatable {
-	public var loadingOrLoaded: CheckInLoadingOrLoadedState
-	var isAnimationFinished: Bool = false
-	let appointment: Appointment
-	
-	public init(loadedState: CheckInContainerState) {
-		self.loadingOrLoaded = .loaded(loadedState)
-		self.appointment = loadedState.appointment
-	}
-	
-	public init(loadingState: CheckInLoadingState) {
-		self.loadingOrLoaded = .loading(loadingState)
-		self.appointment = loadingState.appointment
-	}
-}
-
-public enum CheckInLoadingOrLoadedState: Equatable {
-	case loading(CheckInLoadingState)
-	case loaded(CheckInContainerState)
-}
-
-public struct CheckInInfo: Equatable {
-	let appointment: Appointment
-	let pathwayId: Pathway.ID
-	let pathwayTemplateId: PathwayTemplate.ID
-}
-
-public struct CheckInLoadingState: Equatable {
-	public let appointment: Appointment
-	public var pathwaysLoadingState: LoadingState
-	public let pathwayId: Pathway.ID
-	public let pathwayTemplateId: PathwayTemplate.ID
-	
-	public init(
-		appointment: Appointment,
-		pathwayId: Pathway.ID,
-		pathwayTemplateId: PathwayTemplate.ID,
-		pathwaysLoadingState: LoadingState
-	) {
-		self.appointment = appointment
-		self.pathwayId = pathwayId
-		self.pathwayTemplateId = pathwayTemplateId
-		self.pathwaysLoadingState = pathwaysLoadingState
-	}
-}
-
-public struct CheckInContainerState: Equatable {
+public struct CheckInLoadedState: Equatable {
 	
 	let appointment: Appointment
 	var pathway: Pathway
@@ -88,7 +42,7 @@ public struct CheckInContainerState: Equatable {
 	var isDoctorSummaryActive: Bool = false
 }
 
-extension CheckInContainerState {
+extension CheckInLoadedState {
 	
 	public init(appointment: Appointment,
 				pathway: Pathway,
@@ -113,7 +67,7 @@ extension CheckInContainerState {
 	}
 }
 
-extension CheckInContainerState {
+extension CheckInLoadedState {
 	
 	var passcode: PasscodeContainerState {
 		get {
@@ -142,7 +96,7 @@ extension CheckInContainerState {
 	}
 }
 
-extension CheckInContainerState {
+extension CheckInLoadedState {
 	
 	var doctorCheckIn: CheckInDoctorState {
 		get {

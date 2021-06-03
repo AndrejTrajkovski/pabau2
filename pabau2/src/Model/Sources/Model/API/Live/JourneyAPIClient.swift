@@ -66,7 +66,7 @@ extension APIClient {
 				throw RequestError.emptyDataResponse
 			}
 		}
-		.mapError { $0 as? RequestError ?? RequestError.unknown }
+		.mapError { $0 as? RequestError ?? .unknown($0) }
 		.eraseToEffect()
 	}
 	
@@ -210,7 +210,7 @@ extension APIClient {
 			}
 			return pathway
 		}
-		.mapError { $0 as? RequestError ?? RequestError.unknown }
+		.mapError { $0 as? RequestError ?? .unknown($0) }
 		.eraseToEffect()
 	}
 	
