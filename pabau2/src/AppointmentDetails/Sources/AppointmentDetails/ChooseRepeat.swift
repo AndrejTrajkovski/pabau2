@@ -58,7 +58,6 @@ public struct RepeatOption: Equatable {
 
 public struct ChooseRepeatState: Equatable {
     var isRepeatActive: Bool = false
-    var isRescheduleActive: Bool = false
     var chosenRepeat: RepeatOption?
     
     public init() { }

@@ -16,7 +16,9 @@ public enum AppDetailsAction {
     case onResponseChangeCancelReason(Result<Bool, RequestError>)
 	case onResponseChangeAppointment(Result<Bool, RequestError>)
 	case onResponseCreateReccuringAppointment(Result<Bool, RequestError>)
+    case onResponseRescheduleAppointment(Result<PlaceholdeResponse, RequestError>)
 	case dismissToast
+    case chooseReschedule(ChooseRescheduleAction)
 	case choosePathwayTemplate(ChoosePathwayContainerAction)
 	case choosePathway(PathwayListAction)
 	case backFromChooseTemplates

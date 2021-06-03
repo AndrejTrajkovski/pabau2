@@ -44,7 +44,6 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 			return env.clientsAPI.createRecurringAppointment(appointmentId: state.app.id, repeatRange: interval, repeatUntil: sDate)
 				.catchToEffect()
 				.map { response in AppDetailsAction.onResponseCreateReccuringAppointment(response) }
-			
 		case .onResponseCreateReccuringAppointment(let response):
 			state.chooseRepeat.isRepeatActive = false
             switch response {
@@ -109,7 +108,7 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 			case .onRepeat:
                 state.chooseRepeat.isRepeatActive = true
 			case .onReschedule:
-				break
+                state.chooseReschedule.isRescheduleActive = true
 			case .onPathway:
 				if state.app.pathways.isEmpty {
 					state.choosePathwayTemplate = ChoosePathwayState(selectedAppointment: state.app)
@@ -195,7 +194,36 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 			state.choosePathwayTemplate = nil
 		case .backFromPathwaysList:
 			state.isPathwayListActive = false
-		}
+        case .onResponseRescheduleAppointment(let response):
+            state.chooseReschedule.isRescheduleActive = false
+            switch response {
+            case .failure(let error):
+                state.toast = ToastState(mode: .alert,
+                                         type: .error(.red),
+                                         title: error.description)
+            case .success(_):
+                state.toast = ToastState(mode: .banner(.slide),
+                                         type: .regular,
+                                         title: "Appointment successfully rescheduled.")
+            }
+            
+            return Effect.timer(id: ToastTimerId(), every: 2, on: DispatchQueue.main)
+                .map { _ in AppDetailsAction.dismissToast }
+        case .chooseReschedule(let rescheduleAction):
+            switch rescheduleAction {
+            case .onBackButton:
+                state.chooseReschedule.isRescheduleActive = false
+            case .onSelectedOkRescheduleCalendar(let date):
+                state.app.start_date = date
+                return env.clientsAPI.updateAppointment(appointment: AppointmentBuilder(appointment: state.app) )
+                    .receive(on: RunLoop.main)
+                    .catchToEffect()
+                    .map { response in AppDetailsAction.onResponseRescheduleAppointment(response) }
+                    .eraseToEffect()
+            default:
+                break
+            }
+        }
 		return .none
 	}
 )
