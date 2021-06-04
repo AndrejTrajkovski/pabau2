@@ -3,14 +3,14 @@ import Model
 import ComposableArchitecture
 import Util
 
-public struct CheckInForms<FormsContent: View, S: CheckInState, AvatarView: View>: View where S: Equatable {
-	public init(store: Store<S, CheckInAction>, avatarView: @escaping () -> AvatarView, content: @escaping () -> FormsContent) {
+public struct CheckInForms<FormsContent: View, AvatarView: View>: View {
+	public init(store: Store<CheckInState, CheckInAction>, avatarView: @escaping () -> AvatarView, content: @escaping () -> FormsContent) {
 		self.store = store
 		self.avatarView = avatarView
 		self.content = content
 	}
 
-	let store: Store<S, CheckInAction>
+	let store: Store<CheckInState, CheckInAction>
 	let avatarView: () -> AvatarView
 	let content: () -> FormsContent
 
@@ -43,21 +43,21 @@ public struct CheckInForms<FormsContent: View, S: CheckInState, AvatarView: View
 	}
 }
 
-struct Forms<FormsContent: View, S: CheckInState>: View where S: Equatable {
-	let store: Store<S, CheckInAction>
+struct Forms<FormsContent: View>: View {
+	let store: Store<CheckInState, CheckInAction>
 	@ObservedObject var viewStore: ViewStore<State, CheckInAction>
 	let content: () -> FormsContent
 
 	struct State: Equatable {
 		let selectedIdx: Int
 		let formsCount: Int
-		init(state: S) {
+		init(state: CheckInState) {
 			self.selectedIdx = state.selectedIdx
-			self.formsCount = state.stepForms().count
+			self.formsCount = state.stepForms.count
 		}
 	}
 
-	init(store: Store<S, CheckInAction>,
+	init(store: Store<CheckInState, CheckInAction>,
 		 @ViewBuilder content: @escaping () -> FormsContent) {
 		self.store = store
 		self.viewStore = ViewStore(store.scope(state: State.init(state:)))

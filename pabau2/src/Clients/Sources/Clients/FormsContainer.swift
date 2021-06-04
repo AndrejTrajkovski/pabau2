@@ -41,8 +41,8 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 		action: /FormsContainerAction.forms,
 		environment: { $0 }
 	),
-	CheckInReducer<FormsContainerState>().reducer.pullback(
-		state: \FormsContainerState.self,
+	CheckInReducer().reducer.pullback(
+		state: \FormsContainerState.checkIn,
 		action: /FormsContainerAction.checkIn,
 		environment: { $0 }
 	)
@@ -63,8 +63,19 @@ public enum FormsContainerAction: Equatable {
 	case checkIn(CheckInAction)
 }
 
-extension FormsContainerState: CheckInState {
-	public func stepForms() -> [StepFormInfo] {
+extension FormsContainerState {
+	
+	var checkIn: CheckInState {
+		get {
+			CheckInState(selectedIdx: self.selectedIdx,
+						 stepForms: stepForms())
+		}
+		set {
+			self.selectedIdx = newValue.selectedIdx
+		}
+	}
+	
+	private func stepForms() -> [StepFormInfo] {
 		formsCollection.map { StepFormInfo.init(status: $0.status, title: $0.templateName )}
 	}
 }
@@ -97,7 +108,7 @@ struct FormsContainer: View {
 	@ViewBuilder
 	func checkInView() -> some View {
 		print("FormsContainer")
-		return CheckInForms(store: store.scope(state: { $0 },
+		return CheckInForms(store: store.scope(state: { $0.checkIn },
 								   action: { .checkIn($0)}),
 					   avatarView: {
 						ClientAvatarAndName(store: store.scope(state: { $0.client }).actionless) },

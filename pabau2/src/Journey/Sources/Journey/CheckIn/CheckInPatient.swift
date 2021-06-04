@@ -12,7 +12,7 @@ struct CheckInPatientContainer: View {
 		WithViewStore(store) { viewStore in
 			Group {
 				CheckInForms(store: store.scope(
-							state: { $0.patientCheckIn },
+							state: { $0.patientCheckIn.checkIn },
 							action: { .patient(.stepsView($0)) }),
 						avatarView: {
 							JourneyProfileView(style: JourneyProfileViewStyle.short,
@@ -69,14 +69,14 @@ let checkInPatientReducer: Reducer<CheckInPatientState, CheckInPatientAction, Jo
 		state: \CheckInPatientState.isPatientComplete,
 		action: /CheckInPatientAction.patientComplete,
 		environment: makeFormEnv(_:)),
-	CheckInReducer<CheckInPatientState>().reducer.pullback(
-		state: \CheckInPatientState.self,
+	CheckInReducer().reducer.pullback(
+		state: \CheckInPatientState.checkIn,
 		action: /CheckInPatientAction.stepsView,
         environment: { FormEnvironment($0.formAPI, $0.userDefaults, $0.repository) }
 	)
 )
 
-struct CheckInPatientState: Equatable, CheckInState {
+struct CheckInPatientState: Equatable {
 	let appointment: Appointment
 	let pathway: PathwayTemplate
 	var patientDetails: ClientBuilder
@@ -90,6 +90,19 @@ struct CheckInPatientState: Equatable, CheckInState {
 
 // MARK: - CheckInState
 extension CheckInPatientState {
+	
+	var checkIn: CheckInState {
+		get {
+			CheckInState(
+				selectedIdx: self.selectedIdx,
+				stepForms: self.stepForms()
+			)
+		}
+		set {
+			self.selectedIdx = newValue.selectedIdx
+		}
+	}
+	
 	func stepTypes() -> [StepType] {
 		return pathway.steps.map(\.stepType).filter(filterBy(.patient))
 	}

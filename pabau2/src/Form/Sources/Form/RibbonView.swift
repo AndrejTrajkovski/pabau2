@@ -1,15 +1,15 @@
 import SwiftUI
 import ComposableArchitecture
 
-struct RibbonView<S: CheckInState>: View where S: Equatable {
+struct RibbonView: View {
 	
-	let store: Store<S, Never>
+	let store: Store<CheckInState, Never>
 	
 	struct State: Equatable {
 		let totalSteps: Int
 		let currentStepIdx: Int
-		init(state: S) {
-			self.totalSteps = state.stepForms().count
+		init(state: CheckInState) {
+			self.totalSteps = state.stepForms.count
 			self.currentStepIdx = state.selectedIdx + 1
 		}
 	}
