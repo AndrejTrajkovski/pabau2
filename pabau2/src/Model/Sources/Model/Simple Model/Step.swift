@@ -3,7 +3,7 @@ import Tagged
 
 public struct Step: Decodable, Identifiable, Equatable {
 	
-	public typealias Id = Tagged<Step, String>
+	public typealias Id = Tagged<Step, EitherStringOrInt>
 	
 	public enum PreselectedTemplate: Equatable {
 		case definedbyservice

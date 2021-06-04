@@ -44,7 +44,13 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, F
 		case .saveAlertCanceled:
 			state.saveFailureAlert = nil
 		case .getFormError(.retry):
-			break
+			state.getLoadingState = .loading
+			return env.formAPI.getForm(templateId: state.templateId)
+				.catchToEffect()
+				.receive(on: DispatchQueue.main)
+				.map(HTMLFormAction.gotForm)
+				.eraseToEffect()
+			
 		case .rows(.rows(idx: let idx, action: let action)):
 			break
 		}
@@ -189,7 +195,7 @@ struct ErrorRetry: View {
 	let store: Store<RequestError, ErrorViewAction>
 	var body: some View {
 		WithViewStore(store) { viewStore in
-			HStack {
+			VStack {
 				PlainError(store: store.actionless)
 				Button("Retry", action: { viewStore.send(.retry) })
 			}
@@ -201,7 +207,7 @@ struct PlainError: View {
 	let store: Store<RequestError, Never>
 	var body: some View {
 		WithViewStore(store) { viewStore in
-			Text(viewStore.state.description).foregroundColor(.red)
+			Text(viewStore.state.userMessage).foregroundColor(.red)
 		}
 	}
 }

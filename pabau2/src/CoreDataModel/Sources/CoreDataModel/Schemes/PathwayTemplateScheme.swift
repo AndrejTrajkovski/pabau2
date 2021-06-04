@@ -28,7 +28,7 @@ extension PathwayTemplate {
                 title: sheme.title,
                 steps: sheme.steps.compactMap { stepSheme in
                     Step(
-                        id: Step.Id(rawValue: stepSheme.id),
+						id: Step.Id(rawValue: .left(stepSheme.id)),
                         stepType: StepType(rawValue: stepSheme.stepType) ?? .photos,
                         preselectedTemplate: stepSheme.formTemplateID == "0" ?
                             .definedbyservice :

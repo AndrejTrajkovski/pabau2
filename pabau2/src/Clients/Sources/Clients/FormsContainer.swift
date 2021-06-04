@@ -12,6 +12,7 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 		environment: { $0 }
 	),
 	.init { state, action, env in
+		
 		func getForm(_ templateId: HTMLForm.ID, _ formAPI: FormAPI) -> Effect<FormsContainerAction, Never> {
 			return formAPI.getForm(templateId: templateId)
 				.catchToEffect()
@@ -107,17 +108,16 @@ struct FormsContainer: View {
 
 	@ViewBuilder
 	func checkInView() -> some View {
-		print("FormsContainer")
-		return CheckInForms(store: store.scope(state: { $0.checkIn },
-								   action: { .checkIn($0)}),
-					   avatarView: {
+		CheckInForms(store: store.scope(state: { $0.checkIn },
+										action: { .checkIn($0)}),
+					 avatarView: {
 						ClientAvatarAndName(store: store.scope(state: { $0.client }).actionless) },
-				content: {
-					ForEachStore(store.scope(state: { $0.formsCollection },
-											 action: FormsContainerAction.forms(id: action:)),
-								 content: HTMLFormParent.init(store:)
-					).padding([.leading, .trailing], 32)
-				}
+					 content: {
+						ForEachStore(store.scope(state: { $0.formsCollection },
+												 action: FormsContainerAction.forms(id: action:)),
+									 content: HTMLFormParent.init(store:)
+						).padding([.leading, .trailing], 32)
+					 }
 		)
 	}
 }

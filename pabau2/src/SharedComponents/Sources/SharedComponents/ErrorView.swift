@@ -45,7 +45,7 @@ public struct RawErrorView: View {
 //				.frame(width: geometry.size.width / 2,
 //					   height: geometry.size.height / 5)
 				.background(Color.white)
-				.foregroundColor(Color.blue)
+				.foregroundColor(Color.red)
 				.cornerRadius(20)
 //		}
 	}

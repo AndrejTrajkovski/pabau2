@@ -123,8 +123,8 @@ public enum RequestError: Error, Equatable, CustomStringConvertible {
 			return message
         case .coreData(let message):
             return message
-		case .unknown:
-			return "Unknown Error."
+		case .unknown(let error):
+			return error.localizedDescription
 		}
 	}
 	
@@ -140,9 +140,7 @@ public enum RequestError: Error, Equatable, CustomStringConvertible {
 			return message
 		case .apiError(let message):
 			return message
-		case .unknown(let error):
-			return error.localizedDescription
-		case .jsonDecoding(_), .responseNotHTTP, .coreData, .urlBuilderError:
+		case .jsonDecoding(_), .responseNotHTTP, .coreData, .urlBuilderError, .unknown:
 			return Texts.somethingWentWrong
 		}
 	}
