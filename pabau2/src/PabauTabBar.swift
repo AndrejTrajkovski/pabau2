@@ -16,6 +16,7 @@ import CalendarList
 import ChooseLocationAndEmployee
 import ToastAlert
 import Combine
+import Form
 
 public typealias TabBarEnvironment = (
 	loginAPI: LoginAPI,
@@ -150,6 +151,59 @@ struct PabauTabBar: View {
 private let audioQueue = DispatchQueue(label: "Audio Dispatch Queue")
 struct TimerId: Hashable { }
 
+func getForms(pathway: Pathway, template: PathwayTemplate, formAPI: FormAPI, clientid: Client.ID) -> [Effect<CheckInPatientAction, Never>] {
+	
+//	let stepEntries = template.steps.map { (pathway.stepEntries[$0.id], $0) }
+	return pathway.stepEntries.sorted(by: { $0.value.order < $1.value.order })
+		.compactMap {
+			return getForm(stepEntry: $0.value, formAPI: formAPI, clientId:clientid)
+		}
+}
+
+func getForm(stepEntry: StepEntry, formAPI: FormAPI, clientId: Client.ID) -> Effect<CheckInPatientAction, Never>? {
+	
+	func getHTMLForm(formTemplateId: HTMLForm.ID) -> Effect<Result<HTMLForm, RequestError>, Never> {
+		let getForm: Effect<HTMLForm, RequestError>
+		if let formEntryId = stepEntry.formEntryId {
+			getForm = formAPI.getForm(templateId: formTemplateId, entryId: formEntryId)
+		} else {
+			getForm = formAPI.getForm(templateId: formTemplateId)
+		}
+		return getForm.catchToEffect()
+	}
+	
+	switch stepEntry.stepType {
+	case .patientdetails:
+		return formAPI.getPatientDetails(clientId: clientId)
+			.map(ClientBuilder.init(client:))
+			.catchToEffect()
+			.map(PatientDetailsParentAction.gotGETResponse)
+			.map(CheckInPatientAction.patientDetails)
+	case .medicalhistory:
+		guard let formTemplateId = stepEntry.formTemplateId else { return nil }
+		return getHTMLForm(formTemplateId: formTemplateId)
+			.map {
+				CheckInPatientAction.medicalHistories(id: formTemplateId, action: HTMLFormAction.gotForm($0))
+			}
+	case .consents:
+		guard let formTemplateId = stepEntry.formTemplateId else { return nil }
+		return getHTMLForm(formTemplateId: formTemplateId)
+			.map {
+				CheckInPatientAction.consents(id: formTemplateId, action: HTMLFormAction.gotForm($0))
+			}
+	case .treatmentnotes, .prescriptions:
+		return nil
+	case .checkpatient:
+		return nil
+	case .photos:
+		return nil
+	case .aftercares:
+		return nil
+	case .patientComplete:
+		return nil
+	}
+}
+
 public let tabBarReducer: Reducer<
 	TabBarState,
 	TabBarAction,
@@ -203,13 +257,26 @@ public let tabBarReducer: Reducer<
 					.eraseToEffect()
 			]
 			
-			if case .loading(let loadingState) = checkInState.loadingOrLoaded {
+			switch checkInState.loadingOrLoaded {
+			case .loading(let loadingState):
 				let getCombinedPathwaysResponse = getCombinedPathwayResponse(journeyAPI: env.journeyAPI,
 																			 checkInState: loadingState)
 					.map {
 						TabBarAction.checkIn(.loading(.gotCombinedPathwaysResponse($0)))
 					}
 				returnEffects.append(getCombinedPathwaysResponse)
+				
+			case .loaded(let loadedState):
+				let getPatientForms = getForms(pathway: loadedState.pathway,
+											   template: loadedState.pathwayTemplate,
+											   formAPI: env.formAPI,
+											   clientid: loadedState.appointment.customerId)
+					.map {
+						$0.map {
+							TabBarAction.checkIn(CheckInContainerAction.patient($0))
+						}
+					}
+				returnEffects.append(contentsOf: getPatientForms)
 			}
 			
 			return .merge(returnEffects)
@@ -224,6 +291,7 @@ public let tabBarReducer: Reducer<
 			let loadedState = CheckInLoadedState(appointment: appDetails.app,
 													pathway: pathway,
 													template: template)
+			print("here:", pathway, template)
 			let checkInState = CheckInNavigationState(loadedState: loadedState)
 			
 			return .merge([

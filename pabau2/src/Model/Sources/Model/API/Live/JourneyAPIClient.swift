@@ -185,7 +185,7 @@ extension APIClient {
 	public func match(appointment: Appointment, pathwayTemplateId: PathwayTemplate.ID) -> Effect<Pathway, RequestError> {
 		
 		let body = [
-			"booking_ids": appointment.id.description,
+			"booking_id": appointment.id.description,
 			"pathway_template_id": pathwayTemplateId.description,
 			"contact_id": appointment.customerId.description
 		]

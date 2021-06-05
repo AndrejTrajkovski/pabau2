@@ -53,13 +53,13 @@ let checkInPatientReducer: Reducer<CheckInPatientState, CheckInPatientAction, Jo
 //		}
 //		return .none
 //	},
-	patientDetailsReducer.pullback(
+	patientDetailsParentReducer.pullback(
 		state: \CheckInPatientState.patientDetails,
 		action: /CheckInPatientAction.patientDetails,
 		environment: { $0 }),
 	htmlFormParentReducer.forEach(
 		state: \CheckInPatientState.medicalHistories,
-		action: /CheckInPatientAction.medicalHistories,
+		action: /CheckInPatientAction.medicalHistories(id:action:),
 		environment: makeFormEnv(_:)),
 	htmlFormParentReducer.forEach(
 		state: \CheckInPatientState.consents,
@@ -79,13 +79,11 @@ let checkInPatientReducer: Reducer<CheckInPatientState, CheckInPatientAction, Jo
 struct CheckInPatientState: Equatable {
 	let appointment: Appointment
 	let pathway: PathwayTemplate
-	var patientDetails: ClientBuilder
-	var patientDetailsStatus: StepStatus
+	var patientDetails: PatientDetailsParentState
 	var medicalHistories: IdentifiedArrayOf<HTMLFormParentState>
 	var consents: IdentifiedArrayOf<HTMLFormParentState>
 	var isPatientComplete: StepStatus
 	var selectedIdx: Int
-	var patientDetailsLS: LoadingState
 }
 
 // MARK: - CheckInState
@@ -116,7 +114,7 @@ extension CheckInPatientState {
 	func getForms(_ stepType: StepType) -> [StepFormInfo] {
 		switch stepType {
 		case .patientdetails:
-			return [StepFormInfo(status: patientDetailsStatus,
+			return [StepFormInfo(status: patientDetails.stepStatus,
 								 title: "PATIENT DETAILS")]
 		case .medicalhistory:
 			return medicalHistories.map {
@@ -138,7 +136,7 @@ extension CheckInPatientState {
 }
 
 public enum CheckInPatientAction: Equatable {
-	case patientDetails(PatientDetailsAction)
+	case patientDetails(PatientDetailsParentAction)
 	case medicalHistories(id: HTMLForm.ID, action: HTMLFormAction)
 	case consents(id: HTMLForm.ID, action: HTMLFormAction)
 	case patientComplete(PatientCompleteAction)
@@ -157,7 +155,7 @@ func patientForm(stepType: StepType,
 				 store: Store<CheckInPatientState, CheckInPatientAction>) -> some View {
 	switch stepType {
 	case .patientdetails:
-		PatientDetailsForm(store:
+		PatientDetailsParent(store:
 							store.scope(state: { $0.patientDetails},
 										action: { .patientDetails($0) })
 		)

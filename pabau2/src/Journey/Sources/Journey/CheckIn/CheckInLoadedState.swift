@@ -7,13 +7,11 @@ import ChoosePathway
 
 public struct CheckInLoadedState: Equatable {
 	
-	let appointment: Appointment
-	var pathway: Pathway
-	let pathwayTemplate: PathwayTemplate
+	public let appointment: Appointment
+	public var pathway: Pathway
+	public let pathwayTemplate: PathwayTemplate
 	
-	var patientDetailsLS: LoadingState
-	var patientDetails: ClientBuilder?
-	var patientDetailsStatus: StepStatus
+	var patientDetails: PatientDetailsParentState
 	
 	var medicalHistories: IdentifiedArrayOf<HTMLFormParentState>
 	
@@ -62,8 +60,7 @@ extension CheckInLoadedState {
 		self.photos = PhotosState([[:]])
 		self.patientSelectedIndex = 0
 		self.doctorSelectedIndex = 0
-		self.patientDetailsLS = .initial
-		self.patientDetailsStatus = .pending
+		self.patientDetails = PatientDetailsParentState()
 	}
 }
 
@@ -126,24 +123,20 @@ extension CheckInLoadedState {
 			CheckInPatientState(
 				appointment: appointment,
 				pathway: pathwayTemplate,
-				patientDetails: patientDetails!,
-				patientDetailsStatus: patientDetailsStatus,
+				patientDetails: patientDetails,
 				medicalHistories: medicalHistories,
 				consents: consents,
 				isPatientComplete: isPatientComplete,
-				selectedIdx: patientSelectedIndex,
-				patientDetailsLS: patientDetailsLS
+				selectedIdx: patientSelectedIndex
 			)
 		}
 		
 		set {
 			self.patientDetails = newValue.patientDetails
-			self.patientDetailsStatus = newValue.patientDetailsStatus
 			self.medicalHistories = newValue.medicalHistories
 			self.consents = newValue.consents
 			self.isPatientComplete = newValue.isPatientComplete
 			self.patientSelectedIndex = newValue.selectedIdx
-			self.patientDetailsLS = newValue.patientDetailsLS
 		}
 	}
 }

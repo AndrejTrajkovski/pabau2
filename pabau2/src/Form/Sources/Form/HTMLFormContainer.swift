@@ -2,6 +2,7 @@ import Model
 import ComposableArchitecture
 import Util
 import SwiftUI
+import SharedComponents
 
 public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, FormEnvironment> = .combine(
 	formReducer.optional().pullback(
@@ -59,7 +60,7 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, F
 )
 
 public struct HTMLFormParentState: Equatable, Identifiable {
-
+	
 	public init(templateId: HTMLForm.ID,
 				templateName: String,
 				type: FormType,
@@ -91,7 +92,7 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 		self.clientId = clientId
 		self.postLoadingState = .initial
 	}
-
+	
 	public init(info: FormTemplateInfo,
 				clientId: Client.ID,
 				getLoadingState: LoadingState) {
@@ -133,7 +134,7 @@ public struct HTMLFormParent: View {
 		self.store = store
 		self.viewStore = ViewStore(store.scope(state: State.init(state:)))
 	}
-
+	
 	enum State: Equatable {
 		case getting
 		case saving
@@ -153,10 +154,10 @@ public struct HTMLFormParent: View {
 			}
 		}
 	}
-
+	
 	let store: Store<HTMLFormParentState, HTMLFormAction>
 	@ObservedObject var viewStore: ViewStore<State, HTMLFormAction>
-
+	
 	public var body: some View {
 		switch viewStore.state {
 		case .getting:
@@ -166,48 +167,11 @@ public struct HTMLFormParent: View {
 		case .loaded:
 			IfLetStore(store.scope(state: { $0.form }, action: { .rows($0) }),
 					   then: { HTMLFormView(store: $0, isCheckingDetails: false) },
-					   else: Loading(store: store.scope(state: { $0.getLoadingState },
-																 action: { .getFormError($0) }))
+					   else: IfLetErrorView(store: store.scope(state: { $0.getLoadingState },
+															   action: { .getFormError($0) }))
 			).alert(store.scope(state: \.saveFailureAlert), dismiss: HTMLFormAction.saveAlertCanceled)
 		case .initial:
 			EmptyView()
-		}
-	}
-}
-
-struct Loading: View {
-	let store: Store<LoadingState, ErrorViewAction>
-
-	var body: some View {
-		IfLetStore(store.scope(state: { state in
-			extract(case: LoadingState.gotError, from: state)
-		}),
-			then: ErrorRetry.init(store:)
-		)
-	}
-}
-
-public enum ErrorViewAction {
-	case retry
-}
-
-struct ErrorRetry: View {
-	let store: Store<RequestError, ErrorViewAction>
-	var body: some View {
-		WithViewStore(store) { viewStore in
-			VStack {
-				PlainError(store: store.actionless)
-				Button("Retry", action: { viewStore.send(.retry) })
-			}
-		}
-	}
-}
-
-struct PlainError: View {
-	let store: Store<RequestError, Never>
-	var body: some View {
-		WithViewStore(store) { viewStore in
-			Text(viewStore.state.userMessage).foregroundColor(.red)
 		}
 	}
 }

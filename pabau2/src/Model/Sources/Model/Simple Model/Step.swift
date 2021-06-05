@@ -40,6 +40,8 @@ public struct Step: Decodable, Identifiable, Equatable {
 		let container = try decoder.container(keyedBy: Self.CodingKeys)
 		self.id = try container.decode(Self.ID.self, forKey: .id)
 		let stepType = try container.decode(StepType.self, forKey: .stepType)
+		self.stepType = stepType
+		
 		switch stepType {
 		case .consents, .treatmentnotes, .medicalhistory, .prescriptions:
 			let form_template_id = try? container.decode(HTMLForm.ID.self, forKey: .form_template_id)
@@ -52,6 +54,5 @@ public struct Step: Decodable, Identifiable, Equatable {
 		default:
 			self.preselectedTemplate = nil
 		}
-		self.stepType = stepType
 	}
 }

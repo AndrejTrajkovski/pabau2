@@ -140,6 +140,14 @@ public enum PatientDetailsAction: Equatable {
 	case complete
 }
 
+public let patientDetailsParentReducer: Reducer<PatientDetailsParentState, PatientDetailsParentAction, Any> = .combine(
+	patientDetailsReducer.optional().pullback(
+		state: \PatientDetailsParentState.patientDetails,
+		action: /PatientDetailsParentAction.patientDetails,
+		environment: { $0 }
+	)
+)
+
 public let patientDetailsReducer: Reducer<ClientBuilder, PatientDetailsAction, Any> = (
 	.combine(
 		.init { state, action, _ in
