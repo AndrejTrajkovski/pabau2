@@ -61,11 +61,26 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, F
 
 public struct HTMLFormParentState: Equatable, Identifiable {
 	
+	public init(stepEntry: StepEntry,
+				clientId: Client.ID) throws {
+		guard let templateId = stepEntry.formTemplateId else { throw RequestError.apiError("Pathway step has no form template id")}
+		self.templateId = templateId
+		self.templateName = stepEntry.formTemplateName
+		self.type = FormType.init(stepType: stepEntry.stepType) ?? .unknown
+		self.clientId = clientId
+		self.filledFormId = stepEntry.formEntryId
+		self.status = stepEntry.status
+		self.getLoadingState = .initial
+		self.postLoadingState = .initial
+		self.saveFailureAlert = nil
+	}
+				
+	
 	public init(templateId: HTMLForm.ID,
 				templateName: String,
 				type: FormType,
 				clientId: Client.ID,
-				filledFormId: FilledFormData.ID,
+				filledFormId: FilledFormData.ID?,
 				status: StepStatus
 	) {
 		self.templateId = templateId

@@ -191,7 +191,7 @@ extension APIClient {
 		]
 		
 		struct Response: Decodable {
-			let pathway_data: [Pathway]
+			let pathway_data: Pathway
 		}
 		
 		let requestBuilder: RequestBuilder<Response>.Type = requestBuilderFactory.getBuilder()
@@ -204,13 +204,14 @@ extension APIClient {
 			body: bodyData(parameters: body)
 		)
 		.effect()
-		.tryMap { pathwayResponse in
-			guard let pathway = pathwayResponse.pathway_data.first else {
-				throw RequestError.emptyDataResponse
-			}
-			return pathway
-		}
-		.mapError { $0 as? RequestError ?? .unknown($0) }
+		.map(\.pathway_data)
+//		.tryMap { pathwayResponse in
+//			guard let pathway = pathwayResponse.pathway_data.first else {
+//				throw RequestError.emptyDataResponse
+//			}
+//			return pathway
+//		}
+//		.mapError { $0 as? RequestError ?? .unknown($0) }
 		.eraseToEffect()
 	}
 	

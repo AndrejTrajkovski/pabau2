@@ -81,7 +81,7 @@ public extension APIClient {
 	}
 	
 	func getTemplates(_ type: FormType) -> Effect<[FormTemplateInfo], RequestError> {
-		struct GetTemplates: Codable {
+		struct GetTemplates: Decodable {
 			let templateList: [FormTemplateInfo]
 		}
 		let requestBuilder: RequestBuilder<GetTemplates>.Type = requestBuilderFactory.getBuilder()

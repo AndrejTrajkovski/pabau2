@@ -4,6 +4,32 @@ import ComposableArchitecture
 import Model
 import SharedComponents
 
+public let patientDetailsParentReducer: Reducer<PatientDetailsParentState, PatientDetailsParentAction, Any> = .combine(
+	patientDetailsReducer.optional().pullback(
+		state: \PatientDetailsParentState.patientDetails,
+		action: /PatientDetailsParentAction.patientDetails,
+		environment: { $0 }
+	), .init { state, action, env in
+		switch action {
+		case .gotGETResponse(let result):
+			switch result {
+			case .success(let clientBuilder):
+				state.patientDetails = clientBuilder
+				state.loadingState = .gotSuccess
+			case .failure(let error):
+				state.loadingState = .gotError(error)
+			}
+		case .gotPOSTResponse(let result):
+			break
+		case .errorView(_):
+			break
+		case .patientDetails:
+			break
+		}
+		return .none
+	}
+)
+
 public struct PatientDetailsParentState: Equatable {
 	
 	public init () { }

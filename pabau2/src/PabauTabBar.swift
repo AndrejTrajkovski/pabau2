@@ -154,7 +154,7 @@ struct TimerId: Hashable { }
 func getForms(pathway: Pathway, template: PathwayTemplate, formAPI: FormAPI, clientid: Client.ID) -> [Effect<CheckInPatientAction, Never>] {
 	
 //	let stepEntries = template.steps.map { (pathway.stepEntries[$0.id], $0) }
-	return pathway.stepEntries.sorted(by: { $0.value.order < $1.value.order })
+	return pathway.stepEntries.sorted(by: { $0.value.order ?? pathway.stepEntries.count < $1.value.order ?? pathway.stepEntries.count })
 		.compactMap {
 			return getForm(stepEntry: $0.value, formAPI: formAPI, clientId:clientid)
 		}
@@ -258,6 +258,7 @@ public let tabBarReducer: Reducer<
 			]
 			
 			switch checkInState.loadingOrLoaded {
+			
 			case .loading(let loadingState):
 				let getCombinedPathwaysResponse = getCombinedPathwayResponse(journeyAPI: env.journeyAPI,
 																			 checkInState: loadingState)

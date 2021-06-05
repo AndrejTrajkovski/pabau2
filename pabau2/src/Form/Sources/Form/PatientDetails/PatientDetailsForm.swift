@@ -14,7 +14,7 @@ public struct PatientDetailsForm: View {
 	
 	public var body: some View {
 		ScrollView {
-			VStack {
+			LazyVStack {
 				HStack {
 					SalutationPicker(store: store.scope(state: { $0.salutation },
 														action: { .salutation($0) }))
@@ -139,14 +139,6 @@ public enum PatientDetailsAction: Equatable {
 	case postComm(ToggleAction)
 	case complete
 }
-
-public let patientDetailsParentReducer: Reducer<PatientDetailsParentState, PatientDetailsParentAction, Any> = .combine(
-	patientDetailsReducer.optional().pullback(
-		state: \PatientDetailsParentState.patientDetails,
-		action: /PatientDetailsParentAction.patientDetails,
-		environment: { $0 }
-	)
-)
 
 public let patientDetailsReducer: Reducer<ClientBuilder, PatientDetailsAction, Any> = (
 	.combine(

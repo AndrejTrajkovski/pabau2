@@ -16,7 +16,7 @@ public class FormTemplateInfoScheme: CoreStoreObject {
 extension FormTemplateInfo {
     public static func convert(from schemes: [FormTemplateInfoScheme]) -> [FormTemplateInfo] {
         schemes.compactMap {
-            FormTemplateInfo(id: HTMLForm.ID(stringLiteral: $0.id), name: $0.name, type: FormType(rawValue: $0.type) ?? .unknown)
+			FormTemplateInfo(id: HTMLForm.ID(rawValue: .left($0.id)), name: $0.name, type: FormType(rawValue: $0.type) ?? .unknown)
         }
     }
     

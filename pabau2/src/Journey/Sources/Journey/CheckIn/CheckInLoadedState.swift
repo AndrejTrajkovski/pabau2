@@ -49,8 +49,8 @@ extension CheckInLoadedState {
 //		self.patientDetails = patientDetails
 		self.pathway = pathway
 		self.pathwayTemplate = template
-		self.medicalHistories = []
-		self.consents = []
+		self.medicalHistories = IdentifiedArray(pathway.stepEntries.filter { $0.value.stepType == .medicalhistory }.compactMap { try? HTMLFormParentState.init(stepEntry: $0.value, clientId: appointment.customerId) })
+		self.consents = IdentifiedArray(pathway.stepEntries.filter { $0.value.stepType == .consents }.compactMap { try? HTMLFormParentState.init(stepEntry: $0.value, clientId: appointment.customerId) })
 		self.selectedConsentsIds = []
 		self.selectedTreatmentFormsIds = []
 		self.treatmentNotes = []
