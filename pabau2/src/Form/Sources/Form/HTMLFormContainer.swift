@@ -74,7 +74,6 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 		self.postLoadingState = .initial
 		self.saveFailureAlert = nil
 	}
-				
 	
 	public init(templateId: HTMLForm.ID,
 				templateName: String,

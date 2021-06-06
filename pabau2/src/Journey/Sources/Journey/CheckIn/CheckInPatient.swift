@@ -101,13 +101,15 @@ extension CheckInPatientState {
 		}
 	}
 	
-	func stepTypes() -> [StepType] {
-		return pathway.steps.map(\.stepType).filter(filterBy(.patient))
+	func steps() -> [Step] {
+		return pathway.steps.filter { step in
+			return filterBy(.patient)(step.stepType)
+		}
 	}
 
 	func stepForms() -> [StepFormInfo] {
-		return stepTypes().map {
-			getForms($0)
+		return steps().map {
+			getForms($0.stepType)
 		}.flatMap { $0 }
 	}
 
@@ -146,14 +148,14 @@ public enum CheckInPatientAction: Equatable {
 
 @ViewBuilder
 func patientForms(store: Store<CheckInPatientState, CheckInPatientAction>) -> some View {
-	ForEach(ViewStore(store).state.stepTypes(),
-			content: { patientForm(stepType: $0, store: store).modifier(FormFrame()) })
+	ForEach(ViewStore(store).state.steps(),
+			content: { patientForm(step: $0, store: store).modifier(FormFrame()) })
 }
 
 @ViewBuilder
-func patientForm(stepType: StepType,
+func patientForm(step: Step,
 				 store: Store<CheckInPatientState, CheckInPatientAction>) -> some View {
-	switch stepType {
+	switch step.stepType {
 	case .patientdetails:
 		PatientDetailsParent(store:
 							store.scope(state: { $0.patientDetails},

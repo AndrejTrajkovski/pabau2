@@ -42,8 +42,7 @@ public struct Step: Decodable, Identifiable, Equatable {
 		let stepType = try container.decode(StepType.self, forKey: .stepType)
 		self.stepType = stepType
 		
-		switch stepType {
-		case .consents, .treatmentnotes, .medicalhistory, .prescriptions:
+		if stepType.isHTMLForm {
 			let form_template_id = try? container.decode(HTMLForm.ID.self, forKey: .form_template_id)
 			if let form_template_id = form_template_id,
 			   form_template_id.description != "0" {
@@ -51,7 +50,7 @@ public struct Step: Decodable, Identifiable, Equatable {
 			} else {
 				self.preselectedTemplate = .definedbyservice
 			}
-		default:
+		} else {
 			self.preselectedTemplate = nil
 		}
 	}

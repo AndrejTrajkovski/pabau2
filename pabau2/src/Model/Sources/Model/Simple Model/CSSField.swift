@@ -8,10 +8,10 @@ public struct CSSField: Equatable, Identifiable {
 	public var cssClass: CSSClass
 
 	public let _required: Bool
-
+	
 	public let title: String?
 	
-	init?(id: CSSFieldID, formStructure: _FormStructure) {
+	init?(id: CSSFieldID, formStructure: _FormStructure, formTemplateId: String) {
 		do{
 			guard let cssClass = try CSSClass.init(_formStructure: formStructure, fieldId: id) else { return nil }
 			print("fieldId: \(id)")
@@ -31,18 +31,18 @@ public struct CSSFieldID: Hashable, Equatable {
 	
 	let index: Int
 	let fakeId: FakeID
+	//Might be needed for the hash, in case of two forms have same id and index for field, to prevent crash in double ForEach
+	let formTemplateId: String
 	
 	public func hash(into hasher: inout Hasher) {
 		hasher.combine(index)
 		hasher.combine(fakeId)
+		hasher.combine(formTemplateId)
 	}
 	
-	init(idx: Int, fakeId: String) {
+	init(idx: Int, fakeId: String, formTemplateId: String) {
 		self.index = idx
 		self.fakeId = CSSFieldID.FakeID(rawValue: fakeId)
+		self.formTemplateId = formTemplateId
 	}
-	
-//	func getJSONPOSTValue() -> String {
-//		String(index) + fakeId.rawValue
-//	}
 }

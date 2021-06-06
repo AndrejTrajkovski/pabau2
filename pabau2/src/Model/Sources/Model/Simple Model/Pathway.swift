@@ -17,7 +17,7 @@ public struct Pathway: Decodable, Identifiable, Equatable {
 		
 		let container = try decoder.container(keyedBy: CodingKeys.self)
 		self.id = try container.decode(Self.ID.self, forKey: .id)
-		let stepEntries = try container.decode(Dictionary<String, StepEntry>.self, forKey: .stepEntries)
+		let stepEntries = try container.decode(FailableCodableDictionary<StepEntry, String>.self, forKey: .stepEntries).dictionary
 		self.stepEntries = stepEntries.mapKeys {
 			Step.Id.init(rawValue: EitherStringOrInt.left($0))
 		}
