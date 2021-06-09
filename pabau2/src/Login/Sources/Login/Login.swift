@@ -98,7 +98,7 @@ struct Login: View {
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
 	@Binding private var email: String
 	@State private var password: String = "ios123!@#"
-	
+
 	struct ViewState: Equatable {
 		let emailValidationText: String
 		let passValidationText: String
@@ -116,66 +116,94 @@ struct Login: View {
 		self.store = store
 		self._email = email
 	}
-	var body: some View {
-		WithViewStore(self.store.scope(state: ViewState.init(state:),
-																	 action: { LoginAction.init(action: $0) })) { viewStore in
-			VStack(alignment: .leading) {
-				LoginTitle()
-				Spacer(minLength: 85)
-				LoginTextFields(email: self.$email,
-												password: self.$password,
-												emailValidation: viewStore.state.emailValidationText,
-												passwordValidation: viewStore.state.passValidationText,
-												onForgotPass: { viewStore.send(.forgotPassTapped) })
-				Spacer(minLength: 30)
-				PrimaryButton(Texts.signIn) {
-					viewStore.send(.loginTapped(email: self.email,
-																			password: self.password))
-				}.frame(minWidth: 304, maxWidth: 495)
-			}
-			.navigationBarBackButtonHidden(true)
-			.frame(minWidth: 280, maxWidth: 495, alignment: .center)
-			.fixedSize(horizontal: false, vertical: true)
-			.padding(.bottom, self.keyboardHandler.keyboardHeight)
-			}
-	}
+    var body: some View {
+        WithViewStore(
+            self.store.scope(
+                state: ViewState.init(state:),
+                action: { LoginAction.init(action: $0) }
+            )
+        ) { viewStore in
+            GeometryReader { geometry in
+                VStack(alignment: .leading) {
+                    LoginTitle()
+                    LoginTextFields(
+                        email: self.$email,
+                        password: self.$password,
+                        emailValidation: viewStore.state.emailValidationText,
+                        passwordValidation: viewStore.state.passValidationText,
+                        onForgotPass: { viewStore.send(.forgotPassTapped) }
+                    )
+                    .padding(.top, 50)
+                    PrimaryButton(Texts.signIn) {
+                        viewStore.send(
+                            .loginTapped(
+                                email: self.email,
+                                password: self.password
+                            )
+                        )
+                    }
+                    .padding(.top, 30)
+                }
+                .frame(width: min(geometry.size.width * 0.8, 495))
+                .position(
+                    x: geometry.size.width * 0.5,
+                    y: geometry.size.height * 0.3
+                )
+                .navigationBarBackButtonHidden(true)
+                .padding(.bottom, self.keyboardHandler.keyboardHeight)
+            }
+        }
+    }
 }
 
 public struct LoginView: View {
 	let store: Store<WalkthroughContainerState, LoginViewAction>
 	@ObservedObject var viewStore: ViewStore<ViewState, LoginViewAction>
+
 	struct ViewState: Equatable {
 		let isForgotPassActive: Bool
 		let showsLoadingSpinner: Bool
-		init (state: WalkthroughContainerState) {
+        
+		init(state: WalkthroughContainerState) {
 			self.showsLoadingSpinner = state.loginViewState.loginLS.isLoading
 			self.isForgotPassActive = state.navigation.contains(.forgotPassScreen)
 		}
 	}
-	
+
 	@State var email: String = "ios1@pabau.com"
-	
+
 	public init(store: Store<WalkthroughContainerState, LoginViewAction>) {
 		self.store = store
-		self.viewStore = ViewStore.init(self.store
-			.scope(state: ViewState.init(state:),
-						 action: { $0 }))
-		print("LoginView init")
+        self.viewStore = ViewStore.init(
+            self.store
+                .scope(
+                    state: ViewState.init(state:),
+                    action: { $0 }
+                )
+        )
 	}
 	public var body: some View {
-		print("LoginView body")
 		return VStack {
-			NavigationLink.emptyHidden(self.viewStore.state.isForgotPassActive,
-									   ForgotPasswordView(self.store.scope(
-															state: { $0.forgotPass },
-															action: { .forgotPass($0)}), self.$email))
-			Login(store:
-					self.store.scope(state: { $0 },
-									 action: { .login($0)}),
-				  email: self.$email)
-			Spacer()
-		}.loadingView(.constant(self.viewStore.state.showsLoadingSpinner),
-					  Texts.signingIn)
+            NavigationLink.emptyHidden(
+                self.viewStore.state.isForgotPassActive,
+                ForgotPasswordView(
+                    self.store.scope(
+                        state: { $0.forgotPass },
+                        action: { .forgotPass($0)}), self.$email )
+            )
+            Login(
+                store:
+                    self.store.scope(
+                        state: { $0 },
+                        action: { .login($0) }
+                    ),
+                email: self.$email
+            )
+            Spacer()
+        }.loadingView(
+            .constant(self.viewStore.state.showsLoadingSpinner),
+            Texts.signingIn
+        )
 	}
 }
 

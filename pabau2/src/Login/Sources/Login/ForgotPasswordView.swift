@@ -17,10 +17,16 @@ public struct ForgotPassContainerState: Equatable {
 	var fpValidation: String
 	var rpValidation: RPValidator
 	var rpLoading: LoadingState
+    
 	var forgotPass: ForgotPassState {
-		get { return ForgotPassState(navigation: navigation,
-																 loadingState: forgotPassLS,
-																 fpValidation: fpValidation)}
+		get {
+            return ForgotPassState(
+                navigation: navigation,
+                loadingState: forgotPassLS,
+                fpValidation: fpValidation
+            )
+            
+        }
 		set {
 			self.forgotPassLS = newValue.loadingState
 			self.navigation = newValue.navigation
@@ -28,9 +34,13 @@ public struct ForgotPassContainerState: Equatable {
 		}
 	}
 	var resetPass: ResetPasswordState {
-		get { return ResetPasswordState(navigation: navigation,
-																		rpValidation: rpValidation,
-																		loadingState: rpLoading)}
+        get {
+            return ResetPasswordState(
+                navigation: navigation,
+                rpValidation: rpValidation,
+                loadingState: rpLoading
+            )
+        }
 		set {
 			self.navigation = newValue.navigation
 			self.rpValidation = newValue.rpValidation
@@ -48,26 +58,32 @@ public struct ForgotPassState: Equatable {
 let forgotPassViewReducer: Reducer<ForgotPassContainerState,
 	ForgotPassViewAction,
 	LoginEnvironment> = .combine(
-		forgotPasswordReducer.pullback(
-					 state: \ForgotPassContainerState.forgotPass,
-					 action: /ForgotPassViewAction.forgotPass,
-					 environment: { $0 }),
-		resetPassReducer.pullback(
-					 state: \ForgotPassContainerState.resetPass,
-					 action: /ForgotPassViewAction.resetPass,
-					 environment: { $0 }),
-		checkEmailReducer.pullback(
-					 state: \ForgotPassContainerState.navigation,
-					 action: /ForgotPassViewAction.checkEmail,
-					 environment: { $0 }),
-		passChangedReducer.pullback(
-					 state: \ForgotPassContainerState.navigation,
-					 action: /ForgotPassViewAction.passChanged,
-					 environment: { $0 }),
+        forgotPasswordReducer.pullback(
+            state: \ForgotPassContainerState.forgotPass,
+            action: /ForgotPassViewAction.forgotPass,
+            environment: { $0 }
+        ),
+        resetPassReducer.pullback(
+            state: \ForgotPassContainerState.resetPass,
+            action: /ForgotPassViewAction.resetPass,
+            environment: { $0 }
+        ),
+        checkEmailReducer.pullback(
+            state: \ForgotPassContainerState.navigation,
+            action: /ForgotPassViewAction.checkEmail,
+            environment: { $0 }
+        ),
+        passChangedReducer.pullback(
+            state: \ForgotPassContainerState.navigation,
+            action: /ForgotPassViewAction.passChanged,
+            environment: { $0 }
+        ),
         .init { state, action, _ in
             switch action {
             case .checkEmail(.resetPassTapped):
-                state.navigation.removeAll(where: { $0 == .forgotPassScreen })
+                state.navigation.removeAll(
+                    where: { $0 == .forgotPassScreen }
+                )
             default:
                 break
             }
@@ -76,33 +92,35 @@ let forgotPassViewReducer: Reducer<ForgotPassContainerState,
 )
 
 let forgotPasswordReducer = Reducer<ForgotPassState, ForgotPasswordAction, LoginEnvironment> { state, action, environment in
-		switch action {
-		case .backBtnTapped:
-			state.navigation.removeAll(where: { $0 == .forgotPassScreen })
-			return .none
-		case .sendRequest(let email):
-			let isValid = isValidEmail(email)
-			state.fpValidation = emailValidationText(isValid)
-			if isValid {
-				state.loadingState = .loading
-				return environment.apiClient.resetPass(email)
-						.catchToEffect()
-						.map(ForgotPasswordAction.gotResponse)
-						.receive(on: DispatchQueue.main)
-						.eraseToEffect()
-			} else {
-                return .none
-			}
-		case .gotResponse(let result):
-			switch result {
-			case .success:
-				state.loadingState = .gotSuccess
-				state.navigation.append(.checkEmailScreen)
-			case .failure(let error):
-				state.loadingState = .gotError(error)
-			}
-			return .none
-		}
+    switch action {
+    case .backBtnTapped:
+        state.navigation.removeAll(
+            where: { $0 == .forgotPassScreen }
+        )
+        return .none
+    case .sendRequest(let email):
+        let isValid = isValidEmail(email)
+        state.fpValidation = emailValidationText(isValid)
+        if isValid {
+            state.loadingState = .loading
+            return environment.apiClient.resetPass(email)
+                .catchToEffect()
+                .map(ForgotPasswordAction.gotResponse)
+                .receive(on: DispatchQueue.main)
+                .eraseToEffect()
+        } else {
+            return .none
+        }
+    case .gotResponse(let result):
+        switch result {
+        case .success:
+            state.loadingState = .gotSuccess
+            state.navigation.append(.checkEmailScreen)
+        case .failure(let error):
+            state.loadingState = .gotError(error)
+        }
+        return .none
+    }
 }
 
 public enum ForgotPasswordAction: Equatable {
@@ -115,38 +133,48 @@ struct ForgotPassword: View {
 	let store: Store<ForgotPassState, ForgotPasswordAction>
 	@ObservedObject var viewStore: ViewStore<ForgotPassState, ForgotPasswordAction>
 	@Binding private var email: String
-	init(_ store: Store<ForgotPassState, ForgotPasswordAction>,
-			 _ email: Binding<String>) {
-		self.store = store
-		self.viewStore = ViewStore(self.store)
-		self._email = email
-	}
 
-	var body: some View {
-		VStack(alignment: .leading, spacing: 25) {
-			VStack(alignment: .leading, spacing: 36) {
-				Text(Texts.forgotPass)
-					.foregroundColor(.blackTwo)
-					.font(.bold34)
-					.frame(width: 157)
-				Text(Texts.forgotPassDescription)
-					.foregroundColor(.grey155)
-					.font(.medium16)
-				TextAndTextField(Texts.emailAddress.uppercased(),
-												 self.$email,
-												 "",
-												 self.viewStore.state.fpValidation)
-			}.frame(maxWidth: 319)
-			PrimaryButton(Texts.sendRequest) {
-				self.viewStore.send(.sendRequest(email: self.email))
-			}.frame(minWidth: 304, maxWidth: 495)
-		}
-		.frame(minWidth: 280, maxWidth: 495)
-		.fixedSize(horizontal: false, vertical: true)
-		.customBackButton {
-			self.viewStore.send(.backBtnTapped)
-		}
-	}
+    init(
+        _ store: Store<ForgotPassState, ForgotPasswordAction>,
+        _ email: Binding<String>
+    ) {
+        self.store = store
+        self.viewStore = ViewStore(self.store)
+        self._email = email
+    }
+
+    var body: some View {
+        GeometryReader { geometry in
+            VStack(alignment: .leading, spacing: 25) {
+                VStack(alignment: .leading, spacing: 36) {
+                    Text(Texts.forgotPass)
+                        .foregroundColor(.blackTwo)
+                        .font(.bold34)
+                        .frame(width: 157)
+                    Text(Texts.forgotPassDescription)
+                        .foregroundColor(.grey155)
+                        .font(.medium16)
+                    TextAndTextField(
+                        Texts.emailAddress.uppercased(),
+                        self.$email,
+                        "",
+                        self.viewStore.state.fpValidation
+                    )
+                }
+                PrimaryButton(Texts.sendRequest) {
+                    self.viewStore.send(.sendRequest(email: self.email))
+                }
+            }
+            .frame(width: min(geometry.size.width * 0.8, 495))
+            .position(
+                x: geometry.size.width * 0.5,
+                y: geometry.size.height * 0.3
+            )
+            .customBackButton {
+                self.viewStore.send(.backBtnTapped)
+            }
+        }
+    }
 }
 
 struct ForgotPasswordView: View {
