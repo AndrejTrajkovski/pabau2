@@ -46,12 +46,8 @@ let checkInPatientReducer: Reducer<CheckInPatientState, CheckInPatientAction, Jo
 		action: /CheckInPatientAction.patientDetails,
 		environment: { $0 }),
 	htmlFormStepContainerReducer.forEach(
-		state: \CheckInPatientState.medicalHistories,
-		action: /CheckInPatientAction.medicalHistories(id:action:),
-		environment: makeFormEnv(_:)),
-	htmlFormStepContainerReducer.forEach(
-		state: \CheckInPatientState.consents,
-		action: /CheckInPatientAction.consents(id:action:),
+		state: \CheckInPatientState.htmlForms,
+		action: /CheckInPatientAction.htmlForms(id:action:),
 		environment: makeFormEnv(_:)),
 	patientCompleteReducer.pullback(
 		state: \CheckInPatientState.isPatientComplete,
@@ -64,13 +60,12 @@ let checkInPatientReducer: Reducer<CheckInPatientState, CheckInPatientAction, Jo
 	)
 )
 
-struct CheckInPatientState: Equatable {
+public struct CheckInPatientState: Equatable {
 	let appointment: Appointment
 	let pathway: Pathway
 	let pathwayTemplate: PathwayTemplate
 	var patientDetails: PatientDetailsParentState
-	var medicalHistories: IdentifiedArrayOf<HTMLFormStepContainerState>
-	var consents: IdentifiedArrayOf<HTMLFormStepContainerState>
+	public var htmlForms: IdentifiedArrayOf<HTMLFormStepContainerState>
 	var isPatientComplete: StepStatus
 	var selectedIdx: Int
 }
@@ -82,24 +77,12 @@ extension CheckInPatientState {
 		get {
 			CheckInState(
 				selectedIdx: self.selectedIdx,
-				stepForms: self.stepForms()
+				stepForms: pathway.orderedPatientSteps().compactMap { getStepFormInfo($0.value) }
 			)
 		}
 		set {
 			self.selectedIdx = newValue.selectedIdx
 		}
-	}
-	
-	func patientSteps() -> [Step] {
-		pathwayTemplate.steps.filter { filterPatient($0.stepType) }
-	}
-	
-	func stepEntries() -> [StepEntry] {
-		patientSteps().compactMap { pathway.stepEntries[$0.id] }
-	}
-
-	func stepForms() -> [StepFormInfo] {
-		stepEntries().compactMap(getStepFormInfo(_:))
 	}
 	
 	func getStepFormInfo(_ stepEntry: StepEntry) -> StepFormInfo? {
@@ -124,8 +107,7 @@ extension CheckInPatientState {
 
 public enum CheckInPatientAction: Equatable {
 	case patientDetails(PatientDetailsParentAction)
-	case medicalHistories(id: Step.ID, action: HTMLFormStepContainerAction)
-	case consents(id: Step.ID, action: HTMLFormStepContainerAction)
+	case htmlForms(id: Step.ID, action: HTMLFormStepContainerAction)
 	case patientComplete(PatientCompleteAction)
 	case stepsView(CheckInAction)
 	//	case footer(FooterButtonsAction)
@@ -133,33 +115,31 @@ public enum CheckInPatientAction: Equatable {
 
 @ViewBuilder
 func patientForms(store: Store<CheckInPatientState, CheckInPatientAction>) -> some View {
-	ForEach(ViewStore(store).state.patientSteps(),
+	ForEach(ViewStore(store).state.pathway.orderedPatientSteps(),
+			id: \.key,
 			content: { patientForm(step: $0, store: store).modifier(FormFrame()) })
 }
 
 @ViewBuilder
-func patientForm(step: Step,
+func patientForm(step: Dictionary<Step.ID, StepEntry>.Element,
 				 store: Store<CheckInPatientState, CheckInPatientAction>) -> some View {
-	switch step.stepType {
-	case .patientdetails:
-		PatientDetailsParent(store:
-							store.scope(state: { $0.patientDetails},
-										action: { .patientDetails($0) })
-		)
-	case .medicalhistory:
-		ForEachStore(store.scope(state: { $0.medicalHistories },
-								 action: CheckInPatientAction.medicalHistories(id: action:)),
+	if step.value.stepType.isHTMLForm {
+		ForEachStore(store.scope(state: { $0.htmlForms },
+								 action: CheckInPatientAction.htmlForms(id: action:)),
 					 content: { HTMLFormStepContainer.init(store: $0) }
 		)
-	case .consents:
-		ForEachStore(store.scope(state: { $0.consents },
-								 action: CheckInPatientAction.consents(id: action:)),
-					 content: { HTMLFormStepContainer.init(store: $0) }
-		)
-	case .patientComplete:
-		PatientCompleteForm(store: store.scope(state: { $0.isPatientComplete }, action: { .patientComplete($0)})
-		)
-	default:
-		fatalError()
+	} else {
+		switch step.value.stepType {
+		case .patientdetails:
+			PatientDetailsParent(store:
+								store.scope(state: { $0.patientDetails},
+											action: { .patientDetails($0) })
+			)
+		case .patientComplete:
+			PatientCompleteForm(store: store.scope(state: { $0.isPatientComplete }, action: { .patientComplete($0)})
+			)
+		default:
+			fatalError()
+		}
 	}
 }

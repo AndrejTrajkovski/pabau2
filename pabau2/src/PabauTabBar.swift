@@ -165,35 +165,31 @@ func getForm(stepId: Step.Id, stepEntry: StepEntry, formAPI: FormAPI, clientId: 
 			.catchToEffect()
 	}
 	
-	switch stepEntry.stepType {
-	case .patientdetails:
-		return formAPI.getPatientDetails(clientId: clientId)
-			.map(ClientBuilder.init(client:))
-			.catchToEffect()
-			.map(PatientDetailsParentAction.gotGETResponse)
-			.map(CheckInPatientAction.patientDetails)
-	case .medicalhistory:
+	if stepEntry.stepType.isHTMLForm {
 		guard let formTemplateId = stepEntry.htmlFormInfo?.templateIdToLoad else { return nil }
 		return getHTMLForm(formTemplateId: formTemplateId)
 			.map {
-				CheckInPatientAction.medicalHistories(id: stepId, action: .htmlForm(HTMLFormAction.gotForm($0)))
+				CheckInPatientAction.htmlForms(id: stepId, action: .htmlForm(HTMLFormAction.gotForm($0)))
 			}
-	case .consents:
-		guard let formTemplateId = stepEntry.htmlFormInfo?.templateIdToLoad else { return nil }
-		return getHTMLForm(formTemplateId: formTemplateId)
-			.map {
-				CheckInPatientAction.consents(id: stepId, action: .htmlForm(HTMLFormAction.gotForm($0)))
-			}
-	case .treatmentnotes, .prescriptions:
-		return nil
-	case .checkpatient:
-		return nil
-	case .photos:
-		return nil
-	case .aftercares:
-		return nil
-	case .patientComplete:
-		return nil
+	} else {
+		switch stepEntry.stepType {
+		case .patientdetails:
+			return formAPI.getPatientDetails(clientId: clientId)
+				.map(ClientBuilder.init(client:))
+				.catchToEffect()
+				.map(PatientDetailsParentAction.gotGETResponse)
+				.map(CheckInPatientAction.patientDetails)
+		case .checkpatient:
+			return nil
+		case .photos:
+			return nil
+		case .aftercares:
+			return nil
+		case .patientComplete:
+			return nil
+		default:
+			return nil
+		}
 	}
 }
 
@@ -263,19 +259,16 @@ public let tabBarReducer: Reducer<
 				
 			case .loaded(let loadedState):
 				
-				let pathway = loadedState.pathway
-				let stepEntries = pathway.stepEntries.sorted(by: { $0.value.order ?? pathway.stepEntries.count < $1.value.order ?? pathway.stepEntries.count })
-				
-				let getPatientForms = getForms(stepEntries: stepEntries,
-											   formAPI: env.formAPI,
-											   clientid: loadedState.appointment.customerId)
-					.map {
-						$0.map {
-							TabBarAction.checkIn(CheckInContainerAction.patient($0))
+				let getPatientForms = loadedState.patientCheckIn.htmlForms.compactMap { htmlStepState in
+					return htmlStepState.htmlFormParentState?.getForm(formAPI: env.formAPI)
+						.map {
+							TabBarAction.checkIn(CheckInContainerAction.patient(.htmlForms(id: htmlStepState.id, action: .htmlForm($0))))
 						}
-					}
-				returnEffects.append(contentsOf: getPatientForms)
-//				state.loadedState!.
+				}
+				
+				let getPatientFormsOneAfterAnother = Effect.concatenate(getPatientForms)
+				
+				returnEffects.append(getPatientFormsOneAfterAnother)
 			}
 			
 			return .merge(returnEffects)

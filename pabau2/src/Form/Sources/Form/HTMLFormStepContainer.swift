@@ -15,10 +15,10 @@ public let htmlFormStepContainerReducer: Reducer<HTMLFormStepContainerState, HTM
 																clientId: state.clientId,
 																pathwayId: state.pathwayId)
 			state.htmlFormParentState!.getLoadingState = .loading
-			return env.formAPI.getForm(templateId: state.htmlFormParentState!.templateId,
-									   entryId: state.htmlFormParentState!.filledFormId)
-				.catchToEffect()
-				.map { HTMLFormStepContainerAction.htmlForm(.gotForm($0)) }
+			return state.htmlFormParentState!.getForm(formAPI: env.formAPI)
+				.map { HTMLFormStepContainerAction.htmlForm($0) }
+				.receive(on: DispatchQueue.main)
+				.eraseToEffect()
 			
 		case .htmlForm:
 			
@@ -40,7 +40,7 @@ public struct HTMLFormStepContainerState: Equatable, Identifiable {
 	let clientId: Client.ID
 	let pathwayId: Pathway.ID
 	public let stepEntry: StepEntry
-	var htmlFormParentState: HTMLFormParentState?
+	public var htmlFormParentState: HTMLFormParentState?
 	
 	public init(stepId: Step.ID, stepEntry: StepEntry, clientId: Client.ID, pathwayId: Pathway.ID) {
 		

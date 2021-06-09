@@ -46,10 +46,8 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, F
 			state.saveFailureAlert = nil
 		case .getFormError(.retry):
 			state.getLoadingState = .loading
-			return env.formAPI.getForm(templateId: state.templateId, entryId: state.filledFormId)
-				.catchToEffect()
+			return state.getForm(formAPI: env.formAPI)
 				.receive(on: DispatchQueue.main)
-				.map(HTMLFormAction.gotForm)
 				.eraseToEffect()
 			
 		case .rows(.rows(idx: let idx, action: let action)):
@@ -60,6 +58,13 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, F
 )
 
 public struct HTMLFormParentState: Equatable, Identifiable {
+	
+	public func getForm(formAPI: FormAPI) -> Effect<HTMLFormAction, Never> {
+		return formAPI.getForm(templateId: self.templateId,
+							   entryId: self.filledFormId)
+			.catchToEffect()
+			.map { HTMLFormAction.gotForm($0) }
+	}
 	
 	public init(formTemplateName: String,
 				formType: FormType,

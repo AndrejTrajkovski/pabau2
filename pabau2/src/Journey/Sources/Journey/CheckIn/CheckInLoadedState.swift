@@ -8,14 +8,12 @@ import ChoosePathway
 public struct CheckInLoadedState: Equatable {
 	
 	public let appointment: Appointment
-	public var pathway: Pathway
+	public let pathway: Pathway
 	public let pathwayTemplate: PathwayTemplate
 	
 	var patientDetails: PatientDetailsParentState
 	
-	var medicalHistories: IdentifiedArrayOf<HTMLFormStepContainerState>
-	
-	var consents: IdentifiedArrayOf<HTMLFormStepContainerState>
+	var patientHTMLForms: IdentifiedArrayOf<HTMLFormStepContainerState>
 	
 	var treatmentNotes: IdentifiedArrayOf<HTMLFormParentState>
 	
@@ -49,8 +47,7 @@ extension CheckInLoadedState {
 //		self.patientDetails = patientDetails
 		self.pathway = pathway
 		self.pathwayTemplate = template
-		self.medicalHistories = IdentifiedArray(pathway.stepEntries.filter { $0.value.stepType == .medicalhistory }.map { HTMLFormStepContainerState.init(stepId: $0.key, stepEntry: $0.value, clientId: appointment.customerId, pathwayId: pathway.id) })
-		self.consents = IdentifiedArray(pathway.stepEntries.filter { $0.value.stepType == .consents }.map { HTMLFormStepContainerState.init(stepId: $0.key, stepEntry: $0.value, clientId: appointment.customerId, pathwayId: pathway.id) })
+		self.patientHTMLForms = IdentifiedArray(pathway.stepEntries.filter { $0.value.stepType == .medicalhistory }.map { HTMLFormStepContainerState.init(stepId: $0.key, stepEntry: $0.value, clientId: appointment.customerId, pathwayId: pathway.id) })
 		self.selectedConsentsIds = []
 		self.selectedTreatmentFormsIds = []
 		self.treatmentNotes = []
@@ -118,15 +115,14 @@ extension CheckInLoadedState {
 		}
 	}
 	
-	var patientCheckIn: CheckInPatientState {
+	public var patientCheckIn: CheckInPatientState {
 		get {
 			CheckInPatientState(
 				appointment: appointment,
 				pathway: pathway,
 				pathwayTemplate: pathwayTemplate,
 				patientDetails: patientDetails,
-				medicalHistories: medicalHistories,
-				consents: consents,
+				htmlForms: patientHTMLForms,
 				isPatientComplete: isPatientComplete,
 				selectedIdx: patientSelectedIndex
 			)
@@ -134,10 +130,21 @@ extension CheckInLoadedState {
 		
 		set {
 			self.patientDetails = newValue.patientDetails
-			self.medicalHistories = newValue.medicalHistories
-			self.consents = newValue.consents
+			self.patientHTMLForms = newValue.htmlForms
 			self.isPatientComplete = newValue.isPatientComplete
 			self.patientSelectedIndex = newValue.selectedIdx
 		}
+	}
+}
+
+extension Pathway {
+	func orderedPatientSteps() -> [Dictionary<Step.ID, StepEntry>.Element] {
+		stepEntries.filter { filterPatient($0.value.stepType)}
+			.sorted(by: { $0.value.order ?? 0 < $1.value.order ?? 0 })
+	}
+	
+	func orderedDoctorSteps() -> [Dictionary<Step.ID, StepEntry>.Element] {
+		stepEntries.filter { filterPatient($0.value.stepType)}
+			.sorted(by: { $0.value.order ?? 0 < $1.value.order ?? 0 })
 	}
 }

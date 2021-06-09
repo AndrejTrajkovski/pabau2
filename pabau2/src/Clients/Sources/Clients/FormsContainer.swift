@@ -29,10 +29,16 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 			state.formsCollection = IdentifiedArray(array)
 			state.isFillingFormsActive = true
 			return .concatenate (
-				state.formsCollection.map(\.id).map { getForm($0, env.formAPI) }
-			)
-
-		default:
+				state.formsCollection.map { htmlFormParentState in
+					htmlFormParentState.getForm(formAPI: env.formAPI)
+						.map { FormsContainerAction.forms(id: htmlFormParentState.templateId, action: $0)}
+						.receive(on: DispatchQueue.main)
+						.eraseToEffect()
+				}
+			).receive(on: DispatchQueue.main)
+			.eraseToEffect()
+			
+	default:
 			break
 		}
 		return .none

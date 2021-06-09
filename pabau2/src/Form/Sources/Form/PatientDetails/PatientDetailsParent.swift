@@ -59,7 +59,7 @@ public struct PatientDetailsParent: View {
 							   action: { .patientDetails($0) }),
 				   then: PatientDetailsForm.init(store:),
 				   else: {
-						
+						Text("ASD")
 				   })
 	}
 }
