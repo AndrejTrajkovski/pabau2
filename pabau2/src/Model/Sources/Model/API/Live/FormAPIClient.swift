@@ -26,10 +26,21 @@ public extension APIClient {
 //			.debounce(id: UUID(), for: 5.0, scheduler: DispatchQueue.main)
 	}
 	
-	func getForm(templateId: FormTemplateInfo.ID, entryId: FilledFormData.ID) -> Effect<HTMLForm, RequestError> {
+	func getForm(templateId: FormTemplateInfo.ID,
+				 entryId: FilledFormData.ID?) -> Effect<HTMLForm, RequestError> {
+		if let entryId = entryId {
+			return getForm(templateId: templateId, entryId: entryId)
+		} else {
+			return getForm(templateId: templateId)
+		}
+	}
+	
+	func getForm(templateId: FormTemplateInfo.ID,
+				 entryId: FilledFormData.ID) -> Effect<HTMLForm, RequestError> {
 		
 		let params = commonAnd(other: ["form_template_id": templateId.rawValue,
 									   "form_id": entryId.rawValue])
+		
 		let requestBuilder: RequestBuilder<_FilledForm>.Type = requestBuilderFactory.getBuilder()
 		return requestBuilder.init(method: .GET,
 								   baseUrl: baseUrl,

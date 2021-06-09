@@ -151,25 +151,18 @@ struct PabauTabBar: View {
 private let audioQueue = DispatchQueue(label: "Audio Dispatch Queue")
 struct TimerId: Hashable { }
 
-func getForms(pathway: Pathway, template: PathwayTemplate, formAPI: FormAPI, clientid: Client.ID) -> [Effect<CheckInPatientAction, Never>] {
-	
-//	let stepEntries = template.steps.map { (pathway.stepEntries[$0.id], $0) }
-	return pathway.stepEntries.sorted(by: { $0.value.order ?? pathway.stepEntries.count < $1.value.order ?? pathway.stepEntries.count })
+func getForms(stepEntries: [Dictionary<Step.Id, StepEntry>.Element], formAPI: FormAPI, clientid: Client.ID) -> [Effect<CheckInPatientAction, Never>] {
+	return stepEntries
 		.compactMap {
-			return getForm(stepEntry: $0.value, formAPI: formAPI, clientId:clientid)
+			return getForm(stepId: $0.key, stepEntry: $0.value, formAPI: formAPI, clientId: clientid)
 		}
 }
 
-func getForm(stepEntry: StepEntry, formAPI: FormAPI, clientId: Client.ID) -> Effect<CheckInPatientAction, Never>? {
+func getForm(stepId: Step.Id, stepEntry: StepEntry, formAPI: FormAPI, clientId: Client.ID) -> Effect<CheckInPatientAction, Never>? {
 	
 	func getHTMLForm(formTemplateId: HTMLForm.ID) -> Effect<Result<HTMLForm, RequestError>, Never> {
-		let getForm: Effect<HTMLForm, RequestError>
-		if let formEntryId = stepEntry.formEntryId {
-			getForm = formAPI.getForm(templateId: formTemplateId, entryId: formEntryId)
-		} else {
-			getForm = formAPI.getForm(templateId: formTemplateId)
-		}
-		return getForm.catchToEffect()
+		return formAPI.getForm(templateId: formTemplateId, entryId: stepEntry.htmlFormInfo!.formEntryId)
+			.catchToEffect()
 	}
 	
 	switch stepEntry.stepType {
@@ -180,16 +173,16 @@ func getForm(stepEntry: StepEntry, formAPI: FormAPI, clientId: Client.ID) -> Eff
 			.map(PatientDetailsParentAction.gotGETResponse)
 			.map(CheckInPatientAction.patientDetails)
 	case .medicalhistory:
-		guard let formTemplateId = stepEntry.formTemplateId else { return nil }
+		guard let formTemplateId = stepEntry.htmlFormInfo?.templateIdToLoad else { return nil }
 		return getHTMLForm(formTemplateId: formTemplateId)
 			.map {
-				CheckInPatientAction.medicalHistories(id: formTemplateId, action: HTMLFormAction.gotForm($0))
+				CheckInPatientAction.medicalHistories(id: stepId, action: .htmlForm(HTMLFormAction.gotForm($0)))
 			}
 	case .consents:
-		guard let formTemplateId = stepEntry.formTemplateId else { return nil }
+		guard let formTemplateId = stepEntry.htmlFormInfo?.templateIdToLoad else { return nil }
 		return getHTMLForm(formTemplateId: formTemplateId)
 			.map {
-				CheckInPatientAction.consents(id: formTemplateId, action: HTMLFormAction.gotForm($0))
+				CheckInPatientAction.consents(id: stepId, action: .htmlForm(HTMLFormAction.gotForm($0)))
 			}
 	case .treatmentnotes, .prescriptions:
 		return nil
@@ -260,6 +253,7 @@ public let tabBarReducer: Reducer<
 			switch checkInState.loadingOrLoaded {
 			
 			case .loading(let loadingState):
+				
 				let getCombinedPathwaysResponse = getCombinedPathwayResponse(journeyAPI: env.journeyAPI,
 																			 checkInState: loadingState)
 					.map {
@@ -268,8 +262,11 @@ public let tabBarReducer: Reducer<
 				returnEffects.append(getCombinedPathwaysResponse)
 				
 			case .loaded(let loadedState):
-				let getPatientForms = getForms(pathway: loadedState.pathway,
-											   template: loadedState.pathwayTemplate,
+				
+				let pathway = loadedState.pathway
+				let stepEntries = pathway.stepEntries.sorted(by: { $0.value.order ?? pathway.stepEntries.count < $1.value.order ?? pathway.stepEntries.count })
+				
+				let getPatientForms = getForms(stepEntries: stepEntries,
 											   formAPI: env.formAPI,
 											   clientid: loadedState.appointment.customerId)
 					.map {
@@ -278,6 +275,7 @@ public let tabBarReducer: Reducer<
 						}
 					}
 				returnEffects.append(contentsOf: getPatientForms)
+//				state.loadedState!.
 			}
 			
 			return .merge(returnEffects)

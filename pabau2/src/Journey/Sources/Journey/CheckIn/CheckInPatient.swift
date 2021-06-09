@@ -41,27 +41,15 @@ struct CheckInPatientContainer: View {
 }
 
 let checkInPatientReducer: Reducer<CheckInPatientState, CheckInPatientAction, JourneyEnvironment> = .combine(
-//	.init { state, action, env in
-//		switch action {
-//		case .consents(let id, .complete):
-//			let consent = state.consents[id: id]!
-//			env.formAPI.post(form: consent,
-//							 appointments: state.journey.appointments.map(\.id))
-//			break
-//		default:
-//			break
-//		}
-//		return .none
-//	},
 	patientDetailsParentReducer.pullback(
 		state: \CheckInPatientState.patientDetails,
 		action: /CheckInPatientAction.patientDetails,
 		environment: { $0 }),
-	htmlFormParentReducer.forEach(
+	htmlFormStepContainerReducer.forEach(
 		state: \CheckInPatientState.medicalHistories,
 		action: /CheckInPatientAction.medicalHistories(id:action:),
 		environment: makeFormEnv(_:)),
-	htmlFormParentReducer.forEach(
+	htmlFormStepContainerReducer.forEach(
 		state: \CheckInPatientState.consents,
 		action: /CheckInPatientAction.consents(id:action:),
 		environment: makeFormEnv(_:)),
@@ -78,10 +66,11 @@ let checkInPatientReducer: Reducer<CheckInPatientState, CheckInPatientAction, Jo
 
 struct CheckInPatientState: Equatable {
 	let appointment: Appointment
-	let pathway: PathwayTemplate
+	let pathway: Pathway
+	let pathwayTemplate: PathwayTemplate
 	var patientDetails: PatientDetailsParentState
-	var medicalHistories: IdentifiedArrayOf<HTMLFormParentState>
-	var consents: IdentifiedArrayOf<HTMLFormParentState>
+	var medicalHistories: IdentifiedArrayOf<HTMLFormStepContainerState>
+	var consents: IdentifiedArrayOf<HTMLFormStepContainerState>
 	var isPatientComplete: StepStatus
 	var selectedIdx: Int
 }
@@ -101,46 +90,42 @@ extension CheckInPatientState {
 		}
 	}
 	
-	func steps() -> [Step] {
-		return pathway.steps.filter { step in
-			return filterBy(.patient)(step.stepType)
-		}
+	func patientSteps() -> [Step] {
+		pathwayTemplate.steps.filter { filterPatient($0.stepType) }
+	}
+	
+	func stepEntries() -> [StepEntry] {
+		patientSteps().compactMap { pathway.stepEntries[$0.id] }
 	}
 
 	func stepForms() -> [StepFormInfo] {
-		return steps().map {
-			getForms($0.stepType)
-		}.flatMap { $0 }
+		stepEntries().compactMap(getStepFormInfo(_:))
 	}
-
-	func getForms(_ stepType: StepType) -> [StepFormInfo] {
-		switch stepType {
+	
+	func getStepFormInfo(_ stepEntry: StepEntry) -> StepFormInfo? {
+		switch stepEntry.stepType {
 		case .patientdetails:
-			return [StepFormInfo(status: patientDetails.stepStatus,
-								 title: "PATIENT DETAILS")]
+			return StepFormInfo(status: patientDetails.stepStatus,
+								title: "PATIENT DETAILS")
 		case .medicalhistory:
-			return medicalHistories.map {
-				StepFormInfo(status: $0.status,
-							 title: $0.templateName)
-			}
+			return StepFormInfo(status: stepEntry.status,
+								title: stepEntry.stepType.rawValue)
 		case .consents:
-			return consents.map {
-				StepFormInfo(status: $0.status,
-							 title: $0.templateName)
-			}
+			return StepFormInfo(status: stepEntry.status,
+								title: stepEntry.stepType.rawValue)
 		case .patientComplete:
-			return [StepFormInfo(status: isPatientComplete,
-								 title: "COMPLETE PATIENT")]
+			return StepFormInfo(status: isPatientComplete,
+								title: "COMPLETE PATIENT")
 		default:
-			return []
+			return nil
 		}
 	}
 }
 
 public enum CheckInPatientAction: Equatable {
 	case patientDetails(PatientDetailsParentAction)
-	case medicalHistories(id: HTMLForm.ID, action: HTMLFormAction)
-	case consents(id: HTMLForm.ID, action: HTMLFormAction)
+	case medicalHistories(id: Step.ID, action: HTMLFormStepContainerAction)
+	case consents(id: Step.ID, action: HTMLFormStepContainerAction)
 	case patientComplete(PatientCompleteAction)
 	case stepsView(CheckInAction)
 	//	case footer(FooterButtonsAction)
@@ -148,7 +133,7 @@ public enum CheckInPatientAction: Equatable {
 
 @ViewBuilder
 func patientForms(store: Store<CheckInPatientState, CheckInPatientAction>) -> some View {
-	ForEach(ViewStore(store).state.steps(),
+	ForEach(ViewStore(store).state.patientSteps(),
 			content: { patientForm(step: $0, store: store).modifier(FormFrame()) })
 }
 
@@ -164,12 +149,12 @@ func patientForm(step: Step,
 	case .medicalhistory:
 		ForEachStore(store.scope(state: { $0.medicalHistories },
 								 action: CheckInPatientAction.medicalHistories(id: action:)),
-					 content: { HTMLFormParent.init(store: $0) }
+					 content: { HTMLFormStepContainer.init(store: $0) }
 		)
 	case .consents:
 		ForEachStore(store.scope(state: { $0.consents },
 								 action: CheckInPatientAction.consents(id: action:)),
-					 content: { HTMLFormParent.init(store: $0) }
+					 content: { HTMLFormStepContainer.init(store: $0) }
 		)
 	case .patientComplete:
 		PatientCompleteForm(store: store.scope(state: { $0.isPatientComplete }, action: { .patientComplete($0)})

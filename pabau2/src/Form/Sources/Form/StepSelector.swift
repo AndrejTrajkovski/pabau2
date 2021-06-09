@@ -23,7 +23,7 @@ struct StepSelector: View {
 	init (store: Store<CheckInState, CheckInAction>) {
 		self.store = store
 		self.viewStore = ViewStore(
-			store.scope( state: State.init(state:), action: { $0 }))
+			store.scope(state: State.init(state:), action: { $0 }))
 	}
 
 	var body: some View {

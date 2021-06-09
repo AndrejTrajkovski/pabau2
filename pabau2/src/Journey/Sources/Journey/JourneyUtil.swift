@@ -13,6 +13,8 @@ func isIn(_ journeyMode: JourneyMode, _ stepType: StepType) -> Bool {
 
 let filterBy = curry(isIn(_:_:))
 
+let filterPatient = filterBy(.patient)
+
 func stepToModeMap(_ stepType: StepType) -> JourneyMode {
 	switch stepType {
 	case .patientdetails: return .patient

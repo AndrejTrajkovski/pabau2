@@ -14,7 +14,7 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 	.init { state, action, env in
 		
 		func getForm(_ templateId: HTMLForm.ID, _ formAPI: FormAPI) -> Effect<FormsContainerAction, Never> {
-			return formAPI.getForm(templateId: templateId)
+			return formAPI.getForm(templateId: templateId, entryId: nil)
 				.catchToEffect()
 				.receive(on: DispatchQueue.main)
 				.map { FormsContainerAction.forms(id: templateId, action: .gotForm($0))}

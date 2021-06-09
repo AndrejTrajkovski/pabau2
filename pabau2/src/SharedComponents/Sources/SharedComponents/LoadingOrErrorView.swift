@@ -45,7 +45,6 @@ struct PlainError: View {
 	}
 }
 
-
 struct LoadingOrErrorView: View {
 	
 	let store: Store<LoadingState, ErrorViewAction>

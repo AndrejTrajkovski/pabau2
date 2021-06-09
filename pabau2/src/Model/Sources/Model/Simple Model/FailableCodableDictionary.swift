@@ -1,4 +1,4 @@
-struct FailableCodableDictionary<Value : Decodable, Key: Decodable & Hashable> : Decodable {
+struct FailableCodableDictionary<Key: Decodable & Hashable, Value : Decodable> : Decodable {
 
 	private struct AnyDecodableValue: Decodable {}
 	

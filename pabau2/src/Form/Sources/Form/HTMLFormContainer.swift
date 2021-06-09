@@ -46,7 +46,7 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, F
 			state.saveFailureAlert = nil
 		case .getFormError(.retry):
 			state.getLoadingState = .loading
-			return env.formAPI.getForm(templateId: state.templateId)
+			return env.formAPI.getForm(templateId: state.templateId, entryId: state.filledFormId)
 				.catchToEffect()
 				.receive(on: DispatchQueue.main)
 				.map(HTMLFormAction.gotForm)
@@ -61,15 +61,18 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, F
 
 public struct HTMLFormParentState: Equatable, Identifiable {
 	
-	public init(stepEntry: StepEntry,
-				clientId: Client.ID) throws {
-		guard let templateId = stepEntry.formTemplateId else { throw RequestError.apiError("Pathway step has no form template id")}
-		self.templateId = templateId
-		self.templateName = stepEntry.formTemplateName
-		self.type = FormType.init(stepType: stepEntry.stepType) ?? .unknown
+	public init(formTemplateName: String,
+				formType: FormType,
+				stepStatus: StepStatus,
+				formEntryID: FilledFormData.ID?,
+				formTemplateId: HTMLForm.ID,
+				clientId: Client.ID) {
+		self.templateId = formTemplateId
+		self.templateName = formTemplateName
+		self.type = formType
 		self.clientId = clientId
-		self.filledFormId = stepEntry.formEntryId
-		self.status = stepEntry.status
+		self.filledFormId = formEntryID
+		self.status = stepStatus
 		self.getLoadingState = .initial
 		self.postLoadingState = .initial
 		self.saveFailureAlert = nil

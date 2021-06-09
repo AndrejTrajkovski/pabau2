@@ -13,9 +13,9 @@ public struct CheckInLoadedState: Equatable {
 	
 	var patientDetails: PatientDetailsParentState
 	
-	var medicalHistories: IdentifiedArrayOf<HTMLFormParentState>
+	var medicalHistories: IdentifiedArrayOf<HTMLFormStepContainerState>
 	
-	var consents: IdentifiedArrayOf<HTMLFormParentState>
+	var consents: IdentifiedArrayOf<HTMLFormStepContainerState>
 	
 	var treatmentNotes: IdentifiedArrayOf<HTMLFormParentState>
 	
@@ -49,8 +49,8 @@ extension CheckInLoadedState {
 //		self.patientDetails = patientDetails
 		self.pathway = pathway
 		self.pathwayTemplate = template
-		self.medicalHistories = IdentifiedArray(pathway.stepEntries.filter { $0.value.stepType == .medicalhistory }.compactMap { try? HTMLFormParentState.init(stepEntry: $0.value, clientId: appointment.customerId) })
-		self.consents = IdentifiedArray(pathway.stepEntries.filter { $0.value.stepType == .consents }.compactMap { try? HTMLFormParentState.init(stepEntry: $0.value, clientId: appointment.customerId) })
+		self.medicalHistories = IdentifiedArray(pathway.stepEntries.filter { $0.value.stepType == .medicalhistory }.map { HTMLFormStepContainerState.init(stepId: $0.key, stepEntry: $0.value, clientId: appointment.customerId, pathwayId: pathway.id) })
+		self.consents = IdentifiedArray(pathway.stepEntries.filter { $0.value.stepType == .consents }.map { HTMLFormStepContainerState.init(stepId: $0.key, stepEntry: $0.value, clientId: appointment.customerId, pathwayId: pathway.id) })
 		self.selectedConsentsIds = []
 		self.selectedTreatmentFormsIds = []
 		self.treatmentNotes = []
@@ -122,7 +122,8 @@ extension CheckInLoadedState {
 		get {
 			CheckInPatientState(
 				appointment: appointment,
-				pathway: pathwayTemplate,
+				pathway: pathway,
+				pathwayTemplate: pathwayTemplate,
 				patientDetails: patientDetails,
 				medicalHistories: medicalHistories,
 				consents: consents,
