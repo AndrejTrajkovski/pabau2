@@ -117,7 +117,7 @@ public final class Repository: RepositoryProtocol {
     public func getTemplates(_ type: FormType) -> Effect<SuccessState<[FormTemplateInfo]>, RequestError> {
         let countDB = try? self.coreDataModel.dataStack.fetchCount(
             From(FormTemplateInfoScheme.self),
-            Where<FormTemplateInfoScheme>("%K > %d", "type", type.rawValue)
+            Where<FormTemplateInfoScheme>("%K == %d", "type", type.rawValue)
         )
         
         if countDB == 0 {

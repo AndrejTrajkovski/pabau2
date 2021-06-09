@@ -3,7 +3,7 @@ import Tagged
 
 public struct HTMLForm: Identifiable, Equatable {
 	
-	public typealias ID = Tagged<HTMLForm, String>
+	public typealias ID = Tagged<HTMLForm, EitherStringOrInt>
 	
 	public var id: Self.ID
 	
@@ -28,7 +28,7 @@ public struct HTMLForm: Identifiable, Equatable {
 				formType: FormType,
 				ePaper: Bool? = nil,
 				formStructure: [CSSField]) {
-		self.id = HTMLForm.ID(rawValue: String(id))
+		self.id = HTMLForm.ID(rawValue: .left(String(id)))
 		self.name = name
 		self.type = formType
 		self.ePaper = ePaper
@@ -113,36 +113,42 @@ struct HTMLFormBuilder {
 		guard let formType = FormType(rawValue: template.formType) else { throw HTMLFormBuilderError.unhandledFormType }
 		
 		self.entryId = nil
-		self.id = .init(rawValue: template.id)
+		self.id = .init(rawValue: .left(template.id))
 		self.name = template.name
 		self.formType = formType
 		self.ePaper = nil
-		self.formStructure = try Self.cssFields(formData: template.formData)
+		self.formStructure = try Self.cssFields(formData: template.formData,
+												templateId: template.id)
 	}
 	
-	static func cssFields(formData: String) throws -> [CSSField] {
+	static func cssFields(formData: String, templateId: String) throws -> [CSSField] {
 		guard let encodedFormData = Data(base64Encoded: formData) else {
 			throw HTMLFormBuilderError.formStructureNotBase64
 		}
 		let formDataDecoded = try newJSONDecoder().decode(_FormData.self, from: encodedFormData)
-		return makeCSSFieldsIdsByIdx(formStructure: formDataDecoded.formStructure)
+		return makeCSSFieldsIdsByIdx(formStructure: formDataDecoded.formStructure,
+									 templateId: templateId)
 	}
 	
-	static func makeCSSFieldsIdsByIdx(formStructure: [_FormStructure]) -> [CSSField] {
+	static func makeCSSFieldsIdsByIdx(formStructure: [_FormStructure],
+									  templateId: String) -> [CSSField] {
 		var result: [CSSField] = []
 		var valueCounter = 0
 		formStructure.enumerated().forEach { idx, field in
 			print(valueCounter)
 			print(field.cssClass)
 			let fakeId = String(valueCounter) + field.keyString().lowercased()
-			let id = CSSField.ID.init(idx: idx, fakeId: fakeId)
+			let id = CSSField.ID.init(idx: idx, fakeId: fakeId, formTemplateId: templateId)
 			if field.cssClass != .staticText &&
 				field.cssClass != .heading {
 				valueCounter += 1
 			}
-			guard let cssField = CSSField.init(id: id, formStructure: field) else { return }
+			guard let cssField = CSSField.init(id: id,
+											   formStructure: field,
+											   formTemplateId: templateId) else { return }
 			result.append(cssField)
 		}
+		
 		return result
 	}
 }

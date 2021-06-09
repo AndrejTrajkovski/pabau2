@@ -2,6 +2,7 @@ import Model
 import ComposableArchitecture
 import Util
 import SwiftUI
+import SharedComponents
 
 public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, FormEnvironment> = .combine(
 	formReducer.optional().pullback(
@@ -44,7 +45,11 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, F
 		case .saveAlertCanceled:
 			state.saveFailureAlert = nil
 		case .getFormError(.retry):
-			break
+			state.getLoadingState = .loading
+			return state.getForm(formAPI: env.formAPI)
+				.receive(on: DispatchQueue.main)
+				.eraseToEffect()
+			
 		case .rows(.rows(idx: let idx, action: let action)):
 			break
 		}
@@ -53,12 +58,36 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, F
 )
 
 public struct HTMLFormParentState: Equatable, Identifiable {
-
+	
+	public func getForm(formAPI: FormAPI) -> Effect<HTMLFormAction, Never> {
+		return formAPI.getForm(templateId: self.templateId,
+							   entryId: self.filledFormId)
+			.catchToEffect()
+			.map { HTMLFormAction.gotForm($0) }
+	}
+	
+	public init(formTemplateName: String,
+				formType: FormType,
+				stepStatus: StepStatus,
+				formEntryID: FilledFormData.ID?,
+				formTemplateId: HTMLForm.ID,
+				clientId: Client.ID) {
+		self.templateId = formTemplateId
+		self.templateName = formTemplateName
+		self.type = formType
+		self.clientId = clientId
+		self.filledFormId = formEntryID
+		self.status = stepStatus
+		self.getLoadingState = .initial
+		self.postLoadingState = .initial
+		self.saveFailureAlert = nil
+	}
+	
 	public init(templateId: HTMLForm.ID,
 				templateName: String,
 				type: FormType,
 				clientId: Client.ID,
-				filledFormId: FilledFormData.ID,
+				filledFormId: FilledFormData.ID?,
 				status: StepStatus
 	) {
 		self.templateId = templateId
@@ -85,7 +114,7 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 		self.clientId = clientId
 		self.postLoadingState = .initial
 	}
-
+	
 	public init(info: FormTemplateInfo,
 				clientId: Client.ID,
 				getLoadingState: LoadingState) {
@@ -127,7 +156,7 @@ public struct HTMLFormParent: View {
 		self.store = store
 		self.viewStore = ViewStore(store.scope(state: State.init(state:)))
 	}
-
+	
 	enum State: Equatable {
 		case getting
 		case saving
@@ -147,10 +176,10 @@ public struct HTMLFormParent: View {
 			}
 		}
 	}
-
+	
 	let store: Store<HTMLFormParentState, HTMLFormAction>
 	@ObservedObject var viewStore: ViewStore<State, HTMLFormAction>
-
+	
 	public var body: some View {
 		switch viewStore.state {
 		case .getting:
@@ -160,48 +189,11 @@ public struct HTMLFormParent: View {
 		case .loaded:
 			IfLetStore(store.scope(state: { $0.form }, action: { .rows($0) }),
 					   then: { HTMLFormView(store: $0, isCheckingDetails: false) },
-					   else: Loading(store: store.scope(state: { $0.getLoadingState },
-																 action: { .getFormError($0) }))
+					   else: IfLetErrorView(store: store.scope(state: { $0.getLoadingState },
+															   action: { .getFormError($0) }))
 			).alert(store.scope(state: \.saveFailureAlert), dismiss: HTMLFormAction.saveAlertCanceled)
 		case .initial:
 			EmptyView()
-		}
-	}
-}
-
-struct Loading: View {
-	let store: Store<LoadingState, ErrorViewAction>
-
-	var body: some View {
-		IfLetStore(store.scope(state: { state in
-			extract(case: LoadingState.gotError, from: state)
-		}),
-			then: ErrorRetry.init(store:)
-		)
-	}
-}
-
-public enum ErrorViewAction {
-	case retry
-}
-
-struct ErrorRetry: View {
-	let store: Store<RequestError, ErrorViewAction>
-	var body: some View {
-		WithViewStore(store) { viewStore in
-			HStack {
-				PlainError(store: store.actionless)
-				Button("Retry", action: { viewStore.send(.retry) })
-			}
-		}
-	}
-}
-
-struct PlainError: View {
-	let store: Store<RequestError, Never>
-	var body: some View {
-		WithViewStore(store) { viewStore in
-			Text(viewStore.state.description).foregroundColor(.red)
 		}
 	}
 }

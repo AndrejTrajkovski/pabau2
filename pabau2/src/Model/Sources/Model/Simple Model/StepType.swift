@@ -4,7 +4,7 @@
 import Foundation
 
 public enum StepType: String, Codable, Equatable, CaseIterable, Identifiable {
-	public var id: Int { order }
+	public var id: String { rawValue }
 	
 	case patientdetails = "details"
 	case medicalhistory = "questionnaire"
@@ -18,26 +18,12 @@ public enum StepType: String, Codable, Equatable, CaseIterable, Identifiable {
 //	case mediaimages = "mediaImages"
 //	case mediavideos = "mediaVideos"
 
-	public var order: Int {
+	public var isHTMLForm: Bool {
 		switch self {
-		case .patientdetails:
-			return 0
-		case .medicalhistory:
-			return 1
-		case .consents:
-			return 2
-		case .checkpatient:
-			return 3
-		case .treatmentnotes:
-			return 4
-		case .prescriptions:
-			return 5
-		case .photos:
-			return 6
-		case .aftercares:
-			return 7
-		case .patientComplete:
-			return 8
+		case .medicalhistory, .consents, .treatmentnotes, .prescriptions:
+			return true
+		default:
+			return false
 		}
 	}
 	
@@ -65,21 +51,6 @@ public enum StepType: String, Codable, Equatable, CaseIterable, Identifiable {
 //			return "Video"
 		case .patientComplete:
 			return "Complete"
-		}
-	}
-	
-	public func formType() -> FormType {
-		switch self {
-		case .consents:
-			return .consent
-		case .medicalhistory:
-			return .history
-		case .prescriptions:
-			return .prescription
-		case .treatmentnotes:
-			return .treatment
-		case .aftercares, .checkpatient, .patientdetails, .photos, .patientComplete:
-			fatalError()
 		}
 	}
 }

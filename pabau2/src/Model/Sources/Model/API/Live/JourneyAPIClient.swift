@@ -44,6 +44,32 @@ extension APIClient {
         .effect()
     }
 	
+	public func getPathwayTemplate(id: PathwayTemplate.ID) -> Effect<PathwayTemplate, RequestError> {
+		
+		struct GetPathways: Decodable {
+			let pathways: [PathwayTemplate]
+		}
+		
+		let companyId = loggedInUser?.companyID ?? ""
+		let requestBuilder: RequestBuilder<GetPathways>.Type = requestBuilderFactory.getBuilder()
+		return requestBuilder.init(method: .GET,
+								   baseUrl: baseUrl,
+								   path: .getPathwaysTemplates,
+								   queryParams: commonAnd(other: ["company_id" : companyId,
+																  "id" : id.description])
+		)
+		.effect()
+		.tryMap {
+			if let first = $0.pathways.first {
+				return first
+			} else {
+				throw RequestError.emptyDataResponse
+			}
+		}
+		.mapError { $0 as? RequestError ?? .unknown($0) }
+		.eraseToEffect()
+	}
+	
 	public func getPathwayTemplates() -> Effect<IdentifiedArrayOf<PathwayTemplate>, RequestError> {
 		struct GetPathways: Decodable {
 			let pathways: [PathwayTemplate]
@@ -159,13 +185,13 @@ extension APIClient {
 	public func match(appointment: Appointment, pathwayTemplateId: PathwayTemplate.ID) -> Effect<Pathway, RequestError> {
 		
 		let body = [
-			"booking_ids": appointment.id.description,
+			"booking_id": appointment.id.description,
 			"pathway_template_id": pathwayTemplateId.description,
 			"contact_id": appointment.customerId.description
 		]
 		
 		struct Response: Decodable {
-			let pathway_data: [Pathway]
+			let pathway_data: Pathway
 		}
 		
 		let requestBuilder: RequestBuilder<Response>.Type = requestBuilderFactory.getBuilder()
@@ -178,19 +204,24 @@ extension APIClient {
 			body: bodyData(parameters: body)
 		)
 		.effect()
-		.tryMap { pathwayResponse in
-			guard let pathway = pathwayResponse.pathway_data.first else {
-				throw RequestError.emptyDataResponse
-			}
-			return pathway
-		}
-		.mapError { $0 as? RequestError ?? RequestError.unknown }
+		.map(\.pathway_data)
+//		.tryMap { pathwayResponse in
+//			guard let pathway = pathwayResponse.pathway_data.first else {
+//				throw RequestError.emptyDataResponse
+//			}
+//			return pathway
+//		}
+//		.mapError { $0 as? RequestError ?? .unknown($0) }
 		.eraseToEffect()
 	}
 	
 	public func getPathway(id: Pathway.ID) -> Effect<Pathway, RequestError> {
 		
-		let requestBuilder: RequestBuilder<Pathway>.Type = requestBuilderFactory.getBuilder()
+		struct Response: Decodable {
+			let pathway_data: Pathway
+		}
+		
+		let requestBuilder: RequestBuilder<Response>.Type = requestBuilderFactory.getBuilder()
 		
 		return requestBuilder.init(
 			method: .GET,
@@ -199,6 +230,8 @@ extension APIClient {
 			queryParams: commonAnd(other: ["id": String(id.description)])
 		)
 		.effect()
+		.map(\.pathway_data)
+		.eraseToEffect()
 	}
 	
 	public func getRooms() -> Effect<[Room], RequestError> {

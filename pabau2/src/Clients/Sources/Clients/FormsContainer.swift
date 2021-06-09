@@ -12,8 +12,9 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 		environment: { $0 }
 	),
 	.init { state, action, env in
+		
 		func getForm(_ templateId: HTMLForm.ID, _ formAPI: FormAPI) -> Effect<FormsContainerAction, Never> {
-			return formAPI.getForm(templateId: templateId)
+			return formAPI.getForm(templateId: templateId, entryId: nil)
 				.catchToEffect()
 				.receive(on: DispatchQueue.main)
 				.map { FormsContainerAction.forms(id: templateId, action: .gotForm($0))}
@@ -28,10 +29,16 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 			state.formsCollection = IdentifiedArray(array)
 			state.isFillingFormsActive = true
 			return .concatenate (
-				state.formsCollection.map(\.id).map { getForm($0, env.formAPI) }
-			)
-
-		default:
+				state.formsCollection.map { htmlFormParentState in
+					htmlFormParentState.getForm(formAPI: env.formAPI)
+						.map { FormsContainerAction.forms(id: htmlFormParentState.templateId, action: $0)}
+						.receive(on: DispatchQueue.main)
+						.eraseToEffect()
+				}
+			).receive(on: DispatchQueue.main)
+			.eraseToEffect()
+			
+	default:
 			break
 		}
 		return .none
@@ -41,8 +48,8 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 		action: /FormsContainerAction.forms,
 		environment: { $0 }
 	),
-	CheckInReducer<FormsContainerState>().reducer.pullback(
-		state: \FormsContainerState.self,
+	CheckInReducer().reducer.pullback(
+		state: \FormsContainerState.checkIn,
 		action: /FormsContainerAction.checkIn,
 		environment: { $0 }
 	)
@@ -63,8 +70,19 @@ public enum FormsContainerAction: Equatable {
 	case checkIn(CheckInAction)
 }
 
-extension FormsContainerState: CheckInState {
-	public func stepForms() -> [StepFormInfo] {
+extension FormsContainerState {
+	
+	var checkIn: CheckInState {
+		get {
+			CheckInState(selectedIdx: self.selectedIdx,
+						 stepForms: stepForms())
+		}
+		set {
+			self.selectedIdx = newValue.selectedIdx
+		}
+	}
+	
+	private func stepForms() -> [StepFormInfo] {
 		formsCollection.map { StepFormInfo.init(status: $0.status, title: $0.templateName )}
 	}
 }
@@ -83,7 +101,7 @@ struct FormsContainer: View {
 							}
 							checkInNavigationLink(isActive: viewStore.state)
 						}
-					   }, else: checkInView()
+					   }, else: { checkInView() }
 			)
 		}.debug("Forms Container")
 	}
@@ -94,18 +112,18 @@ struct FormsContainer: View {
 		)
 	}
 
+	@ViewBuilder
 	func checkInView() -> some View {
-		print("FormsContainer")
-		return CheckIn(store: store.scope(state: { $0 },
-								   action: { .checkIn($0)}),
-					   avatarView: {
+		CheckInForms(store: store.scope(state: { $0.checkIn },
+										action: { .checkIn($0)}),
+					 avatarView: {
 						ClientAvatarAndName(store: store.scope(state: { $0.client }).actionless) },
-				content: {
-					ForEachStore(store.scope(state: { $0.formsCollection },
-											 action: FormsContainerAction.forms(id: action:)),
-								 content: HTMLFormParent.init(store:)
-					).padding([.leading, .trailing], 32)
-				}
+					 content: {
+						ForEachStore(store.scope(state: { $0.formsCollection },
+												 action: FormsContainerAction.forms(id: action:)),
+									 content: HTMLFormParent.init(store:)
+						).padding([.leading, .trailing], 32)
+					 }
 		)
 	}
 }

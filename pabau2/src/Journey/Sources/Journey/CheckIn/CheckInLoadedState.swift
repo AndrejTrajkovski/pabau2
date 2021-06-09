@@ -5,21 +5,15 @@ import Util
 import Form
 import ChoosePathway
 
-public struct CheckInContainerState: Equatable {
+public struct CheckInLoadedState: Equatable {
 	
-	let appointment: Appointment
-	var pathway: Pathway
-	let pathwayTemplate: PathwayTemplate
+	public let appointment: Appointment
+	public let pathway: Pathway
+	public let pathwayTemplate: PathwayTemplate
 	
-	var isPatientModeActive: Bool = false
+	var patientDetails: PatientDetailsParentState
 	
-	var patientDetailsLS: LoadingState
-	var patientDetails: ClientBuilder?
-	var patientDetailsStatus: StepStatus
-	
-	var medicalHistories: IdentifiedArrayOf<HTMLFormParentState>
-	
-	var consents: IdentifiedArrayOf<HTMLFormParentState>
+	var patientHTMLForms: IdentifiedArrayOf<HTMLFormStepContainerState>
 	
 	var treatmentNotes: IdentifiedArrayOf<HTMLFormParentState>
 	
@@ -44,7 +38,7 @@ public struct CheckInContainerState: Equatable {
 	var isDoctorSummaryActive: Bool = false
 }
 
-extension CheckInContainerState {
+extension CheckInLoadedState {
 	
 	public init(appointment: Appointment,
 				pathway: Pathway,
@@ -53,8 +47,7 @@ extension CheckInContainerState {
 //		self.patientDetails = patientDetails
 		self.pathway = pathway
 		self.pathwayTemplate = template
-		self.medicalHistories = []
-		self.consents = []
+		self.patientHTMLForms = IdentifiedArray(pathway.stepEntries.filter { $0.value.stepType == .medicalhistory }.map { HTMLFormStepContainerState.init(stepId: $0.key, stepEntry: $0.value, clientId: appointment.customerId, pathwayId: pathway.id) })
 		self.selectedConsentsIds = []
 		self.selectedTreatmentFormsIds = []
 		self.treatmentNotes = []
@@ -64,12 +57,11 @@ extension CheckInContainerState {
 		self.photos = PhotosState([[:]])
 		self.patientSelectedIndex = 0
 		self.doctorSelectedIndex = 0
-		self.patientDetailsLS = .initial
-		self.patientDetailsStatus = .pending
+		self.patientDetails = PatientDetailsParentState()
 	}
 }
 
-extension CheckInContainerState {
+extension CheckInLoadedState {
 	
 	var passcode: PasscodeContainerState {
 		get {
@@ -98,7 +90,7 @@ extension CheckInContainerState {
 	}
 }
 
-extension CheckInContainerState {
+extension CheckInLoadedState {
 	
 	var doctorCheckIn: CheckInDoctorState {
 		get {
@@ -123,29 +115,36 @@ extension CheckInContainerState {
 		}
 	}
 	
-	var patientCheckIn: CheckInPatientState {
+	public var patientCheckIn: CheckInPatientState {
 		get {
 			CheckInPatientState(
 				appointment: appointment,
-				pathway: pathwayTemplate,
-				patientDetails: patientDetails!,
-				patientDetailsStatus: patientDetailsStatus,
-				medicalHistories: medicalHistories,
-				consents: consents,
+				pathway: pathway,
+				pathwayTemplate: pathwayTemplate,
+				patientDetails: patientDetails,
+				htmlForms: patientHTMLForms,
 				isPatientComplete: isPatientComplete,
-				selectedIdx: patientSelectedIndex,
-				patientDetailsLS: patientDetailsLS
+				selectedIdx: patientSelectedIndex
 			)
 		}
 		
 		set {
 			self.patientDetails = newValue.patientDetails
-			self.patientDetailsStatus = newValue.patientDetailsStatus
-			self.medicalHistories = newValue.medicalHistories
-			self.consents = newValue.consents
+			self.patientHTMLForms = newValue.htmlForms
 			self.isPatientComplete = newValue.isPatientComplete
 			self.patientSelectedIndex = newValue.selectedIdx
-			self.patientDetailsLS = newValue.patientDetailsLS
 		}
+	}
+}
+
+extension Pathway {
+	func orderedPatientSteps() -> [Dictionary<Step.ID, StepEntry>.Element] {
+		stepEntries.filter { filterPatient($0.value.stepType)}
+			.sorted(by: { $0.value.order ?? 0 < $1.value.order ?? 0 })
+	}
+	
+	func orderedDoctorSteps() -> [Dictionary<Step.ID, StepEntry>.Element] {
+		stepEntries.filter { filterPatient($0.value.stepType)}
+			.sorted(by: { $0.value.order ?? 0 < $1.value.order ?? 0 })
 	}
 }

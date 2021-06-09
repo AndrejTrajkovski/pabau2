@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import ComposableArchitecture
+import Util
 
 public enum HTTPMethod: String {
 	case GET
@@ -80,7 +81,6 @@ public enum RequestError: Error, Equatable, CustomStringConvertible {
 				 (.nilHTTPResponse, .nilHTTPResponse),
 				 (.jsonDecoding, .jsonDecoding),
 				 (.networking, .networking),
-				 (.generalError, .generalError),
 				 (.serverError, .serverError),
 				 (.responseNotHTTP, .responseNotHTTP),
 				 (.unknown, .unknown),
@@ -97,12 +97,11 @@ public enum RequestError: Error, Equatable, CustomStringConvertible {
 	case nilHTTPResponse
 	case jsonDecoding(String)
 	case networking(Error)
-	case generalError(Error)
 	case serverError(String)
 	case responseNotHTTP
 	case apiError(String)
     case coreData(String)
-	case unknown
+	case unknown(Error)
 	
 	public var description: String {
 		switch self {
@@ -116,8 +115,6 @@ public enum RequestError: Error, Equatable, CustomStringConvertible {
 			return message
 		case .networking(let message):
 			return message.localizedDescription
-		case .generalError(let message):
-			return message.localizedDescription
 		case .serverError(let message):
 			return message
 		case .responseNotHTTP:
@@ -126,8 +123,25 @@ public enum RequestError: Error, Equatable, CustomStringConvertible {
 			return message
         case .coreData(let message):
             return message
-		case .unknown:
-			return "Unknown Error."
+		case .unknown(let error):
+			return error.localizedDescription
+		}
+	}
+	
+	public var userMessage: String {
+		switch self {
+		case .emptyDataResponse:
+			return "Empty Data Response."
+		case .nilHTTPResponse:
+			return "Nil HTTP Response."
+		case .networking(let message):
+			return message.localizedDescription
+		case .serverError(let message):
+			return message
+		case .apiError(let message):
+			return message
+		case .jsonDecoding(_), .responseNotHTTP, .coreData, .urlBuilderError, .unknown:
+			return Texts.somethingWentWrong
 		}
 	}
 }

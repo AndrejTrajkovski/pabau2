@@ -3,21 +3,23 @@ import Model
 import ComposableArchitecture
 import Util
 
-public struct CheckIn<FormsContent: View, S: CheckInState, AvatarView: View>: View where S: Equatable {
-	public init(store: Store<S, CheckInAction>, avatarView: @escaping () -> AvatarView, content: @escaping () -> FormsContent) {
+public struct CheckInForms<FormsContent: View, AvatarView: View>: View {
+	public init(store: Store<CheckInState, CheckInAction>, avatarView: @escaping () -> AvatarView, content: @escaping () -> FormsContent) {
 		self.store = store
 		self.avatarView = avatarView
 		self.content = content
 	}
 
-	let store: Store<S, CheckInAction>
+	let store: Store<CheckInState, CheckInAction>
 	let avatarView: () -> AvatarView
 	let content: () -> FormsContent
 
 	public var body: some View {
 		print("CheckIn")
 		return VStack (spacing: 0) {
-			TopView(store: store, avatarView: avatarView)
+			TopView(avatarView: avatarView,
+						 rightSideContent: ribbonView,
+						 store: store.stateless)
 			VStack {
 				StepSelector(store: store).frame(height: 80)
 				Divider()
@@ -25,6 +27,7 @@ public struct CheckIn<FormsContent: View, S: CheckInState, AvatarView: View>: Vi
 					.shadow(color: Color(hex: "C1C1C1"), radius: 4, y: 2)
 				Forms(store: store,
 					  content: content)
+//				content()
 					.padding([.bottom, .top], 32)
 				Spacer()
 			}
@@ -32,23 +35,30 @@ public struct CheckIn<FormsContent: View, S: CheckInState, AvatarView: View>: Vi
 		.navigationBarTitle("")
 		.navigationBarHidden(true)
 	}
+	
+	@ViewBuilder
+	func ribbonView() -> some View {
+		RibbonView(store: store.actionless)
+			.offset(x: -80, y: -60)
+			.exploding(.topTrailing)
+	}
 }
 
-struct Forms<FormsContent: View, S: CheckInState>: View where S: Equatable {
-	let store: Store<S, CheckInAction>
+struct Forms<FormsContent: View>: View {
+	let store: Store<CheckInState, CheckInAction>
 	@ObservedObject var viewStore: ViewStore<State, CheckInAction>
 	let content: () -> FormsContent
 
 	struct State: Equatable {
 		let selectedIdx: Int
 		let formsCount: Int
-		init(state: S) {
+		init(state: CheckInState) {
 			self.selectedIdx = state.selectedIdx
-			self.formsCount = state.stepForms().count
+			self.formsCount = state.stepForms.count
 		}
 	}
 
-	init(store: Store<S, CheckInAction>,
+	init(store: Store<CheckInState, CheckInAction>,
 		 @ViewBuilder content: @escaping () -> FormsContent) {
 		self.store = store
 		self.viewStore = ViewStore(store.scope(state: State.init(state:)))

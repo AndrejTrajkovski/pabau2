@@ -8,7 +8,7 @@ struct HandBackDeviceState: Equatable {
 }
 
 struct HandBackDevice: View {
-	let store: Store<CheckInContainerState, CheckInContainerAction>
+	let store: Store<CheckInLoadedState, CheckInContainerAction>
 	var body: some View {
 		WithViewStore(store.scope(
 						state: { $0.handback },
