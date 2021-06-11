@@ -14,7 +14,7 @@ public struct CalendarWeekViewState: Equatable {
 	let employees: [Location.ID: IdentifiedArrayOf<Employee>]
 }
 
-public let calendarWeekViewReducer: Reducer<CalendarWeekViewState, CalendarWeekViewAction, CalendarEnvironment> = .init { state, action, env in
+public let calendarWeekViewReducer: Reducer<CalendarWeekViewState, CalendarWeekViewAction, CalendarEnvironment> = .init { state, action, _ in
 	switch action {
 	case .onPageSwipe(let isNext):
 		let daysToAdd = isNext ? 7 : -7

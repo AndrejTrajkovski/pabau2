@@ -21,7 +21,6 @@ public class JZShift: JZBackgroundTime, Identifiable {
 	}
 }
 
-
 extension Shift {
 	public static func convertToCalendar(
 		shifts: [Shift]

@@ -11,13 +11,7 @@ public struct CheckInLoadedState: Equatable {
 	public let pathway: Pathway
 	public let pathwayTemplate: PathwayTemplate
 	
-	var patientDetails: PatientDetailsParentState
-	
-	var patientHTMLForms: IdentifiedArrayOf<HTMLFormStepContainerState>
-	
-	var treatmentNotes: IdentifiedArrayOf<HTMLFormParentState>
-	
-	var prescriptions: IdentifiedArrayOf<HTMLFormParentState>
+	var patientStepStates: IdentifiedArrayOf<StepState>
 	
 	var aftercare: Aftercare?
 	var aftercareStatus: Bool
@@ -47,17 +41,14 @@ extension CheckInLoadedState {
 //		self.patientDetails = patientDetails
 		self.pathway = pathway
 		self.pathwayTemplate = template
-		self.patientHTMLForms = IdentifiedArray(pathway.stepEntries.filter { $0.value.stepType == .medicalhistory }.map { HTMLFormStepContainerState.init(stepId: $0.key, stepEntry: $0.value, clientId: appointment.customerId, pathwayId: pathway.id) })
+		self.patientStepStates = IdentifiedArray(pathway.stepEntries.filter { $0.value.stepType == .medicalhistory }.map { HTMLFormStepContainerState.init(stepId: $0.key, stepEntry: $0.value, clientId: appointment.customerId, pathwayId: pathway.id) })
 		self.selectedConsentsIds = []
 		self.selectedTreatmentFormsIds = []
-		self.treatmentNotes = []
-		self.prescriptions = []
 		self.aftercareStatus = false
 		self.isPatientComplete = .pending
 		self.photos = PhotosState([[:]])
 		self.patientSelectedIndex = 0
 		self.doctorSelectedIndex = 0
-		self.patientDetails = PatientDetailsParentState()
 	}
 }
 

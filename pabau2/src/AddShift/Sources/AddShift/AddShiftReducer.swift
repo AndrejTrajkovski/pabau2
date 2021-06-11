@@ -80,7 +80,7 @@ public let addShiftReducer: Reducer<AddShiftState, AddShiftAction, AddShiftEnvir
 			state: \.note,
 			action: /AddShiftAction.note,
 			environment: { $0 }),
-		.init { state, action, env in
+		.init { state, action, _ in
 			switch action {
 			case .isPublished(.setTo(let isOn)):
 				state.isPublished = isOn

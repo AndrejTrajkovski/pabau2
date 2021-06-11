@@ -14,7 +14,7 @@ public let chooseEmployeesParentReducer: Reducer<
 		environment: { $0 }
 	),
 	
-	.init { state, action, env in
+	.init { state, action, _ in
 		
 		switch action {
 		
@@ -44,7 +44,6 @@ public let chooseEmployeesParentReducer: Reducer<
 		return .none
 	}
 )
-
 
 public let chooseEmployeesReducer = Reducer<
 	ChooseEmployeesState,

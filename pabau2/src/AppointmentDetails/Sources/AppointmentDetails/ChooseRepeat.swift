@@ -2,7 +2,7 @@ import ComposableArchitecture
 import SwiftUI
 import SharedComponents
 
-public let chooseRepeatReducer: Reducer<ChooseRepeatState, ChooseRepeatAction, AppDetailsEnvironment> = .init { state, action, env in
+public let chooseRepeatReducer: Reducer<ChooseRepeatState, ChooseRepeatAction, AppDetailsEnvironment> = .init { state, action, _ in
     switch action {
     case .onBackBtn:
         state.isRepeatActive = false
@@ -84,7 +84,7 @@ public struct ChooseRepeat: View {
     }
 
     public var body: some View {
-        GeometryReader { geo in
+        GeometryReader { _ in
             VStack {
                 List {
                     ForEach(RepeatInterval.allCases) { item in
@@ -118,12 +118,11 @@ public struct ChooseRepeat: View {
     }
 }
 
-
 struct ChooseRepeatDatePicker: View {
     @State private var selectedDate = Date()
     
-    var onOk: (Date) -> ()
-    var onCancel: () -> ()
+    var onOk: (Date) -> Void
+    var onCancel: () -> Void
     
     var body: some View {
         VStack(alignment: .center, spacing: 0) {

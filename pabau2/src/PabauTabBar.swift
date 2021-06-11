@@ -158,41 +158,6 @@ func getForms(stepEntries: [Dictionary<Step.Id, StepEntry>.Element], formAPI: Fo
 		}
 }
 
-func getForm(stepId: Step.Id, stepEntry: StepEntry, formAPI: FormAPI, clientId: Client.ID) -> Effect<CheckInPatientAction, Never>? {
-	
-	func getHTMLForm(formTemplateId: HTMLForm.ID) -> Effect<Result<HTMLForm, RequestError>, Never> {
-		return formAPI.getForm(templateId: formTemplateId, entryId: stepEntry.htmlFormInfo!.formEntryId)
-			.catchToEffect()
-	}
-	
-	if stepEntry.stepType.isHTMLForm {
-		guard let formTemplateId = stepEntry.htmlFormInfo?.templateIdToLoad else { return nil }
-		return getHTMLForm(formTemplateId: formTemplateId)
-			.map {
-				CheckInPatientAction.htmlForms(id: stepId, action: .htmlForm(HTMLFormAction.gotForm($0)))
-			}
-	} else {
-		switch stepEntry.stepType {
-		case .patientdetails:
-			return formAPI.getPatientDetails(clientId: clientId)
-				.map(ClientBuilder.init(client:))
-				.catchToEffect()
-				.map(PatientDetailsParentAction.gotGETResponse)
-				.map(CheckInPatientAction.patientDetails)
-		case .checkpatient:
-			return nil
-		case .photos:
-			return nil
-		case .aftercares:
-			return nil
-		case .patientComplete:
-			return nil
-		default:
-			return nil
-		}
-	}
-}
-
 public let tabBarReducer: Reducer<
 	TabBarState,
 	TabBarAction,
@@ -259,14 +224,18 @@ public let tabBarReducer: Reducer<
 				
 			case .loaded(let loadedState):
 				
-				let getPatientForms = loadedState.patientCheckIn.htmlForms.compactMap { htmlStepState in
+				let getPatientHTMLForms = loadedState.orderedPatientSteps().compactMap {
+					getForm(stepId: $0.key, stepEntry: $0.value, formAPI: env.formAPI, clientId: loadedState.appointment.customerId)
+				}
+				
+				let getPatientHTMLForms = loadedState.patientCheckIn.htmlForms.compactMap { htmlStepState in
 					return htmlStepState.htmlFormParentState?.getForm(formAPI: env.formAPI)
 						.map {
 							TabBarAction.checkIn(CheckInContainerAction.patient(.htmlForms(id: htmlStepState.id, action: .htmlForm($0))))
 						}
 				}
 				
-				let getPatientFormsOneAfterAnother = Effect.concatenate(getPatientForms)
+				let getPatientFormsOneAfterAnother = Effect.concatenate(getPatientHTMLForms)
 				
 				returnEffects.append(getPatientFormsOneAfterAnother)
 			}
@@ -386,7 +355,7 @@ public let tabBarReducer: Reducer<
 	}
 )
 
-public let showAddAppointmentReducer: Reducer<TabBarState, CalendarAction, Any> = .init { state, action, env in
+public let showAddAppointmentReducer: Reducer<TabBarState, CalendarAction, Any> = .init { state, action, _ in
 	
 	var chooseLocAndEmp = ChooseLocationAndEmployeeState(locations: state.calendar.locations,
 														 employees: state.calendar.employees)

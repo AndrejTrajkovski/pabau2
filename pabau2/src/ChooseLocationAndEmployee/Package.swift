@@ -9,7 +9,7 @@ let package = Package(
     products: [
         .library(
             name: "ChooseLocationAndEmployee",
-            targets: ["ChooseLocationAndEmployee"]),
+            targets: ["ChooseLocationAndEmployee"])
     ],
     dependencies: [
 		.package(url: "../ChooseEmployees",
@@ -24,6 +24,6 @@ let package = Package(
 						   "ChooseLocation"]),
         .testTarget(
             name: "ChooseLocationAndEmployeeTests",
-            dependencies: ["ChooseLocationAndEmployee"]),
+            dependencies: ["ChooseLocationAndEmployee"])
     ]
 )

@@ -7,7 +7,7 @@ let addAppTapBtnReducer = Reducer<
 	AddAppointmentState?,
 	AddAppointmentAction,
 	AddAppointmentEnv
-> { state, action, env in
+> { state, action, _ in
 	switch action {
 	case .closeBtnTap:
 		state = nil

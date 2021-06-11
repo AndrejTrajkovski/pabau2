@@ -64,14 +64,50 @@ public struct CheckInPatientState: Equatable {
 	let appointment: Appointment
 	let pathway: Pathway
 	let pathwayTemplate: PathwayTemplate
-	var patientDetails: PatientDetailsParentState
-	public var htmlForms: IdentifiedArrayOf<HTMLFormStepContainerState>
+	var stepStates: IdentifiedArrayOf<StepState>
 	var isPatientComplete: StepStatus
 	var selectedIdx: Int
 }
 
 // MARK: - CheckInState
 extension CheckInPatientState {
+	
+	func getForm(stepId: Step.Id, stepEntry: StepEntry, formAPI: FormAPI, clientId: Client.ID) -> Effect<CheckInPatientAction, Never>? {
+		
+		if stepEntry.stepType.isHTMLForm {
+			guard let formTemplateId = stepEntry.htmlFormInfo?.templateIdToLoad else { return nil }
+			return getHTMLForm(formTemplateId: formTemplateId)
+				.map {
+					CheckInPatientAction.htmlForms(id: stepId, action: .htmlForm(HTMLFormAction.gotForm($0)))
+				}
+		} else {
+			switch stepEntry.stepType {
+			case .patientdetails:
+				return formAPI.getPatientDetails(clientId: clientId)
+					.map(ClientBuilder.init(client:))
+					.catchToEffect()
+					.map(PatientDetailsParentAction.gotGETResponse)
+					.map(CheckInPatientAction.patientDetails)
+			case .checkpatient:
+				return nil
+			case .photos:
+				return nil
+			case .aftercares:
+				return nil
+			case .patientComplete:
+				return nil
+			default:
+				return nil
+			}
+		}
+	}
+	
+	func getForms(formAPI: FormAPI) -> Effect<CheckInPatientAction, Never> {
+		let getPatientHTMLForms = pathway.orderedPatientSteps().compactMap {
+			getForm(stepId: $0.key, stepEntry: $0.value, formAPI: formAPI, clientId: appointment.customerId)
+		}
+	}
+	
 	
 	var checkIn: CheckInState {
 		get {

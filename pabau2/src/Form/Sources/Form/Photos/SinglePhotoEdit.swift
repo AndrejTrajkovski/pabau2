@@ -246,7 +246,6 @@ struct SinglePhotoEdit: View {
 	}
 }
 
-
 //extension View {
 //	public func viewSnapshot() -> UIImage {
 //		let controller = UIHostingController(rootView: self)

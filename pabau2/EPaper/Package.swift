@@ -10,7 +10,7 @@ let package = Package(
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "EPaper",
-            targets: ["EPaper"]),
+            targets: ["EPaper"])
     ],
     dependencies: [
         .package(url: "../Form",
@@ -32,6 +32,6 @@ let package = Package(
             ]),
         .testTarget(
             name: "EPaperTests",
-            dependencies: ["EPaper"]),
+            dependencies: ["EPaper"])
     ]
 )

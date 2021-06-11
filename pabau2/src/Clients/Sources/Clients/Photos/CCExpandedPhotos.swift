@@ -9,7 +9,7 @@ let expandedPhotoReducer: Reducer<CCExpandedPhotosState, CCExpandedPhotosAction,
         action: /CCExpandedPhotosAction.photoCompare,
         environment: { $0 }
     ),
-	.init { state, action, env in
+	.init { state, action, _ in
 		switch action {
 		case .didTouchPhoto(let id):
 			state.photoCompare = PhotoCompareState(photos: state.photos, selectedDate: state.selectedDate, selectedId: id)

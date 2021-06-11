@@ -39,7 +39,7 @@ public let checkInParentReducer: Reducer<CheckInNavigationState, CheckInContaine
 			action: /CheckInContainerAction.self,
 			environment: { $0 }),
 		
-		.init { state, action, env in
+		.init { state, action, _ in
 			
 			switch action {
 			case .checkInAnimationEnd:

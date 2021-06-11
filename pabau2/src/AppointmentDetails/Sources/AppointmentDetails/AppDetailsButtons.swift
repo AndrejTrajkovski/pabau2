@@ -7,7 +7,7 @@ import ChoosePathway
 import PathwayList
 
 public let appDetailsButtonsReducer: Reducer<AppDetailsButtonsState, AppDetailsButtonsAction, AppDetailsEnvironment> = .init {
-	state, action, env in
+	state, action, _ in
 	switch action {
 	case .onCancel:
 		break
@@ -206,7 +206,7 @@ struct AppDetailsButtons: View {
 		IfLetStore(store.scope(state: { $0.choosePathwayTemplate },
 							   action: { .choosePathwayTemplate($0) }),
 				   then: {
-					ChoosePathway.init(store:$0).customBackButton {
+					ChoosePathway.init(store: $0).customBackButton {
 						viewStore.send(.backFromChooseTemplates)
 					}
 				   }

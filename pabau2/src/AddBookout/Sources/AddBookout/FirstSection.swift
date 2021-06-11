@@ -16,7 +16,7 @@ struct FirstSection: View {
 	}
 
 	var body: some View {
-		WithViewStore(store) { viewStore in
+		WithViewStore(store) { _ in
 			VStack(spacing: 16) {
 				Buttons().isHidden(true, remove: true)
 				SwitchCell(

@@ -16,7 +16,7 @@ public let addBookoutOptReducer: Reducer<
 		action: /AddBookoutAction.self,
 		environment: { $0 }
 	),
-	.init { state, action, env in
+	.init { state, action, _ in
 		switch action {
 		case .appointmentCreated(let result):
 			state?.showsLoadingSpinner = false

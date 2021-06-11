@@ -9,7 +9,7 @@ public let patientDetailsParentReducer: Reducer<PatientDetailsParentState, Patie
 		state: \PatientDetailsParentState.patientDetails,
 		action: /PatientDetailsParentAction.patientDetails,
 		environment: { $0 }
-	), .init { state, action, env in
+	), .init { state, action, _ in
 		switch action {
 		case .gotGETResponse(let result):
 			switch result {
@@ -30,10 +30,14 @@ public let patientDetailsParentReducer: Reducer<PatientDetailsParentState, Patie
 	}
 )
 
-public struct PatientDetailsParentState: Equatable {
+public struct PatientDetailsParentState: Equatable, Identifiable {
 	
-	public init () { }
+	public init (id: Step.ID) {
+		self.stepId = id
+	}
 	
+	public var id: Step.ID { stepId }
+	let stepId: Step.ID
 	var patientDetails: ClientBuilder?
 	var loadingState: LoadingState = .initial
 	public var stepStatus: StepStatus = .pending
