@@ -12,11 +12,11 @@ public struct AddEventModifier: ViewModifier {
 	public func body(content: Content) -> some View {
 		NavigationView {
 			VStack(alignment: .leading, spacing: 0) {
-				XButton(onTouch: onXBtnTap).padding([.leading, .top], 24)
-				ScrollView {
+                XButton(onTouch: onXBtnTap).padding(EdgeInsets(top: 30, leading: 24, bottom: 0, trailing: 0))
+				ScrollView(showsIndicators: false) {
 					content
 				}
-				.padding([.leading, .trailing, .bottom], 56)
+                .padding([.leading, .trailing, .bottom], UIDevice.current.userInterfaceIdiom == .pad ? 56 : 16)
 			}
 			.edgesIgnoringSafeArea(.top)
 			.navigationBarHidden(true)

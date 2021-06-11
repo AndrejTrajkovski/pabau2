@@ -24,8 +24,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
              forAppId: "m3fk3gh1"
         )
         
-        //CDStorage.shared.initialized()
-        
 		SwiftDate.defaultRegion = Region.UTC
 		if let windowScene = scene as? UIWindowScene {
             let reducer = appReducer

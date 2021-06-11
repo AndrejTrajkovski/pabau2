@@ -48,55 +48,65 @@ public enum TabBarAction {
 struct PabauTabBar: View {
 	let store: Store<TabBarState, TabBarAction>
 	@ObservedObject var viewStore: ViewStore<ViewState, TabBarAction>
+
 	struct ViewState: Equatable {
 		let isShowingCheckin: Bool
 		let isShowingAddAppointment: Bool
 		let isShowingAppDetails: Bool
+
 		init(state: TabBarState) {
 			self.isShowingCheckin = state.checkIn != nil
 			self.isShowingAddAppointment = state.addAppointment != nil
 			self.isShowingAppDetails = state.calendar.appDetails != nil
 		}
 	}
-	
-	init (store: Store<TabBarState, TabBarAction>) {
-		self.store = store
-		self.viewStore = ViewStore(store.scope(state: ViewState.init(state:),
-											   action: { $0 }))
-	}
-	
+
+    init (store: Store<TabBarState, TabBarAction>) {
+        self.store = store
+        self.viewStore = ViewStore(
+            store.scope(
+                state: ViewState.init(state:),
+                action: { $0 }
+            )
+        )
+    }
+
 	var body: some View {
 		TabView {
 			calendar()
 			clients()
 			settings()
 			communication()
-		}
-		.modalLink(isPresented: .constant(self.viewStore.state.isShowingCheckin),
-				   linkType: ModalTransition.circleReveal,
-				   destination: {
-					checkIn()
-				   }
-		)
-		.fullScreenCover(isPresented: .constant(self.viewStore.state.isShowingAddAppointment)) {
+        }
+        .modalLink(
+            isPresented: .constant(self.viewStore.state.isShowingCheckin),
+            linkType: ModalTransition.circleReveal,
+            destination: {
+                checkIn()
+            }
+        )
+		.fullScreenCover(
+            isPresented: .constant(self.viewStore.state.isShowingAddAppointment)
+        ) {
 			addAppointment()
 		}
 	}
-	
-	fileprivate func calendar() -> some View {
-		CalendarContainer(store:
-							store.scope(state: { $0.calendar },
-										action: { .calendar($0) }
-							)
-		)
-		.tabItem {
-			Image(systemName: "calendar")
-			Text("Calendar")
-		}
-	}
-	
+
+    fileprivate func calendar() -> some View {
+        CalendarContainer(
+            store: store.scope(
+                state: { $0.calendar },
+                action: { .calendar($0) }
+            )
+        )
+        .tabItem {
+            Image(systemName: "calendar")
+            Text("Calendar")
+        }
+    }
+
 	fileprivate func clients() -> some View {
-		return ClientsNavigationView(
+		 ClientsNavigationView(
 			self.store.scope(
 				state: { $0.clients },
 				action: { .clients($0) })
@@ -107,42 +117,45 @@ struct PabauTabBar: View {
 			self.viewStore.send(.clients(ClientsAction.onAppearNavigationView))
 		}
 	}
-	
-	fileprivate func settings() -> some View {
-		return Settings(store:
-							store.scope(state: { $0.settings },
-										action: { .settings($0)}))
-			.tabItem {
-				Image(systemName: "gear")
-				Text("Settings")
-			}
-	}
-	
-	fileprivate func communication() -> some View {
-		return CommunicationView(store:
-									store.scope(state: { $0.communication },
-												action: { .communication($0)}))
-			.tabItem {
-				Image(systemName: "ico-tab-tasks")
-				Text("Intercom")
-			}
-	}
+
+    fileprivate func settings() -> some View {
+        Settings(store: store.scope(
+                    state: { $0.settings },
+                    action: { .settings($0)})
+        )
+        .tabItem {
+            Image(systemName: "gear")
+            Text("Settings")
+        }
+    }
+
+    fileprivate func communication() -> some View {
+        CommunicationView(
+            store:
+                store.scope(state: { $0.communication },
+                            action: { .communication($0)}))
+            .tabItem {
+                Image(systemName: "ico-tab-tasks")
+                Text("Intercom")
+            }
+    }
 	
 	fileprivate func checkIn() -> IfLetStore<CheckInContainerState, CheckInContainerAction, CheckInNavigationView?> {
-		return IfLetStore(self.store.scope(
+        IfLetStore(self.store.scope(
 			state: { $0.checkIn },
 			action: { .checkIn($0) }
 		),
 		then: CheckInNavigationView.init(store:))
 	}
 	
-	fileprivate func addAppointment() -> IfLetStore<AddAppointmentState, AddAppointmentAction, AddAppointment?> {
-		return IfLetStore(self.store.scope(
-			state: { $0.addAppointment },
-			action: { .addAppointment($0)}
-		),
-		then: AddAppointment.init(store:))
-	}
+    fileprivate func addAppointment() -> IfLetStore<AddAppointmentState, AddAppointmentAction, AddAppointment?> {
+        IfLetStore(
+            self.store.scope(
+                state: { $0.addAppointment },
+                action: { .addAppointment($0)}
+            ),
+            then: AddAppointment.init(store:))
+    }
 }
 
 private let audioQueue = DispatchQueue(label: "Audio Dispatch Queue")
@@ -153,7 +166,6 @@ public let tabBarReducer: Reducer<
 	TabBarAction,
 	TabBarEnvironment
 > = Reducer.combine(
-	
 	showAddAppointmentReducer.pullback(
 		state: \TabBarState.self,
 		action: /TabBarAction.calendar,
@@ -175,13 +187,11 @@ public let tabBarReducer: Reducer<
 				repository: $0.repository
 			)
 		}),
-	
+
 	.init { state, action, env in
-		
 		switch action {
-		
 		case .delayStartPathway(let appointment, let pathway, let template):
-			
+
 			state.checkIn = CheckInContainerState(appointment: appointment,
 												  pathway: pathway,
 												  template: template)
@@ -190,12 +200,10 @@ public let tabBarReducer: Reducer<
 					.playCheckInSound()
 					.receive(on: audioQueue)
 					.fireAndForget(),
-				
 				Effect(value:TabBarAction.checkIn(CheckInContainerAction.checkInAnimationEnd))
 				.delay(for: .seconds(checkInAnimationDuration), scheduler: DispatchQueue.main)
 				.eraseToEffect()
 			])
-			
 		case .calendar(.appDetails(.buttons(.onPathway))):
 			break
 			//TODO
@@ -210,19 +218,16 @@ public let tabBarReducer: Reducer<
 //
 //				.cancel(id: ToastTimerId())
 //			])
-				
 		case .calendar(.onAddEvent(.appointment)):
 			state.calendar.isAddEventDropdownShown = false
 			let chooseLocAndEmp = ChooseLocationAndEmployeeState(locations: state.calendar.locations,
 																 employees: state.calendar.employees)
 			state.addAppointment = AddAppointmentState(chooseLocAndEmp: chooseLocAndEmp)
-			
 		case .addAppointment(
 				.chooseLocAndEmp(
 					.chooseLocation(
 						.gotLocationsResponse(let result)))):
 			state.calendar.update(locationsResult: result.map(\.state))
-			
 		case .addAppointment(
 				.chooseLocAndEmp(
 					.chooseEmployee(
@@ -257,7 +262,7 @@ public let tabBarReducer: Reducer<
 				userDefaults: $0.userDefaults)
 		}
 	),
-	
+
 	communicationReducer.pullback(
 		state: \TabBarState.communication,
 		action: /TabBarAction.communication,
@@ -278,18 +283,19 @@ public let tabBarReducer: Reducer<
 		default:
 			break
 		}
-		
+
 		return .none
 	}
 )
 
 public let showAddAppointmentReducer: Reducer<TabBarState, CalendarAction, Any> = .init { state, action, env in
 	
-	var chooseLocAndEmp = ChooseLocationAndEmployeeState(locations: state.calendar.locations,
-														 employees: state.calendar.employees)
-	
+    var chooseLocAndEmp = ChooseLocationAndEmployeeState(
+        locations: state.calendar.locations,
+        employees: state.calendar.employees
+    )
+
 	switch action {
-	
 	case .employee(.addAppointment(let startDate, let durationMins, let dropKeys)):
 		let (location, subsection) = dropKeys
 		let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!

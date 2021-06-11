@@ -38,17 +38,20 @@ struct ListCell: View {
 				Group {
 					Text(time).font(Font.semibold11)
 					Spacer()
-					ListCellAvatarView(appointment: appointment, font: .regular18, bgColor: .accentColor)
-						.frame(width: 55, height: 55)
+					ListCellAvatarView(
+                        appointment: appointment,
+                        font: .regular18,
+                        bgColor: .accentColor
+                    ).frame(width: 55, height: 55)
 					VStack(alignment: .leading, spacing: 4) {
 						Text(name).font(Font.semibold14)
 						Text(services).font(Font.regular12)
 						Text(status ?? "").font(.medium9).foregroundColor(.deepSkyBlue)
-					}.frame(maxWidth: 158, alignment: .leading)
+					}.frame(maxWidth: 170, alignment: .leading)
 				}
 				Spacer()
 				IconAndText(Image(systemName: "person"), employee)
-					.frame(maxWidth: 110, alignment: .leading)
+					.frame(maxWidth: 130, alignment: .leading)
 				Spacer()
 				IconAndText(Image(systemName: "bag"), paidStatus)
 					.frame(maxWidth: 110, alignment: .leading)

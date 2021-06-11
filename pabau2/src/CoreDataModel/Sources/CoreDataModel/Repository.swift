@@ -23,10 +23,10 @@ public final class Repository: RepositoryProtocol {
 		self.formAPI = formAPI
 		self.coreDataModel = coreDataModel
 	}
-	
+
 	public func getBookoutReasons() -> Effect<SuccessState<[BookoutReason]>, RequestError> {
         let countDB = self.coreDataModel.fetchCount(BookoutReasonScheme.self)
-        
+
         if countDB == 0 {
             return self.clientAPI.getBookoutReasons()
                 .map {
@@ -36,7 +36,7 @@ public final class Repository: RepositoryProtocol {
                     return state
                 }
         }
-        
+
         return self.coreDataModel.fetchAllSchemes(BookoutReasonScheme.self)
             .map(BookoutReason.convert(from:))
             .map { SuccessState(state: $0, isFromDB: true) }
@@ -44,7 +44,7 @@ public final class Repository: RepositoryProtocol {
 
 	public func getLocations() -> Effect<SuccessState<[Location]>, RequestError> {
 		let countDB = self.coreDataModel.fetchCount(LocationScheme.self)
-        
+
         if countDB == 0 {
             return self.journeyAPI.getLocations()
                 .map {
@@ -54,12 +54,12 @@ public final class Repository: RepositoryProtocol {
                     return state
                 }
         }
-        
+
         return self.coreDataModel.fetchAllSchemes(LocationScheme.self)
             .map(Location.convert(from:))
             .map { SuccessState(state: $0, isFromDB: true) }
 	}
-    
+
     public func getServices() -> Effect<SuccessState<[Service]>, RequestError> {
         let countDB = self.coreDataModel.fetchCount(ServiceScheme.self)
 
@@ -72,15 +72,15 @@ public final class Repository: RepositoryProtocol {
                     return state
                 }
         }
-        
+
         return self.coreDataModel.fetchAllSchemes(ServiceScheme.self)
             .map(Service.convert(from:))
             .map { SuccessState(state: $0, isFromDB: true) }
     }
-    
+
     public func getRooms() -> Effect<SuccessState<[Room]>, RequestError> {
         let countDB = self.coreDataModel.fetchCount(RoomScheme.self)
-        
+
         if countDB == 0 {
             return self.journeyAPI.getRooms()
                 .map {
@@ -95,7 +95,7 @@ public final class Repository: RepositoryProtocol {
             .map(Room.convert(from:))
             .map { SuccessState(state: $0, isFromDB: true) }
     }
-    
+
     public func getEmployees() -> Effect<SuccessState<[Employee]>, RequestError> {
         let countDB = self.coreDataModel.fetchCount(EmployeeScheme.self)
 
@@ -108,18 +108,18 @@ public final class Repository: RepositoryProtocol {
                     return state
                 }
         }
-        
+
         return self.coreDataModel.fetchAllSchemes(EmployeeScheme.self)
             .map(Employee.convert(from:))
             .map { SuccessState(state: $0, isFromDB: true) }
     }
-    
+
     public func getTemplates(_ type: FormType) -> Effect<SuccessState<[FormTemplateInfo]>, RequestError> {
         let countDB = try? self.coreDataModel.dataStack.fetchCount(
             From(FormTemplateInfoScheme.self),
             Where<FormTemplateInfoScheme>("%K > %d", "type", type.rawValue)
         )
-        
+
         if countDB == 0 {
             return self.formAPI.getTemplates(type)
                 .map {
@@ -129,7 +129,7 @@ public final class Repository: RepositoryProtocol {
                     return state
                 }
         }
-  
+
         return self.coreDataModel.fetchAllSchemes(FormTemplateInfoScheme.self)
             .map(FormTemplateInfo.convert(from:))
             .map { SuccessState(state: $0.filter {$0.type == type}, isFromDB: true) }
@@ -144,7 +144,7 @@ public final class Repository: RepositoryProtocol {
                     let state = SuccessState(state: IdentifiedArrayOf.init($0), isFromDB: false)
                     state.state.forEach { $0.save(to: self.coreDataModel)}
                     log("Saved to DB")
-      
+
                     return  state
                 }
         }

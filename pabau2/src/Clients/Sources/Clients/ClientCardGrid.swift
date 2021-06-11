@@ -121,19 +121,24 @@ struct ClientCardGrid: View {
 	let store: Store<ClientItemsCount?, ClientCardGridAction>
 	var body: some View {
 		WithViewStore(store) { viewStore in
-			ASCollectionView(data: ClientCardGridItem.allCases,
-											 dataID: \.self) { item, _ in
-												ClientCardGridItemView(title: item.title,
-                                                                       iconName: item.iconName,
-                                                                       number: item.count(model: viewStore.state)
-												).onTapGesture {
-													viewStore.send(.onSelect(item))
-												}
-			}
-			.layout {
-				return .grid(layoutMode: .fixedNumberOfColumns(4),
-										 itemSpacing: 0,
-										 lineSpacing: 0)
+            ASCollectionView(
+                data: ClientCardGridItem.allCases,
+                dataID: \.self
+            ) { item, _ in
+                ClientCardGridItemView(
+                    title: item.title,
+                    iconName: item.iconName,
+                    number: item.count(model: viewStore.state)
+                ).onTapGesture {
+                    viewStore.send(.onSelect(item))
+                }
+            }
+            .layout {
+                return .grid(
+                    layoutMode: .fixedNumberOfColumns(4),
+                    itemSpacing: 0,
+                    lineSpacing: 0
+                )
 			}
 		}
 	}

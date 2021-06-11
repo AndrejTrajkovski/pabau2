@@ -22,11 +22,13 @@ public struct CalendarWrapper: View {
 	}
 	
 	var listContainerView: some View {
-		IfLetStore(
-			store.scope(state: { $0.listContainer },
-						action: { .list($0) }),
-			then: ListContainerView.init(store:)
-		)
+        IfLetStore(
+            store.scope(
+                state: { $0.listContainer },
+                action: { .list($0) }
+            ),
+            then: ListContainerView.init(store:)
+        )
 	}
 
 	var weekView: some View {
@@ -38,7 +40,7 @@ public struct CalendarWrapper: View {
 			then: CalendarWeekSwiftUI.init(store:)
 		)
 	}
-	
+    
 	typealias EmployeeCalView = IfLetStore<CalendarSectionViewState<Employee>, SubsectionCalendarAction<Employee>, _ConditionalContent<CalendarSwiftUI<Employee>, EmptyView>>
 	typealias RoomCalView = IfLetStore<CalendarSectionViewState<Room>, SubsectionCalendarAction<Room>,
 											_ConditionalContent<CalendarSwiftUI<Room>, EmptyView>>

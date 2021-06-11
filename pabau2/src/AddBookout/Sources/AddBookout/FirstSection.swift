@@ -15,23 +15,23 @@ struct FirstSection: View {
 		self.viewStore = ViewStore(store)
 	}
 
-	var body: some View {
-		WithViewStore(store) { viewStore in
-			VStack(spacing: 16) {
-				Buttons().isHidden(true, remove: true)
-				SwitchCell(
-					text: Texts.allDay,
-					store: store.scope(
-						state: { $0.isAllDay },
-						action: { .isAllDay($0)}
-					)
-				)
-				ChooseLocationAndEmployee(store:
-											store.scope(state: { $0.chooseLocAndEmp },
-														action: { .chooseLocAndEmp($0) }
-											)
-				)
-			}.wrapAsSection(title: "Add Bookout")
-		}
-	}
+    var body: some View {
+        WithViewStore(store) { _ in
+            VStack {
+                SwitchCell(
+                    text: Texts.allDay,
+                    store: store.scope(
+                        state: { $0.isAllDay },
+                        action: { .isAllDay($0)}
+                    )
+                )
+                ChooseLocationAndEmployee(
+                    store: store.scope(
+                        state: { $0.chooseLocAndEmp },
+                        action: { .chooseLocAndEmp($0) }
+                    )
+                ).padding(.top, 16)
+            }.wrapAsSection(title: "Add Bookout")
+        }
+    }
 }

@@ -15,91 +15,147 @@ public struct PatientDetailsForm: View {
 	public var body: some View {
 		ScrollView {
 			VStack {
-				HStack {
-					SalutationPicker(store: store.scope(state: { $0.salutation },
-														action: { .salutation($0) }))
-					TextAndTextFieldStore(store: store.scope(state: { $0.firstName },
-															 action: { .firstName($0) }),
-										  title: Texts.firstName)
-					TextAndTextFieldStore(store: store.scope(state: { $0.lastName },
-															 action: { .lastName($0) }),
-										  title: Texts.lastName)
-				}
-				
+                HStack {
+                    SalutationPicker(
+                        store: store.scope(
+                            state: { $0.salutation },
+                            action: { .salutation($0) })
+                    )
+                    TextAndTextFieldStore(
+                        store: store.scope(
+                            state: { $0.firstName },
+                            action: { .firstName($0) }
+                        ),
+                        title: Texts.firstName
+                    )
+                    TextAndTextFieldStore(
+                        store: store.scope(
+                            state: { $0.lastName },
+                            action: { .lastName($0) }
+                        ),
+                        title: Texts.lastName
+                    )
+                }
 				HStack {
 					PatientDetailsField(Texts.dob) {
-						DatePickerTCA(mode: .date,
-									  store: store.scope( state: { $0.dOB }, action: { .dob($0) }),
-									  borderStyle: .none
-						)
+                        DatePickerTCA(
+                            mode: .date,
+                            store: store.scope(
+                                state: { $0.dOB },
+                                action: { .dob($0) }
+                            ),
+                            borderStyle: .none
+                        )
 					}
-					TextAndTextFieldStore(store: store.scope(state: { $0.phone },
-															 action: { .phone($0) }),
-										  title: Texts.phone)
-						.keyboardType(.phonePad)
-					TextAndTextFieldStore(store: store.scope(state: { $0.mobile },
-															 action: { .cellPhone($0) }),
-										  title: Texts.cellPhone)
-						.keyboardType(.phonePad)
+                    TextAndTextFieldStore(
+                        store: store.scope(
+                            state: { $0.phone },
+                            action: { .phone($0) }
+                        ),
+                        title: Texts.phone
+                    )
+                    .keyboardType(.phonePad)
+                    TextAndTextFieldStore(
+                        store: store.scope(
+                            state: { $0.mobile },
+                            action: { .cellPhone($0) }
+                        ),
+                        title: Texts.cellPhone
+                    )
+                    .keyboardType(.phonePad)
 				}
 				
 				HStack {
-					TextAndTextFieldStore(store: store.scope(state: { $0.email },
-															 action: { .email($0) }),
-										  title: Texts.email)
-						.keyboardType(.emailAddress)
-					TextAndTextFieldStore(store: store.scope(state: { $0.mailingStreet },
-															 action: { .street($0) }),
-										  title: Texts.street)
-					TextAndTextFieldStore(store: store.scope(state: { $0.otherStreet },
-															 action: { .otherStreet($0) }),
-										  title: Texts.otherStreet)
+                    TextAndTextFieldStore(
+                        store: store.scope(
+                            state: { $0.email },
+                            action: { .email($0) }),
+                        title: Texts.email
+                    )
+                    .keyboardType(.emailAddress)
+                    TextAndTextFieldStore(
+                        store: store.scope(
+                            state: { $0.mailingStreet },
+                            action: { .street($0) }),
+                        title: Texts.street
+                    )
+                    TextAndTextFieldStore(
+                        store: store.scope(
+                            state: { $0.otherStreet },
+                            action: { .otherStreet($0) }),
+                        title: Texts.otherStreet
+                    )
 				}
 				
 				HStack {
-					TextAndTextFieldStore(store: store.scope(state: { $0.mailingPostal },
-															 action: { .postCode($0) }),
-										  title: Texts.postCode)
-					TextAndTextFieldStore(store: store.scope(state: { $0.mailingCity },
-															 action: { .city($0) }),
-										  title: Texts.city)
-					TextAndTextFieldStore(store: store.scope(state: { $0.mailingCounty },
-															 action: { .county($0) }),
-										  title: Texts.county)
+                    TextAndTextFieldStore(
+                        store: store.scope(
+                            state: { $0.mailingPostal },
+                            action: { .postCode($0) }),
+                        title: Texts.postCode
+                    )
+                    TextAndTextFieldStore(
+                        store: store.scope(
+                            state: { $0.mailingCity },
+                            action: { .city($0) }
+                        ),
+                        title: Texts.city
+                    )
+                    TextAndTextFieldStore(
+                        store: store.scope(
+                            state: { $0.mailingCounty },
+                            action: { .county($0) }),
+                        title: Texts.county
+                    )
 				}
-
 				HStack {
-					TextAndTextFieldStore(store: store.scope(state: { $0.mailingCountry },
-															 action: { .country($0) }),
-										  title: Texts.country)
-					TextAndTextFieldStore(store: store.scope(state: { $0.howDidYouHear },
-															 action: { .howDidYouHear($0) }),
-										  title: Texts.howDidUHear)
+                    TextAndTextFieldStore(
+                        store: store.scope(
+                            state: { $0.mailingCountry },
+                            action: { .country($0) }
+                        ),
+                        title: Texts.country
+                    )
+                    TextAndTextFieldStore(
+                        store: store.scope(
+                            state: { $0.howDidYouHear },
+                            action: { .howDidYouHear($0) }
+                        ),
+                        title: Texts.howDidUHear
+                    )
 					Spacer()
 						.fixedSize(horizontal: false, vertical: true)
 				}
 				
 				Group {
-					SwitchCell(text: Texts.emailConfirmations,
-							   store: store.scope(
-								state: { $0.optInEmail },
-								action: { .emailComm($0) })
-					)
-					SwitchCell(text: Texts.smsReminders,
-							   store: store.scope(
-								state: { $0.optInSms },
-								action: { .smsComm($0) })
-					)
-					SwitchCell(text: Texts.phone,
-							   store: store.scope(
-								state: { $0.optInPhone },
-								action: { .phoneComm($0) })
-					)
-					SwitchCell(text: Texts.post,
-							   store: store.scope(
-								state: { $0.optInPost },
-								action: { .postComm($0) })
-					)
+                    SwitchCell(
+                        text: Texts.emailConfirmations,
+                        store: store.scope(
+                            state: { $0.optInEmail },
+                            action: { .emailComm($0) }
+                        )
+                    )
+                    SwitchCell(
+                        text: Texts.smsReminders,
+                        store: store.scope(
+                            state: { $0.optInSms },
+                            action: { .smsComm($0) }
+                        )
+                    )
+                    SwitchCell(
+                        text: Texts.phone,
+                        store: store.scope(
+                            state: { $0.optInPhone },
+                            action: { .phoneComm($0) }
+                        )
+                    )
+                    SwitchCell(
+                        text: Texts.post,
+                        store: store.scope(
+                            state: { $0.optInPost },
+                            action: { .postComm($0) }
+                        )
+                    )
 				}.switchesSection(title: Texts.communications)
 			}
 		}

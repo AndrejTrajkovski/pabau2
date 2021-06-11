@@ -67,18 +67,23 @@ public struct AddClient: View {
 	let store: Store<AddClientState, AddClientAction>
 	
 	public var body: some View {
-		WithViewStore(self.store) { viewStore in
-			VStack {
-				AddPhotoParent(store: self.store.scope(
-					state: { $0.addPhoto }, action: { .addPhoto($0) }
-				)).padding()
-				PatientDetailsForm(store: self.store.scope(
-									state: { $0.clientBuilder },
-									action: { .clientBuilder($0) })
-				).padding()
-				.loadingView(.constant(viewStore.formSaving == .loading), "Saving...")
-				.alert(store.scope(state: \.saveFailureAlert), dismiss: AddClientAction.saveAlertCanceled)
-			}
+        WithViewStore(self.store) { viewStore in
+            VStack {
+                AddPhotoParent(
+                    store: self.store.scope(
+                        state: { $0.addPhoto },
+                        action: { .addPhoto($0) }
+                    )
+                ).padding()
+                PatientDetailsForm(
+                    store: self.store.scope(
+                        state: { $0.clientBuilder },
+                        action: { .clientBuilder($0) }
+                    )
+                ).padding()
+                .loadingView(.constant(viewStore.formSaving == .loading), "Saving...")
+                .alert(store.scope(state: \.saveFailureAlert), dismiss: AddClientAction.saveAlertCanceled)
+            }
 		}
 	}
 }

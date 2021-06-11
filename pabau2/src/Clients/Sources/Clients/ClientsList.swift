@@ -182,10 +182,17 @@ struct ClientsList: View {
 								}
 							)
 						}
-						ActivityIndicator(isAnimating: .constant(true), style: .large)
-							.foregroundColor(.accentColor)
-							.isHidden(!(viewStore.isLoading && !viewStore.isSearching))
-					}
+                        ActivityIndicator(
+                            isAnimating: .constant(true),
+                            style: UIDevice.current.userInterfaceIdiom == .pad ? .large : .medium
+                        )
+                        .padding(.bottom, 10)
+                        .foregroundColor(.clear)
+                        .isHidden(
+                            !(viewStore.isLoading && !viewStore.isSearching),
+                            remove: !(viewStore.isLoading && !viewStore.isSearching)
+                        )
+                    }
 					EmptyDataView(
 						imageName: "clients_image",
 						title: "Nothing found",

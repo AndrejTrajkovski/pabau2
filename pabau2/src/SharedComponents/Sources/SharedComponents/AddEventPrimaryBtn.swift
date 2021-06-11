@@ -9,10 +9,12 @@ public struct AddEventPrimaryBtn: View {
 
 	let title: String
 	let action: () -> Void
+
 	public var body: some View {
-		VStack {
-			Spacer().frame(height: 40)
-			PrimaryButton(title, action).frame(width: 315, height: 52)
+		GeometryReader { geometry in
+            PrimaryButton(title, action)
+                .frame(width: min(geometry.size.width * 0.8, 495), height: 60)
+                .position(x: geometry.size.width * 0.5)
 		}
 	}
 }

@@ -40,50 +40,31 @@ public struct ListContainerView: View {
 	@ObservedObject var viewStore: ViewStore<ListContainerState, ListAction>
 
     @State var showSearchBar: Bool = false
-	
-//	struct ViewState: Equatable {
-//		let appsLoadingState: LoadingState
-//        let searchQuery: String
-//		init(state: ListContainerState) {
-//            self.searchQuery = state.list.searchText
-//			self.appsLoadingState = state.appsLS
-//			UITableView.appearance().separatorStyle = .none
-//		}
-//	}
-	
+
 	public init(store: Store<ListContainerState, ListAction>) {
 		self.store = store
 		self.viewStore = ViewStore(self.store)
-//			.scope(state: ViewState.init(state:),
-//						 action: { $0 }))
 	}
 	
 	public var body: some View {
 		VStack {
-
             FilterPicker()
-
             if self.showSearchBar {
                 searchBar
             }
-			
-			ScrollView {
-				LazyVStack {
-					ForEachStore(store.scope(state: { $0.locationSections },
-											 action: ListAction.locationSection(id:action:)),
-								 content: LocationSection.init(store:)
-					)
-				}
-			}
-//            JourneyList(self.viewStore.state.listedAppointments) {
-//                self.viewStore.send(.selectedAppointment($0))
-//            }.loadingView(.constant(self.viewStore.state.isLoadingApps),
-//						  Texts.fetchingJourneys)
-			
-            Spacer()
+            ScrollView {
+                LazyVStack {
+                    ForEachStore(
+                        store.scope(
+                            state: { $0.locationSections },
+                            action: ListAction.locationSection(id:action:)),
+                        content: LocationSection.init(store:)
+                    )
+                }
+            }
         }
     }
-	
+
 	var searchBar: some View {
 		SearchView(
 			placeholder: "Search",
@@ -121,29 +102,33 @@ struct LocationSection: View {
 		self.store = store
 		self.viewStore = ViewStore(store.scope(state: State.init(state:)).actionless)
 	}
-	
-	var body: some View {
-		Section.init(header:
-						Text(viewStore.locationName)
-						.padding(.leading, 16)
-						.font(.semibold20)
-						.frame(maxWidth: .infinity, alignment: .leading)
-					 ,
-					 content: {
-						if viewStore.showAppointments {
-							ForEachStore(store.scope(state: { $0.appointments },
-													 action: LocationSectionAction.rows(id:action:)),
-										 content: ListCellStoreRow.init(store:)
-							)
-						} else {
-							Text("No Appointments here.").italic()
-								.frame(maxWidth: .infinity, alignment: .leading)
-								.padding(.leading, 16)
-						}
-						Divider()
-					 }
-		)
-	}
+
+    var body: some View {
+        Section.init(
+            header:
+                Text(viewStore.locationName)
+                .padding(.leading, 16)
+                .font(.sectionHeaderSemibold)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            ,
+            content: {
+                if viewStore.showAppointments {
+                    ForEachStore(
+                        store.scope(
+                            state: { $0.appointments },
+                            action: LocationSectionAction.rows(id:action:)),
+                        content: ListCellStoreRow.init(store:)
+                    )
+                } else {
+                    Text("No Appointments here.")
+                        .font(.labelRegular)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.leading, 16)
+                }
+                Divider()
+            }
+        )
+    }
 }
 
 struct ListCellStoreRow: View {
@@ -152,9 +137,6 @@ struct ListCellStoreRow: View {
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			ListCell(appointment: viewStore.state)
-//				.contextMenu {
-//					ListCellContextMenu()
-//				}
 				.onTapGesture { viewStore.send(.select) }
 				.listRowInsets(EdgeInsets())
 		}
@@ -163,13 +145,14 @@ struct ListCellStoreRow: View {
 
 struct FilterPicker: View {
 	@State private var filter: CompleteFilter = .all
-	var body: some View {
-		VStack {
-			Picker(selection: $filter, label: Text("Filter")) {
-				ForEach(CompleteFilter.allCases, id: \.self) { (filter: CompleteFilter) in
-					Text(String(filter.description)).tag(filter.rawValue)
-				}
-			}.pickerStyle(SegmentedPickerStyle())
-		}.padding()
-	}
+    var body: some View {
+        VStack {
+            Picker(
+                selection: $filter, label: Text("Filter")) {
+                ForEach(CompleteFilter.allCases, id: \.self) { (filter: CompleteFilter) in
+                    Text(String(filter.description)).tag(filter.rawValue)
+                }
+                }.pickerStyle(SegmentedPickerStyle())
+        }.padding()
+    }
 }

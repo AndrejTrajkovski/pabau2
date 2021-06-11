@@ -63,9 +63,9 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 		environment: { $0 }
 	),
 	.init { state, action, env in
-		
+
 		struct GetAppointmentsCancelID: Hashable { }
-		
+
 		func getAppointments() -> Effect<CalendarAction, Never> {
 			state.appsLS = .loading
 			let params = appointmentsAPIParams(state: state)
@@ -85,11 +85,10 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			return Just(CalendarAction.onAddEvent(eventType))
 				.delay(for: 0.1, scheduler: DispatchQueue.main)
 				.eraseToEffect()
-			
+
 		case .gotAppointmentsResponse(let result):
 			switch result {
 			case .success(let calendarResponse):
-				
 				state.appsLS = .gotSuccess
 				let shifts = calendarResponse.rota.values.flatMap { $0.shift }
 				state.shifts = Shift.convertToCalendar(shifts: shifts)
@@ -258,7 +257,6 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			state.update(employeesResult: result.map(\.state))
 			
 		case .onAddEvent(.bookout):
-			
 			let chooseLocAndEmp = ChooseLocationAndEmployeeState(locations: state.locations,
 																 employees: state.employees)
 			state.addBookoutState = AddBookoutState(chooseLocAndEmp: chooseLocAndEmp,
@@ -299,7 +297,7 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 
 public struct CalendarContainer: View {
 	let store: Store<CalendarState, CalendarAction>
-	
+
 	public var body: some View {
 		WithViewStore(store) { viewStore in
 			ZStack(alignment: .topTrailing) {
@@ -319,11 +317,9 @@ public struct CalendarContainer: View {
 				if viewStore.state.isShowingFilters {
 					FiltersWrapper(store: store)
 						.transition(.moveAndFade)
-						.onDisappear {
-							
-						}
 				}
-			}
+            }
+            .ignoresSafeArea()
 			.fullScreenCover(
 				isPresented:
 					Binding(

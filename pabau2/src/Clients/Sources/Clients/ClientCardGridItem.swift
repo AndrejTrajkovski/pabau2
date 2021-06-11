@@ -14,7 +14,7 @@ struct ClientCardGridItemView: View {
 					.resizable()
 					.aspectRatio(contentMode: .fit)
 					.foregroundColor(.accentColor)
-					.frame(height: 50)
+                    .frame(height: UIDevice.current.userInterfaceIdiom == .pad ? 50 : 35)
 				if self.number != nil {
 					NumberEclipse(text: String(self.number!))
 				}

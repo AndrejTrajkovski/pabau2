@@ -18,6 +18,7 @@ struct ClientListRow: View {
                     WebImage(url: URL(string: avatarURL))
                         .resizable()
                         .placeholder(Image(systemName: "person.circle.fill"))
+                        .scaledToFill()
                         .clipShape(Circle())
                         .frame(width: 55, height: 55)
                 } else {

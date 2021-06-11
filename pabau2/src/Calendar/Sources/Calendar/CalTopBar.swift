@@ -11,9 +11,12 @@ struct CalTopBar: View {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
-	
+
 	var body: some View {
 		VStack(spacing: 0) {
+            Rectangle()
+                .foregroundColor(Color(hex: "F9F9F9"))
+                .frame(height: statusBarHeight)
 			ZStack {
 				addButton
 					.padding(.leading, 20)
@@ -77,4 +80,14 @@ struct CalTopBar: View {
 				.foregroundColor(Color.blue)
 		}
 	}
+
+    private let statusBarHeight: CGFloat = {
+        var heightToReturn: CGFloat = 0.0
+        for window in UIApplication.shared.windows {
+            if let height = window.windowScene?.statusBarManager?.statusBarFrame.height, height > heightToReturn {
+                heightToReturn = height
+            }
+        }
+        return heightToReturn
+    }()
 }

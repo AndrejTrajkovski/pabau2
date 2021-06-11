@@ -1,5 +1,6 @@
 import SwiftUI
 #if !os(macOS)
+
 public extension Font {
 	static let semibold24 = Font.system(size: 24.0, weight: .semibold)
 	static let semibold11 = Font.system(size: 11, weight: .semibold)
@@ -55,6 +56,15 @@ public extension Font {
 	static let regular36 = Font.system(size: 36, weight: .regular)
 
 	static let light30 = Font.system(size: 30, weight: .light)
+
+    static let textFieldRegular = deviceFont(pad: .regular20, phone: .regular17)
+    static let sectionHeaderSemibold = deviceFont(pad: .semibold20, phone: .semibold18)
+
+    static let labelRegular = deviceFont(pad: .regular20, phone: .regular17)
+
+    static func deviceFont(pad: Font, phone: Font) -> Font  {
+        UIDevice.current.userInterfaceIdiom == .pad ? pad : phone
+    }
 }
 #endif
 

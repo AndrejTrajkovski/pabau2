@@ -53,14 +53,19 @@ struct ClientCard: View {
 	var body: some View {
 		print("ClientCard")
 		return VStack {
-			ClientCardTop(store:
-				self.store.scope(state: { $0.client }, action: { .top($0) })
+			ClientCardTop(
+                store: self.store.scope(
+                    state: { $0.client },
+                    action: { .top($0) }
+                )
 			)
 				.padding(24)
-			ClientCardBottom(store:
-				self.store.scope(state: { $0 }, action: { .bottom($0) })
-			)
-				.frame(minHeight: 0, maxHeight: .infinity)
+			ClientCardBottom(
+                store: self.store.scope(
+                    state: { $0 },
+                    action: { .bottom($0) }
+                )
+			).frame(minHeight: 0, maxHeight: .infinity)
 		}
 	}
 }
