@@ -59,6 +59,7 @@ public extension Font {
 
     static let textFieldRegular = deviceFont(pad: .regular20, phone: .regular17)
     static let sectionHeaderSemibold = deviceFont(pad: .semibold20, phone: .semibold18)
+    static let clientCardGridItemTitle = deviceFont(pad: .medium16, phone: .medium12)
 
     static let labelRegular = deviceFont(pad: .regular20, phone: .regular17)
 

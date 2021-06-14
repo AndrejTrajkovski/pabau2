@@ -1,5 +1,6 @@
 import SwiftUI
 import Combine
+import Util
 
 public struct SearchView: View {
     var placeholder: String
@@ -33,6 +34,6 @@ public struct SearchView: View {
         .padding(10)
         .background(Color(.systemGray6))
         .cornerRadius(12)
-        .padding(.vertical, UIDevice.current.userInterfaceIdiom == .pad ? 10 : 5)
+        .padding(.vertical, Constants.isPad ? 10 : 5)
     }
 }

@@ -220,8 +220,10 @@ public let tabBarReducer: Reducer<
 //			])
 		case .calendar(.onAddEvent(.appointment)):
 			state.calendar.isAddEventDropdownShown = false
-			let chooseLocAndEmp = ChooseLocationAndEmployeeState(locations: state.calendar.locations,
-																 employees: state.calendar.employees)
+            let chooseLocAndEmp = ChooseLocationAndEmployeeState(
+                locations: state.calendar.locations,
+                employees: state.calendar.employees
+            )
 			state.addAppointment = AddAppointmentState(chooseLocAndEmp: chooseLocAndEmp)
 		case .addAppointment(
 				.chooseLocAndEmp(

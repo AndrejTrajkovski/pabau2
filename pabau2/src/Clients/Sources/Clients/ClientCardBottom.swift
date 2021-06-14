@@ -54,10 +54,13 @@ struct ClientCardBottom: View {
 		print("ClientCardBottom")
 		return Group {
 			if self.viewStore.state.activeItem == nil {
-				ClientCardGrid(store:
-					self.store.scope(state: { $0.client.count },
-													 action: { .grid($0)})
-				).padding(.top, 24)
+                ClientCardGrid(
+                    store:
+                        self.store.scope(
+                            state: { $0.client.count },
+                            action: { .grid($0)}
+                        )
+                ).padding(.top, 24)
 			} else {
 				VStack(spacing: 0) {
 					Divider()

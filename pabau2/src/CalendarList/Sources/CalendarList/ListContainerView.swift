@@ -45,7 +45,7 @@ public struct ListContainerView: View {
 		self.store = store
 		self.viewStore = ViewStore(self.store)
 	}
-	
+
 	public var body: some View {
 		VStack {
             FilterPicker()
@@ -91,13 +91,13 @@ struct LocationSection: View {
 	struct State: Equatable {
 		let showAppointments: Bool
 		let locationName: String
-		
+
 		init(state: LocationSectionState) {
 			self.showAppointments = !state.appointments.isEmpty
 			self.locationName = state.location.name
 		}
 	}
-	
+
 	init(store: Store<LocationSectionState, LocationSectionAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store.scope(state: State.init(state:)).actionless)
@@ -133,7 +133,7 @@ struct LocationSection: View {
 
 struct ListCellStoreRow: View {
 	let store: Store<Appointment, ListRowAction>
-	
+
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			ListCell(appointment: viewStore.state)

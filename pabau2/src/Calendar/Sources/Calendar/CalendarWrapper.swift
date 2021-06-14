@@ -40,7 +40,7 @@ public struct CalendarWrapper: View {
 			then: CalendarWeekSwiftUI.init(store:)
 		)
 	}
-    
+
 	typealias EmployeeCalView = IfLetStore<CalendarSectionViewState<Employee>, SubsectionCalendarAction<Employee>, _ConditionalContent<CalendarSwiftUI<Employee>, EmptyView>>
 	typealias RoomCalView = IfLetStore<CalendarSectionViewState<Room>, SubsectionCalendarAction<Room>,
 											_ConditionalContent<CalendarSwiftUI<Room>, EmptyView>>

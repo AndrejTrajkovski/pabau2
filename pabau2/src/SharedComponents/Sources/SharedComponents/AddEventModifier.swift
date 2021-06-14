@@ -16,7 +16,7 @@ public struct AddEventModifier: ViewModifier {
 				ScrollView(showsIndicators: false) {
 					content
 				}
-                .padding([.leading, .trailing, .bottom], UIDevice.current.userInterfaceIdiom == .pad ? 56 : 16)
+                .padding([.leading, .trailing, .bottom], Constants.isPad ? 56 : 16)
 			}
 			.edgesIgnoringSafeArea(.top)
 			.navigationBarHidden(true)

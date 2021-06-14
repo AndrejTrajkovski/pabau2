@@ -15,7 +15,7 @@ struct ListCell: View {
 	let paidStatus: String
 	let stepsComplete: String
 	let stepsTotal: String
-	
+
 	init(appointment: Appointment) {
 		self.appointment = appointment
 		self.color = Color.init(hex: appointment.serviceColor ?? "#000000")
@@ -29,7 +29,7 @@ struct ListCell: View {
 		self.stepsComplete = appointment.pathways.first?.stepsComplete.description ?? ""
 		self.stepsTotal = appointment.pathways.first?.stepsTotal.description ?? ""
 	}
-	
+
 	var body: some View {
 		VStack(spacing: 0) {
 			HStack {

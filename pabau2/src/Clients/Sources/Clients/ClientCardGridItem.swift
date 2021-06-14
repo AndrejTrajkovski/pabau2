@@ -14,11 +14,12 @@ struct ClientCardGridItemView: View {
 					.resizable()
 					.aspectRatio(contentMode: .fit)
 					.foregroundColor(.accentColor)
-                    .frame(height: UIDevice.current.userInterfaceIdiom == .pad ? 50 : 35)
+                    .frame(height: Constants.isPad ? 50 : 35)
 				if self.number != nil {
 					NumberEclipse(text: String(self.number!))
 				}
-				Text(self.title).font(Font.medium16)
+                Text(self.title).font(.clientCardGridItemTitle)
+
 			}
 			.padding(16)
 			.frame(width: geo.size.width, height: geo.size.width)

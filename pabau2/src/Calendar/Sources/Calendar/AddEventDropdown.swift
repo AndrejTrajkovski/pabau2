@@ -22,22 +22,22 @@ public enum EventType: Equatable, CaseIterable {
 
 struct AddEventDropdown: View {
 	let store: Store<Void, CalendarAction>
-	
+
 	var body: some View {
-			
-			ForEach(EventType.allCases, id: \.self) { eventType in
-				AddEventRow(eventType: eventType,
-							store: store)
-			}.background(Color(hex: "F9F9F9"))
-			
+        ForEach(EventType.allCases, id: \.self) { eventType in
+            AddEventRow(
+                eventType: eventType,
+                store: store
+            )
+        }.background(Color(hex: "F9F9F9"))
 	}
 }
 
 struct AddEventRow: View {
-	
+
 	let eventType: EventType
 	let store: Store<Void, CalendarAction>
-	
+
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			VStack(alignment: .leading) {

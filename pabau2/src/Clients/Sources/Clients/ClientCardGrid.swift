@@ -135,7 +135,7 @@ struct ClientCardGrid: View {
             }
             .layout {
                 return .grid(
-                    layoutMode: .fixedNumberOfColumns(4),
+                    layoutMode: .fixedNumberOfColumns(Constants.isPad ? 4 : 3),
                     itemSpacing: 0,
                     lineSpacing: 0
                 )

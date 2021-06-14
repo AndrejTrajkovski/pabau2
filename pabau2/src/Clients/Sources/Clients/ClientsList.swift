@@ -184,7 +184,7 @@ struct ClientsList: View {
 						}
                         ActivityIndicator(
                             isAnimating: .constant(true),
-                            style: UIDevice.current.userInterfaceIdiom == .pad ? .large : .medium
+                            style: Constants.isPad ? .large : .medium
                         )
                         .padding(.bottom, 10)
                         .foregroundColor(.clear)
