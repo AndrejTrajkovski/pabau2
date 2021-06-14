@@ -177,9 +177,9 @@ public let tabBarReducer: Reducer<
 		}),
 	
 	.init { state, action, env in
-		
+        
 		switch action {
-		
+        
 		case .delayStartPathway(let appointment, let pathway, let template):
 			
 			state.checkIn = CheckInContainerState(appointment: appointment,
@@ -228,7 +228,13 @@ public let tabBarReducer: Reducer<
 					.chooseEmployee(
 						.gotEmployeeResponse(let result)))):
 			state.calendar.update(employeesResult: result.map(\.state))
-			
+        case .addAppointment(AddAppointmentAction.appointmentCreated(let response)):
+            switch response {
+            case .success(let appointment):
+                return Effect(value: TabBarAction.calendar(.appointmentCreatedResponse(appointment)))
+            case .failure(let error):
+                print("FAILURE: \(error)")
+            }
 		default:
 			break
 		}
@@ -287,7 +293,6 @@ public let showAddAppointmentReducer: Reducer<TabBarState, CalendarAction, Any> 
 	
 	var chooseLocAndEmp = ChooseLocationAndEmployeeState(locations: state.calendar.locations,
 														 employees: state.calendar.employees)
-	
 	switch action {
 	
 	case .employee(.addAppointment(let startDate, let durationMins, let dropKeys)):

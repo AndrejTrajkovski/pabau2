@@ -20,8 +20,6 @@ public struct ChooseReschedule: View {
     public let store: Store<ChooseRescheduleState, ChooseRescheduleAction>
     @ObservedObject var viewStore: ViewStore<ChooseRescheduleState, ChooseRescheduleAction>
     
-    @State private var selectedDate = Date()
-
     public init(store: Store<ChooseRescheduleState, ChooseRescheduleAction>) {
         self.store = store
         self.viewStore = ViewStore(store)

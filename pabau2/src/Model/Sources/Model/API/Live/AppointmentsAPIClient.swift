@@ -9,8 +9,8 @@ import Foundation
 import ComposableArchitecture
 
 extension APIClient {
-    public func createAppointment(appointment: AppointmentBuilder) -> Effect<PlaceholdeResponse, RequestError> {
-        let requestBuilder: RequestBuilder<PlaceholdeResponse>.Type = requestBuilderFactory.getBuilder()
+    public func createAppointment(appointment: AppointmentBuilder) -> Effect<Appointment, RequestError> {
+        let requestBuilder: RequestBuilder<VoidAPIResponse>.Type = requestBuilderFactory.getBuilder()
 
         var params: [String : Any] = [
             "all_day": (appointment.isAllDay ?? false) ? 1 : 0,
@@ -66,7 +66,7 @@ extension APIClient {
         if let participantUserIDS = appointment.participantUserIDS {
             params["participant_user_ids"] = participantUserIDS
         }
-    
+        
         print(params as NSDictionary)
         return requestBuilder.init(
             method: .POST,
@@ -75,6 +75,8 @@ extension APIClient {
             queryParams: commonAnd(other: params)
         )
             .effect()
+        .map{ _ in Appointment.init(appointmentBuilder: appointment) }
+        .eraseToEffect()
     }
     
     public func updateAppointment(appointment: AppointmentBuilder) -> Effect<PlaceholdeResponse, RequestError> {

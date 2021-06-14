@@ -77,7 +77,7 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 				.eraseToEffect()
 				.cancellable(id: GetAppointmentsCancelID(), cancelInFlight: true)
 		}
-		
+        print(action)
 		switch action {
 		
 		case .addEventDelay(let eventType):
@@ -292,6 +292,21 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			break
 		case .list(.searchedText(_)):
 			break
+        case .refresh:
+            return getAppointments()
+        case .appointmentCreatedResponse(let appointment):
+            state.appsLS = .gotSuccess
+            
+            var calendarEvents = state.appointments.flatten()
+            calendarEvents.append(CalendarEvent.appointment(appointment))
+            
+            state.appointments.refresh(
+                events: calendarEvents,
+                locationsIds: state.chosenLocationsIds,
+                employees: state.selectedEmployeesIds(),
+                rooms: state.selectedRoomsIds()
+            )
+            
 		}
 		return .none
 	}
