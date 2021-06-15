@@ -30,7 +30,6 @@ public enum CalendarAction {
 	case changeCalScope
 	case list(ListAction)
 	case gotLocationsResponse(Result<SuccessState<[Location]>, RequestError>)
-    case appointmentCreatedResponse(Appointment)
-    case appointmentCreatedResponseSecond(Result<CalendarEvent, RequestError>)
+    case appointmentCreatedResponse(Result<CalendarEvent, RequestError>)
     case refresh
 }

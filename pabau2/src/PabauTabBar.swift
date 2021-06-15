@@ -229,7 +229,7 @@ public let tabBarReducer: Reducer<
 						.gotEmployeeResponse(let result)))):
 			state.calendar.update(employeesResult: result.map(\.state))
         case .addAppointment(AddAppointmentAction.appointmentCreated(let response)):
-            return Effect(value: TabBarAction.calendar(.appointmentCreatedResponseSecond(response)))
+            return Effect(value: TabBarAction.calendar(.appointmentCreatedResponse(response)))
 		default:
 			break
 		}

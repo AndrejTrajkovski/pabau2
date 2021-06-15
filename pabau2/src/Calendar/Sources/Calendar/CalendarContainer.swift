@@ -294,9 +294,7 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			break
         case .refresh:
             return getAppointments()
-        case .appointmentCreatedResponse(let appointment):
-            break
-        case .appointmentCreatedResponseSecond(let response):
+        case .appointmentCreatedResponse(let response):
             switch response {
             case .success(let calendarEvent):
                 state.appsLS = .gotSuccess
