@@ -6,7 +6,7 @@ public protocol ClientsAPI {
 	func getItemsCount(clientId: Client.Id) -> Effect<ClientItemsCount, RequestError>
 	
 	func getServices() -> Effect<[Service], RequestError>
-	func createAppointment(appointment: AppointmentBuilder) -> Effect<Appointment, RequestError>
+	func createAppointment(appointment: AppointmentBuilder) -> Effect<CalendarEvent, RequestError>
 	func updateAppointment(appointment: AppointmentBuilder) -> Effect<PlaceholdeResponse, RequestError>
     
 	func getAppointments(clientId: Client.Id) -> Effect<[CCAppointment], RequestError>

@@ -24,6 +24,6 @@ public enum AddAppointmentAction: Equatable {
 	case email(ToggleAction)
 	case feedback(ToggleAction)
 	case note(TextChangeAction)
-    case appointmentCreated(Result<Appointment, RequestError>)
+    case appointmentCreated(Result<CalendarEvent, RequestError>)
 	case cancelAlert
 }

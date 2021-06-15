@@ -229,12 +229,7 @@ public let tabBarReducer: Reducer<
 						.gotEmployeeResponse(let result)))):
 			state.calendar.update(employeesResult: result.map(\.state))
         case .addAppointment(AddAppointmentAction.appointmentCreated(let response)):
-            switch response {
-            case .success(let appointment):
-                return Effect(value: TabBarAction.calendar(.appointmentCreatedResponse(appointment)))
-            case .failure(let error):
-                print("FAILURE: \(error)")
-            }
+            return Effect(value: TabBarAction.calendar(.appointmentCreatedResponseSecond(response)))
 		default:
 			break
 		}

@@ -295,18 +295,24 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
         case .refresh:
             return getAppointments()
         case .appointmentCreatedResponse(let appointment):
-            state.appsLS = .gotSuccess
-            
-            var calendarEvents = state.appointments.flatten()
-            calendarEvents.append(CalendarEvent.appointment(appointment))
-            
-            state.appointments.refresh(
-                events: calendarEvents,
-                locationsIds: state.chosenLocationsIds,
-                employees: state.selectedEmployeesIds(),
-                rooms: state.selectedRoomsIds()
-            )
-            
+            break
+        case .appointmentCreatedResponseSecond(let response):
+            switch response {
+            case .success(let calendarEvent):
+                state.appsLS = .gotSuccess
+                
+                var calendarEvents = state.appointments.flatten()
+                calendarEvents.append(calendarEvent)
+                
+                state.appointments.refresh(
+                    events: calendarEvents,
+                    locationsIds: state.chosenLocationsIds,
+                    employees: state.selectedEmployeesIds(),
+                    rooms: state.selectedRoomsIds()
+                )
+            case .failure(let error):
+                state.appsLS = .gotError(error)
+            }
 		}
 		return .none
 	}
@@ -338,7 +344,7 @@ public struct CalendarContainer: View {
 							
 						}
 				}
-			}
+            }
 			.fullScreenCover(
 				isPresented:
 					Binding(

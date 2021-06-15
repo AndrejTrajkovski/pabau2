@@ -29,3 +29,9 @@ public struct AppointmentsResponse: Decodable {
 public struct Rota: Decodable {
     public let shift: [Shift]
 }
+
+public struct AppointmentCreatedResponse: Decodable {
+    public let appointments: [CalendarEvent]
+    public let success: Bool
+    public let message: String
+}

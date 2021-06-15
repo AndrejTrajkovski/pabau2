@@ -80,11 +80,11 @@ public let addBookoutReducer: Reducer<
 			
 			state.showsLoadingSpinner = true
 			
-//			return env.repository.clientAPI.createAppointment(appointment: state.appointmentsBody)
-//				.catchToEffect()
-//				.receive(on: DispatchQueue.main)
-//				.map(AddBookoutAction.appointmentCreated)
-//				.eraseToEffect()
+			return env.repository.clientAPI.createAppointment(appointment: state.appointmentsBody)
+				.catchToEffect()
+				.receive(on: DispatchQueue.main)
+                .map { response in AddBookoutAction.appointmentCreated(response) }
+				.eraseToEffect()
             return .none
 		case .chooseStartDate(let day):
 			guard let day = day else {

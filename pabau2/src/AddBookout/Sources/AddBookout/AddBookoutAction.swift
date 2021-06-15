@@ -17,5 +17,5 @@ public enum AddBookoutAction {
 	case description(TextChangeAction)
 	case close
 	case saveBookout
-	case appointmentCreated(Result<PlaceholdeResponse, RequestError>)
+    case appointmentCreated(Result<CalendarEvent, RequestError>)
 }
