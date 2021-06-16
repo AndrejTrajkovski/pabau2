@@ -18,7 +18,7 @@ let addAppTapBtnReducer = Reducer<AddAppointmentState?, AddAppointmentAction, Ad
             state?.toast = ToastState(mode: .banner(.slide),
                                      type: .regular,
                                      title: Texts.appointmentSuccessfullyCreated)
-            return Effect.timer(id: ToastTimerId(), every: 1, on: DispatchQueue.main)
+            return Effect.timer(id: ToastTimerId(), every: 2, on: DispatchQueue.main)
                 .map { _ in AddAppointmentAction.dismissToastSuccess }
 		case .failure(let error):
             print("failure")

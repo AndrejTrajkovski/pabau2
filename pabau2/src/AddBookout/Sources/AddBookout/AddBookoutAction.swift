@@ -18,4 +18,5 @@ public enum AddBookoutAction {
 	case close
 	case saveBookout
     case appointmentCreated(Result<CalendarEvent, RequestError>)
+    case dismissToast
 }

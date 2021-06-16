@@ -5,12 +5,10 @@ import Model
 import SharedComponents
 import CoreDataModel
 import ChooseLocationAndEmployee
+import ToastAlert
 
-public let addBookoutOptReducer: Reducer<
-	AddBookoutState?,
-	AddBookoutAction,
-	AddBookoutEnvironment
-> = .combine(
+public let addBookoutOptReducer: Reducer<AddBookoutState?, AddBookoutAction, AddBookoutEnvironment> =
+.combine(
 	addBookoutReducer.optional().pullback(
 		state: \.self,
 		action: /AddBookoutAction.self,
@@ -23,9 +21,17 @@ public let addBookoutOptReducer: Reducer<
 			switch result {
 			case .success:
 				state = nil
-			case .failure:
-				break
+			case .failure(let error):
+                state?.toast = ToastState(mode: .alert,
+                                         type: .error(.red),
+                                         title: error.description)
+                
+                return Effect.timer(id: ToastTimerId(), every: 2, on: DispatchQueue.main)
+                    .map { _ in AddBookoutAction.dismissToast }
 			}
+        case .dismissToast:
+            state?.toast = nil
+            return .cancel(id: ToastTimerId())
 		default:
 			break
 		}
@@ -85,7 +91,6 @@ public let addBookoutReducer: Reducer<
 				.receive(on: DispatchQueue.main)
                 .map { response in AddBookoutAction.appointmentCreated(response) }
 				.eraseToEffect()
-            return .none
 		case .chooseStartDate(let day):
 			guard let day = day else {
 				break
@@ -123,5 +128,6 @@ public struct AddBookout: View {
 		}
 		.addEventWrapper(onXBtnTap: { viewStore.send(.close) })
 		.loadingView(.constant(self.viewStore.state.showsLoadingSpinner))
+        .toast(store: store.scope(state: \.toast))
 	}
 }
