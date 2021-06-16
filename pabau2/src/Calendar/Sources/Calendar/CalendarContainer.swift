@@ -186,8 +186,6 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 		case .appDetails(.close):
 			state.appDetails = nil
 			return .cancel(id: ToastTimerId())
-		case .addBookoutAction(.close):
-			state.addBookoutState = nil
 		case .changeCalScope:
 			state.scope = state.scope == .week ? .month : .week
 		case .datePicker:
@@ -243,17 +241,31 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			if state.appsLS == .initial && state.employeesLS == .gotSuccess {
 				return getAppointments()
 			}
+        case .addBookoutAction(.close):
+            state.addBookoutState = nil
+        case .addBookoutAction(.appointmentCreated(let response)):
+            switch response {
+            case .success(let calendarEvent):
+                state.appsLS = .gotSuccess
+                
+                var calendarEvents = state.appointments.flatten()
+                calendarEvents.append(calendarEvent)
+                
+                state.appointments.refresh(
+                    events: calendarEvents,
+                    locationsIds: state.chosenLocationsIds,
+                    employees: state.selectedEmployeesIds(),
+                    rooms: state.selectedRoomsIds()
+                )
+            case .failure(let error): // Case treated in addAppTapBtnReducer
+                break
+            }
+
 		case .addBookoutAction(.chooseLocAndEmp(.chooseLocation(.gotLocationsResponse(let result)))),
 			 .addShift(.chooseLocAndEmp(.chooseLocation(.gotLocationsResponse(let result)))):
 			state.update(locationsResult: result.map(\.state))
-		case .addBookoutAction(
-				.chooseLocAndEmp(
-					.chooseEmployee(
-						.gotEmployeeResponse(let result)))),
-			 .addShift(
-				.chooseLocAndEmp(
-					.chooseEmployee(
-						.gotEmployeeResponse(let result)))):
+		case .addBookoutAction(.chooseLocAndEmp(.chooseEmployee(.gotEmployeeResponse(let result)))),
+			 .addShift(.chooseLocAndEmp(.chooseEmployee(.gotEmployeeResponse(let result)))):
 			
 			state.update(employeesResult: result.map(\.state))
 			
@@ -282,7 +294,7 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			break
 		case .addBookoutAction:
 			break
-		case .addShift:
+        case .addShift:
 			break
 		case .employeeFilters(.gotLocationsResponse(_)):
 			break
