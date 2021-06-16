@@ -308,10 +308,10 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
                     employees: state.selectedEmployeesIds(),
                     rooms: state.selectedRoomsIds()
                 )
-            case .failure(let error):
-                state.appsLS = .gotError(error)
+            case .failure(let error): // Case treated in addAppTapBtnReducer
+                break
             }
-		}
+        }
 		return .none
 	}
 )

@@ -33,6 +33,7 @@ public struct AddAppointment: View {
 		}
 		.addEventWrapper(onXBtnTap: { self.viewStore.send(.closeBtnTap) })
 		.loadingView(.constant(self.viewStore.state.showsLoadingSpinner))
+        .toast(store: store.scope(state: \.toast))
 		.alert(
 			isPresented: viewStore.binding(
 				get: { $0.alertBody?.isShow == true },
