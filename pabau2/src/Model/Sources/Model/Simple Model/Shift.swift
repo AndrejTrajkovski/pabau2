@@ -12,7 +12,7 @@ public struct Shift: Decodable, Equatable {
 	public let locationName: String
 	public let locColor: String
 	public let locationID: Location.ID
-	public let roomID: Room.Id
+	public let roomID: Room.Id?
 	public let notes: String
     public let published: Bool?
 
@@ -41,7 +41,7 @@ public struct Shift: Decodable, Equatable {
 		self.locColor = try container.decode(String.self, forKey: .locColor)
 		self.published = try container.decodeIfPresent(Bool.self, forKey: .published)
 		self.locationID = try container.decode(Location.Id.self, forKey: .locationID)
-		self.roomID = try container.decode(Room.Id.self, forKey: .roomID)
+		self.roomID = try? container.decode(Room.Id.self, forKey: .roomID)
 		self.notes = try container.decode(String.self, forKey: .notes)
 		
 		let dateString = try container.decode(String.self, forKey: .date)

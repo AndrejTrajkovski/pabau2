@@ -89,10 +89,14 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 		case .gotAppointmentsResponse(let result):
 			switch result {
 			case .success(let calendarResponse):
-				
+				print(calendarResponse)
 				state.appsLS = .gotSuccess
 				let shifts = calendarResponse.rota.values.flatMap { $0.shift }
+				print(shifts)
 				state.shifts = Shift.convertToCalendar(shifts: shifts)
+				print(state.shifts)
+				state.chosenEmployeesIds = Dictionary.init(grouping: shifts, by: { $0.locationID })
+					.mapValues { $0.map { $0.userID }}
 				state.appointments.refresh(
 					events: calendarResponse.appointments,
 					locationsIds: state.chosenLocationsIds,

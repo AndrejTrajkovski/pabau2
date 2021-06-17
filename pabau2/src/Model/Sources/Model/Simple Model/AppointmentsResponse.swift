@@ -14,13 +14,7 @@ public struct AppointmentsResponse: Decodable {
 	public init(from decoder: Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
 		self.appointments = try container.decode([CalendarEvent].self, forKey: .appointments)
-		let rota: [String: Rota]
-		if let rotaDict = try? container.decode([String: Rota].self, forKey: .rota) {
-			rota = rotaDict
-		} else {
-			rota = [:]
-		}
-		self.rota = rota
+		self.rota = try container.decode([String: Rota].self, forKey: .rota)
 		self.intervalSetting = try container.decode(Int.self, forKey: .intervalSetting)
 	}
 }

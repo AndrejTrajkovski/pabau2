@@ -53,23 +53,21 @@ public class SectionCalendarView<Subsection: Identifiable & Equatable>: SectionW
 	}
 
 	override open func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-		var view = UICollectionReusableView()
+		let view: UICollectionReusableView
 		switch kind {
 		case JZSupplementaryViewKinds.columnHeader:
-			if let columnHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: columnHeaderId, for: indexPath) as? ColumnHeader {
-				let (sectionOpt, subsection) = sectionsDataSource!.sectionAndSubsection(for: indexPath.section)
-				if let section = sectionOpt,
-				   let viewModel = ColumnHeaderAdapter.sectionViewModel(subsection!, section) {
-					columnHeader.update(viewModel: viewModel)
-				} else {
-					columnHeader.update(title: "", subtitle: "", color: UIColor.clear)
-				}
-				view = columnHeader
+			let columnHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: columnHeaderId, for: indexPath) as! ColumnHeader
+			let (sectionOpt, subsection) = sectionsDataSource!.sectionAndSubsection(for: indexPath.section)
+			if let section = sectionOpt,
+			   let viewModel = ColumnHeaderAdapter.sectionViewModel(subsection!, section) {
+				columnHeader.update(viewModel: viewModel)
+			} else {
+				columnHeader.update(title: "", subtitle: "", color: UIColor.clear)
 			}
+			view = columnHeader
 		case JZSupplementaryViewKinds.columnBackground:
-			if let columnBackground = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: columnBackground, for: indexPath) as? JZColumnBackground {
-				view = columnBackground
-			}
+			let columnBackground = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: columnBackground, for: indexPath) as! JZColumnBackground
+			view = columnBackground
 		default: view = super.collectionView(collectionView, viewForSupplementaryElementOfKind: kind, at: indexPath)
 		}
 		return view
