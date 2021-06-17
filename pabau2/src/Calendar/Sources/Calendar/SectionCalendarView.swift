@@ -74,7 +74,11 @@ public class SectionCalendarView<Subsection: Identifiable & Equatable>: SectionW
 	}
 
 	@objc override public func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, backgroundTimesAtSection section: Int) -> [JZBackgroundTime] {
-		return sectionsDataSource!.backgroundTimes(section: section)
+		let bgTime = sectionsDataSource!.backgroundTimes(section: section)
+		
+		print("shift section: \(section)")
+		print("bgTimes: \(bgTime)")
+		return bgTime
 	}
 	
 	static func makeSectionDataSource(state: CalendarSectionViewState<Subsection>,
@@ -86,7 +90,7 @@ public class SectionCalendarView<Subsection: Identifiable & Equatable>: SectionW
 											  state.chosenLocations(),
 											  state.chosenSubsections(),
 											  jzApps,
-											  state.shifts[state.selectedDate] ?? [:],
+											  state.shifts,
 											  pageWidth
 		)
 	}
