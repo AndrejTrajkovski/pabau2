@@ -1,9 +1,14 @@
 import ComposableArchitecture
 import Model
 
-public protocol CheckInState {
-	var selectedIdx: Int { get set }
-	func stepForms() -> [StepFormInfo]
+public struct CheckInState {
+	public init(selectedIdx: Int, stepForms: [StepFormInfo]) {
+		self.selectedIdx = selectedIdx
+		self.stepForms = stepForms
+	}
+	
+	public var selectedIdx: Int
+	public let stepForms: [StepFormInfo]
 }
 
 public extension CheckInState {
@@ -13,7 +18,7 @@ public extension CheckInState {
 	}
 
 	mutating func next() -> Bool {
-		if stepForms().count - 1 > selectedIdx {
+		if stepForms.count - 1 > selectedIdx {
 			selectedIdx += 1
 			return true
 		}
@@ -29,15 +34,15 @@ public extension CheckInState {
 	}
 
 	mutating func goToNextUncomplete() {
-		stepForms().firstIndex(where: { $0.status == .pending }).map {
+		stepForms.firstIndex(where: { $0.status == .pending }).map {
 			selectedIdx = $0
 		}
 	}
 }
 
-public struct CheckInReducer<T: CheckInState> {
+public struct CheckInReducer {
 	public init () { }
-	public let reducer = Reducer<T, CheckInAction, FormEnvironment> { state, action, _ in
+	public let reducer = Reducer<CheckInState, CheckInAction, FormEnvironment> { state, action, _ in
 		switch action {
 		case .didSelectFlatFormIndex(let idx):
 			state.selectedIdx = idx

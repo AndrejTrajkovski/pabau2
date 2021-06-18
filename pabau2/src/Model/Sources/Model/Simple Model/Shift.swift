@@ -12,7 +12,7 @@ public struct Shift: Decodable, Equatable {
 	public let locationName: String
 	public let locColor: String
 	public let locationID: Location.ID
-	public let roomID: Room.Id? 
+	public let roomID: Room.Id?
 	public let notes: String
     public let published: Bool?
 
@@ -96,6 +96,7 @@ public struct Shift: Decodable, Equatable {
         self.notes = ""
         self.published = false
     }
+
 }
 
 public struct ShiftSchema: Codable {

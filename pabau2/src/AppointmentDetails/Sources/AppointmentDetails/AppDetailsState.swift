@@ -30,7 +30,7 @@ public struct AppDetailsState: Equatable {
 	var chooseStatusLS: LoadingState = .initial
 	
 	var isPathwayListActive: Bool = false
-	var choosePathwayTemplate: ChoosePathwayState?
+	public var choosePathwayTemplate: ChoosePathwayState?
 }
 
 extension AppDetailsState {

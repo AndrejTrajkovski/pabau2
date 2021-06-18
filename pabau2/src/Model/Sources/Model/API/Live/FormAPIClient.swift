@@ -26,10 +26,21 @@ public extension APIClient {
 //			.debounce(id: UUID(), for: 5.0, scheduler: DispatchQueue.main)
 	}
 	
-	func getForm(templateId: FormTemplateInfo.ID, entryId: FilledFormData.ID) -> Effect<HTMLForm, RequestError> {
+	func getForm(templateId: FormTemplateInfo.ID,
+				 entryId: FilledFormData.ID?) -> Effect<HTMLForm, RequestError> {
+		if let entryId = entryId {
+			return getForm(templateId: templateId, entryId: entryId)
+		} else {
+			return getForm(templateId: templateId)
+		}
+	}
+	
+	func getForm(templateId: FormTemplateInfo.ID,
+				 entryId: FilledFormData.ID) -> Effect<HTMLForm, RequestError> {
 		
 		let params = commonAnd(other: ["form_template_id": templateId.rawValue,
 									   "form_id": entryId.rawValue])
+		
 		let requestBuilder: RequestBuilder<_FilledForm>.Type = requestBuilderFactory.getBuilder()
 		return requestBuilder.init(method: .GET,
 								   baseUrl: baseUrl,
@@ -45,7 +56,7 @@ public extension APIClient {
 				if let formError = error as? HTMLFormBuilderError {
 					return RequestError.jsonDecoding(formError.description)
 				} else {
-					return error as? RequestError ?? .unknown
+					return error as? RequestError ?? .unknown(error)
 				}
 			}
 			.eraseToEffect()
@@ -70,7 +81,7 @@ public extension APIClient {
 				if let formError = error as? HTMLFormBuilderError {
 					return RequestError.jsonDecoding(formError.description)
 				} else {
-					return error as? RequestError ?? .unknown
+					return error as? RequestError ?? .unknown(error)
 				}
 			}
 			.eraseToEffect()
@@ -81,7 +92,7 @@ public extension APIClient {
 	}
 	
 	func getTemplates(_ type: FormType) -> Effect<[FormTemplateInfo], RequestError> {
-		struct GetTemplates: Codable {
+		struct GetTemplates: Decodable {
 			let templateList: [FormTemplateInfo]
 		}
 		let requestBuilder: RequestBuilder<GetTemplates>.Type = requestBuilderFactory.getBuilder()
@@ -221,7 +232,7 @@ extension APIClient {
 					throw RequestError.apiError("No Patient Details found")
 				}
 			}
-			.mapError { $0 as? RequestError ?? RequestError.unknown }
+			.mapError { $0 as? RequestError ?? .unknown($0) }
 			.eraseToEffect()
 	}
 }

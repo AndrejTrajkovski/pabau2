@@ -1,6 +1,7 @@
 import ComposableArchitecture
 import SwiftUI
 import Util
+import Model
 
 public struct ErrorViewStore<E: Error>: View where E: CustomStringConvertible & Equatable {
 	
@@ -19,25 +20,33 @@ public struct ErrorViewStore<E: Error>: View where E: CustomStringConvertible & 
 
 public struct ErrorView<E: Error>: View {
 	
+	let error: E
+	
 	public init(error: E) {
-		self.description = (error as CustomStringConvertible).description
+		self.error = error
 	}
+	
+	public var body: some View {
+		RawErrorView(description: (error as? RequestError)?.userMessage ?? (error as CustomStringConvertible).description)
+	}
+}
+
+public struct RawErrorView: View {
 	
 	public init(description: String) {
 		self.description = description
 	}
 	
 	let description: String
-
 	
 	public var body: some View {
-		GeometryReaderPatch { geometry in
+//		GeometryReaderPatch { geometry in
 			Text("Error: \(description)")
-				.frame(width: geometry.size.width / 2,
-					   height: geometry.size.height / 5)
+//				.frame(width: geometry.size.width / 2,
+//					   height: geometry.size.height / 5)
 				.background(Color.white)
-				.foregroundColor(Color.blue)
+				.foregroundColor(Color.red)
 				.cornerRadius(20)
-		}
+//		}
 	}
 }

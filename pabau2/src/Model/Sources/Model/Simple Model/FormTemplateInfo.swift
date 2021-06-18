@@ -1,7 +1,7 @@
 import Foundation
 import Tagged
 
-public struct FormTemplateInfo: Codable, Identifiable, Equatable {
+public struct FormTemplateInfo: Decodable, Identifiable, Equatable {
 	
 	public init(id: HTMLForm.ID, name: String, type: FormType) {
 		self.id = id

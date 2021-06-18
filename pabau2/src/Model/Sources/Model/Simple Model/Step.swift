@@ -3,7 +3,7 @@ import Tagged
 
 public struct Step: Decodable, Identifiable, Equatable {
 	
-	public typealias Id = Tagged<Step, String>
+	public typealias Id = Tagged<Step, EitherStringOrInt>
 	
 	public enum PreselectedTemplate: Equatable {
 		case definedbyservice
@@ -40,18 +40,18 @@ public struct Step: Decodable, Identifiable, Equatable {
 		let container = try decoder.container(keyedBy: Self.CodingKeys)
 		self.id = try container.decode(Self.ID.self, forKey: .id)
 		let stepType = try container.decode(StepType.self, forKey: .stepType)
-		switch stepType {
-		case .consents, .treatmentnotes, .medicalhistory, .prescriptions:
+		self.stepType = stepType
+		
+		if stepType.isHTMLForm {
 			let form_template_id = try? container.decode(HTMLForm.ID.self, forKey: .form_template_id)
 			if let form_template_id = form_template_id,
-			   form_template_id.rawValue != "0" {
+			   form_template_id.description != "0" {
 				self.preselectedTemplate = .template(form_template_id)
 			} else {
 				self.preselectedTemplate = .definedbyservice
 			}
-		default:
+		} else {
 			self.preselectedTemplate = nil
 		}
-		self.stepType = stepType
 	}
 }

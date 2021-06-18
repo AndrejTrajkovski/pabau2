@@ -4,11 +4,26 @@
 import Foundation
 
 public enum FormType: String, Codable, Equatable {
-	case history = "history"
+	case history = "questionnaire"
 	case treatment = "treatment"
 	case consent = "consent"
 	case prescription = "prescription"
 	case epaper
     case unknown
 //	case photos = "photos"
+	
+	public init?(stepType: StepType) {
+		switch stepType {
+		case .medicalhistory:
+			self = .history
+		case .consents:
+			self = .consent
+		case .treatmentnotes:
+			self = .treatment
+		case .prescriptions:
+			self = .prescription
+		case .checkpatient, .patientdetails, .photos, .aftercares, .patientComplete:
+			return nil
+		}
+	}
 }

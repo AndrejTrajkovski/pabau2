@@ -3,7 +3,7 @@ import SwiftUI
 import Model
 import ComposableArchitecture
 
-struct StepSelector<S: CheckInState>: View where S: Equatable {
+struct StepSelector: View {
 	let cellWidth: CGFloat = 100
 	let cellHeight: CGFloat = 80
 	let spacing: CGFloat = 8
@@ -17,13 +17,13 @@ struct StepSelector<S: CheckInState>: View where S: Equatable {
 		let shouldShowRightArrow: Bool
 	}
 
-	let store: Store<S, CheckInAction>
+	let store: Store<CheckInState, CheckInAction>
 	@ObservedObject var viewStore: ViewStore<State, CheckInAction>
 
-	init (store: Store<S, CheckInAction>) {
+	init (store: Store<CheckInState, CheckInAction>) {
 		self.store = store
 		self.viewStore = ViewStore(
-			store.scope( state: State.init(state:), action: { $0 }))
+			store.scope(state: State.init(state:), action: { $0 }))
 	}
 
 	var body: some View {
@@ -105,7 +105,7 @@ extension StepSelector.State {
 //			StepFormInfo(isComplete: $0.0.isComplete,
 //								title: $0.0.form.title)
 //		}
-		let stepForms = state.stepForms()
+		let stepForms = state.stepForms
 		let shouldShowArrows = stepForms.count > maxVisibleCells
 		self.selectedIndex = state.selectedIdx
 		self.numberOfVisibleSteps = min(stepForms.count, maxVisibleCells)

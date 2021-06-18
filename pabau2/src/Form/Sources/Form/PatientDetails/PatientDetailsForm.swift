@@ -14,7 +14,7 @@ public struct PatientDetailsForm: View {
 	
 	public var body: some View {
 		ScrollView {
-			VStack {
+			LazyVStack {
 				HStack {
 					SalutationPicker(store: store.scope(state: { $0.salutation },
 														action: { .salutation($0) }))

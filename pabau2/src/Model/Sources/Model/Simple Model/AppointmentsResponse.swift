@@ -13,8 +13,14 @@ public struct AppointmentsResponse: Decodable {
 	
 	public init(from decoder: Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
-		self.appointments = try container.decode([CalendarEvent].self, forKey: .appointments)
-        self.rota = try container.decode([String: Rota].self, forKey: .rota)
+		self.appointments = try container.decode([CalendarEvent].self, forKey: .appointments)		
+		if let _ = try? container.decode([String].self, forKey: .rota) {
+			//empty rota is array in response
+			self.rota = [:]
+		} else {
+			self.rota = try container.decode([String: Rota].self, forKey: .rota)
+		}
+
 		self.intervalSetting = try container.decode(Int.self, forKey: .intervalSetting)
 	}
 }

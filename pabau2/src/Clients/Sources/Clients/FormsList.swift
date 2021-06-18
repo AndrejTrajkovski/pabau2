@@ -48,7 +48,7 @@ public let formsListReducer: Reducer<FormsListState, FormsListAction, ClientsEnv
 			if state.formsContainer!.formsCollection.count == state.formsContainer!.selectedIdx + 1 {
 				state.formsContainer = nil
 			} else {
-				_ = state.formsContainer!.next()
+				_ = state.formsContainer!.checkIn.next()
 			}
 		case .formsContainer:
 			break

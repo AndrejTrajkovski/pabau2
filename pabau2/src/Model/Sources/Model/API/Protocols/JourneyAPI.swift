@@ -10,4 +10,5 @@ public protocol JourneyAPI {
     func getCalendar(startDate: Date, endDate: Date, locationIds: Set<Location.ID>, employeesIds: [Employee.ID]?, roomIds: [Room.ID]?) -> Effect<AppointmentsResponse, RequestError>
 	func match(appointment: Appointment, pathwayTemplateId: PathwayTemplate.ID) -> Effect<Pathway, RequestError>
 	func getPathway(id: Pathway.ID) -> Effect<Pathway, RequestError>
+	func getPathwayTemplate(id: PathwayTemplate.ID) -> Effect<PathwayTemplate, RequestError>
 }

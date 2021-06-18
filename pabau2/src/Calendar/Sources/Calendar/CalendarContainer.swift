@@ -89,10 +89,11 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 		case .gotAppointmentsResponse(let result):
 			switch result {
 			case .success(let calendarResponse):
-				
 				state.appsLS = .gotSuccess
 				let shifts = calendarResponse.rota.values.flatMap { $0.shift }
 				state.shifts = Shift.convertToCalendar(shifts: shifts)
+//				state.chosenEmployeesIds = Dictionary.init(grouping: shifts, by: { $0.locationID })
+//					.mapValues { $0.map { $0.userID }}
 				state.appointments.refresh(
 					events: calendarResponse.appointments,
 					locationsIds: state.chosenLocationsIds,
@@ -100,12 +101,15 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 					rooms: state.selectedRoomsIds()
 				)
 			case .failure(let error):
+				print(error)
 				state.appsLS = .gotError(error)
 			}
 			
 		case .datePicker(.selectedDate(let date)):
 			
-			state.selectedDate = date
+			//+1 hour because the framework alway returns 23:00
+			let convertFrameworkDate = date + 1.hours
+			state.selectedDate = convertFrameworkDate
 			
 			return getAppointments()
 			

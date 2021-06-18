@@ -18,18 +18,22 @@ public struct PathwayList: View {
 	
 	public var body: some View {
 		WithViewStore(store) { viewStore in
-			ScrollView {
-				LazyVStack {
-					ForEachStore(store.scope(state: { $0.pathways },
-											 action: PathwayListAction.rows(id:action:)),
-								 content: PathwayInfoRow.init(store:))
-					
-					PrimaryButton(Texts.startPathway)
-								  { viewStore.send(.addNew ) }
-						.fixedSize()
+			VStack {
+				ScrollView {
+					LazyVStack {
+						ForEachStore(store.scope(state: { $0.pathways },
+												 action: PathwayListAction.rows(id:action:)),
+									 content: PathwayInfoRow.init(store:))
+					}
 				}
+				PrimaryButton(Texts.startPathway){
+					viewStore.send(.addNew )
+					
+				}
+					.fixedSize()
+					.padding()
 			}
-//			.journeyBase(viewStore.state, .long)
+			//			.journeyBase(viewStore.state, .long)
 		}
 	}
 }

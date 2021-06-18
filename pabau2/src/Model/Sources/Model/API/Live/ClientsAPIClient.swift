@@ -82,7 +82,7 @@ extension APIClient {
     
     public func addNote(clientId: Client.Id, note: String) -> Effect<Note, RequestError> {
         Just(Note(id: 24214, content: note, date: Date()))
-            .mapError { _ in RequestError.unknown }
+            .mapError { RequestError.unknown($0) }
 			.eraseToEffect()
 	}
 

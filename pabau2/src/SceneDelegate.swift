@@ -14,7 +14,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 	var window: UIWindow?
     
-	func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+	func scene(
+        _ scene: UIScene, willConnectTo session: UISceneSession,
+        options connectionOptions: UIScene.ConnectionOptions
+    ) {
 
         Intercom.setApiKey(
             "ios_sdk-f223a9e3f380f60354bc459db9d5c0349c61fd7c",
@@ -22,11 +25,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         )
         
         //CDStorage.shared.initialized()
-
+        
 		SwiftDate.defaultRegion = Region.UTC
 		if let windowScene = scene as? UIWindowScene {
-			let reducer = appReducer
-      let window = UIWindow(windowScene: windowScene)
+            let reducer = appReducer
+            let window = UIWindow(windowScene: windowScene)
 			let userDefaults = StandardUDConfig()
 			let user = userDefaults.loggedInUser
 			let hasSeenWalkthrough = userDefaults.hasSeenAppIntroduction
@@ -42,7 +45,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 userDefaults: userDefaults,
                 coreDataModel: storage
             )
-            
+          
 			let env = AppEnvironment(
 				loginAPI: apiClient,
 				journeyAPI: apiClient,
@@ -53,19 +56,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 				audioPlayer: AudioPlayer()
 			)
             
-			window.rootViewController = UIHostingController(
-				rootView: ContentView(
-					store: Store(
-						initialState: AppState(loggedInUser: nil,
-											   hasSeenWalkthrough: hasSeenWalkthrough!
-						),
-						reducer: reducer,
-						environment: env
-					)
-				).environmentObject(KeyboardFollower())
-			)
-			self.window = window
-			window.makeKeyAndVisible()
+            window.rootViewController = UIHostingController(
+                rootView: ContentView(
+                    store: Store(
+                        initialState: AppState(
+                            loggedInUser: nil,
+                            hasSeenWalkthrough: hasSeenWalkthrough!
+                        ),
+                        reducer: reducer,
+                        environment: env
+                    )
+                ).environmentObject(KeyboardFollower())
+            )
+            self.window = window
+            window.makeKeyAndVisible()
 		}
 	}
 

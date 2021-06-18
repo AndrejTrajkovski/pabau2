@@ -15,6 +15,8 @@ import CoreDataModel
 import CalendarList
 import ChooseLocationAndEmployee
 import ToastAlert
+import Combine
+import Form
 
 public typealias TabBarEnvironment = (
 	loginAPI: LoginAPI,
@@ -27,7 +29,7 @@ public typealias TabBarEnvironment = (
 )
 
 public struct TabBarState: Equatable {
-	var checkIn: CheckInContainerState?
+	var checkIn: CheckInNavigationState?
 	var clients: ClientsState
 	var calendar: CalendarState
 	var settings: SettingsState
@@ -42,7 +44,7 @@ public enum TabBarAction {
 	case addAppointment(AddAppointmentAction)
 	case communication(CommunicationAction)
 	case checkIn(CheckInContainerAction)
-	case delayStartPathway(appointment: Appointment, pathway: Pathway, template: PathwayTemplate)
+	case delayStartPathway(state: CheckInNavigationState)
 }
 
 struct PabauTabBar: View {
@@ -128,7 +130,8 @@ struct PabauTabBar: View {
 			}
 	}
 	
-	fileprivate func checkIn() -> IfLetStore<CheckInContainerState, CheckInContainerAction, CheckInNavigationView?> {
+	fileprivate func checkIn() -> IfLetStore<CheckInNavigationState, CheckInContainerAction, CheckInNavigationView?> {
+		print("checkIn()")
 		return IfLetStore(self.store.scope(
 			state: { $0.checkIn },
 			action: { .checkIn($0) }
@@ -148,11 +151,59 @@ struct PabauTabBar: View {
 private let audioQueue = DispatchQueue(label: "Audio Dispatch Queue")
 struct TimerId: Hashable { }
 
+func getForms(stepEntries: [Dictionary<Step.Id, StepEntry>.Element], formAPI: FormAPI, clientid: Client.ID) -> [Effect<CheckInPatientAction, Never>] {
+	return stepEntries
+		.compactMap {
+			return getForm(stepId: $0.key, stepEntry: $0.value, formAPI: formAPI, clientId: clientid)
+		}
+}
+
+func getForm(stepId: Step.Id, stepEntry: StepEntry, formAPI: FormAPI, clientId: Client.ID) -> Effect<CheckInPatientAction, Never>? {
+	
+	func getHTMLForm(formTemplateId: HTMLForm.ID) -> Effect<Result<HTMLForm, RequestError>, Never> {
+		return formAPI.getForm(templateId: formTemplateId, entryId: stepEntry.htmlFormInfo!.formEntryId)
+			.catchToEffect()
+	}
+	
+	if stepEntry.stepType.isHTMLForm {
+		guard let formTemplateId = stepEntry.htmlFormInfo?.templateIdToLoad else { return nil }
+		return getHTMLForm(formTemplateId: formTemplateId)
+			.map {
+				CheckInPatientAction.htmlForms(id: stepId, action: .htmlForm(HTMLFormAction.gotForm($0)))
+			}
+	} else {
+		switch stepEntry.stepType {
+		case .patientdetails:
+			return formAPI.getPatientDetails(clientId: clientId)
+				.map(ClientBuilder.init(client:))
+				.catchToEffect()
+				.map(PatientDetailsParentAction.gotGETResponse)
+				.map(CheckInPatientAction.patientDetails)
+		case .checkpatient:
+			return nil
+		case .photos:
+			return nil
+		case .aftercares:
+			return nil
+		case .patientComplete:
+			return nil
+		default:
+			return nil
+		}
+	}
+}
+
 public let tabBarReducer: Reducer<
 	TabBarState,
 	TabBarAction,
 	TabBarEnvironment
 > = Reducer.combine(
+	
+	checkInParentReducer.optional().pullback(
+		state: \TabBarState.checkIn,
+		action: /TabBarAction.checkIn,
+		environment: makeJourneyEnv(_:)
+	),
 	
 	showAddAppointmentReducer.pullback(
 		state: \TabBarState.self,
@@ -179,38 +230,89 @@ public let tabBarReducer: Reducer<
 	.init { state, action, env in
         
 		switch action {
-        
-		case .delayStartPathway(let appointment, let pathway, let template):
+		case .delayStartPathway(let checkInState):
 			
-			state.checkIn = CheckInContainerState(appointment: appointment,
-												  pathway: pathway,
-												  template: template)
-			return .merge([
+			state.checkIn = checkInState
+			
+			var returnEffects: [Effect<TabBarAction, Never>] = [
 				env.audioPlayer
 					.playCheckInSound()
 					.receive(on: audioQueue)
 					.fireAndForget(),
 				
-				Effect(value:TabBarAction.checkIn(CheckInContainerAction.checkInAnimationEnd))
-				.delay(for: .seconds(checkInAnimationDuration), scheduler: DispatchQueue.main)
-				.eraseToEffect()
+				Effect(value: TabBarAction.checkIn(CheckInContainerAction.checkInAnimationEnd))
+					.delay(for: .seconds(checkInAnimationDuration), scheduler: DispatchQueue.main)
+					.eraseToEffect()
+			]
+			
+			switch checkInState.loadingOrLoaded {
+			
+			case .loading(let loadingState):
+				
+				let getCombinedPathwaysResponse = getCombinedPathwayResponse(journeyAPI: env.journeyAPI,
+																			 checkInState: loadingState)
+					.map {
+						TabBarAction.checkIn(.loading(.gotCombinedPathwaysResponse($0)))
+					}
+				returnEffects.append(getCombinedPathwaysResponse)
+				
+			case .loaded(let loadedState):
+				
+				let getPatientForms = loadedState.patientCheckIn.htmlForms.compactMap { htmlStepState in
+					return htmlStepState.htmlFormParentState?.getForm(formAPI: env.formAPI)
+						.map {
+							TabBarAction.checkIn(CheckInContainerAction.patient(.htmlForms(id: htmlStepState.id, action: .htmlForm($0))))
+						}
+				}
+				
+				let getPatientFormsOneAfterAnother = Effect.concatenate(getPatientForms)
+				
+				returnEffects.append(getPatientFormsOneAfterAnother)
+			}
+			
+			return .merge(returnEffects)
+			
+		case .calendar(.appDetails(.choosePathwayTemplate(.matchResponse(.success(let pathway))))):
+			
+			guard let appDetails = state.calendar.appDetails,
+				  let template = appDetails.choosePathwayTemplate?.selectedPathway else { return .none }
+			
+			state.calendar.appDetails = nil
+			
+			let loadedState = CheckInLoadedState(appointment: appDetails.app,
+													pathway: pathway,
+													template: template)
+			print("here:", pathway, template)
+			let checkInState = CheckInNavigationState(loadedState: loadedState)
+			
+			return .merge([
+				Effect.init(value: TabBarAction.delayStartPathway(state: checkInState))
+					.delay(for: 0.2, scheduler: DispatchQueue.main)
+					.eraseToEffect(),
+				
+				.cancel(id: ToastTimerId())
 			])
 			
-		case .calendar(.appDetails(.buttons(.onPathway))):
-			break
-			//TODO
-//			guard let appointment = state.calendar.appDetails?.app else { break }
-//
-//			state.calendar.appDetails = nil
-//
-//			return .merge([
-//				Effect.init(value: TabBarAction.delayStartPathway(appointment: appointment))
-//					.delay(for: 0.2, scheduler: DispatchQueue.main)
-//					.eraseToEffect(),
-//
-//				.cancel(id: ToastTimerId())
-//			])
+		case .calendar(.appDetails(.choosePathway(.rows(let id, .select)))):
+			guard let app = state.calendar.appDetails?.app,
+				  let pathwayInfo = app.pathways[id: id] else { return .none }
+			
+			state.calendar.appDetails = nil
+			
+			let loadingCheckInState = CheckInLoadingState(appointment: app,
+														  pathwayId: pathwayInfo.pathwayId,
+														  pathwayTemplateId: pathwayInfo.pathwayTemplateId,
+														  pathwaysLoadingState: .loading)
+			let checkInState = CheckInNavigationState(loadingState: loadingCheckInState)
+			
+			return .merge([
+				Effect.init(value: TabBarAction.delayStartPathway(state: checkInState))
+					.delay(for: 0.2, scheduler: DispatchQueue.main)
+					.eraseToEffect(),
 				
+				.cancel(id: ToastTimerId())
+			])
+			
 		case .calendar(.onAddEvent(.appointment)):
 			state.calendar.isAddEventDropdownShown = false
 			let chooseLocAndEmp = ChooseLocationAndEmployeeState(locations: state.calendar.locations,

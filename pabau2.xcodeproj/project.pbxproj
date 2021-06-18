@@ -36,6 +36,7 @@
 		82BE2F4E23D97D9F00B3678A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 82BE2F4D23D97D9F00B3678A /* Assets.xcassets */; };
 		82BE2F5123D97D9F00B3678A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 82BE2F5023D97D9F00B3678A /* Preview Assets.xcassets */; };
 		82F6ADAE23F2C7B1001B3ACE /* PabauTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */; };
+		BA5863DD266F8D0C00F7BFEC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BA5863DC266F8D0C00F7BFEC /* LaunchScreen.storyboard */; };
 		BA6FD88F2645616C00ACB1B2 /* CoreDataModel in Frameworks */ = {isa = PBXBuildFile; productRef = BA6FD88E2645616C00ACB1B2 /* CoreDataModel */; };
 		BA6FD892264565E400ACB1B2 /* CoreStore in Frameworks */ = {isa = PBXBuildFile; productRef = BA6FD891264565E400ACB1B2 /* CoreStore */; };
 /* End PBXBuildFile section */
@@ -100,6 +101,7 @@
 		82E9C12524D035A60023B98B /* Journey */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Journey; sourceTree = "<group>"; };
 		82EF76FA265A876F006253AA /* ChooseLocationAndEmployee */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ChooseLocationAndEmployee; sourceTree = "<group>"; };
 		82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PabauTabBar.swift; sourceTree = "<group>"; };
+		BA5863DC266F8D0C00F7BFEC /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BA6FD88D26454B1F00ACB1B2 /* CoreDataModel */ = {isa = PBXFileReference; lastKnownFileType = folder; path = CoreDataModel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -230,6 +232,7 @@
 				8297A2B123D9BA0200D091FF /* Locales */,
 				82BE2F4723D97D9C00B3678A /* AppDelegate.swift */,
 				82BE2F4923D97D9C00B3678A /* SceneDelegate.swift */,
+				BA5863DC266F8D0C00F7BFEC /* LaunchScreen.storyboard */,
 				82BE2F4D23D97D9F00B3678A /* Assets.xcassets */,
 				82BE2F5523D97D9F00B3678A /* Info.plist */,
 				82811EF323E06BCB0066AFDC /* ContentView.swift */,
@@ -331,6 +334,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BA5863DD266F8D0C00F7BFEC /* LaunchScreen.storyboard in Resources */,
 				825BE7EA2436226300422910 /* checkIn.mp4 in Resources */,
 				82BE2F5123D97D9F00B3678A /* Preview Assets.xcassets in Resources */,
 				8297A2B523D9BA0200D091FF /* Localizable.strings in Resources */,
@@ -534,7 +538,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 23;
@@ -566,7 +569,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 23;
