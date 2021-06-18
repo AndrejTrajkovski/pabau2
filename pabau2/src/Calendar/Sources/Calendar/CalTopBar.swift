@@ -52,7 +52,7 @@ struct CalTopBar: View {
 			Divider()
 		}
 	}
-	
+
 	var addButton: some View {
 		HStack {
             if Constants.isPad {

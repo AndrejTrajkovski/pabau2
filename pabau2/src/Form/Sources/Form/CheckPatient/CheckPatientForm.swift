@@ -14,22 +14,26 @@ struct CheckPatientForm: View {
 	}
 
 	var body: some View {
-		print("CheckPatientForm body")
-		return ScrollView {
+		 ScrollView {
 			VStack {
-				PatientDetailsForm(store: Store.init(initialState: viewStore.state.clientBuilder,
-													 reducer: Reducer.empty,
-													 environment: { })
-				)
-				ForEach(viewStore.patForms.indices, id: \.self ) { index in
-					HTMLFormView(
-						store: Store(initialState: viewStore.patForms[index],
-									 reducer: Reducer.empty,
-									 environment: { }),
-						isCheckingDetails: true
-					)
-				}
-			}.disabled(true)
+                PatientDetailsForm(
+                    store: Store.init(
+                        initialState: viewStore.state.clientBuilder,
+                        reducer: Reducer.empty,
+                        environment: { }
+                    )
+                )
+                ForEach(viewStore.patForms.indices, id: \.self ) { index in
+                    HTMLFormView(
+                        store: Store(
+                            initialState: viewStore.patForms[index],
+                            reducer: Reducer.empty,
+                            environment: { }
+                        ),
+                        isCheckingDetails: true
+                    )
+                }
+            }.disabled(true)
 		}
 	}
 }

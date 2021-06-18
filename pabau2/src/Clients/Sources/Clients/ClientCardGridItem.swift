@@ -3,28 +3,57 @@ import Util
 import Model
 
 struct ClientCardGridItemView: View {
-//	let item: ClientCardGridItem
 	let title: String
 	let iconName: String
 	let number: Int?
-	var body: some View {
-		GeometryReaderPatch { geo in
-			VStack(spacing: 8) {
-				Image(systemName: self.iconName)
-					.resizable()
-					.aspectRatio(contentMode: .fit)
-					.foregroundColor(.accentColor)
-                    .frame(height: Constants.isPad ? 50 : 35)
-				if self.number != nil {
-					NumberEclipse(text: String(self.number!))
-				}
-                Text(self.title).font(.clientCardGridItemTitle)
 
-			}
-			.padding(16)
-			.frame(width: geo.size.width, height: geo.size.width)
+	var body: some View {
+		GeometryReaderPatch { _ in
+            if Constants.isPad {
+                iPadItemView
+            } else {
+                iPhoneItemView
+            }
 		}.border(Color(hex: "D8D8D8"), width: 0.5)
 	}
+
+    private var iPadItemView: some View {
+        VStack(spacing: 8) {
+            iconItemView
+            if let number = self.number {
+                NumberEclipse(text: String(number))
+            }
+            textItemView
+
+        }
+        .padding(16)
+    }
+
+    private var iPhoneItemView: some View {
+        HStack(spacing: 20) {
+            VStack(spacing: 5) {
+                iconItemView
+                if let number = self.number {
+                    NumberEclipse(text: String(number))
+                }
+            }.padding(.leading, 16)
+            textItemView
+            Spacer()
+        }
+    }
+
+    private var iconItemView: some View {
+        Image(systemName: self.iconName)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .foregroundColor(.accentColor)
+            .frame(width: 50, height: Constants.isPad ? 50 : 25)
+    }
+
+    private var textItemView: some View {
+        Text(self.title).font(.clientCardGridItemTitle)
+    }
+
 }
 
 public enum ClientCardGridItem: Equatable, CaseIterable {

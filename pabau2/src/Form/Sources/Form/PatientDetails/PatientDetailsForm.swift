@@ -5,17 +5,38 @@ import Model
 import SharedComponents
 import SwiftDate
 
+fileprivate struct WrapStack<Content: View>: View {
+    let content: Content
+
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+
+    var body: some View {
+        if Constants.isPad {
+            HStack {
+                content
+            }
+        } else {
+            content
+        }
+    }
+}
+
 public struct PatientDetailsForm: View {
 	let store: Store<ClientBuilder, PatientDetailsAction>
+    @State private var isDisabled: Bool = false
 
-	public init(store: Store<ClientBuilder, PatientDetailsAction>) {
+    public init(store: Store<ClientBuilder, PatientDetailsAction>, isDisabled: Bool = false) {
 		self.store = store
+        self._isDisabled = State(wrappedValue: isDisabled)
+        print(isDisabled, "isEditing")
 	}
-	
+
 	public var body: some View {
 		ScrollView {
-			VStack {
-                HStack {
+            VStack(alignment: .leading) {
+                WrapStack {
                     SalutationPicker(
                         store: store.scope(
                             state: { $0.salutation },
@@ -36,7 +57,7 @@ public struct PatientDetailsForm: View {
                         title: Texts.lastName
                     )
                 }
-				HStack {
+                WrapStack {
 					PatientDetailsField(Texts.dob) {
                         DatePickerTCA(
                             mode: .date,
@@ -64,8 +85,7 @@ public struct PatientDetailsForm: View {
                     )
                     .keyboardType(.phonePad)
 				}
-				
-				HStack {
+                WrapStack {
                     TextAndTextFieldStore(
                         store: store.scope(
                             state: { $0.email },
@@ -86,8 +106,7 @@ public struct PatientDetailsForm: View {
                         title: Texts.otherStreet
                     )
 				}
-				
-				HStack {
+                WrapStack {
                     TextAndTextFieldStore(
                         store: store.scope(
                             state: { $0.mailingPostal },
@@ -108,7 +127,7 @@ public struct PatientDetailsForm: View {
                         title: Texts.county
                     )
 				}
-				HStack {
+                WrapStack {
                     TextAndTextFieldStore(
                         store: store.scope(
                             state: { $0.mailingCountry },
@@ -123,10 +142,9 @@ public struct PatientDetailsForm: View {
                         ),
                         title: Texts.howDidUHear
                     )
-					Spacer()
-						.fixedSize(horizontal: false, vertical: true)
+                    Spacer()
+                        .fixedSize(horizontal: false, vertical: true)
 				}
-				
 				Group {
                     SwitchCell(
                         text: Texts.emailConfirmations,
@@ -157,7 +175,7 @@ public struct PatientDetailsForm: View {
                         )
                     )
 				}.switchesSection(title: Texts.communications)
-			}
+            }.disabled(isDisabled)
 		}
 	}
 }
@@ -167,9 +185,11 @@ struct TextAndTextFieldStore: View {
 	let title: String
 	var body: some View {
 		WithViewStore(store) { viewStore in
-			TextAndTextField(title,
-							 viewStore.binding(get: { $0 },
-											   send: TextChangeAction.textChange))
+			TextAndTextField(
+                title,
+				viewStore.binding(get: { $0 },
+				send: TextChangeAction.textChange)
+            )
 		}
 	}
 }

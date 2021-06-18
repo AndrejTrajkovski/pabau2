@@ -135,9 +135,10 @@ struct ClientCardGrid: View {
             }
             .layout {
                 return .grid(
-                    layoutMode: .fixedNumberOfColumns(Constants.isPad ? 4 : 3),
+                    layoutMode: .fixedNumberOfColumns(Constants.isPad ? 4 : 1),
                     itemSpacing: 0,
-                    lineSpacing: 0
+                    lineSpacing: 0,
+                    itemSize: .estimated(Constants.isPad ? 150 : 64)
                 )
 			}
 		}

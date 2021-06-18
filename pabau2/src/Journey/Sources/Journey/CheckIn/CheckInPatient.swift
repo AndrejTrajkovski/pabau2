@@ -144,10 +144,13 @@ func patientForm(stepType: StepType,
 				 store: Store<CheckInPatientState, CheckInPatientAction>) -> some View {
 	switch stepType {
 	case .patientdetails:
-		PatientDetailsForm(store:
-							store.scope(state: { $0.patientDetails},
-										action: { .patientDetails($0) })
-		)
+        PatientDetailsForm(
+            store:
+                store.scope(
+                    state: { $0.patientDetails},
+                    action: { .patientDetails($0) }
+                )
+        )
 	case .medicalhistory:
 		ForEachStore(store.scope(state: { $0.medicalHistories },
 								 action: CheckInPatientAction.medicalHistories(id: action:)),

@@ -79,21 +79,30 @@ struct PatientDetailsClientCard: ClientCardChild {
 	let store: Store<PatientDetailsClientCardState, PatientDetailsClientCardAction>
 	@ObservedObject var viewStore: ViewStore<PatientDetailsClientCardState, PatientDetailsClientCardAction>
 
-	var body: some View {
-		Group {
-			IfLetStore(store.scope(
-						state: { $0.childState.state },
-							  action: { .form($0) }),
-					   then: PatientDetailsForm.init(store:))
-			.padding()
-			.disabled(true)
-			NavigationLink.emptyHidden(viewStore.state.editingClient != nil,
-									   IfLetStore(self.store.scope(
-													state: { $0.editingClient },
-													action: { .editingClient($0)}),
-												  then: ClientCardAddClient.init(store:)
-									   )
-			)
-		}
-	}
+    var body: some View {
+        Group {
+            IfLetStore(
+                store.scope(
+                    state: { $0.childState.state },
+                    action: { .form($0) }),
+                then: { store in
+                    PatientDetailsForm.init(
+                        store: store,
+                        isDisabled: true
+                    )
+                }
+            )
+            .padding()
+            NavigationLink.emptyHidden(
+                viewStore.state.editingClient != nil,
+                IfLetStore(
+                    self.store.scope(
+                        state: { $0.editingClient },
+                        action: { .editingClient($0)}
+                    ),
+                    then: ClientCardAddClient.init(store:)
+                )
+            )
+        }
+    }
 }
