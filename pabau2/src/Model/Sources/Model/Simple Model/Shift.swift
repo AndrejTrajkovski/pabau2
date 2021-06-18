@@ -141,6 +141,7 @@ public struct ShiftSchema: Codable {
 }
 
 extension Shift {
+    static func mock() -> Shift {
        Shift(
             rotaId: 6274414,
             date: Date.init("2021-06-10")!,
@@ -154,5 +155,4 @@ extension Shift {
             roomId: "0"
         )
     }
-
 }

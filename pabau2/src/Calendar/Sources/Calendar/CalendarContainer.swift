@@ -294,7 +294,13 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			break
 		case .addBookoutAction:
 			break
-        case .addShift:
+        case .addShift(let shiftAction):
+            switch shiftAction {
+            case .shiftCreated(let response):
+                break
+            default:
+                break
+            }
 			break
 		case .employeeFilters(.gotLocationsResponse(_)):
 			break
