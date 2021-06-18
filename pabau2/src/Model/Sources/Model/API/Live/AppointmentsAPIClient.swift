@@ -75,12 +75,12 @@ extension APIClient {
             queryParams: commonAnd(other: params)
         )
             .effect()
-        .map{ response in return response.appointments.first! }
+        .map { response in response.appointments.first! }
         .eraseToEffect()
     }
     
-    public func updateAppointment(appointment: AppointmentBuilder) -> Effect<PlaceholdeResponse, RequestError> {
-        let requestBuilder: RequestBuilder<PlaceholdeResponse>.Type = requestBuilderFactory.getBuilder()
+    public func updateAppointment(appointment: AppointmentBuilder) -> Effect<CalendarEvent.Id, RequestError> {
+        let requestBuilder: RequestBuilder<VoidAPIResponse>.Type = requestBuilderFactory.getBuilder()
         
         var params: [String : Any] = [:]
         
@@ -108,6 +108,8 @@ extension APIClient {
             queryParams: commonAnd(other: params)
         )
         .effect()
+        .map { _ in appointment.appointmentID! }
+        .eraseToEffect()
     }
     
     public func appointmentChangeStatus(appointmentId: Appointment.ID, status: String) -> Effect<Bool, RequestError> {

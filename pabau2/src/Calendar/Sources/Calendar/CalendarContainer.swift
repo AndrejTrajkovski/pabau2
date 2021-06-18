@@ -171,6 +171,20 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 				returnEffects.append(showAddApp)
 			}
 			return .merge(returnEffects)
+        case .appDetails(.onResponseRescheduleAppointment(let response)):
+            switch response {
+            case .success(let calendarEventId):
+                var calendarEvents = state.appointments.flatten().filter { $0.id != calendarEventId }
+                
+                state.appointments.refresh(
+                    events: calendarEvents,
+                    locationsIds: state.chosenLocationsIds,
+                    employees: state.selectedEmployeesIds(),
+                    rooms: state.selectedRoomsIds()
+                )
+            case .failure:
+                break
+            }
 		case .onAppDetailsDismiss:
 			
 			state.appDetails = nil

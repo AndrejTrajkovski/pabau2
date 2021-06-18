@@ -7,7 +7,7 @@ public protocol ClientsAPI {
 	
 	func getServices() -> Effect<[Service], RequestError>
 	func createAppointment(appointment: AppointmentBuilder) -> Effect<CalendarEvent, RequestError>
-	func updateAppointment(appointment: AppointmentBuilder) -> Effect<PlaceholdeResponse, RequestError>
+    func updateAppointment(appointment: AppointmentBuilder) -> Effect<CalendarEvent.Id, RequestError>
     
 	func getAppointments(clientId: Client.Id) -> Effect<[CCAppointment], RequestError>
     func getAppointmentStatus() -> Effect<[AppointmentStatus], RequestError>
