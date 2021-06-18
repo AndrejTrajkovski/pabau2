@@ -128,10 +128,8 @@ extension APIClient {
         return result
 	}
 	
-	public func createShiftOld(shiftSheme: ShiftSchema) -> Effect<PlaceholdeResponse, RequestError> {
+	public func createShift(shiftSheme: ShiftSchema) -> Effect<PlaceholdeResponse, RequestError> {
 		let requestBuilder: RequestBuilder<PlaceholdeResponse>.Type = requestBuilderFactory.getBuilder()
-		
-	  
 		let shiftShemeData = try? JSONEncoder().encode(shiftSheme)
 		let params = shiftShemeData?.dictionary() ?? [:]
 		
@@ -143,28 +141,6 @@ extension APIClient {
 		)
 		.effect()
 	}
-    
-    
-    public func createShift(shiftSheme: ShiftSchema) -> Effect<Shift, RequestError> {
-        let requestBuilder: RequestBuilder<ShiftCreatedResponse>.Type = requestBuilderFactory.getBuilder()
-        
-      
-        let shiftShemeData = try? JSONEncoder().encode(shiftSheme)
-        let params = shiftShemeData?.dictionary() ?? [:]
-        
-        return requestBuilder.init(
-            method: .POST,
-            baseUrl: baseUrl,
-            path: .createShift,
-            queryParams: commonAnd(other: params)
-        )
-        .effect()
-        .map { response in 
-            Shift.mock()
-        }
-        //.map(\.shift)
-        .eraseToEffect()
-    }
 	
 //	public func getBookoutReasons() -> Effect<[BookoutReason], RequestError> {
 //		let requestBuilder: RequestBuilder<[BookoutReason]>.Type = requestBuilderFactory.getBuilder()

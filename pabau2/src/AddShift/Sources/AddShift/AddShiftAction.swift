@@ -6,7 +6,7 @@ import Foundation
 public enum AddShiftAction {
 	case isPublished(ToggleAction)
 	case chooseLocAndEmp(ChooseLocationAndEmployeeAction)
-	case shiftCreated(Result<Shift, RequestError>)
+	case shiftCreated(Result<PlaceholdeResponse, RequestError>)
 	case startDate(Date?)
 	case startTime(Date?)
 	case endTime(Date?)
