@@ -240,7 +240,6 @@ public let tabBarReducer: Reducer<
 
 	.init { state, action, env in
 		switch action {
-		
 		case .delayStartPathway(let checkInState):
 			
 			state.checkIn = checkInState
@@ -341,7 +340,8 @@ public let tabBarReducer: Reducer<
 					.chooseEmployee(
 						.gotEmployeeResponse(let result)))):
 			state.calendar.update(employeesResult: result.map(\.state))
-			
+        case .addAppointment(AddAppointmentAction.appointmentCreated(let response)):
+            return Effect(value: TabBarAction.calendar(.appointmentCreatedResponse(response)))
 		default:
 			break
 		}

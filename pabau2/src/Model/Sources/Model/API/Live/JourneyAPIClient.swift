@@ -130,8 +130,6 @@ extension APIClient {
 	
 	public func createShift(shiftSheme: ShiftSchema) -> Effect<PlaceholdeResponse, RequestError> {
 		let requestBuilder: RequestBuilder<PlaceholdeResponse>.Type = requestBuilderFactory.getBuilder()
-		
-	  
 		let shiftShemeData = try? JSONEncoder().encode(shiftSheme)
 		let params = shiftShemeData?.dictionary() ?? [:]
 		

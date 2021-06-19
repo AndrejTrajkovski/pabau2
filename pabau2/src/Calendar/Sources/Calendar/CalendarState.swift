@@ -78,7 +78,7 @@ extension CalendarState {
 				chosenLocationsIds: chosenLocationsIds,
 				subsections: employees,
 				chosenSubsectionsIds: chosenEmployeesIds,
-				shifts: shifts
+				shifts: shifts[selectedDate] ?? [:]
 			)
 		}
 		set {
@@ -91,7 +91,7 @@ extension CalendarState {
 				self.chosenLocationsIds = $0.chosenLocationsIds
 				self.employees = $0.subsections
 				self.chosenEmployeesIds = $0.chosenSubsectionsIds
-				self.shifts = $0.shifts
+				self.shifts[$0.selectedDate] = $0.shifts
 			}
 		}
 	}

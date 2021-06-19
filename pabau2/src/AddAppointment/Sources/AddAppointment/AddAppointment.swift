@@ -16,41 +16,42 @@ public struct AddAppointment: View {
 		self.viewStore = ViewStore(store)
 	}
 
-    public var body: some View {
-        VStack {
-            SwitchCell(
-                text: "All Day",
-                store: store.scope(
-                    state: { $0.isAllDay },
-                    action: { .isAllDay($0)}
-                )
-            ).wrapAsSection(title: "Add Appointment")
-            AddAppSections(store: self.store)
-                .environmentObject(KeyboardFollower())
-            AddEventPrimaryBtn(title: Texts.saveAppointment) {
-                self.viewStore.send(.saveAppointmentTap)
-            }.padding([.top, .bottom], 50)
-        }
-        .addEventWrapper(onXBtnTap: { self.viewStore.send(.closeBtnTap) })
-        .loadingView(.constant(self.viewStore.state.showsLoadingSpinner))
-        .alert(
-            isPresented: viewStore.binding(
-                get: { $0.alertBody?.isShow == true },
-                send: .cancelAlert
-            )
-        ) {
-            Alert(
-                title: Text(self.viewStore.state.alertBody?.title ?? ""),
-                message: Text(self.viewStore.state.alertBody?.subtitle ?? ""),
-                dismissButton: .default(
-                    Text(self.viewStore.state.alertBody?.secondaryButtonTitle ?? ""),
-                    action: {
-                        self.viewStore.send(.cancelAlert)
-                    }
-                )
-            )
-        }
-    }
+	public var body: some View {
+		VStack {
+			SwitchCell(
+				text: "All Day",
+				store: store.scope(
+					state: { $0.isAllDay },
+					action: { .isAllDay($0)}
+				)
+			).wrapAsSection(title: "Add Appointment")
+			AddAppSections(store: self.store)
+				.environmentObject(KeyboardFollower())
+			AddEventPrimaryBtn(title: Texts.saveAppointment) {
+				self.viewStore.send(.saveAppointmentTap)
+			}
+		}
+		.addEventWrapper(onXBtnTap: { self.viewStore.send(.closeBtnTap) })
+		.loadingView(.constant(self.viewStore.state.showsLoadingSpinner))
+        .toast(store: store.scope(state: \.toast))
+		.alert(
+			isPresented: viewStore.binding(
+				get: { $0.alertBody?.isShow == true },
+				send: .cancelAlert
+			)
+		) {
+			Alert(
+				title: Text(self.viewStore.state.alertBody?.title ?? ""),
+				message: Text(self.viewStore.state.alertBody?.subtitle ?? ""),
+				dismissButton: .default(
+					Text(self.viewStore.state.alertBody?.secondaryButtonTitle ?? ""),
+					action: {
+						self.viewStore.send(.cancelAlert)
+					}
+				)
+			)
+		}
+	}
 }
 
 struct PlusTitleView: View {

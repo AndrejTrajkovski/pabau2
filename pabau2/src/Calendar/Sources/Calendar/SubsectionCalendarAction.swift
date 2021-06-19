@@ -18,5 +18,5 @@ public enum SubsectionCalendarAction<Subsection: Identifiable & Equatable> {
 	case addBookout(startDate: Date,
 					durationMins: Int,
 					dropKeys:(location: Location.ID, subsection: Subsection.ID))
-    case appointmentEdited(Result<PlaceholdeResponse, RequestError>)
+    case appointmentEdited(Result<CalendarEvent.Id, RequestError>)
 }

@@ -77,7 +77,7 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 				.eraseToEffect()
 				.cancellable(id: GetAppointmentsCancelID(), cancelInFlight: true)
 		}
-		
+        print(action)
 		switch action {
 		
 		case .addEventDelay(let eventType):
@@ -92,6 +92,8 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 				state.appsLS = .gotSuccess
 				let shifts = calendarResponse.rota.values.flatMap { $0.shift }
 				state.shifts = Shift.convertToCalendar(shifts: shifts)
+//				state.chosenEmployeesIds = Dictionary.init(grouping: shifts, by: { $0.locationID })
+//					.mapValues { $0.map { $0.userID }}
 				state.appointments.refresh(
 					events: calendarResponse.appointments,
 					locationsIds: state.chosenLocationsIds,
@@ -99,11 +101,14 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 					rooms: state.selectedRoomsIds()
 				)
 			case .failure(let error):
+				print(error)
 				state.appsLS = .gotError(error)
 			}
 		case .datePicker(.selectedDate(let date)):
 			
-			state.selectedDate = date
+			//+1 hour because the framework alway returns 23:00
+			let convertFrameworkDate = date + 1.hours
+			state.selectedDate = convertFrameworkDate
 			
 			return getAppointments()
 		case .calTypePicker(.onSelect(let calType)):
@@ -159,6 +164,20 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 				returnEffects.append(showAddApp)
 			}
 			return .merge(returnEffects)
+        case .appDetails(.onResponseRescheduleAppointment(let response)):
+            switch response {
+            case .success(let calendarEventId):
+                var calendarEvents = state.appointments.flatten().filter { $0.id != calendarEventId }
+                
+                state.appointments.refresh(
+                    events: calendarEvents,
+                    locationsIds: state.chosenLocationsIds,
+                    employees: state.selectedEmployeesIds(),
+                    rooms: state.selectedRoomsIds()
+                )
+            case .failure:
+                break
+            }
 		case .onAppDetailsDismiss:
 			state.appDetails = nil
 			return .cancel(id: ToastTimerId())
@@ -175,8 +194,6 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 		case .appDetails(.close):
 			state.appDetails = nil
 			return .cancel(id: ToastTimerId())
-		case .addBookoutAction(.close):
-			state.addBookoutState = nil
 		case .changeCalScope:
 			state.scope = state.scope == .week ? .month : .week
 		case .datePicker:
@@ -224,6 +241,26 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			if state.appsLS == .initial && state.employeesLS == .gotSuccess {
 				return getAppointments()
 			}
+        case .addBookoutAction(.close):
+            state.addBookoutState = nil
+        case .addBookoutAction(.appointmentCreated(let response)):
+            switch response {
+            case .success(let calendarEvent):
+                state.appsLS = .gotSuccess
+                
+                var calendarEvents = state.appointments.flatten()
+                calendarEvents.append(calendarEvent)
+                
+                state.appointments.refresh(
+                    events: calendarEvents,
+                    locationsIds: state.chosenLocationsIds,
+                    employees: state.selectedEmployeesIds(),
+                    rooms: state.selectedRoomsIds()
+                )
+            case .failure(let error): // Case treated in addAppTapBtnReducer
+                break
+            }
+
 		case .addBookoutAction(.chooseLocAndEmp(.chooseLocation(.gotLocationsResponse(let result)))),
 			 .addShift(.chooseLocAndEmp(.chooseLocation(.gotLocationsResponse(let result)))):
 			state.update(locationsResult: result.map(\.state))
@@ -258,7 +295,13 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			break
 		case .addBookoutAction:
 			break
-		case .addShift:
+        case .addShift(let shiftAction):
+            switch shiftAction {
+            case .shiftCreated(let response):
+                break
+            default:
+                break
+            }
 			break
 		case .employeeFilters(.gotLocationsResponse(_)):
 			break
@@ -268,7 +311,26 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			break
 		case .list(.searchedText(_)):
 			break
-		}
+        case .refresh:
+            return getAppointments()
+        case .appointmentCreatedResponse(let response):
+            switch response {
+            case .success(let calendarEvent):
+                state.appsLS = .gotSuccess
+                
+                var calendarEvents = state.appointments.flatten()
+                calendarEvents.append(calendarEvent)
+                
+                state.appointments.refresh(
+                    events: calendarEvents,
+                    locationsIds: state.chosenLocationsIds,
+                    employees: state.selectedEmployeesIds(),
+                    rooms: state.selectedRoomsIds()
+                )
+            case .failure(let error): // Case treated in addAppTapBtnReducer
+                break
+            }
+        }
 		return .none
 	}
 )
@@ -279,25 +341,25 @@ public struct CalendarContainer: View {
 	public var body: some View {
 		WithViewStore(store) { viewStore in
 			ZStack(alignment: .topTrailing) {
-                    VStack(spacing: 0) {
-                        CalTopBar(store: store.scope(state: { $0 }))
-                        CalendarDatePicker(
-                            store: self.store.scope(
-                                state: { $0.selectedDate },
-                                action: { .datePicker($0)}
-                            ),
-                            isWeekView: viewStore.state.appointments.calendarType == Appointments.CalendarType.week,
-                            scope: viewStore.scope
-                        )
-                        CalendarWrapper(store: self.store)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    }
-                    if viewStore.state.isShowingFilters {
-                        FiltersWrapper(store: store)
-                            .transition(.moveAndFade).padding(.top, Constants.statusBarHeight)
-                    }
-            }
-            .ignoresSafeArea()
+				VStack(spacing: 0) {
+					CalTopBar(store: store.scope(state: { $0 }))
+					CalendarDatePicker(
+						store: self.store.scope(
+							state: { $0.selectedDate },
+							action: { .datePicker($0)}
+						),
+						isWeekView: viewStore.state.appointments.calendarType == Appointments.CalendarType.week,
+						scope: viewStore.scope
+					)
+					CalendarWrapper(store: self.store)
+						.frame(maxWidth: .infinity, maxHeight: .infinity)
+				}
+				if viewStore.state.isShowingFilters {
+					FiltersWrapper(store: store)
+						.transition(.moveAndFade).padding(.top, Constants.statusBarHeight)
+				}
+			}
+			.ignoresSafeArea()
 			.fullScreenCover(
 				isPresented:
 					Binding(

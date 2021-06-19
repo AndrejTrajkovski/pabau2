@@ -5,7 +5,7 @@ import SharedComponents
 public let chooseRepeatReducer: Reducer<ChooseRepeatState, ChooseRepeatAction, AppDetailsEnvironment> = .init { state, action, env in
     switch action {
     case .onBackBtn:
-        state.isRepeatActive = false
+        break
     case .onChangeInterval(let interval):
         state.chosenRepeat = interval.map { RepeatOption(interval: $0, date: Date())}
     case .onSelectedOkCalendar(let date):

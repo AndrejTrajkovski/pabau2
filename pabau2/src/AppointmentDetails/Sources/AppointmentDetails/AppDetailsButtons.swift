@@ -14,9 +14,10 @@ public let appDetailsButtonsReducer: Reducer<AppDetailsButtonsState, AppDetailsB
 	case .onStatus:
 		break
 	case .onRepeat:
-		state.isRepeatActive = true
+		//state.isRepeatActive = true
+        break
 	case .onReschedule:
-		state.isRescheduleActive = true
+        break
 	case .onPathway:
 		break
 	}
@@ -118,13 +119,13 @@ struct AppDetailsButtons: View {
 	@ViewBuilder
 	var reschedule: some View {
 		NavigationLink(
-			destination: IfLetStore(store.scope(state: { $0.chooseRepeat },
-												action: { .chooseRepeat($0) }),
-									then: ChooseRepeat.init(store:)
+			destination: IfLetStore(store.scope(state: { $0.chooseReschedule },
+												action: { .chooseReschedule($0) }),
+                                    then: ChooseReschedule.init(store: )
 			),
 			isActive: viewStore.binding(
-				get: \.chooseRepeat.isRepeatActive,
-				send: { $0 ? AppDetailsAction.buttons(.onRepeat) : AppDetailsAction.chooseRepeat(.onBackBtn) }
+				get: \.chooseReschedule.isRescheduleActive,
+                send: { $0 ? AppDetailsAction.buttons(.onReschedule) : AppDetailsAction.chooseReschedule(.onBackButton) }
 			)
 		) {
 			TimeSlotButton(
