@@ -29,8 +29,9 @@ public struct AvatarView: View {
 			Group {
 				if avatarUrl != nil {
 					WebImage(url: URL(string: avatarUrl!))
-						.resizable()
+                        .resizable()
 						.indicator(.activity) // Activity Indicator
+                        .scaledToFill()
 						.clipShape(Circle())
 				} else {
 					Text(initials.uppercased())

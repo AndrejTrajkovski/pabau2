@@ -15,9 +15,11 @@ public struct ListCellAvatarView: View {
 	let font: Font
 	let bgColor: Color
 	public var body: some View {
-		AvatarView(avatarUrl: appointment.clientPhoto,
-				   initials: appointment.employeeInitials,
-				   font: font,
-				   bgColor: bgColor)
+        AvatarView(
+            avatarUrl: appointment.clientPhoto,
+            initials: appointment.employeeInitials,
+            font: font,
+            bgColor: bgColor
+        )
 	}
 }

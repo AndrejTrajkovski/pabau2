@@ -74,19 +74,24 @@ public enum ClientCardAddClientAction: Equatable {
 
 struct ClientCardAddClient: View {
 	let store: Store<AddClientState, ClientCardAddClientAction>
-	
+
 	var body: some View {
-		WithViewStore(self.store) { viewStore in
-			AddClient(store: store.scope(state: { $0 }, action: { .addClient($0) }))
-				.navigationBarItems(
-					leading:
-						MyBackButton(text: Texts.back, action: {
-							viewStore.send(.onBackFromAddClient)
-						}), trailing:
-							Button(action: { viewStore.send(.saveClient) },
-								   label: { Text(Texts.save) }
-							)
-				).navigationBarBackButtonHidden(true)
-		}
+        WithViewStore(self.store) { viewStore in
+            AddClient(
+                store: store.scope(
+                    state: { $0 },
+                    action: { .addClient($0) })
+            )
+            .navigationBarItems(
+                leading:
+                    MyBackButton(text: Texts.back, action: {
+                        viewStore.send(.onBackFromAddClient)
+                    }), trailing:
+                        Button(
+                            action: { viewStore.send(.saveClient) },
+                            label: { Text(Texts.save) }
+                        )
+            ).navigationBarBackButtonHidden(true)
+        }
 	}
 }

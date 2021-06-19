@@ -77,7 +77,7 @@ public struct ChooseBookoutReasonView: View {
 		self.viewStore = ViewStore(store)
 		UITableViewHeaderFooterView.appearance().tintColor = UIColor.clear
 	}
-	
+
 	public var body: some View {
 		VStack {
 			SearchView(

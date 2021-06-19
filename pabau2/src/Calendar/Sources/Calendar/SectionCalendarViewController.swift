@@ -9,7 +9,7 @@ import Appointments
 public class SectionCalendarViewController<Subsection: Identifiable & Equatable>: BaseCalendarViewController {
 	
 	let viewStore: ViewStore<CalendarSectionViewState<Subsection>, SubsectionCalendarAction<Subsection>>
-	
+
 	init(_ viewStore: ViewStore<CalendarSectionViewState<Subsection>, SubsectionCalendarAction<Subsection>>) {
 		
 		self.viewStore = viewStore
@@ -18,6 +18,7 @@ public class SectionCalendarViewController<Subsection: Identifiable & Equatable>
 
 	public override func viewDidLoad() {
 		super.viewDidLoad()
+
 		calendarView.setupCalendar(setDate: viewStore.state.selectedDate)
 		calendarView.reload(state: viewStore.state)
 		
@@ -94,12 +95,27 @@ extension SectionCalendarViewController: SectionLongPressDelegate {
 		guard let section = startPageAndSectionIdx.0,
 			  let subsection = startPageAndSectionIdx.1 else { return }
 		let startKeys = (section as! Location.ID, subsection as! Subsection.ID)
-		presentAlert(onDate, anchorView, weekView,
-					 onAddBookout: { [weak self] in
-						self!.viewStore.send(.addBookout(startDate: onDate, durationMins: weekView.addNewDurationMins, dropKeys: startKeys))
-					 }, onAddAppointment: { [weak self] in
-						self!.viewStore.send(.addAppointment(startDate: onDate, durationMins: weekView.addNewDurationMins, dropKeys: startKeys))
-					})
+        
+        presentAlert(
+            onDate, anchorView, weekView,
+            onAddBookout: { [unowned self] in
+                self.viewStore.send(
+                    .addBookout(
+                        startDate: onDate,
+                        durationMins: weekView.addNewDurationMins,
+                        dropKeys: startKeys
+                    )
+                )
+            }, onAddAppointment: { [unowned self] in
+                self.viewStore.send(
+                    .addAppointment(
+                        startDate: onDate,
+                        durationMins: weekView.addNewDurationMins,
+                        dropKeys: startKeys
+                    )
+                )
+            }
+        )
 	}
 }
 

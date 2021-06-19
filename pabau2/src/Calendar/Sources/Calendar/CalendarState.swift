@@ -31,15 +31,15 @@ public struct CalendarState: Equatable {
 	public var rooms: [Location.Id: IdentifiedArrayOf<Room>]
 	public var chosenEmployeesIds: [Location.Id: [Employee.Id]]
 	var chosenRoomsIds: [Location.Id: [Room.Id]]
-	
+
 	var scope: FSCalendarScope = .week
 	var isShowingFilters: Bool
 	var expandedLocationsIds: Set<Location.Id>
-	
+
 	public var appDetails: AppDetailsState?
 	public var addBookoutState: AddBookoutState?
 	public var addShift: AddShiftState?
-	
+
 	public var selectedDate: Date = DateFormatter.yearMonthDay.date(from: "2021-03-11")!
 	public var chosenLocationsIds: Set<Location.Id>
 }

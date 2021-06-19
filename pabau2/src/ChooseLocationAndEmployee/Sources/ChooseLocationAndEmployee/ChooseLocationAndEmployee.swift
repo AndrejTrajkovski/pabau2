@@ -38,40 +38,44 @@ public struct ChooseLocationAndEmployee: View {
 		}
 	}
 	
-	public var body: some View {
-		HStack(spacing: 24.0) {
-			TitleAndValueLabel(
-				"LOCATION",
-				viewStore.state.locationName,
-				viewStore.state.locationColor,
-				.constant(viewStore.locationError)
-			).onTapGesture {
-				self.viewStore.send(.onChooseLocation)
-			}
-			TitleAndValueLabel(
-				"WITH",
-				viewStore.state.employeeName,
-				viewStore.state.employeeColor,
-				.constant(viewStore.employeeError)
-			).onTapGesture {
-				self.viewStore.send(.onChooseEmployee)
-			}
-		}
-		NavigationLink.emptyHidden(viewStore.isChooseEmployeeActive,
-								   IfLetStore(
-									store.scope(
-										state: { $0.chooseEmployeeState },
-										action: { .chooseEmployee($0 )}),
-									then: ChooseEmployeesView.init(store:)
-								   )
-		)
-		NavigationLink.emptyHidden(viewStore.isChooseLocationActive,
-								   IfLetStore(
-									store.scope(
-										state: { $0.chooseLocationState },
-										action: { .chooseLocation($0 )}),
-									then: ChooseLocationView.init(store:)
-								   )
-		)
-	}
+    public var body: some View {
+//        VStack {
+            HStack(spacing: 24.0) {
+                TitleAndValueLabel(
+                    "LOCATION",
+                    viewStore.state.locationName,
+                    viewStore.state.locationColor,
+                    .constant(viewStore.locationError)
+                ).onTapGesture {
+                    self.viewStore.send(.onChooseLocation)
+                }
+                TitleAndValueLabel(
+                    "WITH",
+                    viewStore.state.employeeName,
+                    viewStore.state.employeeColor,
+                    .constant(viewStore.employeeError)
+                ).onTapGesture {
+                    self.viewStore.send(.onChooseEmployee)
+                }
+            }
+            NavigationLink.emptyHidden(
+                viewStore.isChooseEmployeeActive,
+                IfLetStore(
+                    store.scope(
+                        state: { $0.chooseEmployeeState },
+                        action: { .chooseEmployee($0 )}),
+                    then: ChooseEmployeesView.init(store:)
+                )
+            )
+            NavigationLink.emptyHidden(
+                viewStore.isChooseLocationActive,
+                IfLetStore(
+                    store.scope(
+                        state: { $0.chooseLocationState },
+                        action: { .chooseLocation($0 )}),
+                    then: ChooseLocationView.init(store:)
+                )
+            )
+//        }
+    }
 }

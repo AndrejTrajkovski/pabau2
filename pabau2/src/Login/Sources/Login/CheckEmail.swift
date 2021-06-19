@@ -25,6 +25,7 @@ public struct CheckEmail: View {
 
 	let resetPassStore: Store<ResetPasswordState, ResetPasswordAction>
 	let passChangedStore: Store<[LoginNavScreen], PassChangedAction>
+    
 	public init(store: Store<[LoginNavScreen], CheckEmailAction>,
 				resetPassStore: Store<ResetPasswordState, ResetPasswordAction>,
 				passChangedStore: Store<[LoginNavScreen], PassChangedAction>) {
@@ -33,16 +34,21 @@ public struct CheckEmail: View {
 		self.resetPassStore = resetPassStore
 		self.passChangedStore = passChangedStore
 	}
-	let content = WalkthroughContentContent(title: Texts.checkYourEmail,
-											description: Texts.checkEmailDesc,
-											imageTitle: "illu-check-email")
+    
+    let content = WalkthroughContentContent(
+        title: Texts.checkYourEmail,
+        description: Texts.checkEmailDesc,
+        imageTitle: "illu-check-email"
+    )
+    
     public var body: some View {
-        WalkthroughContentAndButton(content: content,
-                                    btnTitle: Texts.signIn,
-                                    btnAction: {
-                                        self.viewStore.send(.resetPassTapped)
-                                        self.viewStore.send(.backBtnTapped)
-                                    }
+        WalkthroughContentAndButton(
+            content: content,
+            btnTitle: Texts.signIn,
+            btnAction: {
+                self.viewStore.send(.resetPassTapped)
+                self.viewStore.send(.backBtnTapped)
+            }
         ).customBackButton { self.viewStore.send(.backBtnTapped) }
     }
 }

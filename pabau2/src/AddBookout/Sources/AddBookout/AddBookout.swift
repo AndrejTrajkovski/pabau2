@@ -73,11 +73,11 @@ public let addBookoutReducer: Reducer<
 	.init { state, action, env in
 		switch action {
 		case .saveBookout:
-			
+
 			let isValid = state.chooseLocAndEmp.validate()
-			
+
 			if !isValid { break }
-			
+
 			state.showsLoadingSpinner = true
 			
 			return env.repository.clientAPI.createAppointment(appointment: state.appointmentsBody)
@@ -105,21 +105,22 @@ public let addBookoutReducer: Reducer<
 public struct AddBookout: View {
 	let store: Store<AddBookoutState, AddBookoutAction>
 	@ObservedObject var viewStore: ViewStore<AddBookoutState, AddBookoutAction>
-	
+
 	public init(store: Store<AddBookoutState, AddBookoutAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
-	
+
 	public var body: some View {
-		VStack {
-			FirstSection(store: store)
-			DateAndTime(store: store)
-			DescriptionAndNotes(store: store)
-			AddEventPrimaryBtn(title: "Save Bookout") {
-				viewStore.send(.saveBookout)
-			}
-		}
+        VStack {
+            FirstSection(store: store)
+            DateAndTime(store: store)
+            DescriptionAndNotes(store: store)
+                .padding(.top, 30)
+            AddEventPrimaryBtn(title: "Save Bookout") {
+                viewStore.send(.saveBookout)
+            }.padding([.top, .bottom], 30)
+        }
 		.addEventWrapper(onXBtnTap: { viewStore.send(.close) })
 		.loadingView(.constant(self.viewStore.state.showsLoadingSpinner))
 	}

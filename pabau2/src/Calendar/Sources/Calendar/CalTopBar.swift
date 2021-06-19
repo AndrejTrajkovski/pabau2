@@ -11,9 +11,12 @@ struct CalTopBar: View {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
-	
+
 	var body: some View {
 		VStack(spacing: 0) {
+            Rectangle()
+                .foregroundColor(Color(hex: "F9F9F9"))
+                .frame(height: Constants.statusBarHeight)
 			ZStack {
 				addButton
 					.padding(.leading, 20)
@@ -49,20 +52,64 @@ struct CalTopBar: View {
 			Divider()
 		}
 	}
-	
+
 	var addButton: some View {
 		HStack {
-			PlusButton {
-				viewStore.send(.addEventDropdownToggle(true))
-			}.popover(isPresented:
-						viewStore.binding(
-							get: { $0.isAddEventDropdownShown },
-							send: CalendarAction.addEventDropdownToggle(false))) {
-				AddEventDropdown(store: store.stateless)
-			}
+            if Constants.isPad {
+                 padPlusButton
+            } else {
+                iphonePlusButton
+            }
 		}
 	}
-	
+
+    var padPlusButton: some View {
+        PlusButton {
+            viewStore.send(.addEventDropdownToggle(true))
+        }
+        .popover(
+            isPresented:
+                viewStore.binding(
+                    get: { $0.isAddEventDropdownShown },
+                    send: CalendarAction.addEventDropdownToggle(false))
+        ) {
+            AddEventDropdown(store: store.stateless)
+        }
+    }
+
+    var iphonePlusButton: some View {
+        PlusButton {
+            viewStore.send(.addEventDropdownToggle(true))
+        }
+        .actionSheet(isPresented: viewStore.binding(
+                get: { $0.isAddEventDropdownShown },
+                send: CalendarAction.addEventDropdownToggle(false))
+        ) {
+            ActionSheet(
+                title: Text("Please choose"),
+                message: nil,
+                buttons: [
+                    .default(
+                        Text(EventType.appointment.title())
+                    ) {
+                        viewStore.send(.addEventDelay(.appointment))
+                    },
+                    .default(
+                        Text(EventType.bookout.title())
+                    ) {
+                        viewStore.send(.addEventDelay(.bookout))
+                    },
+                    .default(
+                        Text(EventType.shift.title())
+                    ) {
+                        viewStore.send(.addEventDelay(.shift))
+                    },
+                    .cancel()
+                ]
+            )
+        }
+    }
+
 	@ViewBuilder
 	func filtersLabel() -> some View {
 		switch viewStore.state.filtersLoadingState {
