@@ -4,6 +4,7 @@ import ChooseLocationAndEmployee
 import SharedComponents
 import Foundation
 import ComposableArchitecture
+import ToastAlert
 
 public struct AddBookoutState: Equatable {
 	var editingBookout: Bookout?
@@ -36,6 +37,8 @@ public struct AddBookoutState: Equatable {
 			description: self.chooseBookoutReasonState.chosenReasons?.name
 		)
 	}
+    
+    var toast: ToastState<AddBookoutAction>?
 }
 
 extension Employee: SingleChoiceElement {}

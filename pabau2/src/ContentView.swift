@@ -52,12 +52,12 @@ enum AppAction {
 }
 
 let appReducer: Reducer<AppState, AppAction, AppEnvironment> = Reducer.combine(
-	walkthroughContainerReducer.pullbackCp(
+	walkthroughContainerReducer.pullback(
 		state: /AppState.walkthrough,
 		action: /AppAction.walkthrough,
 		environment: { LoginEnvironment($0.loginAPI, $0.userDefaults) }
 	),
-	tabBarReducer.pullbackCp(
+	tabBarReducer.pullback(
 		state: /AppState.tabBar,
 		action: /AppAction.tabBar,
 		environment: {

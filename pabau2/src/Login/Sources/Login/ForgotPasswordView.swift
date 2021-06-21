@@ -178,31 +178,45 @@ struct ForgotPassword: View {
 }
 
 struct ForgotPasswordView: View {
+
 	let store: Store<ForgotPassContainerState, ForgotPassViewAction>
 	@ObservedObject var viewStore: ViewStore<ForgotPassContainerState, ForgotPassViewAction>
 	@Binding private var email: String
+
 	init(_ store: Store<ForgotPassContainerState, ForgotPassViewAction>, _ email: Binding<String>) {
 		self.store = store
 		self.viewStore = ViewStore.init(store)
 		_email = email
 	}
+
 	var body: some View {
-		VStack(alignment: .leading, spacing: 36) {
-			ForgotPassword(self.store.scope(state: { $0.forgotPass }, action: { .forgotPass($0)}), self.$email)
-			NavigationLink.emptyHidden(
-				self.viewStore.state.navigation.contains(.checkEmailScreen),
-				self.checkEmailView)
-			Spacer()
-		}.loadingView(.constant(self.viewStore.state.forgotPass.loadingState.isLoading),
-									Texts.forgotPassLoading)
+        VStack(alignment: .leading, spacing: 36) {
+            ForgotPassword(
+                self.store.scope(
+                    state: { $0.forgotPass },
+                    action: { .forgotPass($0) }
+                ),
+                self.$email
+            )
+            NavigationLink.emptyHidden(
+                self.viewStore.state.navigation.contains(.checkEmailScreen),
+                self.checkEmailView)
+            Spacer()
+        }.loadingView(
+            .constant(self.viewStore.state.forgotPass.loadingState.isLoading),
+            Texts.forgotPassLoading
+        )
 	}
 
 	var checkEmailView: CheckEmail {
-		CheckEmail(store: self.store.scope(state: { $0.navigation },
-																			 action: { .checkEmail($0)}),
-							 resetPassStore: resetPassStore,
-							 passChangedStore: passChangedStore
-		)
+        CheckEmail(
+            store: self.store.scope(
+                state: { $0.navigation },
+                action: { .checkEmail($0) }
+            ),
+            resetPassStore: resetPassStore,
+            passChangedStore: passChangedStore
+        )
 	}
 
 	var passChangedStore: Store<[LoginNavScreen], PassChangedAction> {

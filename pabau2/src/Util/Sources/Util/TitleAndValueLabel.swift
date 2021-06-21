@@ -6,7 +6,7 @@ public struct TitleAndValueLabel: View {
 	let valueText: String
     var textColor: Color?
 	@Binding var error: String?
-	
+
 	public init(
         _ labelTxt: String,
 		_ valueText: String,
@@ -50,9 +50,10 @@ public struct TitleAndLowerContent<Content: View>: View {
 			lowerContent()
             Divider()
 				.background(error == nil ? Color.textFieldBottomLine : Color.red)
-            Text(error ?? " ")
+            Text(error ?? "")
                 .font(.bold13)
                 .foregroundColor(.red)
+                .isHidden(error == nil, remove: error == nil)
 		}
 	}
 }

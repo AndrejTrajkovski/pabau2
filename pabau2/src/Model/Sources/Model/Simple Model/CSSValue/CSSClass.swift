@@ -133,7 +133,7 @@ public enum CSSClass: Equatable {
 			return radio.selectedChoice?.title
 		case .checkboxes(let checkbox):
 			return checkbox.selected
-				.flatMap { $0.data(using: .utf8) }
+				.compactMap { $0.data(using: .utf8) }
 				.map { (data: Data) in data.base64EncodedString() }
 				.joined(separator: ",")
 		case .select(let select):

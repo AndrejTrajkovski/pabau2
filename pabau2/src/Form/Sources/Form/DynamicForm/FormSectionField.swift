@@ -135,28 +135,28 @@ let cssFieldReducer: Reducer<CSSField, CSSClassAction, FormEnvironment> =
 
 let cssClassReducer: Reducer<CSSClass, CSSClassAction, FormEnvironment> =
 	.combine(
-		checkBoxFieldReducer.pullbackCp(
+		checkBoxFieldReducer.pullback(
 			state: /CSSClass.checkboxes,
 			action: /CSSClassAction.checkboxes,
 			environment: { $0 }),
-		radioFieldReducer.pullbackCp(
+		radioFieldReducer.pullback(
 			state: /CSSClass.radio,
 			action: /CSSClassAction.radio,
 			environment: { $0 }),
-		textAreaFieldReducer.pullbackCp(
+		textAreaFieldReducer.pullback(
 			state: /CSSClass.textarea,
 			action: /CSSClassAction.textArea,
 			environment: { $0 }),
-		inputTextFieldReducer.pullbackCp(
+		inputTextFieldReducer.pullback(
 			state: /CSSClass.input_text,
 			action: /CSSClassAction.inputText,
 			environment: { $0 }
 		),
-		selectFieldReducer.pullbackCp(
+		selectFieldReducer.pullback(
 			state: /CSSClass.select,
 			action: /CSSClassAction.select,
 			environment: { $0 }),
-		signatureFieldReducer.pullbackCp(
+		signatureFieldReducer.pullback(
 			state: /CSSClass.signature,
 			action: /CSSClassAction.signature,
 			environment: { $0 })

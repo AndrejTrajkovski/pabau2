@@ -11,7 +11,8 @@ public struct CheckInLoadedState: Equatable {
 	public let pathway: Pathway
 	public let pathwayTemplate: PathwayTemplate
 	
-	var patientStepStates: IdentifiedArrayOf<StepState>
+	var patientStepStates: [StepState]
+	var doctorStepStates: [StepState]
 	
 	var aftercare: Aftercare?
 	var aftercareStatus: Bool
@@ -41,7 +42,9 @@ extension CheckInLoadedState {
 //		self.patientDetails = patientDetails
 		self.pathway = pathway
 		self.pathwayTemplate = template
-		self.patientStepStates = IdentifiedArray(pathway.stepEntries.filter { $0.value.stepType == .medicalhistory }.map { HTMLFormStepContainerState.init(stepId: $0.key, stepEntry: $0.value, clientId: appointment.customerId, pathwayId: pathway.id) })
+		self.patientStepStates = []
+		self.doctorStepStates = []
+//		IdentifiedArray(pathway.stepEntries.filter { $0.value.stepType == .medicalhistory }.map { HTMLFormStepContainerState.init(stepId: $0.key, stepEntry: $0.value, clientId: appointment.customerId, pathwayId: pathway.id) })
 		self.selectedConsentsIds = []
 		self.selectedTreatmentFormsIds = []
 		self.aftercareStatus = false
@@ -88,20 +91,12 @@ extension CheckInLoadedState {
 			CheckInDoctorState(
 				appointment: self.appointment,
 				pathway: pathwayTemplate,
-				treatmentNotes: self.treatmentNotes,
-				prescriptions: self.prescriptions,
-				aftercare: self.aftercare,
-				aftercareStatus: self.aftercareStatus,
-				photos: self.photos,
+				stepStates: self.doctorStepStates,
 				doctorSelectedIndex: self.doctorSelectedIndex
 			)
 		}
 		set {
-			self.treatmentNotes = newValue.treatmentNotes
-			self.prescriptions = newValue.prescriptions
-			self.aftercare = newValue.aftercare
-			self.aftercareStatus = newValue.aftercareStatus
-			self.photos = newValue.photos
+			self.doctorStepStates = newValue.stepStates
 			self.doctorSelectedIndex = newValue.doctorSelectedIndex
 		}
 	}
@@ -112,17 +107,13 @@ extension CheckInLoadedState {
 				appointment: appointment,
 				pathway: pathway,
 				pathwayTemplate: pathwayTemplate,
-				patientDetails: patientDetails,
-				htmlForms: patientHTMLForms,
-				isPatientComplete: isPatientComplete,
+				stepStates: patientStepStates,
 				selectedIdx: patientSelectedIndex
 			)
 		}
 		
 		set {
-			self.patientDetails = newValue.patientDetails
-			self.patientHTMLForms = newValue.htmlForms
-			self.isPatientComplete = newValue.isPatientComplete
+			self.patientStepStates = newValue.stepStates
 			self.patientSelectedIndex = newValue.selectedIdx
 		}
 	}

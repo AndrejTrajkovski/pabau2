@@ -37,7 +37,7 @@ public struct AddShift: View {
 			)
 			AddEventPrimaryBtn(title: "Save Shift") {
 				self.viewStore.send(.saveShift)
-			}
+            }.padding([.top, .bottom], 30)
 			//swiftui bug fix - https://stackoverflow.com/a/67312740/3050624
 			NavigationLink(destination: EmptyView()) {
 				EmptyView()
@@ -47,7 +47,7 @@ public struct AddShift: View {
 		.addEventWrapper(onXBtnTap: { viewStore.send(.close) })
 		.loadingView(.constant(self.viewStore.state.showsLoadingSpinner))
 	}
-	
+
 	public init(store: Store<AddShiftState, AddShiftAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store)
@@ -92,7 +92,7 @@ struct DateAndTime: View {
 			}
 		}
 	}
-	
+
 	init(store: Store<AddShiftState, AddShiftAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store)

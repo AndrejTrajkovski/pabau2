@@ -4,11 +4,11 @@ import Model
 import SharedComponents
 
 let inputTextFieldReducer: Reducer<InputText, InputTextAction, FormEnvironment> = .combine(
-	textFieldReducer.pullbackCp(
+	textFieldReducer.pullback(
 		state: /InputText.justText,
 		action: /InputTextAction.justText,
 		environment: { $0 }),
-	datePickerReducer.pullbackCp(
+	datePickerReducer.pullback(
 		state: /InputText.date,
 		action: /InputTextAction.date,
 		environment: { $0 })

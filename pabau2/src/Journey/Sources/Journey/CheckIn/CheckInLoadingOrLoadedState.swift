@@ -5,13 +5,13 @@ import Form
 
 let checkInLoadingOrLoadedReducer: Reducer<CheckInLoadingOrLoadedState, CheckInContainerAction, JourneyEnvironment> = .combine (
 	
-	checkInLoadedReducer.pullbackCp(
+	checkInLoadedReducer.pullback(
 		state: /CheckInLoadingOrLoadedState.loaded,
 		action: /CheckInContainerAction.self,
 		environment: { $0 }
 	),
 	
-	checkInLoadingReducer.pullbackCp(
+	checkInLoadingReducer.pullback(
 		state: /CheckInLoadingOrLoadedState.loading,
 		action: /CheckInContainerAction.loading,
 		environment: { $0 }),

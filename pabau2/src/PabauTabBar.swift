@@ -17,6 +17,7 @@ import ChooseLocationAndEmployee
 import ToastAlert
 import Combine
 import Form
+import Overture
 
 public typealias TabBarEnvironment = (
 	loginAPI: LoginAPI,
@@ -50,55 +51,65 @@ public enum TabBarAction {
 struct PabauTabBar: View {
 	let store: Store<TabBarState, TabBarAction>
 	@ObservedObject var viewStore: ViewStore<ViewState, TabBarAction>
+
 	struct ViewState: Equatable {
 		let isShowingCheckin: Bool
 		let isShowingAddAppointment: Bool
 		let isShowingAppDetails: Bool
+
 		init(state: TabBarState) {
 			self.isShowingCheckin = state.checkIn != nil
 			self.isShowingAddAppointment = state.addAppointment != nil
 			self.isShowingAppDetails = state.calendar.appDetails != nil
 		}
 	}
-	
-	init (store: Store<TabBarState, TabBarAction>) {
-		self.store = store
-		self.viewStore = ViewStore(store.scope(state: ViewState.init(state:),
-											   action: { $0 }))
-	}
-	
+
+    init (store: Store<TabBarState, TabBarAction>) {
+        self.store = store
+        self.viewStore = ViewStore(
+            store.scope(
+                state: ViewState.init(state:),
+                action: { $0 }
+            )
+        )
+    }
+
 	var body: some View {
 		TabView {
 			calendar()
 			clients()
 			settings()
 			communication()
-		}
-		.modalLink(isPresented: .constant(self.viewStore.state.isShowingCheckin),
-				   linkType: ModalTransition.circleReveal,
-				   destination: {
-					checkIn()
-				   }
-		)
-		.fullScreenCover(isPresented: .constant(self.viewStore.state.isShowingAddAppointment)) {
+        }
+        .modalLink(
+            isPresented: .constant(self.viewStore.state.isShowingCheckin),
+            linkType: ModalTransition.circleReveal,
+            destination: {
+                checkIn()
+            }
+        )
+		.fullScreenCover(
+            isPresented: .constant(self.viewStore.state.isShowingAddAppointment)
+        ) {
 			addAppointment()
 		}
 	}
-	
-	fileprivate func calendar() -> some View {
-		CalendarContainer(store:
-							store.scope(state: { $0.calendar },
-										action: { .calendar($0) }
-							)
-		)
-		.tabItem {
-			Image(systemName: "calendar")
-			Text("Calendar")
-		}
-	}
-	
+
+    fileprivate func calendar() -> some View {
+        CalendarContainer(
+            store: store.scope(
+                state: { $0.calendar },
+                action: { .calendar($0) }
+            )
+        )
+        .tabItem {
+            Image(systemName: "calendar")
+            Text("Calendar")
+        }
+    }
+
 	fileprivate func clients() -> some View {
-		return ClientsNavigationView(
+		 ClientsNavigationView(
 			self.store.scope(
 				state: { $0.clients },
 				action: { .clients($0) })
@@ -109,26 +120,28 @@ struct PabauTabBar: View {
 			self.viewStore.send(.clients(ClientsAction.onAppearNavigationView))
 		}
 	}
-	
-	fileprivate func settings() -> some View {
-		return Settings(store:
-							store.scope(state: { $0.settings },
-										action: { .settings($0)}))
-			.tabItem {
-				Image(systemName: "gear")
-				Text("Settings")
-			}
-	}
-	
-	fileprivate func communication() -> some View {
-		return CommunicationView(store:
-									store.scope(state: { $0.communication },
-												action: { .communication($0)}))
-			.tabItem {
-				Image(systemName: "ico-tab-tasks")
-				Text("Intercom")
-			}
-	}
+
+    fileprivate func settings() -> some View {
+        Settings(store: store.scope(
+                    state: { $0.settings },
+                    action: { .settings($0)})
+        )
+        .tabItem {
+            Image(systemName: "gear")
+            Text("Settings")
+        }
+    }
+
+    fileprivate func communication() -> some View {
+        CommunicationView(
+            store:
+                store.scope(state: { $0.communication },
+                            action: { .communication($0)}))
+            .tabItem {
+                Image(systemName: "ico-tab-tasks")
+                Text("Intercom")
+            }
+    }
 	
 	fileprivate func checkIn() -> IfLetStore<CheckInNavigationState, CheckInContainerAction, CheckInNavigationView?> {
 		print("checkIn()")
@@ -139,37 +152,29 @@ struct PabauTabBar: View {
 		then: CheckInNavigationView.init(store:))
 	}
 	
-	fileprivate func addAppointment() -> IfLetStore<AddAppointmentState, AddAppointmentAction, AddAppointment?> {
-		return IfLetStore(self.store.scope(
-			state: { $0.addAppointment },
-			action: { .addAppointment($0)}
-		),
-		then: AddAppointment.init(store:))
-	}
+    fileprivate func addAppointment() -> IfLetStore<AddAppointmentState, AddAppointmentAction, AddAppointment?> {
+        IfLetStore(
+            self.store.scope(
+                state: { $0.addAppointment },
+                action: { .addAppointment($0)}
+            ),
+            then: AddAppointment.init(store:))
+    }
 }
 
 private let audioQueue = DispatchQueue(label: "Audio Dispatch Queue")
 struct TimerId: Hashable { }
-
-func getForms(stepEntries: [Dictionary<Step.Id, StepEntry>.Element], formAPI: FormAPI, clientid: Client.ID) -> [Effect<CheckInPatientAction, Never>] {
-	return stepEntries
-		.compactMap {
-			return getForm(stepId: $0.key, stepEntry: $0.value, formAPI: formAPI, clientId: clientid)
-		}
-}
 
 public let tabBarReducer: Reducer<
 	TabBarState,
 	TabBarAction,
 	TabBarEnvironment
 > = Reducer.combine(
-	
 	checkInParentReducer.optional().pullback(
 		state: \TabBarState.checkIn,
 		action: /TabBarAction.checkIn,
 		environment: makeJourneyEnv(_:)
 	),
-	
 	showAddAppointmentReducer.pullback(
 		state: \TabBarState.self,
 		action: /TabBarAction.calendar,
@@ -191,11 +196,9 @@ public let tabBarReducer: Reducer<
 				repository: $0.repository
 			)
 		}),
-	
+
 	.init { state, action, env in
-		
 		switch action {
-		
 		case .delayStartPathway(let checkInState):
 			
 			state.checkIn = checkInState
@@ -224,19 +227,12 @@ public let tabBarReducer: Reducer<
 				
 			case .loaded(let loadedState):
 				
-				let getPatientHTMLForms = loadedState.orderedPatientSteps().compactMap {
-					getForm(stepId: $0.key, stepEntry: $0.value, formAPI: env.formAPI, clientId: loadedState.appointment.customerId)
-				}
-				
-				let getPatientHTMLForms = loadedState.patientCheckIn.htmlForms.compactMap { htmlStepState in
-					return htmlStepState.htmlFormParentState?.getForm(formAPI: env.formAPI)
-						.map {
-							TabBarAction.checkIn(CheckInContainerAction.patient(.htmlForms(id: htmlStepState.id, action: .htmlForm($0))))
-						}
-				}
-				
-				let getPatientFormsOneAfterAnother = Effect.concatenate(getPatientHTMLForms)
-				
+				let getPatientForms = getForms(loadedState.pathway, loadedState.pathwayTemplate, env.formAPI, loadedState.appointment.customerId)
+					
+				let pipeInits = pipe(CheckInPatientAction.steps, CheckInContainerAction.patient, TabBarAction.checkIn)
+				let getPatientFormsOneAfterAnother = Effect.concatenate(getPatientForms)
+					.map(pipeInits)
+					
 				returnEffects.append(getPatientFormsOneAfterAnother)
 			}
 			
@@ -285,22 +281,23 @@ public let tabBarReducer: Reducer<
 			
 		case .calendar(.onAddEvent(.appointment)):
 			state.calendar.isAddEventDropdownShown = false
-			let chooseLocAndEmp = ChooseLocationAndEmployeeState(locations: state.calendar.locations,
-																 employees: state.calendar.employees)
+            let chooseLocAndEmp = ChooseLocationAndEmployeeState(
+                locations: state.calendar.locations,
+                employees: state.calendar.employees
+            )
 			state.addAppointment = AddAppointmentState(chooseLocAndEmp: chooseLocAndEmp)
-			
 		case .addAppointment(
 				.chooseLocAndEmp(
 					.chooseLocation(
 						.gotLocationsResponse(let result)))):
 			state.calendar.update(locationsResult: result.map(\.state))
-			
 		case .addAppointment(
 				.chooseLocAndEmp(
 					.chooseEmployee(
 						.gotEmployeeResponse(let result)))):
 			state.calendar.update(employeesResult: result.map(\.state))
-			
+        case .addAppointment(AddAppointmentAction.appointmentCreated(let response)):
+            return Effect(value: TabBarAction.calendar(.appointmentCreatedResponse(response)))
 		default:
 			break
 		}
@@ -329,7 +326,7 @@ public let tabBarReducer: Reducer<
 				userDefaults: $0.userDefaults)
 		}
 	),
-	
+
 	communicationReducer.pullback(
 		state: \TabBarState.communication,
 		action: /TabBarAction.communication,
@@ -350,18 +347,19 @@ public let tabBarReducer: Reducer<
 		default:
 			break
 		}
-		
+
 		return .none
 	}
 )
 
 public let showAddAppointmentReducer: Reducer<TabBarState, CalendarAction, Any> = .init { state, action, _ in
 	
-	var chooseLocAndEmp = ChooseLocationAndEmployeeState(locations: state.calendar.locations,
-														 employees: state.calendar.employees)
-	
+    var chooseLocAndEmp = ChooseLocationAndEmployeeState(
+        locations: state.calendar.locations,
+        employees: state.calendar.employees
+    )
+
 	switch action {
-	
 	case .employee(.addAppointment(let startDate, let durationMins, let dropKeys)):
 		let (location, subsection) = dropKeys
 		let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
@@ -410,5 +408,52 @@ extension TabBarState {
 		self.calendar = CalendarState()
 		self.settings = SettingsState()
 		self.communication = CommunicationState()
+	}
+}
+
+func getForms(_ pathway: Pathway, _ template: PathwayTemplate, _ formAPI: FormAPI, _ clientId: Client.ID) -> [Effect<StepsActions, Never>] {
+	let orderedStepEntries = template.steps.compactMap { pathway.stepEntries[$0.id] }
+	return getForms(stepEntries: orderedStepEntries, formAPI: formAPI, clientId: clientId)
+}
+
+func getForms(stepEntries: [StepEntry], formAPI: FormAPI, clientId: Client.ID) -> [Effect<StepsActions, Never>] {
+	let stepActions: [Effect<StepsActions, Never>] = stepEntries.indices.compactMap { idx in
+			let stepEntry = stepEntries[idx]
+			if let getForm = getForm(stepEntry: stepEntry, formAPI: formAPI, clientId: clientId) {
+				return getForm.map { StepsActions.steps(idx: idx, action: $0) }
+			} else {
+				return nil
+			}
+		}
+	return stepActions
+}
+
+func getForm(stepEntry: StepEntry, formAPI: FormAPI, clientId: Client.ID) -> Effect<StepAction, Never>? {
+	if stepEntry.stepType.isHTMLForm {
+		guard let templateId = stepEntry.htmlFormInfo?.templateIdToLoad else {
+			return nil
+		}
+		
+		return formAPI.getForm(templateId: templateId, entryId: stepEntry.htmlFormInfo?.formEntryId)
+			.catchToEffect()
+			.map(pipe(HTMLFormAction.gotForm, HTMLFormStepContainerAction.htmlForm, StepAction.htmlForm))
+	} else {
+		switch stepEntry.stepType {
+		case .consents, .medicalhistory, .treatmentnotes, .prescriptions:
+			fatalError("should be handled previously")
+		case .patientdetails:
+			return formAPI.getPatientDetails(clientId: clientId)
+				.catchToEffect()
+				.map { $0.map(ClientBuilder.init(client:))}
+				.map(pipe(PatientDetailsParentAction.gotGETResponse, StepAction.patientDetails))
+		case .aftercares:
+			return nil
+		case .checkpatient:
+			return nil
+		case .photos:
+			return nil
+		case .patientComplete:
+			return nil
+		}
 	}
 }

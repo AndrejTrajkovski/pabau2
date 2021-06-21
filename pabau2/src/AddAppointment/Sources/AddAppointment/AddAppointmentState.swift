@@ -4,6 +4,7 @@ import Foundation
 import SharedComponents
 import ComposableArchitecture
 import ChooseLocationAndEmployee
+import ToastAlert
 
 public struct AddAppointmentState: Equatable {
 	
@@ -51,6 +52,8 @@ public struct AddAppointmentState: Equatable {
 			participantUserIDS: self.participants.chosenParticipants.compactMap { $0.id.rawValue }
 		)
 	}
+    
+    var toast: ToastState<AddAppointmentAction>?
 }
 
 extension Employee: SingleChoiceElement { }

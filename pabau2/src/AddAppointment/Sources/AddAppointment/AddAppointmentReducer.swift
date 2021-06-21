@@ -2,6 +2,9 @@ import ComposableArchitecture
 import Model
 import SharedComponents
 import ChooseLocationAndEmployee
+import AlertToast
+import ToastAlert
+import Util
 
 let addAppTapBtnReducer = Reducer<
 	AddAppointmentState?,
@@ -15,21 +18,34 @@ let addAppTapBtnReducer = Reducer<
 		state?.showsLoadingSpinner = false
 		switch result {
 		case .success(let services):
-			state = nil
-		case .failure:
-			break
+            state?.toast = ToastState(mode: .banner(.slide),
+                                     type: .regular,
+                                     title: Texts.appointmentSuccessfullyCreated)
+            return Effect.timer(id: ToastTimerId(), every: 2, on: DispatchQueue.main)
+                .map { _ in AddAppointmentAction.dismissToastSuccess }
+		case .failure(let error):
+            print("failure")
+            state?.toast = ToastState(mode: .alert,
+                                     type: .error(.red),
+                                     title: error.description)
+            
+            return Effect.timer(id: ToastTimerId(), every: 2, on: DispatchQueue.main)
+                .map { _ in AddAppointmentAction.dismissToast }
 		}
+    case .dismissToast:
+        state?.toast = nil
+        return .cancel(id: ToastTimerId())
+    case .dismissToastSuccess:
+        state = nil
+        return .cancel(id: ToastTimerId())
 	default:
 		break
 	}
 	return .none
 }
 
-let addAppointmentValueReducer: Reducer<
-	AddAppointmentState,
-	AddAppointmentAction,
-	AddAppointmentEnv
-> = .combine(
+let addAppointmentValueReducer: Reducer<AddAppointmentState, AddAppointmentAction, AddAppointmentEnv> =
+    .combine(
 		chooseClientsReducer.pullback(
 			state: \AddAppointmentState.clients,
 			action: /AddAppointmentAction.clients,
@@ -159,11 +175,8 @@ let addAppointmentValueReducer: Reducer<
 		}
 	)
 
-public let addAppointmentReducer: Reducer<
-	AddAppointmentState?,
-	AddAppointmentAction,
-	AddAppointmentEnv
-> = .combine(
+public let addAppointmentReducer: Reducer<AddAppointmentState?, AddAppointmentAction, AddAppointmentEnv> =
+    .combine(
 	addAppointmentValueReducer.optional().pullback(
 		state: \AddAppointmentState.self,
 		action: /AddAppointmentAction.self,

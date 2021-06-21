@@ -1,5 +1,6 @@
 import SwiftUI
 import Combine
+import Util
 
 public struct SearchView: View {
     var placeholder: String
@@ -16,7 +17,7 @@ public struct SearchView: View {
             Image(systemName: "magnifyingglass").foregroundColor(.secondary)
 
             TextField(placeholder, text: $text)
-                .font(.regular20)
+                .font(.textFieldRegular)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
 
@@ -33,6 +34,6 @@ public struct SearchView: View {
         .padding(10)
         .background(Color(.systemGray6))
         .cornerRadius(12)
-        .padding(.vertical, 10)
+        .padding(.vertical, Constants.isPad ? 10 : 5)
     }
 }

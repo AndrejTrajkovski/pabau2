@@ -33,6 +33,7 @@ public struct AddAppointment: View {
 		}
 		.addEventWrapper(onXBtnTap: { self.viewStore.send(.closeBtnTap) })
 		.loadingView(.constant(self.viewStore.state.showsLoadingSpinner))
+        .toast(store: store.scope(state: \.toast))
 		.alert(
 			isPresented: viewStore.binding(
 				get: { $0.alertBody?.isShow == true },
@@ -79,8 +80,9 @@ struct TitleMinusView: View {
 
 struct AddAppSections: View {
 	@EnvironmentObject var keyboardHandler: KeyboardFollower
+    @ObservedObject var viewStore: ViewStore<AddAppointmentState, AddAppointmentAction>
+
 	let store: Store<AddAppointmentState, AddAppointmentAction>
-	@ObservedObject var viewStore: ViewStore<AddAppointmentState, AddAppointmentAction>
 	init (store: Store<AddAppointmentState, AddAppointmentAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store)

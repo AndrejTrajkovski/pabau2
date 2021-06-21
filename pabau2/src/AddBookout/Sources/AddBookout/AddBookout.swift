@@ -5,12 +5,10 @@ import Model
 import SharedComponents
 import CoreDataModel
 import ChooseLocationAndEmployee
+import ToastAlert
 
-public let addBookoutOptReducer: Reducer<
-	AddBookoutState?,
-	AddBookoutAction,
-	AddBookoutEnvironment
-> = .combine(
+public let addBookoutOptReducer: Reducer<AddBookoutState?, AddBookoutAction, AddBookoutEnvironment> =
+.combine(
 	addBookoutReducer.optional().pullback(
 		state: \.self,
 		action: /AddBookoutAction.self,
@@ -23,9 +21,17 @@ public let addBookoutOptReducer: Reducer<
 			switch result {
 			case .success:
 				state = nil
-			case .failure:
-				break
+			case .failure(let error):
+                state?.toast = ToastState(mode: .alert,
+                                         type: .error(.red),
+                                         title: error.description)
+                
+                return Effect.timer(id: ToastTimerId(), every: 2, on: DispatchQueue.main)
+                    .map { _ in AddBookoutAction.dismissToast }
 			}
+        case .dismissToast:
+            state?.toast = nil
+            return .cancel(id: ToastTimerId())
 		default:
 			break
 		}
@@ -73,17 +79,17 @@ public let addBookoutReducer: Reducer<
 	.init { state, action, env in
 		switch action {
 		case .saveBookout:
-			
+
 			let isValid = state.chooseLocAndEmp.validate()
-			
+
 			if !isValid { break }
-			
+
 			state.showsLoadingSpinner = true
 			
 			return env.repository.clientAPI.createAppointment(appointment: state.appointmentsBody)
 				.catchToEffect()
 				.receive(on: DispatchQueue.main)
-				.map(AddBookoutAction.appointmentCreated)
+                .map { response in AddBookoutAction.appointmentCreated(response) }
 				.eraseToEffect()
 		case .chooseStartDate(let day):
 			guard let day = day else {
@@ -105,22 +111,24 @@ public let addBookoutReducer: Reducer<
 public struct AddBookout: View {
 	let store: Store<AddBookoutState, AddBookoutAction>
 	@ObservedObject var viewStore: ViewStore<AddBookoutState, AddBookoutAction>
-	
+
 	public init(store: Store<AddBookoutState, AddBookoutAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
-	
+
 	public var body: some View {
-		VStack {
-			FirstSection(store: store)
-			DateAndTime(store: store)
-			DescriptionAndNotes(store: store)
-			AddEventPrimaryBtn(title: "Save Bookout") {
-				viewStore.send(.saveBookout)
-			}
-		}
+        VStack {
+            FirstSection(store: store)
+            DateAndTime(store: store)
+            DescriptionAndNotes(store: store)
+                .padding(.top, 30)
+            AddEventPrimaryBtn(title: "Save Bookout") {
+                viewStore.send(.saveBookout)
+            }.padding([.top, .bottom], 30)
+        }
 		.addEventWrapper(onXBtnTap: { viewStore.send(.close) })
 		.loadingView(.constant(self.viewStore.state.showsLoadingSpinner))
+        .toast(store: store.scope(state: \.toast))
 	}
 }

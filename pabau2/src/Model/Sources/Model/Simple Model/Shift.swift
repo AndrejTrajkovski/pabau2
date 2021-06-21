@@ -12,7 +12,7 @@ public struct Shift: Decodable, Equatable {
 	public let locationName: String
 	public let locColor: String
 	public let locationID: Location.ID
-	public let roomID: Room.Id
+	public let roomID: Room.Id?
 	public let notes: String
     public let published: Bool?
 
@@ -41,7 +41,7 @@ public struct Shift: Decodable, Equatable {
 		self.locColor = try container.decode(String.self, forKey: .locColor)
 		self.published = try container.decodeIfPresent(Bool.self, forKey: .published)
 		self.locationID = try container.decode(Location.Id.self, forKey: .locationID)
-		self.roomID = try container.decode(Room.Id.self, forKey: .roomID)
+		self.roomID = try? container.decode(Room.Id.self, forKey: .roomID)
 		self.notes = try container.decode(String.self, forKey: .notes)
 		
 		let dateString = try container.decode(String.self, forKey: .date)
@@ -70,6 +70,33 @@ public struct Shift: Decodable, Equatable {
 				  debugDescription: "Date string does not match format expected by formatter.")
 		}
 	}
+    
+    init(rotaId: Int,
+              date: Date,
+              startTime: Date,
+              endTime: Date,
+              userId: Int,
+              userName: String,
+              locationName: String,
+              locColor: String,
+              locationId: String,
+              roomId: String) {
+        
+        self.rotaID = rotaId
+        self.date = date
+        self.startTime = startTime
+        self.endTime = endTime
+        self.userID = Employee.Id.init(rawValue: "\(userId)")
+        self.userName = userName
+        self.locationName = locationName
+        self.locColor = locColor
+        self.locationID = Location.Id.init(rawValue: EitherStringOrInt.left(locationId))
+        self.roomID = Room.ID.init(roomId)
+        
+        self.notes = ""
+        self.published = false
+    }
+
 }
 
 public struct ShiftSchema: Codable {
@@ -111,5 +138,22 @@ public struct ShiftSchema: Codable {
         case notes
         case published
         case rotaUID = "rota_uid"
+    }
+}
+
+extension Shift {
+    static func mock() -> Shift {
+       Shift(
+            rotaId: 6274414,
+            date: Date.init("2021-06-10")!,
+            startTime: Date.init("06:57:00")!,
+            endTime: Date.init("21:00:00")!,
+            userId: 5234,
+            userName: "O'Grady lastcheck O'Grady",
+            locationName: "EU5L5HFK",
+            locColor: "303F9F",
+            locationId: "2503",
+            roomId: "0"
+        )
     }
 }

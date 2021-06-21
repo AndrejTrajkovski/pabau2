@@ -14,7 +14,7 @@ public enum CalendarAction {
 	case gotAppointmentsResponse(Result<AppointmentsResponse, RequestError>)
 	case datePicker(CalendarDatePickerAction)
 	case calTypePicker(CalendarTypePickerAction)
-	case addShift(AddShiftAction)
+    case addShift(AddShiftAction)
 	case toggleFilters
 	case room(SubsectionCalendarAction<Room>)
 	case employee(SubsectionCalendarAction<Employee>)
@@ -30,4 +30,6 @@ public enum CalendarAction {
 	case changeCalScope
 	case list(ListAction)
 	case gotLocationsResponse(Result<SuccessState<[Location]>, RequestError>)
+    case appointmentCreatedResponse(Result<CalendarEvent, RequestError>)
+    case refresh
 }

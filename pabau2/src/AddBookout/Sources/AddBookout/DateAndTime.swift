@@ -35,7 +35,7 @@ struct DateAndTime: View {
 					mode: .dateAndTime
 				).isHidden(viewStore.isAllDay, remove: true)
 			}
-			GeometryReader { geo in
+			GeometryReader { geometry in
 				HStack {
 					TitleAndValueLabel(
 						"DURATION",
@@ -43,7 +43,7 @@ struct DateAndTime: View {
 						nil,
 						.constant(viewStore.durationValidator)
 					)
-					.frame(width: geo.size.width / 2)
+                    .frame(width: geometry.size.width * 0.4)
 					DurationPicker(
 						store: store.scope(
 							state: { $0.chooseDuration },

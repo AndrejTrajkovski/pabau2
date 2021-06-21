@@ -15,8 +15,11 @@ public let htmlFormStepContainerReducer: Reducer<HTMLFormStepContainerState, HTM
 																clientId: state.clientId,
 																pathwayId: state.pathwayId)
 			state.htmlFormParentState!.getLoadingState = .loading
-			return state.htmlFormParentState!.getForm(formAPI: env.formAPI)
-				.map { HTMLFormStepContainerAction.htmlForm($0) }
+			return env.formAPI.getForm(templateId: state.htmlFormParentState!.templateId,
+									   entryId: state.htmlFormParentState!.filledFormId)
+				.catchToEffect()
+				.map(HTMLFormAction.gotForm)
+				.map(HTMLFormStepContainerAction.htmlForm)
 				.receive(on: DispatchQueue.main)
 				.eraseToEffect()
 			

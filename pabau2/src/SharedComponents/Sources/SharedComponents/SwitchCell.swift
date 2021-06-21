@@ -23,13 +23,17 @@ public struct SwitchCell: View {
 	let text: String
 	let store: Store<Bool, ToggleAction>
 
-	public var body: some View {
-		WithViewStore(store) { viewStore in
-			SwitchCellRaw(text: text, value: viewStore.binding(get: { $0 },
-															   send: { .setTo($0)})
-			)
-		}
-	}
+    public var body: some View {
+        WithViewStore(store) { viewStore in
+            SwitchCellRaw(
+                text: text,
+                value: viewStore.binding(
+                    get: { $0 },
+                    send: { .setTo($0)}
+                )
+            )
+        }
+    }
 }
 
 public struct SwitchCellRaw: View {
