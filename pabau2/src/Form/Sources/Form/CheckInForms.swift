@@ -25,9 +25,9 @@ public struct CheckInForms<FormsContent: View, AvatarView: View>: View {
 				Divider()
 					.frame(maxWidth: .infinity)
 					.shadow(color: Color(hex: "C1C1C1"), radius: 4, y: 2)
-				Forms(store: store,
-					  content: content)
-//				content()
+//				Forms(store: store,
+//					  content: content)
+				content()
 					.padding([.bottom, .top], 32)
 				Spacer()
 			}

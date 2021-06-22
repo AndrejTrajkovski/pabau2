@@ -42,9 +42,8 @@ extension CheckInLoadedState {
 //		self.patientDetails = patientDetails
 		self.pathway = pathway
 		self.pathwayTemplate = template
-		self.patientStepStates = []
-		self.doctorStepStates = []
-//		IdentifiedArray(pathway.stepEntries.filter { $0.value.stepType == .medicalhistory }.map { HTMLFormStepContainerState.init(stepId: $0.key, stepEntry: $0.value, clientId: appointment.customerId, pathwayId: pathway.id) })
+		self.patientStepStates = stepEntries(pathway, pathwayTemplate, .patient)
+		self.doctorStepStates = stepEntries(pathway, pathwayTemplate, .doctor)
 		self.selectedConsentsIds = []
 		self.selectedTreatmentFormsIds = []
 		self.aftercareStatus = false
@@ -119,14 +118,51 @@ extension CheckInLoadedState {
 	}
 }
 
-extension Pathway {
-	func orderedPatientSteps() -> [Dictionary<Step.ID, StepEntry>.Element] {
-		stepEntries.filter { filterPatient($0.value.stepType)}
-			.sorted(by: { $0.value.order ?? 0 < $1.value.order ?? 0 })
-	}
-	
-	func orderedDoctorSteps() -> [Dictionary<Step.ID, StepEntry>.Element] {
-		stepEntries.filter { filterPatient($0.value.stepType)}
-			.sorted(by: { $0.value.order ?? 0 < $1.value.order ?? 0 })
+public let getFormsForPathway = pipe(stepEntries(_:_:_:), curry(getForms(stepEntries:formAPI:clientId:)))
+
+public func stepEntries(_ pathway: Pathway, _ template: PathwayTemplate, _ journeyMode: JourneyMode) -> [StepEntry] {
+	return template.steps.compactMap { pathway.stepEntries[$0.id] }
+		.filter { isIn(journeyMode, $0.stepType) }
+}
+
+func getForms(stepEntries: [StepEntry], formAPI: FormAPI, clientId: Client.ID) -> [Effect<StepsActions, Never>] {
+	let stepActions: [Effect<StepsActions, Never>] = stepEntries.indices.compactMap { idx in
+			let stepEntry = stepEntries[idx]
+			if let getForm = getForm(stepEntry: stepEntry, formAPI: formAPI, clientId: clientId) {
+				return getForm.map { StepsActions.steps(idx: idx, action: $0) }
+			} else {
+				return nil
+			}
+		}
+	return stepActions
+}
+
+func getForm(stepEntry: StepEntry, formAPI: FormAPI, clientId: Client.ID) -> Effect<StepAction, Never>? {
+	if stepEntry.stepType.isHTMLForm {
+		guard let templateId = stepEntry.htmlFormInfo?.templateIdToLoad else {
+			return nil
+		}
+		
+		return formAPI.getForm(templateId: templateId, entryId: stepEntry.htmlFormInfo?.formEntryId)
+			.catchToEffect()
+			.map(pipe(HTMLFormAction.gotForm, HTMLFormStepContainerAction.htmlForm, StepAction.htmlForm))
+	} else {
+		switch stepEntry.stepType {
+		case .consents, .medicalhistory, .treatmentnotes, .prescriptions:
+			fatalError("should be handled previously")
+		case .patientdetails:
+			return formAPI.getPatientDetails(clientId: clientId)
+				.catchToEffect()
+				.map { $0.map(ClientBuilder.init(client:))}
+				.map(pipe(PatientDetailsParentAction.gotGETResponse, StepAction.patientDetails))
+		case .aftercares:
+			return nil
+		case .checkpatient:
+			return nil
+		case .photos:
+			return nil
+		case .patientComplete:
+			return nil
+		}
 	}
 }

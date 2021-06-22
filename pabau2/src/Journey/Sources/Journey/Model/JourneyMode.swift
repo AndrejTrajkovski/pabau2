@@ -1,4 +1,4 @@
-enum JourneyMode: Equatable {
+public enum JourneyMode: Equatable {
 	case patient
 	case doctor
 }

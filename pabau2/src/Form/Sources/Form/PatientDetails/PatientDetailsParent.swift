@@ -61,7 +61,7 @@ public struct PatientDetailsParent: View {
 	public var body: some View {
 		IfLetStore(store.scope(state: { $0.patientDetails },
 							   action: { .patientDetails($0) }),
-				   then: { PatientDetailsForm.init(store:$0, isDisabled: false) },
+				   then: { PatientDetailsForm.init(store: $0, isDisabled: false) },
 				   else: {
 						Text("ASD")
 				   })

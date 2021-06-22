@@ -40,13 +40,24 @@ public enum StepState: Equatable, Identifiable {
 			return StepFormInfo(status: pdState.stepStatus, title: "PATIENT DETAILS")
 		}
 	}
+	
+	init(stepEntry: StepEntry, stepId: Step.ID, clientId: Client.ID, pathway: Pathway) {
+		if stepEntry.stepType.isHTMLForm {
+			let htmlFormState = HTMLFormParent
+		} else {
+			switch stepEntry.stepType {
+			case .aftercares, .checkpatient, .patientComplete, .patientdetails, .photos:
+				
+			default:
+				fatalError()
+		}
+	}
 }
 
 public enum StepAction: Equatable {
 	case patientDetails(PatientDetailsParentAction)
 	case htmlForm(HTMLFormStepContainerAction)
 }
-
 
 struct StepForm: View {
 	
