@@ -25,12 +25,21 @@ public enum StepState: Equatable, Identifiable {
 		case .patientDetails(let pds):
 			return pds.id
 		case .htmlForm(let html):
-			return  html.id
+			return html.id
+		case .photos(let photos):
+			return photos.id
+		case .aftercare(let aftercare):
+			return aftercare.id
+		case .checkPatient(let checkPatient):
+			return checkPatient.id
 		}
 	}
 	
 	case patientDetails(PatientDetailsParentState)
 	case htmlForm(HTMLFormStepContainerState)
+	case photos(PhotosState)
+	case aftercare(Aftercare)
+	case checkPatient(CheckPatient)
 	
 	func info() -> StepFormInfo {
 		switch self {
@@ -38,18 +47,31 @@ public enum StepState: Equatable, Identifiable {
 			return StepFormInfo(status: formState.stepEntry.status, title: formState.stepEntry.stepType.rawValue.uppercased())
 		case .patientDetails(let pdState):
 			return StepFormInfo(status: pdState.stepStatus, title: "PATIENT DETAILS")
+		default:
+			return StepFormInfo(status: StepStatus.pending, title: "TODO")
 		}
 	}
 	
-	init(stepEntry: StepEntry, stepId: Step.ID, clientId: Client.ID, pathway: Pathway) {
-		if stepEntry.stepType.isHTMLForm {
-			let htmlFormState = HTMLFormParent
+	init(stepAndEntry: StepAndStepEntry, clientId: Client.ID, pathway: Pathway) {
+		if stepAndEntry.step.stepType.isHTMLForm {
+			let htmlFormState = HTMLFormStepContainerState(stepId: stepAndEntry.step.id,
+														   stepEntry: stepAndEntry.entry!,
+														   clientId: clientId,
+														   pathwayId: pathway.id)
+			self = .htmlForm(htmlFormState)
 		} else {
-			switch stepEntry.stepType {
-			case .aftercares, .checkpatient, .patientComplete, .patientdetails, .photos:
-				
+			switch stepAndEntry.step.stepType {
+			case .patientdetails:
+				self = .patientDetails(PatientDetailsParentState(id: stepAndEntry.step.id))
+			case .aftercares:
+				self = .aftercare(Aftercare.mock(id: stepAndEntry.step.id))
+			case .checkpatient:
+				self = .checkPatient(CheckPatient(id: stepAndEntry.step.id, clientBuilder: nil, patForms: []))
+			case .photos:
+				self = .photos(PhotosState(id: stepAndEntry.step.id))
 			default:
 				fatalError()
+			}
 		}
 	}
 }

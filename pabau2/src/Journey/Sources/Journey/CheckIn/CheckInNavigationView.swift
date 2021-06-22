@@ -60,6 +60,12 @@ public let checkInParentReducer: Reducer<CheckInNavigationState, CheckInContaine
 )
 
 public let checkInLoadedReducer: Reducer<CheckInLoadedState, CheckInContainerAction, JourneyEnvironment> = .combine(
+	
+	stepFormsReducer.pullback(
+		state: \CheckInLoadedState.patientStepStates,
+		action: /CheckInContainerAction.patient..CheckInPatientAction.steps,
+		environment: { $0 }),
+	
 	checkInPatientReducer.pullback(
 		state: \CheckInLoadedState.patientCheckIn,
 		action: /CheckInContainerAction.patient,

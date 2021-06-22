@@ -40,7 +40,6 @@ struct CheckInPatientContainer: View {
 
 let checkInPatientReducer: Reducer<CheckInPatientState, CheckInPatientAction, JourneyEnvironment> = .combine(
 	
-	
 	CheckInReducer().reducer.pullback(
 		state: \CheckInPatientState.checkIn,
 		action: /CheckInPatientAction.stepsView,

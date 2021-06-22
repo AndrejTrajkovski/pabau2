@@ -227,7 +227,12 @@ public let tabBarReducer: Reducer<
 				
 			case .loaded(let loadedState):
 				
-				let getPatientForms = getForms(loadedState.pathway, loadedState.pathwayTemplate, env.formAPI, loadedState.appointment.customerId)
+				let getPatientForms = getFormsForPathway((loadedState.pathway,
+														 loadedState.pathwayTemplate,
+														 JourneyMode.patient),
+															env.formAPI,
+															loadedState.appointment.customerId
+				)
 					
 				let pipeInits = pipe(CheckInPatientAction.steps, CheckInContainerAction.patient, TabBarAction.checkIn)
 				let getPatientFormsOneAfterAnother = Effect.concatenate(getPatientForms)

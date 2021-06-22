@@ -16,14 +16,16 @@ struct CheckPatientForm: View {
 	var body: some View {
 		 ScrollView {
 			VStack {
-                PatientDetailsForm(
-                    store: Store.init(
-                        initialState: viewStore.state.clientBuilder,
-                        reducer: Reducer.empty,
-                        environment: { }
-                    ),
-					isDisabled: true
-                )
+				if let clientBuilder = viewStore.state.clientBuilder {
+					PatientDetailsForm(
+						store: Store.init(
+							initialState: clientBuilder,
+							reducer: Reducer.empty,
+							environment: { }
+						),
+						isDisabled: true
+					)
+				}
                 ForEach(viewStore.patForms.indices, id: \.self ) { index in
                     HTMLFormView(
                         store: Store(

@@ -15,11 +15,8 @@ public struct CheckInLoadedState: Equatable {
 	var doctorStepStates: [StepState]
 	
 	var aftercare: Aftercare?
-	var aftercareStatus: Bool
 	
-	var isPatientComplete: StepStatus
-	
-	var photos: PhotosState
+	var isPatientComplete: StepStatus = .pending
 	
 	var selectedConsentsIds: [HTMLForm.ID]
 	var selectedTreatmentFormsIds: [HTMLForm.ID]
@@ -42,13 +39,14 @@ extension CheckInLoadedState {
 //		self.patientDetails = patientDetails
 		self.pathway = pathway
 		self.pathwayTemplate = template
-		self.patientStepStates = stepEntries(pathway, pathwayTemplate, .patient)
-		self.doctorStepStates = stepEntries(pathway, pathwayTemplate, .doctor)
+		self.patientStepStates = stepsAndEntries(pathway, pathwayTemplate, .patient).map {
+			StepState.init(stepAndEntry: $0, clientId: appointment.customerId, pathway: pathway)
+		}
+		self.doctorStepStates = stepsAndEntries(pathway, pathwayTemplate, .doctor).map {
+			StepState.init(stepAndEntry: $0, clientId: appointment.customerId, pathway: pathway)
+		}
 		self.selectedConsentsIds = []
 		self.selectedTreatmentFormsIds = []
-		self.aftercareStatus = false
-		self.isPatientComplete = .pending
-		self.photos = PhotosState([[:]])
 		self.patientSelectedIndex = 0
 		self.doctorSelectedIndex = 0
 	}
@@ -118,17 +116,19 @@ extension CheckInLoadedState {
 	}
 }
 
-public let getFormsForPathway = pipe(stepEntries(_:_:_:), curry(getForms(stepEntries:formAPI:clientId:)))
+public let getFormsForPathway = uncurry(pipe(stepsAndEntries(_:_:_:), curry(getForms(stepsAndEntries:formAPI:clientId:))))
 
-public func stepEntries(_ pathway: Pathway, _ template: PathwayTemplate, _ journeyMode: JourneyMode) -> [StepEntry] {
-	return template.steps.compactMap { pathway.stepEntries[$0.id] }
+public func stepsAndEntries(_ pathway: Pathway, _ template: PathwayTemplate, _ journeyMode: JourneyMode) -> [StepAndStepEntry] {
+	return template.steps
 		.filter { isIn(journeyMode, $0.stepType) }
+		.map { StepAndStepEntry(step: $0, entry: pathway.stepEntries[$0.id]) }
+		
 }
 
-func getForms(stepEntries: [StepEntry], formAPI: FormAPI, clientId: Client.ID) -> [Effect<StepsActions, Never>] {
-	let stepActions: [Effect<StepsActions, Never>] = stepEntries.indices.compactMap { idx in
-			let stepEntry = stepEntries[idx]
-			if let getForm = getForm(stepEntry: stepEntry, formAPI: formAPI, clientId: clientId) {
+func getForms(stepsAndEntries: [StepAndStepEntry], formAPI: FormAPI, clientId: Client.ID) -> [Effect<StepsActions, Never>] {
+	let stepActions: [Effect<StepsActions, Never>] = stepsAndEntries.indices.compactMap { idx in
+			let stepAndEntry = stepsAndEntries[idx]
+			if let getForm = getForm(stepAndEntry: stepAndEntry, formAPI: formAPI, clientId: clientId) {
 				return getForm.map { StepsActions.steps(idx: idx, action: $0) }
 			} else {
 				return nil
@@ -137,17 +137,17 @@ func getForms(stepEntries: [StepEntry], formAPI: FormAPI, clientId: Client.ID) -
 	return stepActions
 }
 
-func getForm(stepEntry: StepEntry, formAPI: FormAPI, clientId: Client.ID) -> Effect<StepAction, Never>? {
-	if stepEntry.stepType.isHTMLForm {
-		guard let templateId = stepEntry.htmlFormInfo?.templateIdToLoad else {
+func getForm(stepAndEntry: StepAndStepEntry, formAPI: FormAPI, clientId: Client.ID) -> Effect<StepAction, Never>? {
+	if stepAndEntry.step.stepType.isHTMLForm {
+		guard let templateId = stepAndEntry.entry?.htmlFormInfo?.templateIdToLoad else {
 			return nil
 		}
 		
-		return formAPI.getForm(templateId: templateId, entryId: stepEntry.htmlFormInfo?.formEntryId)
+		return formAPI.getForm(templateId: templateId, entryId: stepAndEntry.entry?.htmlFormInfo?.formEntryId)
 			.catchToEffect()
 			.map(pipe(HTMLFormAction.gotForm, HTMLFormStepContainerAction.htmlForm, StepAction.htmlForm))
 	} else {
-		switch stepEntry.stepType {
+		switch stepAndEntry.step.stepType {
 		case .consents, .medicalhistory, .treatmentnotes, .prescriptions:
 			fatalError("should be handled previously")
 		case .patientdetails:
@@ -160,8 +160,6 @@ func getForm(stepEntry: StepEntry, formAPI: FormAPI, clientId: Client.ID) -> Eff
 		case .checkpatient:
 			return nil
 		case .photos:
-			return nil
-		case .patientComplete:
 			return nil
 		}
 	}

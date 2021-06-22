@@ -2,14 +2,16 @@ import Model
 import Foundation
 
 public struct CheckPatient: Equatable, Identifiable {
-	public let id: UUID = UUID()
-	let clientBuilder: ClientBuilder
-	let patForms: [HTMLForm]
+	public let id: Step.ID
+	var clientBuilder: ClientBuilder?
+	var patForms: [HTMLForm]
 
 	public init (
-		clientBuilder: ClientBuilder,
+		id: Step.Id,
+		clientBuilder: ClientBuilder?,
 		patForms: [HTMLForm]
 	) {
+		self.id = id
 		self.clientBuilder = clientBuilder
 		self.patForms = patForms
 	}
