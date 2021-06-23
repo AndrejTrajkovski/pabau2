@@ -157,3 +157,9 @@ extension Shift {
         )
     }
 }
+
+struct ShiftCreateResponse: Decodable {
+    var message: String
+    var success: Bool
+    var rota: [Shift]
+}
