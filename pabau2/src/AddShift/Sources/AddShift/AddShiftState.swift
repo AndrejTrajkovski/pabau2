@@ -1,6 +1,7 @@
 import Model
 import ChooseLocationAndEmployee
 import Foundation
+import ToastAlert
 
 public struct AddShiftState: Equatable {
 	
@@ -28,6 +29,7 @@ public struct AddShiftState: Equatable {
 	var showsLoadingSpinner: Bool = false
 	var startTimeValidator: String?
 	var endTimeValidator: String?
+    var toast: ToastState<AddShiftAction>?
 	
 	var shiftSchema: ShiftSchema {
 		let rotaUID = chooseLocAndEmp.chosenEmployeeId

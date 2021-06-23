@@ -2,6 +2,7 @@ import ComposableArchitecture
 import Model
 import SharedComponents
 import ChooseLocationAndEmployee
+import ToastAlert
 
 public let addShiftOptReducer: Reducer<
 	AddShiftState?,
@@ -57,8 +58,15 @@ public let addShiftOptReducer: Reducer<
 			case .success:
 				state = nil
 			case .failure(let error):
-				print(error)
+                state?.toast = ToastState(mode: .alert,
+                                         type: .error(.red),
+                                         title: error.description)
+                return Effect.timer(id: ToastTimerId(), every: 2, on: DispatchQueue.main)
+                    .map { _ in AddShiftAction.dismissToast }
 			}
+        case .dismissToast:
+            state?.toast = nil
+            return .cancel(id: ToastTimerId())
 		default: break
 		}
 		return .none
@@ -102,6 +110,8 @@ public let addShiftReducer: Reducer<AddShiftState, AddShiftAction, AddShiftEnvir
 				break
 			case .close:
 				break
+            case .dismissToast:
+                break
 			}
 			return .none
 		}

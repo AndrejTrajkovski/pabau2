@@ -46,6 +46,7 @@ public struct AddShift: View {
 		}
 		.addEventWrapper(onXBtnTap: { viewStore.send(.close) })
 		.loadingView(.constant(self.viewStore.state.showsLoadingSpinner))
+        .toast(store: store.scope(state: \.toast))
 	}
 
 	public init(store: Store<AddShiftState, AddShiftAction>) {

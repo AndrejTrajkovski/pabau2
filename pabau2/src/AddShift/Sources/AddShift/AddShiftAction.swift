@@ -13,4 +13,5 @@ public enum AddShiftAction {
 	case note(TextChangeAction)
 	case saveShift
 	case close
+    case dismissToast
 }
