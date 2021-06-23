@@ -35,7 +35,7 @@ struct ClientListRow: View {
                 }
 				VStack(alignment: .leading) {
 					Text(viewStore.fullname).font(.headline)
-					Text(viewStore.email ?? "").font(.regular12)
+                    Text(viewStore.email).font(.regular12)
 				}
 				Spacer()
 			}.onTapGesture {

@@ -2,6 +2,7 @@ import SwiftUI
 import ComposableArchitecture
 import Form
 import ASCollectionView
+import Util
 
 struct CCGroupedPhotos: View {
 	let store: Store<[Date: [PhotoViewModel]], CCPhotosAction>
@@ -18,9 +19,11 @@ struct CCGroupedPhotos: View {
 		}.layout { sectionID in
 			switch sectionID {
 			case 0:
-				return .grid(layoutMode: .fixedNumberOfColumns(4),
-										 itemSpacing: 16,
-										 lineSpacing: 16)
+				return .grid(
+                    layoutMode: .fixedNumberOfColumns(Constants.isPad ? 4 : 2),
+                    itemSpacing: 16,
+					lineSpacing: 16
+                )
 			default:
 				fatalError()
 			}

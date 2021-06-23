@@ -28,15 +28,15 @@ struct AppDetailsInfo: View {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
                     VStack(alignment: .leading, spacing: 0) {
-                        Text(viewStore.patientName).font(.medium24)
+                        Text(viewStore.patientName).font(.titleMediumLabel)
                         Text(viewStore.serviceName)
-                            .font(.regular18)
+                            .font(.labelRegular1816)
                     }
                     HStack(spacing: 4) {
                         Image(systemName: "clock")
                             .foregroundColor(.blue)
                             .frame(width: 21, height: 21)
-                        Text(viewStore.dateString).font(.regular18)
+                        Text(viewStore.dateString).font(.labelRegular1816)
                     }
                     Spacer()
                 }

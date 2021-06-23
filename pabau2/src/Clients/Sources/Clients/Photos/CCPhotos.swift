@@ -41,15 +41,23 @@ public enum CCPhotosAction: Equatable {
 struct CCPhotos: ClientCardChild {
 	let store: Store<CCPhotosState, CCPhotosAction>
 	var body: some View {
-		IfLetStore(store.scope(state: { $0.expandedSection },
-							   action: { .expanded($0) }),
-				   then: CCExpandedPhotos.init(store:),
-				   else: groupedPhotos)
+        IfLetStore(
+            store.scope(
+                state: { $0.expandedSection },
+                action: { .expanded($0) }
+            ),
+            then: CCExpandedPhotos.init(store:),
+            else: groupedPhotos
+        )
 	}
 
 	var groupedPhotos: some View {
-		CCGroupedPhotos(store: store.scope(state: { $0.childState.state },
-											action: { $0 }))
+		CCGroupedPhotos(
+            store: store.scope(
+                state: { $0.childState.state },
+				action: { $0 }
+            )
+        )
 	}
 }
 

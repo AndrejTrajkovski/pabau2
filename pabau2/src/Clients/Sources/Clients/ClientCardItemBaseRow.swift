@@ -24,7 +24,7 @@ struct TitleAndDate: View {
 	let title: String
 	let date: Date
 	var body: some View {
-		VStack(alignment: .leading, spacing: 4) {
+		VStack(alignment: .leading, spacing: 5) {
 			Text(title).font(.semibold17)
 			DateLabel(date: date).font(.regular15)
 		}

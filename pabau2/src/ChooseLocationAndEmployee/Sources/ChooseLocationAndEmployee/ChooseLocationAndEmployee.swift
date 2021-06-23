@@ -40,7 +40,7 @@ public struct ChooseLocationAndEmployee: View {
 	
     public var body: some View {
 //        VStack {
-            HStack(spacing: 24.0) {
+        DeviceHVStack {
                 TitleAndValueLabel(
                     "LOCATION",
                     viewStore.state.locationName,

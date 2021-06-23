@@ -13,8 +13,7 @@ struct ClientDaySection: View {
 	}
 	var body: some View {
 		Group {
-			HStack(spacing: 24.0) {
-				
+            DeviceHVStack {
 				TitleAndValueLabel(
 					"CLIENT",
 					self.viewStore.state.clients.chosenClient?.fullname ??  "Choose client",

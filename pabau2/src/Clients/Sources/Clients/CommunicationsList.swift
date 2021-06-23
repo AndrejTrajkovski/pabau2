@@ -23,17 +23,21 @@ struct CommunicationRow: View {
 	var body: some View {
 		VStack(spacing: 0) {
 			HStack {
-				AvatarView(avatarUrl: nil,
-									 initials: comm.initials,
-									 font: .regular18,
-									 bgColor: .accentColor)
-					.frame(width: 55, height: 55)
-					.padding()
-				VStack(alignment: .leading) {
-					HStack {
+                AvatarView(
+                    avatarUrl: nil,
+                    initials: comm.initials,
+                    font: .regular18,
+                    bgColor: .accentColor
+                )
+                .frame(width: 55, height: 55)
+                .padding()
+                VStack(alignment: .leading, spacing: Constants.isPad ? 0 : 10) {
+                    DeviceHVStack(vspacing: 10, horizontalAlignment: .leading) {
 						ChannelIcon(channel: comm.channel)
-						Text(comm.title).font(.medium17)
-						Spacer()
+                        Text(comm.title).font(.medium17).isRemoved(comm.title.isEmpty)
+                        if Constants.isPad {
+                            Spacer()
+                        }
 						DateLabel(date: comm.date)
 					}
 					Text(comm.subtitle)

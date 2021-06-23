@@ -12,7 +12,7 @@ public struct AddEventModifier: ViewModifier {
 	public func body(content: Content) -> some View {
 		NavigationView {
 			VStack(alignment: .leading, spacing: 0) {
-                XButton(onTouch: onXBtnTap).padding(EdgeInsets(top: 30, leading: 24, bottom: 0, trailing: 0))
+                XButton(onTouch: onXBtnTap).padding(EdgeInsets(top: 40, leading: 24, bottom: 5, trailing: 0))
 				ScrollView(showsIndicators: false) {
 					content
 				}

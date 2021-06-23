@@ -26,7 +26,7 @@ public struct AppointmentDetails: View {
                 .fixedSize(horizontal: false, vertical: true)
 			AddEventPrimaryBtn(title: Texts.addService) {
 				self.viewStore.send(.addService)
-			}
+            }.padding(.top, 70)
 		}
 		.addEventWrapper(
 			onXBtnTap: { self.viewStore.send(.close) }
