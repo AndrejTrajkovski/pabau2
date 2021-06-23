@@ -298,6 +298,25 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
         case .addShift(let shiftAction):
             switch shiftAction {
             case .shiftCreated(let response):
+                switch response {
+                case .success(let shift):
+                    state.appsLS = .gotSuccess
+                    
+                    let jzShiftsArr = state.shifts.values.flatMap { $0.values.flatMap { $0.values.flatMap { $0 }}}
+                    var shiftsArr = jzShiftsArr.map { $0.shift }
+                    shiftsArr.append(shift)
+                    state.shifts = Shift.convertToCalendar(shifts: shiftsArr)
+                    
+                    state.appointments.refresh(
+                        events: state.appointments.flatten(),
+                        locationsIds: state.chosenLocationsIds,
+                        employees: state.selectedEmployeesIds(),
+                        rooms: state.selectedRoomsIds()
+                    )
+                    
+                case .failure(let errror):
+                    break
+                }
                 break
             default:
                 break

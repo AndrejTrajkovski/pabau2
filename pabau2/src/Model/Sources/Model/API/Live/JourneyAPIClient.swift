@@ -128,8 +128,8 @@ extension APIClient {
         return result
 	}
 	
-	public func createShift(shiftSheme: ShiftSchema) -> Effect<PlaceholdeResponse, RequestError> {
-		let requestBuilder: RequestBuilder<PlaceholdeResponse>.Type = requestBuilderFactory.getBuilder()
+	public func createShift(shiftSheme: ShiftSchema) -> Effect<Shift, RequestError> {
+		let requestBuilder: RequestBuilder<VoidAPIResponse>.Type = requestBuilderFactory.getBuilder()
 		let shiftShemeData = try? JSONEncoder().encode(shiftSheme)
 		let params = shiftShemeData?.dictionary() ?? [:]
 		
@@ -140,6 +140,11 @@ extension APIClient {
 			queryParams: commonAnd(other: params)
 		)
 		.effect()
+        .map { response in
+            // FIXME: Returned shift from endpoint response when will be added
+            Shift.mock()
+        }
+        .eraseToEffect()
 	}
 	
 //	public func getBookoutReasons() -> Effect<[BookoutReason], RequestError> {
