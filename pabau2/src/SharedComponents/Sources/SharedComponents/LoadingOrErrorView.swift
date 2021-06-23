@@ -24,9 +24,14 @@ public enum ErrorViewAction {
 	case retry
 }
 
-struct ErrorRetry: View {
+public struct ErrorRetry: View {
+	
+	public init(store: Store<RequestError, ErrorViewAction>) {
+		self.store = store
+	}
+	
 	let store: Store<RequestError, ErrorViewAction>
-	var body: some View {
+	public var body: some View {
 		WithViewStore(store) { viewStore in
 			VStack {
 				PlainError(store: store.actionless)

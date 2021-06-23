@@ -36,7 +36,6 @@ extension CheckInLoadedState {
 				pathway: Pathway,
 				template: PathwayTemplate) {
 		self.appointment = appointment
-//		self.patientDetails = patientDetails
 		self.pathway = pathway
 		self.pathwayTemplate = template
 		self.patientStepStates = stepsAndEntries(pathway, pathwayTemplate, .patient).map {

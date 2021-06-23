@@ -89,6 +89,6 @@ struct StepForm: View {
 		SwitchStore(store) {
 			CaseLet(state: /StepState.patientDetails, action: StepAction.patientDetails, then: PatientDetailsParent.init(store:))
 			CaseLet(state: /StepState.htmlForm, action: StepAction.htmlForm, then: HTMLFormStepContainer.init(store:))
-		}
+		}.modifier(FormFrame())
 	}
 }
