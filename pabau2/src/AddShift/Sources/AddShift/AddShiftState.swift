@@ -37,7 +37,7 @@ public struct AddShiftState: Equatable {
 		
 		return ShiftSchema(
 			rotaID: shiftRotaID,
-            date: startDate?.getFormattedDate(format: "MM-dd-yyyy"),
+            date: startDate?.getFormattedDate(format: "yyyy-MM-dd"),
 			startTime: startTime?.getFormattedDate(format: "HH:mm"),
 			endTime: endTime?.getFormattedDate(format: "HH:mm"),
             locationID: "\(String(describing: locationID!))",
