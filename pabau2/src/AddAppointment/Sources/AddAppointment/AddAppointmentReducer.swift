@@ -15,11 +15,7 @@ let addAppTapBtnReducer = Reducer<AddAppointmentState?, AddAppointmentAction, Ad
 		state?.showsLoadingSpinner = false
 		switch result {
 		case .success(let services):
-            state?.toast = ToastState(mode: .banner(.slide),
-                                     type: .regular,
-                                     title: Texts.appointmentSuccessfullyCreated)
-            return Effect.timer(id: ToastTimerId(), every: 2, on: DispatchQueue.main)
-                .map { _ in AddAppointmentAction.dismissToastSuccess }
+            state = nil
 		case .failure(let error):
             print("failure")
             state?.toast = ToastState(mode: .alert,

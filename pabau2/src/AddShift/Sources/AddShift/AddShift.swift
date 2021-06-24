@@ -105,12 +105,12 @@ extension Location: SingleChoiceElement { }
 
 extension AddShiftState {
 	
-	public static func makeEmpty(chooseLocAndEmp: ChooseLocationAndEmployeeState) -> AddShiftState {
+    public static func makeEmpty(chooseLocAndEmp: ChooseLocationAndEmployeeState, startDate: Date? = nil) -> AddShiftState {
 		AddShiftState(
 			shiftRotaID: nil,
 			isPublished: true,
 			chooseLocAndEmp: chooseLocAndEmp,
-			startDate: nil,
+			startDate: startDate,
 			startTime: nil,
 			endTime: nil,
 			note: ""

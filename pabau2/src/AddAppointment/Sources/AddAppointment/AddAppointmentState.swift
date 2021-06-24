@@ -137,7 +137,7 @@ struct AddAppMocks {
 }
 
 extension AddAppointmentState {
-	public init(chooseLocAndEmp: ChooseLocationAndEmployeeState) {
+    public init(chooseLocAndEmp: ChooseLocationAndEmployeeState, startDate: Date? = nil) {
 		self.init(
 			editingAppointment: nil,
 			reminder: false,
@@ -145,7 +145,7 @@ extension AddAppointmentState {
 			sms: false,
 			feedback: false,
 			isAllDay: false,
-			startDate: Date(),
+			startDate: startDate ?? Date(),
 			durations: AddAppMocks.durationState,
 			participants: ChooseParticipantState(isChooseParticipantActive: false),
 			chooseLocAndEmp: chooseLocAndEmp,

@@ -189,7 +189,7 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
                 locations: state.locations,
                 employees: state.employees
             )
-			state.addShift = AddShiftState.makeEmpty(chooseLocAndEmp: chooseLocAndEmp)
+            state.addShift = AddShiftState.makeEmpty(chooseLocAndEmp: chooseLocAndEmp, startDate: state.selectedDate)
 		case .toggleFilters:
 			state.isShowingFilters.toggle()
 		case .appDetails(.close):
@@ -439,7 +439,7 @@ public struct CalendarContainer: View {
 					Group {
 						IfLetStore(
 							store.scope(
-								state: { $0.addShift },
+                                state: { $0.addShift },
 								action: { .addShift($0) }),
 							then: AddShift.init(store:)
 						)
