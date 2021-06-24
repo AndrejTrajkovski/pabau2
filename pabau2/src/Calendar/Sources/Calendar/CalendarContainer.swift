@@ -16,6 +16,7 @@ import Overture
 import AppointmentDetails
 import ChooseLocationAndEmployee
 import ToastAlert
+import FSCalendar
 
 public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, CalendarEnvironment> = .combine(
 	calTypePickerReducer.pullback(
@@ -257,6 +258,10 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
                     employees: state.selectedEmployeesIds(),
                     rooms: state.selectedRoomsIds()
                 )
+                
+                return Effect.init(value: CalendarAction.displayBannerMessage(Texts.bookoutSuccessfullyCreated))
+                    .eraseToEffect()
+                
             case .failure(let error): // Case treated in addAppTapBtnReducer
                 break
             }
@@ -314,7 +319,10 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
                         rooms: state.selectedRoomsIds()
                     )
                     
-                case .failure(let errror):
+                    return Effect.init(value: CalendarAction.displayBannerMessage(Texts.shiftSuccessfullyCreated))
+                        .eraseToEffect()
+                    
+                case .failure(let error):
                     break
                 }
                 break
@@ -346,9 +354,24 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
                     employees: state.selectedEmployeesIds(),
                     rooms: state.selectedRoomsIds()
                 )
+                
+                return Effect.init(value: CalendarAction.displayBannerMessage(Texts.appointmentSuccessfullyCreated))
+                    .eraseToEffect()
+                
             case .failure(let error): // Case treated in addAppTapBtnReducer
                 break
             }
+        case .displayBannerMessage(let message):
+            state.toast = ToastState(mode: .banner(.slide),
+                                     type: .regular,
+                                     title: message)
+            
+            return Effect.timer(id: ToastTimerId(), every: 5, on: DispatchQueue.main)
+                .map { _ in CalendarAction.dismissToast }
+            
+        case .dismissToast:
+            state.toast = nil
+            return .cancel(id: ToastTimerId())
         }
 		return .none
 	}
@@ -356,9 +379,33 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 
 public struct CalendarContainer: View {
 	let store: Store<CalendarState, CalendarAction>
+    
+    public init(store: Store<CalendarState, CalendarAction>) {
+        self.store = store
+    }
+    
+    struct ViewState: Equatable {
+        var appointments: Appointments
+        var selectedDate: Date
+        var isShowingFilters: Bool
+        var scope: FSCalendarScope
+        var addBookoutState: AddBookoutState?
+        var appDetails: AppDetailsState?
+        var addShift: AddShiftState?
+        
+        init(state: CalendarState) {
+            self.appointments =  state.appointments
+            self.selectedDate = state.selectedDate
+            self.isShowingFilters = state.isShowingFilters
+            self.scope = state.scope
+            self.addBookoutState = state.addBookoutState
+            self.appDetails = state.appDetails
+            self.addShift = state.addShift
+        }
+    }
 
 	public var body: some View {
-		WithViewStore(store) { viewStore in
+        WithViewStore(store.scope(state: ViewState.init(state:))) { viewStore in
 			ZStack(alignment: .topTrailing) {
 				VStack(spacing: 0) {
 					CalTopBar(store: store.scope(state: { $0 }))
@@ -379,6 +426,7 @@ public struct CalendarContainer: View {
 				}
 			}
 			.ignoresSafeArea()
+            .toast(store: store.scope(state: \.toast))
 			.fullScreenCover(
 				isPresented:
 					Binding(
@@ -412,18 +460,14 @@ public struct CalendarContainer: View {
 			)
 		}
 	}
-
-	public init(store: Store<CalendarState, CalendarAction>) {
-		self.store = store
-	}
-
+    
 	enum ActiveSheet {
 		case appDetails
 		case addBookout
 		case addShift
 	}
 
-	func activeSheet(state: CalendarState) -> ActiveSheet? {
+	func activeSheet(state: ViewState) -> ActiveSheet? {
 		if state.addBookoutState != nil {
 			return .addBookout
 		} else if state.appDetails != nil {
@@ -435,7 +479,7 @@ public struct CalendarContainer: View {
 		}
 	}
 
-	func dismissAction(state: CalendarState) -> CalendarAction? {
+	func dismissAction(state: ViewState) -> CalendarAction? {
 		if state.addBookoutState != nil {
 			return .onBookoutDismiss
 		} else if state.appDetails != nil {

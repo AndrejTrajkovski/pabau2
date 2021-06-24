@@ -14,6 +14,8 @@ import Appointments
 import CalendarList
 import Util
 import AppointmentDetails
+import ToastAlert
+import AlertToast
 
 public struct CalendarState: Equatable {
 	
@@ -42,6 +44,8 @@ public struct CalendarState: Equatable {
 
 	public var selectedDate: Date = DateFormatter.yearMonthDay.date(from: "2021-03-11")!
 	public var chosenLocationsIds: Set<Location.Id>
+    
+    var toast: ToastState<CalendarAction>?
 }
 
 extension CalendarState {
