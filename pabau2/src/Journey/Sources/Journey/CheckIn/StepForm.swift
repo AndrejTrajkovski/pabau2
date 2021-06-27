@@ -7,7 +7,7 @@ public let stepFormReducer: Reducer<StepState, StepAction, JourneyEnvironment> =
 	patientDetailsParentReducer.pullback(
 		state: /StepState.patientDetails,
 		action: /StepAction.patientDetails,
-		environment: { $0 }),
+		environment: makeFormEnv(_:)),
 	htmlFormStepContainerReducer.pullback(
 		state: /StepState.htmlForm,
 		action: /StepAction.htmlForm,
@@ -62,7 +62,8 @@ public enum StepState: Equatable, Identifiable {
 		} else {
 			switch stepAndEntry.step.stepType {
 			case .patientdetails:
-				self = .patientDetails(PatientDetailsParentState(id: stepAndEntry.step.id))
+				self = .patientDetails(PatientDetailsParentState(id: stepAndEntry.step.id,
+																 pathwayId: pathway.id))
 			case .aftercares:
 				self = .aftercare(Aftercare.mock(id: stepAndEntry.step.id))
 			case .checkpatient:

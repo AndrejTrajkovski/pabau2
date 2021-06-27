@@ -38,7 +38,7 @@ public let clientCardAddClientReducer: Reducer<AddClientState, ClientCardAddClie
 	switch action {
 	case .saveClient:
 		state.formSaving = .loading
-		return env.apiClient.update(clientBuilder: state.clientBuilder)
+		return env.formAPI.update(clientBuilder: state.clientBuilder, pathwayStep: nil)
 			.catchToEffect()
 			.receive(on: DispatchQueue.main)
 			.map { ClientCardAddClientAction.addClient(.onResponseSave($0)) }

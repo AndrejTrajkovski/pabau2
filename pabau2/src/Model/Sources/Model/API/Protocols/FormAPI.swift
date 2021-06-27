@@ -12,4 +12,5 @@ public protocol FormAPI {
     func uploadEpaperImage(image: Data, params: [String: String]) -> Effect<VoidAPIResponse, RequestError>
     func uploadClientEditedImage(image: Data, params: [String: String]) -> Effect<VoidAPIResponse, RequestError>
 	func getPatientDetails(clientId: Client.Id) -> Effect<Client, RequestError>
+	func update(clientBuilder: ClientBuilder, pathwayStep: PathwayIdStepId?) -> Effect<Client.ID, RequestError>
 }
