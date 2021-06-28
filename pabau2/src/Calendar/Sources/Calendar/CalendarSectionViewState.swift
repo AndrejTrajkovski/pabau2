@@ -16,6 +16,8 @@ public struct CalendarSectionViewState<Subsection: Identifiable & Equatable>: Eq
 	let subsections: [Location.ID: IdentifiedArrayOf<Subsection>]
 	let chosenSubsectionsIds: [Location.ID: [Subsection.ID]]
 	let shifts: [Location.ID: [Subsection.ID: [JZShift]]]
+	var editingSectionEvents: IdentifiedArrayOf<EditingEvent> = []
+//	var editingDurationEvents: IdentifiedArrayOf<EditingEvent> = []
 }
 
 public extension Dictionary {

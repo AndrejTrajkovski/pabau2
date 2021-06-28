@@ -300,36 +300,29 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			break
 		case .addBookoutAction:
 			break
-        case .addShift(let shiftAction):
-            switch shiftAction {
-            case .shiftCreated(let response):
-                switch response {
-                case .success(let shift):
-                    state.appsLS = .gotSuccess
-                    
-                    let jzShiftsArr = state.shifts.values.flatMap { $0.values.flatMap { $0.values.flatMap { $0 }}}
-                    var shiftsArr = jzShiftsArr.map { $0.shift }
-                    shiftsArr.append(shift)
-                    state.shifts = Shift.convertToCalendar(shifts: shiftsArr)
-                    
-                    state.appointments.refresh(
-                        events: state.appointments.flatten(),
-                        locationsIds: state.chosenLocationsIds,
-                        employees: state.selectedEmployeesIds(),
-                        rooms: state.selectedRoomsIds()
-                    )
-                    
-                    return Effect.init(value: CalendarAction.displayBannerMessage(Texts.shiftSuccessfullyCreated))
-                        .eraseToEffect()
-                    
-                case .failure(let error):
-                    break
-                }
-                break
-            default:
-                break
-            }
-			break
+		case .addShift(.shiftCreated(let response)):
+			switch response {
+			case .success(let shift):
+				state.appsLS = .gotSuccess
+				
+				let jzShiftsArr = state.shifts.values.flatMap { $0.values.flatMap { $0.values.flatMap { $0 }}}
+				var shiftsArr = jzShiftsArr.map { $0.shift }
+				shiftsArr.append(shift)
+				state.shifts = Shift.convertToCalendar(shifts: shiftsArr)
+				
+				state.appointments.refresh(
+					events: state.appointments.flatten(),
+					locationsIds: state.chosenLocationsIds,
+					employees: state.selectedEmployeesIds(),
+					rooms: state.selectedRoomsIds()
+				)
+				
+				return Effect.init(value: CalendarAction.displayBannerMessage(Texts.shiftSuccessfullyCreated))
+					.eraseToEffect()
+				
+			case .failure(let error):
+				break
+			}
 		case .employeeFilters(.gotLocationsResponse(_)):
 			break
 		case .roomFilters(.gotLocationsResponse(_)):
@@ -372,7 +365,9 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
         case .dismissToast:
             state.toast = nil
             return .cancel(id: ToastTimerId())
-        }
+		case .addShift:
+			break
+		}
 		return .none
 	}
 )
