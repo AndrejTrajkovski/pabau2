@@ -10,6 +10,7 @@ public struct CheckInNavigationState: Equatable {
 	public var loadingOrLoaded: CheckInLoadingOrLoadedState
 	var isAnimationFinished: Bool = false
 	let appointment: Appointment
+	var isEnterPasscodeToGoBackActive: Bool = false
 	
 	public init(loadedState: CheckInLoadedState) {
 		self.loadingOrLoaded = .loaded(loadedState)
@@ -91,15 +92,15 @@ public let navigationReducer = Reducer<CheckInLoadedState, CheckInContainerActio
 	func backToPatientMode() {
 		state.isDoctorSummaryActive = false
 		state.isDoctorCheckInMainActive = false
-		state.passcodeState = PasscodeState()
+		state.passcodeStateForDoctorMode = PasscodeState()
 		state.isHandBackDeviceActive = false
-		state.isEnterPasscodeActive = false
+		state.isEnterPasscodeForDoctorModeActive = false
 		//TODO goToNextUncomplete
 		//		state.patie.goToNextUncomplete()
 	}
 	switch action {
 	case .didTouchHandbackDevice:
-		state.isEnterPasscodeActive = true
+		state.isEnterPasscodeForDoctorModeActive = true
 	case .checkInAnimationEnd:
 		break
 	//TODO

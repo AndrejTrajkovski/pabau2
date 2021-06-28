@@ -27,7 +27,7 @@ struct HandBackDevice: View {
 						viewStore.send(.didTouchHandbackDevice)
 					}
 				NavigationLink.emptyHidden(viewStore.state.isEnterPasscodeActive,
-										   Passcode(store: self.store.scope(
+										   PasscodeBeforeDoctorMode(store: self.store.scope(
 														state: { $0 }, action: { $0 }))
 											.navigationBarHidden(viewStore.state.isNavBarHidden)
 											.navigationBarTitle("")

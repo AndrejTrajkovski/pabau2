@@ -24,8 +24,8 @@ public struct CheckInLoadedState: Equatable {
 	var patientSelectedIndex: Int
 	var doctorSelectedIndex: Int
 	
-	var passcodeState = PasscodeState()
-	var isEnterPasscodeActive: Bool = false
+	var passcodeStateForDoctorMode = PasscodeState()
+	var isEnterPasscodeForDoctorModeActive: Bool = false
 	var isDoctorCheckInMainActive: Bool = false
 	var isDoctorSummaryActive: Bool = false
 }
@@ -56,12 +56,12 @@ extension CheckInLoadedState {
 	var passcode: PasscodeContainerState {
 		get {
 			PasscodeContainerState(
-				passcode: self.passcodeState,
+				passcode: self.passcodeStateForDoctorMode,
 				isDoctorCheckInMainActive: self.isDoctorCheckInMainActive
 			)
 		}
 		set {
-			self.passcodeState = newValue.passcode
+			self.passcodeStateForDoctorMode = newValue.passcode
 			self.isDoctorCheckInMainActive = newValue.isDoctorCheckInMainActive
 		}
 	}
@@ -73,7 +73,7 @@ extension CheckInLoadedState {
 	
 	var handback: HandBackDeviceState {
 		get {
-			HandBackDeviceState(isEnterPasscodeActive: self.isEnterPasscodeActive,
+			HandBackDeviceState(isEnterPasscodeActive: self.isEnterPasscodeForDoctorModeActive,
 								isNavBarHidden: !self.passcode.passcode.unlocked
 			)
 		}
