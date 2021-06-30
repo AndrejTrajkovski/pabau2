@@ -309,12 +309,12 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
                 shiftsArr.append(shift)
 				state.shifts = Shift.convertToCalendar(shifts: shiftsArr)
 				
-				state.appointments.refresh(
-					events: state.appointments.flatten(),
-					locationsIds: state.chosenLocationsIds,
-					employees: state.selectedEmployeesIds(),
-					rooms: state.selectedRoomsIds()
-				)
+//				state.appointments.refresh(
+//					events: state.appointments.flatten(),
+//					locationsIds: state.chosenLocationsIds,
+//					employees: state.selectedEmployeesIds(),
+//					rooms: state.selectedRoomsIds()
+//				)
 				
                 state.toast = ToastState(mode: .banner(.slide),
                                          type: .regular,
