@@ -22,29 +22,54 @@ struct CommunicationRow: View {
 	let comm: Communication
 	var body: some View {
 		VStack(spacing: 0) {
-			HStack {
-                AvatarView(
-                    avatarUrl: nil,
-                    initials: comm.initials,
-                    font: .regular18,
-                    bgColor: .accentColor
-                )
-                .frame(width: 55, height: 55)
-                .padding()
-                VStack(alignment: .leading, spacing: Constants.isPad ? 0 : 10) {
-                    DeviceHVStack(vspacing: 10, horizontalAlignment: .leading) {
-						ChannelIcon(channel: comm.channel)
-                        Text(comm.title).font(.medium17).isRemoved(comm.title.isEmpty)
-                        if Constants.isPad {
-                            Spacer()
-                        }
-						DateLabel(date: comm.date)
-					}
-					Text(comm.subtitle)
-				}
-			}
+            if Constants.isPad {
+                ipadContentView
+            } else {
+                iphoneContentView
+            }
 		}
 	}
+
+    private var ipadContentView: some View {
+        HStack {
+            avatarView
+            VStack(alignment: .leading, spacing: 5) {
+                HStack(spacing: 5) {
+                    ChannelIcon(channel: comm.channel)
+                    Text(comm.title).font(.medium17).isRemoved(comm.title.isEmpty)
+                    Spacer()
+                    DateLabel(date: comm.date)
+                }
+                Text(comm.subtitle)
+            }
+        }
+    }
+
+    private var iphoneContentView: some View {
+        HStack {
+            avatarView
+            VStack(alignment: .leading, spacing: 5) {
+                VStack(alignment: .leading, spacing: 10) {
+                    Text(comm.title).font(.medium17).isRemoved(comm.title.isEmpty)
+                    DateLabel(date: comm.date)
+                }
+                Text(comm.subtitle)
+            }
+            Spacer()
+            ChannelIcon(channel: comm.channel)
+        }
+    }
+
+    private var avatarView: some View {
+        AvatarView(
+            avatarUrl: nil,
+            initials: comm.initials,
+            font: .regular18,
+            bgColor: .accentColor
+        )
+        .frame(width: 55, height: 55)
+        .padding()
+    }
 }
 
 struct ChannelIcon: View {

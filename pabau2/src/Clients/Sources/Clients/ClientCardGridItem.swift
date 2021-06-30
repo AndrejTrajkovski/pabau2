@@ -33,12 +33,12 @@ struct ClientCardGridItemView: View {
         HStack(spacing: 20) {
             VStack(spacing: 5) {
                 iconItemView
-                if let number = self.number {
-                    NumberEclipse(text: String(number))
-                }
             }.padding(.leading, 16)
             textItemView
             Spacer()
+            if let number = self.number {
+                NumberEclipse(text: String(number)).padding(.trailing, 16)
+            }
         }
     }
 
