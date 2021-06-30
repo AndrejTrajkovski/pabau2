@@ -253,8 +253,8 @@ extension DateFormatter {
 	public static let HHmm: DateFormatter = {
 		let formatter = DateFormatter()
 		formatter.dateFormat = "HH:mm"
-		formatter.calendar = Calendar(identifier: .iso8601)
-		formatter.timeZone = TimeZone(secondsFromGMT: 0)
+//		formatter.calendar = Calendar(identifier: .gregorian)
+//		formatter.timeZone = TimeZone(secondsFromGMT: 0)
 		formatter.locale = Locale(identifier: "en_US_POSIX")
 		return formatter
 	}()
@@ -262,8 +262,8 @@ extension DateFormatter {
 	public static let HHmmss: DateFormatter = {
 		let formatter = DateFormatter()
 		formatter.dateFormat = "HH:mm:ss"
-		formatter.calendar = Calendar(identifier: .iso8601)
-		formatter.timeZone = TimeZone(secondsFromGMT: 0)
+//		formatter.calendar = Calendar(identifier: .gregorian)
+//		formatter.timeZone = TimeZone(secondsFromGMT: 0)
 		formatter.locale = Locale(identifier: "en_US_POSIX")
 		return formatter
 	}()
@@ -271,8 +271,8 @@ extension DateFormatter {
 	public static let yearMonthDay: DateFormatter = {
 		let formatter = DateFormatter()
 		formatter.dateFormat = "yyyy-MM-dd"
-		formatter.calendar = Calendar(identifier: .iso8601)
-		formatter.timeZone = TimeZone(secondsFromGMT: 0)
+//		formatter.calendar = Calendar(identifier: .gregorian)
+//		formatter.timeZone = TimeZone(secondsFromGMT: 0)
 		formatter.locale = Locale(identifier: "en_US_POSIX")
 		return formatter
 	}()

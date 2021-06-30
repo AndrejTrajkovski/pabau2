@@ -3,6 +3,15 @@ import JZCalendarWeekView
 import Model
 
 public class JZShift: JZBackgroundTime, Identifiable {
+	
+	public override func isEqual(_ object: Any?) -> Bool {
+		guard let jzShift = object as? JZShift else { return false }
+		return jzShift.shift == self.shift
+	}
+	
+	static func == (lhs: JZShift, rhs: JZShift) -> Bool {
+		lhs.shift == rhs.shift
+	}
 
 	public subscript<Value>(dynamicMember keyPath: KeyPath<Shift, Value>) -> Value {
 		shift[keyPath: keyPath]
@@ -20,7 +29,6 @@ public class JZShift: JZBackgroundTime, Identifiable {
 		return JZShift(shift: shift)
 	}
 }
-
 
 extension Shift {
 	public static func convertToCalendar(

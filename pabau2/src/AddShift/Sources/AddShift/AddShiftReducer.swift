@@ -19,9 +19,6 @@ public let addShiftOptReducer: Reducer<
 		case .close:
 			state = nil
 		case .saveShift:
-			guard let shiftSheme = state?.shiftSchema else {
-				break
-			}
 			
 			var isValid = true
 			
@@ -41,6 +38,10 @@ public let addShiftOptReducer: Reducer<
 			}
 			
 			if !isValid { break }
+			
+			guard let shiftSheme = state?.shiftSchema else {
+				break
+			}
 			
 			state?.showsLoadingSpinner = true
 			

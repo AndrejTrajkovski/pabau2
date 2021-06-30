@@ -29,7 +29,7 @@ public class SectionCalendarView<Subsection: Identifiable & Equatable>: SectionW
 	}
 	
 	func reload(state: CalendarSectionViewState<Subsection>) {
-		print(state.shifts)
+		print("reload(state \(state.shifts)")
 		self.sectionsDataSource = Self.makeSectionDataSource(state: state,
 															 pageWidth: getSectionWidth())
 		initDate = state.selectedDate
@@ -40,7 +40,7 @@ public class SectionCalendarView<Subsection: Identifiable & Equatable>: SectionW
 		sectionsFlowLayout.invalidateLayoutCache()
 		collectionView.reloadData()
 	}
-
+    
 	public override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		if var cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as? BaseCalendarCell,
 			let event = getCurrentEvent(with: indexPath) as? JZAppointmentEvent {

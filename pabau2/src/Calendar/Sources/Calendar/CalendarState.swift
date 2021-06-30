@@ -42,7 +42,7 @@ public struct CalendarState: Equatable {
 	public var addBookoutState: AddBookoutState?
 	public var addShift: AddShiftState?
 
-	public var selectedDate: Date = DateFormatter.yearMonthDay.date(from: "2021-03-11")!
+	public var selectedDate: Date = Date().cutToDay()
 	public var chosenLocationsIds: Set<Location.Id>
     
     var toast: ToastState<CalendarAction>?
@@ -73,6 +73,12 @@ extension CalendarState {
             ) else {
                 return nil
             }
+			print("this")
+			print(selectedDate.timeIntervalSince1970)
+			print("shifts")
+			print(shifts)
+			print("shifts selecteDate")
+			print(shifts[selectedDate])
 			return CalendarSectionViewState<Employee>(
 				selectedDate: selectedDate,
 				appointments: groupAppointments,

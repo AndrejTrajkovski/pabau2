@@ -24,7 +24,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
              forAppId: "m3fk3gh1"
         )
         
-		SwiftDate.defaultRegion = Region.UTC
+		SwiftDate.defaultRegion = Region(calendar: Calendar.gregorian,
+										 zone: Zones.gmt,
+										 locale: Locale.init(identifier: "en_US_POSIX"))
 		if let windowScene = scene as? UIWindowScene {
             let reducer = appReducer
             let window = UIWindow(windowScene: windowScene)

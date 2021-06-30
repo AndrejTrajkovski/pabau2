@@ -107,10 +107,7 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			}
 		case .datePicker(.selectedDate(let date)):
 			
-			//+1 hour because the framework alway returns 23:00
-			let convertFrameworkDate = date + 1.hours
-			state.selectedDate = convertFrameworkDate
-			
+            state.selectedDate = date
 			return getAppointments()
 		case .calTypePicker(.onSelect(let calType)):
 			guard calType != state.appointments.calendarType else { return .none }
@@ -128,7 +125,6 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 				chooseLocAndEmp: chooseLocAndEmp,
 				start: startDate
 			)
-		//- TODO Iurii
 		case .room(.addBookout(let startDate, let durationMins, let dropKeys)):
 			let (location, subsection) = dropKeys
 			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
@@ -380,14 +376,14 @@ public struct CalendarContainer: View {
     }
     
     struct ViewState: Equatable {
-        var appointments: Appointments
-        var selectedDate: Date
-        var isShowingFilters: Bool
-        var scope: FSCalendarScope
-        var addBookoutState: AddBookoutState?
-        var appDetails: AppDetailsState?
-        var addShift: AddShiftState?
-        
+        let appointments: Appointments
+        let selectedDate: Date
+        let isShowingFilters: Bool
+        let scope: FSCalendarScope
+        let addBookoutState: AddBookoutState?
+        let appDetails: AppDetailsState?
+        let addShift: AddShiftState?
+		let shifts: [Date: [Location.ID: [Employee.ID: [JZShift]]]]
         init(state: CalendarState) {
             self.appointments =  state.appointments
             self.selectedDate = state.selectedDate
@@ -396,6 +392,7 @@ public struct CalendarContainer: View {
             self.addBookoutState = state.addBookoutState
             self.appDetails = state.appDetails
             self.addShift = state.addShift
+			self.shifts = state.shifts
         }
     }
 
