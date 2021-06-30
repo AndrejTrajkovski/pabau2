@@ -384,18 +384,24 @@ public struct CalendarContainer: View {
         let selectedDate: Date
         let isShowingFilters: Bool
         let scope: FSCalendarScope
-        let addBookoutState: AddBookoutState?
-        let appDetails: AppDetailsState?
-        let addShift: AddShiftState?
+        let isPresenting: ActiveSheet?
 		let shifts: [Date: [Location.ID: [Employee.ID: [Shift]]]]
         init(state: CalendarState) {
             self.appointments =  state.appointments
             self.selectedDate = state.selectedDate
             self.isShowingFilters = state.isShowingFilters
             self.scope = state.scope
-            self.addBookoutState = state.addBookoutState
-            self.appDetails = state.appDetails
-            self.addShift = state.addShift
+            self.isPresenting = {
+                if state.addBookoutState != nil {
+                    return ActiveSheet.addBookout
+                } else if state.appDetails != nil {
+                    return ActiveSheet.appDetails
+                } else if state.addShift != nil {
+                    return ActiveSheet.addShift
+                } else {
+                    return nil
+                }
+            }()
 			self.shifts = state.shifts
         }
     }
@@ -426,9 +432,9 @@ public struct CalendarContainer: View {
 			.fullScreenCover(
 				isPresented:
 					Binding(
-						get: { activeSheet(state: viewStore.state) != nil },
+                        get: { viewStore.isPresenting != nil },
 						set: {
-							_ in dismissAction(state: viewStore.state).map(viewStore.send)
+							_ in dismissAction(activeSheet: viewStore.isPresenting).map(viewStore.send)
 						}
 					),
 				content: {
@@ -463,28 +469,17 @@ public struct CalendarContainer: View {
 		case addShift
 	}
 
-	func activeSheet(state: ViewState) -> ActiveSheet? {
-		if state.addBookoutState != nil {
-			return .addBookout
-		} else if state.appDetails != nil {
-			return .appDetails
-		} else if state.addShift != nil {
-			return .addShift
-		} else {
-			return nil
-		}
-	}
-
-	func dismissAction(state: ViewState) -> CalendarAction? {
-		if state.addBookoutState != nil {
-			return .onBookoutDismiss
-		} else if state.appDetails != nil {
-			return .onAppDetailsDismiss
-		} else if state.addShift != nil {
-			return .onAddShiftDismiss
-		} else {
-			return nil
-		}
+	func dismissAction(activeSheet: ActiveSheet?) -> CalendarAction? {
+        return activeSheet.map {
+            switch $0 {
+            case .appDetails:
+                return .onAppDetailsDismiss
+            case .addBookout:
+                return .onBookoutDismiss
+            case .addShift:
+                return .onAddShiftDismiss
+            }
+        }
 	}
 
 	var searchBarButton: some View {
