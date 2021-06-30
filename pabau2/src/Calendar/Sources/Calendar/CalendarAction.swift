@@ -32,4 +32,5 @@ public enum CalendarAction {
 	case gotLocationsResponse(Result<SuccessState<[Location]>, RequestError>)
     case appointmentCreatedResponse(Result<CalendarEvent, RequestError>)
     case refresh
+    case dismissToast
 }

@@ -29,6 +29,7 @@ public class SectionCalendarView<Subsection: Identifiable & Equatable>: SectionW
 	}
 	
 	func reload(state: CalendarSectionViewState<Subsection>) {
+		print("reload(state \(state.shifts)")
 		self.sectionsDataSource = Self.makeSectionDataSource(state: state,
 															 pageWidth: getSectionWidth())
 		initDate = state.selectedDate
@@ -39,7 +40,7 @@ public class SectionCalendarView<Subsection: Identifiable & Equatable>: SectionW
 		sectionsFlowLayout.invalidateLayoutCache()
 		collectionView.reloadData()
 	}
-
+    
 	public override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		if var cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as? BaseCalendarCell,
 			let event = getCurrentEvent(with: indexPath) as? JZAppointmentEvent {
@@ -75,9 +76,6 @@ public class SectionCalendarView<Subsection: Identifiable & Equatable>: SectionW
 
 	@objc override public func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, backgroundTimesAtSection section: Int) -> [JZBackgroundTime] {
 		let bgTime = sectionsDataSource!.backgroundTimes(section: section)
-		
-		print("shift section: \(section)")
-		print("bgTimes: \(bgTime)")
 		return bgTime
 	}
 	
@@ -86,11 +84,16 @@ public class SectionCalendarView<Subsection: Identifiable & Equatable>: SectionW
 	SectionWeekViewDataSource<JZAppointmentEvent, Location, Subsection, JZShift> {
 		let jzApps = state.appointments.appointments.mapValues { $0.mapValues { $0.elements.map(JZAppointmentEvent.init(appointment:)) }}
 		print("appointments: \(jzApps)")
+        let jzShifts = state.shifts.mapValues {
+            $0.mapValues {
+                $0.map(JZShift.init(shift:))
+            }
+        }
 		return SectionWeekViewDataSource.init(state.selectedDate,
 											  state.chosenLocations(),
 											  state.chosenSubsections(),
 											  jzApps,
-											  state.shifts,
+                                              jzShifts,
 											  pageWidth
 		)
 	}

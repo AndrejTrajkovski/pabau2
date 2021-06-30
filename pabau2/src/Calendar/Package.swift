@@ -17,7 +17,7 @@ let package = Package(
 		.package(url: "../FSCalendarSwiftUI",
 						 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "https://github.com/AndrejTrajkovski/JZCalendarWeekView.git",
-				 .branch("animatedWidthFix")),
+				 .revision("d1984a19f1f66ac8c73c763772ed3f14ab5857f9")),
 		.package(url: "../AddAppointment",
 				 from: Version.init(stringLiteral: "1.0.0")),
 		.package(url: "../SharedComponents",

@@ -21,13 +21,18 @@ public struct CalendarSectionViewReducer<Subsection: Identifiable & Equatable> {
                 break
             }
             
+			let oldEvent = app
+			
 			app.update(start: startDate)
 			app.locationId = dropIndexes.location
             
+			var newSection: Either<Room.ID, Employee.ID>!
 			if let roomId = dropIndexes.subsection as? Room.ID {
 				app.roomId = roomId
+				newSection = .left(roomId)
 			} else if let empId = dropIndexes.subsection as? Employee.ID {
 				app.employeeId = empId
+				newSection = .right(empId)
 			}
             
 			if state.appointments.appointments[dropIndexes.location] == nil {
@@ -36,8 +41,14 @@ public struct CalendarSectionViewReducer<Subsection: Identifiable & Equatable> {
 
             state.appointments.appointments[dropIndexes.location]?[dropIndexes.subsection]?.append(app)
 			
+			let editingEvent = EditingEvent(oldEvent: oldEvent,
+											newLocation: dropIndexes.location,
+											newSection: newSection,
+											newStartDate: startDate)
+			state.editingSectionEvents.append(editingEvent)
+			
 			let appBuilder = AppointmentBuilder(calendarEvent: app)
-
+			
             return env.clientsAPI.updateAppointment(appointment: appBuilder)
                 .catchToEffect()
                 .map(SubsectionCalendarAction.appointmentEdited)
@@ -51,7 +62,7 @@ public struct CalendarSectionViewReducer<Subsection: Identifiable & Equatable> {
 			state.selectedDate = newDate
 			
 		case .editDuration(let newEndDate, let startIndexes, let eventId):
-			
+			//CRISTIAN -only drag the bottom
 			let calId = CalendarEvent.Id(rawValue: eventId)
 			let oldDateO = state.appointments.appointments[startIndexes.location]?[startIndexes.subsection]?[id: calId]?.end_date
 			guard let oldDate = oldDateO else { return .none }
@@ -83,12 +94,12 @@ public struct CalendarSectionViewReducer<Subsection: Identifiable & Equatable> {
 		case .addBookout(startDate: let startDxate, durationMins: let durationMins, dropKeys: let dropKeys):
 			break
         case .appointmentEdited(let result):
-			//TODO: IURII failure
             switch result {
             case .success(let placeholder):
-                print(placeholder)
-            default:
-                break
+				state.editingSectionEvents.remove(id: placeholder)
+			case .failure(let error):
+				break
+			//TODO: Cristian, return appointments state to where it was before
             }
 		}
 		return .none

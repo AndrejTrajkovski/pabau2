@@ -329,7 +329,8 @@ public let tabBarReducer: Reducer<
                 locations: state.calendar.locations,
                 employees: state.calendar.employees
             )
-			state.addAppointment = AddAppointmentState(chooseLocAndEmp: chooseLocAndEmp)
+            state.addAppointment = AddAppointmentState(chooseLocAndEmp: chooseLocAndEmp,
+                                                       startDate: state.calendar.selectedDate)
 		case .addAppointment(
 				.chooseLocAndEmp(
 					.chooseLocation(
