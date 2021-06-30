@@ -33,21 +33,21 @@ public class JZShift: JZBackgroundTime, Identifiable {
 extension Shift {
 	public static func convertToCalendar(
 		shifts: [Shift]
-	) -> [Date: [Location.ID: [Employee.Id: [JZShift]]]] {
+	) -> [Date: [Location.ID: [Employee.Id: [Shift]]]] {
 		
-		let jzShifts = shifts.map(JZShift.init(shift:))
+//		let jzShifts = shifts.map(JZShift.init(shift:))
 		
-		let byDate = Dictionary.init(grouping: jzShifts, by: { $0[dynamicMember: \.date] })
+		let byDate = Dictionary.init(grouping: shifts, by: { $0.date })
 		
 		return byDate.mapValues { events in
 			return Dictionary.init(
 				grouping: events,
-				by: { $0[dynamicMember: \.locationID] }
+				by: { $0.locationID }
 			)
 			.mapValues { events2 in
 				Dictionary.init(
 					grouping: events2,
-					by: { $0[dynamicMember: \.userID] }
+					by: { $0.userID }
 				)
 			}
 		}

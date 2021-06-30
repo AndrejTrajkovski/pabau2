@@ -15,7 +15,7 @@ public struct CalendarSectionViewState<Subsection: Identifiable & Equatable>: Eq
 	let chosenLocationsIds: Set<Location.ID>
 	let subsections: [Location.ID: IdentifiedArrayOf<Subsection>]
 	let chosenSubsectionsIds: [Location.ID: [Subsection.ID]]
-	let shifts: [Location.ID: [Subsection.ID: [JZShift]]]
+	let shifts: [Location.ID: [Subsection.ID: [Shift]]]
 	var editingSectionEvents: IdentifiedArrayOf<EditingEvent> = []
 //	var editingDurationEvents: IdentifiedArrayOf<EditingEvent> = []
 }

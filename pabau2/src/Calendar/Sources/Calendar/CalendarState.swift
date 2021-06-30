@@ -27,7 +27,7 @@ public struct CalendarState: Equatable {
 	public var appointments: Appointments
 	public var isAddEventDropdownShown: Bool
 	var isCalendarTypeDropdownShown: Bool
-	var shifts: [Date: [Location.ID: [Employee.ID: [JZShift]]]]
+	var shifts: [Date: [Location.ID: [Employee.ID: [Shift]]]]
 	public var locations: IdentifiedArrayOf<Location>
 	public var employees: [Location.Id: IdentifiedArrayOf<Employee>]
 	public var rooms: [Location.Id: IdentifiedArrayOf<Room>]

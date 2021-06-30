@@ -301,9 +301,9 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			case .success(let shift):
 				state.appsLS = .gotSuccess
 				
-				let jzShiftsArr = state.shifts.values.flatMap { $0.values.flatMap { $0.values.flatMap { $0 }}}
-				var shiftsArr = jzShiftsArr.map { $0.shift }
-				shiftsArr.append(shift)
+				var shiftsArr = state.shifts.values.flatMap { $0.values.flatMap { $0.values.flatMap { $0 }}}
+//				var shiftsArr = jzShiftsArr.map { $0.shift }
+                shiftsArr.append(shift)
 				state.shifts = Shift.convertToCalendar(shifts: shiftsArr)
 				
 				state.appointments.refresh(
@@ -383,7 +383,7 @@ public struct CalendarContainer: View {
         let addBookoutState: AddBookoutState?
         let appDetails: AppDetailsState?
         let addShift: AddShiftState?
-		let shifts: [Date: [Location.ID: [Employee.ID: [JZShift]]]]
+		let shifts: [Date: [Location.ID: [Employee.ID: [Shift]]]]
         init(state: CalendarState) {
             self.appointments =  state.appointments
             self.selectedDate = state.selectedDate
