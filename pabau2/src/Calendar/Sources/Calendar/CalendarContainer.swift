@@ -259,8 +259,12 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
                     rooms: state.selectedRoomsIds()
                 )
                 
-                return Effect.init(value: CalendarAction.displayBannerMessage(Texts.bookoutSuccessfullyCreated))
-                    .eraseToEffect()
+                state.toast = ToastState(mode: .banner(.slide),
+                                         type: .regular,
+                                         title: Texts.bookoutSuccessfullyCreated)
+                
+                return Effect.timer(id: ToastTimerId(), every: 5, on: DispatchQueue.main)
+                    .map { _ in CalendarAction.dismissToast }
                 
             case .failure(let error): // Case treated in addAppTapBtnReducer
                 break
@@ -319,8 +323,12 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
                         rooms: state.selectedRoomsIds()
                     )
                     
-                    return Effect.init(value: CalendarAction.displayBannerMessage(Texts.shiftSuccessfullyCreated))
-                        .eraseToEffect()
+                    state.toast = ToastState(mode: .banner(.slide),
+                                             type: .regular,
+                                             title: Texts.shiftSuccessfullyCreated)
+                    
+                    return Effect.timer(id: ToastTimerId(), every: 5, on: DispatchQueue.main)
+                        .map { _ in CalendarAction.dismissToast }
                     
                 case .failure(let error):
                     break
@@ -355,19 +363,16 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
                     rooms: state.selectedRoomsIds()
                 )
                 
-                return Effect.init(value: CalendarAction.displayBannerMessage(Texts.appointmentSuccessfullyCreated))
-                    .eraseToEffect()
+                state.toast = ToastState(mode: .banner(.slide),
+                                         type: .regular,
+                                         title: Texts.appointmentSuccessfullyCreated)
+                
+                return Effect.timer(id: ToastTimerId(), every: 5, on: DispatchQueue.main)
+                    .map { _ in CalendarAction.dismissToast }
                 
             case .failure(let error): // Case treated in addAppTapBtnReducer
                 break
             }
-        case .displayBannerMessage(let message):
-            state.toast = ToastState(mode: .banner(.slide),
-                                     type: .regular,
-                                     title: message)
-            
-            return Effect.timer(id: ToastTimerId(), every: 5, on: DispatchQueue.main)
-                .map { _ in CalendarAction.dismissToast }
             
         case .dismissToast:
             state.toast = nil
