@@ -33,5 +33,4 @@ public enum CalendarAction {
     case appointmentCreatedResponse(Result<CalendarEvent, RequestError>)
     case refresh
     case dismissToast
-    case displayBannerMessage(String)
 }
