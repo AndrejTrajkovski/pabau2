@@ -35,6 +35,13 @@ public struct CalendarSectionViewReducer<Subsection: Identifiable & Equatable> {
 				newSection = .right(empId)
 			}
             
+            var oldSection: Either<Room.ID, Employee.ID>!
+            if let roomId = startIndexes.subsection as? Room.ID {
+                oldSection = .left(roomId)
+            } else  if let empId = startIndexes.subsection as? Employee.ID {
+                oldSection = .right(empId)
+            }
+            
 			if state.appointments.appointments[dropIndexes.location] == nil {
 				state.appointments.appointments[dropIndexes.location] = [:]
 			}
@@ -44,14 +51,17 @@ public struct CalendarSectionViewReducer<Subsection: Identifiable & Equatable> {
 			let editingEvent = EditingEvent(oldEvent: oldEvent,
 											newLocation: dropIndexes.location,
 											newSection: newSection,
+                                            oldSection: oldSection,
 											newStartDate: startDate)
 			state.editingSectionEvents.append(editingEvent)
+            print(state.editingSectionEvents)
+            
 			
 			let appBuilder = AppointmentBuilder(calendarEvent: app)
 			
             return env.clientsAPI.updateAppointment(appointment: appBuilder)
                 .catchToEffect()
-                .map(SubsectionCalendarAction.appointmentEdited)
+                .map { response in SubsectionCalendarAction.appointmentEdited(response, id: app.id) }
                 .receive(on: DispatchQueue.main)
                 .eraseToEffect()
 			
@@ -78,7 +88,7 @@ public struct CalendarSectionViewReducer<Subsection: Identifiable & Equatable> {
             return env.clientsAPI.updateAppointment(appointment: appointmentBuilder)
                 .receive(on: DispatchQueue.main)
                 .catchToEffect()
-                .map(SubsectionCalendarAction.appointmentEdited)
+                .map{ response in SubsectionCalendarAction.appointmentEdited(response, id: app.id) }
                 .eraseToEffect()
 			
 		case .onSelect(let keys, let eventId):
@@ -93,13 +103,38 @@ public struct CalendarSectionViewReducer<Subsection: Identifiable & Equatable> {
 			}
 		case .addBookout(startDate: let startDxate, durationMins: let durationMins, dropKeys: let dropKeys):
 			break
-        case .appointmentEdited(let result):
+        case .appointmentEdited(let result, let calendarEventId):
             switch result {
             case .success(let placeholder):
 				state.editingSectionEvents.remove(id: placeholder)
+                break
 			case .failure(let error):
-				break
-			//TODO: Cristian, return appointments state to where it was before
+                
+                guard let editingEvent = state.editingSectionEvents.first(where: { $0.id == calendarEventId }) else { break }
+                var app: CalendarEvent!
+                
+                switch editingEvent.newSection {
+                case .left(let roomId):
+                    let subsectionId = roomId as! Subsection.ID
+                    app = state.appointments.appointments[editingEvent.oldEvent.locationId]?[subsectionId]?.remove(id: editingEvent.id)
+                case .right(let employeeId):
+                    let subsectionId = employeeId as! Subsection.ID
+                    app = state.appointments.appointments[editingEvent.oldEvent.locationId]?[subsectionId]?.remove(id: editingEvent.id)
+                }
+                
+                app.update(start: editingEvent.oldEvent.start_date)
+                app.locationId = editingEvent.oldEvent.locationId
+                
+                switch editingEvent.oldSection {
+                case .left(let roomId):
+                    let subsectionId = roomId as! Subsection.ID
+                    state.appointments.appointments[editingEvent.oldEvent.locationId]?[subsectionId]?.append(app)
+                case .right(let employeeId):
+                    let subsectionId = employeeId as! Subsection.ID
+                    state.appointments.appointments[editingEvent.oldEvent.locationId]?[subsectionId]?.append(app)
+                }
+                
+                state.editingSectionEvents.removeAll(where: { $0.id == calendarEventId })
             }
 		}
 		return .none

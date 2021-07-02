@@ -42,10 +42,12 @@ public struct CalendarState: Equatable {
 	public var addBookoutState: AddBookoutState?
 	public var addShift: AddShiftState?
 
-	public var selectedDate: Date = Date().cutToDay()
+    public var selectedDate: Date = Date().cutToDay()
 	public var chosenLocationsIds: Set<Location.Id>
     
     var toast: ToastState<CalendarAction>?
+    
+    var editingSectionEvents: IdentifiedArrayOf<EditingEvent> = []
 }
 
 extension CalendarState {
@@ -88,7 +90,8 @@ extension CalendarState {
 				chosenLocationsIds: chosenLocationsIds,
 				subsections: employees,
 				chosenSubsectionsIds: chosenEmployeesIds,
-				shifts: shifts[selectedDate] ?? [:]
+				shifts: shifts[selectedDate] ?? [:],
+                editingSectionEvents: []
 			)
 		}
 		set {
@@ -102,6 +105,7 @@ extension CalendarState {
 				self.employees = $0.subsections
 				self.chosenEmployeesIds = $0.chosenSubsectionsIds
 				self.shifts[$0.selectedDate] = $0.shifts
+                self.editingSectionEvents = $0.editingSectionEvents
 			}
 		}
 	}
@@ -118,7 +122,8 @@ extension CalendarState {
 				chosenLocationsIds: chosenLocationsIds,
 				subsections: rooms,
 				chosenSubsectionsIds: chosenRoomsIds,
-				shifts: [:]
+				shifts: [:],
+                editingSectionEvents: editingSectionEvents
 			)
 		}
 		set {
@@ -131,6 +136,7 @@ extension CalendarState {
 				self.chosenLocationsIds = $0.chosenLocationsIds
 				self.rooms = $0.subsections
 				self.chosenRoomsIds = $0.chosenSubsectionsIds
+                self.editingSectionEvents = $0.editingSectionEvents
 			}
 		}
 	}
