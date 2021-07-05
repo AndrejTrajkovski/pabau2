@@ -159,6 +159,11 @@ extension CalendarEvent: Decodable {
 		case fontColor = "font_color"
 		case extraEmployees = "extra_employees"
 		case pathways
+        case patient_details_status
+        case medical_history_status
+        case patient_consent_status
+        case photos_status
+        case treatment_notes_status
 	}
 	
 	public init(from decoder: Decoder) throws {
@@ -199,6 +204,7 @@ extension CalendarEvent: Decodable {
 		let employeeName = try container.decode(String.self, forKey: .employeeName)
 		let employeeInitials = employeeName.split(separator: " ").joined().uppercased()
 		let serviceId = try? container.decode(Service.Id.self, forKey: .serviceID)
+        
 		if let serviceId = serviceId, serviceId.rawValue != "0" {
             let app = try Appointment(
                 id,

@@ -26,6 +26,11 @@ public struct Appointment: Equatable, Identifiable, Decodable {
 	public let serviceId: Service.Id
 	public let locationName: String?
 	public let pathways: IdentifiedArrayOf<PathwayInfo>
+    public var patient_details_status: Int
+    public var medical_history_status: Int
+    public var patient_consent_status: Int
+    public var photos_status: Int
+    public var treatment_notes_status: Int
 }
 
 public struct PathwayInfo: Decodable, Equatable, Identifiable {
@@ -44,6 +49,20 @@ public struct PathwayInfo: Decodable, Equatable, Identifiable {
 }
 
 extension Appointment: CalendarEventVariant { }
+
+extension Appointment {
+    
+    public var isComplete: Bool {
+        if patient_details_status.boolValue &&
+            medical_history_status.boolValue &&
+            patient_consent_status.boolValue &&
+            photos_status.boolValue &&
+            treatment_notes_status.boolValue {
+                return true
+        }
+        return false
+    }
+}
 
 extension Appointment {
 	
@@ -87,6 +106,12 @@ extension Appointment {
 		self.locationName = "TO ADD IN BACKEND"
 		let pathwayArr = (try? container.decode([PathwayInfo].self, forKey: .pathways)) ?? []
 		self.pathways = IdentifiedArrayOf(pathwayArr)
+        
+        self.patient_details_status = try container.decode(Int.self, forKey: .patient_details_status)
+        self.medical_history_status = try container.decode(Int.self, forKey: .medical_history_status)
+        self.patient_consent_status = try container.decode(Int.self, forKey: .patient_consent_status)
+        self.photos_status = try container.decode(Int.self, forKey: .photos_status)
+        self.treatment_notes_status = try container.decode(Int.self, forKey: .treatment_notes_status)
 	}
 }
 
@@ -100,3 +125,8 @@ extension CalendarEvent {
 		self.end_date = end
 	}
 }
+
+extension Int {
+    var boolValue: Bool { return self != 0 }
+}
+

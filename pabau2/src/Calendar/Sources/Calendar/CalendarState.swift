@@ -46,6 +46,7 @@ public struct CalendarState: Equatable {
 	public var chosenLocationsIds: Set<Location.Id>
     
     var toast: ToastState<CalendarAction>?
+    var activeFilter: CompleteFilter = .all
 }
 
 extension CalendarState {

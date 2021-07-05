@@ -15,7 +15,7 @@ public typealias ListCalendarEnvironment = (
 	userDefaults: UserDefaultsConfig
 )
 
-let listCalendarReducer: Reducer<ListState, ListAction, ListCalendarEnvironment> =
+public let listCalendarReducer: Reducer<ListState, ListAction, ListCalendarEnvironment> =
 	.combine (
 		.init { state, action, environment in
 
@@ -23,7 +23,6 @@ let listCalendarReducer: Reducer<ListState, ListAction, ListCalendarEnvironment>
 			
 			case .selectedFilter(let filter):
 				state.selectedFilter = filter
-				
 			case .searchedText(let searchText):
 				state.searchText = searchText
 				
@@ -40,7 +39,8 @@ public struct ListContainerView: View {
 	@ObservedObject var viewStore: ViewStore<ListContainerState, ListAction>
 
     @State var showSearchBar: Bool = false
-
+    @State private var filter: CompleteFilter = .all
+    
 	public init(store: Store<ListContainerState, ListAction>) {
 		self.store = store
 		self.viewStore = ViewStore(self.store)
@@ -48,7 +48,7 @@ public struct ListContainerView: View {
 
 	public var body: some View {
 		VStack {
-            FilterPicker()
+            FilterPicker(filter: $filter)
             if self.showSearchBar {
                 searchBar
             }
@@ -62,6 +62,8 @@ public struct ListContainerView: View {
                     )
                 }
             }
+        }.onChange(of: filter) { _ in
+            viewStore.send(.selectedFilter(filter))
         }
     }
 
@@ -136,7 +138,7 @@ struct ListCellStoreRow: View {
 
 	var body: some View {
 		WithViewStore(store) { viewStore in
-			ListCell(appointment: viewStore.state)
+            ListCell(appointment: viewStore.state)
 				.onTapGesture { viewStore.send(.select) }
 				.listRowInsets(EdgeInsets())
 		}
@@ -144,7 +146,7 @@ struct ListCellStoreRow: View {
 }
 
 struct FilterPicker: View {
-	@State private var filter: CompleteFilter = .all
+    @Binding var filter: CompleteFilter
     var body: some View {
         VStack {
             Picker(

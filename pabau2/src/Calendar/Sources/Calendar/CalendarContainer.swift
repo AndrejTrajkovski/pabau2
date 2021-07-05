@@ -17,6 +17,7 @@ import AppointmentDetails
 import ChooseLocationAndEmployee
 import ToastAlert
 import FSCalendar
+import CalendarList
 
 public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, CalendarEnvironment> = .combine(
 	calTypePickerReducer.pullback(
@@ -63,6 +64,15 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 		action: /CalendarAction.addShift,
 		environment: { $0 }
 	),
+    listCalendarReducer.pullback(
+        state: \CalendarState.list,
+        action: /CalendarAction.list,
+        environment: { ListCalendarEnvironment(journeyAPI: $0.journeyAPI,
+                                               clientsAPI: $0.clientsAPI,
+                                               userDefaults: $0.userDefaults)
+        }
+    ),
+    
 	.init { state, action, env in
 
 		struct GetAppointmentsCancelID: Hashable { }
@@ -78,6 +88,7 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 				.eraseToEffect()
 				.cancellable(id: GetAppointmentsCancelID(), cancelInFlight: true)
 		}
+        
         print(action)
 		switch action {
 		
@@ -330,8 +341,6 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			break
 		case .roomFilters(.gotLocationsResponse(_)):
 			break
-		case .list(.selectedFilter(_)):
-			break
 		case .list(.searchedText(_)):
 			break
         case .refresh:
@@ -367,6 +376,9 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
             return .cancel(id: ToastTimerId())
 		case .addShift:
 			break
+        case .list(.selectedFilter(let filter)):
+            print(filter)
+            state.activeFilter = filter
 		}
 		return .none
 	}
