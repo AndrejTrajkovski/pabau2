@@ -44,11 +44,16 @@ public let addBookoutReducer: Reducer<
 	AddBookoutAction,
 	AddBookoutEnvironment
 > = .combine(
-	SingleChoiceReducer<Duration>().reducer.pullback(
+    SingleChoiceLinkReducer<Duration>().reducer.pullback(
 		state: \.chooseDuration,
 		action: /AddBookoutAction.chooseDuration,
 		environment: { $0 }
 	),
+    SingleChoiceReducer<Duration>().reducer.pullback(
+        state: \.choosePredefinedDuration,
+        action: /AddBookoutAction.choosePredefinedDuration,
+        environment: { $0 }
+    ),
 	textFieldReducer.pullback(
 		state: \.note,
 		action: /AddBookoutAction.note,
@@ -101,6 +106,10 @@ public let addBookoutReducer: Reducer<
 			state.time = time
 		case .onChooseBookoutReason:
 			state.chooseBookoutReasonState.isChooseBookoutReasonActive = true
+        case .chooseDuration:
+            state.duration = state.chooseDuration.chosenItemName ?? ""
+        case .choosePredefinedDuration:
+            state.duration = state.choosePredefinedDuration.chosenItemName ?? ""
 		default:
 			break
 		}

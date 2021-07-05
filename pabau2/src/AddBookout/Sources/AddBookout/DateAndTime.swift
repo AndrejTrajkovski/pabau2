@@ -37,19 +37,29 @@ struct DateAndTime: View {
 			}
 			GeometryReader { geometry in
 				HStack {
-					TitleAndValueLabel(
-						"DURATION",
-						self.viewStore.state.chooseDuration.chosenItemName ?? "",
-						nil,
-						.constant(viewStore.durationValidator)
-					)
+                    SingleChoiceLink.init(
+                        content: {
+                            TitleAndValueLabel.init(
+                                "DURATION",
+                                self.viewStore.state.duration,
+                                nil,
+                                .constant(nil)
+                            )
+                        },
+                        store: self.store.scope(
+                            state: { $0.chooseDuration },
+                            action: { .chooseDuration($0) }
+                        ),
+                        cell: TextAndCheckMarkContainer.init(state:),
+                        title: "Duration"
+                    )
                     .frame(width: geometry.size.width * 0.4)
-					DurationPicker(
-						store: store.scope(
-							state: { $0.chooseDuration },
-							action: { .chooseDuration($0) }
-						)
-					)
+                    DurationPicker(
+                        store: store.scope(
+                            state: { $0.choosePredefinedDuration },
+                            action: { .choosePredefinedDuration($0) }
+                        )
+                    )
 					.frame(maxWidth: .infinity)
 				}
 			}
