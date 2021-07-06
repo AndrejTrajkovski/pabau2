@@ -10,7 +10,7 @@ import AppointmentDetails
 public struct CalendarSectionViewReducer<Subsection: Identifiable & Equatable> {
 	let reducer = Reducer<CalendarSectionViewState<Subsection>, SubsectionCalendarAction<Subsection>, CalendarEnvironment> { state, action, env in
 		switch action {
-		
+        
 		case .addAppointment:
 			break //handled in calendarContainerReducer
 		
@@ -72,16 +72,29 @@ public struct CalendarSectionViewReducer<Subsection: Identifiable & Equatable> {
 			state.selectedDate = newDate
 			
 		case .editDuration(let newEndDate, let startIndexes, let eventId):
-			//CRISTIAN -only drag the bottom
 			let calId = CalendarEvent.Id(rawValue: eventId)
 			let oldDateO = state.appointments.appointments[startIndexes.location]?[startIndexes.subsection]?[id: calId]?.end_date
 			guard let oldDate = oldDateO else { return .none }
-            
-			state.appointments.appointments[startIndexes.location]?[startIndexes.subsection]?[id: calId]?.end_date = Date.concat(oldDate, newEndDate)
-            
             guard let app = state.appointments.appointments[startIndexes.location]?[startIndexes.subsection]?[id: calId] else {
                 return .none
             }
+            
+            let oldEvent = app
+            var oldSection: Either<Room.ID, Employee.ID>!
+            if let roomId = startIndexes.subsection as? Room.ID {
+                oldSection = .left(roomId)
+            } else  if let empId = startIndexes.subsection as? Employee.ID {
+                oldSection = .right(empId)
+            }
+            
+            state.appointments.appointments[startIndexes.location]?[startIndexes.subsection]?[id: calId]?.end_date = Date.concat(oldDate, newEndDate)
+            
+            let editingEvent = EditingEvent(oldEvent: app,
+                                            newLocation: oldEvent.locationId,
+                                            newSection: oldSection,
+                                            oldSection: oldSection,
+                                            newStartDate: oldEvent.start_date)
+            state.editingSectionEvents.append(editingEvent)
 
 			let appointmentBuilder = AppointmentBuilder(calendarEvent: app)
             
@@ -109,7 +122,6 @@ public struct CalendarSectionViewReducer<Subsection: Identifiable & Equatable> {
 				state.editingSectionEvents.remove(id: placeholder)
                 break
 			case .failure(let error):
-                
                 guard let editingEvent = state.editingSectionEvents.first(where: { $0.id == calendarEventId }) else { break }
                 var app: CalendarEvent!
                 
@@ -122,7 +134,7 @@ public struct CalendarSectionViewReducer<Subsection: Identifiable & Equatable> {
                     app = state.appointments.appointments[editingEvent.oldEvent.locationId]?[subsectionId]?.remove(id: editingEvent.id)
                 }
                 
-                app.update(start: editingEvent.oldEvent.start_date)
+                app.update(startDate: editingEvent.oldEvent.start_date, endDate: editingEvent.oldEvent.end_date)
                 app.locationId = editingEvent.oldEvent.locationId
                 
                 switch editingEvent.oldSection {

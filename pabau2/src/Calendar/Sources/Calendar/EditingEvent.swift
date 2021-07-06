@@ -9,3 +9,9 @@ public struct EditingEvent: Equatable, Identifiable {
     let oldSection: Either<Room.Id, Employee.Id>
 	let newStartDate: Date
 }
+
+public struct EditingDurationEvent: Equatable, Identifiable {
+    public var id: CalendarEvent.ID { oldEvent.id }
+    let oldEvent: CalendarEvent
+    let newEndDate: Date
+}

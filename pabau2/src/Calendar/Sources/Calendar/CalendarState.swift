@@ -91,7 +91,7 @@ extension CalendarState {
 				subsections: employees,
 				chosenSubsectionsIds: chosenEmployeesIds,
 				shifts: shifts[selectedDate] ?? [:],
-                editingSectionEvents: []
+                editingSectionEvents: editingSectionEvents
 			)
 		}
 		set {

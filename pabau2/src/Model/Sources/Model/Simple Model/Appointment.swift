@@ -99,4 +99,9 @@ extension CalendarEvent {
 		self.start_date = start
 		self.end_date = end
 	}
+    
+    public mutating func update(startDate: Date, endDate: Date) {
+        self.start_date = startDate
+        self.end_date = endDate
+    }
 }
