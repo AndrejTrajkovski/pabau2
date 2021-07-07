@@ -6,7 +6,7 @@ import Model
 import Journey
 import Clients
 import SwiftDate
-import Intercom
+//import Intercom
 import FacebookShare
 import CoreDataModel
 
@@ -19,12 +19,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         options connectionOptions: UIScene.ConnectionOptions
     ) {
 
-        Intercom.setApiKey(
-            "ios_sdk-f223a9e3f380f60354bc459db9d5c0349c61fd7c",
-             forAppId: "m3fk3gh1"
-        )
+//        Intercom.setApiKey(
+//            "ios_sdk-f223a9e3f380f60354bc459db9d5c0349c61fd7c",
+//             forAppId: "m3fk3gh1"
+//        )
         
-		SwiftDate.defaultRegion = Region.UTC
+		SwiftDate.defaultRegion = Region(calendar: Calendar.gregorian,
+										 zone: Zones.gmt,
+										 locale: Locale.init(identifier: "en_US_POSIX"))
 		if let windowScene = scene as? UIWindowScene {
             let reducer = appReducer
             let window = UIWindow(windowScene: windowScene)

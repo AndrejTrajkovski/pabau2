@@ -14,6 +14,8 @@ import Appointments
 import CalendarList
 import Util
 import AppointmentDetails
+import ToastAlert
+import AlertToast
 
 public struct CalendarState: Equatable {
 	
@@ -25,7 +27,7 @@ public struct CalendarState: Equatable {
 	public var appointments: Appointments
 	public var isAddEventDropdownShown: Bool
 	var isCalendarTypeDropdownShown: Bool
-	var shifts: [Date: [Location.ID: [Employee.ID: [JZShift]]]]
+	var shifts: [Date: [Location.ID: [Employee.ID: [Shift]]]]
 	public var locations: IdentifiedArrayOf<Location>
 	public var employees: [Location.Id: IdentifiedArrayOf<Employee>]
 	public var rooms: [Location.Id: IdentifiedArrayOf<Room>]
@@ -40,8 +42,10 @@ public struct CalendarState: Equatable {
 	public var addBookoutState: AddBookoutState?
 	public var addShift: AddShiftState?
 
-	public var selectedDate: Date = DateFormatter.yearMonthDay.date(from: "2021-03-11")!
+	public var selectedDate: Date = Date().cutToDay()
 	public var chosenLocationsIds: Set<Location.Id>
+    
+    var toast: ToastState<CalendarAction>?
 }
 
 extension CalendarState {
@@ -69,6 +73,12 @@ extension CalendarState {
             ) else {
                 return nil
             }
+			print("this")
+			print(selectedDate.timeIntervalSince1970)
+			print("shifts")
+			print(shifts)
+			print("shifts selecteDate")
+			print(shifts[selectedDate])
 			return CalendarSectionViewState<Employee>(
 				selectedDate: selectedDate,
 				appointments: groupAppointments,

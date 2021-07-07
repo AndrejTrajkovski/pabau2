@@ -4,9 +4,7 @@ public struct DatePickerTextField: UIViewRepresentable {
     @Binding var date: Date?
 
     var didChange: () -> Void = { }
-
-    private var minimumDate: Date? = Date()
-    private var maximumDate: Date?
+	
     private let datePickerMode: UIDatePicker.Mode
     private var placeholder: String? = "Select a date"
 
@@ -71,14 +69,14 @@ public struct DatePickerTextField: UIViewRepresentable {
         let datePickerView = UIDatePicker()
         datePickerView.datePickerMode = datePickerMode
         datePickerView.timeZone = .current
-        datePickerView.maximumDate = minimumDate
-        datePickerView.maximumDate = maximumDate
         datePickerView.preferredDatePickerStyle = .wheels
         datePickerView.addTarget(
             context.coordinator,
             action: #selector(Coordinator.handleDatePicker(sender:)),
             for: .valueChanged)
-
+		if let date = date {
+			datePickerView.date = date
+		}
         textField.inputView = datePickerView
 
         addDoneButtonToKeyboard(textField)

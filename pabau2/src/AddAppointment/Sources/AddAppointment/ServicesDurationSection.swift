@@ -16,8 +16,8 @@ struct ServicesDurationSection: View {
 	
 	var body: some View {
 		Group {
-			VStack(spacing: 16) {
-				HStack(spacing: 24.0) {
+			VStack(spacing: 16){
+                DeviceHVStack {
 					TitleAndValueLabel(
 						"SERVICE",
 						self.viewStore.state.services.chosenService?.name ?? "Choose Service",

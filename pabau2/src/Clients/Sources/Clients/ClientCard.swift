@@ -24,7 +24,7 @@ let clientCardReducer: Reducer<ClientCardState?, ClientCardAction, ClientsEnviro
 			} else {
 				state = nil
 			}
-		case .bottom:break
+		case .bottom: break
 		case .top: break
 		}
 		return .none
@@ -51,7 +51,6 @@ struct ClientCard: View {
 	}
 
 	var body: some View {
-		print("ClientCard")
 		return VStack {
 			ClientCardTop(
                 store: self.store.scope(

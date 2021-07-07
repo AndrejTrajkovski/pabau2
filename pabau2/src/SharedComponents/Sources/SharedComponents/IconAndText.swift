@@ -21,6 +21,6 @@ public struct IconAndText: View {
             Text(text)
                 .font(Font.semibold11)
                 .foregroundColor(textColor)
-        }
+        }.isHidden(text.isEmpty, remove: text.isEmpty)
     }
 }

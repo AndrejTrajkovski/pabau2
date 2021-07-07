@@ -9,7 +9,7 @@ import Filters
 import JZCalendarWeekView
 import AddAppointment
 import Communication
-import Intercom
+//import Intercom
 import Appointments
 import CoreDataModel
 import CalendarList
@@ -290,7 +290,8 @@ public let tabBarReducer: Reducer<
                 locations: state.calendar.locations,
                 employees: state.calendar.employees
             )
-			state.addAppointment = AddAppointmentState(chooseLocAndEmp: chooseLocAndEmp)
+            state.addAppointment = AddAppointmentState(chooseLocAndEmp: chooseLocAndEmp,
+                                                       startDate: state.calendar.selectedDate)
 		case .addAppointment(
 				.chooseLocAndEmp(
 					.chooseLocation(
@@ -340,14 +341,14 @@ public let tabBarReducer: Reducer<
 	.init { _, action, _ in
 		switch action {
 		case .communication(.liveChat):
-			Intercom.registerUser(withEmail: "a@a.com")
-			Intercom.presentMessenger()
+//			Intercom.registerUser(withEmail: "a@a.com")
+//			Intercom.presentMessenger()
 			return .none
 		case .communication(.helpGuides):
-			Intercom.presentHelpCenter()
+			//Intercom.presentHelpCenter()
 			return .none
 		case .communication(.carousel):
-			Intercom.presentCarousel("13796318")
+			//Intercom.presentCarousel("13796318")
 			return .none
 		default:
 			break

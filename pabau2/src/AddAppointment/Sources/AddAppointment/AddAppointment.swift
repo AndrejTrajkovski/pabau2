@@ -29,7 +29,7 @@ public struct AddAppointment: View {
 				.environmentObject(KeyboardFollower())
 			AddEventPrimaryBtn(title: Texts.saveAppointment) {
 				self.viewStore.send(.saveAppointmentTap)
-			}
+            }.padding(.top, 50)
 		}
 		.addEventWrapper(onXBtnTap: { self.viewStore.send(.closeBtnTap) })
 		.loadingView(.constant(self.viewStore.state.showsLoadingSpinner))

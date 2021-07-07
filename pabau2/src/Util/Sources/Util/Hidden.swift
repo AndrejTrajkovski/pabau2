@@ -22,6 +22,10 @@ public extension View {
     func isHidden(_ hidden: Bool, remove: Bool = false) -> some View {
         modifier(HiddenModifier(isHidden: hidden, remove: remove))
     }
+    
+    func isRemoved(_ remove: Bool = false) -> some View {
+        modifier(HiddenModifier(isHidden: remove, remove: remove))
+    }
 }
 
 /// Creates a view modifier to show and hide a view.

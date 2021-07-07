@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import Util
+import SwiftDate
 
 //MARK: - JourneyAPI
 extension APIClient {
@@ -12,14 +13,9 @@ extension APIClient {
         roomIds: [Room.ID]?
     ) -> Effect<AppointmentsResponse, RequestError> {
         let requestBuilder: RequestBuilder<AppointmentsResponse>.Type = requestBuilderFactory.getBuilder()
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale.init(identifier: "en_US_POSIX")
-//		dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-		print(startDate.timeIntervalSince1970)
         var params: [String : Any] = [
-            "start_date": dateFormatter.string(from: startDate),
-            "end_date": dateFormatter.string(from: endDate),
+            "start_date": DateFormatter.yearMonthDay.string(from: startDate),
+            "end_date": DateFormatter.yearMonthDay.string(from: endDate),
         ]
         
 		print(params)
@@ -128,8 +124,8 @@ extension APIClient {
         return result
 	}
 	
-	public func createShift(shiftSheme: ShiftSchema) -> Effect<PlaceholdeResponse, RequestError> {
-		let requestBuilder: RequestBuilder<PlaceholdeResponse>.Type = requestBuilderFactory.getBuilder()
+	public func createShift(shiftSheme: ShiftSchema) -> Effect<Shift, RequestError> {
+		let requestBuilder: RequestBuilder<ShiftCreateResponse>.Type = requestBuilderFactory.getBuilder()
 		let shiftShemeData = try? JSONEncoder().encode(shiftSheme)
 		let params = shiftShemeData?.dictionary() ?? [:]
 		
@@ -140,6 +136,15 @@ extension APIClient {
 			queryParams: commonAnd(other: params)
 		)
 		.effect()
+        .tryMap {
+            if let first = $0.rota.first {
+                return first
+            } else {
+                throw RequestError.emptyDataResponse
+            }
+        }
+        .mapError { $0 as? RequestError ?? .unknown($0) }
+        .eraseToEffect()
 	}
 	
 //	public func getBookoutReasons() -> Effect<[BookoutReason], RequestError> {

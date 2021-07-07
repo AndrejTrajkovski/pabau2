@@ -56,19 +56,22 @@ struct AppointmentRow: View {
 	var body: some View {
 		VStack(spacing: 0) {
 			HStack {
-				AvatarView(avatarUrl: nil,
-						   initials: app.employeeInitials ?? "",
-						   font: .regular18,
-						   bgColor: .accentColor)
-					.frame(width: 55, height: 55)
-					.padding()
-				VStack(alignment: .leading) {
+                AvatarView(
+                    avatarUrl: nil,
+                    initials: app.employeeInitials,
+                    font: .regular18,
+                    bgColor: .accentColor
+                )
+                .frame(width: 55, height: 55)
+                .padding()
+                VStack(alignment: .leading, spacing: 10) {
 					Text(app.service).font(.medium17)
 					DateLocation(app: app)
 				}
 				Spacer()
-				AppointmentIcons()
-					.padding()
+                if Constants.isPad {
+                    AppointmentIcons()
+                }
 			}
 		}
 	}
@@ -103,11 +106,14 @@ struct LocationLabel: View {
 struct DateLocation: View {
 	let app: CCAppointment
 	var body: some View {
-		HStack {
+        DeviceHVStack(horizontalAlignment: .leading) {
 			if let date = app.startDate {
 				DateLabel(date: date)
 			}
-			LocationLabel(location: app.locationName ?? "")
+            LocationLabel(location: "New York")
+            if let locationName = app.locationName {
+                LocationLabel(location: locationName)
+            }
 		}
 	}
 }

@@ -16,6 +16,7 @@ import Overture
 import AppointmentDetails
 import ChooseLocationAndEmployee
 import ToastAlert
+import FSCalendar
 
 public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, CalendarEnvironment> = .combine(
 	calTypePickerReducer.pullback(
@@ -106,10 +107,7 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			}
 		case .datePicker(.selectedDate(let date)):
 			
-			//+1 hour because the framework alway returns 23:00
-			let convertFrameworkDate = date + 1.hours
-			state.selectedDate = convertFrameworkDate
-			
+            state.selectedDate = date
 			return getAppointments()
 		case .calTypePicker(.onSelect(let calType)):
 			guard calType != state.appointments.calendarType else { return .none }
@@ -127,7 +125,6 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 				chooseLocAndEmp: chooseLocAndEmp,
 				start: startDate
 			)
-		//- TODO Iurii
 		case .room(.addBookout(let startDate, let durationMins, let dropKeys)):
 			let (location, subsection) = dropKeys
 			let endDate = Calendar.gregorian.date(byAdding: .minute, value: durationMins, to: startDate)!
@@ -188,7 +185,7 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
                 locations: state.locations,
                 employees: state.employees
             )
-			state.addShift = AddShiftState.makeEmpty(chooseLocAndEmp: chooseLocAndEmp)
+            state.addShift = AddShiftState.makeEmpty(chooseLocAndEmp: chooseLocAndEmp, startDate: state.selectedDate)
 		case .toggleFilters:
 			state.isShowingFilters.toggle()
 		case .appDetails(.close):
@@ -257,6 +254,14 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
                     employees: state.selectedEmployeesIds(),
                     rooms: state.selectedRoomsIds()
                 )
+                
+                state.toast = ToastState(mode: .banner(.slide),
+                                         type: .regular,
+                                         title: Texts.bookoutSuccessfullyCreated)
+                
+                return Effect.timer(id: ToastTimerId(), every: 5, on: DispatchQueue.main)
+                    .map { _ in CalendarAction.dismissToast }
+                
             case .failure(let error): // Case treated in addAppTapBtnReducer
                 break
             }
@@ -295,14 +300,32 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			break
 		case .addBookoutAction:
 			break
-        case .addShift(let shiftAction):
-            switch shiftAction {
-            case .shiftCreated(let response):
-                break
-            default:
-                break
-            }
-			break
+		case .addShift(.shiftCreated(let response)):
+			switch response {
+			case .success(let shift):
+				state.appsLS = .gotSuccess
+				
+				var shiftsArr = state.shifts.values.flatMap { $0.values.flatMap { $0.values.flatMap { $0 }}}
+                shiftsArr.append(shift)
+				state.shifts = Shift.convertToCalendar(shifts: shiftsArr)
+				
+//				state.appointments.refresh(
+//					events: state.appointments.flatten(),
+//					locationsIds: state.chosenLocationsIds,
+//					employees: state.selectedEmployeesIds(),
+//					rooms: state.selectedRoomsIds()
+//				)
+				
+                state.toast = ToastState(mode: .banner(.slide),
+                                         type: .regular,
+                                         title: Texts.shiftSuccessfullyCreated)
+                
+                return Effect.timer(id: ToastTimerId(), every: 5, on: DispatchQueue.main)
+                    .map { _ in CalendarAction.dismissToast }
+				
+			case .failure(let error):
+				break
+			}
 		case .employeeFilters(.gotLocationsResponse(_)):
 			break
 		case .roomFilters(.gotLocationsResponse(_)):
@@ -327,19 +350,64 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
                     employees: state.selectedEmployeesIds(),
                     rooms: state.selectedRoomsIds()
                 )
+                
+                state.toast = ToastState(mode: .banner(.slide),
+                                         type: .regular,
+                                         title: Texts.appointmentSuccessfullyCreated)
+                
+                return Effect.timer(id: ToastTimerId(), every: 5, on: DispatchQueue.main)
+                    .map { _ in CalendarAction.dismissToast }
+                
             case .failure(let error): // Case treated in addAppTapBtnReducer
                 break
             }
-        }
+            
+        case .dismissToast:
+            state.toast = nil
+            return .cancel(id: ToastTimerId())
+		case .addShift:
+			break
+		}
 		return .none
 	}
 )
 
 public struct CalendarContainer: View {
 	let store: Store<CalendarState, CalendarAction>
+    
+    public init(store: Store<CalendarState, CalendarAction>) {
+        self.store = store
+    }
+    
+    struct ViewState: Equatable {
+        let appointments: Appointments
+        let selectedDate: Date
+        let isShowingFilters: Bool
+        let scope: FSCalendarScope
+        let isPresenting: ActiveSheet?
+		let shifts: [Date: [Location.ID: [Employee.ID: [Shift]]]]
+        init(state: CalendarState) {
+            self.appointments =  state.appointments
+            self.selectedDate = state.selectedDate
+            self.isShowingFilters = state.isShowingFilters
+            self.scope = state.scope
+            self.isPresenting = {
+                if state.addBookoutState != nil {
+                    return ActiveSheet.addBookout
+                } else if state.appDetails != nil {
+                    return ActiveSheet.appDetails
+                } else if state.addShift != nil {
+                    return ActiveSheet.addShift
+                } else {
+                    return nil
+                }
+            }()
+			self.shifts = state.shifts
+        }
+    }
 
 	public var body: some View {
-		WithViewStore(store) { viewStore in
+        WithViewStore(store.scope(state: ViewState.init(state:))) { viewStore in
 			ZStack(alignment: .topTrailing) {
 				VStack(spacing: 0) {
 					CalTopBar(store: store.scope(state: { $0 }))
@@ -360,19 +428,20 @@ public struct CalendarContainer: View {
 				}
 			}
 			.ignoresSafeArea()
+            .toast(store: store.scope(state: \.toast))
 			.fullScreenCover(
 				isPresented:
 					Binding(
-						get: { activeSheet(state: viewStore.state) != nil },
+                        get: { viewStore.isPresenting != nil },
 						set: {
-							_ in dismissAction(state: viewStore.state).map(viewStore.send)
+							_ in dismissAction(activeSheet: viewStore.isPresenting).map(viewStore.send)
 						}
 					),
 				content: {
 					Group {
 						IfLetStore(
 							store.scope(
-								state: { $0.addShift },
+                                state: { $0.addShift },
 								action: { .addShift($0) }),
 							then: AddShift.init(store:)
 						)
@@ -393,39 +462,24 @@ public struct CalendarContainer: View {
 			)
 		}
 	}
-
-	public init(store: Store<CalendarState, CalendarAction>) {
-		self.store = store
-	}
-
+    
 	enum ActiveSheet {
 		case appDetails
 		case addBookout
 		case addShift
 	}
 
-	func activeSheet(state: CalendarState) -> ActiveSheet? {
-		if state.addBookoutState != nil {
-			return .addBookout
-		} else if state.appDetails != nil {
-			return .appDetails
-		} else if state.addShift != nil {
-			return .addShift
-		} else {
-			return nil
-		}
-	}
-
-	func dismissAction(state: CalendarState) -> CalendarAction? {
-		if state.addBookoutState != nil {
-			return .onBookoutDismiss
-		} else if state.appDetails != nil {
-			return .onAppDetailsDismiss
-		} else if state.addShift != nil {
-			return .onAddShiftDismiss
-		} else {
-			return nil
-		}
+	func dismissAction(activeSheet: ActiveSheet?) -> CalendarAction? {
+        return activeSheet.map {
+            switch $0 {
+            case .appDetails:
+                return .onAppDetailsDismiss
+            case .addBookout:
+                return .onBookoutDismiss
+            case .addShift:
+                return .onAddShiftDismiss
+            }
+        }
 	}
 
 	var searchBarButton: some View {

@@ -18,7 +18,7 @@ let package = Package(
 				 ),
 		.package(name: "swift-composable-architecture",
 						 url: "https://github.com/pointfreeco/swift-composable-architecture.git",
-						 from: Version.init(stringLiteral: "0.19.0"))
+						 from: Version.init(stringLiteral: "0.20.0"))
 	],
 	targets: [
 		// Targets are the basic building blocks of a package. A target can define a module or a test suite.

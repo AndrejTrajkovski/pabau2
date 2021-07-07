@@ -27,6 +27,7 @@ public extension Font {
 	static let medium24 = Font.system(size: 24.0, weight: .medium)
 	static let medium38 = Font.system(size: 38.0, weight: .medium)
 	static let medium25 = Font.system(size: 25.0, weight: .medium)
+    static let medium20 = Font.system(size: 20.0, weight: .medium)
 
 	static let bold34 = Font.system(size: 34, weight: .bold)
 	static let bold14 = Font.system(size: 14, weight: .bold)
@@ -62,6 +63,8 @@ public extension Font {
     static let clientCardGridItemTitle = deviceFont(pad: .medium16, phone: .medium17)
 
     static let labelRegular = deviceFont(pad: .regular20, phone: .regular17)
+    static let labelRegular1816 = deviceFont(pad: .regular18, phone: .regular16)
+    static let titleMediumLabel = deviceFont(pad: .medium24, phone: .medium20)
 
     static func deviceFont(pad: Font, phone: Font) -> Font  {
         UIDevice.current.userInterfaceIdiom == .pad ? pad : phone

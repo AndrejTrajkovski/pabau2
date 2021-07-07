@@ -3,6 +3,15 @@ import JZCalendarWeekView
 import Model
 
 public class JZShift: JZBackgroundTime, Identifiable {
+	
+	public override func isEqual(_ object: Any?) -> Bool {
+		guard let jzShift = object as? JZShift else { return false }
+		return jzShift.shift == self.shift
+	}
+	
+	static func == (lhs: JZShift, rhs: JZShift) -> Bool {
+		lhs.shift == rhs.shift
+	}
 
 	public subscript<Value>(dynamicMember keyPath: KeyPath<Shift, Value>) -> Value {
 		shift[keyPath: keyPath]
@@ -24,21 +33,21 @@ public class JZShift: JZBackgroundTime, Identifiable {
 extension Shift {
 	public static func convertToCalendar(
 		shifts: [Shift]
-	) -> [Date: [Location.ID: [Employee.Id: [JZShift]]]] {
+	) -> [Date: [Location.ID: [Employee.Id: [Shift]]]] {
 		
-		let jzShifts = shifts.map(JZShift.init(shift:))
+//		let jzShifts = shifts.map(JZShift.init(shift:))
 		
-		let byDate = Dictionary.init(grouping: jzShifts, by: { $0[dynamicMember: \.date] })
+		let byDate = Dictionary.init(grouping: shifts, by: { $0.date })
 		
 		return byDate.mapValues { events in
 			return Dictionary.init(
 				grouping: events,
-				by: { $0[dynamicMember: \.locationID] }
+				by: { $0.locationID }
 			)
 			.mapValues { events2 in
 				Dictionary.init(
 					grouping: events2,
-					by: { $0[dynamicMember: \.userID] }
+					by: { $0.userID }
 				)
 			}
 		}

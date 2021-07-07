@@ -46,6 +46,7 @@ public struct AddShift: View {
 		}
 		.addEventWrapper(onXBtnTap: { viewStore.send(.close) })
 		.loadingView(.constant(self.viewStore.state.showsLoadingSpinner))
+        .toast(store: store.scope(state: \.toast))
 	}
 
 	public init(store: Store<AddShiftState, AddShiftAction>) {
@@ -104,12 +105,12 @@ extension Location: SingleChoiceElement { }
 
 extension AddShiftState {
 	
-	public static func makeEmpty(chooseLocAndEmp: ChooseLocationAndEmployeeState) -> AddShiftState {
+    public static func makeEmpty(chooseLocAndEmp: ChooseLocationAndEmployeeState, startDate: Date? = nil) -> AddShiftState {
 		AddShiftState(
 			shiftRotaID: nil,
 			isPublished: true,
 			chooseLocAndEmp: chooseLocAndEmp,
-			startDate: nil,
+			startDate: startDate,
 			startTime: nil,
 			endTime: nil,
 			note: ""

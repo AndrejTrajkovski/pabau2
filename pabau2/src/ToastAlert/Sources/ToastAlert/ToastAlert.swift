@@ -22,19 +22,17 @@ public struct ToastState<Action>: Equatable {
 
 extension View {
 	
-	public func toast<Action>(store: Store<ToastState<Action>?, Action>) -> some View {
-		WithViewStore(store) { viewStore in
-			if let toastState = viewStore.state {
-				toast(isPresenting: .constant(true),
-					  alert: { AlertToast(displayMode: toastState.mode,
-										  type: toastState.type,
-										  title: toastState.title,
-										  subTitle: toastState.subTitle, custom: nil)
-					  }
-				)
-			} else {
-				self
-			}
-		}
-	}
+    public func toast<Action>(store: Store<ToastState<Action>?, Action>) -> some View {
+            WithViewStore(store) { viewStore in
+                toast(isPresenting: .constant(viewStore.state != nil),
+                      alert: { AlertToast(displayMode: viewStore.state?.mode ?? .banner(.slide),
+                                          type: viewStore.state?.type ?? .regular,
+                                          title: viewStore.state?.title,
+                                          subTitle: viewStore.state?.subTitle,
+                                          custom: nil)
+                     }
+                )
+            }
+    }
+
 }
