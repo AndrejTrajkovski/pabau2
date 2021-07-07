@@ -62,8 +62,8 @@ struct PasscodeBeforeDoctorMode: View {
 		Group {
 			Passcode(store: store.scope(state: { $0.passcode },
 										action: { .passcode($0)}))
-			NavigationLink.emptyHidden(viewStore.state.passcode.unlocked, doctorCheckIn
-			)
+//			NavigationLink.emptyHidden(viewStore.state.passcode.unlocked, doctorCheckIn
+//			)
 		}
 	}
 	

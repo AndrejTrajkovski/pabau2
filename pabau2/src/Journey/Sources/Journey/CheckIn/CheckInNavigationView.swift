@@ -123,9 +123,11 @@ public struct CheckInNavigationView: View {
 	struct State: Equatable {
 		let isAnimationFinished: Bool
 		let appointment: Appointment
+        let isEnterPasscodeToGoBackActive: Bool
 		init(state: CheckInNavigationState) {
 			self.appointment = state.appointment
 			self.isAnimationFinished = state.isAnimationFinished
+            self.isEnterPasscodeToGoBackActive = state.isEnterPasscodeToGoBackActive
 		}
 	}
 	
@@ -141,6 +143,7 @@ public struct CheckInNavigationView: View {
 				CheckInAnimation(animationDuration: checkInAnimationDuration,
 								 appointment: viewStore.state.appointment)
 			} else {
+                
 				CheckInLoadingOrLoaded(store: store.scope(state: { $0.loadingOrLoaded }))
 			}
 		}

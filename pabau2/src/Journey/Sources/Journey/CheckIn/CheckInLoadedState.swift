@@ -14,8 +14,6 @@ public struct CheckInLoadedState: Equatable {
 	var patientStepStates: [StepState]
 	var doctorStepStates: [StepState]
 	
-	var aftercare: Aftercare?
-	
 	var isPatientComplete: StepStatus = .pending
 	
 	var selectedConsentsIds: [HTMLForm.ID]
