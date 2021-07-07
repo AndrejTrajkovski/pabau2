@@ -48,6 +48,7 @@ public struct CalendarState: Equatable {
     var toast: ToastState<CalendarAction>?
     
     var editingSectionEvents: IdentifiedArrayOf<EditingEvent> = []
+    var editingWeekEvents: IdentifiedArrayOf<EditingDurationEvent> = []
 }
 
 extension CalendarState {
@@ -150,7 +151,8 @@ extension CalendarState {
 				addBookout: addBookoutState,
 				appDetails: appDetails,
 				locations: locations,
-				employees: employees
+				employees: employees,
+                editingWeekEvents: editingWeekEvents
 			)
 		}
 		set {
@@ -159,6 +161,7 @@ extension CalendarState {
 				self.appointments = Appointments.week($0.appointments)
 				self.addBookoutState = $0.addBookout
 				self.appDetails = $0.appDetails
+                self.editingWeekEvents = $0.editingWeekEvents
 			}
 		}
 	}
