@@ -4,6 +4,8 @@ import Model
 import AddBookout
 import AppointmentDetails
 import ChooseLocationAndEmployee
+import ToastAlert
+import Util
 
 public struct CalendarWeekViewState: Equatable {
 	var appointments: [Date: IdentifiedArrayOf<CalendarEvent>]
@@ -13,6 +15,7 @@ public struct CalendarWeekViewState: Equatable {
 	let locations: IdentifiedArrayOf<Location>
 	let employees: [Location.ID: IdentifiedArrayOf<Employee>]
     var editingWeekEvents: IdentifiedArrayOf<EditingWeekEvent> = []
+    var toast: ToastState<CalendarAction>?
 }
 
 public let calendarWeekViewReducer: Reducer<CalendarWeekViewState, CalendarWeekViewAction, CalendarEnvironment> = .init { state, action, env in
@@ -99,6 +102,14 @@ public let calendarWeekViewReducer: Reducer<CalendarWeekViewState, CalendarWeekV
         switch response {
         case .success(let result):
             state.editingWeekEvents.remove(id: result)
+            
+            state.toast = ToastState(mode: .banner(.slide),
+                                     type: .regular,
+                                     title: Texts.appointmentModifiedSuccessfully)
+            
+            return Effect.timer(id: ToastTimerId(), every: 5, on: DispatchQueue.main)
+                .map { _ in CalendarWeekViewAction.dismissToast }
+            
         case .failure(let error):
             guard var editingEvent = state.editingWeekEvents.first(where: { $0.id == calendarEventId }) else { break }
 
@@ -114,7 +125,17 @@ public let calendarWeekViewReducer: Reducer<CalendarWeekViewState, CalendarWeekV
             state.appointments[oldStartOfDayDate]!.append(app)
             
             state.editingWeekEvents.removeAll(where: { $0.id == calendarEventId })
+            
+            state.toast = ToastState(mode: .banner(.slide),
+                                     type: .regular,
+                                     title: Texts.appointmentModifiedFailed)
+            
+            return Effect.timer(id: ToastTimerId(), every: 5, on: DispatchQueue.main)
+                .map { _ in CalendarWeekViewAction.dismissToast }
         }
+    case .dismissToast:
+        state.toast = nil
+        return .cancel(id: ToastTimerId())
 	}
 	return .none
 }
@@ -138,4 +159,5 @@ public enum CalendarWeekViewAction {
 					  eventId: Int)
 	case onSelect(startOfDayDate: Date,
 				  eventId: Int)
+    case dismissToast
 }

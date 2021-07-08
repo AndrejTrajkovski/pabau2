@@ -125,6 +125,8 @@ Tap the aftercare bellow that you wish to send to the client. The aftercare will
     public static let appointmentSuccessfullyCreated = "Appointment successfully created."
     public static let shiftSuccessfullyCreated = "Shift successfully created."
     public static let bookoutSuccessfullyCreated = "Bookout successfully created."
+    public static let appointmentModifiedSuccessfully = "Appointment successfully modified."
+    public static let appointmentModifiedFailed = "Appointment failed to modify."
 	
 	public static let addPhotos = "Add Photos"
 	public static let editPhotos = "Edit Photos"

@@ -152,7 +152,8 @@ extension CalendarState {
 				appDetails: appDetails,
 				locations: locations,
 				employees: employees,
-                editingWeekEvents: editingWeekEvents
+                editingWeekEvents: editingWeekEvents,
+                toast: toast
 			)
 		}
 		set {
@@ -162,6 +163,7 @@ extension CalendarState {
 				self.addBookoutState = $0.addBookout
 				self.appDetails = $0.appDetails
                 self.editingWeekEvents = $0.editingWeekEvents
+                self.toast = $0.toast
 			}
 		}
 	}
