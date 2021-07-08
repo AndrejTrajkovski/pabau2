@@ -6,7 +6,7 @@ import Combine
 import Util
 import SharedComponents
 
-public struct CheckInNavigationState: Equatable {
+public struct CheckInContainerState: Equatable {
 	public var loadingOrLoaded: CheckInLoadingOrLoadedState
 	var isAnimationFinished: Bool = false
 	let appointment: Appointment
@@ -30,11 +30,11 @@ public enum CheckInContainerAction: Equatable {
     case gotPathwaysResponse(Result<CombinedPathwayResponse, RequestError>)
 }
 
-public let checkInParentReducer: Reducer<CheckInNavigationState, CheckInContainerAction, JourneyEnvironment> =
+public let checkInParentReducer: Reducer<CheckInContainerState, CheckInContainerAction, JourneyEnvironment> =
 	.combine(
 		
 		checkInLoadingOrLoadedReducer.pullback(
-			state: \CheckInNavigationState.loadingOrLoaded,
+			state: \CheckInContainerState.loadingOrLoaded,
 			action: /CheckInContainerAction.self,
 			environment: { $0 }),
 		
@@ -109,21 +109,21 @@ public let navigationReducer = Reducer<CheckInLoadedState, CheckInLoadedAction, 
 }
 
 public struct CheckInNavigationView: View {
-	let store: Store<CheckInNavigationState, CheckInContainerAction>
+	let store: Store<CheckInContainerState, CheckInContainerAction>
 	@ObservedObject var viewStore: ViewStore<State, CheckInContainerAction>
 	
 	struct State: Equatable {
 		let isAnimationFinished: Bool
 		let appointment: Appointment
         let isEnterPasscodeToGoBackActive: Bool
-		init(state: CheckInNavigationState) {
+		init(state: CheckInContainerState) {
 			self.appointment = state.appointment
 			self.isAnimationFinished = state.isAnimationFinished
             self.isEnterPasscodeToGoBackActive = state.isEnterPasscodeToGoBackActive
 		}
 	}
 	
-	public init(store: Store<CheckInNavigationState, CheckInContainerAction>) {
+	public init(store: Store<CheckInContainerState, CheckInContainerAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store.scope(state: State.init(state:)))
 	}

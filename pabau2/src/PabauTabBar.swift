@@ -30,7 +30,7 @@ public typealias TabBarEnvironment = (
 )
 
 public struct TabBarState: Equatable {
-	var checkIn: CheckInNavigationState?
+	var checkIn: CheckInContainerState?
 	var clients: ClientsState
 	var calendar: CalendarState
 	var settings: SettingsState
@@ -45,7 +45,7 @@ public enum TabBarAction {
 	case addAppointment(AddAppointmentAction)
 	case communication(CommunicationAction)
 	case checkIn(CheckInContainerAction)
-	case delayStartPathway(state: CheckInNavigationState)
+	case delayStartPathway(state: CheckInContainerState)
 }
 
 struct PabauTabBar: View {
@@ -143,7 +143,7 @@ struct PabauTabBar: View {
             }
     }
 	
-	fileprivate func checkIn() -> IfLetStore<CheckInNavigationState, CheckInContainerAction, CheckInNavigationView?> {
+	fileprivate func checkIn() -> IfLetStore<CheckInContainerState, CheckInContainerAction, CheckInNavigationView?> {
 		print("checkIn()")
 		return IfLetStore(self.store.scope(
 			state: { $0.checkIn },
@@ -257,7 +257,7 @@ public let tabBarReducer: Reducer<
 													pathway: pathway,
 													template: template)
 			print("here:", pathway, template)
-			let checkInState = CheckInNavigationState(loadedState: loadedState)
+			let checkInState = CheckInContainerState(loadedState: loadedState)
 			
 			return .merge([
 				Effect.init(value: TabBarAction.delayStartPathway(state: checkInState))
@@ -277,7 +277,7 @@ public let tabBarReducer: Reducer<
 														  pathwayId: pathwayInfo.pathwayId,
 														  pathwayTemplateId: pathwayInfo.pathwayTemplateId,
 														  pathwaysLoadingState: .loading)
-			let checkInState = CheckInNavigationState(loadingState: loadingCheckInState)
+			let checkInState = CheckInContainerState(loadingState: loadingCheckInState)
 			
 			return .merge([
 				Effect.init(value: TabBarAction.delayStartPathway(state: checkInState))
