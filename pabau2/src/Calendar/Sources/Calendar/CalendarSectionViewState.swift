@@ -5,6 +5,7 @@ import Model
 import AddBookout
 import Appointments
 import AppointmentDetails
+import ToastAlert
 
 public struct CalendarSectionViewState<Subsection: Identifiable & Equatable>: Equatable {
 	var selectedDate: Date
@@ -17,7 +18,7 @@ public struct CalendarSectionViewState<Subsection: Identifiable & Equatable>: Eq
 	let chosenSubsectionsIds: [Location.ID: [Subsection.ID]]
 	let shifts: [Location.ID: [Subsection.ID: [Shift]]]
 	var editingSectionEvents: IdentifiedArrayOf<EditingEvent> = []
-//	var editingDurationEvents: IdentifiedArrayOf<EditingEvent> = []
+    var toast: ToastState<CalendarAction>?
 }
 
 public extension Dictionary {

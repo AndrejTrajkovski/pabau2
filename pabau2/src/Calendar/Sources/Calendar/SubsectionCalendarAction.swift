@@ -19,4 +19,5 @@ public enum SubsectionCalendarAction<Subsection: Identifiable & Equatable> {
 					durationMins: Int,
 					dropKeys:(location: Location.ID, subsection: Subsection.ID))
     case appointmentEdited(Result<CalendarEvent.Id, RequestError>, id: CalendarEvent.ID)
+    case dismissToast
 }

@@ -107,6 +107,7 @@ extension CalendarState {
 				self.chosenEmployeesIds = $0.chosenSubsectionsIds
 				self.shifts[$0.selectedDate] = $0.shifts
                 self.editingSectionEvents = $0.editingSectionEvents
+                self.toast = $0.toast
 			}
 		}
 	}
@@ -138,6 +139,7 @@ extension CalendarState {
 				self.rooms = $0.subsections
 				self.chosenRoomsIds = $0.chosenSubsectionsIds
                 self.editingSectionEvents = $0.editingSectionEvents
+                self.toast = $0.toast
 			}
 		}
 	}

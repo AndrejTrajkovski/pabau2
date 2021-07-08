@@ -6,6 +6,8 @@ import Appointments
 import JZCalendarWeekView
 import CoreGraphics
 import AppointmentDetails
+import ToastAlert
+import Util
 
 public struct CalendarSectionViewReducer<Subsection: Identifiable & Equatable> {
 	let reducer = Reducer<CalendarSectionViewState<Subsection>, SubsectionCalendarAction<Subsection>, CalendarEnvironment> { state, action, env in
@@ -120,7 +122,14 @@ public struct CalendarSectionViewReducer<Subsection: Identifiable & Equatable> {
             switch result {
             case .success(let placeholder):
 				state.editingSectionEvents.remove(id: placeholder)
-                break
+                state.editingSectionEvents.removeAll(where: { $0.id == calendarEventId })
+                
+                state.toast = ToastState(mode: .banner(.slide),
+                                         type: .regular,
+                                         title: Texts.appointmentModifiedSuccessfully)
+                
+                return Effect.timer(id: ToastTimerId(), every: 5, on: DispatchQueue.main)
+                    .map { _ in SubsectionCalendarAction.dismissToast }
 			case .failure(let error):
                 guard let editingEvent = state.editingSectionEvents.first(where: { $0.id == calendarEventId }) else { break }
                 var app: CalendarEvent!
@@ -147,7 +156,17 @@ public struct CalendarSectionViewReducer<Subsection: Identifiable & Equatable> {
                 }
                 
                 state.editingSectionEvents.removeAll(where: { $0.id == calendarEventId })
+                
+                state.toast = ToastState(mode: .banner(.slide),
+                                         type: .regular,
+                                         title: Texts.appointmentModifiedFailed)
+                
+                return Effect.timer(id: ToastTimerId(), every: 5, on: DispatchQueue.main)
+                    .map { _ in SubsectionCalendarAction.dismissToast }
             }
+        case .dismissToast:
+            state.toast = nil
+            return .cancel(id: ToastTimerId())
 		}
 		return .none
 	}
