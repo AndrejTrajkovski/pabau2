@@ -48,7 +48,7 @@ public struct CalendarState: Equatable {
     var toast: ToastState<CalendarAction>?
     
     var editingSectionEvents: IdentifiedArrayOf<EditingEvent> = []
-    var editingWeekEvents: IdentifiedArrayOf<EditingDurationEvent> = []
+    var editingWeekEvents: IdentifiedArrayOf<EditingWeekEvent> = []
 }
 
 extension CalendarState {

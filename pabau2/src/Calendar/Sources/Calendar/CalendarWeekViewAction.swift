@@ -12,7 +12,7 @@ public struct CalendarWeekViewState: Equatable {
 	var appDetails: AppDetailsState?
 	let locations: IdentifiedArrayOf<Location>
 	let employees: [Location.ID: IdentifiedArrayOf<Employee>]
-    var editingWeekEvents: IdentifiedArrayOf<EditingDurationEvent> = []
+    var editingWeekEvents: IdentifiedArrayOf<EditingWeekEvent> = []
 }
 
 public let calendarWeekViewReducer: Reducer<CalendarWeekViewState, CalendarWeekViewAction, CalendarEnvironment> = .init { state, action, env in
@@ -25,6 +25,7 @@ public let calendarWeekViewReducer: Reducer<CalendarWeekViewState, CalendarWeekV
 		let calId = CalendarEvent.ID.init(rawValue: eventId)
         var app = state.appointments[startingPointStartOfDay]?.remove(id: calId)
         let oldStartDate = app!.start_date
+        let oldEndDate = app!.end_date
 		app?.update(start: startDate)
 
 		app.map {
@@ -34,11 +35,10 @@ public let calendarWeekViewReducer: Reducer<CalendarWeekViewState, CalendarWeekV
 			state.appointments[startOfDayDate]!.append($0)
 		}
         
-        let editingEvent = EditingDurationEvent(oldEvent: app!,
-                                                newStartDate: startDate,
-                                                newStartOfDayDate: startOfDayDate,
-                                                oldStartDate: oldStartDate,
-                                                oldStartOfDayDate: startingPointStartOfDay)
+        let editingEvent = EditingWeekEvent(oldEvent: app!,
+                                            oldStartDate: oldStartDate,
+                                            oldEndDate: oldEndDate,
+                                            newStartOfDayDate: startOfDayDate)
         state.editingWeekEvents.append(editingEvent)
         
         let appBuilder = AppointmentBuilder(calendarEvent: app!)
@@ -52,7 +52,29 @@ public let calendarWeekViewReducer: Reducer<CalendarWeekViewState, CalendarWeekV
 
 	case .editDuration(let startOfDayDate, let endDate, let eventId):
 		let calId = CalendarEvent.ID.init(rawValue: eventId)
-		state.appointments[startOfDayDate]?[id: calId]?.end_date = endDate
+        
+        var oldStartDate = state.appointments[startOfDayDate]?[id: calId]?.start_date
+        var oldEndDate = state.appointments[startOfDayDate]?[id: calId]?.end_date
+        
+        state.appointments[startOfDayDate]?[id: calId]?.end_date = endDate
+        
+        guard let app = state.appointments[startOfDayDate]?[id: calId] else {
+            return .none
+        }
+            
+        let editingEvent = EditingWeekEvent(oldEvent: app,
+                                            oldStartDate: oldStartDate!,
+                                            oldEndDate: oldEndDate!,
+                                            newStartOfDayDate: startOfDayDate)
+        state.editingWeekEvents.append(editingEvent)
+        
+        let appBuilder = AppointmentBuilder(calendarEvent: app)
+        return env.clientsAPI.updateAppointment(appointment: appBuilder)
+            .catchToEffect()
+            .map { response in CalendarWeekViewAction.editAppointmentResponse(response, id: app.id) }
+            .receive(on: DispatchQueue.main)
+            .eraseToEffect()
+        
 	case .addAppointment:
 		break// handled in calendarContainerReducer
     case .editAppointment:
@@ -82,12 +104,14 @@ public let calendarWeekViewReducer: Reducer<CalendarWeekViewState, CalendarWeekV
 
             var app: CalendarEvent!
             app = state.appointments[editingEvent.newStartOfDayDate]?.remove(id: calendarEventId)
-            app.update(start: editingEvent.oldStartDate)
             
-            if state.appointments[editingEvent.oldStartOfDayDate] == nil {
-                state.appointments[editingEvent.oldStartOfDayDate] = IdentifiedArrayOf<CalendarEvent>.init()
+            let oldStartOfDayDate = editingEvent.oldStartDate.startOfDay
+            
+            app.update(startDate: editingEvent.oldStartDate, endDate: editingEvent.oldEndDate)
+            if state.appointments[oldStartOfDayDate] == nil {
+                state.appointments[oldStartOfDayDate] = IdentifiedArrayOf<CalendarEvent>.init()
             }
-            state.appointments[editingEvent.oldStartOfDayDate]!.append(app)
+            state.appointments[oldStartOfDayDate]!.append(app)
             
             state.editingWeekEvents.removeAll(where: { $0.id == calendarEventId })
         }

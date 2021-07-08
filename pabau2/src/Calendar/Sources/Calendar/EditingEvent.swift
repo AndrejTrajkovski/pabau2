@@ -10,11 +10,10 @@ public struct EditingEvent: Equatable, Identifiable {
 	let newStartDate: Date
 }
 
-public struct EditingDurationEvent: Equatable, Identifiable {
+public struct EditingWeekEvent: Equatable, Identifiable {
     public var id: CalendarEvent.ID { oldEvent.id }
-    let oldEvent: CalendarEvent
-    let newStartDate: Date
+    var oldEvent: CalendarEvent
+    var oldStartDate: Date
+    var oldEndDate: Date
     let newStartOfDayDate: Date
-    let oldStartDate: Date
-    let oldStartOfDayDate: Date
 }
