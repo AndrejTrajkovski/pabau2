@@ -22,8 +22,7 @@ public struct CheckInLoadedState: Equatable {
 	var patientSelectedIndex: Int
 	var doctorSelectedIndex: Int
 	
-	var passcodeStateForDoctorMode = PasscodeState()
-	var isEnterPasscodeForDoctorModeActive: Bool = false
+    var passcodeForDoctorMode: PasscodeState?
 	var isDoctorCheckInMainActive: Bool = false
 	var isDoctorSummaryActive: Bool = false
 }
@@ -32,7 +31,7 @@ public enum CheckInLoadedAction: Equatable {
     case didTouchHandbackDevice
     case patient(CheckInPatientAction)
     case doctor(CheckInDoctorAction)
-    case passcode(PasscodeAction)
+    case passcodeForDoctorMode(PasscodeAction)
 }
 
 extension CheckInLoadedState {
@@ -58,30 +57,9 @@ extension CheckInLoadedState {
 
 extension CheckInLoadedState {
 	
-	var passcode: PasscodeContainerState {
-		get {
-			PasscodeContainerState(
-				passcode: self.passcodeStateForDoctorMode,
-				isDoctorCheckInMainActive: self.isDoctorCheckInMainActive
-			)
-		}
-		set {
-			self.passcodeStateForDoctorMode = newValue.passcode
-			self.isDoctorCheckInMainActive = newValue.isDoctorCheckInMainActive
-		}
-	}
-	
 	var isHandBackDeviceActive: Bool {
 		get { isPatientComplete == .complete }
 		set { isPatientComplete = newValue ? .complete : .pending }
-	}
-	
-	var handback: HandBackDeviceState {
-		get {
-			HandBackDeviceState(isEnterPasscodeActive: self.isEnterPasscodeForDoctorModeActive,
-								isNavBarHidden: !self.passcode.passcode.unlocked
-			)
-		}
 	}
 }
 

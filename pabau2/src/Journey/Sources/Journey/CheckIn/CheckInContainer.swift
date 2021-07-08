@@ -28,11 +28,17 @@ public enum CheckInContainerAction: Equatable {
 	case checkInAnimationEnd
 	case loading(CheckInLoadingAction)
     case gotPathwaysResponse(Result<CombinedPathwayResponse, RequestError>)
+    case passcodeToClose(PasscodeAction)
 }
 
 public let checkInContainerReducer: Reducer<CheckInContainerState, CheckInContainerAction, JourneyEnvironment> =
 	.combine(
 		
+        passcodeReducer.optional().pullback(
+            state: \CheckInContainerState.passcodeToClose,
+            action: /CheckInContainerAction.passcodeToClose,
+            environment: { $0 }),
+        
 		checkInLoadingOrLoadedReducer.pullback(
 			state: \CheckInContainerState.loadingOrLoaded,
 			action: /CheckInContainerAction.self,
@@ -47,7 +53,11 @@ public let checkInContainerReducer: Reducer<CheckInContainerState, CheckInContai
 				break
             case .gotPathwaysResponse(_):
                 break
-            case .loaded(_):
+            case .loaded(.patient(.stepsView(.onXTap))):
+                state.passcodeToClose = PasscodeState()
+            case .loaded:
+                break
+            case .passcodeToClose:
                 break
             }
 			return .none
@@ -76,9 +86,9 @@ public let checkInLoadedReducer: Reducer<CheckInLoadedState, CheckInLoadedAction
 		action: /CheckInLoadedAction.self,
 		environment: { $0 }
 	),
-	passcodeContainerReducer.pullback(
-		state: \CheckInLoadedState.passcode,
-		action: /CheckInLoadedAction.passcode,
+    passcodeReducer.optional().pullback(
+		state: \CheckInLoadedState.passcodeForDoctorMode,
+		action: /CheckInLoadedAction.passcodeForDoctorMode,
 		environment: { $0 })
 )
 
@@ -86,15 +96,14 @@ public let navigationReducer = Reducer<CheckInLoadedState, CheckInLoadedAction, 
 	func backToPatientMode() {
 		state.isDoctorSummaryActive = false
 		state.isDoctorCheckInMainActive = false
-		state.passcodeStateForDoctorMode = PasscodeState()
+		state.passcodeForDoctorMode = nil
 		state.isHandBackDeviceActive = false
-		state.isEnterPasscodeForDoctorModeActive = false
 		//TODO goToNextUncomplete
 		//		state.patie.goToNextUncomplete()
 	}
 	switch action {
 	case .didTouchHandbackDevice:
-		state.isEnterPasscodeForDoctorModeActive = true
+		state.passcodeForDoctorMode = PasscodeState()
 	//TODO
 	//	case .doctor(.checkInBody(.footer(.toPatientMode))):
 	//		backToPatientMode()
@@ -108,7 +117,7 @@ public let navigationReducer = Reducer<CheckInLoadedState, CheckInLoadedAction, 
 	return .none
 }
 
-public struct CheckInNavigationView: View {
+public struct CheckInContainer: View {
 	let store: Store<CheckInContainerState, CheckInContainerAction>
 	@ObservedObject var viewStore: ViewStore<State, CheckInContainerAction>
 	
@@ -135,7 +144,11 @@ public struct CheckInNavigationView: View {
 				CheckInAnimation(animationDuration: checkInAnimationDuration,
 								 appointment: viewStore.state.appointment)
 			} else {
-				CheckInLoadingOrLoaded(store: store.scope(state: { $0.loadingOrLoaded }))
+                if viewStore.isEnterPasscodeToGoBackActive {
+                    
+                } else {
+                    CheckInLoadingOrLoaded(store: store.scope(state: { $0.loadingOrLoaded }))
+                }
 			}
 		}
 		.navigationViewStyle(StackNavigationViewStyle())

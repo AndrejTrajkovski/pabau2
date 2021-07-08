@@ -47,31 +47,6 @@ let passcodeReducer = Reducer<PasscodeState, PasscodeAction, Any> { state, actio
 	return .none
 }
 
-let passcodeContainerReducer: Reducer<PasscodeContainerState, PasscodeAction, Any>
-	= (
-		passcodeReducer.pullback(
-			state: \PasscodeContainerState.passcode,
-			action: /PasscodeAction.self,
-			environment: { $0 })
-	)
-
-struct PasscodeBeforeDoctorMode: View {
-	let store: Store<CheckInLoadedState, CheckInLoadedAction>
-	
-	var body: some View {
-		Group {
-			Passcode(store: store.scope(state: { $0.passcode },
-										action: { .passcode($0)}))
-//			NavigationLink.emptyHidden(viewStore.state.passcode.unlocked, doctorCheckIn
-//			)
-		}
-	}
-	
-	var doctorCheckIn: some View {
-		EmptyView()
-	}
-}
-
 struct DotView: View {
 	let isFilled: Bool
 	var body: some View {
@@ -134,4 +109,44 @@ struct Shake: GeometryEffect {
 												amount * sin(animatableData * .pi * CGFloat(shakesPerUnit)),
 											  y: 0))
 	}
+}
+
+struct PasscodeBeforeDoctorMode: View {
+    let store: Store<CheckInLoadedState, CheckInLoadedAction>
+    @ObservedObject var viewStore: ViewStore<State, Never>
+    
+    init(store: Store<CheckInLoadedState, CheckInLoadedAction>) {
+        self.store = store
+        self.viewStore = ViewStore(store.scope(state: State.init(state:)).actionless)
+    }
+    
+    struct State: Equatable {
+        let isDoctorCheckInActive: Bool
+        init(state: CheckInLoadedState) {
+            self.isDoctorCheckInActive = (state.passcodeForDoctorMode?.unlocked ?? false) == true
+        }
+    }
+    
+    var body: some View {
+        passcode
+        doctorCheckInNavigationLink
+    }
+    
+    var passcode: some View {
+        IfLetStore(store.scope(state: { $0.passcodeForDoctorMode },
+                               action: { .passcodeForDoctorMode($0) }),
+                   then: Passcode.init(store:))
+    }
+    
+    var doctorCheckInNavigationLink: some View {
+        NavigationLink.emptyHidden(viewStore.state.isDoctorCheckInActive,
+                                   doctorCheckIn
+        )
+    }
+    
+    var doctorCheckIn: some View {
+        IfLetStore(store.scope(state: { $0.doctorCheckIn },
+                               action: { .doctor($0) }),
+                   then: { _ in Text("TODO DOCTOR CHECK IN") })
+    }
 }

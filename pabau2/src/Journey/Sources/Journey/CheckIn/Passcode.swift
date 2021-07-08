@@ -4,7 +4,7 @@ import Util
 
 struct Passcode: View {
 	
-	let store: Store<PasscodeContainerState, PasscodeAction>
+	let store: Store<PasscodeState, PasscodeAction>
 	
 	var body: some View {
 		WithViewStore(store) { viewStore in
@@ -13,11 +13,11 @@ struct Passcode: View {
 				Text(Texts.enterPass).font(.semibold20)
 				HStack(spacing: 16) {
 					ForEach(0..<4) { idx in
-						DotView(isFilled: viewStore.state.passcode.runningDigits.count > idx)
+						DotView(isFilled: viewStore.state.runningDigits.count > idx)
 					}
 				}
 				.modifier(Shake(animatableData:
-									CGFloat(viewStore.state.passcode.wrongAttempts)))
+									CGFloat(viewStore.state.wrongAttempts)))
 				Digits(onTouch: { viewStore.send(.touchDigit($0)) })
 				HStack {
 					Text("Cancel")

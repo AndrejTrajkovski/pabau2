@@ -53,6 +53,8 @@ let checkInLoadingOrLoadedReducer: Reducer<CheckInLoadingOrLoadedState, CheckInC
 			break
         case .gotPathwaysResponse(let result):
             return handlePathwaysResponse(result)
+        case .passcodeToClose(_):
+            break
         }
 		return .none
 	}

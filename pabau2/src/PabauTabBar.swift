@@ -143,13 +143,13 @@ struct PabauTabBar: View {
             }
     }
 	
-	fileprivate func checkIn() -> IfLetStore<CheckInContainerState, CheckInContainerAction, CheckInNavigationView?> {
+	fileprivate func checkIn() -> IfLetStore<CheckInContainerState, CheckInContainerAction, CheckInContainer?> {
 		print("checkIn()")
 		return IfLetStore(self.store.scope(
 			state: { $0.checkIn },
 			action: { .checkIn($0) }
 		),
-		then: CheckInNavigationView.init(store:))
+		then: CheckInContainer.init(store:))
 	}
 	
     fileprivate func addAppointment() -> IfLetStore<AddAppointmentState, AddAppointmentAction, AddAppointment?> {
