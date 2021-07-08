@@ -170,7 +170,7 @@ public let tabBarReducer: Reducer<
 	TabBarAction,
 	TabBarEnvironment
 > = Reducer.combine(
-	checkInParentReducer.optional().pullback(
+	checkInContainerReducer.optional().pullback(
 		state: \TabBarState.checkIn,
 		action: /TabBarAction.checkIn,
 		environment: makeJourneyEnv(_:)

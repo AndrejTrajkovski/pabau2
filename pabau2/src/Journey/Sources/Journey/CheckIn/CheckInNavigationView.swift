@@ -10,8 +10,8 @@ public struct CheckInContainerState: Equatable {
 	public var loadingOrLoaded: CheckInLoadingOrLoadedState
 	var isAnimationFinished: Bool = false
 	let appointment: Appointment
-	var isEnterPasscodeToGoBackActive: Bool = false
-	
+    var passcodeToClose: PasscodeState?
+    
 	public init(loadedState: CheckInLoadedState) {
 		self.loadingOrLoaded = .loaded(loadedState)
 		self.appointment = loadedState.appointment
@@ -30,7 +30,7 @@ public enum CheckInContainerAction: Equatable {
     case gotPathwaysResponse(Result<CombinedPathwayResponse, RequestError>)
 }
 
-public let checkInParentReducer: Reducer<CheckInContainerState, CheckInContainerAction, JourneyEnvironment> =
+public let checkInContainerReducer: Reducer<CheckInContainerState, CheckInContainerAction, JourneyEnvironment> =
 	.combine(
 		
 		checkInLoadingOrLoadedReducer.pullback(
@@ -119,7 +119,7 @@ public struct CheckInNavigationView: View {
 		init(state: CheckInContainerState) {
 			self.appointment = state.appointment
 			self.isAnimationFinished = state.isAnimationFinished
-            self.isEnterPasscodeToGoBackActive = state.isEnterPasscodeToGoBackActive
+            self.isEnterPasscodeToGoBackActive = state.passcodeToClose != nil
 		}
 	}
 	
@@ -135,7 +135,6 @@ public struct CheckInNavigationView: View {
 				CheckInAnimation(animationDuration: checkInAnimationDuration,
 								 appointment: viewStore.state.appointment)
 			} else {
-                
 				CheckInLoadingOrLoaded(store: store.scope(state: { $0.loadingOrLoaded }))
 			}
 		}
