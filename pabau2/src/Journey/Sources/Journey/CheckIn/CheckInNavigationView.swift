@@ -24,12 +24,10 @@ public struct CheckInNavigationState: Equatable {
 }
 
 public enum CheckInContainerAction: Equatable {
+    case loaded(CheckInLoadedAction)
 	case checkInAnimationEnd
-	case passcode(PasscodeAction)
-	case patient(CheckInPatientAction)
-	case doctor(CheckInDoctorAction)
-	case didTouchHandbackDevice
 	case loading(CheckInLoadingAction)
+    case gotPathwaysResponse(Result<CombinedPathwayResponse, RequestError>)
 }
 
 public let checkInParentReducer: Reducer<CheckInNavigationState, CheckInContainerAction, JourneyEnvironment> =
@@ -45,31 +43,27 @@ public let checkInParentReducer: Reducer<CheckInNavigationState, CheckInContaine
 			switch action {
 			case .checkInAnimationEnd:
 				state.isAnimationFinished = true
-			case .passcode(_):
-				break
-			case .patient(_):
-				break
-			case .doctor(_):
-				break
-			case .didTouchHandbackDevice:
-				break
 			case .loading:
 				break
-			}
+            case .gotPathwaysResponse(_):
+                break
+            case .loaded(_):
+                break
+            }
 			return .none
 		}
 )
 
-public let checkInLoadedReducer: Reducer<CheckInLoadedState, CheckInContainerAction, JourneyEnvironment> = .combine(
+public let checkInLoadedReducer: Reducer<CheckInLoadedState, CheckInLoadedAction, JourneyEnvironment> = .combine(
 	
 	stepFormsReducer.pullback(
 		state: \CheckInLoadedState.patientStepStates,
-		action: /CheckInContainerAction.patient..CheckInPatientAction.steps,
+		action: /CheckInLoadedAction.patient..CheckInPatientAction.steps,
 		environment: { $0 }),
 	
 	checkInPatientReducer.pullback(
 		state: \CheckInLoadedState.patientCheckIn,
-		action: /CheckInContainerAction.patient,
+		action: /CheckInLoadedAction.patient,
 		environment: { $0 }
 	),
 	//	checkInMainReducer.pullback(
@@ -79,16 +73,16 @@ public let checkInLoadedReducer: Reducer<CheckInLoadedState, CheckInContainerAct
 	//	),
 	navigationReducer.pullback(
 		state: \CheckInLoadedState.self,
-		action: /CheckInContainerAction.self,
+		action: /CheckInLoadedAction.self,
 		environment: { $0 }
 	),
 	passcodeContainerReducer.pullback(
 		state: \CheckInLoadedState.passcode,
-		action: /CheckInContainerAction.passcode,
+		action: /CheckInLoadedAction.passcode,
 		environment: { $0 })
 )
 
-public let navigationReducer = Reducer<CheckInLoadedState, CheckInContainerAction, Any> { state, action, _ in
+public let navigationReducer = Reducer<CheckInLoadedState, CheckInLoadedAction, Any> { state, action, _ in
 	func backToPatientMode() {
 		state.isDoctorSummaryActive = false
 		state.isDoctorCheckInMainActive = false
@@ -101,8 +95,6 @@ public let navigationReducer = Reducer<CheckInLoadedState, CheckInContainerActio
 	switch action {
 	case .didTouchHandbackDevice:
 		state.isEnterPasscodeForDoctorModeActive = true
-	case .checkInAnimationEnd:
-		break
 	//TODO
 	//	case .doctor(.checkInBody(.footer(.toPatientMode))):
 	//		backToPatientMode()

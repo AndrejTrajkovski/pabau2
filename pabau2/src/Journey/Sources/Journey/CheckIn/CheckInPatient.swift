@@ -7,7 +7,7 @@ import CoreDataModel
 import SharedComponents
 
 struct CheckInPatientContainer: View {
-	let store: Store<CheckInLoadedState, CheckInContainerAction>
+	let store: Store<CheckInLoadedState, CheckInLoadedAction>
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			Group {

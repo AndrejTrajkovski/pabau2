@@ -56,7 +56,7 @@ let passcodeContainerReducer: Reducer<PasscodeContainerState, PasscodeAction, An
 	)
 
 struct PasscodeBeforeDoctorMode: View {
-	let store: Store<CheckInLoadedState, CheckInContainerAction>
+	let store: Store<CheckInLoadedState, CheckInLoadedAction>
 	
 	var body: some View {
 		Group {

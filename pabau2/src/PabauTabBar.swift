@@ -201,8 +201,6 @@ public let tabBarReducer: Reducer<
 		switch action {
 		case .delayStartPathway(let checkInState):
 			
-			state.checkIn = checkInState
-			
 			var returnEffects: [Effect<TabBarAction, Never>] = [
 				env.audioPlayer
 					.playCheckInSound()
@@ -221,7 +219,7 @@ public let tabBarReducer: Reducer<
 				let getCombinedPathwaysResponse = getCombinedPathwayResponse(journeyAPI: env.journeyAPI,
 																			 checkInState: loadingState)
 					.map {
-						TabBarAction.checkIn(.loading(.gotCombinedPathwaysResponse($0)))
+						TabBarAction.checkIn(.gotPathwaysResponse($0))
 					}
 				returnEffects.append(getCombinedPathwaysResponse)
 				
@@ -234,13 +232,18 @@ public let tabBarReducer: Reducer<
 															loadedState.appointment.customerId
 				)
 					
-				let pipeInits = pipe(CheckInPatientAction.steps, CheckInContainerAction.patient, TabBarAction.checkIn)
+                let pipeInits = pipe(CheckInPatientAction.steps,
+                                     CheckInLoadedAction.patient,
+                                     CheckInContainerAction.loaded,
+                                     TabBarAction.checkIn)
 				let getPatientFormsOneAfterAnother = Effect.concatenate(getPatientForms)
 					.map(pipeInits)
 					
 				returnEffects.append(getPatientFormsOneAfterAnother)
 			}
 			
+            state.checkIn = checkInState
+            
 			return .merge(returnEffects)
 			
 		case .calendar(.appDetails(.choosePathwayTemplate(.matchResponse(.success(let pathway))))):

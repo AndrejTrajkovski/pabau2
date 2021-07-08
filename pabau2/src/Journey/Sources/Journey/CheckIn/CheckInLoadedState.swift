@@ -28,6 +28,13 @@ public struct CheckInLoadedState: Equatable {
 	var isDoctorSummaryActive: Bool = false
 }
 
+public enum CheckInLoadedAction: Equatable {
+    case didTouchHandbackDevice
+    case patient(CheckInPatientAction)
+    case doctor(CheckInDoctorAction)
+    case passcode(PasscodeAction)
+}
+
 extension CheckInLoadedState {
 	
 	public init(appointment: Appointment,
