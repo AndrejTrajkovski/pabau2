@@ -42,7 +42,7 @@ extension CheckInLoadedState {
 		self.appointment = appointment
 		self.pathway = pathway
 		self.pathwayTemplate = template
-		self.patientStepStates = stepsAndEntries(pathway, pathwayTemplate, .patient).map {
+		self.patientStepStates = stepsAndEntries(pathway, template, .patient).map {
 			StepState.init(stepAndEntry: $0, clientId: appointment.customerId, pathway: pathway)
 		}
 		self.doctorStepStates = stepsAndEntries(pathway, pathwayTemplate, .doctor).map {
