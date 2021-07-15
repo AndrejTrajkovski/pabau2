@@ -31,10 +31,29 @@ public enum CheckInContainerAction: Equatable {
     case passcodeToClose(PasscodeAction)
 }
 
+public let checkInContainerOptionalReducer: Reducer<CheckInContainerState?, CheckInContainerAction, JourneyEnvironment> =
+    .combine (
+        checkInContainerReducer.optional().pullback(
+            state: \CheckInContainerState.self,
+            action: /CheckInContainerAction.self,
+            environment: { $0 }
+        ),
+        .init { state, action, env in
+            
+            if case CheckInContainerAction.passcodeToClose(PasscodeAction.touchDigit(_)) = action,
+               let passcodeState = state?.passcodeToClose,
+               passcodeState.unlocked {
+                state = nil
+            }
+            
+            return .none
+        }
+    )
+
 public let checkInContainerReducer: Reducer<CheckInContainerState, CheckInContainerAction, JourneyEnvironment> =
 	.combine(
 		
-        passcodeReducer.optional().pullback(
+        passcodeOptReducer.pullback(
             state: \CheckInContainerState.passcodeToClose,
             action: /CheckInContainerAction.passcodeToClose,
             environment: { $0 }),
@@ -86,7 +105,8 @@ public let checkInLoadedReducer: Reducer<CheckInLoadedState, CheckInLoadedAction
 		action: /CheckInLoadedAction.self,
 		environment: { $0 }
 	),
-    passcodeReducer.optional().pullback(
+    
+    passcodeOptReducer.pullback(
 		state: \CheckInLoadedState.passcodeForDoctorMode,
 		action: /CheckInLoadedAction.passcodeForDoctorMode,
 		environment: { $0 })
@@ -124,33 +144,36 @@ public struct CheckInContainer: View {
 	struct State: Equatable {
 		let isAnimationFinished: Bool
 		let appointment: Appointment
-        let isEnterPasscodeToGoBackActive: Bool
+//        let isEnterPasscodeToGoBackActive: Bool
 		init(state: CheckInContainerState) {
 			self.appointment = state.appointment
 			self.isAnimationFinished = state.isAnimationFinished
-            self.isEnterPasscodeToGoBackActive = state.passcodeToClose != nil
+//            self.isEnterPasscodeToGoBackActive = state.passcodeToClose != nil
 		}
 	}
 	
 	public init(store: Store<CheckInContainerState, CheckInContainerAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store.scope(state: State.init(state:)))
-	}
-	
-	public var body: some View {
-		print("check in navigation")
-		return NavigationView {
-			if !viewStore.state.isAnimationFinished {
-				CheckInAnimation(animationDuration: checkInAnimationDuration,
-								 appointment: viewStore.state.appointment)
-			} else {
-                if viewStore.isEnterPasscodeToGoBackActive {
-                    
-                } else {
-                    CheckInLoadingOrLoaded(store: store.scope(state: { $0.loadingOrLoaded }))
-                }
-			}
-		}
-		.navigationViewStyle(StackNavigationViewStyle())
-	}
+    }
+    
+    public var body: some View {
+        print("check in navigation")
+        return NavigationView {
+            if !viewStore.state.isAnimationFinished {
+                CheckInAnimation(animationDuration: checkInAnimationDuration,
+                                 appointment: viewStore.state.appointment)
+            } else {
+                IfLetStore(store.scope(state: { $0.passcodeToClose },
+                                       action: { .passcodeToClose($0)}),
+                           then: { passStore in
+                            Passcode.init(store: passStore)
+                                .navigationBarHidden(true)
+                           },
+                           else: {
+                            CheckInLoadingOrLoaded(store: store.scope(state: { $0.loadingOrLoaded }))
+                           })
+            }
+        }.navigationViewStyle(StackNavigationViewStyle())
+    }
 }

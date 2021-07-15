@@ -98,9 +98,29 @@ extension CheckInLoadedState {
 	}
 }
 
-public let getFormsForPathway = uncurry(pipe(stepsAndEntries(_:_:_:), curry(getForms(stepsAndEntries:formAPI:clientId:))))
+func toCheckInForms(stepsActions: [Effect<StepsActions, Never>]) -> [Effect<CheckInContainerAction, Never>] {
+    let pipeInits = pipe(CheckInPatientAction.steps,
+                         CheckInLoadedAction.patient,
+                         CheckInContainerAction.loaded)
+    return stepsActions.map { $0.map(pipeInits) }
+}
+
+let getFormsForPathway = uncurry(pipe(stepsAndEntries(_:_:_:), curry(getForms(stepsAndEntries:formAPI:clientId:))))
+let getCheckInFormsForPathway = pipe(getFormsForPathway, toCheckInForms(stepsActions:))
+public func getCheckInFormsOneAfterAnother(pathway: Pathway,
+                                           template: PathwayTemplate,
+                                           journeyMode: JourneyMode,
+                                           formAPI: FormAPI,
+                                           clientId: Client.ID) -> Effect<CheckInContainerAction, Never> {
+    let effects = with(((pathway, template, journeyMode), formAPI, clientId), getCheckInFormsForPathway)
+    return Effect.concatenate(effects)
+}
+
+//func getCheckInForms(loadedState: CheckInLoadedState) ->
 
 public func stepsAndEntries(_ pathway: Pathway, _ template: PathwayTemplate, _ journeyMode: JourneyMode) -> [StepAndStepEntry] {
+    print("here")
+    print(pathway, template)
 	return template.steps
 		.filter { isIn(journeyMode, $0.stepType) }
 		.map { StepAndStepEntry(step: $0, entry: pathway.stepEntries[$0.id]) }

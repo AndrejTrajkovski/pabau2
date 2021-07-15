@@ -2,6 +2,7 @@ import Model
 import ComposableArchitecture
 import SwiftUI
 import Form
+import Overture
 
 let checkInLoadingOrLoadedReducer: Reducer<CheckInLoadingOrLoadedState, CheckInContainerAction, JourneyEnvironment> = .combine (
 	
@@ -16,7 +17,7 @@ let checkInLoadingOrLoadedReducer: Reducer<CheckInLoadingOrLoadedState, CheckInC
         environment: { $0 }
     ),
 	
-	.init { state, action, _ in
+	.init { state, action, env in
         
         func handlePathwaysResponse(_ result: Result<CombinedPathwayResponse, RequestError>) -> Effect<CheckInContainerAction, Never> {
             print("gotCombinedPathwaysResponse")
@@ -28,11 +29,16 @@ let checkInLoadingOrLoadedReducer: Reducer<CheckInLoadingOrLoadedState, CheckInC
             case .success(let pathwaysResponse):
                 
                 print("success pathwaysResponse")
-                let loaded = CheckInLoadedState(appointment: pathwaysResponse.appointment,
+                let loadedState = CheckInLoadedState(appointment: pathwaysResponse.appointment,
                                                    pathway: pathwaysResponse.pathway,
                                                    template: pathwaysResponse.pathwayTemplate)
-                state = .loaded(loaded)
-                return .none
+                state = .loaded(loadedState)
+                
+                return getCheckInFormsOneAfterAnother(pathway: loadedState.pathway,
+                                                      template: loadedState.pathwayTemplate,
+                                                      journeyMode: .patient,
+                                                      formAPI: env.formAPI,
+                                                      clientId: loadedState.appointment.customerId)
                 
             case .failure(let error):
                 

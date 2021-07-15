@@ -20,7 +20,9 @@ struct Passcode: View {
 									CGFloat(viewStore.state.wrongAttempts)))
 				Digits(onTouch: { viewStore.send(.touchDigit($0)) })
 				HStack {
-					Text("Cancel")
+					Text("Cancel").onTapGesture {
+                        viewStore.send(.onCancel)
+                    }
 					Spacer()
 					Text("Delete").onTapGesture {
 						viewStore.send(.deleteLast)

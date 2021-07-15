@@ -23,7 +23,26 @@ public struct PasscodeState: Equatable {
 public enum PasscodeAction: Equatable {
 	case touchDigit(String)
 	case deleteLast
+    case onCancel
 }
+
+let passcodeOptReducer: Reducer<PasscodeState?, PasscodeAction, Any> = .combine(
+    
+    passcodeReducer.optional().pullback(
+        state: \PasscodeState.self,
+        action: /PasscodeAction.self,
+        environment: { $0 }
+    ),
+    
+    Reducer.init { state, action, _ in
+        
+        if case PasscodeAction.onCancel = action {
+            state = nil
+        }
+        
+        return .none
+    }
+)
 
 let passcodeReducer = Reducer<PasscodeState, PasscodeAction, Any> { state, action, _ in
 	switch action {
@@ -43,7 +62,9 @@ let passcodeReducer = Reducer<PasscodeState, PasscodeAction, Any> { state, actio
 		}
 	case .deleteLast:
 		if !state.runningDigits.isEmpty { state.runningDigits.removeLast() }
-	}
+    case .onCancel:
+        break
+    }
 	return .none
 }
 

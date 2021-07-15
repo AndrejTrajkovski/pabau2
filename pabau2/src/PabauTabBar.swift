@@ -170,7 +170,7 @@ public let tabBarReducer: Reducer<
 	TabBarAction,
 	TabBarEnvironment
 > = Reducer.combine(
-	checkInContainerReducer.optional().pullback(
+    checkInContainerOptionalReducer.pullback(
 		state: \TabBarState.checkIn,
 		action: /TabBarAction.checkIn,
 		environment: makeJourneyEnv(_:)
@@ -225,21 +225,13 @@ public let tabBarReducer: Reducer<
 				
 			case .loaded(let loadedState):
 				
-				let getPatientForms = getFormsForPathway((loadedState.pathway,
-														 loadedState.pathwayTemplate,
-														 JourneyMode.patient),
-															env.formAPI,
-															loadedState.appointment.customerId
-				)
+                let getForms = getCheckInFormsOneAfterAnother(pathway: loadedState.pathway,
+                                                              template: loadedState.pathwayTemplate,
+                                                              journeyMode: .patient,
+                                                              formAPI: env.formAPI,
+                                                              clientId: loadedState.appointment.customerId)
 					
-                let pipeInits = pipe(CheckInPatientAction.steps,
-                                     CheckInLoadedAction.patient,
-                                     CheckInContainerAction.loaded,
-                                     TabBarAction.checkIn)
-				let getPatientFormsOneAfterAnother = Effect.concatenate(getPatientForms)
-					.map(pipeInits)
-					
-				returnEffects.append(getPatientFormsOneAfterAnother)
+                returnEffects.append(getForms.map(TabBarAction.checkIn))
 			}
 			
             state.checkIn = checkInState
