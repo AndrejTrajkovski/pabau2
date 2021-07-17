@@ -7,17 +7,6 @@ public struct StepEntryFormInfo: Decodable, Equatable {
 	//if step is not started both are nil
 	public let chosenFormTemplateId: FormTemplateInfo.ID?
 	public let formEntryId: FilledFormData.ID?
-	
-	
-	public var templateIdToLoad: FormTemplateInfo.ID? {
-		if let chosenFormTemplateId = chosenFormTemplateId {
-			return chosenFormTemplateId
-		} else if possibleFormTemplates.count == 1 {
-			return possibleFormTemplates.first!.id
-		} else {
-			return nil
-		}
-	}
 }
 
 public struct StepEntry: Decodable, Equatable {
@@ -25,7 +14,7 @@ public struct StepEntry: Decodable, Equatable {
 //	public typealias ID = Tagged<Step.ID, String>
 	public let stepType: StepType
 	public let order: Int?
-	public let status: StepStatus
+	public var status: StepStatus
 	
 	public let htmlFormInfo: StepEntryFormInfo?
 	

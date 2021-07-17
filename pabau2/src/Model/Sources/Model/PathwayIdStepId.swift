@@ -1,13 +1,13 @@
 
-public struct PathwayIdStepId {
+public struct PathwayIdStepId: Equatable {
 	
-	public init(step_id: Step.ID, path_taken_id: Pathway.ID) {
+    public init(step_id: Step.ID, path_taken_id: Pathway.ID) {
 		self.step_id = step_id
 		self.path_taken_id = path_taken_id
 	}
 	
-	let step_id: Step.ID
-	let path_taken_id: Pathway.ID
+	public let step_id: Step.ID
+	public let path_taken_id: Pathway.ID
 }
 
 extension EitherStringOrInt: Encodable {

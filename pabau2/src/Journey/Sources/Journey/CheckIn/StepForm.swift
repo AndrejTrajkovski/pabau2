@@ -44,7 +44,7 @@ public enum StepState: Equatable, Identifiable {
 	func info() -> StepFormInfo {
 		switch self {
 		case .htmlForm(let formState):
-			return StepFormInfo(status: formState.stepEntry.status, title: formState.stepEntry.stepType.rawValue.uppercased())
+			return StepFormInfo(status: formState.status, title: formState.stepType.rawValue.uppercased())
 		case .patientDetails(let pdState):
 			return StepFormInfo(status: pdState.stepStatus, title: "PATIENT DETAILS")
 		default:

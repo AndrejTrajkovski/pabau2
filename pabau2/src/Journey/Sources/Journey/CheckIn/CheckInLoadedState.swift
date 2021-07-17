@@ -141,14 +141,23 @@ func getForms(stepsAndEntries: [StepAndStepEntry], formAPI: FormAPI, clientId: C
 
 func getForm(stepAndEntry: StepAndStepEntry, formAPI: FormAPI, clientId: Client.ID) -> Effect<StepAction, Never>? {
 	if stepAndEntry.step.stepType.isHTMLForm {
-		guard let templateId = stepAndEntry.entry?.htmlFormInfo?.templateIdToLoad else {
+		guard let templateId = stepAndEntry.entry?.htmlFormInfo?.chosenFormTemplateId else {
 			return nil
 		}
-		
+        let pipeInits: (Result<HTMLForm, RequestError>) -> StepAction
+        
+        if stepAndEntry.entry!.htmlFormInfo!.possibleFormTemplates.count == 1 {
+            pipeInits = pipe(HTMLFormAction.gotForm, HTMLFormStepContainerAction.singleForm, StepAction.htmlForm)
+        } else {
+            pipeInits = pipe(HTMLFormAction.gotForm, MultipleFormsAction.htmlForm, HTMLFormStepContainerAction.multipleForms, StepAction.htmlForm)
+        }
+        
 		return formAPI.getForm(templateId: templateId, entryId: stepAndEntry.entry?.htmlFormInfo?.formEntryId)
 			.catchToEffect()
-			.map(pipe(HTMLFormAction.gotForm, HTMLFormStepContainerAction.htmlForm, StepAction.htmlForm))
+			.map(pipeInits)
+        
 	} else {
+        
 		switch stepAndEntry.step.stepType {
 		case .consents, .medicalhistory, .treatmentnotes, .prescriptions:
 			fatalError("should be handled previously")

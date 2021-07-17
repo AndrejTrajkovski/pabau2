@@ -3,6 +3,7 @@ import ComposableArchitecture
 import Util
 import SwiftUI
 import SharedComponents
+import ToastAlert
 
 public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, FormEnvironment> = .combine(
 	formReducer.optional().pullback(
@@ -25,7 +26,7 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, F
 		case .rows(.complete):
 			guard let form = state.form else { break }
 			state.postLoadingState = .loading
-			return env.formAPI.save(form: form, clientId: state.clientId)
+            return env.formAPI.save(form: form, clientId: state.clientId, pathwayStep: state.pathwayIdStepId)
 				.receive(on: DispatchQueue.main)
 				.catchToEffect()
 				.map(HTMLFormAction.gotPOSTResponse)
@@ -55,19 +56,44 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, F
 			
 		case .rows(.rows(idx: let idx, action: let action)):
 			break
-		}
-		return .none
-	}
+        case .skipStep:
+            if let pathwayIdStepId = state.pathwayIdStepId {
+                return env.formAPI.skipStep(pathwayIdStepId)
+                    .catchToEffect()
+                    .map(HTMLFormAction.gotSkipResponse)
+                    .receive(on: DispatchQueue.main)
+                    .eraseToEffect()
+            } else {
+                return .none
+            }
+        case .gotSkipResponse(let statusResult):
+            switch statusResult {
+            case .success(let status):
+                state.status = status
+            case .failure(let error):
+                state.skipToast = ToastState(mode: .alert,
+                                             type: .error(.red),
+                                             title: "Failed to skip step")
+                return Effect.timer(id: ToastTimerId(), every: 2, on: DispatchQueue.main)
+                    .map { _ in HTMLFormAction.hideToast }
+            }
+        case .hideToast:
+            state.skipToast = nil
+        }
+        return .none
+    }
 )
 
 public struct HTMLFormParentState: Equatable, Identifiable {
-	
+    
 	public init(formTemplateName: String,
 				formType: FormType,
 				stepStatus: StepStatus,
 				formEntryID: FilledFormData.ID?,
 				formTemplateId: HTMLForm.ID,
-				clientId: Client.ID) {
+				clientId: Client.ID,
+                pathwayIdStepId: PathwayIdStepId,
+                stepType: StepType) {
 		self.templateId = formTemplateId
 		self.templateName = formTemplateName
 		self.type = formType
@@ -77,6 +103,8 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 		self.getLoadingState = .initial
 		self.postLoadingState = .initial
 		self.saveFailureAlert = nil
+        self.pathwayIdStepId = pathwayIdStepId
+        self.stepType = stepType
 	}
 	
 	public init(templateId: HTMLForm.ID,
@@ -95,6 +123,7 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 		self.getLoadingState = .initial
 		self.postLoadingState = .initial
 		self.saveFailureAlert = nil
+        self.stepType = nil
 	}
 	
 	public init(formData: FilledFormData,
@@ -109,6 +138,7 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 		self.filledFormId = formData.treatmentId
 		self.clientId = clientId
 		self.postLoadingState = .initial
+        self.stepType = nil
 	}
 	
 	public init(info: FormTemplateInfo,
@@ -123,6 +153,7 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 		self.filledFormId = nil
 		self.clientId = clientId
 		self.postLoadingState = .initial
+        self.stepType = nil
 	}
 	
 	public var id: HTMLForm.ID { templateId }
@@ -137,14 +168,20 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 	public var postLoadingState: LoadingState
 	public var status: StepStatus
 	public var saveFailureAlert: AlertState<HTMLFormAction>?
+    public var pathwayIdStepId: PathwayIdStepId?
+    public var skipToast: ToastState<HTMLFormAction>?
+    public let stepType: StepType?
 }
 
 public enum HTMLFormAction: Equatable {
+    case gotSkipResponse(Result<StepStatus, RequestError>)
+    case skipStep
 	case gotPOSTResponse(Result<FilledFormData.ID, RequestError>)
 	case gotForm(Result<HTMLForm, RequestError>)
 	case getFormError(ErrorViewAction)
 	case rows(HTMLRowsAction)
 	case saveAlertCanceled
+    case hideToast
 }
 
 public struct HTMLFormParent: View {
@@ -176,20 +213,22 @@ public struct HTMLFormParent: View {
 	let store: Store<HTMLFormParentState, HTMLFormAction>
 	@ObservedObject var viewStore: ViewStore<State, HTMLFormAction>
 	
-	public var body: some View {
-		switch viewStore.state {
-		case .getting:
-			LoadingView.init(title: "Loading", bindingIsShowing: .constant(true), content: { Spacer() })
-		case .saving:
-			LoadingView.init(title: "Saving", bindingIsShowing: .constant(true), content: { Spacer() })
-		case .loaded:
-			IfLetStore(store.scope(state: { $0.form }, action: { .rows($0) }),
-					   then: { HTMLFormView(store: $0, isCheckingDetails: false) },
-					   else: IfLetErrorView(store: store.scope(state: { $0.getLoadingState },
-															   action: { .getFormError($0) }))
-			).alert(store.scope(state: \.saveFailureAlert), dismiss: HTMLFormAction.saveAlertCanceled)
-		case .initial:
-			EmptyView()
-		}
+    public var body: some View {
+        Group {
+            switch viewStore.state {
+            case .getting:
+                LoadingView.init(title: "Loading", bindingIsShowing: .constant(true), content: { Spacer() })
+            case .saving:
+                LoadingView.init(title: "Saving", bindingIsShowing: .constant(true), content: { Spacer() })
+            case .loaded:
+                IfLetStore(store.scope(state: { $0.form }, action: { .rows($0) }),
+                           then: { HTMLFormView(store: $0, isCheckingDetails: false) },
+                           else: IfLetErrorView(store: store.scope(state: { $0.getLoadingState },
+                                                                   action: { .getFormError($0) }))
+                ).alert(store.scope(state: \.saveFailureAlert), dismiss: HTMLFormAction.saveAlertCanceled)
+            case .initial:
+                EmptyView()
+            }
+        }.toast(store: store.scope(state: { $0.skipToast }))
 	}
 }
