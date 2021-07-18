@@ -26,11 +26,11 @@
 		82182C5725265C5D00E5479F /* Util in Frameworks */ = {isa = PBXBuildFile; productRef = 82182C5625265C5D00E5479F /* Util */; };
 		8223F5EE264FC1230056023C /* CheckInMiddleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8223F5ED264FC1230056023C /* CheckInMiddleware.swift */; };
 		8223F5F0265115FD0056023C /* CalendarList in Frameworks */ = {isa = PBXBuildFile; productRef = 8223F5EF265115FD0056023C /* CalendarList */; };
-		8246DB3925716DF900F5D87E /* Intercom.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74DD9D37256EB28C00CC3920 /* Intercom.framework */; };
-		8246DB3C2571731C00F5D87E /* Intercom.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 74DD9D37256EB28C00CC3920 /* Intercom.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		825BE7EA2436226300422910 /* checkIn.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 825BE7E92436226300422910 /* checkIn.mp4 */; };
 		82811EF423E06BCB0066AFDC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EF323E06BCB0066AFDC /* ContentView.swift */; };
 		8297A2B523D9BA0200D091FF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8297A2B223D9BA0200D091FF /* Localizable.strings */; };
+		829D643F26A45C910087E5C0 /* Intercom.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 829D643E26A45C910087E5C0 /* Intercom.xcframework */; };
+		829D644026A45CA90087E5C0 /* Intercom.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 829D643E26A45C910087E5C0 /* Intercom.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		82BE2F4823D97D9C00B3678A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BE2F4723D97D9C00B3678A /* AppDelegate.swift */; };
 		82BE2F4A23D97D9C00B3678A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BE2F4923D97D9C00B3678A /* SceneDelegate.swift */; };
 		82BE2F4E23D97D9F00B3678A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 82BE2F4D23D97D9F00B3678A /* Assets.xcassets */; };
@@ -48,7 +48,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				8246DB3C2571731C00F5D87E /* Intercom.framework in Embed Frameworks */,
+				829D644026A45CA90087E5C0 /* Intercom.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -66,7 +66,6 @@
 		08EF32862588FC5F00E862B3 /* SFProText-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-Regular.ttf"; sourceTree = "<group>"; };
 		745E58A125D28B3A00EDD10D /* Appointments */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Appointments; sourceTree = "<group>"; };
 		74DD9D31256EAB0E00CC3920 /* Communication */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Communication; sourceTree = "<group>"; };
-		74DD9D37256EB28C00CC3920 /* Intercom.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intercom.framework; path = pabau2/Intercom.framework; sourceTree = "<group>"; };
 		82018FE62567D59300E740A9 /* AddAppointment */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AddAppointment; sourceTree = "<group>"; };
 		82018FE72569657100E740A9 /* AddBookout */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AddBookout; sourceTree = "<group>"; };
 		82104534240CE516004EA838 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -86,6 +85,7 @@
 		8297A2B423D9BA0200D091FF /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8298A11324D486960079BFE9 /* Clients */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Clients; sourceTree = "<group>"; };
 		829D61FF24D18CF90049D5D0 /* FSCalendarSwiftUI */ = {isa = PBXFileReference; lastKnownFileType = folder; path = FSCalendarSwiftUI; sourceTree = "<group>"; };
+		829D643E26A45C910087E5C0 /* Intercom.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Intercom.xcframework; path = pabau2/src/Intercom.xcframework; sourceTree = "<group>"; };
 		82A5317525EFD63A00840749 /* Avatar */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Avatar; sourceTree = "<group>"; };
 		82BE2F4423D97D9C00B3678A /* pabau2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pabau2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		82BE2F4723D97D9C00B3678A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -124,9 +124,9 @@
 				82182C5125265C5D00E5479F /* Journey in Frameworks */,
 				82182C5525265C5D00E5479F /* Model in Frameworks */,
 				74DD9D34256EAB1A00CC3920 /* Communication in Frameworks */,
-				8246DB3925716DF900F5D87E /* Intercom.framework in Frameworks */,
 				82182C4925265C5D00E5479F /* Clients in Frameworks */,
 				82182C5725265C5D00E5479F /* Util in Frameworks */,
+				829D643F26A45C910087E5C0 /* Intercom.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -155,7 +155,7 @@
 		82B02FFF23F2581C0015B0B4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				74DD9D37256EB28C00CC3920 /* Intercom.framework */,
+				829D643E26A45C910087E5C0 /* Intercom.xcframework */,
 				82104536240CE524004EA838 /* libswiftXCTest.tbd */,
 				82104534240CE516004EA838 /* XCTest.framework */,
 			);
