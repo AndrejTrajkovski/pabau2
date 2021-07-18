@@ -67,10 +67,7 @@ extension CalendarState {
 extension CalendarState {
 	public var employeeSectionState: CalendarSectionViewState<Employee>? {
 		get {
-			guard let groupAppointments = extract(
-                    case: Appointments.employee,
-                    from: self.appointments
-            ) else {
+            guard case Appointments.employee(let employeeAppointments) = appointments else {
                 return nil
             }
 			print("this")
@@ -81,7 +78,7 @@ extension CalendarState {
 			print(shifts[selectedDate])
 			return CalendarSectionViewState<Employee>(
 				selectedDate: selectedDate,
-				appointments: groupAppointments,
+				appointments: employeeAppointments,
 				appDetails: appDetails,
 				addBookout: addBookoutState,
 				locations: locations,
@@ -108,10 +105,12 @@ extension CalendarState {
 
 	public var roomSectionState: CalendarSectionViewState<Room>? {
 		get {
-			guard let groupAppointments = extract(case: Appointments.room, from: self.appointments) else { return nil }
+            guard case Appointments.room(let roomAppointments) = appointments else {
+                return nil
+            }
 			return CalendarSectionViewState<Room>(
 				selectedDate: selectedDate,
-				appointments: groupAppointments,
+				appointments: roomAppointments,
 				appDetails: appDetails,
 				addBookout: addBookoutState,
 				locations: locations,
@@ -137,9 +136,11 @@ extension CalendarState {
 
 	public var week: CalendarWeekViewState? {
 		get {
-			guard let apps = extract(case: Appointments.week, from: self.appointments) else { return nil }
+            guard case Appointments.week(let weekAppointments) = appointments else {
+                return nil
+            }
 			return CalendarWeekViewState(
-				appointments: apps,
+				appointments: weekAppointments,
 				selectedDate: selectedDate,
 				addBookout: addBookoutState,
 				appDetails: appDetails,
@@ -159,12 +160,13 @@ extension CalendarState {
 	
 	public var listContainer: ListContainerState? {
 		get {
-			guard let apps = extract(case: Appointments.list, from: self.appointments) else { return nil }
-			
+            guard case Appointments.list(let listAppointments) = appointments else {
+                return nil
+            }
 			return ListContainerState(
 				appsLS: self.appsLS,
 				list: self.list,
-				appointments: apps,
+				appointments: listAppointments,
 				locations: self.locations,
 				employees: self.employees,
 				chosenEmployeesIds: self.chosenEmployeesIds,

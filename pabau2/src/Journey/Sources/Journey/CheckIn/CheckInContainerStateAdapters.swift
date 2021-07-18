@@ -110,9 +110,9 @@ import Form
 //	let oldWithData = forms.filter { old in
 //		finalSelectedTemplatesIds.contains(old.id)
 //	}.map(\.form)
-//		.compactMap {
-//			extract(case: MetaForm.template, from: $0)
-//	}
+//		.compactMap(
+//			extract(MetaForm.template)
+//	)
 //	let allNew = selected(allTemplates, finalSelectedTemplatesIds)
 //	let oldWithDataDict = Dictionary.init(grouping: oldWithData,
 //																				by: \.id)

@@ -13,7 +13,13 @@ struct FormSectionField: View {
 		let titleAlignment: Alignment
 		let borderColor: Color
 		init(state: CSSField, isCheckingDetails: Bool) {
-			let isSignature = extract(case: CSSClass.signature, from: state.cssClass) != nil
+            let isSignature: Bool = {
+                if case CSSClass.signature = state.cssClass {
+                    return true
+                } else {
+                    return false
+                }
+            }()
 			self.title = (state.title ?? "") + (state._required ? " (*)Required" : "")
 			self.titleFont = isSignature ? .bold18: .semibold18
 			self.titleAlignment = isSignature ? .center : .leading
@@ -76,19 +82,7 @@ struct FormFieldStore: View {
             )
             Default { EmptyView() }
         }
-        
-//		IfLetStore(store.scope(
-//					state: { extract(case: CSSClass.select, from: $0)},
-//					action: { .select($0)}),
-//				   then: SelectField.init(store:)
-//		)
-//		IfLetStore(store.scope(
-//					state: { extract(case: CSSClass.heading, from: $0)}).actionless,
-//				   then: { store in
-//					AttributedOrTextField(store: store.scope(state: { $0.value }))
-//				   }
-//		)
-	}
+    }
 }
 
 public enum HTMLRowsAction: Equatable {

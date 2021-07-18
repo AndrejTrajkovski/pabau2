@@ -52,25 +52,11 @@ public struct TimelinePhotoCell: View {
     }
 
     public var body: some View {
-        Group {
-            if extract(case: Photo.saved, from: photo.basePhoto) != nil {
-                SavedTimelinePhotoCell(savedPhoto: extract(case: Photo.saved, from: photo.basePhoto)!)
-            } else if extract(case: Photo.new, from: photo.basePhoto) != nil {
-                NewTimelinePhotoCell(newPhoto: extract(case: Photo.new, from: photo.basePhoto)!)
-            }
-        }
-    }
-}
-
-struct SavedTimelinePhotoCell: View {
-    let savedPhoto: SavedPhoto
-    var body: some View {
-        GeometryReader { proxy in
-            WebImage(url: URL(string: savedPhoto.normalSizePhoto ?? ""))
-                .resizable()
-                .placeholder(Image(systemName: "photo"))
-                .frame(width: proxy.size.width, height: proxy.size.height)
-                .clipped()
+        switch photo.basePhoto {
+        case .saved(let savedPhoto):
+            SavedPhotoCell(savedPhoto: savedPhoto)
+        case .new(let newPhoto):
+            NewTimelinePhotoCell(newPhoto: newPhoto)
         }
     }
 }

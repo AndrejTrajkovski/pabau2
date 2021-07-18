@@ -95,7 +95,7 @@ struct _FormStructure: Codable {
 	func getLabelTitle() -> String {
 		switch self.cssClass {
 		case .input_text, .textarea:
-			return extract(case: Values.string, from: self.values) ?? ""
+            return values?.extractString() ?? ""
 		case .radio, .checkbox, .select, .signature, .diagram_mini:
 			return self.title ?? ""
 		case .staticText, .heading:
@@ -163,6 +163,14 @@ enum Values: Codable {
 			try container.encode(x)
 		}
 	}
+    
+    func extractString() -> String? {
+        if case Values.string(let stringValue) = self {
+            return stringValue
+        } else {
+            return nil
+        }
+    }
 }
 
 // MARK: - Value

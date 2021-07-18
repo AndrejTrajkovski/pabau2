@@ -58,8 +58,12 @@ struct LoadingStore<State, Action, Content>: View where Content: View, State: Eq
             } else {
                 let errorOrLoading: () -> _ConditionalContent<ErrorContent, LoadingContent> = {
                     if case .error(let error) = viewStore.state {
-                        let errorStore = store.scope(state: {
-                            extract(case: LoadingState2.error, from: $0) ?? error
+                        let errorStore = store.scope(state: { (loadingState: LoadingState2) -> RequestError in
+                            if case LoadingState2.error(let error2) = loadingState {
+                                return error2
+                            } else {
+                                return error
+                            }
                         }, action: errorPath)
                         
                         return ViewBuilder.buildEither(first:

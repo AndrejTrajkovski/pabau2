@@ -147,7 +147,13 @@ struct ClientsList: View {
             self.isAddClientActive = state.addClient != nil
 			self.isSearching = !state.searchText.isEmpty
 			self.notFoundClients = state.clients.isEmpty
-			self.error = extract(case: LoadingState.gotError, from: state.contactListLS)
+			self.error = {
+                if case LoadingState.gotError(let error) = state.contactListLS {
+                    return error as? RequestError
+                } else {
+                    return nil
+                }
+            }()
         }
     }
 

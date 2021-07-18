@@ -58,7 +58,7 @@ struct PhotoDetailViewSecond: View {
         GeometryReader { proxy in
             ZStack {
                 UIScrollViewWrapper {
-                    PhotoDetailCell(photo: viewStore.photo)
+                    PhotoCell(photo: viewStore.photo)
                                 .frame(width: proxy.size.width * (viewStore.pinchMagnification * viewStore.currentMagnification),
                                        height: proxy.size.height * (viewStore.pinchMagnification * viewStore.currentMagnification))
                                 .gesture(magnificationGest)

@@ -22,15 +22,14 @@ public enum InputTextAction: Equatable {
 struct InputTextFieldParent: View {
 	let store: Store<InputText, InputTextAction>
 	var body: some View {
-		IfLetStore(store.scope(state: { extract(case: InputText.justText, from: $0)},
-							   action: InputTextAction.justText),
-				   then:
-					InputTextFieldWrapper.init(store:)
-				   //					InputTextField.init(store:)
-		)
-		IfLetStore(store.scope(state: { extract(case: InputText.date, from: $0)},
-							   action: InputTextAction.date),
-				   then: { return DatePickerTCA.init(mode: UIDatePicker.Mode.date, store: $0, borderStyle: .roundedRect) })
+        SwitchStore(store) {
+            CaseLet(state: /InputText.justText, action: InputTextAction.justText, then: InputTextFieldWrapper.init(store:))
+            CaseLet(state: /InputText.date, action: InputTextAction.date,
+                    then: {
+                        localStore in
+                        DatePickerTCA.init(mode: UIDatePicker.Mode.date, store: localStore, borderStyle: .roundedRect) }
+            )
+        }
 	}
 }
 

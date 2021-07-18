@@ -47,7 +47,13 @@ public enum CSSClass: Equatable {
 	case unknown
 	
 	init?(_formStructure: _FormStructure, fieldId: CSSFieldID) throws {
-		let stringValue = extract(case: Values.string, from:_formStructure.values)
+        let stringValue: String? = {
+            if let values = _formStructure.values {
+                return values.extractString()
+            } else {
+                return nil
+            }
+        }()
 		switch _formStructure.cssClass {
 		case .staticText:
 			self = .staticText(StaticText(AttributedOrText.init(value: stringValue ?? "")))
