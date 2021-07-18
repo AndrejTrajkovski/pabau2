@@ -36,7 +36,7 @@ public class CalendarWeekViewController: BaseCalendarViewController {
 			.sink(receiveValue: { [weak self] in
 				let newInitDate = $0.0.getMondayOfWeek()
 				self?.weekView.updateWeekView(to: newInitDate)
-				self?.weekView.forceReload(reloadEvents: $0.1.mapValues(pipe(get(\.elements), map(JZAppointmentEvent.init(appointment:)))))
+				self?.weekView.forceReload(reloadEvents: $0.1.mapValues(pipe(get(\.self), map(JZAppointmentEvent.init(appointment:)))))
         }).store(in: &self.cancellables)
 	}
 

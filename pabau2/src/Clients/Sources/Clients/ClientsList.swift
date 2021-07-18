@@ -76,7 +76,8 @@ let clientsListReducer: Reducer<
                     state.clients = .init(clients)
                     break
                 }
-                state.clients = (state.clients + .init(clients))
+                let result = state.clients + clients
+                state.clients = IdentifiedArray(uniqueElements: result)
             case .failure(let error):
 				print("error \(error)")
                 state.contactListLS = .gotError(error)

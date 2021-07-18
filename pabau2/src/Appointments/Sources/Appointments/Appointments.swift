@@ -61,7 +61,7 @@ public enum Appointments: Equatable {
 		case .room(let apps):
 			return apps.flatten()
 		case .week(let apps):
-			return apps.flatMap { $0.value.elements }
+			return apps.flatMap { $0.value }
 		case .list(let apps):
 			return apps.flatten()
 		}
