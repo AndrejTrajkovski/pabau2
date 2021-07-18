@@ -45,8 +45,14 @@ struct LoadingStore<State, Action, Content>: View where Content: View, State: Eq
         self.content = { viewStore in
             if case .loaded(let state) = viewStore.state {
                 return ViewBuilder.buildEither(first:
-                                                ifContent(store.scope(state: { extract(case: LoadingState2.loaded, from: $0) ?? state }
-                                                )
+                                                ifContent(
+                                                    store.scope(state: {
+                                                        if case LoadingState2.loaded(let loadedState) = $0 {
+                                                            return loadedState
+                                                        } else {
+                                                            return state
+                                                        }
+                                                    })
                                                 )
                 )
             } else {

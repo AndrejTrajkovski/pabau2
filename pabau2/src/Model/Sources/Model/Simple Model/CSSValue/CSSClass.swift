@@ -170,7 +170,8 @@ fileprivate let extractAndSortValues: (Values?) throws -> [Value] =
 	pipe(extractValueMap(values:), sort(valueMap:))
 
 fileprivate func extractValueMap(values: Values?) throws -> [Int: Value] {
-	if let valueMap = extract(case: Values.valueMap, from:values) {
+    guard let someValues = values else { return [:] }
+	if case Values.valueMap(let valueMap) = someValues {
 		return valueMap
 	} else {
 		throw CSSClassTypeMismatch.expectedValueMap

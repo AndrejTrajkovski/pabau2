@@ -3,6 +3,7 @@ import SharedComponents
 import ComposableArchitecture
 import Model
 import Util
+import Overture
 
 struct FormSectionField: View {
 
@@ -52,64 +53,41 @@ struct FormFieldStore: View {
 	let title: String
 
 	var body: some View {
-		IfLetStore(store.scope(
-					state: { extract(case: CSSClass.staticText, from: $0)}).actionless,
-				   then: { store in
-						AttributedOrTextField(store: store.scope(state: { $0.value }))
-				   }
-		)
-		IfLetStore(store.scope(
-					state: { extract(case: CSSClass.input_text, from: $0)},
-					action: { .inputText($0)}),
-				   then: InputTextFieldParent.init(store:)
-		)
-		IfLetStore(store.scope(
-					state: { extract(case: CSSClass.textarea, from: $0)},
-					action: { .textArea($0)}),
-				   then: {
-						TextAreaField(store: $0)
-				   }
-		)
-		IfLetStore(store.scope(
-					state: { extract(case: CSSClass.radio, from: $0)},
-					action: { .radio($0)}),
-				   then: RadioField.init(store:))
-		IfLetStore(store.scope(
-					state: { extract(case: CSSClass.signature, from: $0)},
-					action: { .signature($0)}),
-				   then: {
-					SignatureField(store: $0,
-								   title: title)
-				   }
-		)
-		IfLetStore(store.scope(
-					state: { extract(case: CSSClass.checkboxes, from: $0)},
-					action: { .checkboxes($0)}),
-				   then: CheckBoxField.init(store:)
-		)
-		IfLetStore(store.scope(
-					state: { extract(case: CSSClass.select, from: $0)},
-					action: { .select($0)}),
-				   then: SelectField.init(store:)
-		)
-		IfLetStore(store.scope(
-					state: { extract(case: CSSClass.heading, from: $0)}).actionless,
-				   then: { store in
-					AttributedOrTextField(store: store.scope(state: { $0.value }))
-				   }
-		)
+        
+        SwitchStore(store) {
+            CaseLet(state: /CSSClass.staticText, action: CSSClassAction.staticText,
+                    then: { (store: Store<StaticText, Never>) in
+                        AttributedOrTextField(store: store.scope(state: { $0.value }))
+                    }
+            )
+            CaseLet(state: /CSSClass.input_text, action: CSSClassAction.inputText, then: InputTextFieldParent.init(store:))
+            CaseLet(state: /CSSClass.textarea, action: CSSClassAction.textArea, then: TextAreaField.init(store:))
+            CaseLet(state: /CSSClass.radio, action: CSSClassAction.radio, then: RadioField.init(store:))
+            CaseLet(state: /CSSClass.signature, action: CSSClassAction.signature, then: {
+                signatureStore in
+                SignatureField.init(store:signatureStore, title: title)
+            })
+            CaseLet(state: /CSSClass.checkboxes, action: CSSClassAction.checkboxes, then: CheckBoxField.init(store:))
+            CaseLet(state: /CSSClass.select, action: CSSClassAction.select, then: SelectField.init(store:))
+            CaseLet(state: /CSSClass.heading, action: CSSClassAction.heading,
+                    then: { (store: Store<Heading, Never>) in
+                        AttributedOrTextField(store: store.scope(state: { $0.value }))
+                    }
+            )
+            Default { EmptyView() }
+        }
+        
 //		IfLetStore(store.scope(
-//					state: { extract(case: CSSClass.cl_drugs, from: $0)},
-//					action: { .cl_drugs($0)}),
-//				   then: { store in
-//					return EmptyView()
-//				   })
+//					state: { extract(case: CSSClass.select, from: $0)},
+//					action: { .select($0)}),
+//				   then: SelectField.init(store:)
+//		)
 //		IfLetStore(store.scope(
-//					state: { extract(case: CSSClass.diagram_mini, from: $0)},
-//					action: { .diagram_mini($0)}),
+//					state: { extract(case: CSSClass.heading, from: $0)}).actionless,
 //				   then: { store in
-//					return EmptyView()
-//				   })
+//					AttributedOrTextField(store: store.scope(state: { $0.value }))
+//				   }
+//		)
 	}
 }
 
@@ -163,6 +141,8 @@ let cssClassReducer: Reducer<CSSClass, CSSClassAction, FormEnvironment> =
 	)
 
 public enum CSSClassAction: Equatable {
+    case heading(Never)
+    case staticText(Never)
 	case inputText(InputTextAction)
 	case textArea(TextAreaFieldAction)
 	case radio(RadioFieldAction)
