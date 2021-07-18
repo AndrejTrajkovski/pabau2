@@ -13,7 +13,11 @@ public struct IfLetErrorView: View {
 	
 	public var body: some View {
 		IfLetStore(store.scope(state: { state in
-			extract(case: LoadingState.gotError, from: state)
+            if case .gotError(let error) = state {
+                return error as? RequestError
+            } else {
+                return nil
+            }
 		}),
 			then: ErrorRetry.init(store:)
 		)

@@ -28,7 +28,6 @@ let checkInLoadingOrLoadedReducer: Reducer<CheckInLoadingOrLoadedState, CheckInC
             
             case .success(let pathwaysResponse):
                 
-                print("success pathwaysResponse")
                 let loadedState = CheckInLoadedState(appointment: pathwaysResponse.appointment,
                                                    pathway: pathwaysResponse.pathway,
                                                    template: pathwaysResponse.pathwayTemplate)

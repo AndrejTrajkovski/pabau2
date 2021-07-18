@@ -113,6 +113,7 @@ public func getCheckInFormsOneAfterAnother(pathway: Pathway,
                                            formAPI: FormAPI,
                                            clientId: Client.ID) -> Effect<CheckInContainerAction, Never> {
     let effects = with(((pathway, template, journeyMode), formAPI, clientId), getCheckInFormsForPathway)
+    print("number of requests:", effects.count)
     return Effect.concatenate(effects)
 }
 
@@ -141,6 +142,7 @@ func getForms(stepsAndEntries: [StepAndStepEntry], formAPI: FormAPI, clientId: C
 
 func getForm(stepAndEntry: StepAndStepEntry, formAPI: FormAPI, clientId: Client.ID) -> Effect<StepAction, Never>? {
 	if stepAndEntry.step.stepType.isHTMLForm {
+        print(stepAndEntry)
 		guard let templateId = stepAndEntry.entry?.htmlFormInfo?.chosenFormTemplateId else {
 			return nil
 		}

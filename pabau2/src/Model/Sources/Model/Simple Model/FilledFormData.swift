@@ -70,7 +70,11 @@ struct _FormStructure: Codable {
 	func keyString() -> String {
 		switch self.cssClass {
 		case .input_text, .textarea:
-			return extract(case: Values.string, from: self.values)!
+            if case .string(let stringValue) = self.values {
+                return stringValue
+            } else {
+                fatalError("something is wrong on backend")
+            }
 		case .radio, .checkbox, .select, .signature, .diagram_mini:
 			return self.title!
 		case .staticText:
