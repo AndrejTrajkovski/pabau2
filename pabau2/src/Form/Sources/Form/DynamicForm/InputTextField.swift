@@ -49,9 +49,9 @@ struct InputTextFieldWrapper: View {
 	@State var myText: String
 	var onChange: (String) -> Void
 
-	init(store: Store<String, TextChangeAction>) {
+	init(store: Store<String?, TextChangeAction>) {
 		let viewStore = ViewStore(store)
-		self._myText = State.init(initialValue: viewStore.state)
+        self._myText = State.init(initialValue: viewStore.state ?? "")
 		self.onChange = { viewStore.send(.textChange($0)) }
 	}
 //	init (initialValue: String, onChange: @escaping (String) -> Void) {

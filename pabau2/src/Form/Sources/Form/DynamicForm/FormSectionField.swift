@@ -59,7 +59,6 @@ struct FormFieldStore: View {
 	let title: String
 
 	var body: some View {
-        
         SwitchStore(store) {
             CaseLet(state: /CSSClass.staticText, action: CSSClassAction.staticText,
                     then: { (store: Store<StaticText, Never>) in
