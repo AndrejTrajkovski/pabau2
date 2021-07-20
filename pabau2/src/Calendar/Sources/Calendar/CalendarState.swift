@@ -332,4 +332,16 @@ extension CalendarState {
 //			locationsLS = .gotError(error)
 //		}
 	}
+    
+    public mutating func replace(app: CalendarEvent) {
+        var flatApps = self.appointments.flatten()
+        flatApps.removeAll(where: { $0.id == app.id })
+        flatApps.append(app)
+        self.appointments.refresh(
+            events: flatApps,
+            locationsIds: chosenLocationsIds,
+            employees: selectedEmployeesIds(),
+            rooms: selectedRoomsIds()
+        )
+    }
 }

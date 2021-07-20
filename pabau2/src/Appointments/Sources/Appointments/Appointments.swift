@@ -69,7 +69,7 @@ public enum Appointments: Equatable {
 }
 
 public extension Appointments {
-	
+    
 	mutating func refresh(events: [CalendarEvent],
 						  locationsIds: Set<Location.ID>,
 						  employees: [Employee.ID],

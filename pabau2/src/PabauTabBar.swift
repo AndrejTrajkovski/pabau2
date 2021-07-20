@@ -243,6 +243,9 @@ public let tabBarReducer: Reducer<
 			guard let appDetails = state.calendar.appDetails,
 				  let template = appDetails.choosePathwayTemplate?.selectedPathway else { return .none }
 			
+            var app = state.calendar.appDetails!.app
+            app.pathways.append(PathwayInfo.init(pathway, template))
+            state.calendar.replace(app: CalendarEvent.appointment(app))
 			state.calendar.appDetails = nil
 			
 			let loadedState = CheckInLoadedState(appointment: appDetails.app,
