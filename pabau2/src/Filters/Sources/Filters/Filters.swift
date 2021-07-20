@@ -37,7 +37,7 @@ public struct FiltersReducer<S: Identifiable & Equatable & Named> {
 							state.chosenSubsectionsIds = state.subsections.mapValues {
 								$0.map(\.id)
 							}
-							
+				
 							if S.self is Employee.Type {
 								(successResult as! [Employee]).forEach {
 									$0.save(to: env.repository.coreDataModel)
@@ -49,14 +49,14 @@ public struct FiltersReducer<S: Identifiable & Equatable & Named> {
 							} else {
 								fatalError()
 							}
-							
+				
 						case .failure(let error):
 							state.subsectionsLS = .gotError(error)
 						}
 					case .reload:
-						
+				
 						let getSubsection: Effect<FiltersAction<S>, Never>
-						
+					
 						if S.self is Employee.Type {
 							getSubsection = env.journeyAPI.getEmployees()
 								.receive(on: DispatchQueue.main)
@@ -200,7 +200,7 @@ public struct Filters<S: Identifiable & Equatable & Named>: View {
 					CalendarHeader<S>(
 						onTap: { viewStore.send(.onHeaderTap) },
 						onReload: { viewStore.send(.reload) }
-					)
+                    ).padding(.top, Constants.statusBarHeight)
 					Divider()
 					switch viewStore.state.sumLoadingState {
 					case .loading:
@@ -218,8 +218,11 @@ public struct Filters<S: Identifiable & Equatable & Named>: View {
 						EmptyView()
 					}
 					Spacer()
-				}
+                }.onTapGesture {}
 			}
+            .onTapGesture {
+                viewStore.send(.onHeaderTap)
+            }
 			.frame(width: 302)
 			.frame(maxHeight: .infinity)
 			.background(Color.employeeBg)

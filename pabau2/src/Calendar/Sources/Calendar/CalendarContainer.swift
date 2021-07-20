@@ -386,6 +386,7 @@ public struct CalendarContainer: View {
         let scope: FSCalendarScope
         let isPresenting: ActiveSheet?
 		let shifts: [Date: [Location.ID: [Employee.ID: [Shift]]]]
+
         init(state: CalendarState) {
             self.appointments =  state.appointments
             self.selectedDate = state.selectedDate
@@ -422,10 +423,19 @@ public struct CalendarContainer: View {
 					CalendarWrapper(store: self.store)
 						.frame(maxWidth: .infinity, maxHeight: .infinity)
 				}
-				if viewStore.state.isShowingFilters {
-					FiltersWrapper(store: store)
-						.transition(.moveAndFade).padding(.top, Constants.statusBarHeight)
-				}
+                if viewStore.state.isShowingFilters {
+                    Rectangle()
+                        .toEdges()
+                        .background(Color.black)
+                        .opacity(0.1)
+                        .onTapGesture {
+                            viewStore.send(.refresh)
+                            viewStore.send(.toggleFilters)
+                        }
+                    FiltersWrapper(store: store)
+                        .transition(.moveAndFade)
+
+                }
 			}
 			.ignoresSafeArea()
             .toast(store: store.scope(state: \.toast))

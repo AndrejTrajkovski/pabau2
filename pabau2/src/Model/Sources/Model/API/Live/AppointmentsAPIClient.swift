@@ -48,7 +48,7 @@ extension APIClient {
         }
 
         if let note = appointment.note {
-            params["note"] = note
+            params["title"] = note
         }
         
         if let description = appointment.description {

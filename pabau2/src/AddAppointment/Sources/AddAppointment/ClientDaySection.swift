@@ -22,14 +22,12 @@ struct ClientDaySection: View {
 				).onTapGesture {
 					self.viewStore.send(.didTabClients)
 				}
-				
 				DatePickerControl.init(
 					"DAY", viewStore.binding(
 						get: { $0.startDate },
 						send: { .chooseStartDate($0!) }
 					), .constant(nil)
 				).isHidden(!viewStore.isAllDay, remove: true)
-				
 				DatePickerControl.init(
 					"DAY", viewStore.binding(
 						get: { $0.startDate },
@@ -39,7 +37,6 @@ struct ClientDaySection: View {
 					mode: .dateAndTime
 				).isHidden(viewStore.isAllDay, remove: true)
 			}
-			
 			NavigationLink.emptyHidden(
 				self.viewStore.state.clients.isChooseClientsActive,
 				ChooseClients(

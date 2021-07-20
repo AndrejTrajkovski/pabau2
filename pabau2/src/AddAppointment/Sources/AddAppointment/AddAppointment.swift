@@ -89,39 +89,41 @@ struct AddAppSections: View {
 	}
 
 	var body: some View {
-		Group {
-			ClientDaySection(store: self.store)
-			ServicesDurationSection(store: self.store)
-			NotesSection(
-				title: "BOOKING NOTE",
-				tfLabel: "Add a booking note",
-				store: store.scope(
-					state: { $0.note },
-					action: { .note($0) }
-				)
-			)
-			Group {
-				SwitchCell(text: Texts.sendReminder,
-						   store: store.scope(
-							state: { $0.reminder },
-							action: { .reminder($0) })
-				)
-				SwitchCell(text: Texts.sendConfirmationEmail,
-						   store: store.scope(
-							state: { $0.email },
-							action: { .email($0) })
-				)
-				SwitchCell(text: Texts.sendConfirmationSMS,
-						   store: store.scope(
-							state: { $0.sms },
-							action: { .sms($0) })
-				)
-				SwitchCell(text: Texts.sendFeedbackSurvey,
-						   store: store.scope(
-							state: { $0.feedback },
-							action: { .feedback($0) })
-				)
-			}.switchesSection(title: Texts.communications)
-		}.padding(.bottom, keyboardHandler.keyboardHeight)
+        VStack(spacing: 0) {
+            Group {
+                ClientDaySection(store: self.store)
+                ServicesDurationSection(store: self.store)
+                NotesSection(
+                    title: "BOOKING NOTE",
+                    tfLabel: "Add a booking note",
+                    store: store.scope(
+                        state: { $0.note },
+                        action: { .note($0) }
+                    )
+                )
+                Group {
+                    SwitchCell(text: Texts.sendReminder,
+                               store: store.scope(
+                                state: { $0.reminder },
+                                action: { .reminder($0) })
+                    )
+                    SwitchCell(text: Texts.sendConfirmationEmail,
+                               store: store.scope(
+                                state: { $0.email },
+                                action: { .email($0) })
+                    )
+                    SwitchCell(text: Texts.sendConfirmationSMS,
+                               store: store.scope(
+                                state: { $0.sms },
+                                action: { .sms($0) })
+                    )
+                    SwitchCell(text: Texts.sendFeedbackSurvey,
+                               store: store.scope(
+                                state: { $0.feedback },
+                                action: { .feedback($0) })
+                    )
+                }.switchesSection(title: Texts.communications)
+            }
+        }.padding(.bottom, keyboardHandler.keyboardHeight)
 	}
 }
