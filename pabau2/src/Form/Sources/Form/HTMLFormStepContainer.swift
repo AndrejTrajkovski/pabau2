@@ -34,7 +34,6 @@ public let htmlFormStepContainerReducer: Reducer<HTMLFormStepContainerState, HTM
             let chosenTemplateInfo = state.possibleFormTemplates[id: chosenId]!
             let formState = HTMLFormParentState(formTemplateName: chosenTemplateInfo.name,
                                                 formType: chosenTemplateInfo.type,
-                                                stepStatus: .pending,
                                                 formEntryID: nil,
                                                 formTemplateId: chosenTemplateInfo.id,
                                                 clientId: state.clientId,
@@ -110,7 +109,6 @@ public struct HTMLFormStepContainerState: Equatable, Identifiable {
             let chosenFormInfo = htmlInfo.possibleFormTemplates.first!
             self.chosenForm = HTMLFormParentState(formTemplateName: chosenFormInfo.name,
                                                     formType: chosenFormInfo.type,
-                                                    stepStatus: stepEntry.status,
                                                     formEntryID: htmlInfo.formEntryId,
                                                     formTemplateId: chosenFormInfo.id,
                                                     clientId: clientId,
@@ -123,7 +121,6 @@ public struct HTMLFormStepContainerState: Equatable, Identifiable {
                 let chosenFormInfo = htmlInfo.possibleFormTemplates[id: chosenFormTemplateId]!
                 self.chosenForm = HTMLFormParentState(formTemplateName: chosenFormInfo.name,
                                                       formType: chosenFormInfo.type,
-                                                      stepStatus: stepEntry.status,
                                                       formEntryID: htmlInfo.formEntryId,
                                                       formTemplateId: chosenFormInfo.id,
                                                       clientId: clientId,

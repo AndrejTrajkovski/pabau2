@@ -77,7 +77,7 @@ extension FormsContainerState {
 	}
 	
 	private func stepForms() -> [StepFormInfo] {
-		formsCollection.map { StepFormInfo.init(status: $0.status, title: $0.templateName )}
+        formsCollection.map { StepFormInfo.init(status: StepStatus.init(formStatus:$0.status), title: $0.templateName )}
 	}
 }
 

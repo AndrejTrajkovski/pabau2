@@ -69,7 +69,7 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, F
         case .gotSkipResponse(let statusResult):
             switch statusResult {
             case .success(let status):
-                state.status = status
+                break//handle in pathway reducer
             case .failure(let error):
                 state.skipToast = ToastState(mode: .alert,
                                              type: .error(.red),
@@ -88,7 +88,6 @@ public struct HTMLFormParentState: Equatable, Identifiable {
     
 	public init(formTemplateName: String,
 				formType: FormType,
-				stepStatus: StepStatus,
 				formEntryID: FilledFormData.ID?,
 				formTemplateId: HTMLForm.ID,
 				clientId: Client.ID,
@@ -99,7 +98,7 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 		self.type = formType
 		self.clientId = clientId
 		self.filledFormId = formEntryID
-		self.status = stepStatus
+		self.status = nil
 		self.getLoadingState = .initial
 		self.postLoadingState = .initial
 		self.saveFailureAlert = nil
@@ -112,7 +111,7 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 				type: FormType,
 				clientId: Client.ID,
 				filledFormId: FilledFormData.ID?,
-				status: StepStatus
+				status: FormStatus
 	) {
 		self.templateId = templateId
 		self.templateName = templateName
@@ -166,7 +165,7 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 	public var form: HTMLForm?
 	public var getLoadingState: LoadingState
 	public var postLoadingState: LoadingState
-	public var status: StepStatus
+	public var status: FormStatus?
 	public var saveFailureAlert: AlertState<HTMLFormAction>?
     public var pathwayIdStepId: PathwayIdStepId?
     public var skipToast: ToastState<HTMLFormAction>?
