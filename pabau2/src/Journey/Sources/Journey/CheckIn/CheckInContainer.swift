@@ -9,7 +9,7 @@ import SharedComponents
 public struct CheckInContainerState: Equatable {
 	public var loadingOrLoaded: CheckInLoadingOrLoadedState
 	var isAnimationFinished: Bool = false
-	let appointment: Appointment
+	public let appointment: Appointment
     var passcodeToClose: PasscodeState?
     
 	public init(loadedState: CheckInLoadedState) {
@@ -85,12 +85,7 @@ public let checkInContainerReducer: Reducer<CheckInContainerState, CheckInContai
 
 public let checkInLoadedReducer: Reducer<CheckInLoadedState, CheckInLoadedAction, JourneyEnvironment> = .combine(
 	
-	stepFormsReducer.pullback(
-		state: \CheckInLoadedState.patientStepStates,
-		action: /CheckInLoadedAction.patient..CheckInPatientAction.steps,
-		environment: { $0 }),
-	
-	checkInPatientReducer.pullback(
+	checkInPathwayReducer.pullback(
 		state: \CheckInLoadedState.patientCheckIn,
 		action: /CheckInLoadedAction.patient,
 		environment: { $0 }

@@ -9,4 +9,13 @@ extension EitherStringOrInt: CustomStringConvertible {
 			return String(int)
 		}
 	}
+    
+    public var integerValue: Int {
+        switch self {
+        case .left(let string):
+            return Int(string) ?? 0
+        case .right(let int):
+            return int
+        }
+    }
 }

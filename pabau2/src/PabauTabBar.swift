@@ -193,12 +193,22 @@ public let tabBarReducer: Reducer<
 				journeyAPI: $0.journeyAPI,
 				clientsAPI: $0.clientsAPI,
 				userDefaults: $0.userDefaults,
-				repository: $0.repository
-			)
-		}),
-
-	.init { state, action, env in
+                repository: $0.repository
+            )
+        }),
+    
+    Reducer<
+        TabBarState,
+        TabBarAction,
+        TabBarEnvironment
+    >.init { state, action, env in
 		switch action {
+        
+        case .checkIn(.loaded(.patient(.steps(.steps(let idx, let stepAction))))):
+            return updateAppointmentsStepsComplete(idx: idx, stepAction: stepAction, state: &state)
+        case .checkIn(.loaded(.doctor(.steps(.steps(let idx, let stepAction))))):
+            return updateAppointmentsStepsComplete(idx: idx, stepAction: stepAction, state: &state)
+            
 		case .delayStartPathway(let checkInState):
 			
 			var returnEffects: [Effect<TabBarAction, Never>] = [
@@ -413,4 +423,19 @@ extension TabBarState {
 		self.settings = SettingsState()
 		self.communication = CommunicationState()
 	}
+}
+
+fileprivate func updateAppointmentsStepsComplete(idx: Int, stepAction: StepAction, state: inout TabBarState) -> Effect<TabBarAction, Never> {
+    guard stepAction.isStepCompleteAction else { return .none }
+    if case .loaded(let loadedState) = state.checkIn?.loadingOrLoaded {
+        var app = loadedState.appointment
+        guard var pathwayInfo = app.pathways[id: loadedState.pathway.id] else { return .none }
+        let allStatuses = (loadedState.patientStepStates + loadedState.doctorStepStates).map(\.status)
+        let completeCount = allStatuses.filter { $0 == .complete }.count
+        pathwayInfo.stepsTotal = .right(allStatuses.count)
+        pathwayInfo.stepsComplete = .right(completeCount)
+        app.pathways[id: pathwayInfo.id] = pathwayInfo
+        state.calendar.replace(app: CalendarEvent.appointment(app))
+    }
+    return .none
 }

@@ -39,8 +39,8 @@ public struct PathwayInfo: Decodable, Equatable, Identifiable {
 	public var id: Pathway.ID { pathwayId }
 	public let pathwayTemplateId: PathwayTemplate.ID
 	public let pathwayId: Pathway.ID
-	public let stepsTotal: EitherStringOrInt
-	public let stepsComplete: EitherStringOrInt
+	public var stepsTotal: EitherStringOrInt
+	public var stepsComplete: EitherStringOrInt
 	
 	enum CodingKeys: String, CodingKey {
 		case pathwayTemplateId = "pathway_template_id"

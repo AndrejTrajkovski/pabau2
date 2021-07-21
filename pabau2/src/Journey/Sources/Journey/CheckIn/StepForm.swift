@@ -40,6 +40,17 @@ public enum StepState: Equatable, Identifiable {
 	case photos(PhotosState)
 	case aftercare(Aftercare)
 	case checkPatient(CheckPatient)
+    
+    public var status: StepStatus {
+        switch self {
+        case .htmlForm(let formState):
+            return formState.status
+        case .patientDetails(let pdState):
+            return pdState.stepStatus
+        default:
+            return .pending
+        }
+    }
 	
 	func info() -> StepFormInfo {
 		switch self {
@@ -63,7 +74,8 @@ public enum StepState: Equatable, Identifiable {
 			switch stepAndEntry.step.stepType {
 			case .patientdetails:
 				self = .patientDetails(PatientDetailsParentState(id: stepAndEntry.step.id,
-																 pathwayId: pathway.id))
+                                                                 pathwayId: pathway.id,
+                                                                 clientId: clientId))
 			case .aftercares:
 				self = .aftercare(Aftercare.mock(id: stepAndEntry.step.id))
 			case .checkpatient:
@@ -80,6 +92,19 @@ public enum StepState: Equatable, Identifiable {
 public enum StepAction: Equatable {
 	case patientDetails(PatientDetailsParentAction)
 	case htmlForm(HTMLFormStepContainerAction)
+    
+    public var isStepCompleteAction: Bool {
+        switch self {
+        case .patientDetails(.gotPOSTResponse(.success)):
+            return true
+        case .htmlForm(.multipleForms(.htmlForm(.gotPOSTResponse(.success)))):
+            return true
+        case .htmlForm(.singleForm(.gotPOSTResponse(.success))):
+            return true
+        default:
+            return false
+        }
+    }
 }
 
 struct StepForm: View {

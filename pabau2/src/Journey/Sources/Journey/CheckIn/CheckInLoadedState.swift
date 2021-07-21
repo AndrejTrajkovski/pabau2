@@ -11,16 +11,10 @@ public struct CheckInLoadedState: Equatable {
 	public let pathway: Pathway
 	public let pathwayTemplate: PathwayTemplate
 	
-	var patientStepStates: [StepState]
-	var doctorStepStates: [StepState]
-	
+    public var patientCheckIn: CheckInPathwayState
+    public var doctorCheckIn: CheckInPathwayState
+    
 	var isPatientComplete: StepStatus = .pending
-	
-	var selectedConsentsIds: [HTMLForm.ID]
-	var selectedTreatmentFormsIds: [HTMLForm.ID]
-	
-	var patientSelectedIndex: Int
-	var doctorSelectedIndex: Int
 	
     var passcodeForDoctorMode: PasscodeState?
 	var isDoctorCheckInMainActive: Bool = false
@@ -29,7 +23,7 @@ public struct CheckInLoadedState: Equatable {
 
 public enum CheckInLoadedAction: Equatable {
     case didTouchHandbackDevice
-    case patient(CheckInPatientAction)
+    case patient(CheckInPathwayAction)
     case doctor(CheckInDoctorAction)
     case passcodeForDoctorMode(PasscodeAction)
 }
@@ -42,16 +36,22 @@ extension CheckInLoadedState {
 		self.appointment = appointment
 		self.pathway = pathway
 		self.pathwayTemplate = template
-		self.patientStepStates = stepsAndEntries(pathway, template, .patient).map {
+		let patientStepStates = stepsAndEntries(pathway, template, .patient).map {
 			StepState.init(stepAndEntry: $0, clientId: appointment.customerId, pathway: pathway)
 		}
-		self.doctorStepStates = stepsAndEntries(pathway, pathwayTemplate, .doctor).map {
+        self.patientCheckIn = CheckInPathwayState(appointment: appointment,
+                                                  pathway: pathway,
+                                                  pathwayTemplate: pathwayTemplate,
+                                                  stepStates: patientStepStates,
+                                                  selectedIdx: 0)
+		let doctorStepStates = stepsAndEntries(pathway, pathwayTemplate, .doctor).map {
 			StepState.init(stepAndEntry: $0, clientId: appointment.customerId, pathway: pathway)
 		}
-		self.selectedConsentsIds = []
-		self.selectedTreatmentFormsIds = []
-		self.patientSelectedIndex = 0
-		self.doctorSelectedIndex = 0
+        self.doctorCheckIn = CheckInPathwayState(appointment: appointment,
+                                                 pathway: pathway,
+                                                 pathwayTemplate: pathwayTemplate,
+                                                 stepStates: doctorStepStates,
+                                                 selectedIdx: 0)
 	}
 }
 
@@ -63,43 +63,8 @@ extension CheckInLoadedState {
 	}
 }
 
-extension CheckInLoadedState {
-	
-	var doctorCheckIn: CheckInDoctorState {
-		get {
-			CheckInDoctorState(
-				appointment: self.appointment,
-				pathway: pathwayTemplate,
-				stepStates: self.doctorStepStates,
-				doctorSelectedIndex: self.doctorSelectedIndex
-			)
-		}
-		set {
-			self.doctorStepStates = newValue.stepStates
-			self.doctorSelectedIndex = newValue.doctorSelectedIndex
-		}
-	}
-	
-	public var patientCheckIn: CheckInPatientState {
-		get {
-			CheckInPatientState(
-				appointment: appointment,
-				pathway: pathway,
-				pathwayTemplate: pathwayTemplate,
-				stepStates: patientStepStates,
-				selectedIdx: patientSelectedIndex
-			)
-		}
-		
-		set {
-			self.patientStepStates = newValue.stepStates
-			self.patientSelectedIndex = newValue.selectedIdx
-		}
-	}
-}
-
 func toCheckInForms(stepsActions: [Effect<StepsActions, Never>]) -> [Effect<CheckInContainerAction, Never>] {
-    let pipeInits = pipe(CheckInPatientAction.steps,
+    let pipeInits = pipe(CheckInPathwayAction.steps,
                          CheckInLoadedAction.patient,
                          CheckInContainerAction.loaded)
     return stepsActions.map { $0.map(pipeInits) }
