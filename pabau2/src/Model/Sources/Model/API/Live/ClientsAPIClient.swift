@@ -16,6 +16,7 @@ extension APIClient {
 
         if let search = search {
             queryItems["name"] = search
+            queryItems["like_email"] = search
         }
 
         return requestBuilder.init(

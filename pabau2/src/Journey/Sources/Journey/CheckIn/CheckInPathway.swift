@@ -43,8 +43,8 @@ let checkInPathwayReducer: Reducer<CheckInPathwayState, CheckInPathwayAction, Jo
     .init { state, action, _ in
         switch action {
         case .steps(.steps(let idx, let stepsAction)):
-            if stepsAction.isStepCompleteAction {
-                
+            if stepsAction.isStepCompleteAction && state.selectedIdx < state.stepStates.count - 1 {
+                state.selectedIdx += 1
             }
         default:
             break
