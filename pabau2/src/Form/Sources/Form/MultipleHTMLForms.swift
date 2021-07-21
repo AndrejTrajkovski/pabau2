@@ -1,90 +1,59 @@
 import ComposableArchitecture
 import SwiftUI
 import Model
-
-public let multipleFormsReducer: Reducer<MultipleFormsState, MultipleFormsAction, FormEnvironment> = .combine(
-    .init {
-        state, action, env in
-        switch action {
-        
-        case .chooseForm(let id, _):
-            
-            let chosenTemplateInfo = state.possibleFormTemplates[id: id]!
-            let formState = HTMLFormParentState(formTemplateName: chosenTemplateInfo.name,
-                                                formType: chosenTemplateInfo.type,
-                                                stepStatus: .pending,
-                                                formEntryID: nil,
-                                                formTemplateId: chosenTemplateInfo.id,
-                                                clientId: state.clientId,
-                                                pathwayIdStepId: PathwayIdStepId(step_id: state.stepId,
-                                                                                 path_taken_id: state.pathwayId),
-                                                stepType: state.stepType
-            )
-            
-            state.chosenForm = formState
-            state.chosenForm!.getLoadingState = .loading
-            return env.formAPI.getForm(templateId: id,
-                                       entryId: nil)
-                .catchToEffect()
-                .map(HTMLFormAction.gotForm)
-                .map(MultipleFormsAction.htmlForm)
-                .receive(on: DispatchQueue.main)
-                .eraseToEffect()
-            
-        case .htmlForm(.gotPOSTResponse(.success(_))):
-            
-            state.status = .complete
-            
-            return .none
-            
-        case .htmlForm(.gotSkipResponse(.success(let status))):
-            
-            state.status = status
-            
-            return .none
-            
-        case .htmlForm:
-            
-            return .none
-            
-        case .cancelChoosingForm:
-            
-            state.isChoosingForm = false
-            
-            return .none
-        }
-    },
-    
-    htmlFormParentReducer.optional().pullback(
-        state: \.chosenForm,
-        action: /MultipleFormsAction.htmlForm,
-        environment: { $0 })
-)
-
-public struct MultipleFormsState: Equatable, Identifiable {
-    public var id: Step.ID { stepId }
-    var isChoosingForm: Bool
-    var chosenForm: HTMLFormParentState?
-    let stepId: Step.ID
-    let clientId: Client.ID
-    let pathwayId: Pathway.ID
-    var status: StepStatus
-    let possibleFormTemplates: IdentifiedArrayOf<FormTemplateInfo>
-    let stepType: StepType
-}
-
-public enum MultipleFormsAction: Equatable {
-    case htmlForm(HTMLFormAction)
-    case chooseForm(id: HTMLForm.ID, action: ChooseHTMLFormAction)
-    case cancelChoosingForm
-}
+import Util
 
 struct MultipleHTMLForms: View {
-    let store: Store<MultipleFormsState, MultipleFormsAction>
+    
+    let store: Store<HTMLFormStepContainerState, HTMLFormStepContainerAction>
     
     var body: some View {
-        //TODO
-        ChooseForm(store: store)
+        IfLetStore(store.scope(state: { $0.choosingForm }, action: { .choosingForm($0) }),
+                   then: ChooseForm.init(store:),
+                   else: {
+                    chosenForm
+                   }
+        )
+    }
+    
+    var chosenForm: some View {
+        IfLetStore(store.scope(state: { $0.chosenForm }, action: { .chosenForm($0)}),
+                   then: HTMLFormParent.init(store:),
+                   else: { ChooseFormButton.init(store: store.stateless) }
+        )
+    }
+}
+
+public enum ChoosingFormAction: Equatable {
+    case cancelChoosingForm
+    case chooseForm(id: HTMLForm.ID, action: ChooseHTMLFormAction)
+    case confirmChoice
+}
+
+struct ChooseFormButton: View {
+    let store: Store<Void, HTMLFormStepContainerAction>
+    
+    var body: some View {
+        WithViewStore(store) { viewStore in
+            PrimaryButton.init("Choose a different form.") {
+                viewStore.send(.switchToChoosingForm )
+            }
+        }
+    }
+}
+
+public struct ChoosingFormState: Equatable {
+    let possibleFormTemplates: IdentifiedArrayOf<FormTemplateInfo>
+    var tempChosenFormId: FormTemplateInfo.ID?
+    
+    var selectFormRows: IdentifiedArrayOf<SelectFormRowState> {
+        get {
+            let mapped = possibleFormTemplates.map { SelectFormRowState.init(isSelected: $0.id == tempChosenFormId , form: $0) }
+            return IdentifiedArrayOf<SelectFormRowState>.init(uniqueElements: mapped)
+        }
+        set {
+            self.tempChosenFormId = newValue.first(where: { $0.isSelected == true })?.id
+        }
     }
 }
 
@@ -93,32 +62,52 @@ public enum ChooseHTMLFormAction: Equatable {
 }
 
 struct ChooseForm: View {
-    let store: Store<MultipleFormsState, MultipleFormsAction>
+    let store: Store<ChoosingFormState, ChoosingFormAction>
     
     var body: some View {
         VStack {
             Text("The service booked relates to multiple forms. Please pick the one to use.")
             ScrollView {
                 LazyVStack {
-                    ForEachStore(store.scope(state: { $0.possibleFormTemplates },
-                                             action: MultipleFormsAction.chooseForm(id:action:)),
+                    ForEachStore(store.scope(state: { $0.selectFormRows },
+                                             action: ChoosingFormAction.chooseForm(id:action:)),
                                  content: SelectFormRow.init(store:))
                 }
+                ConfirmChoice(store: store.stateless)
             }
             Spacer()
         }
     }
 }
 
+struct ConfirmChoice: View {
+    let store: Store<Void, ChoosingFormAction>
+    var body: some View {
+        WithViewStore(store) { viewStore in
+            PrimaryButton.init("Select form") {
+                viewStore.send(.confirmChoice )
+            }
+        }
+    }
+}
+
+struct SelectFormRowState: Equatable, Identifiable {
+    var id: FormTemplateInfo.ID { form.id }
+    let isSelected: Bool
+    let form: FormTemplateInfo
+}
+
 struct SelectFormRow: View {
     
-    let store: Store<FormTemplateInfo, ChooseHTMLFormAction>
+    let store: Store<SelectFormRowState, ChooseHTMLFormAction>
     
     var body: some View {
         WithViewStore(store) { viewStore in
-            Text(viewStore.state.name).onTapGesture {
-                viewStore.send(.choose)
-            }
+            SelectRow(title: viewStore.state.form.name,
+                      isSelected: viewStore.state.isSelected)
+                .onTapGesture {
+                    viewStore.send(.choose)
+                }
         }
     }
 }

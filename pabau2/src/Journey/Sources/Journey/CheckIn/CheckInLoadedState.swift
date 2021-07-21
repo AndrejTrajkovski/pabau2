@@ -111,13 +111,7 @@ func getForm(stepAndEntry: StepAndStepEntry, formAPI: FormAPI, clientId: Client.
 		guard let templateId = stepAndEntry.entry?.htmlFormInfo?.chosenFormTemplateId else {
 			return nil
 		}
-        let pipeInits: (Result<HTMLForm, RequestError>) -> StepAction
-        
-        if stepAndEntry.entry!.htmlFormInfo!.possibleFormTemplates.count == 1 {
-            pipeInits = pipe(HTMLFormAction.gotForm, HTMLFormStepContainerAction.singleForm, StepAction.htmlForm)
-        } else {
-            pipeInits = pipe(HTMLFormAction.gotForm, MultipleFormsAction.htmlForm, HTMLFormStepContainerAction.multipleForms, StepAction.htmlForm)
-        }
+        let pipeInits: (Result<HTMLForm, RequestError>) -> StepAction = pipe(HTMLFormAction.gotForm, HTMLFormStepContainerAction.chosenForm, StepAction.htmlForm)
         
 		return formAPI.getForm(templateId: templateId, entryId: stepAndEntry.entry?.htmlFormInfo?.formEntryId)
 			.catchToEffect()

@@ -97,9 +97,7 @@ public enum StepAction: Equatable {
         switch self {
         case .patientDetails(.gotPOSTResponse(.success)):
             return true
-        case .htmlForm(.multipleForms(.htmlForm(.gotPOSTResponse(.success)))):
-            return true
-        case .htmlForm(.singleForm(.gotPOSTResponse(.success))):
+        case .htmlForm(.chosenForm(.gotPOSTResponse(.success))):
             return true
         default:
             return false

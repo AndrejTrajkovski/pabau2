@@ -3,66 +3,112 @@ import ComposableArchitecture
 import Model
 
 public let htmlFormStepContainerReducer: Reducer<HTMLFormStepContainerState, HTMLFormStepContainerAction, FormEnvironment> = .combine(
-    htmlFormParentReducer.pullback(
-        state: /HTMLFormStepContainerState.singleForm,
-        action: /HTMLFormStepContainerAction.singleForm,
+    
+    htmlFormParentReducer.optional().pullback(
+        state: \HTMLFormStepContainerState.chosenForm,
+        action: /HTMLFormStepContainerAction.chosenForm,
         environment: { $0 }),
-    multipleFormsReducer.pullback(
-        state: /HTMLFormStepContainerState.multipleForms,
-        action: /HTMLFormStepContainerAction.multipleForms,
-        environment: { $0 })
+    
+    .init { state, action, env in
+        switch action {
+        
+        case .choosingForm(.cancelChoosingForm):
+            
+            state.choosingForm = nil
+            return .none
+            
+        case .choosingForm(.chooseForm(id: let id, action: let action)):
+            
+            state.choosingForm?.tempChosenFormId = id
+            return .none
+            
+        case .choosingForm(.confirmChoice):
+            
+            guard let chosenId = state.choosingForm?.tempChosenFormId else { return .none }
+            
+            guard chosenId != state.chosenForm?.id else {
+                state.choosingForm = nil
+                return .none
+            }
+            
+            let chosenTemplateInfo = state.possibleFormTemplates[id: chosenId]!
+            let formState = HTMLFormParentState(formTemplateName: chosenTemplateInfo.name,
+                                                formType: chosenTemplateInfo.type,
+                                                stepStatus: .pending,
+                                                formEntryID: nil,
+                                                formTemplateId: chosenTemplateInfo.id,
+                                                clientId: state.clientId,
+                                                pathwayIdStepId: PathwayIdStepId(step_id: state.stepId,
+                                                                                 path_taken_id: state.pathwayId),
+                                                stepType: state.stepType
+            )
+            
+            state.chosenForm = formState
+            state.chosenForm!.getLoadingState = .loading
+            state.choosingForm = nil
+            return env.formAPI.getForm(templateId: chosenId,
+                                       entryId: nil)
+                .catchToEffect()
+                .map(HTMLFormAction.gotForm)
+                .map(HTMLFormStepContainerAction.chosenForm)
+                .receive(on: DispatchQueue.main)
+                .eraseToEffect()
+            
+        case .chosenForm(.gotPOSTResponse(.success(_))):
+            
+            state.status = .complete
+            return .none
+            
+        case .chosenForm(.gotSkipResponse(.success(let status))):
+            
+            state.status = status
+            return .none
+            
+        case .chosenForm:
+            
+            return .none
+            
+        case .switchToChoosingForm:
+            
+            state.choosingForm = ChoosingFormState(possibleFormTemplates: state.possibleFormTemplates,
+                                                   tempChosenFormId: state.chosenForm?.id)
+            return .none
+        }
+    }
 )
 
 //Maybe refactor to struct with status, stepType, pathwayId as shared properties
-public enum HTMLFormStepContainerState: Equatable, Identifiable {
+public struct HTMLFormStepContainerState: Equatable, Identifiable {
     
-    public var status: StepStatus {
-        switch self {
-        case .noForms(let noForms):
-            return noForms.status
-        case .singleForm(let singleForm):
-            return singleForm.status
-        case .multipleForms(let mforms):
-            return mforms.status
-        }
-    }
-    
-    public var stepType: StepType {
-        switch self {
-        case .noForms(let noForms):
-            return noForms.stepType
-        case .singleForm(let singleForm):
-            return singleForm.stepType!
-        case .multipleForms(let mforms):
-            return mforms.stepType
-        }
-    }
-    
-    public var id: Step.ID {
-        switch self {
-        case .noForms(let noForms):
-            return noForms.id
-        case .singleForm(let singleForm):
-            return singleForm.pathwayIdStepId!.step_id
-        case .multipleForms(let mforms):
-            return mforms.id
-        }
-    }
-    
-    case noForms(NoHTMLFormsState)
-    case singleForm(HTMLFormParentState)
-    case multipleForms(MultipleFormsState)
+    public var id: Step.ID { stepId }
+    var choosingForm: ChoosingFormState?
+    var chosenForm: HTMLFormParentState?
+    let stepId: Step.ID
+    let clientId: Client.ID
+    let pathwayId: Pathway.ID
+    public var status: StepStatus
+    let possibleFormTemplates: IdentifiedArrayOf<FormTemplateInfo>
+    public let stepType: StepType
     
     public init(stepId: Step.ID, stepEntry: StepEntry, clientId: Client.ID, pathwayId: Pathway.ID) {
         
         let htmlInfo = stepEntry.htmlFormInfo!
         
+        self.stepId = stepId
+        self.clientId = clientId
+        self.pathwayId = pathwayId
+        self.status = stepEntry.status
+        self.possibleFormTemplates = htmlInfo.possibleFormTemplates
+        self.stepType = stepEntry.stepType
+        
         switch htmlInfo.possibleFormTemplates.count {
         case 0, Int.min...(-1):
-            self = .noForms(NoHTMLFormsState(status: stepEntry.status, stepId: stepId, pathwayId: pathwayId, stepType: stepEntry.stepType))
+            self.choosingForm = nil
+            self.chosenForm = nil
         case 1:
+            self.choosingForm = nil
             let chosenFormInfo = htmlInfo.possibleFormTemplates.first!
-            let htmlStepState = HTMLFormParentState(formTemplateName: chosenFormInfo.name,
+            self.chosenForm = HTMLFormParentState(formTemplateName: chosenFormInfo.name,
                                                     formType: chosenFormInfo.type,
                                                     stepStatus: stepEntry.status,
                                                     formEntryID: htmlInfo.formEntryId,
@@ -71,12 +117,11 @@ public enum HTMLFormStepContainerState: Equatable, Identifiable {
                                                     pathwayIdStepId: PathwayIdStepId(step_id: stepId,
                                                                                      path_taken_id: pathwayId),
                                                     stepType: stepEntry.stepType)
-            self = .singleForm(htmlStepState)
         case 2...Int.max:
-            let chosenFormState: HTMLFormParentState?
+            self.choosingForm = nil
             if let chosenFormTemplateId = htmlInfo.chosenFormTemplateId {
                 let chosenFormInfo = htmlInfo.possibleFormTemplates[id: chosenFormTemplateId]!
-                chosenFormState = HTMLFormParentState(formTemplateName: chosenFormInfo.name,
+                self.chosenForm = HTMLFormParentState(formTemplateName: chosenFormInfo.name,
                                                       formType: chosenFormInfo.type,
                                                       stepStatus: stepEntry.status,
                                                       formEntryID: htmlInfo.formEntryId,
@@ -86,18 +131,10 @@ public enum HTMLFormStepContainerState: Equatable, Identifiable {
                                                                                        path_taken_id: pathwayId),
                                                       stepType: stepEntry.stepType)
             } else {
-                chosenFormState = nil
+                self.choosingForm = ChoosingFormState(possibleFormTemplates: htmlInfo.possibleFormTemplates,
+                                                      tempChosenFormId: nil)
+                self.chosenForm = nil
             }
-                
-            let multipleFormsState = MultipleFormsState(isChoosingForm: false,
-                                                        chosenForm: chosenFormState,
-                                                        stepId: stepId,
-                                                        clientId: clientId,
-                                                        pathwayId: pathwayId,
-                                                        status: stepEntry.status,
-                                                        possibleFormTemplates: htmlInfo.possibleFormTemplates,
-                                                        stepType: stepEntry.stepType)
-            self = .multipleForms(multipleFormsState)
         default:
             fatalError()
         }
@@ -105,25 +142,47 @@ public enum HTMLFormStepContainerState: Equatable, Identifiable {
 }
 
 public enum HTMLFormStepContainerAction: Equatable {
-	case multipleForms(MultipleFormsAction)
-    case singleForm(HTMLFormAction)
-    case noForms(Never)
+    case switchToChoosingForm
+    case chosenForm(HTMLFormAction)
+    case choosingForm(ChoosingFormAction)
 }
 
 public struct HTMLFormStepContainer: View {
 	
 	public init(store: Store<HTMLFormStepContainerState, HTMLFormStepContainerAction>) {
 		self.store = store
+        self.viewStore = ViewStore(store.scope(state: State.init(state:)))
 	}
 	
 	let store: Store<HTMLFormStepContainerState, HTMLFormStepContainerAction>
+    @ObservedObject var viewStore: ViewStore<State, HTMLFormStepContainerAction>
     
-	public var body: some View {
-        SwitchStore(store) {
-            CaseLet(state: /HTMLFormStepContainerState.noForms, action: HTMLFormStepContainerAction.noForms,
-                    then: NoForm.init(store:))
-            CaseLet(state: /HTMLFormStepContainerState.singleForm, action: HTMLFormStepContainerAction.singleForm, then: HTMLFormParent.init(store:))
-            CaseLet(state: /HTMLFormStepContainerState.multipleForms, action: HTMLFormStepContainerAction.multipleForms, then: MultipleHTMLForms.init(store:))
+    enum State: Equatable {
+        case noForm
+        case singleForm
+        case multipleForms
+        init(state: HTMLFormStepContainerState) {
+            switch state.possibleFormTemplates.count {
+            case 0, Int.min...(-1):
+                self = .noForm
+            case 1:
+                self = .singleForm
+            case 2...Int.max:
+                self = .multipleForms
+            default:
+                self = .multipleForms
+            }
+        }
+    }
+    
+    public var body: some View {
+        switch viewStore.state {
+        case .noForm:
+            NoForm()
+        case .singleForm:
+            HTMLFormParent.init(store: store.scope(state: { $0.chosenForm! }, action: { .chosenForm($0) }))
+        case .multipleForms:
+            MultipleHTMLForms.init(store: store)
         }
 	}
 }
