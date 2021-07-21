@@ -4,7 +4,7 @@ import Model
 import SharedComponents
 
 let inputTextFieldReducer: Reducer<InputText, InputTextAction, FormEnvironment> = .combine(
-	textFieldReducer.pullback(
+    textFieldReducer.optional().pullback(
 		state: /InputText.justText,
 		action: /InputTextAction.justText,
 		environment: { $0 }),
