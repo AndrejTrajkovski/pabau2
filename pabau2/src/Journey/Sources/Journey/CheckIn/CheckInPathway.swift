@@ -57,7 +57,7 @@ public struct CheckInPathwayState: Equatable {
     let appointment: Appointment
     let pathway: Pathway
     let pathwayTemplate: PathwayTemplate
-    var stepStates: [StepState]
+    public var stepStates: [StepState]
     var selectedIdx: Int
 }
 

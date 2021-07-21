@@ -430,7 +430,7 @@ fileprivate func updateAppointmentsStepsComplete(idx: Int, stepAction: StepActio
     if case .loaded(let loadedState) = state.checkIn?.loadingOrLoaded {
         var app = loadedState.appointment
         guard var pathwayInfo = app.pathways[id: loadedState.pathway.id] else { return .none }
-        let allStatuses = (loadedState.patientStepStates + loadedState.doctorStepStates).map(\.status)
+        let allStatuses = (loadedState.patientCheckIn.stepStates + loadedState.doctorCheckIn.stepStates).map(\.status)
         let completeCount = allStatuses.filter { $0 == .complete }.count
         pathwayInfo.stepsTotal = .right(allStatuses.count)
         pathwayInfo.stepsComplete = .right(completeCount)
