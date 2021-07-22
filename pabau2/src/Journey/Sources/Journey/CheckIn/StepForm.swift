@@ -68,7 +68,8 @@ public enum StepState: Equatable, Identifiable {
 			let htmlFormState = HTMLFormStepContainerState(stepId: stepAndEntry.step.id,
 														   stepEntry: stepAndEntry.entry!,
 														   clientId: clientId,
-														   pathwayId: pathway.id)
+                                                           pathwayId: pathway.id,
+                                                           canSkip: stepAndEntry.step.canSkip)
 			self = .htmlForm(htmlFormState)
 		} else {
 			switch stepAndEntry.step.stepType {
@@ -94,6 +95,17 @@ public enum StepState: Equatable, Identifiable {
 public enum StepAction: Equatable {
 	case patientDetails(PatientDetailsParentAction)
 	case htmlForm(HTMLFormStepContainerAction)
+    
+    public var isStepSkipAction: Bool {
+        switch self {
+        case .patientDetails(.gotSkipResponse(.success)):
+            return true
+        case .htmlForm(.chosenForm(.gotSkipResponse(.success))):
+            return true
+        default:
+            return false
+        }
+    }
     
     public var isStepCompleteAction: Bool {
         switch self {

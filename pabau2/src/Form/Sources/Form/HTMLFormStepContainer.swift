@@ -76,7 +76,6 @@ public let htmlFormStepContainerReducer: Reducer<HTMLFormStepContainerState, HTM
     }
 )
 
-//Maybe refactor to struct with status, stepType, pathwayId as shared properties
 public struct HTMLFormStepContainerState: Equatable, Identifiable {
     
     public var id: Step.ID { stepId }
@@ -88,8 +87,9 @@ public struct HTMLFormStepContainerState: Equatable, Identifiable {
     public var status: StepStatus
     let possibleFormTemplates: IdentifiedArrayOf<FormTemplateInfo>
     public let stepType: StepType
+    public let canSkip: Bool
     
-    public init(stepId: Step.ID, stepEntry: StepEntry, clientId: Client.ID, pathwayId: Pathway.ID) {
+    public init(stepId: Step.ID, stepEntry: StepEntry, clientId: Client.ID, pathwayId: Pathway.ID, canSkip: Bool) {
         
         let htmlInfo = stepEntry.htmlFormInfo!
         
@@ -99,7 +99,7 @@ public struct HTMLFormStepContainerState: Equatable, Identifiable {
         self.status = stepEntry.status
         self.possibleFormTemplates = htmlInfo.possibleFormTemplates
         self.stepType = stepEntry.stepType
-        
+        self.canSkip = canSkip
         switch htmlInfo.possibleFormTemplates.count {
         case 0, Int.min...(-1):
             self.choosingForm = nil
@@ -177,7 +177,8 @@ public struct HTMLFormStepContainer: View {
         case .noForm:
             NoForm()
         case .singleForm:
-            HTMLFormParent.init(store: store.scope(state: { $0.chosenForm! }, action: { .chosenForm($0) }))
+            HTMLFormPathway(store: store)
+//            HTMLFormParent.init(store: store.scope(state: { $0.chosenForm! }, action: { .chosenForm($0) }))
         case .multipleForms:
             MultipleHTMLForms.init(store: store)
         }

@@ -33,7 +33,8 @@ struct CheckPatientForm: View {
                             reducer: Reducer.empty,
                             environment: { }
                         ),
-                        isCheckingDetails: true
+                        isCheckingDetails: true,
+                        footer: { Optional<EmptyView>.none }
                     )
                 }
             }.disabled(true)

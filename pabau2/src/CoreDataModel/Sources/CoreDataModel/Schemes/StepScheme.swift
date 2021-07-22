@@ -13,4 +13,7 @@ public class StepScheme: CoreStoreObject {
     
     @Field.Stored("form_template_id")
     public var formTemplateID: String = ""
+    
+    @Field.Stored("canSkip")
+    public var canSkip: Bool = true
 }

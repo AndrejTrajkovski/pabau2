@@ -32,7 +32,8 @@ extension PathwayTemplate {
                         stepType: StepType(rawValue: stepSheme.stepType) ?? .photos,
                         preselectedTemplate: stepSheme.formTemplateID == "0" ?
                             .definedbyservice :
-							.template(HTMLForm.ID(rawValue: .left(stepSheme.formTemplateID))))
+                            .template(HTMLForm.ID(rawValue: .left(stepSheme.formTemplateID))),
+                        canSkip: stepSheme.canSkip)
                 },
                 _description: sheme.descript
             )

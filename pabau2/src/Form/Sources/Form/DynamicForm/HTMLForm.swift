@@ -3,16 +3,19 @@ import SwiftUI
 import ComposableArchitecture
 import Util
 
-public struct HTMLFormView: View {
+public struct HTMLFormView<Footer: View>: View {
 
 	let isCheckingDetails: Bool
 	let store: Store<HTMLForm, HTMLRowsAction>
+    let footer: () -> Footer?
 	public init(store: Store<HTMLForm, HTMLRowsAction>,
-				isCheckingDetails: Bool = false) {
+				isCheckingDetails: Bool = false,
+                @ViewBuilder footer: @escaping () -> Footer?) {
 		self.store = store
 		self.isCheckingDetails = isCheckingDetails
 		UITableViewHeaderFooterView.appearance().tintColor = UIColor.white
 		UITableView.appearance().separatorStyle = .none
+        self.footer = footer
 	}
 
 	public var body: some View {
@@ -29,9 +32,7 @@ public struct HTMLFormView: View {
 					)
 				}
 			}
-			CompleteButton(store: store.scope(state: { $0 },
-											  action: { .complete($0) })
-			)
+			footer()
 		}
 	}
 }

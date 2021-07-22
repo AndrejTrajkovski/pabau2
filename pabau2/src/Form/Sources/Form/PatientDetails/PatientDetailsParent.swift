@@ -51,6 +51,27 @@ public let patientDetailsParentReducer: Reducer<PatientDetailsParentState, Patie
 				.eraseToEffect()
         case .dismissToast:
             state.saveToastAlert = nil
+        case .skipStep(_):
+            state.skipStepState = .loading
+            let pathwayStep = PathwayIdStepId(step_id: state.stepId, path_taken_id: state.pathwayId)
+            return env.formAPI.skipStep(pathwayStep)
+                .catchToEffect()
+                .receive(on: DispatchQueue.main)
+                .map(PatientDetailsParentAction.gotSkipResponse)
+                .eraseToEffect()
+        case .gotSkipResponse(let skipResult):
+            switch skipResult {
+            case .success:
+                state.skipStepState = .gotSuccess
+                state.stepStatus = .skipped
+            case .failure(let error):
+                state.skipStepState = .gotError(error)
+                state.saveToastAlert = ToastState<PatientDetailsParentAction>(mode: .alert,
+                                                                              type: .error(.red),
+                                                                              title: "Failed to skip step.")
+                return Effect.timer(id: ToastTimerId(), every: 1.0, on: DispatchQueue.main)
+                    .map { _ in PatientDetailsParentAction.dismissToast }
+            }
         }
 		return .none
 	}
@@ -75,6 +96,7 @@ public struct PatientDetailsParentState: Equatable, Identifiable {
 	var patientDetails: ClientBuilder?
 	var loadingState: LoadingState = .initial
     var savingState: LoadingState = .initial
+    var skipStepState: LoadingState = .initial
 	public var stepStatus: StepStatus
     var saveToastAlert: ToastState<PatientDetailsParentAction>?
 }
@@ -86,6 +108,8 @@ public enum PatientDetailsParentAction: Equatable {
 	case errorView(ErrorViewAction)
 	case complete(CompleteBtnAction)
     case dismissToast
+    case skipStep(SkipStepAction)
+    case gotSkipResponse(Result<StepStatus, RequestError>)
 }
 
 public struct PatientDetailsParent: View {

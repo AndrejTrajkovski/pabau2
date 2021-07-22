@@ -174,7 +174,7 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 
 public enum HTMLFormAction: Equatable {
     case gotSkipResponse(Result<StepStatus, RequestError>)
-    case skipStep
+    case skipStep(SkipStepAction)
 	case gotPOSTResponse(Result<FilledFormData.ID, RequestError>)
 	case gotForm(Result<HTMLForm, RequestError>)
 	case getFormError(ErrorViewAction)
@@ -184,9 +184,11 @@ public enum HTMLFormAction: Equatable {
 }
 
 public struct HTMLFormParent: View {
-	public init(store: Store<HTMLFormParentState, HTMLFormAction>) {
+	public init(store: Store<HTMLFormParentState, HTMLFormAction>,
+                @ViewBuilder skipButton: @escaping () -> SkipButton?) {
 		self.store = store
 		self.viewStore = ViewStore(store.scope(state: State.init(state:)))
+        self.skipButton = skipButton
 	}
 	
 	enum State: Equatable {
@@ -211,7 +213,8 @@ public struct HTMLFormParent: View {
 	
 	let store: Store<HTMLFormParentState, HTMLFormAction>
 	@ObservedObject var viewStore: ViewStore<State, HTMLFormAction>
-	
+    let skipButton: () -> SkipButton?
+    
     public var body: some View {
         Group {
             switch viewStore.state {
@@ -221,7 +224,9 @@ public struct HTMLFormParent: View {
                 LoadingView.init(title: "Saving", bindingIsShowing: .constant(true), content: { Spacer() })
             case .loaded:
                 IfLetStore(store.scope(state: { $0.form }, action: { .rows($0) }),
-                           then: { HTMLFormView(store: $0, isCheckingDetails: false) },
+                           then: { HTMLFormView(store: $0,
+                                                isCheckingDetails: false,
+                                                footer: footer) },
                            else: IfLetErrorView(store: store.scope(state: { $0.getLoadingState },
                                                                    action: { .getFormError($0) }))
                 ).alert(store.scope(state: \.saveFailureAlert), dismiss: HTMLFormAction.saveAlertCanceled)
@@ -230,4 +235,19 @@ public struct HTMLFormParent: View {
             }
         }.toast(store: store.scope(state: { $0.skipToast }))
 	}
+        
+    func footer() -> some View {
+        HStack {
+            if let skipButton = skipButton() {
+                skipButton
+            }
+            completeButton()
+        }
+    }
+    
+    func completeButton() -> some View {
+        CompleteButton(store: store.scope(state: { $0.form! },
+                                          action: { .rows(.complete($0)) })
+        )
+    }
 }

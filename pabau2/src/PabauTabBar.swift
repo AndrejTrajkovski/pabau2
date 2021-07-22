@@ -426,12 +426,12 @@ extension TabBarState {
 }
 
 fileprivate func updateAppointmentsStepsComplete(idx: Int, stepAction: StepAction, state: inout TabBarState) -> Effect<TabBarAction, Never> {
-    guard stepAction.isStepCompleteAction else { return .none }
+    guard stepAction.isStepCompleteAction || stepAction.isStepCompleteAction else { return .none }
     if case .loaded(let loadedState) = state.checkIn?.loadingOrLoaded {
         var app = loadedState.appointment
         guard var pathwayInfo = app.pathways[id: loadedState.pathway.id] else { return .none }
         let allStatuses = (loadedState.patientCheckIn.stepStates + loadedState.doctorCheckIn.stepStates).map(\.status)
-        let completeCount = allStatuses.filter { $0 == .completed }.count
+        let completeCount = allStatuses.filter { $0 == .completed || $0 == .skipped }.count
         pathwayInfo.stepsTotal = .right(allStatuses.count)
         pathwayInfo.stepsComplete = .right(completeCount)
         app.pathways[id: pathwayInfo.id] = pathwayInfo

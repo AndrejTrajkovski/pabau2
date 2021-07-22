@@ -44,4 +44,19 @@ struct PrimaryButtonStyle: ButtonStyle {
 			.background(Color.blue2.opacity(isDisabled ? 0.3 : 1.0))
 	}
 }
+
+public struct SkipButtonStyle: ButtonStyle {
+    public init(isDisabled: Bool) {
+        self.isDisabled = isDisabled
+    }
+    
+    var isDisabled: Bool
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .padding()
+            .foregroundColor(Color.white)
+            .background(Color.yellow.opacity(isDisabled ? 0.3 : 1.0))
+    }
+}
+
 #endif

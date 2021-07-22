@@ -115,7 +115,7 @@ struct FormsContainer: View {
 					 content: {
 						ForEachStore(store.scope(state: { $0.formsCollection },
 												 action: FormsContainerAction.forms(id: action:)),
-									 content: HTMLFormParent.init(store:)
+                                     content: { HTMLFormParent.init(store:$0, skipButton: { Optional<SkipButton>.none }) }
 						).padding([.leading, .trailing], 32)
 					 }
 		)
