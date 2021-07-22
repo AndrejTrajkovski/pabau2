@@ -4,7 +4,7 @@ import Combine
 public extension APIClient {
 	
     func skipStep(_ pathwayStep: PathwayIdStepId) -> Effect<StepStatus, RequestError> {
-        Just(StepStatus.skipped).setFailureType(to: RequestError.self).eraseToEffect()
+        Just(StepStatus.skipped).setFailureType(to: RequestErrpor.self).eraseToEffect()
     }
     
 	func save(form: HTMLForm, clientId: Client.ID, pathwayStep: PathwayIdStepId?) -> Effect<FilledFormData.ID, RequestError> {
