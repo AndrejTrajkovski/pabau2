@@ -73,7 +73,7 @@ struct StepSelector: View {
 
 	fileprivate func color(status: StepStatus) -> Color {
 		switch status {
-		case .complete:
+		case .completed:
 			return Color.blue
 		case .pending:
 			return Color(hex: "C7C7CC")

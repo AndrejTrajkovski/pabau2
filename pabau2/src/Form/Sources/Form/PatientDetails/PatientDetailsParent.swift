@@ -24,7 +24,7 @@ public let patientDetailsParentReducer: Reducer<PatientDetailsParentState, Patie
             switch result {
             case .success:
                 state.savingState = .gotSuccess
-                state.stepStatus = .complete
+                state.stepStatus = .completed
             case .failure(let error):
                 state.saveToastAlert = ToastState<PatientDetailsParentAction>(mode: .alert,
                                                                               type: .error(.red),
@@ -60,10 +60,12 @@ public struct PatientDetailsParentState: Equatable, Identifiable {
 	
 	public init (id: Step.ID,
 				 pathwayId: Pathway.ID,
-                 clientId: Client.ID) {
+                 clientId: Client.ID,
+                 status: StepStatus) {
 		self.stepId = id
 		self.pathwayId = pathwayId
         self.clientId = clientId
+        self.stepStatus = status
 	}
 	
 	public var id: Step.ID { stepId }
@@ -73,7 +75,7 @@ public struct PatientDetailsParentState: Equatable, Identifiable {
 	var patientDetails: ClientBuilder?
 	var loadingState: LoadingState = .initial
     var savingState: LoadingState = .initial
-	public var stepStatus: StepStatus = .pending
+	public var stepStatus: StepStatus
     var saveToastAlert: ToastState<PatientDetailsParentAction>?
 }
 

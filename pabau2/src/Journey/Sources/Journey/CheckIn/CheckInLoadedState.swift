@@ -58,8 +58,8 @@ extension CheckInLoadedState {
 extension CheckInLoadedState {
 	
 	var isHandBackDeviceActive: Bool {
-		get { isPatientComplete == .complete }
-		set { isPatientComplete = newValue ? .complete : .pending }
+		get { isPatientComplete == .completed }
+		set { isPatientComplete = newValue ? .completed : .pending }
 	}
 }
 

@@ -6,7 +6,7 @@ import Model
 public let patientCompleteReducer = Reducer<StepStatus, PatientCompleteAction, FormEnvironment> { state, action, _ in
 	switch action {
 	case .didTouchComplete:
-		state = .complete
+		state = .completed
 	}
 	return .none
 }

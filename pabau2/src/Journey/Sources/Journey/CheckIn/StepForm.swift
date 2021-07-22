@@ -75,7 +75,9 @@ public enum StepState: Equatable, Identifiable {
 			case .patientdetails:
 				self = .patientDetails(PatientDetailsParentState(id: stepAndEntry.step.id,
                                                                  pathwayId: pathway.id,
-                                                                 clientId: clientId))
+                                                                 clientId: clientId,
+                                                                 status: stepAndEntry.entry?.status ?? .pending)
+                )
 			case .aftercares:
 				self = .aftercare(Aftercare.mock(id: stepAndEntry.step.id))
 			case .checkpatient:
