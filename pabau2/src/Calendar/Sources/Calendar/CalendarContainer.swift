@@ -175,6 +175,19 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
             case .failure:
                 break
             }
+        case .appDetails(.onResponseChangeCancelReason(let response)):
+            switch response {
+            case .success(let appointmentID):
+                let activeEvents = state.appointments.flatten().filter { $0.id != appointmentID }                
+                state.appointments.refresh(
+                    events: activeEvents,
+                    locationsIds: state.chosenLocationsIds,
+                    employees: state.selectedEmployeesIds(),
+                    rooms: state.selectedRoomsIds()
+                )
+            default:
+                break
+            }
 		case .onAppDetailsDismiss:
 			state.appDetails = nil
 			return .cancel(id: ToastTimerId())

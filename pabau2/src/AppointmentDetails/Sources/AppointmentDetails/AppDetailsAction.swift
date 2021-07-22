@@ -13,8 +13,8 @@ public enum AppDetailsAction {
 	case close
 	case downloadStatusesResponse(Result<[AppointmentStatus], RequestError>)
     case onDownloadCancelReasons(Result<[CancelReason], RequestError>)
-    case onResponseChangeCancelReason(Result<Bool, RequestError>)
-	case onResponseChangeAppointment(Result<Bool, RequestError>)
+    case onResponseChangeCancelReason(Result<CalendarEvent.Id, RequestError>)
+	case onResponseChangeAppointment(Result<VoidAPIResponse, RequestError>)
 	case onResponseCreateReccuringAppointment(Result<Bool, RequestError>)
     case onResponseRescheduleAppointment(Result<CalendarEvent.Id, RequestError>)
 	case dismissToast

@@ -65,9 +65,17 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 				switch single {
 				case .action(let id, let action):
 					let cancelReason = state.cancelReasons[id: id]
+                    let appID = state.app.id
 					return env.clientsAPI.appointmentChangeCancelReason(appointmentId: state.app.id, reason: "\(String(describing: cancelReason))")
 						.catchToEffect()
-                        .map { response in AppDetailsAction.onResponseChangeAppointment(response) }
+                        .map { response in
+                            let newResponse: Result<Appointment.ID, RequestError>
+                            switch response {
+                            case .success(_): newResponse = .success(appID)
+                            case .failure(let error): newResponse = .failure(error)
+                            }
+                            return AppDetailsAction.onResponseChangeCancelReason(newResponse)
+                        }
 						.eraseToEffect()
 					
 				}
