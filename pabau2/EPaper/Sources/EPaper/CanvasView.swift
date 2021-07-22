@@ -7,7 +7,7 @@ public struct CanvasEnvironment {
     public init() {}
 }
 
-let canvasStateReducer = Reducer<CanvasViewState, PhotoAndCanvasAction, CanvasEnvironment>.init { state, action, env in
+let canvasStateReducer = Reducer<CanvasViewState, PhotoAndCanvasAction, CanvasEnvironment>.init { state, action, _ in
     switch action {
     case .onDrawingChange(let drawing):
         state.canvasDrawingState.canvasView.drawing = drawing

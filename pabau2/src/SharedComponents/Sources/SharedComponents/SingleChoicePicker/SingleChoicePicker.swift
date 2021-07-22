@@ -54,7 +54,7 @@ public struct SingleChoiceReducer<T: SingleChoiceElement> {
 	public let reducer: Reducer<SingleChoiceState<T>, SingleChoiceActions<T>, Any> =
 		.combine(
 			.init {
-				state, action, env in
+				state, action, _ in
 				switch action {
 				case .action(let id, action: let singleItemAction):
 					switch singleItemAction {

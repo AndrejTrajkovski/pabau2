@@ -56,7 +56,7 @@ let chooseClientsReducer =
                     break
                 }
 
-                state.clients = (state.clients + .init(clients))
+                state.clients = IdentifiedArray(uniqueElements: state.clients + clients)
                 state.notFoundClients = state.clients.isEmpty
             case .failure:
                 break

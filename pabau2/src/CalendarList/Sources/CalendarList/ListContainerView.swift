@@ -17,7 +17,7 @@ public typealias ListCalendarEnvironment = (
 
 public let listCalendarReducer: Reducer<ListState, ListAction, ListCalendarEnvironment> =
 	.combine (
-		.init { state, action, environment in
+		.init { state, action, _ in
 
 			switch action {
 			

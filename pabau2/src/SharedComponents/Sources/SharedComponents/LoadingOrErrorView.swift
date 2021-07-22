@@ -13,7 +13,11 @@ public struct IfLetErrorView: View {
 	
 	public var body: some View {
 		IfLetStore(store.scope(state: { state in
-			extract(case: LoadingState.gotError, from: state)
+            if case .gotError(let error) = state {
+                return error as? RequestError
+            } else {
+                return nil
+            }
 		}),
 			then: ErrorRetry.init(store:)
 		)
@@ -24,9 +28,14 @@ public enum ErrorViewAction {
 	case retry
 }
 
-struct ErrorRetry: View {
+public struct ErrorRetry: View {
+	
+	public init(store: Store<RequestError, ErrorViewAction>) {
+		self.store = store
+	}
+	
 	let store: Store<RequestError, ErrorViewAction>
-	var body: some View {
+	public var body: some View {
 		WithViewStore(store) { viewStore in
 			VStack {
 				PlainError(store: store.actionless)

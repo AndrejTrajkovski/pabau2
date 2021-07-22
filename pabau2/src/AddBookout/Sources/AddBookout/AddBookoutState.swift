@@ -20,10 +20,10 @@ public struct AddBookoutState: Equatable {
 
 	var showsLoadingSpinner: Bool = false
 
-	var employeeValidator: String? = nil
-	var dayValidator: String? = nil
-	var timeValidator: String? = nil
-	var durationValidator: String? = nil
+	var employeeValidator: String?
+	var dayValidator: String?
+	var timeValidator: String?
+	var durationValidator: String?
 
 	var appointmentsBody: AppointmentBuilder {
 		return AppointmentBuilder(

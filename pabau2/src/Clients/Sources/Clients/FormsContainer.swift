@@ -12,14 +12,6 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 		environment: { $0 }
 	),
 	.init { state, action, env in
-		
-		func getForm(_ templateId: HTMLForm.ID, _ formAPI: FormAPI) -> Effect<FormsContainerAction, Never> {
-			return formAPI.getForm(templateId: templateId, entryId: nil)
-				.catchToEffect()
-				.receive(on: DispatchQueue.main)
-				.map { FormsContainerAction.forms(id: templateId, action: .gotForm($0))}
-				.eraseToEffect()
-		}
 
 	switch action {
 
@@ -30,7 +22,9 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 			state.isFillingFormsActive = true
 			return .concatenate (
 				state.formsCollection.map { htmlFormParentState in
-					htmlFormParentState.getForm(formAPI: env.formAPI)
+					env.formAPI.getForm(templateId: htmlFormParentState.templateId, entryId: nil)
+						.catchToEffect()
+						.map(HTMLFormAction.gotForm)
 						.map { FormsContainerAction.forms(id: htmlFormParentState.templateId, action: $0)}
 						.receive(on: DispatchQueue.main)
 						.eraseToEffect()

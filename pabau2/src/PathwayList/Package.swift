@@ -9,7 +9,7 @@ let package = Package(
     products: [
         .library(
             name: "PathwayList",
-            targets: ["PathwayList"]),
+            targets: ["PathwayList"])
     ],
     dependencies: [
 		.package(url: "../Model", from: Version("1.0.0")),
@@ -24,6 +24,6 @@ let package = Package(
 						   "SharedComponents"]),
         .testTarget(
             name: "PathwayListTests",
-            dependencies: ["PathwayList"]),
+            dependencies: ["PathwayList"])
     ]
 )

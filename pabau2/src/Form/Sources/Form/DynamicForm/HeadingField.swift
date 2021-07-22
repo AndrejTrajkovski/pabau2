@@ -5,18 +5,18 @@ import Model
 struct AttributedOrTextField: View {
 	let store: Store<AttributedOrText, Never>
 	var body: some View {
-		IfLetStore(store.scope(
-					state: { extract(case: AttributedOrText.text, from: $0)}).actionless,
-				   then: { localStore in
-					Text(ViewStore(localStore).state)
-				   }
-		)
-		IfLetStore(store.scope(
-					state: { extract(case: AttributedOrText.attributed, from: $0)}).actionless,
-				   then: { store in
-					AttributedStringLabel(text: ViewStore(store).state)
-				   }
-		)
+        SwitchStore(store) {
+            CaseLet(state: /AttributedOrText.text, action: { $0 },
+                    then: { (localStore: Store<String, Never>) in
+                        Text(ViewStore(localStore).state)
+                       }
+            )
+            CaseLet(state: /AttributedOrText.attributed, action: { $0 },
+                    then: { (localStore: Store<NSAttributedString, Never>) in
+                        AttributedStringLabel(text: ViewStore(localStore).state)
+                       }
+            )
+        }
 	}
 }
 

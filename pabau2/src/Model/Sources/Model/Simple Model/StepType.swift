@@ -14,7 +14,6 @@ public enum StepType: String, Codable, Equatable, CaseIterable, Identifiable {
 	case prescriptions = "prescriptions"
 	case photos = "photos"
 	case aftercares = "aftercare"
-	case patientComplete = "complete"
 //	case mediaimages = "mediaImages"
 //	case mediavideos = "mediaVideos"
 
@@ -49,8 +48,6 @@ public enum StepType: String, Codable, Equatable, CaseIterable, Identifiable {
 //			return "Image"
 //		case .mediavideos:
 //			return "Video"
-		case .patientComplete:
-			return "Complete"
 		}
 	}
 }

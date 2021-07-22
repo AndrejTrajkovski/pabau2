@@ -9,7 +9,7 @@ import Filters
 import JZCalendarWeekView
 import AddAppointment
 import Communication
-//import Intercom
+import Intercom
 import Appointments
 import CoreDataModel
 import CalendarList
@@ -17,6 +17,7 @@ import ChooseLocationAndEmployee
 import ToastAlert
 import Combine
 import Form
+import Overture
 
 public typealias TabBarEnvironment = (
 	loginAPI: LoginAPI,
@@ -29,7 +30,7 @@ public typealias TabBarEnvironment = (
 )
 
 public struct TabBarState: Equatable {
-	var checkIn: CheckInNavigationState?
+	var checkIn: CheckInContainerState?
 	var clients: ClientsState
 	var calendar: CalendarState
 	var settings: SettingsState
@@ -44,7 +45,7 @@ public enum TabBarAction {
 	case addAppointment(AddAppointmentAction)
 	case communication(CommunicationAction)
 	case checkIn(CheckInContainerAction)
-	case delayStartPathway(state: CheckInNavigationState)
+	case delayStartPathway(state: CheckInContainerState)
 }
 
 struct PabauTabBar: View {
@@ -142,13 +143,13 @@ struct PabauTabBar: View {
             }
     }
 	
-	fileprivate func checkIn() -> IfLetStore<CheckInNavigationState, CheckInContainerAction, CheckInNavigationView?> {
+	fileprivate func checkIn() -> IfLetStore<CheckInContainerState, CheckInContainerAction, CheckInContainer?> {
 		print("checkIn()")
 		return IfLetStore(self.store.scope(
 			state: { $0.checkIn },
 			action: { .checkIn($0) }
 		),
-		then: CheckInNavigationView.init(store:))
+		then: CheckInContainer.init(store:))
 	}
 	
     fileprivate func addAppointment() -> IfLetStore<AddAppointmentState, AddAppointmentAction, AddAppointment?> {
@@ -164,54 +165,12 @@ struct PabauTabBar: View {
 private let audioQueue = DispatchQueue(label: "Audio Dispatch Queue")
 struct TimerId: Hashable { }
 
-func getForms(stepEntries: [Dictionary<Step.Id, StepEntry>.Element], formAPI: FormAPI, clientid: Client.ID) -> [Effect<CheckInPatientAction, Never>] {
-	return stepEntries
-		.compactMap {
-			return getForm(stepId: $0.key, stepEntry: $0.value, formAPI: formAPI, clientId: clientid)
-		}
-}
-
-func getForm(stepId: Step.Id, stepEntry: StepEntry, formAPI: FormAPI, clientId: Client.ID) -> Effect<CheckInPatientAction, Never>? {
-	
-	func getHTMLForm(formTemplateId: HTMLForm.ID) -> Effect<Result<HTMLForm, RequestError>, Never> {
-		return formAPI.getForm(templateId: formTemplateId, entryId: stepEntry.htmlFormInfo!.formEntryId)
-			.catchToEffect()
-	}
-	
-	if stepEntry.stepType.isHTMLForm {
-		guard let formTemplateId = stepEntry.htmlFormInfo?.templateIdToLoad else { return nil }
-		return getHTMLForm(formTemplateId: formTemplateId)
-			.map {
-				CheckInPatientAction.htmlForms(id: stepId, action: .htmlForm(HTMLFormAction.gotForm($0)))
-			}
-	} else {
-		switch stepEntry.stepType {
-		case .patientdetails:
-			return formAPI.getPatientDetails(clientId: clientId)
-				.map(ClientBuilder.init(client:))
-				.catchToEffect()
-				.map(PatientDetailsParentAction.gotGETResponse)
-				.map(CheckInPatientAction.patientDetails)
-		case .checkpatient:
-			return nil
-		case .photos:
-			return nil
-		case .aftercares:
-			return nil
-		case .patientComplete:
-			return nil
-		default:
-			return nil
-		}
-	}
-}
-
 public let tabBarReducer: Reducer<
 	TabBarState,
 	TabBarAction,
 	TabBarEnvironment
 > = Reducer.combine(
-	checkInParentReducer.optional().pullback(
+    checkInContainerOptionalReducer.pullback(
 		state: \TabBarState.checkIn,
 		action: /TabBarAction.checkIn,
 		environment: makeJourneyEnv(_:)
@@ -242,8 +201,6 @@ public let tabBarReducer: Reducer<
 		switch action {
 		case .delayStartPathway(let checkInState):
 			
-			state.checkIn = checkInState
-			
 			var returnEffects: [Effect<TabBarAction, Never>] = [
 				env.audioPlayer
 					.playCheckInSound()
@@ -262,24 +219,23 @@ public let tabBarReducer: Reducer<
 				let getCombinedPathwaysResponse = getCombinedPathwayResponse(journeyAPI: env.journeyAPI,
 																			 checkInState: loadingState)
 					.map {
-						TabBarAction.checkIn(.loading(.gotCombinedPathwaysResponse($0)))
+						TabBarAction.checkIn(.gotPathwaysResponse($0))
 					}
 				returnEffects.append(getCombinedPathwaysResponse)
 				
 			case .loaded(let loadedState):
 				
-				let getPatientForms = loadedState.patientCheckIn.htmlForms.compactMap { htmlStepState in
-					return htmlStepState.htmlFormParentState?.getForm(formAPI: env.formAPI)
-						.map {
-							TabBarAction.checkIn(CheckInContainerAction.patient(.htmlForms(id: htmlStepState.id, action: .htmlForm($0))))
-						}
-				}
-				
-				let getPatientFormsOneAfterAnother = Effect.concatenate(getPatientForms)
-				
-				returnEffects.append(getPatientFormsOneAfterAnother)
+                let getForms = getCheckInFormsOneAfterAnother(pathway: loadedState.pathway,
+                                                              template: loadedState.pathwayTemplate,
+                                                              journeyMode: .patient,
+                                                              formAPI: env.formAPI,
+                                                              clientId: loadedState.appointment.customerId)
+					
+                returnEffects.append(getForms.map(TabBarAction.checkIn))
 			}
 			
+            state.checkIn = checkInState
+            
 			return .merge(returnEffects)
 			
 		case .calendar(.appDetails(.choosePathwayTemplate(.matchResponse(.success(let pathway))))):
@@ -287,13 +243,16 @@ public let tabBarReducer: Reducer<
 			guard let appDetails = state.calendar.appDetails,
 				  let template = appDetails.choosePathwayTemplate?.selectedPathway else { return .none }
 			
+            var app = state.calendar.appDetails!.app
+            app.pathways.append(PathwayInfo.init(pathway, template))
+            state.calendar.replace(app: CalendarEvent.appointment(app))
 			state.calendar.appDetails = nil
 			
 			let loadedState = CheckInLoadedState(appointment: appDetails.app,
 													pathway: pathway,
 													template: template)
 			print("here:", pathway, template)
-			let checkInState = CheckInNavigationState(loadedState: loadedState)
+			let checkInState = CheckInContainerState(loadedState: loadedState)
 			
 			return .merge([
 				Effect.init(value: TabBarAction.delayStartPathway(state: checkInState))
@@ -313,7 +272,7 @@ public let tabBarReducer: Reducer<
 														  pathwayId: pathwayInfo.pathwayId,
 														  pathwayTemplateId: pathwayInfo.pathwayTemplateId,
 														  pathwaysLoadingState: .loading)
-			let checkInState = CheckInNavigationState(loadingState: loadingCheckInState)
+			let checkInState = CheckInContainerState(loadingState: loadingCheckInState)
 			
 			return .merge([
 				Effect.init(value: TabBarAction.delayStartPathway(state: checkInState))
@@ -380,14 +339,14 @@ public let tabBarReducer: Reducer<
 	.init { _, action, _ in
 		switch action {
 		case .communication(.liveChat):
-//			Intercom.registerUser(withEmail: "a@a.com")
-//			Intercom.presentMessenger()
+			Intercom.registerUser(withEmail: "a@a.com")
+			Intercom.presentMessenger()
 			return .none
 		case .communication(.helpGuides):
 			//Intercom.presentHelpCenter()
 			return .none
 		case .communication(.carousel):
-			//Intercom.presentCarousel("13796318")
+			Intercom.presentCarousel("13796318")
 			return .none
 		default:
 			break
@@ -397,7 +356,7 @@ public let tabBarReducer: Reducer<
 	}
 )
 
-public let showAddAppointmentReducer: Reducer<TabBarState, CalendarAction, Any> = .init { state, action, env in
+public let showAddAppointmentReducer: Reducer<TabBarState, CalendarAction, Any> = .init { state, action, _ in
 	
     var chooseLocAndEmp = ChooseLocationAndEmployeeState(
         locations: state.calendar.locations,

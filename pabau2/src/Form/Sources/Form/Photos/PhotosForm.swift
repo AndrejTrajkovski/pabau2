@@ -7,7 +7,11 @@ import Overture
 import ASCollectionView
 
 public struct PhotosState: Equatable, Identifiable {
-	public var id = UUID()
+	public init(id: Step.ID) {
+		self.id = id
+	}
+	
+	public var id: Step.ID
 	public var photos: IdentifiedArray<PhotoVariantId, PhotoViewModel> = []
 	public var selectedIds: [PhotoVariantId] = []
 	public var editPhotos: EditPhotosState?
@@ -108,13 +112,5 @@ extension Dictionary where Key == PhotoVariantId, Value == PhotoViewModel {
 		guard savedPhotoDict.count == 1 else { return nil }
 		return [PhotoVariantId.saved(savedPhotoDict.keys.first!):
 			PhotoViewModel.init(savedPhotoDict.values.first!) ]
-	}
-}
-
-extension PhotosState {
-	public init(_ savedPhotos: [[SavedPhoto.ID: SavedPhoto]]) {
-		self.init(photos: IdentifiedArray.wrap(savedPhotos),
-							selectedIds: [],
-							editPhotos: nil)
 	}
 }

@@ -11,7 +11,7 @@ public let addClientOptionalReducer: Reducer<AddClientState?, ClientCardAddClien
 		action: /ClientCardAddClientAction.self,
 		environment: { $0 }
 	),
-	.init { state, action, env in
+	.init { state, action, _ in
 		switch action {
 		case .onBackFromAddClient:
 			state = nil
@@ -38,7 +38,7 @@ public let clientCardAddClientReducer: Reducer<AddClientState, ClientCardAddClie
 	switch action {
 	case .saveClient:
 		state.formSaving = .loading
-		return env.apiClient.update(clientBuilder: state.clientBuilder)
+		return env.formAPI.update(clientBuilder: state.clientBuilder, pathwayStep: nil)
 			.catchToEffect()
 			.receive(on: DispatchQueue.main)
 			.map { ClientCardAddClientAction.addClient(.onResponseSave($0)) }
@@ -59,12 +59,11 @@ public let clientCardAddClientReducer: Reducer<AddClientState, ClientCardAddClie
 			FormEnvironment(
 				formAPI: $0.formAPI,
 				userDefaults: $0.userDefaults,
-                repository:  $0.repository
+                repository: $0.repository
 			)
 		}
 	)
 )
-
 
 public enum ClientCardAddClientAction: Equatable {
 	case addClient(AddClientAction)

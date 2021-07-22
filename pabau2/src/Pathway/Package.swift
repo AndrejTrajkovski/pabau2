@@ -9,7 +9,7 @@ let package = Package(
     products: [
         .library(
             name: "Pathway",
-            targets: ["Pathway"]),
+            targets: ["Pathway"])
     ],
     dependencies: [
 		.package(url: "../Form",
@@ -21,6 +21,6 @@ let package = Package(
             dependencies: ["Form"]),
         .testTarget(
             name: "PathwayTests",
-            dependencies: ["Pathway"]),
+            dependencies: ["Pathway"])
     ]
 )

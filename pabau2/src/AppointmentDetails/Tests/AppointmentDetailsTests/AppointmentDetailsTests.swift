@@ -10,6 +10,6 @@ final class AppointmentDetailsTests: XCTestCase {
     }
 
     static var allTests = [
-        ("testExample", testExample),
+        ("testExample", testExample)
     ]
 }

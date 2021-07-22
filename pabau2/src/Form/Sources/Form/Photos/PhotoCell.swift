@@ -9,12 +9,11 @@ public struct PhotoCell: View {
 	}
 
 	public var body: some View {
-		Group {
-			if extract(case: Photo.saved, from: photo.basePhoto) != nil {
-				SavedPhotoCell(savedPhoto: extract(case: Photo.saved, from: photo.basePhoto)!)
-			} else if extract(case: Photo.new, from: photo.basePhoto) != nil {
-				NewPhotoCell(newPhoto: extract(case: Photo.new, from: photo.basePhoto)!)
-			}
-		}
+        switch photo.basePhoto {
+        case .saved(let savedPhoto):
+            SavedPhotoCell(savedPhoto: savedPhoto)
+        case .new(let newPhoto):
+            NewPhotoCell(newPhoto: newPhoto)
+        }
 	}
 }

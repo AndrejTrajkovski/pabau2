@@ -22,7 +22,7 @@ public enum FormType: String, Codable, Equatable {
 			self = .treatment
 		case .prescriptions:
 			self = .prescription
-		case .checkpatient, .patientdetails, .photos, .aftercares, .patientComplete:
+		case .checkpatient, .patientdetails, .photos, .aftercares:
 			return nil
 		}
 	}

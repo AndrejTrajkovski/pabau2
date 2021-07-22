@@ -7,27 +7,22 @@ import Model
 public struct CheckInDoctorState: Equatable {
 	public let appointment: Appointment
 	let pathway: PathwayTemplate
-	var treatmentNotes: IdentifiedArrayOf<HTMLFormParentState>
-	var prescriptions: IdentifiedArrayOf<HTMLFormParentState>
-	var aftercare: Aftercare?
-	var aftercareStatus: Bool
-	var photos: PhotosState
+	var stepStates: [StepState]
 	var doctorSelectedIndex: Int
 }
 
 public enum CheckInDoctorAction: Equatable {
-	case aftercare(AftercareAction)
-	case photos(PhotosFormAction)
+	case steps(StepsActions)
 	case completeJourney(CompleteJourneyBtnAction)
 	case stepsView(CheckInAction)
 //	case footer(FooterButtonsAction)
 }
 
-//aftercareReducer.pullbackCp(
+//aftercareReducer.pullback(
 //	state: /MetaForm.aftercare,
 //	action: /UpdateFormAction.aftercare,
 //	environment: { $0 }),
-//photosFormReducer.pullbackCp(
+//photosFormReducer.pullback(
 //	state: /MetaForm.photos,
 //	action: /UpdateFormAction.photos,
 //	environment: { $0 }),

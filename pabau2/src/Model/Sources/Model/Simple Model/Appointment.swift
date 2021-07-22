@@ -25,7 +25,7 @@ public struct Appointment: Equatable, Identifiable, Decodable {
 	public let customerId: Client.ID
 	public let serviceId: Service.Id
 	public let locationName: String?
-	public let pathways: IdentifiedArrayOf<PathwayInfo>
+    public var pathways: IdentifiedArrayOf<PathwayInfo>
     public var patient_details_status: Int
     public var medical_history_status: Int
     public var patient_consent_status: Int
@@ -34,6 +34,13 @@ public struct Appointment: Equatable, Identifiable, Decodable {
 }
 
 public struct PathwayInfo: Decodable, Equatable, Identifiable {
+    public init(_ pathway: Pathway, _ template: PathwayTemplate) {
+        self.pathwayTemplateId = template.id
+        self.pathwayId = pathway.id
+        self.stepsTotal = .right(template.steps.count)
+        self.stepsComplete = .right(0)
+    }
+    
 	public var id: Pathway.ID { pathwayId }
 	public let pathwayTemplateId: PathwayTemplate.ID
 	public let pathwayId: Pathway.ID
@@ -105,7 +112,7 @@ extension Appointment {
 		self.customerId = try container.decode(Client.ID.self, forKey: .customerID)
 		self.locationName = "TO ADD IN BACKEND"
 		let pathwayArr = (try? container.decode([PathwayInfo].self, forKey: .pathways)) ?? []
-		self.pathways = IdentifiedArrayOf(pathwayArr)
+        self.pathways = IdentifiedArrayOf(uniqueElements: pathwayArr)
         
         self.patient_details_status = try container.decode(Int.self, forKey: .patient_details_status)
         self.medical_history_status = try container.decode(Int.self, forKey: .medical_history_status)

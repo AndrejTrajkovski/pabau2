@@ -11,8 +11,8 @@ public let checkInLoadingReducer: Reducer<CheckInLoadingState, CheckInLoadingAct
 		state.pathwaysLoadingState = .loading
 		return getCombinedPathwayResponse(journeyAPI: env.journeyAPI,
 										  checkInState: state)
-				.map(CheckInLoadingAction.gotCombinedPathwaysResponse)
-	case .gotCombinedPathwaysResponse:
+				.map(CheckInLoadingAction.gotRetryPathwaysResponse)
+	case .gotRetryPathwaysResponse:
 		break
 	}
 	return .none
@@ -39,7 +39,7 @@ public struct CheckInLoadingState: Equatable {
 
 public enum CheckInLoadingAction: Equatable {
 	case retryLoadingPathways
-	case gotCombinedPathwaysResponse(Result<CombinedPathwayResponse, RequestError>)
+	case gotRetryPathwaysResponse(Result<CombinedPathwayResponse, RequestError>)
 }
 
 struct CheckInLoading: View {

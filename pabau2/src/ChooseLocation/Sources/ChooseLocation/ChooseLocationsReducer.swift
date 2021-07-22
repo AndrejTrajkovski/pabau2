@@ -13,7 +13,7 @@ public let chooseLocationsParentReducer: Reducer<ChooseLocationState?, ChooseLoc
 			action: /.self,
 			environment: { $0 }
 		),
-		.init { state, action, env in
+		.init { state, action, _ in
 			switch action {
 				
 			case .didSelectLocation(let locationId):

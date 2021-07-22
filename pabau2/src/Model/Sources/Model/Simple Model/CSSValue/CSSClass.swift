@@ -47,7 +47,13 @@ public enum CSSClass: Equatable {
 	case unknown
 	
 	init?(_formStructure: _FormStructure, fieldId: CSSFieldID) throws {
-		let stringValue = extract(case: Values.string, from:_formStructure.values)
+        let stringValue: String? = {
+            if let values = _formStructure.values {
+                return values.extractString()
+            } else {
+                return nil
+            }
+        }()
 		switch _formStructure.cssClass {
 		case .staticText:
 			self = .staticText(StaticText(AttributedOrText.init(value: stringValue ?? "")))
@@ -133,7 +139,7 @@ public enum CSSClass: Equatable {
 			return radio.selectedChoice?.title
 		case .checkboxes(let checkbox):
 			return checkbox.selected
-				.flatMap { $0.data(using: .utf8) }
+				.compactMap { $0.data(using: .utf8) }
 				.map { (data: Data) in data.base64EncodedString() }
 				.joined(separator: ",")
 		case .select(let select):
@@ -170,7 +176,8 @@ fileprivate let extractAndSortValues: (Values?) throws -> [Value] =
 	pipe(extractValueMap(values:), sort(valueMap:))
 
 fileprivate func extractValueMap(values: Values?) throws -> [Int: Value] {
-	if let valueMap = extract(case: Values.valueMap, from:values) {
+    guard let someValues = values else { return [:] }
+	if case Values.valueMap(let valueMap) = someValues {
 		return valueMap
 	} else {
 		throw CSSClassTypeMismatch.expectedValueMap

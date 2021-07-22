@@ -3,6 +3,7 @@ import SharedComponents
 import ComposableArchitecture
 import Model
 import Util
+import Overture
 
 struct FormSectionField: View {
 
@@ -12,7 +13,13 @@ struct FormSectionField: View {
 		let titleAlignment: Alignment
 		let borderColor: Color
 		init(state: CSSField, isCheckingDetails: Bool) {
-			let isSignature = extract(case: CSSClass.signature, from: state.cssClass) != nil
+            let isSignature: Bool = {
+                if case CSSClass.signature = state.cssClass {
+                    return true
+                } else {
+                    return false
+                }
+            }()
 			self.title = (state.title ?? "") + (state._required ? " (*)Required" : "")
 			self.titleFont = isSignature ? .bold18: .semibold18
 			self.titleAlignment = isSignature ? .center : .leading
@@ -52,65 +59,29 @@ struct FormFieldStore: View {
 	let title: String
 
 	var body: some View {
-		IfLetStore(store.scope(
-					state: { extract(case: CSSClass.staticText, from: $0)}).actionless,
-				   then: { store in
-						AttributedOrTextField(store: store.scope(state: { $0.value }))
-				   }
-		)
-		IfLetStore(store.scope(
-					state: { extract(case: CSSClass.input_text, from: $0)},
-					action: { .inputText($0)}),
-				   then: InputTextFieldParent.init(store:)
-		)
-		IfLetStore(store.scope(
-					state: { extract(case: CSSClass.textarea, from: $0)},
-					action: { .textArea($0)}),
-				   then: {
-						TextAreaField(store: $0)
-				   }
-		)
-		IfLetStore(store.scope(
-					state: { extract(case: CSSClass.radio, from: $0)},
-					action: { .radio($0)}),
-				   then: RadioField.init(store:))
-		IfLetStore(store.scope(
-					state: { extract(case: CSSClass.signature, from: $0)},
-					action: { .signature($0)}),
-				   then: {
-					SignatureField(store: $0,
-								   title: title)
-				   }
-		)
-		IfLetStore(store.scope(
-					state: { extract(case: CSSClass.checkboxes, from: $0)},
-					action: { .checkboxes($0)}),
-				   then: CheckBoxField.init(store:)
-		)
-		IfLetStore(store.scope(
-					state: { extract(case: CSSClass.select, from: $0)},
-					action: { .select($0)}),
-				   then: SelectField.init(store:)
-		)
-		IfLetStore(store.scope(
-					state: { extract(case: CSSClass.heading, from: $0)}).actionless,
-				   then: { store in
-					AttributedOrTextField(store: store.scope(state: { $0.value }))
-				   }
-		)
-//		IfLetStore(store.scope(
-//					state: { extract(case: CSSClass.cl_drugs, from: $0)},
-//					action: { .cl_drugs($0)}),
-//				   then: { store in
-//					return EmptyView()
-//				   })
-//		IfLetStore(store.scope(
-//					state: { extract(case: CSSClass.diagram_mini, from: $0)},
-//					action: { .diagram_mini($0)}),
-//				   then: { store in
-//					return EmptyView()
-//				   })
-	}
+        SwitchStore(store) {
+            CaseLet(state: /CSSClass.staticText, action: CSSClassAction.staticText,
+                    then: { (store: Store<StaticText, Never>) in
+                        AttributedOrTextField(store: store.scope(state: { $0.value }))
+                    }
+            )
+            CaseLet(state: /CSSClass.input_text, action: CSSClassAction.inputText, then: InputTextFieldParent.init(store:))
+            CaseLet(state: /CSSClass.textarea, action: CSSClassAction.textArea, then: TextAreaField.init(store:))
+            CaseLet(state: /CSSClass.radio, action: CSSClassAction.radio, then: RadioField.init(store:))
+            CaseLet(state: /CSSClass.signature, action: CSSClassAction.signature, then: {
+                signatureStore in
+                SignatureField.init(store:signatureStore, title: title)
+            })
+            CaseLet(state: /CSSClass.checkboxes, action: CSSClassAction.checkboxes, then: CheckBoxField.init(store:))
+            CaseLet(state: /CSSClass.select, action: CSSClassAction.select, then: SelectField.init(store:))
+            CaseLet(state: /CSSClass.heading, action: CSSClassAction.heading,
+                    then: { (store: Store<Heading, Never>) in
+                        AttributedOrTextField(store: store.scope(state: { $0.value }))
+                    }
+            )
+            Default { EmptyView() }
+        }
+    }
 }
 
 public enum HTMLRowsAction: Equatable {
@@ -135,34 +106,36 @@ let cssFieldReducer: Reducer<CSSField, CSSClassAction, FormEnvironment> =
 
 let cssClassReducer: Reducer<CSSClass, CSSClassAction, FormEnvironment> =
 	.combine(
-		checkBoxFieldReducer.pullbackCp(
+		checkBoxFieldReducer.pullback(
 			state: /CSSClass.checkboxes,
 			action: /CSSClassAction.checkboxes,
 			environment: { $0 }),
-		radioFieldReducer.pullbackCp(
+		radioFieldReducer.pullback(
 			state: /CSSClass.radio,
 			action: /CSSClassAction.radio,
 			environment: { $0 }),
-		textAreaFieldReducer.pullbackCp(
+		textAreaFieldReducer.pullback(
 			state: /CSSClass.textarea,
 			action: /CSSClassAction.textArea,
 			environment: { $0 }),
-		inputTextFieldReducer.pullbackCp(
+		inputTextFieldReducer.pullback(
 			state: /CSSClass.input_text,
 			action: /CSSClassAction.inputText,
 			environment: { $0 }
 		),
-		selectFieldReducer.pullbackCp(
+		selectFieldReducer.pullback(
 			state: /CSSClass.select,
 			action: /CSSClassAction.select,
 			environment: { $0 }),
-		signatureFieldReducer.pullbackCp(
+		signatureFieldReducer.pullback(
 			state: /CSSClass.signature,
 			action: /CSSClassAction.signature,
 			environment: { $0 })
 	)
 
 public enum CSSClassAction: Equatable {
+    case heading(Never)
+    case staticText(Never)
 	case inputText(InputTextAction)
 	case textArea(TextAreaFieldAction)
 	case radio(RadioFieldAction)

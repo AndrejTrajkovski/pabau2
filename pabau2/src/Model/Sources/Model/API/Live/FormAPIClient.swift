@@ -1,18 +1,23 @@
 import ComposableArchitecture
+import Combine
 //FormAPI
 public extension APIClient {
 	
-	func save(form: HTMLForm, clientId: Client.ID) -> Effect<FilledFormData.ID, RequestError> {
+    func skipStep(_ pathwayStep: PathwayIdStepId) -> Effect<StepStatus, RequestError> {
+        Just(StepStatus.complete).setFailureType(to: RequestError.self).eraseToEffect()
+    }
+    
+	func save(form: HTMLForm, clientId: Client.ID, pathwayStep: PathwayIdStepId?) -> Effect<FilledFormData.ID, RequestError> {
 		struct Response: Codable {
 			let medical_form_contact_id: FilledFormData.ID
 		}
-		let body: [String : Any] = [
+		var body: [String : Any] = [
 			"mode": "save",
-			//									"uid": "",
-			"booking_id": "",
 			"contact_id": clientId.description,
 			"form_id": form.id.rawValue,
-			"form_data": form.getJSONPOSTValues()]
+			"form_data": form.getJSONPOSTValues()
+        ]
+        merge(&body, with: pathwayStep)
 		let requestBuilder: RequestBuilder<Response>.Type = requestBuilderFactory.getBuilder()
 		return requestBuilder.init(method: .POST,
 								   baseUrl: baseUrl,
@@ -85,10 +90,6 @@ public extension APIClient {
 				}
 			}
 			.eraseToEffect()
-	}
-	
-	func post(form: HTMLForm, appointments: [CalendarEvent.Id]) -> Effect<HTMLForm, RequestError> {
-		fatalError()
 	}
 	
 	func getTemplates(_ type: FormType) -> Effect<[FormTemplateInfo], RequestError> {

@@ -50,7 +50,6 @@ struct ContainerView<Content: View>: View {
     }
 }
 
-
 struct PhotoSizePreferenceSetter: View {
 	var body: some View {
 		GeometryReaderPatch { geometry in

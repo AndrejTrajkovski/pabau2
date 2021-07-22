@@ -46,4 +46,3 @@ public extension View {
         self.modifier(JourneyBaseModifier(appointment: appointment, style: style))
     }
 }
-

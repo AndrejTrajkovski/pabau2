@@ -45,15 +45,25 @@ struct LoadingStore<State, Action, Content>: View where Content: View, State: Eq
         self.content = { viewStore in
             if case .loaded(let state) = viewStore.state {
                 return ViewBuilder.buildEither(first:
-                                                ifContent(store.scope(state: { extract(case: LoadingState2.loaded, from: $0) ?? state }
-                                                )
+                                                ifContent(
+                                                    store.scope(state: {
+                                                        if case LoadingState2.loaded(let loadedState) = $0 {
+                                                            return loadedState
+                                                        } else {
+                                                            return state
+                                                        }
+                                                    })
                                                 )
                 )
             } else {
                 let errorOrLoading: () -> _ConditionalContent<ErrorContent, LoadingContent> = {
                     if case .error(let error) = viewStore.state {
-                        let errorStore = store.scope(state: {
-                            extract(case: LoadingState2.error, from: $0) ?? error
+                        let errorStore = store.scope(state: { (loadingState: LoadingState2) -> RequestError in
+                            if case LoadingState2.error(let error2) = loadingState {
+                                return error2
+                            } else {
+                                return error
+                            }
                         }, action: errorPath)
                         
                         return ViewBuilder.buildEither(first:

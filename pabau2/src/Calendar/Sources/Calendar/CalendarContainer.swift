@@ -298,7 +298,7 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			state.isCalendarTypeDropdownShown = false
 			state.isAddEventDropdownShown = value
 		case .list(.locationSection(id: let locId, action: .rows(id: let appId, action: .select))):
-			guard let app = state.listContainer?.appointments.appointments[locId]?.values.flatMap({ $0.elements }).first(where: { $0.id == appId }) else { break }
+			guard let app = state.listContainer?.appointments.appointments[locId]?.values.flatMap({ $0 }).first(where: { $0.id == appId }) else { break }
 			state.appDetails = AppDetailsState(app: app)
 
 		case .roomFilters(.rows(id: let id, action: let action)):

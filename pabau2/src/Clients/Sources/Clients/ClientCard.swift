@@ -8,7 +8,7 @@ let clientCardReducer: Reducer<ClientCardState?, ClientCardAction, ClientsEnviro
 		state: \ClientCardState.self,
 		action: /ClientCardAction.bottom,
 		environment: { $0 }),
-	.init { state, action, env in
+	.init { state, action, _ in
 		switch action {
 		case .bottom(.backBtnTap):
 			if state?.activeItem != nil {

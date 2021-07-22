@@ -101,7 +101,7 @@ public struct ChooseFormList: View {
 			self.searchText = state.searchText
 
 			self.isSearching = !state.searchText.isEmpty
-			self.notSelectedTemplates = state.templates.elements
+			self.notSelectedTemplates = state.templates
 				.filter { !state.selectedTemplatesIds.contains($0.id) }
 				.map { $0 }
 				.sorted(by: \.name)

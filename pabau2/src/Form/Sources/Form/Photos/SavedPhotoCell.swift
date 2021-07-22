@@ -2,9 +2,13 @@ import SwiftUI
 import Model
 import SDWebImageSwiftUI
 
-struct SavedPhotoCell: View {
+public struct SavedPhotoCell: View {
+    public init(savedPhoto: SavedPhoto) {
+        self.savedPhoto = savedPhoto
+    }
+    
     let savedPhoto: SavedPhoto
-    var body: some View {
+    public var body: some View {
 		GeometryReader { proxy in
 			WebImage(url: URL(string: savedPhoto.normalSizePhoto ?? ""))
 				.resizable()

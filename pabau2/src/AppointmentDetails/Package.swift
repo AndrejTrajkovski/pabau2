@@ -9,7 +9,7 @@ let package = Package(
     products: [
         .library(
             name: "AppointmentDetails",
-            targets: ["AppointmentDetails"]),
+            targets: ["AppointmentDetails"])
     ],
     dependencies: [
         .package(url: "../CoreDataModel", from: Version.init(stringLiteral: "1.0.0")),
@@ -26,6 +26,6 @@ let package = Package(
 						   "ChoosePathway"]),
         .testTarget(
             name: "AppointmentDetailsTests",
-            dependencies: ["AppointmentDetails"]),
+            dependencies: ["AppointmentDetails"])
     ]
 )

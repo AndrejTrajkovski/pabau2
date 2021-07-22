@@ -24,19 +24,19 @@
 //			}
 //			return .none
 //		},
-//		patientCompleteReducer.pullbackCp(
+//		patientCompleteReducer.pullback(
 //			state: /MetaForm.patientComplete,
 //			action: /UpdateFormAction.patientComplete,
 //			environment: { $0 }),
-//		patientDetailsReducer.pullbackCp(
+//		patientDetailsReducer.pullback(
 //			state: /MetaForm.patientDetails,
 //			action: /UpdateFormAction.patientDetails,
 //			environment: { $0 }),
-//		aftercareReducer.pullbackCp(
+//		aftercareReducer.pullback(
 //			state: /MetaForm.aftercare,
 //			action: /UpdateFormAction.aftercare,
 //			environment: { $0 }),
-//		photosFormReducer.pullbackCp(
+//		photosFormReducer.pullback(
 //			state: /MetaForm.photos,
 //			action: /UpdateFormAction.photos,
 //			environment: { $0 })

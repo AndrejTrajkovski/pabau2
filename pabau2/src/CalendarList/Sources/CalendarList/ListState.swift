@@ -21,8 +21,8 @@ public struct ListContainerState: Equatable {
 				list: ListState,
 				appointments: ListAppointments,
 				locations: IdentifiedArrayOf<Location>,
-				employees: [Location.Id : IdentifiedArrayOf<Employee>],
-				chosenEmployeesIds: [Location.Id : [Employee.Id]],
+				employees: [Location.Id: IdentifiedArrayOf<Employee>],
+				chosenEmployeesIds: [Location.Id: [Employee.Id]],
 				expandedLocationsIds: Set<Location.Id>,
 				selectedDate: Date,
 				chosenLocationsIds: Set<Location.Id>) {

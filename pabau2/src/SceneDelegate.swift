@@ -6,7 +6,7 @@ import Model
 import Journey
 import Clients
 import SwiftDate
-//import Intercom
+import Intercom
 import FacebookShare
 import CoreDataModel
 
@@ -19,10 +19,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         options connectionOptions: UIScene.ConnectionOptions
     ) {
 
-//        Intercom.setApiKey(
-//            "ios_sdk-f223a9e3f380f60354bc459db9d5c0349c61fd7c",
-//             forAppId: "m3fk3gh1"
-//        )
+        Intercom.setApiKey(
+            "ios_sdk-f223a9e3f380f60354bc459db9d5c0349c61fd7c",
+             forAppId: "m3fk3gh1"
+        )
         
 		SwiftDate.defaultRegion = Region(calendar: Calendar.gregorian,
 										 zone: Zones.gmt,
