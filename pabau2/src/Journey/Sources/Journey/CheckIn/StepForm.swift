@@ -63,12 +63,13 @@ public enum StepState: Equatable, Identifiable {
 		}
 	}
 	
-	init(stepAndEntry: StepAndStepEntry, clientId: Client.ID, pathway: Pathway) {
+    init(stepAndEntry: StepAndStepEntry, clientId: Client.ID, pathway: Pathway, appId: Appointment.ID) {
 		if stepAndEntry.step.stepType.isHTMLForm {
 			let htmlFormState = HTMLFormStepContainerState(stepId: stepAndEntry.step.id,
 														   stepEntry: stepAndEntry.entry!,
 														   clientId: clientId,
                                                            pathwayId: pathway.id,
+                                                           appointmentId: appId,
                                                            canSkip: stepAndEntry.step.canSkip)
 			self = .htmlForm(htmlFormState)
 		} else {
@@ -77,7 +78,8 @@ public enum StepState: Equatable, Identifiable {
 				self = .patientDetails(PatientDetailsParentState(id: stepAndEntry.step.id,
                                                                  pathwayId: pathway.id,
                                                                  clientId: clientId,
-                                                                 status: stepAndEntry.entry?.status ?? .pending)
+                                                                 status: stepAndEntry.entry?.status ?? .pending,
+                                                                 appointmentId: appId)
                 )
 			case .aftercares:
 				self = .aftercare(Aftercare.mock(id: stepAndEntry.step.id))

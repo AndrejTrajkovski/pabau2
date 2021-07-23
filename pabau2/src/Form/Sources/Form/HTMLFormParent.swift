@@ -57,15 +57,7 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, F
 		case .rows(.rows(idx: let idx, action: let action)):
 			break
         case .skipStep:
-            if let pathwayIdStepId = state.pathwayIdStepId {
-                return env.formAPI.skipStep(pathwayIdStepId)
-                    .catchToEffect()
-                    .map(HTMLFormAction.gotSkipResponse)
-                    .receive(on: DispatchQueue.main)
-                    .eraseToEffect()
-            } else {
-                return .none
-            }
+            break
         case .gotSkipResponse(let statusResult):
             switch statusResult {
             case .success(let status):

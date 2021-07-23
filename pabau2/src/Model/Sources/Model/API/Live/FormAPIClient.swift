@@ -3,8 +3,22 @@ import Combine
 //FormAPI
 public extension APIClient {
 	
-    func skipStep(_ pathwayStep: PathwayIdStepId) -> Effect<StepStatus, RequestError> {
-        Just(StepStatus.skipped).setFailureType(to: RequestError.self).eraseToEffect()
+    func skipStep(_ pathwayStep: PathwayIdStepId, _ clientId: Client.ID, _ appointmentId: Appointment.ID) -> Effect<StepStatus, RequestError> {
+        
+        let queryParams: [String : Any] = [
+            "pathway_taken_id": pathwayStep.path_taken_id.description,
+            "step_id": pathwayStep.step_id.description,
+            "contact_id": clientId.description,
+            "booking_id": appointmentId.description
+        ]
+        
+        let requestBuilder: RequestBuilder<StepStatus>.Type = requestBuilderFactory.getBuilder()
+        return requestBuilder.init(method: .POST,
+                                   baseUrl: baseUrl,
+                                   path: .skipStep,
+                                   queryParams: commonAnd(other: queryParams)
+        )
+        .effect()
     }
     
 	func save(form: HTMLForm, clientId: Client.ID, pathwayStep: PathwayIdStepId?) -> Effect<FilledFormData.ID, RequestError> {

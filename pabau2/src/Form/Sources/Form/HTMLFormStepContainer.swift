@@ -12,6 +12,16 @@ public let htmlFormStepContainerReducer: Reducer<HTMLFormStepContainerState, HTM
     .init { state, action, env in
         switch action {
         
+        
+        case .chosenForm(.skipStep):
+            let pwidsid = PathwayIdStepId(step_id: state.id, path_taken_id: state.pathwayId)
+            return env.formAPI.skipStep(pwidsid, state.clientId, state.appointmentId)
+                .catchToEffect()
+                .map(HTMLFormAction.gotSkipResponse)
+                .map(HTMLFormStepContainerAction.chosenForm)
+                .receive(on: DispatchQueue.main)
+                .eraseToEffect()
+        
         case .choosingForm(.cancelChoosingForm):
             
             state.choosingForm = nil
@@ -60,7 +70,7 @@ public let htmlFormStepContainerReducer: Reducer<HTMLFormStepContainerState, HTM
             
         case .chosenForm(.gotSkipResponse(.success(let status))):
             
-            state.status = .skipped
+            state.status = status
             return .none
             
         case .chosenForm:
@@ -88,8 +98,9 @@ public struct HTMLFormStepContainerState: Equatable, Identifiable {
     let possibleFormTemplates: IdentifiedArrayOf<FormTemplateInfo>
     public let stepType: StepType
     public let canSkip: Bool
+    let appointmentId: Appointment.ID
     
-    public init(stepId: Step.ID, stepEntry: StepEntry, clientId: Client.ID, pathwayId: Pathway.ID, canSkip: Bool) {
+    public init(stepId: Step.ID, stepEntry: StepEntry, clientId: Client.ID, pathwayId: Pathway.ID, appointmentId: Appointment.ID, canSkip: Bool) {
         
         let htmlInfo = stepEntry.htmlFormInfo!
         
@@ -100,6 +111,8 @@ public struct HTMLFormStepContainerState: Equatable, Identifiable {
         self.possibleFormTemplates = htmlInfo.possibleFormTemplates
         self.stepType = stepEntry.stepType
         self.canSkip = canSkip
+        self.appointmentId = appointmentId
+        
         switch htmlInfo.possibleFormTemplates.count {
         case 0, Int.min...(-1):
             self.choosingForm = nil

@@ -54,16 +54,16 @@ public let patientDetailsParentReducer: Reducer<PatientDetailsParentState, Patie
         case .skipStep(_):
             state.skipStepState = .loading
             let pathwayStep = PathwayIdStepId(step_id: state.stepId, path_taken_id: state.pathwayId)
-            return env.formAPI.skipStep(pathwayStep)
+            return env.formAPI.skipStep(pathwayStep, state.clientId, state.appointmentId)
                 .catchToEffect()
                 .receive(on: DispatchQueue.main)
                 .map(PatientDetailsParentAction.gotSkipResponse)
                 .eraseToEffect()
         case .gotSkipResponse(let skipResult):
             switch skipResult {
-            case .success:
+            case .success(let status):
                 state.skipStepState = .gotSuccess
-                state.stepStatus = .skipped
+                state.stepStatus = status
             case .failure(let error):
                 state.skipStepState = .gotError(error)
                 state.saveToastAlert = ToastState<PatientDetailsParentAction>(mode: .alert,
@@ -82,14 +82,17 @@ public struct PatientDetailsParentState: Equatable, Identifiable {
 	public init (id: Step.ID,
 				 pathwayId: Pathway.ID,
                  clientId: Client.ID,
-                 status: StepStatus) {
+                 status: StepStatus,
+                 appointmentId: Appointment.ID) {
 		self.stepId = id
 		self.pathwayId = pathwayId
         self.clientId = clientId
         self.stepStatus = status
+        self.appointmentId = appointmentId
 	}
 	
 	public var id: Step.ID { stepId }
+    let appointmentId: Appointment.ID
 	let pathwayId: Pathway.ID
 	let stepId: Step.ID
     let clientId: Client.ID
