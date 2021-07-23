@@ -56,19 +56,6 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, F
 			
 		case .rows(.rows(idx: let idx, action: let action)):
 			break
-        case .skipStep:
-            break
-        case .gotSkipResponse(let statusResult):
-            switch statusResult {
-            case .success(let status):
-                break//handle in pathway reducer
-            case .failure(let error):
-                state.skipToast = ToastState(mode: .alert,
-                                             type: .error(.red),
-                                             title: "Failed to skip step")
-                return Effect.timer(id: ToastTimerId(), every: 1, on: DispatchQueue.main)
-                    .map { _ in HTMLFormAction.hideToast }
-            }
         case .hideToast:
             state.skipToast = nil
         }
@@ -83,8 +70,7 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 				formEntryID: FilledFormData.ID?,
 				formTemplateId: HTMLForm.ID,
 				clientId: Client.ID,
-                pathwayIdStepId: PathwayIdStepId,
-                stepType: StepType) {
+                pathwayIdStepId: PathwayIdStepId) {
 		self.templateId = formTemplateId
 		self.templateName = formTemplateName
 		self.type = formType
@@ -95,7 +81,6 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 		self.postLoadingState = .initial
 		self.saveFailureAlert = nil
         self.pathwayIdStepId = pathwayIdStepId
-        self.stepType = stepType
 	}
 	
 	public init(templateId: HTMLForm.ID,
@@ -114,7 +99,6 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 		self.getLoadingState = .initial
 		self.postLoadingState = .initial
 		self.saveFailureAlert = nil
-        self.stepType = nil
 	}
 	
 	public init(formData: FilledFormData,
@@ -129,7 +113,6 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 		self.filledFormId = formData.treatmentId
 		self.clientId = clientId
 		self.postLoadingState = .initial
-        self.stepType = nil
 	}
 	
 	public init(info: FormTemplateInfo,
@@ -144,7 +127,6 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 		self.filledFormId = nil
 		self.clientId = clientId
 		self.postLoadingState = .initial
-        self.stepType = nil
 	}
 	
 	public var id: HTMLForm.ID { templateId }
@@ -161,12 +143,9 @@ public struct HTMLFormParentState: Equatable, Identifiable {
 	public var saveFailureAlert: AlertState<HTMLFormAction>?
     public var pathwayIdStepId: PathwayIdStepId?
     public var skipToast: ToastState<HTMLFormAction>?
-    public let stepType: StepType?
 }
 
 public enum HTMLFormAction: Equatable {
-    case gotSkipResponse(Result<StepStatus, RequestError>)
-    case skipStep(SkipStepAction)
 	case gotPOSTResponse(Result<FilledFormData.ID, RequestError>)
 	case gotForm(Result<HTMLForm, RequestError>)
 	case getFormError(ErrorViewAction)

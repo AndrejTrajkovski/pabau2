@@ -12,16 +12,6 @@ public let htmlFormStepContainerReducer: Reducer<HTMLFormStepContainerState, HTM
     .init { state, action, env in
         switch action {
         
-        
-        case .chosenForm(.skipStep):
-            let pwidsid = PathwayIdStepId(step_id: state.id, path_taken_id: state.pathwayId)
-            return env.formAPI.skipStep(pwidsid, state.clientId, state.appointmentId)
-                .catchToEffect()
-                .map(HTMLFormAction.gotSkipResponse)
-                .map(HTMLFormStepContainerAction.chosenForm)
-                .receive(on: DispatchQueue.main)
-                .eraseToEffect()
-        
         case .choosingForm(.cancelChoosingForm):
             
             state.choosingForm = nil
@@ -48,8 +38,7 @@ public let htmlFormStepContainerReducer: Reducer<HTMLFormStepContainerState, HTM
                                                 formTemplateId: chosenTemplateInfo.id,
                                                 clientId: state.clientId,
                                                 pathwayIdStepId: PathwayIdStepId(step_id: state.stepId,
-                                                                                 path_taken_id: state.pathwayId),
-                                                stepType: state.stepType
+                                                                                 path_taken_id: state.pathwayId)
             )
             
             state.chosenForm = formState
@@ -62,16 +51,6 @@ public let htmlFormStepContainerReducer: Reducer<HTMLFormStepContainerState, HTM
                 .map(HTMLFormStepContainerAction.chosenForm)
                 .receive(on: DispatchQueue.main)
                 .eraseToEffect()
-            
-        case .chosenForm(.gotPOSTResponse(.success(_))):
-            
-            state.status = .completed
-            return .none
-            
-        case .chosenForm(.gotSkipResponse(.success(let status))):
-            
-            state.status = status
-            return .none
             
         case .chosenForm:
             
@@ -91,14 +70,12 @@ public struct HTMLFormStepContainerState: Equatable, Identifiable {
     public var id: Step.ID { stepId }
     var choosingForm: ChoosingFormState?
     var chosenForm: HTMLFormParentState?
+    let appointmentId: Appointment.ID
     let stepId: Step.ID
     let clientId: Client.ID
     let pathwayId: Pathway.ID
-    public var status: StepStatus
     let possibleFormTemplates: IdentifiedArrayOf<FormTemplateInfo>
-    public let stepType: StepType
-    public let canSkip: Bool
-    let appointmentId: Appointment.ID
+    let canSkip: Bool
     
     public init(stepId: Step.ID, stepEntry: StepEntry, clientId: Client.ID, pathwayId: Pathway.ID, appointmentId: Appointment.ID, canSkip: Bool) {
         
@@ -107,9 +84,7 @@ public struct HTMLFormStepContainerState: Equatable, Identifiable {
         self.stepId = stepId
         self.clientId = clientId
         self.pathwayId = pathwayId
-        self.status = stepEntry.status
         self.possibleFormTemplates = htmlInfo.possibleFormTemplates
-        self.stepType = stepEntry.stepType
         self.canSkip = canSkip
         self.appointmentId = appointmentId
         
@@ -126,8 +101,8 @@ public struct HTMLFormStepContainerState: Equatable, Identifiable {
                                                     formTemplateId: chosenFormInfo.id,
                                                     clientId: clientId,
                                                     pathwayIdStepId: PathwayIdStepId(step_id: stepId,
-                                                                                     path_taken_id: pathwayId),
-                                                    stepType: stepEntry.stepType)
+                                                                                     path_taken_id: pathwayId)
+            )
         case 2...Int.max:
             self.choosingForm = nil
             if let chosenFormTemplateId = htmlInfo.chosenFormTemplateId {
@@ -138,8 +113,8 @@ public struct HTMLFormStepContainerState: Equatable, Identifiable {
                                                       formTemplateId: chosenFormInfo.id,
                                                       clientId: clientId,
                                                       pathwayIdStepId: PathwayIdStepId(step_id: stepId,
-                                                                                       path_taken_id: pathwayId),
-                                                      stepType: stepEntry.stepType)
+                                                                                       path_taken_id: pathwayId)
+                )
             } else {
                 self.choosingForm = ChoosingFormState(possibleFormTemplates: htmlInfo.possibleFormTemplates,
                                                       tempChosenFormId: nil)

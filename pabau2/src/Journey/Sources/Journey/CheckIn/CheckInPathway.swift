@@ -49,10 +49,12 @@ let checkInPathwayReducer: Reducer<CheckInPathwayState, CheckInPathwayAction, Jo
         }
         
         switch action {
-        case .steps(.steps(let idx, let stepsAction)):
-            if stepsAction.isStepCompleteAction || stepsAction.isStepSkipAction {
+        case .steps(.steps(_, .stepType(let stepTypeAction))):
+            if stepTypeAction.isStepCompleteAction {
                 nextStep()
             }
+        case .steps(.steps(_, .gotSkipResponse(.success))):
+            nextStep()
         default:
             break
         }

@@ -13,7 +13,7 @@ public struct HTMLFormPathway: View {
                     HTMLFormParent(store: $0,
                                    skipButton: {
                                     SkipButton(store: store.scope(state: { $0.canSkip },
-                                                                  action: { .chosenForm(.skipStep($0))}))
+                                                                  action: { .skipStep($0)}))
                                    })
                    }
         )
