@@ -74,7 +74,7 @@ public let htmlFormParentReducer: Reducer<HTMLFormParentState, HTMLFormAction, F
                 state.skipToast = ToastState(mode: .alert,
                                              type: .error(.red),
                                              title: "Failed to skip step")
-                return Effect.timer(id: ToastTimerId(), every: 2, on: DispatchQueue.main)
+                return Effect.timer(id: ToastTimerId(), every: 1, on: DispatchQueue.main)
                     .map { _ in HTMLFormAction.hideToast }
             }
         case .hideToast:

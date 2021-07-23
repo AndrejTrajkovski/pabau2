@@ -60,7 +60,7 @@ public let htmlFormStepContainerReducer: Reducer<HTMLFormStepContainerState, HTM
             
         case .chosenForm(.gotSkipResponse(.success(let status))):
             
-            state.status = status
+            state.status = .skipped
             return .none
             
         case .chosenForm:
