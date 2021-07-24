@@ -5,6 +5,10 @@ public extension APIClient {
 	
     func skipStep(_ pathwayStep: PathwayIdStepId, _ clientId: Client.ID, _ appointmentId: Appointment.ID) -> Effect<StepStatus, RequestError> {
         
+        struct Response: Decodable {
+            let status: StepStatus
+        }
+        
         let queryParams: [String : Any] = [
             "pathway_taken_id": pathwayStep.path_taken_id.description,
             "step_id": pathwayStep.step_id.description,
@@ -12,13 +16,15 @@ public extension APIClient {
             "booking_id": appointmentId.description
         ]
         
-        let requestBuilder: RequestBuilder<StepStatus>.Type = requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<Response>.Type = requestBuilderFactory.getBuilder()
         return requestBuilder.init(method: .POST,
                                    baseUrl: baseUrl,
                                    path: .skipStep,
                                    queryParams: commonAnd(other: queryParams)
         )
         .effect()
+        .map(\.status)
+        .eraseToEffect()
     }
     
 	func save(form: HTMLForm, clientId: Client.ID, pathwayStep: PathwayIdStepId?) -> Effect<FilledFormData.ID, RequestError> {

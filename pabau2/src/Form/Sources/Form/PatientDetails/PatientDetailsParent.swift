@@ -26,7 +26,7 @@ public let patientDetailsParentReducer: Reducer<PatientDetailsParentState, Patie
                 .map(PatientDetailsParentAction.gotGETResponse)
         case .patientDetails:
 			break
-		case .complete(_):
+		case .complete:
 			guard let clientData = state.patientDetails else { return .none }
 			let pathwayStep = PathwayIdStepId(step_id: state.stepId, path_taken_id: state.pathwayId)
 			return env.formAPI.update(clientBuilder: clientData, pathwayStep: pathwayStep)
@@ -46,11 +46,13 @@ public struct PatientDetailsParentState: Equatable, Identifiable {
 	public init (id: Step.ID,
 				 pathwayId: Pathway.ID,
                  clientId: Client.ID,
-                 appointmentId: Appointment.ID) {
+                 appointmentId: Appointment.ID,
+                 canSkip: Bool) {
 		self.stepId = id
 		self.pathwayId = pathwayId
         self.clientId = clientId
         self.appointmentId = appointmentId
+        self.canSkip = canSkip
 	}
 	
 	public var id: Step.ID { stepId }
@@ -58,7 +60,8 @@ public struct PatientDetailsParentState: Equatable, Identifiable {
 	let pathwayId: Pathway.ID
 	let stepId: Step.ID
     let clientId: Client.ID
-	var patientDetails: ClientBuilder?
+    let canSkip: Bool
+	public var patientDetails: ClientBuilder?
 }
 
 public enum PatientDetailsParentAction: Equatable {
@@ -66,7 +69,7 @@ public enum PatientDetailsParentAction: Equatable {
 	case gotGETResponse(Result<ClientBuilder, RequestError>)
 	case gotPOSTResponse(Result<Client.ID, RequestError>)
 	case errorView(ErrorViewAction)
-	case complete(CompleteBtnAction)
+	case complete
 }
 
 public struct PatientDetailsParent: View {
@@ -78,24 +81,13 @@ public struct PatientDetailsParent: View {
 	let store: Store<PatientDetailsParentState, PatientDetailsParentAction>
 	
 	public var body: some View {
-		IfLetStore(store.scope(state: { $0.patientDetails }),
+		IfLetStore(store.scope(state: { $0.patientDetails },
+                               action: { .patientDetails($0) }),
 				   then: {
-					PatientDetailsCompleteBtn.init(store: $0)
+                    PatientDetailsForm.init(store: $0, isDisabled: false)
 				   },
 				   else: {
 					Text("ASD")
 				   })
-	}
-}
-
-struct PatientDetailsCompleteBtn: View {
-	
-	let store: Store<ClientBuilder, PatientDetailsParentAction>
-	
-	var body: some View {
-		VStack {
-			PatientDetailsForm.init(store: store.scope(state: { $0 }, action: { .patientDetails($0)}), isDisabled: false)
-			CompleteButton(store: store.scope(state: { $0 }, action: { .complete($0)}))
-		}
 	}
 }

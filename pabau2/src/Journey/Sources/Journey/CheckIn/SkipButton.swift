@@ -3,12 +3,24 @@ import ComposableArchitecture
 import Model
 import Util
 
-public struct SkipButton: View {
+struct SkipStepButton: View {
+    let store: Store<StepState, StepAction>
+    
+    var body: some View {
+        WithViewStore(store.scope(state: { $0.canSkip })) { viewStore in
+            SkipButton(canSkip: viewStore.state,
+                       onSkip: { viewStore.send(.skipStep) }
+            )
+        }
+    }
+}
+
+struct SkipButton: View {
     
     let canSkip: Bool
     let onSkip: () -> Void
     
-    public var body: some View {
+    var body: some View {
         Button(
             action: onSkip,
             label: {

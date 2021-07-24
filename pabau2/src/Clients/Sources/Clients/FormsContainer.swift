@@ -127,8 +127,8 @@ struct FormsContainer: View {
     
     @ViewBuilder
     func completeBtn(store: Store<HTMLFormParentState, HTMLFormAction>) -> some View {
-        IfLetStore(store.scope(state: { $0.form }, action: { .rows(.complete($0))}),
-                   then: CompleteButton.init(store:))
+        IfLetStore(store.scope(state: { $0.form }, action: { .rows($0)}),
+                   then: HTMLFormCompleteBtn.init(store:))
     }
 }
 

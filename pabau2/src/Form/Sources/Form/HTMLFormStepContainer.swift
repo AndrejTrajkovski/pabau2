@@ -69,7 +69,7 @@ public struct HTMLFormStepContainerState: Equatable, Identifiable {
     
     public var id: Step.ID { stepId }
     var choosingForm: ChoosingFormState?
-    var chosenForm: HTMLFormParentState?
+    public var chosenForm: HTMLFormParentState?
     let appointmentId: Appointment.ID
     let stepId: Step.ID
     let clientId: Client.ID

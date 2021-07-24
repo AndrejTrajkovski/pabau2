@@ -7,45 +7,6 @@ import ToastAlert
 
 public let stepReducer: Reducer<StepState, StepAction, JourneyEnvironment> = .combine(
     
-    stepStateStepTypeReducer.pullback(
-        state: \StepState.self,
-        action: /StepAction.self,
-        environment: { $0 }
-    ),
-    
-    stepTypeReducer.pullback(
-        state: \StepState.stepTypeState,
-        action: /StepAction.stepType,
-        environment: { $0 }
-    )
-)
-
-public enum StepAction: Equatable {
-    case dismissToast
-    case skipStep
-    case gotSkipResponse(Result<StepStatus, RequestError>)
-    case stepType(StepTypeAction)
-}
-
-public enum StepTypeAction: Equatable {
-    
-    case patientDetails(PatientDetailsParentAction)
-    case htmlForm(HTMLFormStepContainerAction)
-    
-    public var isStepCompleteAction: Bool {
-        switch self {
-        case .patientDetails(.gotPOSTResponse(.success)):
-            return true
-        case .htmlForm(.chosenForm(.gotPOSTResponse(.success))):
-            return true
-        default:
-            return false
-        }
-    }
-}
-
-public let stepStateStepTypeReducer: Reducer<StepState, StepAction, JourneyEnvironment> = (
-    
     .init { state, action, env in
         
         switch action {
@@ -63,9 +24,9 @@ public let stepStateStepTypeReducer: Reducer<StepState, StepAction, JourneyEnvir
                 state.savingState = .gotSuccess
                 state.status = .completed
             case .failure(let error):
-                state.toastAlert = ToastState<PatientDetailsParentAction>(mode: .alert,
-                                                                              type: .error(.red),
-                                                                              title: "Failed saving patient details.")
+                state.toastAlert = ToastState<StepAction>(mode: .alert,
+                                                          type: .error(.red),
+                                                          title: "Failed saving patient details.")
                 state.savingState = .gotError(error)
                 return Effect.timer(id: ToastTimerId(), every: 1.0, on: DispatchQueue.main)
                     .map { _ in StepAction.dismissToast }
@@ -99,9 +60,9 @@ public let stepStateStepTypeReducer: Reducer<StepState, StepAction, JourneyEnvir
                 state.status = status
             case .failure(let error):
                 state.skipStepState = .gotError(error)
-                state.toastAlert = ToastState<PatientDetailsParentAction>(mode: .alert,
-                                                                              type: .error(.red),
-                                                                              title: "Failed to skip step.")
+                state.toastAlert = ToastState<StepAction>(mode: .alert,
+                                                          type: .error(.red),
+                                                          title: "Failed to skip step.")
                 return Effect.timer(id: ToastTimerId(), every: 1.0, on: DispatchQueue.main)
                     .map { _ in StepAction.dismissToast }
             }
@@ -111,8 +72,38 @@ public let stepStateStepTypeReducer: Reducer<StepState, StepAction, JourneyEnvir
         }
         
         return .none
-    }
+    },
+    
+    stepTypeReducer.pullback(
+        state: \StepState.stepTypeState,
+        action: /StepAction.stepType,
+        environment: { $0 }
+    )
 )
+
+public enum StepAction: Equatable {
+    case dismissToast
+    case skipStep
+    case gotSkipResponse(Result<StepStatus, RequestError>)
+    case stepType(StepTypeAction)
+}
+
+public enum StepTypeAction: Equatable {
+    
+    case patientDetails(PatientDetailsParentAction)
+    case htmlForm(HTMLFormStepContainerAction)
+    
+    public var isStepCompleteAction: Bool {
+        switch self {
+        case .patientDetails(.gotPOSTResponse(.success)):
+            return true
+        case .htmlForm(.chosenForm(.gotPOSTResponse(.success))):
+            return true
+        default:
+            return false
+        }
+    }
+}
 
 public let stepTypeReducer: Reducer<StepTypeState, StepTypeAction, JourneyEnvironment> = .combine(
 	patientDetailsParentReducer.pullback(
@@ -153,7 +144,8 @@ public enum StepTypeState: Equatable {
                 self = .patientDetails(PatientDetailsParentState(id: stepAndEntry.step.id,
                                                                  pathwayId: pathway.id,
                                                                  clientId: clientId,
-                                                                 appointmentId: appId)
+                                                                 appointmentId: appId,
+                                                                 canSkip: stepAndEntry.step.canSkip)
                 )
             case .aftercares:
                 self = .aftercare(Aftercare.mock(id: stepAndEntry.step.id))
@@ -180,7 +172,7 @@ public struct StepState: Equatable, Identifiable {
     var loadingState: LoadingState = .initial
     var savingState: LoadingState = .initial
     var skipStepState: LoadingState = .initial
-    var toastAlert: ToastState<PatientDetailsParentAction>?
+    var toastAlert: ToastState<StepAction>?
     
     var stepTypeState: StepTypeState
 	
@@ -205,11 +197,14 @@ struct StepForm: View {
     let store: Store<StepState, StepAction>
     
     var body: some View {
-        StepTypeForm(store: store.scope(state: { $0.stepTypeState }, action: { .stepType($0) }))
+        VStack {
+            StepBody(store: store.scope(state: { $0.stepTypeState }, action: { .stepType($0) }))
+            StepFooter(store: store)
+        }.toast(store: store.scope(state: { $0.toastAlert }))
     }
 }
 
-struct StepTypeForm: View {
+struct StepBody: View {
 	
 	let store: Store<StepTypeState, StepTypeAction>
 	
@@ -217,6 +212,7 @@ struct StepTypeForm: View {
 		SwitchStore(store) {
 			CaseLet(state: /StepTypeState.patientDetails, action: StepTypeAction.patientDetails, then: PatientDetailsParent.init(store:))
 			CaseLet(state: /StepTypeState.htmlForm, action: StepTypeAction.htmlForm, then: HTMLFormStepContainer.init(store:))
+            Default { EmptyView ()}
 		}.modifier(FormFrame())
 	}
 }

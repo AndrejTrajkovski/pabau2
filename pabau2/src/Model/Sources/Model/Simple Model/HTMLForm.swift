@@ -17,12 +17,6 @@ public struct HTMLForm: Identifiable, Equatable {
 
 	public var formStructure: [CSSField]
 	
-	public var canProceed: Bool {
-		return formStructure.allSatisfy {
-			!$0._required || $0.cssClass.isFulfilled
-		}
-	}
-	
 	public init(id: Int,
 				name: String,
 				formType: FormType,
