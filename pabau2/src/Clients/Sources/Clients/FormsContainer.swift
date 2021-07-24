@@ -115,11 +115,21 @@ struct FormsContainer: View {
 					 content: {
 						ForEachStore(store.scope(state: { $0.formsCollection },
 												 action: FormsContainerAction.forms(id: action:)),
-                                     content: { HTMLFormParent.init(store:$0, skipButton: { Optional<SkipButton>.none }) }
+                                     content: { formStore in
+                                        HTMLFormParent.init(store: formStore,
+                                                            footer: { completeBtn(store: formStore) }
+                                        )
+                                     }
 						).padding([.leading, .trailing], 32)
 					 }
 		)
 	}
+    
+    @ViewBuilder
+    func completeBtn(store: Store<HTMLFormParentState, HTMLFormAction>) -> some View {
+        IfLetStore(store.scope(state: { $0.form }, action: { .rows(.complete($0))}),
+                   then: CompleteButton.init(store:))
+    }
 }
 
 struct ClientAvatarAndName: View {

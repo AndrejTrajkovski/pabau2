@@ -154,12 +154,12 @@ public enum HTMLFormAction: Equatable {
     case hideToast
 }
 
-public struct HTMLFormParent: View {
+public struct HTMLFormParent<Footer: View>: View {
 	public init(store: Store<HTMLFormParentState, HTMLFormAction>,
-                @ViewBuilder skipButton: @escaping () -> SkipButton?) {
+                @ViewBuilder footer: @escaping () -> Footer) {
 		self.store = store
 		self.viewStore = ViewStore(store.scope(state: State.init(state:)))
-        self.skipButton = skipButton
+        self.footer = footer
 	}
 	
 	enum State: Equatable {
@@ -184,7 +184,7 @@ public struct HTMLFormParent: View {
 	
 	let store: Store<HTMLFormParentState, HTMLFormAction>
 	@ObservedObject var viewStore: ViewStore<State, HTMLFormAction>
-    let skipButton: () -> SkipButton?
+    let footer: () -> Footer
     
     public var body: some View {
         Group {
@@ -206,19 +206,4 @@ public struct HTMLFormParent: View {
             }
         }.toast(store: store.scope(state: { $0.skipToast }))
 	}
-        
-    func footer() -> some View {
-        HStack {
-            if let skipButton = skipButton() {
-                skipButton
-            }
-            completeButton()
-        }
-    }
-    
-    func completeButton() -> some View {
-        CompleteButton(store: store.scope(state: { $0.form! },
-                                          action: { .rows(.complete($0)) })
-        )
-    }
 }

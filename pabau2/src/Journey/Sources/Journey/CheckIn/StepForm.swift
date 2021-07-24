@@ -22,7 +22,7 @@ public let stepReducer: Reducer<StepState, StepAction, JourneyEnvironment> = .co
 
 public enum StepAction: Equatable {
     case dismissToast
-    case skipStep(SkipStepAction)
+    case skipStep
     case gotSkipResponse(Result<StepStatus, RequestError>)
     case stepType(StepTypeAction)
 }
@@ -84,7 +84,7 @@ public let stepStateStepTypeReducer: Reducer<StepState, StepAction, JourneyEnvir
             state.status = .completed
             return .none
             
-        case .skipStep(_):
+        case .skipStep:
             state.skipStepState = .loading
             let pathwayStep = PathwayIdStepId(step_id: state.id, path_taken_id: state.pathwayId)
             return env.formAPI.skipStep(pathwayStep, state.clientId, state.appointmentId)
