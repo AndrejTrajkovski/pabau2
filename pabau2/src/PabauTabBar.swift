@@ -204,6 +204,10 @@ public let tabBarReducer: Reducer<
     >.init { state, action, env in
 		switch action {
         
+        case .checkIn(.loaded(.patient(.steps(.steps(let idx, .gotSkipResponse(.success)))))):
+            return updateNumberOfCompletedSteps(&state)
+        case .checkIn(.loaded(.doctor(.steps(.steps(let idx, .gotSkipResponse(.success)))))):
+            return updateNumberOfCompletedSteps(&state)
         case .checkIn(.loaded(.patient(.steps(.steps(let idx, .stepType(let stepTypeAction)))))):
             return updateAppointmentsStepsComplete(idx: idx, stepTypeAction: stepTypeAction, state: &state)
         case .checkIn(.loaded(.doctor(.steps(.steps(let idx, .stepType(let stepTypeAction)))))):
@@ -425,8 +429,7 @@ extension TabBarState {
 	}
 }
 
-fileprivate func updateAppointmentsStepsComplete(idx: Int, stepTypeAction: StepTypeAction, state: inout TabBarState) -> Effect<TabBarAction, Never> {
-    guard stepTypeAction.isStepCompleteAction else { return .none }
+fileprivate func updateNumberOfCompletedSteps(_ state: inout TabBarState) -> Effect<TabBarAction, Never> {
     if case .loaded(let loadedState) = state.checkIn?.loadingOrLoaded {
         var app = loadedState.appointment
         guard var pathwayInfo = app.pathways[id: loadedState.pathway.id] else { return .none }
@@ -438,4 +441,9 @@ fileprivate func updateAppointmentsStepsComplete(idx: Int, stepTypeAction: StepT
         state.calendar.replace(app: CalendarEvent.appointment(app))
     }
     return .none
+}
+
+fileprivate func updateAppointmentsStepsComplete(idx: Int, stepTypeAction: StepTypeAction, state: inout TabBarState) -> Effect<TabBarAction, Never> {
+    guard stepTypeAction.isStepCompleteAction else { return .none }
+    return updateNumberOfCompletedSteps(&state)
 }
