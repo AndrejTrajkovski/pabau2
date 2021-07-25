@@ -13,8 +13,6 @@ public struct HTMLFormView<Footer: View>: View {
                 @ViewBuilder footer: @escaping () -> Footer?) {
 		self.store = store
 		self.isCheckingDetails = isCheckingDetails
-		UITableViewHeaderFooterView.appearance().tintColor = UIColor.white
-		UITableView.appearance().separatorStyle = .none
         self.footer = footer
 	}
 
@@ -32,7 +30,9 @@ public struct HTMLFormView<Footer: View>: View {
 					)
 				}
 			}
-			footer()
+            if let myFooter = footer() {
+                myFooter
+            }
 		}
 	}
 }

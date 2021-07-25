@@ -48,7 +48,7 @@ public struct CheckPatientDetails: View {
     
     public var body: some View {
         ScrollView {
-            VStack {
+            LazyVStack {
                 if let clientBuilder = viewStore.state.clientBuilder {
                     PatientDetailsForm(
                         store: Store.init(

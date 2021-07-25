@@ -43,7 +43,7 @@ struct CheckPatientDetailsFooter: View {
     }
     
     var body: some View {
-        HStack {
+        Group {
             PrimaryButton(Texts.toPatientMode,
                           isDisabled: false,
                           { viewStore.send(.backToPatientMode) }
