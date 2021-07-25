@@ -24,7 +24,6 @@
 		82182C5325265C5D00E5479F /* Login in Frameworks */ = {isa = PBXBuildFile; productRef = 82182C5225265C5D00E5479F /* Login */; };
 		82182C5525265C5D00E5479F /* Model in Frameworks */ = {isa = PBXBuildFile; productRef = 82182C5425265C5D00E5479F /* Model */; };
 		82182C5725265C5D00E5479F /* Util in Frameworks */ = {isa = PBXBuildFile; productRef = 82182C5625265C5D00E5479F /* Util */; };
-		8223F5EE264FC1230056023C /* CheckInMiddleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8223F5ED264FC1230056023C /* CheckInMiddleware.swift */; };
 		8223F5F0265115FD0056023C /* CalendarList in Frameworks */ = {isa = PBXBuildFile; productRef = 8223F5EF265115FD0056023C /* CalendarList */; };
 		825BE7EA2436226300422910 /* checkIn.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 825BE7E92436226300422910 /* checkIn.mp4 */; };
 		82811EF423E06BCB0066AFDC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82811EF323E06BCB0066AFDC /* ContentView.swift */; };
@@ -71,7 +70,6 @@
 		82104534240CE516004EA838 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		82104536240CE524004EA838 /* libswiftXCTest.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftXCTest.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/libswiftXCTest.tbd; sourceTree = DEVELOPER_DIR; };
 		8223F5EC264FB9F20056023C /* CalendarList */ = {isa = PBXFileReference; lastKnownFileType = folder; path = CalendarList; sourceTree = "<group>"; };
-		8223F5ED264FC1230056023C /* CheckInMiddleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInMiddleware.swift; sourceTree = "<group>"; };
 		823B35962664E51600A07F1E /* PathwayList */ = {isa = PBXFileReference; lastKnownFileType = folder; path = PathwayList; sourceTree = "<group>"; };
 		8246DB37256FCE2300F5D87E /* Filters */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Filters; sourceTree = "<group>"; };
 		82533424256D0C69005755D6 /* AddShift */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AddShift; sourceTree = "<group>"; };
@@ -237,7 +235,6 @@
 				82BE2F5523D97D9F00B3678A /* Info.plist */,
 				82811EF323E06BCB0066AFDC /* ContentView.swift */,
 				82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */,
-				8223F5ED264FC1230056023C /* CheckInMiddleware.swift */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -394,7 +391,6 @@
 				82BE2F4823D97D9C00B3678A /* AppDelegate.swift in Sources */,
 				82F6ADAE23F2C7B1001B3ACE /* PabauTabBar.swift in Sources */,
 				82BE2F4A23D97D9C00B3678A /* SceneDelegate.swift in Sources */,
-				8223F5EE264FC1230056023C /* CheckInMiddleware.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

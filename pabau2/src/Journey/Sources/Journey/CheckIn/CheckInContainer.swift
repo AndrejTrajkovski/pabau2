@@ -90,11 +90,7 @@ public let checkInLoadedReducer: Reducer<CheckInLoadedState, CheckInLoadedAction
         action: /CheckInLoadedAction.patient,
         environment: { $0 }
     ),
-    //	checkInMainReducer.pullback(
-    //		state: \CheckInContainerState.doctorCheckIn,
-    //		action: /CheckInContainerAction.doctor,
-    //		environment: { $0 }
-    //	),
+    
     navigationReducer.pullback(
         state: \CheckInLoadedState.self,
         action: /CheckInLoadedAction.self,
