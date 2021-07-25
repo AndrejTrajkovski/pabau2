@@ -124,6 +124,12 @@ func getForm(stepAndEntry: StepAndStepEntry, formAPI: FormAPI, clientId: Client.
 			return nil
 		case .photos:
 			return nil
-		}
+        case .lab:
+            return nil
+        case .video:
+            return nil
+        case .timeline:
+            return nil
+        }
 	}
 }

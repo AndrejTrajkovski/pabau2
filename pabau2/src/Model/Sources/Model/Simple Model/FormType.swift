@@ -10,7 +10,6 @@ public enum FormType: String, Codable, Equatable {
 	case prescription = "prescription"
 	case epaper
     case unknown
-//	case photos = "photos"
 	
 	public init?(stepType: StepType) {
 		switch stepType {
@@ -22,8 +21,8 @@ public enum FormType: String, Codable, Equatable {
 			self = .treatment
 		case .prescriptions:
 			self = .prescription
-		case .checkpatient, .patientdetails, .photos, .aftercares:
+        case .checkpatient, .patientdetails, .photos, .aftercares, .lab, .video, .timeline:
 			return nil
-		}
+        }
 	}
 }

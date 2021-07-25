@@ -25,7 +25,7 @@ public enum StepBodyState: Equatable {
     case htmlForm(HTMLFormStepContainerState)
     case photos(PhotosState)
     case aftercare(Aftercare)
-    case checkPatient(CheckPatient)
+    case checkPatientDetails(CheckPatientDetailsState)
     
     
     init(stepAndEntry: StepAndStepEntry, clientId: Client.ID, pathway: Pathway, appId: Appointment.ID) {
@@ -49,7 +49,7 @@ public enum StepBodyState: Equatable {
             case .aftercares:
                 self = .aftercare(Aftercare.mock(id: stepAndEntry.step.id))
             case .checkpatient:
-                self = .checkPatient(CheckPatient(id: stepAndEntry.step.id, clientBuilder: nil, patForms: []))
+                self = .checkPatientDetails(CheckPatientDetailsState(id: stepAndEntry.step.id, clientBuilder: nil, patForms: []))
             case .photos:
                 self = .photos(PhotosState(id: stepAndEntry.step.id))
             default:
@@ -63,6 +63,7 @@ public enum StepBodyAction: Equatable {
     
     case patientDetails(PatientDetailsParentAction)
     case htmlForm(HTMLFormStepContainerAction)
+    case checkPatientDetails(CheckPatientDetailsAction)
     
     public var isStepCompleteAction: Bool {
         switch self {

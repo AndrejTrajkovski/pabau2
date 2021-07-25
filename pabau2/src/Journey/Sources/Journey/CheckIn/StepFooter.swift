@@ -2,6 +2,7 @@ import Model
 import SwiftUI
 import ComposableArchitecture
 import Form
+import Util
 
 struct StepFooter: View {
     let store: Store<StepState, StepAction>
@@ -24,7 +25,32 @@ struct CompleteButtonType: View {
                     then: PatientDetailsCompleteBtn.init(store:))
             CaseLet(state: /StepBodyState.htmlForm, action: StepBodyAction.htmlForm,
                     then: HTMLFormPathwayCompleteBtn.init(store:))
+            CaseLet(state: /StepBodyState.checkPatientDetails, action: StepBodyAction.checkPatientDetails,
+                    then: CheckPatientDetailsFooter.init(store:))
             Default { EmptyView () }
+        }
+    }
+}
+
+struct CheckPatientDetailsFooter: View {
+    
+    let store: Store<CheckPatientDetailsState, CheckPatientDetailsAction>
+    @ObservedObject var viewStore: ViewStore<Void, CheckPatientDetailsAction>
+    
+    init(store: Store<CheckPatientDetailsState, CheckPatientDetailsAction>) {
+        self.store = store
+        self.viewStore = ViewStore(store.stateless)
+    }
+    
+    var body: some View {
+        HStack {
+            PrimaryButton(Texts.toPatientMode,
+                          isDisabled: false,
+                          { viewStore.send(.backToPatientMode) }
+            )
+            CompleteButton(canComplete: true,
+                           onComplete: { viewStore.send(.complete) }
+            )
         }
     }
 }

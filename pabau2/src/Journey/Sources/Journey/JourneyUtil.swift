@@ -26,7 +26,13 @@ func stepToModeMap(_ stepType: StepType) -> JourneyMode {
 	case .prescriptions: return .doctor
 	case .photos: return .doctor
 	case .aftercares: return .doctor
-	}
+    case .lab:
+        return .doctor
+    case .video:
+        return .patient
+    case .timeline:
+        return .doctor
+    }
 }
 
 let filterStepType = filterBy

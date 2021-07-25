@@ -11,11 +11,12 @@ public enum StepType: String, Codable, Equatable, CaseIterable, Identifiable {
 	case consents = "consent"
 	case checkpatient = "checkPatient"
 	case treatmentnotes = "treatment"
-	case prescriptions = "prescriptions"
-	case photos = "photos"
+	case prescriptions = "prescription"
+	case photos = "photo"
 	case aftercares = "aftercare"
-//	case mediaimages = "mediaImages"
-//	case mediavideos = "mediaVideos"
+    case lab
+    case video
+    case timeline
 
 	public var isHTMLForm: Bool {
 		switch self {
@@ -44,10 +45,12 @@ public enum StepType: String, Codable, Equatable, CaseIterable, Identifiable {
 			return "Photos"
 		case .aftercares:
 			return "Aftercare"
-//		case .mediaimages:
-//			return "Image"
-//		case .mediavideos:
-//			return "Video"
-		}
+        case .lab:
+            return "Lab"
+        case .video:
+            return "Video"
+        case .timeline:
+            return "Timeline"
+        }
 	}
 }

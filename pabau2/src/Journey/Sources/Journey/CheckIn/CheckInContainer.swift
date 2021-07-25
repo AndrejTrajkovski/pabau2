@@ -118,6 +118,35 @@ public let navigationReducer = Reducer<CheckInLoadedState, CheckInLoadedAction, 
         //TODO goToNextUncomplete
         //		state.patie.goToNextUncomplete()
     }
+    
+    func showHandBackDevice() {
+        state.isHandBackDeviceActive = true
+    }
+    
+    func updateCheckPatientDetails() {
+        
+        let patientDetails: ClientBuilder? = state.patientCheckIn.stepStates.compactMap {
+            guard case .patientDetails(let patientDetails) = $0.stepBody else { return nil }
+            return patientDetails.patientDetails
+        }.last
+        
+        let htmlForms: [HTMLForm] = state.patientCheckIn.stepStates.compactMap {
+            guard case .htmlForm(let htmlForm) = $0.stepBody else { return nil }
+            return htmlForm.chosenForm?.form
+        }
+        
+        var updatedSteps: [StepState] = state.doctorCheckIn.stepStates.map {
+            guard case .checkPatientDetails(var checkPatientDetails) = $0.stepBody else { return $0 }
+            checkPatientDetails.clientBuilder = patientDetails
+            checkPatientDetails.patForms = htmlForms
+            var copy = $0
+            copy.stepBody = .checkPatientDetails(checkPatientDetails)
+            return copy
+        }
+        
+        state.doctorCheckIn.stepStates = updatedSteps
+    }
+    
     switch action {
     case .didTouchHandbackDevice:
         state.passcodeForDoctorMode = PasscodeState()
@@ -125,10 +154,12 @@ public let navigationReducer = Reducer<CheckInLoadedState, CheckInLoadedAction, 
         if state.patientCheckIn.isOnLastStep {
             switch stepAction {
             case .gotSkipResponse(.success(_)):
-                state.isHandBackDeviceActive = true
+                showHandBackDevice()
+                updateCheckPatientDetails()
             case .stepType(let steTypeAction):
                 if steTypeAction.isStepCompleteAction {
-                    state.isHandBackDeviceActive = true
+                    showHandBackDevice()
+                    updateCheckPatientDetails()
                 }
             default:
                 break
