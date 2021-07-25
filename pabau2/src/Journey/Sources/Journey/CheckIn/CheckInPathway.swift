@@ -69,8 +69,23 @@ public struct CheckInPathwayState: Equatable {
     public var stepStates: [StepState]
     var selectedIdx: Int
     
-    var isOnLastStep: Bool {
-        stepStates.count == selectedIdx + 1
+    func isLastStep(index: Int) -> Bool {
+        return stepStates.count == index + 1
+    }
+    
+    func shouldNavigateToNext(_ stepAction: StepAction, _ index: Int) -> Bool {
+        if isLastStep(index: index) {
+            switch stepAction {
+            case .gotSkipResponse(.success(_)):
+                return true
+            case .stepType(let steTypeAction):
+                return steTypeAction.isStepCompleteAction
+            default:
+                return false
+            }
+        } else {
+            return false
+        }
     }
 }
 

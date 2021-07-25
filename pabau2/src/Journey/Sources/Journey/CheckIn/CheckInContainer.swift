@@ -40,6 +40,16 @@ public let checkInContainerOptionalReducer: Reducer<CheckInContainerState?, Chec
         ),
         .init { state, action, env in
             
+            if case CheckInContainerAction.loaded(.doctor(.steps(.steps(let index, let stepAction)))) = action {
+                if let checkInState = state,
+                   case CheckInLoadingOrLoadedState.loaded(let loadedState) = checkInState.loadingOrLoaded {
+                    if loadedState.doctorCheckIn.shouldNavigateToNext(stepAction, index) {
+                        state = nil
+                    }
+                }
+                
+            }
+            
             if case CheckInContainerAction.passcodeToClose(PasscodeAction.touchDigit(_)) = action,
                let passcodeState = state?.passcodeToClose,
                passcodeState.unlocked {
@@ -151,19 +161,9 @@ public let navigationReducer = Reducer<CheckInLoadedState, CheckInLoadedAction, 
     case .didTouchHandbackDevice:
         state.passcodeForDoctorMode = PasscodeState()
     case .patient(.steps(.steps(let idx, let stepAction))):
-        if state.patientCheckIn.isOnLastStep {
-            switch stepAction {
-            case .gotSkipResponse(.success(_)):
-                showHandBackDevice()
-                updateCheckPatientDetails()
-            case .stepType(let steTypeAction):
-                if steTypeAction.isStepCompleteAction {
-                    showHandBackDevice()
-                    updateCheckPatientDetails()
-                }
-            default:
-                break
-            }
+        if state.patientCheckIn.shouldNavigateToNext(stepAction, idx) {
+            showHandBackDevice()
+            updateCheckPatientDetails()
         }
     case .doctor(.steps(.steps(idx: _, action: .stepType(.checkPatientDetails(.backToPatientMode))))):
         backToPatientMode()

@@ -91,7 +91,6 @@
 		82BE2F4D23D97D9F00B3678A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		82BE2F5023D97D9F00B3678A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		82BE2F5523D97D9F00B3678A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		82C02732262AEA5400764597 /* Pathway */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Pathway; sourceTree = "<group>"; };
 		82D8240B24F648CD001F73C8 /* Calendar */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Calendar; sourceTree = "<group>"; };
 		82E9C11C24D021550023B98B /* Login */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Login; sourceTree = "<group>"; };
 		82E9C11D24D0242E0023B98B /* Util */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Util; sourceTree = "<group>"; };
@@ -209,7 +208,6 @@
 				08CF80E32645593B00A206BA /* ChoosePathway */,
 				08C19B32264BC26E00465BDA /* AppointmentDetails */,
 				82E9C12524D035A60023B98B /* Journey */,
-				82C02732262AEA5400764597 /* Pathway */,
 				0854E6A525F11B77007087B8 /* EPaper */,
 				82A5317525EFD63A00840749 /* Avatar */,
 				745E58A125D28B3A00EDD10D /* Appointments */,
