@@ -6,10 +6,10 @@ import Foundation
 public enum StepType: String, Codable, Equatable, CaseIterable, Identifiable {
 	public var id: String { rawValue }
 	
-	case patientdetails = ""
+	case patientdetails = "details"
 	case medicalhistory = "questionnaire"
 	case consents = "consent"
-	case checkpatient = "details"
+	case checkpatient = "checkPatient"
 	case treatmentnotes = "treatment"
 	case prescriptions = "prescription"
 	case photos = "photo"
