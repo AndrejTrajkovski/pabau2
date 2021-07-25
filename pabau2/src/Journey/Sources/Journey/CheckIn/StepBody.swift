@@ -8,11 +8,18 @@ public let stepBodyReducer: Reducer<StepBodyState, StepBodyAction, JourneyEnviro
     patientDetailsParentReducer.pullback(
         state: /StepBodyState.patientDetails,
         action: /StepBodyAction.patientDetails,
-        environment: makeFormEnv(_:)),
+        environment: makeFormEnv(_:)
+    ),
     htmlFormStepContainerReducer.pullback(
         state: /StepBodyState.htmlForm,
         action: /StepBodyAction.htmlForm,
-        environment: makeFormEnv(_:))
+        environment: makeFormEnv(_:)
+    ),
+    checkPatientDetailsReducer.pullback(
+        state: /StepBodyState.checkPatientDetails,
+        action: /StepBodyAction.checkPatientDetails,
+        environment: makeFormEnv(_:)
+    )
     
 //    patientCompleteReducer.pullback(
 //        state: \CheckInPatientState.isPatientComplete,
@@ -26,7 +33,6 @@ public enum StepBodyState: Equatable {
     case photos(PhotosState)
     case aftercare(Aftercare)
     case checkPatientDetails(CheckPatientDetailsState)
-    
     
     init(stepAndEntry: StepAndStepEntry, clientId: Client.ID, pathway: Pathway, appId: Appointment.ID) {
         if stepAndEntry.step.stepType.isHTMLForm {
@@ -85,6 +91,7 @@ struct StepBody: View {
         SwitchStore(store) {
             CaseLet(state: /StepBodyState.patientDetails, action: StepBodyAction.patientDetails, then: PatientDetailsParent.init(store:))
             CaseLet(state: /StepBodyState.htmlForm, action: StepBodyAction.htmlForm, then: HTMLFormStepContainer.init(store:))
+            CaseLet(state: /StepBodyState.checkPatientDetails, action: StepBodyAction.checkPatientDetails, then: CheckPatientDetails.init(store:))
             Default { EmptyView ()}
         }.modifier(FormFrame())
     }

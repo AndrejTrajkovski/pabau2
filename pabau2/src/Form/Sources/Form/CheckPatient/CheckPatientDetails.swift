@@ -4,6 +4,16 @@ import Util
 import Model
 import SharedComponents
 
+public let checkPatientDetailsReducer: Reducer<CheckPatientDetailsState, CheckPatientDetailsAction, FormEnvironment> = .init {
+    state, action, env in
+    switch action {
+    case .complete:
+        return .none//TODO NEED API
+    case .backToPatientMode:
+        return .none //handle somehwere in parentReducers
+    }
+}
+
 public enum CheckPatientDetailsAction: Equatable {
     case backToPatientMode
     case complete

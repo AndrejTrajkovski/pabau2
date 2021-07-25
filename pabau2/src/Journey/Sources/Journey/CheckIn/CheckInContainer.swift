@@ -165,7 +165,8 @@ public let navigationReducer = Reducer<CheckInLoadedState, CheckInLoadedAction, 
                 break
             }
         }
-        
+    case .doctor(.steps(.steps(idx: _, action: .stepType(.checkPatientDetails(.backToPatientMode))))):
+        backToPatientMode()
     //TODO
     //	case .doctor(.checkInBody(.footer(.toPatientMode))):
     //		backToPatientMode()
