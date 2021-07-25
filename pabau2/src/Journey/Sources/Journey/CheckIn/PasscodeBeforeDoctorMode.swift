@@ -168,6 +168,6 @@ struct PasscodeBeforeDoctorMode: View {
     var doctorCheckIn: some View {
         IfLetStore(store.scope(state: { $0.doctorCheckIn },
                                action: { .doctor($0) }),
-                   then: { _ in Text("TODO DOCTOR CHECK IN") })
+                   then: CheckInPathway.init(store:))
     }
 }

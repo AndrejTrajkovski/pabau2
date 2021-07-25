@@ -105,12 +105,17 @@ public let checkInLoadedReducer: Reducer<CheckInLoadedState, CheckInLoadedAction
         state: \CheckInLoadedState.passcodeForDoctorMode,
         action: /CheckInLoadedAction.passcodeForDoctorMode,
         environment: { $0 }
+    ),
+    
+    checkInPathwayReducer.pullback(
+        state: \CheckInLoadedState.doctorCheckIn,
+        action: /CheckInLoadedAction.doctor,
+        environment: { $0 }
     )
 )
 
 public let navigationReducer = Reducer<CheckInLoadedState, CheckInLoadedAction, Any> { state, action, _ in
     func backToPatientMode() {
-        state.isDoctorSummaryActive = false
         state.isDoctorCheckInMainActive = false
         state.passcodeForDoctorMode = nil
         state.isHandBackDeviceActive = false

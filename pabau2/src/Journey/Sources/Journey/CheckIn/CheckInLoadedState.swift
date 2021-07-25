@@ -18,13 +18,12 @@ public struct CheckInLoadedState: Equatable {
 	
     var passcodeForDoctorMode: PasscodeState?
 	var isDoctorCheckInMainActive: Bool = false
-	var isDoctorSummaryActive: Bool = false
 }
 
 public enum CheckInLoadedAction: Equatable {
     case didTouchHandbackDevice
     case patient(CheckInPathwayAction)
-    case doctor(CheckInDoctorAction)
+    case doctor(CheckInPathwayAction)
     case passcodeForDoctorMode(PasscodeAction)
 }
 
