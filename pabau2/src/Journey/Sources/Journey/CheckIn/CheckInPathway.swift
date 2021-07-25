@@ -68,6 +68,10 @@ public struct CheckInPathwayState: Equatable {
     let pathwayTemplate: PathwayTemplate
     public var stepStates: [StepState]
     var selectedIdx: Int
+    
+    var isOnLastStep: Bool {
+        stepStates.count == selectedIdx + 1
+    }
 }
 
 // MARK: - CheckInState

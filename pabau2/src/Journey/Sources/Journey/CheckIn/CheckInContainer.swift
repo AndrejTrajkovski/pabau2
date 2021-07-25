@@ -7,26 +7,26 @@ import Util
 import SharedComponents
 
 public struct CheckInContainerState: Equatable {
-	public var loadingOrLoaded: CheckInLoadingOrLoadedState
-	var isAnimationFinished: Bool = false
-	public let appointment: Appointment
+    public var loadingOrLoaded: CheckInLoadingOrLoadedState
+    var isAnimationFinished: Bool = false
+    public let appointment: Appointment
     var passcodeToClose: PasscodeState?
     
-	public init(loadedState: CheckInLoadedState) {
-		self.loadingOrLoaded = .loaded(loadedState)
-		self.appointment = loadedState.appointment
-	}
-	
-	public init(loadingState: CheckInLoadingState) {
-		self.loadingOrLoaded = .loading(loadingState)
-		self.appointment = loadingState.appointment
-	}
+    public init(loadedState: CheckInLoadedState) {
+        self.loadingOrLoaded = .loaded(loadedState)
+        self.appointment = loadedState.appointment
+    }
+    
+    public init(loadingState: CheckInLoadingState) {
+        self.loadingOrLoaded = .loading(loadingState)
+        self.appointment = loadingState.appointment
+    }
 }
 
 public enum CheckInContainerAction: Equatable {
     case loaded(CheckInLoadedAction)
-	case checkInAnimationEnd
-	case loading(CheckInLoadingAction)
+    case checkInAnimationEnd
+    case loading(CheckInLoadingAction)
     case gotPathwaysResponse(Result<CombinedPathwayResponse, RequestError>)
     case passcodeToClose(PasscodeAction)
 }
@@ -51,25 +51,25 @@ public let checkInContainerOptionalReducer: Reducer<CheckInContainerState?, Chec
     )
 
 public let checkInContainerReducer: Reducer<CheckInContainerState, CheckInContainerAction, JourneyEnvironment> =
-	.combine(
-		
+    .combine(
+        
         passcodeOptReducer.pullback(
             state: \CheckInContainerState.passcodeToClose,
             action: /CheckInContainerAction.passcodeToClose,
             environment: { $0 }),
         
-		checkInLoadingOrLoadedReducer.pullback(
-			state: \CheckInContainerState.loadingOrLoaded,
-			action: /CheckInContainerAction.self,
-			environment: { $0 }),
-		
-		.init { state, action, _ in
-			
-			switch action {
-			case .checkInAnimationEnd:
-				state.isAnimationFinished = true
-			case .loading:
-				break
+        checkInLoadingOrLoadedReducer.pullback(
+            state: \CheckInContainerState.loadingOrLoaded,
+            action: /CheckInContainerAction.self,
+            environment: { $0 }),
+        
+        .init { state, action, _ in
+            
+            switch action {
+            case .checkInAnimationEnd:
+                state.isAnimationFinished = true
+            case .loading:
+                break
             case .gotPathwaysResponse(_):
                 break
             case .loaded(.patient(.stepsView(.onXTap))):
@@ -79,77 +79,92 @@ public let checkInContainerReducer: Reducer<CheckInContainerState, CheckInContai
             case .passcodeToClose:
                 break
             }
-			return .none
-		}
-)
+            return .none
+        }
+    )
 
 public let checkInLoadedReducer: Reducer<CheckInLoadedState, CheckInLoadedAction, JourneyEnvironment> = .combine(
-	
-	checkInPathwayReducer.pullback(
-		state: \CheckInLoadedState.patientCheckIn,
-		action: /CheckInLoadedAction.patient,
-		environment: { $0 }
-	),
-	//	checkInMainReducer.pullback(
-	//		state: \CheckInContainerState.doctorCheckIn,
-	//		action: /CheckInContainerAction.doctor,
-	//		environment: { $0 }
-	//	),
-	navigationReducer.pullback(
-		state: \CheckInLoadedState.self,
-		action: /CheckInLoadedAction.self,
-		environment: { $0 }
-	),
+    
+    checkInPathwayReducer.pullback(
+        state: \CheckInLoadedState.patientCheckIn,
+        action: /CheckInLoadedAction.patient,
+        environment: { $0 }
+    ),
+    //	checkInMainReducer.pullback(
+    //		state: \CheckInContainerState.doctorCheckIn,
+    //		action: /CheckInContainerAction.doctor,
+    //		environment: { $0 }
+    //	),
+    navigationReducer.pullback(
+        state: \CheckInLoadedState.self,
+        action: /CheckInLoadedAction.self,
+        environment: { $0 }
+    ),
     
     passcodeOptReducer.pullback(
-		state: \CheckInLoadedState.passcodeForDoctorMode,
-		action: /CheckInLoadedAction.passcodeForDoctorMode,
-		environment: { $0 })
+        state: \CheckInLoadedState.passcodeForDoctorMode,
+        action: /CheckInLoadedAction.passcodeForDoctorMode,
+        environment: { $0 }
+    )
 )
 
 public let navigationReducer = Reducer<CheckInLoadedState, CheckInLoadedAction, Any> { state, action, _ in
-	func backToPatientMode() {
-		state.isDoctorSummaryActive = false
-		state.isDoctorCheckInMainActive = false
-		state.passcodeForDoctorMode = nil
-		state.isHandBackDeviceActive = false
-		//TODO goToNextUncomplete
-		//		state.patie.goToNextUncomplete()
-	}
-	switch action {
-	case .didTouchHandbackDevice:
-		state.passcodeForDoctorMode = PasscodeState()
-	//TODO
-	//	case .doctor(.checkInBody(.footer(.toPatientMode))):
-	//		backToPatientMode()
-	//	case .doctor(.checkInBody(.footer(.photos(.addPhotos)))):
-	//		state.doctorForms.photosState.editPhotos = EditPhotosState([])
-	//	case .doctor(.checkInBody(.footer(.photos(.editPhotos)))):
-	//		state.doctorForms.photosState.editPhotos = EditPhotosState(state.doctorForms.photosState.selectedPhotos())
-	default:
-		break
-	}
-	return .none
+    func backToPatientMode() {
+        state.isDoctorSummaryActive = false
+        state.isDoctorCheckInMainActive = false
+        state.passcodeForDoctorMode = nil
+        state.isHandBackDeviceActive = false
+        //TODO goToNextUncomplete
+        //		state.patie.goToNextUncomplete()
+    }
+    switch action {
+    case .didTouchHandbackDevice:
+        state.passcodeForDoctorMode = PasscodeState()
+    case .patient(.steps(.steps(let idx, let stepAction))):
+        if state.patientCheckIn.isOnLastStep {
+            switch stepAction {
+            case .gotSkipResponse(.success(_)):
+                state.isHandBackDeviceActive = true
+            case .stepType(let steTypeAction):
+                if steTypeAction.isStepCompleteAction {
+                    state.isHandBackDeviceActive = true
+                }
+            default:
+                break
+            }
+        }
+        
+    //TODO
+    //	case .doctor(.checkInBody(.footer(.toPatientMode))):
+    //		backToPatientMode()
+    //	case .doctor(.checkInBody(.footer(.photos(.addPhotos)))):
+    //		state.doctorForms.photosState.editPhotos = EditPhotosState([])
+    //	case .doctor(.checkInBody(.footer(.photos(.editPhotos)))):
+    //		state.doctorForms.photosState.editPhotos = EditPhotosState(state.doctorForms.photosState.selectedPhotos())
+    default:
+        break
+    }
+    return .none
 }
 
 public struct CheckInContainer: View {
-	let store: Store<CheckInContainerState, CheckInContainerAction>
-	@ObservedObject var viewStore: ViewStore<State, CheckInContainerAction>
-	
-	struct State: Equatable {
-		let isAnimationFinished: Bool
-		let appointment: Appointment
-//        let isEnterPasscodeToGoBackActive: Bool
-		init(state: CheckInContainerState) {
-			self.appointment = state.appointment
-			self.isAnimationFinished = state.isAnimationFinished
-//            self.isEnterPasscodeToGoBackActive = state.passcodeToClose != nil
-		}
-	}
-	
-	public init(store: Store<CheckInContainerState, CheckInContainerAction>) {
-		self.store = store
-		self.viewStore = ViewStore(store.scope(state: State.init(state:)))
+    let store: Store<CheckInContainerState, CheckInContainerAction>
+    @ObservedObject var viewStore: ViewStore<State, CheckInContainerAction>
+    
+    struct State: Equatable {
+        let isAnimationFinished: Bool
+        let appointment: Appointment
+        //        let isEnterPasscodeToGoBackActive: Bool
+        init(state: CheckInContainerState) {
+            self.appointment = state.appointment
+            self.isAnimationFinished = state.isAnimationFinished
+            //            self.isEnterPasscodeToGoBackActive = state.passcodeToClose != nil
+        }
+    }
+    
+    public init(store: Store<CheckInContainerState, CheckInContainerAction>) {
+        self.store = store
+        self.viewStore = ViewStore(store.scope(state: State.init(state:)))
     }
     
     public var body: some View {

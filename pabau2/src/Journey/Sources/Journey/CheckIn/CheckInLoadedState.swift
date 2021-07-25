@@ -14,7 +14,7 @@ public struct CheckInLoadedState: Equatable {
     public var patientCheckIn: CheckInPathwayState
     public var doctorCheckIn: CheckInPathwayState
     
-	var isPatientComplete: StepStatus = .pending
+    var isHandBackDeviceActive: Bool = false
 	
     var passcodeForDoctorMode: PasscodeState?
 	var isDoctorCheckInMainActive: Bool = false
@@ -52,14 +52,6 @@ extension CheckInLoadedState {
                                                  pathwayTemplate: pathwayTemplate,
                                                  stepStates: doctorStepStates,
                                                  selectedIdx: 0)
-	}
-}
-
-extension CheckInLoadedState {
-	
-	var isHandBackDeviceActive: Bool {
-		get { isPatientComplete == .completed }
-		set { isPatientComplete = newValue ? .completed : .pending }
 	}
 }
 

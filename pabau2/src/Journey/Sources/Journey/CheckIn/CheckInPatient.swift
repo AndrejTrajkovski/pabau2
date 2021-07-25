@@ -6,20 +6,33 @@ import Util
 import SharedComponents
 
 struct CheckInPatientContainer: View {
-    let store: Store<CheckInLoadedState, CheckInLoadedAction>
     
-	var body: some View {
-        WithViewStore(store.scope(state: { $0.isHandBackDeviceActive })) { viewStore in
-            CheckInPathway(store: store.scope(state: { $0.patientCheckIn }, action: { .patient($0) }))
-            handBackDeviceLink(viewStore.state)
+    let store: Store<CheckInLoadedState, CheckInLoadedAction>
+    @ObservedObject var viewStore: ViewStore<State, Never>
+    
+    init(store: Store<CheckInLoadedState, CheckInLoadedAction>) {
+        self.store = store
+        self.viewStore = ViewStore(store.scope(state: State.init(state:)).actionless)
+    }
+    
+    struct State: Equatable {
+        let isHandBackDeviceActive: Bool
+        init(state: CheckInLoadedState) {
+            self.isHandBackDeviceActive = state.isHandBackDeviceActive
         }
-	}
-
-	func handBackDeviceLink(_ active: Bool) -> some View {
-		NavigationLink.emptyHidden(active,
-								   HandBackDevice(store: self.store)
-								   .navigationBarTitle("")
-								   .navigationBarHidden(true)
-		)
-	}
+    }
+    
+    var body: some View {
+        Group {
+            if viewStore.isHandBackDeviceActive {
+                NavigationLink.emptyHidden(true,
+                                           HandBackDevice(store: self.store)
+                                            .navigationBarTitle("")
+                                            .navigationBarHidden(true)
+                )
+            } else {
+                CheckInPathway(store: store.scope(state: { $0.patientCheckIn }, action: { .patient($0) }))
+            }
+        }
+    }
 }

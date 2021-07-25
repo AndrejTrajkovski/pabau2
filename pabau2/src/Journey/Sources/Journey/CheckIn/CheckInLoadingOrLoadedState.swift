@@ -75,11 +75,12 @@ struct CheckInLoadingOrLoaded: View {
 	let store: Store<CheckInLoadingOrLoadedState, CheckInContainerAction>
 	
 	var body: some View {
-		IfLetStore(store.scope(state: /CheckInLoadingOrLoadedState.loaded,
-                               action: { .loaded($0) }),
-				   then: CheckInPatientContainer.init(store:))
-		IfLetStore(store.scope(state: /CheckInLoadingOrLoadedState.loading,
-							   action: { .loading($0) }),
-				   then: CheckInLoading.init(store:))
+        print("CheckInLoadingOrLoaded")
+        return SwitchStore(store) {
+            CaseLet(state: /CheckInLoadingOrLoadedState.loaded, action: CheckInContainerAction.loaded,
+                    then: CheckInPatientContainer.init(store:))
+            CaseLet(state: /CheckInLoadingOrLoadedState.loading, action: CheckInContainerAction.loading,
+                    then: CheckInLoading.init(store:))
+        }
 	}
 }
