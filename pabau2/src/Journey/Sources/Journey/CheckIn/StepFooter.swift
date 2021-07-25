@@ -9,20 +9,20 @@ struct StepFooter: View {
     var body: some View {
         HStack {
             SkipStepButton(store: store)
-            CompleteButtonType(store: store.scope(state: { $0.stepTypeState }, action: { .stepType($0) }))
+            CompleteButtonType(store: store.scope(state: { $0.stepBody }, action: { .stepType($0) }))
         }.padding([.leading, .trailing])
     }
 }
 
 struct CompleteButtonType: View {
-    let store: Store<StepTypeState, StepTypeAction>
+    let store: Store<StepBodyState, StepBodyAction>
     
     var body: some View {
         SwitchStore(store) {
-            CaseLet(state: /StepTypeState.patientDetails,
-                    action: StepTypeAction.patientDetails,
+            CaseLet(state: /StepBodyState.patientDetails,
+                    action: StepBodyAction.patientDetails,
                     then: PatientDetailsCompleteBtn.init(store:))
-            CaseLet(state: /StepTypeState.htmlForm, action: StepTypeAction.htmlForm,
+            CaseLet(state: /StepBodyState.htmlForm, action: StepBodyAction.htmlForm,
                     then: HTMLFormPathwayCompleteBtn.init(store:))
             Default { EmptyView () }
         }

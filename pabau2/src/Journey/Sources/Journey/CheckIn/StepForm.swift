@@ -74,8 +74,8 @@ public let stepReducer: Reducer<StepState, StepAction, JourneyEnvironment> = .co
         return .none
     },
     
-    stepTypeReducer.pullback(
-        state: \StepState.stepTypeState,
+    stepBodyReducer.pullback(
+        state: \StepState.stepBody,
         action: /StepAction.stepType,
         environment: { $0 }
     )
@@ -85,79 +85,7 @@ public enum StepAction: Equatable {
     case dismissToast
     case skipStep
     case gotSkipResponse(Result<StepStatus, RequestError>)
-    case stepType(StepTypeAction)
-}
-
-public enum StepTypeAction: Equatable {
-    
-    case patientDetails(PatientDetailsParentAction)
-    case htmlForm(HTMLFormStepContainerAction)
-    
-    public var isStepCompleteAction: Bool {
-        switch self {
-        case .patientDetails(.gotPOSTResponse(.success)):
-            return true
-        case .htmlForm(.chosenForm(.gotPOSTResponse(.success))):
-            return true
-        default:
-            return false
-        }
-    }
-}
-
-public let stepTypeReducer: Reducer<StepTypeState, StepTypeAction, JourneyEnvironment> = .combine(
-	patientDetailsParentReducer.pullback(
-		state: /StepTypeState.patientDetails,
-		action: /StepTypeAction.patientDetails,
-		environment: makeFormEnv(_:)),
-	htmlFormStepContainerReducer.pullback(
-		state: /StepTypeState.htmlForm,
-		action: /StepTypeAction.htmlForm,
-		environment: makeFormEnv(_:))
-	
-//	patientCompleteReducer.pullback(
-//		state: \CheckInPatientState.isPatientComplete,
-//		action: /CheckInPatientAction.patientComplete,
-//		environment: makeFormEnv(_:)),
-	)
-
-public enum StepTypeState: Equatable {
-    case patientDetails(PatientDetailsParentState)
-    case htmlForm(HTMLFormStepContainerState)
-    case photos(PhotosState)
-    case aftercare(Aftercare)
-    case checkPatient(CheckPatient)
-    
-    
-    init(stepAndEntry: StepAndStepEntry, clientId: Client.ID, pathway: Pathway, appId: Appointment.ID) {
-        if stepAndEntry.step.stepType.isHTMLForm {
-            let htmlFormState = HTMLFormStepContainerState(stepId: stepAndEntry.step.id,
-                                                           stepEntry: stepAndEntry.entry!,
-                                                           clientId: clientId,
-                                                           pathwayId: pathway.id,
-                                                           appointmentId: appId,
-                                                           canSkip: stepAndEntry.step.canSkip)
-            self = .htmlForm(htmlFormState)
-        } else {
-            switch stepAndEntry.step.stepType {
-            case .patientdetails:
-                self = .patientDetails(PatientDetailsParentState(id: stepAndEntry.step.id,
-                                                                 pathwayId: pathway.id,
-                                                                 clientId: clientId,
-                                                                 appointmentId: appId,
-                                                                 canSkip: stepAndEntry.step.canSkip)
-                )
-            case .aftercares:
-                self = .aftercare(Aftercare.mock(id: stepAndEntry.step.id))
-            case .checkpatient:
-                self = .checkPatient(CheckPatient(id: stepAndEntry.step.id, clientBuilder: nil, patForms: []))
-            case .photos:
-                self = .photos(PhotosState(id: stepAndEntry.step.id))
-            default:
-                fatalError()
-            }
-        }
-    }
+    case stepType(StepBodyAction)
 }
 
 public struct StepState: Equatable, Identifiable {
@@ -174,7 +102,7 @@ public struct StepState: Equatable, Identifiable {
     var skipStepState: LoadingState = .initial
     var toastAlert: ToastState<StepAction>?
     
-    var stepTypeState: StepTypeState
+    var stepBody: StepBodyState
 	
 	func info() -> StepFormInfo {
         return StepFormInfo(status: status, title: stepType.rawValue.uppercased())
@@ -188,7 +116,7 @@ public struct StepState: Equatable, Identifiable {
         self.clientId = clientId
         self.pathwayId = pathway.id
         self.status = stepAndEntry.entry?.status ?? .pending
-        self.stepTypeState = StepTypeState(stepAndEntry: stepAndEntry, clientId: clientId, pathway: pathway, appId: appId)
+        self.stepBody = StepBodyState(stepAndEntry: stepAndEntry, clientId: clientId, pathway: pathway, appId: appId)
 	}
 }
 
@@ -198,21 +126,8 @@ struct StepForm: View {
     
     var body: some View {
         VStack {
-            StepBody(store: store.scope(state: { $0.stepTypeState }, action: { .stepType($0) }))
+            StepBody(store: store.scope(state: { $0.stepBody }, action: { .stepType($0) }))
             StepFooter(store: store)
         }.toast(store: store.scope(state: { $0.toastAlert }))
     }
-}
-
-struct StepBody: View {
-	
-	let store: Store<StepTypeState, StepTypeAction>
-	
-	var body: some View {
-		SwitchStore(store) {
-			CaseLet(state: /StepTypeState.patientDetails, action: StepTypeAction.patientDetails, then: PatientDetailsParent.init(store:))
-			CaseLet(state: /StepTypeState.htmlForm, action: StepTypeAction.htmlForm, then: HTMLFormStepContainer.init(store:))
-            Default { EmptyView ()}
-		}.modifier(FormFrame())
-	}
 }

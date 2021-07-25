@@ -96,13 +96,13 @@ func getForms(stepsAndEntries: [StepAndStepEntry], formAPI: FormAPI, clientId: C
 	return stepActions
 }
 
-func getForm(stepAndEntry: StepAndStepEntry, formAPI: FormAPI, clientId: Client.ID) -> Effect<StepTypeAction, Never>? {
+func getForm(stepAndEntry: StepAndStepEntry, formAPI: FormAPI, clientId: Client.ID) -> Effect<StepBodyAction, Never>? {
 	if stepAndEntry.step.stepType.isHTMLForm {
         print(stepAndEntry)
 		guard let templateId = stepAndEntry.entry?.htmlFormInfo?.chosenFormTemplateId else {
 			return nil
 		}
-        let pipeInits: (Result<HTMLForm, RequestError>) -> StepTypeAction = pipe(HTMLFormAction.gotForm, HTMLFormStepContainerAction.chosenForm, StepTypeAction.htmlForm)
+        let pipeInits: (Result<HTMLForm, RequestError>) -> StepBodyAction = pipe(HTMLFormAction.gotForm, HTMLFormStepContainerAction.chosenForm, StepBodyAction.htmlForm)
         
 		return formAPI.getForm(templateId: templateId, entryId: stepAndEntry.entry?.htmlFormInfo?.formEntryId)
 			.catchToEffect()
@@ -117,7 +117,7 @@ func getForm(stepAndEntry: StepAndStepEntry, formAPI: FormAPI, clientId: Client.
 			return formAPI.getPatientDetails(clientId: clientId)
 				.catchToEffect()
 				.map { $0.map(ClientBuilder.init(client:))}
-				.map(pipe(PatientDetailsParentAction.gotGETResponse, StepTypeAction.patientDetails))
+				.map(pipe(PatientDetailsParentAction.gotGETResponse, StepBodyAction.patientDetails))
 		case .aftercares:
 			return nil
 		case .checkpatient:

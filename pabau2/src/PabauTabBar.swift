@@ -443,7 +443,7 @@ fileprivate func updateNumberOfCompletedSteps(_ state: inout TabBarState) -> Eff
     return .none
 }
 
-fileprivate func updateAppointmentsStepsComplete(idx: Int, stepTypeAction: StepTypeAction, state: inout TabBarState) -> Effect<TabBarAction, Never> {
+fileprivate func updateAppointmentsStepsComplete(idx: Int, stepTypeAction: StepBodyAction, state: inout TabBarState) -> Effect<TabBarAction, Never> {
     guard stepTypeAction.isStepCompleteAction else { return .none }
     return updateNumberOfCompletedSteps(&state)
 }
