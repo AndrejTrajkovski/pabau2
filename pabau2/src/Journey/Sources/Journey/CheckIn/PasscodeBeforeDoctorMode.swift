@@ -166,8 +166,7 @@ struct PasscodeBeforeDoctorMode: View {
     }
     
     var doctorCheckIn: some View {
-        IfLetStore(store.scope(state: { $0.doctorCheckIn },
-                               action: { .doctor($0) }),
-                   then: CheckInPathway.init(store:))
+        CheckInPathway.init(store: store.scope(state: { $0.doctorCheckIn },
+                               action: { .doctor($0) }))
     }
 }

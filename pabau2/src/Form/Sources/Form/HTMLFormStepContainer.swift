@@ -87,7 +87,7 @@ public struct HTMLFormStepContainerState: Equatable, Identifiable {
         self.possibleFormTemplates = htmlInfo.possibleFormTemplates
         self.canSkip = canSkip
         self.appointmentId = appointmentId
-        
+        //104371
         if let chosenFormTemplateId = htmlInfo.chosenFormTemplateId {
             let chosenFormInfo = htmlInfo.possibleFormTemplates[id: chosenFormTemplateId]!
             self.chosenForm = HTMLFormParentState(formTemplateName: chosenFormInfo.name,

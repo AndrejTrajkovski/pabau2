@@ -21,7 +21,7 @@ public enum FormType: String, Codable, Equatable {
 			self = .treatment
 		case .prescriptions:
 			self = .prescription
-        case .checkpatient, .patientdetails, .photos, .aftercares, .lab, .video, .timeline:
+        case .patientdetails, .photos, .aftercares, .lab, .video, .timeline:
 			return nil
         }
 	}

@@ -1,6 +1,7 @@
 import ComposableArchitecture
 
 public protocol FormAPI {
+    func updateStepStatus(_ stepStatus: StepStatus, _ pathwayStep: PathwayIdStepId, _ clientId: Client.ID, _ appointmentId: Appointment.ID) -> Effect<StepStatus, RequestError>
     func skipStep(_ pathwayStep: PathwayIdStepId, _ clientId: Client.ID, _ appointmentId: Appointment.ID) -> Effect<StepStatus, RequestError>
     func save(form: HTMLForm, clientId: Client.ID, pathwayStep: PathwayIdStepId?) -> Effect<FilledFormData.ID, RequestError>
     func getForm(templateId: FormTemplateInfo.ID,

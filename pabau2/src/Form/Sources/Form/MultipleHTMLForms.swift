@@ -17,11 +17,9 @@ struct MultipleHTMLForms: View {
     }
     
     var chosenForm: some View {
-        HTMLFormPathway(store: store)
-//        IfLetStore(store.scope(state: { $0.chosenForm }, action: { .chosenForm($0)}),
-//                   then: HTMLFormSkipButton(store: store),
-//                   else: { ChooseFormButton.init(store: store.stateless) }
-//        )
+        IfLetStore(store.scope(state: { $0.chosenForm }, action: { .chosenForm($0)}),
+                   then: { formStore in HTMLFormParent.init(store: formStore, footer: { }) }
+        )
     }
 }
 

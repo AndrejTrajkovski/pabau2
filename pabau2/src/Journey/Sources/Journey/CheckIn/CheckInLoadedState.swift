@@ -54,25 +54,24 @@ extension CheckInLoadedState {
 	}
 }
 
-let pipeToContainerAction = pipe(CheckInPathwayAction.steps,
+let pipeToPatientAction = pipe(CheckInPathwayAction.steps,
                                  CheckInLoadedAction.patient,
                                  CheckInContainerAction.loaded)
 
-let pipeToLoadedAction = pipe(CheckInPathwayAction.steps,
-                              CheckInLoadedAction.patient)
+let pipeToDoctorAction = pipe(CheckInPathwayAction.steps,
+                              CheckInLoadedAction.doctor)
 
 func toActions<Action>(_ pipeToAction: @escaping (StepsActions) -> Action, stepsActions: [Effect<StepsActions, Never>]) -> [Effect<Action, Never>] {
     return stepsActions.map { $0.map(pipeToAction) }
 }
 
 func toLoadedActions(stepsActions: [Effect<StepsActions, Never>]) -> [Effect<CheckInLoadedAction, Never>] {
-    return toActions(pipeToLoadedAction, stepsActions: stepsActions)
+    return toActions(pipeToDoctorAction, stepsActions: stepsActions)
 }
 
 func toCheckContainerAction(stepsActions: [Effect<StepsActions, Never>]) -> [Effect<CheckInContainerAction, Never>] {
-    return toActions(pipeToContainerAction, stepsActions: stepsActions)
+    return toActions(pipeToPatientAction, stepsActions: stepsActions)
 }
-
 
 let getFormsForPathway = uncurry(pipe(stepsAndEntries(_:_:_:), curry(getForms(stepsAndEntries:formAPI:clientId:))))
 
@@ -153,8 +152,6 @@ func getForm(stepAndEntry: StepAndStepEntry, formAPI: FormAPI, clientId: Client.
 				.map { $0.map(ClientBuilder.init(client:))}
 				.map(pipe(PatientDetailsParentAction.gotGETResponse, StepBodyAction.patientDetails))
 		case .aftercares:
-			return nil
-		case .checkpatient:
 			return nil
 		case .photos:
 			return nil

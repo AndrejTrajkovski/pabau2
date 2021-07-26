@@ -21,7 +21,6 @@ func stepToModeMap(_ stepType: StepType) -> JourneyMode {
 	case .patientdetails: return .patient
 	case .medicalhistory: return .patient
 	case .consents: return .patient
-	case .checkpatient: return .doctor
 	case .treatmentnotes: return .doctor
 	case .prescriptions: return .doctor
 	case .photos: return .doctor

@@ -16,7 +16,7 @@ public let stepBodyReducer: Reducer<StepBodyState, StepBodyAction, JourneyEnviro
         environment: makeFormEnv(_:)
     ),
     checkPatientDetailsReducer.pullback(
-        state: /StepBodyState.checkPatientDetails,
+        state: /StepBodyState.timeline,
         action: /StepBodyAction.checkPatientDetails,
         environment: makeFormEnv(_:)
     )
@@ -32,7 +32,7 @@ public enum StepBodyState: Equatable {
     case htmlForm(HTMLFormStepContainerState)
     case photos(PhotosState)
     case aftercare(Aftercare)
-    case checkPatientDetails(CheckPatientDetailsState)
+    case timeline(CheckPatientDetailsState)
     
     init(stepAndEntry: StepAndStepEntry, clientId: Client.ID, pathway: Pathway, appId: Appointment.ID) {
         if stepAndEntry.step.stepType.isHTMLForm {
@@ -54,8 +54,8 @@ public enum StepBodyState: Equatable {
                 )
             case .aftercares:
                 self = .aftercare(Aftercare.mock(id: stepAndEntry.step.id))
-            case .checkpatient:
-                self = .checkPatientDetails(CheckPatientDetailsState(id: stepAndEntry.step.id, clientBuilder: nil, patForms: []))
+            case .timeline:
+                self = .timeline(CheckPatientDetailsState(id: stepAndEntry.step.id, clientBuilder: nil, patForms: []))
             case .photos:
                 self = .photos(PhotosState(id: stepAndEntry.step.id))
             default:
@@ -91,7 +91,7 @@ struct StepBody: View {
         SwitchStore(store) {
             CaseLet(state: /StepBodyState.patientDetails, action: StepBodyAction.patientDetails, then: PatientDetailsParent.init(store:))
             CaseLet(state: /StepBodyState.htmlForm, action: StepBodyAction.htmlForm, then: HTMLFormStepContainer.init(store:))
-            CaseLet(state: /StepBodyState.checkPatientDetails, action: StepBodyAction.checkPatientDetails, then: CheckPatientDetails.init(store:))
+            CaseLet(state: /StepBodyState.timeline, action: StepBodyAction.checkPatientDetails, then: CheckPatientDetails.init(store:))
             Default { EmptyView ()}
         }.modifier(FormFrame())
     }

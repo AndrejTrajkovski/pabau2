@@ -9,7 +9,6 @@ public enum StepType: String, Codable, Equatable, CaseIterable, Identifiable {
 	case patientdetails = "details"
 	case medicalhistory = "questionnaire"
 	case consents = "consent"
-	case checkpatient
 	case treatmentnotes = "treatment"
 	case prescriptions = "prescription"
 	case photos = "photo"
@@ -35,8 +34,6 @@ public enum StepType: String, Codable, Equatable, CaseIterable, Identifiable {
 			return "Medical History"
 		case .consents:
 			return "Consents"
-		case .checkpatient:
-			return "Check Patient Details"
 		case .treatmentnotes:
 			return "Treatment Notes"
 		case .prescriptions:
@@ -61,8 +58,6 @@ public enum StepType: String, Codable, Equatable, CaseIterable, Identifiable {
         case .medicalhistory:
             return true
         case .consents:
-            return true
-        case .checkpatient:
             return true
         case .treatmentnotes:
             return true

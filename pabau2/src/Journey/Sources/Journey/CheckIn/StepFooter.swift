@@ -25,7 +25,7 @@ struct CompleteButtonType: View {
                     then: PatientDetailsCompleteBtn.init(store:))
             CaseLet(state: /StepBodyState.htmlForm, action: StepBodyAction.htmlForm,
                     then: HTMLFormPathwayCompleteBtn.init(store:))
-            CaseLet(state: /StepBodyState.checkPatientDetails, action: StepBodyAction.checkPatientDetails,
+            CaseLet(state: /StepBodyState.timeline, action: StepBodyAction.checkPatientDetails,
                     then: CheckPatientDetailsFooter.init(store:))
             Default { EmptyView () }
         }

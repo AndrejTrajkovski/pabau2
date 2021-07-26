@@ -101,9 +101,9 @@ public let checkInLoadedReducer: Reducer<CheckInLoadedState, CheckInLoadedAction
         environment: { $0 }
     ),
     
-    navigationReducer.pullback(
-        state: \CheckInLoadedState.self,
-        action: /CheckInLoadedAction.self,
+    checkInPathwayReducer.pullback(
+        state: \CheckInLoadedState.doctorCheckIn,
+        action: /CheckInLoadedAction.doctor,
         environment: { $0 }
     ),
     
@@ -113,9 +113,9 @@ public let checkInLoadedReducer: Reducer<CheckInLoadedState, CheckInLoadedAction
         environment: { $0 }
     ),
     
-    checkInPathwayReducer.pullback(
-        state: \CheckInLoadedState.doctorCheckIn,
-        action: /CheckInLoadedAction.doctor,
+    navigationReducer.pullback(
+        state: \CheckInLoadedState.self,
+        action: /CheckInLoadedAction.self,
         environment: { $0 }
     )
 )
@@ -142,11 +142,11 @@ public let navigationReducer = Reducer<CheckInLoadedState, CheckInLoadedAction, 
         }
         
         var updatedSteps: [StepState] = state.doctorCheckIn.stepStates.map {
-            guard case .checkPatientDetails(var checkPatientDetails) = $0.stepBody else { return $0 }
+            guard case .timeline(var checkPatientDetails) = $0.stepBody else { return $0 }
             checkPatientDetails.clientBuilder = patientDetails
             checkPatientDetails.patForms = htmlForms
             var copy = $0
-            copy.stepBody = .checkPatientDetails(checkPatientDetails)
+            copy.stepBody = .timeline(checkPatientDetails)
             return copy
         }
         
@@ -166,6 +166,10 @@ public let navigationReducer = Reducer<CheckInLoadedState, CheckInLoadedAction, 
         backToPatientMode()
     case .doctor(.stepsView(.onXTap)):
         backToPatientMode()
+    case .passcodeForDoctorMode(.touchDigit(_)):
+        if state.passcodeForDoctorMode?.unlocked == true {
+            return getLoadedActionsOneAfterAnother(state.pathway, state.pathwayTemplate, .doctor, env.formAPI, state.appointment.customerId)
+        }
     //TODO
     //	case .doctor(.checkInBody(.footer(.toPatientMode))):
     //		backToPatientMode()
