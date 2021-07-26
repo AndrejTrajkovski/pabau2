@@ -120,17 +120,13 @@ public let checkInLoadedReducer: Reducer<CheckInLoadedState, CheckInLoadedAction
     )
 )
 
-public let navigationReducer = Reducer<CheckInLoadedState, CheckInLoadedAction, Any> { state, action, _ in
+public let navigationReducer = Reducer<CheckInLoadedState, CheckInLoadedAction, JourneyEnvironment> { state, action, env in
     func backToPatientMode() {
         state.isDoctorCheckInMainActive = false
         state.passcodeForDoctorMode = nil
         state.isHandBackDeviceActive = false
         //TODO goToNextUncomplete
         //		state.patie.goToNextUncomplete()
-    }
-    
-    func showHandBackDevice() {
-        state.isHandBackDeviceActive = true
     }
     
     func updateCheckPatientDetails() {
@@ -162,8 +158,9 @@ public let navigationReducer = Reducer<CheckInLoadedState, CheckInLoadedAction, 
         state.passcodeForDoctorMode = PasscodeState()
     case .patient(.steps(.steps(let idx, let stepAction))):
         if state.patientCheckIn.shouldNavigateToNext(stepAction, idx) {
-            showHandBackDevice()
+            state.isHandBackDeviceActive = true
             updateCheckPatientDetails()
+            return .none
         }
     case .doctor(.steps(.steps(idx: _, action: .stepType(.checkPatientDetails(.backToPatientMode))))):
         backToPatientMode()

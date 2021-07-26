@@ -54,22 +54,46 @@ extension CheckInLoadedState {
 	}
 }
 
-func toCheckInForms(stepsActions: [Effect<StepsActions, Never>]) -> [Effect<CheckInContainerAction, Never>] {
-    let pipeInits = pipe(CheckInPathwayAction.steps,
-                         CheckInLoadedAction.patient,
-                         CheckInContainerAction.loaded)
-    return stepsActions.map { $0.map(pipeInits) }
+let pipeToContainerAction = pipe(CheckInPathwayAction.steps,
+                                 CheckInLoadedAction.patient,
+                                 CheckInContainerAction.loaded)
+
+let pipeToLoadedAction = pipe(CheckInPathwayAction.steps,
+                              CheckInLoadedAction.patient)
+
+func toActions<Action>(_ pipeToAction: @escaping (StepsActions) -> Action, stepsActions: [Effect<StepsActions, Never>]) -> [Effect<Action, Never>] {
+    return stepsActions.map { $0.map(pipeToAction) }
 }
 
+func toLoadedActions(stepsActions: [Effect<StepsActions, Never>]) -> [Effect<CheckInLoadedAction, Never>] {
+    return toActions(pipeToLoadedAction, stepsActions: stepsActions)
+}
+
+func toCheckContainerAction(stepsActions: [Effect<StepsActions, Never>]) -> [Effect<CheckInContainerAction, Never>] {
+    return toActions(pipeToContainerAction, stepsActions: stepsActions)
+}
+
+
 let getFormsForPathway = uncurry(pipe(stepsAndEntries(_:_:_:), curry(getForms(stepsAndEntries:formAPI:clientId:))))
-let getCheckInFormsForPathway = pipe(getFormsForPathway, toCheckInForms(stepsActions:))
+
+let getCheckInFormsForPathway = pipe(getFormsForPathway, toCheckContainerAction(stepsActions:))
+let getLoadedActionsFormsForPathway = pipe(getFormsForPathway, toLoadedActions(stepsActions:))
+
+func getLoadedActionsOneAfterAnother(_ pathway: Pathway,
+                                     _ template: PathwayTemplate,
+                                     _ journeyMode: JourneyMode,
+                                     _ formAPI: FormAPI,
+                                     _ clientId: Client.ID) -> Effect<CheckInLoadedAction, Never> {
+    let effects = with(((pathway, template, journeyMode), formAPI, clientId), getLoadedActionsFormsForPathway)
+    return Effect.concatenate(effects)
+}
+
 public func getCheckInFormsOneAfterAnother(pathway: Pathway,
                                            template: PathwayTemplate,
                                            journeyMode: JourneyMode,
                                            formAPI: FormAPI,
                                            clientId: Client.ID) -> Effect<CheckInContainerAction, Never> {
     let effects = with(((pathway, template, journeyMode), formAPI, clientId), getCheckInFormsForPathway)
-    print("number of requests:", effects.count)
     return Effect.concatenate(effects)
 }
 
@@ -99,12 +123,22 @@ func getForms(stepsAndEntries: [StepAndStepEntry], formAPI: FormAPI, clientId: C
 func getForm(stepAndEntry: StepAndStepEntry, formAPI: FormAPI, clientId: Client.ID) -> Effect<StepBodyAction, Never>? {
 	if stepAndEntry.step.stepType.isHTMLForm {
         print(stepAndEntry)
-		guard let templateId = stepAndEntry.entry?.htmlFormInfo?.chosenFormTemplateId else {
+		guard let templateToGet = stepAndEntry.entry?.htmlFormInfo?.chosenFormTemplateId else {
 			return nil
 		}
+        
+//        let templateToGet: HTMLForm.ID
+//        if let templateId = stepAndEntry.entry?.htmlFormInfo?.chosenFormTemplateId {
+//            templateToGet = templateId
+//        } else if let firstOfPossible = stepAndEntry.entry?.htmlFormInfo?.possibleFormTemplates.first?.id {
+//            templateToGet = firstOfPossible
+//        } else {
+//            return nil
+//        }
+        
         let pipeInits: (Result<HTMLForm, RequestError>) -> StepBodyAction = pipe(HTMLFormAction.gotForm, HTMLFormStepContainerAction.chosenForm, StepBodyAction.htmlForm)
         
-		return formAPI.getForm(templateId: templateId, entryId: stepAndEntry.entry?.htmlFormInfo?.formEntryId)
+		return formAPI.getForm(templateId: templateToGet, entryId: stepAndEntry.entry?.htmlFormInfo?.formEntryId)
 			.catchToEffect()
 			.map(pipeInits)
         
