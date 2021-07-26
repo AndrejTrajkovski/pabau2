@@ -31,10 +31,6 @@ struct SkipButton: View {
         )
         .buttonStyle(SkipButtonStyle(isDisabled: !canSkip))
         .disabled(!canSkip)
-        .shadow(color: Color.bigBtnShadow1,
-                radius: 4.0,
-                y: 5
-        )
         .cornerRadius(4)
     }
 }
