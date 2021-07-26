@@ -88,41 +88,63 @@ public struct HTMLFormStepContainerState: Equatable, Identifiable {
         self.canSkip = canSkip
         self.appointmentId = appointmentId
         
-        switch htmlInfo.possibleFormTemplates.count {
-        case 0, Int.min...(-1):
-            self.choosingForm = nil
-            self.chosenForm = nil
-        case 1:
-            self.choosingForm = nil
-            let chosenFormInfo = htmlInfo.possibleFormTemplates.first!
+        if let chosenFormTemplateId = htmlInfo.chosenFormTemplateId {
+            let chosenFormInfo = htmlInfo.possibleFormTemplates[id: chosenFormTemplateId]!
             self.chosenForm = HTMLFormParentState(formTemplateName: chosenFormInfo.name,
-                                                    formType: chosenFormInfo.type,
-                                                    formEntryID: htmlInfo.formEntryId,
-                                                    formTemplateId: chosenFormInfo.id,
-                                                    clientId: clientId,
-                                                    pathwayIdStepId: PathwayIdStepId(step_id: stepId,
-                                                                                     path_taken_id: pathwayId)
+                                                  formType: chosenFormInfo.type,
+                                                  formEntryID: htmlInfo.formEntryId,
+                                                  formTemplateId: chosenFormInfo.id,
+                                                  clientId: clientId,
+                                                  pathwayIdStepId: PathwayIdStepId(step_id: stepId,
+                                                                                   path_taken_id: pathwayId)
             )
-        case 2...Int.max:
-            self.choosingForm = nil
-            if let chosenFormTemplateId = htmlInfo.chosenFormTemplateId {
-                let chosenFormInfo = htmlInfo.possibleFormTemplates[id: chosenFormTemplateId]!
-                self.chosenForm = HTMLFormParentState(formTemplateName: chosenFormInfo.name,
-                                                      formType: chosenFormInfo.type,
-                                                      formEntryID: htmlInfo.formEntryId,
-                                                      formTemplateId: chosenFormInfo.id,
-                                                      clientId: clientId,
-                                                      pathwayIdStepId: PathwayIdStepId(step_id: stepId,
-                                                                                       path_taken_id: pathwayId)
-                )
+        } else {
+            self.chosenForm = nil
+            if htmlInfo.possibleFormTemplates.count == 0 {
+                self.choosingForm = nil
             } else {
                 self.choosingForm = ChoosingFormState(possibleFormTemplates: htmlInfo.possibleFormTemplates,
                                                       tempChosenFormId: nil)
-                self.chosenForm = nil
             }
-        default:
-            fatalError()
         }
+        
+        
+//
+//        switch htmlInfo.possibleFormTemplates.count {
+//        case 0, Int.min...(-1):
+//            self.choosingForm = nil
+//            self.chosenForm = nil
+//        case 1:
+//            self.choosingForm = nil
+//            let chosenFormInfo = htmlInfo.possibleFormTemplates.first!
+//            self.chosenForm = HTMLFormParentState(formTemplateName: chosenFormInfo.name,
+//                                                    formType: chosenFormInfo.type,
+//                                                    formEntryID: htmlInfo.formEntryId,
+//                                                    formTemplateId: chosenFormInfo.id,
+//                                                    clientId: clientId,
+//                                                    pathwayIdStepId: PathwayIdStepId(step_id: stepId,
+//                                                                                     path_taken_id: pathwayId)
+//            )
+//        case 2...Int.max:
+//            self.choosingForm = nil
+//            if let chosenFormTemplateId = htmlInfo.chosenFormTemplateId {
+//                let chosenFormInfo = htmlInfo.possibleFormTemplates[id: chosenFormTemplateId]!
+//                self.chosenForm = HTMLFormParentState(formTemplateName: chosenFormInfo.name,
+//                                                      formType: chosenFormInfo.type,
+//                                                      formEntryID: htmlInfo.formEntryId,
+//                                                      formTemplateId: chosenFormInfo.id,
+//                                                      clientId: clientId,
+//                                                      pathwayIdStepId: PathwayIdStepId(step_id: stepId,
+//                                                                                       path_taken_id: pathwayId)
+//                )
+//            } else {
+//                self.choosingForm = ChoosingFormState(possibleFormTemplates: htmlInfo.possibleFormTemplates,
+//                                                      tempChosenFormId: nil)
+//                self.chosenForm = nil
+//            }
+//        default:
+//            fatalError()
+//        }
     }
 }
 
