@@ -79,9 +79,9 @@ public func stepsAndEntries(_ pathway: Pathway, _ template: PathwayTemplate, _ j
     print("here")
     print(pathway, template)
 	return template.steps
+        .filter(\.stepType.isHandledOniOS)
 		.filter { isIn(journeyMode, $0.stepType) }
 		.map { StepAndStepEntry(step: $0, entry: pathway.stepEntries[$0.id]) }
-		
 }
 
 func getForms(stepsAndEntries: [StepAndStepEntry], formAPI: FormAPI, clientId: Client.ID) -> [Effect<StepsActions, Never>] {

@@ -2,6 +2,7 @@ import SwiftUI
 import ComposableArchitecture
 import Model
 import SharedComponents
+import Overture
 
 let inputTextFieldReducer: Reducer<InputText, InputTextAction, FormEnvironment> = .combine(
     textFieldReducer.optional().pullback(
@@ -25,12 +26,14 @@ struct InputTextFieldParent: View {
         SwitchStore(store) {
             CaseLet(state: /InputText.justText, action: InputTextAction.justText, then: InputTextField.init(store:))
             CaseLet(state: /InputText.date, action: InputTextAction.date,
-                    then: {
-                        localStore in
-                        DatePickerTCA.init(mode: UIDatePicker.Mode.date, store: localStore, borderStyle: .roundedRect) }
+                    then: initDatePickerStore
             )
         }
 	}
+}
+
+let initDatePickerStore: (Store<Date?, DatePickerTCAAction>) -> DatePickerTCA = {
+    return DatePickerTCA.init(store:$0, mode: .date, borderStyle:.roundedRect)
 }
 
 //This LAGS

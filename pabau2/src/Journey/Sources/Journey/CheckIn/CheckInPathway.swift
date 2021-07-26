@@ -23,7 +23,7 @@ struct CheckInPathway: View {
                             )
                          }
             )
-        }.debug("CheckInPathway")
+        }
     }
 }
 

@@ -9,7 +9,7 @@ public enum StepType: String, Codable, Equatable, CaseIterable, Identifiable {
 	case patientdetails = "details"
 	case medicalhistory = "questionnaire"
 	case consents = "consent"
-	case checkpatient = "checkPatient"
+	case checkpatient
 	case treatmentnotes = "treatment"
 	case prescriptions = "prescription"
 	case photos = "photo"
@@ -53,4 +53,31 @@ public enum StepType: String, Codable, Equatable, CaseIterable, Identifiable {
             return "Timeline"
         }
 	}
+    
+    public var isHandledOniOS: Bool {
+        switch self {
+        case .patientdetails:
+            return true
+        case .medicalhistory:
+            return true
+        case .consents:
+            return true
+        case .checkpatient:
+            return true
+        case .treatmentnotes:
+            return true
+        case .prescriptions:
+            return true
+        case .photos:
+            return true
+        case .aftercares:
+            return true
+        case .lab:
+            return false
+        case .video:
+            return false
+        case .timeline:
+            return false
+        }
+    }
 }
