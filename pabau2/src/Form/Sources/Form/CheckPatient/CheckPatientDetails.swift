@@ -8,15 +8,18 @@ public let checkPatientDetailsReducer: Reducer<CheckPatientDetailsState, CheckPa
     state, action, env in
     switch action {
     case .complete:
-        return .none//TODO NEED API
+        return .none //handled somehwere in parentReducers
     case .backToPatientMode:
-        return .none //handle somehwere in parentReducers
+        return .none //handled somehwere in parentReducers
+    case .gotCompleteResponse:
+        return .none //handled somehwere in parentReducers
     }
 }
 
 public enum CheckPatientDetailsAction: Equatable {
     case backToPatientMode
     case complete
+    case gotCompleteResponse(Result<StepStatus, RequestError>)
 }
 
 public struct CheckPatientDetailsState: Equatable, Identifiable {

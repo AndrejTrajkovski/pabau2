@@ -83,6 +83,8 @@ public enum StepBodyAction: Equatable {
             return true
         case .htmlForm(.chosenForm(.gotPOSTResponse(.success))):
             return true
+        case .checkPatientDetails(.gotCompleteResponse(.success)):
+            return true
         default:
             return false
         }

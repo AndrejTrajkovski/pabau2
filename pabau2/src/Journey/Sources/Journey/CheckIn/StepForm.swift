@@ -4,6 +4,7 @@ import ComposableArchitecture
 import SwiftUI
 import Util
 import ToastAlert
+import Overture
 
 public let stepReducer: Reducer<StepState, StepAction, JourneyEnvironment> = .combine(
     
@@ -11,6 +12,31 @@ public let stepReducer: Reducer<StepState, StepAction, JourneyEnvironment> = .co
         
         switch action {
         
+        case .stepType(.checkPatientDetails(.complete)):
+            let pathwayStep = PathwayIdStepId(step_id: state.id, path_taken_id: state.pathwayId)
+            state.savingState = .loading
+            return env.formAPI.updateStepStatus(.completed, pathwayStep, state.clientId, state.appointmentId)
+                .catchToEffect()
+                .map(CheckPatientDetailsAction.gotCompleteResponse)
+                .map(StepBodyAction.checkPatientDetails)
+                .map(StepAction.stepType)
+                .receive(on: DispatchQueue.main)
+                .eraseToEffect()
+            
+        case .stepType(.checkPatientDetails(.gotCompleteResponse(let result))):
+            switch result {
+            case .success:
+                state.status = .completed
+                state.savingState = .gotSuccess
+            case .failure(let error):
+                state.toastAlert = ToastState<StepAction>(mode: .alert,
+                                                          type: .error(.red),
+                                                          title: "Failed to save step completion.")
+                state.savingState = .gotError(error)
+                return Effect.timer(id: ToastTimerId(), every: 1.0, on: DispatchQueue.main)
+                    .map { _ in StepAction.dismissToast }
+            }
+            
         case .stepType(.patientDetails(.gotGETResponse(let result))):
             switch result {
             case .success:
@@ -18,6 +44,7 @@ public let stepReducer: Reducer<StepState, StepAction, JourneyEnvironment> = .co
             case .failure(let error):
                 state.loadingState = .gotError(error)
             }
+            
         case .stepType(.patientDetails(.gotPOSTResponse(let result))):
             switch result {
             case .success:
