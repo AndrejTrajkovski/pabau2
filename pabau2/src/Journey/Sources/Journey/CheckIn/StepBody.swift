@@ -33,6 +33,8 @@ public enum StepBodyState: Equatable {
     case photos(PhotosState)
     case aftercare(Aftercare)
     case timeline(CheckPatientDetailsState)
+    case lab
+    case video
     
     init(stepAndEntry: StepAndStepEntry, clientId: Client.ID, pathway: Pathway, appId: Appointment.ID) {
         if stepAndEntry.step.stepType.isHTMLForm {
@@ -58,6 +60,10 @@ public enum StepBodyState: Equatable {
                 self = .timeline(CheckPatientDetailsState(id: stepAndEntry.step.id, clientBuilder: nil, patForms: []))
             case .photos:
                 self = .photos(PhotosState(id: stepAndEntry.step.id))
+            case .lab:
+                self = .lab
+            case .video:
+                self = .video
             default:
                 fatalError()
             }

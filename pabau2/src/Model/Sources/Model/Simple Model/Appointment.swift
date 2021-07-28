@@ -33,7 +33,7 @@ public struct PathwayInfo: Decodable, Equatable, Identifiable {
         self.pathwayTemplateId = template.id
         self.pathwayId = pathway.id
         self.stepsTotal = template.steps.count
-        self.stepsComplete = 0
+        self.stepsComplete = pathway.stepEntries.filter { $0.value.status != .pending }.count
     }
     
 	public var id: Pathway.ID { pathwayId }

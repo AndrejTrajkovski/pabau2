@@ -20,18 +20,18 @@ public struct ImageUrl: Identifiable, Hashable {
 }
 
 public struct SingleSelectImages: Equatable {
-	var images: [ImageUrl]
-	var selectedIdx: Int?
-
-	func isSelected(url: ImageUrl) -> Bool {
-		return self.images.firstIndex(of: url) == selectedIdx
-	}
-
-	public init (images: [ImageUrl],
-							 selectedIdx: Int?) {
-		self.images = images
-		self.selectedIdx = selectedIdx
-	}
+    var images: [ImageUrl]
+    var selectedIdx: Int?
+    
+    func isSelected(url: ImageUrl) -> Bool {
+        return self.images.firstIndex(of: url) == selectedIdx
+    }
+    
+    public init (images: [ImageUrl],
+                 selectedIdx: Int?) {
+        self.images = images
+        self.selectedIdx = selectedIdx
+    }
 }
 
 public enum SingleSelectImagesAction: Equatable {

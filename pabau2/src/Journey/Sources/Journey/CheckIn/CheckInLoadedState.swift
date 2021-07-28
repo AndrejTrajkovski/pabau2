@@ -7,7 +7,7 @@ import ChoosePathway
 
 public struct CheckInLoadedState: Equatable {
 	
-	public let appointment: Appointment
+	public var appointment: Appointment
 	public let pathway: Pathway
 	public let pathwayTemplate: PathwayTemplate
 	

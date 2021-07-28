@@ -203,8 +203,8 @@ public let tabBarReducer: Reducer<
         TabBarEnvironment
     >.init { state, action, env in
 		switch action {
-        case .checkIn(.gotPathwaysResponse(.success(let pwaysResponse))):
-            updatePathwaysOnCheckInAppointment(&state, pwaysResponse)
+//        case .checkIn(.gotPathwaysResponse(.success(let pwaysResponse))):
+//            updatePathwaysOnCheckInAppointment(&state, pwaysResponse)
         case .checkIn(.loaded(.patient(.steps(.steps(let idx, .gotSkipResponse(.success)))))):
             return updateNumberOfCompletedSteps(&state)
         case .checkIn(.loaded(.doctor(.steps(.steps(let idx, .gotSkipResponse(.success)))))):
@@ -259,11 +259,13 @@ public let tabBarReducer: Reducer<
 				  let template = appDetails.choosePathwayTemplate?.selectedPathway else { return .none }
 			
             var app = state.calendar.appDetails!.app
-            app.pathways.append(PathwayInfo.init(pathway, template))
+            let newPathway = PathwayInfo.init(pathway, template)
+            app.pathways[id: newPathway.id] = newPathway
+            print(app.pathways)
             state.calendar.replace(app: CalendarEvent.appointment(app))
 			state.calendar.appDetails = nil
 			
-			let loadedState = CheckInLoadedState(appointment: appDetails.app,
+			let loadedState = CheckInLoadedState(appointment: app,
 													pathway: pathway,
 													template: template)
 			print("here:", pathway, template)
@@ -430,21 +432,27 @@ extension TabBarState {
 	}
 }
 
-fileprivate func updatePathwaysOnCheckInAppointment(_ state: inout TabBarState, _ pwaysResponse: CombinedPathwayResponse) {
-    var copyApp = pwaysResponse.appointment
-    copyApp.pathways[id: pwaysResponse.pathway.id] = PathwayInfo.init(pwaysResponse.pathway, pwaysResponse.pathwayTemplate)
-    state.calendar.replace(app: CalendarEvent.appointment(copyApp))
-}
+//fileprivate func updatePathwaysOnCheckInAppointment(_ state: inout TabBarState, _ pwaysResponse: CombinedPathwayResponse) {
+//    var copyApp = pwaysResponse.appointment
+//    copyApp.pathways = []
+//    copyApp.pathways[id: pwaysResponse.pathway.id] = PathwayInfo.init(pwaysResponse.pathway, pwaysResponse.pathwayTemplate)
+//    state.calendar.replace(app: CalendarEvent.appointment(copyApp))
+//}
 
 fileprivate func updateNumberOfCompletedSteps(_ state: inout TabBarState) -> Effect<TabBarAction, Never> {
-    if case .loaded(let loadedState) = state.checkIn?.loadingOrLoaded {
+    if case .loaded(var loadedState) = state.checkIn?.loadingOrLoaded {
         var app = loadedState.appointment
+        print(app.pathways)
+        print(loadedState.pathway.id)
+        print(app.pathways[id: loadedState.pathway.id])
         guard var pathwayInfo = app.pathways[id: loadedState.pathway.id] else { return .none }
         let allStatuses = (loadedState.patientCheckIn.stepStates + loadedState.doctorCheckIn.stepStates).map(\.status)
         let completeCount = allStatuses.filter { $0 == .completed || $0 == .skipped }.count
         pathwayInfo.stepsTotal = allStatuses.count
         pathwayInfo.stepsComplete = completeCount
         app.pathways[id: pathwayInfo.id] = pathwayInfo
+        loadedState.appointment = app
+        state.checkIn!.loadingOrLoaded = .loaded(loadedState)
         state.calendar.replace(app: CalendarEvent.appointment(app))
     }
     return .none

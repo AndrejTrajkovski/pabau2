@@ -2,7 +2,7 @@ import Foundation
 import Model
 
 public struct Aftercare: Equatable, Identifiable {
-	public var id: Step.Id
+	public let id: Step.Id
 	
 	public init (
 		id: Step.Id,
