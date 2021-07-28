@@ -42,22 +42,33 @@ let checkInPathwayReducer: Reducer<CheckInPathwayState, CheckInPathwayAction, Jo
     
     .init { state, action, _ in
         
-        func nextStep() {
-            if state.selectedIdx < state.stepStates.count - 1 {
-                state.selectedIdx += 1
+//        func nextStep() {
+//            if state.selectedIdx < state.stepStates.count - 1 {
+//                state.selectedIdx
+//            }
+//        }
+        
+        if case .steps(.steps(_, let stepAction)) = action,
+           state.isActionForNextStep(stepAction) {
+            if let nextPendingIndex = state.nextPendingIndex() {
+                state.selectedIdx = nextPendingIndex
             }
         }
         
-        switch action {
-        case .steps(.steps(_, .stepType(let stepTypeAction))):
-            if stepTypeAction.isStepCompleteAction {
-                nextStep()
-            }
-        case .steps(.steps(_, .gotSkipResponse(.success))):
-            nextStep()
-        default:
-            break
-        }
+//        switch action {
+//        case .steps(.steps(_, let stepAction):
+//            if stepTypeAction.isStepCompleteAction {
+//                nextStep()
+//            }
+//        case .steps(.steps(_, .stepType(let stepTypeAction))):
+//            if stepTypeAction.isStepCompleteAction {
+//                nextStep()
+//            }
+//        case .steps(.steps(_, .gotSkipResponse(.success))):
+//            nextStep()
+//        default:
+//            break
+//        }
         return .none
     }
 )
@@ -77,23 +88,30 @@ public struct CheckInPathwayState: Equatable {
     public var stepStates: [StepState]
     var selectedIdx: Int
     
-    func isLastStep(index: Int) -> Bool {
-        return stepStates.count == index + 1
-    }
-    
-    func shouldNavigateToNext(_ stepAction: StepAction, _ index: Int) -> Bool {
-        if isLastStep(index: index) {
-            switch stepAction {
-            case .gotSkipResponse(.success(_)):
-                return true
-            case .stepType(let steTypeAction):
-                return steTypeAction.isStepCompleteAction
-            default:
-                return false
-            }
-        } else {
+    func isActionForNextStep(_ stepAction: StepAction) -> Bool {
+        switch stepAction {
+        case .gotSkipResponse(.success(_)):
+            return true
+        case .stepType(let steTypeAction):
+            return steTypeAction.isStepCompleteAction
+        default:
             return false
         }
+    }
+    
+    func nextPendingIndex() -> Int? {
+        let pendingIndexes = stepStates.enumerated().filter {
+            $0.element.status == .pending
+        }.map{$0.offset}
+        if let next = pendingIndexes.first(where: { $0 > selectedIdx }) {
+            return next
+        } else {
+            return pendingIndexes.first
+        }
+    }
+    
+    func shouldNavigateAwayFromCheckIn(_ stepAction: StepAction, _ index: Int) -> Bool {
+        return isActionForNextStep(stepAction) && nextPendingIndex() == nil
     }
 }
 

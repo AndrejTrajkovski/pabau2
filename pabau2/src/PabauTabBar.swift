@@ -203,7 +203,8 @@ public let tabBarReducer: Reducer<
         TabBarEnvironment
     >.init { state, action, env in
 		switch action {
-        
+        case .checkIn(.gotPathwaysResponse(.success(let pwaysResponse))):
+            updatePathwaysOnCheckInAppointment(&state, pwaysResponse)
         case .checkIn(.loaded(.patient(.steps(.steps(let idx, .gotSkipResponse(.success)))))):
             return updateNumberOfCompletedSteps(&state)
         case .checkIn(.loaded(.doctor(.steps(.steps(let idx, .gotSkipResponse(.success)))))):
@@ -429,14 +430,20 @@ extension TabBarState {
 	}
 }
 
+fileprivate func updatePathwaysOnCheckInAppointment(_ state: inout TabBarState, _ pwaysResponse: CombinedPathwayResponse) {
+    var copyApp = pwaysResponse.appointment
+    copyApp.pathways[id: pwaysResponse.pathway.id] = PathwayInfo.init(pwaysResponse.pathway, pwaysResponse.pathwayTemplate)
+    state.calendar.replace(app: CalendarEvent.appointment(copyApp))
+}
+
 fileprivate func updateNumberOfCompletedSteps(_ state: inout TabBarState) -> Effect<TabBarAction, Never> {
     if case .loaded(let loadedState) = state.checkIn?.loadingOrLoaded {
         var app = loadedState.appointment
         guard var pathwayInfo = app.pathways[id: loadedState.pathway.id] else { return .none }
         let allStatuses = (loadedState.patientCheckIn.stepStates + loadedState.doctorCheckIn.stepStates).map(\.status)
         let completeCount = allStatuses.filter { $0 == .completed || $0 == .skipped }.count
-        pathwayInfo.stepsTotal = .right(allStatuses.count)
-        pathwayInfo.stepsComplete = .right(completeCount)
+        pathwayInfo.stepsTotal = allStatuses.count
+        pathwayInfo.stepsComplete = completeCount
         app.pathways[id: pathwayInfo.id] = pathwayInfo
         state.calendar.replace(app: CalendarEvent.appointment(app))
     }

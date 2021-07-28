@@ -172,8 +172,10 @@ extension CalendarEvent: Decodable {
 		} else {
 			throw DecodingError.dataCorruptedError(forKey: CodingKeys.id, in: container, debugDescription: "Id is not string or int")
 		}
-		let employeeId = try container.decode(Employee.Id.self, forKey: .employeeId)
-		let locationId = try container.decode(Location.ID.self, forKey: .locationID)
+		let employeeId2 = try container.decode(EitherStringOrInt.self, forKey: .employeeId)
+        let employeeId = Employee.Id.init(rawValue: employeeId2.description)
+		let locationId2 = try container.decode(EitherStringOrInt.self, forKey: .locationID)
+        let locationId = Location.Id.init(rawValue: locationId2.integerValue)
 		let _private: Bool
 		let eitherPrivate = try container.decode(Either<Bool, String>.self, forKey: .appointmentPrivate)
 		switch eitherPrivate {

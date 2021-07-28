@@ -41,8 +41,8 @@ public struct StepEntry: Decodable, Equatable {
             
             let formEntryId2 = try container.decode(Int.self, forKey: .formEntryId)
             formEntryId = formEntryId2 != 0 ? .init(rawValue: formEntryId2) : nil
-            let chosenTemplateId2 = try container.decode(Int.self, forKey: .chosenFormTemplateId)
-            chosenTemplateId = chosenTemplateId2 != 0 ? .init(rawValue: .right(chosenTemplateId2)) : nil
+            let chosenTemplateId2 = try container.decode(EitherStringOrInt.self, forKey: .chosenFormTemplateId).integerValue
+            chosenTemplateId = chosenTemplateId2 != 0 ? .init(rawValue: chosenTemplateId2) : nil
             
             
 //			if let formEntryId2 = try container.decode(Int.self, forKey: .formEntryId),

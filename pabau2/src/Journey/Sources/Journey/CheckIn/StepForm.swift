@@ -39,6 +39,7 @@ public let stepReducer: Reducer<StepState, StepAction, JourneyEnvironment> = .co
         case .dismissToast:
             
             state.toastAlert = nil
+            return Effect.cancel(id: ToastTimerId())
             
         case .stepType(.htmlForm(.chosenForm(.gotPOSTResponse(.success)))):
             

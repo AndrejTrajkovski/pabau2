@@ -50,29 +50,4 @@ public enum StepType: String, Codable, Equatable, CaseIterable, Identifiable {
             return "Timeline"
         }
 	}
-    
-    public var isHandledOniOS: Bool {
-        switch self {
-        case .patientdetails:
-            return true
-        case .medicalhistory:
-            return true
-        case .consents:
-            return true
-        case .treatmentnotes:
-            return true
-        case .prescriptions:
-            return true
-        case .photos:
-            return true
-        case .aftercares:
-            return true
-        case .lab:
-            return false
-        case .video:
-            return false
-        case .timeline:
-            return false
-        }
-    }
 }

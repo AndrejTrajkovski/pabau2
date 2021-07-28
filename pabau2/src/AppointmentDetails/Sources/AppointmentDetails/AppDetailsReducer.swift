@@ -141,7 +141,7 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 			switch result {
 			case .success(let downloadStatuses):
 				state.chooseStatusLS = .gotSuccess
-				state.appStatuses = IdentifiedArray(downloadStatuses)
+                state.appStatuses = IdentifiedArray(uniqueElements: downloadStatuses, id: \AppointmentStatus.id)
 			case .failure(let error):
 				state.isStatusActive = false
 				state.chooseStatusLS = .gotError(error)

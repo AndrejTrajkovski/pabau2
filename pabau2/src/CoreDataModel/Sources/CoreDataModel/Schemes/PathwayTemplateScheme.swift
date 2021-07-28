@@ -24,15 +24,15 @@ extension PathwayTemplate {
         
         let array: [PathwayTemplate] = schemes.compactMap { sheme in
             PathwayTemplate(
-                id: PathwayTemplate.ID(rawValue: EitherStringOrInt.left(sheme.id)),
+                id: PathwayTemplate.ID(rawValue: Int(sheme.id)!),
                 title: sheme.title,
                 steps: sheme.steps.compactMap { stepSheme in
                     Step(
-						id: Step.Id(rawValue: .left(stepSheme.id)),
+						id: Step.Id(rawValue: Int(stepSheme.id)!),
                         stepType: StepType(rawValue: stepSheme.stepType) ?? .photos,
                         preselectedTemplate: stepSheme.formTemplateID == "0" ?
                             .definedbyservice :
-                            .template(HTMLForm.ID(rawValue: .left(stepSheme.formTemplateID))),
+                            .template(HTMLForm.ID(rawValue: Int(stepSheme.formTemplateID)!)),
                         canSkip: stepSheme.canSkip)
                 },
                 _description: sheme.descript

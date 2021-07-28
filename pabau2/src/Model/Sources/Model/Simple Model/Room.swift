@@ -25,12 +25,13 @@ public struct Room: Decodable, Identifiable, Equatable {
 	
 	public init(from decoder: Decoder) throws {
 		let container = try decoder.container(keyedBy: Self.CodingKeys)
-		self.id = try container.decode(Id.self, forKey: .id)
+        let parseId = try container.decode(EitherStringOrInt.self, forKey: .id)
+        self.id = Self.ID.init(rawValue: parseId.description)
 		self.name = try container.decode(String.self, forKey: .room_name)
 		if let roomLocations: [[String: String]] = try? container.decode([[String:String]].self, forKey: .room_locations) {
 			self.locationIds = roomLocations.reduce(into: [Location.Id](), { acc, element in
 				if let locIdString = element["location_id"] {
-					let locId = Location.ID.init(rawValue: .left(locIdString))
+					let locId = Location.ID.init(rawValue: Int(locIdString)!)
 					acc.append(locId)
 				}
 			})

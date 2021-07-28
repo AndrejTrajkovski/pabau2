@@ -1,5 +1,11 @@
 public typealias EitherStringOrInt = Either<String, Int>
 
+//extension EitherStringOrInt: Equatable {
+//    public static func == (lhs: Either, rhs: Either) -> Bool {
+//        return lhs.integerValue == rhs.integerValue
+//    }
+//}
+
 extension EitherStringOrInt: CustomStringConvertible {
 	public var description: String {
 		switch self {
