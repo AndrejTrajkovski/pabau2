@@ -63,6 +63,14 @@ let checkInPathwayReducer: Reducer<CheckInPathwayState, CheckInPathwayAction, Jo
 )
 
 public struct CheckInPathwayState: Equatable {
+    init(appointment: Appointment, pathway: Pathway, pathwayTemplate: PathwayTemplate, stepStates: [StepState]) {
+        self.appointment = appointment
+        self.pathway = pathway
+        self.pathwayTemplate = pathwayTemplate
+        self.stepStates = stepStates
+        self.selectedIdx = stepStates.firstIndex(where: { $0.status == .pending }) ?? 0
+    }
+    
     let appointment: Appointment
     let pathway: Pathway
     let pathwayTemplate: PathwayTemplate

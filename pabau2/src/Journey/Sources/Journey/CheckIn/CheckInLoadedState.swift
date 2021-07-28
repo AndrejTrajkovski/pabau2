@@ -41,16 +41,14 @@ extension CheckInLoadedState {
         self.patientCheckIn = CheckInPathwayState(appointment: appointment,
                                                   pathway: pathway,
                                                   pathwayTemplate: pathwayTemplate,
-                                                  stepStates: patientStepStates,
-                                                  selectedIdx: 0)
+                                                  stepStates: patientStepStates)
 		let doctorStepStates = stepsAndEntries(pathway, pathwayTemplate, .doctor).map {
             StepState.init(stepAndEntry: $0, clientId: appointment.customerId, pathway: pathway, appId: appointment.id)
 		}
         self.doctorCheckIn = CheckInPathwayState(appointment: appointment,
                                                  pathway: pathway,
                                                  pathwayTemplate: pathwayTemplate,
-                                                 stepStates: doctorStepStates,
-                                                 selectedIdx: 0)
+                                                 stepStates: doctorStepStates)
 	}
 }
 
