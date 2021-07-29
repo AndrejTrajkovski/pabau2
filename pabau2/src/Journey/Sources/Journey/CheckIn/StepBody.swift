@@ -31,7 +31,7 @@ public enum StepBodyState: Equatable {
     case patientDetails(PatientDetailsParentState)
     case htmlForm(HTMLFormStepContainerState)
     case photos(PhotosState)
-    case aftercare(Aftercare)
+    case aftercare(AftercareState)
     case timeline(CheckPatientDetailsState)
     case lab
     case video
@@ -55,7 +55,7 @@ public enum StepBodyState: Equatable {
                                                                  canSkip: stepAndEntry.step.canSkip)
                 )
             case .aftercares:
-                self = .aftercare(Aftercare.mock(id: stepAndEntry.step.id))
+                self = .aftercare(AftercareState.mock(id: stepAndEntry.step.id))
             case .timeline:
                 self = .timeline(CheckPatientDetailsState(id: stepAndEntry.step.id, clientBuilder: nil, patForms: []))
             case .photos:

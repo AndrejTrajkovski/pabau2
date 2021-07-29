@@ -3,41 +3,47 @@ import SwiftUI
 import ASCollectionView
 import Util
 import SharedComponents
+import Model
 
-public typealias Indexed<T> = (Int, T)
+public let aftercareBoolSectionReducer: Reducer<AftercareBoolSectionState, AftercareBoolAction, Any> = aftercareOptionReducer.forEach(
+    state: \AftercareBoolSectionState.rows,
+    action: /AftercareBoolAction.rows,
+    environment: { $0 }
+)
 
-public enum AftercareBoolAction {
-	case indexedToggle(Indexed<ToggleAction>)
+public enum AftercareBoolAction: Equatable {
+    case rows(idx: Int, action: ToggleAction)
 }
 
-struct AftercareBoolSection {
-	let id: Int
-	let title: String
-	let desc: String
-	@Binding var options: [AftercareOption]
+public struct AftercareBoolSectionState: Equatable {
+    let templates: [AftercareTemplate]
+    var selectedId: AftercareTemplate.ID? = nil
+    
+    var rows: [AftercareOption] {
+        get {
+            self.templates.map {
+                AftercareOption.init(template: $0, isSelected: selectedId == $0.id)
+            }
+        }
+        set {
+            self.selectedId = newValue.first(where: { $0.isSelected == true})?.id
+        }
+    }
+}
 
-	init(id: Int,
-			 title: String,
-			 desc: String,
-			 options: Binding<[AftercareOption]>) {
-		self.id = id
-		self.title = title
-		self.desc = desc
-		self._options = options
-	}
-
-	var section: ASCollectionViewSection<Int> {
-		ASCollectionViewSection(
-			id: id,
-			data: self.options,
-			dataID: \.self) { aftercare, context in
-				AftercareCell(channel: aftercare.channel,
-											title: aftercare.title,
-											value: self.$options[context.index].isSelected
-				)
-		}
-		.sectionHeader { AftercareBoolHeader(title: title, desc: desc) }
-	}
+struct AftercareBoolSection: View {
+    
+    let title: String
+    let desc: String
+    let store: Store<AftercareBoolSectionState, AftercareBoolAction>
+    
+    var body: some View {
+        VStack {
+            AftercareBoolHeader(title: title, desc: desc)
+            ForEachStore(store.scope(state: { $0.rows }, action: AftercareBoolAction.rows(idx:action:)),
+                         content: AftercareCell.init(store:))
+        }
+    }
 }
 
 struct AftercareBoolHeader: View {

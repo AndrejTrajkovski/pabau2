@@ -1,14 +1,13 @@
 import Tagged
 
-struct AftercareTemplate: Decodable {
-    let id: Tagged<AftercareTemplate, String>
-    let template_type: AftercareType
-    let template_name: String
-    let image: String
-//    let
+public struct AftercareTemplate: Identifiable, Decodable, Equatable {
+    public let id: Tagged<AftercareTemplate, String>
+    public let template_type: AftercareType
+    public let template_name: String
+    public let image: String
 }
 
-enum AftercareType: String, Decodable {
+public enum AftercareType: String, Decodable {
     case email
     case sms
 }

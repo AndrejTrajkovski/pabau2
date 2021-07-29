@@ -5,52 +5,41 @@ import ASCollectionView
 import CasePaths
 
 public enum AftercareAction: Equatable {
-	case didUpdateAftercares([AftercareOption])
-	case didUpdateRecalls([AftercareOption])
+	case aftercares(AftercareBoolAction)
+	case recalls(AftercareBoolAction)
 	case profile(SingleSelectImagesAction)
 	case share(SingleSelectImagesAction)
 }
 
-public let aftercareReducer: Reducer<Aftercare, AftercareAction, Any> = (
+public let aftercareReducer: Reducer<AftercareState, AftercareAction, Any> = (
 	.combine(
-		Reducer.init { state, action, _ in
-			switch action {
-			case .didUpdateAftercares(let options):
-				state.aftercares = options
-			case .didUpdateRecalls(let recalls):
-				state.recalls = recalls
-			default:
-				break
-			}
-			return .none
-		},
-//		aftercareOptionReducer.forEach(
-//			state: \Aftercare.aftercares,
-//			action: /AftercareAction.aftercares..AftercareBoolAction.indexedToggle,
-//			environment: { $0 }
-//		),
-//		aftercareOptionReducer.forEach(
-//			state: \Aftercare.recalls,
-//			action: /AftercareAction.recalls..AftercareBoolAction.indexedToggle,
-//			environment: { $0 }
-//		),
+        aftercareBoolSectionReducer.pullback(
+			state: \AftercareState.aftercares,
+			action: /AftercareAction.aftercares,
+			environment: { $0 }
+		),
+        aftercareBoolSectionReducer.pullback(
+            state: \AftercareState.recalls,
+            action: /AftercareAction.recalls,
+            environment: { $0 }
+        ),
 		singleSelectImagesReducer.pullback(
-			state: \Aftercare.profile,
+			state: \AftercareState.profile,
 			action: /AftercareAction.profile,
 			environment: { $0 }
 		),
 		singleSelectImagesReducer.pullback(
-			state: \Aftercare.share,
+			state: \AftercareState.share,
 			action: /AftercareAction.share,
 			environment: { $0 })
 	)
 )
 
 public struct AftercareForm: View {
-	let store: Store<Aftercare, AftercareAction>
-	@ObservedObject var viewStore: ViewStore<Aftercare, AftercareAction>
+	let store: Store<AftercareState, AftercareAction>
+	@ObservedObject var viewStore: ViewStore<AftercareState, AftercareAction>
     
-    public init(store: Store<Aftercare, AftercareAction>) {
+    public init(store: Store<AftercareState, AftercareAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
@@ -70,20 +59,20 @@ public struct AftercareForm: View {
 				store: self.store.scope(
 					state: { $0.share }, action: { .share($0) })
 			).section
-			AftercareBoolSection(
-				id: 2,
-				title: Texts.sendAftercareQ,
-				desc: Texts.sendAftercareDesc,
-				options: self.viewStore.binding(
-					get: { $0.aftercares }, send: { .didUpdateAftercares($0) })
-			).section
-			AftercareBoolSection(
-				id: 3,
-				title: Texts.recallsQ,
-				desc: Texts.recallsDesc,
-				options: self.viewStore.binding(
-					get: { $0.recalls }, send: { .didUpdateRecalls($0) })
-			).section
+//			AftercareBoolSection(
+//				id: 2,
+//				title: Texts.sendAftercareQ,
+//				desc: Texts.sendAftercareDesc,
+//				options: self.viewStore.binding(
+//					get: { $0.aftercares }, send: { .didUpdateAftercares($0) })
+//			).section
+//			AftercareBoolSection(
+//				id: 3,
+//				title: Texts.recallsQ,
+//				desc: Texts.recallsDesc,
+//				options: self.viewStore.binding(
+//					get: { $0.recalls }, send: { .didUpdateRecalls($0) })
+//			).section
 		}.layout { sectionID in
 			switch sectionID {
 			case 0, 1:
@@ -98,11 +87,6 @@ public struct AftercareForm: View {
 				fatalError()
 			}
 		}
-//		.scrollIndicatorsEnabled(horizontal: false, vertical: false)
-//		.edgesIgnoringSafeArea(.all)
-//		.navigationBarTitle("")
-//		.navigationBarBackButtonHidden(true)
-//		.navigationBarHidden(true)
 	}
 }
 
