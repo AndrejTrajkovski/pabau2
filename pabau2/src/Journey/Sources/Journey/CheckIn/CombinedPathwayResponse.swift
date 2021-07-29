@@ -3,9 +3,9 @@ import Combine
 import ComposableArchitecture
 
 public struct CombinedPathwayResponse: Equatable {
-	let pathwayTemplate: PathwayTemplate
-	let pathway: Pathway
-	let appointment: Appointment
+	public let pathwayTemplate: PathwayTemplate
+    public let pathway: Pathway
+    public let appointment: Appointment
 }
 
 public func getCombinedPathwayResponse(journeyAPI: JourneyAPI,

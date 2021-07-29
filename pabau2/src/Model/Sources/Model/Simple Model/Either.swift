@@ -1,4 +1,4 @@
-public enum Either<Left: Decodable & Equatable & Hashable, Right: Decodable & Equatable & Hashable>: Decodable, Equatable, Hashable {
+public enum Either<Left: Decodable, Right: Decodable>: Decodable {
 	case left(Left)
 	case right(Right)
 	

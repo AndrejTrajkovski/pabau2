@@ -90,7 +90,7 @@ public struct Shift: Decodable, Equatable {
         self.userName = userName
         self.locationName = locationName
         self.locColor = locColor
-        self.locationID = Location.Id.init(rawValue: EitherStringOrInt.left(locationId))
+        self.locationID = Location.Id.init(rawValue: Int(locationId)!)
         self.roomID = Room.ID.init(roomId)
         
         self.notes = ""

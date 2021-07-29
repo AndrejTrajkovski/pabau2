@@ -15,8 +15,7 @@ public struct CheckInForms<FormsContent: View, AvatarView: View>: View {
 	let content: () -> FormsContent
 
 	public var body: some View {
-		print("CheckIn")
-		return VStack (spacing: 0) {
+		VStack (spacing: 0) {
 			TopView(avatarView: avatarView,
 						 rightSideContent: ribbonView,
 						 store: store.stateless)

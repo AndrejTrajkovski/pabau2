@@ -77,7 +77,7 @@ extension FormsContainerState {
 	}
 	
 	private func stepForms() -> [StepFormInfo] {
-		formsCollection.map { StepFormInfo.init(status: $0.status, title: $0.templateName )}
+        formsCollection.map { StepFormInfo.init(status: StepStatus.init(formStatus:$0.status), title: $0.templateName )}
 	}
 }
 
@@ -115,11 +115,21 @@ struct FormsContainer: View {
 					 content: {
 						ForEachStore(store.scope(state: { $0.formsCollection },
 												 action: FormsContainerAction.forms(id: action:)),
-									 content: HTMLFormParent.init(store:)
+                                     content: { formStore in
+                                        HTMLFormParent.init(store: formStore,
+                                                            footer: { completeBtn(store: formStore) }
+                                        )
+                                     }
 						).padding([.leading, .trailing], 32)
 					 }
 		)
 	}
+    
+    @ViewBuilder
+    func completeBtn(store: Store<HTMLFormParentState, HTMLFormAction>) -> some View {
+        IfLetStore(store.scope(state: { $0.form }, action: { .rows($0)}),
+                   then: HTMLFormCompleteBtn.init(store:))
+    }
 }
 
 struct ClientAvatarAndName: View {

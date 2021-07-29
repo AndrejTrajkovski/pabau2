@@ -4,7 +4,7 @@ import Tagged
 
 public struct Client: Decodable, Identifiable, Equatable {
 
-    public typealias Id = Tagged<Client, EitherStringOrInt>
+    public typealias Id = Tagged<Client, Int>
 
 	public let id: Client.Id
     public let mobile: String
@@ -80,7 +80,9 @@ public struct Client: Decodable, Identifiable, Equatable {
         self.mailingCountry = try container.decode(String.self, forKey: .mailingCountry)
         self.mailingPostal = try container.decode(String.self, forKey: .mailingPostal)
         self.gender = try container.decode(String.self, forKey: .gender)
-		self.id = try container.decode(Client.Id.self, forKey: .id)
+        
+        let parseId = try container.decode(EitherStringOrInt.self, forKey: .id)
+        self.id = Self.ID.init(rawValue: parseId.integerValue)
 		
         if let sDate = try? container.decode(String.self, forKey: .dOB), let dob = Date(sDate, format: "yyyy-MM-dd", region: .local) {
             self.dOB = dob
