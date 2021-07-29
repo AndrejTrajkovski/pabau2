@@ -36,22 +36,19 @@ public let listCalendarReducer: Reducer<ListState, ListAction, ListCalendarEnvir
 public struct ListContainerView: View {
 	
 	let store: Store<ListContainerState, ListAction>
-	@ObservedObject var viewStore: ViewStore<ListContainerState, ListAction>
 
-    @State var showSearchBar: Bool = false
-    @State private var filter: CompleteFilter = .all
+//    @State var showSearchBar: Bool = false
     
 	public init(store: Store<ListContainerState, ListAction>) {
 		self.store = store
-		self.viewStore = ViewStore(self.store)
 	}
 
 	public var body: some View {
 		VStack {
-            FilterPicker(filter: $filter)
-            if self.showSearchBar {
-                searchBar
-            }
+            FilterPicker(store: store.scope(state: { $0.list.selectedFilter }))
+//            if self.showSearchBar {
+//                searchBar
+//            }
             ScrollView {
                 LazyVStack {
                     ForEachStore(
@@ -62,22 +59,20 @@ public struct ListContainerView: View {
                     )
                 }
             }
-        }.onChange(of: filter) { _ in
-            viewStore.send(.selectedFilter(filter))
         }
     }
 
-	var searchBar: some View {
-		SearchView(
-			placeholder: "Search",
-			text: viewStore.binding(
-				get: { $0.list.searchText },
-				send: { ListAction.searchedText($0) }
-			)
-		)
-		.isHidden(!self.showSearchBar)
-		.padding([.leading, .trailing], 16)
-	}
+//	var searchBar: some View {
+//		SearchView(
+//			placeholder: "Search",
+//			text: viewStore.binding(
+//				get: { $0.list.searchText },
+//				send: { ListAction.searchedText($0) }
+//			)
+//		)
+//		.isHidden(!self.showSearchBar)
+//		.padding([.leading, .trailing], 16)
+//	}
 }
 
 struct LocationSectionState: Equatable, Identifiable {
@@ -146,15 +141,17 @@ struct ListCellStoreRow: View {
 }
 
 struct FilterPicker: View {
-    @Binding var filter: CompleteFilter
+    let store: Store<CompleteFilter, ListAction>
     var body: some View {
-        VStack {
-            Picker(
-                selection: $filter, label: Text("Filter")) {
-                ForEach(CompleteFilter.allCases, id: \.self) { (filter: CompleteFilter) in
-                    Text(String(filter.description)).tag(filter.rawValue)
-                }
+        WithViewStore(store) { viewStore in
+            VStack {
+                Picker(
+                    selection: viewStore.binding(get: { $0 }, send: { .selectedFilter($0) }), label: Text("Filter")) {
+                    ForEach(CompleteFilter.allCases, id: \.self) { (filter: CompleteFilter) in
+                        Text(String(filter.description)).tag(filter.rawValue)
+                    }
                 }.pickerStyle(SegmentedPickerStyle())
-        }.padding()
+            }.padding()
+        }
     }
 }

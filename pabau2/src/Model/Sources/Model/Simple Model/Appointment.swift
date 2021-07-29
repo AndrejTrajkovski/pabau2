@@ -70,14 +70,7 @@ extension Appointment: CalendarEventVariant { }
 extension Appointment {
     
     public var isComplete: Bool {
-        if patient_details_status.boolValue &&
-            medical_history_status.boolValue &&
-            patient_consent_status.boolValue &&
-            photos_status.boolValue &&
-            treatment_notes_status.boolValue {
-                return true
-        }
-        return false
+        return pathways.first(where: { $0.stepsTotal == $0.stepsComplete }) != nil
     }
 }
 
