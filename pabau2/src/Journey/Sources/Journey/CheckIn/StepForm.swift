@@ -136,7 +136,7 @@ public struct StepState: Equatable, Identifiable {
         return StepFormInfo(status: status, title: stepType.rawValue.uppercased())
 	}
 	
-    init(stepAndEntry: StepAndStepEntry, clientId: Client.ID, pathway: Pathway, appId: Appointment.ID) {
+    init(stepAndEntry: StepAndStepEntry, clientId: Client.ID, pathway: Pathway, appointment: Appointment) {
         self.id = stepAndEntry.step.id
         self.stepType = stepAndEntry.step.stepType
         self.canSkip = stepAndEntry.step.canSkip
@@ -144,7 +144,7 @@ public struct StepState: Equatable, Identifiable {
         self.clientId = clientId
         self.pathwayId = pathway.id
         self.status = stepAndEntry.entry?.status ?? .pending
-        self.stepBody = StepBodyState(stepAndEntry: stepAndEntry, clientId: clientId, pathway: pathway, appId: appId)
+        self.stepBody = StepBodyState(stepAndEntry: stepAndEntry, clientId: clientId, pathway: pathway, appointment: appointment)
 	}
 }
 

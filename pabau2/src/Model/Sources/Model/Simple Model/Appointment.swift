@@ -26,11 +26,7 @@ public struct Appointment: Equatable, Identifiable, Decodable {
 	public let serviceId: Service.Id
 	public let locationName: String?
     public var pathways: IdentifiedArrayOf<PathwayInfo>
-    public var patient_details_status: Int
-    public var medical_history_status: Int
-    public var patient_consent_status: Int
-    public var photos_status: Int
-    public var treatment_notes_status: Int
+    public let photos: [ImageModel]
 }
 
 public struct PathwayInfo: Decodable, Equatable, Identifiable {
@@ -118,11 +114,12 @@ extension Appointment {
 		let pathwayArr = (try? container.decode([PathwayInfo].self, forKey: .pathways)) ?? []
         self.pathways = IdentifiedArrayOf(uniqueElements: pathwayArr)
         
-        self.patient_details_status = try container.decode(Int.self, forKey: .patient_details_status)
-        self.medical_history_status = try container.decode(Int.self, forKey: .medical_history_status)
-        self.patient_consent_status = try container.decode(Int.self, forKey: .patient_consent_status)
-        self.photos_status = try container.decode(Int.self, forKey: .photos_status)
-        self.treatment_notes_status = try container.decode(Int.self, forKey: .treatment_notes_status)
+        if let photosIds = try? container.decode([String].self, forKey: .uploaded_photos_ids),
+              let photosUrls = try? container.decode([String].self, forKey: .uploaded_photos) {
+            self.photos = zip(photosIds, photosUrls).map { ImageModel.init($0.0, $0.1) }
+        } else {
+            self.photos = []
+        }
 	}
 }
 
@@ -146,3 +143,14 @@ extension Int {
     var boolValue: Bool { return self != 0 }
 }
 
+public struct ImageModel: Identifiable, Hashable, Decodable {
+    public var id: String { return title }
+    let title: String
+    let url: String
+    
+    public init(_ title: String,
+                _ url: String) {
+        self.title = title
+        self.url = url
+    }
+}

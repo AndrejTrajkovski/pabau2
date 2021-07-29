@@ -6,20 +6,40 @@ public struct AftercareState: Equatable, Identifiable {
 	
 	public init (
 		id: Step.Id,
-		profile: SingleSelectImages,
-		share: SingleSelectImages,
+        images: [ImageModel],
 		aftercares: [AftercareTemplate],
 		recalls: [AftercareTemplate]
 	) {
 		self.id = id
-		self.profile = profile
-		self.share = share
+        self.images = images
         self.aftercares = AftercareBoolSectionState.init(templates: aftercares)
 		self.recalls = AftercareBoolSectionState.init(templates: recalls)
 	}
-
-	var profile: SingleSelectImages
-	var share: SingleSelectImages
+    
+    let images: [ImageModel]
+    var selectedProfileImageIdx: Int? = nil
+    var selectedShareImgeIdx: Int? = nil
 	var aftercares: AftercareBoolSectionState
 	var recalls: AftercareBoolSectionState
+}
+
+extension AftercareState {
+    
+    var profile: SingleSelectImages {
+        get {
+            SingleSelectImages(images: images, selectedIdx: selectedProfileImageIdx)
+        }
+        set {
+            self.selectedProfileImageIdx = newValue.selectedIdx
+        }
+    }
+    
+    var share: SingleSelectImages {
+        get {
+            SingleSelectImages(images: images, selectedIdx: selectedShareImgeIdx)
+        }
+        set {
+            self.selectedShareImgeIdx = newValue.selectedIdx
+        }
+    }
 }

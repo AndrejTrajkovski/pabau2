@@ -1,6 +1,7 @@
 import SwiftUI
 import ComposableArchitecture
 import ASCollectionView
+import Model
 
 public let singleSelectImagesReducer = Reducer<SingleSelectImages, SingleSelectImagesAction, Any>.init { state, action, _ in
 	switch action {
@@ -10,24 +11,15 @@ public let singleSelectImagesReducer = Reducer<SingleSelectImages, SingleSelectI
 	return .none
 }
 
-public struct ImageUrl: Identifiable, Hashable {
-	public var id: String { return title }
-	let title: String
-
-	public init(_ title: String) {
-		self.title = title
-	}
-}
-
 public struct SingleSelectImages: Equatable {
-    var images: [ImageUrl]
+    let images: [ImageModel]
     var selectedIdx: Int?
     
-    func isSelected(url: ImageUrl) -> Bool {
+    func isSelected(url: ImageModel) -> Bool {
         return self.images.firstIndex(of: url) == selectedIdx
     }
     
-    public init (images: [ImageUrl],
+    public init (images: [ImageModel],
                  selectedIdx: Int?) {
         self.images = images
         self.selectedIdx = selectedIdx
