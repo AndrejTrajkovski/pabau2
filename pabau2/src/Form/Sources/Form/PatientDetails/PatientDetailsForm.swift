@@ -59,11 +59,11 @@ public struct PatientDetailsForm: View {
                 WrapStack {
 					PatientDetailsField(Texts.dob) {
                         DatePickerTCA(
-                            mode: .date,
                             store: store.scope(
                                 state: { $0.dOB },
                                 action: { .dob($0) }
                             ),
+                            mode: .date,
                             borderStyle: .none
                         )
 					}

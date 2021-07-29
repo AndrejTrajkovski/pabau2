@@ -52,12 +52,12 @@ enum AppAction {
 }
 
 let appReducer: Reducer<AppState, AppAction, AppEnvironment> = Reducer.combine(
-	walkthroughContainerReducer.pullbackCp(
+	walkthroughContainerReducer.pullback(
 		state: /AppState.walkthrough,
 		action: /AppAction.walkthrough,
 		environment: { LoginEnvironment($0.loginAPI, $0.userDefaults) }
 	),
-	tabBarReducer.pullbackCp(
+	tabBarReducer.pullback(
 		state: /AppState.tabBar,
 		action: /AppAction.tabBar,
 		environment: {
@@ -111,20 +111,10 @@ struct ContentView: View {
 	let store: Store<AppState, AppAction>
     
 	var body: some View {
-        IfLetStore(
-            self.store.scope(
-                state: with(AppState.tabBar, curry(extract(case:from:))),
-                action: { .tabBar($0)}
-            ),
-            then: PabauTabBar.init(store:)
-        )
-		IfLetStore(
-			self.store.scope(
-				state: with(AppState.walkthrough, curry(extract(case:from:))),
-				action: { .walkthrough($0) }
-			),
-			then: LoginContainer.init(store:)
-		)
+        SwitchStore(store) {
+            CaseLet(state: /AppState.tabBar, action: AppAction.tabBar, then: PabauTabBar.init(store:))
+            CaseLet(state: /AppState.walkthrough, action: AppAction.walkthrough, then: LoginContainer.init(store:))
+        }
 	}
 }
 

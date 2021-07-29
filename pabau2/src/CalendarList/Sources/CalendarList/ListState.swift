@@ -21,14 +21,14 @@ public struct ListContainerState: Equatable {
 				list: ListState,
 				appointments: ListAppointments,
 				locations: IdentifiedArrayOf<Location>,
-				employees: [Location.Id : IdentifiedArrayOf<Employee>],
-				chosenEmployeesIds: [Location.Id : [Employee.Id]],
+				employees: [Location.Id: IdentifiedArrayOf<Employee>],
+				chosenEmployeesIds: [Location.Id: [Employee.Id]],
 				expandedLocationsIds: Set<Location.Id>,
 				selectedDate: Date,
 				chosenLocationsIds: Set<Location.Id>) {
 		self.appsLS = appsLS
 		self.list = list
-		self.appointments = appointments
+        self.appointments = appointments
 		self.locations = locations
 		self.employees = employees
 		self.chosenEmployeesIds = chosenEmployeesIds
@@ -57,13 +57,24 @@ extension ListContainerState {
 				
 				let chosenEmployeesForLocation = chosenEmployeesIds[location.id]
 				
-				let appsForLocationByEmployeeId = appointments.appointments[location.id]
+                let appsForLocationByEmployeeId = appointments.appointments[location.id]
 				
 				let appsForLocationAndChosenEmployees = chosenEmployeesForLocation?.compactMap {
 					appsForLocationByEmployeeId?[$0]
 				}.flatMap { $0 } ?? []
-				
-				let idArray = IdentifiedArray(appsForLocationAndChosenEmployees)
+                
+                var filteredApps: [Appointment] = []
+                
+                switch list.selectedFilter {
+                case .all:
+                    filteredApps = appsForLocationAndChosenEmployees
+                case .open:
+                    filteredApps = appsForLocationAndChosenEmployees.filter { !$0.isComplete }
+                case .complete:
+                    filteredApps = appsForLocationAndChosenEmployees.filter { $0.isComplete }
+                }
+         		
+				let idArray = IdentifiedArray(filteredApps)
 				
 				return LocationSectionState(location: location,
 											appointments: idArray)

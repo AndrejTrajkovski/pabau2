@@ -41,7 +41,7 @@ extension Employee {
                 name: $0.name,
                 email: $0.email,
                 avatar: $0.avatar,
-                locations: $0.locations.map { Location.Id(rawValue: EitherStringOrInt.left($0.id)) },
+                locations: $0.locations.map { Location.Id(rawValue: Int($0.id)!) },
                 passcode: $0.passcode
             )
         }

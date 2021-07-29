@@ -10,8 +10,6 @@ public enum PhotoCompareAction: Equatable {
     case shareAction(PhotoShareSelectAction)
     case onBackCompare
     case sideBySideAction(PhotoSideBySideAction)
-    case didSelectEdit
-    case editPhoto(EditPhotoAction)
     case didTouchBackOnEditPhotos
 }
 
@@ -40,9 +38,7 @@ struct PhotoCompareState: Equatable {
 	var position: CGSize = .zero
 	var currentMagnification: CGFloat = 1
 	var pinchMagnification: CGFloat = 1
-    var editPhotoState: EditPhotosState?
     var shareSelectState: PhotoShareSelectState?
-    var isEditPhotosActive: Bool = false
 }
 
 let photoCompareReducer = Reducer.combine(
@@ -56,11 +52,6 @@ let photoCompareReducer = Reducer.combine(
         action: /PhotoCompareAction.sideBySideAction,
         environment: { $0 }
     ),
-    editPhotosReducer.optional().pullback(
-        state: \PhotoCompareState.editPhotoState,
-        action: /PhotoCompareAction.editPhoto,
-        environment: { FormEnvironment(formAPI: $0.formAPI, userDefaults: $0.userDefaults, repository: $0.repository) }
-    ),
     Reducer<PhotoCompareState, PhotoCompareAction, ClientsEnvironment> { state, action, _ in
 		switch action {
 		case .didChangeSelectedPhoto(let photoId):
@@ -73,21 +64,8 @@ let photoCompareReducer = Reducer.combine(
         case .didSelectShare:
             state.shareSelectState = PhotoShareSelectState(photo: state.leftState.photo,
                                                            comparedPhoto: state.rightState.photo)
-        case .didTouchBackOnEditPhotos:
-            state.isEditPhotosActive = false
-        case .didSelectEdit:
-            var photosArray: IdentifiedArray<PhotoVariantId, PhotoViewModel> = []
-            _ = state.photos.map { photos in
-                    photosArray.append(contentsOf: photos.value)
-            }
-            state.editPhotoState = EditPhotosState(photosArray, currentPhoto: state.leftId)
-            state.isEditPhotosActive = true
         case .shareAction(.backButton):
             state.shareSelectState = nil
-        case .editPhoto(.goBack):
-            state.isEditPhotosActive = false
-        case .editPhoto(.singlePhotoEdit(.photoUploadResponse)):
-            state.isEditPhotosActive = false
         default:
             break
         }
@@ -98,15 +76,7 @@ struct PhotoCompareView: View {
     let store: Store<PhotoCompareState, PhotoCompareAction>
 
     var body: some View {
-        print("PhotoCompareView")
-        return WithViewStore(self.store) { viewStore in
-            NavigationLink.emptyHidden(
-                viewStore.state.isEditPhotosActive,
-                IfLetStore(self.store.scope(
-                            state: { $0.editPhotoState }, action: { .editPhoto($0) }),
-                           then: { EditPhotos(store: $0) }
-                )
-            )
+        WithViewStore(self.store) { viewStore in
             VStack {
                 PhotoSideBySideView(store: store.scope(
                                         state: { $0 },
@@ -141,12 +111,7 @@ struct PhotoCompareView: View {
                             .resizable()
                             .frame(width: 24, height: 24)
                     }
-                
-                    Button("Edit") {
-                        viewStore.send(.didSelectEdit)
-                    }
-                    
-                    Button("Share") {
+                Button("Share") {
                         viewStore.send(.didSelectShare)
                     }
                 })

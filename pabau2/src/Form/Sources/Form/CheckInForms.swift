@@ -15,8 +15,7 @@ public struct CheckInForms<FormsContent: View, AvatarView: View>: View {
 	let content: () -> FormsContent
 
 	public var body: some View {
-		print("CheckIn")
-		return VStack (spacing: 0) {
+		VStack (spacing: 0) {
 			TopView(avatarView: avatarView,
 						 rightSideContent: ribbonView,
 						 store: store.stateless)
@@ -72,13 +71,5 @@ struct Forms<FormsContent: View>: View {
 												  send: { .didSelectFlatFormIndex($0) }),
 				  content: content
 		)
-	}
-}
-
-public struct FormFrame: ViewModifier {
-	public init () {}
-	public func body(content: Content) -> some View {
-		content
-			.padding([.leading, .trailing], 40)
 	}
 }

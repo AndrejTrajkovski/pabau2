@@ -71,7 +71,7 @@ public let epaperReducer = Reducer<EpaperState, EpaperAction, EpaperEnvironment>
         case .didDownloadImages(let images):
             state.imagesContainer = images
         case .didFinishedMergeImagesWithDrawings:
-            let clientId: Client.Id = Client.Id.init(rawValue: .right(12148231))
+            let clientId: Client.Id = Client.Id.init(rawValue: 12148231)
             let medicalUniqId = UUID().uuidString
             let params: [String: String] = [
                 "contact_id": "\(clientId.description)",

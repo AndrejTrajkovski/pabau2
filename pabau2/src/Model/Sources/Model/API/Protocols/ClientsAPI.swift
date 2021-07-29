@@ -11,8 +11,8 @@ public protocol ClientsAPI {
     
 	func getAppointments(clientId: Client.Id) -> Effect<[CCAppointment], RequestError>
     func getAppointmentStatus() -> Effect<[AppointmentStatus], RequestError>
-    func appointmentChangeStatus(appointmentId: Appointment.ID, status: String) -> Effect<Bool, RequestError>
-    func appointmentChangeCancelReason(appointmentId: Appointment.ID, reason: String) -> Effect<Bool, RequestError>
+    func appointmentChangeStatus(appointmentId: Appointment.ID, status: String) -> Effect<VoidAPIResponse, RequestError>
+    func appointmentChangeCancelReason(appointmentId: Appointment.ID, reason: String) -> Effect<VoidAPIResponse, RequestError>
     func getAppointmentCancelReasons() -> Effect<[CancelReason], RequestError>
     func createRecurringAppointment(appointmentId: Appointment.ID, repeatRange: String, repeatUntil: String) -> Effect<Bool, RequestError>
     
@@ -25,7 +25,6 @@ public protocol ClientsAPI {
 	func getAlerts(clientId: Client.Id) -> Effect<[Alert], RequestError>
 	func getNotes(clientId: Client.Id) -> Effect<[Note], RequestError>
 	
-	func update(clientBuilder: ClientBuilder) -> Effect<Client.ID, RequestError>
 	func addNote(clientId: Client.Id, note: String) -> Effect<Note, RequestError>
 	func addAlert(clientId: Client.Id, alert: String) -> Effect<Bool, RequestError>
 }

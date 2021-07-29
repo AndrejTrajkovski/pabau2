@@ -29,6 +29,6 @@ let package = Package(
 			]),
         .testTarget(
             name: "CalendarListTests",
-            dependencies: ["CalendarList"]),
+            dependencies: ["CalendarList"])
     ]
 )

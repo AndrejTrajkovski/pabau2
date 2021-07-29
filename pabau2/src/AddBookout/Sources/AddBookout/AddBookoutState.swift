@@ -8,7 +8,8 @@ import ToastAlert
 
 public struct AddBookoutState: Equatable {
 	var editingBookout: Bookout?
-	var chooseDuration: SingleChoiceState<Duration>
+    var chooseDuration: SingleChoiceLinkState<Duration>
+    var choosePredefinedDuration: SingleChoiceState<Duration>
 	var chooseLocAndEmp: ChooseLocationAndEmployeeState
 	var chooseBookoutReasonState: ChooseBookoutReasonState
 	var startDate: Date
@@ -20,10 +21,13 @@ public struct AddBookoutState: Equatable {
 
 	var showsLoadingSpinner: Bool = false
 
+
 	var employeeValidator: String? = nil
 	var dayValidator: String? = nil
 	var timeValidator: String? = nil
 	var durationValidator: String? = nil
+    
+    var duration: String = ""
 
 	var appointmentsBody: AppointmentBuilder {
 		return AppointmentBuilder(
@@ -50,11 +54,15 @@ extension AddBookoutState {
 	) {
 		self.init(
 			chooseDuration:
-				SingleChoiceState<Duration>(
-					dataSource: IdentifiedArray.init(Duration.all),
-					chosenItemId: nil,
-					loadingState: .initial
-				),
+                SingleChoiceLinkState(dataSource: IdentifiedArray.init(Duration.allDay),
+                                      chosenItemId: nil,
+                                      isActive: false,
+                                      loadingState: .initial),
+            choosePredefinedDuration: SingleChoiceState(
+                dataSource: IdentifiedArray.init(Duration.all),
+                chosenItemId: nil,
+                loadingState: .initial
+            ),
 			chooseLocAndEmp: chooseLocAndEmp,
 			chooseBookoutReasonState: ChooseBookoutReasonState(isChooseBookoutReasonActive: false),
 			startDate: start,
@@ -70,12 +78,13 @@ extension AddBookoutState {
 		bookout: Bookout
 	) {
 		self.init(
-			chooseDuration:
-				SingleChoiceState<Duration>(
-					dataSource: IdentifiedArray.init(Duration.all),
-					chosenItemId: nil,
-					loadingState: .initial
-				),
+            chooseDuration: SingleChoiceLinkState(dataSource: IdentifiedArray.init(Duration.all),
+                                                  chosenItemId: nil,
+                                                  isActive: false,
+                                                  loadingState: .initial),
+            choosePredefinedDuration: SingleChoiceState(dataSource: IdentifiedArray.init(Duration.all),
+                                                        chosenItemId: nil,
+                                                        loadingState: .initial),
 			chooseLocAndEmp: chooseLocAndEmp,
 			chooseBookoutReasonState: ChooseBookoutReasonState(isChooseBookoutReasonActive: false),
 			startDate: bookout.start_date,

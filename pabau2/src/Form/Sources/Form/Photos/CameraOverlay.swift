@@ -47,7 +47,9 @@ let cameraOverlayReducer: Reducer<CameraOverlayState, CameraOverlayAction, FormE
 					PhotoViewModel(NewPhoto.init(id: UUID(), image: $0, date: Date()))
 				}
 				guard !newPhotos.isEmpty else { break }
-				state.photos.insert(contentsOf: newPhotos, at: state.photos.count)
+                let result = state.photos + newPhotos
+                state.photos = IdentifiedArray(uniqueElements: result)
+//				state.photos.insert(contentsOf: newPhotos, at: state.photos.count)
 				state.editingPhotoId = newPhotos.last!.id
 			case .closeCamera:
 				state.isCameraActive = false

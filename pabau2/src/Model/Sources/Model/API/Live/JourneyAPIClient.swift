@@ -56,10 +56,10 @@ extension APIClient {
 		)
 		.effect()
 		.tryMap {
-			if let first = $0.pathways.first {
-				return first
+            if let pathway = $0.pathways.first(where: { $0.id == id }) {
+				return pathway
 			} else {
-				throw RequestError.emptyDataResponse
+				throw RequestError.apiError("Can not find pathway with id: \(id)")
 			}
 		}
 		.mapError { $0 as? RequestError ?? .unknown($0) }

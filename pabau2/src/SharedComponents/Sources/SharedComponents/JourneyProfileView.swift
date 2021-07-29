@@ -73,4 +73,3 @@ extension JourneyProfileView.ViewState {
         self.initials = appointment?.employeeInitials ?? ""
     }
 }
-

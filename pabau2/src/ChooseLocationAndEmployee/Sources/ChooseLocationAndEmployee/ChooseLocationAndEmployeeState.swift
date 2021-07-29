@@ -5,7 +5,7 @@ import ChooseEmployees
 
 public struct ChooseLocationAndEmployeeState: Equatable {
 	
-	public init(locations: IdentifiedArrayOf<Location>, employees: [Location.Id : IdentifiedArrayOf<Employee>], chosenLocationId: Location.Id? = nil, chosenEmployeeId: Employee.Id? = nil, locationValidationError: String? = nil, employeeValidationError: String? = nil, chooseLocationState: ChooseLocationState? = nil, chooseEmployeeState: ChooseEmployeesState? = nil) {
+	public init(locations: IdentifiedArrayOf<Location>, employees: [Location.Id: IdentifiedArrayOf<Employee>], chosenLocationId: Location.Id? = nil, chosenEmployeeId: Employee.Id? = nil, locationValidationError: String? = nil, employeeValidationError: String? = nil, chooseLocationState: ChooseLocationState? = nil, chooseEmployeeState: ChooseEmployeesState? = nil) {
 		self.locations = locations
 		self.employees = employees
 		self.chosenLocationId = chosenLocationId
@@ -51,7 +51,6 @@ public struct ChooseLocationAndEmployeeState: Equatable {
 			return empInLoc[id: $0]
 		}
 	}
-	
 	
 	init(locations: IdentifiedArrayOf<Location>,
 		 employees: [Location.ID: IdentifiedArrayOf<Employee>],

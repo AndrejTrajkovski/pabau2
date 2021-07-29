@@ -16,6 +16,7 @@ extension APIClient {
 
         if let search = search {
             queryItems["name"] = search
+            queryItems["like_email"] = search
         }
 
         return requestBuilder.init(
@@ -65,21 +66,33 @@ extension APIClient {
 			.eraseToEffect()
 	}
 	
-	public func update(clientBuilder: ClientBuilder) -> Effect<Client.ID, RequestError> {
+	public func update(clientBuilder: ClientBuilder, pathwayStep: PathwayIdStepId?) -> Effect<Client.ID, RequestError> {
 		struct ClientResponse: Decodable {
-			let contact_id: Client.ID
+			let contact_id: EitherStringOrInt
 		}
+		
+		var queryParams = commonAnd(other: ["contact_id": clientBuilder.id?.description ?? "0"])
+		merge(&queryParams, with: pathwayStep)
+		
 		let requestBuilder: RequestBuilder<ClientResponse>.Type = requestBuilderFactory.getBuilder()
 		return requestBuilder.init(method: .POST,
 								   baseUrl: baseUrl,
 								   path: .updateClient,
-								   queryParams: commonAnd(other: ["contact_id": clientBuilder.id?.description ?? "0"]),
+								   queryParams: queryParams,
 								   body: bodyData(parameters: clientBuilder.toJSONValues())
 		)
 		.effect()
-		.map(\.contact_id)
+        .map(\.contact_id.integerValue)
+        .map(Client.ID.init(rawValue:))
 	}
     
+	func merge(_ params: inout [String: Any], with pathwayStep: PathwayIdStepId?) {
+		if let pathwayStep = pathwayStep {
+			params["step_id"] = pathwayStep.step_id
+			params["path_taken_id"] = pathwayStep.path_taken_id
+		}
+	}
+	
     public func addNote(clientId: Client.Id, note: String) -> Effect<Note, RequestError> {
         Just(Note(id: 24214, content: note, date: Date()))
             .mapError { RequestError.unknown($0) }

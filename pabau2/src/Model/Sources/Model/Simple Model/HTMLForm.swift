@@ -3,7 +3,7 @@ import Tagged
 
 public struct HTMLForm: Identifiable, Equatable {
 	
-	public typealias ID = Tagged<HTMLForm, EitherStringOrInt>
+	public typealias ID = Tagged<HTMLForm, Int>
 	
 	public var id: Self.ID
 	
@@ -17,18 +17,12 @@ public struct HTMLForm: Identifiable, Equatable {
 
 	public var formStructure: [CSSField]
 	
-	public var canProceed: Bool {
-		return formStructure.allSatisfy {
-			!$0._required || $0.cssClass.isFulfilled
-		}
-	}
-	
 	public init(id: Int,
 				name: String,
 				formType: FormType,
 				ePaper: Bool? = nil,
 				formStructure: [CSSField]) {
-		self.id = HTMLForm.ID(rawValue: .left(String(id)))
+		self.id = HTMLForm.ID(rawValue: id)
 		self.name = name
 		self.type = formType
 		self.ePaper = ePaper
@@ -113,7 +107,7 @@ struct HTMLFormBuilder {
 		guard let formType = FormType(rawValue: template.formType) else { throw HTMLFormBuilderError.unhandledFormType }
 		
 		self.entryId = nil
-		self.id = .init(rawValue: .left(template.id))
+		self.id = .init(rawValue: Int(template.id)!)
 		self.name = template.name
 		self.formType = formType
 		self.ePaper = nil

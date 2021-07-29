@@ -7,7 +7,7 @@ public enum TextChangeAction: Equatable {
 }
 
 public let textFieldReducer: Reducer<String, TextChangeAction, Any> = .init {
-	state, action, env in
+	state, action, _ in
 	switch action {
 	case .textChange(let text):
 		state = text

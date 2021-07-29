@@ -46,15 +46,16 @@ public let aftercareReducer: Reducer<Aftercare, AftercareAction, Any> = (
 	)
 )
 
-struct AftercareForm: View {
+public struct AftercareForm: View {
 	let store: Store<Aftercare, AftercareAction>
 	@ObservedObject var viewStore: ViewStore<Aftercare, AftercareAction>
-	init(store: Store<Aftercare, AftercareAction>) {
+    
+    public init(store: Store<Aftercare, AftercareAction>) {
 		self.store = store
 		self.viewStore = ViewStore(store)
 	}
 
-	var body: some View {
+    public var body: some View {
 		print("AftercareForm body")
 		return ASCollectionView {
 			AftercareImagesSection(
@@ -99,9 +100,9 @@ struct AftercareForm: View {
 		}
 //		.scrollIndicatorsEnabled(horizontal: false, vertical: false)
 //		.edgesIgnoringSafeArea(.all)
-		.navigationBarTitle("")
-		.navigationBarBackButtonHidden(true)
-		.navigationBarHidden(true)
+//		.navigationBarTitle("")
+//		.navigationBarBackButtonHidden(true)
+//		.navigationBarHidden(true)
 	}
 }
 

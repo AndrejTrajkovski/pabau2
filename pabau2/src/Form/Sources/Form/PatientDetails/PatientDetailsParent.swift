@@ -3,8 +3,9 @@ import Util
 import ComposableArchitecture
 import Model
 import SharedComponents
+import ToastAlert
 
-public let patientDetailsParentReducer: Reducer<PatientDetailsParentState, PatientDetailsParentAction, Any> = .combine(
+public let patientDetailsParentReducer: Reducer<PatientDetailsParentState, PatientDetailsParentAction, FormEnvironment> = .combine(
 	patientDetailsReducer.optional().pullback(
 		state: \PatientDetailsParentState.patientDetails,
 		action: /PatientDetailsParentAction.patientDetails,
@@ -15,35 +16,60 @@ public let patientDetailsParentReducer: Reducer<PatientDetailsParentState, Patie
 			switch result {
 			case .success(let clientBuilder):
 				state.patientDetails = clientBuilder
-				state.loadingState = .gotSuccess
 			case .failure(let error):
-				state.loadingState = .gotError(error)
+				break
 			}
-		case .gotPOSTResponse(let result):
+        case .errorView(.retry):
+            return env.formAPI.getPatientDetails(clientId: state.clientId)
+                .catchToEffect()
+                .map { $0.map(ClientBuilder.init(client:))}
+                .map(PatientDetailsParentAction.gotGETResponse)
+        case .patientDetails:
 			break
-		case .errorView(_):
-			break
-		case .patientDetails:
-			break
-		}
+		case .complete:
+			guard let clientData = state.patientDetails else { return .none }
+			let pathwayStep = PathwayIdStepId(step_id: state.stepId, path_taken_id: state.pathwayId)
+			return env.formAPI.update(clientBuilder: clientData, pathwayStep: pathwayStep)
+				.catchToEffect()
+				.receive(on: DispatchQueue.main)
+				.map(PatientDetailsParentAction.gotPOSTResponse)
+				.eraseToEffect()
+        case .gotPOSTResponse(_):
+            break
+        }
 		return .none
 	}
 )
 
-public struct PatientDetailsParentState: Equatable {
+public struct PatientDetailsParentState: Equatable, Identifiable {
 	
-	public init () { }
+	public init (id: Step.ID,
+				 pathwayId: Pathway.ID,
+                 clientId: Client.ID,
+                 appointmentId: Appointment.ID,
+                 canSkip: Bool) {
+		self.stepId = id
+		self.pathwayId = pathwayId
+        self.clientId = clientId
+        self.appointmentId = appointmentId
+        self.canSkip = canSkip
+	}
 	
-	var patientDetails: ClientBuilder?
-	var loadingState: LoadingState = .initial
-	public var stepStatus: StepStatus = .pending
+	public var id: Step.ID { stepId }
+    let appointmentId: Appointment.ID
+	let pathwayId: Pathway.ID
+	let stepId: Step.ID
+    let clientId: Client.ID
+    let canSkip: Bool
+	public var patientDetails: ClientBuilder?
 }
 
 public enum PatientDetailsParentAction: Equatable {
 	case patientDetails(PatientDetailsAction)
 	case gotGETResponse(Result<ClientBuilder, RequestError>)
-	case gotPOSTResponse(Result<FilledFormData.ID, RequestError>)
+	case gotPOSTResponse(Result<Client.ID, RequestError>)
 	case errorView(ErrorViewAction)
+	case complete
 }
 
 public struct PatientDetailsParent: View {
@@ -56,10 +82,12 @@ public struct PatientDetailsParent: View {
 	
 	public var body: some View {
 		IfLetStore(store.scope(state: { $0.patientDetails },
-							   action: { .patientDetails($0) }),
-				   then: { PatientDetailsForm.init(store:$0, isDisabled: false) },
+                               action: { .patientDetails($0) }),
+				   then: {
+                    PatientDetailsForm.init(store: $0, isDisabled: false)
+				   },
 				   else: {
-						Text("ASD")
+					Text("ASD")
 				   })
 	}
 }

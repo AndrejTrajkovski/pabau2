@@ -1,23 +1,12 @@
 import ComposableArchitecture
 import Tagged
 
-public struct StepEntryFormInfo: Decodable, Equatable {
+public struct StepEntryHTMLFormInfo: Decodable, Equatable {
 	public let possibleFormTemplates: IdentifiedArrayOf<FormTemplateInfo>
 	
 	//if step is not started both are nil
 	public let chosenFormTemplateId: FormTemplateInfo.ID?
 	public let formEntryId: FilledFormData.ID?
-	
-	
-	public var templateIdToLoad: FormTemplateInfo.ID? {
-		if let chosenFormTemplateId = chosenFormTemplateId {
-			return chosenFormTemplateId
-		} else if possibleFormTemplates.count == 1 {
-			return possibleFormTemplates.first!.id
-		} else {
-			return nil
-		}
-	}
 }
 
 public struct StepEntry: Decodable, Equatable {
@@ -25,15 +14,15 @@ public struct StepEntry: Decodable, Equatable {
 //	public typealias ID = Tagged<Step.ID, String>
 	public let stepType: StepType
 	public let order: Int?
-	public let status: StepStatus
+	public var status: StepStatus
 	
-	public let htmlFormInfo: StepEntryFormInfo?
+	public let htmlFormInfo: StepEntryHTMLFormInfo?
 	
 	enum CodingKeys: String, CodingKey {
 		case possibleFormTemplateNames = "possible_form_template_names"
-		case chosenFormTemplateId = "chosen_form_template_id"
+		case chosenFormTemplateId = "chosen_form_template_id "
 		case possibleFormTemplateIds = "possible_form_template_ids"
-		case formEntryId = "form_entry_id"
+		case formEntryId = "form_entryid_id"
 		case step_form_type
 		case step_order
 		case status
@@ -47,23 +36,29 @@ public struct StepEntry: Decodable, Equatable {
 		
 		if stepType.isHTMLForm {
 			
-			let formEntryId: FilledFormData.ID?
-			let chosenTemplateId: HTMLForm.ID?
-			
-			if let formEntryId2 = try? container.decode(FilledFormData.ID.self, forKey: .formEntryId),
-			   formEntryId2.rawValue != 0,
-			   let chosenTemplateId2 = try? container.decode(HTMLForm.ID.self, forKey: .chosenFormTemplateId),
-			   chosenTemplateId2.description != "0" {
-				
-				formEntryId = FilledFormData.ID?.some(.init(rawValue: formEntryId2.rawValue))
-				chosenTemplateId = chosenTemplateId2
-				
-			} else {
-				
-				formEntryId = nil
-				chosenTemplateId = nil
-			}
-			
+            let formEntryId: FilledFormData.ID?
+            let chosenTemplateId: HTMLForm.ID?
+            
+            let formEntryId2 = try container.decode(Int.self, forKey: .formEntryId)
+            formEntryId = formEntryId2 != 0 ? .init(rawValue: formEntryId2) : nil
+            let chosenTemplateId2 = try container.decode(EitherStringOrInt.self, forKey: .chosenFormTemplateId).integerValue
+            chosenTemplateId = chosenTemplateId2 != 0 ? .init(rawValue: chosenTemplateId2) : nil
+            
+            
+//			if let formEntryId2 = try container.decode(Int.self, forKey: .formEntryId),
+//			   formEntryId2 != 0,
+//			   let chosenTemplateId2 = try container.decode(Int.self, forKey: .chosenFormTemplateId),
+//			   chosenTemplateId2 != 0 {
+//
+//                formEntryId = .some(.init(rawValue: formEntryId2))
+//                chosenTemplateId = .some(.init(rawValue: .right(chosenTemplateId2)))
+//
+//			} else {
+//
+//				formEntryId = nil
+//				chosenTemplateId = nil
+//			}
+//
 			let possibleFormTemplates: [FormTemplateInfo]
 			
 			if let possibleFormTemplateIds = try? container.decode([FormTemplateInfo.ID].self, forKey: .possibleFormTemplateIds),
@@ -75,7 +70,7 @@ public struct StepEntry: Decodable, Equatable {
 				possibleFormTemplates = []
 			}
 			
-			self.htmlFormInfo = StepEntryFormInfo(possibleFormTemplates: IdentifiedArrayOf(possibleFormTemplates),
+            self.htmlFormInfo = StepEntryHTMLFormInfo(possibleFormTemplates: IdentifiedArrayOf(uniqueElements: possibleFormTemplates),
 												  chosenFormTemplateId: chosenTemplateId,
 												  formEntryId: formEntryId)
 			
@@ -84,7 +79,7 @@ public struct StepEntry: Decodable, Equatable {
 		}
 		
 		self.order = Int(try container.decode(String.self, forKey: .step_order))
-		self.status = .pending//TODO
+        self.status = (try? container.decode(StepStatus.self, forKey: .status)) ?? .pending
 //		self.id = try container.decode(StepEntry.ID.self, forKey: .id)
 	}
 }

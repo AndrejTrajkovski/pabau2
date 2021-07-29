@@ -7,35 +7,24 @@ import ChoosePathway
 
 public struct CheckInLoadedState: Equatable {
 	
-	public let appointment: Appointment
+	public var appointment: Appointment
 	public let pathway: Pathway
 	public let pathwayTemplate: PathwayTemplate
 	
-	var patientDetails: PatientDetailsParentState
+    public var patientCheckIn: CheckInPathwayState
+    public var doctorCheckIn: CheckInPathwayState
+    
+    var isHandBackDeviceActive: Bool = false
 	
-	var patientHTMLForms: IdentifiedArrayOf<HTMLFormStepContainerState>
-	
-	var treatmentNotes: IdentifiedArrayOf<HTMLFormParentState>
-	
-	var prescriptions: IdentifiedArrayOf<HTMLFormParentState>
-	
-	var aftercare: Aftercare?
-	var aftercareStatus: Bool
-	
-	var isPatientComplete: StepStatus
-	
-	var photos: PhotosState
-	
-	var selectedConsentsIds: [HTMLForm.ID]
-	var selectedTreatmentFormsIds: [HTMLForm.ID]
-	
-	var patientSelectedIndex: Int
-	var doctorSelectedIndex: Int
-	
-	var passcodeState = PasscodeState()
-	var isEnterPasscodeActive: Bool = false
+    var passcodeForDoctorMode: PasscodeState?
 	var isDoctorCheckInMainActive: Bool = false
-	var isDoctorSummaryActive: Bool = false
+}
+
+public enum CheckInLoadedAction: Equatable {
+    case didTouchHandbackDevice
+    case patient(CheckInPathwayAction)
+    case doctor(CheckInPathwayAction)
+    case passcodeForDoctorMode(PasscodeAction)
 }
 
 extension CheckInLoadedState {
@@ -44,107 +33,131 @@ extension CheckInLoadedState {
 				pathway: Pathway,
 				template: PathwayTemplate) {
 		self.appointment = appointment
-//		self.patientDetails = patientDetails
 		self.pathway = pathway
 		self.pathwayTemplate = template
-		self.patientHTMLForms = IdentifiedArray(pathway.stepEntries.filter { $0.value.stepType == .medicalhistory }.map { HTMLFormStepContainerState.init(stepId: $0.key, stepEntry: $0.value, clientId: appointment.customerId, pathwayId: pathway.id) })
-		self.selectedConsentsIds = []
-		self.selectedTreatmentFormsIds = []
-		self.treatmentNotes = []
-		self.prescriptions = []
-		self.aftercareStatus = false
-		self.isPatientComplete = .pending
-		self.photos = PhotosState([[:]])
-		self.patientSelectedIndex = 0
-		self.doctorSelectedIndex = 0
-		self.patientDetails = PatientDetailsParentState()
+		let patientStepStates = stepsAndEntries(pathway, template, .patient).map {
+            StepState.init(stepAndEntry: $0, clientId: appointment.customerId, pathway: pathway, appId: appointment.id)
+		}
+        self.patientCheckIn = CheckInPathwayState(appointment: appointment,
+                                                  pathway: pathway,
+                                                  pathwayTemplate: pathwayTemplate,
+                                                  stepStates: patientStepStates)
+		let doctorStepStates = stepsAndEntries(pathway, pathwayTemplate, .doctor).map {
+            StepState.init(stepAndEntry: $0, clientId: appointment.customerId, pathway: pathway, appId: appointment.id)
+		}
+        self.doctorCheckIn = CheckInPathwayState(appointment: appointment,
+                                                 pathway: pathway,
+                                                 pathwayTemplate: pathwayTemplate,
+                                                 stepStates: doctorStepStates)
 	}
 }
 
-extension CheckInLoadedState {
-	
-	var passcode: PasscodeContainerState {
-		get {
-			PasscodeContainerState(
-				passcode: self.passcodeState,
-				isDoctorCheckInMainActive: self.isDoctorCheckInMainActive
-			)
-		}
-		set {
-			self.passcodeState = newValue.passcode
-			self.isDoctorCheckInMainActive = newValue.isDoctorCheckInMainActive
-		}
-	}
-	
-	var isHandBackDeviceActive: Bool {
-		get { isPatientComplete == .complete }
-		set { isPatientComplete = newValue ? .complete : .pending }
-	}
-	
-	var handback: HandBackDeviceState {
-		get {
-			HandBackDeviceState(isEnterPasscodeActive: self.isEnterPasscodeActive,
-								isNavBarHidden: !self.passcode.passcode.unlocked
-			)
-		}
-	}
+let pipeToPatientAction = pipe(CheckInPathwayAction.steps,
+                                 CheckInLoadedAction.patient,
+                                 CheckInContainerAction.loaded)
+
+let pipeToDoctorAction = pipe(CheckInPathwayAction.steps,
+                              CheckInLoadedAction.doctor)
+
+func toActions<Action>(_ pipeToAction: @escaping (StepsActions) -> Action, stepsActions: [Effect<StepsActions, Never>]) -> [Effect<Action, Never>] {
+    return stepsActions.map { $0.map(pipeToAction) }
 }
 
-extension CheckInLoadedState {
-	
-	var doctorCheckIn: CheckInDoctorState {
-		get {
-			CheckInDoctorState(
-				appointment: self.appointment,
-				pathway: pathwayTemplate,
-				treatmentNotes: self.treatmentNotes,
-				prescriptions: self.prescriptions,
-				aftercare: self.aftercare,
-				aftercareStatus: self.aftercareStatus,
-				photos: self.photos,
-				doctorSelectedIndex: self.doctorSelectedIndex
-			)
-		}
-		set {
-			self.treatmentNotes = newValue.treatmentNotes
-			self.prescriptions = newValue.prescriptions
-			self.aftercare = newValue.aftercare
-			self.aftercareStatus = newValue.aftercareStatus
-			self.photos = newValue.photos
-			self.doctorSelectedIndex = newValue.doctorSelectedIndex
-		}
-	}
-	
-	public var patientCheckIn: CheckInPatientState {
-		get {
-			CheckInPatientState(
-				appointment: appointment,
-				pathway: pathway,
-				pathwayTemplate: pathwayTemplate,
-				patientDetails: patientDetails,
-				htmlForms: patientHTMLForms,
-				isPatientComplete: isPatientComplete,
-				selectedIdx: patientSelectedIndex
-			)
-		}
-		
-		set {
-			self.patientDetails = newValue.patientDetails
-			self.patientHTMLForms = newValue.htmlForms
-			self.isPatientComplete = newValue.isPatientComplete
-			self.patientSelectedIndex = newValue.selectedIdx
-		}
-	}
+func toLoadedActions(stepsActions: [Effect<StepsActions, Never>]) -> [Effect<CheckInLoadedAction, Never>] {
+    return toActions(pipeToDoctorAction, stepsActions: stepsActions)
 }
 
-extension Pathway {
-	func orderedPatientSteps() -> [Dictionary<Step.ID, StepEntry>.Element] {
-		stepEntries.filter { filterPatient($0.value.stepType)}
-			.sorted(by: { $0.value.order ?? 0 < $1.value.order ?? 0 })
-	}
-	
-	func orderedDoctorSteps() -> [Dictionary<Step.ID, StepEntry>.Element] {
-		stepEntries.filter { filterPatient($0.value.stepType)}
-			.sorted(by: { $0.value.order ?? 0 < $1.value.order ?? 0 })
+func toCheckContainerAction(stepsActions: [Effect<StepsActions, Never>]) -> [Effect<CheckInContainerAction, Never>] {
+    return toActions(pipeToPatientAction, stepsActions: stepsActions)
+}
+
+let getFormsForPathway = uncurry(pipe(stepsAndEntries(_:_:_:), curry(getForms(stepsAndEntries:formAPI:clientId:))))
+
+let getCheckInFormsForPathway = pipe(getFormsForPathway, toCheckContainerAction(stepsActions:))
+let getLoadedActionsFormsForPathway = pipe(getFormsForPathway, toLoadedActions(stepsActions:))
+
+func getLoadedActionsOneAfterAnother(_ pathway: Pathway,
+                                     _ template: PathwayTemplate,
+                                     _ journeyMode: JourneyMode,
+                                     _ formAPI: FormAPI,
+                                     _ clientId: Client.ID) -> Effect<CheckInLoadedAction, Never> {
+    let effects = with(((pathway, template, journeyMode), formAPI, clientId), getLoadedActionsFormsForPathway)
+    return Effect.concatenate(effects)
+}
+
+public func getCheckInFormsOneAfterAnother(pathway: Pathway,
+                                           template: PathwayTemplate,
+                                           journeyMode: JourneyMode,
+                                           formAPI: FormAPI,
+                                           clientId: Client.ID) -> Effect<CheckInContainerAction, Never> {
+    let effects = with(((pathway, template, journeyMode), formAPI, clientId), getCheckInFormsForPathway)
+    return Effect.concatenate(effects)
+}
+
+//func getCheckInForms(loadedState: CheckInLoadedState) ->
+
+public func stepsAndEntries(_ pathway: Pathway, _ template: PathwayTemplate, _ journeyMode: JourneyMode) -> [StepAndStepEntry] {
+    print("here")
+    print(pathway, template)
+	return template.steps
+		.filter { isIn(journeyMode, $0.stepType) }
+		.map { StepAndStepEntry(step: $0, entry: pathway.stepEntries[$0.id]) }
+}
+
+func getForms(stepsAndEntries: [StepAndStepEntry], formAPI: FormAPI, clientId: Client.ID) -> [Effect<StepsActions, Never>] {
+	let stepActions: [Effect<StepsActions, Never>] = stepsAndEntries.indices.compactMap { idx in
+			let stepAndEntry = stepsAndEntries[idx]
+			if let getForm = getForm(stepAndEntry: stepAndEntry, formAPI: formAPI, clientId: clientId) {
+                return getForm.map { StepsActions.steps(idx: idx, action: StepAction.stepType($0)) }
+			} else {
+				return nil
+			}
+		}
+	return stepActions
+}
+
+func getForm(stepAndEntry: StepAndStepEntry, formAPI: FormAPI, clientId: Client.ID) -> Effect<StepBodyAction, Never>? {
+	if stepAndEntry.step.stepType.isHTMLForm {
+        print(stepAndEntry)
+		guard let templateToGet = stepAndEntry.entry?.htmlFormInfo?.chosenFormTemplateId else {
+			return nil
+		}
+        
+//        let templateToGet: HTMLForm.ID
+//        if let templateId = stepAndEntry.entry?.htmlFormInfo?.chosenFormTemplateId {
+//            templateToGet = templateId
+//        } else if let firstOfPossible = stepAndEntry.entry?.htmlFormInfo?.possibleFormTemplates.first?.id {
+//            templateToGet = firstOfPossible
+//        } else {
+//            return nil
+//        }
+        
+        let pipeInits: (Result<HTMLForm, RequestError>) -> StepBodyAction = pipe(HTMLFormAction.gotForm, HTMLFormStepContainerAction.chosenForm, StepBodyAction.htmlForm)
+        
+		return formAPI.getForm(templateId: templateToGet, entryId: stepAndEntry.entry?.htmlFormInfo?.formEntryId)
+			.catchToEffect()
+			.map(pipeInits)
+        
+	} else {
+        
+		switch stepAndEntry.step.stepType {
+		case .consents, .medicalhistory, .treatmentnotes, .prescriptions:
+			fatalError("should be handled previously")
+		case .patientdetails:
+			return formAPI.getPatientDetails(clientId: clientId)
+				.catchToEffect()
+				.map { $0.map(ClientBuilder.init(client:))}
+				.map(pipe(PatientDetailsParentAction.gotGETResponse, StepBodyAction.patientDetails))
+		case .aftercares:
+			return nil
+		case .photos:
+			return nil
+        case .lab:
+            return nil
+        case .video:
+            return nil
+        case .timeline:
+            return nil
+        }
 	}
 }

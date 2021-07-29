@@ -17,6 +17,7 @@ import AppointmentDetails
 import ChooseLocationAndEmployee
 import ToastAlert
 import FSCalendar
+import CalendarList
 
 public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, CalendarEnvironment> = .combine(
 	calTypePickerReducer.pullback(
@@ -63,6 +64,15 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 		action: /CalendarAction.addShift,
 		environment: { $0 }
 	),
+    listCalendarReducer.pullback(
+        state: \CalendarState.list,
+        action: /CalendarAction.list,
+        environment: { ListCalendarEnvironment(journeyAPI: $0.journeyAPI,
+                                               clientsAPI: $0.clientsAPI,
+                                               userDefaults: $0.userDefaults)
+        }
+    ),
+    
 	.init { state, action, env in
 
 		struct GetAppointmentsCancelID: Hashable { }
@@ -78,6 +88,7 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 				.eraseToEffect()
 				.cancellable(id: GetAppointmentsCancelID(), cancelInFlight: true)
 		}
+        
         print(action)
 		switch action {
 		
@@ -173,6 +184,19 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
                     rooms: state.selectedRoomsIds()
                 )
             case .failure:
+                break
+            }
+        case .appDetails(.onResponseChangeCancelReason(let response)):
+            switch response {
+            case .success(let appointmentID):
+                let activeEvents = state.appointments.flatten().filter { $0.id != appointmentID }                
+                state.appointments.refresh(
+                    events: activeEvents,
+                    locationsIds: state.chosenLocationsIds,
+                    employees: state.selectedEmployeesIds(),
+                    rooms: state.selectedRoomsIds()
+                )
+            default:
                 break
             }
 		case .onAppDetailsDismiss:
@@ -287,7 +311,7 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			state.isCalendarTypeDropdownShown = false
 			state.isAddEventDropdownShown = value
 		case .list(.locationSection(id: let locId, action: .rows(id: let appId, action: .select))):
-			guard let app = state.listContainer?.appointments.appointments[locId]?.values.flatMap({ $0.elements }).first(where: { $0.id == appId }) else { break }
+			guard let app = state.listContainer?.appointments.appointments[locId]?.values.flatMap({ $0 }).first(where: { $0.id == appId }) else { break }
 			state.appDetails = AppDetailsState(app: app)
 
 		case .roomFilters(.rows(id: let id, action: let action)):
@@ -330,8 +354,6 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			break
 		case .roomFilters(.gotLocationsResponse(_)):
 			break
-		case .list(.selectedFilter(_)):
-			break
 		case .list(.searchedText(_)):
 			break
         case .refresh:
@@ -367,6 +389,9 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
             return .cancel(id: ToastTimerId())
 		case .addShift:
 			break
+        case .list(.selectedFilter(let filter)):
+            print(filter)
+            state.activeFilter = filter
 		}
 		return .none
 	}

@@ -6,8 +6,11 @@ import AlertToast
 import ToastAlert
 import Util
 
-let addAppTapBtnReducer = Reducer<AddAppointmentState?, AddAppointmentAction, AddAppointmentEnv>
-{ state, action, env in
+let addAppTapBtnReducer = Reducer<
+	AddAppointmentState?,
+	AddAppointmentAction,
+	AddAppointmentEnv
+> { state, action, _ in
 	switch action {
 	case .closeBtnTap:
 		state = nil

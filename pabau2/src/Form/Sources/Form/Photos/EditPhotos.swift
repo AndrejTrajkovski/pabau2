@@ -340,7 +340,6 @@ func getPhoto(_ photos: IdentifiedArrayOf<PhotoViewModel>,
 	}
 }
 
-
 extension View {
     public func snapshot() -> UIImage {
         let controller = UIHostingController(rootView: self)

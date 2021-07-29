@@ -9,7 +9,7 @@ let package = Package(
     products: [
         .library(
             name: "ChooseLocation",
-            targets: ["ChooseLocation"]),
+            targets: ["ChooseLocation"])
     ],
 	dependencies: [
 		.package(url: "../CoreDataModel",
@@ -24,6 +24,6 @@ let package = Package(
 						   "SharedComponents"]),
         .testTarget(
             name: "ChooseLocationTests",
-            dependencies: ["ChooseLocation"]),
+            dependencies: ["ChooseLocation"])
     ]
 )

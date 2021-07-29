@@ -12,14 +12,6 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 		environment: { $0 }
 	),
 	.init { state, action, env in
-		
-		func getForm(_ templateId: HTMLForm.ID, _ formAPI: FormAPI) -> Effect<FormsContainerAction, Never> {
-			return formAPI.getForm(templateId: templateId, entryId: nil)
-				.catchToEffect()
-				.receive(on: DispatchQueue.main)
-				.map { FormsContainerAction.forms(id: templateId, action: .gotForm($0))}
-				.eraseToEffect()
-		}
 
 	switch action {
 
@@ -30,7 +22,9 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 			state.isFillingFormsActive = true
 			return .concatenate (
 				state.formsCollection.map { htmlFormParentState in
-					htmlFormParentState.getForm(formAPI: env.formAPI)
+					env.formAPI.getForm(templateId: htmlFormParentState.templateId, entryId: nil)
+						.catchToEffect()
+						.map(HTMLFormAction.gotForm)
 						.map { FormsContainerAction.forms(id: htmlFormParentState.templateId, action: $0)}
 						.receive(on: DispatchQueue.main)
 						.eraseToEffect()
@@ -83,7 +77,7 @@ extension FormsContainerState {
 	}
 	
 	private func stepForms() -> [StepFormInfo] {
-		formsCollection.map { StepFormInfo.init(status: $0.status, title: $0.templateName )}
+        formsCollection.map { StepFormInfo.init(status: StepStatus.init(formStatus:$0.status), title: $0.templateName )}
 	}
 }
 
@@ -121,11 +115,21 @@ struct FormsContainer: View {
 					 content: {
 						ForEachStore(store.scope(state: { $0.formsCollection },
 												 action: FormsContainerAction.forms(id: action:)),
-									 content: HTMLFormParent.init(store:)
+                                     content: { formStore in
+                                        HTMLFormParent.init(store: formStore,
+                                                            footer: { completeBtn(store: formStore) }
+                                        )
+                                     }
 						).padding([.leading, .trailing], 32)
 					 }
 		)
 	}
+    
+    @ViewBuilder
+    func completeBtn(store: Store<HTMLFormParentState, HTMLFormAction>) -> some View {
+        IfLetStore(store.scope(state: { $0.form }, action: { .rows($0)}),
+                   then: HTMLFormCompleteBtn.init(store:))
+    }
 }
 
 struct ClientAvatarAndName: View {

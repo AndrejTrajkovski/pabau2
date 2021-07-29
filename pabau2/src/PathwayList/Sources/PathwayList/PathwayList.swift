@@ -26,7 +26,7 @@ public struct PathwayList: View {
 									 content: PathwayInfoRow.init(store:))
 					}
 				}
-				PrimaryButton(Texts.startPathway){
+				PrimaryButton(Texts.startPathway) {
 					viewStore.send(.addNew )
 					
 				}

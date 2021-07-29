@@ -7,13 +7,13 @@ public struct ListAppointments: Equatable {
 	
 	public init(events: [CalendarEvent]) {
 		
-		let array = events.compactMap { extract(case: CalendarEvent.bookout, from: $0) }
-		self.bookouts = IdentifiedArrayOf(array)
+		let array = events.compactMap(extract(CalendarEvent.bookout))
+        self.bookouts = IdentifiedArrayOf(uniqueElements: array)
 		
-		let apps = events.compactMap { extract(case: CalendarEvent.appointment, from: $0) }
-		let byLocation: [Location.Id: [Employee.Id : IdentifiedArrayOf<Appointment>]] = Dictionary.init(grouping: apps, by: { $0.locationId })
+		let apps = events.compactMap(extract(CalendarEvent.appointment))
+		let byLocation: [Location.Id: [Employee.Id: IdentifiedArrayOf<Appointment>]] = Dictionary.init(grouping: apps, by: { $0.locationId })
 			.mapValues {
-				let byEmployee = Dictionary.init(grouping: $0, by: { $0.employeeId }).mapValues(IdentifiedArray.init(_:))
+				let byEmployee = Dictionary.init(grouping: $0, by: { $0.employeeId }).mapValues(IdentifiedArray.init(uniqueElements:))
 				return byEmployee
 			}
 		self.appointments = byLocation

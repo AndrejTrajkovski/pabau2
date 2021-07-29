@@ -31,7 +31,7 @@ let package = Package(
 				 url: "https://github.com/SDWebImage/SDWebImageSwiftUI.git",
 				 from: Version.init(stringLiteral: "2.0.0")),
 		.package(url: "../CoreDataModel",
-				 from: Version.init(stringLiteral: "1.0.0")),
+				 from: Version.init(stringLiteral: "1.0.0"))
 	],
 	targets: [
 		.target(

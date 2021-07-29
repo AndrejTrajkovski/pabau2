@@ -9,7 +9,7 @@ let package = Package(
 	products: [
 		.library(
 			name: "ToastAlert",
-			targets: ["ToastAlert"]),
+			targets: ["ToastAlert"])
 	],
 	dependencies: [
 		.package(name: "AlertToast",
@@ -32,6 +32,6 @@ let package = Package(
 			]),
 		.testTarget(
 			name: "ToastAlertTests",
-			dependencies: ["ToastAlert"]),
+			dependencies: ["ToastAlert"])
 	]
 )
