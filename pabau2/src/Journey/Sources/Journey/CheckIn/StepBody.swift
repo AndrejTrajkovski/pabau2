@@ -76,6 +76,7 @@ public enum StepBodyAction: Equatable {
     case patientDetails(PatientDetailsParentAction)
     case htmlForm(HTMLFormStepContainerAction)
     case checkPatientDetails(CheckPatientDetailsAction)
+    case aftercare(AftercareAction)
     
     public var isStepCompleteAction: Bool {
         switch self {
@@ -100,6 +101,7 @@ struct StepBody: View {
             CaseLet(state: /StepBodyState.patientDetails, action: StepBodyAction.patientDetails, then: PatientDetailsParent.init(store:))
             CaseLet(state: /StepBodyState.htmlForm, action: StepBodyAction.htmlForm, then: HTMLFormStepContainer.init(store:))
             CaseLet(state: /StepBodyState.timeline, action: StepBodyAction.checkPatientDetails, then: CheckPatientDetails.init(store:))
+            CaseLet(state: /StepBodyState.aftercare, action: StepBodyAction.aftercare, then: AftercareForm.init(store:))
             Default { EmptyView ()}
         }.modifier(FormFrame())
     }
