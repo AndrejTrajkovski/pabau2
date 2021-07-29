@@ -159,6 +159,11 @@ extension CalendarEvent: Decodable {
 		case fontColor = "font_color"
 		case extraEmployees = "extra_employees"
 		case pathways
+        case patient_details_status
+        case medical_history_status
+        case patient_consent_status
+        case photos_status
+        case treatment_notes_status
 	}
 	
 	public init(from decoder: Decoder) throws {
@@ -172,8 +177,10 @@ extension CalendarEvent: Decodable {
 		} else {
 			throw DecodingError.dataCorruptedError(forKey: CodingKeys.id, in: container, debugDescription: "Id is not string or int")
 		}
-		let employeeId = try container.decode(Employee.Id.self, forKey: .employeeId)
-		let locationId = try container.decode(Location.ID.self, forKey: .locationID)
+		let employeeId2 = try container.decode(EitherStringOrInt.self, forKey: .employeeId)
+        let employeeId = Employee.Id.init(rawValue: employeeId2.description)
+		let locationId2 = try container.decode(EitherStringOrInt.self, forKey: .locationID)
+        let locationId = Location.Id.init(rawValue: locationId2.integerValue)
 		let _private: Bool
 		let eitherPrivate = try container.decode(Either<Bool, String>.self, forKey: .appointmentPrivate)
 		switch eitherPrivate {
@@ -199,6 +206,7 @@ extension CalendarEvent: Decodable {
 		let employeeName = try container.decode(String.self, forKey: .employeeName)
 		let employeeInitials = employeeName.split(separator: " ").joined().uppercased()
 		let serviceId = try? container.decode(Service.Id.self, forKey: .serviceID)
+        
 		if let serviceId = serviceId, serviceId.rawValue != "0" {
             let app = try Appointment(
                 id,

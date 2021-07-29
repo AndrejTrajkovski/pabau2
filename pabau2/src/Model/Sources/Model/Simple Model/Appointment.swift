@@ -25,22 +25,27 @@ public struct Appointment: Equatable, Identifiable, Decodable {
 	public let customerId: Client.ID
 	public let serviceId: Service.Id
 	public let locationName: String?
-	public var pathways: IdentifiedArrayOf<PathwayInfo>
+    public var pathways: IdentifiedArrayOf<PathwayInfo>
+    public var patient_details_status: Int
+    public var medical_history_status: Int
+    public var patient_consent_status: Int
+    public var photos_status: Int
+    public var treatment_notes_status: Int
 }
 
 public struct PathwayInfo: Decodable, Equatable, Identifiable {
     public init(_ pathway: Pathway, _ template: PathwayTemplate) {
         self.pathwayTemplateId = template.id
         self.pathwayId = pathway.id
-        self.stepsTotal = .right(template.steps.count)
-        self.stepsComplete = .right(0)
+        self.stepsTotal = template.steps.count
+        self.stepsComplete = pathway.stepEntries.filter { $0.value.status != .pending }.count
     }
     
 	public var id: Pathway.ID { pathwayId }
 	public let pathwayTemplateId: PathwayTemplate.ID
 	public let pathwayId: Pathway.ID
-	public let stepsTotal: EitherStringOrInt
-	public let stepsComplete: EitherStringOrInt
+	public var stepsTotal: Int
+	public var stepsComplete: Int
 	
 	enum CodingKeys: String, CodingKey {
 		case pathwayTemplateId = "pathway_template_id"
@@ -48,9 +53,26 @@ public struct PathwayInfo: Decodable, Equatable, Identifiable {
 		case stepsTotal = "steps_total"
 		case stepsComplete = "steps_complete"
 	}
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: Self.CodingKeys)
+        let parseId = try container.decode(EitherStringOrInt.self, forKey: .pathwayId)
+        self.pathwayId = Pathway.ID.init(rawValue: parseId.integerValue)
+        let templateId = try container.decode(EitherStringOrInt.self, forKey: .pathwayTemplateId)
+        self.pathwayTemplateId = PathwayTemplate.ID.init(rawValue: templateId.integerValue)
+        self.stepsTotal = try container.decode(EitherStringOrInt.self, forKey: .stepsTotal).integerValue
+        self.stepsComplete = try container.decode(EitherStringOrInt.self, forKey: .stepsComplete).integerValue
+    }
 }
 
 extension Appointment: CalendarEventVariant { }
+
+extension Appointment {
+    
+    public var isComplete: Bool {
+        return pathways.first(where: { $0.stepsTotal == $0.stepsComplete }) != nil
+    }
+}
 
 extension Appointment {
 	
@@ -90,10 +112,17 @@ extension Appointment {
 			self.roomId = Room.Id.init(rawValue: "-1")
 		}
 		self.roomName = try? container.decode(String.self, forKey: .roomName)
-		self.customerId = try container.decode(Client.ID.self, forKey: .customerID)
+		let customerIdEither = try container.decode(EitherStringOrInt.self, forKey: .customerID)
+        self.customerId = Client.Id.init(rawValue: customerIdEither.integerValue)
 		self.locationName = "TO ADD IN BACKEND"
 		let pathwayArr = (try? container.decode([PathwayInfo].self, forKey: .pathways)) ?? []
         self.pathways = IdentifiedArrayOf(uniqueElements: pathwayArr)
+        
+        self.patient_details_status = try container.decode(Int.self, forKey: .patient_details_status)
+        self.medical_history_status = try container.decode(Int.self, forKey: .medical_history_status)
+        self.patient_consent_status = try container.decode(Int.self, forKey: .patient_consent_status)
+        self.photos_status = try container.decode(Int.self, forKey: .photos_status)
+        self.treatment_notes_status = try container.decode(Int.self, forKey: .treatment_notes_status)
 	}
 }
 
@@ -106,4 +135,14 @@ extension CalendarEvent {
 		self.start_date = start
 		self.end_date = end
 	}
+    
+    public mutating func update(startDate: Date, endDate: Date) {
+        self.start_date = startDate
+        self.end_date = endDate
+    }
 }
+
+extension Int {
+    var boolValue: Bool { return self != 0 }
+}
+

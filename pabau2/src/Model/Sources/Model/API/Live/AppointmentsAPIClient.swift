@@ -112,7 +112,7 @@ extension APIClient {
         .eraseToEffect()
     }
     
-    public func appointmentChangeStatus(appointmentId: Appointment.ID, status: String) -> Effect<Bool, RequestError> {
+    public func appointmentChangeStatus(appointmentId: Appointment.ID, status: String) -> Effect<VoidAPIResponse, RequestError> {
         struct AppointmentChangeStatusResponse: Decodable {
             let success: Bool
         }
@@ -121,7 +121,7 @@ extension APIClient {
         params["change_by_id"] = self.loggedInUser?.userID
         params["appointment_id"] = appointmentId
         
-        let requestBuilder: RequestBuilder<AppointmentChangeStatusResponse>.Type = requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<VoidAPIResponse>.Type = requestBuilderFactory.getBuilder()
         return requestBuilder.init(
             method: .GET,
             baseUrl: baseUrl,
@@ -129,10 +129,9 @@ extension APIClient {
             queryParams: commonAnd(other: params)
         )
         .effect()
-        .map(\.success)
     }
     
-    public func appointmentChangeCancelReason(appointmentId: Appointment.ID, reason: String) -> Effect<Bool, RequestError> {
+    public func appointmentChangeCancelReason(appointmentId: Appointment.ID, reason: String) -> Effect<VoidAPIResponse, RequestError> {
         struct AppointmentChangeStatusResponse: Decodable {
             let success: Bool
         }
@@ -141,8 +140,8 @@ extension APIClient {
         params["cancelReason"] = reason
         params["change_by_id"] = self.loggedInUser?.userID
         params["appointment_id"] = appointmentId
-        
-        let requestBuilder: RequestBuilder<AppointmentChangeStatusResponse>.Type = requestBuilderFactory.getBuilder()
+
+        let requestBuilder: RequestBuilder<VoidAPIResponse>.Type = requestBuilderFactory.getBuilder()
         return requestBuilder.init(
             method: .GET,
             baseUrl: baseUrl,
@@ -150,7 +149,6 @@ extension APIClient {
             queryParams: commonAnd(other: params)
         )
         .effect()
-        .map(\.success)
     }
     
     public func getAppointmentCancelReasons() -> Effect<[CancelReason], RequestError> {

@@ -16,7 +16,7 @@ public enum DatePickerTCAAction: Equatable {
 
 public struct DatePickerTCA: View {
 
-	public init(mode: UIDatePicker.Mode, store: Store<Date?, DatePickerTCAAction>, borderStyle: UITextField.BorderStyle) {
+	public init(store: Store<Date?, DatePickerTCAAction>, mode: UIDatePicker.Mode, borderStyle: UITextField.BorderStyle) {
 		self.store = store
 		self.mode = mode
 		self.borderStyle = borderStyle
@@ -32,6 +32,6 @@ public struct DatePickerTCA: View {
 												 send: { .onChange($0)}),
 								mode: mode,
 								borderStyle: borderStyle)
-		}.debug("DatePickerTCA")
+		}
 	}
 }

@@ -39,7 +39,7 @@ public struct FilledFormData: Decodable, Identifiable, Equatable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 		let templateId: FormTemplateInfo.ID
         if let strID = try container.decodeIfPresent(String.self, forKey: .templateId) {
-			templateId = FormTemplateInfo.ID.init(rawValue: .left(strID))
+			templateId = FormTemplateInfo.ID.init(rawValue: Int(strID)!)
         } else {
 			throw DecodingError.dataCorruptedError(forKey: CodingKeys.templateId, in: container, debugDescription: "Can't parse id for FormData.")
         }

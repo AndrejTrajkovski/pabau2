@@ -15,7 +15,7 @@ public typealias ListCalendarEnvironment = (
 	userDefaults: UserDefaultsConfig
 )
 
-let listCalendarReducer: Reducer<ListState, ListAction, ListCalendarEnvironment> =
+public let listCalendarReducer: Reducer<ListState, ListAction, ListCalendarEnvironment> =
 	.combine (
 		.init { state, action, _ in
 
@@ -23,7 +23,6 @@ let listCalendarReducer: Reducer<ListState, ListAction, ListCalendarEnvironment>
 			
 			case .selectedFilter(let filter):
 				state.selectedFilter = filter
-				
 			case .searchedText(let searchText):
 				state.searchText = searchText
 				
@@ -37,21 +36,19 @@ let listCalendarReducer: Reducer<ListState, ListAction, ListCalendarEnvironment>
 public struct ListContainerView: View {
 	
 	let store: Store<ListContainerState, ListAction>
-	@ObservedObject var viewStore: ViewStore<ListContainerState, ListAction>
 
-    @State var showSearchBar: Bool = false
-
+//    @State var showSearchBar: Bool = false
+    
 	public init(store: Store<ListContainerState, ListAction>) {
 		self.store = store
-		self.viewStore = ViewStore(self.store)
 	}
 
 	public var body: some View {
 		VStack {
-            FilterPicker()
-            if self.showSearchBar {
-                searchBar
-            }
+            FilterPicker(store: store.scope(state: { $0.list.selectedFilter }))
+//            if self.showSearchBar {
+//                searchBar
+//            }
             ScrollView {
                 LazyVStack {
                     ForEachStore(
@@ -65,17 +62,17 @@ public struct ListContainerView: View {
         }
     }
 
-	var searchBar: some View {
-		SearchView(
-			placeholder: "Search",
-			text: viewStore.binding(
-				get: { $0.list.searchText },
-				send: { ListAction.searchedText($0) }
-			)
-		)
-		.isHidden(!self.showSearchBar)
-		.padding([.leading, .trailing], 16)
-	}
+//	var searchBar: some View {
+//		SearchView(
+//			placeholder: "Search",
+//			text: viewStore.binding(
+//				get: { $0.list.searchText },
+//				send: { ListAction.searchedText($0) }
+//			)
+//		)
+//		.isHidden(!self.showSearchBar)
+//		.padding([.leading, .trailing], 16)
+//	}
 }
 
 struct LocationSectionState: Equatable, Identifiable {
@@ -136,7 +133,7 @@ struct ListCellStoreRow: View {
 
 	var body: some View {
 		WithViewStore(store) { viewStore in
-			ListCell(appointment: viewStore.state)
+            ListCell(appointment: viewStore.state)
 				.onTapGesture { viewStore.send(.select) }
 				.listRowInsets(EdgeInsets())
 		}
@@ -144,15 +141,17 @@ struct ListCellStoreRow: View {
 }
 
 struct FilterPicker: View {
-	@State private var filter: CompleteFilter = .all
+    let store: Store<CompleteFilter, ListAction>
     var body: some View {
-        VStack {
-            Picker(
-                selection: $filter, label: Text("Filter")) {
-                ForEach(CompleteFilter.allCases, id: \.self) { (filter: CompleteFilter) in
-                    Text(String(filter.description)).tag(filter.rawValue)
-                }
+        WithViewStore(store) { viewStore in
+            VStack {
+                Picker(
+                    selection: viewStore.binding(get: { $0 }, send: { .selectedFilter($0) }), label: Text("Filter")) {
+                    ForEach(CompleteFilter.allCases, id: \.self) { (filter: CompleteFilter) in
+                        Text(String(filter.description)).tag(filter.rawValue)
+                    }
                 }.pickerStyle(SegmentedPickerStyle())
-        }.padding()
+            }.padding()
+        }
     }
 }

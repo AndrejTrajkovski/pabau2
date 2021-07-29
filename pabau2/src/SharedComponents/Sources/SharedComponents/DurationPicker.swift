@@ -58,4 +58,43 @@ extension Duration {
 		Duration(name: "01:00", id: 4, duration: 60, nameInCircle: "1h"),
 		Duration(name: "02:00", id: 5, duration: 120, nameInCircle: "2h")
 	]
+    
+    public static let allDay: [Duration] = DurationDailyGenerator().allDay()
+}
+
+struct DurationDailyGenerator {
+    private var minuteInterval = 15
+    private let formatter = DateComponentsFormatter()
+
+    public init(_ minuteInterval: Int = 15) {
+        self.minuteInterval = minuteInterval
+    }
+    
+    internal func allDay() -> [Duration] {
+        var durations: [Duration] = []
+        let itemsPerDay = (60 / minuteInterval) * 24
+        
+        for i in 1..<itemsPerDay {
+            let duration: Duration = Duration(name: getName(minute: (i * minuteInterval)),
+                                              id: i,
+                                              duration: TimeInterval(i * minuteInterval),
+                                              nameInCircle: getCircleName(minute: i * minuteInterval))
+            durations.append(duration)
+        }
+        
+        return durations
+    }
+    
+    private func getName(minute: Int) -> String {
+        let hour = minute / 60
+        let min = minute % 60
+        return String(format: "%02d:%02d", hour, min)
+    }
+    
+    private func getCircleName(minute: Int) -> String {
+        let hour = minute / 60
+        let min = minute % 60
+        
+        return hour < 1 ? String(format: "%02dm", min) : String(format: "%2dh%02dm", hour, min)
+    }
 }

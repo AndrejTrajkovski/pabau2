@@ -20,7 +20,7 @@ struct SelectField: View {
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			ForEach(viewStore.choices, id: \.self) { (choice: SelectChoice) in
-				SelectRow(choice: choice,
+                SelectRow(title: choice.title,
 						  isSelected: viewStore.selectedChoice == choice)
 					.padding(4)
 					.onTapGesture {
@@ -32,13 +32,13 @@ struct SelectField: View {
 }
 
 struct SelectRow: View {
-	let choice: SelectChoice
+	let title: String
 	let isSelected: Bool
 
 	var body: some View {
 		HStack (alignment: .center, spacing: 16) {
 			SelectImage(isSelected: isSelected)
-			Text(choice.title)
+			Text(title)
 				.foregroundColor(.black).opacity(0.9)
 				.font(.regular16)
 				.alignmentGuide(VerticalAlignment.center, computeValue: { return $0[VerticalAlignment.firstTextBaseline] - 4.5 })

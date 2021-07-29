@@ -42,10 +42,14 @@ public struct CalendarState: Equatable {
 	public var addBookoutState: AddBookoutState?
 	public var addShift: AddShiftState?
 
-	public var selectedDate: Date = Date().cutToDay()
+    public var selectedDate: Date = Date().cutToDay()
 	public var chosenLocationsIds: Set<Location.Id>
     
     var toast: ToastState<CalendarAction>?
+    
+    var editingSectionEvents: IdentifiedArrayOf<EditingEvent> = []
+    var editingWeekEvents: IdentifiedArrayOf<EditingWeekEvent> = []
+    var activeFilter: CompleteFilter = .all
 }
 
 extension CalendarState {
@@ -85,7 +89,8 @@ extension CalendarState {
 				chosenLocationsIds: chosenLocationsIds,
 				subsections: employees,
 				chosenSubsectionsIds: chosenEmployeesIds,
-				shifts: shifts[selectedDate] ?? [:]
+				shifts: shifts[selectedDate] ?? [:],
+                editingSectionEvents: editingSectionEvents
 			)
 		}
 		set {
@@ -99,6 +104,8 @@ extension CalendarState {
 				self.employees = $0.subsections
 				self.chosenEmployeesIds = $0.chosenSubsectionsIds
 				self.shifts[$0.selectedDate] = $0.shifts
+                self.editingSectionEvents = $0.editingSectionEvents
+                self.toast = $0.toast
 			}
 		}
 	}
@@ -117,7 +124,8 @@ extension CalendarState {
 				chosenLocationsIds: chosenLocationsIds,
 				subsections: rooms,
 				chosenSubsectionsIds: chosenRoomsIds,
-				shifts: [:]
+				shifts: [:],
+                editingSectionEvents: editingSectionEvents
 			)
 		}
 		set {
@@ -130,6 +138,8 @@ extension CalendarState {
 				self.chosenLocationsIds = $0.chosenLocationsIds
 				self.rooms = $0.subsections
 				self.chosenRoomsIds = $0.chosenSubsectionsIds
+                self.editingSectionEvents = $0.editingSectionEvents
+                self.toast = $0.toast
 			}
 		}
 	}
@@ -145,7 +155,9 @@ extension CalendarState {
 				addBookout: addBookoutState,
 				appDetails: appDetails,
 				locations: locations,
-				employees: employees
+				employees: employees,
+                editingWeekEvents: editingWeekEvents,
+                toast: toast
 			)
 		}
 		set {
@@ -154,6 +166,8 @@ extension CalendarState {
 				self.appointments = Appointments.week($0.appointments)
 				self.addBookoutState = $0.addBookout
 				self.appDetails = $0.appDetails
+                self.editingWeekEvents = $0.editingWeekEvents
+                self.toast = $0.toast
 			}
 		}
 	}

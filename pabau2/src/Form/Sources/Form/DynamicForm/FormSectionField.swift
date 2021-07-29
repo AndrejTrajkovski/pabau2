@@ -86,7 +86,7 @@ struct FormFieldStore: View {
 
 public enum HTMLRowsAction: Equatable {
 	case rows(idx: Int, action: CSSClassAction)
-	case complete(CompleteBtnAction)
+	case complete
 }
 
 let formReducer: Reducer<HTMLForm, HTMLRowsAction, FormEnvironment> = .combine(

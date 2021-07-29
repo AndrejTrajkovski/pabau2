@@ -13,10 +13,8 @@ struct HandBackDevice: View {
     
     struct State: Equatable {
         var isEnterPasscodeActive: Bool
-        var isNavBarHidden: Bool
         init(state: CheckInLoadedState) {
             self.isEnterPasscodeActive = state.passcodeForDoctorMode != nil
-            self.isNavBarHidden = !(state.passcodeForDoctorMode?.unlocked ?? false)
         }
     }
     
@@ -36,7 +34,7 @@ struct HandBackDevice: View {
                 }
             NavigationLink.emptyHidden(viewStore.state.isEnterPasscodeActive,
                                        PasscodeBeforeDoctorMode(store: store)
-                                        .navigationBarHidden(viewStore.state.isNavBarHidden)
+                                        .navigationBarHidden(true)
                                         .navigationBarTitle("")
                                        //have to enable nav bar on choose treatment
             )

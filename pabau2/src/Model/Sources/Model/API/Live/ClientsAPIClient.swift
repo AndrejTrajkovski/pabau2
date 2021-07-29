@@ -16,6 +16,7 @@ extension APIClient {
 
         if let search = search {
             queryItems["name"] = search
+            queryItems["like_email"] = search
         }
 
         return requestBuilder.init(
@@ -67,7 +68,7 @@ extension APIClient {
 	
 	public func update(clientBuilder: ClientBuilder, pathwayStep: PathwayIdStepId?) -> Effect<Client.ID, RequestError> {
 		struct ClientResponse: Decodable {
-			let contact_id: Client.ID
+			let contact_id: EitherStringOrInt
 		}
 		
 		var queryParams = commonAnd(other: ["contact_id": clientBuilder.id?.description ?? "0"])
@@ -81,7 +82,8 @@ extension APIClient {
 								   body: bodyData(parameters: clientBuilder.toJSONValues())
 		)
 		.effect()
-		.map(\.contact_id)
+        .map(\.contact_id.integerValue)
+        .map(Client.ID.init(rawValue:))
 	}
     
 	func merge(_ params: inout [String: Any], with pathwayStep: PathwayIdStepId?) {

@@ -30,7 +30,7 @@ extension Room {
             Room(
                 id: Id(rawValue: $0.id),
                 name: $0.name,
-                locationIds: $0.locations.map { Location.Id(rawValue: EitherStringOrInt.left($0.id)) }
+                locationIds: $0.locations.map { Location.Id(rawValue: Int($0.id)!) }
             )
         }
     }

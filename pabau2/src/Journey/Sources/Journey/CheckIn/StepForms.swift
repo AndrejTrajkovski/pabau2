@@ -3,7 +3,7 @@ import ComposableArchitecture
 import SwiftUI
 
 public let stepFormsReducer: Reducer<[StepState], StepsActions, JourneyEnvironment> =
-	stepFormReducer.forEach(
+	stepReducer.forEach(
 		state: \[StepState].self,
 		action: /StepsActions.steps,
 		environment: { $0 }

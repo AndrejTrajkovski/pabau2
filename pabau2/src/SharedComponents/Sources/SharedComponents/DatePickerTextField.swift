@@ -28,7 +28,6 @@ public struct DatePickerTextField: UIViewRepresentable {
 				textContentType: UITextContentType? = nil,
 				borderStyle: UITextField.BorderStyle,
 				didChange: @escaping () -> Void = { }) {
-		print(date.wrappedValue)
         self._date = date
 		self.font = font
 		self.textColor = textColor

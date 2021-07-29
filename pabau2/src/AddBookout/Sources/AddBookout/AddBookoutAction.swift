@@ -8,7 +8,8 @@ public enum AddBookoutAction {
 	case chooseStartDate(Date?)
 	case chooseTime(Date?)
 	case chooseLocAndEmp(ChooseLocationAndEmployeeAction)
-	case chooseDuration(SingleChoiceActions<Duration>)
+    case chooseDuration(SingleChoiceLinkAction<Duration>)
+    case choosePredefinedDuration(SingleChoiceActions<Duration>)
 	case chooseBookoutReason(ChooseBookoutReasonAction)
 	case onChooseBookoutReason
 	case isPrivate(ToggleAction)

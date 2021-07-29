@@ -2,21 +2,7 @@ import ComposableArchitecture
 import SwiftUI
 import Model
 
-public struct NoHTMLFormsState: Equatable, Identifiable {
-    public var id: Step.ID { stepId }
-    var status: StepStatus
-    let stepId: Step.ID
-    let pathwayId: Pathway.ID
-    let stepType: StepType
-}
-
-//enum NotHTMLFormsAction: Equatable {
-//    case skipStep
-//}
-
 struct NoForm: View {
-    
-    let store: Store<NoHTMLFormsState, Never>
     
     var body: some View {
         VStack {
