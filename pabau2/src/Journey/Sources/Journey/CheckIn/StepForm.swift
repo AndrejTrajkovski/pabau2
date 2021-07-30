@@ -140,7 +140,7 @@ public struct StepState: Equatable, Identifiable {
         self.id = stepAndEntry.step.id
         self.stepType = stepAndEntry.step.stepType
         self.canSkip = stepAndEntry.step.canSkip
-        self.appointmentId = appId
+        self.appointmentId = appointment.id
         self.clientId = clientId
         self.pathwayId = pathway.id
         self.status = stepAndEntry.entry?.status ?? .pending

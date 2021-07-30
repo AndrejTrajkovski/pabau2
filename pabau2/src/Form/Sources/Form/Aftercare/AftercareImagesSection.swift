@@ -30,41 +30,33 @@ public enum SingleSelectImagesAction: Equatable {
 	case didSelectIdx(Int)
 }
 
-struct AftercareImagesSection {
-	let id: Int
+struct AftercareImagesSection: View {
+    
+    init(title: String, store: Store<SingleSelectImages, SingleSelectImagesAction>) {
+        self.title = title
+        self.store = store
+        self.viewStore = ViewStore(store)
+    }
+    
 	let title: String
 	let store: Store<SingleSelectImages, SingleSelectImagesAction>
-	@ObservedObject var viewStore: ViewStore<SingleSelectImages, SingleSelectImagesAction>
-
-	public init(
-		id: Int,
-		title: String,
-		store: Store<SingleSelectImages, SingleSelectImagesAction>
-		) {
-		self.id = id
-		self.store = store
-		self.viewStore = ViewStore(store, removeDuplicates: { lhs, rhs in
-			return lhs.selectedIdx == rhs.selectedIdx
-//			guard lhs.images.count == rhs.images.count else { return false }
-//			return zip(lhs.images, rhs.images).allSatisfy {
-//				$0.id == $1.id }
-		})
-		self.title = title
-	}
-
-	var section: ASCollectionViewSection<Int> {
-		return ASCollectionViewSection(
-			id: self.id,
-			data: self.viewStore.state.images,
-			dataID: \.self) { imageUrl, context in
-				return GridCell(title: imageUrl.title,
-												isSelected: self.viewStore.state.isSelected(url: imageUrl))
-					.onTapGesture {
-						self.viewStore.send(.didSelectIdx(context.index))
-				}
-		}
-		.sectionHeader { AftercareTitle(self.title) }
-	}
+    
+    
+    @ObservedObject var viewStore: ViewStore<SingleSelectImages, SingleSelectImagesAction>
+    
+    var body: some View {
+        Section(header: AftercareTitle(self.title)) {
+            ForEach(viewStore.state.images.indices) { idx in
+                let imageUrl = viewStore.state.images[idx]
+                GridCell(title: imageUrl.title,
+                         isSelected: self.viewStore.state.isSelected(url: imageUrl))
+                    .onTapGesture {
+                        self.viewStore.send(.didSelectIdx(idx))
+                    }
+                
+            }
+        }
+    }
 }
 
 struct GridCell: View {

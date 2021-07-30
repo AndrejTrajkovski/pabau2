@@ -113,8 +113,8 @@ extension Int {
 
 public struct ImageModel: Identifiable, Hashable, Decodable {
     public var id: String { return title }
-    let title: String
-    let url: String
+    public let title: String
+    public let url: String
     
     public init(_ title: String,
                 _ url: String) {

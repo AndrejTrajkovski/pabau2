@@ -38,10 +38,10 @@ struct AftercareBoolSection: View {
     let store: Store<AftercareBoolSectionState, AftercareBoolAction>
     
     var body: some View {
-        VStack {
-            AftercareBoolHeader(title: title, desc: desc)
+        Section(header: AftercareBoolHeader(title: title, desc: desc)) {
             ForEachStore(store.scope(state: { $0.rows }, action: AftercareBoolAction.rows(idx:action:)),
-                         content: AftercareCell.init(store:))
+                         content: AftercareCell.init(store:)
+            )
         }
     }
 }

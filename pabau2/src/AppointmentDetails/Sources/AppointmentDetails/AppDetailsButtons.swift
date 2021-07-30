@@ -50,8 +50,8 @@ struct AppDetailsButtons: View {
 	}
 	
 	let columns = [
-		GridItem(.flexible(), spacing: 0),
-		GridItem(.flexible(), spacing: 0),
+		GridItem(.flexible(), spacing: 16),
+        GridItem(.flexible(), spacing: 16),
 		GridItem(.flexible(), spacing: 0)
 	]
 	
