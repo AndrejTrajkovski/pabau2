@@ -3,6 +3,50 @@ import Combine
 //FormAPI
 public extension APIClient {
 	
+    public func getAftercareAndRecall(appointmentId: Appointment.ID) -> Effect<AftercareAndRecalls, RequestError> {
+        
+        let getAft = getAftercare(appointmentId: appointmentId)
+        let getrecalls = getRecalls(appointmentId: appointmentId)
+        let parallel = getAft.combineLatest(getrecalls)
+            .map { AftercareAndRecalls.init(aftercare: $0.0, recalls: $0.1)}
+            .eraseToAnyPublisher()
+        
+        return parallel.eraseToEffect()
+    }
+    
+    func getAftercare(appointmentId: Appointment.ID) -> Effect<[AftercareTemplate], RequestError> {
+        struct AftercareResponse: Decodable {
+            let employees: [AftercareTemplate]
+        }
+        
+        let requestBuilder: RequestBuilder<AftercareResponse>.Type = requestBuilderFactory.getBuilder()
+        return requestBuilder.init(method: .GET,
+                                   baseUrl: baseUrl,
+                                   path: .getAftercare,
+                                   queryParams: commonAnd(other: ["appointment_id" : appointmentId.description])
+        )
+        .effect()
+        .map(\.employees)
+        .eraseToEffect()
+    }
+    
+    func getRecalls(appointmentId: Appointment.ID) -> Effect<[AftercareTemplate], RequestError> {
+        
+        struct AftercareResponse: Decodable {
+            let employees: [AftercareTemplate]
+        }
+        
+        let requestBuilder: RequestBuilder<AftercareResponse>.Type = requestBuilderFactory.getBuilder()
+        return requestBuilder.init(method: .GET,
+                                   baseUrl: baseUrl,
+                                   path: .getRecalls,
+                                   queryParams: commonAnd(other: ["appointment_id" : appointmentId.description])
+        )
+        .effect()
+        .map(\.employees)
+        .eraseToEffect()
+    }
+    
     func updateStepStatus(_ stepStatus: StepStatus, _ pathwayStep: PathwayIdStepId, _ clientId: Client.ID, _ appointmentId: Appointment.ID) -> Effect<StepStatus, RequestError> {
         
         struct Response: Decodable {

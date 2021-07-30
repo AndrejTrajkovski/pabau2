@@ -3,8 +3,10 @@ import ComposableArchitecture
 import Util
 import ASCollectionView
 import CasePaths
+import Model
 
 public enum AftercareAction: Equatable {
+    case gotAftercareAndRecallsResponse(Result<AftercareAndRecalls, RequestError>)
     case aftercares(AftercareBoolAction)
     case recalls(AftercareBoolAction)
     case profile(SingleSelectImagesAction)

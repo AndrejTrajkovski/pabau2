@@ -244,7 +244,8 @@ public let tabBarReducer: Reducer<
                                                               template: loadedState.pathwayTemplate,
                                                               journeyMode: .patient,
                                                               formAPI: env.formAPI,
-                                                              clientId: loadedState.appointment.customerId)
+                                                              clientId: loadedState.appointment.customerId,
+                                                              appId: loadedState.appointment.id)
 					
                 returnEffects.append(getForms.map(TabBarAction.checkIn))
 			}

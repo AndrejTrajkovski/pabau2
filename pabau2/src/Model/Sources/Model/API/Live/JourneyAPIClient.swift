@@ -1,6 +1,7 @@
 import ComposableArchitecture
 import Util
 import SwiftDate
+import Tagged
 
 //MARK: - JourneyAPI
 extension APIClient {

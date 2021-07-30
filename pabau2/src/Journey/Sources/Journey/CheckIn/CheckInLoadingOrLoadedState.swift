@@ -37,7 +37,8 @@ let checkInLoadingOrLoadedReducer: Reducer<CheckInLoadingOrLoadedState, CheckInC
                                                       template: loadedState.pathwayTemplate,
                                                       journeyMode: .patient,
                                                       formAPI: env.formAPI,
-                                                      clientId: loadedState.appointment.customerId)
+                                                      clientId: loadedState.appointment.customerId,
+                                                      appId: pathwaysResponse.appointment.id)
                 
             case .failure(let error):
                 
