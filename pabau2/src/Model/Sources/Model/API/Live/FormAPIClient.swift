@@ -2,8 +2,19 @@ import ComposableArchitecture
 import Combine
 //FormAPI
 public extension APIClient {
-	
-    public func getAftercareAndRecall(appointmentId: Appointment.ID) -> Effect<AftercareAndRecalls, RequestError> {
+    
+    func saveAftercareForm(_ bookingId: Appointment.ID,
+                           _ pathwayIdStepId: PathwayIdStepId,
+                           _ clientId: Client.ID,
+                           _ selectedAftercareIds: [AftercareTemplate.ID],
+                           _ selectedRecallIds: [AftercareTemplate.ID],
+                           _ profilePicId: ImageModel.ID?,
+                           _ sharePicId: ImageModel.ID?) -> Effect<StepStatus, RequestError> {
+        Fail(error: RequestError.apiError("TO IMPLEMENT ON BACKEND"))
+            .eraseToEffect()
+    }
+    
+    func getAftercareAndRecall(appointmentId: Appointment.ID) -> Effect<AftercareAndRecalls, RequestError> {
         
         let getAft = getAftercare(appointmentId: appointmentId)
         let getrecalls = getRecalls(appointmentId: appointmentId)

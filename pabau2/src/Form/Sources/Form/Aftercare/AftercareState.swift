@@ -18,11 +18,18 @@ public struct AftercareState: Equatable, Identifiable {
 	}
     
     let images: [ImageModel]
-    var selectedProfileImageIdx: Int? = nil
-    var selectedShareImgeIdx: Int? = nil
-	var aftercares: AftercareBoolSectionState
-	var recalls: AftercareBoolSectionState
-    var getAftercareLS: LoadingState = .loading
+    public var selectedProfileImageIdx: Int? = nil
+    public var selectedShareImgeIdx: Int? = nil
+	public var aftercares: AftercareBoolSectionState
+	public var recalls: AftercareBoolSectionState
+    
+    public func selectedProfileImageId() -> ImageModel.ID? {
+        selectedProfileImageIdx.map { images[$0].id }
+    }
+    
+    public func selectedShareImageId() -> ImageModel.ID? {
+        selectedShareImgeIdx.map { images[$0].id }
+    }
 }
 
 extension AftercareState {

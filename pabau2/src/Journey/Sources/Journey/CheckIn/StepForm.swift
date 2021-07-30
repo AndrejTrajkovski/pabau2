@@ -59,6 +59,50 @@ public let stepReducer: Reducer<StepState, StepAction, JourneyEnvironment> = .co
                     .map { _ in StepAction.dismissToast }
             }
             
+        case .stepType(.aftercare(.complete)):
+            guard case .aftercare(let aftercarestate) = state.stepBody else {
+                return .none
+            }
+            let pathwayIdStepId = PathwayIdStepId(step_id: state.id, path_taken_id: state.pathwayId)
+            state.savingState = .loading
+            return env.formAPI.saveAftercareForm(state.appointmentId,
+                                                 pathwayIdStepId,
+                                                 state.clientId,
+                                                 Array(aftercarestate.aftercares.selectedIds),
+                                                 Array(aftercarestate.recalls.selectedIds),
+                                                 aftercarestate.selectedProfileImageId(),
+                                                 aftercarestate.selectedShareImageId()
+            )
+            .catchToEffect()
+            .map(AftercareAction.gotCompleteResponse)
+            .map(StepBodyAction.aftercare)
+            .map(StepAction.stepType)
+            .receive(on: DispatchQueue.main)
+            .eraseToEffect()
+        
+        case .stepType(.aftercare(.gotCompleteResponse(let result))):
+            
+            switch result {
+            case .success(let stepStatus):
+                state.status = stepStatus
+                state.savingState = .gotSuccess
+            case .failure(let error):
+                state.savingState = .gotError(error)
+                state.toastAlert = ToastState<StepAction>(mode: .alert,
+                                                          type: .error(.red),
+                                                          title: "Failed to save aftercare.")
+                return Effect.timer(id: ToastTimerId(), every: 1.0, on: DispatchQueue.main)
+                    .map { _ in StepAction.dismissToast }
+            }
+        
+        case .stepType(.aftercare(.gotAftercareAndRecallsResponse(let result))):
+            switch result {
+            case .success:
+                state.loadingState = .gotSuccess
+            case .failure(let error):
+                state.loadingState = .gotError(error)
+            }
+            
         case .stepType(.patientDetails(.complete)):
             
             state.savingState = .loading

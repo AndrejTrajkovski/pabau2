@@ -6,6 +6,8 @@ import CasePaths
 import Model
 
 public enum AftercareAction: Equatable {
+    case complete
+    case gotCompleteResponse(Result<StepStatus, RequestError>)
     case gotAftercareAndRecallsResponse(Result<AftercareAndRecalls, RequestError>)
     case aftercares(AftercareBoolAction)
     case recalls(AftercareBoolAction)
@@ -13,20 +15,19 @@ public enum AftercareAction: Equatable {
     case share(SingleSelectImagesAction)
 }
 
-public let aftercareReducer: Reducer<AftercareState, AftercareAction, Any> = (
+public let aftercareReducer: Reducer<AftercareState, AftercareAction, FormEnvironment> = (
     .combine(
         
-        .init { state, action, _ in
+        .init { state, action, env in
             
             switch action {
             case .gotAftercareAndRecallsResponse(let result):
                 switch result {
                 case .success(let success):
-                    state.getAftercareLS = .gotSuccess
                     state.aftercares.templates = success.aftercare
                     state.recalls.templates = success.recalls
-                case .failure(let error):
-                    state.getAftercareLS = .gotError(error)
+                case .failure:
+                    break //step reducer
                 }
             case .aftercares:
                 break
@@ -35,6 +36,10 @@ public let aftercareReducer: Reducer<AftercareState, AftercareAction, Any> = (
             case .recalls:
                 break
             case .share:
+                break
+            case .complete:
+                break
+            case .gotCompleteResponse(_):
                 break
             }
             

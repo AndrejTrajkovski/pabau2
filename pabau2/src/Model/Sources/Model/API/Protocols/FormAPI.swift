@@ -15,4 +15,11 @@ public protocol FormAPI {
     func getPatientDetails(clientId: Client.Id) -> Effect<Client, RequestError>
     func update(clientBuilder: ClientBuilder, pathwayStep: PathwayIdStepId?) -> Effect<Client.ID, RequestError>
     func getAftercareAndRecall(appointmentId: Appointment.ID) -> Effect<AftercareAndRecalls, RequestError>
+    func saveAftercareForm(_ bookingId: Appointment.ID,
+                           _ pathwayIdStepId: PathwayIdStepId,
+                           _ clientId: Client.ID,
+                           _ selectedAftercareIds: [AftercareTemplate.ID],
+                           _ selectedRecallIds: [AftercareTemplate.ID],
+                           _ profilePicId: ImageModel.ID?,
+                           _ sharePicId: ImageModel.ID?) -> Effect<StepStatus, RequestError>
 }

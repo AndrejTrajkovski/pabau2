@@ -22,12 +22,29 @@ struct CompleteButtonType: View {
         SwitchStore(store) {
             CaseLet(state: /StepBodyState.patientDetails,
                     action: StepBodyAction.patientDetails,
-                    then: PatientDetailsCompleteBtn.init(store:))
+                    then: PatientDetailsCompleteBtn.init(store:)
+            )
             CaseLet(state: /StepBodyState.htmlForm, action: StepBodyAction.htmlForm,
-                    then: HTMLFormPathwayCompleteBtn.init(store:))
+                    then: HTMLFormPathwayCompleteBtn.init(store:)
+            )
             CaseLet(state: /StepBodyState.timeline, action: StepBodyAction.checkPatientDetails,
-                    then: CheckPatientDetailsFooter.init(store:))
+                    then: CheckPatientDetailsFooter.init(store:)
+            )
+            CaseLet(state: /StepBodyState.aftercare, action: StepBodyAction.aftercare,
+                    then: AftercareCompleteBtn.init(store:))
             Default { EmptyView () }
+        }
+    }
+}
+
+struct AftercareCompleteBtn: View {
+    let store: Store<AftercareState, AftercareAction>
+    var body: some View {
+        WithViewStore(store) { viewStore in
+            CompleteButton(canComplete: true,
+                           onComplete: {
+                            viewStore.send(.complete)
+            })
         }
     }
 }
