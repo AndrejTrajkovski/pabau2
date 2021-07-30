@@ -249,10 +249,12 @@ public let tabBarReducer: Reducer<
 					
                 returnEffects.append(getForms.map(TabBarAction.checkIn))
 			}
-			
+            
             state.checkIn = checkInState
             
-			return .merge(returnEffects)
+            return .merge(returnEffects)
+                .receive(on: DispatchQueue.main)
+                .eraseToEffect()
 			
 		case .calendar(.appDetails(.choosePathwayTemplate(.matchResponse(.success(let pathway))))):
 			

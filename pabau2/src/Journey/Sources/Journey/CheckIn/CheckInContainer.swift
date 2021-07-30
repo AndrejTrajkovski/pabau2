@@ -169,6 +169,8 @@ public let navigationReducer = Reducer<CheckInLoadedState, CheckInLoadedAction, 
     case .passcodeForDoctorMode(.touchDigit(_)):
         if state.passcodeForDoctorMode?.unlocked == true {
             return getLoadedActionsOneAfterAnother(state.pathway, state.pathwayTemplate, .doctor, env.formAPI, state.appointment.customerId, state.appointment.id)
+                .receive(on: DispatchQueue.main)
+                .eraseToEffect()
         }
     //TODO
     //	case .doctor(.checkInBody(.footer(.toPatientMode))):

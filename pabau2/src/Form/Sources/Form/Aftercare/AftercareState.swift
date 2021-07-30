@@ -1,5 +1,6 @@
 import Foundation
 import Model
+import Util
 
 public struct AftercareState: Equatable, Identifiable {
 	public let id: Step.Id
@@ -21,6 +22,7 @@ public struct AftercareState: Equatable, Identifiable {
     var selectedShareImgeIdx: Int? = nil
 	var aftercares: AftercareBoolSectionState
 	var recalls: AftercareBoolSectionState
+    var getAftercareLS: LoadingState = .loading
 }
 
 extension AftercareState {

@@ -15,6 +15,32 @@ public enum AftercareAction: Equatable {
 
 public let aftercareReducer: Reducer<AftercareState, AftercareAction, Any> = (
     .combine(
+        
+        .init { state, action, _ in
+            
+            switch action {
+            case .gotAftercareAndRecallsResponse(let result):
+                switch result {
+                case .success(let success):
+                    state.getAftercareLS = .gotSuccess
+                    state.aftercares.templates = success.aftercare
+                    state.recalls.templates = success.recalls
+                case .failure(let error):
+                    state.getAftercareLS = .gotError(error)
+                }
+            case .aftercares:
+                break
+            case .profile:
+                break
+            case .recalls:
+                break
+            case .share:
+                break
+            }
+            
+            return .none
+        },
+        
         aftercareBoolSectionReducer.pullback(
             state: \AftercareState.aftercares,
             action: /AftercareAction.aftercares,
@@ -39,11 +65,11 @@ public let aftercareReducer: Reducer<AftercareState, AftercareAction, Any> = (
 
 public struct AftercareForm: View {
     let store: Store<AftercareState, AftercareAction>
-    @ObservedObject var viewStore: ViewStore<AftercareState, AftercareAction>
+//    @ObservedObject var viewStore: ViewStore<AftercareState, AftercareAction>
     
     public init(store: Store<AftercareState, AftercareAction>) {
         self.store = store
-        self.viewStore = ViewStore(store)
+//        self.viewStore = ViewStore(store)
     }
     
     private var imagesColumns: [GridItem] = [
@@ -69,19 +95,19 @@ public struct AftercareForm: View {
                                        store: store.scope(state: { $0.profile },
                                                           action: { .profile($0 )})
                 )
-                AftercareBoolSection(title: Texts.sendAftercareQ,
-                                     desc: Texts.sendAftercareDesc,
-                                     store: store.scope(state: { $0.aftercares },
-                                                        action: { .aftercares($0 )}
-                                     )
-                )
-                AftercareBoolSection(title: Texts.recallsQ,
-                                     desc: Texts.recallsDesc,
-                                     store: store.scope(state: { $0.recalls },
-                                                        action: { .recalls($0 )}
-                                     )
-                )
             }
+            AftercareBoolSection(title: Texts.sendAftercareQ,
+                                 desc: Texts.sendAftercareDesc,
+                                 store: store.scope(state: { $0.aftercares },
+                                                    action: { .aftercares($0 )}
+                                 )
+            )
+            AftercareBoolSection(title: Texts.recallsQ,
+                                 desc: Texts.recallsDesc,
+                                 store: store.scope(state: { $0.recalls },
+                                                    action: { .recalls($0 )}
+                                 )
+            )
         }
     }
     //    .layout { sectionID in

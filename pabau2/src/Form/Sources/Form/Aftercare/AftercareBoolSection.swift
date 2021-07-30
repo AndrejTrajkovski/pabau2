@@ -16,17 +16,18 @@ public enum AftercareBoolAction: Equatable {
 }
 
 public struct AftercareBoolSectionState: Equatable {
-    let templates: [AftercareTemplate]
-    var selectedId: AftercareTemplate.ID? = nil
+    public var templates: [AftercareTemplate]
+    public var selectedIds: Set<AftercareTemplate.ID> = []
     
     var rows: [AftercareOption] {
         get {
             self.templates.map {
-                AftercareOption.init(template: $0, isSelected: selectedId == $0.id)
+                AftercareOption.init(template: $0,
+                                     isSelected: selectedIds.contains($0.id))
             }
         }
         set {
-            self.selectedId = newValue.first(where: { $0.isSelected == true})?.id
+            self.selectedIds = Set(newValue.filter(\.isSelected).map(\.id))
         }
     }
 }

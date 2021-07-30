@@ -150,10 +150,11 @@ func getForm(stepAndEntry: StepAndStepEntry, formAPI: FormAPI, clientId: Client.
 				.catchToEffect()
 				.map { $0.map(ClientBuilder.init(client:))}
 				.map(pipe(PatientDetailsParentAction.gotGETResponse, StepBodyAction.patientDetails))
-		case .aftercares:
+        case .aftercares:
             return formAPI.getAftercareAndRecall(appointmentId: appId)
                 .catchToEffect()
                 .map(pipe(AftercareAction.gotAftercareAndRecallsResponse, StepBodyAction.aftercare))
+                .eraseToEffect()
 		case .photos:
 			return nil
         case .lab:

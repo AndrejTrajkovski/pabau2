@@ -19,6 +19,11 @@ public let stepBodyReducer: Reducer<StepBodyState, StepBodyAction, JourneyEnviro
         state: /StepBodyState.timeline,
         action: /StepBodyAction.checkPatientDetails,
         environment: makeFormEnv(_:)
+    ),
+    aftercareReducer.pullback(
+        state: /StepBodyState.aftercare,
+        action: /StepBodyAction.aftercare,
+        environment: makeFormEnv(_:)
     )
     
 //    patientCompleteReducer.pullback(

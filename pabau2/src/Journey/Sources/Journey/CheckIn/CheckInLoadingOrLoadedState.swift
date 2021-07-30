@@ -39,6 +39,8 @@ let checkInLoadingOrLoadedReducer: Reducer<CheckInLoadingOrLoadedState, CheckInC
                                                       formAPI: env.formAPI,
                                                       clientId: loadedState.appointment.customerId,
                                                       appId: pathwaysResponse.appointment.id)
+                    .receive(on: DispatchQueue.main)
+                    .eraseToEffect()
                 
             case .failure(let error):
                 

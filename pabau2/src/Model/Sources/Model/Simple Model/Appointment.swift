@@ -82,8 +82,10 @@ extension Appointment {
 		let pathwayArr = (try? container.decode([PathwayInfo].self, forKey: .pathways)) ?? []
         self.pathways = IdentifiedArrayOf(uniqueElements: pathwayArr)
         
-        if let photosIds = try? container.decode([String].self, forKey: .uploaded_photos_ids),
-              let photosUrls = try? container.decode([String].self, forKey: .uploaded_photos) {
+        if let photosIdsStr = try? container.decode(String.self, forKey: .uploaded_photos_ids),
+              let photosUrlsStr = try? container.decode(String.self, forKey: .uploaded_photos) {
+            let photosIds = photosIdsStr.components(separatedBy: ",")
+            let photosUrls = photosUrlsStr.components(separatedBy: ",")
             self.photos = zip(photosIds, photosUrls).map { ImageModel.init($0.0, $0.1) }
         } else {
             self.photos = []
