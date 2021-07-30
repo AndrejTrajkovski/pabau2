@@ -82,9 +82,9 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 			let params = appointmentsAPIParams(state: state)
 			let getCalendar = with(params, env.journeyAPI.getCalendar)
 			return getCalendar
-				.receive(on: DispatchQueue.main)
 				.catchToEffect()
 				.map(CalendarAction.gotAppointmentsResponse)
+                .receive(on: DispatchQueue.main)
 				.eraseToEffect()
 				.cancellable(id: GetAppointmentsCancelID(), cancelInFlight: true)
 		}

@@ -40,8 +40,13 @@ public struct Shift: Decodable, Equatable {
 		self.locationName = try container.decode(String.self, forKey: .locationName)
 		self.locColor = try container.decode(String.self, forKey: .locColor)
 		self.published = try container.decodeIfPresent(Bool.self, forKey: .published)
-		self.locationID = try container.decode(Location.Id.self, forKey: .locationID)
-		self.roomID = try? container.decode(Room.Id.self, forKey: .roomID)
+		let parseLocId = try container.decode(EitherStringOrInt.self, forKey: .locationID)
+        self.locationID = Location.Id.init(rawValue: parseLocId.integerValue)
+        if let parseRoomID = try? container.decode(EitherStringOrInt.self, forKey: .roomID) {
+            self.roomID = Room.Id.init(rawValue: parseRoomID.description)
+        } else {
+            self.roomID = nil
+        }
 		self.notes = try container.decode(String.self, forKey: .notes)
 		
 		let dateString = try container.decode(String.self, forKey: .date)

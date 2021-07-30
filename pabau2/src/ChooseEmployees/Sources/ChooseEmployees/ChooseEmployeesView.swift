@@ -52,23 +52,3 @@ public struct ChooseEmployeesView: View {
         .customBackButton(action: { self.viewStore.send(.didTapBackBtn)})
     }
 }
-
-//struct ChooseEmployees_Previews: PreviewProvider {
-//	static var state: ChooseEmployeesState {
-//		ChooseEmployeesState(chosenEmployeeId: nil,
-//							 employees: [Employee.init(id: Employee.Id.init(rawValue: "1"), name: "Andrej", email: "asdf@asd.com", avatar: nil, locations: [], passcode: "123"),
-//										 Employee.init(id: Employee.Id.init(rawValue: "2"), name: "Mate", email: "asdf@asd.com", avatar: nil, locations: [], passcode: "123")])
-//	}
-//
-//	static var env: ChooseEmployeesEnvironment {
-//		return ChooseEmployeesEnvironment(journeyAPI: APIClient(baseUrl: "https://ios.pabau.me", loggedInUser: User.init(userID: User.ID.init(rawValue: 1), companyID: "", fullName: "", avatar: "", logo: "", companyName: "", apiKey: "")),
-//										  repository: MockRepository(bookoutReasons: .none, locations: .none, employees: .init(value: .init(state: [], isFromDB: false)), templates: .none, pathwayTemplates: .none)
-//		)
-//	}
-//
-//	static var previews: some View {
-//		ChooseEmployeesView(store:
-//								Store.init(initialState: Self.state,
-//										   reducer: chooseEmployeesReducer, environment: Self.env))
-//	}
-//}

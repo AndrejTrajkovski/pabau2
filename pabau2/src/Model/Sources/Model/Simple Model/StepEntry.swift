@@ -80,6 +80,5 @@ public struct StepEntry: Decodable, Equatable {
 		
 		self.order = Int(try container.decode(String.self, forKey: .step_order))
         self.status = (try? container.decode(StepStatus.self, forKey: .status)) ?? .pending
-//		self.id = try container.decode(StepEntry.ID.self, forKey: .id)
 	}
 }

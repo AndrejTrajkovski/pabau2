@@ -35,7 +35,7 @@ public class EmployeeScheme: CoreStoreObject {
 
 extension Employee {
     public static func convert(from schemes: [EmployeeScheme]) -> [Employee]  {
-        schemes.compactMap {
+        schemes.map {
             Employee(
                 id: Id(rawValue: $0.id),
                 name: $0.name,

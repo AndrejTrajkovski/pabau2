@@ -13,6 +13,7 @@ public func groupDict<T, Key: Hashable>(elements: [T],
 					result[key]!.append(element)
 				} else {
 					result[key] = IdentifiedArray()
+                    result[key]!.append(element)
 				}
 			}
 		}

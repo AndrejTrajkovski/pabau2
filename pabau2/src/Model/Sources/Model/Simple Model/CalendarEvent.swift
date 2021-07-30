@@ -202,9 +202,9 @@ extension CalendarEvent: Decodable {
 		let end = Date.concat(start_date, end_time)
 		let employeeName = try container.decode(String.self, forKey: .employeeName)
 		let employeeInitials = employeeName.split(separator: " ").joined().uppercased()
-		let serviceId = try? container.decode(Service.Id.self, forKey: .serviceID)
+        let serviceId = try? container.decode(EitherStringOrInt.self, forKey: .serviceID)
         
-		if let serviceId = serviceId, serviceId.rawValue != "0" {
+		if let serviceId = serviceId, serviceId.description != "0" {
             let app = try Appointment(
                 id,
                 allDay == "1",
@@ -216,7 +216,7 @@ extension CalendarEvent: Decodable {
                 _private,
                 status,
                 employeeName,
-                serviceId,
+                Service.ID.init(rawValue: serviceId.description),
                 container
             )
 			self = .appointment(app)

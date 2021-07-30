@@ -2,21 +2,22 @@ import SwiftUI
 import ComposableArchitecture
 import ASCollectionView
 import Model
+import SDWebImageSwiftUI
 
 public let singleSelectImagesReducer = Reducer<SingleSelectImages, SingleSelectImagesAction, Any>.init { state, action, _ in
-	switch action {
-	case .didSelectIdx(let idx):
-		state.selectedIdx = state.selectedIdx == idx ? nil : idx
-	}
-	return .none
+    switch action {
+    case .didSelectIdx(let idx):
+        state.selectedIdx = state.selectedIdx == idx ? nil : idx
+    }
+    return .none
 }
 
 public struct SingleSelectImages: Equatable {
     let images: [ImageModel]
     var selectedIdx: Int?
     
-    func isSelected(url: ImageModel) -> Bool {
-        return self.images.firstIndex(of: url) == selectedIdx
+    func isSelected(model: ImageModel) -> Bool {
+        return self.images.firstIndex(of: model) == selectedIdx
     }
     
     public init (images: [ImageModel],
@@ -27,7 +28,7 @@ public struct SingleSelectImages: Equatable {
 }
 
 public enum SingleSelectImagesAction: Equatable {
-	case didSelectIdx(Int)
+    case didSelectIdx(Int)
 }
 
 struct AftercareImagesSection: View {
@@ -38,8 +39,8 @@ struct AftercareImagesSection: View {
         self.viewStore = ViewStore(store)
     }
     
-	let title: String
-	let store: Store<SingleSelectImages, SingleSelectImagesAction>
+    let title: String
+    let store: Store<SingleSelectImages, SingleSelectImagesAction>
     
     
     @ObservedObject var viewStore: ViewStore<SingleSelectImages, SingleSelectImagesAction>
@@ -47,9 +48,9 @@ struct AftercareImagesSection: View {
     var body: some View {
         Section(header: AftercareTitle(self.title)) {
             ForEach(viewStore.state.images.indices) { idx in
-                let imageUrl = viewStore.state.images[idx]
-                GridCell(title: imageUrl.title,
-                         isSelected: self.viewStore.state.isSelected(url: imageUrl))
+                let model = viewStore.state.images[idx]
+                GridCell(model: model,
+                         isSelected: self.viewStore.state.isSelected(model: model))
                     .onTapGesture {
                         self.viewStore.send(.didSelectIdx(idx))
                     }
@@ -60,13 +61,13 @@ struct AftercareImagesSection: View {
 }
 
 struct GridCell: View {
-	let title: String
-	let isSelected: Bool
-	var body: some View {
-		Image(title)
-		.resizable()
-		.aspectRatio(contentMode: .fit)
-		.padding(8)
-		.border(isSelected ? Color.accentColor : Color.clear, width: 8.0)
-	}
+    let model: ImageModel
+    let isSelected: Bool
+    var body: some View {
+        WebImage(url: URL(string: model.url))
+            .resizable()
+            .indicator(.activity) // Activity Indicator
+            .padding(8)
+            .border(isSelected ? Color.accentColor : Color.clear, width: 8.0)
+    }
 }

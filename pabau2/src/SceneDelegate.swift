@@ -33,7 +33,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 			let userDefaults = StandardUDConfig()
 			let user = userDefaults.loggedInUser
 			let hasSeenWalkthrough = userDefaults.hasSeenAppIntroduction
-			let apiClient = APIClient(baseUrl: "https://ios.pabau.me", loggedInUser: user)
+			let apiClient = APIClient(baseUrl: "https://crm.pabau.com", loggedInUser: user)
             
             let storage = PabauStorage()
             storage.initialized()

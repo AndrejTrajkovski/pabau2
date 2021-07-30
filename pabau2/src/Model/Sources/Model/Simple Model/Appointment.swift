@@ -70,8 +70,8 @@ extension Appointment {
 		self.serviceColor = try? container.decode(String.self, forKey: .serviceColor)
 		self.clientName = try? container.decode(String.self, forKey: .customerName)
 		self.clientPhoto = try? container.decode(String.self, forKey: .clientPhoto)
-		if let roomId = try? container.decode(Room.Id.self, forKey: .roomID) {
-			self.roomId = roomId
+		if let roomId = try? container.decode(EitherStringOrInt.self, forKey: .roomID) {
+            self.roomId = Room.ID.init(rawValue: roomId.description)
 		} else {
 			self.roomId = Room.Id.init(rawValue: "-1")
 		}
