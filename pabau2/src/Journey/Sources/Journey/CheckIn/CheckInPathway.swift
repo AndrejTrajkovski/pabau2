@@ -9,13 +9,13 @@ struct CheckInPathway: View {
     let store: Store<CheckInPathwayState, CheckInPathwayAction>
     
     var body: some View {
-        WithViewStore(store) { viewStore in
+        WithViewStore(store.scope(state: { $0.appointment})) { viewStore in
             CheckInForms(store: store.scope(
                             state: { $0.checkIn },
                             action: { .stepsView($0) }),
                          avatarView: {
                             JourneyProfileView(style: JourneyProfileViewStyle.short,
-                                               viewState: .init(appointment: viewStore.state.appointment))
+                                               viewState: .init(appointment: viewStore.state))
                          },
                          content: {
                             StepForms(store: store.scope(state: { $0.stepStates },

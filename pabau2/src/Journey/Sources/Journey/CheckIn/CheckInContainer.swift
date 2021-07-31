@@ -40,6 +40,10 @@ public let checkInContainerOptionalReducer: Reducer<CheckInContainerState?, Chec
         ),
         .init { state, action, env in
             
+            if case CheckInContainerAction.loaded(.doctor(.steps(.noStepsComplete))) = action {
+                state = nil
+            }
+            
             if case CheckInContainerAction.loaded(.doctor(.steps(.steps(let index, let stepAction)))) = action {
                 if let checkInState = state,
                    case CheckInLoadingOrLoadedState.loaded(let loadedState) = checkInState.loadingOrLoaded {
@@ -156,6 +160,10 @@ public let navigationReducer = Reducer<CheckInLoadedState, CheckInLoadedAction, 
     switch action {
     case .didTouchHandbackDevice:
         state.passcodeForDoctorMode = PasscodeState()
+    case .patient(.steps(.noStepsComplete)):
+        state.isHandBackDeviceActive = true
+        updateCheckPatientDetails()
+        return .none
     case .patient(.steps(.steps(let idx, let stepAction))):
         if state.patientCheckIn.shouldNavigateAwayFromCheckIn(stepAction, idx) {
             state.isHandBackDeviceActive = true

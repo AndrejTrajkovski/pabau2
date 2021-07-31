@@ -399,9 +399,11 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
 
 public struct CalendarContainer: View {
 	let store: Store<CalendarState, CalendarAction>
+    @ObservedObject var viewStore: ViewStore<ViewState, CalendarAction>
     
     public init(store: Store<CalendarState, CalendarAction>) {
         self.store = store
+        self.viewStore = ViewStore(store.scope(state: ViewState.init(state:)))
     }
     
     struct ViewState: Equatable {
@@ -428,74 +430,72 @@ public struct CalendarContainer: View {
                     return nil
                 }
             }()
-			self.shifts = state.shifts
+            self.shifts = state.shifts
         }
     }
-
-	public var body: some View {
-        WithViewStore(store.scope(state: ViewState.init(state:))) { viewStore in
-			ZStack(alignment: .topTrailing) {
-				VStack(spacing: 0) {
-					CalTopBar(store: store.scope(state: { $0 }))
-					CalendarDatePicker(
-						store: self.store.scope(
-							state: { $0.selectedDate },
-							action: { .datePicker($0)}
-						),
-						isWeekView: viewStore.state.appointments.calendarType == Appointments.CalendarType.week,
-						scope: viewStore.scope
-					)
-					CalendarWrapper(store: self.store)
-						.frame(maxWidth: .infinity, maxHeight: .infinity)
-				}
-                if viewStore.state.isShowingFilters {
-                    Rectangle()
-                        .toEdges()
-                        .background(Color.black)
-                        .opacity(0.1)
-                        .onTapGesture {
-                            viewStore.send(.refresh)
-                            viewStore.send(.toggleFilters)
-                        }
-                    FiltersWrapper(store: store)
-                        .transition(.moveAndFade)
-
+    
+    public var body: some View {
+        ZStack(alignment: .topTrailing) {
+            VStack(spacing: 0) {
+                CalTopBar(store: store.scope(state: { $0 }))
+                CalendarDatePicker(
+                    store: self.store.scope(
+                        state: { $0.selectedDate },
+                        action: { .datePicker($0)}
+                    ),
+                    isWeekView: viewStore.state.appointments.calendarType == Appointments.CalendarType.week,
+                    scope: viewStore.scope
+                )
+                CalendarWrapper(store: self.store)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+            if viewStore.state.isShowingFilters {
+                Rectangle()
+                    .toEdges()
+                    .background(Color.black)
+                    .opacity(0.1)
+                    .onTapGesture {
+                        viewStore.send(.refresh)
+                        viewStore.send(.toggleFilters)
+                    }
+                FiltersWrapper(store: store)
+                    .transition(.moveAndFade)
+                
+            }
+        }
+        .ignoresSafeArea()
+        .toast(store: store.scope(state: \.toast))
+        .fullScreenCover(
+            isPresented:
+                Binding(
+                    get: { viewStore.isPresenting != nil },
+                    set: {
+                        _ in dismissAction(activeSheet: viewStore.isPresenting).map(viewStore.send)
+                    }
+                ),
+            content: {
+                Group {
+                    IfLetStore(
+                        store.scope(
+                            state: { $0.addShift },
+                            action: { .addShift($0) }),
+                        then: AddShift.init(store:)
+                    )
+                    IfLetStore(
+                        store.scope(
+                            state: { $0.appDetails },
+                            action: { .appDetails($0) }),
+                        then: AppointmentDetails.init(store:)
+                    )
+                    IfLetStore(
+                        store.scope(
+                            state: { $0.addBookoutState },
+                            action: { .addBookoutAction($0) }),
+                        then: AddBookout.init(store:)
+                    )
                 }
-			}
-			.ignoresSafeArea()
-            .toast(store: store.scope(state: \.toast))
-			.fullScreenCover(
-				isPresented:
-					Binding(
-                        get: { viewStore.isPresenting != nil },
-						set: {
-							_ in dismissAction(activeSheet: viewStore.isPresenting).map(viewStore.send)
-						}
-					),
-				content: {
-					Group {
-						IfLetStore(
-							store.scope(
-                                state: { $0.addShift },
-								action: { .addShift($0) }),
-							then: AddShift.init(store:)
-						)
-						IfLetStore(
-							store.scope(
-								state: { $0.appDetails },
-								action: { .appDetails($0) }),
-							then: AppointmentDetails.init(store:)
-						)
-						IfLetStore(
-							store.scope(
-								state: { $0.addBookoutState },
-								action: { .addBookoutAction($0) }),
-							then: AddBookout.init(store:)
-						)
-					}
-				}
-			)
-		}
+            }
+        )
 	}
     
 	enum ActiveSheet {

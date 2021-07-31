@@ -2,24 +2,54 @@ import SwiftUI
 import ComposableArchitecture
 import CalendarList
 import Model
+import Util
+import Appointments
+import SharedComponents
 
 public struct CalendarWrapper: View {
+    
 	let store: Store<CalendarState, CalendarAction>
-
-	public var body: some View {
-		WithViewStore(store) { viewStore -> AnyView in
-			switch viewStore.state.appointments {
-			case .list:
-				return AnyView(listContainerView)
-			case .week:
-				return AnyView(weekView)
-			case .employee:
-				return AnyView(employeeCalendarView)
-			case .room:
-				return AnyView(roomCalendarView)
-			}
-		}
+    @ObservedObject var viewStore: ViewStore<State, CalendarAction>
+    
+    init(store: Store<CalendarState, CalendarAction>) {
+        self.store = store
+        self.viewStore = ViewStore(store.scope(state: State.init(state:)))
+    }
+    
+    struct State: Equatable {
+        let appsLS: LoadingState
+        let calType: Appointments.CalendarType
+        init(state: CalendarState) {
+            self.appsLS = state.appsLS
+            self.calType = state.appointments.calendarType
+        }
+    }
+    
+    public var body: some View {
+        switch self.viewStore.state.appsLS {
+        case .gotError(_):
+            RawErrorView(description: "Something went wrong when loading appointments. You can try again by picking a date.")
+        case .initial:
+            Text("Load appointments by choosing a date")
+        case .gotSuccess:
+            loadedApps
+        case .loading:
+            LoadingSpinner(title: "Loading appointments...")
+        }
 	}
+    
+    var loadedApps: some View {
+        switch viewStore.state.calType {
+        case .list:
+            return AnyView(listContainerView)
+        case .week:
+            return AnyView(weekView)
+        case .employee:
+            return AnyView(employeeCalendarView)
+        case .room:
+            return AnyView(roomCalendarView)
+        }
+    }
 	
 	var listContainerView: some View {
         IfLetStore(
