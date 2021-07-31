@@ -109,7 +109,13 @@ public func stepsAndEntries(_ pathway: Pathway, _ template: PathwayTemplate, _ j
 func getForms(stepsAndEntries: [StepAndStepEntry], formAPI: FormAPI, clientId: Client.ID, appId: Appointment.ID) -> [Effect<StepsActions, Never>] {
 	let stepActions: [Effect<StepsActions, Never>] = stepsAndEntries.indices.compactMap { idx in
 			let stepAndEntry = stepsAndEntries[idx]
-			if let getForm = getForm(stepAndEntry: stepAndEntry, formAPI: formAPI, clientId: clientId, appId: appId) {
+        if let getForm = getForm(stepAndEntry.step.stepType,
+                                 stepAndEntry.entry?.htmlFormInfo?.chosenFormTemplateId,
+                                 stepAndEntry.entry?.htmlFormInfo?.formEntryId,
+                                 formAPI,
+                                 clientId,
+                                 appId
+        ) {
                 return getForm.map { StepsActions.steps(idx: idx, action: StepAction.stepType($0)) }
 			} else {
 				return nil
@@ -118,16 +124,16 @@ func getForms(stepsAndEntries: [StepAndStepEntry], formAPI: FormAPI, clientId: C
 	return stepActions
 }
 
-func getForm(stepAndEntry: StepAndStepEntry, formAPI: FormAPI, clientId: Client.ID, appId:  Appointment.ID) -> Effect<StepBodyAction, Never>? {
-    switch stepAndEntry.step.stepType {
+func getForm(_ stepType: StepType, _ chosenFormTemplateId: HTMLForm.ID?, _ formEntryId: FilledFormData.ID?, _ formAPI: FormAPI, _ clientId: Client.ID, _ appId:  Appointment.ID) -> Effect<StepBodyAction, Never>? {
+    switch stepType {
     case .consents, .medicalhistory, .treatmentnotes, .prescriptions:
-        guard let templateToGet = stepAndEntry.entry?.htmlFormInfo?.chosenFormTemplateId else {
+        guard let templateToGet = chosenFormTemplateId else {
             return nil
         }
         
         let pipeInits: (Result<HTMLForm, RequestError>) -> StepBodyAction = pipe(HTMLFormAction.gotForm, HTMLFormStepContainerAction.chosenForm, StepBodyAction.htmlForm)
         
-        return formAPI.getForm(templateId: templateToGet, entryId: stepAndEntry.entry?.htmlFormInfo?.formEntryId)
+        return formAPI.getForm(templateId: templateToGet, entryId: formEntryId)
             .catchToEffect()
             .map(pipeInits)
         

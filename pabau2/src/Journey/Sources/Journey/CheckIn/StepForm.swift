@@ -13,7 +13,21 @@ public let stepReducer: Reducer<StepState, StepAction, JourneyEnvironment> = .co
         switch action {
         
         case .retryGetForm:
-            break
+            
+            if let getFormEffect = getForm(state.stepType,
+                                     state.chosenFormTemplateId(),
+                                     state.chosenEntryId(),
+                                     env.formAPI,
+                                     state.clientId,
+                                     state.appointmentId
+            ) {
+                return getFormEffect
+                    .map(StepAction.stepType)
+                    .receive(on: DispatchQueue.main)
+                    .eraseToEffect()
+            } else {
+                return .none
+            }
             
         case .stepType(.checkPatientDetails(.complete)):
             let pathwayStep = PathwayIdStepId(step_id: state.id, path_taken_id: state.pathwayId)
@@ -205,6 +219,21 @@ public struct StepState: Equatable, Identifiable {
         self.status = stepAndEntry.entry?.status ?? .pending
         self.stepBody = StepBodyState(stepAndEntry: stepAndEntry, clientId: clientId, pathway: pathway, appointment: appointment)
 	}
+    
+    func extractHTMLState() -> HTMLFormStepContainerState? {
+        guard case .htmlForm(let htmlState) = stepBody else {
+            return nil
+        }
+        return htmlState
+    }
+    
+    func chosenFormTemplateId() -> HTMLForm.ID? {
+        extractHTMLState().flatMap(\.chosenForm).map(\.id)
+    }
+    
+    func chosenEntryId() -> FilledFormData.ID? {
+        extractHTMLState().flatMap(\.chosenForm?.filledFormId)
+    }
 }
 
 struct StepForm: View {
