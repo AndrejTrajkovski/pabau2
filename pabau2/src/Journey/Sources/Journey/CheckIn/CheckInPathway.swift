@@ -49,26 +49,11 @@ let checkInPathwayReducer: Reducer<CheckInPathwayState, CheckInPathwayAction, Jo
 //        }
         
         if case .steps(.steps(_, let stepAction)) = action,
-           state.isActionForNextStep(stepAction) {
+           stepAction.isForNextStep() {
             if let nextPendingIndex = state.nextPendingIndex() {
                 state.selectedIdx = nextPendingIndex
             }
         }
-        
-//        switch action {
-//        case .steps(.steps(_, let stepAction):
-//            if stepTypeAction.isStepCompleteAction {
-//                nextStep()
-//            }
-//        case .steps(.steps(_, .stepType(let stepTypeAction))):
-//            if stepTypeAction.isStepCompleteAction {
-//                nextStep()
-//            }
-//        case .steps(.steps(_, .gotSkipResponse(.success))):
-//            nextStep()
-//        default:
-//            break
-//        }
         return .none
     }
 )
@@ -88,17 +73,6 @@ public struct CheckInPathwayState: Equatable {
     public var stepStates: [StepState]
     var selectedIdx: Int
     
-    func isActionForNextStep(_ stepAction: StepAction) -> Bool {
-        switch stepAction {
-        case .gotSkipResponse(.success(_)):
-            return true
-        case .stepType(let steTypeAction):
-            return steTypeAction.isStepCompleteAction
-        default:
-            return false
-        }
-    }
-    
     func nextPendingIndex() -> Int? {
         let pendingIndexes = stepStates.enumerated().filter {
             $0.element.status == .pending
@@ -111,7 +85,7 @@ public struct CheckInPathwayState: Equatable {
     }
     
     func shouldNavigateAwayFromCheckIn(_ stepAction: StepAction, _ index: Int) -> Bool {
-        return isActionForNextStep(stepAction) && nextPendingIndex() == nil
+        return stepAction.isForNextStep() && nextPendingIndex() == nil
     }
 }
 

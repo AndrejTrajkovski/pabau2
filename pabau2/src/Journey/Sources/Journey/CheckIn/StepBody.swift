@@ -25,12 +25,7 @@ public let stepBodyReducer: Reducer<StepBodyState, StepBodyAction, JourneyEnviro
         action: /StepBodyAction.aftercare,
         environment: makeFormEnv(_:)
     )
-    
-//    patientCompleteReducer.pullback(
-//        state: \CheckInPatientState.isPatientComplete,
-//        action: /CheckInPatientAction.patientComplete,
-//        environment: makeFormEnv(_:)),
-    )
+)
 
 public enum StepBodyState: Equatable {
     case patientDetails(PatientDetailsParentState)
@@ -93,6 +88,8 @@ public enum StepBodyAction: Equatable {
         case .htmlForm(.chosenForm(.gotPOSTResponse(.success))):
             return true
         case .checkPatientDetails(.gotCompleteResponse(.success)):
+            return true
+        case .aftercare(.gotCompleteResponse(.success(.completed))):
             return true
         default:
             return false

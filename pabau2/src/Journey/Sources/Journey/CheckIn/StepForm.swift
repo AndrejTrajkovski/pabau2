@@ -158,6 +158,17 @@ public enum StepAction: Equatable {
     case skipStep
     case gotSkipResponse(Result<StepStatus, RequestError>)
     case stepType(StepBodyAction)
+    
+    func isForNextStep() -> Bool {
+        switch self {
+        case .gotSkipResponse(.success(_)):
+            return true
+        case .stepType(let steTypeAction):
+            return steTypeAction.isStepCompleteAction
+        default:
+            return false
+        }
+    }
 }
 
 public struct StepState: Equatable, Identifiable {
