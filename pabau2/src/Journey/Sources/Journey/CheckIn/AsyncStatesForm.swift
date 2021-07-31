@@ -17,7 +17,6 @@ struct StepFormContainer: View {
     }
     
     enum AsyncState: Equatable {
-        case initial
         case form(errorToastMessage: String?)
         case getting
         case saving
@@ -25,9 +24,7 @@ struct StepFormContainer: View {
         case retry
         
         init(state: StepState) {
-            switch state.loadingState {
-            case .initial:
-                self = .initial
+            switch state.gettingState {
             case .gotSuccess:
                 switch (state.savingState, state.skipStepState) {
                 case (.loading, .loading):
@@ -46,6 +43,8 @@ struct StepFormContainer: View {
                      (.gotSuccess, .gotSuccess):
                     self = .form(errorToastMessage: nil)
                 }
+            case .initial:
+                self = .form(errorToastMessage: nil)
             case .loading:
                 self = .getting
             case .gotError:
@@ -79,8 +78,6 @@ struct StepFormContainer: View {
                 Button("Retry", action: { viewStore.send(.retryGetForm) })
                 Spacer()
             }
-        case .initial:
-            EmptyView()
         }
     }
 }

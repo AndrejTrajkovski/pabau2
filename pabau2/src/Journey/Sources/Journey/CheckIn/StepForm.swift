@@ -57,9 +57,9 @@ public let stepReducer: Reducer<StepState, StepAction, JourneyEnvironment> = .co
         case .stepType(.patientDetails(.gotGETResponse(let result))):
             switch result {
             case .success:
-                state.loadingState = .gotSuccess
+                state.gettingState = .gotSuccess
             case .failure(let error):
-                state.loadingState = .gotError(error)
+                state.gettingState = .gotError(error)
             }
             
         case .stepType(.patientDetails(.gotPOSTResponse(let result))):
@@ -115,9 +115,9 @@ public let stepReducer: Reducer<StepState, StepAction, JourneyEnvironment> = .co
         case .stepType(.aftercare(.gotAftercareAndRecallsResponse(let result))):
             switch result {
             case .success:
-                state.loadingState = .gotSuccess
+                state.gettingState = .gotSuccess
             case .failure(let error):
-                state.loadingState = .gotError(error)
+                state.gettingState = .gotError(error)
             }
             
         case .stepType(.patientDetails(.complete)):
@@ -155,6 +155,22 @@ public let stepReducer: Reducer<StepState, StepAction, JourneyEnvironment> = .co
 //                                                          title: "Failed to skip step.")
                 return Effect.timer(id: ToastTimerId(), every: 1.0, on: DispatchQueue.main)
                     .map { _ in StepAction.dismissToast }
+            }
+            
+        case .stepType(.htmlForm(.chosenForm(.gotForm(let result)))):
+            switch result {
+            case .success:
+                state.gettingState = .gotSuccess
+            case .failure(let error):
+                state.gettingState = .gotError(error)
+            }
+            
+        case .stepType(.htmlForm(.chosenForm(.gotPOSTResponse(let result)))):
+            switch result {
+            case .success:
+                state.savingState = .gotSuccess
+            case .failure(let error):
+                state.savingState = .gotError(error)
             }
             
         default:
@@ -199,7 +215,7 @@ public struct StepState: Equatable, Identifiable {
     let pathwayId: Pathway.ID
     
     public var status: StepStatus
-    var loadingState: LoadingState = .initial
+    var gettingState: LoadingState
     var savingState: LoadingState = .initial
     var skipStepState: LoadingState = .initial
 //    var toastAlert: ToastState<StepAction>?
@@ -219,6 +235,18 @@ public struct StepState: Equatable, Identifiable {
         self.pathwayId = pathway.id
         self.status = stepAndEntry.entry?.status ?? .pending
         self.stepBody = StepBodyState(stepAndEntry: stepAndEntry, clientId: clientId, pathway: pathway, appointment: appointment)
+        
+        if getForm(
+            stepAndEntry.step.stepType,
+            stepAndEntry.entry?.htmlFormInfo?.chosenFormTemplateId,
+            stepAndEntry.entry?.htmlFormInfo?.formEntryId,
+            APIClient(baseUrl: "mock", loggedInUser: nil),
+            clientId,
+            appointmentId) != nil {
+            self.gettingState = .loading
+        } else {
+            self.gettingState = .initial
+        }
 	}
     
     func extractHTMLState() -> HTMLFormStepContainerState? {
