@@ -42,12 +42,6 @@ let checkInPathwayReducer: Reducer<CheckInPathwayState, CheckInPathwayAction, Jo
     
     .init { state, action, _ in
         
-//        func nextStep() {
-//            if state.selectedIdx < state.stepStates.count - 1 {
-//                state.selectedIdx
-//            }
-//        }
-        
         if case .steps(.steps(_, let stepAction)) = action,
            stepAction.isForNextStep() {
             if let nextPendingIndex = state.nextPendingIndex() {
@@ -109,5 +103,4 @@ public enum CheckInPathwayAction: Equatable {
     case steps(StepsActions)
     case patientComplete(PatientCompleteAction)
     case stepsView(CheckInAction)
-    //    case footer(FooterButtonsAction)
 }

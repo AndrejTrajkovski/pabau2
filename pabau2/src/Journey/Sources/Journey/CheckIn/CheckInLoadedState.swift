@@ -119,50 +119,35 @@ func getForms(stepsAndEntries: [StepAndStepEntry], formAPI: FormAPI, clientId: C
 }
 
 func getForm(stepAndEntry: StepAndStepEntry, formAPI: FormAPI, clientId: Client.ID, appId:  Appointment.ID) -> Effect<StepBodyAction, Never>? {
-	if stepAndEntry.step.stepType.isHTMLForm {
-        print(stepAndEntry)
-		guard let templateToGet = stepAndEntry.entry?.htmlFormInfo?.chosenFormTemplateId else {
-			return nil
-		}
-        
-//        let templateToGet: HTMLForm.ID
-//        if let templateId = stepAndEntry.entry?.htmlFormInfo?.chosenFormTemplateId {
-//            templateToGet = templateId
-//        } else if let firstOfPossible = stepAndEntry.entry?.htmlFormInfo?.possibleFormTemplates.first?.id {
-//            templateToGet = firstOfPossible
-//        } else {
-//            return nil
-//        }
+    switch stepAndEntry.step.stepType {
+    case .consents, .medicalhistory, .treatmentnotes, .prescriptions:
+        guard let templateToGet = stepAndEntry.entry?.htmlFormInfo?.chosenFormTemplateId else {
+            return nil
+        }
         
         let pipeInits: (Result<HTMLForm, RequestError>) -> StepBodyAction = pipe(HTMLFormAction.gotForm, HTMLFormStepContainerAction.chosenForm, StepBodyAction.htmlForm)
         
-		return formAPI.getForm(templateId: templateToGet, entryId: stepAndEntry.entry?.htmlFormInfo?.formEntryId)
-			.catchToEffect()
-			.map(pipeInits)
+        return formAPI.getForm(templateId: templateToGet, entryId: stepAndEntry.entry?.htmlFormInfo?.formEntryId)
+            .catchToEffect()
+            .map(pipeInits)
         
-	} else {
-        
-		switch stepAndEntry.step.stepType {
-		case .consents, .medicalhistory, .treatmentnotes, .prescriptions:
-			fatalError("should be handled previously")
-		case .patientdetails:
-			return formAPI.getPatientDetails(clientId: clientId)
-				.catchToEffect()
-				.map { $0.map(ClientBuilder.init(client:))}
-				.map(pipe(PatientDetailsParentAction.gotGETResponse, StepBodyAction.patientDetails))
-        case .aftercares:
-            return formAPI.getAftercareAndRecall(appointmentId: appId)
-                .catchToEffect()
-                .map(pipe(AftercareAction.gotAftercareAndRecallsResponse, StepBodyAction.aftercare))
-                .eraseToEffect()
-		case .photos:
-			return nil
-        case .lab:
-            return nil
-        case .video:
-            return nil
-        case .timeline:
-            return nil
-        }
-	}
+    case .patientdetails:
+        return formAPI.getPatientDetails(clientId: clientId)
+            .catchToEffect()
+            .map { $0.map(ClientBuilder.init(client:))}
+            .map(pipe(PatientDetailsParentAction.gotGETResponse, StepBodyAction.patientDetails))
+    case .aftercares:
+        return formAPI.getAftercareAndRecall(appointmentId: appId)
+            .catchToEffect()
+            .map(pipe(AftercareAction.gotAftercareAndRecallsResponse, StepBodyAction.aftercare))
+            .eraseToEffect()
+    case .photos:
+        return nil
+    case .lab:
+        return nil
+    case .video:
+        return nil
+    case .timeline:
+        return nil
+    }
 }

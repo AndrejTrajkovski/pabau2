@@ -39,6 +39,7 @@ let checkInLoadingOrLoadedReducer: Reducer<CheckInLoadingOrLoadedState, CheckInC
                                                       formAPI: env.formAPI,
                                                       clientId: loadedState.appointment.customerId,
                                                       appId: pathwaysResponse.appointment.id)
+                    .delay(for: 5.0, scheduler: DispatchQueue.main)
                     .receive(on: DispatchQueue.main)
                     .eraseToEffect()
                 

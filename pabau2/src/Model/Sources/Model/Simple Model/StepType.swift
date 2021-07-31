@@ -16,16 +16,7 @@ public enum StepType: String, Codable, Equatable, CaseIterable, Identifiable {
     case lab
     case video
     case timeline
-
-	public var isHTMLForm: Bool {
-		switch self {
-		case .medicalhistory, .consents, .treatmentnotes, .prescriptions:
-			return true
-		default:
-			return false
-		}
-	}
-	
+    
 	public var title: String {
 		switch self {
 		case .patientdetails:

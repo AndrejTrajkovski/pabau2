@@ -37,7 +37,9 @@ public enum StepBodyState: Equatable {
     case video
     
     init(stepAndEntry: StepAndStepEntry, clientId: Client.ID, pathway: Pathway, appointment: Appointment) {
-        if stepAndEntry.step.stepType.isHTMLForm {
+        
+        switch stepAndEntry.step.stepType {
+        case .medicalhistory, .consents, .treatmentnotes, .prescriptions:
             let htmlFormState = HTMLFormStepContainerState(stepId: stepAndEntry.step.id,
                                                            stepEntry: stepAndEntry.entry!,
                                                            clientId: clientId,
@@ -45,31 +47,28 @@ public enum StepBodyState: Equatable {
                                                            appointmentId: appointment.id,
                                                            canSkip: stepAndEntry.step.canSkip)
             self = .htmlForm(htmlFormState)
-        } else {
-            switch stepAndEntry.step.stepType {
-            case .patientdetails:
-                self = .patientDetails(PatientDetailsParentState(id: stepAndEntry.step.id,
-                                                                 pathwayId: pathway.id,
-                                                                 clientId: clientId,
-                                                                 appointmentId: appointment.id,
-                                                                 canSkip: stepAndEntry.step.canSkip)
-                )
-            case .aftercares:
-                self = .aftercare(AftercareState.init(id: stepAndEntry.step.id,
-                                                      images: appointment.photos,
-                                                      aftercares: [],
-                                                      recalls: []))
-            case .timeline:
-                self = .timeline(CheckPatientDetailsState(id: stepAndEntry.step.id, clientBuilder: nil, patForms: []))
-            case .photos:
-                self = .photos(PhotosState(id: stepAndEntry.step.id))
-            case .lab:
-                self = .lab
-            case .video:
-                self = .video
-            default:
-                fatalError()
-            }
+        case .patientdetails:
+            self = .patientDetails(PatientDetailsParentState(id: stepAndEntry.step.id,
+                                                             pathwayId: pathway.id,
+                                                             clientId: clientId,
+                                                             appointmentId: appointment.id,
+                                                             canSkip: stepAndEntry.step.canSkip)
+            )
+        case .aftercares:
+            self = .aftercare(AftercareState.init(id: stepAndEntry.step.id,
+                                                  images: appointment.photos,
+                                                  aftercares: [],
+                                                  recalls: []))
+        case .timeline:
+            self = .timeline(CheckPatientDetailsState(id: stepAndEntry.step.id, clientBuilder: nil, patForms: []))
+        case .photos:
+            self = .photos(PhotosState(id: stepAndEntry.step.id))
+        case .lab:
+            self = .lab
+        case .video:
+            self = .video
+        default:
+            fatalError()
         }
     }
 }

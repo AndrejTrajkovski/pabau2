@@ -12,6 +12,9 @@ public let stepReducer: Reducer<StepState, StepAction, JourneyEnvironment> = .co
         
         switch action {
         
+        case .retryGetForm:
+            break
+            
         case .stepType(.checkPatientDetails(.complete)):
             let pathwayStep = PathwayIdStepId(step_id: state.id, path_taken_id: state.pathwayId)
             state.savingState = .loading
@@ -158,6 +161,7 @@ public enum StepAction: Equatable {
     case skipStep
     case gotSkipResponse(Result<StepStatus, RequestError>)
     case stepType(StepBodyAction)
+    case retryGetForm
     
     func isForNextStep() -> Bool {
         switch self {
