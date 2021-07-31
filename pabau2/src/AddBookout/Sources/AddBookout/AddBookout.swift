@@ -26,7 +26,7 @@ public let addBookoutOptReducer: Reducer<AddBookoutState?, AddBookoutAction, Add
                                          type: .error(.red),
                                          title: error.description)
                 
-                return Effect.timer(id: ToastTimerId(), every: 2, on: DispatchQueue.main)
+                return Effect.timer(id: ToastTimerId(), every: 1, on: DispatchQueue.main)
                     .map { _ in AddBookoutAction.dismissToast }
 			}
         case .dismissToast:

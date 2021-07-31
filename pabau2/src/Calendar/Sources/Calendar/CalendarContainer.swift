@@ -267,7 +267,6 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
         case .addBookoutAction(.appointmentCreated(let response)):
             switch response {
             case .success(let calendarEvent):
-                state.appsLS = .gotSuccess
                 
                 var calendarEvents = state.appointments.flatten()
                 calendarEvents.append(calendarEvent)
@@ -361,7 +360,6 @@ public let calendarContainerReducer: Reducer<CalendarState, CalendarAction, Cale
         case .appointmentCreatedResponse(let response):
             switch response {
             case .success(let calendarEvent):
-                state.appsLS = .gotSuccess
                 
                 var calendarEvents = state.appointments.flatten()
                 calendarEvents.append(calendarEvent)
