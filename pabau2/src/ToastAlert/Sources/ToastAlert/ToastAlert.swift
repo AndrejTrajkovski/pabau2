@@ -25,6 +25,7 @@ extension View {
     public func toast<Action>(store: Store<ToastState<Action>?, Action>) -> some View {
             WithViewStore(store) { viewStore in
                 toast(isPresenting: .constant(viewStore.state != nil),
+                      duration: 1,
                       alert: { AlertToast(displayMode: viewStore.state?.mode ?? .banner(.slide),
                                           type: viewStore.state?.type ?? .regular,
                                           title: viewStore.state?.title,

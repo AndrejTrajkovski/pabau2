@@ -21,6 +21,6 @@ struct StepForms: View {
 		ForEachStore(store.scope(state: { $0 },
 								 action: { .steps(idx: $0.0, action: $0.1)}),
 					 id: \StepState.id,
-					 content: StepForm.init(store:))
+					 content: StepFormContainer.init(store:))
 	}
 }

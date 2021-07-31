@@ -46,9 +46,9 @@ public let stepReducer: Reducer<StepState, StepAction, JourneyEnvironment> = .co
                 state.status = .completed
                 state.savingState = .gotSuccess
             case .failure(let error):
-                state.toastAlert = ToastState<StepAction>(mode: .alert,
-                                                          type: .error(.red),
-                                                          title: "Failed to save step completion.")
+//                state.toastAlert = ToastState<StepAction>(mode: .alert,
+//                                                          type: .error(.red),
+//                                                          title: "Failed to save step completion.")
                 state.savingState = .gotError(error)
                 return Effect.timer(id: ToastTimerId(), every: 1.0, on: DispatchQueue.main)
                     .map { _ in StepAction.dismissToast }
@@ -68,9 +68,9 @@ public let stepReducer: Reducer<StepState, StepAction, JourneyEnvironment> = .co
                 state.savingState = .gotSuccess
                 state.status = .completed
             case .failure(let error):
-                state.toastAlert = ToastState<StepAction>(mode: .alert,
-                                                          type: .error(.red),
-                                                          title: "Failed saving patient details.")
+//                state.toastAlert = ToastState<StepAction>(mode: .alert,
+//                                                          type: .error(.red),
+//                                                          title: "Failed saving patient details.")
                 state.savingState = .gotError(error)
                 return Effect.timer(id: ToastTimerId(), every: 1.0, on: DispatchQueue.main)
                     .map { _ in StepAction.dismissToast }
@@ -105,9 +105,9 @@ public let stepReducer: Reducer<StepState, StepAction, JourneyEnvironment> = .co
                 state.savingState = .gotSuccess
             case .failure(let error):
                 state.savingState = .gotError(error)
-                state.toastAlert = ToastState<StepAction>(mode: .alert,
-                                                          type: .error(.red),
-                                                          title: "Failed to save aftercare.")
+//                state.toastAlert = ToastState<StepAction>(mode: .alert,
+//                                                          type: .error(.red),
+//                                                          title: "Failed to save aftercare.")
                 return Effect.timer(id: ToastTimerId(), every: 1.0, on: DispatchQueue.main)
                     .map { _ in StepAction.dismissToast }
             }
@@ -126,7 +126,8 @@ public let stepReducer: Reducer<StepState, StepAction, JourneyEnvironment> = .co
         
         case .dismissToast:
             
-            state.toastAlert = nil
+            state.savingState = .initial
+            state.skipStepState = .initial
             return Effect.cancel(id: ToastTimerId())
             
         case .stepType(.htmlForm(.chosenForm(.gotPOSTResponse(.success)))):
@@ -149,9 +150,9 @@ public let stepReducer: Reducer<StepState, StepAction, JourneyEnvironment> = .co
                 state.status = status
             case .failure(let error):
                 state.skipStepState = .gotError(error)
-                state.toastAlert = ToastState<StepAction>(mode: .alert,
-                                                          type: .error(.red),
-                                                          title: "Failed to skip step.")
+//                state.toastAlert = ToastState<StepAction>(mode: .alert,
+//                                                          type: .error(.red),
+//                                                          title: "Failed to skip step.")
                 return Effect.timer(id: ToastTimerId(), every: 1.0, on: DispatchQueue.main)
                     .map { _ in StepAction.dismissToast }
             }
@@ -201,7 +202,7 @@ public struct StepState: Equatable, Identifiable {
     var loadingState: LoadingState = .initial
     var savingState: LoadingState = .initial
     var skipStepState: LoadingState = .initial
-    var toastAlert: ToastState<StepAction>?
+//    var toastAlert: ToastState<StepAction>?
     
     var stepBody: StepBodyState
 	
@@ -244,6 +245,6 @@ struct StepForm: View {
         VStack {
             StepBody(store: store.scope(state: { $0.stepBody }, action: { .stepType($0) }))
             StepFooter(store: store)
-        }.toast(store: store.scope(state: { $0.toastAlert }))
+        }
     }
 }

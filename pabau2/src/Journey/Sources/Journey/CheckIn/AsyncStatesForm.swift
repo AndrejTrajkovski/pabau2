@@ -4,17 +4,21 @@ import ToastAlert
 import Model
 import ComposableArchitecture
 import SharedComponents
+import AlertToast
 
 struct StepFormContainer: View {
     
     let store: Store<StepState, StepAction>
     @ObservedObject var viewStore: ViewStore<AsyncState, StepAction>
     
-    @ViewBuilder let stepFormView: () -> StepForm
+    init(store: Store<StepState, StepAction>) {
+        self.store = store
+        self.viewStore = ViewStore(store.scope(state: AsyncState.init(state:)))
+    }
     
     enum AsyncState: Equatable {
         case initial
-        case form
+        case form(errorToastMessage: String?)
         case getting
         case saving
         case skipping
@@ -25,17 +29,22 @@ struct StepFormContainer: View {
             case .initial:
                 self = .initial
             case .gotSuccess:
-                switch state.savingState {
-                case .loading:
+                switch (state.savingState, state.skipStepState) {
+                case (.loading, .loading):
+                    fatalError("view logic should not allow")
+                case (.loading, _):
                     self = .saving
-                case .initial, .gotSuccess, .gotError:
-                    self = .form //error handled with toast message
-                }
-                switch state.skipStepState {
-                case .loading:
-                    self = .saving
-                case .initial, .gotSuccess, .gotError:
-                    self = .form //error handled with toast message
+                case (_, .loading):
+                    self = .skipping
+                case (_, .gotError):
+                    self = .form(errorToastMessage: "Failed to skip step")
+                case (.gotError, _):
+                    self = .form(errorToastMessage: "Failed to save step")
+                case (.initial, .initial),
+                     (.gotSuccess, .initial),
+                     (.initial, .gotSuccess),
+                     (.gotSuccess, .gotSuccess):
+                    self = .form(errorToastMessage: nil)
                 }
             case .loading:
                 self = .getting
@@ -47,8 +56,17 @@ struct StepFormContainer: View {
     
     var body: some View {
         switch viewStore.state {
-        case .form:
-            stepFormView()
+        case .form(let toastMessage):
+            StepForm(store: store)
+                .toast(isPresenting: .constant(toastMessage != nil),
+                       duration: 1,
+                       tapToDismiss: false,
+                       alert: { AlertToast(displayMode: .alert,
+                                         type: .error(.red),
+                                         title: toastMessage ?? "",
+                                         subTitle: nil,
+                                         custom: nil) }
+                )
         case .getting:
             LoadingView.init(title: "Loading", bindingIsShowing: .constant(true), content: { Spacer() })
         case .saving:
@@ -61,6 +79,8 @@ struct StepFormContainer: View {
                 Button("Retry", action: { viewStore.send(.retryGetForm) })
                 Spacer()
             }
+        case .initial:
+            EmptyView()
         }
     }
 }
