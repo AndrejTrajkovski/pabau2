@@ -123,9 +123,9 @@ struct LoginContainer: View {
 	@ObservedObject var viewStore: ViewStore<ViewState, WalkthroughContainerAction>
 
 	struct ViewState: Equatable {
-		let shouldShowWalkthrough: Bool
+		let isLoginActive: Bool
 		init (state: WalkthroughContainerState) {
-			self.shouldShowWalkthrough = state.navigation.contains(.walkthroughScreen)
+			self.isLoginActive = state.navigation.contains(.signInScreen)
 		}
 	}
   
@@ -142,21 +142,24 @@ struct LoginContainer: View {
 
     var body: some View {
         NavigationView {
-            ViewBuilder.buildBlock(
-                viewStore.state.shouldShowWalkthrough ?
-                    ViewBuilder.buildEither(first: WalkthroughContainer(store))
-                    :
-                    ViewBuilder.buildEither(
-                        second:
-                            LoginView(
-                                store:
-                                    self.store.scope(
-                                        state: { $0 },
-                                        action: { .login($0)}
-                                    )
-                            )
-                    )
-            )
+            WalkthroughContainer(store)
+            NavigationLink.emptyHidden(viewStore.state.isLoginActive,
+                                       LoginView.init(store: store.scope(state: { $0 }, action: { .login($0) })))
+//            ViewBuilder.buildBlock(
+//                viewStore.state.shouldShowWalkthrough ?
+//                    ViewBuilder.buildEither(first: )
+//                    :
+//                    ViewBuilder.buildEither(
+//                        second:
+//                            LoginView(
+//                                store:
+//                                    self.store.scope(
+//                                        state: { $0 },
+//                                        action: { .login($0)}
+//                                    )
+//                            )
+//                    )
+//            )
         }.navigationViewStyle(StackNavigationViewStyle())
     }
 }

@@ -10,7 +10,7 @@ public struct Walkthrough: View {
 						  imageTitles: WalkthroughStatic.images)
 	let action: () -> Void
 	@State var pageIdx: Int = 0
-
+    
 	public var body: some View {
 		VStack {
 			PageView(state.map { WalkthroughContentView(state: $0)},
@@ -26,18 +26,15 @@ public struct Walkthrough: View {
 public let walkthroughReducer = Reducer<[LoginNavScreen], WalkthroughAction, LoginEnvironment> { state, action, environment in
 	switch action {
 	case .signInTapped:
+        var userDefaults = environment.userDefaults
+        userDefaults.hasSeenAppIntroduction = true
 		state.append(.signInScreen)
-		return .none
-	case .onAppear:
-		var userDefaults = environment.userDefaults
-		userDefaults.hasSeenAppIntroduction = true
 		return .none
 	}
 }
 
 public enum WalkthroughAction: Equatable {
 	case signInTapped
-	case onAppear
 }
 
 struct WalkthroughStatic {

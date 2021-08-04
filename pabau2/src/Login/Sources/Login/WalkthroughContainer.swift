@@ -47,9 +47,7 @@ public struct WalkthroughContainer: View {
             VStack(spacing: 50) {
                 Walkthrough(action: {
                     self.viewStore.send(.walkthrough(.signInTapped))
-                }).onAppear {
-                    self.viewStore.send(.walkthrough(.onAppear))
-                }
+                })
                 NavigationLink.emptyHidden(
                     viewStore.state.isSignInActive,
                     LoginView(
