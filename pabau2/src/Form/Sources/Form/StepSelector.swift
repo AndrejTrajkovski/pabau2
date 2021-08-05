@@ -4,7 +4,7 @@ import Model
 import ComposableArchitecture
 
 struct StepSelector: View {
-	let cellWidth: CGFloat = 100
+	let cellWidth: CGFloat = 120
 	let cellHeight: CGFloat = 80
 	let spacing: CGFloat = 8
 
@@ -39,7 +39,7 @@ struct StepSelector: View {
 			ScrollView(.horizontal) {
 				HStack(spacing: spacing) {
 					ForEach(viewStore.state.stepForms.indices, id: \.self) { idx in
-						stepView(for: viewStore.state.stepForms[idx])
+                        stepView(for: viewStore.state.stepForms[idx], viewStore.selectedIndex == idx)
 							.frame(width: cellWidth, height: cellHeight)
 							.onTapGesture {
 								self.viewStore.send(.didSelectFlatFormIndex(idx))
@@ -57,8 +57,8 @@ struct StepSelector: View {
 		}
 	}
 
-	func stepView(for viewModel: StepFormInfo) -> some View {
-		return VStack {
+    func stepView(for viewModel: StepFormInfo, _ isSelected: Bool) -> some View {
+		VStack {
 			Image(systemName: "checkmark.circle.fill")
 				.foregroundColor(color(status: viewModel.status))
 				.frame(width: 30, height: 30)
@@ -68,7 +68,9 @@ struct StepSelector: View {
 				.lineLimit(nil)
 				.font(.medium10)
 				.foregroundColor(Color(hex: "909090"))
-		}
+        }
+        .padding(10)
+        .border(isSelected ? Color.lightBlueGrey : Color.clear, width: isSelected ? 1 : 0)
 	}
 
 	fileprivate func color(status: StepStatus) -> Color {

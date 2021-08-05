@@ -27,8 +27,8 @@ struct StepForms: View {
                              id: \StepState.id,
                              content: StepFormContainer.init(store:))
             } else {
-                VStack {
-                    Text("No forms here")
+                VStack(spacing: 32) {
+                    Text("No forms here").font(.subheadline)
                     PrimaryButton("Complete", { viewStore.send(.noStepsComplete) })
                 }
             }
