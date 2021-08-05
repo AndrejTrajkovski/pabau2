@@ -95,7 +95,7 @@ struct PhotosForm: View {
 					)
 				)
 			}
-		}.debug("Photos form")
+		}
 	}
 }
 

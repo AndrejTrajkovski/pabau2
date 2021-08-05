@@ -241,7 +241,7 @@ struct SinglePhotoEdit: View {
 														 action: { .injectables(.chooseInjectables($0)) })
 					)
 			})
-		}.debug("SinglePhotoEdit")
+		}
         
 	}
 }

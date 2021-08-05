@@ -170,5 +170,4 @@ public struct CalendarSectionViewReducer<Subsection: Identifiable & Equatable> {
 		}
 		return .none
 	}
-	//	.debug(state: { return $0 }, action: (/SubsectionCalendarAction.editAppointment))
 }

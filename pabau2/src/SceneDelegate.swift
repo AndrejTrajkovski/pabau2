@@ -12,6 +12,14 @@ import CoreDataModel
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
+    let debugEnv: DebugEnvironment = {
+        #if DEBUG
+        return DebugEnvironment.init(printer: { _ in })
+        #else
+        return DebugEnvironment.init(printer: { logMessage in TextLog().write(logMessage) })
+        #endif
+    }()
+    
 	var window: UIWindow?
     
 	func scene(

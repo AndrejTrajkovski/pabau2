@@ -136,7 +136,7 @@ struct EditPhotosRightSide: View {
 						"ico-journey-upload-photos-injectables-gray")
 				})
 			}.buttonStyle(EditPhotosButtonStyle())
-		}.debug("edit photos right side")
+		}
 	}
 }
 

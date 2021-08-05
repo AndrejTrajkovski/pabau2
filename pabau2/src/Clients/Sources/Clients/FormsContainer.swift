@@ -97,7 +97,7 @@ struct FormsContainer: View {
 						}
 					   }, else: { checkInView() }
 			)
-		}.debug("Forms Container")
+		}
 	}
 
 	func checkInNavigationLink(isActive: Bool) -> some View {

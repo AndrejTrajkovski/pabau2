@@ -109,7 +109,7 @@ struct FormsList: ClientCardChild {
 												   )
 						)
 					  }
-		).debug("FormsList")
+		)
 	}
 }
 

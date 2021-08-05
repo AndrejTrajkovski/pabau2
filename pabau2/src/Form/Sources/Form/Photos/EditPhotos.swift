@@ -54,7 +54,7 @@ public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnv
 			}
 			return .none
         }
-    ).debug()
+    )
 
 public enum EditPhotoAction: Equatable {
 	case openCamera
@@ -212,7 +212,7 @@ public struct EditPhotos: View {
                         ).navigationBarHidden(true)
                         .navigationBarTitle("")
                        })
-        }.debug("Edit Photos")
+        }
 	}
 }
 
