@@ -4,18 +4,18 @@ import MessageUI
 struct MailView: UIViewControllerRepresentable {
     
     @Binding var isShowing: Bool
-    @Binding var result: Result<MFMailComposeResult, Error>?
+    var result: (Result<MFMailComposeResult, Error>?) -> Void
     let file: Data
     
     class Coordinator: NSObject, MFMailComposeViewControllerDelegate {
         
         @Binding var isShowing: Bool
-        @Binding var result: Result<MFMailComposeResult, Error>?
+        var result: (Result<MFMailComposeResult, Error>?) -> Void
         
         init(isShowing: Binding<Bool>,
-             result: Binding<Result<MFMailComposeResult, Error>?>) {
+             result: @escaping (Result<MFMailComposeResult, Error>?) -> Void) {
             _isShowing = isShowing
-            _result = result
+            self.result = result
         }
         
         func mailComposeController(_ controller: MFMailComposeViewController,
@@ -25,16 +25,16 @@ struct MailView: UIViewControllerRepresentable {
                 isShowing = false
             }
             guard error == nil else {
-                self.result = .failure(error!)
+                self.result(.failure(error!))
                 return
             }
-            self.result = .success(result)
+            self.result(.success(result))
         }
     }
     
     func makeCoordinator() -> Coordinator {
         return Coordinator(isShowing: $isShowing,
-                           result: $result)
+                           result: result)
     }
     
     func makeUIViewController(context: UIViewControllerRepresentableContext<MailView>) -> MFMailComposeViewController {
