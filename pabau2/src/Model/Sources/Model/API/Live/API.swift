@@ -8,7 +8,7 @@ public class APIClient: LoginAPI, JourneyAPI, ClientsAPI, FormAPI {
         self.loggedInUser = loggedInUser
     }
 
-    var baseUrl: String = "https://ios.pabau.me"
+    var baseUrl: String
     var forgotPwBaseUrl: String { baseUrl }
     
     var loggedInUser: User? = nil

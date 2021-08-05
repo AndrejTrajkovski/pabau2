@@ -69,9 +69,9 @@ extension APIClient {
 	
 	func commonParams() -> [String: Any] {
 		var version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
-		#if DEBUG
-			version = "4.6.3"
-		#endif
+//		#if DEBUG
+        version = "4.6.3"//has to be like this for backend check
+//		#endif
 		let userParams = getUserParams() ?? [:]
 		let versionParams = ["app_version" : version ?? ""]
 		return versionParams.merging(userParams, uniquingKeysWith: { old, new in return old })

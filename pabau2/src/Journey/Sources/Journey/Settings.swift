@@ -11,7 +11,7 @@ public typealias SettingsEnvironment = (
 	userDefaults: UserDefaultsConfig
 )
 
-public let settingsReducer = Reducer<SettingsState, SettingsAction, SettingsEnvironment> { _, action, env in
+public let settingsReducer = Reducer<SettingsState, SettingsAction, SettingsEnvironment> { state, action, env in
 	switch action {
 	case .logoutTapped:
 		var userDefaults = env.userDefaults
@@ -20,7 +20,7 @@ public let settingsReducer = Reducer<SettingsState, SettingsAction, SettingsEnvi
     case .reportProblem:
         do {
             let log = try TextLog.retrieveLogFile()
-            print(log)
+            state.reportProblemLog = log
         } catch {
             print(error)
         }
@@ -30,6 +30,7 @@ public let settingsReducer = Reducer<SettingsState, SettingsAction, SettingsEnvi
 
 public struct SettingsState: Equatable {
 	public init () {}
+    var reportProblemLog: Data? = nil
 }
 
 public enum SettingsAction {
@@ -52,6 +53,11 @@ public struct Settings: View {
             PrimaryButton(Texts.reportProblem) {
                 self.viewStore.send(.reportProblem)
             }.frame(minWidth: 304, maxWidth: 495)
+            if viewStore.state.reportProblemLog != nil {
+                MailView(isShowing: .constant(viewStore.state.reportProblemLog != nil),
+                         result: .constant(nil),
+                         file: viewStore.state.reportProblemLog!)
+            }
 		}
 	}
 }
