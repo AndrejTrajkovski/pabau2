@@ -9,16 +9,20 @@ import SwiftDate
 import Intercom
 import FacebookShare
 import CoreDataModel
+import TextLog
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
-    let debugEnv: DebugEnvironment = {
-        #if DEBUG
-        return DebugEnvironment.init(printer: { _ in })
-        #else
-        return DebugEnvironment.init(printer: { logMessage in TextLog().write(logMessage) })
-        #endif
-    }()
+    static func makeDebugEnv() -> DebugEnvironment {
+//        #if DEBUG
+//        return DebugEnvironment.init(printer: { _ in })
+//        #else
+        return DebugEnvironment.init(printer: { logMessage in
+            var log = TextLog()
+            log.write(logMessage)
+        })
+//        #endif
+    }
     
 	var window: UIWindow?
     
@@ -36,7 +40,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 										 zone: Zones.gmt,
 										 locale: Locale.init(identifier: "en_US_POSIX"))
 		if let windowScene = scene as? UIWindowScene {
-            let reducer = appReducer
+            let reducer = appReducer.debug(environment: { $0.debug })
             let window = UIWindow(windowScene: windowScene)
 			let userDefaults = StandardUDConfig()
 			let user = userDefaults.loggedInUser
@@ -54,6 +58,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 coreDataModel: storage
             )
           
+            let debugEnv = Self.makeDebugEnv()
+            
 			let env = AppEnvironment(
 				loginAPI: apiClient,
 				journeyAPI: apiClient,
@@ -61,7 +67,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 				formAPI: apiClient,
 				userDefaults: userDefaults,
                 repository: repository,
-				audioPlayer: AudioPlayer()
+				audioPlayer: AudioPlayer(),
+                debug: debugEnv
 			)
             
             window.rootViewController = UIHostingController(

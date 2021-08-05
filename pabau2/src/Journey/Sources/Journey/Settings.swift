@@ -2,6 +2,7 @@ import SwiftUI
 import ComposableArchitecture
 import Util
 import Model
+import TextLog
 
 public typealias SettingsEnvironment = (
 	loginAPI: LoginAPI,
@@ -16,6 +17,14 @@ public let settingsReducer = Reducer<SettingsState, SettingsAction, SettingsEnvi
 		var userDefaults = env.userDefaults
 		userDefaults.loggedInUser = nil
 		return .none
+    case .reportProblem:
+        do {
+            let log = try TextLog.retrieveLogFile()
+            print(log)
+        } catch {
+            print(error)
+        }
+        return .none
 	}
 }
 
@@ -25,6 +34,7 @@ public struct SettingsState: Equatable {
 
 public enum SettingsAction {
 	case logoutTapped
+    case reportProblem
 }
 
 public struct Settings: View {
@@ -39,6 +49,9 @@ public struct Settings: View {
 			PrimaryButton(Texts.logout) {
 				self.viewStore.send(.logoutTapped)
 			}.frame(minWidth: 304, maxWidth: 495)
+            PrimaryButton(Texts.reportProblem) {
+                self.viewStore.send(.reportProblem)
+            }.frame(minWidth: 304, maxWidth: 495)
 		}
 	}
 }

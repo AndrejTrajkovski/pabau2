@@ -183,7 +183,7 @@ public let tabBarReducer: Reducer<
 	clientsContainerReducer.pullback(
 		state: \TabBarState.clients,
 		action: /TabBarAction.clients,
-		environment: makeClientsEnv(_:)
+		environment: makeClientsEnv(appEnv:)
 	),
 	calendarContainerReducer.pullback(
 		state: \TabBarState.calendar,
@@ -376,7 +376,7 @@ public let tabBarReducer: Reducer<
 	}
 )
 
-public let showAddAppointmentReducer: Reducer<TabBarState, CalendarAction, Any> = .init { state, action, _ in
+public let showAddAppointmentReducer: Reducer<TabBarState, CalendarAction, TabBarEnvironment> = .init { state, action, _ in
 	
     var chooseLocAndEmp = ChooseLocationAndEmployeeState(
         locations: state.calendar.locations,

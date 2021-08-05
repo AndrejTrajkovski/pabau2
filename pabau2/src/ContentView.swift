@@ -18,7 +18,8 @@ typealias AppEnvironment = (
 	formAPI: FormAPI,
 	userDefaults: UserDefaultsConfig,
     repository: Repository,
-	audioPlayer: AudioPlayerProtocol
+	audioPlayer: AudioPlayerProtocol,
+    debug: DebugEnvironment
 )
 
 func makeJourneyEnv(_ appEnv: TabBarEnvironment) -> JourneyEnvironment {
@@ -32,7 +33,7 @@ func makeJourneyEnv(_ appEnv: TabBarEnvironment) -> JourneyEnvironment {
 	)
 }
 
-func makeClientsEnv(_ appEnv: AppEnvironment) -> ClientsEnvironment {
+func makeClientsEnv(appEnv: TabBarEnvironment) -> ClientsEnvironment {
 	return ClientsEnvironment(
 		apiClient: appEnv.clientsAPI,
 		formAPI: appEnv.formAPI,

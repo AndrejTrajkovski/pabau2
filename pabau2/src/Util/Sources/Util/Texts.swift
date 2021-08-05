@@ -111,6 +111,7 @@ public struct Texts {
 	public static let sharePhoto = "Share photo"
 	public static let sendAftercareQ = "Would you like to send aftercare?"
 	public static let recallsQ = "Schedule any recalls?"
+    public static let reportProblem = "Report Problem"
 	public static let sendAftercareDesc = """
 Tap the aftercare bellow that you wish to send to the client. The aftercare will be send either via email or sms. You can send multiple aftercare. The aftercare will be immedieately sent.
 """
