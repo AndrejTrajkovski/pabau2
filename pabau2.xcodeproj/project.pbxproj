@@ -34,7 +34,6 @@
 		82BE2F4A23D97D9C00B3678A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BE2F4923D97D9C00B3678A /* SceneDelegate.swift */; };
 		82BE2F4E23D97D9F00B3678A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 82BE2F4D23D97D9F00B3678A /* Assets.xcassets */; };
 		82BE2F5123D97D9F00B3678A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 82BE2F5023D97D9F00B3678A /* Preview Assets.xcassets */; };
-		82E39D2826BB4DC9005AF76B /* TextLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E39D2726BB4DC9005AF76B /* TextLog.swift */; };
 		82F6ADAE23F2C7B1001B3ACE /* PabauTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */; };
 		BA5863DD266F8D0C00F7BFEC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BA5863DC266F8D0C00F7BFEC /* LaunchScreen.storyboard */; };
 		BA6FD88F2645616C00ACB1B2 /* CoreDataModel in Frameworks */ = {isa = PBXBuildFile; productRef = BA6FD88E2645616C00ACB1B2 /* CoreDataModel */; };
@@ -93,7 +92,7 @@
 		82BE2F5023D97D9F00B3678A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		82BE2F5523D97D9F00B3678A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		82D8240B24F648CD001F73C8 /* Calendar */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Calendar; sourceTree = "<group>"; };
-		82E39D2726BB4DC9005AF76B /* TextLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextLog.swift; sourceTree = "<group>"; };
+		82E39D2A26BBCA8C005AF76B /* TextLog */ = {isa = PBXFileReference; lastKnownFileType = folder; name = TextLog; path = "../../../../Desktop/workspace/ios-pabau2/pabau2/src/TextLog"; sourceTree = "<group>"; };
 		82E9C11C24D021550023B98B /* Login */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Login; sourceTree = "<group>"; };
 		82E9C11D24D0242E0023B98B /* Util */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Util; sourceTree = "<group>"; };
 		82E9C11E24D024E50023B98B /* Model */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Model; sourceTree = "<group>"; };
@@ -200,6 +199,7 @@
 		82CACDF7241027320021E1DE /* src */ = {
 			isa = PBXGroup;
 			children = (
+				82E39D2A26BBCA8C005AF76B /* TextLog */,
 				823B35962664E51600A07F1E /* PathwayList */,
 				08DC047B266132A4003846DA /* ToastAlert */,
 				BA6FD88D26454B1F00ACB1B2 /* CoreDataModel */,
@@ -235,7 +235,6 @@
 				82BE2F5523D97D9F00B3678A /* Info.plist */,
 				82811EF323E06BCB0066AFDC /* ContentView.swift */,
 				82F6ADAD23F2C7B1001B3ACE /* PabauTabBar.swift */,
-				82E39D2726BB4DC9005AF76B /* TextLog.swift */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -388,7 +387,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				82E39D2826BB4DC9005AF76B /* TextLog.swift in Sources */,
 				82811EF423E06BCB0066AFDC /* ContentView.swift in Sources */,
 				82BE2F4823D97D9C00B3678A /* AppDelegate.swift in Sources */,
 				82F6ADAE23F2C7B1001B3ACE /* PabauTabBar.swift in Sources */,
