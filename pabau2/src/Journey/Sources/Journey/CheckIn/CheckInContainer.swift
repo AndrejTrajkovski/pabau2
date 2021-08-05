@@ -214,22 +214,23 @@ public struct CheckInContainer: View {
     }
     
     public var body: some View {
-        print("check in navigation")
-        return NavigationView {
+        Group {
             if !viewStore.state.isAnimationFinished {
                 CheckInAnimation(animationDuration: checkInAnimationDuration,
                                  appointment: viewStore.state.appointment)
             } else {
-                IfLetStore(store.scope(state: { $0.passcodeToClose },
-                                       action: { .passcodeToClose($0)}),
-                           then: { passStore in
-                            Passcode.init(store: passStore)
-                                .navigationBarHidden(true)
-                           },
-                           else: {
-                            CheckInLoadingOrLoaded(store: store.scope(state: { $0.loadingOrLoaded }))
-                           })
+                NavigationView {
+                    IfLetStore(store.scope(state: { $0.passcodeToClose },
+                                           action: { .passcodeToClose($0)}),
+                               then: { passStore in
+                                Passcode.init(store: passStore)
+                                    .navigationBarHidden(true)
+                               },
+                               else: {
+                                CheckInLoadingOrLoaded(store: store.scope(state: { $0.loadingOrLoaded }))
+                               })
+                }.navigationViewStyle(StackNavigationViewStyle())
             }
-        }.navigationViewStyle(StackNavigationViewStyle())
+        }
     }
 }
