@@ -72,6 +72,7 @@
 		8223F5EC264FB9F20056023C /* CalendarList */ = {isa = PBXFileReference; lastKnownFileType = folder; path = CalendarList; sourceTree = "<group>"; };
 		823B35962664E51600A07F1E /* PathwayList */ = {isa = PBXFileReference; lastKnownFileType = folder; path = PathwayList; sourceTree = "<group>"; };
 		8246DB37256FCE2300F5D87E /* Filters */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Filters; sourceTree = "<group>"; };
+		824F0BBF26BD2BAA005F25CB /* TextLog */ = {isa = PBXFileReference; lastKnownFileType = folder; name = TextLog; path = ../../../../Desktop/TextLog; sourceTree = "<group>"; };
 		82533424256D0C69005755D6 /* AddShift */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AddShift; sourceTree = "<group>"; };
 		82533425256D8393005755D6 /* SharedComponents */ = {isa = PBXFileReference; lastKnownFileType = folder; path = SharedComponents; sourceTree = "<group>"; };
 		8258EB2A26580E0F008BA5A2 /* ChooseEmployees */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ChooseEmployees; sourceTree = "<group>"; };
@@ -92,7 +93,6 @@
 		82BE2F5023D97D9F00B3678A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		82BE2F5523D97D9F00B3678A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		82D8240B24F648CD001F73C8 /* Calendar */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Calendar; sourceTree = "<group>"; };
-		82E39D2A26BBCA8C005AF76B /* TextLog */ = {isa = PBXFileReference; lastKnownFileType = folder; name = TextLog; path = "../../../../Desktop/workspace/ios-pabau2/pabau2/src/TextLog"; sourceTree = "<group>"; };
 		82E9C11C24D021550023B98B /* Login */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Login; sourceTree = "<group>"; };
 		82E9C11D24D0242E0023B98B /* Util */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Util; sourceTree = "<group>"; };
 		82E9C11E24D024E50023B98B /* Model */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Model; sourceTree = "<group>"; };
@@ -199,7 +199,7 @@
 		82CACDF7241027320021E1DE /* src */ = {
 			isa = PBXGroup;
 			children = (
-				82E39D2A26BBCA8C005AF76B /* TextLog */,
+				824F0BBF26BD2BAA005F25CB /* TextLog */,
 				823B35962664E51600A07F1E /* PathwayList */,
 				08DC047B266132A4003846DA /* ToastAlert */,
 				BA6FD88D26454B1F00ACB1B2 /* CoreDataModel */,
