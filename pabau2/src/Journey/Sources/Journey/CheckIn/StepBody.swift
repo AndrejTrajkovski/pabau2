@@ -24,6 +24,11 @@ public let stepBodyReducer: Reducer<StepBodyState, StepBodyAction, JourneyEnviro
         state: /StepBodyState.aftercare,
         action: /StepBodyAction.aftercare,
         environment: makeFormEnv(_:)
+    ),
+    photosFormReducer.pullback(
+        state: /StepBodyState.photos,
+        action: /StepBodyAction.photos,
+        environment: makeFormEnv(_:)
     )
 )
 
@@ -67,8 +72,6 @@ public enum StepBodyState: Equatable {
             self = .lab
         case .video:
             self = .video
-        default:
-            fatalError()
         }
     }
 }
@@ -79,6 +82,7 @@ public enum StepBodyAction: Equatable {
     case htmlForm(HTMLFormStepContainerAction)
     case checkPatientDetails(CheckPatientDetailsAction)
     case aftercare(AftercareAction)
+    case photos(PhotosFormAction)
     
     public var isStepCompleteAction: Bool {
         switch self {
@@ -106,6 +110,7 @@ struct StepBody: View {
             CaseLet(state: /StepBodyState.htmlForm, action: StepBodyAction.htmlForm, then: HTMLFormStepContainer.init(store:))
             CaseLet(state: /StepBodyState.timeline, action: StepBodyAction.checkPatientDetails, then: CheckPatientDetails.init(store:))
             CaseLet(state: /StepBodyState.aftercare, action: StepBodyAction.aftercare, then: AftercareForm.init(store:))
+            CaseLet(state: /StepBodyState.photos, action: StepBodyAction.photos, then: PhotosForm.init(store:))
             Default { EmptyView ()}
         }.modifier(FormFrame())
     }

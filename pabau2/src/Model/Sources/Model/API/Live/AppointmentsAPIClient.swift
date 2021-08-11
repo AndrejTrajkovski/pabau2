@@ -9,6 +9,7 @@ import Foundation
 import ComposableArchitecture
 
 extension APIClient {
+    
     public func createAppointment(appointment: AppointmentBuilder) -> Effect<CalendarEvent, RequestError> {
         let requestBuilder: RequestBuilder<AppointmentCreatedResponse>.Type = requestBuilderFactory.getBuilder()
 

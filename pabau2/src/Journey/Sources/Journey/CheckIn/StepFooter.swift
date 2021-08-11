@@ -32,7 +32,21 @@ struct CompleteButtonType: View {
             )
             CaseLet(state: /StepBodyState.aftercare, action: StepBodyAction.aftercare,
                     then: AftercareCompleteBtn.init(store:))
+            CaseLet(state: /StepBodyState.photos, action: StepBodyAction.photos,
+                    then: PhotosCompleteBtn.init(store:))
             Default { EmptyView () }
+        }
+    }
+}
+
+struct PhotosCompleteBtn: View {
+    let store: Store<PhotosState, PhotosFormAction>
+    var body: some View {
+        WithViewStore(store) { viewStore in
+            CompleteButton(canComplete: true,
+                           onComplete: {
+                            
+            })
         }
     }
 }
@@ -77,7 +91,8 @@ struct HTMLFormPathwayCompleteBtn: View {
     let store: Store<HTMLFormStepContainerState, HTMLFormStepContainerAction>
     
     var body: some View {
-        IfLetStore(store.scope(state: { $0.chosenForm?.form }, action: { .chosenForm(.rows($0)) }),
+        IfLetStore(store.scope(state: { $0.chosenForm?.form },
+                               action: { .chosenForm(.rows($0)) }),
                    then: HTMLFormCompleteBtn.init(store:),
                    else: { CompleteButton(canComplete: false, onComplete: { }) }
         )
