@@ -7,8 +7,9 @@ import Overture
 import ASCollectionView
 
 public struct PhotosState: Equatable, Identifiable {
-    public init(id: Step.ID) {
+    public init(id: Step.ID, imageModels: [ImageModel]) {
         self.id = id
+        //TODO get image models for appointment and add to photos array
     }
     
     public var id: Step.ID

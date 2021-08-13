@@ -41,12 +41,29 @@ struct CompleteButtonType: View {
 
 struct PhotosCompleteBtn: View {
     let store: Store<PhotosState, PhotosFormAction>
+    
+    struct State: Equatable {
+        let shouldShowEditPhotos: Bool
+        let isEditButtonDisabled: Bool
+        
+        init(state: PhotosState) {
+            self.shouldShowEditPhotos = !state.photos.isEmpty
+            self.isEditButtonDisabled = state.selectedIds.isEmpty
+        }
+    }
+    
     var body: some View {
-        WithViewStore(store) { viewStore in
-            CompleteButton(canComplete: true,
-                           onComplete: {
-                            
-            })
+        WithViewStore(store.scope(state: State.init(state:))) { viewStore in
+            Group {
+                PrimaryButton(Texts.editPhotos,
+                              isDisabled: viewStore.isEditButtonDisabled,
+                              { viewStore.send(.didSelectEditPhotos) }
+                )
+                PrimaryButton(Texts.addPhotos,
+                              isDisabled: false,
+                              { viewStore.send(.didSelectEditPhotos) }
+                )
+            }
         }
     }
 }

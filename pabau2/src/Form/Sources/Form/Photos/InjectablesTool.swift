@@ -12,11 +12,11 @@ public let injectablesToolReducer: Reducer<InjectablesToolState, InjectablesTool
 	injectablesToolStepperReducer.pullback(
 		state: \.self,
 		action: /InjectablesToolAction.stepper,
-		environment: { $0 }),
-	injectablesToolAnglePickerReducer.optional().pullback(
-		state: \InjectablesToolState.anglePicker,
-		action: /InjectablesToolAction.anglePicker,
 		environment: { $0 })
+//	injectablesToolAnglePickerReducer.optional().pullback(
+//		state: \InjectablesToolState.anglePicker,
+//		action: /InjectablesToolAction.anglePicker,
+//		environment: { $0 })
 )
 
 struct InjectablesTool: View {
@@ -61,24 +61,24 @@ extension InjectablesTool.State {
 	}
 }
 
-extension InjectablesToolState {
-	var anglePicker: InjectablesAnglePickerState? {
-		get {
-			chosenInjectionId.map {
-				InjectablesAnglePickerState(
-					allInjectables: self.allInjectables,
-					photoInjections: self.photoInjections,
-					chosenInjectableId: self.chosenInjectableId,
-					chosenInjectionId: $0
-				)
-			}
-		}
-		set {
-			guard let newValue = newValue else { return }
-			self.chosenInjectionId = newValue.chosenInjectionId
-			self.allInjectables = newValue.allInjectables
-			self.photoInjections = newValue.photoInjections
-			self.chosenInjectableId = newValue.chosenInjectableId
-		}
-	}
-}
+//extension InjectablesToolState {
+//	var anglePicker: InjectablesAnglePickerState? {
+//		get {
+//			chosenInjectionId.map {
+//				InjectablesAnglePickerState(
+//					allInjectables: self.allInjectables,
+//					photoInjections: self.photoInjections,
+//					chosenInjectableId: self.chosenInjectableId,
+//					chosenInjectionId: $0
+//				)
+//			}
+//		}
+//		set {
+//			guard let newValue = newValue else { return }
+//			self.chosenInjectionId = newValue.chosenInjectionId
+//			self.allInjectables = newValue.allInjectables
+//			self.photoInjections = newValue.photoInjections
+//			self.chosenInjectableId = newValue.chosenInjectableId
+//		}
+//	}
+//}

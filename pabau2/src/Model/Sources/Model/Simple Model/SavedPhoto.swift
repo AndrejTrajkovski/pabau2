@@ -56,6 +56,13 @@ public struct SavedPhoto: Codable, Identifiable, Equatable, Hashable {
 }
 
 extension SavedPhoto {
+    
+//    public init(imageModel: ImageModel) {
+//        self.id = imageModel.id
+//    }
+}
+
+extension SavedPhoto {
     public static func mock() -> [[Int: SavedPhoto]] {
         [
             [1: SavedPhoto.init(id: 1, normalPhotoSize: "", thumbnail: "", mediumThumbnail: "", photoDate: Date(), title: "", photoPosition: "")],
