@@ -31,7 +31,7 @@ public let clientsContainerReducer: Reducer<ClientsState, ClientsAction, Clients
 		case .gotClientsResponse(let result):
 			switch result {
 			case .success(let contacts):
-                state.clients = .init(contacts)
+                state.clients = .init(uniqueElements: contacts)
 				state.contactListLS = .gotSuccess
 			case .failure(let error):
 				state.contactListLS = .gotError(error)

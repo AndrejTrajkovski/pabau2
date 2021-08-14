@@ -42,7 +42,7 @@ public struct ChooseEmployeesView: View {
 				}
 			case .loading:
 				LoadingSpinner()
-			case .gotError(let error):
+			case .gotError(_):
 				Text("Error loading employees.")
 			}
             

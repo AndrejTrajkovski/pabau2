@@ -16,7 +16,6 @@ public struct CSSField: Equatable, Identifiable {
 			guard let cssClass = try CSSClass.init(_formStructure: formStructure, fieldId: id) else {
                 return nil
             }
-			print("fieldId: \(id)")
 			self.id = id
 			self._required = Bool(formStructure.formStructureRequired) ?? false
 			self.title = formStructure.getLabelTitle()

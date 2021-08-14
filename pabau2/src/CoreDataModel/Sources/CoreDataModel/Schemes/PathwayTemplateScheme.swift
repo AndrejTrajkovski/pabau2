@@ -39,7 +39,7 @@ extension PathwayTemplate {
             )
         }
         
-        return IdentifiedArrayOf(array)
+        return IdentifiedArrayOf(uniqueElements: array)
     }
     public func save(to store: CoreDataModel) {
         store.dataStack.perform { (transaction) -> PathwayTemplateScheme? in

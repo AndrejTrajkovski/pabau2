@@ -40,7 +40,7 @@ public struct SingleChoicePicker<T: SingleChoiceElement, Cell: View>: View {
 		ForEachStore(store.scope(state: { state in
 			let array = state.dataSource.map {
 				SingleChoiceItemState.init(item: $0, selectedId: state.chosenItemId) }
-			return IdentifiedArray.init(array)
+            return IdentifiedArrayOf(uniqueElements:array)
 		},
 		action: SingleChoiceActions.action(id:action:)),
 		content: { (singleChoiceStore: Store<SingleChoiceItemState<T>, SingleChoiceAction<T>>) in

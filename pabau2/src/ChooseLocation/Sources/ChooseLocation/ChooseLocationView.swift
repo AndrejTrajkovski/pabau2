@@ -41,7 +41,7 @@ public struct ChooseLocationView: View {
 				}
 			case .loading:
 				LoadingSpinner()
-			case .gotError(let error):
+			case .gotError(_):
 				Text("Error loading locations.")
 			}
         }

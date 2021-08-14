@@ -54,12 +54,12 @@ extension AddBookoutState {
 	) {
 		self.init(
 			chooseDuration:
-                SingleChoiceLinkState(dataSource: IdentifiedArray.init(Duration.allDay),
+                SingleChoiceLinkState(dataSource: IdentifiedArray.init(uniqueElements: Duration.allDay),
                                       chosenItemId: nil,
                                       isActive: false,
                                       loadingState: .initial),
             choosePredefinedDuration: SingleChoiceState(
-                dataSource: IdentifiedArray.init(Duration.all),
+                dataSource: IdentifiedArray.init(uniqueElements: Duration.all),
                 chosenItemId: nil,
                 loadingState: .initial
             ),

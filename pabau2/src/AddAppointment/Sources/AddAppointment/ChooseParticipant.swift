@@ -31,7 +31,7 @@ let chooseParticipantReducer =
         case .gotParticipantsResponse(let result):
             switch result {
             case .success(let participants):
-                state.participants = .init(participants)
+                state.participants = .init(uniqueElements: participants)
                 state.filteredParticipants = state.participants
             case .failure:
                 break

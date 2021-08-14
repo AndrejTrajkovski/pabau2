@@ -115,7 +115,7 @@ extension IdentifiedArray where Element == PhotoViewModel, ID == PhotoVariantId 
         let res = savedPhotos
             .compactMap(Dictionary<PhotoVariantId, PhotoViewModel>.wrap)
             .compactMap(\.values.first)
-        return IdentifiedArray(res)
+        return IdentifiedArray(uniqueElements: res)
     }
 }
 

@@ -52,7 +52,7 @@ open class SectionHelper {
 		let eventsBySection = Dictionary.init(grouping: events, by: { $0[keyPath: keyPath] })
 		return subsections.reduce(into: [T: IdentifiedArrayOf<CalendarEvent>](), { res, sectionId in
 			let array = eventsBySection[sectionId, default: []]
-			res[sectionId] = IdentifiedArrayOf.init(array)
+            res[sectionId] = IdentifiedArrayOf(uniqueElements: array)
 		})
 	}
 }

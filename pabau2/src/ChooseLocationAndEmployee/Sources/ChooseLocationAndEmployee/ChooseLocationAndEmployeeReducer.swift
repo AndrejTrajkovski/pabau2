@@ -43,7 +43,7 @@ public let chooseLocationAndEmployeeReducer: Reducer<ChooseLocationAndEmployeeSt
 				
 			case .chooseLocation(.gotLocationsResponse(let locationsRes)):
 				if case let .success(locations) = locationsRes {
-					state.locations = IdentifiedArray(locations())
+                    state.locations = IdentifiedArrayOf(uniqueElements: locations())
 					if let chosenLocationId = state.chosenLocationId,
 					   !state.locations.map(\.id).contains(chosenLocationId) {
 						state.chosenLocationId = nil

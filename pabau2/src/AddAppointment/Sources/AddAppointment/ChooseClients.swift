@@ -35,7 +35,7 @@ let chooseClientsReducer =
         case .onAppear:
             state.searchText = ""
             state.isSearching = false
-            state.clients = .init([])
+            state.clients = .init(uniqueElements: [])
 
             return env.clientAPI
                 .getClients(
@@ -51,7 +51,7 @@ let chooseClientsReducer =
             switch result {
             case .success(let clients):
                 if state.isSearching {
-                    state.clients = .init(clients)
+                    state.clients = .init(uniqueElements: clients)
                     state.notFoundClients = clients.isEmpty
                     break
                 }

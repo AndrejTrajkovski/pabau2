@@ -445,9 +445,6 @@ extension TabBarState {
 fileprivate func updateNumberOfCompletedSteps(_ state: inout TabBarState) -> Effect<TabBarAction, Never> {
     if case .loaded(var loadedState) = state.checkIn?.loadingOrLoaded {
         var app = loadedState.appointment
-        print(app.pathways)
-        print(loadedState.pathway.id)
-        print(app.pathways[id: loadedState.pathway.id])
         guard var pathwayInfo = app.pathways[id: loadedState.pathway.id] else { return .none }
         let allStatuses = (loadedState.patientCheckIn.stepStates + loadedState.doctorCheckIn.stepStates).map(\.status)
         let completeCount = allStatuses.filter { $0 == .completed || $0 == .skipped }.count

@@ -77,7 +77,7 @@ public let chooseEmployeesReducer = Reducer<
 		
 		switch result {
 		case .success(let response):
-			state.employees = .init(response.state)
+            state.employees = IdentifiedArrayOf(uniqueElements: response.state)
 			state.filteredEmployees = state.employees
 			state.employeesLS = .gotSuccess
 		case .failure(let error):

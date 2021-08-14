@@ -74,12 +74,12 @@ extension ListContainerState {
                     filteredApps = appsForLocationAndChosenEmployees.filter { $0.isComplete }
                 }
          		
-				let idArray = IdentifiedArray(filteredApps)
+                let idArray = IdentifiedArray(uniqueElements: filteredApps)
 				
 				return LocationSectionState(location: location,
 											appointments: idArray)
 			}
-			return IdentifiedArray(array)
+            return IdentifiedArray(uniqueElements: array)
 		}
 	}
 }

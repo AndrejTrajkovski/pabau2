@@ -24,6 +24,7 @@ struct CanvasView: UIViewRepresentable {
 	}
 
 	func makeUIView(context: Context) -> PKCanvasView {
+        print("make ui view")
 		let canvasView = PKCanvasView()
 		if let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first,
 			let toolPicker = PKToolPicker.shared(for: window) {
@@ -40,10 +41,10 @@ struct CanvasView: UIViewRepresentable {
 	}
 
 	func updateUIView(_ canvasView: PKCanvasView, context: Context) {
-		canvasView.drawing = viewStore.state.photo.drawing
 		if let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first,
 			let toolPicker = PKToolPicker.shared(for: window) {
 			toolPicker.setVisible(!viewStore.state.isDisabled, forFirstResponder: canvasView)
+            canvasView.drawing = viewStore.state.photo.drawing
 		}
 //		uiViewController.updateViewStore(viewStore: viewStore)
 	}
@@ -75,6 +76,7 @@ struct CanvasView: UIViewRepresentable {
 
 extension CanvasView.Coordinator {
 	func canvasViewDrawingDidChange(_ canvasView: PKCanvasView) {
+        print("canvasViewDrawingDidChange")
 		viewStore.send(.onDrawingChange(canvasView.drawing))
 	}
 }

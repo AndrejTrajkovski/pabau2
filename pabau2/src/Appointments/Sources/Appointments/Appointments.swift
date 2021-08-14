@@ -107,7 +107,7 @@ public extension Appointments {
             )
 			self = .room(appointments)
 		case .week:
-			let weekApps = groupByStartOfDay(originalEvents: events).mapValues { IdentifiedArrayOf.init($0)}
+            let weekApps = groupByStartOfDay(originalEvents: events).mapValues { IdentifiedArrayOf.init(uniqueElements: $0)}
 			self = .week(weekApps)
 		case .list:
 			self = .list(ListAppointments.init(events: events))

@@ -18,7 +18,7 @@ public let formsContainerReducer: Reducer<FormsContainerState, FormsContainerAct
 		case .chooseForms(.proceed):
 			guard state.chooseForms != nil else { break }
 			let array = state.chooseForms!.selectedTemplates().map { HTMLFormParentState.init(info: $0, clientId: state.client.id, getLoadingState: .loading) }
-			state.formsCollection = IdentifiedArray(array)
+            state.formsCollection = IdentifiedArrayOf(uniqueElements: array)
 			state.isFillingFormsActive = true
 			return .concatenate (
 				state.formsCollection.map { htmlFormParentState in

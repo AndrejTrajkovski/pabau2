@@ -130,7 +130,7 @@ struct AddAppMocks {
 
 	static let durationState: SingleChoiceLinkState<Duration> =
 		SingleChoiceLinkState.init(
-			dataSource: IdentifiedArray(Duration.allDay),
+            dataSource: .init(uniqueElements: Duration.allDay),
 			chosenItemId: Duration.all[3].id,
 			isActive: false,
 			loadingState: .initial)

@@ -29,7 +29,7 @@ let chooseBookoutReasonReducer = Reducer<
     case .gotReasonResponse(let result):
         switch result {
         case .success(let response):
-            state.reasons = .init(response.state)
+            state.reasons = .init(uniqueElements: response.state)
             state.filteredReasons = state.reasons
         case .failure:
             break

@@ -121,6 +121,6 @@ extension SingleChoiceLinkState {
 
 	public init(_ dataSource: [Model], loadingState: LoadingState) {
 		isActive = false
-		singleChoice = SingleChoiceState(dataSource: IdentifiedArrayOf(dataSource), chosenItemId: nil, loadingState: loadingState)
+        singleChoice = SingleChoiceState(dataSource: IdentifiedArrayOf(uniqueElements: dataSource), chosenItemId: nil, loadingState: loadingState)
 	}
 }

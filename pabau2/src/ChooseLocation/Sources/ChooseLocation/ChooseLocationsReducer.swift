@@ -72,7 +72,7 @@ public let chooseLocationsReducer =
 			
             switch result {
             case .success(let result):
-                state.locations = .init(result())
+                state.locations = IdentifiedArrayOf(uniqueElements: result())
                 state.filteredLocations = state.locations
 				state.locationsLS = .gotSuccess
             case .failure(let error):

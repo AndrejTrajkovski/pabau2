@@ -54,7 +54,7 @@ public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnv
 			}
 			return .none
         }
-    )
+    ).debug()
 
 public enum EditPhotoAction: Equatable {
 	case openCamera
@@ -82,7 +82,7 @@ public struct EditPhotosState: Equatable {
 	var isFlashOn: Bool = false
 	var frontOrRear: UIImagePickerController.CameraDevice = .rear
 	var activeCanvas: CanvasMode = .drawing
-	var allInjectables: IdentifiedArrayOf<Injectable> = .init(Injectable.injectables())
+    var allInjectables: IdentifiedArrayOf<Injectable> = .init(uniqueElements: Injectable.injectables())
 	var isChooseInjectablesActive: Bool = false
 	var chosenInjectableId: InjectableId?
 	var deletePhotoAlert: AlertState<EditPhotosRightSideAction>?
@@ -158,7 +158,7 @@ public struct EditPhotos: View {
 						),
 						then:
 						SinglePhotoEdit.init(store:),
-						else: Text("No photos selected. Select or take a new photo.")
+                        else: { Text("No photos selected. Select or take a new photo.") }
 					)
 					.frame(minWidth: 0, maxWidth: .infinity)
 					EditPhotosRightSide(store:
@@ -175,7 +175,7 @@ public struct EditPhotos: View {
 							state: { $0.singlePhotoEdit?.injectables.injectablesTool },
 							action: { .singlePhotoEdit(SinglePhotoEditAction.injectables(InjectablesAction.injectablesTool($0)))}), then: {
 								InjectablesTool(store: $0)
-							}, else: Color.clear
+                            }, else: { Color.clear }
 						)
 					} else {
 						Color.clear

@@ -163,7 +163,7 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 			switch result {
 			case .success(let cancelReasons):
 				state.cancelReasonLS = .gotSuccess
-				state.cancelReasons = IdentifiedArray(cancelReasons)
+                state.cancelReasons = IdentifiedArrayOf(uniqueElements: cancelReasons)
 			case .failure(let error):
 				state.isCancelActive = false
 				state.cancelReasonLS = .gotError(error)
