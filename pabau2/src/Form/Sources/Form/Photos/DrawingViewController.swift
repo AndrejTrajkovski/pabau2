@@ -14,7 +14,12 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
 
 	func updateViewStore(viewStore: ViewStore<PhotoViewModel, PhotoAndCanvasAction>) {
 		self.viewStore = viewStore
-		canvasView.drawing = viewStore.state.drawing
+        do {
+            canvasView.drawing = try PKDrawing.init(data: viewStore.state.drawing)
+        } catch {
+            print("pkdrawing error")
+            print(error)
+        }
 	}
 
 	required init?(coder: NSCoder) {
@@ -72,7 +77,7 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
 
 	// MARK: Canvas View Delegate
 	func canvasViewDrawingDidChange(_ canvasView: PKCanvasView) {
-		viewStore.send(.onDrawingChange(canvasView.drawing))
+        viewStore.send(.onDrawingChange(canvasView.drawing.dataRepresentation()))
 	}
 
 	func who(_ any: Any) -> String {

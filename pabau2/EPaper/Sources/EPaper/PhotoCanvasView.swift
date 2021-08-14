@@ -6,7 +6,7 @@ import Combine
 
 public enum PhotoAndCanvasAction: Equatable {
     case onSave
-    case onDrawingChange(PKDrawing)
+    case onDrawingChange(Data)
     case imageDownloaded(UIImage)
     case mergeWithDrawing
 }

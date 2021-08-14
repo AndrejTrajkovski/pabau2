@@ -65,7 +65,7 @@ extension EpaperCanvasView: UIViewRepresentable {
 extension EpaperCanvasView.Coordinator {
     func canvasViewDrawingDidChange(_ canvasView: PKCanvasView) {
         if !canvasView.drawing.bounds.isEmpty {
-            viewStore.send(.onDrawingChange(canvasView.drawing))
+            viewStore.send(.onDrawingChange(canvasView.drawing.dataRepresentation()))
         }
     }
 }

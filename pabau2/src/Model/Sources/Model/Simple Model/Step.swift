@@ -33,7 +33,9 @@ public struct Step: Decodable, Identifiable, Equatable {
         //		case formTemplate
     }
     
-    public init(id: Id, stepType: StepType, preselectedTemplate: PreselectedTemplate?,
+    public init(id: Id,
+                stepType: StepType,
+                preselectedTemplate: PreselectedTemplate?,
                 canSkip: Bool) {
         self.id = id
         self.stepType = stepType

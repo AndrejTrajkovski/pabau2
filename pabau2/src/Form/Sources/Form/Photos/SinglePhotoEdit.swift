@@ -69,8 +69,12 @@ let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction,
                     }
                 }
                 
-                state.photo.drawing.image(from: CGRect(x: 0, y: 0, width: size.width, height: size.height), scale: 1)
-                    .draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+                if let pencilImage = UIImage(data: state.photo.drawing) {
+                    pencilImage.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+                }
+                
+//                state.photo.drawing.image(from: CGRect(x: 0, y: 0, width: size.width, height: size.height), scale: 1)
+//                    .draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
             }
             state.imageInjectable = img
             return Just(SinglePhotoEditAction.uploadPhoto(img))

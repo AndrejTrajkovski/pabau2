@@ -22,6 +22,18 @@ typealias AppEnvironment = (
     debug: DebugEnvironment
 )
 
+func makeTabBarEnv(_ appEnv: AppEnvironment) -> TabBarEnvironment {
+    TabBarEnvironment(
+        loginAPI: appEnv.loginAPI,
+        journeyAPI: appEnv.journeyAPI,
+        clientsAPI: appEnv.clientsAPI,
+        formAPI: appEnv.formAPI,
+        userDefaults: appEnv.userDefaults,
+        repository: appEnv.repository,
+        audioPlayer: appEnv.audioPlayer
+    )
+}
+
 func makeJourneyEnv(_ appEnv: TabBarEnvironment) -> JourneyEnvironment {
 	return JourneyEnvironment(
 		formAPI: appEnv.formAPI,
@@ -61,17 +73,7 @@ let appReducer: Reducer<AppState, AppAction, AppEnvironment> = Reducer.combine(
 	tabBarReducer.pullback(
 		state: /AppState.tabBar,
 		action: /AppAction.tabBar,
-		environment: {
-			TabBarEnvironment(
-				loginAPI: $0.loginAPI,
-				journeyAPI: $0.journeyAPI,
-				clientsAPI: $0.clientsAPI,
-				formAPI: $0.formAPI,
-				userDefaults: $0.userDefaults,
-                repository: $0.repository,
-				audioPlayer: $0.audioPlayer
-              )
-			}
+		environment: makeTabBarEnv(_:)
 	),
 	.init { state, action, env in
 		switch action {

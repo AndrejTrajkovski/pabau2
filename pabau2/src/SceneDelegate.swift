@@ -10,6 +10,8 @@ import Intercom
 import FacebookShare
 import CoreDataModel
 import TextLog
+import Form
+import Journey
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -71,17 +73,42 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 debug: debugEnv
 			)
             
+            let contentView = ContentView(
+                store: Store(
+                    initialState: AppState(
+                        loggedInUser: nil,
+                        hasSeenWalkthrough: hasSeenWalkthrough!
+                    ),
+                    reducer: reducer,
+                    environment: env
+                )
+            ).environmentObject(KeyboardFollower())
+            
+            let step = Step(id: Step.ID.init(rawValue: 1),
+                            stepType: .photos,
+                            preselectedTemplate: nil,
+                            canSkip: true)
+                            
+            let stepAndEntry = StepAndStepEntry(step: step, entry: nil)
+            let stepState = StepState.init(stepAndEntry: stepAndEntry,
+                                           clientId: Client.ID.init(rawValue: 1),
+                                           pathwayId: Pathway.ID.init(rawValue: 1),
+                                           appointmentId: Appointment.ID.init(rawValue: 1),
+                                           photos: []
+            )
+            
+            let photosStep = StepForm(
+                store: Store(
+                initialState: stepState,
+                reducer: stepReducer,
+                environment: makeJourneyEnv(makeTabBarEnv(env))
+                )
+            )
+            
             window.rootViewController = UIHostingController(
-                rootView: ContentView(
-                    store: Store(
-                        initialState: AppState(
-                            loggedInUser: nil,
-                            hasSeenWalkthrough: hasSeenWalkthrough!
-                        ),
-                        reducer: reducer,
-                        environment: env
-                    )
-                ).environmentObject(KeyboardFollower())
+                rootView: NavigationView.init(content: {
+                    photosStep
+                }).navigationViewStyle(StackNavigationViewStyle())
             )
             self.window = window
             window.makeKeyAndVisible()

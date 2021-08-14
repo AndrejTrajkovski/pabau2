@@ -226,15 +226,19 @@ public struct StepState: Equatable, Identifiable {
         return StepFormInfo(status: status, title: stepType.rawValue.uppercased())
 	}
 	
-    init(stepAndEntry: StepAndStepEntry, clientId: Client.ID, pathway: Pathway, appointment: Appointment) {
+    public init(stepAndEntry: StepAndStepEntry,
+                clientId: Client.ID,
+                pathwayId: Pathway.ID,
+                appointmentId: Appointment.ID,
+                photos: [ImageModel]) {
         self.id = stepAndEntry.step.id
         self.stepType = stepAndEntry.step.stepType
         self.canSkip = stepAndEntry.step.canSkip
-        self.appointmentId = appointment.id
+        self.appointmentId = appointmentId
         self.clientId = clientId
-        self.pathwayId = pathway.id
+        self.pathwayId = pathwayId
         self.status = stepAndEntry.entry?.status ?? .pending
-        self.stepBody = StepBodyState(stepAndEntry: stepAndEntry, clientId: clientId, pathway: pathway, appointment: appointment)
+        self.stepBody = StepBodyState(stepAndEntry: stepAndEntry, clientId: clientId, pathwayId: pathwayId, appointmentId: appointmentId, appPhotos: photos)
         
         if getForm(
             stepAndEntry.step.stepType,
@@ -265,11 +269,15 @@ public struct StepState: Equatable, Identifiable {
     }
 }
 
-struct StepForm: View {
+public struct StepForm: View {
     
     let store: Store<StepState, StepAction>
     
-    var body: some View {
+    public init(store: Store<StepState, StepAction>) {
+        self.store = store
+    }
+    
+    public var body: some View {
         VStack {
             StepBody(store: store.scope(state: { $0.stepBody }, action: { .stepType($0) }))
             StepFooter(store: store)

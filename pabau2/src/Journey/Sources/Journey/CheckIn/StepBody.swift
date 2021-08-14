@@ -41,34 +41,34 @@ public enum StepBodyState: Equatable {
     case lab
     case video
     
-    init(stepAndEntry: StepAndStepEntry, clientId: Client.ID, pathway: Pathway, appointment: Appointment) {
+    init(stepAndEntry: StepAndStepEntry, clientId: Client.ID, pathwayId: Pathway.ID, appointmentId: Appointment.ID, appPhotos: [ImageModel]) {
         
         switch stepAndEntry.step.stepType {
         case .medicalhistory, .consents, .treatmentnotes, .prescriptions:
             let htmlFormState = HTMLFormStepContainerState(stepId: stepAndEntry.step.id,
                                                            stepEntry: stepAndEntry.entry!,
                                                            clientId: clientId,
-                                                           pathwayId: pathway.id,
-                                                           appointmentId: appointment.id,
+                                                           pathwayId: pathwayId,
+                                                           appointmentId: appointmentId,
                                                            canSkip: stepAndEntry.step.canSkip)
             self = .htmlForm(htmlFormState)
         case .patientdetails:
             self = .patientDetails(PatientDetailsParentState(id: stepAndEntry.step.id,
-                                                             pathwayId: pathway.id,
+                                                             pathwayId: pathwayId,
                                                              clientId: clientId,
-                                                             appointmentId: appointment.id,
+                                                             appointmentId: appointmentId,
                                                              canSkip: stepAndEntry.step.canSkip)
             )
         case .aftercares:
             self = .aftercare(AftercareState.init(id: stepAndEntry.step.id,
-                                                  images: appointment.photos,
+                                                  images: appPhotos,
                                                   aftercares: [],
                                                   recalls: []))
         case .timeline:
             self = .timeline(CheckPatientDetailsState(id: stepAndEntry.step.id, clientBuilder: nil, patForms: []))
         case .photos:
             self = .photos(PhotosState(id: stepAndEntry.step.id,
-                                       imageModels: appointment.photos))
+                                       imageModels: appPhotos))
         case .lab:
             self = .lab
         case .video:

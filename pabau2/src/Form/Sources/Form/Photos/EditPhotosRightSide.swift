@@ -9,12 +9,7 @@ public let editPhotosRightSideReducer = Reducer<EditPhotosRightSideState, EditPh
 	case .didTouchPrivacy:
 		state.editingPhoto?.isPrivate.toggle()
 	case .didTouchTrash:
-		state.deletePhotoAlert = AlertState(
-			title: TextState("Delete Photo"),
-			message: TextState("Are you sure you want to delete this photo?"),
-			primaryButton: .default(TextState("Yes"), send: .deleteAlertConfirmed),
-			secondaryButton: .cancel()
-		)
+		break//parent reducer
 	case .deleteAlertConfirmed:
 		state.deletePhotoAlert = nil
 		guard let editingPhotoId = state.editingPhotoId else { break }
@@ -55,7 +50,7 @@ public struct EditPhotosRightSideState: Equatable {
 	var isChooseInjectablesActive: Bool
 	var chosenInjectableId: Int?
 	var isPhotosAlbumActive: Bool
-	var deletePhotoAlert: AlertState<EditPhotosRightSideAction>?
+	var deletePhotoAlert: AlertState<EditPhotoAction>?
 
 	var editingPhoto: PhotoViewModel? {
 		get {
@@ -100,10 +95,6 @@ struct EditPhotosRightSide: View {
 				Button(action: { viewStore.send(.didTouchTrash)}, label: {
 					Image(systemName: "trash.circle.fill")
 				})
-					.alert(
-						self.store.scope(state: \.deletePhotoAlert),
-						dismiss: .deleteAlertCanceled
-				)
 				Button(action: { viewStore.send(.didTouchPrivacy)}, label: {
 					Image(systemName: "eye.slash.fill")
 						.foregroundColor(viewStore.state.eyeIconColor)

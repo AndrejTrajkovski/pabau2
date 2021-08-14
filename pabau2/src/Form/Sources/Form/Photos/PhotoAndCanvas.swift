@@ -8,14 +8,14 @@ let photoAndCanvasReducer = Reducer<PhotoViewModel, PhotoAndCanvasAction, FormEn
 	case .onSave:
 		break
 	case .onDrawingChange(let drawing):
-		state.drawing = drawing
+        state.drawing = drawing
 	}
 	return .none
 }
 
 public enum PhotoAndCanvasAction: Equatable {
 	case onSave
-	case onDrawingChange(PKDrawing)
+	case onDrawingChange(Data)
 }
 
 struct PhotoParent: View {

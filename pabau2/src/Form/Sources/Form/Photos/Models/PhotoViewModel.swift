@@ -17,7 +17,7 @@ public typealias InjectableId = Int
 
 public struct PhotoViewModel: Equatable {
 	public let basePhoto: Photo
-	var drawing: PKDrawing = PKDrawing()
+    var drawing: Data = PKDrawing().dataRepresentation()
 	var isPrivate: Bool = false
 	var tags: [String] = []
 	var injections: [InjectableId: IdentifiedArrayOf<Injection>] = [:]
