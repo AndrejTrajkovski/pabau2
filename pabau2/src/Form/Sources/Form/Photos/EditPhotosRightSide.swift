@@ -1,27 +1,18 @@
 import SwiftUI
 import ComposableArchitecture
 import Util
+import PencilKit
 
 public let editPhotosRightSideReducer = Reducer<EditPhotosRightSideState, EditPhotosRightSideAction, FormEnvironment>.init { state, action, _ in
 	switch action {
 	case .didTouchTag:
 		state.isTagsAlertActive = true
 	case .didTouchPrivacy:
-		state.editingPhoto?.isPrivate.toggle()
+		state.photo?.isPrivate.toggle()
 	case .didTouchTrash:
-		break//parent reducer
-	case .deleteAlertConfirmed:
-		state.deletePhotoAlert = nil
-		guard let editingPhotoId = state.editingPhotoId else { break }
-		let idx = state.photos.ids.firstIndex(where: { $0 == editingPhotoId }).map {
-			Int($0)
-		}!
-		let toBeSelected = state.photos[safe: state.photos.index(after: idx)] ??
-			state.photos[safe: state.photos.index(before: idx)]
-		state.editingPhotoId = toBeSelected.map(\.id)
-		state.photos.remove(id: editingPhotoId)
-	case .deleteAlertCanceled:
-		state.deletePhotoAlert = nil
+		break//parent
+    case .deleteAlertCanceled:
+        state.deletePhotoAlert = nil
 	case .didTouchCamera:
 		state.isCameraActive = true
 	case .didTouchInjectables:
@@ -37,13 +28,14 @@ public let editPhotosRightSideReducer = Reducer<EditPhotosRightSideState, EditPh
 		state.activeCanvas = .drawing
 	case .didTouchOpenPhotosLibrary:
 		state.isPhotosAlbumActive = true
-	}
+    case .deleteAlertConfirmed:
+        break//parent
+    }
 	return .none
 }
 
 public struct EditPhotosRightSideState: Equatable {
-	var photos: IdentifiedArrayOf<PhotoViewModel>
-	var editingPhotoId: PhotoVariantId?
+	var photo: PhotoViewModel?
 	var isCameraActive: Bool
 	var isTagsAlertActive: Bool
 	var activeCanvas: CanvasMode
@@ -52,14 +44,14 @@ public struct EditPhotosRightSideState: Equatable {
 	var isPhotosAlbumActive: Bool
 	var deletePhotoAlert: AlertState<EditPhotoAction>?
 
-	var editingPhoto: PhotoViewModel? {
-		get {
-			getPhoto(photos, editingPhotoId)
-		}
-		set {
-			set(newValue, onto: &photos)
-		}
-	}
+//	var editingPhoto: PhotoViewModel? {
+//		get {
+//			getPhoto(photos, editingPhotoId)
+//		}
+//		set {
+//			set(newValue, onto: &photos)
+//		}
+//	}
 }
 
 public enum EditPhotosRightSideAction: Equatable {
@@ -84,7 +76,7 @@ struct EditPhotosRightSide: View {
 		init(state: EditPhotosRightSideState) {
 			self.isDeleteAlertActive = state.deletePhotoAlert != nil
 			self.isChooseInjectablesActive = true//state.activeCanvas == .injectables
-			self.eyeIconColor = state.editingPhoto?.isPrivate ?? false ? .blue : Color.gray184
+			self.eyeIconColor = state.photo?.isPrivate ?? false ? .blue : Color.gray184
 			self.pencilIconColor = state.activeCanvas == .drawing ? .blue : Color.gray184
 		}
 	}

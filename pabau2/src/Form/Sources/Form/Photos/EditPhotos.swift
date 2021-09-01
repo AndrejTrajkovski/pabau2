@@ -55,6 +55,24 @@ public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnv
                                             send: EditPhotoAction.rightSide(.deleteAlertConfirmed)),
                     secondaryButton: .cancel()
                 )
+            case .rightSide(.deleteAlertConfirmed):
+                state.deletePhotoAlert = nil
+                guard let editingPhotoId = state.editingPhotoId else { break }
+                let toBeSelected: PhotoViewModel?
+                if state.photos.count > 1,
+                   let idx = state.photos.index(id: editingPhotoId) {
+                    if let elementAfter = state.photos[safe: state.photos.index(after: idx)] {
+                        toBeSelected = elementAfter
+                    } else if let elementBefore = state.photos[safe: state.photos.index(before: idx)] {
+                        toBeSelected = elementBefore
+                    } else {
+                        toBeSelected = nil
+                    }
+                } else {
+                    toBeSelected = nil
+                }
+                state.editingPhotoId = toBeSelected.map(\.id)
+                state.photos.remove(id: editingPhotoId)
             default:
                 break
 			}
@@ -120,6 +138,21 @@ public struct EditPhotosState: Equatable {
 		get { self.showingImagePicker == .some(.photoLibrary) }
 		set { self.showingImagePicker = newValue ? .some(.photoLibrary) : nil }
 	}
+
+    mutating func updateWith(editingPhoto: PhotoViewModel?) {
+        if let editingPhoto = editingPhoto {
+            photos[id: editingPhoto.id] = editingPhoto
+        } else if let editingPhotoId = editingPhotoId {
+            photos.remove(id: editingPhotoId)
+            self.editingPhotoId = nil
+        }
+    }
+    
+    func getEditingPhoto() -> PhotoViewModel? {
+        return editingPhotoId.map {
+            photos[id: $0]!
+        }
+    }
 }
 
 public struct EditPhotos: View {
@@ -223,7 +256,7 @@ public struct EditPhotos: View {
             store.scope(state: { $0.deletePhotoAlert }),
             dismiss: EditPhotoAction.rightSide(EditPhotosRightSideAction.deleteAlertCanceled)
         )
-        .alert(store.scope(state: { $0.uploadAlert }), dismiss: EditPhotoAction.continueUpload)
+//        .alert(store.scope(state: { $0.uploadAlert }), dismiss: EditPhotoAction.continueUpload)
 	}
 }
 
@@ -261,8 +294,7 @@ extension EditPhotosState {
 
     var rightSide: EditPhotosRightSideState {
         get {
-            EditPhotosRightSideState(photos: self.photos,
-                                     editingPhotoId: self.editingPhotoId,
+            EditPhotosRightSideState(photo: getEditingPhoto(),
                                      isCameraActive: self.isCameraActive,
                                      isTagsAlertActive: self.isTagsAlertActive,
                                      activeCanvas: self.activeCanvas,
@@ -273,8 +305,7 @@ extension EditPhotosState {
             )
         }
         set {
-            self.photos = newValue.photos
-            self.editingPhotoId = newValue.editingPhotoId
+            self.updateWith(editingPhoto: newValue.photo)
             self.isCameraActive = newValue.isCameraActive
             self.isTagsAlertActive = newValue.isTagsAlertActive
             self.activeCanvas = newValue.activeCanvas
@@ -287,7 +318,7 @@ extension EditPhotosState {
 
 	var singlePhotoEdit: SinglePhotoEditState? {
 		get {
-			guard let editingPhoto = editingPhoto else {
+			guard let editingPhoto = getEditingPhoto() else {
 				return nil
 			}
 			return SinglePhotoEditState(
@@ -299,11 +330,12 @@ extension EditPhotosState {
                 imageInjectable: self.imageInjectable,
                 photoSize: self.photoSize,
                 editingPhotoId: self.editingPhotoId,
-                loadingState: self.loadingState
+                loadingState: self.loadingState,
+                isAlertActive: (self.uploadAlert != nil) || (self.deletePhotoAlert != nil)
 			)
 		}
 		set {
-			self.editingPhoto = newValue?.photo
+            updateWith(editingPhoto: newValue?.photo)
 			guard let newValue = newValue else { return }
 			self.activeCanvas = newValue.activeCanvas
 			self.allInjectables = newValue.allInjectables
@@ -316,14 +348,14 @@ extension EditPhotosState {
 		}
 	}
 
-	var editingPhoto: PhotoViewModel? {
-		get {
-			getPhoto(photos, editingPhotoId)
-		}
-		set {
-			set(newValue, onto: &photos)
-		}
-	}
+//	var editingPhoto: PhotoViewModel? {
+//		get {
+//			getPhoto(photos, editingPhotoId)
+//		}
+//		set {
+//			set(newValue, onto: &photos)
+//		}
+//	}
 
 	var editPhotoList: EditPhotosListState {
 		get {
@@ -335,19 +367,6 @@ extension EditPhotosState {
 			self.photos = newValue.photos
 			self.editingPhotoId = newValue.editingPhotoId
 		}
-	}
-}
-
-func set(_ photo: PhotoViewModel?,
-				 onto photos:inout IdentifiedArrayOf<PhotoViewModel>) {
-	guard let photo = photo else { return }
-	photos[id: photo.id] = photo
-}
-
-func getPhoto(_ photos: IdentifiedArrayOf<PhotoViewModel>,
-							_ id: PhotoVariantId?) -> PhotoViewModel? {
-	return id.map {
-		photos[id: $0]!
 	}
 }
 

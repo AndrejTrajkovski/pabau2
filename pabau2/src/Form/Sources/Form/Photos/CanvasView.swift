@@ -4,7 +4,12 @@ import ComposableArchitecture
 
 struct CanvasViewState: Equatable {
 	var photo: PhotoViewModel
-	var isDisabled: Bool
+    var activeCanvas: CanvasMode
+    var isDeletePhotoAlertActive: Bool
+    
+    func shouldReceiveTouches() -> Bool {
+        activeCanvas == .drawing && (isDeletePhotoAlertActive == false)
+    }
 }
 
 struct CanvasView: UIViewRepresentable {
@@ -15,12 +20,9 @@ struct CanvasView: UIViewRepresentable {
 		self.store = store
 		self.viewStore = ViewStore(self.store
 			.scope(
-				state: { $0 },
-				action: { $0 }
-			), removeDuplicates: { lhs, rhs in
-				lhs.photo.id == rhs.photo.id &&
-				lhs.isDisabled == rhs.isDisabled
-		})
+                state: { $0 },
+                action: { $0 }
+            ))
 	}
 
 	func makeUIView(context: Context) -> PKCanvasView {
@@ -29,8 +31,9 @@ struct CanvasView: UIViewRepresentable {
 		if let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first,
 			let toolPicker = PKToolPicker.shared(for: window) {
 			toolPicker.addObserver(canvasView)
-			toolPicker.setVisible(!viewStore.state.isDisabled, forFirstResponder: canvasView)
+            toolPicker.setVisible(viewStore.state.shouldReceiveTouches(), forFirstResponder: canvasView)
 		}
+        canvasView.isUserInteractionEnabled = viewStore.state.shouldReceiveTouches()
 		canvasView.isScrollEnabled = false
 		canvasView.becomeFirstResponder()
 		canvasView.backgroundColor = UIColor.clear
@@ -43,16 +46,18 @@ struct CanvasView: UIViewRepresentable {
 	func updateUIView(_ canvasView: PKCanvasView, context: Context) {
 		if let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first,
 			let toolPicker = PKToolPicker.shared(for: window) {
-			toolPicker.setVisible(!viewStore.state.isDisabled, forFirstResponder: canvasView)
+            toolPicker.setVisible(viewStore.state.activeCanvas == .drawing, forFirstResponder: canvasView)
             do {
                 canvasView.drawing = try PKDrawing(data: viewStore.state.photo.drawing)
             } catch {
                 print("pkdrawing error")
                 print(error)
             }
-            
 		}
+        canvasView.isUserInteractionEnabled = viewStore.state.shouldReceiveTouches()
+        print("canvasView.isUserInteractionEnabled : \(canvasView.isUserInteractionEnabled)")
 //		uiViewController.updateViewStore(viewStore: viewStore)
+        context.coordinator.viewStore = viewStore
 	}
 
 	static func dismantleUIView(_ canvasView: PKCanvasView, coordinator: Coordinator) {
@@ -67,7 +72,7 @@ struct CanvasView: UIViewRepresentable {
 
 	class Coordinator: NSObject, PKCanvasViewDelegate {
 		let parent: CanvasView
-		let viewStore: ViewStore<CanvasViewState, PhotoAndCanvasAction>
+		var viewStore: ViewStore<CanvasViewState, PhotoAndCanvasAction>
 		init(_ parent: CanvasView,
 				 viewStore: ViewStore<CanvasViewState, PhotoAndCanvasAction>) {
 			self.parent = parent
@@ -83,6 +88,16 @@ struct CanvasView: UIViewRepresentable {
 extension CanvasView.Coordinator {
 	func canvasViewDrawingDidChange(_ canvasView: PKCanvasView) {
         print("canvasViewDrawingDidChange")
-        viewStore.send(.onDrawingChange(canvasView.drawing.dataRepresentation()))
+        if viewStore.state.shouldReceiveTouches() {
+            
+            if let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first,
+                let toolPicker = PKToolPicker.shared(for: window),
+                toolPicker.isVisible {
+                print("send action .onDrawingChange")
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+                    self?.viewStore.send(.onDrawingChange(canvasView.drawing.dataRepresentation()))
+                }
+            }
+        }
 	}
 }
