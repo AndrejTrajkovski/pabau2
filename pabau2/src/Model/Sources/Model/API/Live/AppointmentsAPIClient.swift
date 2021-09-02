@@ -139,7 +139,7 @@ extension APIClient {
         var params: [String: Any] = [:]
         params["data"] = "Cancelled"
         params["cancelReason"] = reason
-        params["change_by_id"] = self.loggedInUser?.userID
+        params["change_by_uid"] = self.loggedInUser?.userID
         params["appointment_id"] = appointmentId
 
         let requestBuilder: RequestBuilder<VoidAPIResponse>.Type = requestBuilderFactory.getBuilder()
