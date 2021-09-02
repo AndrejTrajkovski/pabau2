@@ -14,6 +14,7 @@ public struct ChooseClientsState: Equatable {
             isSearching = !searchText.isEmpty
         }
     }
+    var loadingState: LoadingState = .initial
     var isSearching = false
     var notFoundClients = false
 }
@@ -36,7 +37,7 @@ let chooseClientsReducer =
             state.searchText = ""
             state.isSearching = false
             state.clients = .init(uniqueElements: [])
-
+            state.loadingState = .loading
             return env.clientAPI
                 .getClients(
                     search: nil,
@@ -50,15 +51,16 @@ let chooseClientsReducer =
         case .gotClientsResponse(let result):
             switch result {
             case .success(let clients):
+                state.loadingState = .gotSuccess
                 if state.isSearching {
                     state.clients = .init(uniqueElements: clients)
                     state.notFoundClients = clients.isEmpty
                     break
                 }
-
                 state.clients = IdentifiedArray(uniqueElements: state.clients + clients)
                 state.notFoundClients = state.clients.isEmpty
-            case .failure:
+            case .failure(let error):
+                state.loadingState = .gotError(error)
                 break
             }
         case .onSearch(let text):
@@ -80,6 +82,10 @@ let chooseClientsReducer =
         case .didTapBackBtn:
             state.isChooseClientsActive = false
         case .loadMoreClients:
+            if state.loadingState == .loading {
+                return .none
+            }
+            state.loadingState = .loading
             return env.clientAPI
                 .getClients(search: nil, offset: state.clients.count)
                 .catchToEffect()
@@ -120,6 +126,11 @@ struct ChooseClients: View {
                             }
                         }
                     }
+                }
+                if viewStore.loadingState == .loading {
+                    ProgressView()
+                        .scaleEffect(2.5, anchor: .center)
+                        .progressViewStyle(CircularProgressViewStyle(tint: .blue))
                 }
                 EmptyDataView(
                     imageName: "clients_image",
