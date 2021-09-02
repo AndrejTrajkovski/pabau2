@@ -65,7 +65,7 @@ public struct Client: Decodable, Identifiable, Equatable {
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-
+        
         self.firstName = try container.decode(String.self, forKey: .firstName)
         self.lastName = try container.decode(String.self, forKey: .lastName)
 
@@ -83,7 +83,7 @@ public struct Client: Decodable, Identifiable, Equatable {
         
         let parseId = try container.decode(EitherStringOrInt.self, forKey: .id)
         self.id = Self.ID.init(rawValue: parseId.integerValue)
-		
+
         if let sDate = try? container.decode(String.self, forKey: .dOB), let dob = Date(sDate, format: "yyyy-MM-dd", region: .local) {
             self.dOB = dob
         } else {

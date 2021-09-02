@@ -1,12 +1,14 @@
 import ComposableArchitecture
 import Combine
 //MARK: - APIClient: ClientApi
-extension APIClient {
 
+extension APIClient {
+    
     public func getClients(search: String?, offset: Int) -> Effect<[Client], RequestError> {
         let requestBuilder: RequestBuilder<ClientResponse>.Type = requestBuilderFactory.getBuilder()
+        
         struct ClientResponse: Decodable, Equatable {
-            public let clients: [Client]
+            let clients: [Client]
             public enum CodingKeys: String, CodingKey {
                 case clients = "appointments"
             }
@@ -15,8 +17,7 @@ extension APIClient {
         var queryItems: [String: Any] = ["limit": 20, "offset": offset]
 
         if let search = search {
-            queryItems["name"] = search
-            queryItems["like_email"] = search
+            queryItems["general_search"] = search
         }
 
         return requestBuilder.init(

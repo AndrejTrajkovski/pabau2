@@ -73,7 +73,7 @@ let clientsListReducer: Reducer<
                 state.contactListLS = .gotSuccess
 
 				if !state.searchText.isEmpty {
-                    state.clients = .init(clients)
+                    state.clients = .init(uniqueElements: clients)
                     break
                 }
                 let result = state.clients + clients
