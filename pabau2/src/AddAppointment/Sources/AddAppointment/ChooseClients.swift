@@ -65,7 +65,10 @@ let chooseClientsReducer =
             }
         case .onSearch(let text):
             state.searchText = text
-            state.isSearching = !text.isEmpty
+            if text.isEmpty {
+                state.clients = .init(uniqueElements: [])
+            }
+            
             return env.clientAPI
                 .getClients(
                     search: state.isSearching ? state.searchText : nil,
@@ -121,7 +124,7 @@ struct ChooseClients: View {
                         ClientListRow(client: client).onTapGesture {
                             self.viewStore.send(.didSelectClient(client))
                         }.onAppear {
-                            if client.id == self.viewStore.state.clients.last?.id {
+                            if client.id == self.viewStore.state.clients.last?.id && viewStore.isSearching == false {
                                 self.viewStore.send(.loadMoreClients)
                             }
                         }
