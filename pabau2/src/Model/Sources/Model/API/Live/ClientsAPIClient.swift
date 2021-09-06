@@ -32,8 +32,27 @@ extension APIClient {
     }
 	
 	public func getItemsCount(clientId: Client.Id) -> Effect<ClientItemsCount, RequestError> {
-		Effect(value: ClientItemsCount.init(id: 1, appointments: 2, photos: 4, financials: 6, treatmentNotes: 3, presriptions: 10, documents: 15, communications: 123, consents: 4381, alerts: 123, notes: 0))
-			.eraseToEffect()
+        
+        let requestBuilder: RequestBuilder<CardCountResponse>.Type = requestBuilderFactory.getBuilder()
+        
+        struct CardCountResponse: Decodable {
+            let counter: ClientItemsCount
+            public enum CodingKeys: String, CodingKey {
+                case counter = "client_card_counter"
+            }
+        }
+  
+        let queryItems: [String: Any] = ["contact_id": clientId]
+        
+        return requestBuilder.init(
+            method: .GET,
+            baseUrl: baseUrl,
+            path: .getCardCount,
+            queryParams: commonAnd(other: queryItems)
+        )
+        .effect()
+        .map(\.counter)
+        .eraseToEffect()
 	}
 	
 	public func getFinancials(clientId: Client.Id) -> Effect<[Financial], RequestError> {
