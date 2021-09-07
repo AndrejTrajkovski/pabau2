@@ -73,7 +73,7 @@ let clientsListReducer: Reducer<
                 state.contactListLS = .gotSuccess
 
 				if !state.searchText.isEmpty {
-                    state.clients = .init(clients)
+                    state.clients = .init(uniqueElements: clients)
                     break
                 }
                 let result = state.clients + clients
@@ -83,8 +83,12 @@ let clientsListReducer: Reducer<
                 state.contactListLS = .gotError(error)
             }
         case .gotItemsResponse(let result):
-			guard case .success(let count) = result else { break }
-			state.selectedClient?.client.count = count
+            switch result {
+            case .success(let count):
+                state.selectedClient?.client.count = count
+            case .failure(let error):
+                print("Error getting item count \(error)")
+            }
 		case .selectedClient(.bottom(.child(.details(.editingClient(.addClient(.onResponseSave(let result))))))):
 			if case .success(let newId) = result,
 			   let clientBuilder = state.selectedClient?.list.details.editingClient?.clientBuilder {

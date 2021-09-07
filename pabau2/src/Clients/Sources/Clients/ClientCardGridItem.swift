@@ -108,12 +108,12 @@ public enum ClientCardGridItem: Equatable, CaseIterable {
 		case .appointments: return model.appointments
 		case .photos: return model.photos
 		case .financials: return model.financials
-		case .treatmentNotes: return model.treatmentNotes
-		case .prescriptions: return model.presriptions
+		case .treatmentNotes: return model.treatments
+		case .prescriptions: return model.prescriptions
 		case .documents: return model.documents
-		case .communications: return model.communications
+		case .communications: return model.communication
 		case .consents: return model.consents
-		case .alerts: return model.alerts
+		case .alerts: return  model.alerts
 		case .notes: return model.notes
 		}
 	}

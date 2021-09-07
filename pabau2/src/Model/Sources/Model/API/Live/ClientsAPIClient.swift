@@ -1,12 +1,14 @@
 import ComposableArchitecture
 import Combine
 //MARK: - APIClient: ClientApi
-extension APIClient {
 
+extension APIClient {
+    
     public func getClients(search: String?, offset: Int) -> Effect<[Client], RequestError> {
         let requestBuilder: RequestBuilder<ClientResponse>.Type = requestBuilderFactory.getBuilder()
+        
         struct ClientResponse: Decodable, Equatable {
-            public let clients: [Client]
+            let clients: [Client]
             public enum CodingKeys: String, CodingKey {
                 case clients = "appointments"
             }
@@ -15,8 +17,7 @@ extension APIClient {
         var queryItems: [String: Any] = ["limit": 20, "offset": offset]
 
         if let search = search {
-            queryItems["name"] = search
-            queryItems["like_email"] = search
+            queryItems["general_search"] = search
         }
 
         return requestBuilder.init(
@@ -31,8 +32,27 @@ extension APIClient {
     }
 	
 	public func getItemsCount(clientId: Client.Id) -> Effect<ClientItemsCount, RequestError> {
-		Effect(value: ClientItemsCount.init(id: 1, appointments: 2, photos: 4, financials: 6, treatmentNotes: 3, presriptions: 10, documents: 15, communications: 123, consents: 4381, alerts: 123, notes: 0))
-			.eraseToEffect()
+        
+        let requestBuilder: RequestBuilder<CardCountResponse>.Type = requestBuilderFactory.getBuilder()
+        
+        struct CardCountResponse: Decodable {
+            let counter: ClientItemsCount
+            public enum CodingKeys: String, CodingKey {
+                case counter = "client_card_counter"
+            }
+        }
+  
+        let queryItems: [String: Any] = ["contact_id": clientId]
+        
+        return requestBuilder.init(
+            method: .GET,
+            baseUrl: baseUrl,
+            path: .getCardCount,
+            queryParams: commonAnd(other: queryItems)
+        )
+        .effect()
+        .map(\.counter)
+        .eraseToEffect()
 	}
 	
 	public func getFinancials(clientId: Client.Id) -> Effect<[Financial], RequestError> {

@@ -66,7 +66,9 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 				case .action(let id, let action):
 					let cancelReason = state.cancelReasons[id: id]
                     let appID = state.app.id
-					return env.clientsAPI.appointmentChangeCancelReason(appointmentId: state.app.id, reason: "\(String(describing: cancelReason))")
+                    let cancelReasonId = cancelReason?.id.rawValue ?? ""
+                    
+                    return env.clientsAPI.appointmentChangeCancelReason(appointmentId: state.app.id, reason: cancelReasonId) 
 						.catchToEffect()
                         .map { response in
                             let newResponse: Result<Appointment.ID, RequestError>
