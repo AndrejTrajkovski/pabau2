@@ -111,6 +111,16 @@ public struct EditPhotosState: Equatable {
 	var deletePhotoAlert: AlertState<EditPhotoAction>?
     var isUploadingImage: Bool = false
     var uploadAlert: AlertState<EditPhotoAction>?
+    var isCameraActive: Bool
+//    {
+//        get { self.showingImagePicker == .some(.camera) }
+//        set { self.showingImagePicker = newValue ? .some(.camera) : nil }
+//    }
+    var isPhotosAlbumActive: Bool
+//    {
+//        get { self.showingImagePicker == .some(.photoLibrary) }
+//        set { self.showingImagePicker = newValue ? .some(.photoLibrary) : nil }
+//    }
 	private var showingImagePicker: UIImagePickerController.SourceType?
     
     var editedPhoto: UIImage = UIImage()
@@ -122,22 +132,15 @@ public struct EditPhotosState: Equatable {
 		self.photos = photos
 		self.editingPhotoId = photos.last?.id
 		self.isCameraActive = self.photos.isEmpty
+        self.isPhotosAlbumActive = false
 	}
     
     public init(_ photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>, currentPhoto: PhotoVariantId) {
         self.photos = photos
         self.editingPhotoId = currentPhoto
         self.isCameraActive = self.photos.isEmpty
+        self.isPhotosAlbumActive = false
     }
-
-	var isCameraActive: Bool {
-		get { self.showingImagePicker == .some(.camera) }
-		set { self.showingImagePicker = newValue ? .some(.camera) : nil }
-	}
-	var isPhotosAlbumActive: Bool {
-		get { self.showingImagePicker == .some(.photoLibrary) }
-		set { self.showingImagePicker = newValue ? .some(.photoLibrary) : nil }
-	}
 
     mutating func updateWith(editingPhoto: PhotoViewModel?) {
         if let editingPhoto = editingPhoto {
