@@ -84,30 +84,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 )
             ).environmentObject(KeyboardFollower())
             
-            let step = Step(id: Step.ID.init(rawValue: 1),
-                            stepType: .photos,
-                            preselectedTemplate: nil,
-                            canSkip: true)
-                            
-            let stepAndEntry = StepAndStepEntry(step: step, entry: nil)
-            let stepState = StepState.init(stepAndEntry: stepAndEntry,
-                                           clientId: Client.ID.init(rawValue: 1),
-                                           pathwayId: Pathway.ID.init(rawValue: 1),
-                                           appointmentId: Appointment.ID.init(rawValue: 1),
-                                           photos: []
-            )
-            
-            let photosStep = StepForm(
-                store: Store(
-                initialState: stepState,
-                reducer: stepReducer,
-                environment: makeJourneyEnv(makeTabBarEnv(env))
-                )
-            )
-            
             window.rootViewController = UIHostingController(
                 rootView: NavigationView.init(content: {
-                    photosStep
+                    contentView
                 }).navigationViewStyle(StackNavigationViewStyle())
             )
             self.window = window
