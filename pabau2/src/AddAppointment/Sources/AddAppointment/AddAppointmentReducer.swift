@@ -134,8 +134,7 @@ let addAppointmentValueReducer: Reducer<AddAppointmentState, AddAppointmentActio
 				
 			case .didTapParticipants:
 				
-				guard state.isAllDay,
-					  let location = state.chooseLocAndEmp.chosenLocationId,
+				guard let location = state.chooseLocAndEmp.chosenLocationId,
 					  let service = state.services.chosenService,
 					  let employee = state.chooseLocAndEmp.chosenEmployeeId
 				else {
