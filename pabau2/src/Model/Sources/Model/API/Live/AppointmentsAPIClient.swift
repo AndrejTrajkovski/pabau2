@@ -113,12 +113,12 @@ extension APIClient {
         .eraseToEffect()
     }
     
-    public func appointmentChangeStatus(appointmentId: Appointment.ID, status: String) -> Effect<VoidAPIResponse, RequestError> {
+    public func appointmentChangeStatus(appointmentId: Appointment.ID, statusId: Int) -> Effect<VoidAPIResponse, RequestError> {
         struct AppointmentChangeStatusResponse: Decodable {
             let success: Bool
         }
         var params: [String: Any] = [:]
-        params["data"] = status
+        params["data"] = statusId
         params["change_by_id"] = self.loggedInUser?.userID
         params["appointment_id"] = appointmentId
         

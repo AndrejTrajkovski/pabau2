@@ -90,10 +90,12 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 				switch single {
 				case .action(let id, let action):
 					let status = state.appStatuses[id: id]
-					return env.clientsAPI.appointmentChangeStatus(appointmentId: state.app.id, status: "\(String(describing: status))")
-						.catchToEffect()
-                        .map { response in AppDetailsAction.onResponseChangeAppointment(response) }
-						.eraseToEffect()
+                    if let status = status {
+                        return env.clientsAPI.appointmentChangeStatus(appointmentId: state.app.id, statusId: status.id)
+                            .catchToEffect()
+                            .map { response in AppDetailsAction.onResponseChangeAppointment(response) }
+                            .eraseToEffect()
+                    }
 				}
 			default:
 				break
