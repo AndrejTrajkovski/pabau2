@@ -200,7 +200,8 @@ extension APIClient {
         return requestBuilder.init(method: .GET,
                                    baseUrl: baseUrl,
                                    path: .getForms,
-                                   queryParams: commonAnd(other: ["contact_id": "\(clientId)"]))
+                                   queryParams: commonAnd(other: ["contact_id": "\(clientId)",
+                                                                  "type": "full"]))
             .effect()
 			.map { $0.forms.filter { $0.templateType == type} }
             .eraseToEffect()
