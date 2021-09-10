@@ -187,43 +187,35 @@ public extension APIClient {
 	}
 	
 	func updateProfilePic(image: Data, clientId: Client.ID) -> Effect<VoidAPIResponse, RequestError> {
-		let photo = PhotoUpload(fileData: image)
-		return uploadPhoto(photo,
-						   0,
-						   ["contact_id": clientId.description,
-							"counter": "1",
-							"mode": "upload_photo",
-							"profile_picture": "1",
-							"uid": String(loggedInUser!.userID.rawValue)
-						   ])
+        let params = ["contact_id": clientId.description,
+                      "counter": "1",
+                      "mode": "upload_photo",
+                      "profile_picture": "1",
+                      "uid": String(loggedInUser!.userID.rawValue)
+                     ]
+        let photo = PhotoUpload(fileData: image, params: params)
+        return uploadPhoto(photo, 0, [:])
 	}
 
 }
 
 //MARK: - Photos
 extension APIClient {
-	func uploadPhotos(_ photos: PhotosUpload) -> Effect<VoidAPIResponse, RequestError> {
-		return Effect.concatenate (
-			zip(photos.photos, photos.photos.indices).map {
-				uploadPhoto($0.0, $0.1, photos.params)
-			}
-		)
-	}
-	
+//    func uploadPhotos(_ photos: PhotosUpload, _ deletePreviousPhotosInStep: Bool = false) -> Effect<VoidAPIResponse, RequestError> {
+//		return Effect.concatenate (
+//			zip(photos.photos, photos.photos.indices).map {
+//				uploadPhoto($0.0, $0.1, photos.params)
+//			}
+//		)
+//	}
+
 	func uploadPhoto(_ photo: PhotoUpload,
 					 _ index: Int,
-					 _ params: [String: String]) -> Effect<VoidAPIResponse, RequestError> {
+                     _ queryParams: [String: String]) -> Effect<VoidAPIResponse, RequestError> {
 		let requestBuilder: RequestBuilder<VoidAPIResponse>.Type = requestBuilderFactory.getBuilder()
-		
-		//USED WHEN UPLOADING FORMS
-//		let delete: Bool = (bookingId != nil) && (index == 0)
-//		let bookingId = bookingId != nil ? bookingId!.rawValue : 0
-//		let queryParams = commonAnd(other: ["booking_id": String(bookingId),
-//											"delete": String(delete)])
-		
 		let boundary = "Boundary-\(UUID().uuidString)"
 		let httpBody = NSMutableData()
-		for (key, value) in params {
+        for (key, value) in photo.params {
 		  httpBody.appendString(convertFormField(named: key, value: value, using: boundary))
 		}
 
@@ -237,7 +229,7 @@ extension APIClient {
 		return requestBuilder.init(method: .POST,
 								   baseUrl: baseUrl,
 								   path: .uploadPhotos,
-								   queryParams: commonAnd(other: params),
+								   queryParams: commonAnd(other: queryParams),
 								   headers: ["Content-Type": "multipart/form-data; boundary=\(boundary)"],
 								   body: httpBody as Data
 		)
@@ -272,23 +264,24 @@ extension APIClient {
     public func uploadEpaperImages(images: [Data], params: [String: String]) -> Effect<VoidAPIResponse, RequestError> {
         return images.publisher
             .flatMap { imageData in
-                self.uploadEpaperImage(image: imageData, params: params)
+                self.uploadEpaperImage(image: imageData, queryParams: params)
             }
             .eraseToEffect()
     }
     
-    public func uploadEpaperImage(image: Data, params: [String: String]) -> Effect<VoidAPIResponse, RequestError> {
-        let photo = PhotoUpload(fileData: image)
-        var commonParams: [String: String] = [
+    public func uploadEpaperImage(image: Data, queryParams: [String: String]) -> Effect<VoidAPIResponse, RequestError> {
+        let multipartParams: [String: String] = [
             "counter": "1",
             "mode": "upload_photo",
             "photo_type": "consent",
             "uid": String(loggedInUser!.userID.rawValue)
         ]
-        commonParams.merge(params) { (_, new) in new }
+        let photo = PhotoUpload(fileData: image, params: multipartParams)
+
+
         return uploadPhoto(photo,
                            0,
-                           commonParams)
+                           queryParams)
     }
     
 	public func getPatientDetails(clientId: Client.Id) -> Effect<Client, RequestError> {
@@ -320,19 +313,19 @@ extension APIClient {
 
 // MARK - ClientCard
 extension APIClient {
-    public func uploadClientEditedImage(image: Data, params: [String: String]) -> Effect<VoidAPIResponse, RequestError> {
-        let photo = PhotoUpload(fileData: image)
-        var commonParams: [String: String] = [
-            "counter": "1",
-            "mode": "upload_photo",
-            "photo_type": "contact",
-            "uid": String(loggedInUser!.userID.rawValue)
-        ]
-        commonParams.merge(params) { (_, new) in new }
 
-        return uploadPhoto(photo,
-                           0,
-                           commonParams)
+    public func uploadImages(uploads: [PhotoUpload],
+                             pathwayIdStepId: PathwayIdStepId) -> [Effect<VoidAPIResponse, RequestError>] {
+        var photoUploadEffects = [Effect<VoidAPIResponse, RequestError>]()
+        uploads.indices.forEach {
+            let shouldDeletePreviousPhotosInStep = $0 == 0
+            var queryParams = commonAnd(other: ["delete": String(shouldDeletePreviousPhotosInStep)])
+            merge(&queryParams, with: pathwayIdStepId)
+            let photoUpload = uploads[$0]
+            let uploadPhoto = uploadPhoto(photoUpload, $0, queryParams as! [String: String])
+            photoUploadEffects.append(uploadPhoto)
+        }
+        return photoUploadEffects
     }
 }
 

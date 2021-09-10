@@ -10,8 +10,7 @@ public protocol FormAPI {
     func updateProfilePic(image: Data, clientId: Client.ID) -> Effect<VoidAPIResponse, RequestError>
     
     func uploadEpaperImages(images: [Data], params: [String: String]) -> Effect<VoidAPIResponse, RequestError>
-    func uploadEpaperImage(image: Data, params: [String: String]) -> Effect<VoidAPIResponse, RequestError>
-    func uploadClientEditedImage(image: Data, params: [String: String]) -> Effect<VoidAPIResponse, RequestError>
+    func uploadEpaperImage(image: Data, queryParams: [String: String]) -> Effect<VoidAPIResponse, RequestError>
     func getPatientDetails(clientId: Client.Id) -> Effect<Client, RequestError>
     func update(clientBuilder: ClientBuilder, pathwayStep: PathwayIdStepId?) -> Effect<Client.ID, RequestError>
     func getAftercareAndRecall(appointmentId: Appointment.ID) -> Effect<AftercareAndRecalls, RequestError>
@@ -22,4 +21,7 @@ public protocol FormAPI {
                            _ selectedRecallIds: [AftercareTemplate.ID],
                            _ profilePicId: ImageModel.ID?,
                            _ sharePicId: ImageModel.ID?) -> Effect<StepStatus, RequestError>
+
+    func uploadImages(uploads: [PhotoUpload],
+                      pathwayIdStepId: PathwayIdStepId) -> [Effect<VoidAPIResponse, RequestError>]
 }

@@ -1,5 +1,6 @@
 import Model
 import Foundation
+import UIKit
 
 @dynamicMemberLookup
 public enum Photo: Equatable {
@@ -16,6 +17,15 @@ extension Photo: Identifiable {
             return PhotoVariantId.saved(savedPhoto.id)
 		}
 	}
+
+    func imageData() -> UIImage? {
+        switch self {
+        case .new(let newPhoto):
+            return newPhoto.image
+        case .saved(let savedPhoto):
+            return savedPhoto.normalSizePhotoData.flatMap(UIImage.init(data:))
+        }
+    }
 }
 
 extension Photo {

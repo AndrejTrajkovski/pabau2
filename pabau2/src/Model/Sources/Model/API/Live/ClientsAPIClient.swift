@@ -108,8 +108,8 @@ extension APIClient {
     
 	func merge(_ params: inout [String: Any], with pathwayStep: PathwayIdStepId?) {
 		if let pathwayStep = pathwayStep {
-			params["step_id"] = pathwayStep.step_id
-			params["path_taken_id"] = pathwayStep.path_taken_id
+            params["step_id"] = pathwayStep.step_id.description
+            params["path_taken_id"] = pathwayStep.path_taken_id.description
 		}
 	}
 	

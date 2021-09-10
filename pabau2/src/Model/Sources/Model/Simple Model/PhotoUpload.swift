@@ -1,17 +1,14 @@
 import Foundation
 
-struct PhotoUpload {
+public struct PhotoUpload {
 	let fileData: Data
 	let fileName: String
-	
-	init(fileData: Data) {
+    let params: [String: String]
+
+    public init(fileData: Data,
+                params: [String: String]) {
 		self.fileData = fileData
 		self.fileName = "photo_" + UUID().description + ".jpg"
+        self.params = params
 	}
-}
-
-struct PhotosUpload {	
-	let photos: [PhotoUpload]
-	let params: [String: String]
-	let bookingId: Appointment.ID?
 }

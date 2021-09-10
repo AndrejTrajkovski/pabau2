@@ -68,7 +68,9 @@ public enum StepBodyState: Equatable {
             self = .timeline(CheckPatientDetailsState(id: stepAndEntry.step.id, clientBuilder: nil, patForms: []))
         case .photos:
             self = .photos(PhotosState(id: stepAndEntry.step.id,
-                                       imageModels: appPhotos))
+                                       pathwayId: pathwayId,
+                                       imageModels: appPhotos,
+                                       clientId: clientId))
         case .lab:
             self = .lab
         case .video:

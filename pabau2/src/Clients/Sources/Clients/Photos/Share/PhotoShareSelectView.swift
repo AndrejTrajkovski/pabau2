@@ -126,7 +126,7 @@ struct PhotoShareSelectView: View {
         }
     }
 
-    func convertViewToData<V>(view: V, size: CGSize, completion: @escaping (Data?) -> Void) where V: View {
+    func convertViewToData<V: View>(view: V, size: CGSize, completion: @escaping (Data?) -> Void) {
         guard let rootVC = UIApplication.shared.windows.first?.rootViewController else {
             completion(nil)
             return

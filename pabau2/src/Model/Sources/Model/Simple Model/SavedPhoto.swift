@@ -11,7 +11,8 @@ public struct SavedPhoto: Codable, Identifiable, Equatable, Hashable {
     public let photoDate: Date
     public let photoTitle: String
     public let photoPosition: String?
-    
+    public var normalSizePhotoData: Data?
+
     public init(id: Int, normalPhotoSize: String?, thumbnail: String?, mediumThumbnail: String?, photoDate: Date, title: String, photoPosition: String? ) {
         self.id = id
         self.normalSizePhoto = normalPhotoSize
@@ -60,15 +61,4 @@ extension SavedPhoto {
 //    public init(imageModel: ImageModel) {
 //        self.id = imageModel.id
 //    }
-}
-
-extension SavedPhoto {
-    public static func mock() -> [[Int: SavedPhoto]] {
-        [
-            [1: SavedPhoto.init(id: 1, normalPhotoSize: "", thumbnail: "", mediumThumbnail: "", photoDate: Date(), title: "", photoPosition: "")],
-            [2: SavedPhoto.init(id: 2, normalPhotoSize: "", thumbnail: "", mediumThumbnail: "", photoDate: Date(), title: "", photoPosition: "")],
-            [3: SavedPhoto.init(id: 3, normalPhotoSize: "", thumbnail: "", mediumThumbnail: "", photoDate: Date(), title: "", photoPosition: "")]
-        ]
-    }
-    public static let mockCC: [SavedPhoto] = []
 }

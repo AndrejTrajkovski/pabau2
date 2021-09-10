@@ -23,18 +23,24 @@ public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnv
 			state: \EditPhotosState.cameraOverlay,
 			action: /EditPhotoAction.cameraOverlay,
 			environment: { $0 }),
-		.init { state, action, _ in
+		.init { state, action, env in
 			switch action {
 			case .openPhotoAlbum:
 				state.isPhotosAlbumActive = true
             case .editPhotoList, .cameraOverlay, .chooseInjectables:
 				break
-            case .save:
-                break
-            case .singlePhotoEdit(.saveDrawings):
-                state.isUploadingImage = true
             case .goBack:
                 break
+            case .save:
+                state.isUploadingImages = true
+                let uploads = state.photos.compactMap { makeUploadData(photoViewModel: $0,
+                                                                       clientId: state.clientId, employeeId: nil)}
+                let uploadPhotosResponseActions = env.formAPI.uploadImages(uploads: uploads,
+                                                                           pathwayIdStepId: state.pathwayIdStepId)
+//                Effect.concatenate(uploads)
+
+                return .none
+//                    .cancellable(id: UploadPhotoId())
             case .showAlert:
                 state.uploadAlert = AlertState(title: TextState(Texts.uploadAlertTitle),
                                                message: TextState(Texts.uploadAlertMessage),
@@ -92,6 +98,7 @@ public enum EditPhotoAction: Equatable {
     case showAlert
     case abortUpload
     case continueUpload
+    case saveResponse(id: Int, result:(Result<VoidAPIResponse, RequestError>))
 }
 
 public struct EditPhotosState: Equatable {
@@ -109,38 +116,30 @@ public struct EditPhotosState: Equatable {
 	var isChooseInjectablesActive: Bool = false
 	var chosenInjectableId: InjectableId?
 	var deletePhotoAlert: AlertState<EditPhotoAction>?
-    var isUploadingImage: Bool = false
+    var isUploadingImages: Bool = false
     var uploadAlert: AlertState<EditPhotoAction>?
     var isCameraActive: Bool
-//    {
-//        get { self.showingImagePicker == .some(.camera) }
-//        set { self.showingImagePicker = newValue ? .some(.camera) : nil }
-//    }
     var isPhotosAlbumActive: Bool
-//    {
-//        get { self.showingImagePicker == .some(.photoLibrary) }
-//        set { self.showingImagePicker = newValue ? .some(.photoLibrary) : nil }
-//    }
-	private var showingImagePicker: UIImagePickerController.SourceType?
-    
-    var editedPhoto: UIImage = UIImage()
-    var imageInjectable: UIImage = UIImage()
-    var photoSize: CGSize = .zero
+    let pathwayIdStepId: PathwayIdStepId
+    let clientId: Client.ID
     var loadingState: LoadingState = .initial
 
-	public init (_ photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>) {
+    public init (_ photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>, pathwayIdStepId: PathwayIdStepId, clientId: Client.ID) {
 		self.photos = photos
 		self.editingPhotoId = photos.last?.id
 		self.isCameraActive = self.photos.isEmpty
         self.isPhotosAlbumActive = false
+        self.pathwayIdStepId = pathwayIdStepId
+        self.clientId = clientId
 	}
     
-    public init(_ photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>, currentPhoto: PhotoVariantId) {
-        self.photos = photos
-        self.editingPhotoId = currentPhoto
-        self.isCameraActive = self.photos.isEmpty
-        self.isPhotosAlbumActive = false
-    }
+//    public init(_ photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>, currentPhoto: PhotoVariantId, pathwayIdStepId: PathwayIdStepId) {
+//        self.photos = photos
+//        self.editingPhotoId = currentPhoto
+//        self.isCameraActive = self.photos.isEmpty
+//        self.isPhotosAlbumActive = false
+//        self.pathwayIdStepId = pathwayIdStepId
+//    }
 
     mutating func updateWith(editingPhoto: PhotoViewModel?) {
         if let editingPhoto = editingPhoto {
@@ -174,16 +173,16 @@ public struct EditPhotos: View {
 		let isChooseInjectablesActive: Bool
 		let editingPhotoId: PhotoVariantId?
 		let isDrawingDisabled: Bool
-        let editedPhoto: UIImage
-        let isUploadingImage: Bool
+        let isUploadingImages: Bool
+        let isSaveEnabled: Bool
 		init (state: EditPhotosState) {
 			self.isCameraActive = state.isCameraActive
 			self.isChooseInjectablesActive = state.isChooseInjectablesActive
 			self.editingPhotoId = state.editingPhotoId
 			self.isDrawingDisabled = state.activeCanvas != .drawing
 			self.isPhotosAlbumActive = state.isPhotosAlbumActive
-            self.editedPhoto = state.editedPhoto
-            self.isUploadingImage = state.isUploadingImage
+            self.isUploadingImages = state.isUploadingImages
+            self.isSaveEnabled = state.photos.allSatisfy { $0.basePhoto.imageData() != nil }
 		}
 	}
     
@@ -228,9 +227,10 @@ public struct EditPhotos: View {
         }
         .navigationBarItems(
             leading: MyBackButton(text: Texts.back,
-                                  action: { viewStore.isUploadingImage ? viewStore.send(.showAlert) : viewStore.send(.goBack) }),
-            trailing: Button( action: { viewStore.send(.singlePhotoEdit(.saveDrawings)) },
+                                  action: { viewStore.isUploadingImages ? viewStore.send(.showAlert) : viewStore.send(.goBack) }),
+            trailing: Button( action: { viewStore.send(.save) },
                               label: { Text(Texts.save) })
+                .disabled(!viewStore.isSaveEnabled)
         )
         .navigationBarBackButtonHidden(true)
         .modalLink(isPresented: .constant(viewStore.state.isPhotosAlbumActive),
@@ -330,8 +330,6 @@ extension EditPhotosState {
 				allInjectables: self.allInjectables,
 				isChooseInjectablesActive: self.isChooseInjectablesActive,
 				chosenInjectatbleId: self.chosenInjectableId,
-                imageInjectable: self.imageInjectable,
-                photoSize: self.photoSize,
                 editingPhotoId: self.editingPhotoId,
                 loadingState: self.loadingState,
                 isAlertActive: (self.uploadAlert != nil) || (self.deletePhotoAlert != nil)
@@ -344,21 +342,10 @@ extension EditPhotosState {
 			self.allInjectables = newValue.allInjectables
 			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
 			self.chosenInjectableId = newValue.chosenInjectatbleId
-            self.imageInjectable = newValue.imageInjectable
-            self.photoSize = newValue.photoSize
             self.editingPhotoId = newValue.editingPhotoId
             self.loadingState = newValue.loadingState
 		}
 	}
-
-//	var editingPhoto: PhotoViewModel? {
-//		get {
-//			getPhoto(photos, editingPhotoId)
-//		}
-//		set {
-//			set(newValue, onto: &photos)
-//		}
-//	}
 
 	var editPhotoList: EditPhotosListState {
 		get {
@@ -387,5 +374,56 @@ extension View {
         return renderer.image { _ in
             view?.drawHierarchy(in: controller.view.bounds, afterScreenUpdates: true)
         }
+    }
+}
+
+func render(photoViewModel: PhotoViewModel) -> UIImage {
+    render(injections: photoViewModel.injections,
+           drawing: photoViewModel.drawing,
+           image: photoViewModel.basePhoto.imageData()!)
+}
+
+func render(injections: [InjectableId : IdentifiedArrayOf<Injection>],
+            drawing: Data,
+            image: UIImage) -> UIImage {
+    let size = image.size
+    let renderer = UIGraphicsImageRenderer(size: size)
+    let img = renderer.image { (ctx) in
+        image.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+
+        injections.values.forEach { (injections: IdentifiedArrayOf<Injection>) in
+            injections.forEach { injection in
+                draw(injectionSize: InjectableMarker.MarkerSizes.markerSize,
+                     widthToHeight: InjectableMarker.MarkerSizes.wToHRatio,
+                     injection: injection)
+            }
+        }
+
+        if let pencilImage = UIImage(data: drawing) {
+            pencilImage.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+        }
+    }
+
+    return img
+}
+
+func makeUploadData(photoViewModel: PhotoViewModel,
+                    clientId: Client.ID,
+                    employeeId: Employee.ID?) -> PhotoUpload? {
+    //TODO employee id from passcode when starting pathway, make employeeId non optional and follow compiler
+    var params: [String: String] = ["contact_id": clientId.description,
+                                    "counter": "1",
+                                    "mode": "upload_photo",
+                                    "photo_type": "contact"]
+    if case .saved(let savedPhoto) = photoViewModel.basePhoto {
+        params["photo_id"] = savedPhoto.id.description
+    }
+    if let employeeId = employeeId {
+        params["uid"] = employeeId.description
+    }
+    if let rendered = render(photoViewModel: photoViewModel).jpegData(compressionQuality: 0.5) {
+        return PhotoUpload(fileData: rendered, params: params)
+    } else {
+        return nil
     }
 }

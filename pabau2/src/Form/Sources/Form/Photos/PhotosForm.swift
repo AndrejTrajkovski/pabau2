@@ -7,15 +7,19 @@ import Overture
 import ASCollectionView
 
 public struct PhotosState: Equatable, Identifiable {
-    public init(id: Step.ID, imageModels: [ImageModel]) {
+    public init(id: Step.ID, pathwayId: Pathway.ID, imageModels: [ImageModel], clientId: Client.ID) {
         self.id = id
+        self.pathwayId = pathwayId
+        self.clientId = clientId
         //TODO get image models for appointment and add to photos array
     }
-    
-    public var id: Step.ID
+
+    public let pathwayId: Pathway.ID
+    public let id: Step.ID
     public var photos: IdentifiedArray<PhotoVariantId, PhotoViewModel> = []
     public var selectedIds: [PhotoVariantId] = []
     public var editPhotos: EditPhotosState?
+    public let clientId: Client.ID
     //    public var stepStatus: StepStatus
     
     var selectPhotos: SelectPhotosState {
@@ -33,10 +37,11 @@ public let photosFormReducer: Reducer<PhotosState, PhotosFormAction, FormEnviron
             switch action {
             case .didSelectEditPhotos:
                 let selPhotos = state.photos.filter { state.selectedIds.contains($0.id) }
-                state.editPhotos = EditPhotosState(selPhotos)
+                let pidsid = PathwayIdStepId(step_id: state.id, path_taken_id: state.pathwayId)
+                state.editPhotos = EditPhotosState(selPhotos, pathwayIdStepId: pidsid, clientId: state.clientId)
             case .didTouchBackOnEditPhotos:
                 state.editPhotos = nil
-            case .saveEdited:
+            case .editPhoto(.save):
                 guard let editedPhotos = state.editPhotos?.photos else { break }
                 state.selectedIds.forEach {
                     state.photos[id: $0] = editedPhotos[id: $0]
@@ -55,14 +60,13 @@ public let photosFormReducer: Reducer<PhotosState, PhotosFormAction, FormEnviron
             state: \PhotosState.selectPhotos,
             action: /PhotosFormAction.selectPhotos,
             environment: { $0 })
-    )
+    ).debug()
 
 public enum PhotosFormAction: Equatable {
     case selectPhotos(SelectPhotosAction)
     case didSelectEditPhotos
     case didTouchBackOnEditPhotos
     case editPhoto(EditPhotoAction)
-    case saveEdited
 }
 
 public struct PhotosForm: View {
@@ -99,12 +103,12 @@ public struct PhotosForm: View {
                     state: { $0.editPhotos }, action: { .editPhoto($0) }),
                    then: {
                     EditPhotos(store: $0)
-                        .navigationBarItems(leading:
-                                                MyBackButton(text: Texts.back, action: { viewStore.send(.didTouchBackOnEditPhotos)}
-                                                ), trailing:
-                                                    Button(action: { viewStore.send(.saveEdited) },
-                                                           label: { Text(Texts.save) })
-                        ).navigationBarBackButtonHidden(true)
+//                        .navigationBarItems(leading:
+//                                                MyBackButton(text: Texts.back, action: { viewStore.send(.didTouchBackOnEditPhotos)}
+//                                                ), trailing:
+//                                                    Button(action: { viewStore.send(.saveEdited) },
+//                                                           label: { Text(Texts.save) })
+//                        ).navigationBarBackButtonHidden(true)
                    }
         )
     }

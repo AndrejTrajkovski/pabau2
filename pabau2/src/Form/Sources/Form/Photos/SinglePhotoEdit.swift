@@ -12,8 +12,7 @@ enum CanvasMode: Equatable {
 
 func draw(injectionSize: CGSize,
 		  widthToHeight: CGFloat,
-          injection: Injection,
-		  in ctxt: UIGraphicsImageRendererContext) {
+          injection: Injection) {
     
     let colorInjection = Injectable.injectables().filter { $0.id == injection.injectableId }.first?.color
     let injectableMarkerPlain = InjectableMarkerPlain(wToHRatio: InjectableMarker.MarkerSizes.wToHRatio,
@@ -44,60 +43,9 @@ let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction,
 		action: /SinglePhotoEditAction.photoAndCanvas,
         environment: { $0 }),
     .init { state, action, env in
+
         switch action {
-        case .saveDrawings:
-            state.loadingState = .loading
-            let size = state.photoSize
-            let renderer = UIGraphicsImageRenderer(size: size)
-            let img = renderer.image { (ctx) in
-                if case .saved(let savedPhoto) = state.photo.basePhoto {
-                    if let photoImageURLString = savedPhoto.normalSizePhoto, let url = URL(string: photoImageURLString) {
-                        if let dataImage = try? Data(contentsOf: url) {
-                            if let pImage = UIImage(data: dataImage) {
-                                pImage.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
-                            }
-                        }
-                    }
-                }
-                
-                state.injectables.photoInjections.values.forEach { (injections: IdentifiedArrayOf<Injection>) in
-                    injections.forEach { injection in
-                        draw(injectionSize: InjectableMarker.MarkerSizes.markerSize,
-                             widthToHeight: InjectableMarker.MarkerSizes.wToHRatio,
-                             injection: injection,
-                             in: ctx)
-                    }
-                }
-                
-                if let pencilImage = UIImage(data: state.photo.drawing) {
-                    pencilImage.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
-                }
-                
-//                state.photo.drawing.image(from: CGRect(x: 0, y: 0, width: size.width, height: size.height), scale: 1)
-//                    .draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
-            }
-            state.imageInjectable = img
-            return Just(SinglePhotoEditAction.uploadPhoto(img))
-                .eraseToEffect()
-        case .onChangePhotoSize(let size):
-            state.photoSize = size
-        
-        case .uploadPhoto(let image):
-            var params: [String: String] = [
-                "booking_id": "0",
-                "delete": "0",
-                "contact_id": UserDefaults.standard.string(forKey: "selectedClientId") ?? "",
-                "photo_id": state.editingPhotoId?.description ?? ""
-            ]
-            return env.formAPI
-                .uploadClientEditedImage(image: image.jpegData(compressionQuality: 0.5)!, params: params)
-                .receive(on: DispatchQueue.main)
-                .catchToEffect()
-                .map { response in
-                    return SinglePhotoEditAction.photoUploadResponse(response)
-                }
-                .cancellable(id: UploadPhotoId())
-        case .photoUploadResponse(let result):
+        case .savePhotosResponse(let result):
             state.loadingState = .initial
             switch result {
             case .success(let voResponse):
@@ -120,8 +68,6 @@ struct SinglePhotoEditState: Equatable {
 	var allInjectables: IdentifiedArrayOf<Injectable>
 	var isChooseInjectablesActive: Bool
 	var chosenInjectatbleId: InjectableId?
-    var imageInjectable: UIImage
-    var photoSize: CGSize = .zero
     var editingPhotoId: PhotoVariantId?
     var loadingState: LoadingState = .initial
     let isAlertActive: Bool
@@ -160,11 +106,10 @@ struct SinglePhotoEditState: Equatable {
 public enum SinglePhotoEditAction: Equatable {
 	case photoAndCanvas(PhotoAndCanvasAction)
 	case injectables(InjectablesAction)
-    case saveDrawings
     case updateImageInjectables(UIImage)
     case onChangePhotoSize(CGSize)
-    case uploadPhoto(UIImage)
-    case photoUploadResponse(Result<VoidAPIResponse, RequestError>)
+    case savePhotos
+    case savePhotosResponse(Result<VoidAPIResponse, RequestError>)
     case cancelUpload
 }
 
@@ -184,8 +129,6 @@ struct SinglePhotoEdit: View {
 		let isDrawingDisabled: Bool
 		let isChooseInjectablesActive: Bool
 		let isInjectablesDisabled: Bool
-        let imageInjectable: UIImage
-        let photoSize: CGSize
         let loadingState: LoadingState
 		init (state: SinglePhotoEditState) {
 			let isInjectablesActive = state.activeCanvas == CanvasMode.injectables ? true : false
@@ -203,8 +146,6 @@ struct SinglePhotoEdit: View {
 			self.isInjectablesDisabled = !isInjectablesActive
 			self.isDrawingDisabled = isInjectablesActive || state.isAlertActive
 			self.isChooseInjectablesActive = state.isChooseInjectablesActive
-            self.imageInjectable = state.imageInjectable
-            self.photoSize = state.photoSize
             self.loadingState = state.loadingState
 		}
 	}
@@ -271,3 +212,4 @@ struct SinglePhotoEdit: View {
 //		}
 //	}
 //}
+
