@@ -28,29 +28,35 @@ public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnv
 			case .openPhotoAlbum:
 				state.isPhotosAlbumActive = true
             case .editPhotoList, .cameraOverlay, .chooseInjectables:
-				break
-            case .goBack:
                 break
             case .save:
-                state.isUploadingImages = true
+                for idx in state.photos.indices {
+                    let id = state.photos[idx].id
+                    state.photos[id: id]?.savePhotoState = .loading
+                }
                 let uploads = state.photos.compactMap { makeUploadData(photoViewModel: $0,
                                                                        clientId: state.clientId, employeeId: nil)}
-                let uploadPhotosResponseActions = env.formAPI.uploadImages(uploads: uploads,
-                                                                           pathwayIdStepId: state.pathwayIdStepId)
-//                Effect.concatenate(uploads)
+                let uploadsResponses = env.formAPI.uploadImages(uploads: uploads,
+                                                                pathwayIdStepId: state.pathwayIdStepId)
+                let uploadsActions: [Effect<EditPhotoAction, Never>] = zip(uploadsResponses.indices, uploadsResponses).map { idx, upload in
+                    let responseEffect = upload.catchToEffect()
+                        .map { EditPhotoAction.saveResponse(idx: idx, result: $0) }
+                    return responseEffect
+                }
 
-                return .none
-//                    .cancellable(id: UploadPhotoId())
-            case .showAlert:
-                state.uploadAlert = AlertState(title: TextState(Texts.uploadAlertTitle),
-                                               message: TextState(Texts.uploadAlertMessage),
-                                               primaryButton: .destructive(TextState("Yes"), send: .abortUpload),
-                                               secondaryButton: .default(TextState("No"), send: .continueUpload))
+                return Effect.concatenate(uploadsActions)
+                    .cancellable(id: UploadPhotoId())
+            case .goBack:
+                if state.photos.map(\.savePhotoState).contains(where: { $0.isLoading }) {
+                    state.uploadAlert = AlertState(title: TextState(Texts.uploadAlertTitle),
+                                                   message: TextState(Texts.uploadAlertMessage),
+                                                   primaryButton: .destructive(TextState("Yes"), send: .abortUpload),
+                                                   secondaryButton: .default(TextState("No"), send: .continueUpload))
+                } else {
+                    break//parent reducer
+                }
             case .abortUpload:
-                return .merge(
-                    Effect(value: EditPhotoAction.goBack),
-                    Effect(value: EditPhotoAction.singlePhotoEdit(.cancelUpload))
-                )
+                return Effect(value: EditPhotoAction.singlePhotoEdit(.cancelUpload))
             case .continueUpload:
                 state.uploadAlert = nil
             case .rightSide(.didTouchTrash):
@@ -79,6 +85,17 @@ public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnv
                 }
                 state.editingPhotoId = toBeSelected.map(\.id)
                 state.photos.remove(id: editingPhotoId)
+            case .saveResponse(let idx, let result):
+                print("here result")
+                let id = state.photos[idx].id
+                switch result {
+                case .success(let voidApiResponse):
+                    print(voidApiResponse)
+                    state.photos[id: id]?.savePhotoState = .gotSuccess
+                case .failure(let error):
+                    print(error)
+                    state.photos[id: id]?.savePhotoState = .gotError(error)
+                }
             default:
                 break
 			}
@@ -98,7 +115,7 @@ public enum EditPhotoAction: Equatable {
     case showAlert
     case abortUpload
     case continueUpload
-    case saveResponse(id: Int, result:(Result<VoidAPIResponse, RequestError>))
+    case saveResponse(idx: Int, result:(Result<VoidAPIResponse, RequestError>))
 }
 
 public struct EditPhotosState: Equatable {
@@ -116,7 +133,6 @@ public struct EditPhotosState: Equatable {
 	var isChooseInjectablesActive: Bool = false
 	var chosenInjectableId: InjectableId?
 	var deletePhotoAlert: AlertState<EditPhotoAction>?
-    var isUploadingImages: Bool = false
     var uploadAlert: AlertState<EditPhotoAction>?
     var isCameraActive: Bool
     var isPhotosAlbumActive: Bool
@@ -173,7 +189,7 @@ public struct EditPhotos: View {
 		let isChooseInjectablesActive: Bool
 		let editingPhotoId: PhotoVariantId?
 		let isDrawingDisabled: Bool
-        let isUploadingImages: Bool
+        let uploadingImagesMessage: String?
         let isSaveEnabled: Bool
 		init (state: EditPhotosState) {
 			self.isCameraActive = state.isCameraActive
@@ -181,7 +197,19 @@ public struct EditPhotos: View {
 			self.editingPhotoId = state.editingPhotoId
 			self.isDrawingDisabled = state.activeCanvas != .drawing
 			self.isPhotosAlbumActive = state.isPhotosAlbumActive
-            self.isUploadingImages = state.isUploadingImages
+
+            self.uploadingImagesMessage = {
+                let savingStates = state.photos.map(\.savePhotoState)
+                if savingStates.allSatisfy({ $0 == .gotSuccess }) {
+                    return nil
+                } else if savingStates.allSatisfy({ $0 == .initial }) {
+                    return nil
+                } else if savingStates.contains(where: { $0 == .loading }) {
+                    return "Uploading photos..."
+                } else {
+                    return "There was an error uploading photos."
+                }
+            }()
             self.isSaveEnabled = state.photos.allSatisfy { $0.basePhoto.imageData() != nil }
 		}
 	}
@@ -227,7 +255,7 @@ public struct EditPhotos: View {
         }
         .navigationBarItems(
             leading: MyBackButton(text: Texts.back,
-                                  action: { viewStore.isUploadingImages ? viewStore.send(.showAlert) : viewStore.send(.goBack) }),
+                                  action: { viewStore.send(.goBack) }),
             trailing: Button( action: { viewStore.send(.save) },
                               label: { Text(Texts.save) })
                 .disabled(!viewStore.isSaveEnabled)

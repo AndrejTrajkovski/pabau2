@@ -155,15 +155,25 @@ extension URLRequest {
 		var cURL = "curl "
 		var header = ""
 		var data: String = ""
-		
+
+        var isMultipartFormData: Bool = false
+
 		if let httpHeaders = self.allHTTPHeaderFields, httpHeaders.keys.count > 0 {
 			for (key,value) in httpHeaders {
 				header += (pretty ? "--header " : "-H ") + "\'\(key): \(value)\' \(newLine)"
+                if key == "Content-Type", value.contains("multipart/form-data; boundary=") {
+                    isMultipartFormData = true
+                }
 			}
 		}
-		
-		if let bodyData = self.httpBody, let bodyString = String(data: bodyData, encoding: .utf8) {
-			data = "--data '\(bodyString)'"
+
+		if let bodyData = self.httpBody{
+            if let bodyString = String(data: bodyData, encoding: .utf8) {
+                data = "--data '\(bodyString)'"
+            } else if isMultipartFormData {
+                data = "--data "
+//                data = "--data '\(Array(bodyData))'"
+            }
 		}
 		
 		cURL += method + url + header + data

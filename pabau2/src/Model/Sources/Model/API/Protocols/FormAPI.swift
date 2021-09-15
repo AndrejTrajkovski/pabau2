@@ -21,7 +21,7 @@ public protocol FormAPI {
                            _ selectedRecallIds: [AftercareTemplate.ID],
                            _ profilePicId: ImageModel.ID?,
                            _ sharePicId: ImageModel.ID?) -> Effect<StepStatus, RequestError>
-
+    
     func uploadImages(uploads: [PhotoUpload],
                       pathwayIdStepId: PathwayIdStepId) -> [Effect<VoidAPIResponse, RequestError>]
 }

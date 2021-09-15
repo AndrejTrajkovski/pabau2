@@ -107,7 +107,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             
             window.rootViewController = UIHostingController(
                 rootView: NavigationView.init(content: {
-                    photosStep
+                    contentView
                 }).navigationViewStyle(StackNavigationViewStyle())
             )
             self.window = window

@@ -33,29 +33,33 @@ public struct PhotosState: Equatable, Identifiable {
 
 public let photosFormReducer: Reducer<PhotosState, PhotosFormAction, FormEnvironment> =
     .combine(
+        editPhotosReducer.optional().pullback(
+            state: \PhotosState.editPhotos,
+            action: /PhotosFormAction.editPhoto,
+            environment: { $0 }),
         Reducer.init { state, action, _ in
             switch action {
             case .didSelectEditPhotos:
                 let selPhotos = state.photos.filter { state.selectedIds.contains($0.id) }
                 let pidsid = PathwayIdStepId(step_id: state.id, path_taken_id: state.pathwayId)
                 state.editPhotos = EditPhotosState(selPhotos, pathwayIdStepId: pidsid, clientId: state.clientId)
-            case .didTouchBackOnEditPhotos:
-                state.editPhotos = nil
-            case .editPhoto(.save):
-                guard let editedPhotos = state.editPhotos?.photos else { break }
-                state.selectedIds.forEach {
-                    state.photos[id: $0] = editedPhotos[id: $0]
+            case .editPhoto(.goBack):
+                if state.photos.map(\.savePhotoState).allSatisfy({ !$0.isLoading }) {
+                    state.editPhotos = nil
                 }
+            case .didTouchBackOnEditPhotos, .editPhoto(.abortUpload):
                 state.editPhotos = nil
-                state.selectedIds.removeAll()
+//            case .editPhoto(.save):
+//                guard let editedPhotos = state.editPhotos?.photos else { break }
+//                state.selectedIds.forEach {
+//                    state.photos[id: $0] = editedPhotos[id: $0]
+//                }
+//                state.editPhotos = nil
+//                state.selectedIds.removeAll()
             case .editPhoto, .selectPhotos: break
             }
             return .none
         },
-        editPhotosReducer.optional().pullback(
-            state: \PhotosState.editPhotos,
-            action: /PhotosFormAction.editPhoto,
-            environment: { $0 }),
         selectPhotosReducer.pullback(
             state: \PhotosState.selectPhotos,
             action: /PhotosFormAction.selectPhotos,

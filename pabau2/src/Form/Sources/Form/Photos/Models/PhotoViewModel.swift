@@ -1,6 +1,7 @@
 import Model
 import PencilKit
 import ComposableArchitecture
+import Util
 
 public typealias InjectableId = Int
 //public struct InjectionsByInjectable: Equatable, Identifiable {
@@ -22,6 +23,7 @@ public struct PhotoViewModel: Equatable {
 	var tags: [String] = []
 	var injections: [InjectableId: IdentifiedArrayOf<Injection>] = [:]
 	var chosenInjectionId: UUID?
+    var savePhotoState: LoadingState = .initial
 
 	public init (_ savedPhoto: SavedPhoto) {
 		self.basePhoto = .saved(savedPhoto)

@@ -2,6 +2,7 @@ import SwiftUI
 import ComposableArchitecture
 import ASCollectionView
 import Form
+import Model
 
 let expandedPhotoReducer: Reducer<CCExpandedPhotosState, CCExpandedPhotosAction, ClientsEnvironment> = .combine(
     photoCompareReducer.optional().pullback(

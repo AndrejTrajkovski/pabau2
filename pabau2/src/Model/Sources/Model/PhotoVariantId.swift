@@ -1,5 +1,4 @@
 import Foundation
-import Model
 
 public enum PhotoVariantId: Equatable, Hashable {
 	case saved(SavedPhoto.ID)

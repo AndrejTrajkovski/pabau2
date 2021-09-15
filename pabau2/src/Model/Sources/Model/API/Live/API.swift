@@ -2,7 +2,7 @@ import ComposableArchitecture
 import Combine
 
 public class APIClient: LoginAPI, JourneyAPI, ClientsAPI, FormAPI {
-    
+
     public init(baseUrl: String, loggedInUser: User?) {
         self.baseUrl = baseUrl
         self.loggedInUser = loggedInUser

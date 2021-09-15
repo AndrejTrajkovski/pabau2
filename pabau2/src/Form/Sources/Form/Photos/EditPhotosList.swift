@@ -1,5 +1,6 @@
 import SwiftUI
 import ComposableArchitecture
+import Model
 
 public struct EditPhotosListState: Equatable {
 	var photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>

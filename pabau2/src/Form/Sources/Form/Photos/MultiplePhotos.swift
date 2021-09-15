@@ -1,6 +1,7 @@
 import ComposableArchitecture
 import ASCollectionView
 import SwiftUI
+import Model
 
 public let selectPhotosReducer: Reducer<SelectPhotosState, SelectPhotosAction, Any> = .init {
 	state, action, _ in

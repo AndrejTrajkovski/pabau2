@@ -1,5 +1,6 @@
 import SwiftUI
 import ComposableArchitecture
+import Model
 
 public struct CameraOverlayState: Equatable {
 	var photos: IdentifiedArrayOf<PhotoViewModel>

@@ -1,6 +1,7 @@
 import SwiftUI
 import Form
 import ComposableArchitecture
+import Model
 
 public enum ActiveSide: Equatable {
 	case left
