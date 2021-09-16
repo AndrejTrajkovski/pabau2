@@ -84,16 +84,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 )
             ).environmentObject(KeyboardFollower())
             
-            let step = Step(id: Step.ID.init(rawValue: 1),
+            let step = Step(id: Step.ID.init(rawValue: 8225),
                             stepType: .photos,
                             preselectedTemplate: nil,
                             canSkip: true)
                             
             let stepAndEntry = StepAndStepEntry(step: step, entry: nil)
             let stepState = StepState.init(stepAndEntry: stepAndEntry,
-                                           clientId: Client.ID.init(rawValue: 1),
-                                           pathwayId: Pathway.ID.init(rawValue: 1),
-                                           appointmentId: Appointment.ID.init(rawValue: 1),
+                                           clientId: Client.ID.init(rawValue: 22518040),
+                                           pathwayId: Pathway.ID.init(rawValue: 2067),
+                                           appointmentId: Appointment.ID.init(rawValue: 74994803),
                                            photos: []
             )
             
@@ -107,7 +107,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             
             window.rootViewController = UIHostingController(
                 rootView: NavigationView.init(content: {
-                    contentView
+                    photosStep
                 }).navigationViewStyle(StackNavigationViewStyle())
             )
             self.window = window
