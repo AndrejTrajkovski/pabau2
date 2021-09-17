@@ -118,9 +118,11 @@ extension APIClient {
             let success: Bool
         }
         var params: [String: Any] = [:]
-        params["data"] = statusId
+
+        params["type"] = "status"
         params["change_by_id"] = self.loggedInUser?.userID
         params["appointment_id"] = appointmentId
+        params["status_id"] = statusId
         
         let requestBuilder: RequestBuilder<VoidAPIResponse>.Type = requestBuilderFactory.getBuilder()
         return requestBuilder.init(
@@ -132,13 +134,14 @@ extension APIClient {
         .effect()
     }
     
-    public func appointmentChangeCancelReason(appointmentId: Appointment.ID, reason: String) -> Effect<VoidAPIResponse, RequestError> {
+    public func appointmentChangeCancelReason(appointmentId: Appointment.ID, reasonId: String) -> Effect<VoidAPIResponse, RequestError> {
         struct AppointmentChangeStatusResponse: Decodable {
             let success: Bool
         }
+
         var params: [String: Any] = [:]
-        params["data"] = "Cancelled"
-        params["cancelReason"] = reason
+        params["type"] = "cancel_reason"
+        params["reason_id"] = reasonId
         params["change_by_uid"] = self.loggedInUser?.userID
         params["appointment_id"] = appointmentId
 

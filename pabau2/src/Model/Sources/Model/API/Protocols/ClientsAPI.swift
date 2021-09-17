@@ -12,7 +12,7 @@ public protocol ClientsAPI {
 	func getAppointments(clientId: Client.Id) -> Effect<[CCAppointment], RequestError>
     func getAppointmentStatus() -> Effect<[AppointmentStatus], RequestError>
     func appointmentChangeStatus(appointmentId: Appointment.ID, statusId: Int) -> Effect<VoidAPIResponse, RequestError>
-    func appointmentChangeCancelReason(appointmentId: Appointment.ID, reason: String) -> Effect<VoidAPIResponse, RequestError>
+    func appointmentChangeCancelReason(appointmentId: Appointment.ID, reasonId: String) -> Effect<VoidAPIResponse, RequestError>
     func getAppointmentCancelReasons() -> Effect<[CancelReason], RequestError>
     func createRecurringAppointment(appointmentId: Appointment.ID, repeatRange: String, repeatUntil: String) -> Effect<Bool, RequestError>
     

@@ -64,11 +64,13 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 			case .singleChoice(let single):
 				switch single {
 				case .action(let id, let action):
-					let cancelReason = state.cancelReasons[id: id]
+                    guard let cancelReason = state.cancelReasons[id: id] else {
+                        return .none
+                    }
                     let appID = state.app.id
-                    let cancelReasonId = cancelReason?.id.rawValue ?? ""
+                    let cancelReasonId = cancelReason.id.rawValue
                     
-                    return env.clientsAPI.appointmentChangeCancelReason(appointmentId: state.app.id, reason: cancelReasonId) 
+                    return env.clientsAPI.appointmentChangeCancelReason(appointmentId: state.app.id, reasonId: cancelReasonId) 
 						.catchToEffect()
                         .map { response in
                             let newResponse: Result<Appointment.ID, RequestError>
