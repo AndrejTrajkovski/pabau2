@@ -100,6 +100,8 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 			default:
 				break
 			}
+        case .chooseRepeat(.onBackBtn):
+            state.chooseRepeat.isRepeatActive = false
 		case .buttons(let appDetailsButtonsAction):
 			print(appDetailsButtonsAction)
 			switch appDetailsButtonsAction {
@@ -140,8 +142,6 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 				.catchToEffect()
 				.map { .choosePathwayTemplate(.gotPathwayTemplates($0))  }
 		case .addService:
-			break
-		case .chooseRepeat(.onBackBtn):
 			break
 		case .chooseRepeat(.onChangeInterval(_)):
 			break
