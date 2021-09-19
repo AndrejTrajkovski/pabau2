@@ -41,25 +41,7 @@ let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction,
 	photoAndCanvasReducer.pullback(
 		state: \SinglePhotoEditState.photo,
 		action: /SinglePhotoEditAction.photoAndCanvas,
-        environment: { $0 }),
-    .init { state, action, env in
-
-        switch action {
-        case .savePhotosResponse(let result):
-            state.loadingState = .initial
-            switch result {
-            case .success(let voResponse):
-                state.loadingState = .gotSuccess
-            case .failure(let error):
-                state.loadingState = .gotError(error)
-            }
-        case .cancelUpload:
-            return .cancel(id: UploadPhotoId())
-        default:
-            break
-        }
-        return .none
-    }
+        environment: { $0 })
 )
 
 struct SinglePhotoEditState: Equatable {
@@ -109,8 +91,6 @@ public enum SinglePhotoEditAction: Equatable {
     case updateImageInjectables(UIImage)
     case onChangePhotoSize(CGSize)
     case savePhotos
-    case savePhotosResponse(Result<VoidAPIResponse, RequestError>)
-    case cancelUpload
 }
 
 struct SinglePhotoEdit: View {

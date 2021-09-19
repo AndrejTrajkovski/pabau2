@@ -17,4 +17,9 @@ public enum LoadingState: Equatable {
 		guard case LoadingState.loading = self else { return false }
 		return true
 	}
+
+    public var isError: Bool {
+        guard case LoadingState.gotError(_) = self else { return false }
+        return true
+    }
 }

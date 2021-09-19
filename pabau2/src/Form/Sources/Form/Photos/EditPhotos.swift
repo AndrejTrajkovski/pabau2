@@ -4,6 +4,7 @@ import Model
 import PencilKit
 import ComposableArchitecture
 import Util
+import AlertToast
 
 public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnvironment>
 	.combine(
@@ -56,7 +57,7 @@ public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnv
                     break//parent reducer
                 }
             case .abortUpload:
-                return Effect(value: EditPhotoAction.singlePhotoEdit(.cancelUpload))
+                return .cancel(id: UploadPhotoId())
             case .continueUpload:
                 state.uploadAlert = nil
             case .rightSide(.didTouchTrash):
@@ -96,6 +97,25 @@ public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnv
                     print(error)
                     state.photos[id: id]?.savePhotoState = .gotError(error)
                 }
+                let savingStates = state.photos.map(\.savePhotoState)
+                let allUploadsAreFinished = savingStates.allSatisfy { !$0.isLoading }
+                if allUploadsAreFinished {
+                    let numberOfErrors = savingStates.filter { $0.isError }.count
+                    if numberOfErrors > 0 {
+                        state.uploadAlert = AlertState(title: TextState(Texts.errorUploadingPhotos),
+                                                       message: TextState("\(numberOfErrors) photos failed to upload."),
+                        dismissButton: .destructive(TextState("Ok"), send: .dismissUploadErrorAlert))
+                    }
+                    state.photos = state.photos.filter { $0.savePhotoState != .gotSuccess }
+                    if state.editingPhotoId == id {
+                        state.editingPhotoId = state.photos.last?.id
+                        if state.editingPhotoId == nil {
+                            return Effect.init(value: EditPhotoAction.goBack)
+                        }
+                    }
+                }
+            case .dismissUploadErrorAlert:
+                state.uploadAlert = nil
             default:
                 break
 			}
@@ -116,6 +136,7 @@ public enum EditPhotoAction: Equatable {
     case abortUpload
     case continueUpload
     case saveResponse(idx: Int, result:(Result<VoidAPIResponse, RequestError>))
+    case dismissUploadErrorAlert
 }
 
 public struct EditPhotosState: Equatable {
@@ -197,19 +218,17 @@ public struct EditPhotos: View {
 			self.editingPhotoId = state.editingPhotoId
 			self.isDrawingDisabled = state.activeCanvas != .drawing
 			self.isPhotosAlbumActive = state.isPhotosAlbumActive
-
-            self.uploadingImagesMessage = {
-                let savingStates = state.photos.map(\.savePhotoState)
-                if savingStates.allSatisfy({ $0 == .gotSuccess }) {
-                    return nil
-                } else if savingStates.allSatisfy({ $0 == .initial }) {
-                    return nil
-                } else if savingStates.contains(where: { $0 == .loading }) {
-                    return "Uploading photos..."
-                } else {
-                    return "There was an error uploading photos."
-                }
-            }()
+            let savingStates = state.photos.map(\.savePhotoState)
+            if savingStates.allSatisfy({ $0 == .gotSuccess }) {
+                uploadingImagesMessage = nil
+            } else if savingStates.allSatisfy({ $0 == .initial }) {
+                uploadingImagesMessage = nil
+            } else if savingStates.contains(where: { $0 == .loading }) {
+                let numberOfPhotosSaving = savingStates.filter { $0 == .loading }.count
+                uploadingImagesMessage = "Uploading photos \(savingStates.count - numberOfPhotosSaving + 1) / \(savingStates.count)"
+            } else {
+                uploadingImagesMessage = nil
+            }
             self.isSaveEnabled = state.photos.allSatisfy { $0.basePhoto.imageData() != nil }
 		}
 	}
@@ -218,16 +237,16 @@ public struct EditPhotos: View {
         VStack {
             HStack {
                 EditPhotosList(store:
-                                self.store.scope(state: { $0.editPhotoList }, action: { .editPhotoList($0) })
+                                store.scope(state: { $0.editPhotoList },
+                                            action: { .editPhotoList($0) })
                 )
                 .frame(width: 92)
                 IfLetStore(
-                    self.store.scope(
+                    store.scope(
                         state: { $0.singlePhotoEdit },
                         action: { .singlePhotoEdit($0) }
                     ),
-                    then:
-                        SinglePhotoEdit.init(store:),
+                    then: SinglePhotoEdit.init(store:),
                     else: { Text("No photos selected. Select or take a new photo.") }
                 )
                 .frame(minWidth: 0, maxWidth: .infinity)
@@ -241,12 +260,7 @@ public struct EditPhotos: View {
             }
             Group {
                 if viewStore.state.isDrawingDisabled {
-                    IfLetStore(self.store.scope(
-                                state: { $0.singlePhotoEdit?.injectables.injectablesTool },
-                                action: { .singlePhotoEdit(SinglePhotoEditAction.injectables(InjectablesAction.injectablesTool($0)))}), then: {
-                                    InjectablesTool(store: $0)
-                                }, else: { Color.clear }
-                    )
+                    injectablesPicker
                 } else {
                     Color.clear
                 }
@@ -254,41 +268,73 @@ public struct EditPhotos: View {
             .frame(height: 128)
         }
         .navigationBarItems(
-            leading: MyBackButton(text: Texts.back,
-                                  action: { viewStore.send(.goBack) }),
-            trailing: Button( action: { viewStore.send(.save) },
-                              label: { Text(Texts.save) })
-                .disabled(!viewStore.isSaveEnabled)
+            leading: backButton,
+            trailing: saveButton
         )
         .navigationBarBackButtonHidden(true)
         .modalLink(isPresented: .constant(viewStore.state.isPhotosAlbumActive),
                    linkType: ModalTransition.fullScreenModal,
-                   destination: {
-                    IfLetStore(self.store.scope(
-                                state: { $0.cameraOverlay },
-                                action: { .cameraOverlay($0) }),
-                               then: PhotoLibraryPicker.init(store:)
-                    )
-                    .navigationBarHidden(true)
-                    .navigationBarTitle("")
-                   })
+                   destination: { photosAlbum })
         .modalLink(isPresented: .constant(viewStore.state.isCameraActive),
                    linkType: ModalTransition.fullScreenModal,
-                   destination: {
-                    IfLetStore(self.store.scope(
-                                state: { $0.cameraOverlay },
-                                action: { .cameraOverlay($0) }),
-                               then: ImagePicker.init(store:)
-                    ).navigationBarHidden(true)
-                    .navigationBarTitle("")
-                   }
-        )
+                   destination: { camera })
         .alert(
             store.scope(state: { $0.deletePhotoAlert }),
-            dismiss: EditPhotoAction.rightSide(EditPhotosRightSideAction.deleteAlertCanceled)
-        )
-//        .alert(store.scope(state: { $0.uploadAlert }), dismiss: EditPhotoAction.continueUpload)
+            dismiss: EditPhotoAction.rightSide(EditPhotosRightSideAction.deleteAlertCanceled))
+        .loadingView(.constant(viewStore.uploadingImagesMessage != nil),
+                     viewStore.uploadingImagesMessage ?? "")
+        .alert(
+            store.scope(state: { $0.uploadAlert }),
+            dismiss: EditPhotoAction.dismissUploadErrorAlert)
+//        .toast(isPresenting: .constant(viewStore.uploadingErrorMessage != nil),
+//               duration: 1,
+//               tapToDismiss: false,
+//               alert: { AlertToast(displayMode: .alert,
+//                                   type: .error(.red),
+//                                   title: viewStore.uploadingErrorMessage ?? "",
+//                                   subTitle: nil,
+//                                   custom: nil) }
+//        )
 	}
+
+    var injectablesPicker: some View {
+        IfLetStore(self.store.scope(
+                    state: { $0.singlePhotoEdit?.injectables.injectablesTool },
+                    action: { .singlePhotoEdit(SinglePhotoEditAction.injectables(InjectablesAction.injectablesTool($0)))}), then: {
+                        InjectablesTool(store: $0)
+                    }, else: { Color.clear }
+        )
+    }
+
+    var backButton: some View {
+        MyBackButton(text: Texts.back,
+                              action: { viewStore.send(.goBack) })
+    }
+
+    var saveButton: some View {
+        Button( action: { viewStore.send(.save) },
+                          label: { Text(Texts.save) })
+            .disabled(!viewStore.isSaveEnabled)
+    }
+
+    var photosAlbum: some View {
+        IfLetStore(self.store.scope(
+                    state: { $0.cameraOverlay },
+                    action: { .cameraOverlay($0) }),
+                   then: PhotoLibraryPicker.init(store:)
+        )
+        .navigationBarHidden(true)
+        .navigationBarTitle("")
+    }
+
+    var camera: some View {
+        IfLetStore(self.store.scope(
+                    state: { $0.cameraOverlay },
+                    action: { .cameraOverlay($0) }),
+                   then: ImagePicker.init(store:)
+        ).navigationBarHidden(true)
+        .navigationBarTitle("")
+    }
 }
 
 extension EditPhotosState {
