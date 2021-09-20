@@ -22,6 +22,9 @@ public protocol FormAPI {
                            _ profilePicId: ImageModel.ID?,
                            _ sharePicId: ImageModel.ID?) -> Effect<StepStatus, RequestError>
     
-    func uploadImages(uploads: [PhotoUpload],
-                      pathwayIdStepId: PathwayIdStepId) -> [Effect<VoidAPIResponse, RequestError>]
+    //    func uploadImages(uploads: [PhotoUpload],
+    //                      pathwayIdStepId: PathwayIdStepId) -> [Effect<VoidAPIResponse, RequestError>]
+    func uploadImage(upload: PhotoUpload,
+                     index: Int,
+                     pathwayIdStepId: PathwayIdStepId) -> Effect<VoidAPIResponse, RequestError>
 }

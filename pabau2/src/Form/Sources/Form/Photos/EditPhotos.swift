@@ -5,6 +5,7 @@ import PencilKit
 import ComposableArchitecture
 import Util
 import AlertToast
+import Combine
 
 public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnvironment>
 	.combine(
@@ -31,21 +32,48 @@ public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnv
             case .editPhotoList, .cameraOverlay, .chooseInjectables:
                 break
             case .save:
+                var uploadsActions: [Effect<EditPhotoAction, Never>] = []
                 for idx in state.photos.indices {
-                    let id = state.photos[idx].id
+                    let photo = state.photos[idx]
+                    let id = photo.id
                     state.photos[id: id]?.savePhotoState = .loading
-                }
-                let uploads = state.photos.compactMap { makeUploadData(photoViewModel: $0,
-                                                                       clientId: state.clientId, employeeId: nil)}
-                let uploadsResponses = env.formAPI.uploadImages(uploads: uploads,
-                                                                pathwayIdStepId: state.pathwayIdStepId)
-                let uploadsActions: [Effect<EditPhotoAction, Never>] = zip(uploadsResponses.indices, uploadsResponses).map { idx, upload in
-                    let responseEffect = upload.catchToEffect()
-                        .map { EditPhotoAction.saveResponse(idx: idx, result: $0) }
-                    return responseEffect
+                    let renderAndUploadEffect = renderAndUpload(photo,
+                                                                idx,
+                                                                state.pathwayIdStepId,
+                                                                state.clientId,
+                                                                nil,
+                                                                env.formAPI)
+                    let action = renderAndUploadEffect
+                        .catchToEffect()
+                        .receive(on: DispatchQueue.main)
+                        .eraseToEffect()
+                        .map {
+                            EditPhotoAction.saveResponse(idx: idx, result: $0)
+                        }
+                    uploadsActions.append(action)
                 }
 
+//                let renderedUploads = Effect<[PhotoUpload], Never>.future { callback in
+//                        DispatchQueue.global(qos: .userInitiated).async {
+//                            let uploads = state.photos.map { photo in
+//                                return makeUploadData(photoViewModel: photo,
+//                                                      clientId: state.clientId,
+//                                                      employeeId: nil)
+//                            }
+//                            callback(.success(uploads))
+//                        }
+//                    }
+//                let uploadsResponses = env.formAPI.uploadImages(uploads: uploads,
+//                                                                pathwayIdStepId: state.pathwayIdStepId)
+//                let uploadsActions: [Effect<EditPhotoAction, Never>] = zip(uploadsResponses.indices, uploadsResponses).map { idx, upload in
+//                    let responseEffect = upload.catchToEffect()
+//                        .map { EditPhotoAction.saveResponse(idx: idx, result: $0) }
+//                    return responseEffect
+//                }
+
                 return Effect.concatenate(uploadsActions)
+                    .receive(on: DispatchQueue.main)
+                    .eraseToEffect()
                     .cancellable(id: UploadPhotoId())
             case .goBack:
                 if state.photos.map(\.savePhotoState).contains(where: { $0.isLoading }) {
@@ -105,13 +133,6 @@ public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnv
                         state.uploadAlert = AlertState(title: TextState(Texts.errorUploadingPhotos),
                                                        message: TextState("\(numberOfErrors) photos failed to upload."),
                         dismissButton: .destructive(TextState("Ok"), send: .dismissUploadErrorAlert))
-                    }
-                    state.photos = state.photos.filter { $0.savePhotoState != .gotSuccess }
-                    if state.editingPhotoId == id {
-                        state.editingPhotoId = state.photos.last?.id
-                        if state.editingPhotoId == nil {
-                            return Effect.init(value: EditPhotoAction.goBack)
-                        }
                     }
                 }
             case .dismissUploadErrorAlert:
@@ -483,7 +504,7 @@ func render(injections: [InjectableId : IdentifiedArrayOf<Injection>],
 
 func makeUploadData(photoViewModel: PhotoViewModel,
                     clientId: Client.ID,
-                    employeeId: Employee.ID?) -> PhotoUpload? {
+                    employeeId: Employee.ID?) -> PhotoUpload {
     //TODO employee id from passcode when starting pathway, make employeeId non optional and follow compiler
     var params: [String: String] = ["contact_id": clientId.description,
                                     "counter": "1",
@@ -495,9 +516,28 @@ func makeUploadData(photoViewModel: PhotoViewModel,
     if let employeeId = employeeId {
         params["uid"] = employeeId.description
     }
-    if let rendered = render(photoViewModel: photoViewModel).jpegData(compressionQuality: 0.5) {
-        return PhotoUpload(fileData: rendered, params: params)
-    } else {
-        return nil
+    let rendered = render(photoViewModel: photoViewModel).jpegData(compressionQuality: 0.5)!
+    return PhotoUpload(fileData: rendered, params: params)
+}
+
+func renderAndUpload(_ photoViewModel: PhotoViewModel,
+                     _ index: Int,
+                     _ pathwayIdStepId: PathwayIdStepId,
+                     _ clientId: Client.ID,
+                     _ employeeId: Employee.ID?,
+                     _ api: FormAPI) -> Effect<VoidAPIResponse, RequestError> {
+    let renderedUploadData = Effect<PhotoUpload, Never>.future { completion in
+        DispatchQueue.global(qos: .userInitiated).async {
+            let uploadData = makeUploadData(photoViewModel: photoViewModel,
+                                            clientId: clientId,
+                                            employeeId: employeeId)
+            completion(.success(uploadData))
+        }
     }
+    let upload = renderedUploadData.flatMap {
+        api.uploadImage(upload: $0, index: index, pathwayIdStepId: pathwayIdStepId)
+            .receive(on: DispatchQueue.main)
+            .eraseToEffect()
+    }
+    return upload.eraseToEffect()
 }

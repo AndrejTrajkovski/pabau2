@@ -49,6 +49,27 @@ public let photosFormReducer: Reducer<PhotosState, PhotosFormAction, FormEnviron
                 }
             case .didTouchBackOnEditPhotos, .editPhoto(.abortUpload):
                 state.editPhotos = nil
+            case .editPhoto(.saveResponse(let idx, let result)):
+                let savingStates = state.photos.map(\.savePhotoState)
+                let allUploadsAreFinished = savingStates.allSatisfy { !$0.isLoading }
+                if allUploadsAreFinished {
+                    guard var editPhotos = state.editPhotos else {
+                        return .none
+                    }
+                    let id = editPhotos.photos[idx].id
+                    editPhotos.photos.filter { $0.savePhotoState == .gotSuccess}.forEach {
+                        state.photos[id: $0.id] = $0
+                    }
+                    editPhotos.photos = editPhotos.photos.filter { $0.savePhotoState != .gotSuccess }
+                    if editPhotos.editingPhotoId == id {
+                        if editPhotos.editingPhotoId == nil {
+                            state.editPhotos = nil
+                        } else {
+                            editPhotos.editingPhotoId = editPhotos.photos.last?.id
+                            state.editPhotos = editPhotos
+                        }
+                    }
+                }
 //            case .editPhoto(.save):
 //                guard let editedPhotos = state.editPhotos?.photos else { break }
 //                state.selectedIds.forEach {

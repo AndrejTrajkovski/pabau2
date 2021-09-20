@@ -215,7 +215,7 @@ extension APIClient {
 		let requestBuilder: RequestBuilder<VoidAPIResponse>.Type = requestBuilderFactory.getBuilder()
 		let boundary = "Boundary-\(UUID().uuidString)"
 		let httpBody = NSMutableData()
-        for (key, value) in photo.params {
+        for (key, value) in photo.photoParams {
 		  httpBody.appendString(convertFormField(named: key, value: value, using: boundary))
 		}
 
@@ -314,19 +314,26 @@ extension APIClient {
 // MARK - ClientCard
 extension APIClient {
 
-    public func uploadImages(uploads: [PhotoUpload],
-                             pathwayIdStepId: PathwayIdStepId) -> [Effect<VoidAPIResponse, RequestError>] {
-        var photoUploadEffects = [Effect<VoidAPIResponse, RequestError>]()
-        uploads.indices.forEach {
-            let shouldDeletePreviousPhotosInStep = $0 == 0
-            var queryParams = commonAnd(other: ["delete": String(shouldDeletePreviousPhotosInStep)])
-            merge(&queryParams, with: pathwayIdStepId)
-            let photoUpload = uploads[$0]
-            let uploadPhoto = uploadPhoto(photoUpload, $0, queryParams as! [String: String])
-            photoUploadEffects.append(uploadPhoto)
-        }
-        return photoUploadEffects
+    public func uploadImage(upload: PhotoUpload,
+                            index: Int,
+                            pathwayIdStepId: PathwayIdStepId) -> Effect<VoidAPIResponse, RequestError> {
+        var queryParams = commonParams()
+        merge(&queryParams, with: pathwayIdStepId)
+        return uploadPhoto(upload, index, queryParams as! [String: String])
     }
+
+//    public func uploadImages(uploads: [PhotoUpload],
+//                             pathwayIdStepId: PathwayIdStepId) -> [Effect<VoidAPIResponse, RequestError>] {
+//        var photoUploadEffects = [Effect<VoidAPIResponse, RequestError>]()
+//        uploads.indices.forEach {
+//            var queryParams = commonParams()
+//            merge(&queryParams, with: pathwayIdStepId)
+//            let photoUpload = uploads[$0]
+//            let uploadPhoto = uploadPhoto(photoUpload, $0, queryParams as! [String: String])
+//            photoUploadEffects.append(uploadPhoto)
+//        }
+//        return photoUploadEffects
+//    }
 }
 
 extension NSMutableData {
