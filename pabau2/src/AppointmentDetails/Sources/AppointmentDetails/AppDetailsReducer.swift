@@ -37,11 +37,11 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 		switch action {
 		case .chooseRepeat(.onRepeat(let chosenRepeat)):
 			let formatter = DateFormatter()
-			formatter.dateFormat = "dd-MM-yyyy"
+			formatter.dateFormat = "dd-MM-yyyy HH:mm"
 			let sDate = formatter.string(from: chosenRepeat.date)
 			let interval = chosenRepeat.interval.interval
 						
-			return env.clientsAPI.createRecurringAppointment(appointmentId: state.app.id, repeatRange: interval, repeatUntil: sDate)
+            return env.clientsAPI.createRecurringAppointment(appointmentId: state.app.id, repeatRange: interval, repeatUntil: sDate)
 				.catchToEffect()
 				.map { response in AppDetailsAction.onResponseCreateReccuringAppointment(response) }
 		case .onResponseCreateReccuringAppointment(let response):

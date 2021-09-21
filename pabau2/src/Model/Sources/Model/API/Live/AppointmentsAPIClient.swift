@@ -181,10 +181,9 @@ extension APIClient {
         var params: [String: Any] = [:]
         params["appointment_id"] = appointmentId
         params["repeat_range"] = repeatRange
-        params["repeat_number"] = "1" //there it's always 1. 
         params["repeat_until"] = repeatUntil
         
-        let requestBuilder: RequestBuilder<AppointmentRecurringResponse>.Type = requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<AppointmentRecurringResponse>.Type  = requestBuilderFactory.getBuilder()
         return requestBuilder.init(
             method: .GET,
             baseUrl: baseUrl,
