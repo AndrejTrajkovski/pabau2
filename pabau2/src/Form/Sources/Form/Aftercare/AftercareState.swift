@@ -7,7 +7,7 @@ public struct AftercareState: Equatable, Identifiable {
 	
 	public init (
 		id: Step.Id,
-        images: [ImageModel],
+        images: [SavedPhoto],
 		aftercares: [AftercareTemplate],
 		recalls: [AftercareTemplate]
 	) {
@@ -17,17 +17,17 @@ public struct AftercareState: Equatable, Identifiable {
 		self.recalls = AftercareBoolSectionState.init(templates: recalls)
 	}
     
-    let images: [ImageModel]
+    let images: [SavedPhoto]
     public var selectedProfileImageIdx: Int? = nil
     public var selectedShareImgeIdx: Int? = nil
 	public var aftercares: AftercareBoolSectionState
 	public var recalls: AftercareBoolSectionState
     
-    public func selectedProfileImageId() -> ImageModel.ID? {
+    public func selectedProfileImageId() -> SavedPhoto.ID? {
         selectedProfileImageIdx.map { images[$0].id }
     }
     
-    public func selectedShareImageId() -> ImageModel.ID? {
+    public func selectedShareImageId() -> SavedPhoto.ID? {
         selectedShareImgeIdx.map { images[$0].id }
     }
 }

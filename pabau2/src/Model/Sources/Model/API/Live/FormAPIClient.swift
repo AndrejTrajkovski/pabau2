@@ -8,8 +8,8 @@ public extension APIClient {
                            _ clientId: Client.ID,
                            _ selectedAftercareIds: [AftercareTemplate.ID],
                            _ selectedRecallIds: [AftercareTemplate.ID],
-                           _ profilePicId: ImageModel.ID?,
-                           _ sharePicId: ImageModel.ID?) -> Effect<StepStatus, RequestError> {
+                           _ profilePicId: SavedPhoto.ID?,
+                           _ sharePicId: SavedPhoto.ID?) -> Effect<StepStatus, RequestError> {
         Fail(error: RequestError.apiError("TO IMPLEMENT ON BACKEND"))
             .eraseToEffect()
     }

@@ -13,14 +13,14 @@ public let singleSelectImagesReducer = Reducer<SingleSelectImages, SingleSelectI
 }
 
 public struct SingleSelectImages: Equatable {
-    let images: [ImageModel]
+    let images: [SavedPhoto]
     var selectedIdx: Int?
     
-    func isSelected(model: ImageModel) -> Bool {
+    func isSelected(model: SavedPhoto) -> Bool {
         return self.images.firstIndex(of: model) == selectedIdx
     }
     
-    public init (images: [ImageModel],
+    public init (images: [SavedPhoto],
                  selectedIdx: Int?) {
         self.images = images
         self.selectedIdx = selectedIdx
@@ -61,10 +61,10 @@ struct AftercareImagesSection: View {
 }
 
 struct GridCell: View {
-    let model: ImageModel
+    let model: SavedPhoto
     let isSelected: Bool
     var body: some View {
-        WebImage(url: URL(string: model.url))
+        WebImage(url: model.thumbnail.flatMap(URL.init(string:)))
             .resizable()
             .indicator(.activity) // Activity Indicator
             .padding(8)

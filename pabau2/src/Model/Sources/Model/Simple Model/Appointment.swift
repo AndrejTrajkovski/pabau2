@@ -26,7 +26,6 @@ public struct Appointment: Equatable, Identifiable, Decodable {
 	public let serviceId: Service.Id
 	public let locationName: String?
     public var pathways: IdentifiedArrayOf<PathwayInfo>
-    public let photos: [ImageModel]
 }
 
 extension Appointment: CalendarEventVariant { }
@@ -82,14 +81,14 @@ extension Appointment {
 		let pathwayArr = (try? container.decode([PathwayInfo].self, forKey: .pathways)) ?? []
         self.pathways = IdentifiedArrayOf(uniqueElements: pathwayArr)
         
-        if let photosIdsStr = try? container.decode(String.self, forKey: .uploaded_photos_ids),
-              let photosUrlsStr = try? container.decode(String.self, forKey: .uploaded_photos) {
-            let photosIds = photosIdsStr.components(separatedBy: ",")
-            let photosUrls = photosUrlsStr.components(separatedBy: ",")
-            self.photos = zip(photosIds, photosUrls).map { ImageModel.init($0.0, $0.1) }
-        } else {
-            self.photos = []
-        }
+//        if let photosIdsStr = try? container.decode(String.self, forKey: .uploaded_photos_ids),
+//              let photosUrlsStr = try? container.decode(String.self, forKey: .uploaded_photos) {
+//            let photosIds = photosIdsStr.components(separatedBy: ",")
+//            let photosUrls = photosUrlsStr.components(separatedBy: ",")
+//            self.photos = zip(photosIds, photosUrls).map { ImageModel.init($0.0, $0.1) }
+//        } else {
+//            self.photos = []
+//        }
 	}
 }
 
@@ -111,16 +110,4 @@ extension CalendarEvent {
 
 extension Int {
     var boolValue: Bool { return self != 0 }
-}
-
-public struct ImageModel: Identifiable, Hashable, Decodable {
-    public var id: String { return title }
-    public let title: String
-    public let url: String
-    
-    public init(_ title: String,
-                _ url: String) {
-        self.title = title
-        self.url = url
-    }
 }
