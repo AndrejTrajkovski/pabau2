@@ -36,7 +36,7 @@ extension CheckInLoadedState {
 		self.pathway = pathway
 		self.pathwayTemplate = template
 		let patientStepStates = stepsAndEntries(pathway, template, .patient).map {
-            StepState.init(stepAndEntry: $0, clientId: appointment.customerId, pathwayId: pathway.id, appointmentId: appointment.id, photos: appointment.photos)
+            StepState.init(stepAndEntry: $0, clientId: appointment.customerId, pathwayId: pathway.id, appointmentId: appointment.id)
 		}
         
         self.patientCheckIn = CheckInPathwayState(appointment: appointment,
@@ -44,7 +44,7 @@ extension CheckInLoadedState {
                                                   pathwayTemplate: pathwayTemplate,
                                                   stepStates: patientStepStates)
 		let doctorStepStates = stepsAndEntries(pathway, pathwayTemplate, .doctor).map {
-            StepState.init(stepAndEntry: $0, clientId: appointment.customerId, pathwayId: pathway.id, appointmentId: appointment.id, photos: appointment.photos)
+            StepState.init(stepAndEntry: $0, clientId: appointment.customerId, pathwayId: pathway.id, appointmentId: appointment.id)
 		}
         self.doctorCheckIn = CheckInPathwayState(appointment: appointment,
                                                  pathway: pathway,
@@ -151,7 +151,7 @@ func getForm(_ pathwayId: Pathway.ID, _ stepId: Step.ID, _ stepType: StepType, _
             .map(pipe(AftercareAction.gotAftercareAndRecallsResponse, StepBodyAction.aftercare))
             .eraseToEffect()
     case .photos:
-        return formAPI.getPhotos(id: pathwayId, step: stepId)
+        return formAPI.getPhotos(pathwayId: pathwayId, stepId: stepId)
             .catchToEffect()
             .map(pipe(PhotosFormAction.gotStepPhotos, StepBodyAction.photos))
             .eraseToEffect()

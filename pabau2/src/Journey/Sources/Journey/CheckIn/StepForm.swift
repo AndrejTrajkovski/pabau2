@@ -13,7 +13,7 @@ public let stepReducer: Reducer<StepState, StepAction, JourneyEnvironment> = .co
         switch action {
         
         case .retryGetForm:
-            
+            state.gettingState = .loading
             if let getFormEffect = getForm(state.pathwayId,
                                            state.id,
                                            state.stepType,
@@ -238,8 +238,7 @@ public struct StepState: Equatable, Identifiable {
     public init(stepAndEntry: StepAndStepEntry,
                 clientId: Client.ID,
                 pathwayId: Pathway.ID,
-                appointmentId: Appointment.ID,
-                photos: [ImageModel]) {
+                appointmentId: Appointment.ID) {
         self.id = stepAndEntry.step.id
         self.stepType = stepAndEntry.step.stepType
         self.canSkip = stepAndEntry.step.canSkip
@@ -247,7 +246,7 @@ public struct StepState: Equatable, Identifiable {
         self.clientId = clientId
         self.pathwayId = pathwayId
         self.status = stepAndEntry.entry?.status ?? .pending
-        self.stepBody = StepBodyState(stepAndEntry: stepAndEntry, clientId: clientId, pathwayId: pathwayId, appointmentId: appointmentId, appPhotos: photos)
+        self.stepBody = StepBodyState(stepAndEntry: stepAndEntry, clientId: clientId, pathwayId: pathwayId, appointmentId: appointmentId)
         
         if getForm(
             pathwayId,

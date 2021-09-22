@@ -41,7 +41,7 @@ public enum StepBodyState: Equatable {
     case lab
     case video
     
-    init(stepAndEntry: StepAndStepEntry, clientId: Client.ID, pathwayId: Pathway.ID, appointmentId: Appointment.ID, appPhotos: [ImageModel]) {
+    init(stepAndEntry: StepAndStepEntry, clientId: Client.ID, pathwayId: Pathway.ID, appointmentId: Appointment.ID) {
         
         switch stepAndEntry.step.stepType {
         case .medicalhistory, .consents, .treatmentnotes, .prescriptions:
@@ -61,7 +61,7 @@ public enum StepBodyState: Equatable {
             )
         case .aftercares:
             self = .aftercare(AftercareState.init(id: stepAndEntry.step.id,
-                                                  images: appPhotos,
+                                                  images: [],
                                                   aftercares: [],
                                                   recalls: []))
         case .timeline:
@@ -69,7 +69,6 @@ public enum StepBodyState: Equatable {
         case .photos:
             self = .photos(PhotosState(id: stepAndEntry.step.id,
                                        pathwayId: pathwayId,
-                                       imageModels: appPhotos,
                                        clientId: clientId))
         case .lab:
             self = .lab

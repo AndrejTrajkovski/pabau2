@@ -93,8 +93,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let stepState = StepState.init(stepAndEntry: stepAndEntry,
                                            clientId: Client.ID.init(rawValue: 22518040),
                                            pathwayId: Pathway.ID.init(rawValue: 2067),
-                                           appointmentId: Appointment.ID.init(rawValue: 74994803),
-                                           photos: []
+                                           appointmentId: Appointment.ID.init(rawValue: 74994803)
             )
             
             let photosStep = StepForm(
@@ -104,11 +103,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 environment: makeJourneyEnv(makeTabBarEnv(env))
                 )
             )
-            
+
+            let photosNavigation = NavigationView.init(content: {
+                photosStep
+            }).navigationViewStyle(StackNavigationViewStyle())
+
             window.rootViewController = UIHostingController(
-                rootView: NavigationView.init(content: {
-                    photosStep
-                }).navigationViewStyle(StackNavigationViewStyle())
+                rootView: contentView
             )
             self.window = window
             window.makeKeyAndVisible()

@@ -7,11 +7,10 @@ import Overture
 import ASCollectionView
 
 public struct PhotosState: Equatable, Identifiable {
-    public init(id: Step.ID, pathwayId: Pathway.ID, imageModels: [ImageModel], clientId: Client.ID) {
+    public init(id: Step.ID, pathwayId: Pathway.ID, clientId: Client.ID) {
         self.id = id
         self.pathwayId = pathwayId
         self.clientId = clientId
-        //TODO get image models for appointment and add to photos array
     }
 
     public let pathwayId: Pathway.ID

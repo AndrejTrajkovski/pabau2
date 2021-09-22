@@ -324,14 +324,15 @@ extension APIClient {
         return uploadPhoto(upload, index, queryParams as! [String: String], SavedPhoto.self)
     }
 
-    public func getPhotos(id: Pathway.ID, step: Step.ID) -> Effect<[SavedPhoto], RequestError> {
+    public func getPhotos(pathwayId: Pathway.ID, stepId: Step.ID) -> Effect<[SavedPhoto], RequestError> {
         let requestBuilder: RequestBuilder<[SavedPhoto]>.Type = requestBuilderFactory.getBuilder()
 
         return requestBuilder.init(
             method: .GET,
             baseUrl: baseUrl,
             path: .getPathwayStepPhotos,
-            queryParams: commonAnd(other: [:])
+            queryParams: commonAnd(other: ["path_taken_id": pathwayId,
+                                           "step_id": stepId.description])
         )
         .effect()
     }
