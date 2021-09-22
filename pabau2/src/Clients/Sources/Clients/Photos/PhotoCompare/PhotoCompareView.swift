@@ -10,7 +10,6 @@ public enum PhotoCompareAction: Equatable {
     case shareAction(PhotoShareSelectAction)
     case onBackCompare
     case sideBySideAction(PhotoSideBySideAction)
-    case didTouchBackOnEditPhotos
 }
 
 enum PhotoCompareMode: Equatable {

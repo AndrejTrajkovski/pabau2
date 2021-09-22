@@ -26,5 +26,6 @@ public protocol FormAPI {
     //                      pathwayIdStepId: PathwayIdStepId) -> [Effect<VoidAPIResponse, RequestError>]
     func uploadImage(upload: PhotoUpload,
                      index: Int,
-                     pathwayIdStepId: PathwayIdStepId) -> Effect<VoidAPIResponse, RequestError>
+                     pathwayIdStepId: PathwayIdStepId) -> Effect<SavedPhoto, RequestError>
+    func getPhotos(id: Pathway.ID, step: Step.ID) -> Effect<[SavedPhoto], RequestError>
 }

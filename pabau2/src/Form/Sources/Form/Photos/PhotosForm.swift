@@ -44,11 +44,12 @@ public let photosFormReducer: Reducer<PhotosState, PhotosFormAction, FormEnviron
                 let pidsid = PathwayIdStepId(step_id: state.id, path_taken_id: state.pathwayId)
                 state.editPhotos = EditPhotosState(selPhotos, pathwayIdStepId: pidsid, clientId: state.clientId)
             case .editPhoto(.goBack):
-                if state.photos.map(\.savePhotoState).allSatisfy({ !$0.isLoading }) {
+                if let editPhotos = state.editPhotos, editPhotos.isSavingPhotos == false {
                     state.editPhotos = nil
                 }
-            case .didTouchBackOnEditPhotos, .editPhoto(.abortUpload):
+            case .editPhoto(.abortUpload):
                 state.editPhotos = nil
+            return .cancel(id: UploadPhotoId())
             case .editPhoto(.saveResponse(let idx, let result)):
                 let savingStates = state.photos.map(\.savePhotoState)
                 let allUploadsAreFinished = savingStates.allSatisfy { !$0.isLoading }
@@ -78,6 +79,13 @@ public let photosFormReducer: Reducer<PhotosState, PhotosFormAction, FormEnviron
 //                state.editPhotos = nil
 //                state.selectedIds.removeAll()
             case .editPhoto, .selectPhotos: break
+            case .gotStepPhotos(let photosResult):
+                switch photosResult {
+                case .success(let photos):
+                    state.photos = IdentifiedArray.init(uniqueElements: photos.map(PhotoViewModel.init(_:)))
+                case .failure(let error):
+                    break
+                }
             }
             return .none
         },
@@ -85,13 +93,13 @@ public let photosFormReducer: Reducer<PhotosState, PhotosFormAction, FormEnviron
             state: \PhotosState.selectPhotos,
             action: /PhotosFormAction.selectPhotos,
             environment: { $0 })
-    ).debug()
+    )
 
 public enum PhotosFormAction: Equatable {
     case selectPhotos(SelectPhotosAction)
     case didSelectEditPhotos
-    case didTouchBackOnEditPhotos
     case editPhoto(EditPhotoAction)
+    case gotStepPhotos(Result<[SavedPhoto], RequestError>)
 }
 
 public struct PhotosForm: View {
@@ -126,15 +134,7 @@ public struct PhotosForm: View {
     var editPhotos: some View {
         IfLetStore(self.store.scope(
                     state: { $0.editPhotos }, action: { .editPhoto($0) }),
-                   then: {
-                    EditPhotos(store: $0)
-//                        .navigationBarItems(leading:
-//                                                MyBackButton(text: Texts.back, action: { viewStore.send(.didTouchBackOnEditPhotos)}
-//                                                ), trailing:
-//                                                    Button(action: { viewStore.send(.saveEdited) },
-//                                                           label: { Text(Texts.save) })
-//                        ).navigationBarBackButtonHidden(true)
-                   }
+                   then: EditPhotos.init(store:)
         )
     }
 }

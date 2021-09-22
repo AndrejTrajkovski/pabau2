@@ -77,6 +77,10 @@ func publisher<T: Decodable>(request: URLRequest, dateDecoding: JSONDecoder.Date
 		.flatMap(maxPublishers: .max(1)) { data in
 			return decode(data, dateDecoding: dateDecoding)
 		}
+        .mapError {
+            print($0)
+            return $0
+        }
 		.eraseToAnyPublisher()
 }
 

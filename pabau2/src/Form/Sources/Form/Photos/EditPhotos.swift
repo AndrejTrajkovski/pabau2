@@ -52,31 +52,12 @@ public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnv
                         }
                     uploadsActions.append(action)
                 }
-
-//                let renderedUploads = Effect<[PhotoUpload], Never>.future { callback in
-//                        DispatchQueue.global(qos: .userInitiated).async {
-//                            let uploads = state.photos.map { photo in
-//                                return makeUploadData(photoViewModel: photo,
-//                                                      clientId: state.clientId,
-//                                                      employeeId: nil)
-//                            }
-//                            callback(.success(uploads))
-//                        }
-//                    }
-//                let uploadsResponses = env.formAPI.uploadImages(uploads: uploads,
-//                                                                pathwayIdStepId: state.pathwayIdStepId)
-//                let uploadsActions: [Effect<EditPhotoAction, Never>] = zip(uploadsResponses.indices, uploadsResponses).map { idx, upload in
-//                    let responseEffect = upload.catchToEffect()
-//                        .map { EditPhotoAction.saveResponse(idx: idx, result: $0) }
-//                    return responseEffect
-//                }
-
                 return Effect.concatenate(uploadsActions)
                     .receive(on: DispatchQueue.main)
                     .eraseToEffect()
                     .cancellable(id: UploadPhotoId())
             case .goBack:
-                if state.photos.map(\.savePhotoState).contains(where: { $0.isLoading }) {
+                if state.isSavingPhotos {
                     state.uploadAlert = AlertState(title: TextState(Texts.uploadAlertTitle),
                                                    message: TextState(Texts.uploadAlertMessage),
                                                    primaryButton: .destructive(TextState("Yes"), send: .abortUpload),
@@ -85,7 +66,7 @@ public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnv
                     break//parent reducer
                 }
             case .abortUpload:
-                return .cancel(id: UploadPhotoId())
+                break//parent reducer
             case .continueUpload:
                 state.uploadAlert = nil
             case .rightSide(.didTouchTrash):
@@ -125,9 +106,9 @@ public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnv
                     print(error)
                     state.photos[id: id]?.savePhotoState = .gotError(error)
                 }
-                let savingStates = state.photos.map(\.savePhotoState)
-                let allUploadsAreFinished = savingStates.allSatisfy { !$0.isLoading }
+                let allUploadsAreFinished = !state.isSavingPhotos
                 if allUploadsAreFinished {
+                    let savingStates = state.photos.map(\.savePhotoState)
                     let numberOfErrors = savingStates.filter { $0.isError }.count
                     if numberOfErrors > 0 {
                         state.uploadAlert = AlertState(title: TextState(Texts.errorUploadingPhotos),
@@ -142,7 +123,7 @@ public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnv
 			}
 			return .none
         }
-    ).debug()
+    )
 
 public enum EditPhotoAction: Equatable {
 	case openPhotoAlbum
@@ -156,11 +137,16 @@ public enum EditPhotoAction: Equatable {
     case showAlert
     case abortUpload
     case continueUpload
-    case saveResponse(idx: Int, result:(Result<VoidAPIResponse, RequestError>))
+    case saveResponse(idx: Int, result:(Result<SavedPhoto, RequestError>))
     case dismissUploadErrorAlert
 }
 
 public struct EditPhotosState: Equatable {
+
+    var isSavingPhotos: Bool {
+        return photos.map(\.savePhotoState).contains(where: { $0.isLoading })
+    }
+
 	var photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>
 	var editingPhotoId: PhotoVariantId?
 	var isTagsAlertActive: Bool = false
@@ -180,8 +166,7 @@ public struct EditPhotosState: Equatable {
     var isPhotosAlbumActive: Bool
     let pathwayIdStepId: PathwayIdStepId
     let clientId: Client.ID
-    var loadingState: LoadingState = .initial
-
+    
     public init (_ photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>, pathwayIdStepId: PathwayIdStepId, clientId: Client.ID) {
 		self.photos = photos
 		self.editingPhotoId = photos.last?.id
@@ -239,12 +224,8 @@ public struct EditPhotos: View {
 			self.editingPhotoId = state.editingPhotoId
 			self.isDrawingDisabled = state.activeCanvas != .drawing
 			self.isPhotosAlbumActive = state.isPhotosAlbumActive
-            let savingStates = state.photos.map(\.savePhotoState)
-            if savingStates.allSatisfy({ $0 == .gotSuccess }) {
-                uploadingImagesMessage = nil
-            } else if savingStates.allSatisfy({ $0 == .initial }) {
-                uploadingImagesMessage = nil
-            } else if savingStates.contains(where: { $0 == .loading }) {
+            if state.isSavingPhotos {
+                let savingStates = state.photos.map(\.savePhotoState)
                 let numberOfPhotosSaving = savingStates.filter { $0 == .loading }.count
                 uploadingImagesMessage = "Uploading photos \(savingStates.count - numberOfPhotosSaving + 1) / \(savingStates.count)"
             } else {
@@ -255,6 +236,28 @@ public struct EditPhotos: View {
 	}
     
     public var body: some View {
+        Group {
+            if let uploadMessage = viewStore.uploadingImagesMessage {
+                LoadingView.init(title:
+                                    uploadMessage,
+                                 bindingIsShowing: .constant(true),
+                                 content: { EmptyView() }
+                )
+            } else {
+                editPhotosMain
+            }
+        }
+        .navigationBarItems(
+            leading: backButton,
+            trailing: saveButton
+        )
+        .navigationBarBackButtonHidden(true)
+        .alert(
+            store.scope(state: { $0.uploadAlert }),
+            dismiss: EditPhotoAction.dismissUploadErrorAlert)
+	}
+
+    var editPhotosMain: some View {
         VStack {
             HStack {
                 EditPhotosList(store:
@@ -288,11 +291,6 @@ public struct EditPhotos: View {
             }
             .frame(height: 128)
         }
-        .navigationBarItems(
-            leading: backButton,
-            trailing: saveButton
-        )
-        .navigationBarBackButtonHidden(true)
         .modalLink(isPresented: .constant(viewStore.state.isPhotosAlbumActive),
                    linkType: ModalTransition.fullScreenModal,
                    destination: { photosAlbum })
@@ -302,21 +300,7 @@ public struct EditPhotos: View {
         .alert(
             store.scope(state: { $0.deletePhotoAlert }),
             dismiss: EditPhotoAction.rightSide(EditPhotosRightSideAction.deleteAlertCanceled))
-        .loadingView(.constant(viewStore.uploadingImagesMessage != nil),
-                     viewStore.uploadingImagesMessage ?? "")
-        .alert(
-            store.scope(state: { $0.uploadAlert }),
-            dismiss: EditPhotoAction.dismissUploadErrorAlert)
-//        .toast(isPresenting: .constant(viewStore.uploadingErrorMessage != nil),
-//               duration: 1,
-//               tapToDismiss: false,
-//               alert: { AlertToast(displayMode: .alert,
-//                                   type: .error(.red),
-//                                   title: viewStore.uploadingErrorMessage ?? "",
-//                                   subTitle: nil,
-//                                   custom: nil) }
-//        )
-	}
+    }
 
     var injectablesPicker: some View {
         IfLetStore(self.store.scope(
@@ -426,7 +410,6 @@ extension EditPhotosState {
 				isChooseInjectablesActive: self.isChooseInjectablesActive,
 				chosenInjectatbleId: self.chosenInjectableId,
                 editingPhotoId: self.editingPhotoId,
-                loadingState: self.loadingState,
                 isAlertActive: (self.uploadAlert != nil) || (self.deletePhotoAlert != nil)
 			)
 		}
@@ -438,7 +421,6 @@ extension EditPhotosState {
 			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
 			self.chosenInjectableId = newValue.chosenInjectatbleId
             self.editingPhotoId = newValue.editingPhotoId
-            self.loadingState = newValue.loadingState
 		}
 	}
 
@@ -520,13 +502,40 @@ func makeUploadData(photoViewModel: PhotoViewModel,
     return PhotoUpload(fileData: rendered, params: params)
 }
 
+
+//background thread async
 func renderAndUpload(_ photoViewModel: PhotoViewModel,
                      _ index: Int,
                      _ pathwayIdStepId: PathwayIdStepId,
                      _ clientId: Client.ID,
                      _ employeeId: Employee.ID?,
-                     _ api: FormAPI) -> Effect<VoidAPIResponse, RequestError> {
-    let renderedUploadData = Effect<PhotoUpload, Never>.future { completion in
+                     _ api: FormAPI) -> Effect<SavedPhoto, RequestError> {
+    let renderedUploadData = renderOnBgThread(photoViewModel, clientId, employeeId)
+    let upload = renderedUploadData.flatMap {
+        api.uploadImage(upload: $0, index: index, pathwayIdStepId: pathwayIdStepId)
+            .receive(on: DispatchQueue.main)
+            .eraseToEffect()
+    }
+    return upload.eraseToEffect()
+}
+
+func render(
+    _ photoViewModel: PhotoViewModel,
+    _ clientId: Client.ID,
+    _ employeeId: Employee.ID?
+) -> Effect<PhotoUpload, Never> {
+    let uploadData = makeUploadData(photoViewModel: photoViewModel,
+                                    clientId: clientId,
+                                    employeeId: employeeId)
+    return Just(uploadData).eraseToEffect()
+}
+
+func renderOnBgThread(
+    _ photoViewModel: PhotoViewModel,
+    _ clientId: Client.ID,
+    _ employeeId: Employee.ID?
+) -> Effect<PhotoUpload, Never> {
+    return Effect.future { completion in
         DispatchQueue.global(qos: .userInitiated).async {
             let uploadData = makeUploadData(photoViewModel: photoViewModel,
                                             clientId: clientId,
@@ -534,10 +543,4 @@ func renderAndUpload(_ photoViewModel: PhotoViewModel,
             completion(.success(uploadData))
         }
     }
-    let upload = renderedUploadData.flatMap {
-        api.uploadImage(upload: $0, index: index, pathwayIdStepId: pathwayIdStepId)
-            .receive(on: DispatchQueue.main)
-            .eraseToEffect()
-    }
-    return upload.eraseToEffect()
 }

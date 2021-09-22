@@ -3,7 +3,7 @@ import PencilKit
 import ComposableArchitecture
 
 struct CanvasViewState: Equatable {
-	var photo: PhotoViewModel
+	var drawing: Data
     var activeCanvas: CanvasMode
     var isDeletePhotoAlertActive: Bool
     
@@ -48,7 +48,7 @@ struct CanvasView: UIViewRepresentable {
 			let toolPicker = PKToolPicker.shared(for: window) {
             toolPicker.setVisible(viewStore.state.activeCanvas == .drawing, forFirstResponder: canvasView)
             do {
-                canvasView.drawing = try PKDrawing(data: viewStore.state.photo.drawing)
+                canvasView.drawing = try PKDrawing(data: viewStore.state.drawing)
             } catch {
                 print("pkdrawing error")
                 print(error)

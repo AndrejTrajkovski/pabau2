@@ -74,12 +74,12 @@ struct SinglePhotoEditState: Equatable {
 
 	var canvasState: CanvasViewState {
 		get {
-			CanvasViewState(photo: self.photo,
+            CanvasViewState(drawing: self.photo.drawing,
                             activeCanvas: self.activeCanvas,
                             isDeletePhotoAlertActive: self.isAlertActive)
 		}
 		set {
-			self.photo = newValue.photo
+            self.photo.drawing = newValue.drawing
             self.activeCanvas = newValue.activeCanvas
 		}
 	}
@@ -109,7 +109,6 @@ struct SinglePhotoEdit: View {
 		let isDrawingDisabled: Bool
 		let isChooseInjectablesActive: Bool
 		let isInjectablesDisabled: Bool
-        let loadingState: LoadingState
 		init (state: SinglePhotoEditState) {
 			let isInjectablesActive = state.activeCanvas == CanvasMode.injectables ? true : false
             if state.isAlertActive {
@@ -126,7 +125,6 @@ struct SinglePhotoEdit: View {
 			self.isInjectablesDisabled = !isInjectablesActive
 			self.isDrawingDisabled = isInjectablesActive || state.isAlertActive
 			self.isChooseInjectablesActive = state.isChooseInjectablesActive
-            self.loadingState = state.loadingState
 		}
 	}
     
@@ -151,7 +149,7 @@ struct SinglePhotoEdit: View {
                                    height: self.photoSize.height)
                             .disabled(viewStore.state.isInjectablesDisabled)
                             .zIndex(viewStore.state.injectablesZIndex)
-                       }, else: Spacer()
+                       }, else: { Spacer() }
             )
             CanvasView(store:
                         self.store.scope(
@@ -163,7 +161,6 @@ struct SinglePhotoEdit: View {
                    height: self.photoSize.height)
             .zIndex(viewStore.state.drawingCanvasZIndex)
         }
-        .loadingView(.constant(viewStore.state.loadingState == .loading), Texts.uploadingPhoto)
         .sheet(isPresented: viewStore.binding(
             get: { $0.isChooseInjectablesActive },
             send: { _ in .injectables(.chooseInjectables(.onDismissChooseInjectables)) }

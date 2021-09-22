@@ -194,7 +194,7 @@ public extension APIClient {
                       "uid": String(loggedInUser!.userID.rawValue)
                      ]
         let photo = PhotoUpload(fileData: image, params: params)
-        return uploadPhoto(photo, 0, [:])
+        return uploadPhoto(photo, 0, [:], VoidAPIResponse.self)
 	}
 
 }
@@ -209,10 +209,11 @@ extension APIClient {
 //		)
 //	}
 
-	func uploadPhoto(_ photo: PhotoUpload,
+    func uploadPhoto<T: Decodable>(_ photo: PhotoUpload,
 					 _ index: Int,
-                     _ queryParams: [String: String]) -> Effect<VoidAPIResponse, RequestError> {
-		let requestBuilder: RequestBuilder<VoidAPIResponse>.Type = requestBuilderFactory.getBuilder()
+                     _ queryParams: [String: String],
+                     _ returnType: T.Type) -> Effect<T, RequestError> {
+		let requestBuilder: RequestBuilder<T>.Type = requestBuilderFactory.getBuilder()
 		let boundary = "Boundary-\(UUID().uuidString)"
 		let httpBody = NSMutableData()
         for (key, value) in photo.photoParams {
@@ -281,7 +282,8 @@ extension APIClient {
 
         return uploadPhoto(photo,
                            0,
-                           queryParams)
+                           queryParams,
+                           VoidAPIResponse.self)
     }
     
 	public func getPatientDetails(clientId: Client.Id) -> Effect<Client, RequestError> {
@@ -316,24 +318,23 @@ extension APIClient {
 
     public func uploadImage(upload: PhotoUpload,
                             index: Int,
-                            pathwayIdStepId: PathwayIdStepId) -> Effect<VoidAPIResponse, RequestError> {
+                            pathwayIdStepId: PathwayIdStepId) -> Effect<SavedPhoto, RequestError> {
         var queryParams = commonParams()
         merge(&queryParams, with: pathwayIdStepId)
-        return uploadPhoto(upload, index, queryParams as! [String: String])
+        return uploadPhoto(upload, index, queryParams as! [String: String], SavedPhoto.self)
     }
 
-//    public func uploadImages(uploads: [PhotoUpload],
-//                             pathwayIdStepId: PathwayIdStepId) -> [Effect<VoidAPIResponse, RequestError>] {
-//        var photoUploadEffects = [Effect<VoidAPIResponse, RequestError>]()
-//        uploads.indices.forEach {
-//            var queryParams = commonParams()
-//            merge(&queryParams, with: pathwayIdStepId)
-//            let photoUpload = uploads[$0]
-//            let uploadPhoto = uploadPhoto(photoUpload, $0, queryParams as! [String: String])
-//            photoUploadEffects.append(uploadPhoto)
-//        }
-//        return photoUploadEffects
-//    }
+    public func getPhotos(id: Pathway.ID, step: Step.ID) -> Effect<[SavedPhoto], RequestError> {
+        let requestBuilder: RequestBuilder<[SavedPhoto]>.Type = requestBuilderFactory.getBuilder()
+
+        return requestBuilder.init(
+            method: .GET,
+            baseUrl: baseUrl,
+            path: .getPathwayStepPhotos,
+            queryParams: commonAnd(other: [:])
+        )
+        .effect()
+    }
 }
 
 extension NSMutableData {
