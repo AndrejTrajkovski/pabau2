@@ -36,7 +36,7 @@ extension CheckInLoadedState {
 		self.pathway = pathway
 		self.pathwayTemplate = template
 		let patientStepStates = stepsAndEntries(pathway, template, .patient).compactMap {
-            StepState.init(stepAndEntry: $0, clientId: appointment.customerId, pathwayId: pathway.id, appointmentId: appointment.id, photos: appointment.photos)
+            StepState.init(stepAndEntry: $0, clientId: appointment.customerId, pathwayId: pathway.id, appointmentId: appointment.id)
 		}
         
         self.patientCheckIn = CheckInPathwayState(appointment: appointment,
@@ -44,7 +44,7 @@ extension CheckInLoadedState {
                                                   pathwayTemplate: pathwayTemplate,
                                                   stepStates: patientStepStates)
 		let doctorStepStates = stepsAndEntries(pathway, pathwayTemplate, .doctor).compactMap {
-            StepState.init(stepAndEntry: $0, clientId: appointment.customerId, pathwayId: pathway.id, appointmentId: appointment.id, photos: appointment.photos)
+            StepState.init(stepAndEntry: $0, clientId: appointment.customerId, pathwayId: pathway.id, appointmentId: appointment.id)
 		}
         self.doctorCheckIn = CheckInPathwayState(appointment: appointment,
                                                  pathway: pathway,

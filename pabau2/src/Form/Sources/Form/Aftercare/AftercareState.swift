@@ -7,17 +7,16 @@ public struct AftercareState: Equatable, Identifiable {
 	
 	public init (
 		id: Step.Id,
-        images: [SavedPhoto],
 		aftercares: [AftercareTemplate],
 		recalls: [AftercareTemplate]
 	) {
 		self.id = id
-        self.images = images
         self.aftercares = AftercareBoolSectionState.init(templates: aftercares)
 		self.recalls = AftercareBoolSectionState.init(templates: recalls)
+        self.images = []
 	}
     
-    let images: [SavedPhoto]
+    var images: [SavedPhoto]
     public var selectedProfileImageIdx: Int? = nil
     public var selectedShareImgeIdx: Int? = nil
 	public var aftercares: AftercareBoolSectionState

@@ -229,9 +229,8 @@ public struct StepState: Equatable, Identifiable {
     public init?(stepAndEntry: StepAndStepEntry,
                 clientId: Client.ID,
                 pathwayId: Pathway.ID,
-                appointmentId: Appointment.ID,
-                photos: [ImageModel]) {
-        guard let stepBody = StepBodyState(stepAndEntry: stepAndEntry, clientId: clientId, pathwayId: pathwayId, appointmentId: appointmentId, appPhotos: photos) else {
+                appointmentId: Appointment.ID) {
+        guard let stepBody = StepBodyState(stepAndEntry: stepAndEntry, clientId: clientId, pathwayId: pathwayId, appointmentId: appointmentId) else {
             return nil
         }
         self.stepBody = stepBody
