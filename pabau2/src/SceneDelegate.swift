@@ -85,9 +85,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             ).environmentObject(KeyboardFollower())
             
             window.rootViewController = UIHostingController(
-                rootView: NavigationView.init(content: {
-                    contentView
-                }).navigationViewStyle(StackNavigationViewStyle())
+                rootView: contentView
             )
             self.window = window
             window.makeKeyAndVisible()

@@ -226,11 +226,15 @@ public struct StepState: Equatable, Identifiable {
         return StepFormInfo(status: status, title: stepType.rawValue.uppercased())
 	}
 	
-    public init(stepAndEntry: StepAndStepEntry,
+    public init?(stepAndEntry: StepAndStepEntry,
                 clientId: Client.ID,
                 pathwayId: Pathway.ID,
                 appointmentId: Appointment.ID,
                 photos: [ImageModel]) {
+        guard let stepBody = StepBodyState(stepAndEntry: stepAndEntry, clientId: clientId, pathwayId: pathwayId, appointmentId: appointmentId, appPhotos: photos) else {
+            return nil
+        }
+        self.stepBody = stepBody
         self.id = stepAndEntry.step.id
         self.stepType = stepAndEntry.step.stepType
         self.canSkip = stepAndEntry.step.canSkip
@@ -238,7 +242,7 @@ public struct StepState: Equatable, Identifiable {
         self.clientId = clientId
         self.pathwayId = pathwayId
         self.status = stepAndEntry.entry?.status ?? .pending
-        self.stepBody = StepBodyState(stepAndEntry: stepAndEntry, clientId: clientId, pathwayId: pathwayId, appointmentId: appointmentId, appPhotos: photos)
+
         
         if getForm(
             stepAndEntry.step.stepType,
