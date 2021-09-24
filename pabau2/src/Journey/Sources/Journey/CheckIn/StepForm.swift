@@ -13,15 +13,13 @@ public let stepReducer: Reducer<StepState, StepAction, JourneyEnvironment> = .co
         switch action {
         
         case .retryGetForm:
-            state.gettingState = .loading
-            if let getFormEffect = getForm(state.pathwayId,
-                                           state.id,
-                                           state.stepType,
-                                           state.chosenFormTemplateId(),
-                                           state.chosenEntryId(),
-                                           env.formAPI,
-                                           state.clientId,
-                                           state.appointmentId
+            
+            if let getFormEffect = getForm(state.stepType,
+                                     state.chosenFormTemplateId(),
+                                     state.chosenEntryId(),
+                                     env.formAPI,
+                                     state.clientId,
+                                     state.appointmentId
             ) {
                 return getFormEffect
                     .map(StepAction.stepType)
@@ -30,14 +28,7 @@ public let stepReducer: Reducer<StepState, StepAction, JourneyEnvironment> = .co
             } else {
                 return .none
             }
-
-        case .stepType(.photos(.gotStepPhotos(let result))):
-            switch result {
-            case .success:
-                state.gettingState = .gotSuccess
-            case .failure(let error):
-                state.gettingState = .gotError(error)
-            }
+            
         case .stepType(.checkPatientDetails(.complete)):
             let pathwayStep = PathwayIdStepId(step_id: state.id, path_taken_id: state.pathwayId)
             state.savingState = .loading
@@ -235,10 +226,15 @@ public struct StepState: Equatable, Identifiable {
         return StepFormInfo(status: status, title: stepType.rawValue.uppercased())
 	}
 	
-    public init(stepAndEntry: StepAndStepEntry,
+    public init?(stepAndEntry: StepAndStepEntry,
                 clientId: Client.ID,
                 pathwayId: Pathway.ID,
-                appointmentId: Appointment.ID) {
+                appointmentId: Appointment.ID,
+                photos: [ImageModel]) {
+        guard let stepBody = StepBodyState(stepAndEntry: stepAndEntry, clientId: clientId, pathwayId: pathwayId, appointmentId: appointmentId, appPhotos: photos) else {
+            return nil
+        }
+        self.stepBody = stepBody
         self.id = stepAndEntry.step.id
         self.stepType = stepAndEntry.step.stepType
         self.canSkip = stepAndEntry.step.canSkip
@@ -246,11 +242,9 @@ public struct StepState: Equatable, Identifiable {
         self.clientId = clientId
         self.pathwayId = pathwayId
         self.status = stepAndEntry.entry?.status ?? .pending
-        self.stepBody = StepBodyState(stepAndEntry: stepAndEntry, clientId: clientId, pathwayId: pathwayId, appointmentId: appointmentId)
+
         
         if getForm(
-            pathwayId,
-            stepAndEntry.step.id,
             stepAndEntry.step.stepType,
             stepAndEntry.entry?.htmlFormInfo?.chosenFormTemplateId,
             stepAndEntry.entry?.htmlFormInfo?.formEntryId,

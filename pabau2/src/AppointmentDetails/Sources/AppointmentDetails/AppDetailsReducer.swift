@@ -37,11 +37,11 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 		switch action {
 		case .chooseRepeat(.onRepeat(let chosenRepeat)):
 			let formatter = DateFormatter()
-			formatter.dateFormat = "dd-MM-yyyy"
+			formatter.dateFormat = "dd-MM-yyyy HH:mm"
 			let sDate = formatter.string(from: chosenRepeat.date)
 			let interval = chosenRepeat.interval.interval
 						
-			return env.clientsAPI.createRecurringAppointment(appointmentId: state.app.id, repeatRange: interval, repeatUntil: sDate)
+            return env.clientsAPI.createRecurringAppointment(appointmentId: state.app.id, repeatRange: interval, repeatUntil: sDate)
 				.catchToEffect()
 				.map { response in AppDetailsAction.onResponseCreateReccuringAppointment(response) }
 		case .onResponseCreateReccuringAppointment(let response):
@@ -64,11 +64,13 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 			case .singleChoice(let single):
 				switch single {
 				case .action(let id, let action):
-					let cancelReason = state.cancelReasons[id: id]
+                    guard let cancelReason = state.cancelReasons[id: id] else {
+                        return .none
+                    }
                     let appID = state.app.id
-                    let cancelReasonId = cancelReason?.id.rawValue ?? ""
+                    let cancelReasonId = cancelReason.id.rawValue
                     
-                    return env.clientsAPI.appointmentChangeCancelReason(appointmentId: state.app.id, reason: cancelReasonId) 
+                    return env.clientsAPI.appointmentChangeCancelReason(appointmentId: state.app.id, reasonId: cancelReasonId) 
 						.catchToEffect()
                         .map { response in
                             let newResponse: Result<Appointment.ID, RequestError>
@@ -90,14 +92,18 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 				switch single {
 				case .action(let id, let action):
 					let status = state.appStatuses[id: id]
-					return env.clientsAPI.appointmentChangeStatus(appointmentId: state.app.id, status: "\(String(describing: status))")
-						.catchToEffect()
-                        .map { response in AppDetailsAction.onResponseChangeAppointment(response) }
-						.eraseToEffect()
+                    if let status = status {
+                        return env.clientsAPI.appointmentChangeStatus(appointmentId: state.app.id, statusId: status.id)
+                            .catchToEffect()
+                            .map { response in AppDetailsAction.onResponseChangeAppointment(response) }
+                            .eraseToEffect()
+                    }
 				}
 			default:
 				break
 			}
+        case .chooseRepeat(.onBackBtn):
+            state.chooseRepeat.isRepeatActive = false
 		case .buttons(let appDetailsButtonsAction):
 			print(appDetailsButtonsAction)
 			switch appDetailsButtonsAction {
@@ -138,8 +144,6 @@ public let appDetailsReducer: Reducer<AppDetailsState, AppDetailsAction, AppDeta
 				.catchToEffect()
 				.map { .choosePathwayTemplate(.gotPathwayTemplates($0))  }
 		case .addService:
-			break
-		case .chooseRepeat(.onBackBtn):
 			break
 		case .chooseRepeat(.onChangeInterval(_)):
 			break

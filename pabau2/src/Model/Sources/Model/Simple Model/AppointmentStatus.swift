@@ -20,7 +20,7 @@ public struct AppointmentStatus: Codable, Identifiable, Equatable {
     }
     
     public enum CodingKeys: String, CodingKey {
-        case id = "id"
+        case id
         case name
 		case color
         case status
@@ -29,11 +29,11 @@ public struct AppointmentStatus: Codable, Identifiable, Equatable {
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-
+        
         self.status = try container.decode(String.self, forKey: .status)
         self.value = try container.decode(String.self, forKey: .value)
+        self.id = try container.decode(Int.self, forKey: .id)
         
-        self.id = Int.random(in: 0...50)
         self.name = status
         self.color = "1ad36b"
     }

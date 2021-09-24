@@ -38,10 +38,8 @@ public enum StepBodyState: Equatable {
     case photos(PhotosState)
     case aftercare(AftercareState)
     case timeline(CheckPatientDetailsState)
-    case lab
-    case video
     
-    init(stepAndEntry: StepAndStepEntry, clientId: Client.ID, pathwayId: Pathway.ID, appointmentId: Appointment.ID) {
+    init?(stepAndEntry: StepAndStepEntry, clientId: Client.ID, pathwayId: Pathway.ID, appointmentId: Appointment.ID, appPhotos: [ImageModel]) {
         
         switch stepAndEntry.step.stepType {
         case .medicalhistory, .consents, .treatmentnotes, .prescriptions:
@@ -61,19 +59,18 @@ public enum StepBodyState: Equatable {
             )
         case .aftercares:
             self = .aftercare(AftercareState.init(id: stepAndEntry.step.id,
-                                                  images: [],
+                                                  images: appPhotos,
                                                   aftercares: [],
                                                   recalls: []))
         case .timeline:
             self = .timeline(CheckPatientDetailsState(id: stepAndEntry.step.id, clientBuilder: nil, patForms: []))
         case .photos:
             self = .photos(PhotosState(id: stepAndEntry.step.id,
-                                       pathwayId: pathwayId,
-                                       clientId: clientId))
+                                       imageModels: appPhotos))
         case .lab:
-            self = .lab
+            return nil
         case .video:
-            self = .video
+            return nil
         }
     }
 }

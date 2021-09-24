@@ -186,7 +186,7 @@ extension CalendarEvent: Decodable {
 		case .right(let string):
 			_private = Bool.init(string) ?? false
 		}
-		let status = try? container.decode(AppointmentStatus?.self, forKey: .appointmentStatus)
+        let status = try? container.decode(AppointmentStatus.self, forKey: .appointmentStatus)
         let allDay = try? container.decode(String.self, forKey: .allDay)
 		let start_date = try Date(container: container,
 								  codingKey: .startDate,

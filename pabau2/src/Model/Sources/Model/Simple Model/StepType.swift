@@ -16,7 +16,16 @@ public enum StepType: String, Codable, Equatable, CaseIterable, Identifiable {
     case lab
     case video
     case timeline
-    
+
+    func isHandled() -> Bool {
+        switch self {
+        case .lab, .video:
+            return false
+        case .aftercares, .consents, .treatmentnotes, .prescriptions, .medicalhistory, .patientdetails, .photos, .timeline:
+            return true
+        }
+    }
+
 	public var title: String {
 		switch self {
 		case .patientdetails:
