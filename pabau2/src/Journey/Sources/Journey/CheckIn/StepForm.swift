@@ -14,12 +14,14 @@ public let stepReducer: Reducer<StepState, StepAction, JourneyEnvironment> = .co
         
         case .retryGetForm:
             
-            if let getFormEffect = getForm(state.stepType,
-                                     state.chosenFormTemplateId(),
-                                     state.chosenEntryId(),
-                                     env.formAPI,
-                                     state.clientId,
-                                     state.appointmentId
+            if let getFormEffect = getForm(state.pathwayId,
+                                           state.id,
+                                           state.stepType,
+                                           state.chosenFormTemplateId(),
+                                           state.chosenEntryId(),
+                                           env.formAPI,
+                                           state.clientId,
+                                           state.appointmentId
             ) {
                 return getFormEffect
                     .map(StepAction.stepType)
@@ -207,6 +209,7 @@ public enum StepAction: Equatable {
 }
 
 public struct StepState: Equatable, Identifiable {
+    
     public let id: Step.ID
     public let stepType: StepType
     public let canSkip: Bool
@@ -244,6 +247,8 @@ public struct StepState: Equatable, Identifiable {
 
         
         if getForm(
+            pathwayId,
+            id,
             stepAndEntry.step.stepType,
             stepAndEntry.entry?.htmlFormInfo?.chosenFormTemplateId,
             stepAndEntry.entry?.htmlFormInfo?.formEntryId,

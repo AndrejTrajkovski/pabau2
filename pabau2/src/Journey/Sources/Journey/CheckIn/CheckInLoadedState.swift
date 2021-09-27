@@ -72,7 +72,7 @@ func toCheckContainerAction(stepsActions: [Effect<StepsActions, Never>]) -> [Eff
     return toActions(pipeToPatientAction, stepsActions: stepsActions)
 }
 
-let getFormsForPathway = uncurry(pipe(stepsAndEntries(_:_:_:), curry(getForms(stepsAndEntries:formAPI:clientId:appId:))))
+let getFormsForPathway = uncurry(pipe(stepsAndEntries(_:_:_:), curry(getForms(stepsAndEntries:formAPI:clientId:appId:pathwayId:))))
 
 let getCheckInFormsForPathway = pipe(getFormsForPathway, toCheckContainerAction(stepsActions:))
 let getLoadedActionsFormsForPathway = pipe(getFormsForPathway, toLoadedActions(stepsActions:))
@@ -83,7 +83,7 @@ func getLoadedActionsOneAfterAnother(_ pathway: Pathway,
                                      _ formAPI: FormAPI,
                                      _ clientId: Client.ID,
                                      _ appId: Appointment.ID) -> Effect<CheckInLoadedAction, Never> {
-    let effects = with(((pathway, template, journeyMode), formAPI, clientId, appId), getLoadedActionsFormsForPathway)
+    let effects = with(((pathway, template, journeyMode), formAPI, clientId, appId, pathway.id), getLoadedActionsFormsForPathway)
     return Effect.concatenate(effects)
 }
 
@@ -93,7 +93,7 @@ public func getCheckInFormsOneAfterAnother(pathway: Pathway,
                                            formAPI: FormAPI,
                                            clientId: Client.ID,
                                            appId: Appointment.ID) -> Effect<CheckInContainerAction, Never> {
-    let effects = with(((pathway, template, journeyMode), formAPI, clientId, appId), getCheckInFormsForPathway)
+    let effects = with(((pathway, template, journeyMode), formAPI, clientId, appId, pathway.id), getCheckInFormsForPathway)
     return Effect.concatenate(effects)
 }
 
@@ -102,15 +102,17 @@ public func getCheckInFormsOneAfterAnother(pathway: Pathway,
 public func stepsAndEntries(_ pathway: Pathway, _ template: PathwayTemplate, _ journeyMode: JourneyMode) -> [StepAndStepEntry] {
     print("here")
     print(pathway, template)
-	return template.steps
-		.filter { isIn(journeyMode, $0.stepType) }
-		.map { StepAndStepEntry(step: $0, entry: pathway.stepEntries[$0.id]) }
+    return template.steps
+        .filter { isIn(journeyMode, $0.stepType) }
+        .map { StepAndStepEntry(step: $0, entry: pathway.stepEntries[$0.id]) }
 }
 
-func getForms(stepsAndEntries: [StepAndStepEntry], formAPI: FormAPI, clientId: Client.ID, appId: Appointment.ID) -> [Effect<StepsActions, Never>] {
-	let stepActions: [Effect<StepsActions, Never>] = stepsAndEntries.indices.compactMap { idx in
-			let stepAndEntry = stepsAndEntries[idx]
-        if let getForm = getForm(stepAndEntry.step.stepType,
+func getForms(stepsAndEntries: [StepAndStepEntry], formAPI: FormAPI, clientId: Client.ID, appId: Appointment.ID, pathwayId: Pathway.ID) -> [Effect<StepsActions, Never>] {
+    let stepActions: [Effect<StepsActions, Never>] = stepsAndEntries.indices.compactMap { idx in
+            let stepAndEntry = stepsAndEntries[idx]
+        if let getForm = getForm(pathwayId,
+                                 stepAndEntry.step.id,
+                                 stepAndEntry.step.stepType,
                                  stepAndEntry.entry?.htmlFormInfo?.chosenFormTemplateId,
                                  stepAndEntry.entry?.htmlFormInfo?.formEntryId,
                                  formAPI,
@@ -118,26 +120,26 @@ func getForms(stepsAndEntries: [StepAndStepEntry], formAPI: FormAPI, clientId: C
                                  appId
         ) {
                 return getForm.map { StepsActions.steps(idx: idx, action: StepAction.stepType($0)) }
-			} else {
-				return nil
-			}
-		}
-	return stepActions
+            } else {
+                return nil
+            }
+        }
+    return stepActions
 }
 
-func getForm(_ stepType: StepType, _ chosenFormTemplateId: HTMLForm.ID?, _ formEntryId: FilledFormData.ID?, _ formAPI: FormAPI, _ clientId: Client.ID, _ appId:  Appointment.ID) -> Effect<StepBodyAction, Never>? {
+func getForm(_ pathwayId: Pathway.ID, _ stepId: Step.ID, _ stepType: StepType, _ chosenFormTemplateId: HTMLForm.ID?, _ formEntryId: FilledFormData.ID?, _ formAPI: FormAPI, _ clientId: Client.ID, _ appId:  Appointment.ID) -> Effect<StepBodyAction, Never>? {
     switch stepType {
     case .consents, .medicalhistory, .treatmentnotes, .prescriptions:
         guard let templateToGet = chosenFormTemplateId else {
             return nil
         }
-        
+
         let pipeInits: (Result<HTMLForm, RequestError>) -> StepBodyAction = pipe(HTMLFormAction.gotForm, HTMLFormStepContainerAction.chosenForm, StepBodyAction.htmlForm)
-        
+
         return formAPI.getForm(templateId: templateToGet, entryId: formEntryId)
             .catchToEffect()
             .map(pipeInits)
-        
+
     case .patientdetails:
         return formAPI.getPatientDetails(clientId: clientId)
             .catchToEffect()
@@ -149,7 +151,10 @@ func getForm(_ stepType: StepType, _ chosenFormTemplateId: HTMLForm.ID?, _ formE
             .map(pipe(AftercareAction.gotAftercareAndRecallsResponse, StepBodyAction.aftercare))
             .eraseToEffect()
     case .photos:
-        return nil
+        return formAPI.getPhotos(pathwayId: pathwayId, stepId: stepId)
+            .catchToEffect()
+            .map(pipe(PhotosFormAction.gotStepPhotos, StepBodyAction.photos))
+            .eraseToEffect()
     case .lab:
         return nil
     case .video:
