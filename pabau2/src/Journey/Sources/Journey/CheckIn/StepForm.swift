@@ -13,7 +13,7 @@ public let stepReducer: Reducer<StepState, StepAction, JourneyEnvironment> = .co
         switch action {
         
         case .retryGetForm:
-            
+            state.gettingState = .loading
             if let getFormEffect = getForm(state.pathwayId,
                                            state.id,
                                            state.stepType,
@@ -29,6 +29,14 @@ public let stepReducer: Reducer<StepState, StepAction, JourneyEnvironment> = .co
                     .eraseToEffect()
             } else {
                 return .none
+            }
+
+        case .stepType(.photos(.gotStepPhotos(let result))):
+            switch result {
+            case .success:
+                state.gettingState = .gotSuccess
+            case .failure(let error):
+                state.gettingState = .gotError(error)
             }
             
         case .stepType(.checkPatientDetails(.complete)):
