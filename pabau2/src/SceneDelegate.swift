@@ -21,7 +21,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 //        #else
         return DebugEnvironment.init(printer: { logMessage in
             var log = TextLog()
-            log.write(logMessage)
+//            log.write(logMessage)
         })
 //        #endif
     }
@@ -86,6 +86,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             
             window.rootViewController = UIHostingController(
                 rootView: contentView
+//                rootView: makeMockPhotosStep(appEnv: env)
             )
             self.window = window
             window.makeKeyAndVisible()
@@ -105,4 +106,31 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         )
     }
 
+}
+
+func makeMockPhotosStep(appEnv: AppEnvironment) -> some View {
+    let step = Step(id: Step.ID.init(rawValue: 8225),
+                    stepType: .photos,
+                    preselectedTemplate: nil,
+                    canSkip: true)
+
+    let stepAndEntry = StepAndStepEntry(step: step, entry: nil)
+    let stepState = StepState.init(stepAndEntry: stepAndEntry,
+                                   clientId: Client.ID.init(rawValue: 22518040),
+                                   pathwayId: Pathway.ID.init(rawValue: 2067),
+                                   appointmentId: Appointment.ID.init(rawValue: 74994803)
+    )!
+
+    let photosStep = StepForm(
+        store: Store(
+        initialState: stepState,
+        reducer: stepReducer,
+        environment: makeJourneyEnv(makeTabBarEnv(appEnv))
+        )
+    )
+
+    let photosNavigation = NavigationView.init(content: {
+        photosStep
+    }).navigationViewStyle(StackNavigationViewStyle())
+    return photosNavigation
 }

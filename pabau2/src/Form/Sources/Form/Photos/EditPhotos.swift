@@ -510,9 +510,9 @@ func renderAndUpload(_ photoViewModel: PhotoViewModel,
                      _ clientId: Client.ID,
                      _ employeeId: Employee.ID?,
                      _ api: FormAPI) -> Effect<SavedPhoto, RequestError> {
-    let renderedUploadData = renderOnBgThread(photoViewModel, clientId, employeeId)
+    let renderedUploadData = render(photoViewModel, clientId, employeeId)
     let upload = renderedUploadData.flatMap {
-        api.uploadImage(upload: $0, index: index, pathwayIdStepId: pathwayIdStepId)
+        api.uploadImage(upload: $0, pathwayIdStepId: pathwayIdStepId)
             .receive(on: DispatchQueue.main)
             .eraseToEffect()
     }

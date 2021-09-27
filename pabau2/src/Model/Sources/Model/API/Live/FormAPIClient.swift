@@ -317,11 +317,10 @@ extension APIClient {
 extension APIClient {
 
     public func uploadImage(upload: PhotoUpload,
-                            index: Int,
                             pathwayIdStepId: PathwayIdStepId) -> Effect<SavedPhoto, RequestError> {
         var queryParams = commonParams()
         merge(&queryParams, with: pathwayIdStepId)
-        return uploadPhoto(upload, index, queryParams as! [String: String], SavedPhoto.self)
+        return uploadPhoto(upload, 0, queryParams as! [String: String], SavedPhoto.self)
     }
 
     public func getPhotos(pathwayId: Pathway.ID, stepId: Step.ID) -> Effect<[SavedPhoto], RequestError> {
