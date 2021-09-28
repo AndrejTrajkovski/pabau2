@@ -10,8 +10,28 @@ public extension APIClient {
                            _ selectedRecallIds: [AftercareTemplate.ID],
                            _ profilePicId: SavedPhoto.ID?,
                            _ sharePicId: SavedPhoto.ID?) -> Effect<StepStatus, RequestError> {
-        Fail(error: RequestError.apiError("TO IMPLEMENT ON BACKEND"))
-            .eraseToEffect()
+
+        struct AftercareResponse: Decodable {
+            let status: StepStatus
+        }
+
+        let queryParams: [String : Any] = [
+            "pathway_taken_id": pathwayIdStepId.path_taken_id.description,
+            "step_id": pathwayIdStepId.step_id.description,
+            "contact_id": clientId.description,
+            "aftercare_ids": selectedAftercareIds.map(\.rawValue),
+            "recall_ids": selectedRecallIds.map(\.rawValue)
+        ]
+
+        let requestBuilder: RequestBuilder<AftercareResponse>.Type = requestBuilderFactory.getBuilder()
+        return requestBuilder.init(method: .POST,
+                                   baseUrl: baseUrl,
+                                   path: .saveAftercareAndRecall,
+                                   queryParams: commonAnd(other: queryParams)
+        )
+        .effect()
+        .map(\.status)
+        .eraseToEffect()
     }
     
     func getAftercareAndRecall(appointmentId: Appointment.ID) -> Effect<AftercareAndRecalls, RequestError> {
@@ -213,6 +233,7 @@ extension APIClient {
 					 _ index: Int,
                      _ queryParams: [String: String],
                      _ returnType: T.Type) -> Effect<T, RequestError> {
+
 		let requestBuilder: RequestBuilder<T>.Type = requestBuilderFactory.getBuilder()
 		let boundary = "Boundary-\(UUID().uuidString)"
 		let httpBody = NSMutableData()
@@ -320,11 +341,15 @@ extension APIClient {
                             pathwayIdStepId: PathwayIdStepId) -> Effect<SavedPhoto, RequestError> {
         var queryParams = commonParams()
         merge(&queryParams, with: pathwayIdStepId)
-        return uploadPhoto(upload, 0, queryParams as! [String: String], SavedPhoto.self)
+        return uploadPhoto(upload, 0, queryParams as! [String: String], [SavedPhoto].self)
+            .map(\.first!)
     }
 
     public func getPhotos(pathwayId: Pathway.ID, stepId: Step.ID) -> Effect<[SavedPhoto], RequestError> {
-        let requestBuilder: RequestBuilder<[SavedPhoto]>.Type = requestBuilderFactory.getBuilder()
+        struct PhotosResponse: Decodable {
+            let step_attachments: [SavedPhoto]
+        }
+        let requestBuilder: RequestBuilder<PhotosResponse>.Type = requestBuilderFactory.getBuilder()
 
         return requestBuilder.init(
             method: .GET,
@@ -334,6 +359,8 @@ extension APIClient {
                                            "step_id": stepId.description])
         )
         .effect()
+        .map(\.step_attachments)
+        .eraseToEffect()
     }
 }
 

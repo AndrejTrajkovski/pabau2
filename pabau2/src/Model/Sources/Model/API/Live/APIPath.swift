@@ -9,6 +9,7 @@ public enum APIPath: String {
 	case getLocations = "/OAuth2/locations/get_locations_v1.php"
 	case getPathwaysTemplates = "/OAuth2/pathway/list_pathways.php"
     case getPathwayStepPhotos = "/OAuth2/pathway/get_pathway_step_photos.php"
+    case saveAftercareAndRecall = "/OAuth2/pathway/save_aftercare_and_recall.php"
 
     case getShifts = "/OAuth2/staff/get_rota_shifts.php"
 	case pathwaysMatch = "/OAuth2/pathway/match.php"

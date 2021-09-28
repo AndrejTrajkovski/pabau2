@@ -31,7 +31,8 @@ struct CheckInPatientContainer: View {
                                             .navigationBarHidden(true)
                 )
             } else {
-                CheckInPathway(store: store.scope(state: { $0.patientCheckIn }, action: { .patient($0) }))
+                CheckInPathway(store: store.scope(state: { $0.patientCheckIn },
+                                                  action: { .patient($0) }))
             }
         }
     }

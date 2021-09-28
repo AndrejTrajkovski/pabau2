@@ -17,7 +17,7 @@ public struct PhotosState: Equatable, Identifiable {
     public let id: Step.ID
     public var photos: IdentifiedArray<PhotoVariantId, PhotoViewModel> = []
     public var selectedIds: [PhotoVariantId] = []
-    public var editPhotos: EditPhotosState?
+    public var editPhotos: EditPhotosState? = nil
     public let clientId: Client.ID
     //    public var stepStatus: StepStatus
     
@@ -81,7 +81,11 @@ public let photosFormReducer: Reducer<PhotosState, PhotosFormAction, FormEnviron
             case .gotStepPhotos(let photosResult):
                 switch photosResult {
                 case .success(let photos):
-                    state.photos = IdentifiedArray.init(uniqueElements: photos.map(PhotoViewModel.init(_:)))
+                    //backend returns duplicate ids
+                    let uniquePhotos = Dictionary.init(grouping: photos, by: { $0.id }).compactMap {
+                        $0.value.first
+                    }
+                    state.photos = IdentifiedArray.init(uniqueElements: uniquePhotos.map(PhotoViewModel.init(_:)))
                 case .failure(let error):
                     break
                 }
@@ -119,14 +123,16 @@ public struct PhotosForm: View {
     }
     
     public var body: some View {
-        VStack {
+        Group {
             SelectPhotos(store: self.store.scope(
                             state: { $0.selectPhotos },
                             action: { .selectPhotos($0) }))
-            NavigationLink.emptyHidden(
-                viewStore.state.isEditPhotosActive,
-                editPhotos
-            )
+            if viewStore.state.isEditPhotosActive {
+                NavigationLink.emptyHidden(
+                    viewStore.state.isEditPhotosActive,
+                    editPhotos
+                )
+            }
         }
     }
     
