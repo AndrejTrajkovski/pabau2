@@ -216,7 +216,7 @@ public struct EditPhotos: View {
 		let editingPhotoId: PhotoVariantId?
 		let isDrawingDisabled: Bool
         let uploadingImagesMessage: String?
-        let isSaveEnabled: Bool
+//        let isSaveEnabled: Bool
 		init (state: EditPhotosState) {
 			self.isCameraActive = state.isCameraActive
 			self.isChooseInjectablesActive = state.isChooseInjectablesActive
@@ -230,7 +230,7 @@ public struct EditPhotos: View {
             } else {
                 uploadingImagesMessage = nil
             }
-            self.isSaveEnabled = state.photos.allSatisfy { $0.basePhoto.imageData() != nil }
+//            self.isSaveEnabled = state.photos.allSatisfy { $0.basePhoto.imageData() != nil }
 		}
 	}
     
@@ -318,7 +318,7 @@ public struct EditPhotos: View {
     var saveButton: some View {
         Button( action: { viewStore.send(.save) },
                           label: { Text(Texts.save) })
-            .disabled(!viewStore.isSaveEnabled)
+//            .disabled(!viewStore.isSaveEnabled)
     }
 
     var photosAlbum: some View {
