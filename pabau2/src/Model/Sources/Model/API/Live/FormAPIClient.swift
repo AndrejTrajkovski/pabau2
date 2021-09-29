@@ -339,10 +339,13 @@ extension APIClient {
 
     public func uploadImage(upload: PhotoUpload,
                             pathwayIdStepId: PathwayIdStepId) -> Effect<SavedPhoto, RequestError> {
+        struct PathwayPhotosResponse: Decodable {
+            let saved_images: [SavedPhoto]
+        }
         var queryParams = commonParams()
         merge(&queryParams, with: pathwayIdStepId)
-        return uploadPhoto(upload, 0, queryParams as! [String: String], [SavedPhoto].self)
-            .map(\.first!)
+        return uploadPhoto(upload, 0, queryParams as! [String: String], PathwayPhotosResponse.self)
+            .map(\.saved_images.first!)
     }
 
     public func getPhotos(pathwayId: Pathway.ID, stepId: Step.ID) -> Effect<[SavedPhoto], RequestError> {
