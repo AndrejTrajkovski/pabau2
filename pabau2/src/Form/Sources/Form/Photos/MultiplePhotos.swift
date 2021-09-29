@@ -1,5 +1,4 @@
 import ComposableArchitecture
-import ASCollectionView
 import SwiftUI
 import Model
 
@@ -45,25 +44,30 @@ public enum SelectPhotosAction: Equatable {
 struct SelectPhotos: View {
 	let store: Store<SelectPhotosState, SelectPhotosAction>
 
-	var body: some View {
-		WithViewStore(store) { viewStore in
-			ASCollectionView.init(
-			data: viewStore.photos) { photo, _ in
-				MultipleSelectPhotoCell(photo: photo,
-                                        isSelected: viewStore.state.isSelected(photo))
-					.onTapGesture {
-						viewStore.send(.didTouchPhotoId(photo.id))
-				}
-			}.layout { sectionID in
-				switch sectionID {
-				case 0:
-					return .grid(layoutMode: .fixedNumberOfColumns(4),
-											 itemSpacing: 2.5,
-											 lineSpacing: 2.5)
-				default:
-					fatalError()
-				}
-			}
-		}
+    private let imagesColumns: [GridItem] = [
+        GridItem(.flexible()),
+        GridItem(.flexible()),
+        GridItem(.flexible()),
+        GridItem(.flexible())
+    ]
+
+    var body: some View {
+        WithViewStore(store) { viewStore in
+            ScrollView {
+                LazyVGrid (
+                    columns: imagesColumns,
+                    alignment: .leading,
+                    spacing: 16
+                ){
+                    ForEach(viewStore.photos) { photo in
+                        MultipleSelectPhotoCell(photo: photo,
+                                                isSelected: viewStore.state.isSelected(photo))
+                            .onTapGesture {
+                                viewStore.send(.didTouchPhotoId(photo.id))
+                            }
+                    }
+                }
+            }
+        }
 	}
 }

@@ -4,7 +4,6 @@ import Util
 import Model
 import PencilKit
 import Overture
-import ASCollectionView
 
 public struct PhotosState: Equatable, Identifiable {
     public init(id: Step.ID, pathwayId: Pathway.ID, clientId: Client.ID) {
@@ -81,11 +80,7 @@ public let photosFormReducer: Reducer<PhotosState, PhotosFormAction, FormEnviron
             case .gotStepPhotos(let photosResult):
                 switch photosResult {
                 case .success(let photos):
-                    //backend returns duplicate ids
-                    let uniquePhotos = Dictionary.init(grouping: photos, by: { $0.id }).compactMap {
-                        $0.value.first
-                    }
-                    state.photos = IdentifiedArray.init(uniqueElements: uniquePhotos.map(PhotoViewModel.init(_:)))
+                    state.photos = IdentifiedArray.init(uniqueElements: photos.map(PhotoViewModel.init(_:)))
                 case .failure(let error):
                     break
                 }

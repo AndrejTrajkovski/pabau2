@@ -4,7 +4,7 @@ import Tagged
 
 public struct SavedPhoto: Codable, Identifiable, Equatable, Hashable {
         
-    public let id: Int
+    public let id: Tagged<SavedPhoto, Int>
     public let normalSizePhoto: String?
     public let thumbnail: String?
     public let mediumThumbnail: String?
@@ -12,26 +12,11 @@ public struct SavedPhoto: Codable, Identifiable, Equatable, Hashable {
     public let photoTitle: String
     public let photoPosition: String?
     public var normalSizePhotoData: Data?
-
-    public init(id: Int, normalPhotoSize: String?, thumbnail: String?, mediumThumbnail: String?, photoDate: Date, title: String, photoPosition: String? ) {
-        self.id = id
-        self.normalSizePhoto = normalPhotoSize
-        self.thumbnail = thumbnail
-        self.mediumThumbnail = mediumThumbnail
-        self.photoDate = photoDate
-        self.photoTitle = title
-        self.photoPosition = photoPosition
-    }
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        
-        if let sId = try? container.decode(String.self, forKey: .id), let id = Int(sId) {
-            self.id = id
-        } else {
-            self.id = 0
-        }
-        
+
+        self.id = try container.decode(Self.ID.self, forKey: .id)
         if let date: String = try? container.decode(String.self, forKey: .photoDate) {
             self.photoDate = date.toDate("dd/MM/yyyy", region: .local)?.date ?? Date()
         } else {

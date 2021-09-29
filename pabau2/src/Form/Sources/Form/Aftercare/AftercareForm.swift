@@ -1,7 +1,6 @@
 import SwiftUI
 import ComposableArchitecture
 import Util
-import ASCollectionView
 import CasePaths
 import Model
 
@@ -94,11 +93,11 @@ public struct AftercareForm: View {
             ){
                 AftercareImagesSection(title: Texts.setProfilePhoto,
                                        store: store.scope(state: { $0.profile },
-                                                          action: { .profile($0 )})
+                                                          action: { .profile($0)})
                 )
                 AftercareImagesSection(title: Texts.sharePhoto,
                                        store: store.scope(state: { $0.profile },
-                                                          action: { .profile($0 )})
+                                                          action: { .profile($0)})
                 )
             }
             AftercareBoolSection(title: Texts.sendAftercareQ,
@@ -115,21 +114,6 @@ public struct AftercareForm: View {
             )
         }
     }
-    //    .layout { sectionID in
-    //			switch sectionID {
-    //			case 0, 1:
-    //				// Here we use one of the provided convenience layouts
-    //				return .grid(layoutMode: .fixedNumberOfColumns(4),
-    //										 itemSpacing: 2.5,
-    //										 lineSpacing: 2.5)
-    //			case 2, 3:
-    //				return
-    //					.list(itemSize: .absolute(60))
-    //			default:
-    //				fatalError()
-    //			}
-    //		}
-    //	}
 }
 
 struct AftercareTitle: View {

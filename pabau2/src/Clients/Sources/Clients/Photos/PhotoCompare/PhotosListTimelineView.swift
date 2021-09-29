@@ -7,7 +7,7 @@ import SDWebImageSwiftUI
 struct PhotosListTimelineView: View {
 
     let store: Store<PhotoCompareState, PhotoCompareAction>
-    var layout = [GridItem(.flexible())]
+    let layout = [GridItem(.flexible())]
 
 	struct State: Equatable {
 		let photos: [PhotoViewModel]

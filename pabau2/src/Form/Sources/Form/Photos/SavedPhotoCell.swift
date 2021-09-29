@@ -9,12 +9,12 @@ public struct SavedPhotoCell: View {
     
     let savedPhoto: SavedPhoto
     public var body: some View {
-		GeometryReader { proxy in
+//		GeometryReader { proxy in
 			WebImage(url: URL(string: savedPhoto.normalSizePhoto ?? ""))
 				.resizable()
 				.aspectRatio(contentMode: .fit)
-				.frame(width: proxy.size.width, height: proxy.size.height)
+//				.frame(width: proxy.size.width, height: proxy.size.height)
 				.clipped()
-		}
+//		}
 	}
 }
