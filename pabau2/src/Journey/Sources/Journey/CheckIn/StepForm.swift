@@ -97,8 +97,8 @@ public let stepReducer: Reducer<StepState, StepAction, JourneyEnvironment> = .co
                                                  state.clientId,
                                                  Array(aftercarestate.aftercares.selectedIds),
                                                  Array(aftercarestate.recalls.selectedIds),
-                                                 aftercarestate.selectedProfileImageId(),
-                                                 aftercarestate.selectedShareImageId()
+                                                 aftercarestate.selectedProfileImageId,
+                                                 aftercarestate.selectedShareImgeId
             )
             .catchToEffect()
             .map(AftercareAction.gotCompleteResponse)

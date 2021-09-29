@@ -48,7 +48,7 @@ public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnv
                         .receive(on: DispatchQueue.main)
                         .eraseToEffect()
                         .map {
-                            EditPhotoAction.saveResponse(idx: idx, result: $0)
+                            EditPhotoAction.saveResponse(id: id, result: $0)
                         }
                     uploadsActions.append(action)
                 }
@@ -95,9 +95,8 @@ public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnv
                 }
                 state.editingPhotoId = toBeSelected.map(\.id)
                 state.photos.remove(id: editingPhotoId)
-            case .saveResponse(let idx, let result):
+            case .saveResponse(let id, let result):
                 print("here result")
-                let id = state.photos[idx].id
                 switch result {
                 case .success(let voidApiResponse):
                     print(voidApiResponse)
@@ -137,7 +136,7 @@ public enum EditPhotoAction: Equatable {
     case showAlert
     case abortUpload
     case continueUpload
-    case saveResponse(idx: Int, result:(Result<SavedPhoto, RequestError>))
+    case saveResponse(id: PhotoVariantId, result:(Result<SavedPhoto, RequestError>))
     case dismissUploadErrorAlert
 }
 

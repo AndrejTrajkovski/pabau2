@@ -16,7 +16,15 @@ public struct SavedPhoto: Codable, Identifiable, Equatable, Hashable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        self.id = try container.decode(Self.ID.self, forKey: .id)
+        if let stringId = try? container.decode(String.self, forKey: .id),
+           let toIntID = Int(stringId) {
+            self.id = Self.ID(rawValue: toIntID)
+        } else if let intId = try? container.decode(Int.self, forKey: .id) {
+            self.id = Self.ID(rawValue: intId)
+        } else {
+            throw DecodingError.dataCorruptedError(forKey: CodingKeys.id, in: container, debugDescription: "Id is not string or int")
+        }
+
         if let date: String = try? container.decode(String.self, forKey: .photoDate) {
             self.photoDate = date.toDate("dd/MM/yyyy", region: .local)?.date ?? Date()
         } else {

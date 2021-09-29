@@ -1,6 +1,7 @@
 import Foundation
 import Model
 import Util
+import ComposableArchitecture
 
 public struct AftercareState: Equatable, Identifiable {
 	public let id: Step.Id
@@ -16,38 +17,30 @@ public struct AftercareState: Equatable, Identifiable {
         self.images = []
 	}
     
-    public var images: [SavedPhoto]
-    public var selectedProfileImageIdx: Int? = nil
-    public var selectedShareImgeIdx: Int? = nil
+    public var images: IdentifiedArrayOf<SavedPhoto>
+    public var selectedProfileImageId: SavedPhoto.ID? = nil
+    public var selectedShareImgeId: SavedPhoto.ID? = nil
 	public var aftercares: AftercareBoolSectionState
 	public var recalls: AftercareBoolSectionState
-    
-    public func selectedProfileImageId() -> SavedPhoto.ID? {
-        selectedProfileImageIdx.map { images[$0].id }
-    }
-    
-    public func selectedShareImageId() -> SavedPhoto.ID? {
-        selectedShareImgeIdx.map { images[$0].id }
-    }
 }
 
 extension AftercareState {
     
     var profile: SingleSelectImages {
         get {
-            SingleSelectImages(images: images, selectedIdx: selectedProfileImageIdx)
+            SingleSelectImages(images: images, selectedId: selectedProfileImageId)
         }
         set {
-            self.selectedProfileImageIdx = newValue.selectedIdx
+            self.selectedProfileImageId = newValue.selectedId
         }
     }
     
     var share: SingleSelectImages {
         get {
-            SingleSelectImages(images: images, selectedIdx: selectedShareImgeIdx)
+            SingleSelectImages(images: images, selectedId: selectedShareImgeId)
         }
         set {
-            self.selectedShareImgeIdx = newValue.selectedIdx
+            self.selectedShareImgeId = newValue.selectedId
         }
     }
 }

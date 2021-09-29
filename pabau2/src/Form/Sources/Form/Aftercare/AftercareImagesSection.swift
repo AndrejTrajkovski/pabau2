@@ -3,70 +3,83 @@ import ComposableArchitecture
 import Model
 import SDWebImageSwiftUI
 
-public let singleSelectImagesReducer = Reducer<SingleSelectImages, SingleSelectImagesAction, Any>.init { state, action, _ in
-    switch action {
-    case .didSelectIdx(let idx):
-        state.selectedIdx = state.selectedIdx == idx ? nil : idx
+public let singleSelectImagesReducer: Reducer<SingleSelectImages, SingleSelectImagesAction, Any> =
+    .init { state, action, _ in
+        switch action {
+        case .rows(let id, _):
+            state.selectedId = id
+        }
+        return .none
     }
-    return .none
-}
 
 public struct SingleSelectImages: Equatable {
-    let images: [SavedPhoto]
-    var selectedIdx: Int?
+    var images: IdentifiedArrayOf<SavedPhoto>
+    var selectedId: SavedPhoto.ID?
     
-    func isSelected(model: SavedPhoto) -> Bool {
-        return self.images.firstIndex(of: model) == selectedIdx
-    }
-    
-    public init (images: [SavedPhoto],
-                 selectedIdx: Int?) {
+    public init (images: IdentifiedArrayOf<SavedPhoto>,
+                 selectedId: SavedPhoto.ID?) {
         self.images = images
-        self.selectedIdx = selectedIdx
+        self.selectedId = selectedId
+    }
+
+    var rows: IdentifiedArrayOf<GridCellState> {
+        get {
+            let gridImages = images.map { GridCellState.init(photo: $0, selectedId: selectedId) }
+            return IdentifiedArray.init(uniqueElements: gridImages)
+        }
+        set {
+            self.images = IdentifiedArray.init(uniqueElements: newValue.map(\.photo))
+            self.selectedId = newValue.first(where: { $0.selectedId != nil })?.id
+        }
     }
 }
 
 public enum SingleSelectImagesAction: Equatable {
-    case didSelectIdx(Int)
+    case rows(id: SavedPhoto.ID, select: SelectAction)
 }
+
+public struct SelectAction: Equatable {}
 
 struct AftercareImagesSection: View {
     
     init(title: String, store: Store<SingleSelectImages, SingleSelectImagesAction>) {
         self.title = title
         self.store = store
-        self.viewStore = ViewStore(store)
     }
     
     let title: String
     let store: Store<SingleSelectImages, SingleSelectImagesAction>
     
-    
-    @ObservedObject var viewStore: ViewStore<SingleSelectImages, SingleSelectImagesAction>
-    
     var body: some View {
         Section(header: AftercareTitle(self.title)) {
-            ForEach(viewStore.state.images.indices) { idx in
-                let model = viewStore.state.images[idx]
-                GridCell(model: model,
-                         isSelected: self.viewStore.state.isSelected(model: model))
-                    .onTapGesture {
-                        self.viewStore.send(.didSelectIdx(idx))
-                    }
-                
-            }
+            ForEachStore(store.scope(state: { $0.rows },
+                                     action: SingleSelectImagesAction.rows),
+                         content: GridCell.init(store:))
         }
     }
 }
 
+struct GridCellState: Equatable, Identifiable {
+    let photo: SavedPhoto
+    let selectedId: SavedPhoto.ID?
+
+    var id: SavedPhoto.ID { photo.id }
+}
+
 struct GridCell: View {
-    let model: SavedPhoto
-    let isSelected: Bool
+
+    let store: Store<GridCellState, SelectAction>
+
     var body: some View {
-        WebImage(url: model.thumbnail.flatMap(URL.init(string:)))
-            .resizable()
-            .indicator(.activity) // Activity Indicator
-            .padding(8)
-            .border(isSelected ? Color.accentColor : Color.clear, width: 8.0)
+        WithViewStore(store) { viewStore in
+            WebImage(url: viewStore.photo.thumbnail.flatMap(URL.init(string:)))
+                .resizable()
+                .indicator(.activity) // Activity Indicator
+                .padding(8)
+                .border((viewStore.selectedId != nil) ? Color.accentColor : Color.clear, width: 8.0)
+                .onTapGesture {
+                    viewStore.send(SelectAction())
+                }
+        }.id(UUID())
     }
 }

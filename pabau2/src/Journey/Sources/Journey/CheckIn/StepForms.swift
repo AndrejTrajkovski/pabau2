@@ -19,7 +19,9 @@ public let stepFormsReducer: Reducer<[StepState], StepsActions, JourneyEnvironme
                     guard case StepType.aftercares = state[idx].stepType else { return }
                     var aftercareStep = state[idx]
                     guard case StepBodyState.aftercare(var aftercareBody) = aftercareStep.stepBody else { return }
-                    aftercareBody.images = photos
+                    photos.forEach {
+                        aftercareBody.images.append($0)
+                    }
                     aftercareStep.stepBody = .aftercare(aftercareBody)
                     toUpdate[idx] = aftercareStep
                 }
