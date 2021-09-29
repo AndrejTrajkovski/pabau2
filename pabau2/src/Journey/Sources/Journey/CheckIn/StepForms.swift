@@ -4,11 +4,41 @@ import SwiftUI
 import Util
 
 public let stepFormsReducer: Reducer<[StepState], StepsActions, JourneyEnvironment> =
-	stepReducer.forEach(
-		state: \[StepState].self,
-		action: /StepsActions.steps,
-		environment: { $0 }
-	)
+
+    .combine(
+        stepReducer.forEach(
+            state: \[StepState].self,
+            action: /StepsActions.steps,
+            environment: { $0 }
+        ),
+        .init { state, action, _ in
+
+            func updateAftercareSteps(_ photos: [SavedPhoto]) {
+                var toUpdate = [Int: StepState]()
+                state.indices.forEach { idx in
+                    guard case StepType.aftercares = state[idx].stepType else { return }
+                    var aftercareStep = state[idx]
+                    guard case StepBodyState.aftercare(var aftercareBody) = aftercareStep.stepBody else { return }
+                    aftercareBody.images = photos
+                    aftercareStep.stepBody = .aftercare(aftercareBody)
+                    toUpdate[idx] = aftercareStep
+                }
+                toUpdate.forEach {
+                    state[$0.key] = $0.value
+                }
+            }
+
+            if case StepsActions.steps(_, .stepType(.photos(.gotStepPhotos(.success(let photos))))) = action {
+                updateAftercareSteps(photos)
+            }
+            
+            if case StepsActions.steps(_, .stepType(.photos(.editPhoto(.saveResponse(_, .success(let photos)))))) = action {
+                updateAftercareSteps([photos])
+            }
+
+            return .none
+        }
+)
 
 public enum StepsActions: Equatable {
 	case steps(idx: Int, action: StepAction)

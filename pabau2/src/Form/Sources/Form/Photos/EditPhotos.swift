@@ -255,6 +255,9 @@ public struct EditPhotos: View {
         .alert(
             store.scope(state: { $0.uploadAlert }),
             dismiss: EditPhotoAction.dismissUploadErrorAlert)
+        .alert(
+            store.scope(state: { $0.deletePhotoAlert }),
+            dismiss: EditPhotoAction.rightSide(EditPhotosRightSideAction.deleteAlertCanceled))
 	}
 
     var editPhotosMain: some View {
@@ -297,9 +300,6 @@ public struct EditPhotos: View {
         .modalLink(isPresented: .constant(viewStore.state.isCameraActive),
                    linkType: ModalTransition.fullScreenModal,
                    destination: { camera })
-        .alert(
-            store.scope(state: { $0.deletePhotoAlert }),
-            dismiss: EditPhotoAction.rightSide(EditPhotosRightSideAction.deleteAlertCanceled))
     }
 
     var injectablesPicker: some View {

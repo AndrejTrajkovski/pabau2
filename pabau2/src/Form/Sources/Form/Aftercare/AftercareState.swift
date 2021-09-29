@@ -16,7 +16,7 @@ public struct AftercareState: Equatable, Identifiable {
         self.images = []
 	}
     
-    var images: [SavedPhoto]
+    public var images: [SavedPhoto]
     public var selectedProfileImageIdx: Int? = nil
     public var selectedShareImgeIdx: Int? = nil
 	public var aftercares: AftercareBoolSectionState

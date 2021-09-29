@@ -96,8 +96,8 @@ public struct AftercareForm: View {
                                                           action: { .profile($0)})
                 )
                 AftercareImagesSection(title: Texts.sharePhoto,
-                                       store: store.scope(state: { $0.profile },
-                                                          action: { .profile($0)})
+                                       store: store.scope(state: { $0.share },
+                                                          action: { .share($0)})
                 )
             }
             AftercareBoolSection(title: Texts.sendAftercareQ,
