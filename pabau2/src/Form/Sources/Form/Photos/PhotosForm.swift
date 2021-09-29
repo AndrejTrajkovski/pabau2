@@ -37,6 +37,9 @@ public let photosFormReducer: Reducer<PhotosState, PhotosFormAction, FormEnviron
             environment: { $0 }),
         Reducer.init { state, action, _ in
             switch action {
+            case .didSelectAddPhotos:
+                let pidsid = PathwayIdStepId(step_id: state.id, path_taken_id: state.pathwayId)
+                state.editPhotos = EditPhotosState([], pathwayIdStepId: pidsid, clientId: state.clientId)
             case .didSelectEditPhotos:
                 let selPhotos = state.photos.filter { state.selectedIds.contains($0.id) }
                 let pidsid = PathwayIdStepId(step_id: state.id, path_taken_id: state.pathwayId)
@@ -96,6 +99,7 @@ public let photosFormReducer: Reducer<PhotosState, PhotosFormAction, FormEnviron
 public enum PhotosFormAction: Equatable {
     case selectPhotos(SelectPhotosAction)
     case didSelectEditPhotos
+    case didSelectAddPhotos
     case editPhoto(EditPhotoAction)
     case gotStepPhotos(Result<[SavedPhoto], RequestError>)
 }

@@ -61,7 +61,7 @@ struct PhotosCompleteBtn: View {
                 )
                 PrimaryButton(Texts.addPhotos,
                               isDisabled: false,
-                              { viewStore.send(.didSelectEditPhotos) }
+                              { viewStore.send(.didSelectAddPhotos) }
                 )
             }
         }
