@@ -156,37 +156,33 @@ public let navigationReducer = Reducer<CheckInLoadedState, CheckInLoadedAction, 
         
         state.doctorCheckIn.stepStates = updatedSteps
     }
+
+    func goToHandbackDevice() -> Effect<CheckInLoadedAction, Never> {
+        state.isHandBackDeviceActive = true
+        updateCheckPatientDetails()
+        return getLoadedActionsOneAfterAnother(state.pathway, state.pathwayTemplate, .doctor, env.formAPI, state.appointment.customerId, state.appointment.id)
+            .receive(on: DispatchQueue.main)
+            .eraseToEffect()
+    }
     
     switch action {
     case .didTouchHandbackDevice:
         state.passcodeForDoctorMode = PasscodeState()
     case .patient(.steps(.noStepsComplete)):
-        state.isHandBackDeviceActive = true
-        updateCheckPatientDetails()
-        return .none
+        return goToHandbackDevice()
     case .patient(.steps(.steps(let idx, let stepAction))):
         if state.patientCheckIn.shouldNavigateAwayFromCheckIn(stepAction, idx) {
-            state.isHandBackDeviceActive = true
-            updateCheckPatientDetails()
-            return .none
+            return goToHandbackDevice()
         }
     case .doctor(.steps(.steps(idx: _, action: .stepType(.checkPatientDetails(.backToPatientMode))))):
         backToPatientMode()
     case .doctor(.stepsView(.onXTap)):
         backToPatientMode()
-    case .passcodeForDoctorMode(.touchDigit(_)):
-        if state.passcodeForDoctorMode?.unlocked == true {
-            return getLoadedActionsOneAfterAnother(state.pathway, state.pathwayTemplate, .doctor, env.formAPI, state.appointment.customerId, state.appointment.id)
-                .receive(on: DispatchQueue.main)
-                .eraseToEffect()
-        }
-    //TODO
-    //	case .doctor(.checkInBody(.footer(.toPatientMode))):
-    //		backToPatientMode()
-    //	case .doctor(.checkInBody(.footer(.photos(.addPhotos)))):
-    //		state.doctorForms.photosState.editPhotos = EditPhotosState([])
-    //	case .doctor(.checkInBody(.footer(.photos(.editPhotos)))):
-    //		state.doctorForms.photosState.editPhotos = EditPhotosState(state.doctorForms.photosState.selectedPhotos())
+//        if state.passcodeForDoctorMode?.unlocked == true {
+//            return getLoadedActionsOneAfterAnother(state.pathway, state.pathwayTemplate, .doctor, env.formAPI, state.appointment.customerId, state.appointment.id)
+//                .receive(on: DispatchQueue.main)
+//                .eraseToEffect()
+//        }
     default:
         break
     }
