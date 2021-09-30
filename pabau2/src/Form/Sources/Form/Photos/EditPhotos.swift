@@ -37,12 +37,18 @@ public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnv
                     let photo = state.photos[idx]
                     let id = photo.id
                     state.photos[id: id]?.savePhotoState = .loading
+
+                    //if there are photos taken in both portrait and landscape this is where the bug is. Only one photo has a canvas size with the current impl, and it is applied to all photos
+                    guard let canvasSize = state.photos.map(\.canvasSize).first(where: {
+                        $0 != .zero
+                    }) else { return .none }
                     let renderAndUploadEffect = renderAndUpload(photo,
                                                                 idx,
                                                                 state.pathwayIdStepId,
                                                                 state.clientId,
                                                                 nil,
-                                                                env.formAPI)
+                                                                env.formAPI,
+                                                                canvasSize)
                     let action = renderAndUploadEffect
                         .catchToEffect()
                         .receive(on: DispatchQueue.main)
@@ -306,7 +312,7 @@ public struct EditPhotos: View {
                     state: { $0.singlePhotoEdit?.injectables.injectablesTool },
                     action: { .singlePhotoEdit(SinglePhotoEditAction.injectables(InjectablesAction.injectablesTool($0)))}), then: {
                         InjectablesTool(store: $0)
-                    }, else: { Color.clear }
+                    }, else: { Color.clear.frame(height: 128) }
         )
     }
 
@@ -451,11 +457,12 @@ extension View {
     }
 }
 
-func render(photoViewModel: PhotoViewModel) -> UIImage {
+func render(photoViewModel: PhotoViewModel,
+            canvasSize: CGSize) -> UIImage {
     render(injections: photoViewModel.injections,
            drawing: photoViewModel.drawing,
            image: photoViewModel.basePhoto.imageData()!,
-           canvasSize: photoViewModel.canvasSize)
+           canvasSize: canvasSize)
 }
 
 func render(injections: [InjectableId : IdentifiedArrayOf<Injection>],
@@ -487,7 +494,8 @@ func render(injections: [InjectableId : IdentifiedArrayOf<Injection>],
 
 func makeUploadData(photoViewModel: PhotoViewModel,
                     clientId: Client.ID,
-                    employeeId: Employee.ID?) -> PhotoUpload {
+                    employeeId: Employee.ID?,
+                    canvasSize: CGSize) -> PhotoUpload {
     //TODO employee id from passcode when starting pathway, make employeeId non optional and follow compiler
     var params: [String: String] = ["contact_id": clientId.description,
                                     "counter": "1",
@@ -499,7 +507,9 @@ func makeUploadData(photoViewModel: PhotoViewModel,
     if let employeeId = employeeId {
         params["uid"] = employeeId.description
     }
-    let rendered = render(photoViewModel: photoViewModel).jpegData(compressionQuality: 0.5)!
+    let rendered = render(photoViewModel: photoViewModel,
+                          canvasSize: canvasSize)
+        .jpegData(compressionQuality: 0.5)!
     return PhotoUpload(fileData: rendered, params: params)
 }
 
@@ -510,8 +520,9 @@ func renderAndUpload(_ photoViewModel: PhotoViewModel,
                      _ pathwayIdStepId: PathwayIdStepId,
                      _ clientId: Client.ID,
                      _ employeeId: Employee.ID?,
-                     _ api: FormAPI) -> Effect<SavedPhoto, RequestError> {
-    let renderedUploadData = render(photoViewModel, clientId, employeeId)
+                     _ api: FormAPI,
+                     _ canvasSize: CGSize) -> Effect<SavedPhoto, RequestError> {
+    let renderedUploadData = render(photoViewModel, clientId, employeeId, canvasSize)
     let upload = renderedUploadData.flatMap {
         api.uploadImage(upload: $0, pathwayIdStepId: pathwayIdStepId)
             .receive(on: DispatchQueue.main)
@@ -523,24 +534,28 @@ func renderAndUpload(_ photoViewModel: PhotoViewModel,
 func render(
     _ photoViewModel: PhotoViewModel,
     _ clientId: Client.ID,
-    _ employeeId: Employee.ID?
+    _ employeeId: Employee.ID?,
+    _ canvasSize: CGSize
 ) -> Effect<PhotoUpload, Never> {
     let uploadData = makeUploadData(photoViewModel: photoViewModel,
                                     clientId: clientId,
-                                    employeeId: employeeId)
+                                    employeeId: employeeId,
+                                    canvasSize: canvasSize)
     return Just(uploadData).eraseToEffect()
 }
 
 func renderOnBgThread(
     _ photoViewModel: PhotoViewModel,
     _ clientId: Client.ID,
-    _ employeeId: Employee.ID?
+    _ employeeId: Employee.ID?,
+    _ canvasSize: CGSize
 ) -> Effect<PhotoUpload, Never> {
     return Effect.future { completion in
         DispatchQueue.global(qos: .userInitiated).async {
             let uploadData = makeUploadData(photoViewModel: photoViewModel,
                                             clientId: clientId,
-                                            employeeId: employeeId)
+                                            employeeId: employeeId,
+                                            canvasSize: canvasSize)
             completion(.success(uploadData))
         }
     }
