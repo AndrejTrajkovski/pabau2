@@ -55,20 +55,20 @@ public let photosFormReducer: Reducer<PhotosState, PhotosFormAction, FormEnviron
                 let savingStates = state.photos.map(\.savePhotoState)
                 let allUploadsAreFinished = savingStates.allSatisfy { !$0.isLoading }
                 if allUploadsAreFinished {
-                    guard var editPhotos = state.editPhotos else {
+                    guard var newEditPhotos = state.editPhotos else {
                         return .none
                     }
-                    editPhotos.photos.filter { $0.savePhotoState == .gotSuccess}.forEach {
+                    newEditPhotos.photos.filter { $0.savePhotoState == .gotSuccess}.forEach {
                         state.photos[id: $0.id] = $0
                     }
-                    editPhotos.photos = editPhotos.photos.filter { $0.savePhotoState != .gotSuccess }
-                    if editPhotos.editingPhotoId == id {
-                        if editPhotos.editingPhotoId == nil {
-                            state.editPhotos = nil
-                        } else {
-                            editPhotos.editingPhotoId = editPhotos.photos.last?.id
-                            state.editPhotos = editPhotos
-                        }
+                    newEditPhotos.photos = newEditPhotos.photos.filter { $0.savePhotoState != .gotSuccess }
+                    if newEditPhotos.editingPhotoId == id,
+                       newEditPhotos.photos.last?.id != id {
+                        newEditPhotos.editingPhotoId = newEditPhotos.photos.last?.id
+                        state.editPhotos = newEditPhotos
+                    }
+                    if newEditPhotos.editingPhotoId == nil {
+                        state.editPhotos = nil
                     }
                 }
 //            case .editPhoto(.save):
