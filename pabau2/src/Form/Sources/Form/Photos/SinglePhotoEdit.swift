@@ -34,6 +34,12 @@ func draw(injectionSize: CGSize,
 }
 
 let singlePhotoEditReducer: Reducer<SinglePhotoEditState, SinglePhotoEditAction, FormEnvironment> = .combine (
+    .init { state, action, _ in
+        if case .onChangePhotoSize(let size) = action {
+            state.photo.canvasSize = size
+        }
+        return .none
+    },
 	injectablesContainerReducer.pullback(
 		state: \SinglePhotoEditState.injectables,
 		action: /SinglePhotoEditAction.injectables,
@@ -50,7 +56,6 @@ struct SinglePhotoEditState: Equatable {
 	var allInjectables: IdentifiedArrayOf<Injectable>
 	var isChooseInjectablesActive: Bool
 	var chosenInjectatbleId: InjectableId?
-    var editingPhotoId: PhotoVariantId?
     var loadingState: LoadingState = .initial
     let isAlertActive: Bool
     
@@ -74,7 +79,8 @@ struct SinglePhotoEditState: Equatable {
 
 	var canvasState: CanvasViewState {
 		get {
-            CanvasViewState(drawing: self.photo.drawing,
+            CanvasViewState(photoId: self.photo.id,
+                            drawing: self.photo.drawing,
                             activeCanvas: self.activeCanvas,
                             isDeletePhotoAlertActive: self.isAlertActive)
 		}
@@ -95,7 +101,7 @@ public enum SinglePhotoEditAction: Equatable {
 
 struct SinglePhotoEdit: View {
 
-	@State var photoSize: CGSize = .zero
+    @State var photoSize: CGSize = .zero
 	let store: Store<SinglePhotoEditState, SinglePhotoEditAction>
 	@ObservedObject var viewStore: ViewStore<ViewState, SinglePhotoEditAction>
 	public init(store: Store<SinglePhotoEditState, SinglePhotoEditAction>) {
@@ -134,12 +140,6 @@ struct SinglePhotoEdit: View {
                 store: self.store.scope(state: { $0.photo }).actionless,
                 self.$photoSize
             )
-            .onPreferenceChange(PhotoSize.self) { size in
-                if size != .zero {
-                    viewStore.send(.onChangePhotoSize(size))
-                }
-            }
-            
             IfLetStore(self.store.scope(
                         state: { $0.injectables.canvas },
                         action: { .injectables(InjectablesAction.canvas($0))}),
@@ -173,20 +173,19 @@ struct SinglePhotoEdit: View {
     }
 }
 
-//extension View {
-//	public func viewSnapshot() -> UIImage {
-//		let controller = UIHostingController(rootView: self)
-//		let view = controller.view
-//
-//		let targetSize = controller.view.intrinsicContentSize
-//		view?.bounds = CGRect(origin: .zero, size: targetSize)
-//		view?.backgroundColor = .clear
-//
-//		let renderer = UIGraphicsImageRenderer(size: targetSize)
-//
-//		return renderer.image { _ in
-//			view?.drawHierarchy(in: controller.view.bounds, afterScreenUpdates: true)
-//		}
-//	}
-//}
+extension View {
+	public func viewSnapshot() -> UIImage {
+		let controller = UIHostingController(rootView: self)
+		let view = controller.view
 
+		let targetSize = controller.view.intrinsicContentSize
+		view?.bounds = CGRect(origin: .zero, size: targetSize)
+		view?.backgroundColor = .clear
+
+		let renderer = UIGraphicsImageRenderer(size: targetSize)
+
+		return renderer.image { _ in
+			view?.drawHierarchy(in: controller.view.bounds, afterScreenUpdates: true)
+		}
+	}
+}

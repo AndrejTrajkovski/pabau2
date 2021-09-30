@@ -24,7 +24,8 @@ public struct PhotoViewModel: Equatable {
 	var injections: [InjectableId: IdentifiedArrayOf<Injection>] = [:]
 	var chosenInjectionId: UUID?
     var savePhotoState: LoadingState = .initial
-
+    var canvasSize: CGSize?
+    
 	public init (_ savedPhoto: SavedPhoto) {
 		self.basePhoto = .saved(savedPhoto)
 	}

@@ -408,7 +408,6 @@ extension EditPhotosState {
 				allInjectables: self.allInjectables,
 				isChooseInjectablesActive: self.isChooseInjectablesActive,
 				chosenInjectatbleId: self.chosenInjectableId,
-                editingPhotoId: self.editingPhotoId,
                 isAlertActive: (self.uploadAlert != nil) || (self.deletePhotoAlert != nil)
 			)
 		}
@@ -419,7 +418,6 @@ extension EditPhotosState {
 			self.allInjectables = newValue.allInjectables
 			self.isChooseInjectablesActive = newValue.isChooseInjectablesActive
 			self.chosenInjectableId = newValue.chosenInjectatbleId
-            self.editingPhotoId = newValue.editingPhotoId
 		}
 	}
 
@@ -456,16 +454,19 @@ extension View {
 func render(photoViewModel: PhotoViewModel) -> UIImage {
     render(injections: photoViewModel.injections,
            drawing: photoViewModel.drawing,
-           image: photoViewModel.basePhoto.imageData()!)
+           image: photoViewModel.basePhoto.imageData()!,
+           canvasSize: photoViewModel.canvasSize ?? .zero)
 }
 
 func render(injections: [InjectableId : IdentifiedArrayOf<Injection>],
             drawing: Data,
-            image: UIImage) -> UIImage {
-    let size = image.size
-    let renderer = UIGraphicsImageRenderer(size: size)
+            image: UIImage,
+            canvasSize: CGSize) -> UIImage {
+    let pkDrawing = try! PKDrawing.init(data: drawing)
+    let renderer = UIGraphicsImageRenderer(size: canvasSize)
+    print(canvasSize)
     let img = renderer.image { (ctx) in
-        image.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+        image.draw(in: CGRect(x: 0, y: 0, width: canvasSize.width, height: canvasSize.height))
 
         injections.values.forEach { (injections: IdentifiedArrayOf<Injection>) in
             injections.forEach { injection in
@@ -475,9 +476,9 @@ func render(injections: [InjectableId : IdentifiedArrayOf<Injection>],
             }
         }
 
-        if let pencilImage = UIImage(data: drawing) {
-            pencilImage.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
-        }
+        let pencilImage = pkDrawing.image(from: pkDrawing.bounds, scale: 1.0)
+            print("there is pencil image")
+        pencilImage.draw(in: CGRect(x: 0, y: 0, width: canvasSize.width, height: canvasSize.height))
     }
 
     return img
