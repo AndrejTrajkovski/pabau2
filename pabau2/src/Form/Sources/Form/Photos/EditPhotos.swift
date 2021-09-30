@@ -455,7 +455,7 @@ func render(photoViewModel: PhotoViewModel) -> UIImage {
     render(injections: photoViewModel.injections,
            drawing: photoViewModel.drawing,
            image: photoViewModel.basePhoto.imageData()!,
-           canvasSize: photoViewModel.canvasSize ?? .zero)
+           canvasSize: photoViewModel.canvasSize)
 }
 
 func render(injections: [InjectableId : IdentifiedArrayOf<Injection>],
@@ -464,9 +464,10 @@ func render(injections: [InjectableId : IdentifiedArrayOf<Injection>],
             canvasSize: CGSize) -> UIImage {
     let pkDrawing = try! PKDrawing.init(data: drawing)
     let renderer = UIGraphicsImageRenderer(size: canvasSize)
+    let canvasRect = CGRect(x: 0, y: 0, width: canvasSize.width, height: canvasSize.height)
     print(canvasSize)
     let img = renderer.image { (ctx) in
-        image.draw(in: CGRect(x: 0, y: 0, width: canvasSize.width, height: canvasSize.height))
+        image.draw(in: canvasRect)
 
         injections.values.forEach { (injections: IdentifiedArrayOf<Injection>) in
             injections.forEach { injection in
@@ -476,9 +477,9 @@ func render(injections: [InjectableId : IdentifiedArrayOf<Injection>],
             }
         }
 
-        let pencilImage = pkDrawing.image(from: pkDrawing.bounds, scale: 1.0)
+        let pencilImage = pkDrawing.image(from: canvasRect, scale: 1.0)
             print("there is pencil image")
-        pencilImage.draw(in: CGRect(x: 0, y: 0, width: canvasSize.width, height: canvasSize.height))
+        pencilImage.draw(in: canvasRect)
     }
 
     return img

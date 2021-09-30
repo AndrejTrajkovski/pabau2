@@ -51,13 +51,13 @@ struct ContainerView<Content: View>: View {
 }
 
 struct PhotoSizePreferenceSetter: View {
-	var body: some View {
-		GeometryReaderPatch { geometry in
-			Color.clear
-				.preference(key: PhotoSize.self,
-										value: geometry.size)
-		}
-	}
+    var body: some View {
+        GeometryReaderPatch { geometry in
+            Color.clear
+                .preference(key: PhotoSize.self,
+                            value: geometry.size)
+        }
+    }
 }
 
 struct PhotoSize: PreferenceKey {

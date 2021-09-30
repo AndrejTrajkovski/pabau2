@@ -101,7 +101,7 @@ public enum SinglePhotoEditAction: Equatable {
 
 struct SinglePhotoEdit: View {
 
-    @State var photoSize: CGSize = .zero
+//    @State var photoSize: CGSize = .zero
 	let store: Store<SinglePhotoEditState, SinglePhotoEditAction>
 	@ObservedObject var viewStore: ViewStore<ViewState, SinglePhotoEditAction>
 	public init(store: Store<SinglePhotoEditState, SinglePhotoEditAction>) {
@@ -115,6 +115,7 @@ struct SinglePhotoEdit: View {
 		let isDrawingDisabled: Bool
 		let isChooseInjectablesActive: Bool
 		let isInjectablesDisabled: Bool
+        let canvasSize: CGSize
 		init (state: SinglePhotoEditState) {
 			let isInjectablesActive = state.activeCanvas == CanvasMode.injectables ? true : false
             if state.isAlertActive {
@@ -131,6 +132,7 @@ struct SinglePhotoEdit: View {
 			self.isInjectablesDisabled = !isInjectablesActive
 			self.isDrawingDisabled = isInjectablesActive || state.isAlertActive
 			self.isChooseInjectablesActive = state.isChooseInjectablesActive
+            self.canvasSize = state.photo.canvasSize
 		}
 	}
     
@@ -138,15 +140,17 @@ struct SinglePhotoEdit: View {
         ZStack {
             PhotoParent(
                 store: self.store.scope(state: { $0.photo }).actionless,
-                self.$photoSize
+                viewStore.binding(
+                    get: { $0.canvasSize },
+                    send: { .onChangePhotoSize($0) })
             )
             IfLetStore(self.store.scope(
                         state: { $0.injectables.canvas },
                         action: { .injectables(InjectablesAction.canvas($0))}),
                        then: {
-                        InjectablesCanvas(size: self.photoSize, store: $0)
-                            .frame(width: self.photoSize.width,
-                                   height: self.photoSize.height)
+                        InjectablesCanvas(size: viewStore.canvasSize, store: $0)
+                            .frame(width: viewStore.canvasSize.width,
+                                   height: viewStore.canvasSize.height)
                             .disabled(viewStore.state.isInjectablesDisabled)
                             .zIndex(viewStore.state.injectablesZIndex)
                        }, else: { Spacer() }
@@ -157,8 +161,8 @@ struct SinglePhotoEdit: View {
                             action: { .photoAndCanvas($0) })
             )
             .disabled(viewStore.state.isDrawingDisabled)
-            .frame(width: self.photoSize.width,
-                   height: self.photoSize.height)
+            .frame(width: viewStore.canvasSize.width,
+                   height: viewStore.canvasSize.height)
             .zIndex(viewStore.state.drawingCanvasZIndex)
         }
         .sheet(isPresented: viewStore.binding(
