@@ -85,8 +85,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             ).environmentObject(KeyboardFollower())
             
             window.rootViewController = UIHostingController(
-                rootView: contentView
-//                rootView: makeMockPhotosStep(appEnv: env)
+//                rootView: contentView
+                rootView: makeMockPhotosStep(appEnv: env)
             )
             self.window = window
             window.makeKeyAndVisible()
