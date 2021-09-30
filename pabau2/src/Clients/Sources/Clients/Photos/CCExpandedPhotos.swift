@@ -90,7 +90,7 @@ struct ExpandedPhotosSection {
 		ASCollectionViewSection(
 			id: date,
 			data: self.photos) { photo, _ in
-            PhotoCell(photo: photo)
+            PhotoCell(photo: photo, shouldShowThumbnail: true)
                 .padding()
                 .onTapGesture { action(photo.basePhoto.id) }
 		}

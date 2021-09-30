@@ -57,7 +57,7 @@ struct GroupedPhotosCell: View {
 
 	var body: some View {
 		ZStack(alignment: .bottom) {
-			PhotoCell(photo: photos.first!)
+            PhotoCell(photo: photos.first!, shouldShowThumbnail: true)
 			DateAndNumber(date: date, number: photos.count).offset(y: -16)
 		}
 	}

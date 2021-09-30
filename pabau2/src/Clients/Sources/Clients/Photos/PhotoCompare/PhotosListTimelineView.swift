@@ -54,7 +54,7 @@ public struct TimelinePhotoCell: View {
     public var body: some View {
         switch photo.basePhoto {
         case .saved(let savedPhoto):
-            SavedPhotoCell(savedPhoto: savedPhoto)
+            SavedPhotoCell(savedPhoto: savedPhoto, shouldShowThumbnail: true)
         case .new(let newPhoto):
             NewTimelinePhotoCell(newPhoto: newPhoto)
         }

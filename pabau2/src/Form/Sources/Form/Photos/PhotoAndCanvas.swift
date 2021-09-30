@@ -30,7 +30,7 @@ struct PhotoParent: View {
     
     //using "preference key " in background() is not working https://developer.apple.com/forums/thread/668976
 	var body: some View {
-		PhotoCell(photo: ViewStore(store).state)
+        PhotoCell(photo: ViewStore(store).state, shouldShowThumbnail: false)
         ContainerView {
             PhotoSizePreferenceSetter()
         }.onPreferenceChange(PhotoSize.self) { size in

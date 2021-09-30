@@ -38,7 +38,9 @@ public let stepReducer: Reducer<StepState, StepAction, JourneyEnvironment> = .co
             case .failure(let error):
                 state.gettingState = .gotError(error)
             }
-            
+
+        case .stepType(.photos(.editPhoto(.saveResponse(_, .success)))):
+            state.status = .completed
         case .stepType(.checkPatientDetails(.complete)):
             let pathwayStep = PathwayIdStepId(step_id: state.id, path_taken_id: state.pathwayId)
             state.savingState = .loading

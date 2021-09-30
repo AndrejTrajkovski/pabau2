@@ -15,7 +15,7 @@ public struct MultipleSelectPhotoCell: View {
 
 	public var body: some View {
 		ZStack(alignment: .bottomTrailing) {
-			PhotoCell(photo: photo)
+            PhotoCell(photo: photo, shouldShowThumbnail: true)
 				.overlay(PrivacyOverlay(isPrivate: photo.isPrivate))
 			if isSelected {
 				ZStack {

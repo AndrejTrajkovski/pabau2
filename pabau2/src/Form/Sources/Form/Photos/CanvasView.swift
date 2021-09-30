@@ -112,9 +112,9 @@ extension CanvasView.Coordinator {
                 let toolPicker = PKToolPicker.shared(for: window),
                 toolPicker.isVisible {
                 print("send action .onDrawingChange")
-//                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
-                    self.viewStore.send(.onDrawingChange(canvasView.drawing.dataRepresentation()))
-//                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+                    self?.viewStore.send(.onDrawingChange(canvasView.drawing.dataRepresentation()))
+                }
             }
         }
 	}

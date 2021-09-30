@@ -123,6 +123,9 @@ public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnv
                 }
             case .dismissUploadErrorAlert:
                 state.uploadAlert = nil
+//            case .singlePhotoEdit(.onChangePhotoSize(let size)):
+//                state.singlePhotoedit.photo.canvasSize = size
+//                return .none
             default:
                 break
 			}
