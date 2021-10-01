@@ -15,6 +15,13 @@ import Journey
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
+    var appStore: Store<AppState, AppAction>!
+
+    lazy var viewStore = ViewStore(
+      self.store.scope(state: { _ in () }),
+      removeDuplicates: ==
+    )
+
     static func makeDebugEnv() -> DebugEnvironment {
 //        #if DEBUG
 //        return DebugEnvironment.init(printer: { _ in })
@@ -72,16 +79,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 				audioPlayer: AudioPlayer(),
                 debug: debugEnv
 			)
-            
+
+            let store = Store(
+                initialState: AppState(
+                    loggedInUser: nil,
+                    hasSeenWalkthrough: hasSeenWalkthrough!
+                ),
+                reducer: reducer,
+                environment: env
+            )
+
+            self.appStore = store
+
             let contentView = ContentView(
-                store: Store(
-                    initialState: AppState(
-                        loggedInUser: nil,
-                        hasSeenWalkthrough: hasSeenWalkthrough!
-                    ),
-                    reducer: reducer,
-                    environment: env
-                )
+                store: store
             ).environmentObject(KeyboardFollower())
             
             window.rootViewController = UIHostingController(
