@@ -17,14 +17,7 @@ public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnv
 			state: \EditPhotosState.editPhotoList,
 			action: /EditPhotoAction.editPhotoList,
 			environment: { $0 }),
-		singlePhotoEditReducer.optional().pullback(
-			state: \EditPhotosState.singlePhotoEdit,
-			action: /EditPhotoAction.singlePhotoEdit,
-			environment: { $0 }),
-		cameraOverlayReducer.optional().pullback(
-			state: \EditPhotosState.cameraOverlay,
-			action: /EditPhotoAction.cameraOverlay,
-			environment: { $0 }),
+
 		.init { state, action, env in
 			switch action {
             case .editPhotoList, .chooseInjectables:
@@ -130,7 +123,15 @@ public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnv
                 break
 			}
 			return .none
-        }
+        },
+        singlePhotoEditReducer.optional().pullback(
+            state: \EditPhotosState.singlePhotoEdit,
+            action: /EditPhotoAction.singlePhotoEdit,
+            environment: { $0 }),
+        cameraOverlayReducer.optional().pullback(
+            state: \EditPhotosState.cameraOverlay,
+            action: /EditPhotoAction.cameraOverlay,
+            environment: { $0 })
     )
 
 public enum EditPhotoAction: Equatable {
@@ -163,10 +164,10 @@ public struct EditPhotosState: Equatable {
 	var selectedStencilIdx: Int?
 	var isFlashOn: Bool = false
 	var frontOrRear: UIImagePickerController.CameraDevice = .rear
-	var activeCanvas: CanvasMode = .drawing
+	var activeCanvas: CanvasMode = .injectables
     var allInjectables: IdentifiedArrayOf<Injectable> = .init(uniqueElements: Injectable.injectables())
 	var isChooseInjectablesActive: Bool = false
-	var chosenInjectableId: InjectableId?
+    var chosenInjectableId: InjectableId? = Injectable.injectables().first?.id
 	var deletePhotoAlert: AlertState<EditPhotoAction>?
     var uploadAlert: AlertState<EditPhotoAction>?
     var isCameraActive: Bool
