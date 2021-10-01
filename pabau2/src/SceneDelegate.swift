@@ -17,11 +17,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var appStore: Store<AppState, AppAction>!
 
-    lazy var viewStore = ViewStore(
-      self.store.scope(state: { _ in () }),
-      removeDuplicates: ==
-    )
-
     static func makeDebugEnv() -> DebugEnvironment {
 //        #if DEBUG
 //        return DebugEnvironment.init(printer: { _ in })
