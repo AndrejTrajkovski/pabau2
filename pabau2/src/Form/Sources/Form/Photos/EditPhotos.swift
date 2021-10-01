@@ -27,9 +27,7 @@ public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnv
 			environment: { $0 }),
 		.init { state, action, env in
 			switch action {
-			case .openPhotoAlbum:
-				state.isPhotosAlbumActive = true
-            case .editPhotoList, .cameraOverlay, .chooseInjectables:
+            case .editPhotoList, .chooseInjectables:
                 break
             case .save:
                 var uploadsActions: [Effect<EditPhotoAction, Never>] = []
@@ -126,6 +124,8 @@ public let editPhotosReducer = Reducer<EditPhotosState, EditPhotoAction, FormEnv
 //            case .singlePhotoEdit(.onChangePhotoSize(let size)):
 //                state.singlePhotoedit.photo.canvasSize = size
 //                return .none
+            case .cameraOverlay(.onClosePhotosLibrary):
+                state.isPhotosAlbumActive = false
             default:
                 break
 			}
@@ -159,7 +159,6 @@ public struct EditPhotosState: Equatable {
 	var editingPhotoId: PhotoVariantId?
 	var isTagsAlertActive: Bool = false
 	var stencils = ["stencil1", "stencil2", "stencil3", "stencil4"]
-	var isShowingPhotoLib: Bool = false
 	var isShowingStencils: Bool = true//false
 	var selectedStencilIdx: Int?
 	var isFlashOn: Bool = false
@@ -183,14 +182,6 @@ public struct EditPhotosState: Equatable {
         self.pathwayIdStepId = pathwayIdStepId
         self.clientId = clientId
 	}
-    
-//    public init(_ photos: IdentifiedArray<PhotoVariantId, PhotoViewModel>, currentPhoto: PhotoVariantId, pathwayIdStepId: PathwayIdStepId) {
-//        self.photos = photos
-//        self.editingPhotoId = currentPhoto
-//        self.isCameraActive = self.photos.isEmpty
-//        self.isPhotosAlbumActive = false
-//        self.pathwayIdStepId = pathwayIdStepId
-//    }
 
     mutating func updateWith(editingPhoto: PhotoViewModel?) {
         if let editingPhoto = editingPhoto {
@@ -344,7 +335,7 @@ public struct EditPhotos: View {
         IfLetStore(self.store.scope(
                     state: { $0.cameraOverlay },
                     action: { .cameraOverlay($0) }),
-                   then: ImagePicker.init(store:)
+                   then: Camera.init(store:)
         ).navigationBarHidden(true)
         .navigationBarTitle("")
     }
@@ -361,7 +352,6 @@ extension EditPhotosState {
 				stencils: self.stencils,
 				selectedStencilIdx: self.selectedStencilIdx,
 				isShowingStencils: self.isShowingStencils,
-				isShowingPhotoLib: self.isShowingPhotoLib,
 				isFlashOn: self.isFlashOn,
 				frontOrRear: self.frontOrRear,
 				allInjectables: self.allInjectables
@@ -375,7 +365,6 @@ extension EditPhotosState {
 			self.stencils = newValue.stencils
 			self.selectedStencilIdx = newValue.selectedStencilIdx
 			self.isShowingStencils = newValue.isShowingStencils
-			self.isShowingPhotoLib = newValue.isShowingPhotoLib
 			self.isFlashOn = newValue.isFlashOn
 			self.frontOrRear = newValue.frontOrRear
 			self.allInjectables = newValue.allInjectables

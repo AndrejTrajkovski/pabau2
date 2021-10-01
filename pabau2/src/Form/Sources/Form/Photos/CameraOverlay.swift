@@ -9,7 +9,6 @@ public struct CameraOverlayState: Equatable {
 	var stencils: [Stencil]
 	var selectedStencilIdx: Int?
 	var isShowingStencils: Bool
-	var isShowingPhotoLib: Bool
 	var isFlashOn: Bool
 	var frontOrRear: UIImagePickerController.CameraDevice
 	var allInjectables: IdentifiedArrayOf<Injectable>
@@ -17,9 +16,9 @@ public struct CameraOverlayState: Equatable {
 
 public enum CameraOverlayAction: Equatable {
 	case onToggleStencils
-	case onOpenPhotosLibrary
 	case onClosePhotosLibrary
-	case didTakePhotos([UIImage])
+    case didChoosePhotosFromLibrary([UIImage])
+	case didTakePhotoWithCamera(UIImage)
 	case closeCamera
 	case stencils(StencilsAction)
 	case onToggleFlash
@@ -39,11 +38,7 @@ let cameraOverlayReducer: Reducer<CameraOverlayState, CameraOverlayAction, FormE
 			environment: { $0 }),
 		.init { state, action, _ in
 			switch action {
-			case .onOpenPhotosLibrary:
-				state.isShowingPhotoLib = true
-			case .onClosePhotosLibrary:
-				state.isShowingPhotoLib = false
-			case .didTakePhotos(let images):
+			case .didChoosePhotosFromLibrary(let images):
 				let newPhotos = images.map {
 					PhotoViewModel(NewPhoto.init(id: UUID(), image: $0, date: Date()))
 				}
@@ -52,6 +47,7 @@ let cameraOverlayReducer: Reducer<CameraOverlayState, CameraOverlayAction, FormE
                 state.photos = IdentifiedArray(uniqueElements: result)
 //				state.photos.insert(contentsOf: newPhotos, at: state.photos.count)
 				state.editingPhotoId = newPhotos.last!.id
+                return Effect.init(value: CameraOverlayAction.onClosePhotosLibrary)
 			case .closeCamera:
 				state.isCameraActive = false
 			case .onToggleStencils:
@@ -62,7 +58,13 @@ let cameraOverlayReducer: Reducer<CameraOverlayState, CameraOverlayAction, FormE
 				state.frontOrRear.toggle()
 			case .stencils:
 				break
-			}
+            case .onClosePhotosLibrary:
+                break
+            case .didTakePhotoWithCamera(let photo):
+                let photoViewModel = PhotoViewModel(NewPhoto.init(id: UUID(), image: photo, date: Date()))
+                state.photos.append(photoViewModel)
+                state.editingPhotoId = photoViewModel.id
+            }
 			return .none
 		}
 )

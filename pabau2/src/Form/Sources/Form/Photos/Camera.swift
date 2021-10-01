@@ -1,7 +1,7 @@
 import SwiftUI
 import ComposableArchitecture
 
-struct ImagePicker: UIViewControllerRepresentable {
+struct Camera: UIViewControllerRepresentable {
 
 	@Environment(\.presentationMode) var presentationMode
 	let store: Store<CameraOverlayState, CameraOverlayAction>
@@ -13,9 +13,9 @@ struct ImagePicker: UIViewControllerRepresentable {
 	}
 
 	class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
-		var parent: ImagePicker
+		var parent: Camera
 
-		init(_ parent: ImagePicker) {
+		init(_ parent: Camera) {
 			self.parent = parent
 		}
 	}
@@ -24,7 +24,7 @@ struct ImagePicker: UIViewControllerRepresentable {
 		Coordinator(self)
 	}
 
-	func makeUIViewController(context: UIViewControllerRepresentableContext<ImagePicker>) -> UIImagePickerController {
+	func makeUIViewController(context: UIViewControllerRepresentableContext<Camera>) -> UIImagePickerController {
 		let picker = UIImagePickerController()
 		picker.delegate = context.coordinator
 		picker.sourceType = .camera
@@ -40,14 +40,14 @@ struct ImagePicker: UIViewControllerRepresentable {
 		return picker
 	}
 
-	func updateUIViewController(_ picker: UIImagePickerController, context: UIViewControllerRepresentableContext<ImagePicker>) {
+	func updateUIViewController(_ picker: UIImagePickerController, context: UIViewControllerRepresentableContext<Camera>) {
 		picker.cameraFlashMode = viewStore.isFlashOn ? .on : .off
 		picker.cameraDevice = viewStore.frontOrRear
 	}
 }
 
 // MARK: - UIImagePickerControllerDelegate
-extension ImagePicker.Coordinator {
+extension Camera.Coordinator {
 	func imagePickerController(_ picker: UIImagePickerController,
 														 didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
 
@@ -56,7 +56,7 @@ extension ImagePicker.Coordinator {
 		guard let image = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.originalImage)] as? UIImage else {
 			return
 		}
-		self.parent.viewStore.send(.didTakePhotos([image]))
+		self.parent.viewStore.send(.didTakePhotoWithCamera(image))
 		//		finishAndUpdate()
 	}
 

@@ -41,23 +41,23 @@ struct PhotoLibraryPicker: UIViewControllerRepresentable {
 
 extension PhotoLibraryPicker.Coordinator: ImagePickerControllerDelegate, UINavigationControllerDelegate {
 
-	func getAssetImage(asset: PHAsset) -> UIImage {
-		let manager = PHImageManager.default()
-		let option = PHImageRequestOptions()
-		var thumbnail = UIImage()
-		option.isSynchronous = true
-		manager.requestImage(for: asset,
-												 targetSize: PHImageManagerMaximumSize,
-												 contentMode: .aspectFit,
-												 options: option,
-												 resultHandler: {(result, _) -> Void in
-													thumbnail = result!
-		})
-		return thumbnail
-	}
+    func getAssetImage(asset: PHAsset) -> UIImage {
+        let manager = PHImageManager.default()
+        let option = PHImageRequestOptions()
+        var thumbnail = UIImage()
+        option.isSynchronous = true
+        manager.requestImage(for: asset,
+                             targetSize: PHImageManagerMaximumSize,
+                             contentMode: .aspectFit,
+                             options: option,
+                             resultHandler: {(result, _) -> Void in
+                                thumbnail = result!
+                             })
+        return thumbnail
+    }
 
 	func imagePicker(_ imagePicker: ImagePickerController, didFinishWithAssets assets: [PHAsset]) {
-		parent.viewStore.send(.didTakePhotos(assets.map(getAssetImage(asset:))))
+		parent.viewStore.send(.didChoosePhotosFromLibrary(assets.map(getAssetImage(asset:))))
 	}
 
 	func imagePicker(_ imagePicker: ImagePickerController, didSelectAsset asset: PHAsset) {
