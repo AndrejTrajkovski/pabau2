@@ -12,9 +12,7 @@ let package = Package(
 			targets: ["Clients"])
 	],
 	dependencies: [
-		.package(name: "Form",
-						 url: "../Form",
-						 from: Version.init(stringLiteral: "1.0.0")),
+		.package(path: "../Form"),
 		.package(name: "SDWebImageSwiftUI",
 						 url: "https://github.com/SDWebImage/SDWebImageSwiftUI.git",
 						 from: Version.init(stringLiteral: "2.0.0")),

@@ -13,14 +13,10 @@ let package = Package(
             targets: ["AddAppointment"])
     ],
     dependencies: [
-		.package(url: "../Form",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../SharedComponents",
-						 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../CoreDataModel",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../ChooseLocationAndEmployee",
-				 from: Version.init(stringLiteral: "1.0.0"))
+		.package(path: "../Form"),
+		.package(path: "../SharedComponents"),
+		.package(path: "../CoreDataModel"),
+		.package(path: "../ChooseLocationAndEmployee")
 	],
 	targets: [
         .target(

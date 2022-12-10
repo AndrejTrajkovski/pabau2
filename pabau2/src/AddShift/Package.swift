@@ -12,14 +12,10 @@ let package = Package(
 			targets: ["AddShift"])
 	],
 	dependencies: [
-		.package(url: "../SharedComponents",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../Model",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../CoreDataModel",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../ChooseLocationAndEmployee",
-				 from: Version.init(stringLiteral: "1.0.0"))
+		.package(path: "../SharedComponents"),
+		.package(path: "../Model"),
+		.package(path: "../CoreDataModel"),
+		.package(path: "../ChooseLocationAndEmployee")
 	],
 	targets: [
 		.target(

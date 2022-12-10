@@ -13,10 +13,8 @@ let package = Package(
             targets: ["Communication"])
     ],
     dependencies: [
-        .package(url: "../Model",
-                         from: Version.init(stringLiteral: "1.0.0")),
-        .package(url: "../Util",
-                         from: Version.init(stringLiteral: "1.0.0"))
+        .package(path: "../Model"),
+        .package(path: "../Util")
     ],
     targets: [
         .target(

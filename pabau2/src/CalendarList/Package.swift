@@ -12,12 +12,9 @@ let package = Package(
             targets: ["CalendarList"])
     ],
     dependencies: [
-		.package(url: "../Appointments",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../Model",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../SharedComponents",
-				 from: Version.init(stringLiteral: "1.0.0"))
+		.package(path: "../Appointments"),
+		.package(path: "../Model"),
+		.package(path: "../SharedComponents")
     ],
     targets: [
         .target(

@@ -11,10 +11,8 @@ let package = Package(
 			targets: ["Login"])
 	],
 	dependencies: [
-		.package(url: "../Util",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../Model",
-				 from: Version.init(stringLiteral: "1.0.0"))
+		.package(path: "../Util"),
+		.package(path: "../Model")
 	],
 	targets: [
 		.target(

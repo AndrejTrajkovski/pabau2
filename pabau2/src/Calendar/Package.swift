@@ -12,28 +12,18 @@ let package = Package(
 			targets: ["Calendar"])
 	],
 	dependencies: [
-		.package(url: "../Form",
-						 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../FSCalendarSwiftUI",
-						 from: Version.init(stringLiteral: "1.0.0")),
+		.package(path: "../Form"),
+		.package(path: "../FSCalendarSwiftUI"),
 		.package(url: "https://github.com/AndrejTrajkovski/JZCalendarWeekView.git",
 				 .revision("d1984a19f1f66ac8c73c763772ed3f14ab5857f9")),
-		.package(url: "../AddAppointment",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../SharedComponents",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../AddBookout",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../AddShift",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../Filters",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../Appointments",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../CalendarList",
-				 from: Version.init(stringLiteral: "1.0.0")),
-        .package(url: "../AppointmentDetails",
-                 from: Version.init(stringLiteral: "1.0.0"))
+		.package(path: "../AddAppointment"),
+		.package(path: "../SharedComponents"),
+		.package(path: "../AddBookout"),
+		.package(path: "../AddShift"),
+		.package(path: "../Filters"),
+		.package(path: "../Appointments"),
+		.package(path: "../CalendarList"),
+        .package(path: "../AppointmentDetails")
 	],
 	targets: [
 		.target(

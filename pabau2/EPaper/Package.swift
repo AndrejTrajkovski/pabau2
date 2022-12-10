@@ -13,10 +13,8 @@ let package = Package(
             targets: ["EPaper"])
     ],
     dependencies: [
-        .package(url: "../Form",
-                 from: Version.init(stringLiteral: "1.0.0")),
-        .package(url: "../Model",
-                 from: Version.init(stringLiteral: "1.0.0")),
+        .package(path: "../Form"),
+        .package(path: "../Model"),
         .package(name: "SDWebImageSwiftUI",
                  url: "https://github.com/SDWebImage/SDWebImageSwiftUI.git",
                  from: Version.init(stringLiteral: "2.0.0"))

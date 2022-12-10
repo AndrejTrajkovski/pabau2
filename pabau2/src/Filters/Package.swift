@@ -12,12 +12,9 @@ let package = Package(
             targets: ["Filters"])
     ],
     dependencies: [
-		.package(url: "../Util",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../Model",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../CoreDataModel",
-				 from: Version.init(stringLiteral: "1.0.0"))
+		.package(path: "../Util"),
+		.package(path: "../Model"),
+		.package(path: "../CoreDataModel")
     ],
     targets: [
         .target(

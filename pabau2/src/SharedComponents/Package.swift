@@ -13,16 +13,13 @@ let package = Package(
             targets: ["SharedComponents"])
     ],
     dependencies: [
-		.package(url: "../Util",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../Model",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../Avatar",
-				 from: Version.init(stringLiteral: "1.0.0")),
+		.package(path: "../Util"),
+		.package(path: "../Model"),
+		.package(path: "../Avatar"),
 		.package(name: "SDWebImageSwiftUI",
 				 url: "https://github.com/SDWebImage/SDWebImageSwiftUI.git",
 				 from: Version.init(stringLiteral: "2.0.0")),
-		.package(url: "../ToastAlert", from: Version.init("1.0.0"))
+		.package(path: "../ToastAlert")
 
     ],
     targets: [

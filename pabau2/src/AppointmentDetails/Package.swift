@@ -12,10 +12,10 @@ let package = Package(
             targets: ["AppointmentDetails"])
     ],
     dependencies: [
-        .package(url: "../CoreDataModel", from: Version.init(stringLiteral: "1.0.0")),
-        .package(url: "../SharedComponents", from: Version.init("1.0.0")),
-		.package(url: "../ChoosePathway", from: Version.init("1.0.0")),
-		.package(url: "../PathwayList", from: Version.init("1.0.0"))
+        .package(path: "../CoreDataModel"),
+        .package(path: "../SharedComponents"),
+		.package(path: "../ChoosePathway"),
+		.package(path: "../PathwayList")
     ],
     targets: [
         .target(

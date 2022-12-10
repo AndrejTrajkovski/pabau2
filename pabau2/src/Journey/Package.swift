@@ -11,22 +11,14 @@ let package = Package(
 			targets: ["Journey"])
 	],
 	dependencies: [
-		.package(url: "../Form",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../FSCalendarSwiftUI",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../Filters",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../AddAppointment",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../Appointments",
-				 from: Version.init(stringLiteral: "1.0.0")),
-        .package(url: "../ChoosePathway",
-                 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../SharedComponents",
-				 from: Version.init(stringLiteral: "1.0.0")),
-        .package(url: "../TextLog",
-                 from: Version("1.0.0"))
+		.package(path: "../Form"),
+		.package(path: "../FSCalendarSwiftUI"),
+		.package(path: "../Filters"),
+		.package(path: "../AddAppointment"),
+		.package(path: "../Appointments"),
+        .package(path: "../ChoosePathway"),
+		.package(path: "../SharedComponents"),
+        .package(path: "../TextLog")
 	],
 	targets: [
 		.target(

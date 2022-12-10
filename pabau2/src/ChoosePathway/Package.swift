@@ -12,10 +12,8 @@ let package = Package(
             targets: ["ChoosePathway"])
     ],
     dependencies: [
-        .package(url: "../SharedComponents",
-                 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../CoreDataModel",
-				 from: Version.init(stringLiteral: "1.0.0"))
+        .package(path: "../SharedComponents"),
+		.package(path: "../CoreDataModel")
     ],
     targets: [
         .target(

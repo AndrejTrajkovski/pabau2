@@ -12,10 +12,8 @@ let package = Package(
             targets: ["ChooseLocationAndEmployee"])
     ],
     dependencies: [
-		.package(url: "../ChooseEmployees",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../ChooseLocation",
-				 from: Version.init(stringLiteral: "1.0.0"))
+		.package(path: "../ChooseEmployees"),
+		.package(path: "../ChooseLocation")
     ],
     targets: [
         .target(

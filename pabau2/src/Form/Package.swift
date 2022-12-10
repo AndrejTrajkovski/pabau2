@@ -18,17 +18,13 @@ let package = Package(
 		.package(name: "BSImagePicker",
 				 url: "https://github.com/mikaoj/BSImagePicker.git",
 				 from: Version.init(stringLiteral: "3.2.1")),
-		.package(url: "../Util",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../Model",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../SharedComponents",
-				 from: Version.init(stringLiteral: "1.0.0")),
+		.package(path: "../Util"),
+		.package(path: "../Model"),
+		.package(path: "../SharedComponents"),
 		.package(name: "SDWebImageSwiftUI",
 				 url: "https://github.com/SDWebImage/SDWebImageSwiftUI.git",
 				 from: Version.init(stringLiteral: "2.0.0")),
-		.package(url: "../CoreDataModel",
-				 from: Version.init(stringLiteral: "1.0.0"))
+		.package(path: "../CoreDataModel")
 	],
 	targets: [
 		.target(

@@ -12,10 +12,8 @@ let package = Package(
             targets: ["ChooseLocation"])
     ],
 	dependencies: [
-		.package(url: "../CoreDataModel",
-				 from: Version.init(stringLiteral: "1.0.0")),
-		.package(url: "../SharedComponents",
-				 from: Version.init(stringLiteral: "1.0.0"))
+		.package(path: "../CoreDataModel"),
+		.package(path: "../SharedComponents")
 	],
     targets: [
         .target(
