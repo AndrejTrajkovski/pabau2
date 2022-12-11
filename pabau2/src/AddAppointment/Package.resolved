@@ -1,0 +1,160 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "AlertToast",
+        "repositoryURL": "https://github.com/elai950/AlertToast.git",
+        "state": {
+          "branch": null,
+          "revision": "a4f4267f6454259ba4ed8f9dadb87334a789c26c",
+          "version": "1.3.7"
+        }
+      },
+      {
+        "package": "BSImagePicker",
+        "repositoryURL": "https://github.com/mikaoj/BSImagePicker.git",
+        "state": {
+          "branch": null,
+          "revision": "750f26abd0fafbcc4124adef436251888a7c962a",
+          "version": "3.3.1"
+        }
+      },
+      {
+        "package": "combine-schedulers",
+        "repositoryURL": "https://github.com/pointfreeco/combine-schedulers",
+        "state": {
+          "branch": null,
+          "revision": "882ac01eb7ef9e36d4467eb4b1151e74fcef85ab",
+          "version": "0.9.1"
+        }
+      },
+      {
+        "package": "CoreStore",
+        "repositoryURL": "https://github.com/JohnEstropia/CoreStore",
+        "state": {
+          "branch": null,
+          "revision": "496145761ab30e8cf1c44220c0882b95e6b41077",
+          "version": "8.1.0"
+        }
+      },
+      {
+        "package": "SDWebImage",
+        "repositoryURL": "https://github.com/SDWebImage/SDWebImage.git",
+        "state": {
+          "branch": null,
+          "revision": "3312bf5e67b52fbce7c3caf431b0cda721a9f7bb",
+          "version": "5.14.2"
+        }
+      },
+      {
+        "package": "SDWebImageSwiftUI",
+        "repositoryURL": "https://github.com/SDWebImage/SDWebImageSwiftUI.git",
+        "state": {
+          "branch": null,
+          "revision": "ed288667c909c89127ab1b690113a3e397af3098",
+          "version": "2.2.1"
+        }
+      },
+      {
+        "package": "swift-case-paths",
+        "repositoryURL": "https://github.com/pointfreeco/swift-case-paths",
+        "state": {
+          "branch": null,
+          "revision": "bb436421f57269fbcfe7360735985321585a86e5",
+          "version": "0.10.1"
+        }
+      },
+      {
+        "package": "swift-clocks",
+        "repositoryURL": "https://github.com/pointfreeco/swift-clocks",
+        "state": {
+          "branch": null,
+          "revision": "20b25ca0dd88ebfb9111ec937814ddc5a8880172",
+          "version": "0.2.0"
+        }
+      },
+      {
+        "package": "swift-collections",
+        "repositoryURL": "https://github.com/apple/swift-collections",
+        "state": {
+          "branch": null,
+          "revision": "937e904258d22af6e447a0b72c0bc67583ef64a2",
+          "version": "1.0.4"
+        }
+      },
+      {
+        "package": "swift-composable-architecture",
+        "repositoryURL": "https://github.com/pointfreeco/swift-composable-architecture.git",
+        "state": {
+          "branch": null,
+          "revision": "c9259b5f74892690cb04a9a8088b4a1789b05a7d",
+          "version": "0.47.2"
+        }
+      },
+      {
+        "package": "swift-custom-dump",
+        "repositoryURL": "https://github.com/pointfreeco/swift-custom-dump",
+        "state": {
+          "branch": null,
+          "revision": "ead7d30cc224c3642c150b546f4f1080d1c411a8",
+          "version": "0.6.1"
+        }
+      },
+      {
+        "package": "swift-identified-collections",
+        "repositoryURL": "https://github.com/pointfreeco/swift-identified-collections",
+        "state": {
+          "branch": null,
+          "revision": "a08887de589e3829d488e0b4b707b2ca804b1060",
+          "version": "0.5.0"
+        }
+      },
+      {
+        "package": "Overture",
+        "repositoryURL": "https://github.com/pointfreeco/swift-overture.git",
+        "state": {
+          "branch": null,
+          "revision": "7977acd7597f413717058acc1e080731249a1d7e",
+          "version": "0.5.0"
+        }
+      },
+      {
+        "package": "swift-tagged",
+        "repositoryURL": "https://github.com/pointfreeco/swift-tagged.git",
+        "state": {
+          "branch": null,
+          "revision": "33f44ceb793b12d6af5019cbe26f8b0e66e6389f",
+          "version": "0.8.0"
+        }
+      },
+      {
+        "package": "SwiftDate",
+        "repositoryURL": "https://github.com/malcommac/SwiftDate.git",
+        "state": {
+          "branch": null,
+          "revision": "6190d0cefff3013e77ed567e6b074f324e5c5bf5",
+          "version": "6.3.1"
+        }
+      },
+      {
+        "package": "swiftui-navigation",
+        "repositoryURL": "https://github.com/pointfreeco/swiftui-navigation",
+        "state": {
+          "branch": null,
+          "revision": "a4a84e387c83a735e56d03bf9736d49a07b3c3ae",
+          "version": "0.4.3"
+        }
+      },
+      {
+        "package": "xctest-dynamic-overlay",
+        "repositoryURL": "https://github.com/pointfreeco/xctest-dynamic-overlay",
+        "state": {
+          "branch": null,
+          "revision": "5a5457a744239896e9b0b03a8e1a5069c3e7b91f",
+          "version": "0.6.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
